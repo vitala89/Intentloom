@@ -5,6 +5,7 @@ import {
   rename,
   rm,
   stat,
+  realpath,
   writeFile,
 } from "node:fs/promises";
 import { dirname, relative, resolve, sep } from "node:path";
@@ -45,6 +46,7 @@ export interface FileSystem {
   mkdir(path: string): Promise<void>;
   remove(path: string): Promise<void>;
   list(path: string): Promise<string[]>;
+  realpath(path: string): Promise<string>;
 }
 export interface InitOptions {
   readonly root: string;
@@ -73,6 +75,36 @@ function inside(root: string, path: string): string {
   if (target !== resolve(root) && !target.startsWith(`${resolve(root)}${sep}`))
     throw new Error(`path traversal: ${path}`);
   return target;
+}
+
+function collisionKey(path: string): string {
+  return path.normalize("NFC").replaceAll("\\", "/").toLocaleLowerCase("en-US");
+}
+
+async function safeDestination(
+  root: string,
+  path: string,
+  fs: FileSystem,
+): Promise<void> {
+  let rootResolved = resolve(root);
+  try {
+    rootResolved = await fs.realpath(rootResolved);
+  } catch {
+    /* a new project root has no link to resolve yet */
+  }
+  let current = path;
+  while (true) {
+    if (await fs.exists(current)) {
+      const resolved = await fs.realpath(current);
+      if (
+        resolved !== rootResolved &&
+        !resolved.startsWith(`${rootResolved}${sep}`)
+      )
+        throw new Error(`security-error: ${relative(root, path)}`);
+    }
+    if (current === resolve(root)) return;
+    current = dirname(current);
+  }
 }
 
 function config(profile: string, adapters: readonly AdapterName[]): string {
@@ -193,6 +225,24 @@ async function plan(
   sync = false,
 ): Promise<Plan> {
   const changes: Change[] = [];
+  const desiredFiles = await desired(options);
+  const collisionSources = new Map<string, string>();
+  for (const file of desiredFiles) {
+    const key = collisionKey(file.path);
+    const previous = collisionSources.get(key);
+    if (previous && previous !== file.path)
+      return {
+        changes: [
+          {
+            path: file.path,
+            kind: "conflict",
+            reason: `normalized destination collision with ${previous}`,
+          },
+        ],
+        diagnostics: ["destination-collision"],
+      };
+    collisionSources.set(key, file.path);
+  }
   const owned = await ownership(options.root, fs);
   if (owned === null)
     return {
@@ -205,8 +255,22 @@ async function plan(
       ],
       diagnostics: ["invalid source-map"],
     };
-  for (const file of await desired(options)) {
+  for (const file of desiredFiles) {
     const path = inside(options.root, normalizeOutputPath(file.path));
+    try {
+      await safeDestination(options.root, path, fs);
+    } catch (error) {
+      return {
+        changes: [
+          {
+            path: file.path,
+            kind: "security-error",
+            reason: error instanceof Error ? error.message : String(error),
+          },
+        ],
+        diagnostics: ["security-error"],
+      };
+    }
     if (!(await fs.exists(path)))
       changes.push({
         path: file.path,
@@ -385,6 +449,9 @@ export function createMemoryFileSystem(
     async list(path) {
       return [...files.keys()].filter((file) => file.startsWith(path));
     },
+    async realpath(path) {
+      return path;
+    },
   };
 }
 export const nodeFileSystem: FileSystem = {
@@ -413,4 +480,5 @@ export const nodeFileSystem: FileSystem = {
       return [];
     }
   },
+  realpath: (path) => realpath(path),
 };
