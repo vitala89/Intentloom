@@ -29,6 +29,8 @@ All notable changes are documented here. This project follows Keep a Changelog p
 - Report manually modified generated files as conflicts and roll back newly created files after a recoverable write failure.
 - Finalize manifest and source-map writes after generated destinations and roll back all created outputs after metadata-stage failure.
 - Added resolved-path checks for existing destination parents and portable normalized collision analysis before writes.
+- Added real-filesystem coverage for broken destination, parent-directory, nested adapter, and metadata symlink escapes.
+- Defined deterministic collision normalization for separators, dot segments, Unicode NFC, and case-only path differences.
 
 ### Migration
 

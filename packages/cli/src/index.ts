@@ -1,5 +1,6 @@
 import {
   mkdir,
+  lstat,
   readFile,
   readdir,
   rename,
@@ -8,7 +9,7 @@ import {
   realpath,
   writeFile,
 } from "node:fs/promises";
-import { dirname, relative, resolve, sep } from "node:path";
+import { dirname, posix, relative, resolve, sep } from "node:path";
 import { generateAdapter } from "@aif/adapters";
 import {
   AIF_VERSION,
@@ -47,6 +48,7 @@ export interface FileSystem {
   remove(path: string): Promise<void>;
   list(path: string): Promise<string[]>;
   realpath(path: string): Promise<string>;
+  isSymbolicLink(path: string): Promise<boolean>;
 }
 export interface InitOptions {
   readonly root: string;
@@ -77,8 +79,17 @@ function inside(root: string, path: string): string {
   return target;
 }
 
-function collisionKey(path: string): string {
-  return path.normalize("NFC").replaceAll("\\", "/").toLocaleLowerCase("en-US");
+export function destinationCollisionKey(path: string): string {
+  if (
+    path.includes("\0") ||
+    path.startsWith("/") ||
+    /^[A-Za-z]:[\\/]/u.test(path)
+  )
+    throw new Error(`invalid destination: ${path}`);
+  const normalized = posix.normalize(path.replaceAll("\\", "/"));
+  if (normalized === ".." || normalized.startsWith("../"))
+    throw new Error(`destination escapes project root: ${path}`);
+  return normalized.replace(/^\.\//u, "").normalize("NFC").toLowerCase();
 }
 
 async function safeDestination(
@@ -94,6 +105,8 @@ async function safeDestination(
   }
   let current = path;
   while (true) {
+    if (await fs.isSymbolicLink(current))
+      throw new Error(`security-error: ${relative(root, path)}`);
     if (await fs.exists(current)) {
       const resolved = await fs.realpath(current);
       if (
@@ -228,7 +241,7 @@ async function plan(
   const desiredFiles = await desired(options);
   const collisionSources = new Map<string, string>();
   for (const file of desiredFiles) {
-    const key = collisionKey(file.path);
+    const key = destinationCollisionKey(file.path);
     const previous = collisionSources.get(key);
     if (previous && previous !== file.path)
       return {
@@ -452,6 +465,9 @@ export function createMemoryFileSystem(
     async realpath(path) {
       return path;
     },
+    async isSymbolicLink() {
+      return false;
+    },
   };
 }
 export const nodeFileSystem: FileSystem = {
@@ -481,4 +497,11 @@ export const nodeFileSystem: FileSystem = {
     }
   },
   realpath: (path) => realpath(path),
+  async isSymbolicLink(path) {
+    try {
+      return (await lstat(path)).isSymbolicLink();
+    } catch {
+      return false;
+    }
+  },
 };
