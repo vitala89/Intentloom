@@ -92,6 +92,43 @@ export function destinationCollisionKey(path: string): string {
   return normalized.replace(/^\.\//u, "").normalize("NFC").toLowerCase();
 }
 
+export interface DestinationCollision {
+  readonly code: "destination-collision";
+  readonly key: string;
+  readonly paths: readonly string[];
+  readonly sources: readonly string[];
+}
+
+export function findDestinationCollisions(
+  inputs: readonly { path: string; sources: readonly string[] }[],
+): DestinationCollision[] {
+  const groups = new Map<
+    string,
+    { paths: Set<string>; sources: Set<string>; count: number }
+  >();
+  for (const input of inputs) {
+    const key = destinationCollisionKey(input.path);
+    const group = groups.get(key) ?? {
+      paths: new Set(),
+      sources: new Set(),
+      count: 0,
+    };
+    group.paths.add(input.path);
+    input.sources.forEach((source) => group.sources.add(source));
+    group.count += 1;
+    groups.set(key, group);
+  }
+  return [...groups.entries()]
+    .filter(([, group]) => group.count > 1)
+    .map(([key, group]) => ({
+      code: "destination-collision" as const,
+      key,
+      paths: [...group.paths].sort(),
+      sources: [...group.sources].sort(),
+    }))
+    .sort((left, right) => left.key.localeCompare(right.key));
+}
+
 async function safeDestination(
   root: string,
   path: string,
@@ -259,23 +296,16 @@ async function plan(
       };
     }
   }
-  const collisionSources = new Map<string, string>();
-  for (const file of desiredFiles) {
-    const key = destinationCollisionKey(file.path);
-    const previous = collisionSources.get(key);
-    if (previous && previous !== file.path)
-      return {
-        changes: [
-          {
-            path: file.path,
-            kind: "conflict",
-            reason: `normalized destination collision with ${previous}`,
-          },
-        ],
-        diagnostics: ["destination-collision"],
-      };
-    collisionSources.set(key, file.path);
-  }
+  const collisions = findDestinationCollisions(desiredFiles);
+  if (collisions.length > 0)
+    return {
+      changes: collisions.map((collision) => ({
+        path: collision.paths.join(", "),
+        kind: "conflict" as const,
+        reason: JSON.stringify(collision),
+      })),
+      diagnostics: ["destination-collision"],
+    };
   const owned = await ownership(options.root, fs);
   if (owned === null)
     return {

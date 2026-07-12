@@ -31,3 +31,4 @@ AIF does not sandbox a coding agent, enforce provider permissions, scan all repo
 4. Human confirmation is required when an existing non-identical file would be replaced.
 5. Security-sensitive provider behavior remains outside canonical core and is explicitly documented by an adapter.
 6. Generated and metadata write paths reject symlinks, including internal and broken links, and are revalidated before replacement.
+7. Symlink loops fail through the same stable path-security classification without recursive traversal.

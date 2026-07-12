@@ -32,6 +32,7 @@ All notable changes are documented here. This project follows Keep a Changelog p
 - Added real-filesystem coverage for broken destination, parent-directory, nested adapter, and metadata symlink escapes.
 - Defined deterministic collision normalization for separators, dot segments, Unicode NFC, and case-only path differences.
 - Added direct manifest/source-map symlink rejection and commit-time destination revalidation against symlink substitution.
+- Added explicit real-filesystem symlink-loop coverage and deterministic, provenance-complete collision reporting independent of input order.
 
 ### Migration
 

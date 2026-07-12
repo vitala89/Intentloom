@@ -7,3 +7,5 @@ Before a write plan is accepted, AIF evaluates a portable normalized collision k
 The collision sequence rejects absolute/null-byte input, converts separators, normalizes dot segments, rejects root escape, removes redundant `./`, applies NFC, then locale-independent lowercase comparison. This is deterministic but is not a complete Unicode case-folding implementation.
 
 The v0.1 policy rejects every symlink component, including links whose current target is inside the project. Paths are revalidated immediately before each replacement; this narrows but cannot eliminate TOCTOU races.
+
+Normalized collisions are reported with a stable `destination-collision` code, collision key, sorted original paths, and sorted canonical/adapter source identifiers. No colliding output is selected based on input order.

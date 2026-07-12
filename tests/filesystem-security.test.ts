@@ -106,6 +106,30 @@ describe("filesystem security", () => {
     ).rejects.toThrow();
     expect(await readFile(external, "utf8")).toBe("sentinel");
   });
+
+  it.each([
+    ["destination", "AGENTS.md", "codex"],
+    ["adapter parent", ".cursor", "cursor"],
+    ["metadata parent", ".aif", "codex"],
+  ] as const)(
+    "rejects a real %s symlink loop",
+    async (_name, loopPath, adapter) => {
+      const sandbox = await mkdtemp(join(tmpdir(), "aif-loop-"));
+      const project = join(sandbox, "project");
+      await mkdir(project);
+      await symlink(loopPath, join(project, loopPath));
+      const result = await initProject(
+        {
+          root: project,
+          profile: "generic",
+          adapters: [adapter],
+          dryRun: true,
+        },
+        nodeFileSystem,
+      );
+      expect(result.changes[0]?.kind).toBe("security-error");
+    },
+  );
 });
 
 describe("collision normalization", () => {
