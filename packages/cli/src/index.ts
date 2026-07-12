@@ -20,7 +20,14 @@ import {
 } from "@aif/core";
 import { parse, stringify } from "yaml";
 
-export type ChangeKind = "create" | "update" | "conflict" | "delete";
+export type ChangeKind =
+  | "create"
+  | "update"
+  | "conflict"
+  | "modified"
+  | "missing"
+  | "stale"
+  | "security-error";
 export interface Change {
   readonly path: string;
   readonly kind: ChangeKind;
@@ -137,12 +144,66 @@ async function desired(options: InitOptions): Promise<GeneratedFile[]> {
   ];
 }
 
+interface OwnershipRecord {
+  readonly path: string;
+  readonly checksum: string;
+  readonly ownership: "aif-owned-generated";
+}
+
+async function ownership(
+  root: string,
+  fs: FileSystem,
+): Promise<Map<string, OwnershipRecord> | null> {
+  const path = inside(root, sourceMapPath);
+  if (!(await fs.exists(path))) return new Map();
+  try {
+    const value = JSON.parse(await fs.read(path)) as {
+      schemaVersion?: unknown;
+      files?: unknown;
+    };
+    if (value.schemaVersion !== "1" || !Array.isArray(value.files)) return null;
+    const records = new Map<string, OwnershipRecord>();
+    for (const record of value.files) {
+      if (typeof record !== "object" || record === null) return null;
+      const item = record as Record<string, unknown>;
+      if (
+        typeof item.path !== "string" ||
+        typeof item.checksum !== "string" ||
+        item.ownership !== "aif-owned-generated"
+      )
+        return null;
+      const normalized = normalizeOutputPath(item.path);
+      if (normalized !== item.path || records.has(normalized)) return null;
+      records.set(normalized, {
+        path: normalized,
+        checksum: item.checksum,
+        ownership: "aif-owned-generated",
+      });
+    }
+    return records;
+  } catch {
+    return null;
+  }
+}
+
 async function plan(
   options: InitOptions,
   fs: FileSystem,
-  force = false,
+  sync = false,
 ): Promise<Plan> {
   const changes: Change[] = [];
+  const owned = await ownership(options.root, fs);
+  if (owned === null)
+    return {
+      changes: [
+        {
+          path: sourceMapPath,
+          kind: "conflict",
+          reason: "malformed source-map; refusing all writes",
+        },
+      ],
+      diagnostics: ["invalid source-map"],
+    };
   for (const file of await desired(options)) {
     const path = inside(options.root, normalizeOutputPath(file.path));
     if (!(await fs.exists(path)))
@@ -153,14 +214,33 @@ async function plan(
         content: file.content,
       });
     else if ((await fs.read(path)) === file.content) continue;
-    else if (force)
-      changes.push({
-        path: file.path,
-        kind: "update",
-        reason: "AIF-owned generated output changed",
-        content: file.content,
-      });
-    else
+    else if (
+      sync &&
+      file.path !== sourceMapPath &&
+      file.path !== lockPath &&
+      file.path !== configPath
+    ) {
+      const record = owned.get(file.path);
+      if (!record)
+        changes.push({
+          path: file.path,
+          kind: "conflict",
+          reason: "existing destination has no AIF ownership record",
+        });
+      else if (checksum(await fs.read(path)) !== record.checksum)
+        changes.push({
+          path: file.path,
+          kind: "modified",
+          reason: "AIF-owned generated file was manually modified",
+        });
+      else
+        changes.push({
+          path: file.path,
+          kind: "update",
+          reason: "verified AIF-owned generated output changed",
+          content: file.content,
+        });
+    } else
       changes.push({
         path: file.path,
         kind: "conflict",
@@ -179,15 +259,18 @@ async function apply(
     (change) => change.kind === "create" || change.kind === "update",
   );
   const backups = new Map<string, string>();
+  const created: string[] = [];
   try {
     for (const change of writes) {
       const path = inside(root, change.path);
       if (await fs.exists(path)) backups.set(path, await fs.read(path));
+      else created.push(path);
       await fs.mkdir(dirname(path));
       await fs.write(path, change.content!);
     }
   } catch (error) {
     for (const [path, content] of backups) await fs.write(path, content);
+    for (const path of created) await fs.remove(path);
     throw error;
   }
 }
@@ -208,7 +291,7 @@ export async function syncProject(
   options: SyncOptions,
   fs: FileSystem,
 ): Promise<Plan> {
-  const proposal = await plan(options, fs, options.force === true);
+  const proposal = await plan(options, fs, true);
   if (
     !options.dryRun &&
     !proposal.changes.some((change) => change.kind === "conflict")

@@ -49,4 +49,19 @@ describe("init", () => {
     await doctorProject(options, fs);
     expect([...fs.files.entries()]).toEqual(before);
   });
+  it("refuses a manually modified owned generated file", async () => {
+    const fs = createMemoryFileSystem();
+    const options = {
+      root: "/project",
+      profile: "generic",
+      adapters: ["codex"] as const,
+    };
+    await initProject(options, fs);
+    await fs.write("/project/AGENTS.md", "manual edit");
+    expect(
+      (await syncProject(options, fs)).changes.find(
+        (change) => change.path === "AGENTS.md",
+      )?.kind,
+    ).toBe("modified");
+  });
 });

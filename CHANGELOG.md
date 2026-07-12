@@ -23,6 +23,11 @@ All notable changes are documented here. This project follows Keep a Changelog p
 
 - Claude Code, Codex, Cursor, and Copilot outputs are unit-layout tested; clean CLI fixture verification remains a release blocker.
 
+### Security
+
+- Prevented sync from overwriting destinations without a verified source-map ownership record.
+- Report manually modified generated files as conflicts and roll back newly created files after a recoverable write failure.
+
 ### Migration
 
 - No published migration is available; release readiness is currently blocked.
