@@ -1,0 +1,7 @@
+{
+  "schemaVersion": "1",
+  "extends": ["angular", "tauri"],
+  "defaults": {
+    "integration": "angular-tauri"
+  }
+}

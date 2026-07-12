@@ -22,38 +22,38 @@ Out of scope: MCP, CodeGraph/Graphify, hosted services, telemetry, marketplace, 
 
 ## Artifact model
 
-| Artifact | Canonical location | Purpose |
-| --- | --- | --- |
-| Policy | `catalog/policies/` | Durable engineering constraints |
-| Workflow | `catalog/workflows/` | Ordered, human-verifiable procedure |
-| Skill | `catalog/skills/` | Portable, progressively disclosed task capability |
-| Template | `catalog/templates/` | Parameterized scaffold or document |
-| Schema | `catalog/schemas/` | Validated machine-readable contract |
-| Profile | `profiles/` | Selected artifact set and parameters |
+| Artifact | Canonical location   | Purpose                                           |
+| -------- | -------------------- | ------------------------------------------------- |
+| Policy   | `catalog/policies/`  | Durable engineering constraints                   |
+| Workflow | `catalog/workflows/` | Ordered, human-verifiable procedure               |
+| Skill    | `catalog/skills/`    | Portable, progressively disclosed task capability |
+| Template | `catalog/templates/` | Parameterized scaffold or document                |
+| Schema   | `catalog/schemas/`   | Validated machine-readable contract               |
+| Profile  | `profiles/`          | Selected artifact set and parameters              |
 
 Canonical skills follow the open [Agent Skills specification](https://agentskills.io/specification): a skill directory containing `SKILL.md` with required `name` and `description` frontmatter. AIF may add its own schema around, but does not redefine, the standard skill payload.
 
 ## Versioning
 
-| Version | Meaning | Compatibility rule |
-| --- | --- | --- |
-| Framework version | AIF release | SemVer |
-| Schema version | Canonical manifest/schema contract | Explicit compatibility range |
-| Adapter version | Transformation behavior for one target | SemVer, recorded in output |
-| Lock version | Installed-project lock format | Explicit parser support |
+| Version           | Meaning                                | Compatibility rule           |
+| ----------------- | -------------------------------------- | ---------------------------- |
+| Framework version | AIF release                            | SemVer                       |
+| Schema version    | Canonical manifest/schema contract     | Explicit compatibility range |
+| Adapter version   | Transformation behavior for one target | SemVer, recorded in output   |
+| Lock version      | Installed-project lock format          | Explicit parser support      |
 
 `manifest.lock.json` pins framework, schemas, adapters, profile, source hashes, and generated-output hashes. A schema or lock migration is never implicit.
 
 ## Command contract (future CLI)
 
-| Command | Intent | Writes? |
-| --- | --- | --- |
-| `init` | Create a new AIF layout | With preview and confirmation |
-| `adopt` | Map AIF into an existing project | With conflict detection |
-| `plan` | Explain resolved profile and target files | No |
-| `diff` | Compare desired and installed state | No |
-| `sync` | Apply an approved plan | Only after safety gates |
-| `doctor` | Validate files, versions, and drift | No |
+| Command  | Intent                                    | Writes?                       |
+| -------- | ----------------------------------------- | ----------------------------- |
+| `init`   | Create a new AIF layout                   | With preview and confirmation |
+| `adopt`  | Map AIF into an existing project          | With conflict detection       |
+| `plan`   | Explain resolved profile and target files | No                            |
+| `diff`   | Compare desired and installed state       | No                            |
+| `sync`   | Apply an approved plan                    | Only after safety gates       |
+| `doctor` | Validate files, versions, and drift       | No                            |
 
 ## Acceptance criteria
 

@@ -2,24 +2,24 @@
 
 ## Status vocabulary
 
-| Status | Meaning |
-| --- | --- |
-| Officially supported | Provider documents the format/capability as supported. |
-| Supported through shared standard | Provider documents compatibility with the open standard. |
-| Generated adapter | AIF can emit a documented provider-native format. |
-| Experimental | Provider behavior or AIF mapping is preview/unstable; requires opt-in. |
-| Unsupported | AIF deliberately does not generate or rely on it. |
+| Status                            | Meaning                                                                |
+| --------------------------------- | ---------------------------------------------------------------------- |
+| Officially supported              | Provider documents the format/capability as supported.                 |
+| Supported through shared standard | Provider documents compatibility with the open standard.               |
+| Generated adapter                 | AIF can emit a documented provider-native format.                      |
+| Experimental                      | Provider behavior or AIF mapping is preview/unstable; requires opt-in. |
+| Unsupported                       | AIF deliberately does not generate or rely on it.                      |
 
 ## v0.1 target assessment
 
-| Capability | Claude Code | OpenAI Codex | Cursor | GitHub Copilot |
-| --- | --- | --- | --- | --- |
-| Repository instructions | Officially supported (`CLAUDE.md`) | Officially supported (`AGENTS.md`) | Officially supported (`AGENTS.md`, Rules) | Officially supported (instructions and `AGENTS.md`) |
-| Shared `AGENTS.md` | Via `CLAUDE.md` import | Officially supported | Officially supported | Officially supported |
-| Agent Skills | Officially supported | Officially supported | Supported through shared standard | Officially supported |
-| Path-scoped rules | Officially supported | Adapter-dependent; not canonical | Officially supported | Officially supported |
-| Custom subagents | Officially supported | Experimental / adapter discovery required | Experimental / adapter discovery required | Officially supported |
-| AIF native adapter | Generated adapter | Generated adapter | Generated adapter | Generated adapter |
+| Capability              | Claude Code                        | OpenAI Codex                              | Cursor                                    | GitHub Copilot                                      |
+| ----------------------- | ---------------------------------- | ----------------------------------------- | ----------------------------------------- | --------------------------------------------------- |
+| Repository instructions | Officially supported (`CLAUDE.md`) | Officially supported (`AGENTS.md`)        | Officially supported (`AGENTS.md`, Rules) | Officially supported (instructions and `AGENTS.md`) |
+| Shared `AGENTS.md`      | Via `CLAUDE.md` import             | Officially supported                      | Officially supported                      | Officially supported                                |
+| Agent Skills            | Officially supported               | Officially supported                      | Supported through shared standard         | Officially supported                                |
+| Path-scoped rules       | Officially supported               | Adapter-dependent; not canonical          | Officially supported                      | Officially supported                                |
+| Custom subagents        | Officially supported               | Experimental / adapter discovery required | Experimental / adapter discovery required | Officially supported                                |
+| AIF native adapter      | Generated adapter                  | Generated adapter                         | Generated adapter                         | Generated adapter                                   |
 
 The last row is a v0.1 product target, not a claim that implementation exists. A target moves to “generated adapter” only when its emitted files are validated against provider documentation and fixtures.
 

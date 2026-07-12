@@ -1,0 +1,11 @@
+{
+  "name": "@aif/adapters",
+  "version": "0.1.0",
+  "type": "module",
+  "dependencies": {
+    "@aif/core": "workspace:*"
+  },
+  "exports": {
+    ".": "./src/index.ts"
+  }
+}

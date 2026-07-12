@@ -6,18 +6,18 @@ Assets include repository contents, developer secrets, project files, AIF catalo
 
 ## Threats and controls
 
-| Threat | Risk | Required controls |
-| --- | --- | --- |
-| Malicious repository instructions / prompt injection | Agent is persuaded to bypass policy or leak data | Treat repository prose as untrusted data; isolate instruction sources; show provenance; retain human confirmation for write plans. |
-| Path traversal | Writes outside project root | Canonicalize paths, reject absolute/escaping paths, and validate every planned path against project root. |
-| Arbitrary script execution | Local code execution | No scripts run during resolution/validation; future scripts require explicit command and approval. |
-| Secret leakage | Secrets enter prompts, logs, locks, or generated files | Redact known secret patterns from diagnostics; prohibit secret values in catalog, lock, source map, and examples. |
-| Unsafe hooks | Silent lifecycle execution | Never install or enable hooks automatically; model hooks as explicit, reviewed future artifacts. |
-| Template injection | Untrusted values alter generated output | Use structured rendering with schema validation and escaping; forbid arbitrary expression evaluation. |
-| Generated-file tampering | Drift is hidden or malicious content is trusted | Record content hashes and source ownership; report mismatch; never overwrite automatically. |
-| Dependency supply-chain risk | Compromised build/runtime dependency | v0.1 installs none; later dependencies require lockfiles, provenance review, and minimal surface. |
-| Destructive overwrite | User content loss | Dry-run, diff, conflict detection, and backup or explicit confirmation for every write. |
-| Stale instructions | Obsolete policy drives unsafe behavior | Pin versions and checksums; `doctor` reports stale locks, unsupported adapters, and drift. |
+| Threat                                               | Risk                                                   | Required controls                                                                                                                  |
+| ---------------------------------------------------- | ------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------- |
+| Malicious repository instructions / prompt injection | Agent is persuaded to bypass policy or leak data       | Treat repository prose as untrusted data; isolate instruction sources; show provenance; retain human confirmation for write plans. |
+| Path traversal                                       | Writes outside project root                            | Canonicalize paths, reject absolute/escaping paths, and validate every planned path against project root.                          |
+| Arbitrary script execution                           | Local code execution                                   | No scripts run during resolution/validation; future scripts require explicit command and approval.                                 |
+| Secret leakage                                       | Secrets enter prompts, logs, locks, or generated files | Redact known secret patterns from diagnostics; prohibit secret values in catalog, lock, source map, and examples.                  |
+| Unsafe hooks                                         | Silent lifecycle execution                             | Never install or enable hooks automatically; model hooks as explicit, reviewed future artifacts.                                   |
+| Template injection                                   | Untrusted values alter generated output                | Use structured rendering with schema validation and escaping; forbid arbitrary expression evaluation.                              |
+| Generated-file tampering                             | Drift is hidden or malicious content is trusted        | Record content hashes and source ownership; report mismatch; never overwrite automatically.                                        |
+| Dependency supply-chain risk                         | Compromised build/runtime dependency                   | v0.1 installs none; later dependencies require lockfiles, provenance review, and minimal surface.                                  |
+| Destructive overwrite                                | User content loss                                      | Dry-run, diff, conflict detection, and backup or explicit confirmation for every write.                                            |
+| Stale instructions                                   | Obsolete policy drives unsafe behavior                 | Pin versions and checksums; `doctor` reports stale locks, unsupported adapters, and drift.                                         |
 
 ## Non-goals
 
