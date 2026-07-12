@@ -239,6 +239,26 @@ async function plan(
 ): Promise<Plan> {
   const changes: Change[] = [];
   const desiredFiles = await desired(options);
+  for (const metadataPath of [lockPath, sourceMapPath]) {
+    try {
+      await safeDestination(
+        options.root,
+        inside(options.root, metadataPath),
+        fs,
+      );
+    } catch (error) {
+      return {
+        changes: [
+          {
+            path: metadataPath,
+            kind: "security-error",
+            reason: error instanceof Error ? error.message : String(error),
+          },
+        ],
+        diagnostics: ["security-error"],
+      };
+    }
+  }
   const collisionSources = new Map<string, string>();
   for (const file of desiredFiles) {
     const key = destinationCollisionKey(file.path);
@@ -341,6 +361,8 @@ async function apply(
   try {
     for (const change of writes) {
       const path = inside(root, change.path);
+      // Revalidate immediately before replacement to narrow symlink substitution races.
+      await safeDestination(root, path, fs);
       if (await fs.exists(path)) backups.set(path, await fs.read(path));
       else created.push(path);
       await fs.mkdir(dirname(path));

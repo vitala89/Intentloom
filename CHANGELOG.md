@@ -31,6 +31,7 @@ All notable changes are documented here. This project follows Keep a Changelog p
 - Added resolved-path checks for existing destination parents and portable normalized collision analysis before writes.
 - Added real-filesystem coverage for broken destination, parent-directory, nested adapter, and metadata symlink escapes.
 - Defined deterministic collision normalization for separators, dot segments, Unicode NFC, and case-only path differences.
+- Added direct manifest/source-map symlink rejection and commit-time destination revalidation against symlink substitution.
 
 ### Migration
 

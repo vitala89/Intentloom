@@ -30,3 +30,4 @@ AIF does not sandbox a coding agent, enforce provider permissions, scan all repo
 3. Every generated artifact is traceable to canonical inputs and adapter version.
 4. Human confirmation is required when an existing non-identical file would be replaced.
 5. Security-sensitive provider behavior remains outside canonical core and is explicitly documented by an adapter.
+6. Generated and metadata write paths reject symlinks, including internal and broken links, and are revalidated before replacement.
