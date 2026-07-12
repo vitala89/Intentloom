@@ -138,9 +138,10 @@ async function desired(options: InitOptions): Promise<GeneratedFile[]> {
         "# Local AIF preferences only; never store secrets here.\n",
       ),
     },
+    ...files,
+    // Metadata is committed last so ownership never advances ahead of files.
     { path: lockPath, content: lock, sources: [], checksum: checksum(lock) },
     { path: sourceMapPath, content: map, sources: [], checksum: checksum(map) },
-    ...files,
   ];
 }
 
@@ -350,8 +351,11 @@ export async function planFeature(taskId: string): Promise<string> {
 
 export function createMemoryFileSystem(
   initial: Record<string, string> = {},
+  failAfterWrites?: number,
 ): FileSystem & { files: Map<string, string> } {
   const files = new Map(Object.entries(initial));
+  let writes = 0;
+  let failed = false;
   return {
     files,
     async exists(path) {
@@ -363,6 +367,15 @@ export function createMemoryFileSystem(
       return content;
     },
     async write(path, content) {
+      writes += 1;
+      if (
+        failAfterWrites !== undefined &&
+        writes > failAfterWrites &&
+        !failed
+      ) {
+        failed = true;
+        throw new Error("injected write failure");
+      }
       files.set(path, content);
     },
     async mkdir() {},

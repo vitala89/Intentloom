@@ -64,4 +64,14 @@ describe("init", () => {
       )?.kind,
     ).toBe("modified");
   });
+  it("rolls back generated files and metadata when finalization fails", async () => {
+    const fs = createMemoryFileSystem({}, 3);
+    await expect(
+      initProject(
+        { root: "/project", profile: "generic", adapters: ["codex"] },
+        fs,
+      ),
+    ).rejects.toThrow("injected write failure");
+    expect(fs.files.size).toBe(0);
+  });
 });

@@ -5,7 +5,7 @@ Audit date: 2026-07-13. Scope: repository state at `8709faa` and the accepted v0
 ## Blockers
 
 1. **Clean CLI runtime blocker resolved in this branch.** The CLI now packs a self-contained `dist/aif.cjs` bundle and runtime catalog; isolated tarball installation verified `--help` and `--version`. Full automated clean-runtime coverage remains required before stable release.
-2. **Generated ownership safety is incomplete.** `sync --force` classifies every changed destination as update and does not read `.aif/source-map.json` before replacement. This can overwrite a project-owned file, contrary to ADR-0003.
+2. **Generated ownership safety is partially resolved.** Verified ownership prevents unowned/manual overwrites and metadata is finalized after generated destinations with rollback coverage. Symlink escape and case-collision protection remain release blockers.
 3. **Schema implementation is placeholder-level.** Six of seven schemas only require `schemaVersion`; the validator does not validate against catalog schemas, source maps, or locks comprehensively.
 4. **Required CLI behavior and coverage are incomplete.** `adopt` does not inspect stack evidence, documents, duplication, or map existing files; `doctor` does not validate imports/capabilities/edited generated files; no persisted adapter fixtures, snapshots, partial-write, Windows-path, or real CLI smoke tests exist.
 5. **Release package naming is unresolved.** Root package is private `aif-core`; workspace packages use provisional `@aif/*` names without repository, homepage, bugs, license, files, publishConfig, or publishability decision.
