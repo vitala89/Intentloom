@@ -129,6 +129,39 @@ export function findDestinationCollisions(
     .sort((left, right) => left.key.localeCompare(right.key));
 }
 
+function collisionPlan(files: readonly GeneratedFile[]): Plan | null {
+  const collisions = findDestinationCollisions(files);
+  if (collisions.length === 0) return null;
+  return {
+    changes: collisions.map((collision) => ({
+      path: collision.paths.join(", "),
+      kind: "conflict" as const,
+      reason: JSON.stringify(collision),
+    })),
+    diagnostics: ["destination-collision"],
+  };
+}
+
+export async function synchronizeGeneratedFiles(
+  root: string,
+  files: readonly GeneratedFile[],
+  fs: FileSystem,
+): Promise<Plan> {
+  const collision = collisionPlan(files);
+  if (collision) return collision;
+  const proposal: Plan = {
+    changes: files.map((file) => ({
+      path: file.path,
+      kind: "create" as const,
+      reason: "missing",
+      content: file.content,
+    })),
+    diagnostics: [],
+  };
+  await apply(root, fs, proposal);
+  return proposal;
+}
+
 async function safeDestination(
   root: string,
   path: string,
@@ -296,16 +329,8 @@ async function plan(
       };
     }
   }
-  const collisions = findDestinationCollisions(desiredFiles);
-  if (collisions.length > 0)
-    return {
-      changes: collisions.map((collision) => ({
-        path: collision.paths.join(", "),
-        kind: "conflict" as const,
-        reason: JSON.stringify(collision),
-      })),
-      diagnostics: ["destination-collision"],
-    };
+  const collision = collisionPlan(desiredFiles);
+  if (collision) return collision;
   const owned = await ownership(options.root, fs);
   if (owned === null)
     return {
