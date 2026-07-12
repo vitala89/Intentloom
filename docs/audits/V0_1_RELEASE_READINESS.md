@@ -4,7 +4,7 @@ Audit date: 2026-07-13. Scope: repository state at `8709faa` and the accepted v0
 
 ## Blockers
 
-1. **Clean CLI runtime is not verified and currently fails without workspace links.** Running built `packages/cli/dist/bin.js` failed to resolve `@aif/adapters`. Package exports point at TypeScript source while the CLI bin points at `dist`; package metadata does not yet define a publishable, self-consistent artifact layout.
+1. **Clean CLI runtime blocker resolved in this branch.** The CLI now packs a self-contained `dist/aif.cjs` bundle and runtime catalog; isolated tarball installation verified `--help` and `--version`. Full automated clean-runtime coverage remains required before stable release.
 2. **Generated ownership safety is incomplete.** `sync --force` classifies every changed destination as update and does not read `.aif/source-map.json` before replacement. This can overwrite a project-owned file, contrary to ADR-0003.
 3. **Schema implementation is placeholder-level.** Six of seven schemas only require `schemaVersion`; the validator does not validate against catalog schemas, source maps, or locks comprehensively.
 4. **Required CLI behavior and coverage are incomplete.** `adopt` does not inspect stack evidence, documents, duplication, or map existing files; `doctor` does not validate imports/capabilities/edited generated files; no persisted adapter fixtures, snapshots, partial-write, Windows-path, or real CLI smoke tests exist.

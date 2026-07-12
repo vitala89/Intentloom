@@ -1,14 +1,20 @@
 {
   "name": "@aif/cli",
-  "version": "0.1.0",
+  "version": "0.1.0-alpha.0",
+  "description": "Provisional AIF command-line interface for local AI engineering workflows.",
+  "license": "MIT",
+  "engines": {
+    "node": ">=24"
+  },
   "type": "module",
   "bin": {
-    "aif": "./dist/bin.js"
+    "aif": "./dist/aif.cjs"
   },
-  "dependencies": {
-    "@aif/adapters": "workspace:*",
-    "@aif/core": "workspace:*",
-    "@aif/validator": "workspace:*",
-    "yaml": "^2.9.0"
-  }
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "sideEffects": false
 }

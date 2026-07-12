@@ -3,7 +3,8 @@ import { readFile, readdir } from "node:fs/promises";
 import { resolve, sep } from "node:path";
 import { parse as parseYaml } from "yaml";
 
-export const AIF_VERSION = "0.1.0";
+import { AIF_VERSION } from "./version.js";
+export { AIF_VERSION };
 
 export type AdapterName = "claude" | "codex" | "cursor" | "copilot";
 
