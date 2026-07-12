@@ -40,6 +40,22 @@ export interface Plan {
   readonly changes: readonly Change[];
   readonly diagnostics: readonly string[];
 }
+export type TransactionStage =
+  | "generated-stage"
+  | "generated-commit"
+  | "manifest-stage"
+  | "manifest-finalize"
+  | "source-map-stage"
+  | "source-map-finalize"
+  | "post-write-consistency"
+  | "success-cleanup";
+export interface TransactionResult extends Plan {
+  readonly status: "success" | "failed";
+  readonly failedStage?: TransactionStage;
+  readonly rollbackAttempted: boolean;
+  readonly rollbackCompleted: boolean;
+  readonly rollbackFailures: readonly string[];
+}
 export interface FileSystem {
   exists(path: string): Promise<boolean>;
   read(path: string): Promise<string>;
@@ -146,11 +162,40 @@ export async function synchronizeGeneratedFiles(
   root: string,
   files: readonly GeneratedFile[],
   fs: FileSystem,
-): Promise<Plan> {
+  options: { failAt?: TransactionStage } = {},
+): Promise<TransactionResult> {
   const collision = collisionPlan(files);
-  if (collision) return collision;
+  if (collision)
+    return {
+      ...collision,
+      status: "failed",
+      rollbackAttempted: false,
+      rollbackCompleted: true,
+      rollbackFailures: [],
+    };
+  const normalized = files.map((file) => ({
+    ...file,
+    checksum: checksum(file.content),
+  }));
+  const manifest = `${JSON.stringify({ lockVersion: "1", frameworkVersion: AIF_VERSION, generated: normalized.map(({ path, checksum }) => ({ path, checksum })) }, null, 2)}\n`;
+  const sourceMap = `${JSON.stringify({ schemaVersion: "1", frameworkVersion: AIF_VERSION, adapterOutputVersion: "0.1.0", files: normalized.map(({ path, checksum, sources }) => ({ path, checksum, sources, ownership: "aif-owned-generated" })) }, null, 2)}\n`;
+  const transactionFiles: GeneratedFile[] = [
+    ...normalized,
+    {
+      path: lockPath,
+      content: manifest,
+      sources: ["transaction:manifest"],
+      checksum: checksum(manifest),
+    },
+    {
+      path: sourceMapPath,
+      content: sourceMap,
+      sources: ["transaction:source-map"],
+      checksum: checksum(sourceMap),
+    },
+  ];
   const proposal: Plan = {
-    changes: files.map((file) => ({
+    changes: transactionFiles.map((file) => ({
       path: file.path,
       kind: "create" as const,
       reason: "missing",
@@ -158,8 +203,71 @@ export async function synchronizeGeneratedFiles(
     })),
     diagnostics: [],
   };
-  await apply(root, fs, proposal);
-  return proposal;
+  const backups = new Map<string, string>();
+  const created: string[] = [];
+  let stage: TransactionStage = "generated-stage";
+  const inject = (candidate: TransactionStage) => {
+    stage = candidate;
+    if (options.failAt === candidate) throw new Error(`injected:${candidate}`);
+  };
+  try {
+    for (const candidate of [
+      "generated-stage",
+      "manifest-stage",
+      "source-map-stage",
+    ] as const)
+      inject(candidate);
+    for (const file of transactionFiles) {
+      inject(
+        file.path === lockPath
+          ? "manifest-finalize"
+          : file.path === sourceMapPath
+            ? "source-map-finalize"
+            : "generated-commit",
+      );
+      const path = inside(root, file.path);
+      await safeDestination(root, path, fs);
+      if (await fs.exists(path)) backups.set(path, await fs.read(path));
+      else created.push(path);
+      await fs.mkdir(dirname(path));
+      await fs.write(path, file.content);
+    }
+    inject("post-write-consistency");
+    for (const file of normalized)
+      if (checksum(await fs.read(inside(root, file.path))) !== file.checksum)
+        throw new Error("post-write checksum mismatch");
+    inject("success-cleanup");
+    return {
+      ...proposal,
+      status: "success",
+      rollbackAttempted: false,
+      rollbackCompleted: true,
+      rollbackFailures: [],
+    };
+  } catch (error) {
+    const rollbackFailures: string[] = [];
+    for (const [path, content] of backups)
+      try {
+        await fs.write(path, content);
+      } catch {
+        rollbackFailures.push(relative(root, path));
+      }
+    for (const path of created)
+      try {
+        await fs.remove(path);
+      } catch {
+        rollbackFailures.push(relative(root, path));
+      }
+    return {
+      ...proposal,
+      status: "failed",
+      failedStage: stage,
+      diagnostics: [error instanceof Error ? error.message : String(error)],
+      rollbackAttempted: true,
+      rollbackCompleted: rollbackFailures.length === 0,
+      rollbackFailures,
+    };
+  }
 }
 
 async function safeDestination(
