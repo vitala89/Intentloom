@@ -1,6 +1,10 @@
 {
   "compilerOptions": {
-    "paths": { "@aif/core": ["./packages/core/src/index.ts"] },
+    "paths": {
+      "@aif/core": ["./packages/core/src/index.ts"],
+      "@aif/adapters": ["./packages/adapters/src/index.ts"],
+      "@aif/validator": ["./packages/validator/src/index.ts"]
+    },
     "types": ["node"],
     "target": "ES2022",
     "module": "NodeNext",

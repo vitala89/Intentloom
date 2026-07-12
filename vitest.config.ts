@@ -13,6 +13,9 @@ export default defineConfig({
       "@aif/validator": fileURLToPath(
         new URL("./packages/validator/src/index.ts", import.meta.url),
       ),
+      "@aif/cli": fileURLToPath(
+        new URL("./packages/cli/src/index.ts", import.meta.url),
+      ),
     },
   },
   test: { include: ["tests/**/*.test.ts"] },

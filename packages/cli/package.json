@@ -1,0 +1,14 @@
+{
+  "name": "@aif/cli",
+  "version": "0.1.0",
+  "type": "module",
+  "bin": {
+    "aif": "./dist/bin.js"
+  },
+  "dependencies": {
+    "@aif/adapters": "workspace:*",
+    "@aif/core": "workspace:*",
+    "@aif/validator": "workspace:*",
+    "yaml": "^2.9.0"
+  }
+}
