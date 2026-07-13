@@ -162,7 +162,10 @@ export async function synchronizeGeneratedFiles(
   root: string,
   files: readonly GeneratedFile[],
   fs: FileSystem,
-  options: { failAt?: TransactionStage } = {},
+  options: {
+    failAt?: TransactionStage;
+    rollbackFailPaths?: readonly string[];
+  } = {},
 ): Promise<TransactionResult> {
   const collision = collisionPlan(files);
   if (collision)
@@ -246,26 +249,40 @@ export async function synchronizeGeneratedFiles(
     };
   } catch (error) {
     const rollbackFailures: string[] = [];
-    for (const [path, content] of backups)
+    const injectedRollbackFailures = new Set(options.rollbackFailPaths ?? []);
+    for (const [path, content] of backups) {
+      const projectPath = relative(root, path);
       try {
+        if (injectedRollbackFailures.has(projectPath))
+          throw new Error("injected rollback failure");
         await fs.write(path, content);
       } catch {
-        rollbackFailures.push(relative(root, path));
+        rollbackFailures.push(projectPath);
       }
-    for (const path of created)
+    }
+    for (const path of created) {
+      const projectPath = relative(root, path);
       try {
+        if (injectedRollbackFailures.has(projectPath))
+          throw new Error("injected rollback failure");
         await fs.remove(path);
       } catch {
-        rollbackFailures.push(relative(root, path));
+        rollbackFailures.push(projectPath);
       }
+    }
+    const originalError =
+      error instanceof Error ? error.message : String(error);
     return {
       ...proposal,
       status: "failed",
       failedStage: stage,
-      diagnostics: [error instanceof Error ? error.message : String(error)],
+      diagnostics:
+        rollbackFailures.length === 0
+          ? [originalError]
+          : [originalError, "transaction-rollback-incomplete"],
       rollbackAttempted: true,
       rollbackCompleted: rollbackFailures.length === 0,
-      rollbackFailures,
+      rollbackFailures: rollbackFailures.sort(),
     };
   }
 }

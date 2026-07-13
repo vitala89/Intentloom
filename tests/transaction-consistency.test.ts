@@ -107,4 +107,96 @@ describe("transaction consistency", () => {
       ),
     ).toBe(false);
   });
+
+  it("preserves original failure and reports incomplete generated-file rollback", async () => {
+    const fs = createMemoryFileSystem({
+      "/project/AGENTS.md": "old generated",
+    });
+    const result = await synchronizeGeneratedFiles(
+      "/project",
+      [
+        {
+          path: "AGENTS.md",
+          content: "new generated",
+          sources: ["adapter:codex"],
+          checksum: "ignored",
+        },
+      ],
+      fs,
+      { failAt: "source-map-finalize", rollbackFailPaths: ["AGENTS.md"] },
+    );
+    expect(result.status).toBe("failed");
+    expect(result.failedStage).toBe("source-map-finalize");
+    expect(result.rollbackCompleted).toBe(false);
+    expect(result.rollbackFailures).toEqual(["AGENTS.md"]);
+    expect(result.diagnostics).toContain("transaction-rollback-incomplete");
+  });
+
+  it.each([
+    ["new generated removal", {}, "AGENTS.md"],
+    [
+      "existing manifest restore",
+      { "/project/.aif/manifest.lock.json": "old manifest" },
+      ".aif/manifest.lock.json",
+    ],
+    ["absent manifest removal", {}, ".aif/manifest.lock.json"],
+    [
+      "existing source-map restore",
+      { "/project/.aif/source-map.json": "old source map" },
+      ".aif/source-map.json",
+    ],
+    ["absent source-map removal", {}, ".aif/source-map.json"],
+  ])(
+    "reports incomplete rollback for %s failure",
+    async (_name, initial, rollbackPath) => {
+      const fs = createMemoryFileSystem(initial);
+      const result = await synchronizeGeneratedFiles(
+        "/project",
+        [
+          {
+            path: "AGENTS.md",
+            content: "new",
+            sources: ["adapter:codex"],
+            checksum: "ignored",
+          },
+        ],
+        fs,
+        { failAt: "success-cleanup", rollbackFailPaths: [rollbackPath] },
+      );
+      expect(result.status).toBe("failed");
+      expect(result.failedStage).toBe("success-cleanup");
+      expect(result.rollbackCompleted).toBe(false);
+      expect(result.rollbackFailures).toContain(rollbackPath);
+      expect(result.diagnostics).toContain("transaction-rollback-incomplete");
+    },
+  );
+
+  it("reports every failed rollback path deterministically", async () => {
+    const fs = createMemoryFileSystem();
+    const result = await synchronizeGeneratedFiles(
+      "/project",
+      [
+        {
+          path: "AGENTS.md",
+          content: "new",
+          sources: ["adapter:codex"],
+          checksum: "ignored",
+        },
+      ],
+      fs,
+      {
+        failAt: "success-cleanup",
+        rollbackFailPaths: [
+          "AGENTS.md",
+          ".aif/manifest.lock.json",
+          ".aif/source-map.json",
+        ],
+      },
+    );
+    expect(result.rollbackFailures).toEqual([
+      ".aif/manifest.lock.json",
+      ".aif/source-map.json",
+      "AGENTS.md",
+    ]);
+  });
 });

@@ -35,6 +35,7 @@ All notable changes are documented here. This project follows Keep a Changelog p
 - Added explicit real-filesystem symlink-loop coverage and deterministic, provenance-complete collision reporting independent of input order.
 - Added end-to-end collision-abort invariants proving generated, metadata, staging, and backup state remains byte-for-byte unchanged.
 - Added structured transaction-stage results and independent rollback coverage for generated, manifest, source-map, consistency, and cleanup stages.
+- Added explicit incomplete-rollback detection that preserves the original failed stage and reports all project-relative rollback failure paths.
 
 ### Migration
 
