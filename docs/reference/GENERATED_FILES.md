@@ -27,3 +27,5 @@ Stable post-write corruption codes are grouped as follows:
 Every invalid post-write result fails at `post-write-consistency` and enters the normal transaction rollback path. Existing generated and metadata bytes are restored, newly created destinations are removed, unrelated files remain unchanged, and success is never reported. The deterministic corruption callback is dependency-injected only through the programmatic transaction test seam after finalization; normal configuration and CLI commands cannot enable it.
 
 An incomplete rollback adds the stable `transaction-rollback-incomplete` diagnostic without replacing the original transaction failure. Manual inspection is required for the listed project-relative paths.
+
+The real `aif sync` path now executes this transaction and maps its result directly to CLI output and exit codes. Transaction summaries expose sorted created, updated, and unchanged generated paths; manifest/source-map update flags; consistency status; and cleanup status. A pre-write ownership, collision, or path-security conflict does not enter the transaction and exits with code `3`.

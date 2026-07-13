@@ -55,6 +55,13 @@ export interface TransactionResult extends Plan {
   readonly rollbackAttempted: boolean;
   readonly rollbackCompleted: boolean;
   readonly rollbackFailures: readonly string[];
+  readonly createdFiles: readonly string[];
+  readonly updatedFiles: readonly string[];
+  readonly unchangedFiles: readonly string[];
+  readonly manifestUpdated: boolean;
+  readonly sourceMapUpdated: boolean;
+  readonly consistencyValidated: boolean;
+  readonly cleanupCompleted: boolean;
   readonly postWriteValidation?: PostWriteValidationResult;
 }
 export type PostWriteCorruptionCode =
@@ -132,6 +139,20 @@ export interface SyncOptions extends InitOptions {
 export interface PostWriteCorruptionContext {
   readonly root: string;
   readonly fileSystem: FileSystem;
+}
+export interface TransactionOptions {
+  readonly failAt?: TransactionStage;
+  readonly rollbackFailPaths?: readonly string[];
+  readonly corruptAfterFinalization?: (
+    context: PostWriteCorruptionContext,
+  ) => void | Promise<void>;
+}
+export interface SyncDryRunResult extends Plan {
+  readonly dryRun: true;
+  readonly createdFiles: readonly string[];
+  readonly updatedFiles: readonly string[];
+  readonly unchangedFiles: readonly string[];
+  readonly conflictFiles: readonly string[];
 }
 
 const emptyCatalog: Catalog = {
@@ -227,6 +248,84 @@ interface PostWriteValidationInput {
   readonly sourceMapBytes: string;
   readonly createdGeneratedPaths: ReadonlySet<string>;
   readonly fs: FileSystem;
+}
+
+interface TransactionMetadata {
+  readonly manifest: string;
+  readonly sourceMap: string;
+}
+
+function buildTransactionMetadata(
+  files: readonly GeneratedFile[],
+): TransactionMetadata {
+  const canonicalSourceId = checksum(
+    JSON.stringify([...new Set(files.flatMap((file) => file.sources))].sort()),
+  );
+  const sharedMetadata = {
+    metadataFormatVersion,
+    frameworkVersion: AIF_VERSION,
+    adapterOutputVersion,
+    adapterId: transactionAdapterId,
+    canonicalSourceId,
+  };
+  return {
+    manifest: `${JSON.stringify(
+      {
+        lockVersion: metadataFormatVersion,
+        ...sharedMetadata,
+        generated: files.map(({ path, checksum }) => ({ path, checksum })),
+      },
+      null,
+      2,
+    )}\n`,
+    sourceMap: `${JSON.stringify(
+      {
+        schemaVersion: metadataFormatVersion,
+        ...sharedMetadata,
+        files: files.map(({ path, checksum, sources }) => ({
+          path,
+          checksum,
+          sources,
+          ownership: "aif-owned-generated",
+        })),
+      },
+      null,
+      2,
+    )}\n`,
+  };
+}
+
+function transactionSummary(
+  files: readonly GeneratedFile[],
+  changes: readonly Change[],
+): Pick<
+  TransactionResult,
+  | "createdFiles"
+  | "updatedFiles"
+  | "unchangedFiles"
+  | "manifestUpdated"
+  | "sourceMapUpdated"
+> {
+  const generatedChanges = changes.filter(
+    (change) => change.path !== lockPath && change.path !== sourceMapPath,
+  );
+  const changedPaths = new Set(generatedChanges.map((change) => change.path));
+  return {
+    createdFiles: generatedChanges
+      .filter((change) => change.kind === "create")
+      .map((change) => change.path)
+      .sort(),
+    updatedFiles: generatedChanges
+      .filter((change) => change.kind === "update")
+      .map((change) => change.path)
+      .sort(),
+    unchangedFiles: files
+      .map((file) => file.path)
+      .filter((path) => !changedPaths.has(path))
+      .sort(),
+    manifestUpdated: changes.some((change) => change.path === lockPath),
+    sourceMapUpdated: changes.some((change) => change.path === sourceMapPath),
+  };
 }
 
 class PostWriteValidationFailure extends Error {
@@ -590,13 +689,7 @@ export async function synchronizeGeneratedFiles(
   root: string,
   files: readonly GeneratedFile[],
   fs: FileSystem,
-  options: {
-    failAt?: TransactionStage;
-    rollbackFailPaths?: readonly string[];
-    corruptAfterFinalization?: (
-      context: PostWriteCorruptionContext,
-    ) => void | Promise<void>;
-  } = {},
+  options: TransactionOptions = {},
 ): Promise<TransactionResult> {
   const collision = collisionPlan(files);
   if (collision)
@@ -606,46 +699,19 @@ export async function synchronizeGeneratedFiles(
       rollbackAttempted: false,
       rollbackCompleted: true,
       rollbackFailures: [],
+      createdFiles: [],
+      updatedFiles: [],
+      unchangedFiles: [],
+      manifestUpdated: false,
+      sourceMapUpdated: false,
+      consistencyValidated: false,
+      cleanupCompleted: false,
     };
   const normalized = files.map((file) => ({
     ...file,
     checksum: checksum(file.content),
   }));
-  const canonicalSourceId = checksum(
-    JSON.stringify(
-      [...new Set(normalized.flatMap((file) => file.sources))].sort(),
-    ),
-  );
-  const sharedMetadata = {
-    metadataFormatVersion,
-    frameworkVersion: AIF_VERSION,
-    adapterOutputVersion,
-    adapterId: transactionAdapterId,
-    canonicalSourceId,
-  };
-  const manifest = `${JSON.stringify(
-    {
-      lockVersion: metadataFormatVersion,
-      ...sharedMetadata,
-      generated: normalized.map(({ path, checksum }) => ({ path, checksum })),
-    },
-    null,
-    2,
-  )}\n`;
-  const sourceMap = `${JSON.stringify(
-    {
-      schemaVersion: metadataFormatVersion,
-      ...sharedMetadata,
-      files: normalized.map(({ path, checksum, sources }) => ({
-        path,
-        checksum,
-        sources,
-        ownership: "aif-owned-generated",
-      })),
-    },
-    null,
-    2,
-  )}\n`;
+  const { manifest, sourceMap } = buildTransactionMetadata(normalized);
   const transactionFiles: GeneratedFile[] = [
     ...normalized,
     {
@@ -683,6 +749,7 @@ export async function synchronizeGeneratedFiles(
       });
   }
   const proposal: Plan = { changes, diagnostics: [] };
+  const summary = transactionSummary(normalized, changes);
   const backups = new Map<string, string>();
   const created: string[] = [];
   let stage: TransactionStage = "generated-stage";
@@ -732,6 +799,9 @@ export async function synchronizeGeneratedFiles(
       rollbackAttempted: false,
       rollbackCompleted: true,
       rollbackFailures: [],
+      ...summary,
+      consistencyValidated: true,
+      cleanupCompleted: true,
       postWriteValidation,
     };
   } catch (error) {
@@ -772,6 +842,9 @@ export async function synchronizeGeneratedFiles(
       rollbackAttempted: true,
       rollbackCompleted: rollbackFailures.length === 0,
       rollbackFailures: rollbackFailures.sort(),
+      ...summary,
+      consistencyValidated: postWriteValidation?.status === "valid",
+      cleanupCompleted: false,
       ...(postWriteValidation === undefined ? {} : { postWriteValidation }),
     };
   }
@@ -824,36 +897,7 @@ async function desired(options: InitOptions): Promise<GeneratedFile[]> {
       ? await loadCatalog(options.catalogRoot)
       : emptyCatalog);
   const files = generated(options.adapters, catalog);
-  const lock =
-    JSON.stringify(
-      {
-        lockVersion: "1",
-        frameworkVersion: AIF_VERSION,
-        profile: options.profile,
-        adapters: options.adapters,
-        generated: files.map((file) => ({
-          path: file.path,
-          checksum: file.checksum,
-        })),
-      },
-      null,
-      2,
-    ) + "\n";
-  const map =
-    JSON.stringify(
-      {
-        schemaVersion: "1",
-        files: files.map((file) => ({
-          path: file.path,
-          checksum: file.checksum,
-          sources: file.sources,
-          ownership: "aif-owned-generated",
-        })),
-      },
-      null,
-      2,
-    ) + "\n";
-  return [
+  const payload: GeneratedFile[] = [
     {
       path: configPath,
       content: config(options.profile, options.adapters),
@@ -869,9 +913,23 @@ async function desired(options: InitOptions): Promise<GeneratedFile[]> {
       ),
     },
     ...files,
+  ];
+  const { manifest, sourceMap } = buildTransactionMetadata(payload);
+  return [
+    ...payload,
     // Metadata is committed last so ownership never advances ahead of files.
-    { path: lockPath, content: lock, sources: [], checksum: checksum(lock) },
-    { path: sourceMapPath, content: map, sources: [], checksum: checksum(map) },
+    {
+      path: lockPath,
+      content: manifest,
+      sources: [],
+      checksum: checksum(manifest),
+    },
+    {
+      path: sourceMapPath,
+      content: sourceMap,
+      sources: [],
+      checksum: checksum(sourceMap),
+    },
   ];
 }
 
@@ -1060,14 +1118,50 @@ export async function initProject(
 export async function syncProject(
   options: SyncOptions,
   fs: FileSystem,
-): Promise<Plan> {
+  transactionOptions: TransactionOptions = {},
+): Promise<SyncDryRunResult | TransactionResult> {
   const proposal = await plan(options, fs, true);
-  if (
-    !options.dryRun &&
-    !proposal.changes.some((change) => change.kind === "conflict")
-  )
-    await apply(options.root, fs, proposal);
-  return proposal;
+  const desiredFiles = await desired(options);
+  const payload = desiredFiles.filter(
+    (file) => file.path !== lockPath && file.path !== sourceMapPath,
+  );
+  const blockingChanges = proposal.changes.filter((change) =>
+    ["conflict", "modified", "security-error"].includes(change.kind),
+  );
+  if (options.dryRun) {
+    const summary = transactionSummary(payload, proposal.changes);
+    return {
+      ...proposal,
+      dryRun: true,
+      createdFiles: summary.createdFiles,
+      updatedFiles: summary.updatedFiles,
+      unchangedFiles: summary.unchangedFiles,
+      conflictFiles: blockingChanges.map((change) => change.path).sort(),
+    };
+  }
+  if (blockingChanges.length > 0 || proposal.diagnostics.length > 0)
+    return {
+      ...proposal,
+      diagnostics:
+        proposal.diagnostics.length > 0
+          ? proposal.diagnostics
+          : ["sync-conflict"],
+      status: "failed",
+      rollbackAttempted: false,
+      rollbackCompleted: true,
+      rollbackFailures: [],
+      ...transactionSummary(payload, proposal.changes),
+      manifestUpdated: false,
+      sourceMapUpdated: false,
+      consistencyValidated: false,
+      cleanupCompleted: false,
+    };
+  return synchronizeGeneratedFiles(
+    options.root,
+    payload,
+    fs,
+    transactionOptions,
+  );
 }
 export async function diffProject(
   options: InitOptions,

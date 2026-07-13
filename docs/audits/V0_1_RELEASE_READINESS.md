@@ -2,19 +2,24 @@
 
 Audit date: 2026-07-13. Scope: repository state at `8709faa` and the accepted v0.1 specification/ADRs.
 
+## CLI sync path finding
+
+Before the transactional CLI integration, `bin.ts` called the legacy `syncProject` plan/apply path, printed raw plan changes, and never received `TransactionResult`. It therefore discarded the failed stage, consistency status, cleanup status, rollback completion, and rollback failure paths. Conflicts used exit `2`, caught exceptions used generic exit `1`, and security-error plans could be treated as successful because only `conflict` changes affected the exit code. It did not reconstruct success from a later filesystem check and normal catches printed messages rather than stacks, but rollback state was unavailable to the formatter.
+
+The current path is `bin.ts → runCli() → syncProject() → synchronizeGeneratedFiles() → TransactionResult → CLI outcome mapper → human/JSON formatter → stable exit code`.
+
 ## Blockers
 
-1. **Clean CLI runtime blocker resolved in this branch.** The CLI now packs a self-contained `dist/aif.cjs` bundle and runtime catalog; isolated tarball installation verified `--help` and `--version`. Full automated clean-runtime coverage remains required before stable release.
-2. **Filesystem-security sub-blocker resolved.** Real symlink tests, commit-time revalidation, deterministic collision reporting, reversed-order execution, and byte-for-byte collision-abort snapshots now pass. Independent metadata transaction failure stages remain part of the broader ownership/sync blocker.
-3. **Ownership transaction remains partially resolved; the post-write consistency sub-blocker is resolved.** Eight stage injections and independent incomplete-rollback paths preserve both original and rollback diagnostics. Thirty-four independently reported corruption cases now re-read committed generated and metadata bytes, return stable safe identifiers, and prove complete rollback. Twenty-three independently reported success cases prove all relationships and a zero-diff second sync. Direct CLI structured-result integration and exit-code behavior remain blockers outside this PR.
+1. **Clean CLI runtime blocker resolved.** The CLI packs a self-contained `dist/aif.cjs` bundle and runtime catalog. Isolated tarball installation now executes successful sync, no-op sync, dry-run, help, and version outside the monorepo.
+2. **Filesystem-security sub-blocker resolved.** Real symlink tests, commit-time revalidation, deterministic collision reporting, reversed-order execution, and byte-for-byte collision-abort snapshots pass.
+3. **Ownership/sync blocker resolved.** The real CLI directly consumes the structured transaction result. Success, conflict, restored failure, and incomplete rollback use distinct stable exit codes; dry-run is write-free; diagnostics are content-safe; and 47 process-level cases cover human/JSON output, transaction faults, redaction, and packed runtime. The post-write validator retains its 34 corruption and 23 success cases.
 4. **Schema implementation is placeholder-level.** Six of seven schemas only require `schemaVersion`; the validator does not validate against catalog schemas, source maps, or locks comprehensively.
-5. **Required CLI behavior and coverage are incomplete.** `adopt` does not inspect stack evidence, documents, duplication, or map existing files; `doctor` does not validate imports/capabilities/edited generated files; no persisted adapter fixtures, snapshots, partial-write, Windows-path, or real CLI smoke tests exist.
+5. **Required adoption/doctor behavior and fixture coverage are incomplete.** `adopt` does not inspect stack evidence, documents, duplication, or map existing files; `doctor` does not validate imports/capabilities/edited generated files; persisted all-adapter and Windows-path fixtures remain incomplete.
 6. **Release package naming is unresolved.** Root package is private `aif-core`; workspace packages use provisional `@aif/*` names without repository, homepage, bugs, license, files, publishConfig, or publishability decision.
 
 ## Required before stable 0.1.0
 
-- Resolve all blockers, add clean-install and packaged CLI smoke coverage, and verify all four adapter fixtures from the real catalog.
-- Establish source-map-based ownership and rollback semantics; prove no project-owned file is overwritten.
+- Resolve all remaining blockers and verify all four adapter fixtures from the real catalog.
 - Complete JSON schemas and schema-driven validation; add migration tests.
 - Execute an Applye dry-run only after an explicit repository path is supplied.
 
@@ -22,7 +27,7 @@ Audit date: 2026-07-13. Scope: repository state at `8709faa` and the accepted v0
 
 - Replace repeated generic guide text with command-specific content.
 - Add a deterministic version synchronization check for lockstep packages.
-- Remove unused CLI imports and add explicit CLI exit-code tests.
+- Remove unused CLI imports as modules are further separated.
 
 ## Later
 
@@ -39,7 +44,7 @@ Audit date: 2026-07-13. Scope: repository state at `8709faa` and the accepted v0
 
 ## Verification observed
 
-The post-write corruption and success matrices pass through the real programmatic transaction executor. The complete suite contains 124 passing tests with no failures or skips. Typecheck, lint, formatting, build, and `git diff --check` pass. An isolated tarball install outside the monorepo passes `aif --help` and `aif --version`. Applye dry-run was not run because it is outside this task and no explicit path was provided.
+The complete suite contains 171 passing tests with no failures or skips, including 47 process-level CLI cases and four packed-runtime cases. The packed artifact performs successful sync, no-op sync, dry-run, help, and version outside the monorepo. Typecheck, lint, formatting, build, and `git diff --check` pass. Applye dry-run was not run because it is outside this task and no explicit path was provided.
 
 ## Verdict
 

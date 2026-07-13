@@ -18,6 +18,9 @@ All notable changes are documented here. This project follows Keep a Changelog p
 
 - Set the unreleased lockstep development baseline to `0.1.0-alpha.0`; `0.1.0` was an untagged bootstrap placeholder.
 - Defined provisional `@aif/*` package metadata; npm name availability remains unverified and publishing remains blocked.
+- `aif sync` now consumes the structured transaction result directly.
+- Added distinct CLI exit codes for conflicts, restored transaction failures, and incomplete rollback.
+- Sync output now reports consistency validation and rollback status explicitly.
 
 ### Compatibility
 
@@ -39,6 +42,8 @@ All notable changes are documented here. This project follows Keep a Changelog p
 - Added independently identifiable post-write corruption validation across generated files, manifest, and source map.
 - Added full rollback for malformed, incomplete, unsafe, duplicated, or incompatible ownership metadata.
 - Prevented sync transaction success when actual committed state differs from the planned transaction state.
+- Prevented CLI output from presenting incomplete rollback as restored project state.
+- Added safe, project-relative sync diagnostics without private generated-file contents.
 
 ### Migration
 
