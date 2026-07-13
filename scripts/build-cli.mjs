@@ -8,7 +8,7 @@ await build({
   bundle: true,
   format: "cjs",
   platform: "node",
-  target: "node24",
+  target: "node22",
   outfile: "packages/cli/dist/aif.cjs",
 });
 await cp("catalog", "packages/cli/dist/catalog", { recursive: true });

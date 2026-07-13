@@ -14,13 +14,25 @@ The current path is `bin.ts → runCli() → syncProject() → synchronizeGenera
 2. **Filesystem-security sub-blocker resolved.** Real symlink tests, commit-time revalidation, deterministic collision reporting, reversed-order execution, and byte-for-byte collision-abort snapshots pass.
 3. **Ownership/sync blocker resolved.** The real CLI directly consumes the structured transaction result. Success, conflict, restored failure, and incomplete rollback use distinct stable exit codes; dry-run is write-free; diagnostics are content-safe; and 47 process-level cases cover human/JSON output, transaction faults, redaction, and packed runtime. The post-write validator retains its 34 corruption and 23 success cases.
 4. **Schema-driven validation blocker resolved.** Eight locally bundled versioned schemas now drive runtime structural validation. Hardened JSON/YAML parsing, strict unknown fields, stable redacted diagnostics, pre-semantic/pre-write CLI integration, Agent Skill policy validation, doctor aggregation, and isolated packed-runtime schema validation are covered by dedicated tests.
-5. **Adoption/doctor fixture blocker resolved.** Adoption now returns deterministic ownership-safe proposals, detects profiles from bounded file evidence, maps existing documentation without claiming it, and applies clean accepted proposals through transactional sync. Doctor returns sorted severity/category/remediation findings for partial, malformed, stale, conflicting, orphaned, drifted, and unsafe state. Sixteen reusable fixture groups, 22 existing-state doctor cases, immutable-state proofs, and ten packed-runtime cases cover the required matrix. Persisted all-adapter and Windows-path fixtures remain a separate blocker.
-6. **Release package naming is unresolved.** Root package is private `aif-core`; workspace packages use provisional `@aif/*` names without repository, homepage, bugs, license, files, publishConfig, or publishability decision.
+5. **Adoption/doctor fixture blocker resolved.** Adoption now returns deterministic ownership-safe proposals, detects profiles from bounded file evidence, maps existing documentation without claiming it, and applies clean accepted proposals through transactional sync. Doctor returns sorted severity/category/remediation findings for partial, malformed, stale, conflicting, orphaned, drifted, and unsafe state. Sixteen reusable fixture groups, 22 existing-state doctor cases, immutable-state proofs, and ten packed-runtime cases cover the required matrix.
+6. **Adapter fixture blocker resolved.** Normalized Claude Code, Codex, Cursor,
+   and Copilot contracts drive deterministic single- and multi-adapter output,
+   honest diagnostics, profile scopes, ownership conflicts, migration/removal,
+   real-catalog fixtures, and installed-tarball tests.
+7. **Cross-platform fixture sub-blocker resolved; host evidence pending.** Thirty
+   stored-path cases cover Windows prefixes, devices, separators, Unicode,
+   collisions, unsafe names, spaces, and long paths. The complete Node 22/24
+   suite is configured for Linux, macOS, and Windows, but a hosted Windows run
+   has not yet completed in this branch.
+8. **Runtime engine blocker resolved.** ADR-0005 sets Node 22 as the consistent
+   workspace minimum and bundle target. Complete 512-test suites pass locally on
+   Node 22.17.0 and checksum-verified Node 24.18.0.
+9. **Release package naming is unresolved.** Root package is private `aif-core`; workspace packages use provisional `@aif/*` names without repository, homepage, bugs, license, files, publishConfig, or publishability decision.
 
 ## Required before stable 0.1.0
 
 - Resolve all remaining blockers and verify all four adapter fixtures from the real catalog.
-- Complete all-adapter and Windows-path fixtures without weakening schema gates.
+- Obtain a successful hosted Windows compatibility run on Node 22 and Node 24.
 - Execute an Applye dry-run only after an explicit repository path is supplied.
 
 ## Recommended
@@ -35,25 +47,21 @@ The current path is `bin.ts → runCli() → syncProject() → synchronizeGenera
 
 ## Adapter status
 
-| Adapter     | Supported output                 | Fixture tested   | Limitation                                               |
-| ----------- | -------------------------------- | ---------------- | -------------------------------------------------------- |
-| Claude Code | `AGENTS.md`, `CLAUDE.md`, skills | Unit layout only | No real fixture/clean CLI test                           |
-| Codex       | `AGENTS.md`, skills              | Unit layout only | No real fixture/clean CLI test                           |
-| Cursor      | `AGENTS.md`, `.mdc` rule, skills | Unit layout only | `.cursorignore` profile output absent                    |
-| Copilot     | instructions, skills             | Unit layout only | Environment-specific agent support intentionally omitted |
+| Adapter     | Supported output                         | Fixture tested                         | Limitation                                                  |
+| ----------- | ---------------------------------------- | -------------------------------------- | ----------------------------------------------------------- |
+| Claude Code | `AGENTS.md`, `CLAUDE.md`, skills         | Direct, multi, snapshot, packed        | Hooks, permissions, and subagents intentionally omitted     |
+| Codex       | `AGENTS.md`, skills                      | Direct, multi, snapshot, packed        | User configuration and custom agents intentionally omitted  |
+| Cursor      | `AGENTS.md`, `.mdc` rules, shared skills | Direct, multi, scoped snapshot, packed | Skills experimental; legacy rules and ignore output omitted |
+| Copilot     | repository/path instructions, skills     | Direct, multi, scoped snapshot, packed | Environment-specific custom agents intentionally omitted    |
 
 ## Verification observed
 
-The complete suite contains 355 passing tests with no failures or skips: the
-294-test baseline plus 61 adoption/doctor tests. It includes 76 process-level
-CLI cases and 16 packed-runtime cases. The schema-specific coverage retains
-95 schema/skill/semantic cases, 12 parser-security cases, and 16 built-CLI
-process cases. The packed artifact additionally performs deterministic,
-byte-preserving adoption dry-runs and doctor checks across clean, existing,
-partial, malformed, drifted, spaces, and Unicode fixtures. A second build
-produces an identical schema bundle, and tarball inspection excludes tests,
-fixtures, and secret files. Typecheck, lint, formatting, build, and
-`git diff --check` pass.
+The complete suite contains 512 passing tests in 34 files with no failures or
+skips on both Node 22.17.0 and checksum-verified Node 24.18.0. The packed
+artifact exercises every adapter, all-adapter generation, no-op sync, doctor,
+conflicts, spaces, Unicode, portable metadata, and stable version output.
+Typecheck, lint, formatting, build, and `git diff --check` pass. Hosted Windows
+CI evidence remains pending.
 Applye dry-run was not run because it is outside this task and no explicit path
 was provided.
 

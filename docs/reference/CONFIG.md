@@ -24,3 +24,10 @@ The v0.1 config has no user-defined scan-exclusion field. Adoption and doctor
 apply the documented built-in ignored-directory and binary limits; adding a
 configurable exclusion contract is deferred rather than accepting unknown
 configuration.
+
+Adapters may be listed in any order; generation sorts and deduplicates them.
+Supported profiles for adapter-scoped output are `generic`, `typescript`,
+`angular`, `rust`, `tauri`, and `angular-tauri`. Doctor reports
+`adapter-profile-unsupported` rather than silently omitting output for another
+profile. All paths persisted through configuration-derived metadata follow the
+portable stored-path contract in `PATHS.md`.

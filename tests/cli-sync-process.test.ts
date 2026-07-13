@@ -18,6 +18,8 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
 const execute = promisify(execFile);
 const repositoryRoot = resolve(import.meta.dirname, "..");
 const builtCli = join(repositoryRoot, "packages/cli/dist/aif.cjs");
+const windows = process.platform === "win32";
+const command = (name: string) => (windows ? `${name}.cmd` : name);
 let faultRunner = "";
 const temporaryRoots: string[] = [];
 const privateContents = "PRIVATE-GENERATED-CONTENT-DO-NOT-PRINT\n";
@@ -85,6 +87,7 @@ async function run(
       cwd,
       env: { ...process.env, ...env },
       maxBuffer: 10 * 1024 * 1024,
+      shell: windows && executable.endsWith(".cmd"),
     });
     return { ...result, exitCode: 0 };
   } catch (error) {
@@ -212,7 +215,7 @@ async function adoptionFaultScenario(
 async function installPackedCli(): Promise<string> {
   const packRoot = await temporaryDirectory("aif-cli-packed-");
   await run(
-    "pnpm",
+    command("pnpm"),
     ["--filter", "@aif/cli", "pack", "--pack-destination", packRoot],
     repositoryRoot,
   );
@@ -223,7 +226,7 @@ async function installPackedCli(): Promise<string> {
   const runtime = join(packRoot, "runtime");
   await mkdir(runtime);
   const installed = await run(
-    "npm",
+    command("npm"),
     [
       "install",
       "--cache",
@@ -236,16 +239,16 @@ async function installPackedCli(): Promise<string> {
     runtime,
   );
   if (installed.exitCode !== 0) throw new Error(installed.stderr);
-  return join(runtime, "node_modules/.bin/aif");
+  return join(runtime, `node_modules/.bin/aif${windows ? ".cmd" : ""}`);
 }
 
 beforeAll(async () => {
-  const build = await run("pnpm", ["build"], repositoryRoot);
+  const build = await run(command("pnpm"), ["build"], repositoryRoot);
   if (build.exitCode !== 0) throw new Error(build.stderr || build.stdout);
   const faultBuildRoot = await temporaryDirectory("aif-cli-fault-runner-");
   faultRunner = join(faultBuildRoot, "cli-fault-runner.cjs");
   const faultBuild = await run(
-    "pnpm",
+    command("pnpm"),
     [
       "exec",
       "esbuild",

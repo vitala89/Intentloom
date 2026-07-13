@@ -13,11 +13,21 @@ All notable changes are documented here. This project follows Keep a Changelog p
 - Added deterministic adoption proposals for existing repositories.
 - Added expanded doctor diagnostics for partial, stale, conflicting, and corrupted AIF installations.
 - Added reusable adoption and doctor fixture matrices, including packed-runtime coverage.
+- Added normalized Claude Code, Codex, Cursor, and Copilot adapter contracts,
+  real-catalog fixtures, deterministic multi-adapter merging, profile-scoped
+  rules, and installed-tarball coverage.
+- Added host-independent stored-path normalization and Windows path/collision
+  fixtures.
+- Added a Linux/macOS/Windows compatibility workflow for Node 22 and Node 24.
 
 ### Fixed
 
 - Fixed packaged CLI module resolution by shipping a self-contained bundled executable and runtime catalog.
 - Verified packed CLI `--help` and `--version` outside the monorepo.
+- Fixed adapter output dependence on selection order and duplicate shared
+  destinations.
+- Fixed stored-path handling for Windows separators, unsafe device names,
+  Unicode/case collisions, and noncanonical traversal spellings.
 
 ### Changed
 
@@ -30,10 +40,14 @@ All notable changes are documented here. This project follows Keep a Changelog p
 - Manifest locks now pin selected profiles, schema families, adapter versions, canonical source hashes, and generated-output hashes.
 - Existing project documentation is mapped where possible instead of duplicated.
 - Profile detection now reports deterministic file evidence and ambiguity explicitly.
+- Set Node.js 22 as the documented and directly verified minimum across every
+  workspace package and the packed CLI bundle target.
 
 ### Compatibility
 
-- Claude Code, Codex, Cursor, and Copilot outputs are unit-layout tested; clean CLI fixture verification remains a release blocker.
+- Claude Code, Codex, Cursor, and Copilot outputs are covered by direct,
+  multi-adapter, profile snapshot, doctor, and packed CLI fixtures. Real Windows
+  CI evidence remains pending.
 
 ### Security
 

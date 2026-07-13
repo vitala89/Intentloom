@@ -39,3 +39,18 @@ For CI, treat only exit `0` as success. Exit `4` means the workspace was restore
   transactional regeneration. Doctor does not update stale state.
 - Doctor exit `0` allows warning/info findings; exit `3` means at least one
   error finding. Usage remains exit `2`; doctor never returns `4` or `5`.
+
+## Adapter and path recovery
+
+- For `shared-file-conflict`, keep the existing file project-owned or reconcile
+  the canonical sources so every selected adapter produces the same bytes.
+- For `path-scoped-rule-invalid`, restore the generated Cursor/Copilot
+  frontmatter or review a sync dry-run. Do not convert portable `/` globs to
+  host-native backslashes.
+- For `stored-path-incompatible`, preserve both metadata files, migrate the
+  unsafe entry to the documented project-relative form, and rerun doctor before
+  sync. Do not copy an absolute host path into AIF metadata.
+- For adapter removal, review `adapter-selection-conflict` and orphan findings.
+  AIF intentionally does not delete the prior adapter's files.
+- If a package manager reports an engine mismatch, use Node 22 or newer. Node 21
+  and older are outside the supported range.

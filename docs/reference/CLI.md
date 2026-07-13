@@ -9,6 +9,12 @@ brief, and context pack structures are validated before output or writes.
 `doctor` aggregates config, manifest, source-map, Agent Skill, and semantic
 cross-document issues and never modifies files.
 
+`--adapters` accepts a comma-separated selection of `claude`, `codex`,
+`cursor`, and `copilot`. Multi-adapter output is order-independent, identical
+shared files are emitted once, and non-identical destination collisions stop
+before writes. `--profile` controls documented path-scoped Cursor and Copilot
+derivatives.
+
 ## Adoption
 
 `aif adopt --dry-run` returns the same deterministic adoption proposal in human
@@ -70,3 +76,9 @@ Doctor-only generated-state findings use the distinct
 `urn:aif:semantic:generated-state:1` contract and identify the affected
 project-relative path; they are not mislabeled as schema failures for config,
 manifest, or source-map documents.
+
+Adapter-specific findings include `adapter-capability-experimental`,
+`adapter-capability-unsupported`, `adapter-profile-unsupported`,
+`adapter-output-stale`, `shared-file-conflict`, `path-scoped-rule-invalid`, and
+`stored-path-incompatible`. Missing generated files identify the related
+adapter where the destination is unambiguous.

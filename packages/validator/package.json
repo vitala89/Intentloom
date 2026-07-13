@@ -1,6 +1,9 @@
 {
   "name": "@aif/validator",
   "version": "0.1.0-alpha.0",
+  "engines": {
+    "node": ">=22"
+  },
   "type": "module",
   "dependencies": {
     "@aif/core": "workspace:*",

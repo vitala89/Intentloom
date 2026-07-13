@@ -13,6 +13,8 @@ import { beforeAll, describe, expect, it } from "vitest";
 
 const repositoryRoot = resolve(".");
 const cli = resolve("packages/cli/dist/aif.cjs");
+const windows = process.platform === "win32";
+const command = (name: string) => (windows ? `${name}.cmd` : name);
 
 interface Execution {
   status: number;
@@ -20,7 +22,11 @@ interface Execution {
   stderr: string;
 }
 function run(binary: string, args: string[], cwd = repositoryRoot): Execution {
-  const result = spawnSync(binary, args, { cwd, encoding: "utf8" });
+  const result = spawnSync(binary, args, {
+    cwd,
+    encoding: "utf8",
+    shell: windows && binary.endsWith(".cmd"),
+  });
   return {
     status: result.status ?? -1,
     stdout: result.stdout,
@@ -49,7 +55,11 @@ async function snapshot(root: string) {
 }
 
 beforeAll(() => {
-  execFileSync("pnpm", ["build"], { cwd: repositoryRoot, stdio: "pipe" });
+  execFileSync(command("pnpm"), ["build"], {
+    cwd: repositoryRoot,
+    stdio: "pipe",
+    shell: windows,
+  });
 });
 
 describe("built CLI schema validation process cases", () => {
@@ -200,16 +210,17 @@ describe("built CLI schema validation process cases", () => {
           ),
       );
     const firstBuild = await schemaSnapshot();
-    execFileSync("pnpm", ["build"], {
+    execFileSync(command("pnpm"), ["build"], {
       cwd: repositoryRoot,
       stdio: "pipe",
+      shell: windows,
     });
     expect(await schemaSnapshot()).toEqual(firstBuild);
     const packRoot = await mkdtemp(join(tmpdir(), "aif-schema-pack-"));
     execFileSync(
-      "pnpm",
+      command("pnpm"),
       ["--filter", "@aif/cli", "pack", "--pack-destination", packRoot],
-      { cwd: repositoryRoot, stdio: "pipe" },
+      { cwd: repositoryRoot, stdio: "pipe", shell: windows },
     );
     const tarball = join(
       packRoot,
@@ -226,7 +237,7 @@ describe("built CLI schema validation process cases", () => {
     const runtime = join(packRoot, "runtime");
     await mkdir(runtime);
     execFileSync(
-      "npm",
+      command("npm"),
       [
         "install",
         "--cache",
@@ -236,9 +247,12 @@ describe("built CLI schema validation process cases", () => {
         "--no-fund",
         tarball,
       ],
-      { cwd: runtime, stdio: "pipe" },
+      { cwd: runtime, stdio: "pipe", shell: windows },
     );
-    const packedCli = join(runtime, "node_modules/.bin/aif");
+    const packedCli = join(
+      runtime,
+      `node_modules/.bin/aif${windows ? ".cmd" : ""}`,
+    );
     const root = join(packRoot, "external-project");
     await mkdir(root);
     expect(

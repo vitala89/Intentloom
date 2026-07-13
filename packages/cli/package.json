@@ -4,7 +4,7 @@
   "description": "Provisional AIF command-line interface for local AI engineering workflows.",
   "license": "MIT",
   "engines": {
-    "node": ">=24"
+    "node": ">=22"
   },
   "type": "module",
   "bin": {

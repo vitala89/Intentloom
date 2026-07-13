@@ -6,6 +6,34 @@ import {
 } from "./project-state.js";
 
 describe("collision abort execution", () => {
+  it("rejects a lone noncanonical traversal without writing", async () => {
+    const fs = createMemoryFileSystem({
+      "/project/existing.md": "project sentinel\n",
+    });
+    const before = await snapshotProjectState(fs);
+    const result = await synchronizeGeneratedFiles(
+      "/project",
+      [
+        {
+          path: "docs/../AGENTS.md",
+          content: "unsafe",
+          sources: ["policies/core.md"],
+          checksum: "ignored",
+        },
+      ],
+      fs,
+    );
+    expect(result.status).toBe("failed");
+    expect(result.diagnostics).toEqual(["invalid-stored-path"]);
+    expect(result.changes).toEqual([
+      expect.objectContaining({
+        path: "docs/../AGENTS.md",
+        kind: "security-error",
+      }),
+    ]);
+    assertProjectStateUnchanged(before, await snapshotProjectState(fs));
+  });
+
   it("preserves project state byte-for-byte for a case-only collision", async () => {
     const fs = createMemoryFileSystem({
       "/project/existing.md": "generated sentinel",

@@ -9,13 +9,19 @@ import {
   realpath,
   writeFile,
 } from "node:fs/promises";
-import { dirname, posix, relative, resolve, sep } from "node:path";
-import { adapterVersion, generateAdapter } from "@aif/adapters";
+import { dirname, relative, resolve, sep } from "node:path";
+import {
+  adapterVersion,
+  generateAdapters,
+  getAdapterContract,
+} from "@aif/adapters";
 import {
   AIF_VERSION,
   checksum,
   loadCatalog,
   normalizeOutputPath,
+  normalizeStoredPath,
+  storedPathCollisionKey,
   type AdapterName,
   type Catalog,
   type GeneratedFile,
@@ -472,16 +478,11 @@ function inside(root: string, path: string): string {
 }
 
 export function destinationCollisionKey(path: string): string {
-  if (
-    path.includes("\0") ||
-    path.startsWith("/") ||
-    /^[A-Za-z]:[\\/]/u.test(path)
-  )
-    throw new Error(`invalid destination: ${path}`);
-  const normalized = posix.normalize(path.replaceAll("\\", "/"));
-  if (normalized === ".." || normalized.startsWith("../"))
-    throw new Error(`destination escapes project root: ${path}`);
-  return normalized.replace(/^\.\//u, "").normalize("NFC").toLowerCase();
+  try {
+    return storedPathCollisionKey(path);
+  } catch {
+    throw new Error("invalid or escaping destination");
+  }
 }
 
 export interface DestinationCollision {
@@ -531,6 +532,28 @@ function collisionPlan(files: readonly GeneratedFile[]): Plan | null {
       reason: JSON.stringify(collision),
     })),
     diagnostics: ["destination-collision"],
+  };
+}
+
+function noncanonicalPathPlan(files: readonly GeneratedFile[]): Plan | null {
+  const invalidPaths = files
+    .map((file) => file.path)
+    .filter((path) => {
+      try {
+        return normalizeStoredPath(path) !== path;
+      } catch {
+        return true;
+      }
+    })
+    .sort();
+  if (invalidPaths.length === 0) return null;
+  return {
+    changes: invalidPaths.map((path) => ({
+      path,
+      kind: "security-error" as const,
+      reason: "generated destination is not a canonical stored path",
+    })),
+    diagnostics: ["invalid-stored-path"],
   };
 }
 
@@ -706,7 +729,8 @@ function pathFailure(
     )
       return invalidPostWriteState(absoluteCode, [metadataPath], [identifier]);
     try {
-      destinationCollisionKey(path);
+      if (normalizeStoredPath(path) !== path)
+        return invalidPostWriteState(escapeCode, [metadataPath], [identifier]);
     } catch {
       return invalidPostWriteState(escapeCode, [metadataPath], [identifier]);
     }
@@ -1045,6 +1069,22 @@ export async function synchronizeGeneratedFiles(
       consistencyValidated: false,
       cleanupCompleted: false,
     };
+  const invalidPath = noncanonicalPathPlan(files);
+  if (invalidPath)
+    return {
+      ...invalidPath,
+      status: "failed",
+      rollbackAttempted: false,
+      rollbackCompleted: true,
+      rollbackFailures: [],
+      createdFiles: [],
+      updatedFiles: [],
+      unchangedFiles: [],
+      manifestUpdated: false,
+      sourceMapUpdated: false,
+      consistencyValidated: false,
+      cleanupCompleted: false,
+    };
   const normalized = files.map((file) => ({
     ...file,
     checksum: checksum(file.content),
@@ -1223,10 +1263,9 @@ function config(profile: string, adapters: readonly AdapterName[]): string {
 function generated(
   adapterNames: readonly AdapterName[],
   catalog: Catalog,
+  profile: string,
 ): GeneratedFile[] {
-  return adapterNames.flatMap(
-    (adapter) => generateAdapter(adapter, catalog).files,
-  );
+  return [...generateAdapters(adapterNames, catalog, { profile }).files];
 }
 
 async function desired(options: InitOptions): Promise<GeneratedFile[]> {
@@ -1269,13 +1308,15 @@ async function desired(options: InitOptions): Promise<GeneratedFile[]> {
     (options.catalogRoot
       ? await loadCatalog(options.catalogRoot)
       : emptyCatalog);
-  const files = generated(options.adapters, catalog);
+  const selectedAdapters = [...new Set(options.adapters)].sort();
+  const files = generated(selectedAdapters, catalog, options.profile);
+  const configContent = config(options.profile, selectedAdapters);
   const payload: GeneratedFile[] = [
     {
       path: configPath,
-      content: config(options.profile, options.adapters),
+      content: configContent,
       sources: ["project:config"],
-      checksum: checksum(config(options.profile, options.adapters)),
+      checksum: checksum(configContent),
     },
     {
       path: ".aif/local.example.yaml",
@@ -1667,6 +1708,25 @@ export async function doctorProject(
         profile: options.profile,
       })),
   );
+  const selectedAdapters = [...new Set(options.adapters)].sort();
+  const adapterForPath = (path: string): AdapterName | null => {
+    if (path === "CLAUDE.md" || path.startsWith(".claude/")) return "claude";
+    if (path.startsWith(".agents/")) {
+      const owners = selectedAdapters.filter(
+        (adapter) => adapter === "codex" || adapter === "cursor",
+      );
+      return owners.length === 1 ? owners[0]! : null;
+    }
+    if (path.startsWith(".cursor/")) return "cursor";
+    if (path.startsWith(".github/")) return "copilot";
+    if (path === "AGENTS.md")
+      return (
+        selectedAdapters.find((adapter) => adapter !== "claude") ??
+        selectedAdapters[0] ??
+        null
+      );
+    return null;
+  };
   if (!options.validator) {
     for (const definition of [
       { path: configPath, format: "yaml" as const },
@@ -1795,7 +1855,7 @@ export async function doctorProject(
       message: change.reason,
       remediation: [definition.remediation],
       readOnly: true,
-      adapter: null,
+      adapter: adapterForPath(change.path),
       profile: options.profile,
     });
   }
@@ -1825,6 +1885,33 @@ export async function doctorProject(
   };
   const manifest = await readJson(lockPath);
   const sourceMap = await readJson(sourceMapPath);
+  const addStoredPathFinding = (
+    metadataPath: typeof lockPath | typeof sourceMapPath,
+    records: readonly Record<string, unknown>[],
+  ) => {
+    if (
+      records.some((record) => {
+        if (typeof record.path !== "string") return false;
+        try {
+          return normalizeStoredPath(record.path) !== record.path;
+        } catch {
+          return true;
+        }
+      })
+    )
+      addFinding({
+        code: "stored-path-incompatible",
+        severity: "error",
+        category: "security",
+        path: metadataPath,
+        message: "metadata contains a non-portable stored path",
+        remediation: [
+          "Review and migrate stored paths to normalized project-relative form.",
+        ],
+        adapter: null,
+        profile: options.profile,
+      });
+  };
   if (manifest) {
     if (manifest.frameworkVersion !== AIF_VERSION)
       addFinding({
@@ -1866,6 +1953,7 @@ export async function doctorProject(
     const generated = Array.isArray(manifest.generated)
       ? (manifest.generated as Record<string, unknown>[])
       : [];
+    addStoredPathFinding(lockPath, generated);
     for (const record of generated)
       if (typeof record.path === "string" && !desiredPaths.has(record.path))
         addFinding({
@@ -1908,6 +1996,7 @@ export async function doctorProject(
     sourceMap && Array.isArray(sourceMap.files)
       ? (sourceMap.files as Record<string, unknown>[])
       : [];
+  addStoredPathFinding(sourceMapPath, sourceRecords);
   const ownedPaths = new Set(
     sourceRecords
       .map((record) => record.path)
@@ -1955,7 +2044,10 @@ export async function doctorProject(
       (await fs.read(inside(options.root, path))).includes("Generated by AIF")
     )
       addFinding({
-        code: "generated-header-without-ownership",
+        code:
+          path === "AGENTS.md" && selectedAdapters.length > 1
+            ? "shared-file-conflict"
+            : "generated-header-without-ownership",
         severity: "error",
         category: "ownership",
         path,
@@ -1966,6 +2058,65 @@ export async function doctorProject(
         adapter: null,
         profile: options.profile,
       });
+  for (const path of desiredPaths) {
+    if (
+      !scannedSet.has(path) ||
+      !(
+        /^\.cursor\/rules\/.*\.mdc$/u.test(path) ||
+        /^\.github\/instructions\/.*\.instructions\.md$/u.test(path)
+      )
+    )
+      continue;
+    const source = await fs.read(inside(options.root, path));
+    const key = path.startsWith(".cursor/") ? "globs" : "applyTo";
+    const frontmatter = source.match(/^---\n([\s\S]*?)\n---\n/u)?.[1] ?? "";
+    const value = frontmatter
+      .match(new RegExp(`^${key}:\\s*(.+)$`, "mu"))?.[1]
+      ?.trim()
+      .replace(/^(?:"([\s\S]*)"|'([\s\S]*)')$/u, "$1$2");
+    const globalCursorRule =
+      path.startsWith(".cursor/") &&
+      /^alwaysApply:\s*true$/mu.test(frontmatter);
+    const portableGlob = (pattern: string) =>
+      pattern.length > 0 &&
+      !pattern.includes("\\") &&
+      !pattern.includes("\0") &&
+      !/^(?:[A-Za-z]:|\/)/u.test(pattern) &&
+      !pattern.split("/").some((segment) => segment === ".." || segment === "");
+    const valid =
+      globalCursorRule ||
+      (typeof value === "string" && value.split(",").every(portableGlob));
+    if (!valid)
+      addFinding({
+        code: "path-scoped-rule-invalid",
+        severity: "error",
+        category: "adapter",
+        path,
+        message: "path-scoped adapter output has invalid frontmatter",
+        remediation: ["Restore or transactionally regenerate the scoped rule."],
+        adapter: adapterForPath(path),
+        profile: options.profile,
+      });
+  }
+  const supportedProfiles = new Set([
+    "generic",
+    "typescript",
+    "angular",
+    "rust",
+    "tauri",
+    "angular-tauri",
+  ]);
+  if (!supportedProfiles.has(options.profile))
+    addFinding({
+      code: "adapter-profile-unsupported",
+      severity: "error",
+      category: "profile",
+      path: configPath,
+      message: "selected profile is not supported by the adapter matrix",
+      remediation: ["Choose a documented profile before syncing adapters."],
+      adapter: null,
+      profile: options.profile,
+    });
   const profileDetection = await detectProjectProfiles(options.root, fs);
   if (
     !profileDetection.manualConfirmationRequired &&
@@ -1984,20 +2135,33 @@ export async function doctorProject(
       adapter: null,
       profile: options.profile,
     });
-  if (options.adapters.includes("copilot"))
-    addFinding({
-      code: "adapter-capability-experimental",
-      severity: "warning",
-      category: "adapter",
-      path: configPath,
-      message:
-        "some Copilot environment capabilities remain environment-specific",
-      remediation: [
-        "Review the compatibility matrix for unsupported capabilities.",
-      ],
-      adapter: "copilot",
-      profile: options.profile,
-    });
+  for (const adapter of metadataPresence[0]?.present ? selectedAdapters : []) {
+    const contract = getAdapterContract(adapter);
+    for (const capability of contract.experimentalCapabilities)
+      addFinding({
+        code: "adapter-capability-experimental",
+        severity: "warning",
+        category: "adapter",
+        path: configPath,
+        message: `${adapter} capability ${capability} is experimental`,
+        remediation: [
+          "Review the compatibility matrix before relying on this capability.",
+        ],
+        adapter,
+        profile: options.profile,
+      });
+    for (const capability of contract.unsupportedCapabilities)
+      addFinding({
+        code: "adapter-capability-unsupported",
+        severity: "info",
+        category: "adapter",
+        path: configPath,
+        message: `${adapter} capability ${capability} is not generated`,
+        remediation: ["Keep unsupported provider configuration project-owned."],
+        adapter,
+        profile: options.profile,
+      });
+  }
   const instructionRoots = new Set(
     scannedPaths.flatMap((path) => {
       if (path === "AGENTS.md" || path.startsWith(".agents/"))

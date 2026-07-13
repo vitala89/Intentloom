@@ -12,11 +12,16 @@ import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 
 const repositoryRoot = resolve(".");
+const windows = process.platform === "win32";
+const command = (name: string) => (windows ? `${name}.cmd` : name);
 let packRoot: string;
 let packedCli: string;
 
 function aif(args: string[]) {
-  const result = spawnSync(packedCli, args, { encoding: "utf8" });
+  const result = spawnSync(packedCli, args, {
+    encoding: "utf8",
+    shell: windows,
+  });
   return {
     status: result.status ?? -1,
     stdout: result.stdout,
@@ -42,12 +47,16 @@ async function snapshot(root: string) {
 }
 
 beforeAll(async () => {
-  execFileSync("pnpm", ["build"], { cwd: repositoryRoot, stdio: "pipe" });
+  execFileSync(command("pnpm"), ["build"], {
+    cwd: repositoryRoot,
+    stdio: "pipe",
+    shell: windows,
+  });
   packRoot = await mkdtemp(join(tmpdir(), "aif-adoption-packed-"));
   execFileSync(
-    "pnpm",
+    command("pnpm"),
     ["--filter", "@aif/cli", "pack", "--pack-destination", packRoot],
-    { cwd: repositoryRoot, stdio: "pipe" },
+    { cwd: repositoryRoot, stdio: "pipe", shell: windows },
   );
   const tarball = join(
     packRoot,
@@ -56,7 +65,7 @@ beforeAll(async () => {
   const runtime = join(packRoot, "runtime");
   await mkdir(runtime);
   execFileSync(
-    "npm",
+    command("npm"),
     [
       "install",
       "--cache",
@@ -66,9 +75,9 @@ beforeAll(async () => {
       "--no-fund",
       tarball,
     ],
-    { cwd: runtime, stdio: "pipe" },
+    { cwd: runtime, stdio: "pipe", shell: windows },
   );
-  packedCli = join(runtime, "node_modules/.bin/aif");
+  packedCli = join(runtime, `node_modules/.bin/aif${windows ? ".cmd" : ""}`);
 }, 30_000);
 
 afterAll(async () => {
