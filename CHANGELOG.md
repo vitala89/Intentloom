@@ -8,6 +8,8 @@ All notable changes are documented here. This project follows Keep a Changelog p
 
 - Canonical policies, workflows, templates, portable Agent Skills, schemas, profiles, adapters, validator, and local CLI implementation are present in the repository.
 - Documentation guides, examples, and initial integration-style tests.
+- Added versioned JSON Schemas for AIF configuration, ownership metadata, feature briefs, context packs, change requests, technical-debt entries, and Agent Skill metadata.
+- Added reusable structural validation with stable machine-readable diagnostics and an additional AIF Agent Skill policy layer.
 
 ### Fixed
 
@@ -21,6 +23,8 @@ All notable changes are documented here. This project follows Keep a Changelog p
 - `aif sync` now consumes the structured transaction result directly.
 - Added distinct CLI exit codes for conflicts, restored transaction failures, and incomplete rollback.
 - Sync output now reports consistency validation and rollback status explicitly.
+- `init`, `adopt`, `plan`, `diff`, `sync`, and `doctor` now use the shared schema-validation layer before semantic validation.
+- Manifest locks now pin selected profiles, schema families, adapter versions, canonical source hashes, and generated-output hashes.
 
 ### Compatibility
 
@@ -44,6 +48,8 @@ All notable changes are documented here. This project follows Keep a Changelog p
 - Prevented sync transaction success when actual committed state differs from the planned transaction state.
 - Prevented CLI output from presenting incomplete rollback as restored project state.
 - Added safe, project-relative sync diagnostics without private generated-file contents.
+- Added safe JSON/YAML parsing with duplicate-key, unsafe-tag, size, depth, BOM, Unicode, and alias protections.
+- Prevented commands from writing when project metadata fails structural validation and prevented schema diagnostics from exposing private artifact contents.
 
 ### Migration
 

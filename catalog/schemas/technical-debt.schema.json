@@ -1,15 +1,54 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:aif:schema:technical-debt:1",
   "title": "technical-debt",
   "type": "object",
   "additionalProperties": false,
   "properties": {
-    "schemaVersion": {
-      "type": "string"
+    "schemaVersion": { "const": "1" },
+    "id": { "$ref": "#/$defs/id" },
+    "status": {
+      "enum": ["accepted", "active", "scheduled", "resolved", "rejected"]
     },
-    "version": {
-      "type": "string"
-    }
+    "severity": { "enum": ["low", "medium", "high", "critical"] },
+    "area": { "$ref": "#/$defs/text" },
+    "description": { "$ref": "#/$defs/text" },
+    "reasonAccepted": { "$ref": "#/$defs/text" },
+    "workaround": { "$ref": "#/$defs/text" },
+    "doNot": { "$ref": "#/$defs/text" },
+    "risk": { "$ref": "#/$defs/text" },
+    "resolutionTrigger": { "$ref": "#/$defs/text" },
+    "relatedFeature": { "$ref": "#/$defs/id" },
+    "relatedFiles": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/projectPath" }
+    },
+    "extensions": { "type": "object" }
   },
-  "required": ["schemaVersion"]
+  "required": [
+    "schemaVersion",
+    "id",
+    "status",
+    "severity",
+    "area",
+    "description",
+    "reasonAccepted",
+    "workaround",
+    "doNot",
+    "risk",
+    "resolutionTrigger",
+    "relatedFeature",
+    "relatedFiles"
+  ],
+  "$defs": {
+    "id": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$" },
+    "text": { "type": "string", "minLength": 1, "maxLength": 4096 },
+    "projectPath": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1024,
+      "pattern": "^(?!/)(?![A-Za-z]:)(?!.*\\\\)(?!.*(?:^|/)\\.\\.?(?:/|$))(?!.*//).+$"
+    }
+  }
 }

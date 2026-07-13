@@ -10,7 +10,7 @@ import {
   writeFile,
 } from "node:fs/promises";
 import { dirname, posix, relative, resolve, sep } from "node:path";
-import { generateAdapter } from "@aif/adapters";
+import { adapterVersion, generateAdapter } from "@aif/adapters";
 import {
   AIF_VERSION,
   checksum,
@@ -20,6 +20,11 @@ import {
   type Catalog,
   type GeneratedFile,
 } from "@aif/core";
+import {
+  type ArtifactValidationResult,
+  type ArtifactValidator,
+  validateSkillSet,
+} from "@aif/validator";
 import { parse, stringify } from "yaml";
 
 export type ChangeKind =
@@ -39,6 +44,19 @@ export interface Change {
 export interface Plan {
   readonly changes: readonly Change[];
   readonly diagnostics: readonly string[];
+}
+export interface DoctorPlan extends Plan {
+  readonly errors: readonly {
+    readonly code: string;
+    readonly message: string;
+    readonly fieldPath: string;
+    readonly phase: "semantic";
+    readonly artifactType: "generated-state";
+    readonly schemaId: "urn:aif:semantic:generated-state:1";
+    readonly schemaVersion: "1";
+    readonly documentPath: string;
+    readonly affectedPath: string;
+  }[];
 }
 export type TransactionStage =
   | "generated-stage"
@@ -132,6 +150,8 @@ export interface InitOptions {
   readonly dryRun?: boolean;
   readonly catalog?: Catalog;
   readonly catalogRoot?: string;
+  readonly canonicalSourceHashes?: Readonly<Record<string, string>>;
+  readonly validator?: ArtifactValidator;
 }
 export interface SyncOptions extends InitOptions {
   readonly force?: boolean;
@@ -165,7 +185,7 @@ const configPath = ".aif/config.yaml";
 const lockPath = ".aif/manifest.lock.json";
 const sourceMapPath = ".aif/source-map.json";
 const metadataFormatVersion = "1";
-const adapterOutputVersion = "0.1.0";
+const adapterOutputVersion = adapterVersion;
 const transactionAdapterId = "aif:generated-files";
 
 function inside(root: string, path: string): string {
@@ -255,8 +275,27 @@ interface TransactionMetadata {
   readonly sourceMap: string;
 }
 
+interface MetadataPins {
+  readonly profile: string;
+  readonly adapters: readonly AdapterName[];
+  readonly sourceHashes: readonly {
+    readonly id: string;
+    readonly checksum: string;
+  }[];
+}
+
 function buildTransactionMetadata(
   files: readonly GeneratedFile[],
+  pins: MetadataPins = {
+    profile: "generic",
+    adapters: ["codex"],
+    sourceHashes: [
+      {
+        id: "transaction:generated",
+        checksum: checksum("transaction:generated"),
+      },
+    ],
+  },
 ): TransactionMetadata {
   const canonicalSourceId = checksum(
     JSON.stringify([...new Set(files.flatMap((file) => file.sources))].sort()),
@@ -271,7 +310,23 @@ function buildTransactionMetadata(
   return {
     manifest: `${JSON.stringify(
       {
+        schemaVersion: metadataFormatVersion,
         lockVersion: metadataFormatVersion,
+        ownershipPolicy: "aif-owned-generated",
+        profile: pins.profile,
+        schemaVersions: {
+          config: "1",
+          manifestLock: "1",
+          sourceMap: "1",
+          planning: "1",
+          agentSkillPolicy: "1",
+        },
+        adapters: [...pins.adapters]
+          .sort()
+          .map((id) => ({ id, version: adapterOutputVersion })),
+        sourceHashes: [...pins.sourceHashes].sort((left, right) =>
+          left.id.localeCompare(right.id),
+        ),
         ...sharedMetadata,
         generated: files.map(({ path, checksum }) => ({ path, checksum })),
       },
@@ -536,6 +591,12 @@ async function validateCommittedOwnershipState({
 
   const manifestRecords = metadataRecords(manifest, "generated");
   const sourceMapRecords = metadataRecords(sourceMap, "files");
+  if (manifest.ownershipPolicy !== "aif-owned-generated")
+    return invalidPostWriteState(
+      "ownership-classification-invalid",
+      [lockPath],
+      ["ownershipPolicy"],
+    );
   const manifestPathFailure = pathFailure("manifest", manifestRecords);
   if (manifestPathFailure) return manifestPathFailure;
   const sourceMapPathFailure = pathFailure("source-map", sourceMapRecords);
@@ -690,6 +751,7 @@ export async function synchronizeGeneratedFiles(
   files: readonly GeneratedFile[],
   fs: FileSystem,
   options: TransactionOptions = {},
+  validatedMetadata?: TransactionMetadata,
 ): Promise<TransactionResult> {
   const collision = collisionPlan(files);
   if (collision)
@@ -711,7 +773,8 @@ export async function synchronizeGeneratedFiles(
     ...file,
     checksum: checksum(file.content),
   }));
-  const { manifest, sourceMap } = buildTransactionMetadata(normalized);
+  const { manifest, sourceMap } =
+    validatedMetadata ?? buildTransactionMetadata(normalized);
   const transactionFiles: GeneratedFile[] = [
     ...normalized,
     {
@@ -891,6 +954,40 @@ function generated(
 }
 
 async function desired(options: InitOptions): Promise<GeneratedFile[]> {
+  if (options.validator && options.catalogRoot) {
+    const skillRoot = resolve(options.catalogRoot, "skills");
+    const directories = (await readdir(skillRoot, { withFileTypes: true }))
+      .filter((entry) => entry.isDirectory())
+      .map((entry) => entry.name)
+      .sort();
+    const documents = await Promise.all(
+      directories.map(async (directory) => ({
+        path: `skills/${directory}/SKILL.md`,
+        content: await readFile(
+          resolve(skillRoot, directory, "SKILL.md"),
+          "utf8",
+        ),
+      })),
+    );
+    const skillValidation = validateSkillSet(options.validator, documents, {
+      aifCatalogPolicy: true,
+    });
+    const invalid = skillValidation.results.filter(
+      (result) => result.status === "invalid",
+    );
+    if (skillValidation.errors.length > 0)
+      invalid.push({
+        status: "invalid",
+        artifactType: "agent-skill",
+        schemaId: "urn:aif:schema:agent-skill:1",
+        schemaVersion: "1",
+        documentPath: documents[0]?.path ?? "skills/SKILL.md",
+        structuralErrors: [],
+        semanticErrors: skillValidation.errors,
+        warnings: [],
+      });
+    if (invalid.length > 0) throw new ArtifactValidationFailure(invalid);
+  }
   const catalog =
     options.catalog ??
     (options.catalogRoot
@@ -901,20 +998,69 @@ async function desired(options: InitOptions): Promise<GeneratedFile[]> {
     {
       path: configPath,
       content: config(options.profile, options.adapters),
-      sources: [],
+      sources: ["project:config"],
       checksum: checksum(config(options.profile, options.adapters)),
     },
     {
       path: ".aif/local.example.yaml",
       content: "# Local AIF preferences only; never store secrets here.\n",
-      sources: [],
+      sources: ["project:local-example"],
       checksum: checksum(
         "# Local AIF preferences only; never store secrets here.\n",
       ),
     },
     ...files,
   ];
-  const { manifest, sourceMap } = buildTransactionMetadata(payload);
+  const canonicalSources = [
+    ...new Set(
+      payload
+        .flatMap((file) => file.sources)
+        .filter((source) =>
+          /^(?:policies|skills|templates|workflows)\//u.test(source),
+        ),
+    ),
+  ].sort();
+  const sourceHashes = await Promise.all(
+    canonicalSources.map(async (id) => {
+      const pinnedChecksum = options.catalogRoot
+        ? checksum(await readFile(resolve(options.catalogRoot, id), "utf8"))
+        : options.canonicalSourceHashes?.[id];
+      if (!pinnedChecksum || !/^[a-f0-9]{64}$/u.test(pinnedChecksum))
+        throw new Error(`canonical source hash unavailable: ${id}`);
+      return { id, checksum: pinnedChecksum };
+    }),
+  );
+  const { manifest, sourceMap } = buildTransactionMetadata(payload, {
+    profile: options.profile,
+    adapters: options.adapters,
+    sourceHashes,
+  });
+  if (options.validator) {
+    const generatedDocuments = [
+      options.validator.validate({
+        artifactType: "aif-config",
+        documentPath: configPath,
+        format: "yaml",
+        source: payload[0]!.content,
+      }),
+      options.validator.validate({
+        artifactType: "manifest-lock",
+        documentPath: lockPath,
+        format: "json",
+        source: manifest,
+      }),
+      options.validator.validate({
+        artifactType: "source-map",
+        documentPath: sourceMapPath,
+        format: "json",
+        source: sourceMap,
+      }),
+    ];
+    const invalid = generatedDocuments.filter(
+      (result) => result.status === "invalid",
+    );
+    if (invalid.length > 0) throw new ArtifactValidationFailure(invalid);
+  }
   return [
     ...payload,
     // Metadata is committed last so ownership never advances ahead of files.
@@ -931,6 +1077,12 @@ async function desired(options: InitOptions): Promise<GeneratedFile[]> {
       checksum: checksum(sourceMap),
     },
   ];
+}
+
+export class ArtifactValidationFailure extends Error {
+  constructor(readonly results: readonly ArtifactValidationResult[]) {
+    super("project artifact validation failed");
+  }
 }
 
 interface OwnershipRecord {
@@ -1035,8 +1187,11 @@ async function plan(
     if (!(await fs.exists(path)))
       changes.push({
         path: file.path,
-        kind: "create",
-        reason: "missing",
+        kind: sync && owned.has(file.path) ? "missing" : "create",
+        reason:
+          sync && owned.has(file.path)
+            ? "AIF-owned generated file is missing"
+            : "missing",
         content: file.content,
       });
     else if ((await fs.read(path)) === file.content) continue;
@@ -1161,6 +1316,11 @@ export async function syncProject(
     payload,
     fs,
     transactionOptions,
+    {
+      manifest: desiredFiles.find((file) => file.path === lockPath)!.content,
+      sourceMap: desiredFiles.find((file) => file.path === sourceMapPath)!
+        .content,
+    },
   );
 }
 export async function diffProject(
@@ -1172,13 +1332,39 @@ export async function diffProject(
 export async function doctorProject(
   options: InitOptions,
   fs: FileSystem,
-): Promise<Plan> {
-  const proposal = await plan({ ...options, dryRun: true }, fs);
+): Promise<DoctorPlan> {
+  const proposal = await plan({ ...options, dryRun: true }, fs, true);
+  const changes = proposal.changes.map(({ content: _content, ...change }) =>
+    change.kind === "update"
+      ? {
+          ...change,
+          kind: "stale" as const,
+          reason: "generated state is stale",
+        }
+      : change,
+  );
+  const blockingChanges = changes.filter((change) =>
+    ["conflict", "modified", "missing", "stale", "security-error"].includes(
+      change.kind,
+    ),
+  );
   return {
     ...proposal,
-    diagnostics: proposal.changes
-      .filter((change) => change.kind === "conflict")
-      .map((change) => `${change.path}: ${change.reason}`),
+    changes,
+    diagnostics: blockingChanges.map(
+      (change) => `${change.path}: ${change.reason}`,
+    ),
+    errors: blockingChanges.map((change) => ({
+      code: `generated-file-${change.kind}`,
+      message: change.reason,
+      fieldPath: "/",
+      phase: "semantic" as const,
+      artifactType: "generated-state" as const,
+      schemaId: "urn:aif:semantic:generated-state:1" as const,
+      schemaVersion: "1" as const,
+      documentPath: change.path,
+      affectedPath: change.path,
+    })),
   };
 }
 export async function adoptProject(
@@ -1207,9 +1393,71 @@ export async function adoptProject(
       .map((path) => `project-owned existing artifact: ${path}`),
   };
 }
-export async function planFeature(taskId: string): Promise<string> {
+export async function planFeature(
+  taskId: string,
+  validator?: ArtifactValidator,
+): Promise<string> {
   if (!taskId) throw new Error("task identifier is required");
-  return `# Feature brief: ${taskId}\n\n## Must read\n\n## Read if needed\n\n## Excluded\n\n## Forbidden to change\n\n## Acceptance criteria\n\n## Edge cases\n\n## Verification\n\n## Technical debt\n\n## Stop condition\n`;
+  const featureBrief = {
+    schemaVersion: "1",
+    id: taskId,
+    title: taskId,
+    status: "draft",
+    priority: "medium",
+    effort: "m",
+    risk: "medium",
+    impact: "To be assessed",
+    ownerMode: "unassigned",
+    problem: "To be defined",
+    userValue: "To be defined",
+    goal: "Create an approved bounded implementation brief",
+    scope: [],
+    outOfScope: [],
+    acceptanceCriteria: [
+      "Acceptance criteria must be completed before approval",
+    ],
+    architectureBoundaries: [],
+    reuseCandidates: [],
+    contextPack: `plans/${taskId}-context.json`,
+    allowedFiles: [],
+    forbiddenFiles: [],
+    edgeCases: [],
+    verification: ["Define proportionate verification before implementation"],
+    liveVerification: false,
+    technicalDebtDecision: "none",
+    stopCondition: "Stop before implementation until the brief is approved",
+  };
+  const contextPack = {
+    schemaVersion: "1",
+    taskId,
+    mustRead: [],
+    readIfNeeded: [],
+    excluded: [],
+    forbiddenToChange: [],
+    relevantSourceAreas: [],
+    contextMode: "minimal",
+    expansionReasons: [],
+    fileBudget: 20,
+  };
+  if (validator) {
+    const results = [
+      validator.validate({
+        artifactType: "feature-brief",
+        documentPath: `plans/${taskId}.json`,
+        format: "json",
+        source: JSON.stringify(featureBrief),
+      }),
+      validator.validate({
+        artifactType: "context-pack",
+        documentPath: `plans/${taskId}-context.json`,
+        format: "json",
+        source: JSON.stringify(contextPack),
+      }),
+    ];
+    const invalid = results.filter((result) => result.status === "invalid");
+    if (invalid.length > 0) throw new ArtifactValidationFailure(invalid);
+  }
+  return JSON.stringify({ featureBrief, contextPack }, null, 2);
 }
 
 export function createMemoryFileSystem(
@@ -1277,7 +1525,7 @@ export const nodeFileSystem: FileSystem = {
   },
   async list(path) {
     try {
-      return await readdir(path);
+      return await readdir(path, { recursive: true });
     } catch {
       return [];
     }

@@ -1,15 +1,118 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:aif:schema:manifest-lock:1",
   "title": "manifest-lock",
   "type": "object",
   "additionalProperties": false,
   "properties": {
-    "schemaVersion": {
-      "type": "string"
+    "schemaVersion": { "const": "1" },
+    "lockVersion": { "const": "1" },
+    "metadataFormatVersion": { "const": "1" },
+    "frameworkVersion": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(?:-[0-9A-Za-z.-]+)?$"
     },
-    "version": {
-      "type": "string"
+    "adapterOutputVersion": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(?:-[0-9A-Za-z.-]+)?$"
+    },
+    "adapterId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[a-z0-9][a-z0-9:-]*$"
+    },
+    "canonicalSourceId": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "ownershipPolicy": { "enum": ["aif-owned-generated"] },
+    "profile": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[a-z0-9][a-z0-9-]*$"
+    },
+    "schemaVersions": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "config": { "const": "1" },
+        "manifestLock": { "const": "1" },
+        "sourceMap": { "const": "1" },
+        "planning": { "const": "1" },
+        "agentSkillPolicy": { "const": "1" }
+      },
+      "required": [
+        "config",
+        "manifestLock",
+        "sourceMap",
+        "planning",
+        "agentSkillPolicy"
+      ]
+    },
+    "adapters": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": { "enum": ["claude", "codex", "cursor", "copilot"] },
+          "version": {
+            "type": "string",
+            "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(?:-[0-9A-Za-z.-]+)?$"
+          }
+        },
+        "required": ["id", "version"]
+      }
+    },
+    "sourceHashes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": { "$ref": "#/$defs/projectPath" },
+          "checksum": { "$ref": "#/$defs/checksum" }
+        },
+        "required": ["id", "checksum"]
+      }
+    },
+    "generated": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "path": { "$ref": "#/$defs/projectPath" },
+          "checksum": { "$ref": "#/$defs/checksum" }
+        },
+        "required": ["path", "checksum"]
+      }
     }
   },
-  "required": ["schemaVersion"]
+  "required": [
+    "schemaVersion",
+    "lockVersion",
+    "metadataFormatVersion",
+    "frameworkVersion",
+    "adapterOutputVersion",
+    "adapterId",
+    "canonicalSourceId",
+    "ownershipPolicy",
+    "profile",
+    "schemaVersions",
+    "adapters",
+    "sourceHashes",
+    "generated"
+  ],
+  "$defs": {
+    "projectPath": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1024,
+      "pattern": "^(?!/)(?![A-Za-z]:)(?!.*\\\\)(?!.*(?:^|/)\\.\\.?(?:/|$))(?!.*//).+$"
+    },
+    "checksum": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+  }
 }

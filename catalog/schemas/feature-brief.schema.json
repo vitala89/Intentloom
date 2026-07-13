@@ -1,15 +1,99 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:aif:schema:feature-brief:1",
   "title": "feature-brief",
   "type": "object",
   "additionalProperties": false,
   "properties": {
-    "schemaVersion": {
-      "type": "string"
+    "schemaVersion": { "const": "1" },
+    "id": { "$ref": "#/$defs/id" },
+    "title": { "$ref": "#/$defs/text" },
+    "status": {
+      "enum": [
+        "draft",
+        "approved",
+        "in-progress",
+        "blocked",
+        "done",
+        "cancelled"
+      ]
     },
-    "version": {
-      "type": "string"
-    }
+    "priority": { "enum": ["low", "medium", "high", "critical"] },
+    "effort": { "enum": ["xs", "s", "m", "l", "xl"] },
+    "risk": { "enum": ["low", "medium", "high", "critical"] },
+    "impact": { "$ref": "#/$defs/text" },
+    "ownerMode": { "enum": ["individual", "team", "unassigned"] },
+    "problem": { "$ref": "#/$defs/text" },
+    "userValue": { "$ref": "#/$defs/text" },
+    "goal": { "$ref": "#/$defs/text" },
+    "scope": { "$ref": "#/$defs/textList" },
+    "outOfScope": { "$ref": "#/$defs/textList" },
+    "acceptanceCriteria": { "$ref": "#/$defs/nonEmptyTextList" },
+    "architectureBoundaries": { "$ref": "#/$defs/textList" },
+    "reuseCandidates": { "$ref": "#/$defs/textList" },
+    "contextPack": { "$ref": "#/$defs/projectPath" },
+    "allowedFiles": { "$ref": "#/$defs/pathList" },
+    "forbiddenFiles": { "$ref": "#/$defs/pathList" },
+    "edgeCases": { "$ref": "#/$defs/textList" },
+    "verification": { "$ref": "#/$defs/nonEmptyTextList" },
+    "liveVerification": { "type": "boolean" },
+    "technicalDebtDecision": {
+      "enum": ["none", "accepted", "deferred", "prohibited"]
+    },
+    "stopCondition": { "$ref": "#/$defs/text" },
+    "extensions": { "type": "object" }
   },
-  "required": ["schemaVersion"]
+  "required": [
+    "schemaVersion",
+    "id",
+    "title",
+    "status",
+    "priority",
+    "effort",
+    "risk",
+    "impact",
+    "ownerMode",
+    "problem",
+    "userValue",
+    "goal",
+    "scope",
+    "outOfScope",
+    "acceptanceCriteria",
+    "architectureBoundaries",
+    "reuseCandidates",
+    "contextPack",
+    "allowedFiles",
+    "forbiddenFiles",
+    "edgeCases",
+    "verification",
+    "liveVerification",
+    "technicalDebtDecision",
+    "stopCondition"
+  ],
+  "$defs": {
+    "id": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$" },
+    "text": { "type": "string", "minLength": 1, "maxLength": 4096 },
+    "textList": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/text" }
+    },
+    "nonEmptyTextList": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/text" }
+    },
+    "projectPath": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1024,
+      "pattern": "^(?!/)(?![A-Za-z]:)(?!.*\\\\)(?!.*(?:^|/)\\.\\.?(?:/|$))(?!.*//).+$"
+    },
+    "pathList": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/projectPath" }
+    }
+  }
 }

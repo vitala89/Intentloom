@@ -1,15 +1,67 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:aif:schema:change-request:1",
   "title": "change-request",
   "type": "object",
   "additionalProperties": false,
   "properties": {
-    "schemaVersion": {
-      "type": "string"
+    "schemaVersion": { "const": "1" },
+    "changeId": { "$ref": "#/$defs/id" },
+    "relatedFeature": { "$ref": "#/$defs/id" },
+    "originalSpecification": { "$ref": "#/$defs/projectPath" },
+    "requestedChange": { "$ref": "#/$defs/text" },
+    "reason": { "$ref": "#/$defs/text" },
+    "scopeImpact": { "$ref": "#/$defs/text" },
+    "architectureImpact": { "$ref": "#/$defs/text" },
+    "dataMigrationImpact": { "$ref": "#/$defs/text" },
+    "testImpact": { "$ref": "#/$defs/text" },
+    "acceptanceCriteriaChanges": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/text" }
     },
-    "version": {
-      "type": "string"
-    }
+    "decision": { "enum": ["pending", "accepted", "deferred", "rejected"] },
+    "decisionDate": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+    },
+    "extensions": { "type": "object" }
   },
-  "required": ["schemaVersion"]
+  "required": [
+    "schemaVersion",
+    "changeId",
+    "relatedFeature",
+    "originalSpecification",
+    "requestedChange",
+    "reason",
+    "scopeImpact",
+    "architectureImpact",
+    "dataMigrationImpact",
+    "testImpact",
+    "acceptanceCriteriaChanges",
+    "decision"
+  ],
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "decision": { "enum": ["accepted", "deferred", "rejected"] }
+        },
+        "required": ["decision"]
+      },
+      "then": {
+        "properties": { "decisionDate": { "type": "string" } },
+        "required": ["decisionDate"]
+      }
+    }
+  ],
+  "$defs": {
+    "id": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$" },
+    "text": { "type": "string", "minLength": 1, "maxLength": 4096 },
+    "projectPath": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1024,
+      "pattern": "^(?!/)(?![A-Za-z]:)(?!.*\\\\)(?!.*(?:^|/)\\.\\.?(?:/|$))(?!.*//).+$"
+    }
+  }
 }

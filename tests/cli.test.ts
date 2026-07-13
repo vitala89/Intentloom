@@ -5,6 +5,14 @@ import {
   initProject,
   syncProject,
 } from "@aif/cli";
+import { checksum, type Catalog } from "@aif/core";
+
+const injectedCatalog: Catalog = {
+  policies: ["policies/core.md"],
+  workflows: [],
+  templates: [],
+  skills: [],
+};
 
 describe("init", () => {
   it("plans without writing in dry-run mode", async () => {
@@ -73,5 +81,35 @@ describe("init", () => {
       ),
     ).rejects.toThrow("injected write failure");
     expect(fs.files.size).toBe(0);
+  });
+  it("requires content evidence when an injected catalog has canonical sources", async () => {
+    const options = {
+      root: "/project",
+      profile: "generic",
+      adapters: ["codex"] as const,
+      catalog: injectedCatalog,
+    };
+    await expect(
+      initProject(options, createMemoryFileSystem()),
+    ).rejects.toThrow("canonical source hash unavailable: policies/core.md");
+    const fs = createMemoryFileSystem();
+    await initProject(
+      {
+        ...options,
+        canonicalSourceHashes: {
+          "policies/core.md": checksum("canonical policy bytes"),
+        },
+      },
+      fs,
+    );
+    const manifest = JSON.parse(
+      await fs.read("/project/.aif/manifest.lock.json"),
+    );
+    expect(manifest.sourceHashes).toEqual([
+      {
+        id: "policies/core.md",
+        checksum: checksum("canonical policy bytes"),
+      },
+    ]);
   });
 });
