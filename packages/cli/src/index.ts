@@ -55,7 +55,59 @@ export interface TransactionResult extends Plan {
   readonly rollbackAttempted: boolean;
   readonly rollbackCompleted: boolean;
   readonly rollbackFailures: readonly string[];
+  readonly postWriteValidation?: PostWriteValidationResult;
 }
+export type PostWriteCorruptionCode =
+  | "manifest-json-malformed"
+  | "source-map-json-malformed"
+  | "manifest-entry-missing"
+  | "source-map-entry-missing"
+  | "manifest-destination-missing"
+  | "source-map-destination-missing"
+  | "generated-checksum-mismatch"
+  | "manifest-source-map-checksum-mismatch"
+  | "manifest-generated-checksum-mismatch"
+  | "manifest-absolute-path"
+  | "source-map-absolute-path"
+  | "manifest-path-escape"
+  | "source-map-path-escape"
+  | "manifest-duplicate-destination"
+  | "source-map-duplicate-ownership"
+  | "ownership-classification-invalid"
+  | "adapter-id-missing"
+  | "adapter-id-mismatch"
+  | "canonical-source-id-missing"
+  | "canonical-source-id-mismatch"
+  | "framework-version-missing"
+  | "framework-version-incompatible"
+  | "adapter-output-version-missing"
+  | "adapter-output-version-incompatible"
+  | "metadata-format-version-incompatible"
+  | "committed-generated-bytes-mismatch"
+  | "committed-manifest-bytes-mismatch"
+  | "committed-source-map-bytes-mismatch"
+  | "generated-file-without-ownership"
+  | "ownership-record-without-generated-file"
+  | "normalized-destination-duplicate";
+export interface ValidPostWriteValidation {
+  readonly status: "valid";
+  readonly checkedGeneratedFileCount: number;
+  readonly checkedManifestEntryCount: number;
+  readonly checkedSourceMapEntryCount: number;
+  readonly checksumsValidated: true;
+  readonly ownershipValidated: true;
+  readonly pathsValidated: true;
+  readonly versionsValidated: true;
+  readonly metadataBytesValidated: true;
+}
+export interface InvalidPostWriteValidation {
+  readonly status: "invalid";
+  readonly code: PostWriteCorruptionCode;
+  readonly affectedPaths: readonly string[];
+  readonly affectedIdentifiers: readonly string[];
+}
+export type PostWriteValidationResult =
+  ValidPostWriteValidation | InvalidPostWriteValidation;
 export interface FileSystem {
   exists(path: string): Promise<boolean>;
   read(path: string): Promise<string>;
@@ -77,6 +129,10 @@ export interface InitOptions {
 export interface SyncOptions extends InitOptions {
   readonly force?: boolean;
 }
+export interface PostWriteCorruptionContext {
+  readonly root: string;
+  readonly fileSystem: FileSystem;
+}
 
 const emptyCatalog: Catalog = {
   policies: [],
@@ -87,6 +143,9 @@ const emptyCatalog: Catalog = {
 const configPath = ".aif/config.yaml";
 const lockPath = ".aif/manifest.lock.json";
 const sourceMapPath = ".aif/source-map.json";
+const metadataFormatVersion = "1";
+const adapterOutputVersion = "0.1.0";
+const transactionAdapterId = "aif:generated-files";
 
 function inside(root: string, path: string): string {
   const target = resolve(root, path);
@@ -158,6 +217,375 @@ function collisionPlan(files: readonly GeneratedFile[]): Plan | null {
   };
 }
 
+type MetadataObject = Record<string, unknown>;
+type MetadataRecord = Record<string, unknown>;
+
+interface PostWriteValidationInput {
+  readonly root: string;
+  readonly files: readonly GeneratedFile[];
+  readonly manifestBytes: string;
+  readonly sourceMapBytes: string;
+  readonly createdGeneratedPaths: ReadonlySet<string>;
+  readonly fs: FileSystem;
+}
+
+class PostWriteValidationFailure extends Error {
+  constructor(readonly validation: InvalidPostWriteValidation) {
+    super(validation.code);
+  }
+}
+
+function invalidPostWriteState(
+  code: PostWriteCorruptionCode,
+  affectedPaths: readonly string[],
+  affectedIdentifiers: readonly string[] = [],
+): InvalidPostWriteValidation {
+  return {
+    status: "invalid",
+    code,
+    affectedPaths: [...new Set(affectedPaths)].sort(),
+    affectedIdentifiers: [...new Set(affectedIdentifiers)].sort(),
+  };
+}
+
+function metadataRecords(
+  value: MetadataObject,
+  key: "generated" | "files",
+): MetadataRecord[] {
+  return Array.isArray(value[key])
+    ? (value[key] as MetadataRecord[]).filter(
+        (record) => typeof record === "object" && record !== null,
+      )
+    : [];
+}
+
+function pathFailure(
+  metadata: "manifest" | "source-map",
+  records: readonly MetadataRecord[],
+): InvalidPostWriteValidation | null {
+  const metadataPath = metadata === "manifest" ? lockPath : sourceMapPath;
+  const absoluteCode = `${metadata}-absolute-path` as PostWriteCorruptionCode;
+  const escapeCode = `${metadata}-path-escape` as PostWriteCorruptionCode;
+  for (const [index, record] of records.entries()) {
+    const path = record.path;
+    const identifier = `${metadata}.${index}`;
+    if (
+      typeof path !== "string" ||
+      path.startsWith("/") ||
+      /^[A-Za-z]:[\\/]/u.test(path)
+    )
+      return invalidPostWriteState(absoluteCode, [metadataPath], [identifier]);
+    try {
+      destinationCollisionKey(path);
+    } catch {
+      return invalidPostWriteState(escapeCode, [metadataPath], [identifier]);
+    }
+  }
+  return null;
+}
+
+function duplicateFailure(
+  metadata: "manifest" | "source-map",
+  records: readonly MetadataRecord[],
+): InvalidPostWriteValidation | null {
+  const metadataPath = metadata === "manifest" ? lockPath : sourceMapPath;
+  const exact = new Set<string>();
+  for (const [index, record] of records.entries()) {
+    if (typeof record.path !== "string") continue;
+    if (exact.has(record.path))
+      return invalidPostWriteState(
+        metadata === "manifest"
+          ? "manifest-duplicate-destination"
+          : "source-map-duplicate-ownership",
+        [metadataPath, record.path],
+        [`${metadata}.${index}`],
+      );
+    exact.add(record.path);
+  }
+  const normalized = new Map<string, string>();
+  for (const [index, record] of records.entries()) {
+    if (typeof record.path !== "string") continue;
+    const key = destinationCollisionKey(record.path);
+    const previous = normalized.get(key);
+    if (previous !== undefined && previous !== record.path)
+      return invalidPostWriteState(
+        "normalized-destination-duplicate",
+        [metadataPath, previous, record.path],
+        [`${metadata}.${index}`, key],
+      );
+    normalized.set(key, record.path);
+  }
+  return null;
+}
+
+function missingIdentity(
+  manifest: MetadataObject,
+  sourceMap: MetadataObject,
+  key: "adapterId" | "canonicalSourceId",
+  code: "adapter-id-missing" | "canonical-source-id-missing",
+): InvalidPostWriteValidation | null {
+  const affected: string[] = [];
+  if (typeof manifest[key] !== "string" || manifest[key] === "")
+    affected.push(lockPath);
+  if (typeof sourceMap[key] !== "string" || sourceMap[key] === "")
+    affected.push(sourceMapPath);
+  return affected.length === 0
+    ? null
+    : invalidPostWriteState(code, affected, [key]);
+}
+
+async function validateCommittedOwnershipState({
+  root,
+  files,
+  manifestBytes,
+  sourceMapBytes,
+  createdGeneratedPaths,
+  fs,
+}: PostWriteValidationInput): Promise<PostWriteValidationResult> {
+  const committedManifestBytes = await fs.read(inside(root, lockPath));
+  const committedSourceMapBytes = await fs.read(inside(root, sourceMapPath));
+  let manifest: MetadataObject;
+  let sourceMap: MetadataObject;
+  try {
+    manifest = JSON.parse(committedManifestBytes) as MetadataObject;
+  } catch {
+    return invalidPostWriteState("manifest-json-malformed", [lockPath]);
+  }
+  try {
+    sourceMap = JSON.parse(committedSourceMapBytes) as MetadataObject;
+  } catch {
+    return invalidPostWriteState("source-map-json-malformed", [sourceMapPath]);
+  }
+
+  const adapterMissing = missingIdentity(
+    manifest,
+    sourceMap,
+    "adapterId",
+    "adapter-id-missing",
+  );
+  if (adapterMissing) return adapterMissing;
+  if (manifest.adapterId !== sourceMap.adapterId)
+    return invalidPostWriteState(
+      "adapter-id-mismatch",
+      [lockPath, sourceMapPath],
+      ["adapterId"],
+    );
+  const canonicalMissing = missingIdentity(
+    manifest,
+    sourceMap,
+    "canonicalSourceId",
+    "canonical-source-id-missing",
+  );
+  if (canonicalMissing) return canonicalMissing;
+  if (manifest.canonicalSourceId !== sourceMap.canonicalSourceId)
+    return invalidPostWriteState(
+      "canonical-source-id-mismatch",
+      [lockPath, sourceMapPath],
+      ["canonicalSourceId"],
+    );
+
+  const frameworkPaths: string[] = [];
+  if (typeof manifest.frameworkVersion !== "string")
+    frameworkPaths.push(lockPath);
+  if (typeof sourceMap.frameworkVersion !== "string")
+    frameworkPaths.push(sourceMapPath);
+  if (frameworkPaths.length > 0)
+    return invalidPostWriteState("framework-version-missing", frameworkPaths, [
+      "frameworkVersion",
+    ]);
+  if (
+    manifest.frameworkVersion !== AIF_VERSION ||
+    sourceMap.frameworkVersion !== AIF_VERSION
+  )
+    return invalidPostWriteState(
+      "framework-version-incompatible",
+      [lockPath, sourceMapPath],
+      ["frameworkVersion"],
+    );
+
+  const adapterVersionPaths: string[] = [];
+  if (typeof manifest.adapterOutputVersion !== "string")
+    adapterVersionPaths.push(lockPath);
+  if (typeof sourceMap.adapterOutputVersion !== "string")
+    adapterVersionPaths.push(sourceMapPath);
+  if (adapterVersionPaths.length > 0)
+    return invalidPostWriteState(
+      "adapter-output-version-missing",
+      adapterVersionPaths,
+      ["adapterOutputVersion"],
+    );
+  if (
+    manifest.adapterOutputVersion !== adapterOutputVersion ||
+    sourceMap.adapterOutputVersion !== adapterOutputVersion
+  )
+    return invalidPostWriteState(
+      "adapter-output-version-incompatible",
+      [lockPath, sourceMapPath],
+      ["adapterOutputVersion"],
+    );
+  if (
+    manifest.metadataFormatVersion !== metadataFormatVersion ||
+    sourceMap.metadataFormatVersion !== metadataFormatVersion ||
+    manifest.lockVersion !== metadataFormatVersion ||
+    sourceMap.schemaVersion !== metadataFormatVersion
+  )
+    return invalidPostWriteState(
+      "metadata-format-version-incompatible",
+      [lockPath, sourceMapPath],
+      ["metadataFormatVersion"],
+    );
+
+  const manifestRecords = metadataRecords(manifest, "generated");
+  const sourceMapRecords = metadataRecords(sourceMap, "files");
+  const manifestPathFailure = pathFailure("manifest", manifestRecords);
+  if (manifestPathFailure) return manifestPathFailure;
+  const sourceMapPathFailure = pathFailure("source-map", sourceMapRecords);
+  if (sourceMapPathFailure) return sourceMapPathFailure;
+  const manifestDuplicate = duplicateFailure("manifest", manifestRecords);
+  if (manifestDuplicate) return manifestDuplicate;
+  const sourceMapDuplicate = duplicateFailure("source-map", sourceMapRecords);
+  if (sourceMapDuplicate) return sourceMapDuplicate;
+
+  for (const [index, record] of sourceMapRecords.entries())
+    if (record.ownership !== "aif-owned-generated")
+      return invalidPostWriteState(
+        "ownership-classification-invalid",
+        [sourceMapPath, String(record.path ?? "")].filter(Boolean),
+        [`source-map.${index}`, "ownership"],
+      );
+
+  const plannedByPath = new Map(files.map((file) => [file.path, file]));
+  const manifestByPath = new Map(
+    manifestRecords
+      .filter((record) => typeof record.path === "string")
+      .map((record) => [record.path as string, record]),
+  );
+  const sourceMapByPath = new Map(
+    sourceMapRecords
+      .filter((record) => typeof record.path === "string")
+      .map((record) => [record.path as string, record]),
+  );
+
+  for (const record of manifestRecords) {
+    const path = record.path as string;
+    if (!(await fs.exists(inside(root, path))))
+      return invalidPostWriteState(
+        "manifest-destination-missing",
+        [lockPath, path],
+        [path],
+      );
+  }
+  for (const record of sourceMapRecords) {
+    const path = record.path as string;
+    if (!(await fs.exists(inside(root, path))))
+      return invalidPostWriteState(
+        plannedByPath.has(path)
+          ? "source-map-destination-missing"
+          : sourceMapRecords.length > files.length
+            ? "ownership-record-without-generated-file"
+            : "source-map-destination-missing",
+        [sourceMapPath, path],
+        [path],
+      );
+  }
+
+  for (const file of files) {
+    if (!manifestByPath.has(file.path))
+      return invalidPostWriteState(
+        "manifest-entry-missing",
+        [lockPath, file.path],
+        [file.path],
+      );
+    if (!sourceMapByPath.has(file.path))
+      return invalidPostWriteState(
+        createdGeneratedPaths.has(file.path)
+          ? "generated-file-without-ownership"
+          : "source-map-entry-missing",
+        [sourceMapPath, file.path],
+        [file.path],
+      );
+  }
+
+  for (const file of files) {
+    const actualChecksum = checksum(await fs.read(inside(root, file.path)));
+    const manifestChecksum = manifestByPath.get(file.path)!.checksum;
+    const sourceMapChecksum = sourceMapByPath.get(file.path)!.checksum;
+    if (
+      actualChecksum === file.checksum &&
+      sourceMapChecksum !== actualChecksum
+    )
+      return invalidPostWriteState(
+        "generated-checksum-mismatch",
+        [sourceMapPath, file.path],
+        [file.path],
+      );
+    if (
+      actualChecksum === file.checksum &&
+      manifestChecksum !== sourceMapChecksum
+    )
+      return invalidPostWriteState(
+        "manifest-source-map-checksum-mismatch",
+        [lockPath, sourceMapPath, file.path],
+        [file.path],
+      );
+    if (
+      actualChecksum !== file.checksum &&
+      manifestChecksum !== actualChecksum &&
+      manifestChecksum === sourceMapChecksum
+    )
+      return invalidPostWriteState(
+        "manifest-generated-checksum-mismatch",
+        [lockPath, file.path],
+        [file.path],
+      );
+    if (sourceMapChecksum !== actualChecksum)
+      return invalidPostWriteState(
+        "generated-checksum-mismatch",
+        [sourceMapPath, file.path],
+        [file.path],
+      );
+    if (manifestChecksum !== sourceMapChecksum)
+      return invalidPostWriteState(
+        "manifest-source-map-checksum-mismatch",
+        [lockPath, sourceMapPath, file.path],
+        [file.path],
+      );
+    if (manifestChecksum !== actualChecksum)
+      return invalidPostWriteState(
+        "manifest-generated-checksum-mismatch",
+        [lockPath, file.path],
+        [file.path],
+      );
+    if (actualChecksum !== file.checksum)
+      return invalidPostWriteState(
+        "committed-generated-bytes-mismatch",
+        [file.path],
+        [file.path],
+      );
+  }
+
+  if (committedManifestBytes !== manifestBytes)
+    return invalidPostWriteState("committed-manifest-bytes-mismatch", [
+      lockPath,
+    ]);
+  if (committedSourceMapBytes !== sourceMapBytes)
+    return invalidPostWriteState("committed-source-map-bytes-mismatch", [
+      sourceMapPath,
+    ]);
+
+  return {
+    status: "valid",
+    checkedGeneratedFileCount: files.length,
+    checkedManifestEntryCount: manifestRecords.length,
+    checkedSourceMapEntryCount: sourceMapRecords.length,
+    checksumsValidated: true,
+    ownershipValidated: true,
+    pathsValidated: true,
+    versionsValidated: true,
+    metadataBytesValidated: true,
+  };
+}
+
 export async function synchronizeGeneratedFiles(
   root: string,
   files: readonly GeneratedFile[],
@@ -165,6 +593,9 @@ export async function synchronizeGeneratedFiles(
   options: {
     failAt?: TransactionStage;
     rollbackFailPaths?: readonly string[];
+    corruptAfterFinalization?: (
+      context: PostWriteCorruptionContext,
+    ) => void | Promise<void>;
   } = {},
 ): Promise<TransactionResult> {
   const collision = collisionPlan(files);
@@ -180,8 +611,41 @@ export async function synchronizeGeneratedFiles(
     ...file,
     checksum: checksum(file.content),
   }));
-  const manifest = `${JSON.stringify({ lockVersion: "1", frameworkVersion: AIF_VERSION, generated: normalized.map(({ path, checksum }) => ({ path, checksum })) }, null, 2)}\n`;
-  const sourceMap = `${JSON.stringify({ schemaVersion: "1", frameworkVersion: AIF_VERSION, adapterOutputVersion: "0.1.0", files: normalized.map(({ path, checksum, sources }) => ({ path, checksum, sources, ownership: "aif-owned-generated" })) }, null, 2)}\n`;
+  const canonicalSourceId = checksum(
+    JSON.stringify(
+      [...new Set(normalized.flatMap((file) => file.sources))].sort(),
+    ),
+  );
+  const sharedMetadata = {
+    metadataFormatVersion,
+    frameworkVersion: AIF_VERSION,
+    adapterOutputVersion,
+    adapterId: transactionAdapterId,
+    canonicalSourceId,
+  };
+  const manifest = `${JSON.stringify(
+    {
+      lockVersion: metadataFormatVersion,
+      ...sharedMetadata,
+      generated: normalized.map(({ path, checksum }) => ({ path, checksum })),
+    },
+    null,
+    2,
+  )}\n`;
+  const sourceMap = `${JSON.stringify(
+    {
+      schemaVersion: metadataFormatVersion,
+      ...sharedMetadata,
+      files: normalized.map(({ path, checksum, sources }) => ({
+        path,
+        checksum,
+        sources,
+        ownership: "aif-owned-generated",
+      })),
+    },
+    null,
+    2,
+  )}\n`;
   const transactionFiles: GeneratedFile[] = [
     ...normalized,
     {
@@ -197,18 +661,32 @@ export async function synchronizeGeneratedFiles(
       checksum: checksum(sourceMap),
     },
   ];
-  const proposal: Plan = {
-    changes: transactionFiles.map((file) => ({
-      path: file.path,
-      kind: "create" as const,
-      reason: "missing",
-      content: file.content,
-    })),
-    diagnostics: [],
-  };
+  const changes: Change[] = [];
+  const createdGeneratedPaths = new Set<string>();
+  for (const file of transactionFiles) {
+    const path = inside(root, file.path);
+    if (!(await fs.exists(path))) {
+      changes.push({
+        path: file.path,
+        kind: "create",
+        reason: "missing",
+        content: file.content,
+      });
+      if (file.path !== lockPath && file.path !== sourceMapPath)
+        createdGeneratedPaths.add(file.path);
+    } else if ((await fs.read(path)) !== file.content)
+      changes.push({
+        path: file.path,
+        kind: "update",
+        reason: "committed content differs",
+        content: file.content,
+      });
+  }
+  const proposal: Plan = { changes, diagnostics: [] };
   const backups = new Map<string, string>();
   const created: string[] = [];
   let stage: TransactionStage = "generated-stage";
+  let postWriteValidation: PostWriteValidationResult | undefined;
   const inject = (candidate: TransactionStage) => {
     stage = candidate;
     if (options.failAt === candidate) throw new Error(`injected:${candidate}`);
@@ -236,9 +714,17 @@ export async function synchronizeGeneratedFiles(
       await fs.write(path, file.content);
     }
     inject("post-write-consistency");
-    for (const file of normalized)
-      if (checksum(await fs.read(inside(root, file.path))) !== file.checksum)
-        throw new Error("post-write checksum mismatch");
+    await options.corruptAfterFinalization?.({ root, fileSystem: fs });
+    postWriteValidation = await validateCommittedOwnershipState({
+      root,
+      files: normalized,
+      manifestBytes: manifest,
+      sourceMapBytes: sourceMap,
+      createdGeneratedPaths,
+      fs,
+    });
+    if (postWriteValidation.status === "invalid")
+      throw new PostWriteValidationFailure(postWriteValidation);
     inject("success-cleanup");
     return {
       ...proposal,
@@ -246,8 +732,11 @@ export async function synchronizeGeneratedFiles(
       rollbackAttempted: false,
       rollbackCompleted: true,
       rollbackFailures: [],
+      postWriteValidation,
     };
   } catch (error) {
+    if (error instanceof PostWriteValidationFailure)
+      postWriteValidation = error.validation;
     const rollbackFailures: string[] = [];
     const injectedRollbackFailures = new Set(options.rollbackFailPaths ?? []);
     for (const [path, content] of backups) {
@@ -283,6 +772,7 @@ export async function synchronizeGeneratedFiles(
       rollbackAttempted: true,
       rollbackCompleted: rollbackFailures.length === 0,
       rollbackFailures: rollbackFailures.sort(),
+      ...(postWriteValidation === undefined ? {} : { postWriteValidation }),
     };
   }
 }

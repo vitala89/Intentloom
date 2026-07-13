@@ -36,6 +36,9 @@ All notable changes are documented here. This project follows Keep a Changelog p
 - Added end-to-end collision-abort invariants proving generated, metadata, staging, and backup state remains byte-for-byte unchanged.
 - Added structured transaction-stage results and independent rollback coverage for generated, manifest, source-map, consistency, and cleanup stages.
 - Added explicit incomplete-rollback detection that preserves the original failed stage and reports all project-relative rollback failure paths.
+- Added independently identifiable post-write corruption validation across generated files, manifest, and source map.
+- Added full rollback for malformed, incomplete, unsafe, duplicated, or incompatible ownership metadata.
+- Prevented sync transaction success when actual committed state differs from the planned transaction state.
 
 ### Migration
 

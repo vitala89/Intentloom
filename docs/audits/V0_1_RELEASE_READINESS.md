@@ -6,7 +6,7 @@ Audit date: 2026-07-13. Scope: repository state at `8709faa` and the accepted v0
 
 1. **Clean CLI runtime blocker resolved in this branch.** The CLI now packs a self-contained `dist/aif.cjs` bundle and runtime catalog; isolated tarball installation verified `--help` and `--version`. Full automated clean-runtime coverage remains required before stable release.
 2. **Filesystem-security sub-blocker resolved.** Real symlink tests, commit-time revalidation, deterministic collision reporting, reversed-order execution, and byte-for-byte collision-abort snapshots now pass. Independent metadata transaction failure stages remain part of the broader ownership/sync blocker.
-3. **Ownership transaction remains partially resolved.** Eight stage injections and independent incomplete-rollback paths now preserve both original and rollback diagnostics. The complete post-write corruption matrix and direct CLI structured-result integration remain blockers.
+3. **Ownership transaction remains partially resolved; the post-write consistency sub-blocker is resolved.** Eight stage injections and independent incomplete-rollback paths preserve both original and rollback diagnostics. Thirty-four independently reported corruption cases now re-read committed generated and metadata bytes, return stable safe identifiers, and prove complete rollback. Twenty-three independently reported success cases prove all relationships and a zero-diff second sync. Direct CLI structured-result integration and exit-code behavior remain blockers outside this PR.
 4. **Schema implementation is placeholder-level.** Six of seven schemas only require `schemaVersion`; the validator does not validate against catalog schemas, source maps, or locks comprehensively.
 5. **Required CLI behavior and coverage are incomplete.** `adopt` does not inspect stack evidence, documents, duplication, or map existing files; `doctor` does not validate imports/capabilities/edited generated files; no persisted adapter fixtures, snapshots, partial-write, Windows-path, or real CLI smoke tests exist.
 6. **Release package naming is unresolved.** Root package is private `aif-core`; workspace packages use provisional `@aif/*` names without repository, homepage, bugs, license, files, publishConfig, or publishability decision.
@@ -39,7 +39,7 @@ Audit date: 2026-07-13. Scope: repository state at `8709faa` and the accepted v0
 
 ## Verification observed
 
-Typecheck, lint, formatting, build, and eight unit tests passed in the workspace. A direct built-CLI smoke test failed because workspace package resolution was unavailable. Applye dry-run was not run: no explicit path was provided.
+The post-write corruption and success matrices pass through the real programmatic transaction executor. The complete suite contains 124 passing tests with no failures or skips. Typecheck, lint, formatting, build, and `git diff --check` pass. An isolated tarball install outside the monorepo passes `aif --help` and `aif --version`. Applye dry-run was not run because it is outside this task and no explicit path was provided.
 
 ## Verdict
 
