@@ -10,6 +10,9 @@ All notable changes are documented here. This project follows Keep a Changelog p
 - Documentation guides, examples, and initial integration-style tests.
 - Added versioned JSON Schemas for AIF configuration, ownership metadata, feature briefs, context packs, change requests, technical-debt entries, and Agent Skill metadata.
 - Added reusable structural validation with stable machine-readable diagnostics and an additional AIF Agent Skill policy layer.
+- Added deterministic adoption proposals for existing repositories.
+- Added expanded doctor diagnostics for partial, stale, conflicting, and corrupted AIF installations.
+- Added reusable adoption and doctor fixture matrices, including packed-runtime coverage.
 
 ### Fixed
 
@@ -25,6 +28,8 @@ All notable changes are documented here. This project follows Keep a Changelog p
 - Sync output now reports consistency validation and rollback status explicitly.
 - `init`, `adopt`, `plan`, `diff`, `sync`, and `doctor` now use the shared schema-validation layer before semantic validation.
 - Manifest locks now pin selected profiles, schema families, adapter versions, canonical source hashes, and generated-output hashes.
+- Existing project documentation is mapped where possible instead of duplicated.
+- Profile detection now reports deterministic file evidence and ambiguity explicitly.
 
 ### Compatibility
 
@@ -50,6 +55,9 @@ All notable changes are documented here. This project follows Keep a Changelog p
 - Added safe, project-relative sync diagnostics without private generated-file contents.
 - Added safe JSON/YAML parsing with duplicate-key, unsafe-tag, size, depth, BOM, Unicode, and alias protections.
 - Prevented commands from writing when project metadata fails structural validation and prevented schema diagnostics from exposing private artifact contents.
+- Proved that adoption dry-run and doctor never modify project files.
+- Prevented adoption from inferring ownership from paths, headers, filenames, equivalent sources, or matching content.
+- Added bounded project scanning that excludes heavy, binary, ignored, and external symlinked directories.
 
 ### Migration
 

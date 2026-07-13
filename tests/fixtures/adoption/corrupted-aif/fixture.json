@@ -1,0 +1,25 @@
+{
+  "name": "corrupted-aif",
+  "initialTree": {},
+  "preparation": "initialize-codex",
+  "projectOwned": [],
+  "expectedProfile": "generic",
+  "expectedOwnership": { "AGENTS.md": "project-owned" },
+  "expectedAdoptionProposal": ["conflict"],
+  "expectedDoctorFindings": ["yaml-malformed", "json-malformed"],
+  "expectedExitCode": 3,
+  "unchangedPaths": [
+    ".aif/config.yaml",
+    ".aif/manifest.lock.json",
+    ".aif/source-map.json",
+    "AGENTS.md"
+  ],
+  "reportedCases": [
+    "malformed config",
+    "malformed manifest",
+    "malformed source map",
+    "manually modified generated file",
+    "absolute metadata path",
+    "symlink path violation"
+  ]
+}

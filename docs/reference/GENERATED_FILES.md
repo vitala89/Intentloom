@@ -48,3 +48,11 @@ Every invalid post-write result fails at `post-write-consistency` and enters the
 An incomplete rollback adds the stable `transaction-rollback-incomplete` diagnostic without replacing the original transaction failure. Manual inspection is required for the listed project-relative paths.
 
 The real `aif sync` path now executes this transaction and maps its result directly to CLI output and exit codes. Transaction summaries expose sorted created, updated, and unchanged generated paths; manifest/source-map update flags; consistency status; and cleanup status. A pre-write ownership, collision, or path-security conflict does not enter the transaction and exits with code `3`.
+
+Adoption uses this same transaction path only after a proposal has no manual
+decisions. Existing mapped instructions and documentation do not receive
+source-map records. A generated-looking header or byte-identical candidate
+without a valid ownership record remains project-owned and blocks replacement.
+Doctor separately reports missing records/files, orphaned records, checksum and
+version drift, missing supported headers, and headers without ownership proof;
+it never repairs them.

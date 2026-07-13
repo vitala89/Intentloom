@@ -1,0 +1,36 @@
+{
+  "name": "multiple-agent-files",
+  "initialTree": {
+    "AGENTS.md": "project\n",
+    "CLAUDE.md": "project\n",
+    ".cursor/rules/project.mdc": "project\n",
+    ".github/copilot-instructions.md": "project\n"
+  },
+  "projectOwned": [
+    "AGENTS.md",
+    "CLAUDE.md",
+    ".cursor/rules/project.mdc",
+    ".github/copilot-instructions.md"
+  ],
+  "expectedProfile": "generic",
+  "expectedOwnership": {
+    "AGENTS.md": "project-owned",
+    "CLAUDE.md": "project-owned"
+  },
+  "expectedAdoptionProposal": ["map-existing-project-owned"],
+  "expectedDoctorFindings": [
+    "aif-config-missing",
+    "instruction-files-conflicting"
+  ],
+  "expectedExitCode": 3,
+  "unchangedPaths": [
+    "AGENTS.md",
+    "CLAUDE.md",
+    ".cursor/rules/project.mdc",
+    ".github/copilot-instructions.md"
+  ],
+  "reportedCases": [
+    "multiple tools configured simultaneously",
+    "conflicting instruction files"
+  ]
+}

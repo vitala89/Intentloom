@@ -13,3 +13,14 @@ Config structure is validated before profile resolution, adapter generation,
 ownership checks, diffs, or writes. Path syntax in mappings is structural;
 project-root containment, collisions, symlinks, and adapter capability remain
 semantic validation.
+
+For an unconfigured existing repository, adoption detects a candidate profile
+from bounded stack evidence. An existing valid config remains authoritative;
+doctor reports a non-fatal `profile-mismatch` when deterministic repository
+evidence disagrees. Ambiguous evidence requires confirmation and never silently
+rewrites the configured profile. README prose is not detection evidence.
+
+The v0.1 config has no user-defined scan-exclusion field. Adoption and doctor
+apply the documented built-in ignored-directory and binary limits; adding a
+configurable exclusion contract is deferred rather than accepting unknown
+configuration.

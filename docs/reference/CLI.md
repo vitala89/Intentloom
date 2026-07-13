@@ -9,6 +9,33 @@ brief, and context pack structures are validated before output or writes.
 `doctor` aggregates config, manifest, source-map, Agent Skill, and semantic
 cross-document issues and never modifies files.
 
+## Adoption
+
+`aif adopt --dry-run` returns the same deterministic adoption proposal in human
+or JSON form and creates no `.aif`, backup, or staging state. Proposal actions
+are `create`, `map-existing-project-owned`,
+`map-existing-aif-compatible-document`, `generated-candidate`, `conflict`,
+`unsupported`, `skip`, and `manual-decision-required`. Existing files are never
+claimed from their path, header, name, or content.
+
+`aif adopt` without `--dry-run` accepts only a proposal with no manual decisions
+and routes safe generated creation through transactional sync. A blocked
+proposal writes nothing; a partial failure reports restored/incomplete status
+through the proposal's `applicationStatus`.
+
+## Doctor
+
+Doctor findings contain a stable code, `error`/`warning`/`info` severity,
+category, project-relative path, concise message, sorted remediation list,
+read-only guarantee, and related adapter/profile where applicable. Categories
+are config, schema, ownership, generated-file, adapter, profile, documentation,
+migration, security, and drift. Findings are sorted by code and path.
+
+Doctor exits `0` when there are no error findings, including warning-only
+states; it exits `3` for one or more project validation errors and `2` for CLI
+invocation errors. It never uses transaction codes `4` or `5`, writes files,
+creates `.aif`, repairs metadata, or refreshes stale output.
+
 ## Transactional sync
 
 `aif sync` consumes the structured transaction result directly. It does not infer success from filesystem presence, lack of an exception, or a subsequent empty diff. Human and JSON output use the same mapped outcome and exit code.

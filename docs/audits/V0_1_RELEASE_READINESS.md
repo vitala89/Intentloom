@@ -14,13 +14,13 @@ The current path is `bin.ts → runCli() → syncProject() → synchronizeGenera
 2. **Filesystem-security sub-blocker resolved.** Real symlink tests, commit-time revalidation, deterministic collision reporting, reversed-order execution, and byte-for-byte collision-abort snapshots pass.
 3. **Ownership/sync blocker resolved.** The real CLI directly consumes the structured transaction result. Success, conflict, restored failure, and incomplete rollback use distinct stable exit codes; dry-run is write-free; diagnostics are content-safe; and 47 process-level cases cover human/JSON output, transaction faults, redaction, and packed runtime. The post-write validator retains its 34 corruption and 23 success cases.
 4. **Schema-driven validation blocker resolved.** Eight locally bundled versioned schemas now drive runtime structural validation. Hardened JSON/YAML parsing, strict unknown fields, stable redacted diagnostics, pre-semantic/pre-write CLI integration, Agent Skill policy validation, doctor aggregation, and isolated packed-runtime schema validation are covered by dedicated tests.
-5. **Required adoption/doctor behavior and fixture coverage are incomplete.** `adopt` does not inspect stack evidence, documents, duplication, or map existing files; `doctor` does not validate imports/capabilities/edited generated files; persisted all-adapter and Windows-path fixtures remain incomplete.
+5. **Adoption/doctor fixture blocker resolved.** Adoption now returns deterministic ownership-safe proposals, detects profiles from bounded file evidence, maps existing documentation without claiming it, and applies clean accepted proposals through transactional sync. Doctor returns sorted severity/category/remediation findings for partial, malformed, stale, conflicting, orphaned, drifted, and unsafe state. Sixteen reusable fixture groups, 22 existing-state doctor cases, immutable-state proofs, and ten packed-runtime cases cover the required matrix. Persisted all-adapter and Windows-path fixtures remain a separate blocker.
 6. **Release package naming is unresolved.** Root package is private `aif-core`; workspace packages use provisional `@aif/*` names without repository, homepage, bugs, license, files, publishConfig, or publishability decision.
 
 ## Required before stable 0.1.0
 
 - Resolve all remaining blockers and verify all four adapter fixtures from the real catalog.
-- Expand adoption/doctor behavior and all-adapter/Windows fixtures without weakening schema gates.
+- Complete all-adapter and Windows-path fixtures without weakening schema gates.
 - Execute an Applye dry-run only after an explicit repository path is supplied.
 
 ## Recommended
@@ -44,14 +44,16 @@ The current path is `bin.ts → runCli() → syncProject() → synchronizeGenera
 
 ## Verification observed
 
-The complete suite contains 294 passing tests with no failures or skips: the
-171-test baseline plus 123 schema-validation tests. It includes 63 process-level
-CLI cases and five packed-runtime cases. The schema-specific coverage comprises
+The complete suite contains 355 passing tests with no failures or skips: the
+294-test baseline plus 61 adoption/doctor tests. It includes 76 process-level
+CLI cases and 16 packed-runtime cases. The schema-specific coverage retains
 95 schema/skill/semantic cases, 12 parser-security cases, and 16 built-CLI
-process cases. The packed artifact performs schema-validated init/sync, no-op
-sync, dry-run, help, and version outside the monorepo; a second build produces an
-identical schema bundle, and tarball inspection excludes tests, fixtures, and
-secret files. Typecheck, lint, formatting, build, and `git diff --check` pass.
+process cases. The packed artifact additionally performs deterministic,
+byte-preserving adoption dry-runs and doctor checks across clean, existing,
+partial, malformed, drifted, spaces, and Unicode fixtures. A second build
+produces an identical schema bundle, and tarball inspection excludes tests,
+fixtures, and secret files. Typecheck, lint, formatting, build, and
+`git diff --check` pass.
 Applye dry-run was not run because it is outside this task and no explicit path
 was provided.
 

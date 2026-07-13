@@ -1,0 +1,28 @@
+{
+  "name": "monorepo",
+  "initialTree": {
+    "package.json": "{\"workspaces\":[\"apps/*\"]}",
+    "apps/web/angular.json": "{}",
+    "apps/desktop/src-tauri/tauri.conf.json": "{}"
+  },
+  "projectOwned": [
+    "package.json",
+    "apps/web/angular.json",
+    "apps/desktop/src-tauri/tauri.conf.json"
+  ],
+  "expectedProfile": "generic",
+  "expectedOwnership": {
+    "package.json": "project-owned",
+    "apps/web/angular.json": "project-owned",
+    "apps/desktop/src-tauri/tauri.conf.json": "project-owned"
+  },
+  "expectedAdoptionProposal": ["generated-candidate"],
+  "expectedDoctorFindings": ["aif-config-missing"],
+  "expectedExitCode": 3,
+  "unchangedPaths": [
+    "package.json",
+    "apps/web/angular.json",
+    "apps/desktop/src-tauri/tauri.conf.json"
+  ],
+  "reportedCases": ["monorepo root", "nested application inside monorepo"]
+}

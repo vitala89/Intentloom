@@ -1,0 +1,21 @@
+{
+  "name": "existing-engineering-docs",
+  "initialTree": {
+    "docs/architecture.md": "architecture\n",
+    "docs/technical-debt.md": "debt\n"
+  },
+  "projectOwned": ["docs/architecture.md", "docs/technical-debt.md"],
+  "expectedProfile": "generic",
+  "expectedOwnership": {
+    "docs/architecture.md": "project-owned",
+    "docs/technical-debt.md": "project-owned"
+  },
+  "expectedAdoptionProposal": ["map-existing-aif-compatible-document"],
+  "expectedDoctorFindings": ["product-documentation-missing"],
+  "expectedExitCode": 3,
+  "unchangedPaths": ["docs/architecture.md", "docs/technical-debt.md"],
+  "reportedCases": [
+    "existing architecture document",
+    "existing technical-debt document"
+  ]
+}

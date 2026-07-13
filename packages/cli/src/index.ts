@@ -46,17 +46,49 @@ export interface Plan {
   readonly diagnostics: readonly string[];
 }
 export interface DoctorPlan extends Plan {
-  readonly errors: readonly {
-    readonly code: string;
-    readonly message: string;
-    readonly fieldPath: string;
-    readonly phase: "semantic";
-    readonly artifactType: "generated-state";
-    readonly schemaId: "urn:aif:semantic:generated-state:1";
-    readonly schemaVersion: "1";
-    readonly documentPath: string;
-    readonly affectedPath: string;
-  }[];
+  readonly findings: readonly DoctorFinding[];
+  readonly errors: readonly DoctorError[];
+}
+
+export type DoctorSeverity = "error" | "warning" | "info";
+export type DoctorCategory =
+  | "config"
+  | "schema"
+  | "ownership"
+  | "generated-file"
+  | "adapter"
+  | "profile"
+  | "documentation"
+  | "migration"
+  | "security"
+  | "drift";
+
+export interface DoctorFinding {
+  readonly code: string;
+  readonly severity: DoctorSeverity;
+  readonly category: DoctorCategory;
+  readonly path: string;
+  readonly message: string;
+  readonly remediation: readonly string[];
+  readonly readOnly: true;
+  readonly adapter: AdapterName | null;
+  readonly profile: string | null;
+}
+
+export interface DoctorError extends DoctorFinding {
+  readonly phase: "semantic";
+  readonly artifactType: "generated-state";
+  readonly schemaId: "urn:aif:semantic:generated-state:1";
+  readonly schemaVersion: "1";
+  readonly documentPath: string;
+  readonly affectedPath: string;
+  readonly fieldPath: "/";
+}
+
+export function doctorExitCode(report: DoctorPlan): 0 | 3 {
+  return report.findings.some((finding) => finding.severity === "error")
+    ? 3
+    : 0;
 }
 export type TransactionStage =
   | "generated-stage"
@@ -152,6 +184,80 @@ export interface InitOptions {
   readonly catalogRoot?: string;
   readonly canonicalSourceHashes?: Readonly<Record<string, string>>;
   readonly validator?: ArtifactValidator;
+  readonly existingValidationResults?: readonly ArtifactValidationResult[];
+  readonly profileConfirmed?: boolean;
+}
+
+export type DetectedProfile =
+  "generic" | "typescript" | "angular" | "rust" | "tauri" | "angular-tauri";
+
+export interface ProfileCandidate {
+  readonly profile: DetectedProfile;
+  readonly evidenceFiles: readonly string[];
+  readonly reason: string;
+  readonly confidence: "exact" | "inferred" | "fallback";
+}
+
+export interface ProfileDetectionResult {
+  readonly selectedProfile: DetectedProfile;
+  readonly candidates: readonly ProfileCandidate[];
+  readonly competingCandidates: readonly DetectedProfile[];
+  readonly manualConfirmationRequired: boolean;
+  readonly scannedPaths: readonly string[];
+}
+
+export type AdoptionAction =
+  | "create"
+  | "map-existing-project-owned"
+  | "map-existing-aif-compatible-document"
+  | "generated-candidate"
+  | "conflict"
+  | "unsupported"
+  | "skip"
+  | "manual-decision-required";
+
+export interface AdoptionProposalItem {
+  readonly path: string;
+  readonly action: AdoptionAction;
+  readonly currentClassification:
+    "absent" | "project-owned" | "aif-owned" | "aif-metadata";
+  readonly proposedClassification:
+    | "aif-generated"
+    | "aif-metadata"
+    | "project-owned"
+    | "project-owned-documentation"
+    | "unsupported";
+  readonly reason: string;
+  readonly canonicalSource: string | null;
+  readonly adapter: AdapterName | null;
+  readonly profile: string | null;
+  readonly conflictDetails: readonly string[];
+  readonly writeEligible: boolean;
+  readonly manualDecisionRequired: boolean;
+  readonly safeNextAction: string;
+}
+
+export interface AdoptionProposal extends Plan {
+  readonly kind: "adoption-proposal";
+  readonly items: readonly AdoptionProposalItem[];
+  readonly profileDetection: ProfileDetectionResult;
+  readonly applied: boolean;
+  readonly applicationStatus:
+    | "not-requested"
+    | "blocked"
+    | "applied"
+    | "failed-restored"
+    | "failed-incomplete";
+  readonly transactionOutcome: AdoptionTransactionOutcome | null;
+}
+export interface AdoptionTransactionOutcome {
+  readonly status: "success" | "failed";
+  readonly failedStage: TransactionStage | null;
+  readonly errorCode: string | null;
+  readonly rollbackAttempted: boolean;
+  readonly rollbackCompleted: boolean;
+  readonly rollbackFailures: readonly string[];
+  readonly diagnostics: readonly string[];
 }
 export interface SyncOptions extends InitOptions {
   readonly force?: boolean;
@@ -187,6 +293,176 @@ const sourceMapPath = ".aif/source-map.json";
 const metadataFormatVersion = "1";
 const adapterOutputVersion = adapterVersion;
 const transactionAdapterId = "aif:generated-files";
+const ignoredScanSegments = new Set([
+  ".git",
+  ".cache",
+  ".next",
+  ".turbo",
+  "build",
+  "coverage",
+  "dist",
+  "node_modules",
+  "out",
+  "target",
+  "vendor",
+]);
+
+function projectRelativePaths(
+  root: string,
+  entries: readonly string[],
+): string[] {
+  const normalizedRoot = resolve(root);
+  return [
+    ...new Set(
+      entries.flatMap((entry) => {
+        const normalizedEntry = entry.replaceAll("\\", "/");
+        const absolute = normalizedEntry.startsWith("/")
+          ? resolve(normalizedEntry)
+          : resolve(normalizedRoot, normalizedEntry);
+        const path = relative(normalizedRoot, absolute).replaceAll("\\", "/");
+        if (
+          path === "" ||
+          path === ".." ||
+          path.startsWith("../") ||
+          path.split("/").some((segment) => ignoredScanSegments.has(segment))
+        )
+          return [];
+        return [path];
+      }),
+    ),
+  ].sort();
+}
+
+async function readEvidenceFile(
+  root: string,
+  path: string,
+  paths: ReadonlySet<string>,
+  fs: FileSystem,
+): Promise<string | null> {
+  if (!paths.has(path)) return null;
+  try {
+    return await fs.read(inside(root, path));
+  } catch {
+    return null;
+  }
+}
+
+export async function detectProjectProfiles(
+  root: string,
+  fs: FileSystem,
+): Promise<ProfileDetectionResult> {
+  const scannedPaths = projectRelativePaths(root, await fs.list(root));
+  const paths = new Set(scannedPaths);
+  const packageSource = await readEvidenceFile(root, "package.json", paths, fs);
+  let packageNames = new Set<string>();
+  if (packageSource !== null)
+    try {
+      const document = JSON.parse(packageSource) as Record<string, unknown>;
+      packageNames = new Set(
+        ["dependencies", "devDependencies", "peerDependencies"].flatMap(
+          (field) =>
+            typeof document[field] === "object" && document[field] !== null
+              ? Object.keys(document[field] as Record<string, unknown>)
+              : [],
+        ),
+      );
+    } catch {
+      /* malformed package metadata is not stack evidence */
+    }
+  const typescriptEvidence = [
+    ...(paths.has("package.json") && packageNames.has("typescript")
+      ? ["package.json"]
+      : []),
+    ...(paths.has("tsconfig.json") ? ["tsconfig.json"] : []),
+  ];
+  const angularEvidence = [
+    ...(paths.has("angular.json") ? ["angular.json"] : []),
+    ...(paths.has("package.json") && packageNames.has("@angular/core")
+      ? ["package.json"]
+      : []),
+  ];
+  const rustEvidence = [
+    ...(paths.has("Cargo.toml") ? ["Cargo.toml"] : []),
+    ...(paths.has("src-tauri/Cargo.toml") ? ["src-tauri/Cargo.toml"] : []),
+  ];
+  const tauriEvidence = [
+    ...(paths.has("src-tauri/Cargo.toml") ? ["src-tauri/Cargo.toml"] : []),
+    ...["src-tauri/tauri.conf.json", "src-tauri/tauri.conf.json5"].filter(
+      (path) => paths.has(path),
+    ),
+    ...(paths.has("package.json") &&
+    [...packageNames].some((name) => name.startsWith("@tauri-apps/"))
+      ? ["package.json"]
+      : []),
+  ];
+  const hasAngular = angularEvidence.length > 0;
+  const hasTauri = tauriEvidence.length > 0;
+  const definitions: ProfileCandidate[] = [];
+  if (hasAngular && hasTauri)
+    definitions.push({
+      profile: "angular-tauri",
+      evidenceFiles: [
+        ...new Set([
+          ...angularEvidence,
+          ...tauriEvidence,
+          ...typescriptEvidence,
+        ]),
+      ].sort(),
+      reason: "Angular and Tauri configuration are both present",
+      confidence: "exact",
+    });
+  if (hasAngular)
+    definitions.push({
+      profile: "angular",
+      evidenceFiles: [...new Set(angularEvidence)].sort(),
+      reason: "Angular package or workspace configuration is present",
+      confidence: "exact",
+    });
+  if (hasTauri)
+    definitions.push({
+      profile: "tauri",
+      evidenceFiles: [...new Set(tauriEvidence)].sort(),
+      reason: "Tauri configuration or package evidence is present",
+      confidence: "exact",
+    });
+  if (typescriptEvidence.length > 0 || hasAngular)
+    definitions.push({
+      profile: "typescript",
+      evidenceFiles: [...new Set(typescriptEvidence)].sort(),
+      reason: "TypeScript configuration or package evidence is present",
+      confidence: "inferred",
+    });
+  if (rustEvidence.length > 0 || hasTauri)
+    definitions.push({
+      profile: "rust",
+      evidenceFiles: [...new Set(rustEvidence)].sort(),
+      reason: "Cargo project evidence is present",
+      confidence: "inferred",
+    });
+  definitions.push({
+    profile: "generic",
+    evidenceFiles: [],
+    reason: "Generic is the deterministic fallback profile",
+    confidence: "fallback",
+  });
+  const hasWebProfile = hasAngular || typescriptEvidence.length > 0;
+  const hasNativeProfile = hasTauri || rustEvidence.length > 0;
+  const ambiguous =
+    hasWebProfile && hasNativeProfile && !(hasAngular && hasTauri);
+  return {
+    selectedProfile: ambiguous ? "generic" : definitions[0]!.profile,
+    candidates: definitions,
+    competingCandidates: definitions
+      .filter(
+        (candidate) =>
+          candidate.profile !==
+          (ambiguous ? "generic" : definitions[0]!.profile),
+      )
+      .map((candidate) => candidate.profile),
+    manualConfirmationRequired: ambiguous,
+    scannedPaths,
+  };
+}
 
 function inside(root: string, path: string): string {
   const target = resolve(root, path);
@@ -1332,7 +1608,125 @@ export async function diffProject(
 export async function doctorProject(
   options: InitOptions,
   fs: FileSystem,
+  validationResults: readonly ArtifactValidationResult[] = [],
 ): Promise<DoctorPlan> {
+  const metadataPresence = await Promise.all(
+    [configPath, lockPath, sourceMapPath].map(async (path) => ({
+      path,
+      present: await fs.exists(inside(options.root, path)),
+    })),
+  );
+  const effectiveValidationResults = [...validationResults];
+  if (options.validator) {
+    const definitions = [
+      {
+        artifactType: "aif-config" as const,
+        path: configPath,
+        format: "yaml" as const,
+      },
+      {
+        artifactType: "manifest-lock" as const,
+        path: lockPath,
+        format: "json" as const,
+      },
+      {
+        artifactType: "source-map" as const,
+        path: sourceMapPath,
+        format: "json" as const,
+      },
+    ];
+    for (const definition of definitions)
+      if (
+        (await fs.exists(inside(options.root, definition.path))) &&
+        !effectiveValidationResults.some(
+          (result) => result.documentPath === definition.path,
+        )
+      ) {
+        const result = options.validator.validate({
+          ...definition,
+          documentPath: definition.path,
+          source: await fs.read(inside(options.root, definition.path)),
+        });
+        if (result.status === "invalid")
+          effectiveValidationResults.push(result);
+      }
+  }
+  const findings: DoctorFinding[] = effectiveValidationResults.flatMap(
+    (result) =>
+      [...result.structuralErrors, ...result.semanticErrors].map((error) => ({
+        code: error.code,
+        severity: "error" as const,
+        category: "schema" as const,
+        path: result.documentPath,
+        message: error.message,
+        remediation: [
+          `Repair ${result.artifactType} structure or semantics before applying changes.`,
+        ],
+        readOnly: true as const,
+        adapter: null,
+        profile: options.profile,
+      })),
+  );
+  if (!options.validator) {
+    for (const definition of [
+      { path: configPath, format: "yaml" as const },
+      { path: lockPath, format: "json" as const },
+      { path: sourceMapPath, format: "json" as const },
+    ]) {
+      if (!(await fs.exists(inside(options.root, definition.path)))) continue;
+      if (
+        effectiveValidationResults.some(
+          (result) => result.documentPath === definition.path,
+        )
+      )
+        continue;
+      try {
+        const source = await fs.read(inside(options.root, definition.path));
+        if (definition.format === "json") JSON.parse(source);
+        else parse(source);
+      } catch {
+        findings.push({
+          code:
+            definition.format === "json" ? "json-malformed" : "yaml-malformed",
+          severity: "error",
+          category: "schema",
+          path: definition.path,
+          message: `${definition.format.toUpperCase()} document is malformed`,
+          remediation: [
+            "Repair the malformed metadata before applying changes.",
+          ],
+          readOnly: true,
+          adapter: null,
+          profile: options.profile,
+        });
+      }
+    }
+  }
+  findings.push(
+    ...metadataPresence
+      .filter((item) => !item.present)
+      .map((item) => ({
+        code:
+          item.path === configPath
+            ? "aif-config-missing"
+            : item.path === lockPath
+              ? "manifest-lock-missing"
+              : "source-map-missing",
+        severity: "error" as const,
+        category:
+          item.path === configPath
+            ? ("config" as const)
+            : ("ownership" as const),
+        path: item.path,
+        message: `required AIF metadata is missing: ${item.path}`,
+        remediation: [
+          "Run adoption dry-run and review the proposed metadata creation.",
+        ],
+        readOnly: true as const,
+        adapter: null,
+        profile: options.profile,
+      })),
+  );
   const proposal = await plan({ ...options, dryRun: true }, fs, true);
   const changes = proposal.changes.map(({ content: _content, ...change }) =>
     change.kind === "update"
@@ -1348,49 +1742,620 @@ export async function doctorProject(
       change.kind,
     ),
   );
+  for (const change of blockingChanges) {
+    if (
+      !metadataPresence.every((item) => item.present) &&
+      change.kind !== "security-error"
+    )
+      continue;
+    if (
+      [configPath, lockPath, sourceMapPath].includes(change.path) &&
+      change.kind !== "security-error"
+    )
+      continue;
+    const definition =
+      change.kind === "modified"
+        ? {
+            code: "generated-checksum-drift",
+            category: "drift" as const,
+            remediation:
+              "Restore the generated file or explicitly regenerate it after review.",
+          }
+        : change.kind === "missing"
+          ? {
+              code: "generated-file-missing",
+              category: "generated-file" as const,
+              remediation:
+                "Review a sync dry-run and restore the missing generated output.",
+            }
+          : change.kind === "stale"
+            ? {
+                code: "adapter-output-stale",
+                category: "drift" as const,
+                remediation: "Review and apply a transactional sync.",
+              }
+            : change.kind === "security-error"
+              ? {
+                  code: "path-security-violation",
+                  category: "security" as const,
+                  remediation:
+                    "Remove the unsafe path or symlink before retrying.",
+                }
+              : {
+                  code: "unowned-generated-destination",
+                  category: "ownership" as const,
+                  remediation:
+                    "Keep the file project-owned or resolve the destination manually.",
+                };
+    findings.push({
+      code: definition.code,
+      severity: "error",
+      category: definition.category,
+      path: change.path,
+      message: change.reason,
+      remediation: [definition.remediation],
+      readOnly: true,
+      adapter: null,
+      profile: options.profile,
+    });
+  }
+  const scannedPaths = projectRelativePaths(
+    options.root,
+    await fs.list(options.root),
+  );
+  const scannedSet = new Set(scannedPaths);
+  const desiredPaths = new Set(
+    (await desired(options))
+      .map((file) => file.path)
+      .filter((path) => path !== lockPath && path !== sourceMapPath),
+  );
+  const addFinding = (finding: Omit<DoctorFinding, "readOnly">) =>
+    findings.push({ ...finding, readOnly: true });
+  const readJson = async (
+    path: string,
+  ): Promise<Record<string, unknown> | null> => {
+    try {
+      const value = JSON.parse(await fs.read(inside(options.root, path)));
+      return typeof value === "object" && value !== null
+        ? (value as Record<string, unknown>)
+        : null;
+    } catch {
+      return null;
+    }
+  };
+  const manifest = await readJson(lockPath);
+  const sourceMap = await readJson(sourceMapPath);
+  if (manifest) {
+    if (manifest.frameworkVersion !== AIF_VERSION)
+      addFinding({
+        code: "framework-version-stale",
+        severity: "error",
+        category: "migration",
+        path: lockPath,
+        message: "manifest framework version does not match this CLI",
+        remediation: [
+          "Review the migration guide before regenerating metadata.",
+        ],
+        adapter: null,
+        profile: options.profile,
+      });
+    if (manifest.adapterOutputVersion !== adapterOutputVersion)
+      addFinding({
+        code: "adapter-version-stale",
+        severity: "error",
+        category: "adapter",
+        path: lockPath,
+        message: "manifest adapter output version is stale",
+        remediation: [
+          "Review a sync dry-run with the current adapter version.",
+        ],
+        adapter: null,
+        profile: options.profile,
+      });
+    if (manifest.schemaVersion !== metadataFormatVersion)
+      addFinding({
+        code: "schema-version-stale",
+        severity: "error",
+        category: "schema",
+        path: lockPath,
+        message: "manifest schema version is not supported by this CLI",
+        remediation: ["Use an explicit supported schema migration."],
+        adapter: null,
+        profile: options.profile,
+      });
+    const generated = Array.isArray(manifest.generated)
+      ? (manifest.generated as Record<string, unknown>[])
+      : [];
+    for (const record of generated)
+      if (typeof record.path === "string" && !desiredPaths.has(record.path))
+        addFinding({
+          code: "manifest-entry-orphaned",
+          severity: "error",
+          category: "ownership",
+          path: record.path,
+          message: "manifest entry has no current generated destination",
+          remediation: [
+            "Review and remove the orphan through an explicit migration.",
+          ],
+          adapter: null,
+          profile: options.profile,
+        });
+    const pinnedAdapters = Array.isArray(manifest.adapters)
+      ? (manifest.adapters as Record<string, unknown>[])
+          .map((entry) => entry.id)
+          .filter((id): id is string => typeof id === "string")
+          .sort()
+      : [];
+    if (
+      pinnedAdapters.length > 0 &&
+      pinnedAdapters.join(",") !== [...options.adapters].sort().join(",")
+    )
+      addFinding({
+        code: "adapter-selection-conflict",
+        severity: "error",
+        category: "adapter",
+        path: lockPath,
+        message:
+          "manifest adapter selection differs from project configuration",
+        remediation: [
+          "Choose adapters explicitly and review adoption before syncing.",
+        ],
+        adapter: null,
+        profile: options.profile,
+      });
+  }
+  const sourceRecords =
+    sourceMap && Array.isArray(sourceMap.files)
+      ? (sourceMap.files as Record<string, unknown>[])
+      : [];
+  const ownedPaths = new Set(
+    sourceRecords
+      .map((record) => record.path)
+      .filter((path): path is string => typeof path === "string"),
+  );
+  for (const record of sourceRecords) {
+    if (typeof record.path !== "string") continue;
+    if (!desiredPaths.has(record.path))
+      addFinding({
+        code: "source-map-record-orphaned",
+        severity: "error",
+        category: "ownership",
+        path: record.path,
+        message:
+          "source-map ownership record has no current generated destination",
+        remediation: [
+          "Review and remove the orphan through an explicit migration.",
+        ],
+        adapter: null,
+        profile: options.profile,
+      });
+    if (
+      scannedSet.has(record.path) &&
+      /\.(?:md|mdc)$/iu.test(record.path) &&
+      !(await fs.read(inside(options.root, record.path))).includes(
+        "Generated by AIF",
+      )
+    )
+      addFinding({
+        code: "generated-header-missing",
+        severity: "error",
+        category: "generated-file",
+        path: record.path,
+        message: "owned generated text file lacks its supported AIF header",
+        remediation: ["Restore or transactionally regenerate the owned file."],
+        adapter: null,
+        profile: options.profile,
+      });
+  }
+  for (const path of desiredPaths)
+    if (
+      scannedSet.has(path) &&
+      !ownedPaths.has(path) &&
+      /\.(?:md|mdc)$/iu.test(path) &&
+      (await fs.read(inside(options.root, path))).includes("Generated by AIF")
+    )
+      addFinding({
+        code: "generated-header-without-ownership",
+        severity: "error",
+        category: "ownership",
+        path,
+        message: "AIF-like header is not ownership proof",
+        remediation: [
+          "Keep the file project-owned or resolve adoption manually.",
+        ],
+        adapter: null,
+        profile: options.profile,
+      });
+  const profileDetection = await detectProjectProfiles(options.root, fs);
+  if (
+    !profileDetection.manualConfirmationRequired &&
+    profileDetection.selectedProfile !== "generic" &&
+    profileDetection.selectedProfile !== options.profile
+  )
+    addFinding({
+      code: "profile-mismatch",
+      severity: "warning",
+      category: "profile",
+      path: configPath,
+      message: `configured profile does not match detected ${profileDetection.selectedProfile} evidence`,
+      remediation: [
+        "Review profile evidence and confirm the intended profile manually.",
+      ],
+      adapter: null,
+      profile: options.profile,
+    });
+  if (options.adapters.includes("copilot"))
+    addFinding({
+      code: "adapter-capability-experimental",
+      severity: "warning",
+      category: "adapter",
+      path: configPath,
+      message:
+        "some Copilot environment capabilities remain environment-specific",
+      remediation: [
+        "Review the compatibility matrix for unsupported capabilities.",
+      ],
+      adapter: "copilot",
+      profile: options.profile,
+    });
+  const instructionRoots = new Set(
+    scannedPaths.flatMap((path) => {
+      if (path === "AGENTS.md" || path.startsWith(".agents/"))
+        return ["agents"];
+      if (path === "CLAUDE.md" || path.startsWith(".claude/"))
+        return ["claude"];
+      if (path.startsWith(".cursor/")) return ["cursor"];
+      if (path.startsWith(".github/")) return ["copilot"];
+      return [];
+    }),
+  );
+  if (instructionRoots.size > 1)
+    addFinding({
+      code: "instruction-files-conflicting",
+      severity: "warning",
+      category: "migration",
+      path: ".",
+      message:
+        "multiple project-owned tool instruction roots require explicit mapping",
+      remediation: [
+        "Review each instruction root and keep ownership explicit.",
+      ],
+      adapter: null,
+      profile: options.profile,
+    });
+  if (
+    !scannedPaths.some((path) =>
+      /(?:^|\/)(?:readme|roadmap|product[-_ ]?(?:state|roadmap))\.md$/iu.test(
+        path,
+      ),
+    )
+  )
+    findings.push({
+      code: "product-documentation-missing",
+      severity: "warning",
+      category: "documentation",
+      path: "docs/",
+      message: "recommended product documentation was not detected",
+      remediation: ["Map an existing product document or add one when useful."],
+      readOnly: true,
+      adapter: null,
+      profile: options.profile,
+    });
+  if (!findings.some((finding) => finding.severity === "error"))
+    findings.push({
+      code: "installation-healthy",
+      severity: "info",
+      category: "config",
+      path: ".aif/",
+      message: "AIF required state is healthy",
+      remediation: [],
+      readOnly: true,
+      adapter: null,
+      profile: options.profile,
+    });
+  findings.sort((left, right) =>
+    `${left.code}:${left.path}`.localeCompare(`${right.code}:${right.path}`),
+  );
+  const errors: DoctorError[] = findings
+    .filter((finding) => finding.severity === "error")
+    .map((finding) => ({
+      ...finding,
+      phase: "semantic",
+      artifactType: "generated-state",
+      schemaId: "urn:aif:semantic:generated-state:1",
+      schemaVersion: "1",
+      documentPath: finding.path,
+      affectedPath: finding.path,
+      fieldPath: "/",
+    }));
   return {
     ...proposal,
     changes,
-    diagnostics: blockingChanges.map(
-      (change) => `${change.path}: ${change.reason}`,
-    ),
-    errors: blockingChanges.map((change) => ({
-      code: `generated-file-${change.kind}`,
-      message: change.reason,
-      fieldPath: "/",
-      phase: "semantic" as const,
-      artifactType: "generated-state" as const,
-      schemaId: "urn:aif:semantic:generated-state:1" as const,
-      schemaVersion: "1" as const,
-      documentPath: change.path,
-      affectedPath: change.path,
-    })),
+    diagnostics: errors.map((finding) => `${finding.path}: ${finding.message}`),
+    findings,
+    errors,
   };
 }
 export async function adoptProject(
   options: InitOptions,
   fs: FileSystem,
-): Promise<Plan> {
-  const known = [
-    "AGENTS.md",
-    "CLAUDE.md",
-    ".cursor/rules",
-    ".github/copilot-instructions.md",
-    "README.md",
-    "ROADMAP.md",
-    "CHANGELOG.md",
-  ];
-  const found = await Promise.all(
-    known.map(async (path) =>
-      (await fs.exists(inside(options.root, path))) ? path : null,
+  transactionOptions: TransactionOptions = {},
+): Promise<AdoptionProposal> {
+  const profileDetection = await detectProjectProfiles(options.root, fs);
+  const scannedPaths = profileDetection.scannedPaths;
+  const scanned = new Set(scannedPaths);
+  const desiredFiles = await desired(options);
+  const desiredByPath = new Map(desiredFiles.map((file) => [file.path, file]));
+  const ownershipState = await ownership(options.root, fs);
+  const invalidOwnershipMetadata = ownershipState === null;
+  const owned = ownershipState ?? new Map();
+  const completeMetadata = await Promise.all(
+    [configPath, lockPath, sourceMapPath].map((path) =>
+      fs.exists(inside(options.root, path)),
+    ),
+  ).then((present) => present.every(Boolean) && owned.size > 0);
+  const proposal = await plan({ ...options, dryRun: true }, fs);
+  const changes = proposal.changes.map(
+    ({ content: _content, ...change }) => change,
+  );
+  const changeByPath = new Map(changes.map((change) => [change.path, change]));
+  const adapterForPath = (path: string): AdapterName | null => {
+    if (path === "CLAUDE.md" || path.startsWith(".claude/")) return "claude";
+    if (path.startsWith(".cursor/")) return "cursor";
+    if (path.startsWith(".github/")) return "copilot";
+    if (path.startsWith(".agents/")) return "codex";
+    return null;
+  };
+  const instructionPath = (path: string) =>
+    path === "AGENTS.md" ||
+    path === "CLAUDE.md" ||
+    path.startsWith(".claude/") ||
+    path.startsWith(".agents/") ||
+    path.startsWith(".cursor/") ||
+    path === ".github/copilot-instructions.md" ||
+    /^\.github\/instructions\/.+\.instructions\.md$/u.test(path);
+  const unsupportedPath = (path: string) =>
+    /^\.github\/agents\/.+\.agent\.md$/u.test(path);
+  const documentConcept = (path: string): string | null => {
+    const lower = path.toLowerCase();
+    const name = lower.split("/").at(-1)!;
+    if (name === "readme.md") return "public-readme";
+    if (name === "changelog.md") return "change-history";
+    if (
+      name === "roadmap.md" ||
+      /(?:product[-_ ]?(?:state|roadmap)|state[-_ ]?of[-_ ]?product)/u.test(
+        name,
+      )
+    )
+      return "product-state";
+    if (/(?:architecture|architectural|adr)/u.test(name)) return "architecture";
+    if (/(?:technical[-_ ]?debt|tech[-_ ]?debt)/u.test(name))
+      return "technical-debt";
+    return null;
+  };
+  const conceptCounts = new Map<string, number>();
+  for (const path of scannedPaths) {
+    const concept = documentConcept(path);
+    if (concept)
+      conceptCounts.set(concept, (conceptCounts.get(concept) ?? 0) + 1);
+  }
+  const items: AdoptionProposalItem[] = [];
+  for (const file of desiredFiles) {
+    const exists =
+      scanned.has(file.path) ||
+      (await fs.exists(inside(options.root, file.path)));
+    const record = owned.get(file.path);
+    const change = changeByPath.get(file.path);
+    const metadata = file.path.startsWith(".aif/");
+    const metadataConflict =
+      file.path === sourceMapPath && invalidOwnershipMetadata;
+    const aifOwned = record !== undefined;
+    const recognizedMetadata = metadata && exists && completeMetadata;
+    const projectOwned =
+      exists && !aifOwned && !recognizedMetadata && !metadataConflict;
+    items.push({
+      path: file.path,
+      action: metadataConflict
+        ? "conflict"
+        : projectOwned
+          ? "map-existing-project-owned"
+          : !exists
+            ? metadata
+              ? "create"
+              : "generated-candidate"
+            : change?.kind === "conflict" || change?.kind === "security-error"
+              ? "conflict"
+              : change
+                ? "generated-candidate"
+                : "skip",
+      currentClassification: recognizedMetadata
+        ? "aif-metadata"
+        : aifOwned
+          ? "aif-owned"
+          : exists
+            ? "project-owned"
+            : "absent",
+      proposedClassification: recognizedMetadata
+        ? "aif-metadata"
+        : projectOwned
+          ? "project-owned"
+          : "aif-generated",
+      reason: metadataConflict
+        ? "existing AIF ownership metadata is malformed or unsupported"
+        : projectOwned
+          ? "existing destination has no AIF ownership record"
+          : !exists
+            ? "safe generated destination is absent"
+            : (change?.reason ?? "existing AIF-owned output already matches"),
+      canonicalSource: file.sources[0] ?? null,
+      adapter: adapterForPath(file.path),
+      profile: options.profile,
+      conflictDetails: metadataConflict
+        ? ["ownership cannot be established from .aif/source-map.json"]
+        : projectOwned && change
+          ? [change.reason]
+          : [],
+      writeEligible:
+        !metadataConflict &&
+        !projectOwned &&
+        change?.kind !== "conflict" &&
+        change?.kind !== "security-error" &&
+        (!exists || aifOwned || recognizedMetadata),
+      manualDecisionRequired: projectOwned || metadataConflict,
+      safeNextAction: metadataConflict
+        ? "Repair or explicitly replace the ownership metadata before applying changes."
+        : projectOwned
+          ? "Keep the file project-owned or explicitly resolve the generated destination conflict."
+          : !exists
+            ? "Apply the reviewed proposal to create this file transactionally."
+            : "No action is required unless regeneration is requested.",
+    });
+  }
+  for (const path of scannedPaths) {
+    if (desiredByPath.has(path)) continue;
+    const concept = documentConcept(path);
+    const duplicate = concept !== null && (conceptCounts.get(concept) ?? 0) > 1;
+    items.push({
+      path,
+      action: unsupportedPath(path)
+        ? "unsupported"
+        : duplicate
+          ? "manual-decision-required"
+          : concept === "public-readme"
+            ? "map-existing-project-owned"
+            : instructionPath(path)
+              ? "map-existing-project-owned"
+              : concept
+                ? "map-existing-aif-compatible-document"
+                : "skip",
+      currentClassification: "project-owned",
+      proposedClassification: unsupportedPath(path)
+        ? "unsupported"
+        : concept
+          ? "project-owned-documentation"
+          : "project-owned",
+      reason: unsupportedPath(path)
+        ? "custom Copilot agents are not generated by the current adapter"
+        : duplicate
+          ? `multiple project documents represent the ${concept} concept`
+          : concept
+            ? `existing project document maps to the ${concept} concept`
+            : instructionPath(path)
+              ? "existing tool instruction remains project-owned"
+              : "project file is not an adoption artifact",
+      canonicalSource: null,
+      adapter: adapterForPath(path),
+      profile: null,
+      conflictDetails: duplicate
+        ? [`ambiguous ${concept} document mapping`]
+        : [],
+      writeEligible: false,
+      manualDecisionRequired: duplicate,
+      safeNextAction: unsupportedPath(path)
+        ? "Keep the unsupported file project-owned and review adapter capabilities."
+        : duplicate
+          ? "Choose the authoritative project document manually."
+          : concept || instructionPath(path)
+            ? "Keep the existing file project-owned and record the mapping only."
+            : "Leave the unrelated project file unchanged.",
+    });
+  }
+  items.sort((left, right) =>
+    `${left.path}:${left.action}`.localeCompare(
+      `${right.path}:${right.action}`,
     ),
   );
-  const proposal = await plan({ ...options, dryRun: true }, fs);
+  const validationDiagnostics = (options.existingValidationResults ?? [])
+    .flatMap((result) => [
+      ...result.structuralErrors.map(
+        (error) => `${result.documentPath}: ${error.code}`,
+      ),
+      ...result.semanticErrors.map(
+        (error) => `${result.documentPath}: ${error.code}`,
+      ),
+    ])
+    .sort();
+  const profileConfirmationRequired =
+    profileDetection.manualConfirmationRequired && !options.profileConfirmed;
+  const blocked =
+    profileConfirmationRequired ||
+    validationDiagnostics.length > 0 ||
+    items.some(
+      (item) => item.manualDecisionRequired || item.action === "conflict",
+    );
+  let applied = false;
+  let transactionOutcome: AdoptionTransactionOutcome | null = null;
+  let applicationStatus: AdoptionProposal["applicationStatus"] = options.dryRun
+    ? "not-requested"
+    : blocked
+      ? "blocked"
+      : "applied";
+  if (!options.dryRun && !blocked) {
+    const result = await syncProject(
+      { ...options, dryRun: false },
+      fs,
+      transactionOptions,
+    );
+    if (!("dryRun" in result)) {
+      const safeDiagnostics = [
+        ...new Set(
+          result.diagnostics.map((diagnostic) =>
+            /^[a-z0-9][a-z0-9:-]*$/u.test(diagnostic)
+              ? diagnostic
+              : "transaction-failed",
+          ),
+        ),
+      ].sort();
+      const errorCode =
+        result.status === "success"
+          ? null
+          : result.postWriteValidation?.status === "invalid"
+            ? result.postWriteValidation.code
+            : (safeDiagnostics.find(
+                (diagnostic) =>
+                  diagnostic !== "transaction-rollback-incomplete",
+              ) ?? "transaction-failed");
+      transactionOutcome = {
+        status: result.status,
+        failedStage: result.failedStage ?? null,
+        errorCode,
+        rollbackAttempted: result.rollbackAttempted,
+        rollbackCompleted: result.rollbackCompleted,
+        rollbackFailures: result.rollbackFailures
+          .flatMap((path) => {
+            try {
+              return [normalizeOutputPath(path)];
+            } catch {
+              return [];
+            }
+          })
+          .sort(),
+        diagnostics: safeDiagnostics,
+      };
+      if (result.status === "success") applied = true;
+      else
+        applicationStatus = result.rollbackCompleted
+          ? "failed-restored"
+          : "failed-incomplete";
+    }
+  }
   return {
-    ...proposal,
-    diagnostics: found
-      .filter((path): path is string => path !== null)
-      .map((path) => `project-owned existing artifact: ${path}`),
+    kind: "adoption-proposal",
+    changes,
+    diagnostics: [
+      ...(profileConfirmationRequired
+        ? ["profile: explicit confirmation required"]
+        : []),
+      ...validationDiagnostics,
+      ...items
+        .filter((item) => item.manualDecisionRequired)
+        .map((item) => `${item.path}: manual decision required`),
+    ].sort(),
+    items,
+    profileDetection,
+    applied,
+    applicationStatus,
+    transactionOutcome,
   };
 }
 export async function planFeature(
@@ -1525,7 +2490,31 @@ export const nodeFileSystem: FileSystem = {
   },
   async list(path) {
     try {
-      return await readdir(path, { recursive: true });
+      const files: string[] = [];
+      const binaryExtensions =
+        /\.(?:7z|bin|dll|dylib|exe|gif|gz|ico|jpe?g|pdf|png|so|tar|webp|zip)$/iu;
+      const walk = async (
+        directory: string,
+        prefix: string,
+        depth: number,
+      ): Promise<void> => {
+        if (depth > 32 || files.length >= 10_000) return;
+        const entries = (
+          await readdir(directory, { withFileTypes: true })
+        ).sort((left, right) => left.name.localeCompare(right.name));
+        for (const entry of entries) {
+          if (files.length >= 10_000) return;
+          const relativePath = prefix ? `${prefix}/${entry.name}` : entry.name;
+          if (entry.isSymbolicLink()) continue;
+          if (entry.isDirectory()) {
+            if (ignoredScanSegments.has(entry.name)) continue;
+            await walk(resolve(directory, entry.name), relativePath, depth + 1);
+          } else if (entry.isFile() && !binaryExtensions.test(entry.name))
+            files.push(relativePath);
+        }
+      };
+      await walk(path, "", 0);
+      return files.sort();
     } catch {
       return [];
     }

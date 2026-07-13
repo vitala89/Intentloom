@@ -1,0 +1,19 @@
+{
+  "name": "generic-existing-project",
+  "initialTree": { "README.md": "public readme\n", "src/main.txt": "source\n" },
+  "projectOwned": ["README.md", "src/main.txt"],
+  "expectedProfile": "generic",
+  "expectedOwnership": {
+    "README.md": "project-owned",
+    "src/main.txt": "project-owned"
+  },
+  "expectedAdoptionProposal": ["map-existing-project-owned"],
+  "expectedDoctorFindings": ["aif-config-missing"],
+  "expectedExitCode": 3,
+  "unchangedPaths": ["README.md", "src/main.txt"],
+  "reportedCases": [
+    "generic repository with README and source directory",
+    "one recognized profile",
+    "multiple profile candidates"
+  ]
+}

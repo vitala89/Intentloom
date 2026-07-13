@@ -62,6 +62,8 @@ interface Scenarios {
   jsonConflict: ProcessResult;
   jsonRestoredFailure: ProcessResult;
   jsonIncompleteRollback: ProcessResult;
+  adoptionRestoredFailure: StatefulResult;
+  adoptionIncompleteRollback: StatefulResult;
 }
 
 let scenarios: Scenarios;
@@ -100,7 +102,7 @@ async function run(
 }
 
 function commandArgs(
-  command: "init" | "sync",
+  command: "init" | "sync" | "adopt",
   project: string,
   extra: readonly string[] = [],
 ): string[] {
@@ -118,10 +120,11 @@ async function runFaultCli(
   project: string,
   env: NodeJS.ProcessEnv,
   extra: readonly string[] = [],
+  command: "sync" | "adopt" = "sync",
 ): Promise<ProcessResult> {
   return run(
     process.execPath,
-    [faultRunner, ...commandArgs("sync", project, extra)],
+    [faultRunner, ...commandArgs(command, project, extra)],
     project,
     {
       AIF_TEST_CATALOG_ROOT: join(repositoryRoot, "packages/cli/dist/catalog"),
@@ -196,6 +199,14 @@ async function faultScenario(
 ): Promise<StatefulResult> {
   const project = await initializedProject();
   return stateful(project, () => runFaultCli(project, env, extra));
+}
+
+async function adoptionFaultScenario(
+  env: NodeJS.ProcessEnv,
+  extra: readonly string[] = [],
+): Promise<StatefulResult> {
+  const project = await temporaryDirectory("aif-cli-adoption-fault-");
+  return stateful(project, () => runFaultCli(project, env, extra, "adopt"));
 }
 
 async function installPackedCli(): Promise<string> {
@@ -386,6 +397,16 @@ beforeAll(async () => {
     },
     ["--json"],
   );
+  const adoptionRestoredFailure = await adoptionFaultScenario({
+    AIF_TEST_FAIL_AT: "manifest-finalize",
+  });
+  const adoptionIncompleteRollback = await adoptionFaultScenario(
+    {
+      AIF_TEST_FAIL_AT: "source-map-finalize",
+      AIF_TEST_ROLLBACK_PATHS: "AGENTS.md",
+    },
+    ["--json"],
+  );
 
   scenarios = {
     success,
@@ -416,6 +437,8 @@ beforeAll(async () => {
     jsonConflict,
     jsonRestoredFailure,
     jsonIncompleteRollback,
+    adoptionRestoredFailure,
+    adoptionIncompleteRollback,
   };
 }, 120_000);
 
@@ -666,6 +689,34 @@ describe("real CLI transactional sync", () => {
       rollbackCompleted: false,
       rollbackErrorCode: "transaction-rollback-incomplete",
       rollbackFailures: ["AGENTS.md"],
+    });
+  });
+
+  it("adoption restored failure preserves diagnostics and exits 4", () => {
+    expect(scenarios.adoptionRestoredFailure.exitCode).toBe(4);
+    expect(scenarios.adoptionRestoredFailure.stdout).toContain(
+      "Transaction failed during: manifest-finalize",
+    );
+    expect(scenarios.adoptionRestoredFailure.stdout).toContain(
+      "Rollback: completed",
+    );
+    expect(scenarios.adoptionRestoredFailure.after).toEqual(
+      scenarios.adoptionRestoredFailure.before,
+    );
+  });
+
+  it("adoption incomplete rollback preserves affected paths and exits 5", () => {
+    expect(scenarios.adoptionIncompleteRollback.exitCode).toBe(5);
+    expect(
+      JSON.parse(scenarios.adoptionIncompleteRollback.stdout),
+    ).toMatchObject({
+      applicationStatus: "failed-incomplete",
+      transactionOutcome: {
+        status: "failed",
+        failedStage: "source-map-finalize",
+        rollbackCompleted: false,
+        rollbackFailures: ["AGENTS.md"],
+      },
     });
   });
 });

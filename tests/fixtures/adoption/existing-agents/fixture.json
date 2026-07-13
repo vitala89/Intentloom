@@ -1,0 +1,23 @@
+{
+  "name": "existing-agents",
+  "initialTree": {
+    "AGENTS.md": "project instructions\n",
+    ".agents/skills/local/SKILL.md": "---\nname: local\ndescription: Local\n---\n# Local\n"
+  },
+  "projectOwned": ["AGENTS.md", ".agents/skills/local/SKILL.md"],
+  "expectedProfile": "generic",
+  "expectedOwnership": {
+    "AGENTS.md": "project-owned",
+    ".agents/skills/local/SKILL.md": "project-owned"
+  },
+  "expectedAdoptionProposal": ["map-existing-project-owned"],
+  "expectedDoctorFindings": ["aif-config-missing"],
+  "expectedExitCode": 3,
+  "unchangedPaths": ["AGENTS.md", ".agents/skills/local/SKILL.md"],
+  "reportedCases": [
+    "existing project-owned AGENTS.md",
+    "existing .agents/skills",
+    "AIF-like header without ownership",
+    "identical generated content without ownership"
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "name": "existing-product-docs",
+  "initialTree": {
+    "README.md": "public\n",
+    "ROADMAP.md": "roadmap\n",
+    "CHANGELOG.md": "history\n",
+    "docs/product-state.md": "state\n",
+    "docs/product-roadmap.md": "duplicate\n"
+  },
+  "projectOwned": [
+    "README.md",
+    "ROADMAP.md",
+    "CHANGELOG.md",
+    "docs/product-state.md",
+    "docs/product-roadmap.md"
+  ],
+  "expectedProfile": "generic",
+  "expectedOwnership": {
+    "README.md": "project-owned",
+    "ROADMAP.md": "project-owned"
+  },
+  "expectedAdoptionProposal": [
+    "map-existing-project-owned",
+    "manual-decision-required"
+  ],
+  "expectedDoctorFindings": ["aif-config-missing"],
+  "expectedExitCode": 3,
+  "unchangedPaths": [
+    "README.md",
+    "ROADMAP.md",
+    "CHANGELOG.md",
+    "docs/product-state.md",
+    "docs/product-roadmap.md"
+  ],
+  "reportedCases": [
+    "existing ROADMAP",
+    "existing CHANGELOG",
+    "existing README",
+    "existing product-state documents",
+    "different filenames equivalent purpose",
+    "partial documentation set",
+    "duplicated documentation concepts"
+  ]
+}

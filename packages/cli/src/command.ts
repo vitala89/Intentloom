@@ -4,14 +4,18 @@ import { readdir } from "node:fs/promises";
 import {
   ArtifactValidationFailure,
   adoptProject,
+  detectProjectProfiles,
   destinationCollisionKey,
   diffProject,
+  doctorExitCode,
   doctorProject,
   initProject,
   nodeFileSystem,
   planFeature,
   syncProject,
   type FileSystem,
+  type DoctorPlan,
+  type AdoptionProposal,
   type Plan,
   type SyncDryRunResult,
   type TransactionOptions,
@@ -308,6 +312,45 @@ function formatPlan(result: Plan): string {
     .join("\n");
 }
 
+function formatAdoptionProposal(result: AdoptionProposal): string {
+  const lines = [
+    `Detected profile: ${result.profileDetection.selectedProfile}`,
+    `Application status: ${result.applicationStatus}`,
+    ...result.items.map(
+      (item) =>
+        `${item.action.padEnd(36)} ${item.path} — ${item.reason} Next: ${item.safeNextAction}`,
+    ),
+  ];
+  if (result.transactionOutcome?.status === "failed") {
+    lines.push(
+      `Transaction failed during: ${result.transactionOutcome.failedStage ?? "unknown"}`,
+      `Error: ${result.transactionOutcome.errorCode ?? "transaction-failed"}`,
+      `Rollback: ${result.transactionOutcome.rollbackCompleted ? "completed" : "incomplete"}`,
+    );
+    if (!result.transactionOutcome.rollbackCompleted)
+      lines.push(
+        "Manual inspection is required.",
+        ...result.transactionOutcome.rollbackFailures.map(
+          (path) => `- ${path}`,
+        ),
+      );
+  }
+  return lines.join("\n");
+}
+
+function formatDoctor(result: DoctorPlan): string {
+  return result.findings
+    .map(
+      (finding) =>
+        `${finding.severity.padEnd(7)} ${finding.code} ${finding.path} — ${finding.message}${
+          finding.remediation.length > 0
+            ? ` Remediation: ${finding.remediation.join(" ")}`
+            : ""
+        }`,
+    )
+    .join("\n");
+}
+
 function parseAdapters(value: string): AdapterName[] {
   const parsed = value.split(",").filter(Boolean);
   if (
@@ -444,10 +487,30 @@ async function validateProjectSkills(
   fileSystem: FileSystem,
   validator: ArtifactValidator,
 ): Promise<ArtifactValidationResult[]> {
-  const entries = await fileSystem.list(root);
+  const ignored = new Set([
+    ".git",
+    ".cache",
+    ".next",
+    ".turbo",
+    "build",
+    "coverage",
+    "dist",
+    "node_modules",
+    "out",
+    "target",
+    "vendor",
+  ]);
+  const entries = (await fileSystem.list(root))
+    .map((entry) => entry.replaceAll("\\", "/"))
+    .map((entry) =>
+      entry.startsWith(`${root}/`) ? entry.slice(root.length + 1) : entry,
+    )
+    .filter(
+      (entry) => !entry.split("/").some((segment) => ignored.has(segment)),
+    )
+    .sort();
   const documents = await Promise.all(
     entries
-      .map((entry) => entry.replaceAll("\\", "/"))
       .filter((entry) => entry.endsWith("/SKILL.md"))
       .map(async (entry) => {
         const absolute = entry.startsWith(root) ? entry : resolve(root, entry);
@@ -472,6 +535,38 @@ async function validateProjectSkills(
       semanticErrors: validation.errors,
       warnings: [],
     });
+  const planningKinds: readonly {
+    pattern: RegExp;
+    artifactType: ArtifactType;
+  }[] = [
+    {
+      pattern: /(?:feature-brief|\.feature)\.json$/u,
+      artifactType: "feature-brief",
+    },
+    {
+      pattern: /(?:context-pack|\.context)\.json$/u,
+      artifactType: "context-pack",
+    },
+    {
+      pattern: /(?:change-request|\.change)\.json$/u,
+      artifactType: "change-request",
+    },
+    {
+      pattern: /(?:technical-debt|\.debt)\.json$/u,
+      artifactType: "technical-debt",
+    },
+  ];
+  for (const entry of entries) {
+    const kind = planningKinds.find(({ pattern }) => pattern.test(entry));
+    if (!kind) continue;
+    const result = validator.validate({
+      artifactType: kind.artifactType,
+      documentPath: entry,
+      format: "json",
+      source: await fileSystem.read(resolve(root, entry)),
+    });
+    if (result.status === "invalid") invalid.push(result);
+  }
   return invalid;
 }
 
@@ -573,29 +668,83 @@ export async function runCli(
       invalidMetadata.push(
         ...(await validateProjectSkills(root, fileSystem, validator)),
       );
-    if (invalidMetadata.length > 0) {
+    if (parsed.command === "doctor") {
+      const configInvalid = invalidMetadata.some(
+        (result) => result.artifactType === "aif-config",
+      );
+      const configPresent = await fileSystem.exists(
+        resolve(root, ".aif/config.yaml"),
+      );
+      const storedDoctorConfig =
+        configPresent && !configInvalid
+          ? await projectConfiguration(root, fileSystem, validator, false)
+          : undefined;
+      const detection = await detectProjectProfiles(root, fileSystem);
+      const profile =
+        parsed.values.get("--profile") ??
+        storedDoctorConfig?.profile ??
+        detection.selectedProfile;
+      const adapterNames = parseAdapters(
+        parsed.values.get("--adapters") ??
+          storedDoctorConfig?.adapters.join(",") ??
+          "codex",
+      );
+      const result = await doctorProject(
+        {
+          root,
+          profile,
+          adapters: adapterNames,
+          dryRun: true,
+          catalogRoot: dependencies.catalogRoot,
+          validator,
+        },
+        fileSystem,
+        invalidMetadata,
+      );
+      io.stdout(
+        parsed.flags.has("--json")
+          ? JSON.stringify(result, null, 2)
+          : formatDoctor(result),
+      );
+      return doctorExitCode(result);
+    }
+    if (invalidMetadata.length > 0 && parsed.command !== "adopt") {
       const output = formatValidationFailure(
         invalidMetadata,
         parsed.flags.has("--json"),
       );
-      if (parsed.command === "doctor") io.stdout(output);
-      else io.stderr(output);
+      io.stderr(output);
       return 3;
     }
-    const storedConfig = readsProject
-      ? await projectConfiguration(
-          root,
-          fileSystem,
-          validator,
-          parsed.command === "sync",
-        )
-      : undefined;
+    const invalidAdoptionConfig =
+      parsed.command === "adopt" &&
+      invalidMetadata.some((result) => result.artifactType === "aif-config");
+    const storedConfig =
+      readsProject && !invalidAdoptionConfig
+        ? await projectConfiguration(
+            root,
+            fileSystem,
+            validator,
+            parsed.command === "sync",
+          )
+        : undefined;
+    const configPresent = readsProject
+      ? await fileSystem.exists(resolve(root, ".aif/config.yaml"))
+      : false;
+    const adoptionDetection =
+      parsed.command === "adopt"
+        ? await detectProjectProfiles(root, fileSystem)
+        : undefined;
     const profile =
-      parsed.values.get("--profile") ?? storedConfig?.profile ?? "generic";
+      parsed.values.get("--profile") ??
+      (configPresent
+        ? storedConfig?.profile
+        : adoptionDetection?.selectedProfile) ??
+      "generic";
     const adapterNames = parseAdapters(
       parsed.values.get("--adapters") ??
-        storedConfig?.adapters.join(",") ??
-        "claude,codex,cursor,copilot",
+        (configPresent ? storedConfig?.adapters.join(",") : undefined) ??
+        (parsed.command === "adopt" ? "codex" : "claude,codex,cursor,copilot"),
     );
     const options = {
       root,
@@ -604,6 +753,13 @@ export async function runCli(
       dryRun: parsed.flags.has("--dry-run"),
       catalogRoot: dependencies.catalogRoot,
       validator,
+      ...(parsed.command === "adopt"
+        ? {
+            existingValidationResults: invalidMetadata,
+            profileConfirmed:
+              parsed.values.has("--profile") || storedConfig !== undefined,
+          }
+        : {}),
     };
     if (parsed.command === "sync") {
       const result = await syncProject(
@@ -626,25 +782,37 @@ export async function runCli(
       parsed.command === "init"
         ? await initProject(options, fileSystem)
         : parsed.command === "adopt"
-          ? await adoptProject(options, fileSystem)
+          ? await adoptProject(
+              options,
+              fileSystem,
+              dependencies.transactionOptions,
+            )
           : parsed.command === "diff"
             ? await diffProject(options, fileSystem)
-            : parsed.command === "doctor"
-              ? await doctorProject(options, fileSystem)
-              : await planFeature(parsed.values.get("--task") ?? "", validator);
+            : await planFeature(parsed.values.get("--task") ?? "", validator);
     io.stdout(
       parsed.flags.has("--json")
         ? JSON.stringify(result, null, 2)
         : typeof result === "string"
           ? result
-          : formatPlan(result),
+          : parsed.command === "adopt"
+            ? formatAdoptionProposal(result as AdoptionProposal)
+            : formatPlan(result),
     );
-    if (
-      parsed.command === "doctor" &&
-      typeof result !== "string" &&
-      result.diagnostics.length > 0
-    )
-      return 3;
+    if (parsed.command === "adopt") {
+      const adoption = result as AdoptionProposal;
+      if (adoption.transactionOutcome?.status === "failed")
+        return adoption.transactionOutcome.rollbackCompleted ? 4 : 5;
+      return adoption.applicationStatus === "blocked" ||
+        adoption.applicationStatus === "failed-restored" ||
+        adoption.applicationStatus === "failed-incomplete" ||
+        adoption.diagnostics.length > 0 ||
+        adoption.items.some(
+          (item) => item.manualDecisionRequired || item.action === "conflict",
+        )
+        ? 3
+        : 0;
+    }
     return typeof result === "string" || conflicts(result).length === 0 ? 0 : 3;
   } catch (error) {
     if (error instanceof SchemaCatalogError) {
