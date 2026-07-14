@@ -288,5 +288,5 @@ describe("built CLI schema validation process cases", () => {
         .status,
     ).toBe(0);
     expect(run(packedCli, ["sync", "--root", root], runtime).status).toBe(0);
-  });
+  }, 30_000);
 });

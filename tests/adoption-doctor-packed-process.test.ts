@@ -18,13 +18,26 @@ let packRoot: string;
 let packedCli: string;
 
 function aif(args: string[]) {
-  const quoteForWindowsShell = (value: string) =>
-    `"${value.replaceAll('"', '""')}"`;
-  const result = spawnSync(
-    windows ? quoteForWindowsShell(packedCli) : packedCli,
-    windows ? args.map(quoteForWindowsShell) : args,
-    { encoding: "utf8", shell: windows },
-  );
+  const quoteForWindowsCommand = (value: string) => {
+    if (/[&|<>()^%!"]/u.test(value)) {
+      throw new Error("Windows packed CLI test arguments must be shell-safe.");
+    }
+    return `"${value}"`;
+  };
+  const result = windows
+    ? spawnSync(
+        "cmd.exe",
+        [
+          "/d",
+          "/s",
+          "/c",
+          `call ${quoteForWindowsCommand(packedCli)} ${args
+            .map(quoteForWindowsCommand)
+            .join(" ")}`,
+        ],
+        { encoding: "utf8" },
+      )
+    : spawnSync(packedCli, args, { encoding: "utf8" });
   return {
     status: result.status ?? -1,
     stdout: result.stdout,
