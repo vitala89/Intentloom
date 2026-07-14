@@ -28,16 +28,17 @@ experimental; AIF does not fabricate Copilot custom-agent output.
 
 ## Runtime and host matrix
 
-| Runtime/host | Status                                                                                |
-| ------------ | ------------------------------------------------------------------------------------- |
-| Node 22      | Supported minimum; complete local suite and packed CLI verified                       |
-| Node 24      | Supported; complete Linux/macOS/Windows CI matrix configured                          |
-| Linux        | Compatibility CI configured for Node 22 and 24                                        |
-| macOS        | Node 22 verified locally; compatibility CI configured for Node 22 and 24              |
-| Windows      | Compatibility CI configured for Node 22 and 24; no local Windows execution is claimed |
+| Runtime/host | Status                                                                            |
+| ------------ | --------------------------------------------------------------------------------- |
+| Node 22      | Supported minimum; complete local suite and packed CLI verified                   |
+| Node 24      | Supported; complete CI matrix verified                                            |
+| Linux        | Hosted compatibility CI verified on Node 22 and 24                                |
+| macOS        | Hosted compatibility CI verified on Node 22 and 24                                |
+| Windows      | Hosted compatibility CI verified on Node 22 and 24; no local execution is claimed |
 
-The current cross-platform verdict is partially resolved until the configured
-Windows jobs produce external CI evidence.
+The cross-platform verdict is resolved for the hosted Node 22/24 matrix. See
+[Compatibility run 29374780862](https://github.com/vitala89/aif-core/actions/runs/29374780862)
+for the recorded host evidence.
 
 ## Source basis
 

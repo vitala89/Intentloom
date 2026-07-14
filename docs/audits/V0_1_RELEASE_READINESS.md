@@ -19,11 +19,10 @@ The current path is `bin.ts → runCli() → syncProject() → synchronizeGenera
    and Copilot contracts drive deterministic single- and multi-adapter output,
    honest diagnostics, profile scopes, ownership conflicts, migration/removal,
    real-catalog fixtures, and installed-tarball tests.
-7. **Cross-platform fixture sub-blocker resolved; host evidence pending.** Thirty
+7. **Cross-platform fixture and host-evidence sub-blocker resolved.** Thirty
    stored-path cases cover Windows prefixes, devices, separators, Unicode,
    collisions, unsafe names, spaces, and long paths. The complete Node 22/24
-   suite is configured for Linux, macOS, and Windows, but a hosted Windows run
-   has not yet completed in this branch.
+   suite passed on hosted Linux, macOS, and Windows runners.
 8. **Runtime engine blocker resolved.** ADR-0005 sets Node 22 as the consistent
    workspace minimum and bundle target. Complete 512-test suites pass locally on
    Node 22.17.0 and checksum-verified Node 24.18.0.
@@ -32,7 +31,6 @@ The current path is `bin.ts → runCli() → syncProject() → synchronizeGenera
 ## Required before stable 0.1.0
 
 - Resolve all remaining blockers and verify all four adapter fixtures from the real catalog.
-- Obtain a successful hosted Windows compatibility run on Node 22 and Node 24.
 - Execute an Applye dry-run only after an explicit repository path is supplied.
 
 ## Recommended
@@ -60,8 +58,9 @@ The complete suite contains 512 passing tests in 34 files with no failures or
 skips on both Node 22.17.0 and checksum-verified Node 24.18.0. The packed
 artifact exercises every adapter, all-adapter generation, no-op sync, doctor,
 conflicts, spaces, Unicode, portable metadata, and stable version output.
-Typecheck, lint, formatting, build, and `git diff --check` pass. Hosted Windows
-CI evidence remains pending.
+Typecheck, lint, formatting, build, and `git diff --check` pass. The hosted
+[Compatibility run 29374780862](https://github.com/vitala89/aif-core/actions/runs/29374780862)
+passed on Windows Node 22 and Node 24, as well as Linux and macOS.
 Applye dry-run was not run because it is outside this task and no explicit path
 was provided.
 

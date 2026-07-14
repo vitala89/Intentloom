@@ -235,8 +235,8 @@ cases, 34 multi-adapter cases, 10 committed profile snapshots, 12 packed adapter
 process cases, and 30 independently reported stored-path cases. Typecheck,
 lint, formatting, build, and `git diff --check` pass.
 
-Compatibility CI now runs the complete gates on Ubuntu, macOS, and Windows with
-Node 22 and Node 24. This repository change cannot produce a completed hosted
-Windows job, so real Windows execution remains pending. Cross-platform
-compatibility is therefore **PARTIALLY RESOLVED**, with the code/fixture and CI
-configuration blockers resolved and external Windows CI evidence outstanding.
+Compatibility CI runs the complete gates on Ubuntu, macOS, and Windows with
+Node 22 and Node 24. The hosted
+[Compatibility run 29374780862](https://github.com/vitala89/aif-core/actions/runs/29374780862)
+passed every job, including Windows Node 22 and Node 24. Cross-platform
+compatibility is therefore **RESOLVED** for the audited matrix.
