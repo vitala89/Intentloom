@@ -11,6 +11,7 @@ import {
 import { join, resolve } from "node:path";
 import { tmpdir } from "node:os";
 import { beforeAll, describe, expect, it } from "vitest";
+import { resolvePackedCliEntry, runPackedCli } from "./helpers/packed-cli.js";
 
 const repositoryRoot = resolve(".");
 const cli = resolve("packages/cli/dist/aif.cjs");
@@ -277,16 +278,18 @@ describe("built CLI schema validation process cases", () => {
       ],
       { cwd: runtime, stdio: "pipe", shell: windows },
     );
-    const packedCli = join(
-      runtime,
-      `node_modules/.bin/aif${windows ? ".cmd" : ""}`,
-    );
+    const packedCli = resolvePackedCliEntry(runtime);
     const root = join(packRoot, "external-project");
     await mkdir(root);
     expect(
-      run(packedCli, ["init", "--root", root, "--adapters", "codex"], runtime)
-        .status,
+      runPackedCli(
+        packedCli,
+        ["init", "--root", root, "--adapters", "codex"],
+        runtime,
+      ).status,
     ).toBe(0);
-    expect(run(packedCli, ["sync", "--root", root], runtime).status).toBe(0);
+    expect(
+      runPackedCli(packedCli, ["sync", "--root", root], runtime).status,
+    ).toBe(0);
   }, 30_000);
 });

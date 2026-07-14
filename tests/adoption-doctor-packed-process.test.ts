@@ -1,4 +1,4 @@
-import { execFileSync, spawnSync } from "node:child_process";
+import { execFileSync } from "node:child_process";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import {
   mkdtemp,
@@ -10,39 +10,17 @@ import {
 } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
+import { resolvePackedCliEntry, runPackedCli } from "./helpers/packed-cli.js";
 
 const repositoryRoot = resolve(".");
 const windows = process.platform === "win32";
 const command = (name: string) => (windows ? `${name}.cmd` : name);
 let packRoot: string;
-let packedCli: string;
+let packedCliEntry: string;
+let runtime: string;
 
 function aif(args: string[]) {
-  const quoteForWindowsCommand = (value: string) => {
-    if (/[&|<>()^%!"]/u.test(value)) {
-      throw new Error("Windows packed CLI test arguments must be shell-safe.");
-    }
-    return `"${value}"`;
-  };
-  const result = windows
-    ? spawnSync(
-        "cmd.exe",
-        [
-          "/d",
-          "/s",
-          "/c",
-          `"${quoteForWindowsCommand(packedCli)} ${args
-            .map(quoteForWindowsCommand)
-            .join(" ")}"`,
-        ],
-        { encoding: "utf8" },
-      )
-    : spawnSync(packedCli, args, { encoding: "utf8" });
-  return {
-    status: result.status ?? -1,
-    stdout: result.stdout,
-    stderr: result.stderr,
-  };
+  return runPackedCli(packedCliEntry, args, runtime);
 }
 async function project(name: string) {
   const root = join(packRoot, name);
@@ -78,7 +56,7 @@ beforeAll(async () => {
     packRoot,
     (await readdir(packRoot)).find((entry) => entry.endsWith(".tgz"))!,
   );
-  const runtime = join(packRoot, "runtime with spaces");
+  runtime = join(packRoot, "runtime with spaces");
   await mkdir(runtime);
   execFileSync(
     command("npm"),
@@ -93,7 +71,7 @@ beforeAll(async () => {
     ],
     { cwd: runtime, stdio: "pipe", shell: windows },
   );
-  packedCli = join(runtime, `node_modules/.bin/aif${windows ? ".cmd" : ""}`);
+  packedCliEntry = resolvePackedCliEntry(runtime);
 }, 30_000);
 
 afterAll(async () => {
