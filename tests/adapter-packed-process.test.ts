@@ -44,7 +44,7 @@ beforeAll(async () => {
     stdio: "pipe",
     shell: windows,
   });
-  packRoot = await mkdtemp(join(tmpdir(), "aif adapter packed-"));
+  packRoot = await mkdtemp(join(tmpdir(), "aif-adapter-packed-"));
   execFileSync(
     command("pnpm"),
     ["--filter", "@aif/cli", "pack", "--pack-destination", packRoot],
@@ -54,7 +54,7 @@ beforeAll(async () => {
     packRoot,
     (await readdir(packRoot)).find((entry) => entry.endsWith(".tgz"))!,
   );
-  const runtime = join(packRoot, "runtime");
+  const runtime = join(packRoot, "runtime with spaces");
   await mkdir(runtime);
   execFileSync(
     command("npm"),
