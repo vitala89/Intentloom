@@ -67,6 +67,13 @@ async function expectValid(
 }
 
 describe("successful post-write consistency", () => {
+  it("normalizes Windows host paths in the portable memory filesystem", async () => {
+    const fs = createMemoryFileSystem();
+    await fs.write("C:\\project\\AGENTS.md", "generated one\n");
+    expect(await fs.read("/project/AGENTS.md")).toBe("generated one\n");
+    expect(await fs.list("C:\\project")).toEqual(["/project/AGENTS.md"]);
+  });
+
   it("validates creation of one generated file with absent metadata", async () => {
     const { fs } = await expectValid();
     expect(await fs.read(`${root}/AGENTS.md`)).toBe("generated one\n");

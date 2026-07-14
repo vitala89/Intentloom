@@ -2593,16 +2593,23 @@ export function createMemoryFileSystem(
   initial: Record<string, string> = {},
   failAfterWrites?: number,
 ): FileSystem & { files: Map<string, string> } {
-  const files = new Map(Object.entries(initial));
+  const memoryPath = (path: string) =>
+    path.replaceAll("\\", "/").replace(/^[A-Za-z]:/u, "");
+  const files = new Map(
+    Object.entries(initial).map(([path, content]) => [
+      memoryPath(path),
+      content,
+    ]),
+  );
   let writes = 0;
   let failed = false;
   return {
     files,
     async exists(path) {
-      return files.has(path);
+      return files.has(memoryPath(path));
     },
     async read(path) {
-      const content = files.get(path);
+      const content = files.get(memoryPath(path));
       if (content === undefined) throw new Error(`missing ${path}`);
       return content;
     },
@@ -2616,14 +2623,15 @@ export function createMemoryFileSystem(
         failed = true;
         throw new Error("injected write failure");
       }
-      files.set(path, content);
+      files.set(memoryPath(path), content);
     },
     async mkdir() {},
     async remove(path) {
-      files.delete(path);
+      files.delete(memoryPath(path));
     },
     async list(path) {
-      return [...files.keys()].filter((file) => file.startsWith(path));
+      const directory = memoryPath(path);
+      return [...files.keys()].filter((file) => file.startsWith(directory));
     },
     async realpath(path) {
       return path;
