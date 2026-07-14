@@ -1189,7 +1189,7 @@ export async function synchronizeGeneratedFiles(
     const rollbackFailures: string[] = [];
     const injectedRollbackFailures = new Set(options.rollbackFailPaths ?? []);
     for (const [path, content] of backups) {
-      const projectPath = relative(root, path);
+      const projectPath = relative(resolve(root), path).replaceAll("\\", "/");
       try {
         if (injectedRollbackFailures.has(projectPath))
           throw new Error("injected rollback failure");
@@ -1199,7 +1199,7 @@ export async function synchronizeGeneratedFiles(
       }
     }
     for (const path of created) {
-      const projectPath = relative(root, path);
+      const projectPath = relative(resolve(root), path).replaceAll("\\", "/");
       try {
         if (injectedRollbackFailures.has(projectPath))
           throw new Error("injected rollback failure");
@@ -1243,14 +1243,18 @@ async function safeDestination(
   let current = path;
   while (true) {
     if (await fs.isSymbolicLink(current))
-      throw new Error(`security-error: ${relative(root, path)}`);
+      throw new Error(
+        `security-error: ${relative(resolve(root), path).replaceAll("\\", "/")}`,
+      );
     if (await fs.exists(current)) {
       const resolved = await fs.realpath(current);
       if (
         resolved !== rootResolved &&
         !resolved.startsWith(`${rootResolved}${sep}`)
       )
-        throw new Error(`security-error: ${relative(root, path)}`);
+        throw new Error(
+          `security-error: ${relative(resolve(root), path).replaceAll("\\", "/")}`,
+        );
     }
     if (current === resolve(root)) return;
     current = dirname(current);

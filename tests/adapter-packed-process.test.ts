@@ -18,10 +18,14 @@ let packRoot: string;
 let packedCli: string;
 
 function aif(args: string[]) {
-  const result = spawnSync(packedCli, args, {
-    encoding: "utf8",
-    shell: windows,
-  });
+  const quote = (value: string) => `"${value.replaceAll('"', '\\"')}"`;
+  const result = windows
+    ? spawnSync(
+        "cmd.exe",
+        ["/d", "/s", "/c", `${quote(packedCli)} ${args.map(quote).join(" ")}`],
+        { encoding: "utf8" },
+      )
+    : spawnSync(packedCli, args, { encoding: "utf8" });
   return {
     status: result.status ?? -1,
     stdout: result.stdout,
