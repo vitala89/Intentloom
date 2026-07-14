@@ -3,7 +3,6 @@ name: Compatibility
 on:
   pull_request:
   push:
-    branches: [main]
 
 permissions:
   contents: read
@@ -30,5 +29,5 @@ jobs:
       - run: pnpm typecheck
       - run: pnpm lint
       - run: pnpm format:check
-      - run: pnpm test
       - run: pnpm build
+      - run: pnpm test

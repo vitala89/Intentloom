@@ -1,4 +1,5 @@
 import { execFileSync, spawnSync } from "node:child_process";
+import { gunzipSync } from "node:zlib";
 import {
   mkdtemp,
   mkdir,
@@ -15,6 +16,27 @@ const repositoryRoot = resolve(".");
 const cli = resolve("packages/cli/dist/aif.cjs");
 const windows = process.platform === "win32";
 const command = (name: string) => (windows ? `${name}.cmd` : name);
+
+function tarEntries(archive: Buffer) {
+  const tar = gunzipSync(archive);
+  const entries: string[] = [];
+  for (let offset = 0; offset < tar.length;) {
+    const header = tar.subarray(offset, offset + 512);
+    if (header.every((byte) => byte === 0)) break;
+    const name = header.subarray(0, 100).toString("utf8").replace(/\0.*$/u, "");
+    const prefix = header
+      .subarray(345, 500)
+      .toString("utf8")
+      .replace(/\0.*$/u, "");
+    const size = Number.parseInt(
+      header.subarray(124, 136).toString("utf8").replace(/\0.*$/u, "").trim(),
+      8,
+    );
+    entries.push(prefix ? `${prefix}/${name}` : name);
+    offset += 512 + Math.ceil(size / 512) * 512;
+  }
+  return entries;
+}
 
 interface Execution {
   status: number;
@@ -226,14 +248,20 @@ describe("built CLI schema validation process cases", () => {
       packRoot,
       (await readdir(packRoot)).find((entry) => entry.endsWith(".tgz"))!,
     );
-    const contents = execFileSync("tar", ["-tzf", tarball], {
-      encoding: "utf8",
-    });
+    const contents = tarEntries(await readFile(tarball));
     expect(
-      contents.match(/package\/dist\/catalog\/schemas\/[^\n]+\.json/gu),
+      contents.filter((entry) =>
+        /package\/dist\/catalog\/schemas\/[^/]+\.json/u.test(entry),
+      ),
     ).toHaveLength(8);
-    expect(contents).not.toMatch(/(?:^|\/)(?:tests?|fixtures?)(?:\/|$)/mu);
-    expect(contents).not.toMatch(/(?:^|\/)\.env(?:\.|$)/mu);
+    expect(contents).not.toEqual(
+      expect.arrayContaining([
+        expect.stringMatching(/(?:^|\/)(?:tests?|fixtures?)(?:\/|$)/u),
+      ]),
+    );
+    expect(contents).not.toEqual(
+      expect.arrayContaining([expect.stringMatching(/(?:^|\/)\.env(?:\.|$)/u)]),
+    );
     const runtime = join(packRoot, "runtime");
     await mkdir(runtime);
     execFileSync(
