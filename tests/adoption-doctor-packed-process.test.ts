@@ -31,9 +31,9 @@ function aif(args: string[]) {
           "/d",
           "/s",
           "/c",
-          `call ${quoteForWindowsCommand(packedCli)} ${args
+          `"${quoteForWindowsCommand(packedCli)} ${args
             .map(quoteForWindowsCommand)
-            .join(" ")}`,
+            .join(" ")}"`,
         ],
         { encoding: "utf8" },
       )
