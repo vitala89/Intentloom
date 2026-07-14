@@ -18,14 +18,13 @@ let packRoot: string;
 let packedCli: string;
 
 function aif(args: string[]) {
-  const quote = (value: string) => `"${value.replaceAll('"', '\\"')}"`;
-  const result = windows
-    ? spawnSync(
-        "cmd.exe",
-        ["/d", "/s", "/c", `${quote(packedCli)} ${args.map(quote).join(" ")}`],
-        { encoding: "utf8" },
-      )
-    : spawnSync(packedCli, args, { encoding: "utf8" });
+  const quoteForWindowsShell = (value: string) =>
+    `"${value.replaceAll('"', '""')}"`;
+  const result = spawnSync(
+    windows ? quoteForWindowsShell(packedCli) : packedCli,
+    windows ? args.map(quoteForWindowsShell) : args,
+    { encoding: "utf8", shell: windows },
+  );
   return {
     status: result.status ?? -1,
     stdout: result.stdout,
@@ -45,7 +44,7 @@ beforeAll(async () => {
     stdio: "pipe",
     shell: windows,
   });
-  packRoot = await mkdtemp(join(tmpdir(), "aif-adapter-packed-"));
+  packRoot = await mkdtemp(join(tmpdir(), "aif adapter packed-"));
   execFileSync(
     command("pnpm"),
     ["--filter", "@aif/cli", "pack", "--pack-destination", packRoot],
