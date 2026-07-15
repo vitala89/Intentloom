@@ -1,9 +1,76 @@
 import { describe, expect, it } from "vitest";
 import { resolve } from "node:path";
-import { adoptProject, createMemoryFileSystem } from "@aif/cli";
+import {
+  adoptProject,
+  createMemoryFileSystem,
+  type FileSystem,
+} from "@aif/cli";
 import { runCli } from "../packages/cli/src/command.js";
 
 describe("adoption proposal", () => {
+  it.each([
+    ["adopt", ["--dry-run"], 0, true],
+    ["doctor", [], 3, true],
+    ["diff", [], 0, true],
+    ["sync", ["--dry-run"], 2, false],
+  ] as const)(
+    "%s accepts an explicit positional project path without writing",
+    async (command, extra, expectedExit, expectsOutput) => {
+      const fs = createMemoryFileSystem({
+        "/explicit project/README.md": "project\n",
+      });
+      const reads: string[] = [];
+      const trackingFileSystem: FileSystem = {
+        ...fs,
+        exists: async (path) => {
+          reads.push(path);
+          return fs.exists(path);
+        },
+        read: async (path) => {
+          reads.push(path);
+          return fs.read(path);
+        },
+        list: async (path) => {
+          reads.push(path);
+          return fs.list(path);
+        },
+      };
+      const before = [...fs.files.entries()];
+      const stderr: string[] = [];
+      const stdout: string[] = [];
+
+      const exit = await runCli(
+        [command, "/explicit project", ...extra],
+        { catalogRoot: resolve("catalog"), fileSystem: trackingFileSystem },
+        {
+          stdout: (message) => stdout.push(message),
+          stderr: (message) => stderr.push(message),
+        },
+      );
+
+      expect(exit).toBe(expectedExit);
+      expect(stderr.join("\n")).not.toContain("unknown option");
+      expect(stderr.join("\n")).not.toContain("unexpected argument");
+      expect(stdout.join("\n") === "").toBe(!expectsOutput);
+      expect(reads.some((path) => path.startsWith("/explicit project"))).toBe(
+        true,
+      );
+      expect([...fs.files.entries()]).toEqual(before);
+    },
+  );
+
+  it("rejects a positional project path combined with --root", async () => {
+    const stderr: string[] = [];
+    const exit = await runCli(
+      ["doctor", "/first", "--root", "/second"],
+      { catalogRoot: resolve("catalog"), fileSystem: createMemoryFileSystem() },
+      { stdout: () => undefined, stderr: (message) => stderr.push(message) },
+    );
+
+    expect(exit).toBe(2);
+    expect(stderr).toEqual(["project path specified more than once"]);
+  });
+
   it("keeps existing instruction and documentation files project-owned", async () => {
     const initial = {
       "/project/AGENTS.md":

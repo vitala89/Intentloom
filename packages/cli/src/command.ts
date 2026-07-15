@@ -84,11 +84,14 @@ interface ProjectConfiguration {
 }
 
 const commands = new Set(["init", "adopt", "plan", "diff", "sync", "doctor"]);
+const projectPathCommands = new Set(["adopt", "diff", "sync", "doctor"]);
 const booleanFlags = new Set(["--dry-run", "--force", "--json"]);
 const valueFlags = new Set(["--root", "--profile", "--adapters", "--task"]);
 const adapters = new Set<AdapterName>(["claude", "codex", "cursor", "copilot"]);
-const usage =
-  "Usage: aif <init|adopt|plan|diff|sync|doctor> [--root PATH] [--dry-run]";
+const usage = [
+  "Usage: aif <init|plan> [--root PATH] [--dry-run]",
+  "       aif <adopt|diff|sync|doctor> [PROJECT_PATH|--root PATH] [--dry-run]",
+].join("\n");
 
 function parseArguments(args: readonly string[]): ParsedArguments {
   const command = args[0] ?? "";
@@ -101,11 +104,19 @@ function parseArguments(args: readonly string[]): ParsedArguments {
       flags.add(token);
       continue;
     }
+    if (!token.startsWith("--")) {
+      if (!projectPathCommands.has(command) || values.has("--root"))
+        throw new CliUsageError(`unexpected argument: ${token}`);
+      values.set("--root", token);
+      continue;
+    }
     if (!valueFlags.has(token))
       throw new CliUsageError(`unknown option: ${token}`);
     const value = args[index + 1];
     if (value === undefined || value.startsWith("--"))
       throw new CliUsageError(`missing value for ${token}`);
+    if (token === "--root" && values.has("--root"))
+      throw new CliUsageError("project path specified more than once");
     values.set(token, value);
     index += 1;
   }

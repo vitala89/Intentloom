@@ -25,6 +25,9 @@ All notable changes are documented here. This project follows Keep a Changelog p
 - Added an npm publication-authorization checklist, trusted-publishing guardrails,
   and incident handling requirements; real publication remains blocked pending
   ownership and naming/trademark review.
+- Added positional explicit-project-path support for `adopt`, `doctor`, `diff`,
+  and `sync`, with a no-write regression test. The Applye packed-CLI audit is
+  documented as halted pending a stable target baseline.
 
 ### Fixed
 

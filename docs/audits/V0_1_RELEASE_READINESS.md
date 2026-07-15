@@ -33,6 +33,12 @@ The current path is `bin.ts → runCli() → syncProject() → synchronizeGenera
    `docs/audits/PACKAGE_PUBLISH_READINESS.md`. Actual npm identity/package-owner
    authorization, command-collision review, and documented legal/trademark
    review remain required before publication.
+10. **Explicit-path Applye verification remains open.** The initial packed-CLI
+    audit halted when the target's pre-existing Git state diverged. It exposed
+    and corrected positional project-path parsing in AIF, but a clean stable
+    baseline is still required before real-project immutability, adoption,
+    doctor, diff, and sync dry-run evidence can be accepted. See
+    `docs/audits/APPLYE_EXPLICIT_PATH_VERIFICATION.md`.
 
 ## Required before stable 0.1.0
 
