@@ -77,3 +77,56 @@ formatting check, build, packed CLI tests, `npm pack --dry-run`, and `git diff
 
 No Applye path is committed. No Applye files were deliberately changed by this
 audit, and no Applye-specific fixture content was copied into AIF.
+
+## Rerun: baseline stability gate
+
+Rerun date: 2026-07-15. AIF revision: `45de959`. Before building or invoking
+the packed CLI, two external, read-only snapshots captured Git branch and HEAD,
+porcelain-v2 status, index fingerprint, tracked working-tree hashes, untracked
+entries, bounded directory inventory, relevant ignored AIF/agent destinations,
+documentation candidates, symlinks, and transaction-artifact paths.
+
+The snapshots were **not identical**: the target advanced from commit
+`feba87ba88ecae85dd9b28f1f92402fc687331c2` to
+`dd6d896e5960cec5bd4f59f77fad2e78aa338d08` during the stability gate. Its
+branch remained `fix/cv-section-line-toggle`. Baseline A was dirty with eight
+tracked status entries; baseline B was clean. `.aif` was absent in both bounded
+snapshots. The status entries that changed were:
+
+- `apps/desktop/src/app/pages/documents/cv-content.util.ts`
+- `apps/desktop/src/app/pages/documents/cv-detail/cv-detail.component.ts`
+- `apps/desktop/src/app/pages/documents/cv-detail/cv-live-style-panel/cv-live-style-panel.component.html`
+- `apps/desktop/src/app/pages/documents/cv-detail/cv-live-style-panel/cv-live-style-panel.component.ts`
+- `apps/desktop/src/app/pages/documents/cv-detail/cv-preview/cv-preview.component.scss`
+- `apps/desktop/src/app/pages/documents/cv-detail/cv-preview/cv-preview.component.spec.ts`
+- `apps/desktop/src/app/pages/documents/cv-detail/cv-preview/cv-preview.component.ts`
+- `libs/core/src/lib/models/document.model.ts`
+
+No AIF command or runner was created with Applye as its target after that gate
+failed.
+
+Read-only process inspection found active Applye-related development processes,
+including an Nx daemon, `npm run desktop:dev`, Tauri development, Nx serving,
+esbuild, and the desktop process. These are plausible external writers but are
+not proof of the specific Git-state change. No process was stopped or modified.
+
+After the gate stopped, AIF-only verification passed without referencing Applye:
+the targeted positional-path regression tests, build, formatting and diff
+checks, and a fresh external packed-CLI smoke installation. The packed CLI
+reported `0.1.0-alpha.0`, included `PROJECT_PATH` in help, and its tarball
+contained 67 files. This documentation-only rerun did not execute the full
+suite; the current AIF regression evidence remains 522 passed with two
+Windows-only command-shim tests skipped locally.
+
+### Rerun verdict
+
+| Area                                 | Verdict                | Reason                                                                     |
+| ------------------------------------ | ---------------------- | -------------------------------------------------------------------------- |
+| Baseline stability                   | **UNSTABLE**           | target HEAD and status changed between snapshots                           |
+| Applye immutability                  | **NOT VERIFIED**       | no stable baseline exists to compare against                               |
+| Positional explicit-path behavior    | **PARTIALLY RESOLVED** | synthetic and packed tests pass; no new real-target invocation was allowed |
+| Adopt dry-run                        | **NOT EXECUTED**       | baseline gate blocked all AIF commands                                     |
+| Doctor                               | **NOT EXECUTED**       | baseline gate blocked all AIF commands                                     |
+| Diff                                 | **NOT EXECUTED**       | baseline gate blocked all AIF commands                                     |
+| Sync dry-run                         | **NOT EXECUTED**       | baseline gate blocked all AIF commands                                     |
+| Overall explicit-path Applye blocker | **NOT RESOLVED**       | retry only after external writers are paused and two snapshots match       |

@@ -34,11 +34,12 @@ The current path is `bin.ts → runCli() → syncProject() → synchronizeGenera
    authorization, command-collision review, and documented legal/trademark
    review remain required before publication.
 10. **Explicit-path Applye verification remains open.** The initial packed-CLI
-    audit halted when the target's pre-existing Git state diverged. It exposed
-    and corrected positional project-path parsing in AIF, but a clean stable
-    baseline is still required before real-project immutability, adoption,
-    doctor, diff, and sync dry-run evidence can be accepted. See
-    `docs/audits/APPLYE_EXPLICIT_PATH_VERIFICATION.md`.
+    audit exposed and corrected positional project-path parsing in AIF. Its
+    rerun stopped before invoking AIF because the target advanced commits during
+    the two-snapshot stability gate while Applye development processes were
+    active. A stable baseline is still required before real-project
+    immutability, adoption, doctor, diff, and sync dry-run evidence can be
+    accepted. See `docs/audits/APPLYE_EXPLICIT_PATH_VERIFICATION.md`.
 
 ## Required before stable 0.1.0
 
@@ -66,8 +67,8 @@ The current path is `bin.ts → runCli() → syncProject() → synchronizeGenera
 
 ## Verification observed
 
-The complete suite contains 512 passing tests in 34 files with no failures or
-skips on both Node 22.17.0 and checksum-verified Node 24.18.0. The packed
+The current local regression suite contains 522 passing tests and two
+Windows-only command-shim tests skipped locally, with no failures. The packed
 artifact exercises every adapter, all-adapter generation, no-op sync, doctor,
 conflicts, spaces, Unicode, portable metadata, and stable version output.
 Typecheck, lint, formatting, build, and `git diff --check` pass. The hosted
