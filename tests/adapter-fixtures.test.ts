@@ -1,14 +1,14 @@
 import { resolve } from "node:path";
 import { beforeAll, describe, expect, it } from "vitest";
-import { generateAdapter, getAdapterContract } from "@aif/adapters";
-import { loadCatalog, type AdapterName, type Catalog } from "@aif/core";
+import { generateAdapter, getAdapterContract } from "@intentloom/adapters";
+import { loadCatalog, type AdapterName, type Catalog } from "@intentloom/core";
 import {
   createMemoryFileSystem,
   doctorProject,
   initProject,
   syncProject,
-} from "@aif/cli";
-import { validateGeneratedFiles } from "@aif/validator";
+} from "@intentloom/cli";
+import { validateGeneratedFiles } from "@intentloom/validator";
 
 const adapters = ["claude", "codex", "cursor", "copilot"] as const;
 const catalogRoot = resolve("catalog");
@@ -17,7 +17,7 @@ let catalog: Catalog;
 const uniquePath: Readonly<Record<AdapterName, string>> = {
   claude: ".claude/skills/aif-branch-finisher/SKILL.md",
   codex: ".agents/skills/aif-branch-finisher/SKILL.md",
-  cursor: ".cursor/rules/aif-core.mdc",
+  cursor: ".cursor/rules/intentloom-core.mdc",
   copilot: ".github/copilot-instructions.md",
 };
 
@@ -239,23 +239,24 @@ describe("provider-specific adapter fixtures", () => {
     });
     expect(result.files.map((file) => file.path)).toEqual(
       expect.arrayContaining([
-        ".cursor/rules/aif-core.mdc",
-        ".cursor/rules/aif-typescript.mdc",
+        ".cursor/rules/intentloom-core.mdc",
+        ".cursor/rules/intentloom-typescript.mdc",
       ]),
     );
     expect(result.files.map((file) => file.path)).not.toEqual(
       expect.arrayContaining([".cursorrules", ".cursorignore"]),
     );
     expect(
-      result.files.find((file) => file.path === ".cursor/rules/aif-core.mdc")
-        ?.content,
+      result.files.find(
+        (file) => file.path === ".cursor/rules/intentloom-core.mdc",
+      )?.content,
     ).toMatch(
-      /^---\ndescription: AIF shared project guidance\nalwaysApply: true\n---\n/u,
+      /^---\ndescription: Intentloom shared project guidance\nalwaysApply: true\n---\n/u,
     );
   });
 
   it("Cursor preserves an existing project-owned current rule", async () => {
-    const path = ".cursor/rules/aif-core.mdc";
+    const path = ".cursor/rules/intentloom-core.mdc";
     const initial = { [`/project/${path}`]: "project Cursor rule\n" };
     const fs = createMemoryFileSystem(initial);
     const result = await initProject(
@@ -278,18 +279,19 @@ describe("provider-specific adapter fixtures", () => {
     expect(paths).toEqual(
       expect.arrayContaining([
         ".github/copilot-instructions.md",
-        ".github/instructions/aif.instructions.md",
-        ".github/instructions/aif-typescript.instructions.md",
+        ".github/instructions/intentloom.instructions.md",
+        ".github/instructions/intentloom-typescript.instructions.md",
       ]),
     );
     expect(
       result.files.find((file) =>
-        file.path.endsWith("aif-typescript.instructions.md"),
+        file.path.endsWith("intentloom-typescript.instructions.md"),
       )?.content,
     ).toMatch(/^---\napplyTo: "\*\*\/\*\.ts,\*\*\/\*\.tsx"\n---\n/u);
     expect(
       result.files.find(
-        (file) => file.path === ".github/instructions/aif.instructions.md",
+        (file) =>
+          file.path === ".github/instructions/intentloom.instructions.md",
       )?.content,
     ).toMatch(/^---\napplyTo: "\*\*"\n---\n/u);
   });
@@ -311,7 +313,7 @@ describe("provider-specific adapter fixtures", () => {
   });
 
   it("Copilot preserves an existing project-owned path instruction", async () => {
-    const path = ".github/instructions/aif.instructions.md";
+    const path = ".github/instructions/intentloom.instructions.md";
     const initial = { [`/project/${path}`]: "project scoped guidance\n" };
     const fs = createMemoryFileSystem(initial);
     const result = await initProject(

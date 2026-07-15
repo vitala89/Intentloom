@@ -3,7 +3,7 @@ import { beforeAll, describe, expect, it } from "vitest";
 import {
   createArtifactValidator,
   type ArtifactValidator,
-} from "@aif/validator";
+} from "@intentloom/validator";
 
 let validator: ArtifactValidator;
 beforeAll(async () => {

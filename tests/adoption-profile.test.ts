@@ -6,7 +6,7 @@ import {
   createMemoryFileSystem,
   detectProjectProfiles,
   nodeFileSystem,
-} from "@aif/cli";
+} from "@intentloom/cli";
 
 describe("adoption profile detection", () => {
   it("selects Angular plus Tauri from deterministic repository evidence", async () => {

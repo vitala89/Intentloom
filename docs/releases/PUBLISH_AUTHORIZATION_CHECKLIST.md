@@ -10,7 +10,7 @@ private information in the repository.
 - [ ] npm username is confirmed through the maintainer's approved npm process.
 - [ ] Registry is confirmed as `https://registry.npmjs.org/`, unless an
       approved exception is documented.
-- [ ] Exact `aif-core` package state is confirmed, including the date and
+- [ ] Exact `intentloom` package state is confirmed, including the date and
       evidence-command classification.
 - [ ] Package owner rights are confirmed, or the first-publication state is
       confirmed with its limits documented.
@@ -22,18 +22,18 @@ private information in the repository.
       completed; neither option means legal clearance.
 - [ ] If using a fallback scoped name, use only a scope controlled by the
       authenticated account or organization. Do not infer control from a lookup or
-      from the `@aif` spelling.
+      from the `@intentloom` spelling.
 - [ ] Record the successful, authenticated equivalent of [`npm access list
 packages`](https://docs.npmjs.com/cli/v11/commands/npm-access/) (the installed
       npm CLI does not support `npm access ls-packages`).
-- [ ] Run `npm view aif-core --registry=https://registry.npmjs.org/` and retain
+- [ ] Run `npm view intentloom --registry=https://registry.npmjs.org/` and retain
       the timestamped result with the release record. A 404 is only a point-in-time
       availability signal, not a reservation.
 
 ## Name and trademark diligence
 
-- [ ] Check exact and similar names for `AIF`, `AIF Core`, `aif-core`,
-      `Agentic Engineering Framework`, and `aif` in npm, GitHub, and general web
+- [ ] Check exact and similar names for `Intentloom`, `intentloom`, and
+      `intentloom-cli` in npm, GitHub, and general web
       search. Record URLs, dates, and relevant software/category context.
 - [ ] Search the official EUIPO/TMview, DPMAregister, WIPO Global Brand
       Database, and USPTO trademark systems for exact, visual/phonetic, and
@@ -41,7 +41,7 @@ packages`](https://docs.npmjs.com/cli/v11/commands/npm-access/) (the installed
       relevant Nice classes.
 - [ ] Obtain legal review for any material result or before a production name
       decision. Registry and web searches are not legal clearance.
-- [ ] Check `aif` command collisions in npm, Homebrew/Linux package indexes,
+- [ ] Check `intentloom` command collisions in npm, Homebrew/Linux package indexes,
       PyPI, crates.io, and common shell-command usage. Decide whether the command
       remains usable and document any mitigation.
 

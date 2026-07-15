@@ -5,8 +5,8 @@ import {
   type FileSystem,
   type PostWriteCorruptionContext,
   type PostWriteCorruptionCode,
-} from "@aif/cli";
-import { checksum, type GeneratedFile } from "@aif/core";
+} from "@intentloom/cli";
+import { checksum, type GeneratedFile } from "@intentloom/core";
 import {
   assertProjectStateUnchanged,
   snapshotProjectState,
@@ -248,7 +248,7 @@ const corruptionCases: readonly CorruptionCase[] = [
     },
   },
   {
-    name: "rejects a non-AIF ownership classification",
+    name: "rejects a non-Intentloom ownership classification",
     code: "ownership-classification-invalid",
     corrupt: async ({ fileSystem }) => {
       const sourceMap = await readJson(fileSystem, sourceMapPath);

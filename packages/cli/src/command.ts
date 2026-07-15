@@ -22,7 +22,7 @@ import {
   type TransactionResult,
   type TransactionStage,
 } from "./index.js";
-import { AIF_VERSION, type AdapterName } from "@aif/core";
+import { INTENTLOOM_VERSION, type AdapterName } from "@intentloom/core";
 import {
   createArtifactValidator,
   SchemaCatalogError,
@@ -30,7 +30,7 @@ import {
   type ArtifactType,
   type ArtifactValidationResult,
   type ArtifactValidator,
-} from "@aif/validator";
+} from "@intentloom/validator";
 
 export type CliExitCode = 0 | 2 | 3 | 4 | 5;
 
@@ -89,8 +89,8 @@ const booleanFlags = new Set(["--dry-run", "--force", "--json"]);
 const valueFlags = new Set(["--root", "--profile", "--adapters", "--task"]);
 const adapters = new Set<AdapterName>(["claude", "codex", "cursor", "copilot"]);
 const usage = [
-  "Usage: aif <init|plan> [--root PATH] [--dry-run]",
-  "       aif <adopt|diff|sync|doctor> [PROJECT_PATH|--root PATH] [--dry-run]",
+  "Usage: intentloom <init|plan> [--root PATH] [--dry-run]",
+  "       intentloom <adopt|diff|sync|doctor> [PROJECT_PATH|--root PATH] [--dry-run]",
 ].join("\n");
 
 function parseArguments(args: readonly string[]): ParsedArguments {
@@ -252,7 +252,7 @@ export function formatHumanOutcome(outcome: CliSyncOutcome): string {
   if (outcome.dryRun) {
     if (outcome.status === "conflict")
       return [
-        "AIF sync dry run found conflicts.",
+        "Intentloom sync dry run found conflicts.",
         "",
         `Reason: ${outcome.errorCode}`,
         `Conflicts: ${outcome.conflicts.length}`,
@@ -260,7 +260,7 @@ export function formatHumanOutcome(outcome: CliSyncOutcome): string {
         "Dry run — no files were changed.",
       ].join("\n");
     return [
-      "AIF sync dry run.",
+      "Intentloom sync dry run.",
       "",
       ...counts(outcome),
       "Dry run — no files were changed.",
@@ -274,8 +274,8 @@ export function formatHumanOutcome(outcome: CliSyncOutcome): string {
       !outcome.sourceMapUpdated;
     return [
       noChanges
-        ? "AIF sync completed. No changes required."
-        : "AIF sync completed.",
+        ? "Intentloom sync completed. No changes required."
+        : "Intentloom sync completed.",
       "",
       ...counts(outcome),
       `Manifest updated: ${yesNo(outcome.manifestUpdated)}`,
@@ -286,7 +286,7 @@ export function formatHumanOutcome(outcome: CliSyncOutcome): string {
   }
   if (outcome.status === "conflict")
     return [
-      "AIF sync was not applied.",
+      "Intentloom sync was not applied.",
       "",
       `Reason: ${outcome.errorCode}`,
       `Conflicts: ${outcome.conflicts.length}`,
@@ -295,13 +295,13 @@ export function formatHumanOutcome(outcome: CliSyncOutcome): string {
     ].join("\n");
   if (outcome.rollbackCompleted)
     return [
-      `AIF sync failed during: ${outcome.failedStage ?? "unknown"}`,
+      `Intentloom sync failed during: ${outcome.failedStage ?? "unknown"}`,
       `Error: ${outcome.errorCode}`,
       "Rollback: completed",
       "Project state was restored.",
     ].join("\n");
   return [
-    `AIF sync failed during: ${outcome.failedStage ?? "unknown"}`,
+    `Intentloom sync failed during: ${outcome.failedStage ?? "unknown"}`,
     `Error: ${outcome.errorCode}`,
     "Rollback: incomplete",
     `Rollback error: ${outcome.rollbackErrorCode}`,
@@ -620,7 +620,7 @@ function formatValidationFailure(
       2,
     );
   return [
-    "AIF project artifact validation failed.",
+    "Intentloom project artifact validation failed.",
     ...errors.map(
       (error) =>
         `${error.documentPath} (${error.artifactType}, schema ${error.schemaVersion ?? "unknown"}) ${error.fieldPath || "/"}: ${error.message} [${error.code}; ${error.phase}]`,
@@ -634,7 +634,7 @@ export async function runCli(
   io: CliIo,
 ): Promise<CliExitCode> {
   if (args.includes("--version") || args[0] === "--version") {
-    io.stdout(AIF_VERSION);
+    io.stdout(INTENTLOOM_VERSION);
     return 0;
   }
   if (
@@ -834,7 +834,7 @@ export async function runCli(
       };
       const output = args.includes("--json")
         ? JSON.stringify(payload, null, 2)
-        : `AIF schema catalog validation failed: ${error.schemaFile} [${error.code}]`;
+        : `Intentloom schema catalog validation failed: ${error.schemaFile} [${error.code}]`;
       if (args[0] === "doctor") io.stdout(output);
       else io.stderr(output);
       return 3;

@@ -6,7 +6,7 @@ import {
   type GeneratedFile,
   normalizeOutputPath,
   storedPathCollisionKey,
-} from "@aif/core";
+} from "@intentloom/core";
 
 export interface AdapterResult {
   readonly adapter: AdapterName;
@@ -30,7 +30,7 @@ export interface AdapterGenerationOptions {
 const adapterVersion = "0.1.0";
 
 function versionedHeader(sources: readonly string[], body: string): string {
-  return `${generatedHeader(sources, body).trimEnd()}\n# AIF adapter output version: ${adapterVersion}\n\n`;
+  return `${generatedHeader(sources, body).trimEnd()}\n# Intentloom adapter output version: ${adapterVersion}\n\n`;
 }
 
 function versionedFile(
@@ -199,7 +199,7 @@ const contracts: Readonly<Record<AdapterName, AdapterContract>> = {
     schemaValidation: "generated-file",
     deterministicGeneration: true,
     compatibilityNotes: [
-      "Copilot instruction and agent surfaces vary by environment; AIF emits only portable repository instructions.",
+      "Copilot instruction and agent surfaces vary by environment; Intentloom emits only portable repository instructions.",
     ],
     migrationNotes: [sharedMigrationNote],
   },
@@ -211,9 +211,9 @@ export function getAdapterContract(adapter: AdapterName): AdapterContract {
 
 function sharedInstructions(catalog: Catalog): string {
   return [
-    "# AIF project guidance",
+    "# Intentloom project guidance",
     "",
-    "Follow the generated AIF policies and use focused skills for task-specific workflows.",
+    "Follow the generated Intentloom policies and use focused skills for task-specific workflows.",
     "Do not edit generated files manually; update the canonical catalog and regenerate.",
     "",
     "## Canonical policy sources",
@@ -257,19 +257,19 @@ function profileFile(
   if (profile === undefined || profile === "generic") return [];
   const globs = profileGlobs[profile];
   if (globs === undefined) return [];
-  const body = `Apply the shared AIF project guidance to the ${profile} profile paths.\n`;
+  const body = `Apply the shared Intentloom project guidance to the ${profile} profile paths.\n`;
   return adapter === "cursor"
     ? [
         frontmatterFile(
-          `.cursor/rules/aif-${profile}.mdc`,
-          `---\ndescription: AIF ${profile} profile guidance\nglobs: "${globs}"\nalwaysApply: false\n---`,
+          `.cursor/rules/intentloom-${profile}.mdc`,
+          `---\ndescription: Intentloom ${profile} profile guidance\nglobs: "${globs}"\nalwaysApply: false\n---`,
           body,
           canonicalSources,
         ),
       ]
     : [
         frontmatterFile(
-          `.github/instructions/aif-${profile}.instructions.md`,
+          `.github/instructions/intentloom-${profile}.instructions.md`,
           `---\napplyTo: "${globs}"\n---`,
           body,
           canonicalSources,
@@ -312,8 +312,8 @@ export function generateAdapter(
         files: [
           versionedFile("AGENTS.md", common, catalog.policies),
           frontmatterFile(
-            ".cursor/rules/aif-core.mdc",
-            "---\ndescription: AIF shared project guidance\nalwaysApply: true\n---",
+            ".cursor/rules/intentloom-core.mdc",
+            "---\ndescription: Intentloom shared project guidance\nalwaysApply: true\n---",
             common,
             catalog.policies,
           ),
@@ -337,7 +337,7 @@ export function generateAdapter(
             catalog.policies,
           ),
           frontmatterFile(
-            ".github/instructions/aif.instructions.md",
+            ".github/instructions/intentloom.instructions.md",
             '---\napplyTo: "**"\n---',
             common,
             catalog.policies,

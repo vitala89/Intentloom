@@ -1,8 +1,8 @@
-# AIF v0.1 Specification
+# Intentloom v0.1 Specification
 
 ## Purpose
 
-AIF makes repeatable engineering guidance portable across AI coding tools without making the tools interchangeable. It owns canonical engineering content and deterministic transformation rules; each tool retains its own runtime, authorization, and execution model.
+Intentloom makes repeatable engineering guidance portable across AI coding tools without making the tools interchangeable. It owns canonical engineering content and deterministic transformation rules; each tool retains its own runtime, authorization, and execution model.
 
 ## Scope
 
@@ -15,10 +15,10 @@ Out of scope: MCP, CodeGraph/Graphify, hosted services, telemetry, marketplace, 
 1. Every reusable artifact has one canonical source below `catalog/`.
 2. Canonical artifacts must not contain vendor syntax or behavior.
 3. An adapter may emit only documented, supported target formats; unsupported targets remain ungenerated.
-4. Every generated file identifies AIF framework version, adapter version, canonical source path, generation warning, and content checksum when the target format permits it.
+4. Every generated file identifies Intentloom framework version, adapter version, canonical source path, generation warning, and content checksum when the target format permits it.
 5. Installed projects use `.aif/config.yaml`, `.aif/manifest.lock.json`, and `.aif/source-map.json`.
 6. Any write-capable command supports dry-run and diff preview, detects conflicts, and creates a backup or asks for explicit confirmation before replacement.
-7. AIF performs no network request, telemetry, dependency installation, or hook installation unless a future user-visible command explicitly adds and documents that capability.
+7. Intentloom performs no network request, telemetry, dependency installation, or hook installation unless a future user-visible command explicitly adds and documents that capability.
 
 ## Artifact model
 
@@ -31,13 +31,13 @@ Out of scope: MCP, CodeGraph/Graphify, hosted services, telemetry, marketplace, 
 | Schema   | `catalog/schemas/`   | Validated machine-readable contract               |
 | Profile  | `profiles/`          | Selected artifact set and parameters              |
 
-Canonical skills follow the open [Agent Skills specification](https://agentskills.io/specification): a skill directory containing `SKILL.md` with required `name` and `description` frontmatter. AIF may add its own schema around, but does not redefine, the standard skill payload.
+Canonical skills follow the open [Agent Skills specification](https://agentskills.io/specification): a skill directory containing `SKILL.md` with required `name` and `description` frontmatter. Intentloom may add its own schema around, but does not redefine, the standard skill payload.
 
 ## Versioning
 
 | Version           | Meaning                                | Compatibility rule           |
 | ----------------- | -------------------------------------- | ---------------------------- |
-| Framework version | AIF release                            | SemVer                       |
+| Framework version | Intentloom release                     | SemVer                       |
 | Schema version    | Canonical manifest/schema contract     | Explicit compatibility range |
 | Adapter version   | Transformation behavior for one target | SemVer, recorded in output   |
 | Lock version      | Installed-project lock format          | Explicit parser support      |
@@ -48,8 +48,8 @@ Canonical skills follow the open [Agent Skills specification](https://agentskill
 
 | Command  | Intent                                    | Writes?                       |
 | -------- | ----------------------------------------- | ----------------------------- |
-| `init`   | Create a new AIF layout                   | With preview and confirmation |
-| `adopt`  | Map AIF into an existing project          | With conflict detection       |
+| `init`   | Create a new Intentloom layout            | With preview and confirmation |
+| `adopt`  | Map Intentloom into an existing project   | With conflict detection       |
 | `plan`   | Explain resolved profile and target files | No                            |
 | `diff`   | Compare desired and installed state       | No                            |
 | `sync`   | Apply an approved plan                    | Only after safety gates       |

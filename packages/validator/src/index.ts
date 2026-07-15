@@ -12,7 +12,7 @@ import {
   parseAifConfig,
   parseSkill,
   type GeneratedFile,
-} from "@aif/core";
+} from "@intentloom/core";
 
 export type ArtifactType =
   | "aif-config"
@@ -556,13 +556,13 @@ export async function createArtifactValidator(
           for (const [code, pattern] of requiredSections)
             if (!pattern.test(body))
               semanticErrors.push(
-                issue(code, "required AIF policy section is missing"),
+                issue(code, "required Intentloom policy section is missing"),
               );
           if (!/Do not trigger/iu.test(body))
             semanticErrors.push(
               issue(
                 "skill-non-trigger-required",
-                "AIF skills require an explicit non-trigger condition",
+                "Intentloom skills require an explicit non-trigger condition",
               ),
             );
         }

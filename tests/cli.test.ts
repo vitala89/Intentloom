@@ -4,8 +4,8 @@ import {
   doctorProject,
   initProject,
   syncProject,
-} from "@aif/cli";
-import { checksum, type Catalog } from "@aif/core";
+} from "@intentloom/cli";
+import { checksum, type Catalog } from "@intentloom/core";
 
 const injectedCatalog: Catalog = {
   policies: ["policies/core.md"],

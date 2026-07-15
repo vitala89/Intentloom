@@ -1,6 +1,10 @@
 import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
-import { createMemoryFileSystem, doctorProject, initProject } from "@aif/cli";
+import {
+  createMemoryFileSystem,
+  doctorProject,
+  initProject,
+} from "@intentloom/cli";
 
 describe("adapter compatibility diagnostics", () => {
   it("reports Cursor experimental and unsupported capabilities from its contract", async () => {
@@ -84,7 +88,7 @@ describe("adapter compatibility diagnostics", () => {
       catalogRoot: resolve("catalog"),
     };
     await initProject(options, fs);
-    const path = ".cursor/rules/aif-typescript.mdc";
+    const path = ".cursor/rules/intentloom-typescript.mdc";
     await fs.write(`/project/${path}`, "PRIVATE globs: C:\\project\\**\n");
     const report = await doctorProject(options, fs);
     expect(report.findings).toEqual(

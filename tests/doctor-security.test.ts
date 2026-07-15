@@ -2,7 +2,7 @@ import { mkdtemp, mkdir, readdir, rm, symlink } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import { doctorProject, nodeFileSystem } from "@aif/cli";
+import { doctorProject, nodeFileSystem } from "@intentloom/cli";
 
 describe("doctor path security", () => {
   it("reports a symlinked metadata path without traversing or writing it", async () => {

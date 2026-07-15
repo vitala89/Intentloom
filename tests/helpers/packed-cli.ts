@@ -24,7 +24,7 @@ function execution(result: ReturnType<typeof spawnSync>): PackedExecution {
 
 export function resolvePackedCliEntry(
   runtime: string,
-  packageName = "aif-core",
+  packageName = "intentloom",
 ) {
   const packageJson = join(
     runtime,
@@ -36,9 +36,9 @@ export function resolvePackedCliEntry(
     bin?: string | Record<string, string>;
   };
   const bin =
-    typeof manifest.bin === "string" ? manifest.bin : manifest.bin?.aif;
+    typeof manifest.bin === "string" ? manifest.bin : manifest.bin?.intentloom;
   if (!bin)
-    throw new Error(`Packed CLI package has no aif bin: ${packageJson}`);
+    throw new Error(`Packed CLI package has no intentloom bin: ${packageJson}`);
 
   const entry = resolve(dirname(packageJson), bin);
   if (!existsSync(entry))
@@ -47,7 +47,7 @@ export function resolvePackedCliEntry(
 }
 
 export function packedCommandShim(runtime: string) {
-  return join(runtime, "node_modules", ".bin", "aif.cmd");
+  return join(runtime, "node_modules", ".bin", "intentloom.cmd");
 }
 
 export function runPackedCli(entry: string, args: string[], cwd: string) {

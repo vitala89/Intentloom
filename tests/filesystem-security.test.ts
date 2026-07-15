@@ -2,7 +2,11 @@ import { mkdtemp, mkdir, readFile, symlink, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { describe, expect, it } from "vitest";
-import { destinationCollisionKey, initProject, nodeFileSystem } from "@aif/cli";
+import {
+  destinationCollisionKey,
+  initProject,
+  nodeFileSystem,
+} from "@intentloom/cli";
 
 describe("filesystem security", () => {
   it("rejects a broken generated-file symlink without creating its external target", async () => {

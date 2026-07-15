@@ -5,8 +5,12 @@ import {
   synchronizeGeneratedFiles,
   type FileSystem,
   type TransactionResult,
-} from "@aif/cli";
-import { AIF_VERSION, checksum, type GeneratedFile } from "@aif/core";
+} from "@intentloom/cli";
+import {
+  INTENTLOOM_VERSION,
+  checksum,
+  type GeneratedFile,
+} from "@intentloom/core";
 import { snapshotProjectState } from "./project-state.js";
 
 const root = "/project";
@@ -86,7 +90,7 @@ describe("successful post-write consistency", () => {
     });
   });
 
-  it("validates update of one existing AIF-owned generated file", async () => {
+  it("validates update of one existing Intentloom-owned generated file", async () => {
     const fs = createMemoryFileSystem();
     await synchronizeGeneratedFiles(root, oneFile, fs);
     const updated = [{ ...oneFile[0]!, content: "updated one\n" }];
@@ -95,7 +99,7 @@ describe("successful post-write consistency", () => {
     expect(await fs.read(`${root}/AGENTS.md`)).toBe("updated one\n");
   });
 
-  it("validates update of multiple existing AIF-owned generated files", async () => {
+  it("validates update of multiple existing Intentloom-owned generated files", async () => {
     const fs = createMemoryFileSystem();
     await synchronizeGeneratedFiles(root, twoFiles, fs);
     const updated = twoFiles.map((file) => ({
@@ -190,8 +194,8 @@ describe("successful post-write consistency", () => {
   it("validates compatible framework versions", async () => {
     const { fs } = await expectValid();
     const { manifest, sourceMap } = await metadata(fs);
-    expect(manifest.frameworkVersion).toBe(AIF_VERSION);
-    expect(sourceMap.frameworkVersion).toBe(AIF_VERSION);
+    expect(manifest.frameworkVersion).toBe(INTENTLOOM_VERSION);
+    expect(sourceMap.frameworkVersion).toBe(INTENTLOOM_VERSION);
   });
 
   it("validates compatible adapter output versions", async () => {

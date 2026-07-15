@@ -27,7 +27,7 @@
     "expectedPaths": [
       ".agents/skills/plan/SKILL.md",
       ".agents/skills/review/SKILL.md",
-      ".cursor/rules/aif-core.mdc",
+      ".cursor/rules/intentloom-core.mdc",
       "AGENTS.md"
     ]
   },
@@ -37,7 +37,7 @@
     "adapters": ["copilot"],
     "expectedPaths": [
       ".github/copilot-instructions.md",
-      ".github/instructions/aif.instructions.md",
+      ".github/instructions/intentloom.instructions.md",
       ".github/skills/plan/SKILL.md",
       ".github/skills/review/SKILL.md",
       "AGENTS.md"
@@ -52,9 +52,9 @@
       ".agents/skills/review/SKILL.md",
       ".claude/skills/plan/SKILL.md",
       ".claude/skills/review/SKILL.md",
-      ".cursor/rules/aif-core.mdc",
+      ".cursor/rules/intentloom-core.mdc",
       ".github/copilot-instructions.md",
-      ".github/instructions/aif.instructions.md",
+      ".github/instructions/intentloom.instructions.md",
       ".github/skills/plan/SKILL.md",
       ".github/skills/review/SKILL.md",
       "AGENTS.md",
@@ -67,8 +67,8 @@
     "adapters": ["claude", "codex", "cursor", "copilot"],
     "extends": "generic-all",
     "additionalPaths": [
-      ".cursor/rules/aif-typescript.mdc",
-      ".github/instructions/aif-typescript.instructions.md"
+      ".cursor/rules/intentloom-typescript.mdc",
+      ".github/instructions/intentloom-typescript.instructions.md"
     ]
   },
   {
@@ -80,8 +80,8 @@
       ".agents/skills/review/SKILL.md",
       ".claude/skills/plan/SKILL.md",
       ".claude/skills/review/SKILL.md",
-      ".cursor/rules/aif-angular.mdc",
-      ".cursor/rules/aif-core.mdc",
+      ".cursor/rules/intentloom-angular.mdc",
+      ".cursor/rules/intentloom-core.mdc",
       "AGENTS.md",
       "CLAUDE.md"
     ]
@@ -105,8 +105,8 @@
     "adapters": ["claude", "codex", "cursor", "copilot"],
     "extends": "generic-all",
     "additionalPaths": [
-      ".cursor/rules/aif-tauri.mdc",
-      ".github/instructions/aif-tauri.instructions.md"
+      ".cursor/rules/intentloom-tauri.mdc",
+      ".github/instructions/intentloom-tauri.instructions.md"
     ]
   },
   {
@@ -115,8 +115,8 @@
     "adapters": ["claude", "codex", "cursor", "copilot"],
     "extends": "generic-all",
     "additionalPaths": [
-      ".cursor/rules/aif-angular-tauri.mdc",
-      ".github/instructions/aif-angular-tauri.instructions.md"
+      ".cursor/rules/intentloom-angular-tauri.mdc",
+      ".github/instructions/intentloom-angular-tauri.instructions.md"
     ]
   }
 ]

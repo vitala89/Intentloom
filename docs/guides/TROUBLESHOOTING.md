@@ -1,10 +1,10 @@
 # TROUBLESHOOTING
 
-Use the local AIF CLI; it makes no network calls.
+Use the local Intentloom CLI; it makes no network calls.
 
 ## Safety
 
-Start with `--dry-run`, inspect `aif diff`, and resolve conflicts explicitly. AIF never modifies Applye or another project unless it is the explicit root.
+Start with `--dry-run`, inspect `intentloom diff`, and resolve conflicts explicitly. Intentloom never modifies Applye or another project unless it is the explicit root.
 
 ## Sync failures
 
@@ -19,14 +19,14 @@ For `json-malformed`, `yaml-malformed`, `yaml-duplicate-key`, or
 `yaml-unsafe-tag`, repair the indicated document without pasting private values
 into issue reports. `schema-version-missing` requires an explicit version;
 `schema-version-unsupported` requires a documented migration, not a manual
-version bump. Run `aif doctor --json` to distinguish structural errors from
+version bump. Run `intentloom doctor --json` to distinguish structural errors from
 filesystem or cross-document semantic errors.
 
 For CI, treat only exit `0` as success. Exit `4` means the workspace was restored but the requested sync did not complete; it must not be silently ignored.
 
 ## Adoption and doctor recovery
 
-- Start with `aif adopt --dry-run --json`. A manual-decision item means keep the
+- Start with `intentloom adopt --dry-run --json`. A manual-decision item means keep the
   file project-owned until its generated destination is explicitly resolved.
 - For missing config, manifest, or source map, do not hand-create ownership.
   Review adoption output and apply only a complete safe proposal.
@@ -35,7 +35,7 @@ For CI, treat only exit `0` as success. Exit `4` means the workspace was restore
 - For orphaned ownership records or missing generated files, compare both
   metadata documents and the reported project-relative destination. Do not
   delete a project file merely because its path resembles generated output.
-- For checksum/header/version drift, review `aif diff` and sync dry-run before
+- For checksum/header/version drift, review `intentloom diff` and sync dry-run before
   transactional regeneration. Doctor does not update stale state.
 - Doctor exit `0` allows warning/info findings; exit `3` means at least one
   error finding. Usage remains exit `2`; doctor never returns `4` or `5`.
@@ -49,8 +49,8 @@ For CI, treat only exit `0` as success. Exit `4` means the workspace was restore
   host-native backslashes.
 - For `stored-path-incompatible`, preserve both metadata files, migrate the
   unsafe entry to the documented project-relative form, and rerun doctor before
-  sync. Do not copy an absolute host path into AIF metadata.
+  sync. Do not copy an absolute host path into Intentloom metadata.
 - For adapter removal, review `adapter-selection-conflict` and orphan findings.
-  AIF intentionally does not delete the prior adapter's files.
+  Intentloom intentionally does not delete the prior adapter's files.
 - If a package manager reports an engine mismatch, use Node 22 or newer. Node 21
   and older are outside the supported range.

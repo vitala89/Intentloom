@@ -78,7 +78,7 @@ describe("packed adapter compatibility matrix", () => {
     expect(runPackedCommandShim(shim, ["--help"], runtime).status).toBe(0);
     expect(
       runPackedCommandShim(shim, ["--version"], runtime).stdout.trim(),
-    ).toBe("0.1.0-alpha.1");
+    ).toBe("0.1.0-alpha.2");
   });
 
   it.each(["claude", "codex", "cursor", "copilot"])(
@@ -175,6 +175,6 @@ describe("packed adapter compatibility matrix", () => {
   });
 
   it("reports the unchanged framework version", () => {
-    expect(aif(["--version"]).stdout.trim()).toBe("0.1.0-alpha.1");
+    expect(aif(["--version"]).stdout.trim()).toBe("0.1.0-alpha.2");
   });
 });

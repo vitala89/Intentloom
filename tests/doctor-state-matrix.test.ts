@@ -1,6 +1,6 @@
 import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
-import { createMemoryFileSystem, type FileSystem } from "@aif/cli";
+import { createMemoryFileSystem, type FileSystem } from "@intentloom/cli";
 import { runCli } from "../packages/cli/src/command.js";
 
 type MemoryFs = FileSystem & { files: Map<string, string> };

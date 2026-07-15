@@ -1,5 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { createMemoryFileSystem, synchronizeGeneratedFiles } from "@aif/cli";
+import {
+  createMemoryFileSystem,
+  synchronizeGeneratedFiles,
+} from "@intentloom/cli";
 import {
   assertProjectStateUnchanged,
   snapshotProjectState,

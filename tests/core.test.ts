@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { normalizeOutputPath } from "@aif/core";
+import { normalizeOutputPath } from "@intentloom/core";
 
 describe("output path safety", () => {
   it("rejects a traversal attempt", () => {

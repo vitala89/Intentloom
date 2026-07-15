@@ -1,6 +1,6 @@
 # GENERATED FILES
 
-AIF commands are local and deterministic. A generated header is not ownership proof: only a valid `.aif/source-map.json` record with normalized relative path and matching checksum establishes `aif-owned-generated` status. Generated destinations are written before the lock and source map; metadata finalizes only after destination writes succeed. A recoverable failure restores prior files and removes newly created files.
+Intentloom commands are local and deterministic. A generated header is not ownership proof: only a valid `.aif/source-map.json` record with normalized relative path and matching checksum establishes `aif-owned-generated` status. Generated destinations are written before the lock and source map; metadata finalizes only after destination writes succeed. A recoverable failure restores prior files and removes newly created files.
 
 The manifest lock and source map declare schema version `1`, framework version,
 adapter-output version, local metadata-format version, adapter and canonical
@@ -17,11 +17,11 @@ or post-write validation.
 
 The CLI derives canonical source hashes from catalog file bytes. A programmatic
 caller that injects an in-memory catalog must supply the corresponding content
-hash evidence; AIF rejects the plan rather than hashing a source identifier or
+hash evidence; Intentloom rejects the plan rather than hashing a source identifier or
 emitting a misleading pin. Adapter pins use the version exported by the adapter
 module, so generation and lock metadata have one version authority.
 
-Before a write plan is accepted, AIF evaluates a portable normalized collision key (POSIX separators, NFC Unicode normalization, and case-folding) and resolves existing destination parents against the project root. This mitigates link escapes but cannot eliminate a filesystem TOCTOU race between validation and replacement.
+Before a write plan is accepted, Intentloom evaluates a portable normalized collision key (POSIX separators, NFC Unicode normalization, and case-folding) and resolves existing destination parents against the project root. This mitigates link escapes but cannot eliminate a filesystem TOCTOU race between validation and replacement.
 
 The collision sequence rejects absolute/null-byte input, converts separators, normalizes dot segments, rejects root escape, removes redundant `./`, applies NFC, then locale-independent lowercase comparison. This is deterministic but is not a complete Unicode case-folding implementation.
 
@@ -47,7 +47,7 @@ Every invalid post-write result fails at `post-write-consistency` and enters the
 
 An incomplete rollback adds the stable `transaction-rollback-incomplete` diagnostic without replacing the original transaction failure. Manual inspection is required for the listed project-relative paths.
 
-The real `aif sync` path now executes this transaction and maps its result directly to CLI output and exit codes. Transaction summaries expose sorted created, updated, and unchanged generated paths; manifest/source-map update flags; consistency status; and cleanup status. A pre-write ownership, collision, or path-security conflict does not enter the transaction and exits with code `3`.
+The real `intentloom sync` path now executes this transaction and maps its result directly to CLI output and exit codes. Transaction summaries expose sorted created, updated, and unchanged generated paths; manifest/source-map update flags; consistency status; and cleanup status. A pre-write ownership, collision, or path-security conflict does not enter the transaction and exits with code `3`.
 
 Adoption uses this same transaction path only after a proposal has no manual
 decisions. Existing mapped instructions and documentation do not receive

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { normalizeStoredPath, storedPathCollisionKey } from "@aif/core";
+import { normalizeStoredPath, storedPathCollisionKey } from "@intentloom/core";
 
 describe("portable stored paths", () => {
   it("normalizes relative Windows separators and Unicode to stored form", () => {

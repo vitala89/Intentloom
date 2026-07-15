@@ -1,25 +1,27 @@
-# AIF — Agentic Engineering Framework
+# Intentloom
 
-AIF is a vendor-neutral, open-source framework for consistent AI-assisted software engineering. It supplies a canonical catalog of policies, workflows, templates, schemas, and Agent Skills, then generates tool-specific adapters for Claude Code, OpenAI Codex, Cursor, and GitHub Copilot.
+Define engineering intent once. Use it consistently across AI coding tools.
+
+Intentloom is a vendor-neutral framework for defining, validating, and synchronizing engineering intent across AI coding tools. It supplies a canonical catalog of policies, workflows, templates, schemas, and Agent Skills, then generates deterministic adapters for Claude Code, OpenAI Codex, Cursor, and GitHub Copilot.
 
 It is not an LLM, API proxy, autonomous runtime, MCP server, or replacement for coding agents.
 
 ## Status
 
-`aif-core` is alpha software. It provides the `aif` CLI for Node.js 22 or
+`intentloom` is alpha software. It provides the `intentloom` CLI for Node.js 22 or
 newer, with hosted Linux, macOS, and Windows verification on Node 22 and 24.
 Commands are offline-first and do not send telemetry.
 
 ```sh
-npm install --global aif-core
-aif --help
-aif init --dry-run
-aif adopt --dry-run
-aif doctor
-aif sync --dry-run
+npm install --global intentloom
+intentloom --help
+intentloom init --dry-run
+intentloom adopt --dry-run
+intentloom doctor
+intentloom sync --dry-run
 ```
 
-Supported adapters are Claude Code, Codex, Cursor, and GitHub Copilot. AIF
+Supported adapters are Claude Code, Codex, Cursor, and GitHub Copilot. Intentloom
 preserves project-owned files and reports conflicts rather than overwriting.
 
 ## Principles
@@ -42,4 +44,4 @@ examples/         Dogfooding and usage examples
 tests/            Fixtures and conformance tests
 ```
 
-Read the [v0.1 specification](docs/specs/AIF_V0_1_SPEC.md), [architecture](docs/architecture/ARCHITECTURE.md), and [compatibility matrix](docs/compatibility/COMPATIBILITY_MATRIX.md). See [CONTRIBUTING.md](CONTRIBUTING.md) to contribute, [issues](https://github.com/vitala89/aif-core/issues) for support, and [LICENSE](LICENSE) for terms.
+Read the [v0.1 specification](docs/specs/AIF_V0_1_SPEC.md), [architecture](docs/architecture/ARCHITECTURE.md), and [compatibility matrix](docs/compatibility/COMPATIBILITY_MATRIX.md). See [CONTRIBUTING.md](CONTRIBUTING.md) to contribute, [issues](https://github.com/vitala89/aif-core/issues) for support, and [LICENSE](LICENSE) for terms. The repository name remains historical until separately renamed.

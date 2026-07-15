@@ -14,7 +14,7 @@ import { beforeAll, describe, expect, it } from "vitest";
 import { resolvePackedCliEntry, runPackedCli } from "./helpers/packed-cli.js";
 
 const repositoryRoot = resolve(".");
-const cli = resolve("packages/cli/dist/aif.cjs");
+const cli = resolve("packages/cli/dist/intentloom.cjs");
 const windows = process.platform === "win32";
 const command = (name: string) => (windows ? `${name}.cmd` : name);
 

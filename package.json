@@ -1,6 +1,6 @@
 {
-  "name": "@aif/workspace",
-  "version": "0.1.0-alpha.1",
+  "name": "@intentloom/workspace",
+  "version": "0.1.0-alpha.2",
   "private": true,
   "type": "module",
   "packageManager": "pnpm@10.12.4",

@@ -51,7 +51,7 @@ No adapter may become a second canonical catalog. Tool-specific features must be
 
 ## Generated-file envelope
 
-Where a target supports comments, each file begins with an AIF envelope containing framework and adapter versions, canonical source path(s), generation warning, and checksum. For formats that cannot safely carry comments, equivalent metadata is kept in `source-map.json`; the adapter must document the limitation.
+Where a target supports comments, each file begins with an Intentloom envelope containing framework and adapter versions, canonical source path(s), generation warning, and checksum. For formats that cannot safely carry comments, equivalent metadata is kept in `source-map.json`; the adapter must document the limitation.
 
 ## Safety model
 

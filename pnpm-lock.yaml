@@ -29,7 +29,7 @@ importers:
 
   packages/adapters:
     dependencies:
-      "@aif/core":
+      "@intentloom/core":
         specifier: workspace:*
         version: link:../core
 
@@ -43,7 +43,7 @@ importers:
 
   packages/validator:
     dependencies:
-      "@aif/core":
+      "@intentloom/core":
         specifier: workspace:*
         version: link:../core
       ajv:

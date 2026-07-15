@@ -1,13 +1,13 @@
 {
-  "name": "@aif/adapters",
-  "version": "0.1.0-alpha.1",
+  "name": "@intentloom/adapters",
+  "version": "0.1.0-alpha.2",
   "private": true,
   "engines": {
     "node": ">=22"
   },
   "type": "module",
   "dependencies": {
-    "@aif/core": "workspace:*"
+    "@intentloom/core": "workspace:*"
   },
   "exports": {
     ".": "./src/index.ts"
