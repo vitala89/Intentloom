@@ -138,7 +138,7 @@ describe("public package publishing readiness", () => {
     );
     expect(cli).toMatchObject({
       name: "aif-core",
-      version: "0.1.0-alpha.0",
+      version: "0.1.0-alpha.1",
       license: "MIT",
       private: false,
       homepage: "https://github.com/vitala89/aif-core#readme",
@@ -187,7 +187,7 @@ describe("public package publishing readiness", () => {
       await mkdir(root);
       expect(runPackedCli(entry, ["--help"], runtime).status).toBe(0);
       expect(runPackedCli(entry, ["--version"], runtime).stdout.trim()).toBe(
-        "0.1.0-alpha.0",
+        "0.1.0-alpha.1",
       );
       expect(
         runPackedCli(

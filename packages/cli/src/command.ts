@@ -22,7 +22,7 @@ import {
   type TransactionResult,
   type TransactionStage,
 } from "./index.js";
-import type { AdapterName } from "@aif/core";
+import { AIF_VERSION, type AdapterName } from "@aif/core";
 import {
   createArtifactValidator,
   SchemaCatalogError,
@@ -634,7 +634,7 @@ export async function runCli(
   io: CliIo,
 ): Promise<CliExitCode> {
   if (args.includes("--version") || args[0] === "--version") {
-    io.stdout("0.1.0-alpha.0");
+    io.stdout(AIF_VERSION);
     return 0;
   }
   if (

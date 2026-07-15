@@ -4,6 +4,8 @@ All notable changes are documented here. This project follows Keep a Changelog p
 
 ## [Unreleased]
 
+## [0.1.0-alpha.1] - 2026-07-15
+
 ### Added
 
 - Canonical policies, workflows, templates, portable Agent Skills, schemas, profiles, adapters, validator, and local CLI implementation are present in the repository.
@@ -26,8 +28,8 @@ All notable changes are documented here. This project follows Keep a Changelog p
   and incident handling requirements; real publication remains blocked pending
   ownership and naming/trademark review.
 - Added positional explicit-project-path support for `adopt`, `doctor`, `diff`,
-  and `sync`, with a no-write regression test. The Applye packed-CLI audit is
-  documented as halted pending a stable target baseline.
+  and `sync`, with a no-write regression test. The final Applye packed-CLI audit
+  passed its writer, baseline-stability, determinism, and immutability checks.
 
 ### Fixed
 
@@ -85,7 +87,7 @@ All notable changes are documented here. This project follows Keep a Changelog p
 
 ### Migration
 
-- No published migration is available; release readiness is currently blocked.
+- No migration is required for this prerelease.
 
 ## [0.1.0] - 2026-07-13
 

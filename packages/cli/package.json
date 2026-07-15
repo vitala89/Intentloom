@@ -1,6 +1,6 @@
 {
   "name": "aif-core",
-  "version": "0.1.0-alpha.0",
+  "version": "0.1.0-alpha.1",
   "description": "Alpha CLI for AIF — Agentic Engineering Framework local workflows.",
   "license": "MIT",
   "private": false,

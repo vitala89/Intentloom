@@ -1,6 +1,8 @@
 # v0.1 Release Readiness Audit
 
-Audit date: 2026-07-13. Scope: repository state at `8709faa` and the accepted v0.1 specification/ADRs.
+Initial audit date: 2026-07-13. Initial scope: repository state at `8709faa`
+and the accepted v0.1 specification/ADRs. Release-preparation update:
+2026-07-15 for local `0.1.0-alpha.1` metadata and package verification.
 
 ## CLI sync path finding
 
@@ -41,9 +43,11 @@ The current path is `bin.ts → runCli() → syncProject() → synchronizeGenera
     doctor output was deterministic. See
     `docs/audits/APPLYE_EXPLICIT_PATH_VERIFICATION.md`.
 
-## Required before stable 0.1.0
+## Required before publication or stable 0.1.0
 
-- Resolve all remaining blockers and verify all four adapter fixtures from the real catalog.
+- Complete the npm authorization, package-owner, naming/trademark, and
+  command-collision checks recorded in
+  `docs/releases/PUBLISH_AUTHORIZATION_CHECKLIST.md` before any publication.
 
 ## Recommended
 
@@ -79,4 +83,6 @@ the target checkout.
 
 ## Verdict
 
-NOT READY
+TECHNICALLY READY — `0.1.0-alpha.1` is prepared locally. Tagging and npm
+publication remain separate, unperformed actions pending their authorization
+gates.
