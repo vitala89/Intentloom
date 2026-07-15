@@ -152,3 +152,12 @@ operation targeted Applye in this rerun. No process was stopped or modified.
 | Diff                                 | **NOT EXECUTED**       | writer gate failed                                           |
 | Sync dry-run                         | **NOT EXECUTED**       | writer gate failed                                           |
 | Overall explicit-path Applye blocker | **NOT RESOLVED**       | pause the active Nx process, then restart at the writer gate |
+
+### Repeated writer-gate check
+
+The repeated final-verification request re-ran the writer gate on 2026-07-15.
+**Writer-gate verdict: FAIL** — the Applye Nx process remained active (PID
+`97676`). The target-associated code-indexer remained separately classified as
+read-only. In accordance with the gate, no AIF build, package, snapshot, or
+Applye-facing command ran; baseline stability remains not captured and all four
+commands remain not executed.
