@@ -1,0 +1,39 @@
+{
+  "name": "partial-aif",
+  "initialTree": {
+    ".aif/config.yaml": "schemaVersion: '1'\nprofile: generic\nadapters: [codex]\n"
+  },
+  "projectOwned": [],
+  "expectedProfile": "generic",
+  "expectedOwnership": { ".aif/config.yaml": "project-owned" },
+  "expectedAdoptionProposal": ["create", "map-existing-project-owned"],
+  "expectedDoctorFindings": ["manifest-lock-missing", "source-map-missing"],
+  "expectedExitCode": 3,
+  "unchangedPaths": [".aif/config.yaml"],
+  "reportedCases": [
+    "partial .aif directory",
+    "config present manifest missing",
+    "manifest present source map missing",
+    "source map present config missing"
+  ],
+  "variants": [
+    {
+      "name": "config-only",
+      "removeAfterInitialize": [
+        ".aif/manifest.lock.json",
+        ".aif/source-map.json"
+      ],
+      "expectedDoctorFindings": ["manifest-lock-missing", "source-map-missing"]
+    },
+    {
+      "name": "manifest-only",
+      "removeAfterInitialize": [".aif/config.yaml", ".aif/source-map.json"],
+      "expectedDoctorFindings": ["aif-config-missing", "source-map-missing"]
+    },
+    {
+      "name": "source-map-only",
+      "removeAfterInitialize": [".aif/config.yaml", ".aif/manifest.lock.json"],
+      "expectedDoctorFindings": ["aif-config-missing", "manifest-lock-missing"]
+    }
+  ]
+}

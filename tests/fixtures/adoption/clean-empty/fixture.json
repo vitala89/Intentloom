@@ -1,0 +1,16 @@
+{
+  "name": "clean-empty",
+  "initialTree": {},
+  "projectOwned": [],
+  "expectedProfile": "generic",
+  "expectedOwnership": {},
+  "expectedAdoptionProposal": ["create", "generated-candidate"],
+  "expectedDoctorFindings": [
+    "aif-config-missing",
+    "manifest-lock-missing",
+    "source-map-missing"
+  ],
+  "expectedExitCode": 3,
+  "unchangedPaths": [],
+  "reportedCases": ["empty repository", "repository with no recognizable stack"]
+}

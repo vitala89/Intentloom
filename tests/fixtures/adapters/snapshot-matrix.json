@@ -1,0 +1,122 @@
+[
+  {
+    "name": "generic-claude",
+    "profile": "generic",
+    "adapters": ["claude"],
+    "expectedPaths": [
+      ".claude/skills/plan/SKILL.md",
+      ".claude/skills/review/SKILL.md",
+      "AGENTS.md",
+      "CLAUDE.md"
+    ]
+  },
+  {
+    "name": "generic-codex",
+    "profile": "generic",
+    "adapters": ["codex"],
+    "expectedPaths": [
+      ".agents/skills/plan/SKILL.md",
+      ".agents/skills/review/SKILL.md",
+      "AGENTS.md"
+    ]
+  },
+  {
+    "name": "generic-cursor",
+    "profile": "generic",
+    "adapters": ["cursor"],
+    "expectedPaths": [
+      ".agents/skills/plan/SKILL.md",
+      ".agents/skills/review/SKILL.md",
+      ".cursor/rules/aif-core.mdc",
+      "AGENTS.md"
+    ]
+  },
+  {
+    "name": "generic-copilot",
+    "profile": "generic",
+    "adapters": ["copilot"],
+    "expectedPaths": [
+      ".github/copilot-instructions.md",
+      ".github/instructions/aif.instructions.md",
+      ".github/skills/plan/SKILL.md",
+      ".github/skills/review/SKILL.md",
+      "AGENTS.md"
+    ]
+  },
+  {
+    "name": "generic-all",
+    "profile": "generic",
+    "adapters": ["claude", "codex", "cursor", "copilot"],
+    "expectedPaths": [
+      ".agents/skills/plan/SKILL.md",
+      ".agents/skills/review/SKILL.md",
+      ".claude/skills/plan/SKILL.md",
+      ".claude/skills/review/SKILL.md",
+      ".cursor/rules/aif-core.mdc",
+      ".github/copilot-instructions.md",
+      ".github/instructions/aif.instructions.md",
+      ".github/skills/plan/SKILL.md",
+      ".github/skills/review/SKILL.md",
+      "AGENTS.md",
+      "CLAUDE.md"
+    ]
+  },
+  {
+    "name": "typescript-all",
+    "profile": "typescript",
+    "adapters": ["claude", "codex", "cursor", "copilot"],
+    "extends": "generic-all",
+    "additionalPaths": [
+      ".cursor/rules/aif-typescript.mdc",
+      ".github/instructions/aif-typescript.instructions.md"
+    ]
+  },
+  {
+    "name": "angular-claude-cursor",
+    "profile": "angular",
+    "adapters": ["claude", "cursor"],
+    "expectedPaths": [
+      ".agents/skills/plan/SKILL.md",
+      ".agents/skills/review/SKILL.md",
+      ".claude/skills/plan/SKILL.md",
+      ".claude/skills/review/SKILL.md",
+      ".cursor/rules/aif-angular.mdc",
+      ".cursor/rules/aif-core.mdc",
+      "AGENTS.md",
+      "CLAUDE.md"
+    ]
+  },
+  {
+    "name": "rust-claude-codex",
+    "profile": "rust",
+    "adapters": ["claude", "codex"],
+    "expectedPaths": [
+      ".agents/skills/plan/SKILL.md",
+      ".agents/skills/review/SKILL.md",
+      ".claude/skills/plan/SKILL.md",
+      ".claude/skills/review/SKILL.md",
+      "AGENTS.md",
+      "CLAUDE.md"
+    ]
+  },
+  {
+    "name": "tauri-all",
+    "profile": "tauri",
+    "adapters": ["claude", "codex", "cursor", "copilot"],
+    "extends": "generic-all",
+    "additionalPaths": [
+      ".cursor/rules/aif-tauri.mdc",
+      ".github/instructions/aif-tauri.instructions.md"
+    ]
+  },
+  {
+    "name": "angular-tauri-all",
+    "profile": "angular-tauri",
+    "adapters": ["claude", "codex", "cursor", "copilot"],
+    "extends": "generic-all",
+    "additionalPaths": [
+      ".cursor/rules/aif-angular-tauri.mdc",
+      ".github/instructions/aif-angular-tauri.instructions.md"
+    ]
+  }
+]

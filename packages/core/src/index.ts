@@ -3,7 +3,8 @@ import { readFile, readdir } from "node:fs/promises";
 import { resolve, sep } from "node:path";
 import { parse as parseYaml } from "yaml";
 
-export const AIF_VERSION = "0.1.0";
+import { AIF_VERSION } from "./version.js";
+export { AIF_VERSION };
 
 export type AdapterName = "claude" | "codex" | "cursor" | "copilot";
 
@@ -38,19 +39,64 @@ export function checksum(value: string): string {
   return createHash("sha256").update(value, "utf8").digest("hex");
 }
 
-export function normalizeOutputPath(candidate: string): string {
+export function normalizeStoredPath(candidate: string): string {
+  const invalid = () => {
+    throw new Error("stored path must be safe and project-relative");
+  };
   if (
-    candidate.includes("\\") ||
+    candidate === "" ||
+    candidate.includes("\0") ||
+    /^[A-Za-z]:/u.test(candidate) ||
     candidate.startsWith("/") ||
-    /^[A-Za-z]:/.test(candidate)
-  ) {
+    candidate.startsWith("\\")
+  )
+    return invalid();
+  const segments: string[] = [];
+  for (const rawSegment of candidate.replaceAll("\\", "/").split("/")) {
+    if (rawSegment === "" || rawSegment === ".") continue;
+    if (rawSegment === "..") return invalid();
+    const segment = rawSegment.normalize("NFC");
+    const device = segment.split(".", 1)[0]!.toUpperCase();
+    if (
+      /[<>:"|?*\u0000-\u001f]/u.test(segment) ||
+      /[ .]$/u.test(segment) ||
+      /^(?:CON|PRN|AUX|NUL|COM[1-9]|LPT[1-9])$/u.test(device)
+    )
+      return invalid();
+    segments.push(segment);
+  }
+  if (segments.length === 0) return invalid();
+  return segments.join("/");
+}
+
+export function storedPathCollisionKey(candidate: string): string {
+  if (
+    candidate === "" ||
+    /^[A-Za-z]:/u.test(candidate) ||
+    candidate.startsWith("/") ||
+    candidate.startsWith("\\")
+  )
+    throw new Error("stored path must be safe and project-relative");
+  const segments: string[] = [];
+  for (const segment of candidate.replaceAll("\\", "/").split("/")) {
+    if (segment === "" || segment === ".") continue;
+    if (segment === "..") {
+      if (segments.length === 0)
+        throw new Error("stored path must be safe and project-relative");
+      segments.pop();
+    } else segments.push(segment);
+  }
+  return normalizeStoredPath(segments.join("/")).toLowerCase();
+}
+
+export function normalizeOutputPath(candidate: string): string {
+  try {
+    return normalizeStoredPath(candidate);
+  } catch {
+    if (candidate.replaceAll("\\", "/").split("/").includes(".."))
+      throw new Error(`output path escapes the project root: ${candidate}`);
     throw new Error(`output path must be project-relative: ${candidate}`);
   }
-  const parts = candidate.split("/");
-  if (parts.some((part) => part === "" || part === "." || part === "..")) {
-    throw new Error(`output path escapes the project root: ${candidate}`);
-  }
-  return parts.join("/");
 }
 
 export function resolveWithin(root: string, candidate: string): string {

@@ -1,0 +1,12 @@
+{
+  "name": "existing-cursor",
+  "initialTree": { ".cursor/rules/project.mdc": "project rule\n" },
+  "projectOwned": [".cursor/rules/project.mdc"],
+  "expectedProfile": "generic",
+  "expectedOwnership": { ".cursor/rules/project.mdc": "project-owned" },
+  "expectedAdoptionProposal": ["map-existing-project-owned"],
+  "expectedDoctorFindings": ["aif-config-missing"],
+  "expectedExitCode": 3,
+  "unchangedPaths": [".cursor/rules/project.mdc"],
+  "reportedCases": ["existing .cursor/rules"]
+}

@@ -1,0 +1,28 @@
+{
+  "name": "ignored-content",
+  "initialTree": {
+    "README.md": "project\n",
+    "node_modules/fake/package.json": "{\"dependencies\":{\"@angular/core\":\"99\"}}",
+    "dist/tsconfig.json": "{}",
+    "vendor/Cargo.toml": "[package]",
+    ".git/package.json": "{}"
+  },
+  "projectOwned": ["README.md"],
+  "expectedProfile": "generic",
+  "expectedOwnership": { "README.md": "project-owned" },
+  "expectedAdoptionProposal": ["map-existing-project-owned"],
+  "expectedDoctorFindings": ["aif-config-missing"],
+  "expectedExitCode": 3,
+  "unchangedPaths": [
+    "README.md",
+    "node_modules/fake/package.json",
+    "dist/tsconfig.json",
+    "vendor/Cargo.toml",
+    ".git/package.json"
+  ],
+  "reportedCases": [
+    "ignored build and vendor directories",
+    "symlinked source directories",
+    "large ignored directory tree represented minimally"
+  ]
+}

@@ -1,6 +1,10 @@
 {
   "name": "@aif/adapters",
-  "version": "0.1.0",
+  "version": "0.1.0-alpha.1",
+  "private": true,
+  "engines": {
+    "node": ">=22"
+  },
   "type": "module",
   "dependencies": {
     "@aif/core": "workspace:*"

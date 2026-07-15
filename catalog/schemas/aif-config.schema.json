@@ -1,5 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:aif:schema:aif-config:1",
   "title": "aif-config",
   "type": "object",
   "additionalProperties": false,
@@ -8,12 +9,73 @@
       "const": "1"
     },
     "profile": {
-      "type": "string"
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[a-z0-9][a-z0-9-]*$"
     },
     "adapters": {
       "type": "array",
       "items": {
         "enum": ["claude", "codex", "cursor", "copilot"]
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "frameworkCompatibility": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "minimum": {
+          "type": "string",
+          "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(?:-[0-9A-Za-z.-]+)?$"
+        },
+        "maximumExclusive": {
+          "type": "string",
+          "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(?:-[0-9A-Za-z.-]+)?$"
+        }
+      },
+      "required": ["minimum"]
+    },
+    "workflows": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" }
+    },
+    "generatedOutputPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "mode": { "enum": ["preview", "confirm", "apply"] },
+        "backup": { "type": "boolean" }
+      },
+      "required": ["mode", "backup"]
+    },
+    "projectOwnedMappings": { "$ref": "#/$defs/mappings" },
+    "documentationMappings": { "$ref": "#/$defs/mappings" },
+    "localOverrides": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/projectPath" }
+    }
+  },
+  "$defs": {
+    "projectPath": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1024,
+      "pattern": "^(?!/)(?![A-Za-z]:)(?!.*\\\\)(?!.*(?:^|/)\\.\\.?(?:/|$))(?!.*//).+$"
+    },
+    "mappings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "source": { "$ref": "#/$defs/projectPath" },
+          "destination": { "$ref": "#/$defs/projectPath" }
+        },
+        "required": ["source", "destination"]
       }
     }
   },

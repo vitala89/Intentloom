@@ -1,15 +1,52 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:aif:schema:context-pack:1",
   "title": "context-pack",
   "type": "object",
   "additionalProperties": false,
   "properties": {
-    "schemaVersion": {
-      "type": "string"
+    "schemaVersion": { "const": "1" },
+    "taskId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"
     },
-    "version": {
-      "type": "string"
-    }
+    "mustRead": { "$ref": "#/$defs/pathList" },
+    "readIfNeeded": { "$ref": "#/$defs/pathList" },
+    "excluded": { "$ref": "#/$defs/pathList" },
+    "forbiddenToChange": { "$ref": "#/$defs/pathList" },
+    "relevantSourceAreas": { "$ref": "#/$defs/pathList" },
+    "contextMode": { "enum": ["minimal", "standard", "expanded"] },
+    "expansionReasons": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1, "maxLength": 1024 }
+    },
+    "fileBudget": { "type": "integer", "minimum": 1, "maximum": 500 },
+    "extensions": { "type": "object" }
   },
-  "required": ["schemaVersion"]
+  "required": [
+    "schemaVersion",
+    "taskId",
+    "mustRead",
+    "readIfNeeded",
+    "excluded",
+    "forbiddenToChange",
+    "relevantSourceAreas",
+    "contextMode",
+    "expansionReasons",
+    "fileBudget"
+  ],
+  "$defs": {
+    "projectPath": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1024,
+      "pattern": "^(?!/)(?![A-Za-z]:)(?!.*\\\\)(?!.*(?:^|/)\\.\\.?(?:/|$))(?!.*//).+$"
+    },
+    "pathList": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/projectPath" }
+    }
+  }
 }

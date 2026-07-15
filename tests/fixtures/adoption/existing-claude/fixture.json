@@ -1,0 +1,21 @@
+{
+  "name": "existing-claude",
+  "initialTree": {
+    "CLAUDE.md": "project instructions\n",
+    ".claude/skills/local/SKILL.md": "---\nname: local\ndescription: Local\n---\n# Local\n"
+  },
+  "projectOwned": ["CLAUDE.md", ".claude/skills/local/SKILL.md"],
+  "expectedProfile": "generic",
+  "expectedOwnership": {
+    "CLAUDE.md": "project-owned",
+    ".claude/skills/local/SKILL.md": "project-owned"
+  },
+  "expectedAdoptionProposal": ["map-existing-project-owned"],
+  "expectedDoctorFindings": ["aif-config-missing"],
+  "expectedExitCode": 3,
+  "unchangedPaths": ["CLAUDE.md", ".claude/skills/local/SKILL.md"],
+  "reportedCases": [
+    "existing project-owned CLAUDE.md",
+    "existing .claude/skills"
+  ]
+}

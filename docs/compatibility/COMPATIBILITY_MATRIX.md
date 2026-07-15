@@ -10,7 +10,7 @@
 | Experimental                      | Provider behavior or AIF mapping is preview/unstable; requires opt-in. |
 | Unsupported                       | AIF deliberately does not generate or rely on it.                      |
 
-## v0.1 target assessment
+## v0.1 implemented assessment
 
 | Capability              | Claude Code                        | OpenAI Codex                              | Cursor                                    | GitHub Copilot                                      |
 | ----------------------- | ---------------------------------- | ----------------------------------------- | ----------------------------------------- | --------------------------------------------------- |
@@ -21,7 +21,24 @@
 | Custom subagents        | Officially supported               | Experimental / adapter discovery required | Experimental / adapter discovery required | Officially supported                                |
 | AIF native adapter      | Generated adapter                  | Generated adapter                         | Generated adapter                         | Generated adapter                                   |
 
-The last row is a v0.1 product target, not a claim that implementation exists. A target moves to “generated adapter” only when its emitted files are validated against provider documentation and fixtures.
+All four adapter rows are implemented and covered by real-catalog, conflict,
+drift, stale-version, removal, idempotence, multi-adapter, snapshot, and packed
+CLI fixtures. Cursor Agent Skills and Copilot custom-agent capability remain
+experimental; AIF does not fabricate Copilot custom-agent output.
+
+## Runtime and host matrix
+
+| Runtime/host | Status                                                                            |
+| ------------ | --------------------------------------------------------------------------------- |
+| Node 22      | Supported minimum; complete local suite and packed CLI verified                   |
+| Node 24      | Supported; complete CI matrix verified                                            |
+| Linux        | Hosted compatibility CI verified on Node 22 and 24                                |
+| macOS        | Hosted compatibility CI verified on Node 22 and 24                                |
+| Windows      | Hosted compatibility CI verified on Node 22 and 24; no local execution is claimed |
+
+The cross-platform verdict is resolved for the hosted Node 22/24 matrix. See
+[Compatibility run 29374780862](https://github.com/vitala89/aif-core/actions/runs/29374780862)
+for the recorded host evidence.
 
 ## Source basis
 

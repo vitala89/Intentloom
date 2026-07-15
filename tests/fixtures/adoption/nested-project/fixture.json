@@ -1,0 +1,28 @@
+{
+  "name": "nested-project",
+  "initialTree": {
+    "apps/space ünicode/tsconfig.json": "{}",
+    "apps/space ünicode/README.md": "nested\n"
+  },
+  "projectOwned": [
+    "apps/space ünicode/tsconfig.json",
+    "apps/space ünicode/README.md"
+  ],
+  "expectedProfile": "generic",
+  "expectedOwnership": {
+    "apps/space ünicode/tsconfig.json": "project-owned",
+    "apps/space ünicode/README.md": "project-owned"
+  },
+  "expectedAdoptionProposal": ["generated-candidate"],
+  "expectedDoctorFindings": ["aif-config-missing"],
+  "expectedExitCode": 3,
+  "unchangedPaths": [
+    "apps/space ünicode/tsconfig.json",
+    "apps/space ünicode/README.md"
+  ],
+  "reportedCases": [
+    "repository with spaces in path",
+    "repository with Unicode path names",
+    "nested project root"
+  ]
+}

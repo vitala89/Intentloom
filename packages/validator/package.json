@@ -1,9 +1,15 @@
 {
   "name": "@aif/validator",
-  "version": "0.1.0",
+  "version": "0.1.0-alpha.1",
+  "private": true,
+  "engines": {
+    "node": ">=22"
+  },
   "type": "module",
   "dependencies": {
-    "@aif/core": "workspace:*"
+    "@aif/core": "workspace:*",
+    "ajv": "^8.20.0",
+    "yaml": "^2.9.0"
   },
   "exports": {
     ".": "./src/index.ts"

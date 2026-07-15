@@ -1,45 +1,88 @@
 # v0.1 Release Readiness Audit
 
-Audit date: 2026-07-13. Scope: repository state at `8709faa` and the accepted v0.1 specification/ADRs.
+Initial audit date: 2026-07-13. Initial scope: repository state at `8709faa`
+and the accepted v0.1 specification/ADRs. Release-preparation update:
+2026-07-15 for local `0.1.0-alpha.1` metadata and package verification.
+
+## CLI sync path finding
+
+Before the transactional CLI integration, `bin.ts` called the legacy `syncProject` plan/apply path, printed raw plan changes, and never received `TransactionResult`. It therefore discarded the failed stage, consistency status, cleanup status, rollback completion, and rollback failure paths. Conflicts used exit `2`, caught exceptions used generic exit `1`, and security-error plans could be treated as successful because only `conflict` changes affected the exit code. It did not reconstruct success from a later filesystem check and normal catches printed messages rather than stacks, but rollback state was unavailable to the formatter.
+
+The current path is `bin.ts → runCli() → syncProject() → synchronizeGeneratedFiles() → TransactionResult → CLI outcome mapper → human/JSON formatter → stable exit code`.
 
 ## Blockers
 
-1. **Clean CLI runtime is not verified and currently fails without workspace links.** Running built `packages/cli/dist/bin.js` failed to resolve `@aif/adapters`. Package exports point at TypeScript source while the CLI bin points at `dist`; package metadata does not yet define a publishable, self-consistent artifact layout.
-2. **Generated ownership safety is incomplete.** `sync --force` classifies every changed destination as update and does not read `.aif/source-map.json` before replacement. This can overwrite a project-owned file, contrary to ADR-0003.
-3. **Schema implementation is placeholder-level.** Six of seven schemas only require `schemaVersion`; the validator does not validate against catalog schemas, source maps, or locks comprehensively.
-4. **Required CLI behavior and coverage are incomplete.** `adopt` does not inspect stack evidence, documents, duplication, or map existing files; `doctor` does not validate imports/capabilities/edited generated files; no persisted adapter fixtures, snapshots, partial-write, Windows-path, or real CLI smoke tests exist.
-5. **Release package naming is unresolved.** Root package is private `aif-core`; workspace packages use provisional `@aif/*` names without repository, homepage, bugs, license, files, publishConfig, or publishability decision.
+1. **Clean CLI runtime blocker resolved.** The CLI packs a self-contained `dist/aif.cjs` bundle and runtime catalog. Isolated tarball installation now executes successful sync, no-op sync, dry-run, help, and version outside the monorepo.
+2. **Filesystem-security sub-blocker resolved.** Real symlink tests, commit-time revalidation, deterministic collision reporting, reversed-order execution, and byte-for-byte collision-abort snapshots pass.
+3. **Ownership/sync blocker resolved.** The real CLI directly consumes the structured transaction result. Success, conflict, restored failure, and incomplete rollback use distinct stable exit codes; dry-run is write-free; diagnostics are content-safe; and 47 process-level cases cover human/JSON output, transaction faults, redaction, and packed runtime. The post-write validator retains its 34 corruption and 23 success cases.
+4. **Schema-driven validation blocker resolved.** Eight locally bundled versioned schemas now drive runtime structural validation. Hardened JSON/YAML parsing, strict unknown fields, stable redacted diagnostics, pre-semantic/pre-write CLI integration, Agent Skill policy validation, doctor aggregation, and isolated packed-runtime schema validation are covered by dedicated tests.
+5. **Adoption/doctor fixture blocker resolved.** Adoption now returns deterministic ownership-safe proposals, detects profiles from bounded file evidence, maps existing documentation without claiming it, and applies clean accepted proposals through transactional sync. Doctor returns sorted severity/category/remediation findings for partial, malformed, stale, conflicting, orphaned, drifted, and unsafe state. Sixteen reusable fixture groups, 22 existing-state doctor cases, immutable-state proofs, and ten packed-runtime cases cover the required matrix.
+6. **Adapter fixture blocker resolved.** Normalized Claude Code, Codex, Cursor,
+   and Copilot contracts drive deterministic single- and multi-adapter output,
+   honest diagnostics, profile scopes, ownership conflicts, migration/removal,
+   real-catalog fixtures, and installed-tarball tests.
+7. **Cross-platform fixture and host-evidence sub-blocker resolved.** Thirty
+   stored-path cases cover Windows prefixes, devices, separators, Unicode,
+   collisions, unsafe names, spaces, and long paths. The complete Node 22/24
+   suite passed on hosted Linux, macOS, and Windows runners.
+8. **Runtime engine blocker resolved.** ADR-0005 sets Node 22 as the consistent
+   workspace minimum and bundle target. Complete 512-test suites pass locally on
+   Node 22.17.0 and checksum-verified Node 24.18.0.
+9. **Release package naming is partially resolved.** `aif-core` is the planned
+   public CLI package and `aif` its binary; the root workspace and `@aif/*`
+   implementation packages remain private. Metadata, deterministic tarball,
+   clean-room installs, and publish dry-run are recorded in
+   `docs/audits/PACKAGE_PUBLISH_READINESS.md`. Actual npm identity/package-owner
+   authorization, command-collision review, and documented legal/trademark
+   review remain required before publication.
+10. **Explicit-path Applye verification resolved.** The final read-only audit
+    passed the writer gate, installed the 67-file `aif-core@0.1.0-alpha.0`
+    tarball outside both repositories, and exercised positional `PROJECT_PATH`
+    for adopt dry-run, doctor, diff, and sync dry-run. Two pre-command snapshots
+    and every post-command/final snapshot were identical; repeated adoption and
+    doctor output was deterministic. See
+    `docs/audits/APPLYE_EXPLICIT_PATH_VERIFICATION.md`.
 
-## Required before stable 0.1.0
+## Required before publication or stable 0.1.0
 
-- Resolve all blockers, add clean-install and packaged CLI smoke coverage, and verify all four adapter fixtures from the real catalog.
-- Establish source-map-based ownership and rollback semantics; prove no project-owned file is overwritten.
-- Complete JSON schemas and schema-driven validation; add migration tests.
-- Execute an Applye dry-run only after an explicit repository path is supplied.
+- Complete the npm authorization, package-owner, naming/trademark, and
+  command-collision checks recorded in
+  `docs/releases/PUBLISH_AUTHORIZATION_CHECKLIST.md` before any publication.
 
 ## Recommended
 
 - Replace repeated generic guide text with command-specific content.
 - Add a deterministic version synchronization check for lockstep packages.
-- Remove unused CLI imports and add explicit CLI exit-code tests.
+- Remove unused CLI imports as modules are further separated.
 
 ## Later
 
-- Publishable package layout, registry naming, release automation, and stable-1.0 compatibility commitments.
+- Actual package publication, release automation, and stable-1.0 compatibility commitments.
 
 ## Adapter status
 
-| Adapter     | Supported output                 | Fixture tested   | Limitation                                               |
-| ----------- | -------------------------------- | ---------------- | -------------------------------------------------------- |
-| Claude Code | `AGENTS.md`, `CLAUDE.md`, skills | Unit layout only | No real fixture/clean CLI test                           |
-| Codex       | `AGENTS.md`, skills              | Unit layout only | No real fixture/clean CLI test                           |
-| Cursor      | `AGENTS.md`, `.mdc` rule, skills | Unit layout only | `.cursorignore` profile output absent                    |
-| Copilot     | instructions, skills             | Unit layout only | Environment-specific agent support intentionally omitted |
+| Adapter     | Supported output                         | Fixture tested                         | Limitation                                                  |
+| ----------- | ---------------------------------------- | -------------------------------------- | ----------------------------------------------------------- |
+| Claude Code | `AGENTS.md`, `CLAUDE.md`, skills         | Direct, multi, snapshot, packed        | Hooks, permissions, and subagents intentionally omitted     |
+| Codex       | `AGENTS.md`, skills                      | Direct, multi, snapshot, packed        | User configuration and custom agents intentionally omitted  |
+| Cursor      | `AGENTS.md`, `.mdc` rules, shared skills | Direct, multi, scoped snapshot, packed | Skills experimental; legacy rules and ignore output omitted |
+| Copilot     | repository/path instructions, skills     | Direct, multi, scoped snapshot, packed | Environment-specific custom agents intentionally omitted    |
 
 ## Verification observed
 
-Typecheck, lint, formatting, build, and eight unit tests passed in the workspace. A direct built-CLI smoke test failed because workspace package resolution was unavailable. Applye dry-run was not run: no explicit path was provided.
+The current local regression suite contains 522 passing tests and two
+Windows-only command-shim tests skipped locally, with no failures. The packed
+artifact exercises every adapter, all-adapter generation, no-op sync, doctor,
+conflicts, spaces, Unicode, portable metadata, and stable version output.
+Typecheck, lint, formatting, build, and `git diff --check` pass. The hosted
+[Compatibility run 29374780862](https://github.com/vitala89/aif-core/actions/runs/29374780862)
+passed on Windows Node 22 and Node 24, as well as Linux and macOS.
+The final external Applye verification is recorded separately in
+`docs/audits/APPLYE_EXPLICIT_PATH_VERIFICATION.md`; it passed without modifying
+the target checkout.
 
 ## Verdict
 
-NOT READY
+TECHNICALLY READY — `0.1.0-alpha.1` is prepared locally. Tagging and npm
+publication remain separate, unperformed actions pending their authorization
+gates.

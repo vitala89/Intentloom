@@ -6,7 +6,21 @@ It is not an LLM, API proxy, autonomous runtime, MCP server, or replacement for 
 
 ## Status
 
-v0.1 is in architecture and documentation design. This repository deliberately contains no CLI or production implementation yet.
+`aif-core` is alpha software. It provides the `aif` CLI for Node.js 22 or
+newer, with hosted Linux, macOS, and Windows verification on Node 22 and 24.
+Commands are offline-first and do not send telemetry.
+
+```sh
+npm install --global aif-core
+aif --help
+aif init --dry-run
+aif adopt --dry-run
+aif doctor
+aif sync --dry-run
+```
+
+Supported adapters are Claude Code, Codex, Cursor, and GitHub Copilot. AIF
+preserves project-owned files and reports conflicts rather than overwriting.
 
 ## Principles
 
@@ -28,4 +42,4 @@ examples/         Dogfooding and usage examples
 tests/            Fixtures and conformance tests
 ```
 
-Read the [v0.1 specification](docs/specs/AIF_V0_1_SPEC.md), [architecture](docs/architecture/ARCHITECTURE.md), and [compatibility matrix](docs/compatibility/COMPATIBILITY_MATRIX.md). See [CONTRIBUTING.md](CONTRIBUTING.md) to contribute.
+Read the [v0.1 specification](docs/specs/AIF_V0_1_SPEC.md), [architecture](docs/architecture/ARCHITECTURE.md), and [compatibility matrix](docs/compatibility/COMPATIBILITY_MATRIX.md). See [CONTRIBUTING.md](CONTRIBUTING.md) to contribute, [issues](https://github.com/vitala89/aif-core/issues) for support, and [LICENSE](LICENSE) for terms.

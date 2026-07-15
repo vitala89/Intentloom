@@ -1,0 +1,27 @@
+{
+  "name": "conflicting-aif",
+  "initialTree": {},
+  "preparation": "initialize-codex",
+  "projectOwned": [],
+  "expectedProfile": "generic",
+  "expectedOwnership": { "AGENTS.md": "aif-owned" },
+  "expectedAdoptionProposal": ["conflict"],
+  "expectedDoctorFindings": [
+    "manifest-entry-orphaned",
+    "source-map-record-orphaned",
+    "adapter-selection-conflict"
+  ],
+  "expectedExitCode": 3,
+  "unchangedPaths": [
+    ".aif/config.yaml",
+    ".aif/manifest.lock.json",
+    ".aif/source-map.json"
+  ],
+  "reportedCases": [
+    "generated files missing ownership records",
+    "ownership records missing generated files",
+    "orphaned generated record",
+    "duplicate ownership destination",
+    "conflicting selected adapters"
+  ]
+}

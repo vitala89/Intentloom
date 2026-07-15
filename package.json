@@ -1,24 +1,26 @@
 {
-  "name": "aif-core",
-  "version": "0.1.0",
+  "name": "@aif/workspace",
+  "version": "0.1.0-alpha.1",
   "private": true,
   "type": "module",
   "packageManager": "pnpm@10.12.4",
   "engines": {
-    "node": ">=24"
+    "node": ">=22"
   },
   "scripts": {
-    "build": "tsc -b",
+    "build": "node scripts/sync-version.mjs && tsc -b && node scripts/build-cli.mjs",
     "typecheck": "tsc -b --pretty false",
     "test": "vitest run",
     "lint": "tsc -b --pretty false",
-    "format:check": "prettier --check \"**/*.{ts,md,json,yaml,yml}\""
+    "format:check": "prettier --check \"**/*.{ts,md,json,yaml,yml}\"",
+    "pack:cli": "pnpm --filter ./packages/cli pack --pack-destination ./artifacts"
   },
   "dependencies": {
     "yaml": "^2.9.0"
   },
   "devDependencies": {
     "@types/node": "^26.1.1",
+    "esbuild": "^0.28.1",
     "prettier": "^3.9.5",
     "typescript": "^7.0.2",
     "vitest": "^4.1.10"

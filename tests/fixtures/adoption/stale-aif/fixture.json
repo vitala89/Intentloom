@@ -1,0 +1,27 @@
+{
+  "name": "stale-aif",
+  "initialTree": {},
+  "preparation": "initialize-codex",
+  "projectOwned": [],
+  "expectedProfile": "generic",
+  "expectedOwnership": { "AGENTS.md": "aif-owned" },
+  "expectedAdoptionProposal": ["conflict"],
+  "expectedDoctorFindings": [
+    "adapter-version-stale",
+    "framework-version-stale",
+    "schema-version-stale"
+  ],
+  "expectedExitCode": 3,
+  "unchangedPaths": [
+    ".aif/config.yaml",
+    ".aif/manifest.lock.json",
+    ".aif/source-map.json",
+    "AGENTS.md"
+  ],
+  "reportedCases": [
+    "stale adapter output",
+    "stale framework version",
+    "stale schema version",
+    "project profile no longer matches detected stack"
+  ]
+}
