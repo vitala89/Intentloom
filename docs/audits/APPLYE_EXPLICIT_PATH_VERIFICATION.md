@@ -161,3 +161,62 @@ The repeated final-verification request re-ran the writer gate on 2026-07-15.
 read-only. In accordance with the gate, no AIF build, package, snapshot, or
 Applye-facing command ran; baseline stability remains not captured and all four
 commands remain not executed.
+
+## Completed final verification
+
+Final verification date: 2026-07-15. A read-only process inspection found no
+likely Applye writer: no Nx, `desktop:dev`, Angular/Vite serve, Tauri, esbuild
+watch, or desktop application process associated with the target. No process
+was stopped. The prior code-indexer classification remained read-only.
+
+AIF was built from `3eedf24` and packed as `aif-core@0.1.0-alpha.0`. The
+67-file tarball was installed with lifecycle scripts disabled in an isolated
+temporary directory outside both repositories. Its `--version` output was
+`0.1.0-alpha.0`; `--help` and each of `adopt`, `doctor`, `diff`, and `sync`
+help showed `PROJECT_PATH`.
+
+Two full external snapshots were identical before command execution. They
+included branch and HEAD, porcelain-v2 status, index/staged state, tracked and
+untracked hashes, bounded relevant ignored paths, symlinks, `.aif`, instruction
+and documentation destinations, and AIF staging/backup paths. The accepted
+baseline had 524 tracked files, no untracked files, no `.aif`, and no AIF
+transaction artifacts. The target's safe Git state was `main` and clean.
+
+All commands were executed from an unrelated temporary working directory using
+only the positional target path. Every snapshot captured after a command, and
+the final snapshot, was byte-for-byte identical to the accepted baseline.
+
+| Command                    | Exit | Safe result                                                                                                                                                                                                                                                      |
+| -------------------------- | ---: | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `adopt <target> --dry-run` |    3 | Detected `angular-tauri`; 17 adapter candidates and four metadata creations were proposed. It reported 17 manual documentation decisions, 1,085 unrelated-file skips, and no conflicts. Existing project instruction/documentation paths remained project-owned. |
+| `doctor <target>`          |    3 | 18 diagnostics: 17 errors and one warning. Codes were `aif-config-missing`, `manifest-lock-missing`, `source-map-missing`, `instruction-files-conflicting`, and `schema-required-property`.                                                                      |
+| `diff <target>`            |    3 | Safe non-adopted classification: 46 planned creations and 14 explicit conflicts; no write was attempted.                                                                                                                                                         |
+| `sync <target> --dry-run`  |    2 | Safely rejected because required `.aif/config.yaml` is absent; the post-command snapshot proves zero writes.                                                                                                                                                     |
+
+`adopt <target> --dry-run` and `doctor <target>` were each repeated from a
+second unrelated temporary directory. Their respective outputs were
+byte-for-byte identical, and their post-command snapshots matched the baseline.
+No source contents, private configuration values, remote information, or target
+path are recorded in this audit.
+
+### Final proof and verdict
+
+`final Applye state === accepted baseline`
+
+The immutable comparison covers HEAD, branch, tracked and untracked bytes,
+staged state, relevant ignored paths, symlinks, `.aif`, instruction and
+documentation destinations, and AIF staging/backup artifacts. No Applye path
+changed during this audit.
+
+| Area                                 | Verdict       |
+| ------------------------------------ | ------------- |
+| Writer gate                          | **PASS**      |
+| Baseline A/B                         | **IDENTICAL** |
+| Packed positional CLI                | **PASS**      |
+| Adopt dry-run                        | **PASS**      |
+| Doctor                               | **PASS**      |
+| Diff                                 | **PASS**      |
+| Sync dry-run                         | **PASS**      |
+| Determinism                          | **PASS**      |
+| Applye immutability                  | **VERIFIED**  |
+| Overall explicit-path Applye blocker | **RESOLVED**  |

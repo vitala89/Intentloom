@@ -33,19 +33,17 @@ The current path is `bin.ts → runCli() → syncProject() → synchronizeGenera
    `docs/audits/PACKAGE_PUBLISH_READINESS.md`. Actual npm identity/package-owner
    authorization, command-collision review, and documented legal/trademark
    review remain required before publication.
-10. **Explicit-path Applye verification remains open.** The initial packed-CLI
-    audit exposed and corrected positional project-path parsing in AIF. Its
-    rerun stopped before invoking AIF because the target advanced commits during
-    the two-snapshot stability gate while Applye development processes were
-    active; the repeated final writer-gate check still found the active Nx
-    process. A stable baseline is still required before real-project
-    immutability, adoption, doctor, diff, and sync dry-run evidence can be
-    accepted. See `docs/audits/APPLYE_EXPLICIT_PATH_VERIFICATION.md`.
+10. **Explicit-path Applye verification resolved.** The final read-only audit
+    passed the writer gate, installed the 67-file `aif-core@0.1.0-alpha.0`
+    tarball outside both repositories, and exercised positional `PROJECT_PATH`
+    for adopt dry-run, doctor, diff, and sync dry-run. Two pre-command snapshots
+    and every post-command/final snapshot were identical; repeated adoption and
+    doctor output was deterministic. See
+    `docs/audits/APPLYE_EXPLICIT_PATH_VERIFICATION.md`.
 
 ## Required before stable 0.1.0
 
 - Resolve all remaining blockers and verify all four adapter fixtures from the real catalog.
-- Execute an Applye dry-run only after an explicit repository path is supplied.
 
 ## Recommended
 
@@ -75,8 +73,9 @@ conflicts, spaces, Unicode, portable metadata, and stable version output.
 Typecheck, lint, formatting, build, and `git diff --check` pass. The hosted
 [Compatibility run 29374780862](https://github.com/vitala89/aif-core/actions/runs/29374780862)
 passed on Windows Node 22 and Node 24, as well as Linux and macOS.
-Applye dry-run was not run because it is outside this task and no explicit path
-was provided.
+The final external Applye verification is recorded separately in
+`docs/audits/APPLYE_EXPLICIT_PATH_VERIFICATION.md`; it passed without modifying
+the target checkout.
 
 ## Verdict
 
