@@ -22,6 +22,9 @@ All notable changes are documented here. This project follows Keep a Changelog p
 - Added final alpha package metadata for the public `aif-core` CLI, deterministic
   tarball checks, clean-room npm/pnpm installation coverage, and publish dry-run
   validation without publication.
+- Added an npm publication-authorization checklist, trusted-publishing guardrails,
+  and incident handling requirements; real publication remains blocked pending
+  ownership and naming/trademark review.
 
 ### Fixed
 

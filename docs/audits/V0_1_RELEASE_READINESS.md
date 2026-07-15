@@ -30,8 +30,9 @@ The current path is `bin.ts → runCli() → syncProject() → synchronizeGenera
    public CLI package and `aif` its binary; the root workspace and `@aif/*`
    implementation packages remain private. Metadata, deterministic tarball,
    clean-room installs, and publish dry-run are recorded in
-   `docs/audits/PACKAGE_PUBLISH_READINESS.md`. Actual npm ownership confirmation
-   and legal/trademark review remain required before publication.
+   `docs/audits/PACKAGE_PUBLISH_READINESS.md`. Actual npm identity/package-owner
+   authorization, command-collision review, and documented legal/trademark
+   review remain required before publication.
 
 ## Required before stable 0.1.0
 

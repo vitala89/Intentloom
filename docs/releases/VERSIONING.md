@@ -5,7 +5,9 @@ AIF uses Semantic Versioning. During v0.x, all workspace packages release in loc
 The private root workspace `package.json` is the framework-version source of
 truth. Package versions are synchronized deterministically before publication.
 The planned `0.1.0-alpha.1` package is `aif-core` with the `next` dist-tag;
-this task does not change the current `0.1.0-alpha.0` version.
+this task does not change the current `0.1.0-alpha.0` version. It cannot be
+published until the npm authorization and naming/trademark gates in
+`docs/releases/PUBLISH_AUTHORIZATION_CHECKLIST.md` are complete.
 
 Internal versions are distinct data concepts: framework version (root package), config schema version (`config.yaml`), manifest lock version (`manifest.lock.json`), and adapter output version (generated envelope). Their migrations are explicit and recorded in lock/source-map metadata, not independent package releases.
 
