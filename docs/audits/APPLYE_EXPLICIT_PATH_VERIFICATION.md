@@ -130,3 +130,25 @@ Windows-only command-shim tests skipped locally.
 | Diff                                 | **NOT EXECUTED**       | baseline gate blocked all AIF commands                                     |
 | Sync dry-run                         | **NOT EXECUTED**       | baseline gate blocked all AIF commands                                     |
 | Overall explicit-path Applye blocker | **NOT RESOLVED**       | retry only after external writers are paused and two snapshots match       |
+
+## Final rerun: writer gate
+
+Final rerun date: 2026-07-15. A read-only process inspection ran before any
+packed-CLI build, snapshot, or Applye-facing command. An Applye Nx process was
+still active (PID `97676`), so the writer gate failed. A separate code-indexer
+process associated with the target was observed (PID `93056`) but was not
+treated as a writer.
+
+No AIF command, package build, tarball installation, snapshot, or filesystem
+operation targeted Applye in this rerun. No process was stopped or modified.
+
+| Area                                 | Verdict                | Reason                                                       |
+| ------------------------------------ | ---------------------- | ------------------------------------------------------------ |
+| Baseline stability                   | **NOT CAPTURED**       | active Nx process blocked snapshot capture                   |
+| Applye immutability                  | **NOT VERIFIED**       | no accepted baseline and no command sequence                 |
+| Positional explicit-path behavior    | **PARTIALLY RESOLVED** | prior synthetic and packed evidence remains valid            |
+| Adopt dry-run                        | **NOT EXECUTED**       | writer gate failed                                           |
+| Doctor                               | **NOT EXECUTED**       | writer gate failed                                           |
+| Diff                                 | **NOT EXECUTED**       | writer gate failed                                           |
+| Sync dry-run                         | **NOT EXECUTED**       | writer gate failed                                           |
+| Overall explicit-path Applye blocker | **NOT RESOLVED**       | pause the active Nx process, then restart at the writer gate |

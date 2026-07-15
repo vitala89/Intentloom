@@ -37,7 +37,8 @@ The current path is `bin.ts → runCli() → syncProject() → synchronizeGenera
     audit exposed and corrected positional project-path parsing in AIF. Its
     rerun stopped before invoking AIF because the target advanced commits during
     the two-snapshot stability gate while Applye development processes were
-    active. A stable baseline is still required before real-project
+    active; the final rerun also found an active Nx process at its writer gate.
+    A stable baseline is still required before real-project
     immutability, adoption, doctor, diff, and sync dry-run evidence can be
     accepted. See `docs/audits/APPLYE_EXPLICIT_PATH_VERIFICATION.md`.
 
