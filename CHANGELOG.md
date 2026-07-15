@@ -4,6 +4,22 @@ All notable changes are documented here. This project follows Keep a Changelog p
 
 ## [Unreleased]
 
+## [0.1.0-alpha.2] - 2026-07-15
+
+### Changed
+
+- Renamed AIF to Intentloom before the first public npm publication. The planned
+  public package is now `intentloom` and its CLI command is `intentloom`.
+- Renamed private workspace implementation packages from `@aif/*` to
+  `@intentloom/*` and updated generated adapter-facing names.
+- Retained `.aif`, `urn:aif:*`, ownership labels, and schema identifiers as
+  compatibility-sensitive v0.1 persisted protocol values.
+
+### Historical note
+
+- `0.1.0-alpha.1` remains an unpublished AIF technical release-readiness
+  milestone. Its `v0.1.0-alpha.1` tag is unchanged.
+
 ## [0.1.0-alpha.1] - 2026-07-15
 
 ### Added

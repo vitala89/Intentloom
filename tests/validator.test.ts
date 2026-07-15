@@ -1,11 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { generatedFile } from "@aif/core";
+import { generatedFile } from "@intentloom/core";
 import {
   validateCanonicalReferences,
   validateConfigDocument,
   validateGeneratedFiles,
   validateSkillDocuments,
-} from "@aif/validator";
+} from "@intentloom/validator";
 
 describe("validators", () => {
   it("reports malformed and duplicate skills", () => {

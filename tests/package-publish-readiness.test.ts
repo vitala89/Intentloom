@@ -105,7 +105,7 @@ beforeAll(async () => {
     stdio: "pipe",
     shell: windows,
   });
-  packRoot = await mkdtemp(join(tmpdir(), "aif-publish-readiness-"));
+  packRoot = await mkdtemp(join(tmpdir(), "intentloom-publish-readiness-"));
   const first = join(packRoot, "first");
   const second = join(packRoot, "second");
   await Promise.all([mkdir(first), mkdir(second)]);
@@ -137,14 +137,14 @@ describe("public package publishing readiness", () => {
       await readFile(join(repositoryRoot, "packages/cli/package.json"), "utf8"),
     );
     expect(cli).toMatchObject({
-      name: "aif-core",
-      version: "0.1.0-alpha.1",
+      name: "intentloom",
+      version: "0.1.0-alpha.2",
       license: "MIT",
       private: false,
       homepage: "https://github.com/vitala89/aif-core#readme",
       bugs: { url: "https://github.com/vitala89/aif-core/issues" },
       engines: { node: ">=22" },
-      bin: { aif: "dist/aif.cjs" },
+      bin: { intentloom: "dist/intentloom.cjs" },
       exports: { "./package.json": "./package.json" },
       publishConfig: { access: "public" },
     });
@@ -166,7 +166,7 @@ describe("public package publishing readiness", () => {
         "package/LICENSE",
         "package/README.md",
         "package/package.json",
-        "package/dist/aif.cjs",
+        "package/dist/intentloom.cjs",
         "package/dist/catalog/schemas/aif-config.schema.json",
       ]),
     );
@@ -187,7 +187,7 @@ describe("public package publishing readiness", () => {
       await mkdir(root);
       expect(runPackedCli(entry, ["--help"], runtime).status).toBe(0);
       expect(runPackedCli(entry, ["--version"], runtime).stdout.trim()).toBe(
-        "0.1.0-alpha.1",
+        "0.1.0-alpha.2",
       );
       expect(
         runPackedCli(
@@ -215,18 +215,18 @@ describe("public package publishing readiness", () => {
           [
             "--input-type=module",
             "--eval",
-            'import manifest from "aif-core/package.json" with { type: "json" }; console.log(manifest.name);',
+            'import manifest from "intentloom/package.json" with { type: "json" }; console.log(manifest.name);',
           ],
           { cwd: runtime, encoding: "utf8" },
         );
         expect(metadata.status).toBe(0);
-        expect(metadata.stdout.trim()).toBe("aif-core");
+        expect(metadata.stdout.trim()).toBe("intentloom");
         const deepImport = spawnSync(
           process.execPath,
           [
             "--input-type=module",
             "--eval",
-            'import("aif-core").catch((error) => console.log(error.code));',
+            'import("intentloom").catch((error) => console.log(error.code));',
           ],
           { cwd: runtime, encoding: "utf8" },
         );

@@ -2,7 +2,10 @@ import { cp, mkdtemp, readFile, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { describe, expect, it } from "vitest";
-import { createArtifactValidator, SchemaCatalogError } from "@aif/validator";
+import {
+  createArtifactValidator,
+  SchemaCatalogError,
+} from "@intentloom/validator";
 
 describe("local schema catalog", () => {
   it("compiles every bundled schema without remote references", async () => {

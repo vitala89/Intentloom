@@ -102,7 +102,7 @@ describe("packed adoption and doctor fixture cases", () => {
     expect(await snapshot(root)).toEqual(before);
   });
 
-  it("adoption diagnoses a partial AIF fixture", async () => {
+  it("adoption diagnoses a partial Intentloom fixture", async () => {
     const root = await project("partial-aif");
     await mkdir(join(root, ".aif"));
     await writeFile(
@@ -194,6 +194,6 @@ describe("packed adoption and doctor fixture cases", () => {
   });
 
   it("packed version remains unchanged", () => {
-    expect(aif(["--version"]).stdout.trim()).toBe("0.1.0-alpha.1");
+    expect(aif(["--version"]).stdout.trim()).toBe("0.1.0-alpha.2");
   });
 });

@@ -2,7 +2,7 @@
 
 ## Assets and trust boundaries
 
-Assets include repository contents, developer secrets, project files, AIF catalog integrity, generated-file ownership records, and human approval. Inputs from repositories, templates, profiles, generated files, paths, and tool adapters are untrusted until validated. AIF is local-first and has no network or telemetry plane in v0.1.
+Assets include repository contents, developer secrets, project files, Intentloom catalog integrity, generated-file ownership records, and human approval. Inputs from repositories, templates, profiles, generated files, paths, and tool adapters are untrusted until validated. Intentloom is local-first and has no network or telemetry plane in v0.1.
 
 ## Threats and controls
 
@@ -23,7 +23,7 @@ Assets include repository contents, developer secrets, project files, AIF catalo
 
 ## Non-goals
 
-AIF does not sandbox a coding agent, enforce provider permissions, scan all repository content, or prevent a user from deliberately approving unsafe actions. It makes provenance, differences, and unsafe plans visible before mutation.
+Intentloom does not sandbox a coding agent, enforce provider permissions, scan all repository content, or prevent a user from deliberately approving unsafe actions. It makes provenance, differences, and unsafe plans visible before mutation.
 
 ## Security invariants
 

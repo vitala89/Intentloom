@@ -1,9 +1,9 @@
 {
   "compilerOptions": {
     "paths": {
-      "@aif/core": ["./packages/core/src/index.ts"],
-      "@aif/adapters": ["./packages/adapters/src/index.ts"],
-      "@aif/validator": ["./packages/validator/src/index.ts"]
+      "@intentloom/core": ["./packages/core/src/index.ts"],
+      "@intentloom/adapters": ["./packages/adapters/src/index.ts"],
+      "@intentloom/validator": ["./packages/validator/src/index.ts"]
     },
     "types": ["node"],
     "target": "ES2022",

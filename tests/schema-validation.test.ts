@@ -1,6 +1,6 @@
 import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
-import { createArtifactValidator } from "@aif/validator";
+import { createArtifactValidator } from "@intentloom/validator";
 
 const schemaRoot = resolve("catalog/schemas");
 

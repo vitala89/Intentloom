@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
-import { generateAllAdapters } from "@aif/adapters";
-import type { Catalog } from "@aif/core";
-import { validateGeneratedFiles } from "@aif/validator";
+import { generateAllAdapters } from "@intentloom/adapters";
+import type { Catalog } from "@intentloom/core";
+import { validateGeneratedFiles } from "@intentloom/validator";
 
 const catalog: Catalog = {
   policies: ["policies/context-policy.md"],
@@ -30,13 +30,13 @@ describe("adapters", () => {
       ["AGENTS.md", ".agents/skills/aif-orchestrator/SKILL.md"],
       [
         "AGENTS.md",
-        ".cursor/rules/aif-core.mdc",
+        ".cursor/rules/intentloom-core.mdc",
         ".agents/skills/aif-orchestrator/SKILL.md",
       ],
       [
         "AGENTS.md",
         ".github/copilot-instructions.md",
-        ".github/instructions/aif.instructions.md",
+        ".github/instructions/intentloom.instructions.md",
         ".github/skills/aif-orchestrator/SKILL.md",
       ],
     ]);

@@ -1,13 +1,13 @@
 {
-  "name": "@aif/validator",
-  "version": "0.1.0-alpha.1",
+  "name": "@intentloom/validator",
+  "version": "0.1.0-alpha.2",
   "private": true,
   "engines": {
     "node": ">=22"
   },
   "type": "module",
   "dependencies": {
-    "@aif/core": "workspace:*",
+    "@intentloom/core": "workspace:*",
     "ajv": "^8.20.0",
     "yaml": "^2.9.0"
   },

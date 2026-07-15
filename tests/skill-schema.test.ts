@@ -4,7 +4,7 @@ import {
   createArtifactValidator,
   validateSkillSet,
   type ArtifactValidator,
-} from "@aif/validator";
+} from "@intentloom/validator";
 
 let validator: ArtifactValidator;
 beforeAll(async () => {
@@ -26,7 +26,7 @@ function skill(
   });
 }
 
-describe("Agent Skill schema and AIF policy", () => {
+describe("Agent Skill schema and Intentloom policy", () => {
   it("accepts a valid Agent Skill", () =>
     expect(
       skill("name: aif-example\ndescription: Example skill. Use when testing.")
@@ -76,7 +76,7 @@ describe("Agent Skill schema and AIF policy", () => {
         `${body}\nSee [outside](file:///etc/passwd).\n`,
       ).semanticErrors.map((error) => error.code),
     ).toContain("skill-reference-escape"));
-  it("keeps portable Agent Skills independent of AIF catalog policy", () =>
+  it("keeps portable Agent Skills independent of Intentloom catalog policy", () =>
     expect(
       validator.validate({
         artifactType: "agent-skill",

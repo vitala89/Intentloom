@@ -1,9 +1,9 @@
 # Tool Adapters
 
-AIF generates deterministic provider derivatives from the local canonical
+Intentloom generates deterministic provider derivatives from the local canonical
 catalog. It does not install provider tools, edit user-level configuration, or
 make network calls. Generated files are owned only when their path, checksum,
-adapter output version, and canonical sources are recorded in AIF metadata.
+adapter output version, and canonical sources are recorded in Intentloom metadata.
 
 ## Generated destinations
 
@@ -11,7 +11,7 @@ adapter output version, and canonical sources are recorded in AIF metadata.
 | ----------- | ------------------------------------------------------------------------------------------ | ------------------------------------------------ | ---------------------------------------------------- |
 | Claude Code | `AGENTS.md`, `CLAUDE.md`                                                                   | `.claude/skills/<skill>/SKILL.md`                | None                                                 |
 | Codex       | `AGENTS.md`                                                                                | `.agents/skills/<skill>/SKILL.md`                | None                                                 |
-| Cursor      | `AGENTS.md`, `.cursor/rules/aif-core.mdc`                                                  | `.agents/skills/<skill>/SKILL.md` (experimental) | `.cursor/rules/aif-<profile>.mdc`                    |
+| Cursor      | `AGENTS.md`, `.cursor/rules/intentloom.mdc`                                                | `.agents/skills/<skill>/SKILL.md` (experimental) | `.cursor/rules/aif-<profile>.mdc`                    |
 | Copilot     | `AGENTS.md`, `.github/copilot-instructions.md`, `.github/instructions/aif.instructions.md` | `.github/skills/<skill>/SKILL.md`                | `.github/instructions/aif-<profile>.instructions.md` |
 
 Profile scopes are generated for `typescript`, `angular`, `rust`, `tauri`, and
@@ -31,14 +31,14 @@ aborts all writes. Adapter order does not change output.
 
 Project-owned files are never claimed or overwritten. Removing an adapter
 reports its previously owned files as orphaned and requires an explicit reviewed
-migration; AIF does not delete them automatically.
+migration; Intentloom does not delete them automatically.
 
 ## Capability limits
 
-AIF deliberately does not generate Claude hooks, permissions, or subagents;
+Intentloom deliberately does not generate Claude hooks, permissions, or subagents;
 Codex user configuration or custom agents; Cursor legacy `.cursorrules` or
 `.cursorignore`; or environment-specific Copilot agents/capabilities. Doctor
 reports experimental and unsupported selections from the same normalized
 contract used by generation.
 
-Start with `--dry-run`, inspect `aif diff`, and resolve conflicts explicitly.
+Start with `--dry-run`, inspect `intentloom diff`, and resolve conflicts explicitly.

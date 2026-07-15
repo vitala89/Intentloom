@@ -1,10 +1,10 @@
 # CLI
 
-Install the alpha CLI with `npm install --global aif-core`. The public package
-supports the `aif` binary only; programmatic imports and deep imports are not
+Install the alpha CLI with `npm install --global intentloom`. The public package
+supports the `intentloom` binary only; programmatic imports and deep imports are not
 part of the alpha contract.
 
-AIF commands are local and deterministic. Generated files are AIF-owned only when recorded in the source map; project-owned files are never silently replaced.
+Intentloom commands are local and deterministic. Generated files are Intentloom-owned only when recorded in the source map; the persisted ownership value remains `aif-owned-generated` for v0.1 compatibility. Project-owned files are never silently replaced.
 
 `init`, `adopt`, `plan`, `diff`, `sync`, and `doctor` use the shared structural
 validator. Existing project metadata is parsed and validated before semantic
@@ -21,14 +21,14 @@ derivatives.
 
 ## Adoption
 
-`aif adopt --dry-run` returns the same deterministic adoption proposal in human
+`intentloom adopt --dry-run` returns the same deterministic adoption proposal in human
 or JSON form and creates no `.aif`, backup, or staging state. Proposal actions
 are `create`, `map-existing-project-owned`,
 `map-existing-aif-compatible-document`, `generated-candidate`, `conflict`,
 `unsupported`, `skip`, and `manual-decision-required`. Existing files are never
 claimed from their path, header, name, or content.
 
-`aif adopt` without `--dry-run` accepts only a proposal with no manual decisions
+`intentloom adopt` without `--dry-run` accepts only a proposal with no manual decisions
 and routes safe generated creation through transactional sync. A blocked
 proposal writes nothing; a partial failure reports restored/incomplete status
 through the proposal's `applicationStatus`.
@@ -48,11 +48,11 @@ creates `.aif`, repairs metadata, or refreshes stale output.
 
 ## Transactional sync
 
-`aif sync` consumes the structured transaction result directly. It does not infer success from filesystem presence, lack of an exception, or a subsequent empty diff. Human and JSON output use the same mapped outcome and exit code.
+`intentloom sync` consumes the structured transaction result directly. It does not infer success from filesystem presence, lack of an exception, or a subsequent empty diff. Human and JSON output use the same mapped outcome and exit code.
 
-A successful write reports created, updated, and unchanged counts; manifest and source-map update status; consistency validation; and cleanup. A second identical sync reports `AIF sync completed. No changes required.`
+A successful write reports created, updated, and unchanged counts; manifest and source-map update status; consistency validation; and cleanup. A second identical sync reports `Intentloom sync completed. No changes required.`
 
-`aif sync --dry-run` builds and reports the plan without executing the transaction. It does not create generated files, metadata, staging, or backup artifacts and prints `Dry run — no files were changed.` A conflict discovered during dry-run is still exit code `3`.
+`intentloom sync --dry-run` builds and reports the plan without executing the transaction. It does not create generated files, metadata, staging, or backup artifacts and prints `Dry run — no files were changed.` A conflict discovered during dry-run is still exit code `3`.
 
 ## Exit codes
 
@@ -70,7 +70,7 @@ Incomplete rollback is never described as restored state. Output preserves the o
 
 ## JSON output
 
-`aif sync --json` returns the same outcome as human mode with deterministic path arrays. Fields include status, dry-run status, failed stage, error code, rollback status and failures, created/updated/unchanged/conflict paths, metadata update flags, consistency validation, cleanup, and exit code. JSON and human modes never include generated contents, raw metadata, external absolute target paths, or exception stacks.
+`intentloom sync --json` returns the same outcome as human mode with deterministic path arrays. Fields include status, dry-run status, failed stage, error code, rollback status and failures, created/updated/unchanged/conflict paths, metadata update flags, consistency validation, cleanup, and exit code. JSON and human modes never include generated contents, raw metadata, external absolute target paths, or exception stacks.
 
 Artifact validation JSON uses `artifact-validation-failed` and a sorted `errors`
 array. Each error includes a stable code, structural/semantic phase, artifact

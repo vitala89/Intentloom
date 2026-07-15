@@ -1,7 +1,7 @@
 {
-  "name": "aif-core",
-  "version": "0.1.0-alpha.1",
-  "description": "Alpha CLI for AIF — Agentic Engineering Framework local workflows.",
+  "name": "intentloom",
+  "version": "0.1.0-alpha.2",
+  "description": "Intentloom is a vendor-neutral framework for defining, validating, and synchronizing engineering intent across AI coding tools.",
   "license": "MIT",
   "private": false,
   "repository": {
@@ -16,17 +16,19 @@
     "agentic-engineering",
     "ai-assisted-development",
     "developer-tools",
-    "aif"
+    "intentloom",
+    "engineering-intent",
+    "ai-coding-tools"
   ],
   "engines": {
     "node": ">=22"
   },
   "type": "module",
   "bin": {
-    "aif": "dist/aif.cjs"
+    "intentloom": "dist/intentloom.cjs"
   },
   "files": [
-    "dist/aif.cjs",
+    "dist/intentloom.cjs",
     "dist/catalog",
     "dist/profiles",
     "README.md",

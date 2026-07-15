@@ -3,8 +3,8 @@ import {
   generateAdapter,
   generateAdapters,
   getAdapterContract,
-} from "@aif/adapters";
-import type { Catalog } from "@aif/core";
+} from "@intentloom/adapters";
+import type { Catalog } from "@intentloom/core";
 
 const catalog: Catalog = {
   policies: ["policies/core.md"],
@@ -81,9 +81,9 @@ describe("normalized adapter contract", () => {
     expect(forward.files.map((file) => file.path)).toEqual([
       ".agents/skills/review/SKILL.md",
       ".claude/skills/review/SKILL.md",
-      ".cursor/rules/aif-core.mdc",
+      ".cursor/rules/intentloom-core.mdc",
       ".github/copilot-instructions.md",
-      ".github/instructions/aif.instructions.md",
+      ".github/instructions/intentloom.instructions.md",
       ".github/skills/review/SKILL.md",
       "AGENTS.md",
       "CLAUDE.md",
@@ -97,7 +97,7 @@ describe("normalized adapter contract", () => {
       expect(result.contract).toBe(getAdapterContract(adapter));
       for (const file of result.files)
         expect(file.content, file.path).toContain(
-          "AIF adapter output version: 0.1.0",
+          "Intentloom adapter output version: 0.1.0",
         );
       for (const file of result.files.filter((candidate) =>
         /(?:SKILL\.md|\.mdc|\.instructions\.md)$/u.test(candidate.path),
@@ -118,13 +118,14 @@ describe("normalized adapter contract", () => {
     });
     expect(
       result.files.find(
-        (file) => file.path === `.cursor/rules/aif-${profile}.mdc`,
+        (file) => file.path === `.cursor/rules/intentloom-${profile}.mdc`,
       )?.content,
     ).toContain(`globs: "${applyTo}"`);
     expect(
       result.files.find(
         (file) =>
-          file.path === `.github/instructions/aif-${profile}.instructions.md`,
+          file.path ===
+          `.github/instructions/intentloom-${profile}.instructions.md`,
       )?.content,
     ).toContain(`applyTo: "${applyTo}"`);
   });

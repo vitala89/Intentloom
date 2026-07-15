@@ -4,7 +4,7 @@ import {
   createArtifactValidator,
   type ArtifactType,
   type ArtifactValidator,
-} from "@aif/validator";
+} from "@intentloom/validator";
 
 let validator: ArtifactValidator;
 beforeAll(async () => {

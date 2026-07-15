@@ -1,6 +1,6 @@
 {
-  "name": "@aif/core",
-  "version": "0.1.0-alpha.1",
+  "name": "@intentloom/core",
+  "version": "0.1.0-alpha.2",
   "private": true,
   "engines": {
     "node": ">=22"

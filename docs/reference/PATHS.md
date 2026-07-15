@@ -1,6 +1,6 @@
 # Portable Paths
 
-AIF metadata stores paths in one host-independent form:
+Intentloom metadata stores paths in one host-independent form:
 
 - project-relative;
 - Unicode NFC;

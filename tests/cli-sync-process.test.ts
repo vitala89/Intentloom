@@ -17,7 +17,7 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
 const execute = promisify(execFile);
 const repositoryRoot = resolve(import.meta.dirname, "..");
-const builtCli = join(repositoryRoot, "packages/cli/dist/aif.cjs");
+const builtCli = join(repositoryRoot, "packages/cli/dist/intentloom.cjs");
 const windows = process.platform === "win32";
 const command = (name: string) => (windows ? `${name}.cmd` : name);
 let faultRunner = "";
@@ -239,7 +239,7 @@ async function installPackedCli(): Promise<string> {
     runtime,
   );
   if (installed.exitCode !== 0) throw new Error(installed.stderr);
-  return join(runtime, `node_modules/.bin/aif${windows ? ".cmd" : ""}`);
+  return join(runtime, `node_modules/.bin/intentloom${windows ? ".cmd" : ""}`);
 }
 
 beforeAll(async () => {
@@ -641,7 +641,9 @@ describe("real CLI transactional sync", () => {
 
   it("packed CLI performs successful sync outside the monorepo", () => {
     expect(scenarios.packedSuccess.exitCode).toBe(0);
-    expect(scenarios.packedSuccess.stdout).toContain("AIF sync completed.");
+    expect(scenarios.packedSuccess.stdout).toContain(
+      "Intentloom sync completed.",
+    );
   });
 
   it("packed CLI performs a second no-op sync", () => {
@@ -654,9 +656,9 @@ describe("real CLI transactional sync", () => {
     expect(scenarios.packedDryRun.after).toEqual(scenarios.packedDryRun.before);
   });
 
-  it("packed CLI reports version 0.1.0-alpha.1", () => {
+  it("packed CLI reports version 0.1.0-alpha.2", () => {
     expect(scenarios.packedVersion.exitCode).toBe(0);
-    expect(scenarios.packedVersion.stdout.trim()).toBe("0.1.0-alpha.1");
+    expect(scenarios.packedVersion.stdout.trim()).toBe("0.1.0-alpha.2");
   });
 
   it("JSON success uses the same exit code and structured outcome", () => {

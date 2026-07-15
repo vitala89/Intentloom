@@ -4,16 +4,16 @@ import {
   generateAdapters,
   mergeAdapterResults,
   type AdapterResult,
-} from "@aif/adapters";
+} from "@intentloom/adapters";
 import { resolve } from "node:path";
-import { checksum, type AdapterName, type Catalog } from "@aif/core";
+import { checksum, type AdapterName, type Catalog } from "@intentloom/core";
 import {
   createMemoryFileSystem,
   doctorProject,
   initProject,
   syncProject,
-} from "@aif/cli";
-import { validateGeneratedFiles } from "@aif/validator";
+} from "@intentloom/cli";
+import { validateGeneratedFiles } from "@intentloom/validator";
 
 const catalog: Catalog = {
   policies: ["policies/core.md"],

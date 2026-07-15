@@ -17,7 +17,7 @@
   "reportedCases": [
     "existing project-owned AGENTS.md",
     "existing .agents/skills",
-    "AIF-like header without ownership",
+    "Intentloom-like header without ownership",
     "identical generated content without ownership"
   ]
 }
