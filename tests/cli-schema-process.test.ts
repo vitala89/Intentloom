@@ -242,7 +242,7 @@ describe("built CLI schema validation process cases", () => {
     const packRoot = await mkdtemp(join(tmpdir(), "aif-schema-pack-"));
     execFileSync(
       command("pnpm"),
-      ["--filter", "@aif/cli", "pack", "--pack-destination", packRoot],
+      ["--filter", "./packages/cli", "pack", "--pack-destination", packRoot],
       { cwd: repositoryRoot, stdio: "pipe", shell: windows },
     );
     const tarball = join(

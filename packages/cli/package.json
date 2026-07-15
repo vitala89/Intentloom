@@ -1,18 +1,40 @@
 {
-  "name": "@aif/cli",
+  "name": "aif-core",
   "version": "0.1.0-alpha.0",
-  "description": "Provisional AIF command-line interface for local AI engineering workflows.",
+  "description": "Alpha CLI for AIF — Agentic Engineering Framework local workflows.",
   "license": "MIT",
+  "private": false,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vitala89/aif-core.git"
+  },
+  "homepage": "https://github.com/vitala89/aif-core#readme",
+  "bugs": {
+    "url": "https://github.com/vitala89/aif-core/issues"
+  },
+  "keywords": [
+    "agentic-engineering",
+    "ai-assisted-development",
+    "developer-tools",
+    "aif"
+  ],
   "engines": {
     "node": ">=22"
   },
   "type": "module",
   "bin": {
-    "aif": "./dist/aif.cjs"
+    "aif": "dist/aif.cjs"
   },
   "files": [
-    "dist"
+    "dist/aif.cjs",
+    "dist/catalog",
+    "dist/profiles",
+    "README.md",
+    "LICENSE"
   ],
+  "exports": {
+    "./package.json": "./package.json"
+  },
   "publishConfig": {
     "access": "public"
   },

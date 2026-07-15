@@ -2,6 +2,10 @@
 
 Before updating, run `aif diff` and `aif doctor`. Preserve project-owned files. Resolve source-map drift explicitly; never replace a conflicting instruction file without a reviewed choice. Config, manifest-lock, and adapter-output version migrations must be documented with a compatibility range and rollback path.
 
+The first planned public alpha package is `aif-core`; no published provisional
+`@aif/*` package migration exists. Future package-name migration guidance must
+be published before a renamed artifact is released.
+
 v0.1 supports schema version `1` only and provides no automatic schema
 migration. A missing or different version exits `3` before writes. Preserve the
 original document, review the future release's field-level migration notes,

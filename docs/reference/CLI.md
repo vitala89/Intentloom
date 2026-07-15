@@ -1,5 +1,9 @@
 # CLI
 
+Install the alpha CLI with `npm install --global aif-core`. The public package
+supports the `aif` binary only; programmatic imports and deep imports are not
+part of the alpha contract.
+
 AIF commands are local and deterministic. Generated files are AIF-owned only when recorded in the source map; project-owned files are never silently replaced.
 
 `init`, `adopt`, `plan`, `diff`, `sync`, and `doctor` use the shared structural

@@ -216,7 +216,7 @@ async function installPackedCli(): Promise<string> {
   const packRoot = await temporaryDirectory("aif-cli-packed-");
   await run(
     command("pnpm"),
-    ["--filter", "@aif/cli", "pack", "--pack-destination", packRoot],
+    ["--filter", "./packages/cli", "pack", "--pack-destination", packRoot],
     repositoryRoot,
   );
   const tarball = join(

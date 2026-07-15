@@ -43,7 +43,7 @@ beforeAll(async () => {
   packRoot = await mkdtemp(join(tmpdir(), "aif-adapter-packed-"));
   execFileSync(
     command("pnpm"),
-    ["--filter", "@aif/cli", "pack", "--pack-destination", packRoot],
+    ["--filter", "./packages/cli", "pack", "--pack-destination", packRoot],
     { cwd: repositoryRoot, stdio: "pipe", shell: windows },
   );
   const tarball = join(

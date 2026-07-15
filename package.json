@@ -1,5 +1,5 @@
 {
-  "name": "aif-core",
+  "name": "@aif/workspace",
   "version": "0.1.0-alpha.0",
   "private": true,
   "type": "module",
@@ -13,7 +13,7 @@
     "test": "vitest run",
     "lint": "tsc -b --pretty false",
     "format:check": "prettier --check \"**/*.{ts,md,json,yaml,yml}\"",
-    "pack:cli": "pnpm --filter @aif/cli pack --pack-destination ./artifacts"
+    "pack:cli": "pnpm --filter ./packages/cli pack --pack-destination ./artifacts"
   },
   "dependencies": {
     "yaml": "^2.9.0"

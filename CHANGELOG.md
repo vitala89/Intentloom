@@ -19,6 +19,9 @@ All notable changes are documented here. This project follows Keep a Changelog p
 - Added host-independent stored-path normalization and Windows path/collision
   fixtures.
 - Added a Linux/macOS/Windows compatibility workflow for Node 22 and Node 24.
+- Added final alpha package metadata for the public `aif-core` CLI, deterministic
+  tarball checks, clean-room npm/pnpm installation coverage, and publish dry-run
+  validation without publication.
 
 ### Fixed
 
@@ -32,7 +35,8 @@ All notable changes are documented here. This project follows Keep a Changelog p
 ### Changed
 
 - Set the unreleased lockstep development baseline to `0.1.0-alpha.0`; `0.1.0` was an untagged bootstrap placeholder.
-- Defined provisional `@aif/*` package metadata; npm name availability remains unverified and publishing remains blocked.
+- Selected `aif-core` as the planned public package and retained `@aif/*`
+  workspace libraries as private implementation details.
 - `aif sync` now consumes the structured transaction result directly.
 - Added distinct CLI exit codes for conflicts, restored transaction failures, and incomplete rollback.
 - Sync output now reports consistency validation and rollback status explicitly.
@@ -46,8 +50,8 @@ All notable changes are documented here. This project follows Keep a Changelog p
 ### Compatibility
 
 - Claude Code, Codex, Cursor, and Copilot outputs are covered by direct,
-  multi-adapter, profile snapshot, doctor, and packed CLI fixtures. Real Windows
-  CI evidence remains pending.
+  multi-adapter, profile snapshot, doctor, and packed CLI fixtures on hosted
+  Linux, macOS, and Windows Node 22/24.
 
 ### Security
 

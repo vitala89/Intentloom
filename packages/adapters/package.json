@@ -1,6 +1,7 @@
 {
   "name": "@aif/adapters",
   "version": "0.1.0-alpha.0",
+  "private": true,
   "engines": {
     "node": ">=22"
   },

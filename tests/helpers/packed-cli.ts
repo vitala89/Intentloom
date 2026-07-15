@@ -22,12 +22,14 @@ function execution(result: ReturnType<typeof spawnSync>): PackedExecution {
   };
 }
 
-export function resolvePackedCliEntry(runtime: string) {
+export function resolvePackedCliEntry(
+  runtime: string,
+  packageName = "aif-core",
+) {
   const packageJson = join(
     runtime,
     "node_modules",
-    "@aif",
-    "cli",
+    ...packageName.split("/"),
     "package.json",
   );
   const manifest = JSON.parse(readFileSync(packageJson, "utf8")) as {

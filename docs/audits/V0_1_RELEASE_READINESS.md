@@ -26,7 +26,12 @@ The current path is `bin.ts → runCli() → syncProject() → synchronizeGenera
 8. **Runtime engine blocker resolved.** ADR-0005 sets Node 22 as the consistent
    workspace minimum and bundle target. Complete 512-test suites pass locally on
    Node 22.17.0 and checksum-verified Node 24.18.0.
-9. **Release package naming is unresolved.** Root package is private `aif-core`; workspace packages use provisional `@aif/*` names without repository, homepage, bugs, license, files, publishConfig, or publishability decision.
+9. **Release package naming is partially resolved.** `aif-core` is the planned
+   public CLI package and `aif` its binary; the root workspace and `@aif/*`
+   implementation packages remain private. Metadata, deterministic tarball,
+   clean-room installs, and publish dry-run are recorded in
+   `docs/audits/PACKAGE_PUBLISH_READINESS.md`. Actual npm ownership confirmation
+   and legal/trademark review remain required before publication.
 
 ## Required before stable 0.1.0
 
@@ -41,7 +46,7 @@ The current path is `bin.ts → runCli() → syncProject() → synchronizeGenera
 
 ## Later
 
-- Publishable package layout, registry naming, release automation, and stable-1.0 compatibility commitments.
+- Actual package publication, release automation, and stable-1.0 compatibility commitments.
 
 ## Adapter status
 
