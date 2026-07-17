@@ -13,13 +13,18 @@ newer, with hosted Linux, macOS, and Windows verification on Node 22 and 24.
 Commands are offline-first and do not send telemetry.
 
 ```sh
-npm install --global intentloom
+npm install --global intentloom@next
 intentloom --help
 intentloom init --dry-run
 intentloom adopt --dry-run
 intentloom doctor
 intentloom sync --dry-run
 ```
+
+Prefer the `@next` channel during the alpha period; APIs and generated output may
+change. To pin this release, use `npm install --global intentloom@0.1.0-alpha.2`.
+Because this is the first published version, an unqualified install currently resolves
+to the alpha too, but it is not the supported installation form.
 
 Supported adapters are Claude Code, Codex, Cursor, and GitHub Copilot. Intentloom
 preserves project-owned files and reports conflicts rather than overwriting.
@@ -44,4 +49,4 @@ examples/         Dogfooding and usage examples
 tests/            Fixtures and conformance tests
 ```
 
-Read the [v0.1 specification](docs/specs/AIF_V0_1_SPEC.md), [architecture](docs/architecture/ARCHITECTURE.md), and [compatibility matrix](docs/compatibility/COMPATIBILITY_MATRIX.md). See [CONTRIBUTING.md](CONTRIBUTING.md) to contribute, [issues](https://github.com/vitala89/aif-core/issues) for support, and [LICENSE](LICENSE) for terms. The repository name remains historical until separately renamed.
+Read the [documentation index](docs/README.md), [v0.1 specification](docs/specs/AIF_V0_1_SPEC.md), [architecture](docs/architecture/ARCHITECTURE.md), and [compatibility matrix](docs/compatibility/COMPATIBILITY_MATRIX.md). See [CONTRIBUTING.md](CONTRIBUTING.md) to contribute, [SECURITY.md](SECURITY.md) for private vulnerability reporting guidance, and [LICENSE](LICENSE) for terms. The repository remains named `aif-core` until separately renamed; `.aif` and `urn:aif:*` are retained compatibility identifiers.
