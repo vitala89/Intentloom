@@ -75,7 +75,7 @@ Windows-only command-shim tests skipped locally, with no failures. The packed
 artifact exercises every adapter, all-adapter generation, no-op sync, doctor,
 conflicts, spaces, Unicode, portable metadata, and stable version output.
 Typecheck, lint, formatting, build, and `git diff --check` pass. The hosted
-[Compatibility run 29374780862](https://github.com/vitala89/aif-core/actions/runs/29374780862)
+[Compatibility run 29374780862](https://github.com/vitala89/Intentloom/actions/runs/29374780862)
 passed on Windows Node 22 and Node 24, as well as Linux and macOS.
 The final external Applye verification is recorded separately in
 `docs/audits/APPLYE_EXPLICIT_PATH_VERIFICATION.md`; it passed without modifying

@@ -7,15 +7,18 @@ published alpha and the `main` branch; compatibility and generated output may ch
 
 ## Reporting a vulnerability
 
-Do not open a public issue for an undisclosed vulnerability. Prefer GitHub private
-vulnerability reporting for this repository when it is enabled. Maintainers should
-enable that repository setting before opening the project publicly. If private
-reporting is unavailable, contact a maintainer through a private channel already
-listed by the repository owner.
+Please report suspected security vulnerabilities privately by emailing
+[vitalii.kasap@icloud.com](mailto:vitalii.kasap@icloud.com).
 
-Include a clear description, affected versions, reproduction steps or a minimal
-proof of concept, impact, and any relevant environment details. Do not include
-credentials, customer data, or unnecessarily sensitive material.
+Do not include sensitive vulnerability details, proof-of-concept exploits,
+credentials, or private data in a public GitHub issue.
+
+Please include enough information to reproduce and assess the issue, such as the
+affected version, relevant configuration, impact, and reproduction steps.
+
+After this repository becomes public and GitHub Private Vulnerability Reporting is
+enabled, that channel may also be used for private reports. For general bugs that do
+not involve a security vulnerability, use the public GitHub issue tracker.
 
 ## Scope and expectations
 
