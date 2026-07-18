@@ -8,7 +8,7 @@ intentloom --help
 ```
 
 Prefer `@next` during the alpha period because APIs and generated output may change.
-To pin this release, use `npm install --global intentloom@0.1.0-alpha.2`. An
+To pin this release, use `npm install --global intentloom@0.1.0-alpha.3`. An
 unqualified install currently resolves to this alpha because it is the first
 published version, but it is not the supported installation form.
 

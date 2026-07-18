@@ -4,6 +4,22 @@ All notable changes are documented here. This project follows Keep a Changelog p
 
 ## [Unreleased]
 
+## [0.1.0-alpha.3]
+
+### Changed
+
+- Publish canonical GitHub repository, homepage, and issue tracker metadata.
+- Include the expanded public project README and actionable private security
+  reporting policy.
+- Include the cross-platform Windows adoption-path test fix and compatibility
+  verification across Ubuntu, macOS, and Windows on Node.js 22 and 24.
+
+### Notes
+
+- No intentional runtime or schema changes; existing `.aif` and `urn:aif:*`
+  compatibility identifiers remain unchanged.
+- This remains an alpha release.
+
 ## [0.1.0-alpha.2] - 2026-07-15
 
 ### Changed

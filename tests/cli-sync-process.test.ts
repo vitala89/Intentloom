@@ -656,9 +656,9 @@ describe("real CLI transactional sync", () => {
     expect(scenarios.packedDryRun.after).toEqual(scenarios.packedDryRun.before);
   });
 
-  it("packed CLI reports version 0.1.0-alpha.2", () => {
+  it("packed CLI reports version 0.1.0-alpha.3", () => {
     expect(scenarios.packedVersion.exitCode).toBe(0);
-    expect(scenarios.packedVersion.stdout.trim()).toBe("0.1.0-alpha.2");
+    expect(scenarios.packedVersion.stdout.trim()).toBe("0.1.0-alpha.3");
   });
 
   it("JSON success uses the same exit code and structured outcome", () => {
