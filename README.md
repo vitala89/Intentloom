@@ -11,7 +11,7 @@ and synchronizing engineering intent across AI-assisted development workflows. I
 turns a canonical catalog of policies, workflows, templates, schemas, and skills
 into deterministic, reviewable tool-specific guidance.
 
-**Status:** Alpha · **Current release:** `0.1.0-alpha.2` · **Node.js:** `>=22`
+**Status:** Alpha · **Current release:** `0.1.0-alpha.3` · **Node.js:** `>=22`
 
 [Repository](https://github.com/vitala89/Intentloom) · [Documentation](docs/README.md) · [Security](SECURITY.md) · [npm package](https://www.npmjs.com/package/intentloom)
 
@@ -71,7 +71,7 @@ pnpm add --save-dev intentloom@next
 For reproducible installs, pin the current release:
 
 ```bash
-npm install --save-dev intentloom@0.1.0-alpha.2
+npm install --save-dev intentloom@0.1.0-alpha.3
 ```
 
 You can also inspect the CLI without installing it globally:

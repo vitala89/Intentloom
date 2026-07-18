@@ -194,6 +194,6 @@ describe("packed adoption and doctor fixture cases", () => {
   });
 
   it("packed version remains unchanged", () => {
-    expect(aif(["--version"]).stdout.trim()).toBe("0.1.0-alpha.2");
+    expect(aif(["--version"]).stdout.trim()).toBe("0.1.0-alpha.3");
   });
 });

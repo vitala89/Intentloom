@@ -1,6 +1,6 @@
 {
   "name": "intentloom",
-  "version": "0.1.0-alpha.2",
+  "version": "0.1.0-alpha.3",
   "description": "Intentloom is a vendor-neutral framework for defining, validating, and synchronizing engineering intent across AI coding tools.",
   "license": "MIT",
   "private": false,

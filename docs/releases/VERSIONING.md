@@ -4,7 +4,7 @@ Intentloom uses Semantic Versioning. During v0.x, all workspace packages release
 
 The private root workspace `package.json` is the framework-version source of
 truth. Package versions are synchronized deterministically before publication.
-The planned `0.1.0-alpha.2` package is `intentloom` with the `next` dist-tag.
+The planned `0.1.0-alpha.3` package is `intentloom` with the `next` dist-tag.
 It is not tagged or published by this preparation. It cannot be published until
 the npm authorization and naming/trademark gates in
 `docs/releases/PUBLISH_AUTHORIZATION_CHECKLIST.md` are complete.
@@ -24,7 +24,7 @@ framework update does not silently rewrite any of them.
 
 `0.1.0` was an untagged bootstrap placeholder. `0.1.0-alpha.1` remains the
 unpublished historical AIF technical milestone. `0.1.0-alpha.2` is the first
-planned Intentloom prerelease and remains unpublished until separately
-authorized. Patch releases are backward-compatible fixes; minor releases add
+published Intentloom prerelease. `0.1.0-alpha.3` remains unpublished until
+separately authorized. Patch releases are backward-compatible fixes; minor releases add
 backward-compatible functionality; stable major releases may break contracts
 after 1.0. Pre-1.0 breaking changes still require migration notes.

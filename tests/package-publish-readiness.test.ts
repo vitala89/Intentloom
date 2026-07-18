@@ -138,7 +138,7 @@ describe("public package publishing readiness", () => {
     );
     expect(cli).toMatchObject({
       name: "intentloom",
-      version: "0.1.0-alpha.2",
+      version: "0.1.0-alpha.3",
       license: "MIT",
       private: false,
       repository: {
@@ -191,7 +191,7 @@ describe("public package publishing readiness", () => {
       await mkdir(root);
       expect(runPackedCli(entry, ["--help"], runtime).status).toBe(0);
       expect(runPackedCli(entry, ["--version"], runtime).stdout.trim()).toBe(
-        "0.1.0-alpha.2",
+        "0.1.0-alpha.3",
       );
       expect(
         runPackedCli(
