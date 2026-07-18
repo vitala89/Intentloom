@@ -28,6 +28,6 @@ intentloom sync --dry-run
 Supported adapters are Claude Code, Codex, Cursor, and GitHub Copilot. Intentloom
 preserves project-owned files and reports conflicts instead of overwriting them.
 
-See the [repository](https://github.com/vitala89/aif-core),
-[issue tracker](https://github.com/vitala89/aif-core/issues), and
-[MIT license](https://github.com/vitala89/aif-core/blob/main/LICENSE).
+See the [repository](https://github.com/vitala89/Intentloom),
+[issue tracker](https://github.com/vitala89/Intentloom/issues), and
+[MIT license](https://github.com/vitala89/Intentloom/blob/main/LICENSE).

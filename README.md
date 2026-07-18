@@ -49,4 +49,4 @@ examples/         Dogfooding and usage examples
 tests/            Fixtures and conformance tests
 ```
 
-Read the [documentation index](docs/README.md), [v0.1 specification](docs/specs/AIF_V0_1_SPEC.md), [architecture](docs/architecture/ARCHITECTURE.md), and [compatibility matrix](docs/compatibility/COMPATIBILITY_MATRIX.md). See [CONTRIBUTING.md](CONTRIBUTING.md) to contribute, [SECURITY.md](SECURITY.md) for private vulnerability reporting guidance, and [LICENSE](LICENSE) for terms. The repository remains named `aif-core` until separately renamed; `.aif` and `urn:aif:*` are retained compatibility identifiers.
+Read the [documentation index](docs/README.md), [v0.1 specification](docs/specs/AIF_V0_1_SPEC.md), [architecture](docs/architecture/ARCHITECTURE.md), and [compatibility matrix](docs/compatibility/COMPATIBILITY_MATRIX.md). See [CONTRIBUTING.md](CONTRIBUTING.md) to contribute, [SECURITY.md](SECURITY.md) for private vulnerability reporting guidance, and [LICENSE](LICENSE) for terms. The repository is named `Intentloom`; `.aif` and `urn:aif:*` are retained compatibility identifiers.
