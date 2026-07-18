@@ -237,6 +237,6 @@ lint, formatting, build, and `git diff --check` pass.
 
 Compatibility CI runs the complete gates on Ubuntu, macOS, and Windows with
 Node 22 and Node 24. The hosted
-[Compatibility run 29374780862](https://github.com/vitala89/aif-core/actions/runs/29374780862)
+[Compatibility run 29374780862](https://github.com/vitala89/Intentloom/actions/runs/29374780862)
 passed every job, including Windows Node 22 and Node 24. Cross-platform
 compatibility is therefore **RESOLVED** for the audited matrix.

@@ -6,11 +6,11 @@
   "private": false,
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/vitala89/aif-core.git"
+    "url": "git+https://github.com/vitala89/Intentloom.git"
   },
-  "homepage": "https://github.com/vitala89/aif-core#readme",
+  "homepage": "https://github.com/vitala89/Intentloom#readme",
   "bugs": {
-    "url": "https://github.com/vitala89/aif-core/issues"
+    "url": "https://github.com/vitala89/Intentloom/issues"
   },
   "keywords": [
     "agentic-engineering",
