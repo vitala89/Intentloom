@@ -1,11 +1,21 @@
 import { describe, expect, it } from "vitest";
-import { resolve } from "node:path";
+import { isAbsolute, join, relative, resolve, sep } from "node:path";
 import {
   adoptProject,
   createMemoryFileSystem,
   type FileSystem,
 } from "@intentloom/cli";
 import { runCli } from "../packages/cli/src/command.js";
+
+function isPathWithin(root: string, candidate: string): boolean {
+  const relativePath = relative(root, candidate);
+  return (
+    relativePath === "" ||
+    (relativePath !== ".." &&
+      !relativePath.startsWith(`..${sep}`) &&
+      !isAbsolute(relativePath))
+  );
+}
 
 describe("adoption proposal", () => {
   it.each([
@@ -16,8 +26,9 @@ describe("adoption proposal", () => {
   ] as const)(
     "%s accepts an explicit positional project path without writing",
     async (command, extra, expectedExit, expectsOutput) => {
+      const projectRoot = resolve("explicit project");
       const fs = createMemoryFileSystem({
-        "/explicit project/README.md": "project\n",
+        [join(projectRoot, "README.md")]: "project\n",
       });
       const reads: string[] = [];
       const trackingFileSystem: FileSystem = {
@@ -40,7 +51,7 @@ describe("adoption proposal", () => {
       const stdout: string[] = [];
 
       const exit = await runCli(
-        [command, "/explicit project", ...extra],
+        [command, projectRoot, ...extra],
         { catalogRoot: resolve("catalog"), fileSystem: trackingFileSystem },
         {
           stdout: (message) => stdout.push(message),
@@ -52,9 +63,7 @@ describe("adoption proposal", () => {
       expect(stderr.join("\n")).not.toContain("unknown option");
       expect(stderr.join("\n")).not.toContain("unexpected argument");
       expect(stdout.join("\n") === "").toBe(!expectsOutput);
-      expect(reads.some((path) => path.startsWith("/explicit project"))).toBe(
-        true,
-      );
+      expect(reads.some((path) => isPathWithin(projectRoot, path))).toBe(true);
       expect([...fs.files.entries()]).toEqual(before);
     },
   );
