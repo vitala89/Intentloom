@@ -154,3 +154,37 @@ export function createDoctorResponse(
     },
   };
 }
+
+export function parseDoctorResponse(value: unknown): DoctorResponse {
+  if (!isObject(value) || value.jsonrpc !== "2.0")
+    throw new ProtocolValidationError(-32600, "jsonrpc must equal 2.0");
+  const id = requestId(value.id);
+  if (!isObject(value.result))
+    throw new ProtocolValidationError(-32600, "result must be an object");
+  if (value.result.protocolVersion !== PROTOCOL_VERSION)
+    throw new ProtocolValidationError(-32602, "unsupported protocol version");
+  if (!Array.isArray(value.result.findings))
+    throw new ProtocolValidationError(-32602, "findings must be an array");
+  const findings = value.result.findings.map((finding) => {
+    if (!isObject(finding))
+      throw new ProtocolValidationError(-32602, "finding must be an object");
+    const severity = stringValue(finding.severity, "finding severity");
+    if (!["error", "warning", "info"].includes(severity))
+      throw new ProtocolValidationError(-32602, "invalid finding severity");
+    return {
+      code: stringValue(finding.code, "finding code"),
+      severity: severity as DoctorFinding["severity"],
+      category: stringValue(finding.category, "finding category"),
+      path: stringValue(finding.path, "finding path"),
+      message: stringValue(finding.message, "finding message"),
+    };
+  });
+  const exitCode = value.result.exitCode;
+  if (exitCode !== 0 && exitCode !== 3)
+    throw new ProtocolValidationError(-32602, "invalid doctor exit code");
+  return createDoctorResponse(id, {
+    findings,
+    diagnostics: stringArray(value.result.diagnostics, "diagnostics"),
+    exitCode,
+  });
+}

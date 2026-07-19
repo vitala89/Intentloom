@@ -1,9 +1,15 @@
-import { createServer, type Server, type Socket } from "node:net";
+import {
+  createConnection,
+  createServer,
+  type Server,
+  type Socket,
+} from "node:net";
 import { isAbsolute } from "node:path";
 import {
   ProtocolValidationError,
   createDoctorResponse,
   parseDoctorRequest,
+  parseDoctorResponse,
   type DoctorRequest,
   type DoctorResult,
 } from "../../protocol/src/index.js";
@@ -26,6 +32,22 @@ export interface LocalDaemon {
   close(): Promise<void>;
 }
 
+export interface DaemonClientOptions {
+  readonly endpoint: string;
+  readonly sessionToken: string;
+  readonly request: DoctorRequest;
+  readonly requestTimeoutMs?: number;
+}
+
+function localEndpoint(endpoint: string): boolean {
+  return (
+    endpoint.length > 0 &&
+    (process.platform === "win32"
+      ? endpoint.startsWith("\\\\.\\pipe\\")
+      : isAbsolute(endpoint))
+  );
+}
+
 function response(socket: Socket, value: object): void {
   socket.end(`${JSON.stringify(value)}\n`);
 }
@@ -43,12 +65,7 @@ export async function startLocalDaemon(
 ): Promise<LocalDaemon> {
   if (options.sessionToken.length < 32)
     throw new Error("session token is too short");
-  if (
-    options.endpoint.length === 0 ||
-    (process.platform === "win32"
-      ? !options.endpoint.startsWith("\\\\.\\pipe\\")
-      : !isAbsolute(options.endpoint))
-  )
+  if (!localEndpoint(options.endpoint))
     throw new Error("endpoint must be an absolute local IPC path");
   const sockets = new Set<Socket>();
   let closePromise: Promise<void> | undefined;
@@ -112,4 +129,44 @@ export async function startLocalDaemon(
       return closePromise;
     },
   };
+}
+
+export async function requestDaemonDoctor(
+  options: DaemonClientOptions,
+): Promise<DoctorResult> {
+  if (!localEndpoint(options.endpoint))
+    throw new Error("endpoint must be an absolute local IPC path");
+  if (options.sessionToken.length < 32)
+    throw new Error("session token is too short");
+  return new Promise<DoctorResult>((resolve, reject) => {
+    const socket = createConnection(options.endpoint);
+    let output = "";
+    const fail = (error: Error) => {
+      socket.destroy();
+      reject(error);
+    };
+    socket.setTimeout(options.requestTimeoutMs ?? 30_000, () =>
+      fail(new Error("daemon request timed out")),
+    );
+    socket.once("connect", () =>
+      socket.write(
+        `${JSON.stringify({ token: options.sessionToken, request: options.request })}\n`,
+      ),
+    );
+    socket.on("data", (chunk: Buffer) => {
+      output += chunk.toString("utf8");
+      if (Buffer.byteLength(output) > maxMessageBytes)
+        fail(new Error("daemon response too large"));
+    });
+    socket.once("error", (error) => reject(error));
+    socket.once("end", () => {
+      try {
+        const line = output.indexOf("\n");
+        if (line < 0) throw new Error("daemon returned an incomplete response");
+        resolve(parseDoctorResponse(JSON.parse(output.slice(0, line))).result);
+      } catch {
+        reject(new Error("daemon returned an invalid response"));
+      }
+    });
+  });
 }

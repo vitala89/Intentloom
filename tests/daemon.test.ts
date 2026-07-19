@@ -23,6 +23,7 @@ import {
   startLocalDaemon,
   type LocalDaemon,
 } from "../packages/daemon/src/index.js";
+import { runCli } from "../packages/cli/src/command.js";
 
 const daemons: LocalDaemon[] = [];
 afterEach(async () => {
@@ -422,6 +423,124 @@ describe.skipIf(process.platform === "win32")("local daemon", () => {
       expect(await snapshot(root)).toEqual(before);
     }
     expect(await readdir(external)).toEqual([]);
+  });
+
+  it("keeps direct and daemon doctor results equivalent", async () => {
+    const parent = await mkdtemp(join(tmpdir(), "intentloomd-cli-"));
+    const root = join(parent, "project");
+    const endpoint = join(parent, "daemon.sock");
+    const tokenFile = join(parent, "token");
+    const token = "m".repeat(32);
+    await mkdir(root);
+    await writeFile(tokenFile, token, { mode: 0o600 });
+    await initProject(
+      {
+        root,
+        profile: "generic",
+        adapters: ["codex"],
+        catalogRoot: resolve("catalog"),
+      },
+      nodeFileSystem,
+    );
+    const before = await snapshot(root);
+    const daemon = await startLocalDaemon({
+      endpoint,
+      sessionToken: token,
+      doctor: applicationDoctor,
+    });
+    daemons.push(daemon);
+    const direct: string[] = [];
+    const remote: string[] = [];
+    const dependencies = { catalogRoot: resolve("catalog") };
+    const directExit = await runCli(
+      ["doctor", "--root", root, "--json"],
+      dependencies,
+      { stdout: (message) => direct.push(message), stderr: () => undefined },
+    );
+    const daemonExit = await runCli(
+      [
+        "doctor",
+        "--root",
+        root,
+        "--json",
+        "--daemon-endpoint",
+        endpoint,
+        "--daemon-token-file",
+        tokenFile,
+      ],
+      dependencies,
+      { stdout: (message) => remote.push(message), stderr: () => undefined },
+    );
+    const directResult = JSON.parse(direct[0]!) as {
+      findings: unknown;
+      diagnostics: unknown;
+    };
+    const daemonResult = JSON.parse(remote[0]!) as {
+      findings: unknown;
+      diagnostics: unknown;
+    };
+    expect(daemonExit).toBe(directExit);
+    expect(daemonResult).toEqual({
+      protocolVersion: 1,
+      findings: (directResult.findings as Array<Record<string, unknown>>).map(
+        ({ code, severity, category, path, message }) => ({
+          code,
+          severity,
+          category,
+          path,
+          message,
+        }),
+      ),
+      diagnostics: directResult.diagnostics,
+      exitCode: directExit,
+    });
+    expect(await snapshot(root)).toEqual(before);
+  });
+
+  it("fails safely when the daemon token does not authenticate", async () => {
+    const parent = await mkdtemp(join(tmpdir(), "intentloomd-cli-token-"));
+    const root = join(parent, "project");
+    const endpoint = join(parent, "daemon.sock");
+    const tokenFile = join(parent, "token");
+    await mkdir(root);
+    await writeFile(tokenFile, "w".repeat(32), { mode: 0o600 });
+    const daemon = await startLocalDaemon({
+      endpoint,
+      sessionToken: "n".repeat(32),
+      doctor: applicationDoctor,
+    });
+    daemons.push(daemon);
+    const errors: string[] = [];
+    await expect(
+      runCli(
+        [
+          "doctor",
+          "--root",
+          root,
+          "--daemon-endpoint",
+          endpoint,
+          "--daemon-token-file",
+          tokenFile,
+        ],
+        { catalogRoot: resolve("catalog") },
+        { stdout: () => undefined, stderr: (message) => errors.push(message) },
+      ),
+    ).resolves.toBe(2);
+    expect(errors).toEqual(["daemon returned an invalid response"]);
+  });
+
+  it("requires explicit paired doctor daemon options", async () => {
+    const errors: string[] = [];
+    await expect(
+      runCli(
+        ["doctor", "--daemon-endpoint", "/tmp/intentloomd.sock"],
+        { catalogRoot: resolve("catalog") },
+        { stdout: () => undefined, stderr: (message) => errors.push(message) },
+      ),
+    ).resolves.toBe(2);
+    expect(errors).toEqual([
+      "--daemon-endpoint and --daemon-token-file must be used together",
+    ]);
   });
 });
 

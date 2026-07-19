@@ -1,6 +1,11 @@
 import { cwd } from "node:process";
 import { resolve } from "node:path";
-import { readdir } from "node:fs/promises";
+import { readFile, readdir } from "node:fs/promises";
+import { requestDaemonDoctor } from "../../daemon/src/index.js";
+import {
+  createDoctorRequest,
+  type DoctorResult,
+} from "../../protocol/src/index.js";
 import {
   ArtifactValidationFailure,
   adoptProject,
@@ -86,7 +91,14 @@ interface ProjectConfiguration {
 const commands = new Set(["init", "adopt", "plan", "diff", "sync", "doctor"]);
 const projectPathCommands = new Set(["adopt", "diff", "sync", "doctor"]);
 const booleanFlags = new Set(["--dry-run", "--force", "--json"]);
-const valueFlags = new Set(["--root", "--profile", "--adapters", "--task"]);
+const valueFlags = new Set([
+  "--root",
+  "--profile",
+  "--adapters",
+  "--task",
+  "--daemon-endpoint",
+  "--daemon-token-file",
+]);
 const adapters = new Set<AdapterName>(["claude", "codex", "cursor", "copilot"]);
 const usage = [
   "Usage: intentloom <init|plan> [--root PATH] [--dry-run]",
@@ -122,6 +134,14 @@ function parseArguments(args: readonly string[]): ParsedArguments {
   }
   if (command !== "sync" && flags.has("--force"))
     throw new CliUsageError("--force is only valid with sync");
+  const daemonEndpoint = values.has("--daemon-endpoint");
+  const daemonTokenFile = values.has("--daemon-token-file");
+  if (daemonEndpoint !== daemonTokenFile)
+    throw new CliUsageError(
+      "--daemon-endpoint and --daemon-token-file must be used together",
+    );
+  if (daemonEndpoint && command !== "doctor")
+    throw new CliUsageError("daemon mode is only valid with doctor");
   return { command, flags, values };
 }
 
@@ -358,6 +378,15 @@ function formatDoctor(result: DoctorPlan): string {
             ? ` Remediation: ${finding.remediation.join(" ")}`
             : ""
         }`,
+    )
+    .join("\n");
+}
+
+function formatDaemonDoctor(result: DoctorResult): string {
+  return result.findings
+    .map(
+      (finding) =>
+        `${finding.severity.padEnd(7)} ${finding.code} ${finding.path} — ${finding.message}`,
     )
     .join("\n");
 }
@@ -700,6 +729,26 @@ export async function runCli(
           storedDoctorConfig?.adapters.join(",") ??
           "codex",
       );
+      const daemonEndpoint = parsed.values.get("--daemon-endpoint");
+      if (daemonEndpoint !== undefined) {
+        const tokenFile = parsed.values.get("--daemon-token-file")!;
+        const sessionToken = (await readFile(tokenFile, "utf8")).trim();
+        const result = await requestDaemonDoctor({
+          endpoint: daemonEndpoint,
+          sessionToken,
+          request: createDoctorRequest(1, {
+            root,
+            profile,
+            adapters: adapterNames,
+          }),
+        });
+        io.stdout(
+          parsed.flags.has("--json")
+            ? JSON.stringify(result, null, 2)
+            : formatDaemonDoctor(result),
+        );
+        return result.exitCode;
+      }
       const result = await doctorProject(
         {
           root,

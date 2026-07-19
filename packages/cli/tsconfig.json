@@ -3,7 +3,9 @@
   "compilerOptions": { "composite": true, "rootDir": "src", "outDir": "dist" },
   "references": [
     { "path": "../application" },
+    { "path": "../daemon" },
     { "path": "../core" },
+    { "path": "../protocol" },
     { "path": "../validator" }
   ],
   "include": ["src/**/*.ts"]
