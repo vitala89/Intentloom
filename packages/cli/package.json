@@ -24,6 +24,9 @@
     "node": ">=22"
   },
   "type": "module",
+  "devDependencies": {
+    "@intentloom/application": "workspace:*"
+  },
   "bin": {
     "intentloom": "dist/intentloom.cjs"
   },

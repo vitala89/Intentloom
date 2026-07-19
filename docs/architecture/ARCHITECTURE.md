@@ -16,8 +16,11 @@ The catalog is the sole source of reusable engineering meaning. The resolver sel
 packages/
   core/          Canonical model, resolver, schemas, rendering contracts
   adapters/      Shared adapter interfaces and target implementations
-  cli/           Local command surface and process adapter
-  validator/     Validation and drift detection
+  cli/           Public local command surface and process adapter
+  validator/     Structural validation and drift detection
+  application/   Private project-operation boundary
+  protocol/      Private versioned local wire contract
+  daemon/        Private local-IPC process adapter
 catalog/
   skills/ policies/ workflows/ templates/ schemas/
 adapters/
@@ -26,9 +29,34 @@ profiles/ examples/ tests/
 docs/
 ```
 
-These packages are implemented private workspace modules. The public package is
-the `intentloom` CLI; Core, Adapters, and Validator remain implementation
-boundaries rather than public library APIs.
+All workspace packages are implemented. The public `intentloom` package bundles
+the CLI and its runtime catalog/profile assets; the workspace libraries remain
+private implementation packages without a public import API.
+
+## Platform Foundation boundary
+
+The current `packages/cli/src/index.ts` contains the reusable project-operation
+surface as well as the CLI package. Its `initProject`, `adoptProject`,
+`diffProject`, `syncProject`, and `doctorProject` operations use explicit roots,
+filesystem, transaction, validation, and result contracts. `command.ts` owns
+argument parsing, the CLI-only current-working-directory fallback, output
+rendering, and exit-code mapping; `bin.ts` owns direct process interaction.
+
+The private `@intentloom/application` workspace package owns the
+project-operation surface. It depends only on Core, Validator, and Adapters. The
+CLI depends on it, and it does not depend on the CLI. This is not a public
+programmatic API. CLI process and packed-package tests preserve the extraction's
+equivalence and safety gate. See ADR-0007.
+
+`@intentloom/protocol` is a separate private, transport-independent package. It
+defines JSON-RPC 2.0-compatible versioned wire types, beginning with the read-only
+`intentloom.project.doctor.v1` operation. It does not access the filesystem or
+depend on application, CLI, process, or transport code. See ADR-0008.
+
+`intentloomd` is a separate process adapter over local IPC only. It
+authenticates one-use sessions before dispatching the v1 doctor request to the
+application layer, and it does not expose TCP, HTTP, or a public API. Its
+security and lifecycle boundary is defined in ADR-0009.
 
 ## Data flow and ownership
 

@@ -3,7 +3,9 @@
     "paths": {
       "@intentloom/core": ["./packages/core/src/index.ts"],
       "@intentloom/adapters": ["./packages/adapters/src/index.ts"],
-      "@intentloom/validator": ["./packages/validator/src/index.ts"]
+      "@intentloom/validator": ["./packages/validator/src/index.ts"],
+      "@intentloom/protocol": ["./packages/protocol/src/index.ts"],
+      "@intentloom/daemon": ["./packages/daemon/src/index.ts"]
     },
     "types": ["node"],
     "target": "ES2022",

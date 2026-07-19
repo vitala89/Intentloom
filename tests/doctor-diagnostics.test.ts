@@ -5,7 +5,7 @@ import {
   doctorExitCode,
   doctorProject,
   initProject,
-} from "@intentloom/cli";
+} from "../packages/application/src/index.js";
 import { runCli } from "../packages/cli/src/command.js";
 
 const options = {

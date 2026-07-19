@@ -4,6 +4,9 @@
     { "path": "./packages/core" },
     { "path": "./packages/adapters" },
     { "path": "./packages/validator" },
+    { "path": "./packages/application" },
+    { "path": "./packages/protocol" },
+    { "path": "./packages/daemon" },
     { "path": "./packages/cli" }
   ]
 }

@@ -5,7 +5,7 @@ import {
   synchronizeGeneratedFiles,
   type FileSystem,
   type TransactionResult,
-} from "@intentloom/cli";
+} from "../packages/application/src/index.js";
 import {
   INTENTLOOM_VERSION,
   checksum,

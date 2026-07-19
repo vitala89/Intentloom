@@ -9,7 +9,7 @@ import {
   initProject,
   type AdoptionAction,
   type DetectedProfile,
-} from "@intentloom/cli";
+} from "../packages/application/src/index.js";
 
 interface AdoptionFixture {
   readonly name: string;

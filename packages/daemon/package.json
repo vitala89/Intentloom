@@ -1,0 +1,18 @@
+{
+  "name": "@intentloom/daemon",
+  "version": "0.1.0-alpha.3",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "@intentloom/protocol": "workspace:*"
+  },
+  "bin": {
+    "intentloomd": "dist/intentloomd.cjs"
+  },
+  "exports": {
+    ".": "./src/index.ts"
+  }
+}

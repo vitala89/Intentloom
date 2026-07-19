@@ -20,6 +20,7 @@ Assets include repository contents, developer secrets, project files, Intentloom
 | Stale instructions                                   | Obsolete policy drives unsafe behavior                  | Pin versions and checksums; `doctor` reports stale locks, unsupported adapters, and drift.                                                                  |
 | Adoption ownership confusion                         | Existing project files are silently claimed             | Treat every unrecorded existing file as project-owned regardless of path, header, filename, equivalent source, or matching bytes.                           |
 | Unbounded repository discovery                       | Heavy, ignored, binary, or external trees are traversed | Bound depth/file count; ignore dependencies, VCS, vendor/build/cache output and binaries; never traverse symlinked directories.                             |
+| Local daemon endpoint exposure or peer impersonation | Another process reaches or controls the daemon          | IPC-only explicit endpoint, private runtime directory, one-use in-memory session token, strict framing/limits, no TCP fallback, and authenticated shutdown. |
 
 ## Non-goals
 
@@ -40,3 +41,4 @@ Intentloom does not sandbox a coding agent, enforce provider permissions, scan a
 11. Post-write diagnostics contain only project-relative affected paths and safe identifiers, never private file contents or external absolute paths.
 12. Adoption dry-run and doctor are byte-for-byte read-only and produce no `.aif`, backup, staging, Git, or external-path mutation.
 13. Profile detection uses bounded file evidence, never project prose, dependency installation, scripts, network access, or external symlink traversal.
+14. A future local daemon accepts only authenticated, versioned, bounded IPC requests and never treats local endpoint reachability as authorization.

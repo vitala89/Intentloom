@@ -4,7 +4,7 @@ import {
   adoptProject,
   createMemoryFileSystem,
   type FileSystem,
-} from "@intentloom/cli";
+} from "../packages/application/src/index.js";
 import { runCli } from "../packages/cli/src/command.js";
 
 function isPathWithin(root: string, candidate: string): boolean {
