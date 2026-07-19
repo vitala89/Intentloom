@@ -10,14 +10,14 @@ catalog + profiles ──> core resolver ──> adapter contracts ──> targe
 
 The catalog is the sole source of reusable engineering meaning. The resolver selects and parameterizes canonical artifacts. Adapters transform the resolved model into target-specific files. The validator recomputes the model and detects malformed inputs, unsupported capabilities, drift, and unsafe write plans.
 
-## Proposed repository structure
+## Current repository structure
 
 ```text
 packages/
   core/          Canonical model, resolver, schemas, rendering contracts
   adapters/      Shared adapter interfaces and target implementations
-  cli/           Local command surface (future)
-  validator/     Validation and drift detection (future)
+  cli/           Public local command surface and process adapter
+  validator/     Structural validation and drift detection
 catalog/
   skills/ policies/ workflows/ templates/ schemas/
 adapters/
@@ -26,7 +26,34 @@ profiles/ examples/ tests/
 docs/
 ```
 
-Directories are declared now; implementation is intentionally deferred.
+All four workspace packages are implemented. The public `intentloom` package
+bundles the CLI and its runtime catalog/profile assets; the three workspace
+libraries remain private implementation packages without a public import API.
+
+## Platform Foundation boundary
+
+The current `packages/cli/src/index.ts` contains the reusable project-operation
+surface as well as the CLI package. Its `initProject`, `adoptProject`,
+`diffProject`, `syncProject`, and `doctorProject` operations use explicit roots,
+filesystem, transaction, validation, and result contracts. `command.ts` owns
+argument parsing, the CLI-only current-working-directory fallback, output
+rendering, and exit-code mapping; `bin.ts` owns direct process interaction.
+
+The private `@intentloom/application` workspace package owns the
+project-operation surface. It depends only on Core, Validator, and Adapters. The
+CLI depends on it, and it does not depend on the CLI. This is not a public
+programmatic API. CLI process and packed-package tests preserve the extraction's
+equivalence and safety gate. See ADR-0007.
+
+`@intentloom/protocol` is a separate private, transport-independent package. It
+defines JSON-RPC 2.0-compatible versioned wire types, beginning with the read-only
+`intentloom.project.doctor.v1` operation. It does not access the filesystem or
+depend on application, CLI, process, or transport code. See ADR-0008.
+
+The future daemon is a separate process adapter over local IPC only. It will
+authenticate one-use sessions before dispatching the v1 doctor request to the
+application layer, and it will not expose TCP, HTTP, or a public API. Its security
+and lifecycle boundary is defined in ADR-0009.
 
 ## Data flow and ownership
 
