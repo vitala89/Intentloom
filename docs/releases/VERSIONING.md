@@ -5,9 +5,12 @@ Intentloom uses Semantic Versioning. During v0.x, all workspace packages release
 The private root workspace `package.json` is the framework-version source of
 truth. Package versions are synchronized deterministically before publication.
 The repository's `0.1.0-alpha.3` package is `intentloom`. Alpha and beta
-publication, when explicitly authorized, uses the `next` dist-tag; `latest` is
-reserved for a verified stable release. Package availability must be confirmed
-from npm release evidence rather than inferred from a source version.
+publication, when explicitly authorized, uses the `next` dist-tag. npm requires
+each package record to retain a `latest` tag, so the first prerelease also
+remains the default installation until a verified stable release supersedes it.
+After a stable release exists, prerelease publication must not move `latest`.
+Package availability must be confirmed from npm release evidence rather than
+inferred from a source version.
 
 Internal versions are distinct data concepts: framework version (root package), config schema version (`config.yaml`), manifest lock version (`manifest.lock.json`), and adapter output version (generated envelope). Their migrations are explicit and recorded in lock/source-map metadata, not independent package releases.
 

@@ -83,9 +83,10 @@ npx intentloom@next --help
 The public package and CLI are both named `intentloom`. The private
 `@intentloom/workspace` package is not an installation target.
 
-All alpha and beta releases use the `next` dist-tag. `latest` is reserved for a
-verified stable release after the release criteria in the roadmap and release
-process are met.
+All alpha and beta releases use the `next` dist-tag. npm requires every package
+record to retain `latest`, so the first published alpha also remains the default
+install until a verified stable release supersedes it. Once stable exists,
+prerelease publication must not move `latest`.
 
 ## Quick start
 

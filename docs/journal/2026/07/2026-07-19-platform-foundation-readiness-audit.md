@@ -6,7 +6,7 @@
 
 ## Verdict
 
-PASS WITH CONDITIONS for the current alpha track at main commit
+PASS for the current alpha track at main commit
 `db11c595ebf48c8a4708e785870ad167469507a0`.
 
 The local formatting, typecheck, lint, build, full test suite, package dry-run,
@@ -22,15 +22,16 @@ CLI daemon contract are covered by the accepted ADRs and tests. No runtime
 network client, automatic hook, dependency installation, or daemon lifecycle
 management was introduced.
 
-## Condition
+## npm dist-tag clarification
 
 The npm registry currently maps the alpha release to both `next` and `latest`.
-The release policy reserves `latest` for a verified stable release. The repository
-owner authorized removal of `latest` on 2026-07-19, but npm rejected the operation
-with `E401` because the locally configured authentication token is invalid. No
-registry state changed. Renewed npm authentication and one authorized
-`npm dist-tag rm intentloom latest` operation are required before any further
-prerelease publication.
+The repository owner authorized removal of `latest` and completed npm web
+authentication. The registry then rejected the removal with `400` because a
+package record must retain `latest`. This is an npm registry invariant, not an
+authorization or package defect. The release policy now records the compatible
+rule: publish prereleases under `next`; the first prerelease remains `latest`
+until a verified stable release supersedes it; do not move `latest` for later
+prereleases after stable exists.
 
 ## Follow-up
 
