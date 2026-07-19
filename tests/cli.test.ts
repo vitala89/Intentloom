@@ -4,7 +4,7 @@ import {
   doctorProject,
   initProject,
   syncProject,
-} from "@intentloom/cli";
+} from "../packages/application/src/index.js";
 import { checksum, type Catalog } from "@intentloom/core";
 
 const injectedCatalog: Catalog = {

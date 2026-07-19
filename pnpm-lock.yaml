@@ -33,13 +33,34 @@ importers:
         specifier: workspace:*
         version: link:../core
 
-  packages/cli: {}
+  packages/application:
+    dependencies:
+      "@intentloom/adapters":
+        specifier: workspace:*
+        version: link:../adapters
+      "@intentloom/core":
+        specifier: workspace:*
+        version: link:../core
+      "@intentloom/validator":
+        specifier: workspace:*
+        version: link:../validator
+      yaml:
+        specifier: ^2.9.0
+        version: 2.9.0
+
+  packages/cli:
+    devDependencies:
+      "@intentloom/application":
+        specifier: workspace:*
+        version: link:../application
 
   packages/core:
     dependencies:
       yaml:
         specifier: ^2.9.0
         version: 2.9.0
+
+  packages/protocol: {}
 
   packages/validator:
     dependencies:

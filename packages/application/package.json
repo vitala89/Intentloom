@@ -1,0 +1,18 @@
+{
+  "name": "@intentloom/application",
+  "version": "0.1.0-alpha.3",
+  "private": true,
+  "engines": {
+    "node": ">=22"
+  },
+  "type": "module",
+  "dependencies": {
+    "@intentloom/adapters": "workspace:*",
+    "@intentloom/core": "workspace:*",
+    "@intentloom/validator": "workspace:*",
+    "yaml": "^2.9.0"
+  },
+  "exports": {
+    ".": "./src/index.ts"
+  }
+}

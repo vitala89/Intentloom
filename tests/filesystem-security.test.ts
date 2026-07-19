@@ -6,7 +6,7 @@ import {
   destinationCollisionKey,
   initProject,
   nodeFileSystem,
-} from "@intentloom/cli";
+} from "../packages/application/src/index.js";
 
 describe("filesystem security", () => {
   it("rejects a broken generated-file symlink without creating its external target", async () => {

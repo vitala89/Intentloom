@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   createMemoryFileSystem,
   synchronizeGeneratedFiles,
-} from "@intentloom/cli";
+} from "../packages/application/src/index.js";
 import {
   assertProjectStateUnchanged,
   snapshotProjectState,

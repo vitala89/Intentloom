@@ -12,7 +12,7 @@ import {
   doctorProject,
   initProject,
   syncProject,
-} from "@intentloom/cli";
+} from "../packages/application/src/index.js";
 import { validateGeneratedFiles } from "@intentloom/validator";
 
 const catalog: Catalog = {
