@@ -9,6 +9,12 @@ All notable changes are documented here. This project follows Keep a Changelog p
 - Documented a future Engineering Process Intelligence direction based on local workflow evidence, deterministic conformance checking, workflow variants, and bottleneck analysis.
 - Added explicit privacy, provenance, scope, delivery-order, and non-goal boundaries so the direction does not imply a general enterprise process-mining platform or v0.1 implementation commitment.
 
+### Changed
+
+- Aligned architecture, roadmap, versioning, contribution, and release-process
+  documentation with the implemented alpha repository and repeatable delivery
+  workflow.
+
 ## [0.1.0-alpha.3]
 
 ### Changed

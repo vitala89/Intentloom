@@ -1,5 +1,23 @@
 # Roadmap
 
+## Near-term release path
+
+The milestones below are compatibility and evidence gates, not promised dates.
+Intentloom remains alpha until the generated configuration, schemas, and
+adoption workflow have been exercised in multiple real projects.
+
+| Milestone       | Focus                                         | Exit gate                                                                                                              |
+| --------------- | --------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `0.1.0-alpha.4` | Documentation consistency and release hygiene | Architecture, release, versioning, and public-status documents agree with the repository and verified release evidence |
+| `0.1.0-alpha.5` | Fixture depth and adapter compatibility       | Expanded snapshot and packed-CLI coverage across supported adapters and representative project fixtures                |
+| `0.1.0-beta.1`  | Compatibility-freeze candidate                | Explicit API/schema/output compatibility statement, migration policy, and successful dogfooding evidence               |
+| `1.0.0`         | Stable compatibility contract                 | Stable release criteria, documented support policy, verified upgrade path, and maintained compatibility commitments    |
+
+Before beta, Intentloom needs at least three real dogfooding scenarios: a
+minimal project, a TypeScript project, and a sanitized existing-project example
+such as Applye or an Angular + Tauri project. The goal is evidence that
+configuration, schemas, and generated output are not changing accidentally.
+
 ## v0.1 — Foundation
 
 1. Define canonical policies, workflows, templates, schemas, and portable Agent Skills.

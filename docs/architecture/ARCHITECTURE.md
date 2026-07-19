@@ -10,14 +10,14 @@ catalog + profiles ──> core resolver ──> adapter contracts ──> targe
 
 The catalog is the sole source of reusable engineering meaning. The resolver selects and parameterizes canonical artifacts. Adapters transform the resolved model into target-specific files. The validator recomputes the model and detects malformed inputs, unsupported capabilities, drift, and unsafe write plans.
 
-## Proposed repository structure
+## Current repository structure
 
 ```text
 packages/
   core/          Canonical model, resolver, schemas, rendering contracts
   adapters/      Shared adapter interfaces and target implementations
-  cli/           Local command surface (future)
-  validator/     Validation and drift detection (future)
+  cli/           Local command surface and process adapter
+  validator/     Validation and drift detection
 catalog/
   skills/ policies/ workflows/ templates/ schemas/
 adapters/
@@ -26,7 +26,9 @@ profiles/ examples/ tests/
 docs/
 ```
 
-Directories are declared now; implementation is intentionally deferred.
+These packages are implemented private workspace modules. The public package is
+the `intentloom` CLI; Core, Adapters, and Validator remain implementation
+boundaries rather than public library APIs.
 
 ## Data flow and ownership
 
