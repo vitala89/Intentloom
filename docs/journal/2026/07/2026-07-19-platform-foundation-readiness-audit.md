@@ -25,9 +25,12 @@ management was introduced.
 ## Condition
 
 The npm registry currently maps the alpha release to both `next` and `latest`.
-The release policy reserves `latest` for a verified stable release. An explicitly
-authorized npm dist-tag correction is required before any further prerelease
-publication; this audit neither publishes nor changes registry state.
+The release policy reserves `latest` for a verified stable release. The repository
+owner authorized removal of `latest` on 2026-07-19, but npm rejected the operation
+with `E401` because the locally configured authentication token is invalid. No
+registry state changed. Renewed npm authentication and one authorized
+`npm dist-tag rm intentloom latest` operation are required before any further
+prerelease publication.
 
 ## Follow-up
 
