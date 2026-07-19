@@ -4,10 +4,10 @@ Intentloom uses Semantic Versioning. During v0.x, all workspace packages release
 
 The private root workspace `package.json` is the framework-version source of
 truth. Package versions are synchronized deterministically before publication.
-The planned `0.1.0-alpha.3` package is `intentloom` with the `next` dist-tag.
-It is not tagged or published by this preparation. It cannot be published until
-the npm authorization and naming/trademark gates in
-`docs/releases/PUBLISH_AUTHORIZATION_CHECKLIST.md` are complete.
+The repository's `0.1.0-alpha.3` package is `intentloom`. Alpha and beta
+publication, when explicitly authorized, uses the `next` dist-tag; `latest` is
+reserved for a verified stable release. Package availability must be confirmed
+from npm release evidence rather than inferred from a source version.
 
 Internal versions are distinct data concepts: framework version (root package), config schema version (`config.yaml`), manifest lock version (`manifest.lock.json`), and adapter output version (generated envelope). Their migrations are explicit and recorded in lock/source-map metadata, not independent package releases.
 
@@ -23,8 +23,8 @@ not the config schema version. These values may evolve independently, and a
 framework update does not silently rewrite any of them.
 
 `0.1.0` was an untagged bootstrap placeholder. `0.1.0-alpha.1` remains the
-unpublished historical AIF technical milestone. `0.1.0-alpha.2` is the first
-published Intentloom prerelease. `0.1.0-alpha.3` remains unpublished until
-separately authorized. Patch releases are backward-compatible fixes; minor releases add
-backward-compatible functionality; stable major releases may break contracts
-after 1.0. Pre-1.0 breaking changes still require migration notes.
+unpublished historical AIF technical milestone. Release records, not this
+policy, establish whether a particular prerelease was published. Patch releases
+are backward-compatible fixes; minor releases add backward-compatible
+functionality; stable major releases may break contracts after 1.0. Pre-1.0
+breaking changes still require migration notes.

@@ -83,6 +83,10 @@ npx intentloom@next --help
 The public package and CLI are both named `intentloom`. The private
 `@intentloom/workspace` package is not an installation target.
 
+All alpha and beta releases use the `next` dist-tag. `latest` is reserved for a
+verified stable release after the release criteria in the roadmap and release
+process are met.
+
 ## Quick start
 
 From the project you want to configure, preview first:
@@ -192,6 +196,7 @@ and [generated-files reference](docs/reference/GENERATED_FILES.md) for detail.
 - [Troubleshooting](docs/guides/TROUBLESHOOTING.md)
 - [v0.1 specification](docs/specs/AIF_V0_1_SPEC.md)
 - [Release process](docs/releases/RELEASE_PROCESS.md)
+- [Versioning policy](docs/releases/VERSIONING.md)
 
 Public examples include [minimal](examples/minimal/README.md),
 [TypeScript](examples/typescript/README.md), and
@@ -210,12 +215,10 @@ pnpm build
 pnpm vitest run
 ```
 
-The latest verified local result is **35 test files, 522 passed, 2 expected
+The latest documented local result is **35 test files, 522 passed, 2 expected
 skips, and 0 failures**. Package verification also checks byte-identical
-archives and isolated npm and pnpm local-tarball installs.
-
-Hosted PR CI: **NOT EXECUTED - BILLING BLOCKED**. It is not represented as a
-passing CI badge.
+archives and isolated npm and pnpm local-tarball installs. Hosted Compatibility
+CI runs the declared checks on Linux, macOS, and Windows for Node.js 22 and 24.
 
 ## Roadmap
 
