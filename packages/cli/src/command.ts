@@ -21,7 +21,7 @@ import {
   type TransactionOptions,
   type TransactionResult,
   type TransactionStage,
-} from "./index.js";
+} from "@intentloom/application";
 import { INTENTLOOM_VERSION, type AdapterName } from "@intentloom/core";
 import {
   createArtifactValidator,

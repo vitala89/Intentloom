@@ -4,7 +4,7 @@ import {
   createMemoryFileSystem,
   doctorExitCode,
   doctorProject,
-} from "@intentloom/cli";
+} from "../packages/application/src/index.js";
 
 const options = {
   root: "/project",

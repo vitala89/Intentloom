@@ -1,4 +1,4 @@
-import type { FileSystem } from "@intentloom/cli";
+import type { FileSystem } from "../packages/application/src/index.js";
 
 export async function snapshotProjectState(
   fs: FileSystem & { files: Map<string, string> },

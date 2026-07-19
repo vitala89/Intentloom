@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { findDestinationCollisions } from "@intentloom/cli";
+import { findDestinationCollisions } from "../packages/application/src/index.js";
 
 describe("destination collision planning", () => {
   it("reports case-only collisions independently of input order", () => {

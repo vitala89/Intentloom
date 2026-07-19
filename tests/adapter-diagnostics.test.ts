@@ -4,7 +4,7 @@ import {
   createMemoryFileSystem,
   doctorProject,
   initProject,
-} from "@intentloom/cli";
+} from "../packages/application/src/index.js";
 
 describe("adapter compatibility diagnostics", () => {
   it("reports Cursor experimental and unsupported capabilities from its contract", async () => {

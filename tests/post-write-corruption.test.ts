@@ -5,7 +5,7 @@ import {
   type FileSystem,
   type PostWriteCorruptionContext,
   type PostWriteCorruptionCode,
-} from "@intentloom/cli";
+} from "../packages/application/src/index.js";
 import { checksum, type GeneratedFile } from "@intentloom/core";
 import {
   assertProjectStateUnchanged,
