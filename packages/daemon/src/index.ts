@@ -14,6 +14,8 @@ export interface DaemonOptions {
   readonly endpoint: string;
   readonly sessionToken: string;
   readonly maxConnections?: number;
+  readonly requestTimeoutMs?: number;
+  readonly shutdownTimeoutMs?: number;
   readonly doctor: (
     request: DoctorRequest,
   ) => Promise<Omit<DoctorResult, "protocolVersion">>;
@@ -49,9 +51,12 @@ export async function startLocalDaemon(
   )
     throw new Error("endpoint must be an absolute local IPC path");
   const sockets = new Set<Socket>();
+  let closePromise: Promise<void> | undefined;
   const server: Server = createServer((socket) => {
     sockets.add(socket);
-    socket.setTimeout(30_000, () => socket.destroy());
+    socket.setTimeout(options.requestTimeoutMs ?? 30_000, () =>
+      socket.destroy(),
+    );
     let input = "";
     socket.on("data", async (chunk: Buffer) => {
       input += chunk.toString("utf8");
@@ -91,10 +96,20 @@ export async function startLocalDaemon(
   return {
     endpoint: options.endpoint,
     async close(): Promise<void> {
-      for (const socket of sockets) socket.destroy();
-      await new Promise<void>((resolve, reject) =>
-        server.close((error) => (error ? reject(error) : resolve())),
-      );
+      if (closePromise !== undefined) return closePromise;
+      closePromise = new Promise<void>((resolve, reject) => {
+        let timedOut = false;
+        const timeout = setTimeout(() => {
+          timedOut = true;
+          for (const socket of sockets) socket.destroy();
+        }, options.shutdownTimeoutMs ?? 5_000);
+        server.close((error) => {
+          clearTimeout(timeout);
+          if (error && !timedOut) reject(error);
+          else resolve();
+        });
+      });
+      return closePromise;
     },
   };
 }
