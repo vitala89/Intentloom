@@ -297,6 +297,36 @@ describe.skipIf(process.platform === "win32")("local daemon", () => {
     });
   });
 
+  it("drops connections above the configured concurrency limit", async () => {
+    const directory = await mkdtemp(join(tmpdir(), "intentloomd-"));
+    const daemon = await startLocalDaemon({
+      endpoint: join(directory, "daemon.sock"),
+      sessionToken: "l".repeat(32),
+      maxConnections: 1,
+      doctor: async () => ({ findings: [], diagnostics: [], exitCode: 0 }),
+    });
+    daemons.push(daemon);
+    const first = createConnection(daemon.endpoint);
+    await new Promise<void>((resolve, reject) => {
+      first.once("connect", resolve);
+      first.once("error", reject);
+    });
+    const second = createConnection(daemon.endpoint);
+    await new Promise<void>((resolve, reject) => {
+      const timeout = setTimeout(
+        () => reject(new Error("connection limit did not close peer")),
+        500,
+      );
+      const done = () => {
+        clearTimeout(timeout);
+        resolve();
+      };
+      second.once("close", done);
+      second.once("error", done);
+    });
+    first.destroy();
+  });
+
   it("drains an active request before shutdown", async () => {
     const directory = await mkdtemp(join(tmpdir(), "intentloomd-"));
     let release: (() => void) | undefined;
