@@ -9,6 +9,9 @@
   "dependencies": {
     "@intentloom/protocol": "workspace:*"
   },
+  "bin": {
+    "intentloomd": "dist/intentloomd.cjs"
+  },
   "exports": {
     ".": "./src/index.ts"
   }

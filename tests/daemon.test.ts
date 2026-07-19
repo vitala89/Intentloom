@@ -1,4 +1,4 @@
-import { createConnection } from "node:net";
+import { createConnection, createServer } from "node:net";
 import { mkdtemp, stat } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -63,6 +63,20 @@ describe.skipIf(process.platform === "win32")("local daemon", () => {
     });
   });
 
+  it("rejects missing, relative, and non-IPC endpoints", async () => {
+    const doctor = async () => ({ findings: [], diagnostics: [], exitCode: 0 });
+    await expect(
+      startLocalDaemon({ endpoint: "", sessionToken: "a".repeat(32), doctor }),
+    ).rejects.toThrow("endpoint must be an absolute local IPC path");
+    await expect(
+      startLocalDaemon({
+        endpoint: "daemon.sock",
+        sessionToken: "a".repeat(32),
+        doctor,
+      }),
+    ).rejects.toThrow("endpoint must be an absolute local IPC path");
+  });
+
   it("removes only its owned Unix socket during shutdown", async () => {
     const directory = await mkdtemp(join(tmpdir(), "intentloomd-"));
     const endpoint = join(directory, "daemon.sock");
@@ -97,5 +111,69 @@ describe.skipIf(process.platform === "win32")("local daemon", () => {
     ).resolves.toMatchObject({
       error: { code: -32601 },
     });
+  });
+
+  it("processes only the first request on a connection", async () => {
+    const directory = await mkdtemp(join(tmpdir(), "intentloomd-"));
+    let calls = 0;
+    const daemon = await startLocalDaemon({
+      endpoint: join(directory, "daemon.sock"),
+      sessionToken: "f".repeat(32),
+      doctor: async () => {
+        calls += 1;
+        return { findings: [], diagnostics: [], exitCode: 0 };
+      },
+    });
+    daemons.push(daemon);
+    const payload = JSON.stringify({
+      token: "f".repeat(32),
+      request: createDoctorRequest(1, {
+        root: "/project",
+        profile: "generic",
+        adapters: [],
+      }),
+    });
+    await expect(
+      rawRequest(daemon.endpoint, `${payload}\n${payload}`),
+    ).resolves.toMatchObject({ id: 1, result: { exitCode: 0 } });
+    expect(calls).toBe(1);
+  });
+
+  it("rejects oversized messages before invoking the handler", async () => {
+    const directory = await mkdtemp(join(tmpdir(), "intentloomd-"));
+    const daemon = await startLocalDaemon({
+      endpoint: join(directory, "daemon.sock"),
+      sessionToken: "d".repeat(32),
+      doctor: async () => {
+        throw new Error("must not run");
+      },
+    });
+    daemons.push(daemon);
+    await expect(
+      rawRequest(daemon.endpoint, "x".repeat(1024 * 1024 + 1)),
+    ).resolves.toMatchObject({
+      error: { code: -32600, message: "message too large" },
+    });
+  });
+
+  it("fails safely when its endpoint is already in use", async () => {
+    const directory = await mkdtemp(join(tmpdir(), "intentloomd-"));
+    const endpoint = join(directory, "daemon.sock");
+    const occupied = createServer();
+    await new Promise<void>((resolve) => occupied.listen(endpoint, resolve));
+    try {
+      await expect(
+        startLocalDaemon({
+          endpoint,
+          sessionToken: "e".repeat(32),
+          doctor: async () => ({ findings: [], diagnostics: [], exitCode: 0 }),
+        }),
+      ).rejects.toThrow();
+      await stat(endpoint);
+    } finally {
+      await new Promise<void>((resolve, reject) =>
+        occupied.close((error) => (error ? reject(error) : resolve())),
+      );
+    }
   });
 });

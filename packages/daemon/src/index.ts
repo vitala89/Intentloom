@@ -1,5 +1,5 @@
 import { createServer, type Server, type Socket } from "node:net";
-import { rm } from "node:fs/promises";
+import { isAbsolute } from "node:path";
 import {
   ProtocolValidationError,
   createDoctorResponse,
@@ -41,7 +41,13 @@ export async function startLocalDaemon(
 ): Promise<LocalDaemon> {
   if (options.sessionToken.length < 32)
     throw new Error("session token is too short");
-  if (options.endpoint.length === 0) throw new Error("endpoint is required");
+  if (
+    options.endpoint.length === 0 ||
+    (process.platform === "win32"
+      ? !options.endpoint.startsWith("\\\\.\\pipe\\")
+      : !isAbsolute(options.endpoint))
+  )
+    throw new Error("endpoint must be an absolute local IPC path");
   const sockets = new Set<Socket>();
   const server: Server = createServer((socket) => {
     sockets.add(socket);
@@ -89,8 +95,6 @@ export async function startLocalDaemon(
       await new Promise<void>((resolve, reject) =>
         server.close((error) => (error ? reject(error) : resolve())),
       );
-      if (process.platform !== "win32")
-        await rm(options.endpoint, { force: true });
     },
   };
 }
