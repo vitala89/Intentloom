@@ -1,9 +1,24 @@
 import { createConnection, createServer } from "node:net";
-import { mkdtemp, stat } from "node:fs/promises";
+import {
+  mkdtemp,
+  mkdir,
+  lstat,
+  readFile,
+  readdir,
+  readlink,
+  stat,
+  symlink,
+  writeFile,
+} from "node:fs/promises";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { join, resolve } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
 import { createDoctorRequest } from "../packages/protocol/src/index.js";
+import {
+  doctorProject,
+  initProject,
+  nodeFileSystem,
+} from "../packages/application/src/index.js";
 import {
   startLocalDaemon,
   type LocalDaemon,
@@ -14,13 +29,17 @@ afterEach(async () => {
   await Promise.all(daemons.splice(0).map((daemon) => daemon.close()));
 });
 
-async function request(endpoint: string, token: string): Promise<unknown> {
+async function request(
+  endpoint: string,
+  token: string,
+  root = "/project",
+): Promise<unknown> {
   return new Promise((resolve, reject) => {
     const socket = createConnection(endpoint);
     let output = "";
     socket.on("connect", () =>
       socket.write(
-        `${JSON.stringify({ token, request: createDoctorRequest(1, { root: "/project", profile: "generic", adapters: ["codex"] }) })}\n`,
+        `${JSON.stringify({ token, request: createDoctorRequest(1, { root, profile: "generic", adapters: ["codex"] }) })}\n`,
       ),
     );
     socket.on("data", (chunk: Buffer) => {
@@ -29,6 +48,49 @@ async function request(endpoint: string, token: string): Promise<unknown> {
     socket.on("end", () => resolve(JSON.parse(output)));
     socket.on("error", reject);
   });
+}
+
+async function snapshot(root: string): Promise<readonly [string, string][]> {
+  const entries = (await readdir(root, { recursive: true })).sort();
+  return Promise.all(
+    entries.map(async (entry) => {
+      const path = join(root, entry);
+      const metadata = await lstat(path);
+      if (metadata.isSymbolicLink())
+        return [entry, `symlink:${await readlink(path)}`] as const;
+      if (metadata.isDirectory()) return [entry, "directory"] as const;
+      return [entry, await readFile(path, "utf8")] as const;
+    }),
+  );
+}
+
+async function applicationDoctor(
+  request: ReturnType<typeof createDoctorRequest>,
+) {
+  const report = await doctorProject(
+    {
+      root: request.params.root,
+      profile: request.params.profile,
+      adapters: request.params.adapters as never,
+      catalogRoot: resolve("catalog"),
+    },
+    nodeFileSystem,
+  );
+  return {
+    findings: report.findings.map(
+      ({ code, severity, category, path, message }) => ({
+        code,
+        severity,
+        category,
+        path,
+        message,
+      }),
+    ),
+    diagnostics: report.diagnostics,
+    exitCode: report.findings.some((finding) => finding.severity === "error")
+      ? (3 as const)
+      : (0 as const),
+  };
 }
 
 async function rawRequest(endpoint: string, payload: string): Promise<unknown> {
@@ -290,5 +352,62 @@ describe.skipIf(process.platform === "win32")("local daemon", () => {
     await started;
     await expect(daemon.close()).resolves.toBeUndefined();
     await expect(request.output).rejects.toThrow();
+  });
+
+  it("runs doctor read-only for initialized, invalid, and symlinked projects", async () => {
+    const parent = await mkdtemp(join(tmpdir(), "intentloomd-read-only-"));
+    const initialized = join(parent, "initialized");
+    const invalid = join(parent, "invalid");
+    const symlinked = join(parent, "symlinked");
+    const external = join(parent, "external");
+    await mkdir(initialized);
+    await initProject(
+      {
+        root: initialized,
+        profile: "generic",
+        adapters: ["codex"],
+        catalogRoot: resolve("catalog"),
+      },
+      nodeFileSystem,
+    );
+    await mkdir(join(invalid, ".aif"), { recursive: true });
+    await writeFile(join(invalid, ".aif", "config.yaml"), "profile: [");
+    await mkdir(symlinked);
+    await mkdir(external);
+    await symlink(external, join(symlinked, ".aif"));
+    const daemon = await startLocalDaemon({
+      endpoint: join(parent, "daemon.sock"),
+      sessionToken: "j".repeat(32),
+      doctor: applicationDoctor,
+    });
+    daemons.push(daemon);
+
+    for (const root of [initialized, invalid, symlinked]) {
+      const before = await snapshot(root);
+      await expect(
+        request(daemon.endpoint, "j".repeat(32), root),
+      ).resolves.toMatchObject({
+        result: expect.any(Object),
+      });
+      expect(await snapshot(root)).toEqual(before);
+    }
+    expect(await readdir(external)).toEqual([]);
+  });
+});
+
+describe.skipIf(process.platform !== "win32")("Windows local daemon", () => {
+  it("serves doctor over a named pipe and releases it on shutdown", async () => {
+    const endpoint = `\\\\.\\pipe\\intentloomd-${process.pid}-${Date.now()}`;
+    const daemon = await startLocalDaemon({
+      endpoint,
+      sessionToken: "k".repeat(32),
+      doctor: async () => ({ findings: [], diagnostics: [], exitCode: 0 }),
+    });
+    daemons.push(daemon);
+    await expect(request(endpoint, "k".repeat(32))).resolves.toMatchObject({
+      result: { exitCode: 0, findings: [] },
+    });
+    await daemon.close();
+    await expect(request(endpoint, "k".repeat(32))).rejects.toThrow();
   });
 });
