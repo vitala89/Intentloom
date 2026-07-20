@@ -1,7 +1,7 @@
-# Intentloom dogfooding record: TypeScript read-only adoption
+# Intentloom dogfooding record: TypeScript approved adoption
 
 **Date:** 2026-07-20
-**Intentloom version:** `0.1.0-alpha.3` development build at `10fa2ef`
+**Intentloom version:** `0.1.0-alpha.3` development build at `890a4c6`
 **Scenario:** typescript
 **Project:** existing local TypeScript project; project identity and path withheld
 **Profile and adapters:** typescript; Codex
@@ -12,26 +12,26 @@
 - `intentloom adopt --dry-run --json`: exit `0`; proposed 22 creates: 18 safe
   generated candidates and 4 metadata or project-level creates. No manual
   decision was required.
-- `intentloom doctor --json`: exit `3`; expected missing-state findings were
-  `aif-config-missing`, `manifest-lock-missing`, `source-map-missing`, and
+- `intentloom adopt --json`: exit `0`; applied the same 22 creates. The
+  transaction reported `success`, no failed stage, and no rollback attempt.
+- `intentloom doctor --json`: exit `0`; there were no error findings. The
+  expected informational findings were adapter capability limitations and
   `product-documentation-missing`.
-- `intentloom sync --dry-run`: not run because the project has not accepted an
-  adoption proposal and has no Intentloom metadata.
-- Before/after checksums of every Intentloom-managed destination root were
-  identical. The dry run made no change.
+- `intentloom sync --dry-run`: exit `0`; `Created: 0`, `Updated: 0`, and
+  `Unchanged: 20`. The CLI confirmed that no files were changed.
 
 ## Compatibility observations
 
 - Profile detection selected `typescript` without ambiguity.
 - The proposal separated safe creates from existing project content instead of
   asserting ownership from a path or file name.
-- Missing metadata is correctly an error for `doctor`, rather than an implicit
-  request to write it.
+- The applied metadata, manifest lock, and source map are accepted by `doctor`.
+- The optional product-documentation finding is not an ownership or transaction
+  error.
 
 ## Conclusion
 
-Pass with follow-up
+Pass
 
-Read-only adoption was deterministic and non-destructive. A project owner must
-review and explicitly approve the proposal before this scenario can provide
-write-path adoption evidence.
+The project owner reviewed and approved the conflict-free proposal. The applied
+transaction is healthy and an idempotent dry-run sync shows no drift.
