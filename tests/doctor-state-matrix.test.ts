@@ -290,6 +290,30 @@ describe("doctor existing-state matrix", () => {
     );
   });
 
+  it("does not validate project-owned provider skills as Intentloom output", async () => {
+    const fs = await initialized();
+    await fs.write(
+      "/project/.claude/skills/project-owned/SKILL.md",
+      "# Project-owned skill\n",
+    );
+    const stdout: string[] = [];
+    expect(
+      await runCli(
+        ["doctor", "--root", "/project", "--json"],
+        { catalogRoot, fileSystem: fs },
+        { stdout: (message) => stdout.push(message), stderr: () => undefined },
+      ),
+    ).toBe(0);
+    expect(JSON.parse(stdout.join("\n")).findings).not.toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          code: "schema-required-property",
+          path: ".claude/skills/project-owned/SKILL.md",
+        }),
+      ]),
+    );
+  });
+
   it.each(cases)("diagnoses $name deterministically", async (scenario) => {
     const fs = await initialized(scenario.adapter);
     await scenario.mutate?.(fs);

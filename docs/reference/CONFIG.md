@@ -31,3 +31,18 @@ Supported profiles for adapter-scoped output are `generic`, `typescript`,
 `adapter-profile-unsupported` rather than silently omitting output for another
 profile. All paths persisted through configuration-derived metadata follow the
 portable stored-path contract in `PATHS.md`.
+
+## Adoption mappings
+
+`projectOwnedMappings` and `documentationMappings` are explicit, versioned
+adoption resolutions. Each entry has normalized project-relative `source` and
+`destination` paths. v0.1 accepts a self-mapping only: the same path appears on
+both sides. This makes the approval auditable and prevents a mapping from
+silently redirecting or replacing another file.
+
+A project-owned self-mapping for an otherwise generated path, such as
+`AGENTS.md`, preserves that file as project-owned and excludes it from generated
+ownership metadata. A documentation self-mapping selects the authoritative
+existing document for its detected concept; other same-concept documents remain
+project-owned and are not claimed. Missing, non-normalized, redirected, or
+ambiguous mappings block adoption before any write.

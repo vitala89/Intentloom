@@ -17,11 +17,17 @@ All notable changes are documented here. This project follows Keep a Changelog p
   TypeScript and Angular + Tauri adoption scenarios.
 - Recorded the reviewed, applied TypeScript adoption transaction and its
   healthy, idempotent post-write verification.
+- Added explicit, persisted adoption mappings for project-owned generated
+  destinations and authoritative existing documentation.
+- Recorded the reviewed, applied Angular + Tauri adoption transaction and its
+  healthy, idempotent post-write verification.
 
 ### Fixed
 
 - Prevented `doctor` from reporting owned, current multi-adapter instruction
   roots as a project-owned instruction conflict.
+- Prevented `doctor` from validating project-owned provider skills as
+  Intentloom-generated Agent Skills.
 
 ### Changed
 

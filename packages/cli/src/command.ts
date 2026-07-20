@@ -26,8 +26,13 @@ import {
   type TransactionOptions,
   type TransactionResult,
   type TransactionStage,
+  type ProjectMapping,
 } from "@intentloom/application";
-import { INTENTLOOM_VERSION, type AdapterName } from "@intentloom/core";
+import {
+  INTENTLOOM_VERSION,
+  normalizeOutputPath,
+  type AdapterName,
+} from "@intentloom/core";
 import {
   createArtifactValidator,
   SchemaCatalogError,
@@ -81,11 +86,14 @@ interface ParsedArguments {
   readonly command: string;
   readonly flags: ReadonlySet<string>;
   readonly values: ReadonlyMap<string, string>;
+  readonly mappingValues: ReadonlyMap<string, readonly string[]>;
 }
 
 interface ProjectConfiguration {
   readonly profile: string;
   readonly adapters: readonly AdapterName[];
+  readonly projectOwnedMappings: readonly ProjectMapping[];
+  readonly documentationMappings: readonly ProjectMapping[];
 }
 
 const commands = new Set(["init", "adopt", "plan", "diff", "sync", "doctor"]);
@@ -99,10 +107,16 @@ const valueFlags = new Set([
   "--daemon-endpoint",
   "--daemon-token-file",
 ]);
+const mappingValueFlags = new Set([
+  "--project-owned-mapping",
+  "--documentation-mapping",
+]);
 const adapters = new Set<AdapterName>(["claude", "codex", "cursor", "copilot"]);
 const usage = [
   "Usage: intentloom <init|plan> [--root PATH] [--dry-run]",
   "       intentloom <adopt|diff|sync|doctor> [PROJECT_PATH|--root PATH] [--dry-run]",
+  "       adoption mappings use --project-owned-mapping SOURCE=DESTINATION",
+  "       or --documentation-mapping SOURCE=DESTINATION",
 ].join("\n");
 
 function parseArguments(args: readonly string[]): ParsedArguments {
@@ -110,6 +124,7 @@ function parseArguments(args: readonly string[]): ParsedArguments {
   if (!commands.has(command)) throw new CliUsageError(usage);
   const flags = new Set<string>();
   const values = new Map<string, string>();
+  const mappingValues = new Map<string, string[]>();
   for (let index = 1; index < args.length; index += 1) {
     const token = args[index]!;
     if (booleanFlags.has(token)) {
@@ -122,18 +137,26 @@ function parseArguments(args: readonly string[]): ParsedArguments {
       values.set("--root", token);
       continue;
     }
-    if (!valueFlags.has(token))
+    if (!valueFlags.has(token) && !mappingValueFlags.has(token))
       throw new CliUsageError(`unknown option: ${token}`);
     const value = args[index + 1];
     if (value === undefined || value.startsWith("--"))
       throw new CliUsageError(`missing value for ${token}`);
     if (token === "--root" && values.has("--root"))
       throw new CliUsageError("project path specified more than once");
-    values.set(token, value);
+    if (mappingValueFlags.has(token)) {
+      const entries = mappingValues.get(token) ?? [];
+      entries.push(value);
+      mappingValues.set(token, entries);
+    } else values.set(token, value);
     index += 1;
   }
   if (command !== "sync" && flags.has("--force"))
     throw new CliUsageError("--force is only valid with sync");
+  if (mappingValues.size > 0 && command !== "init" && command !== "adopt")
+    throw new CliUsageError(
+      "adoption mappings are only valid with init or adopt",
+    );
   const daemonEndpoint = values.has("--daemon-endpoint");
   const daemonTokenFile = values.has("--daemon-token-file");
   if (daemonEndpoint !== daemonTokenFile)
@@ -142,7 +165,41 @@ function parseArguments(args: readonly string[]): ParsedArguments {
     );
   if (daemonEndpoint && command !== "doctor")
     throw new CliUsageError("daemon mode is only valid with doctor");
-  return { command, flags, values };
+  return { command, flags, values, mappingValues };
+}
+
+function parseMappings(values: readonly string[]): ProjectMapping[] {
+  const mappings = values.map((value) => {
+    const separator = value.indexOf("=");
+    if (separator <= 0 || separator === value.length - 1)
+      throw new CliUsageError("mapping must use SOURCE=DESTINATION");
+    const source = value.slice(0, separator);
+    const destination = value.slice(separator + 1);
+    try {
+      if (
+        normalizeOutputPath(source) !== source ||
+        normalizeOutputPath(destination) !== destination
+      )
+        throw new Error("mapping path is not normalized");
+    } catch {
+      throw new CliUsageError(
+        "mapping paths must be normalized and project-relative",
+      );
+    }
+    return { source, destination };
+  });
+  return [
+    ...new Map(
+      mappings.map((mapping) => [
+        `${mapping.source}\0${mapping.destination}`,
+        mapping,
+      ]),
+    ).values(),
+  ].sort((left, right) =>
+    `${left.source}\0${left.destination}`.localeCompare(
+      `${right.source}\0${right.destination}`,
+    ),
+  );
 }
 
 function safePaths(paths: readonly string[]): string[] {
@@ -413,6 +470,8 @@ async function projectConfiguration(
       return {
         profile: "generic",
         adapters: ["claude", "codex", "cursor", "copilot"],
+        projectOwnedMappings: [],
+        documentationMappings: [],
       };
     throw new CliUsageError(
       "sync requires an initialized project with .aif/config.yaml",
@@ -427,9 +486,18 @@ async function projectConfiguration(
   if (validation.status === "invalid")
     throw new CliProjectValidationError([validation]);
   const config = validation.document as Record<string, unknown>;
+  const mappings = (key: string): ProjectMapping[] =>
+    Array.isArray(config[key])
+      ? (config[key] as Record<string, unknown>[]).map((mapping) => ({
+          source: mapping.source as string,
+          destination: mapping.destination as string,
+        }))
+      : [];
   return {
     profile: config.profile as string,
     adapters: config.adapters as AdapterName[],
+    projectOwnedMappings: mappings("projectOwnedMappings"),
+    documentationMappings: mappings("documentationMappings"),
   };
 }
 
@@ -549,9 +617,35 @@ async function validateProjectSkills(
       (entry) => !entry.split("/").some((segment) => ignored.has(segment)),
     )
     .sort();
+  const ownedSkillPaths = new Set<string>();
+  const sourceMapPath = resolve(root, ".aif/source-map.json");
+  if (await fileSystem.exists(sourceMapPath))
+    try {
+      const sourceMap = JSON.parse(await fileSystem.read(sourceMapPath)) as {
+        files?: unknown;
+      };
+      if (Array.isArray(sourceMap.files))
+        for (const record of sourceMap.files)
+          if (
+            typeof record === "object" &&
+            record !== null &&
+            typeof (record as Record<string, unknown>).path === "string" &&
+            (record as Record<string, unknown>).ownership ===
+              "aif-owned-generated"
+          )
+            ownedSkillPaths.add(
+              (record as Record<string, unknown>).path as string,
+            );
+    } catch {
+      /* source-map validation reports malformed ownership metadata separately */
+    }
   const documents = await Promise.all(
     entries
-      .filter((entry) => entry.endsWith("/SKILL.md"))
+      .filter(
+        (entry) =>
+          entry.endsWith("/SKILL.md") &&
+          (entry.startsWith("skills/") || ownedSkillPaths.has(entry)),
+      )
       .map(async (entry) => {
         const absolute = entry.startsWith(root) ? entry : resolve(root, entry);
         const path = absolute.startsWith(`${root}/`)
@@ -729,6 +823,10 @@ export async function runCli(
           storedDoctorConfig?.adapters.join(",") ??
           "codex",
       );
+      const projectOwnedMappings =
+        storedDoctorConfig?.projectOwnedMappings ?? [];
+      const documentationMappings =
+        storedDoctorConfig?.documentationMappings ?? [];
       const daemonEndpoint = parsed.values.get("--daemon-endpoint");
       if (daemonEndpoint !== undefined) {
         const tokenFile = parsed.values.get("--daemon-token-file")!;
@@ -757,6 +855,8 @@ export async function runCli(
           dryRun: true,
           catalogRoot: dependencies.catalogRoot,
           validator,
+          projectOwnedMappings,
+          documentationMappings,
         },
         fileSystem,
         invalidMetadata,
@@ -806,6 +906,22 @@ export async function runCli(
         (configPresent ? storedConfig?.adapters.join(",") : undefined) ??
         (parsed.command === "adopt" ? "codex" : "claude,codex,cursor,copilot"),
     );
+    const cliProjectOwnedMappings = parseMappings(
+      parsed.mappingValues.get("--project-owned-mapping") ?? [],
+    );
+    const cliDocumentationMappings = parseMappings(
+      parsed.mappingValues.get("--documentation-mapping") ?? [],
+    );
+    const projectOwnedMappings = parsed.mappingValues.has(
+      "--project-owned-mapping",
+    )
+      ? cliProjectOwnedMappings
+      : (storedConfig?.projectOwnedMappings ?? []);
+    const documentationMappings = parsed.mappingValues.has(
+      "--documentation-mapping",
+    )
+      ? cliDocumentationMappings
+      : (storedConfig?.documentationMappings ?? []);
     const options = {
       root,
       profile,
@@ -813,6 +929,8 @@ export async function runCli(
       dryRun: parsed.flags.has("--dry-run"),
       catalogRoot: dependencies.catalogRoot,
       validator,
+      projectOwnedMappings,
+      documentationMappings,
       ...(parsed.command === "adopt"
         ? {
             existingValidationResults: invalidMetadata,

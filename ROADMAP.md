@@ -6,12 +6,12 @@ The milestones below are compatibility and evidence gates, not promised dates.
 Intentloom remains alpha until the generated configuration, schemas, and
 adoption workflow have been exercised in multiple real projects.
 
-| Milestone       | Focus                                         | Exit gate                                                                                                              | Gate status                                                                                       |
-| --------------- | --------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
-| `0.1.0-alpha.4` | Documentation consistency and release hygiene | Architecture, release, versioning, and public-status documents agree with the repository and verified release evidence | Met in unreleased `main`; no release has been cut                                                 |
-| `0.1.0-alpha.5` | Fixture depth and adapter compatibility       | Expanded snapshot and packed-CLI coverage across supported adapters and representative project fixtures                | Met in unreleased `main`; adapter snapshot, packed CLI, and adoption fixture coverage is recorded |
-| `0.1.0-beta.1`  | Compatibility-freeze candidate                | Explicit API/schema/output compatibility statement, migration policy, and successful dogfooding evidence               | TypeScript write-path evidence complete; Angular + Tauri mapping decisions remain pending         |
-| `1.0.0`         | Stable compatibility contract                 | Stable release criteria, documented support policy, verified upgrade path, and maintained compatibility commitments    | Not started                                                                                       |
+| Milestone       | Focus                                         | Exit gate                                                                                                              | Gate status                                                                                         |
+| --------------- | --------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| `0.1.0-alpha.4` | Documentation consistency and release hygiene | Architecture, release, versioning, and public-status documents agree with the repository and verified release evidence | Met in unreleased `main`; no release has been cut                                                   |
+| `0.1.0-alpha.5` | Fixture depth and adapter compatibility       | Expanded snapshot and packed-CLI coverage across supported adapters and representative project fixtures                | Met in unreleased `main`; adapter snapshot, packed CLI, and adoption fixture coverage is recorded   |
+| `0.1.0-beta.1`  | Compatibility-freeze candidate                | Explicit API/schema/output compatibility statement, migration policy, and successful dogfooding evidence               | Evidence met in unreleased `main`; compatibility-freeze and release-candidate review remain pending |
+| `1.0.0`         | Stable compatibility contract                 | Stable release criteria, documented support policy, verified upgrade path, and maintained compatibility commitments    | Not started                                                                                         |
 
 Before beta, Intentloom needs at least three real dogfooding scenarios: a
 minimal project, a TypeScript project, and a sanitized existing-project example
@@ -23,9 +23,10 @@ coverage is necessary but does not replace a real project record.
 
 The initial records are retained in
 [`docs/releases/dogfooding/`](docs/releases/dogfooding/). They establish
-read-only safety and generated-output behavior. A reviewed TypeScript adoption
-is now complete; a beta compatibility freeze still needs resolution of the
-manual ownership and mapping decisions in the Angular + Tauri scenario.
+read-only safety and generated-output behavior. Reviewed TypeScript and the
+Angular + Tauri adoptions are complete. The beta gate evidence is met, but no beta
+release is implied: compatibility-freeze and release-candidate review remain
+separate explicit decisions.
 
 ## v0.1 — Foundation
 

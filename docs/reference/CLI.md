@@ -33,6 +33,14 @@ and routes safe generated creation through transactional sync. A blocked
 proposal writes nothing; a partial failure reports restored/incomplete status
 through the proposal's `applicationStatus`.
 
+Use repeated `--project-owned-mapping SOURCE=DESTINATION` and
+`--documentation-mapping SOURCE=DESTINATION` options with `adopt` or `init` to
+record an explicit adoption resolution. In v0.1 both sides must be the same
+normalized project-relative path. The values are persisted in
+`.aif/config.yaml`; a project-owned mapping prevents ownership of that generated
+destination, and a documentation mapping chooses the authoritative existing
+document for an otherwise ambiguous concept.
+
 ## Doctor
 
 Doctor findings contain a stable code, `error`/`warning`/`info` severity,
