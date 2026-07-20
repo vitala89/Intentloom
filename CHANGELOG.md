@@ -15,6 +15,8 @@ All notable changes are documented here. This project follows Keep a Changelog p
   sanitized existing-project scenarios required before beta.
 - Added sanitized records for a minimal multi-adapter installation and read-only
   TypeScript and Angular + Tauri adoption scenarios.
+- Recorded the reviewed, applied TypeScript adoption transaction and its
+  healthy, idempotent post-write verification.
 
 ### Fixed
 

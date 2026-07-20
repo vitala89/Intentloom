@@ -10,7 +10,7 @@ adoption workflow have been exercised in multiple real projects.
 | --------------- | --------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
 | `0.1.0-alpha.4` | Documentation consistency and release hygiene | Architecture, release, versioning, and public-status documents agree with the repository and verified release evidence | Met in unreleased `main`; no release has been cut                                                 |
 | `0.1.0-alpha.5` | Fixture depth and adapter compatibility       | Expanded snapshot and packed-CLI coverage across supported adapters and representative project fixtures                | Met in unreleased `main`; adapter snapshot, packed CLI, and adoption fixture coverage is recorded |
-| `0.1.0-beta.1`  | Compatibility-freeze candidate                | Explicit API/schema/output compatibility statement, migration policy, and successful dogfooding evidence               | Read-only records complete; a reviewed existing-project adoption remains pending                  |
+| `0.1.0-beta.1`  | Compatibility-freeze candidate                | Explicit API/schema/output compatibility statement, migration policy, and successful dogfooding evidence               | TypeScript write-path evidence complete; Angular + Tauri mapping decisions remain pending         |
 | `1.0.0`         | Stable compatibility contract                 | Stable release criteria, documented support policy, verified upgrade path, and maintained compatibility commitments    | Not started                                                                                       |
 
 Before beta, Intentloom needs at least three real dogfooding scenarios: a
@@ -23,8 +23,9 @@ coverage is necessary but does not replace a real project record.
 
 The initial records are retained in
 [`docs/releases/dogfooding/`](docs/releases/dogfooding/). They establish
-read-only safety and generated-output behavior, but a beta compatibility freeze
-also needs a project owner's reviewed adoption decision for an existing project.
+read-only safety and generated-output behavior. A reviewed TypeScript adoption
+is now complete; a beta compatibility freeze still needs resolution of the
+manual ownership and mapping decisions in the Angular + Tauri scenario.
 
 ## v0.1 — Foundation
 
