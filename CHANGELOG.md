@@ -13,6 +13,13 @@ All notable changes are documented here. This project follows Keep a Changelog p
   doctor-only daemon client with a token-file boundary.
 - Added a dogfooding evidence template for the minimal, TypeScript, and
   sanitized existing-project scenarios required before beta.
+- Added sanitized records for a minimal multi-adapter installation and read-only
+  TypeScript and Angular + Tauri adoption scenarios.
+
+### Fixed
+
+- Prevented `doctor` from reporting owned, current multi-adapter instruction
+  roots as a project-owned instruction conflict.
 
 ### Changed
 

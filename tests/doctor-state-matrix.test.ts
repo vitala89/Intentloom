@@ -203,7 +203,10 @@ const cases: DoctorCase[] = [
   },
   {
     name: "conflicting instruction files",
-    mutate: async (fs) => fs.write("/project/CLAUDE.md", "project\n"),
+    mutate: async (fs) => {
+      await fs.write("/project/CLAUDE.md", "project\n");
+      await fs.write("/project/.cursor/project.mdc", "project\n");
+    },
     code: "instruction-files-conflicting",
     severity: "warning",
     exitCode: 0,
@@ -254,6 +257,39 @@ const cases: DoctorCase[] = [
 ];
 
 describe("doctor existing-state matrix", () => {
+  it("does not report a conflict for Intentloom-owned multi-adapter instructions", async () => {
+    const fs = createMemoryFileSystem({ "/project/README.md": "project\n" });
+    const stderr: string[] = [];
+    expect(
+      await runCli(
+        [
+          "init",
+          "--root",
+          "/project",
+          "--adapters",
+          "claude,codex,cursor,copilot",
+        ],
+        { catalogRoot, fileSystem: fs },
+        { stdout: () => undefined, stderr: (message) => stderr.push(message) },
+      ),
+    ).toBe(0);
+    expect(stderr).toEqual([]);
+
+    const stdout: string[] = [];
+    expect(
+      await runCli(
+        ["doctor", "--root", "/project", "--json"],
+        { catalogRoot, fileSystem: fs },
+        { stdout: (message) => stdout.push(message), stderr: () => undefined },
+      ),
+    ).toBe(0);
+    expect(JSON.parse(stdout.join("\n")).findings).not.toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ code: "instruction-files-conflicting" }),
+      ]),
+    );
+  });
+
   it.each(cases)("diagnoses $name deterministically", async (scenario) => {
     const fs = await initialized(scenario.adapter);
     await scenario.mutate?.(fs);
