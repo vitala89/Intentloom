@@ -127,6 +127,133 @@ describe("adoption proposal", () => {
     expect(JSON.stringify(first)).not.toContain("private instructions");
   });
 
+  it("accepts explicit project-owned and documentation mappings", async () => {
+    const fs = createMemoryFileSystem({
+      "/project/AGENTS.md": "project instructions\n",
+      "/project/README.md": "public project readme\n",
+      "/project/docs/README.md": "secondary readme\n",
+      "/project/ROADMAP.md": "project roadmap\n",
+      "/project/docs/product-state.md": "secondary product state\n",
+      "/project/docs/architecture.md": "project architecture\n",
+      "/project/docs/ADR-0001.md": "project decision\n",
+    });
+    const result = await adoptProject(
+      {
+        root: "/project",
+        profile: "generic",
+        adapters: ["codex"],
+        dryRun: true,
+        projectOwnedMappings: [
+          { source: "AGENTS.md", destination: "AGENTS.md" },
+        ],
+        documentationMappings: [
+          { source: "README.md", destination: "README.md" },
+          { source: "ROADMAP.md", destination: "ROADMAP.md" },
+          {
+            source: "docs/architecture.md",
+            destination: "docs/architecture.md",
+          },
+        ],
+      },
+      fs,
+    );
+
+    expect(result.diagnostics).toEqual([]);
+    expect(result.items).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          path: "AGENTS.md",
+          action: "map-existing-project-owned",
+          manualDecisionRequired: false,
+        }),
+        expect.objectContaining({
+          path: "README.md",
+          action: "map-existing-aif-compatible-document",
+          manualDecisionRequired: false,
+        }),
+        expect.objectContaining({
+          path: "docs/README.md",
+          action: "skip",
+          manualDecisionRequired: false,
+        }),
+        expect.objectContaining({
+          path: "docs/architecture.md",
+          action: "map-existing-aif-compatible-document",
+          manualDecisionRequired: false,
+        }),
+        expect.objectContaining({
+          path: "docs/ADR-0001.md",
+          action: "skip",
+          manualDecisionRequired: false,
+        }),
+      ]),
+    );
+  });
+
+  it("blocks invalid explicit mappings before writing", async () => {
+    const fs = createMemoryFileSystem({ "/project/README.md": "project\n" });
+    const result = await adoptProject(
+      {
+        root: "/project",
+        profile: "generic",
+        adapters: ["codex"],
+        projectOwnedMappings: [
+          { source: "AGENTS.md", destination: "docs/AGENTS.md" },
+        ],
+      },
+      fs,
+    );
+
+    expect(result.applicationStatus).toBe("blocked");
+    expect(result.diagnostics).toContain(
+      "project-owned mapping invalid: AGENTS.md",
+    );
+  });
+
+  it("persists CLI mapping resolutions without claiming project-owned files", async () => {
+    const fs = createMemoryFileSystem({
+      "/project/AGENTS.md": "project instructions\n",
+      "/project/README.md": "public project readme\n",
+      "/project/docs/README.md": "secondary readme\n",
+    });
+    const stdout: string[] = [];
+    const stderr: string[] = [];
+
+    expect(
+      await runCli(
+        [
+          "adopt",
+          "--root",
+          "/project",
+          "--profile",
+          "generic",
+          "--project-owned-mapping",
+          "AGENTS.md=AGENTS.md",
+          "--documentation-mapping",
+          "README.md=README.md",
+        ],
+        { catalogRoot: resolve("catalog"), fileSystem: fs },
+        {
+          stdout: (message) => stdout.push(message),
+          stderr: (message) => stderr.push(message),
+        },
+      ),
+    ).toBe(0);
+
+    expect(stderr).toEqual([]);
+    expect(await fs.read("/project/AGENTS.md")).toBe("project instructions\n");
+    expect(await fs.read("/project/.aif/config.yaml")).toContain(
+      "projectOwnedMappings:",
+    );
+    expect(await fs.read("/project/.aif/config.yaml")).toContain(
+      "documentationMappings:",
+    );
+    expect(await fs.read("/project/.aif/source-map.json")).not.toContain(
+      '"path": "AGENTS.md"',
+    );
+    expect(stdout.join("\n")).not.toContain("project instructions");
+  });
+
   it("reports malformed Intentloom ownership metadata as a blocking conflict", async () => {
     const fs = createMemoryFileSystem({
       "/project/.aif/source-map.json": "{ malformed",

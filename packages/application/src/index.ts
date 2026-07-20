@@ -193,6 +193,13 @@ export interface InitOptions {
   readonly validator?: ArtifactValidator;
   readonly existingValidationResults?: readonly ArtifactValidationResult[];
   readonly profileConfirmed?: boolean;
+  readonly projectOwnedMappings?: readonly ProjectMapping[];
+  readonly documentationMappings?: readonly ProjectMapping[];
+}
+
+export interface ProjectMapping {
+  readonly source: string;
+  readonly destination: string;
 }
 
 export type DetectedProfile =
@@ -1262,8 +1269,32 @@ async function safeDestination(
   }
 }
 
-function config(profile: string, adapters: readonly AdapterName[]): string {
-  return stringify({ schemaVersion: "1", profile, adapters });
+function sortedMappings(mappings: readonly ProjectMapping[]): ProjectMapping[] {
+  return [...mappings].sort((left, right) =>
+    `${left.source}\0${left.destination}`.localeCompare(
+      `${right.source}\0${right.destination}`,
+    ),
+  );
+}
+
+function config(
+  profile: string,
+  adapters: readonly AdapterName[],
+  options: Pick<InitOptions, "projectOwnedMappings" | "documentationMappings">,
+): string {
+  const projectOwnedMappings = sortedMappings(
+    options.projectOwnedMappings ?? [],
+  );
+  const documentationMappings = sortedMappings(
+    options.documentationMappings ?? [],
+  );
+  return stringify({
+    schemaVersion: "1",
+    profile,
+    adapters,
+    ...(projectOwnedMappings.length === 0 ? {} : { projectOwnedMappings }),
+    ...(documentationMappings.length === 0 ? {} : { documentationMappings }),
+  });
 }
 function generated(
   adapterNames: readonly AdapterName[],
@@ -1314,8 +1345,13 @@ async function desired(options: InitOptions): Promise<GeneratedFile[]> {
       ? await loadCatalog(options.catalogRoot)
       : emptyCatalog);
   const selectedAdapters = [...new Set(options.adapters)].sort();
-  const files = generated(selectedAdapters, catalog, options.profile);
-  const configContent = config(options.profile, selectedAdapters);
+  const projectOwnedDestinations = new Set(
+    (options.projectOwnedMappings ?? []).map((mapping) => mapping.source),
+  );
+  const files = generated(selectedAdapters, catalog, options.profile).filter(
+    (file) => !projectOwnedDestinations.has(file.path),
+  );
+  const configContent = config(options.profile, selectedAdapters, options);
   const payload: GeneratedFile[] = [
     {
       path: configPath,
@@ -2308,6 +2344,48 @@ export async function adoptProject(
       return "technical-debt";
     return null;
   };
+  const mappingDiagnostics: string[] = [];
+  const normalizeMappingPath = (path: string): string | null => {
+    try {
+      const normalized = normalizeOutputPath(path);
+      return normalized === path ? normalized : null;
+    } catch {
+      return null;
+    }
+  };
+  for (const mapping of options.projectOwnedMappings ?? []) {
+    const source = normalizeMappingPath(mapping.source);
+    const destination = normalizeMappingPath(mapping.destination);
+    if (
+      source === null ||
+      destination === null ||
+      source !== destination ||
+      !scanned.has(destination)
+    )
+      mappingDiagnostics.push(
+        `project-owned mapping invalid: ${mapping.source}`,
+      );
+  }
+  const documentationMappingsByConcept = new Map<string, string>();
+  for (const mapping of options.documentationMappings ?? []) {
+    const source = normalizeMappingPath(mapping.source);
+    const destination = normalizeMappingPath(mapping.destination);
+    const concept = source === null ? null : documentConcept(source);
+    if (
+      source === null ||
+      destination === null ||
+      source !== destination ||
+      concept === null ||
+      !scanned.has(source) ||
+      documentationMappingsByConcept.has(concept)
+    ) {
+      mappingDiagnostics.push(
+        `documentation mapping invalid: ${mapping.source}`,
+      );
+      continue;
+    }
+    documentationMappingsByConcept.set(concept, source);
+  }
   const conceptCounts = new Map<string, number>();
   for (const path of scannedPaths) {
     const concept = documentConcept(path);
@@ -2391,19 +2469,28 @@ export async function adoptProject(
     if (desiredByPath.has(path)) continue;
     const concept = documentConcept(path);
     const duplicate = concept !== null && (conceptCounts.get(concept) ?? 0) > 1;
+    const mappedDocument =
+      concept === null
+        ? undefined
+        : documentationMappingsByConcept.get(concept);
+    const selectedDocument = mappedDocument === path;
     items.push({
       path,
       action: unsupportedPath(path)
         ? "unsupported"
-        : duplicate
+        : duplicate && mappedDocument === undefined
           ? "manual-decision-required"
-          : concept === "public-readme"
-            ? "map-existing-project-owned"
-            : instructionPath(path)
-              ? "map-existing-project-owned"
-              : concept
-                ? "map-existing-aif-compatible-document"
-                : "skip",
+          : selectedDocument
+            ? "map-existing-aif-compatible-document"
+            : mappedDocument !== undefined
+              ? "skip"
+              : concept === "public-readme"
+                ? "map-existing-project-owned"
+                : instructionPath(path)
+                  ? "map-existing-project-owned"
+                  : concept
+                    ? "map-existing-aif-compatible-document"
+                    : "skip",
       currentClassification: "project-owned",
       proposedClassification: unsupportedPath(path)
         ? "unsupported"
@@ -2412,28 +2499,36 @@ export async function adoptProject(
           : "project-owned",
       reason: unsupportedPath(path)
         ? "custom Copilot agents are not generated by the current adapter"
-        : duplicate
+        : duplicate && mappedDocument === undefined
           ? `multiple project documents represent the ${concept} concept`
-          : concept
-            ? `existing project document maps to the ${concept} concept`
-            : instructionPath(path)
-              ? "existing tool instruction remains project-owned"
-              : "project file is not an adoption artifact",
+          : selectedDocument
+            ? `explicit documentation mapping selects this ${concept} document`
+            : mappedDocument !== undefined
+              ? `explicit documentation mapping retains ${mappedDocument} for the ${concept} concept`
+              : concept
+                ? `existing project document maps to the ${concept} concept`
+                : instructionPath(path)
+                  ? "existing tool instruction remains project-owned"
+                  : "project file is not an adoption artifact",
       canonicalSource: null,
       adapter: adapterForPath(path),
       profile: null,
       conflictDetails: duplicate
-        ? [`ambiguous ${concept} document mapping`]
+        ? mappedDocument === undefined
+          ? [`ambiguous ${concept} document mapping`]
+          : []
         : [],
       writeEligible: false,
-      manualDecisionRequired: duplicate,
+      manualDecisionRequired: duplicate && mappedDocument === undefined,
       safeNextAction: unsupportedPath(path)
         ? "Keep the unsupported file project-owned and review adapter capabilities."
-        : duplicate
+        : duplicate && mappedDocument === undefined
           ? "Choose the authoritative project document manually."
-          : concept || instructionPath(path)
-            ? "Keep the existing file project-owned and record the mapping only."
-            : "Leave the unrelated project file unchanged.",
+          : selectedDocument
+            ? "Keep the explicitly mapped project document project-owned."
+            : concept || instructionPath(path)
+              ? "Keep the existing file project-owned and record the mapping only."
+              : "Leave the unrelated project file unchanged.",
     });
   }
   items.sort((left, right) =>
@@ -2455,6 +2550,7 @@ export async function adoptProject(
     profileDetection.manualConfirmationRequired && !options.profileConfirmed;
   const blocked =
     profileConfirmationRequired ||
+    mappingDiagnostics.length > 0 ||
     validationDiagnostics.length > 0 ||
     items.some(
       (item) => item.manualDecisionRequired || item.action === "conflict",
@@ -2522,6 +2618,7 @@ export async function adoptProject(
       ...(profileConfirmationRequired
         ? ["profile: explicit confirmation required"]
         : []),
+      ...mappingDiagnostics,
       ...validationDiagnostics,
       ...items
         .filter((item) => item.manualDecisionRequired)

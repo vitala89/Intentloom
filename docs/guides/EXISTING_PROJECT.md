@@ -21,6 +21,12 @@ document never establishes ownership. README and mapped product/engineering
 documents remain project-owned; duplicated documentation concepts require a
 manual choice.
 
+Record that choice with a self-mapping in the reviewed command, for example
+`--project-owned-mapping AGENTS.md=AGENTS.md` or
+`--documentation-mapping README.md=README.md`. The mapping is written to the
+generated config only after the complete proposal is safe; it is not an implicit
+claim over the existing file.
+
 Without `--dry-run`, the command is explicit acceptance of the currently safe
 proposal. Clean generated creates use the existing transaction and ownership
 metadata path. Any manual decision or unowned generated destination blocks all

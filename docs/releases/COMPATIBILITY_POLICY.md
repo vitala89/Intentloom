@@ -17,3 +17,10 @@ Stored metadata paths follow the host-independent contract in
 `docs/reference/PATHS.md`. A simulated Windows path test is evidence for path
 semantics, not proof of execution on Windows; only a real Windows CI run can
 establish that host result.
+
+Explicit adoption mappings are persisted in the schema-versioned project config.
+They preserve project ownership rather than transfer it: an explicitly retained
+instruction or document never becomes generated output or source-map ownership.
+Doctor validates the standalone `skills/` catalog and provider-targeted Agent
+Skills only when source-map ownership identifies them as Intentloom-generated;
+other provider or project-owned skills retain their own format contracts.
