@@ -8,12 +8,27 @@ All notable changes are documented here. This project follows Keep a Changelog p
 
 - Documented a future Engineering Process Intelligence direction based on local workflow evidence, deterministic conformance checking, workflow variants, and bottleneck analysis.
 - Added explicit privacy, provenance, scope, delivery-order, and non-goal boundaries so the direction does not imply a general enterprise process-mining platform or v0.1 implementation commitment.
+- Added the private Platform Foundation: a reusable application-operation
+  boundary, versioned doctor protocol, local-IPC `intentloomd`, and an explicit
+  doctor-only daemon client with a token-file boundary.
+- Added a dogfooding evidence template for the minimal, TypeScript, and
+  sanitized existing-project scenarios required before beta.
 
 ### Changed
 
 - Aligned architecture, roadmap, versioning, contribution, and release-process
   documentation with the implemented alpha repository and repeatable delivery
   workflow.
+- Recorded that alpha.4 documentation/release-hygiene and alpha.5
+  fixture/adapter-compatibility gates are met in unreleased `main`; no version
+  or publication is implied.
+- Aligned prerelease dist-tag policy with the npm requirement that an initial
+  package record retains `latest` until a stable release supersedes it.
+
+### Security
+
+- Restricted the private daemon surface to authenticated, bounded local IPC and
+  preserved read-only doctor semantics across direct and daemon CLI modes.
 
 ## [0.1.0-alpha.3]
 
