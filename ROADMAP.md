@@ -6,17 +6,20 @@ The milestones below are compatibility and evidence gates, not promised dates.
 Intentloom remains alpha until the generated configuration, schemas, and
 adoption workflow have been exercised in multiple real projects.
 
-| Milestone       | Focus                                         | Exit gate                                                                                                              |
-| --------------- | --------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
-| `0.1.0-alpha.4` | Documentation consistency and release hygiene | Architecture, release, versioning, and public-status documents agree with the repository and verified release evidence |
-| `0.1.0-alpha.5` | Fixture depth and adapter compatibility       | Expanded snapshot and packed-CLI coverage across supported adapters and representative project fixtures                |
-| `0.1.0-beta.1`  | Compatibility-freeze candidate                | Explicit API/schema/output compatibility statement, migration policy, and successful dogfooding evidence               |
-| `1.0.0`         | Stable compatibility contract                 | Stable release criteria, documented support policy, verified upgrade path, and maintained compatibility commitments    |
+| Milestone       | Focus                                         | Exit gate                                                                                                              | Gate status                                                                                       |
+| --------------- | --------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| `0.1.0-alpha.4` | Documentation consistency and release hygiene | Architecture, release, versioning, and public-status documents agree with the repository and verified release evidence | Met in unreleased `main`; no release has been cut                                                 |
+| `0.1.0-alpha.5` | Fixture depth and adapter compatibility       | Expanded snapshot and packed-CLI coverage across supported adapters and representative project fixtures                | Met in unreleased `main`; adapter snapshot, packed CLI, and adoption fixture coverage is recorded |
+| `0.1.0-beta.1`  | Compatibility-freeze candidate                | Explicit API/schema/output compatibility statement, migration policy, and successful dogfooding evidence               | Blocked on three real dogfooding records                                                          |
+| `1.0.0`         | Stable compatibility contract                 | Stable release criteria, documented support policy, verified upgrade path, and maintained compatibility commitments    | Not started                                                                                       |
 
 Before beta, Intentloom needs at least three real dogfooding scenarios: a
 minimal project, a TypeScript project, and a sanitized existing-project example
 such as Applye or an Angular + Tauri project. The goal is evidence that
 configuration, schemas, and generated output are not changing accidentally.
+Record each scenario with the
+[dogfooding evidence template](docs/releases/DOGFOODING_EVIDENCE.md); fixture
+coverage is necessary but does not replace a real project record.
 
 ## v0.1 — Foundation
 
