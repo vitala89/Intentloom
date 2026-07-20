@@ -2172,15 +2172,17 @@ export async function doctorProject(
       });
   }
   const instructionRoots = new Set(
-    scannedPaths.flatMap((path) => {
-      if (path === "AGENTS.md" || path.startsWith(".agents/"))
-        return ["agents"];
-      if (path === "CLAUDE.md" || path.startsWith(".claude/"))
-        return ["claude"];
-      if (path.startsWith(".cursor/")) return ["cursor"];
-      if (path.startsWith(".github/")) return ["copilot"];
-      return [];
-    }),
+    scannedPaths
+      .filter((path) => !ownedPaths.has(path) || !desiredPaths.has(path))
+      .flatMap((path) => {
+        if (path === "AGENTS.md" || path.startsWith(".agents/"))
+          return ["agents"];
+        if (path === "CLAUDE.md" || path.startsWith(".claude/"))
+          return ["claude"];
+        if (path.startsWith(".cursor/")) return ["cursor"];
+        if (path.startsWith(".github/")) return ["copilot"];
+        return [];
+      }),
   );
   if (instructionRoots.size > 1)
     addFinding({
