@@ -94,7 +94,18 @@ Candidate scope:
 
 Exit criteria: equivalent GitHub and GitLab workflow records produce compatible vendor-neutral timelines with deterministic fixtures.
 
-### v0.2.4 candidate — Local MCP Server
+### v0.2.4 candidate — Timeline and release analysis
+
+Candidate scope:
+
+- Correlate local Git and explicit provider evidence for one release case.
+- Report verified, missing, conflicting, ambiguous, and unsupported evidence.
+- Produce machine-readable and human-readable local reports.
+- Dogfood the timeline against Intentloom and a sanitized existing project.
+
+Exit criteria: Intentloom can explain the observed release path and evidence quality without issuing compliance or causality claims.
+
+### v0.2.5 candidate — Local MCP Server
 
 Candidate scope:
 
@@ -105,17 +116,6 @@ Candidate scope:
 - Prohibit arbitrary shell commands, unrestricted CLI invocation, arbitrary file reads, and generic file writes.
 
 Exit criteria: an MCP client can discover and invoke read-only Intentloom tools, and CLI/MCP results are equivalent for the same operation and project state.
-
-### v0.2.5 candidate — Timeline and release analysis
-
-Candidate scope:
-
-- Correlate local Git and explicit provider evidence for one release case.
-- Report verified, missing, conflicting, ambiguous, and unsupported evidence.
-- Produce machine-readable and human-readable local reports.
-- Dogfood the timeline against Intentloom and a sanitized existing project.
-
-Exit criteria: Intentloom can explain the observed release path and evidence quality without issuing compliance or causality claims.
 
 ## v0.3 candidate — Engineering conformance
 
@@ -131,6 +131,25 @@ Candidate scope:
 - Keep recommendations separate from application and require the existing reviewed transaction boundary for every write.
 
 Exit criteria: Intentloom can explain why a workflow instance conforms, diverges, or cannot be verified, without automatically changing repository state.
+
+## Later candidate — Live read-only providers
+
+Possible capabilities:
+
+- Explicit, least-privilege, read-only GitHub and GitLab provider connections.
+- Credentials stored outside project metadata and evidence.
+- Rate-limit, pagination, caching, redaction, retention, deletion, and revocation contracts.
+
+Exit criteria: provider access is explicit and revocable, records remain project-isolated and provenance-complete, and deterministic fixtures prove redaction, pagination, retention, deletion, and revocation behavior.
+
+## Later candidate — External MCP evidence ingestion
+
+Explicitly configured external MCP servers may provide untrusted evidence only.
+Every result requires validation, redaction, provenance, trust classification, and
+an explicit capability allowlist. External MCP servers cannot directly trigger
+adoption, sync, merge, release, or project mutation.
+
+Exit criteria: adversarial fixtures prove bounded, project-isolated evidence ingestion and that external results cannot grant authority or cause mutation.
 
 ## Later candidate — Safe MCP mutation
 
@@ -148,17 +167,7 @@ prepare plan
 
 External evidence, prompts, recommendations, model output, or endpoint reachability never count as approval.
 
-## Later candidate — Live providers and MCP Client
-
-Possible capabilities:
-
-- Explicit, least-privilege, read-only GitHub and GitLab provider connections.
-- Credentials stored outside project metadata and evidence.
-- Rate-limit, pagination, caching, redaction, retention, deletion, and revocation contracts.
-- Optional ingestion of evidence from explicitly configured external MCP servers.
-- Validation, provenance, trust classification, and capability allowlists for every external MCP result.
-
-External MCP servers and provider adapters cannot directly trigger adoption, sync, merge, release, or project mutation.
+Exit criteria: a prepared plan is rejected for changed root, ownership, state, digest, expiry, or capability scope; approved applies use the existing transactional rollback guarantee; no other signal is accepted as approval.
 
 ## Later candidate — Engineering Process Intelligence
 
@@ -174,13 +183,24 @@ Possible capabilities:
 
 This direction is documented in [Engineering Process Intelligence](docs/concepts/ENGINEERING_PROCESS_INTELLIGENCE.md).
 
+Exit criteria: repeated, privacy-safe timelines produce deterministic workflow-variant and bottleneck reports without treating correlation as causation.
+
 ## Other later candidates
 
 - More profiles and tool adapters.
 - Policy and schema evolution tooling.
 - Compatibility certification.
 - Desktop application over the standalone daemon, without replacing CLI or core.
-- Streamable HTTP MCP transport only after a dedicated authentication, isolation, retention, and network-security review.
+
+## Final later candidate — Streamable HTTP MCP transport
+
+HTTP transport requires a separate ADR and threat review covering authentication,
+tenant and repository isolation, rate limits, auditability, retention, and
+network exposure.
+
+Exit criteria: the separate security decision is accepted and its isolation,
+authentication, retention, and network-security tests pass; HTTP remains disabled
+until then.
 
 ## Explicitly not planned for v0.1
 

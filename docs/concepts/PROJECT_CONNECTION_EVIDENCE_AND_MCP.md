@@ -46,7 +46,7 @@ The current repository already provides most of the required architectural seams
 - `intentloomd` exposes authenticated local IPC only;
 - adoption, diff, sync, and doctor already use explicit project roots;
 - dry-run, ownership, source-map, path-safety, and transactional-write rules are established;
-- Engineering Process Intelligence already defines events, evidence, timelines, trust states, and conformance.
+- Engineering Process Intelligence documents a future direction for events, evidence, timelines, trust states, and conformance.
 
 The missing work is a formal project-access contract, evidence-source implementations, stable inspection operations, and MCP-specific adapters.
 
@@ -385,6 +385,8 @@ evidence-bundle.schema.json
 workflow-timeline.schema.json
 conformance-report.schema.json
 provider-connection.schema.json
+mcp-capability.schema.json
+approved-plan.schema.json
 ```
 
 Schema creation must follow an ADR and compatibility decision. Listing a schema here does not commit v0.1 to it.
@@ -393,19 +395,18 @@ Schema creation must follow an ADR and compatibility decision. Listing a schema 
 
 1. Specify access capabilities, consent, exclusion, and root semantics.
 2. Extract or add a stable read-only `inspectProject` application operation.
-3. Add deterministic inspection fixtures and byte-for-byte read-only tests.
-4. Specify engineering-event, evidence-bundle, provenance, and trust schemas.
+3. Specify engineering-event, evidence-bundle, provenance, and trust schemas.
+4. Add deterministic inspection and evidence fixtures with byte-for-byte read-only tests.
 5. Implement restricted local Git evidence collection.
-6. Build one deterministic release timeline.
-7. Implement GitHub and GitLab export importers.
-8. Add a local stdio MCP server with read-only inspection and doctor tools.
-9. Add timeline and release-readiness MCP tools and bounded resources.
-10. Implement rule-based release conformance.
-11. Dogfood against Intentloom and a sanitized existing project.
+6. Implement GitHub and GitLab export importers.
+7. Add a local stdio MCP server with read-only inspection and doctor tools.
+8. Build one deterministic release timeline and evidence-quality report.
+9. Implement rule-based release conformance and dogfood it against Intentloom and a sanitized existing project.
+10. Consider live, least-privilege, read-only provider adapters.
+11. Consider external MCP evidence ingestion with validation, redaction, provenance, trust classification, and explicit capability allowlists.
 12. Consider safe prepare/approve/apply MCP mutation.
-13. Consider live provider adapters and external MCP evidence sources.
+13. Add workflow variants and bottleneck analysis only after evidence quality and privacy boundaries are proven.
 14. Consider Streamable HTTP only after a dedicated security review.
-15. Add workflow variants and bottleneck analysis after evidence quality is proven.
 
 ## Initial success criteria
 
