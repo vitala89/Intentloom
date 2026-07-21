@@ -6,14 +6,14 @@ Accepted
 
 ## Context
 
-AIF reads user-authored configuration, generated ownership metadata, planning
+Intentloom reads user-authored configuration, generated ownership metadata, planning
 artifacts, and portable Agent Skills. Handwritten shape checks had diverged
 between commands and mixed document structure with filesystem, ownership,
 checksum, capability, and lifecycle decisions.
 
 ## Decision
 
-Use locally bundled, explicitly versioned JSON Schemas for AIF document
+Use locally bundled, explicitly versioned JSON Schemas for Intentloom document
 structure. Parse JSON, YAML, and skill frontmatter through one bounded safe
 parser and return stable content-safe diagnostics. Reject unsupported or missing
 versions and strict unknown core fields. Human-authored planning artifacts may
@@ -24,7 +24,7 @@ root, symlink, collision, checksum, ownership, capability, reference, and
 lifecycle rules in semantic validators. JSON Schema is not a filesystem or
 cross-document security boundary.
 
-Agent Skill frontmatter remains the open Agent Skills format. AIF separately
+Agent Skill frontmatter remains the open Agent Skills format. Intentloom separately
 applies a catalog-admission policy to ensure its reusable skills document
 triggers, inputs, outputs, non-triggers, and stop conditions; these are content
 quality requirements, not new frontmatter fields or a redefinition of the open

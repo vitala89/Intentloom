@@ -1,6 +1,6 @@
 ---
 name: aif-security-review
-description: Review a bounded change for the AIF threat model risks.
+description: Review a bounded change for the Intentloom threat model risks.
 ---
 
 # aif-security-review

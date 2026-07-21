@@ -1,6 +1,6 @@
 # Project adoption
 
-Safely introduce AIF into an existing project.
+Safely introduce Intentloom into an existing project.
 
 ## Procedure
 

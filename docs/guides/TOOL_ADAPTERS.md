@@ -7,12 +7,12 @@ adapter output version, and canonical sources are recorded in Intentloom metadat
 
 ## Generated destinations
 
-| Adapter     | Repository guidance                                                                        | Skills                                           | Profile-scoped output                                |
-| ----------- | ------------------------------------------------------------------------------------------ | ------------------------------------------------ | ---------------------------------------------------- |
-| Claude Code | `AGENTS.md`, `CLAUDE.md`                                                                   | `.claude/skills/<skill>/SKILL.md`                | None                                                 |
-| Codex       | `AGENTS.md`                                                                                | `.agents/skills/<skill>/SKILL.md`                | None                                                 |
-| Cursor      | `AGENTS.md`, `.cursor/rules/intentloom.mdc`                                                | `.agents/skills/<skill>/SKILL.md` (experimental) | `.cursor/rules/aif-<profile>.mdc`                    |
-| Copilot     | `AGENTS.md`, `.github/copilot-instructions.md`, `.github/instructions/aif.instructions.md` | `.github/skills/<skill>/SKILL.md`                | `.github/instructions/aif-<profile>.instructions.md` |
+| Adapter     | Repository guidance                                                                               | Skills                                           | Profile-scoped output                                       |
+| ----------- | ------------------------------------------------------------------------------------------------- | ------------------------------------------------ | ----------------------------------------------------------- |
+| Claude Code | `AGENTS.md`, `CLAUDE.md`                                                                          | `.claude/skills/<skill>/SKILL.md`                | None                                                        |
+| Codex       | `AGENTS.md`                                                                                       | `.agents/skills/<skill>/SKILL.md`                | None                                                        |
+| Cursor      | `AGENTS.md`, `.cursor/rules/intentloom.mdc`                                                       | `.agents/skills/<skill>/SKILL.md` (experimental) | `.cursor/rules/intentloom-<profile>.mdc`                    |
+| Copilot     | `AGENTS.md`, `.github/copilot-instructions.md`, `.github/instructions/intentloom.instructions.md` | `.github/skills/<skill>/SKILL.md`                | `.github/instructions/intentloom-<profile>.instructions.md` |
 
 Profile scopes are generated for `typescript`, `angular`, `rust`, `tauri`, and
 `angular-tauri`. Globs always use forward slashes and deterministic ordering.

@@ -1,4 +1,4 @@
-# AIF repository guidance
+# Intentloom repository guidance
 
 This repository is in documentation-and-architecture phase. Keep changes vendor-neutral in the canonical core and avoid implementation, dependency installation, MCP configuration, external-agent configuration, or tool-specific behavior in canonical documents.
 

@@ -14,7 +14,7 @@ CLI packages specified an engine.
 
 ## Decision
 
-AIF requires Node.js 22 or newer. Every workspace package declares the same
+Intentloom requires Node.js 22 or newer. Every workspace package declares the same
 minimum, and the packed CLI is bundled for the Node 22 target. Compatibility CI
 runs the complete suite and packed-CLI smoke tests on Node 22 and Node 24 across
 Linux, macOS, and Windows.
