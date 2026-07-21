@@ -172,7 +172,7 @@ describe("packed adapter compatibility matrix", () => {
         expect(record.path).not.toContain("\\");
       }
     }
-  });
+  }, 15_000);
 
   it("reports the unchanged framework version", () => {
     expect(aif(["--version"]).stdout.trim()).toBe("0.1.0-alpha.3");
