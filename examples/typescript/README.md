@@ -1,3 +1,3 @@
-# TypeScript AIF example
+# TypeScript Intentloom example
 
 Profile: `typescript`.

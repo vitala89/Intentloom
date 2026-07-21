@@ -1,6 +1,6 @@
 ---
 name: aif-project-adoption
-description: Assess safe AIF adoption for an existing repository.
+description: Assess safe Intentloom adoption for an existing repository.
 ---
 
 # aif-project-adoption

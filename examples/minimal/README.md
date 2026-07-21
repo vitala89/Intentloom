@@ -1,3 +1,3 @@
-# Minimal AIF example
+# Minimal Intentloom example
 
-Run `aif init --dry-run --profile generic` from this directory.
+Run `intentloom init --dry-run --profile generic` from this directory.

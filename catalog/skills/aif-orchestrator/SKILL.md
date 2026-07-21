@@ -1,6 +1,6 @@
 ---
 name: aif-orchestrator
-description: Coordinate a bounded AIF engineering iteration when the user asks to plan or sequence work.
+description: Coordinate a bounded Intentloom engineering iteration when the user asks to plan or sequence work.
 ---
 
 # aif-orchestrator

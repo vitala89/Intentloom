@@ -1,3 +1,3 @@
-# Angular Tauri AIF example
+# Angular Tauri Intentloom example
 
 Profile: `angular-tauri`.
