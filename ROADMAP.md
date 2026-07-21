@@ -37,19 +37,85 @@ separate explicit decisions.
 
 Exit criteria: a project can preview and safely adopt a pinned Intentloom profile, generate supported adapters, and validate drift without network calls.
 
-## v0.2 candidate — Workflow evidence
+## Post-v0.1 delivery principles
 
-Intentloom should be able to describe not only how engineering work is expected to run, but also which verifiable evidence proves that the expected steps occurred.
+Future project connection, evidence, provider, and MCP work must reuse the existing application-operation boundary. CLI, daemon, desktop, and MCP integrations are adapters over the same operations, not independent implementations.
+
+The sequencing rules are:
+
+- local and read-only before remote or mutating;
+- explicit project roots and capabilities before data collection;
+- provider exports before live provider credentials;
+- deterministic timelines before conformance claims;
+- conformance before workflow variants or bottleneck analysis;
+- local `stdio` MCP before HTTP transport;
+- prepare, preview, approve, and revalidate before any MCP-triggered mutation;
+- no generic shell, arbitrary file access, hidden network access, or mandatory telemetry.
+
+The combined direction is documented in [Project Connection, Evidence, and MCP](docs/concepts/PROJECT_CONNECTION_EVIDENCE_AND_MCP.md).
+
+## v0.2 candidate — Connected project and workflow evidence
+
+Intentloom should be able to connect to one explicitly selected project, inspect it safely, and construct reviewable workflow evidence without changing project state.
+
+### v0.2.1 candidate — Project connection and inspection
 
 Candidate scope:
 
-- Define a vendor-neutral engineering event and evidence model for changes, pull requests, reviews, CI checks, releases, incidents, and agent tasks.
-- Represent a workflow instance by an explicit case identifier, such as a pull request, change request, release, incident, or agent task.
-- Import local Git history and explicitly supplied provider exports without hidden network access.
-- Associate observed events with canonical workflows while preserving provenance, timestamps, actors, source identifiers, and uncertainty.
-- Keep raw evidence project-local by default and avoid mandatory telemetry or hosted storage.
+- Define a schema-versioned project-access capability model with an explicit root.
+- Add a reusable read-only project-inspection application operation.
+- Report project profile, adapter readiness, instruction files, documentation mappings, ownership state, and adoption readiness.
+- Keep network, scripts, dependency installation, and project-file writes disabled by default.
+- Distinguish Intentloom application restrictions from a complete operating-system sandbox.
 
-Exit criteria: Intentloom can construct a deterministic, reviewable event timeline for a supported workflow instance without claiming conformance or root cause.
+Exit criteria: CLI inspection produces deterministic structured output, remains byte-for-byte read-only, and cannot access outside the explicit root.
+
+### v0.2.2 candidate — Local Git evidence
+
+Candidate scope:
+
+- Define a vendor-neutral engineering event and evidence model for changes, reviews, CI checks, releases, incidents, migrations, and agent tasks.
+- Represent each workflow instance with an explicit case type and case identifier.
+- Collect local Git evidence through a fixed read-only command allowlist without a shell, hooks, configuration mutation, or network access.
+- Preserve provenance, timestamps, safe actor identifiers, source identifiers, trust state, and uncertainty.
+- Keep raw evidence project-local by default.
+
+Exit criteria: Intentloom can construct a deterministic, reviewable release timeline from local Git evidence without claiming conformance or root cause.
+
+### v0.2.3 candidate — Provider export adapters
+
+Candidate scope:
+
+- Import explicitly supplied GitHub and GitLab exports.
+- Normalize pull or merge requests, reviews, CI or pipeline records, releases, and commit provenance into the common evidence model.
+- Treat provider payloads as untrusted, bounded input.
+- Redact secrets and sensitive identities, retain source provenance, and prevent cross-project mixing.
+- Avoid credentials, live APIs, background polling, and hosted storage in the first provider milestone.
+
+Exit criteria: equivalent GitHub and GitLab workflow records produce compatible vendor-neutral timelines with deterministic fixtures.
+
+### v0.2.4 candidate — Timeline and release analysis
+
+Candidate scope:
+
+- Correlate local Git and explicit provider evidence for one release case.
+- Report verified, missing, conflicting, ambiguous, and unsupported evidence.
+- Produce machine-readable and human-readable local reports.
+- Dogfood the timeline against Intentloom and a sanitized existing project.
+
+Exit criteria: Intentloom can explain the observed release path and evidence quality without issuing compliance or causality claims.
+
+### v0.2.5 candidate — Local MCP Server
+
+Candidate scope:
+
+- Add a local `intentloom mcp serve --stdio --root ...` adapter over `@intentloom/application`.
+- Expose typed read-only tools for inspection, doctor, diff, adoption planning, Git summary, timeline, and release readiness as each underlying operation stabilizes.
+- Expose bounded project, workflow, and finding resources rather than arbitrary files.
+- Version tool input and output schemas, limits, error codes, and capability discovery.
+- Prohibit arbitrary shell commands, unrestricted CLI invocation, arbitrary file reads, and generic file writes.
+
+Exit criteria: an MCP client can discover and invoke read-only Intentloom tools, and CLI/MCP results are equivalent for the same operation and project state.
 
 ## v0.3 candidate — Engineering conformance
 
@@ -62,9 +128,46 @@ Candidate scope:
 - Support policy examples such as required review, verified CI, changelog updates, migration evidence, release approval, and tag-to-build provenance.
 - Distinguish confirmed violations from missing evidence and ambiguous provider data.
 - Produce machine-readable findings and human-readable remediation guidance.
-- Extend `doctor` or introduce a separate read-only command only after the evidence and command boundaries are specified.
+- Keep recommendations separate from application and require the existing reviewed transaction boundary for every write.
 
 Exit criteria: Intentloom can explain why a workflow instance conforms, diverges, or cannot be verified, without automatically changing repository state.
+
+## Later candidate — Live read-only providers
+
+Possible capabilities:
+
+- Explicit, least-privilege, read-only GitHub and GitLab provider connections.
+- Credentials stored outside project metadata and evidence.
+- Rate-limit, pagination, caching, redaction, retention, deletion, and revocation contracts.
+
+Exit criteria: provider access is explicit and revocable, records remain project-isolated and provenance-complete, and deterministic fixtures prove redaction, pagination, retention, deletion, and revocation behavior.
+
+## Later candidate — External MCP evidence ingestion
+
+Explicitly configured external MCP servers may provide untrusted evidence only.
+Every result requires validation, redaction, provenance, trust classification, and
+an explicit capability allowlist. External MCP servers cannot directly trigger
+adoption, sync, merge, release, or project mutation.
+
+Exit criteria: adversarial fixtures prove bounded, project-isolated evidence ingestion and that external results cannot grant authority or cause mutation.
+
+## Later candidate — Safe MCP mutation
+
+Mutating MCP tools may be considered only after read-only operations and conformance are stable.
+
+Required boundary:
+
+```text
+prepare plan
+→ show exact paths and diff
+→ explicit human approval
+→ verify plan identifier, digest, expiry, root, ownership, and current state
+→ transactional apply or reject
+```
+
+External evidence, prompts, recommendations, model output, or endpoint reachability never count as approval.
+
+Exit criteria: a prepared plan is rejected for changed root, ownership, state, digest, expiry, or capability scope; approved applies use the existing transactional rollback guarantee; no other signal is accepted as approval.
 
 ## Later candidate — Engineering Process Intelligence
 
@@ -80,12 +183,24 @@ Possible capabilities:
 
 This direction is documented in [Engineering Process Intelligence](docs/concepts/ENGINEERING_PROCESS_INTELLIGENCE.md).
 
+Exit criteria: repeated, privacy-safe timelines produce deterministic workflow-variant and bottleneck reports without treating correlation as causation.
+
 ## Other later candidates
 
 - More profiles and tool adapters.
 - Policy and schema evolution tooling.
 - Compatibility certification.
-- Explicit, opt-in provider import adapters for GitHub and other development systems.
+- Desktop application over the standalone daemon, without replacing CLI or core.
+
+## Final later candidate — Streamable HTTP MCP transport
+
+HTTP transport requires a separate ADR and threat review covering authentication,
+tenant and repository isolation, rate limits, auditability, retention, and
+network exposure.
+
+Exit criteria: the separate security decision is accepted and its isolation,
+authentication, retention, and network-security tests pass; HTTP remains disabled
+until then.
 
 ## Explicitly not planned for v0.1
 
