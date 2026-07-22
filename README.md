@@ -11,11 +11,11 @@ and synchronizing engineering intent across AI-assisted development workflows. I
 turns a canonical catalog of policies, workflows, templates, schemas, and skills
 into deterministic, reviewable tool-specific guidance.
 
-**Status:** Alpha · **Current release:** `0.1.0-alpha.3` · **Node.js:** `>=22`
+**Status:** Beta · **Current release:** `0.1.0-beta.1` · **Node.js:** `>=22`
 
 [Repository](https://github.com/vitala89/Intentloom) · [Documentation](docs/README.md) · [Security](SECURITY.md) · [npm package](https://www.npmjs.com/package/intentloom)
 
-> Intentloom is alpha software. Its commands, schemas, and generated output may
+> Intentloom is beta software. Its commands, schemas, and generated output may
 > evolve before a stable release. It is local and offline-first: it does not send
 > telemetry or make hidden runtime network requests.
 
@@ -60,7 +60,7 @@ other vendors.
 
 ## Installation
 
-Install the alpha package as a development dependency:
+Install the beta package as a development dependency:
 
 ```bash
 npm install --save-dev intentloom@next
@@ -71,7 +71,7 @@ pnpm add --save-dev intentloom@next
 For reproducible installs, pin the current release:
 
 ```bash
-npm install --save-dev intentloom@0.1.0-alpha.3
+npm install --save-dev intentloom@0.1.0-beta.1
 ```
 
 You can also inspect the CLI without installing it globally:
@@ -83,8 +83,8 @@ npx intentloom@next --help
 The public package and CLI are both named `intentloom`. The private
 `@intentloom/workspace` package is not an installation target.
 
-All alpha and beta releases use the `next` dist-tag. npm requires every package
-record to retain `latest`, so the first published alpha also remains the default
+All beta releases use the `next` dist-tag. npm requires every package
+record to retain `latest`, so the first published prerelease also remains the default
 install until a verified stable release supersedes it. Once stable exists,
 prerelease publication must not move `latest`.
 

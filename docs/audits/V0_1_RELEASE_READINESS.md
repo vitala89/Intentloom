@@ -1,5 +1,8 @@
 # v0.1 Release Readiness Audit
 
+> Historical AIF-era evidence record. It documents the audit performed on its
+> stated date and is not the current Intentloom beta release record.
+
 Initial audit date: 2026-07-13. Initial scope: repository state at `8709faa`
 and the accepted v0.1 specification/ADRs. Release-preparation update:
 2026-07-15 for local `0.1.0-alpha.1` metadata and package verification.

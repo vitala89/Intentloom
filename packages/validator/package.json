@@ -1,6 +1,6 @@
 {
   "name": "@intentloom/validator",
-  "version": "0.1.0-alpha.3",
+  "version": "0.1.0-beta.1",
   "private": true,
   "engines": {
     "node": ">=22"

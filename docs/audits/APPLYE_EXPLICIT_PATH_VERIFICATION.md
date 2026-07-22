@@ -1,5 +1,8 @@
 # Applye Explicit-Path Verification
 
+> Historical AIF-era evidence record. It preserves the exact tested artifact and
+> target state; it is not a verification of a future Intentloom beta tarball.
+
 Audit date: 2026-07-15. AIF commit: `2213e06` at audit start. Packed CLI
 version: `0.1.0-alpha.0`. Target: a local Applye Git checkout, identified by
 repository metadata only; its local path, remote, and file contents are not

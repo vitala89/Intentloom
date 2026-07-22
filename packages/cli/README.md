@@ -1,6 +1,6 @@
 # Intentloom
 
-> Alpha software: review generated changes before applying them in a project.
+> Beta software: review generated changes before applying them in a project.
 
 `intentloom` provides the `intentloom` command for local, vendor-neutral AI engineering
 workflows. It requires Node.js 22 or newer and runs offline-first: commands do
@@ -11,10 +11,10 @@ npm install --global intentloom@next
 intentloom --help
 ```
 
-Prefer `@next` while Intentloom is alpha; APIs and generated output may change. To
-pin this release, use `npm install --global intentloom@0.1.0-alpha.3`. An unqualified
-install currently resolves to this alpha because it is the first published version,
-but it is not the supported alpha installation form.
+Prefer `@next` while Intentloom is beta; APIs and generated output may change. To
+pin this release, use `npm install --global intentloom@0.1.0-beta.1`. An unqualified
+install may resolve to the first prerelease, but it is not the supported beta
+installation form.
 
 Start safely in a project:
 

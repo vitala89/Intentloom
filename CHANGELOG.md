@@ -4,6 +4,8 @@ All notable changes are documented here. This project follows Keep a Changelog p
 
 ## [Unreleased]
 
+## [0.1.0-beta.1] - 2026-07-23
+
 ### Added
 
 - Documented a future Engineering Process Intelligence direction based on local workflow evidence, deterministic conformance checking, workflow variants, and bottleneck analysis.
@@ -53,6 +55,14 @@ All notable changes are documented here. This project follows Keep a Changelog p
 - Established future invariants for bounded local Git commands, least-privilege
   provider access, root-bound MCP capabilities, credential exclusion, and
   transactional approval for any MCP-triggered write.
+
+### Notes
+
+- Compatibility-freeze candidate: no intentional runtime, schema, lockfile, or
+  generated-output contract changes; existing `.aif` and `urn:aif:*`
+  identifiers remain unchanged.
+- Tagging and publication require separate maintainer authorization and the
+  publication checklist; this release record does not publish a package.
 
 ## [0.1.0-alpha.3]
 
