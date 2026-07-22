@@ -21,12 +21,18 @@ Start safely in a project:
 ```sh
 intentloom init --dry-run
 intentloom adopt --dry-run
+intentloom inspect --json
 intentloom doctor
 intentloom sync --dry-run
 ```
 
 Supported adapters are Claude Code, Codex, Cursor, and GitHub Copilot. Intentloom
 preserves project-owned files and reports conflicts instead of overwriting them.
+
+`intentloom inspect` is a bounded read-only project summary. It reports detected
+profile, instruction surfaces, and Intentloom metadata readiness without running
+project scripts, invoking Git, installing dependencies, following symbolic links,
+or contacting a network service.
 
 See the [repository](https://github.com/vitala89/Intentloom),
 [issue tracker](https://github.com/vitala89/Intentloom/issues), and

@@ -132,6 +132,18 @@ describe("packed adapter compatibility matrix", () => {
     );
   });
 
+  it("inspects an installed project through the packed CLI", async () => {
+    const root = await project("packed-inspect");
+    expect(aif(["init", "--root", root, "--adapters", "codex"]).status).toBe(0);
+    const result = aif(["inspect", "--root", root, "--json"]);
+    expect(result.status).toBe(0);
+    expect(JSON.parse(result.stdout)).toMatchObject({
+      operationVersion: 1,
+      readiness: "ready",
+      detectedAdapters: ["codex", "cursor"],
+    });
+  });
+
   it("dry-runs an ownership conflict without writing metadata", async () => {
     const root = await project("packed-conflict");
     await writeFile(join(root, "AGENTS.md"), "project-owned\n");
