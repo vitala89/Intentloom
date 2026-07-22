@@ -1,16 +1,16 @@
 # Getting Started
 
-Install the alpha CLI with Node.js 22 or newer:
+Install the beta CLI with Node.js 22 or newer:
 
 ```sh
 npm install --global intentloom@next
 intentloom --help
 ```
 
-Prefer `@next` during the alpha period because APIs and generated output may change.
-To pin this release, use `npm install --global intentloom@0.1.0-alpha.3`. An
-unqualified install currently resolves to this alpha because it is the first
-published version, but it is not the supported installation form.
+Prefer `@next` during the beta period because APIs and generated output may change.
+To pin this release, use `npm install --global intentloom@0.1.0-beta.1`. An
+unqualified install may resolve to the first prerelease, but it is not the
+supported installation form.
 
 Use a preview before writing anything:
 

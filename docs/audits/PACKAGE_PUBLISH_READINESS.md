@@ -1,5 +1,9 @@
 # Package Publish Readiness
 
+> Historical AIF-era evidence record. Its package-name and registry observations
+> apply only to the stated audit date and are not authorization to publish
+> Intentloom.
+
 Audit date: 2026-07-15. Scope: `0.1.0-alpha.0` package metadata and tarball.
 
 ## Inventory

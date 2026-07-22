@@ -4,8 +4,8 @@ Intentloom uses Semantic Versioning. During v0.x, all workspace packages release
 
 The private root workspace `package.json` is the framework-version source of
 truth. Package versions are synchronized deterministically before publication.
-The repository's `0.1.0-alpha.3` package is `intentloom`. Alpha and beta
-publication, when explicitly authorized, uses the `next` dist-tag. npm requires
+The repository's `0.1.0-beta.1` package is `intentloom`. Beta publication, when
+explicitly authorized, uses the `next` dist-tag. npm requires
 each package record to retain a `latest` tag, so the first prerelease also
 remains the default installation until a verified stable release supersedes it.
 After a stable release exists, prerelease publication must not move `latest`.

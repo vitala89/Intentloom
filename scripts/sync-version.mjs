@@ -9,9 +9,12 @@ async function writeAtomic(file, content) {
 const root = JSON.parse(await readFile("package.json", "utf8"));
 const packageFiles = [
   "packages/core/package.json",
+  "packages/application/package.json",
   "packages/adapters/package.json",
   "packages/validator/package.json",
   "packages/cli/package.json",
+  "packages/protocol/package.json",
+  "packages/daemon/package.json",
 ];
 for (const file of packageFiles) {
   const value = JSON.parse(await readFile(file, "utf8"));

@@ -138,7 +138,7 @@ describe("public package publishing readiness", () => {
     );
     expect(cli).toMatchObject({
       name: "intentloom",
-      version: "0.1.0-alpha.3",
+      version: "0.1.0-beta.1",
       license: "MIT",
       private: false,
       repository: {
@@ -152,7 +152,14 @@ describe("public package publishing readiness", () => {
       exports: { "./package.json": "./package.json" },
       publishConfig: { access: "public" },
     });
-    for (const packageName of ["core", "adapters", "validator"]) {
+    for (const packageName of [
+      "core",
+      "application",
+      "adapters",
+      "validator",
+      "protocol",
+      "daemon",
+    ]) {
       const manifest = JSON.parse(
         await readFile(
           join(repositoryRoot, "packages", packageName, "package.json"),
@@ -160,6 +167,7 @@ describe("public package publishing readiness", () => {
         ),
       );
       expect(manifest.private).toBe(true);
+      expect(manifest.version).toBe("0.1.0-beta.1");
     }
   });
 
@@ -191,7 +199,7 @@ describe("public package publishing readiness", () => {
       await mkdir(root);
       expect(runPackedCli(entry, ["--help"], runtime).status).toBe(0);
       expect(runPackedCli(entry, ["--version"], runtime).stdout.trim()).toBe(
-        "0.1.0-alpha.3",
+        "0.1.0-beta.1",
       );
       expect(
         runPackedCli(
