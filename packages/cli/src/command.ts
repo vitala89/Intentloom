@@ -34,6 +34,11 @@ import {
   createReleaseTimeline,
 } from "@intentloom/evidence-git";
 import {
+  importProviderExport,
+  type ProviderEvidenceResult,
+  type ProviderName,
+} from "@intentloom/evidence-provider";
+import {
   INTENTLOOM_VERSION,
   normalizeOutputPath,
   type AdapterName,
@@ -110,6 +115,7 @@ const commands = new Set([
   "doctor",
   "inspect",
   "timeline",
+  "evidence",
 ]);
 const projectPathCommands = new Set([
   "adopt",
@@ -128,6 +134,9 @@ const valueFlags = new Set([
   "--daemon-endpoint",
   "--daemon-token-file",
   "--case-id",
+  "--provider",
+  "--file",
+  "--project-key",
 ]);
 const mappingValueFlags = new Set([
   "--project-owned-mapping",
@@ -137,6 +146,7 @@ const adapters = new Set<AdapterName>(["claude", "codex", "cursor", "copilot"]);
 const usage = [
   "Usage: intentloom <init|plan> [--root PATH] [--dry-run]",
   "       intentloom <adopt|diff|sync|doctor|inspect|timeline> [PROJECT_PATH|--root PATH] [--dry-run]",
+  "       intentloom evidence import --provider github|gitlab --file PATH --project-key KEY [--json]",
   "       adoption mappings use --project-owned-mapping SOURCE=DESTINATION",
   "       or --documentation-mapping SOURCE=DESTINATION",
 ].join("\n");
@@ -144,10 +154,16 @@ const usage = [
 function parseArguments(args: readonly string[]): ParsedArguments {
   const command = args[0] ?? "";
   if (!commands.has(command)) throw new CliUsageError(usage);
+  if (command === "evidence" && args[1] !== "import")
+    throw new CliUsageError("evidence requires the import subcommand");
   const flags = new Set<string>();
   const values = new Map<string, string>();
   const mappingValues = new Map<string, string[]>();
-  for (let index = 1; index < args.length; index += 1) {
+  for (
+    let index = command === "evidence" ? 2 : 1;
+    index < args.length;
+    index += 1
+  ) {
     const token = args[index]!;
     if (booleanFlags.has(token)) {
       flags.add(token);
@@ -188,6 +204,18 @@ function parseArguments(args: readonly string[]): ParsedArguments {
   if (daemonEndpoint && command !== "doctor")
     throw new CliUsageError("daemon mode is only valid with doctor");
   return { command, flags, values, mappingValues };
+}
+
+function formatProviderEvidence(result: ProviderEvidenceResult): string {
+  return [
+    `Provider: ${result.provider}`,
+    `Project: ${result.projectKey}`,
+    `Status: ${result.status}`,
+    `Events: ${result.events.length}`,
+    ...(result.diagnostics.length > 0
+      ? [`Diagnostics: ${result.diagnostics.join(", ")}`]
+      : []),
+  ].join("\n");
 }
 
 function parseMappings(values: readonly string[]): ProjectMapping[] {
@@ -846,6 +874,49 @@ export async function runCli(
         supportedAdapters: [...adapters].sort(),
       },
     );
+    if (parsed.command === "evidence") {
+      const provider = parsed.values.get("--provider");
+      const file = parsed.values.get("--file");
+      const projectKey = parsed.values.get("--project-key");
+      if (provider !== "github" && provider !== "gitlab")
+        throw new CliUsageError("--provider must be github or gitlab");
+      if (!file || !projectKey)
+        throw new CliUsageError(
+          "evidence import requires --file and --project-key",
+        );
+      let payload: unknown;
+      try {
+        payload = JSON.parse(await readFile(resolve(file), "utf8"));
+      } catch {
+        const result: ProviderEvidenceResult = {
+          operationVersion: 1,
+          source: "provider-export",
+          provider: provider as ProviderName,
+          projectKey,
+          trust: "provider-supplied-unverified",
+          status: "invalid",
+          events: [],
+          diagnostics: ["export-file-unreadable"],
+        };
+        io.stdout(
+          parsed.flags.has("--json")
+            ? JSON.stringify(result, null, 2)
+            : formatProviderEvidence(result),
+        );
+        return 3;
+      }
+      const result = importProviderExport({
+        provider: provider as ProviderName,
+        projectKey,
+        payload,
+      });
+      io.stdout(
+        parsed.flags.has("--json")
+          ? JSON.stringify(result, null, 2)
+          : formatProviderEvidence(result),
+      );
+      return result.status === "invalid" ? 3 : 0;
+    }
     const readsProject = ["sync", "adopt", "diff", "doctor"].includes(
       parsed.command,
     );

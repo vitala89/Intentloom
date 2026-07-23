@@ -26,7 +26,8 @@
   "type": "module",
   "devDependencies": {
     "@intentloom/application": "workspace:*",
-    "@intentloom/evidence-git": "workspace:*"
+    "@intentloom/evidence-git": "workspace:*",
+    "@intentloom/evidence-provider": "workspace:*"
   },
   "bin": {
     "intentloom": "dist/intentloom.cjs"
