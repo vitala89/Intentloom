@@ -30,6 +30,10 @@ import {
   type ProjectMapping,
 } from "@intentloom/application";
 import {
+  collectGitEvidence,
+  createReleaseTimeline,
+} from "@intentloom/evidence-git";
+import {
   INTENTLOOM_VERSION,
   normalizeOutputPath,
   type AdapterName,
@@ -105,6 +109,7 @@ const commands = new Set([
   "sync",
   "doctor",
   "inspect",
+  "timeline",
 ]);
 const projectPathCommands = new Set([
   "adopt",
@@ -112,6 +117,7 @@ const projectPathCommands = new Set([
   "sync",
   "doctor",
   "inspect",
+  "timeline",
 ]);
 const booleanFlags = new Set(["--dry-run", "--force", "--json"]);
 const valueFlags = new Set([
@@ -121,6 +127,7 @@ const valueFlags = new Set([
   "--task",
   "--daemon-endpoint",
   "--daemon-token-file",
+  "--case-id",
 ]);
 const mappingValueFlags = new Set([
   "--project-owned-mapping",
@@ -129,7 +136,7 @@ const mappingValueFlags = new Set([
 const adapters = new Set<AdapterName>(["claude", "codex", "cursor", "copilot"]);
 const usage = [
   "Usage: intentloom <init|plan> [--root PATH] [--dry-run]",
-  "       intentloom <adopt|diff|sync|doctor|inspect> [PROJECT_PATH|--root PATH] [--dry-run]",
+  "       intentloom <adopt|diff|sync|doctor|inspect|timeline> [PROJECT_PATH|--root PATH] [--dry-run]",
   "       adoption mappings use --project-owned-mapping SOURCE=DESTINATION",
   "       or --documentation-mapping SOURCE=DESTINATION",
 ].join("\n");
@@ -466,6 +473,23 @@ function formatInspection(
       (finding) =>
         `${finding.severity.padEnd(7)} ${finding.code} ${finding.path} — ${finding.message}`,
     ),
+  ].join("\n");
+}
+
+function formatTimeline(
+  result: ReturnType<typeof createReleaseTimeline>,
+): string {
+  return [
+    `Case: ${result.caseId}`,
+    `Quality: ${result.quality}`,
+    `Events: ${result.events.length}`,
+    ...result.events.map(
+      (event) =>
+        `${new Date(event.timestamp * 1000).toISOString()} ${event.commitId} ${event.changedPaths.join(", ")}`,
+    ),
+    ...(result.findings.length > 0
+      ? [`Findings: ${result.findings.join(", ")}`]
+      : []),
   ].join("\n");
 }
 
@@ -838,6 +862,19 @@ export async function runCli(
       return result.findings.some((finding) => finding.severity === "error")
         ? 3
         : 0;
+    }
+    if (parsed.command === "timeline") {
+      const evidence = await collectGitEvidence({ root });
+      const timeline = createReleaseTimeline(
+        parsed.values.get("--case-id") ?? "release",
+        evidence,
+      );
+      io.stdout(
+        parsed.flags.has("--json")
+          ? JSON.stringify(timeline, null, 2)
+          : formatTimeline(timeline),
+      );
+      return timeline.quality === "unavailable" ? 3 : 0;
     }
     if (parsed.command === "doctor")
       invalidMetadata.push(

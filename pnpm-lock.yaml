@@ -53,6 +53,9 @@ importers:
       "@intentloom/application":
         specifier: workspace:*
         version: link:../application
+      "@intentloom/evidence-git":
+        specifier: workspace:*
+        version: link:../evidence-git
 
   packages/core:
     dependencies:

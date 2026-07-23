@@ -26,6 +26,14 @@ evidence, traverse ignored build/dependency trees, follow symbolic links, or
 write project files. Secret-like paths are excluded from the result. A symbolic
 link used as the requested root is rejected with exit code `3`.
 
+## Timeline
+
+`intentloom timeline PROJECT_PATH|--root PATH [--case-id ID]` collects bounded
+local Git commit evidence and renders a release-case timeline. The default case
+ID is `release`; `--json` returns the versioned timeline result. Timeline quality
+distinguishes complete, bounded, and unavailable evidence. It does not infer
+review, CI, approval, release conformance, or causality.
+
 `--adapters` accepts a comma-separated selection of `claude`, `codex`,
 `cursor`, and `copilot`. Multi-adapter output is order-independent, identical
 shared files are emitted once, and non-identical destination collisions stop
