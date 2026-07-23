@@ -13,6 +13,7 @@
     "intentloom-mcp": "dist/intentloom-mcp.cjs"
   },
   "devDependencies": {
+    "@intentloom/application": "workspace:*",
     "@intentloom/evidence-analysis": "workspace:*",
     "@intentloom/evidence-git": "workspace:*",
     "@intentloom/evidence-provider": "workspace:*"
