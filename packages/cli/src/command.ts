@@ -38,6 +38,7 @@ import {
   type ProviderEvidenceResult,
   type ProviderName,
 } from "@intentloom/evidence-provider";
+import { analyzeReleaseEvidence } from "@intentloom/evidence-analysis";
 import {
   INTENTLOOM_VERSION,
   normalizeOutputPath,
@@ -147,6 +148,7 @@ const usage = [
   "Usage: intentloom <init|plan> [--root PATH] [--dry-run]",
   "       intentloom <adopt|diff|sync|doctor|inspect|timeline> [PROJECT_PATH|--root PATH] [--dry-run]",
   "       intentloom evidence import --provider github|gitlab --file PATH --project-key KEY [--json]",
+  "       intentloom evidence analyze --provider github|gitlab --file PATH --project-key KEY [--root PATH] [--case-id ID] [--json]",
   "       adoption mappings use --project-owned-mapping SOURCE=DESTINATION",
   "       or --documentation-mapping SOURCE=DESTINATION",
 ].join("\n");
@@ -154,8 +156,10 @@ const usage = [
 function parseArguments(args: readonly string[]): ParsedArguments {
   const command = args[0] ?? "";
   if (!commands.has(command)) throw new CliUsageError(usage);
-  if (command === "evidence" && args[1] !== "import")
-    throw new CliUsageError("evidence requires the import subcommand");
+  if (command === "evidence" && args[1] !== "import" && args[1] !== "analyze")
+    throw new CliUsageError(
+      "evidence requires the import or analyze subcommand",
+    );
   const flags = new Set<string>();
   const values = new Map<string, string>();
   const mappingValues = new Map<string, string[]>();
@@ -215,6 +219,21 @@ function formatProviderEvidence(result: ProviderEvidenceResult): string {
     ...(result.diagnostics.length > 0
       ? [`Diagnostics: ${result.diagnostics.join(", ")}`]
       : []),
+  ].join("\n");
+}
+
+function formatReleaseAnalysis(
+  report: ReturnType<typeof analyzeReleaseEvidence>,
+): string {
+  return [
+    `Case: ${report.caseId}`,
+    `Project: ${report.projectKey}`,
+    `Quality: ${report.quality}`,
+    `Findings: ${report.findings.length}`,
+    ...report.findings.map(
+      (finding) =>
+        `${finding.status.padEnd(10)} ${finding.code}${finding.sourceIds.length > 0 ? ` (${finding.sourceIds.join(", ")})` : ""}`,
+    ),
   ].join("\n");
 }
 
@@ -875,6 +894,7 @@ export async function runCli(
       },
     );
     if (parsed.command === "evidence") {
+      const evidenceSubcommand = args[1];
       const provider = parsed.values.get("--provider");
       const file = parsed.values.get("--file");
       const projectKey = parsed.values.get("--project-key");
@@ -882,13 +902,14 @@ export async function runCli(
         throw new CliUsageError("--provider must be github or gitlab");
       if (!file || !projectKey)
         throw new CliUsageError(
-          "evidence import requires --file and --project-key",
+          `evidence ${evidenceSubcommand} requires --file and --project-key`,
         );
       let payload: unknown;
+      let result: ProviderEvidenceResult;
       try {
         payload = JSON.parse(await readFile(resolve(file), "utf8"));
       } catch {
-        const result: ProviderEvidenceResult = {
+        result = {
           operationVersion: 1,
           source: "provider-export",
           provider: provider as ProviderName,
@@ -898,24 +919,62 @@ export async function runCli(
           events: [],
           diagnostics: ["export-file-unreadable"],
         };
+        if (evidenceSubcommand === "import") {
+          io.stdout(
+            parsed.flags.has("--json")
+              ? JSON.stringify(result, null, 2)
+              : formatProviderEvidence(result),
+          );
+          return 3;
+        }
+      }
+      if (payload !== undefined)
+        result = importProviderExport({
+          provider: provider as ProviderName,
+          projectKey,
+          payload,
+        });
+      if (evidenceSubcommand === "import") {
         io.stdout(
           parsed.flags.has("--json")
-            ? JSON.stringify(result, null, 2)
-            : formatProviderEvidence(result),
+            ? JSON.stringify(result!, null, 2)
+            : formatProviderEvidence(result!),
         );
-        return 3;
+        return result!.status === "invalid" ? 3 : 0;
       }
-      const result = importProviderExport({
-        provider: provider as ProviderName,
+      const timeline = createReleaseTimeline(
+        parsed.values.get("--case-id") ?? "release",
+        await collectGitEvidence({ root }),
+      );
+      const report = analyzeReleaseEvidence(
+        {
+          caseId: timeline.caseId,
+          quality: timeline.quality,
+          events: timeline.events.map((event) => ({
+            commitId: event.commitId,
+            timestamp: event.timestamp,
+          })),
+        },
+        {
+          provider: result!.provider,
+          projectKey: result!.projectKey,
+          status: result!.status,
+          events: result!.events.map((event) => ({
+            eventType: event.eventType,
+            sourceId: event.sourceId,
+            ...(event.commitIds ? { commitIds: event.commitIds } : {}),
+          })),
+        },
         projectKey,
-        payload,
-      });
+      );
       io.stdout(
         parsed.flags.has("--json")
-          ? JSON.stringify(result, null, 2)
-          : formatProviderEvidence(result),
+          ? JSON.stringify(report, null, 2)
+          : formatReleaseAnalysis(report),
       );
-      return result.status === "invalid" ? 3 : 0;
+      return report.quality === "conflicted" || report.quality === "unavailable"
+        ? 3
+        : 0;
     }
     const readsProject = ["sync", "adopt", "diff", "doctor"].includes(
       parsed.command,
