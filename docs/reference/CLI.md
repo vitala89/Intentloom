@@ -13,6 +13,19 @@ brief, and context pack structures are validated before output or writes.
 `doctor` aggregates config, manifest, source-map, Agent Skill, and semantic
 cross-document issues and never modifies files.
 
+## Inspect
+
+`intentloom inspect PROJECT_PATH|--root PATH` reports bounded, read-only facts
+about one explicit project root. It detects the profile, known adapter
+instruction paths, and Intentloom metadata readiness. `--json` returns the
+versioned application result; human output is rendered from that same result.
+
+Inspection does not execute scripts, invoke Git or package managers, install
+dependencies, access the network, read file contents other than bounded profile
+evidence, traverse ignored build/dependency trees, follow symbolic links, or
+write project files. Secret-like paths are excluded from the result. A symbolic
+link used as the requested root is rejected with exit code `3`.
+
 `--adapters` accepts a comma-separated selection of `claude`, `codex`,
 `cursor`, and `copilot`. Multi-adapter output is order-independent, identical
 shared files are emitted once, and non-identical destination collisions stop

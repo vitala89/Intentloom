@@ -15,6 +15,7 @@ import {
   doctorExitCode,
   doctorProject,
   initProject,
+  inspectProject,
   nodeFileSystem,
   planFeature,
   syncProject,
@@ -96,8 +97,22 @@ interface ProjectConfiguration {
   readonly documentationMappings: readonly ProjectMapping[];
 }
 
-const commands = new Set(["init", "adopt", "plan", "diff", "sync", "doctor"]);
-const projectPathCommands = new Set(["adopt", "diff", "sync", "doctor"]);
+const commands = new Set([
+  "init",
+  "adopt",
+  "plan",
+  "diff",
+  "sync",
+  "doctor",
+  "inspect",
+]);
+const projectPathCommands = new Set([
+  "adopt",
+  "diff",
+  "sync",
+  "doctor",
+  "inspect",
+]);
 const booleanFlags = new Set(["--dry-run", "--force", "--json"]);
 const valueFlags = new Set([
   "--root",
@@ -114,7 +129,7 @@ const mappingValueFlags = new Set([
 const adapters = new Set<AdapterName>(["claude", "codex", "cursor", "copilot"]);
 const usage = [
   "Usage: intentloom <init|plan> [--root PATH] [--dry-run]",
-  "       intentloom <adopt|diff|sync|doctor> [PROJECT_PATH|--root PATH] [--dry-run]",
+  "       intentloom <adopt|diff|sync|doctor|inspect> [PROJECT_PATH|--root PATH] [--dry-run]",
   "       adoption mappings use --project-owned-mapping SOURCE=DESTINATION",
   "       or --documentation-mapping SOURCE=DESTINATION",
 ].join("\n");
@@ -437,6 +452,21 @@ function formatDoctor(result: DoctorPlan): string {
         }`,
     )
     .join("\n");
+}
+
+function formatInspection(
+  result: Awaited<ReturnType<typeof inspectProject>>,
+): string {
+  return [
+    `Profile: ${result.profileDetection.selectedProfile}`,
+    `Readiness: ${result.readiness}`,
+    `Detected adapters: ${result.detectedAdapters.join(", ") || "none"}`,
+    `Instruction files: ${result.instructionPaths.join(", ") || "none"}`,
+    ...result.findings.map(
+      (finding) =>
+        `${finding.severity.padEnd(7)} ${finding.code} ${finding.path} — ${finding.message}`,
+    ),
+  ].join("\n");
 }
 
 function formatDaemonDoctor(result: DoctorResult): string {
@@ -798,6 +828,17 @@ export async function runCli(
     const invalidMetadata = readsProject
       ? await validateExistingMetadata(root, fileSystem, validator)
       : [];
+    if (parsed.command === "inspect") {
+      const result = await inspectProject(root, fileSystem);
+      io.stdout(
+        parsed.flags.has("--json")
+          ? JSON.stringify(result, null, 2)
+          : formatInspection(result),
+      );
+      return result.findings.some((finding) => finding.severity === "error")
+        ? 3
+        : 0;
+    }
     if (parsed.command === "doctor")
       invalidMetadata.push(
         ...(await validateProjectSkills(root, fileSystem, validator)),

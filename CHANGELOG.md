@@ -61,8 +61,10 @@ All notable changes are documented here. This project follows Keep a Changelog p
 - Compatibility-freeze candidate: no intentional runtime, schema, lockfile, or
   generated-output contract changes; existing `.aif` and `urn:aif:*`
   identifiers remain unchanged.
-- Tagging and publication require separate maintainer authorization and the
-  publication checklist; this release record does not publish a package.
+- Published after the reviewed release commit was tagged `v0.1.0-beta.1`:
+  `intentloom@0.1.0-beta.1` is available from npm under the `next` dist-tag.
+  The prerelease does not move `latest`, which remains `0.1.0-alpha.3` until a
+  verified stable release supersedes it.
 
 ## [0.1.0-alpha.3]
 

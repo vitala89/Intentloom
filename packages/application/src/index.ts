@@ -220,6 +220,42 @@ export interface ProfileDetectionResult {
   readonly scannedPaths: readonly string[];
 }
 
+export type ProjectInspectionCapability = "project.files.read";
+export type InspectionReadiness =
+  "not-initialized" | "partial-metadata" | "ready";
+export type InspectionFindingSeverity = "warning" | "error" | "info";
+
+export interface ProjectInspectionFinding {
+  readonly code:
+    | "inspection-root-symlink"
+    | "intentloom-not-initialized"
+    | "intentloom-metadata-partial"
+    | "inspection-ready";
+  readonly severity: InspectionFindingSeverity;
+  readonly path: "." | ".aif/";
+  readonly message: string;
+  readonly remediation: readonly string[];
+  readonly readOnly: true;
+}
+
+export interface ProjectInspection {
+  readonly operationVersion: 1;
+  readonly capabilities: readonly [ProjectInspectionCapability];
+  readonly readOnly: true;
+  readonly profileDetection: Omit<ProfileDetectionResult, "scannedPaths">;
+  readonly supportedAdapters: readonly AdapterName[];
+  readonly detectedAdapters: readonly AdapterName[];
+  readonly instructionPaths: readonly string[];
+  readonly intentloomMetadata: readonly {
+    readonly path:
+      ".aif/config.yaml" | ".aif/manifest.lock.json" | ".aif/source-map.json";
+    readonly present: boolean;
+  }[];
+  readonly readiness: InspectionReadiness;
+  readonly exclusions: readonly string[];
+  readonly findings: readonly ProjectInspectionFinding[];
+}
+
 export type AdoptionAction =
   | "create"
   | "map-existing-project-owned"
@@ -475,6 +511,172 @@ export async function detectProjectProfiles(
       .map((candidate) => candidate.profile),
     manualConfirmationRequired: ambiguous,
     scannedPaths,
+  };
+}
+
+const inspectionAdapterNames: readonly AdapterName[] = [
+  "claude",
+  "codex",
+  "cursor",
+  "copilot",
+];
+const inspectionMetadataPaths = [configPath, lockPath, sourceMapPath] as const;
+const inspectionExclusions = [
+  ".git",
+  ".cache",
+  ".next",
+  ".turbo",
+  "build",
+  "coverage",
+  "dist",
+  "node_modules",
+  "out",
+  "target",
+  "vendor",
+  "symbolic links",
+  "secret-like paths",
+] as const;
+
+function instructionAdapters(path: string): AdapterName[] {
+  const detected = new Set<AdapterName>();
+  if (path === "AGENTS.md" || path.startsWith(".agents/")) {
+    detected.add("codex");
+    detected.add("cursor");
+  }
+  if (path === "CLAUDE.md" || path.startsWith(".claude/"))
+    detected.add("claude");
+  if (path.startsWith(".cursor/")) detected.add("cursor");
+  if (path.startsWith(".github/")) detected.add("copilot");
+  return inspectionAdapterNames.filter((adapter) => detected.has(adapter));
+}
+
+function secretLikePath(path: string): boolean {
+  return path
+    .split("/")
+    .some(
+      (segment) =>
+        segment === ".env" ||
+        segment.startsWith(".env.") ||
+        /\.(?:key|pem|p12|pfx)$/iu.test(segment),
+    );
+}
+
+export async function inspectProject(
+  root: string,
+  fs: FileSystem,
+): Promise<ProjectInspection> {
+  const emptyDetection: Omit<ProfileDetectionResult, "scannedPaths"> = {
+    selectedProfile: "generic",
+    candidates: [
+      {
+        profile: "generic",
+        evidenceFiles: [],
+        reason: "Inspection did not access a symbolic-link project root",
+        confidence: "fallback",
+      },
+    ],
+    competingCandidates: [],
+    manualConfirmationRequired: false,
+  };
+  if (await fs.isSymbolicLink(resolve(root)))
+    return {
+      operationVersion: 1,
+      capabilities: ["project.files.read"],
+      readOnly: true,
+      profileDetection: emptyDetection,
+      supportedAdapters: inspectionAdapterNames,
+      detectedAdapters: [],
+      instructionPaths: [],
+      intentloomMetadata: inspectionMetadataPaths.map((path) => ({
+        path,
+        present: false,
+      })),
+      readiness: "not-initialized",
+      exclusions: inspectionExclusions,
+      findings: [
+        {
+          code: "inspection-root-symlink",
+          severity: "error",
+          path: ".",
+          message: "inspection requires a non-symbolic explicit project root",
+          remediation: ["Select the canonical project directory and retry."],
+          readOnly: true,
+        },
+      ],
+    };
+  const detection = await detectProjectProfiles(root, fs);
+  const paths = detection.scannedPaths.filter((path) => !secretLikePath(path));
+  const instructionPaths = paths.filter(
+    (path) => instructionAdapters(path).length > 0,
+  );
+  const detectedAdapters = inspectionAdapterNames.filter((adapter) =>
+    instructionPaths.some((path) =>
+      instructionAdapters(path).includes(adapter),
+    ),
+  );
+  const intentloomMetadata = inspectionMetadataPaths.map((path) => ({
+    path,
+    present: paths.includes(path),
+  }));
+  const metadataCount = intentloomMetadata.filter(
+    (item) => item.present,
+  ).length;
+  const readiness: InspectionReadiness =
+    metadataCount === 0
+      ? "not-initialized"
+      : metadataCount === intentloomMetadata.length
+        ? "ready"
+        : "partial-metadata";
+  const findings: ProjectInspectionFinding[] =
+    readiness === "not-initialized"
+      ? [
+          {
+            code: "intentloom-not-initialized",
+            severity: "info",
+            path: ".aif/",
+            message: "Intentloom metadata is not present",
+            remediation: [
+              "Run adoption dry-run and review the proposed changes.",
+            ],
+            readOnly: true,
+          },
+        ]
+      : readiness === "partial-metadata"
+        ? [
+            {
+              code: "intentloom-metadata-partial",
+              severity: "warning",
+              path: ".aif/",
+              message: "Intentloom metadata is incomplete",
+              remediation: [
+                "Inspect the existing metadata and review adoption before changing files.",
+              ],
+              readOnly: true,
+            },
+          ]
+        : [
+            {
+              code: "inspection-ready",
+              severity: "info",
+              path: ".aif/",
+              message: "Intentloom metadata is present",
+              remediation: [],
+              readOnly: true,
+            },
+          ];
+  const { scannedPaths: _scannedPaths, ...profileDetection } = detection;
+  return {
+    operationVersion: 1,
+    capabilities: ["project.files.read"],
+    readOnly: true,
+    profileDetection,
+    supportedAdapters: inspectionAdapterNames,
+    detectedAdapters,
+    instructionPaths,
+    intentloomMetadata,
+    readiness,
+    exclusions: inspectionExclusions,
+    findings,
   };
 }
 
