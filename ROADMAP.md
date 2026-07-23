@@ -169,6 +169,36 @@ External evidence, prompts, recommendations, model output, or endpoint reachabil
 
 Exit criteria: a prepared plan is rejected for changed root, ownership, state, digest, expiry, or capability scope; approved applies use the existing transactional rollback guarantee; no other signal is accepted as approval.
 
+## Later candidate — Managed external extensions
+
+Intentloom should support optional Agent Skills, MCP servers, knowledge providers,
+adapters, and other tool integrations through a shared vendor-neutral lifecycle.
+External tools remain replaceable dependencies rather than becoming implicit
+parts of the canonical core.
+
+Candidate scope:
+
+- Define a versioned extension manifest for identity, publisher, source, type, compatibility, runtime requirements, requested capabilities, configuration, and update policy.
+- Record the exact resolved version, source, integrity metadata, granted capabilities, configuration digest, and license or notice metadata in reproducible lock state.
+- Distinguish externally installed, referenced, downloaded, bundled, modified, and redistributed artifacts because each has a different legal and maintenance boundary.
+- Add pre-adoption checks for license identifiers, required notices, source and publisher changes, restrictive terms, and unknown legal metadata without presenting the result as legal advice.
+- Separate update discovery from update approval and prohibit hidden installation, hidden network checks, self-updates, and automatic dependency changes.
+- Preview version, capability, permission, publisher, source, integrity, license, configuration, migration, and generated-output changes before approval.
+- Apply approved updates transactionally, run compatibility and health checks before committing lock state, and preserve explicit rollback or manual-recovery evidence.
+- Detect stale, unavailable, revoked, compromised, incompatible, and locally modified extensions through `doctor`-style diagnostics.
+- Support safe disablement and removal while preserving project-owned files, required notices, evidence, and explicit retained-data records.
+- Introduce provider-specific adapters such as a future Graphify CLI or MCP adapter only after the shared lifecycle and knowledge-provider contract exist.
+
+The planned lifecycle is documented in
+[External Extension Lifecycle](docs/concepts/EXTENSION_LIFECYCLE.md).
+
+Exit criteria: a fixture extension can be installed or referenced with explicit
+approval, pinned reproducibly, checked for compatibility and legal metadata,
+updated through a reviewed transaction, rolled back after a failed health check,
+and removed without modifying project-owned files. A Graphify-style provider can
+be supported without coupling the canonical core to that vendor or implying
+redistribution rights.
+
 ## Later candidate — Engineering Process Intelligence
 
 Intentloom may later apply selected process-mining principles to software delivery and AI-agent workflows. This is intentionally narrower than a general enterprise process-mining platform.
@@ -204,4 +234,4 @@ until then.
 
 ## Explicitly not planned for v0.1
 
-MCP, CodeGraph/Graphify, hosted services, telemetry, marketplace, LLM API integration, automatic agent execution, cloud sync, GUI, plugin runtime, autonomous merging, workflow-event ingestion, process discovery, conformance analytics, and process-mining dashboards.
+MCP, CodeGraph/Graphify, hosted services, telemetry, marketplace, LLM API integration, automatic agent execution, cloud sync, GUI, plugin runtime, autonomous merging, workflow-event ingestion, process discovery, conformance analytics, process-mining dashboards, and managed external-extension installation or updates.
