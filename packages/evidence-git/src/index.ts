@@ -41,6 +41,65 @@ export interface GitEvidenceResult {
   readonly diagnostics: readonly string[];
 }
 
+export interface ReleaseTimelineEvent {
+  readonly id: string;
+  readonly eventType: "commit";
+  readonly timestamp: number;
+  readonly commitId: string;
+  readonly parents: readonly string[];
+  readonly changedPaths: readonly string[];
+  readonly source: "local-git";
+  readonly trust: "local-observed-unverified";
+}
+
+export interface ReleaseTimeline {
+  readonly operationVersion: 1;
+  readonly caseType: "release";
+  readonly caseId: string;
+  readonly quality: "complete" | "bounded" | "unavailable";
+  readonly events: readonly ReleaseTimelineEvent[];
+  readonly findings: readonly ("evidence-bounded" | "evidence-unavailable")[];
+}
+
+export function createReleaseTimeline(
+  caseId: string,
+  evidence: GitEvidenceResult,
+): ReleaseTimeline {
+  const quality =
+    evidence.status === "available"
+      ? "complete"
+      : evidence.status === "limit-reached"
+        ? "bounded"
+        : "unavailable";
+  return {
+    operationVersion: 1,
+    caseType: "release",
+    caseId,
+    quality,
+    events: [...evidence.commits]
+      .sort(
+        (left, right) =>
+          left.timestamp - right.timestamp || left.id.localeCompare(right.id),
+      )
+      .map((commit) => ({
+        id: `commit:${commit.id}`,
+        eventType: "commit" as const,
+        timestamp: commit.timestamp,
+        commitId: commit.id,
+        parents: commit.parents,
+        changedPaths: commit.changedPaths,
+        source: evidence.source,
+        trust: evidence.trust,
+      })),
+    findings:
+      evidence.status === "limit-reached"
+        ? ["evidence-bounded"]
+        : evidence.status === "unavailable"
+          ? ["evidence-unavailable"]
+          : [],
+  };
+}
+
 const defaultRunner: GitRunner = async (file, args, options) => {
   const result = await executeGit(file, [...args], {
     cwd: options.cwd,

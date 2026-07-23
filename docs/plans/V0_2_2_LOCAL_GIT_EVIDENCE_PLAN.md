@@ -16,3 +16,5 @@ root, starting with release-oriented commit history.
   remain unchanged.
 - The package is private and does not grant conformance, approval, mutation, or
   network capability.
+- A release case can be normalized into a deterministic timeline whose quality
+  distinguishes complete, bounded, and unavailable evidence.
