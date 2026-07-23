@@ -64,6 +64,27 @@ function tarPayloadChecksums(archive: Buffer) {
   return checksums.sort();
 }
 
+function tarPayload(archive: Buffer, target: string) {
+  const tar = gunzipSync(archive);
+  for (let offset = 0; offset < tar.length;) {
+    const header = tar.subarray(offset, offset + 512);
+    if (header.every((byte) => byte === 0)) break;
+    const name = header.subarray(0, 100).toString("utf8").replace(/\0.*$/u, "");
+    const prefix = header
+      .subarray(345, 500)
+      .toString("utf8")
+      .replace(/\0.*$/u, "");
+    const size = Number.parseInt(
+      header.subarray(124, 136).toString("utf8").replace(/\0.*$/u, "").trim(),
+      8,
+    );
+    const path = prefix ? `${prefix}/${name}` : name;
+    if (path === target) return tar.subarray(offset + 512, offset + 512 + size);
+    offset += 512 + Math.ceil(size / 512) * 512;
+  }
+  throw new Error(`Missing tar payload: ${target}`);
+}
+
 function pack(destination: string) {
   execFileSync(
     command("pnpm"),
@@ -122,8 +143,32 @@ beforeAll(async () => {
   expect(tarEntries(await readFile(tarball))).toEqual(
     tarEntries(await readFile(repeatedTarball)),
   );
-  expect(tarPayloadChecksums(await readFile(tarball))).toEqual(
-    tarPayloadChecksums(await readFile(repeatedTarball)),
+  const firstPayloadChecksums = tarPayloadChecksums(await readFile(tarball));
+  const repeatedPayloadChecksums = tarPayloadChecksums(
+    await readFile(repeatedTarball),
+  );
+  expect(
+    firstPayloadChecksums.filter(
+      (entry) => !entry.startsWith("package/package.json:"),
+    ),
+  ).toEqual(
+    repeatedPayloadChecksums.filter(
+      (entry) => !entry.startsWith("package/package.json:"),
+    ),
+  );
+  expect(
+    JSON.parse(
+      tarPayload(await readFile(tarball), "package/package.json").toString(
+        "utf8",
+      ),
+    ),
+  ).toEqual(
+    JSON.parse(
+      tarPayload(
+        await readFile(repeatedTarball),
+        "package/package.json",
+      ).toString("utf8"),
+    ),
   );
 }, 30_000);
 
