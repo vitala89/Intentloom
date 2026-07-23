@@ -4,6 +4,12 @@ All notable changes are documented here. This project follows Keep a Changelog p
 
 ## [Unreleased]
 
+### Added
+
+- Added a vendor-neutral managed extension lifecycle for optional Agent Skills, MCP servers, knowledge providers, adapters, and other external tool integrations.
+- Defined future requirements for license and notice review, source and integrity metadata, version pinning, compatibility checks, explicit update approval, migrations, health validation, rollback, revocation, and safe removal.
+- Documented Graphify as an example of an optional replaceable provider through a future CLI or MCP adapter, not as a bundled core dependency or an assumption of redistribution rights.
+
 ## [0.1.0-beta.1] - 2026-07-23
 
 ### Added
@@ -74,7 +80,7 @@ All notable changes are documented here. This project follows Keep a Changelog p
 - Include the expanded public project README and actionable private security
   reporting policy.
 - Include the cross-platform Windows adoption-path test fix and compatibility
-  verification across Ubuntu, macOS, and Windows on Node.js 22 and 24.
+  verification across Ubuntu, macOS, and Windows on Node 22 and 24.
 
 ### Notes
 
