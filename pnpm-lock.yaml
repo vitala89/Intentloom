@@ -71,6 +71,8 @@ importers:
 
   packages/evidence-git: {}
 
+  packages/evidence-provider: {}
+
   packages/protocol: {}
 
   packages/validator:
