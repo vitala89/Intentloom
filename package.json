@@ -8,7 +8,7 @@
     "node": ">=22"
   },
   "scripts": {
-    "build": "node scripts/sync-version.mjs && tsc -b && node scripts/build-cli.mjs && node scripts/build-daemon.mjs",
+    "build": "node scripts/sync-version.mjs && tsc -b && node scripts/build-cli.mjs && node scripts/build-daemon.mjs && node scripts/build-mcp.mjs",
     "typecheck": "tsc -b --pretty false",
     "test": "vitest run",
     "lint": "tsc -b --pretty false",

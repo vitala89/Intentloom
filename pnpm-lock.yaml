@@ -81,6 +81,18 @@ importers:
 
   packages/evidence-provider: {}
 
+  packages/mcp-server:
+    devDependencies:
+      "@intentloom/evidence-analysis":
+        specifier: workspace:*
+        version: link:../evidence-analysis
+      "@intentloom/evidence-git":
+        specifier: workspace:*
+        version: link:../evidence-git
+      "@intentloom/evidence-provider":
+        specifier: workspace:*
+        version: link:../evidence-provider
+
   packages/protocol: {}
 
   packages/validator:
