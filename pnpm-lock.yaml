@@ -72,6 +72,8 @@ importers:
         specifier: workspace:*
         version: link:../protocol
 
+  packages/evidence-analysis: {}
+
   packages/evidence-git: {}
 
   packages/evidence-provider: {}

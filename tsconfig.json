@@ -9,6 +9,7 @@
     { "path": "./packages/daemon" },
     { "path": "./packages/evidence-git" },
     { "path": "./packages/evidence-provider" },
+    { "path": "./packages/evidence-analysis" },
     { "path": "./packages/cli" }
   ]
 }
