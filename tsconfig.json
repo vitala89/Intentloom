@@ -7,6 +7,7 @@
     { "path": "./packages/application" },
     { "path": "./packages/protocol" },
     { "path": "./packages/daemon" },
+    { "path": "./packages/evidence-git" },
     { "path": "./packages/cli" }
   ]
 }
