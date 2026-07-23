@@ -49,6 +49,131 @@ export interface ReleaseAnalysisReport {
   readonly findings: readonly ReleaseEvidenceFinding[];
 }
 
+export type ReleaseConformanceControl =
+  "local-release-timeline" | "provider-evidence" | "provider-commit-provenance";
+export type ReleaseConformanceStatus = ReleaseEvidenceFinding["status"];
+export type ReleaseConformanceSummary =
+  | "verified"
+  | "evidence-missing"
+  | "evidence-conflicted"
+  | "evidence-ambiguous"
+  | "evidence-unsupported";
+
+export interface ReleaseConformanceControls {
+  readonly operationVersion: 1;
+  readonly requiredControls: readonly string[];
+}
+
+export interface ReleaseConformanceFinding {
+  readonly control: string;
+  readonly status: ReleaseConformanceStatus;
+  readonly evidenceCodes: readonly ReleaseEvidenceFindingCode[];
+  readonly sourceIds: readonly string[];
+}
+
+export interface ReleaseConformanceReport {
+  readonly operationVersion: 1;
+  readonly caseType: "release";
+  readonly caseId: string;
+  readonly projectKey: string;
+  readonly summary: ReleaseConformanceSummary;
+  readonly findings: readonly ReleaseConformanceFinding[];
+}
+
+const conformanceStatusRank: Readonly<
+  Record<ReleaseConformanceStatus, number>
+> = {
+  verified: 0,
+  ambiguous: 1,
+  missing: 2,
+  unsupported: 3,
+  conflicting: 4,
+};
+
+function controlEvidence(
+  control: string,
+  report: ReleaseAnalysisReport,
+): readonly ReleaseEvidenceFinding[] {
+  if (control === "local-release-timeline")
+    return report.findings.filter((finding) =>
+      finding.code.startsWith("local-timeline-"),
+    );
+  if (control === "provider-commit-provenance")
+    return report.findings.filter(
+      (finding) =>
+        finding.code.startsWith("provider-commit-") ||
+        finding.code === "provider-evidence-missing" ||
+        finding.code === "provider-evidence-invalid",
+    );
+  if (control !== "provider-evidence") return [];
+  const availability = report.findings.filter(
+    (finding) =>
+      finding.code === "provider-evidence-missing" ||
+      finding.code === "provider-evidence-invalid",
+  );
+  if (availability.length > 0) return availability;
+  return report.findings
+    .filter((finding) => finding.code.startsWith("provider-commit-"))
+    .map((finding) => ({ ...finding, status: "verified" as const }));
+}
+
+function conformanceSummary(
+  findings: readonly ReleaseConformanceFinding[],
+): ReleaseConformanceSummary {
+  const status = findings.reduce<ReleaseConformanceStatus>(
+    (current, finding) =>
+      conformanceStatusRank[finding.status] > conformanceStatusRank[current]
+        ? finding.status
+        : current,
+    "verified",
+  );
+  return status === "verified"
+    ? "verified"
+    : status === "conflicting"
+      ? "evidence-conflicted"
+      : status === "missing"
+        ? "evidence-missing"
+        : status === "ambiguous"
+          ? "evidence-ambiguous"
+          : "evidence-unsupported";
+}
+
+export function evaluateReleaseConformance(
+  report: ReleaseAnalysisReport,
+  controls: ReleaseConformanceControls,
+): ReleaseConformanceReport {
+  if (controls.operationVersion !== 1)
+    throw new Error("unsupported release conformance controls version");
+  if (
+    new Set(controls.requiredControls).size !== controls.requiredControls.length
+  )
+    throw new Error("release conformance controls must be unique");
+  const findings = [...controls.requiredControls].sort().map((control) => {
+    const evidence = controlEvidence(control, report);
+    const status = evidence.reduce<ReleaseConformanceStatus>(
+      (current, finding) =>
+        conformanceStatusRank[finding.status] > conformanceStatusRank[current]
+          ? finding.status
+          : current,
+      "verified",
+    );
+    return {
+      control,
+      status: evidence.length === 0 ? "unsupported" : status,
+      evidenceCodes: evidence.map(({ code }) => code).sort(),
+      sourceIds: evidence.flatMap(({ sourceIds }) => sourceIds).sort(),
+    };
+  });
+  return {
+    operationVersion: 1,
+    caseType: "release",
+    caseId: report.caseId,
+    projectKey: report.projectKey,
+    summary: conformanceSummary(findings),
+    findings,
+  };
+}
+
 export function analyzeReleaseEvidence(
   git: ReleaseAnalysisGitTimeline,
   provider: ReleaseAnalysisProviderEvidence,
