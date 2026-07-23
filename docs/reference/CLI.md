@@ -40,6 +40,16 @@ shared files are emitted once, and non-identical destination collisions stop
 before writes. `--profile` controls documented path-scoped Cursor and Copilot
 derivatives.
 
+## Provider evidence import
+
+`intentloom evidence import --provider github|gitlab --file EXPORT.json
+--project-key KEY [--json]` imports one explicitly supplied provider export.
+The payload is treated as untrusted, bounded input and is normalized without
+credentials, network calls, polling, subprocesses, or project writes. The
+caller-supplied project key isolates the result from other repositories; actor
+identities and arbitrary provider fields are not copied into evidence. Invalid
+files exit `3`; bounded results remain usable and report diagnostics.
+
 ## Adoption
 
 `intentloom adopt --dry-run` returns the same deterministic adoption proposal in human
