@@ -83,6 +83,9 @@ importers:
 
   packages/mcp-server:
     devDependencies:
+      "@intentloom/application":
+        specifier: workspace:*
+        version: link:../application
       "@intentloom/evidence-analysis":
         specifier: workspace:*
         version: link:../evidence-analysis
