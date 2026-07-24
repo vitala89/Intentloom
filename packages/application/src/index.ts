@@ -900,10 +900,10 @@ function buildTransactionMetadata(
           planning: "1",
           agentSkillPolicy: "1",
         },
-        adapters: [...pins.adapters]
+        adapters: [...(pins.adapters ?? [])]
           .sort()
           .map((id) => ({ id, version: adapterOutputVersion })),
-        sourceHashes: [...pins.sourceHashes].sort((left, right) =>
+        sourceHashes: [...(pins.sourceHashes ?? [])].sort((left, right) =>
           left.id.localeCompare(right.id),
         ),
         ...sharedMetadata,
