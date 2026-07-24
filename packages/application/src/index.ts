@@ -488,8 +488,7 @@ export async function detectProjectProfiles(
       "src-tauri/src/audio",
       "secrets",
       "credentials",
-      ".env",
-    ].filter((path) => paths.has(path)),
+    ].filter((path) => paths.has(path) && !secretLikePath(path)),
   ];
   const hasAngular = angularEvidence.length > 0;
   const hasTauri = tauriEvidence.length > 0;
