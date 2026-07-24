@@ -1,0 +1,148 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:aif:schema:extension-manifest:1",
+  "title": "extension-manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "const": "urn:aif:schema:extension-manifest:1"
+    },
+    "extensionId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^ext:[a-z0-9_.-]+/[a-z0-9_.-]+$"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "skill",
+        "mcp-server",
+        "knowledge-provider",
+        "adapter-pack",
+        "policy-pack",
+        "daemon-integration"
+      ]
+    },
+    "version": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64
+    },
+    "publisher": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "name": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "url": { "type": "string", "maxLength": 2048 }
+      },
+      "required": ["name"]
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "registry": { "type": "string", "minLength": 1, "maxLength": 64 },
+        "package": { "type": "string", "minLength": 1, "maxLength": 256 }
+      }
+    },
+    "compatibility": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "intentloomCore": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "node": { "type": "string", "maxLength": 128 },
+        "os": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "arch": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      },
+      "required": ["intentloomCore"]
+    },
+    "license": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "spdxId": { "type": "string", "minLength": 1, "maxLength": 64 },
+        "licenseFile": { "type": "string", "maxLength": 512 },
+        "noticeRequired": { "type": "boolean" },
+        "noticeFile": { "type": "string", "maxLength": 512 }
+      },
+      "required": ["spdxId"]
+    },
+    "capabilities": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "filesystem": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "read": { "type": "array", "items": { "type": "string" } },
+            "write": { "type": "array", "items": { "type": "string" } }
+          }
+        },
+        "process": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "exec": { "type": "array", "items": { "type": "string" } }
+          }
+        },
+        "network": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "connect": { "type": "array", "items": { "type": "string" } }
+          }
+        }
+      }
+    },
+    "entrypoint": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "type": { "type": "string", "minLength": 1, "maxLength": 64 },
+        "command": { "type": "string", "minLength": 1, "maxLength": 256 },
+        "args": { "type": "array", "items": { "type": "string" } }
+      },
+      "required": ["type", "command"]
+    },
+    "updateChannel": {
+      "type": "string",
+      "enum": ["stable", "beta", "alpha", "nightly"]
+    },
+    "installationType": {
+      "type": "string",
+      "enum": ["bundled", "downloaded", "externally-installed", "referenced"]
+    },
+    "configSchema": {
+      "type": "string",
+      "maxLength": 512
+    }
+  },
+  "required": [
+    "extensionId",
+    "name",
+    "category",
+    "version",
+    "publisher",
+    "compatibility",
+    "license"
+  ]
+}

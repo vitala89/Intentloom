@@ -1,0 +1,140 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:aif:schema:extension-lock:1",
+  "title": "extension-lock",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "lockVersion": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "updatedAt": {
+      "type": "string",
+      "maxLength": 64
+    },
+    "extensions": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "extensionId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "category": {
+            "type": "string",
+            "enum": [
+              "skill",
+              "mcp-server",
+              "knowledge-provider",
+              "adapter-pack",
+              "policy-pack",
+              "daemon-integration"
+            ]
+          },
+          "requestedVersion": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64
+          },
+          "resolvedVersion": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64
+          },
+          "source": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "registry": { "type": "string", "maxLength": 64 },
+              "package": { "type": "string", "maxLength": 256 },
+              "resolved": { "type": "string", "maxLength": 2048 }
+            }
+          },
+          "integrity": {
+            "type": "string",
+            "maxLength": 256
+          },
+          "manifestSchemaVersion": {
+            "type": "string",
+            "maxLength": 128
+          },
+          "grantedCapabilities": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "filesystem": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "read": { "type": "array", "items": { "type": "string" } },
+                  "write": { "type": "array", "items": { "type": "string" } }
+                }
+              },
+              "process": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "exec": { "type": "array", "items": { "type": "string" } }
+                }
+              },
+              "network": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "connect": { "type": "array", "items": { "type": "string" } }
+                }
+              }
+            }
+          },
+          "license": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "spdxId": { "type": "string", "maxLength": 64 },
+              "noticeSnapshotId": { "type": "string", "maxLength": 256 }
+            }
+          },
+          "configDigest": {
+            "type": "string",
+            "maxLength": 256
+          },
+          "approvedAt": {
+            "type": "string",
+            "maxLength": 64
+          },
+          "approvedBy": {
+            "type": "string",
+            "maxLength": 128
+          },
+          "lastHealthCheck": {
+            "type": "string",
+            "maxLength": 64
+          },
+          "pendingMigration": {
+            "type": "boolean"
+          },
+          "installationType": {
+            "type": "string",
+            "enum": [
+              "bundled",
+              "downloaded",
+              "externally-installed",
+              "referenced"
+            ]
+          }
+        },
+        "required": [
+          "extensionId",
+          "category",
+          "requestedVersion",
+          "resolvedVersion"
+        ]
+      }
+    }
+  },
+  "required": ["lockVersion", "updatedAt", "extensions"]
+}

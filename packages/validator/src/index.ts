@@ -22,7 +22,9 @@ export type ArtifactType =
   | "context-pack"
   | "change-request"
   | "technical-debt"
-  | "agent-skill";
+  | "agent-skill"
+  | "extension-manifest"
+  | "extension-lock";
 export type ArtifactFormat = "json" | "yaml" | "skill";
 
 export interface ArtifactValidationInput {
@@ -43,7 +45,23 @@ export interface ArtifactValidationIssue {
   readonly code: string;
   readonly message: string;
   readonly fieldPath: string;
+  readonly expectedSchemaVersion?: string;
+  readonly actualSchemaVersion?: string;
+  readonly documentPath?: string;
 }
+
+export type StructuralIssueCode =
+  | "document-unreadable"
+  | "document-not-object"
+  | "schema-missing-version"
+  | "schema-version-unsupported"
+  | "schema-missing-property"
+  | "schema-unknown-property"
+  | "schema-invalid-type"
+  | "schema-invalid-format"
+  | "schema-invalid-enum"
+  | "schema-invalid-pattern"
+  | "schema-invalid-constraint";
 
 export interface ArtifactValidationResult {
   readonly status: "valid" | "invalid";
@@ -74,8 +92,21 @@ export interface SkillSetValidationResult {
 
 export class SchemaCatalogError extends Error {
   constructor(
-    readonly code: "schema-catalog-invalid" | "schema-reference-not-local",
-    readonly schemaFile: string,
+    readonly code:
+      | "schema-catalog-missing"
+      | "schema-catalog-invalid"
+      | "schema-reference-not-local",
+    readonly schemaFile?: string,
+    message?: string,
+  ) {
+    super(message ?? code);
+  }
+}
+
+export class ArtifactValidationError extends Error {
+  constructor(
+    readonly code: string,
+    readonly issues: readonly ArtifactValidationIssue[],
   ) {
     super(code);
   }
@@ -91,6 +122,8 @@ const schemaIds: Record<ArtifactType, string> = {
   "change-request": `urn:aif:schema:change-request:${schemaVersion}`,
   "technical-debt": `urn:aif:schema:technical-debt:${schemaVersion}`,
   "agent-skill": `urn:aif:schema:agent-skill:${schemaVersion}`,
+  "extension-manifest": `urn:aif:schema:extension-manifest:${schemaVersion}`,
+  "extension-lock": `urn:aif:schema:extension-lock:${schemaVersion}`,
 };
 const schemaFiles: Record<ArtifactType, string> = {
   "aif-config": "aif-config.schema.json",
@@ -101,6 +134,8 @@ const schemaFiles: Record<ArtifactType, string> = {
   "change-request": "change-request.schema.json",
   "technical-debt": "technical-debt.schema.json",
   "agent-skill": "agent-skill.schema.json",
+  "extension-manifest": "extension-manifest.schema.json",
+  "extension-lock": "extension-lock.schema.json",
 };
 const maximumDocumentBytes = 1024 * 1024;
 const maximumDocumentDepth = 64;
@@ -290,7 +325,11 @@ export async function createArtifactValidator(
       const declaredVersion = (document as Record<string, unknown>)
         .schemaVersion;
       const version =
-        input.artifactType === "agent-skill" ? schemaVersion : declaredVersion;
+        input.artifactType === "agent-skill" ||
+        input.artifactType === "extension-manifest" ||
+        input.artifactType === "extension-lock"
+          ? schemaVersion
+          : declaredVersion;
       if (typeof version !== "string")
         return invalidResult(input, null, [
           issue(

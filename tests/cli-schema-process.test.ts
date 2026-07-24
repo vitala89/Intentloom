@@ -254,7 +254,7 @@ describe("built CLI schema validation process cases", () => {
       contents.filter((entry) =>
         /package\/dist\/catalog\/schemas\/[^/]+\.json/u.test(entry),
       ),
-    ).toHaveLength(8);
+    ).toHaveLength(10);
     expect(contents).not.toEqual(
       expect.arrayContaining([
         expect.stringMatching(/(?:^|\/)(?:tests?|fixtures?)(?:\/|$)/u),
