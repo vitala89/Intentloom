@@ -9,3 +9,4 @@ packages/*/**/*.js
 .intentloom-private/
 docs/plans/
 docs/architecture/CURRENT_SYSTEM_INVENTORY.md
+graphify-out/
