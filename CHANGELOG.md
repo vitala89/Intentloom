@@ -7,6 +7,10 @@ All notable changes are documented here. This project follows Keep a Changelog p
 ### Added
 
 - Added ADR-0020 and v0.3 Engineering Conformance Specification (`ENGINEERING_CONFORMANCE_V0_3_SPEC.md`).
+- Added pure application operation `evaluateEngineeringConformance` in `@intentloom/evidence-analysis` with unit tests.
+- Added `intentloom conformance` CLI command with `--policy`, `--timeline`, `--case-id`, `--case-type`, and `--json` flags.
+- Added `intentloom_engineering_conformance` tool to `@intentloom/mcp-server`.
+- Added ADR-0021 (`ADR-0021-managed-extension-lifecycle-and-manifest.md`) and Managed Extension Lifecycle Specification (`MANAGED_EXTENSION_LIFECYCLE_V0_3_SPEC.md`) defining `urn:aif:schema:extension-manifest:1` and `urn:aif:schema:extension-lock:1`.
 
 ## [0.2.0-beta.1] - 2026-07-24
 

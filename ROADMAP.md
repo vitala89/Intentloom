@@ -118,9 +118,9 @@ Candidate scope:
 
 Exit criteria: an MCP client can discover and invoke read-only Intentloom tools, and CLI/MCP results are equivalent for the same operation and project state.
 
-## v0.3 candidate — Engineering conformance
+## v0.3 candidate — Engineering conformance and managed extension lifecycle
 
-Build deterministic conformance checks on top of the workflow evidence model. The architectural contract and specification are defined in [ADR-0020](docs/decisions/ADR-0020-engineering-workflow-policy-and-conformance.md) and [v0.3 Engineering Conformance Specification](docs/specs/ENGINEERING_CONFORMANCE_V0_3_SPEC.md).
+Build deterministic conformance checks on top of the workflow evidence model and govern external integrations. The architectural contracts and specifications are defined in [ADR-0020](docs/decisions/ADR-0020-engineering-workflow-policy-and-conformance.md), [ADR-0021](docs/decisions/ADR-0021-managed-extension-lifecycle-and-manifest.md), [v0.3 Engineering Conformance Specification](docs/specs/ENGINEERING_CONFORMANCE_V0_3_SPEC.md), and [Managed Extension Lifecycle Specification](docs/specs/MANAGED_EXTENSION_LIFECYCLE_V0_3_SPEC.md).
 
 Candidate scope:
 
@@ -129,9 +129,10 @@ Candidate scope:
 - Support policy examples such as required review, verified CI, changelog updates, migration evidence, release approval, and tag-to-build provenance.
 - Distinguish confirmed violations from missing evidence and ambiguous provider data.
 - Produce machine-readable findings and human-readable remediation guidance.
+- Define `urn:aif:schema:extension-manifest:1` and `urn:aif:schema:extension-lock:1` for external skills, MCP servers, knowledge graph indexers (Graphify), and adapters.
 - Keep recommendations separate from application and require the existing reviewed transaction boundary for every write.
 
-Exit criteria: Intentloom can explain why a workflow instance conforms, diverges, or cannot be verified, without automatically changing repository state.
+Exit criteria: Intentloom can explain why a workflow instance conforms, diverges, or cannot be verified, and securely govern external extension manifests without automatically changing repository state.
 
 ## Later candidate — Live read-only providers
 
