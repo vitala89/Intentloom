@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: Portable Adoption Phase 4 merged; Phase 5 conformance and security profiles active
+Status: Portable Adoption Phase 5 merged; Phase 6 provider synchronization active
 
 Active branch: `main`
 
-Current objective: implement conformance evaluation and security profile detection (`intentloom conformance`), stack profile detection (TypeScript, Angular, Nx, Rust, Tauri, SQLite), and security profile rules.
+Current objective: implement provider-specific instruction derivative generation (Claude Code, Codex, Cursor, Copilot, Antigravity, Gemini CLI), drift detection, local section preservation, and provider diffing (`intentloom diff` / `intentloom sync`).
 
-Next first action: create implementation plan for Phase 5, extend project profile detection, define conformance security rules, and implement test coverage.
+Next first action: create implementation plan for Phase 6, verify adapter generators, test drift detection and local section preservation across provider files.
 
 ## Watch rules
 
@@ -41,6 +41,20 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-25, Portable Adoption Phase 6 provider synchronization (`intentloom sync` / `intentloom diff`)
+
+- **Status:** complete
+- **Agent/tool:** Antigravity AI Pair Programmer
+- **Branch:** `feat/intentloom-provider-sync`
+- **Objective:** Implement provider-specific instruction derivative generation, drift detection, local section preservation, pre-synchronization diffing (`intentloom diff` / `intentloom sync`), and test coverage.
+- **Completed:** Verified provider instruction derivative generation across all supported adapters (`claude`, `codex`, `cursor`, `copilot`), ensured `buildTransactionMetadata` safety against missing pins, implemented CLI integration tests in `tests/cli-provider-sync.test.ts` verifying drift detection, local section preservation, diff proposals, and dry-run safety. Updated `PROJECT_STATE.md` and `DUTY_WATCH.md`.
+- **Files changed:** `packages/application/src/index.ts`, `tests/cli-provider-sync.test.ts`, `PROJECT_STATE.md`, and `DUTY_WATCH.md`.
+- **Validation:** `pnpm typecheck`, `pnpm lint`, `pnpm format:check`, `pnpm build`, and all vitest suites passed cleanly.
+- **Decisions:** Canonical policy remains the single source of truth; provider derivative files can be regenerated without losing documented user-owned local extensions.
+- **Risks or compatibility impact:** None. Completes the 6-phase Portable Adoption & Migration roadmap.
+- **Next first action:** Open PR for `feat/intentloom-provider-sync`, observe CI, merge after approval.
+- **Evidence:** local build, typecheck, lint, prettier format check, and vitest run.
 
 ### 2026-07-25, Portable Adoption Phase 5 conformance and security profiles (`intentloom conformance`)
 

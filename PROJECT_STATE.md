@@ -22,7 +22,7 @@ later justifies separation.
 
 ## Current phase
 
-Portable Adoption Phase 5: Conformance and Security Profiles (`intentloom conformance`).
+Portable Adoption Phase 6: Provider Synchronization (`intentloom sync` / `intentloom diff`).
 
 The project must avoid premature structural migration. New applications,
 packages, and repository boundaries are introduced only when roadmap triggers
@@ -40,18 +40,18 @@ and real consumers justify them.
   connection, evidence, MCP, interactive surfaces, Agent Workspace, Neutron,
   persistent memory, security analysis, engineering process intelligence,
   public monorepo evolution, controlled agent learning, and portable Duty Watch adoption.
-- Duty Watch governance contracts (Phase 1), proposal CLI `intentloom adopt --plan` (Phase 2), transactional apply & rollback engine `intentloom adopt --apply` (Phase 3), and pack update 3-way migration `intentloom update` (Phase 4) are merged into `main`.
+- Duty Watch governance contracts (Phase 1), proposal CLI `intentloom adopt --plan` (Phase 2), transactional apply & rollback engine `intentloom adopt --apply` (Phase 3), pack update 3-way migration `intentloom update` (Phase 4), and conformance & security profiles `intentloom conformance` (Phase 5) are merged into `main`.
 
 These statements must be revalidated against code, tags, CI, and Git history
 before a new release or implementation milestone is declared complete.
 
 ## Active focus
 
-1. Implement project stack profile detection (TypeScript, Angular, Nx, Rust, Tauri, SQLite, mixed).
-2. Implement sensitive security profile detection for career data, provider keys, Tauri IPC, and external sources.
-3. Link conformance findings to concrete repository evidence (git commits, PRs, CI, validation, Duty Watch log).
-4. Distinguish verified, missing, failed, unavailable, manual-required, and accepted-risk findings.
-5. Guarantee that no AI judgement alone can mark a required deterministic gate as passed.
+1. Generate provider-specific instruction derivatives from canonical project roles (Claude Code, Codex, Cursor, Copilot, Antigravity, Gemini CLI).
+2. Support versioned instruction generators in `@intentloom/adapters`.
+3. Detect drift between canonical policy and provider files.
+4. Preserve user-owned local additions and custom sections during synchronization.
+5. Show clear diffs before executing synchronization (`intentloom diff` / `intentloom sync --dry-run`).
 
 ## Architectural invariants
 
@@ -69,19 +69,18 @@ before a new release or implementation milestone is declared complete.
 
 ## Current blockers and unknowns
 
-- Phase 5 focuses on conformance evaluation and security profile detection.
-- Provider synchronization (Phase 6) remains the final phase.
+- Phase 6 focuses on provider synchronization, completing the 6-phase Portable Adoption & Migration roadmap.
 
 ## Current milestone
 
-Implement Portable Adoption Phase 5: Conformance and Security Profiles (`intentloom conformance`).
+Implement Portable Adoption Phase 6: Provider Synchronization (`intentloom sync` / `intentloom diff`).
 
 Expected outputs:
 
-- stack profile detection for TypeScript, Angular, Nx, Rust, Tauri, SQLite, and mixed stacks;
-- sensitive security profile rules for career data, provider keys, Tauri IPC, and external bridges;
-- evidence-linked conformance evaluation linking findings to concrete repository evidence;
-- unit and integration tests proving stack profile detection and evidence-linked conformance findings.
+- provider instruction generators for Claude Code, Codex, Cursor, Copilot, Antigravity, and Gemini CLI;
+- drift detection and local section preservation across provider instruction files;
+- diff generation before mutation via `intentloom diff` and `intentloom sync --dry-run`;
+- unit and integration tests proving provider derivative generation, drift detection, and local section preservation.
 
 ## Next platform milestone
 
