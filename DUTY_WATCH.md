@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: Portable Adoption Phase 3 merged; Phase 4 pack update and three-way migration active
+Status: Portable Adoption Phase 4 merged; Phase 5 conformance and security profiles active
 
 Active branch: `main`
 
-Current objective: implement pack update planning and 3-way migration (`intentloom update --plan` / `intentloom update --apply`), comparing old pack, current project state, and new pack.
+Current objective: implement conformance evaluation and security profile detection (`intentloom conformance`), stack profile detection (TypeScript, Angular, Nx, Rust, Tauri, SQLite), and security profile rules.
 
-Next first action: create implementation plan for Phase 4, define `planPackUpdate` application operation, 3-way comparison algorithm, CLI routing for `intentloom update --plan`, and test coverage.
+Next first action: create implementation plan for Phase 5, extend project profile detection, define conformance security rules, and implement test coverage.
 
 ## Watch rules
 
@@ -41,6 +41,20 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-25, Portable Adoption Phase 5 conformance and security profiles (`intentloom conformance`)
+
+- **Status:** complete
+- **Agent/tool:** Antigravity AI Pair Programmer
+- **Branch:** `feat/intentloom-conformance-profiles`
+- **Objective:** Implement project stack profile detection (Nx, SQLite, sensitive security profiles), evidence-linked conformance evaluation, CLI routing, and test coverage.
+- **Completed:** Expanded `detectProjectProfiles` in `@intentloom/application` to detect Nx monorepo (`nx`), SQLite database (`sqlite`), and sensitive security profiles (`security-sensitive`). Updated `intentloom conformance` CLI handler in `@intentloom/cli` to use `fileSystem.read` for memory filesystem compatibility. Added unit/integration test suite in `tests/cli-conformance-profiles.test.ts`. Updated `PROJECT_STATE.md` and `DUTY_WATCH.md`.
+- **Files changed:** `packages/application/src/index.ts`, `packages/cli/src/command.ts`, `tests/cli-conformance-profiles.test.ts`, `PROJECT_STATE.md`, and `DUTY_WATCH.md`.
+- **Validation:** `pnpm typecheck`, `pnpm lint`, `pnpm format:check`, `pnpm build`, and all vitest suites passed cleanly.
+- **Decisions:** Stack detection automatically identifies Nx, SQLite, and sensitive security paths (stealth, credentials, secrets) to enforce evidence-linked deterministic conformance rules.
+- **Risks or compatibility impact:** None. Backwards compatible profile expansion.
+- **Next first action:** Open PR for `feat/intentloom-conformance-profiles`, observe CI, merge after approval, and prepare Phase 6 (Provider Synchronization).
+- **Evidence:** local build, typecheck, lint, prettier format check, and vitest run.
 
 ### 2026-07-25, Portable Adoption Phase 4 pack update and three-way migration (`intentloom update --plan` / `--apply`)
 

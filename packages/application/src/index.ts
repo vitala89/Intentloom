@@ -214,7 +214,15 @@ export interface ProjectMapping {
 }
 
 export type DetectedProfile =
-  "generic" | "typescript" | "angular" | "rust" | "tauri" | "angular-tauri";
+  | "generic"
+  | "typescript"
+  | "angular"
+  | "rust"
+  | "tauri"
+  | "angular-tauri"
+  | "nx"
+  | "sqlite"
+  | "security-sensitive";
 
 export interface ProfileCandidate {
   readonly profile: DetectedProfile;
@@ -456,9 +464,47 @@ export async function detectProjectProfiles(
       ? ["package.json"]
       : []),
   ];
+  const nxEvidence = [
+    ...(paths.has("nx.json") ? ["nx.json"] : []),
+    ...(paths.has("workspace.json") ? ["workspace.json"] : []),
+    ...(paths.has("package.json") &&
+    [...packageNames].some((name) => name === "nx" || name.startsWith("@nx/"))
+      ? ["package.json"]
+      : []),
+  ];
+  const sqliteEvidence = [
+    ...(paths.has("prisma/schema.prisma") ? ["prisma/schema.prisma"] : []),
+    ...["migrations", "db"].filter((path) => paths.has(path)),
+    ...(paths.has("package.json") &&
+    [...packageNames].some((name) =>
+      ["better-sqlite3", "sqlite3", "@libsql/client"].includes(name),
+    )
+      ? ["package.json"]
+      : []),
+  ];
+  const securitySensitiveEvidence = [
+    ...[
+      "src-tauri/src/stealth",
+      "src-tauri/src/audio",
+      "secrets",
+      "credentials",
+      ".env",
+    ].filter((path) => paths.has(path)),
+  ];
   const hasAngular = angularEvidence.length > 0;
   const hasTauri = tauriEvidence.length > 0;
+  const hasNx = nxEvidence.length > 0;
+  const hasSqlite = sqliteEvidence.length > 0;
+  const hasSecuritySensitive = securitySensitiveEvidence.length > 0;
   const definitions: ProfileCandidate[] = [];
+  if (hasSecuritySensitive)
+    definitions.push({
+      profile: "security-sensitive",
+      evidenceFiles: [...new Set(securitySensitiveEvidence)].sort(),
+      reason:
+        "Sensitive security, stealth, credential, or career-data indicators are present",
+      confidence: "exact",
+    });
   if (hasAngular && hasTauri)
     definitions.push({
       profile: "angular-tauri",
@@ -471,6 +517,20 @@ export async function detectProjectProfiles(
       ].sort(),
       reason: "Angular and Tauri configuration are both present",
       confidence: "exact",
+    });
+  if (hasNx)
+    definitions.push({
+      profile: "nx",
+      evidenceFiles: [...new Set(nxEvidence)].sort(),
+      reason: "Nx monorepo configuration or package evidence is present",
+      confidence: "exact",
+    });
+  if (hasSqlite)
+    definitions.push({
+      profile: "sqlite",
+      evidenceFiles: [...new Set(sqliteEvidence)].sort(),
+      reason: "SQLite database or migration evidence is present",
+      confidence: "inferred",
     });
   if (hasAngular)
     definitions.push({

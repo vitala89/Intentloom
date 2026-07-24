@@ -1163,7 +1163,9 @@ export async function runCli(
 
       let policy: EngineeringWorkflowPolicy;
       if (policyFile) {
-        policy = JSON.parse(await readFile(resolve(root, policyFile), "utf8"));
+        policy = JSON.parse(
+          await fileSystem.read(resolveWithin(root, policyFile)),
+        );
       } else {
         policy = defaultEngineeringPolicy;
       }
@@ -1171,7 +1173,7 @@ export async function runCli(
       let timeline: GenericTimeline;
       if (timelineFile) {
         timeline = JSON.parse(
-          await readFile(resolve(root, timelineFile), "utf8"),
+          await fileSystem.read(resolveWithin(root, timelineFile)),
         );
       } else {
         const rawGit = await collectGitEvidence({ root });

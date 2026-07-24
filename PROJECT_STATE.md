@@ -22,7 +22,7 @@ later justifies separation.
 
 ## Current phase
 
-Portable Adoption Phase 4: Pack Update and Three-Way Migration (`intentloom update --plan` / `--apply`).
+Portable Adoption Phase 5: Conformance and Security Profiles (`intentloom conformance`).
 
 The project must avoid premature structural migration. New applications,
 packages, and repository boundaries are introduced only when roadmap triggers
@@ -39,20 +39,19 @@ and real consumers justify them.
 - The repository carries architecture and roadmap documents for project
   connection, evidence, MCP, interactive surfaces, Agent Workspace, Neutron,
   persistent memory, security analysis, engineering process intelligence,
-  public monorepo evolution, and portable Duty Watch adoption.
-- Duty Watch governance contracts (Phase 1), proposal CLI `intentloom adopt --plan` (Phase 2), and transactional apply & rollback engine `intentloom adopt --apply` (Phase 3) are merged into `main`.
+  public monorepo evolution, controlled agent learning, and portable Duty Watch adoption.
+- Duty Watch governance contracts (Phase 1), proposal CLI `intentloom adopt --plan` (Phase 2), transactional apply & rollback engine `intentloom adopt --apply` (Phase 3), and pack update 3-way migration `intentloom update` (Phase 4) are merged into `main`.
 
 These statements must be revalidated against code, tags, CI, and Git history
 before a new release or implementation milestone is declared complete.
 
 ## Active focus
 
-1. Implement `planPackUpdate` application operation and `intentloom update --plan` / `--apply` CLI command.
-2. Store installed pack identity, version, canonical hashes, local overrides, and exceptions.
-3. Compare old pack, current project state, and new pack using a 3-way migration comparison algorithm.
-4. Generate safe fast-forwards, semantic merges, conflicts, deprecations, and removals.
-5. Preserve local user modifications without overwriting merely because pack version increased.
-6. Provide targeted conflict proposals for customized project files.
+1. Implement project stack profile detection (TypeScript, Angular, Nx, Rust, Tauri, SQLite, mixed).
+2. Implement sensitive security profile detection for career data, provider keys, Tauri IPC, and external sources.
+3. Link conformance findings to concrete repository evidence (git commits, PRs, CI, validation, Duty Watch log).
+4. Distinguish verified, missing, failed, unavailable, manual-required, and accepted-risk findings.
+5. Guarantee that no AI judgement alone can mark a required deterministic gate as passed.
 
 ## Architectural invariants
 
@@ -70,19 +69,19 @@ before a new release or implementation milestone is declared complete.
 
 ## Current blockers and unknowns
 
-- Phase 4 focuses on 3-way migration between old pack, current project, and new pack version.
-- Conformance automation (Phase 5) and security profiles (Phase 6) remain future phases.
+- Phase 5 focuses on conformance evaluation and security profile detection.
+- Provider synchronization (Phase 6) remains the final phase.
 
 ## Current milestone
 
-Implement Portable Adoption Phase 4: Pack Update and Three-Way Migration (`intentloom update --plan` / `--apply`).
+Implement Portable Adoption Phase 5: Conformance and Security Profiles (`intentloom conformance`).
 
 Expected outputs:
 
-- application operation `planPackUpdate` executing 3-way comparison (old pack vs current project vs new pack);
-- CLI command `intentloom update --plan` and `intentloom update --apply <plan>` supporting `--json` and `--dry-run`;
-- conflict detection for modified project files avoiding silent overwrites;
-- unit and integration tests proving fast-forward updates, conflict generation, and local modification preservation.
+- stack profile detection for TypeScript, Angular, Nx, Rust, Tauri, SQLite, and mixed stacks;
+- sensitive security profile rules for career data, provider keys, Tauri IPC, and external bridges;
+- evidence-linked conformance evaluation linking findings to concrete repository evidence;
+- unit and integration tests proving stack profile detection and evidence-linked conformance findings.
 
 ## Next platform milestone
 
