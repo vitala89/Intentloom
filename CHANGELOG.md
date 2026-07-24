@@ -4,6 +4,10 @@ All notable changes are documented here. This project follows Keep a Changelog p
 
 ## [Unreleased]
 
+### Added
+
+- Added ADR-0022 (`ADR-0022-live-read-only-provider-connections.md`) and Live Read-Only Provider Connections Specification (`LIVE_PROVIDER_CONNECTIONS_SPEC.md`).
+
 ## [0.3.0-beta.1] - 2026-07-24
 
 ### Added
