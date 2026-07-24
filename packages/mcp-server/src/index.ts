@@ -9,6 +9,11 @@ import {
 } from "@intentloom/application";
 import {
   analyzeReleaseEvidence,
+  evaluateEngineeringConformance,
+  type EngineeringConformanceReport,
+  type EngineeringWorkflowCaseType,
+  type EngineeringWorkflowPolicy,
+  type GenericTimeline,
   type ReleaseAnalysisReport,
 } from "@intentloom/evidence-analysis";
 import {
@@ -24,6 +29,8 @@ export const MCP_PROTOCOL_VERSION = "2024-11-05" as const;
 export const RELEASE_ANALYSIS_TOOL = "intentloom_release_analysis" as const;
 export const PROJECT_INSPECT_TOOL = "intentloom_project_inspect" as const;
 export const PROJECT_DOCTOR_TOOL = "intentloom_project_doctor" as const;
+export const ENGINEERING_CONFORMANCE_TOOL =
+  "intentloom_engineering_conformance" as const;
 export const MCP_TOOL_ERROR_SCHEMA_VERSION = 1 as const;
 
 export interface McpRequest {
@@ -148,16 +155,101 @@ const projectDoctorTool = {
   },
 } as const;
 
+const defaultEngineeringPolicy: EngineeringWorkflowPolicy = {
+  schemaVersion: "1",
+  policyId: "policy:default-engineering-conformance",
+  description: "Default Intentloom engineering workflow policy",
+  rules: [
+    {
+      ruleId: "rule:require-commit-evidence",
+      caseType: "pull-request",
+      severity: "error",
+      title: "Commit Evidence Presence",
+      condition: {
+        type: "required-activity",
+        activity: "commit",
+      },
+      remediation: {
+        summary: "Pull request workflow timeline must contain commit evidence.",
+        actionableSteps: [
+          "Ensure local Git history contains commits on the topic branch.",
+        ],
+      },
+    },
+    {
+      ruleId: "rule:require-release-evidence",
+      caseType: "release",
+      severity: "error",
+      title: "Release Evidence Presence",
+      condition: {
+        type: "required-activity",
+        activity: "commit",
+      },
+      remediation: {
+        summary: "Release workflow timeline must contain commit evidence.",
+        actionableSteps: [
+          "Ensure Git tags and release commits exist in the repository.",
+        ],
+      },
+    },
+  ],
+};
+
+const engineeringConformanceTool = {
+  name: ENGINEERING_CONFORMANCE_TOOL,
+  description:
+    "Evaluate engineering workflow policy conformance against repository timeline events.",
+  inputSchema: {
+    $id: "urn:intentloom:mcp:engineering-conformance:input:1",
+    type: "object",
+    additionalProperties: false,
+    properties: {
+      policyFile: {
+        type: "string",
+        description: "Project-relative JSON workflow policy path.",
+      },
+      timelineFile: {
+        type: "string",
+        description: "Project-relative JSON timeline events path.",
+      },
+      caseId: { type: "string" },
+      caseType: { type: "string", enum: ["pull-request", "release"] },
+    },
+  },
+  outputSchema: {
+    $id: "urn:intentloom:mcp:engineering-conformance:output:1",
+    type: "object",
+    required: [
+      "operationVersion",
+      "policyId",
+      "evaluatedAt",
+      "caseType",
+      "caseId",
+      "summary",
+      "findings",
+    ],
+  },
+  annotations: {
+    "x-intentloom-limits": {
+      configuredRoot: 1,
+      policyFileLength: 512,
+      timelineFileLength: 512,
+    },
+  },
+} as const;
+
 const tools = [
   releaseAnalysisTool,
   projectInspectTool,
   projectDoctorTool,
+  engineeringConformanceTool,
 ] as const;
 
 type McpToolName =
   | typeof RELEASE_ANALYSIS_TOOL
   | typeof PROJECT_INSPECT_TOOL
-  | typeof PROJECT_DOCTOR_TOOL;
+  | typeof PROJECT_DOCTOR_TOOL
+  | typeof ENGINEERING_CONFORMANCE_TOOL;
 
 const profiles = [
   "generic",
@@ -354,6 +446,57 @@ async function projectDoctor(
   );
 }
 
+async function engineeringConformance(
+  args: Record<string, unknown>,
+  options: McpServerOptions,
+): Promise<EngineeringConformanceReport> {
+  await assertNonSymlinkRoot(options);
+  const caseId =
+    typeof args.caseId === "string" && args.caseId.length > 0
+      ? args.caseId
+      : "current";
+  const caseType =
+    typeof args.caseType === "string" &&
+    (args.caseType === "pull-request" || args.caseType === "release")
+      ? (args.caseType as EngineeringWorkflowCaseType)
+      : "pull-request";
+
+  let policy: EngineeringWorkflowPolicy;
+  if (typeof args.policyFile === "string" && args.policyFile.length > 0) {
+    const policyPath = boundedPath(options.root, args.policyFile);
+    const content = await (
+      options.readFile ?? ((path) => readFile(path, "utf8"))
+    )(policyPath);
+    policy = JSON.parse(content);
+  } else {
+    policy = defaultEngineeringPolicy;
+  }
+
+  let timeline: GenericTimeline;
+  if (typeof args.timelineFile === "string" && args.timelineFile.length > 0) {
+    const timelinePath = boundedPath(options.root, args.timelineFile);
+    const content = await (
+      options.readFile ?? ((path) => readFile(path, "utf8"))
+    )(timelinePath);
+    timeline = JSON.parse(content);
+  } else {
+    const rawGit = await collectGitEvidence({ root: options.root });
+    timeline = {
+      caseType,
+      caseId,
+      events: rawGit.commits.map((c) => ({
+        activity: "commit",
+        source: "git",
+        sourceId: c.id,
+        timestamp: new Date(c.timestamp * 1000).toISOString(),
+        commitIds: [c.id],
+      })),
+    };
+  }
+
+  return evaluateEngineeringConformance(timeline, policy);
+}
+
 function toolArguments(value: unknown): Record<string, unknown> {
   if (value === undefined) return {};
   if (value === null || typeof value !== "object" || Array.isArray(value))
@@ -365,7 +508,8 @@ function isMcpToolName(value: unknown): value is McpToolName {
   return (
     value === RELEASE_ANALYSIS_TOOL ||
     value === PROJECT_INSPECT_TOOL ||
-    value === PROJECT_DOCTOR_TOOL
+    value === PROJECT_DOCTOR_TOOL ||
+    value === ENGINEERING_CONFORMANCE_TOOL
   );
 }
 
@@ -399,7 +543,9 @@ export async function handleMcpRequest(
         ? await releaseAnalysis(args, options)
         : params.name === PROJECT_INSPECT_TOOL
           ? await projectInspect(args, options)
-          : await projectDoctor(args, options);
+          : params.name === PROJECT_DOCTOR_TOOL
+            ? await projectDoctor(args, options)
+            : await engineeringConformance(args, options);
     return {
       jsonrpc: "2.0",
       id,
