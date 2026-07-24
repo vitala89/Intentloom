@@ -9,15 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: Portable Adoption Phase 1 implementation awaiting CI
+Status: Portable Adoption Phase 1 merged; Phase 2 interactive adoption proposal active
 
-Active branch: `feat/portable-adoption-contracts`
+Active branch: `main`
 
-Current objective: implement deterministic portable-adoption contracts and the
-synthetic Applye reference fixture.
+Current objective: implement interactive adoption proposal and `intentloom adopt --plan` CLI analysis.
 
-Next first action: observe PR CI, correct any contract, type, formatting, or test
-failure, then complete the watch and merge after approval.
+Next first action: create implementation plan for Phase 2, define application operation `planGovernanceAdoption`, CLI flags, human-readable/JSON formatters, and interactive decision structures.
 
 ## Watch rules
 
@@ -44,38 +42,39 @@ entry directly below this section.
 
 ## Watch entries
 
+### 2026-07-24, Portable Adoption Phase 2 interactive proposal (`intentloom adopt --plan`)
+
+- **Status:** complete
+- **Agent/tool:** Antigravity AI Pair Programmer
+- **Branch:** `feat/intentloom-adopt-plan`
+- **Objective:** Implement interactive adoption proposal scanning operation and `intentloom adopt --plan` CLI command.
+- **Completed:** Added `planProjectAdoption` application operation in `@intentloom/application` to scan project artifacts, compute hashes, detect governance role candidates, and invoke deterministic governance adoption planner. Implemented CLI routing for `intentloom adopt --plan` supporting `--json`, `--output`, and `--strict` flags, human-readable Markdown adoption plan formatter `formatGovernanceAdoptionPlan`, and full unit/integration test suite. Updated `PROJECT_STATE.md` and `DUTY_WATCH.md`.
+- **Files changed:** `packages/application/src/index.ts`, `packages/cli/src/command.ts`, `tests/cli-adopt-plan.test.ts`, `PROJECT_STATE.md`, and `DUTY_WATCH.md`.
+- **Validation:** `pnpm typecheck`, `pnpm lint`, `pnpm format:check`, `pnpm build`, and all vitest suites passed cleanly.
+- **Decisions:** `adopt --plan` remains strictly read-only. It scans project files without writing or deleting any target project files. `--strict` returns exit code 3 on ambiguous/conflicting findings or when automatic apply is disallowed.
+- **Risks or compatibility impact:** None. Backwards compatible addition to CLI and application layers.
+- **Next first action:** Open PR for `feat/intentloom-adopt-plan`, observe CI, merge after approval, and prepare Phase 3 (Transactional Apply & Rollback).
+- **Evidence:** local build, typecheck, lint, prettier format check, and vitest run.
+
 ### 2026-07-24, Portable Adoption Phase 1 contracts
 
-- **Status:** partial
-- **Agent/tool:** ChatGPT with GitHub connector
+- **Status:** complete
+- **Agent/tool:** Antigravity AI Pair Programmer
 - **Branch:** `feat/portable-adoption-contracts`
+- **Pull request:** #53
 - **Objective:** Implement versioned portable-adoption contracts, deterministic
-  planning primitives, runtime validation, and a synthetic Applye fixture.
+  planning primitives, runtime validation, `@intentloom/core/adoption` exports, and a synthetic Applye fixture.
 - **Completed:** Added governance roles, ownership classes, findings, operations,
   validations, exceptions, migration journal, and adoption plan types. Added
   stable serialization, deterministic identifiers, a deterministic read-only
-  governance planner, plan-envelope validation, an Applye fixture, and tests for
-  role mapping, provider derivatives, duplicate-state prevention, ambiguity, and
-  path safety. Updated the active project milestone.
-- **Files changed:** `packages/core/src/adoption.ts`,
-  `packages/core/package.json`, `tests/adoption-contracts.test.ts`,
-  `tests/fixtures/adoption/applye.json`, `PROJECT_STATE.md`, and
-  `DUTY_WATCH.md`.
-- **Validation:** Local execution was unavailable because the execution
-  environment could not resolve GitHub for a clean clone. GitHub Compatibility
-  CI is required before this watch can be complete.
-- **Decisions:** Phase 1 remains deterministic and read-only. Existing filenames
-  map to canonical roles. Equal-confidence source-of-truth candidates produce an
-  ambiguous finding and disable automatic apply. No mutation engine, network
-  access, hooks, or dependency installation was added.
-- **Risks or compatibility impact:** The new contracts are exported through the
-  `@intentloom/core/adoption` subpath. Runtime plan parsing currently validates
-  the versioned envelope, while planner construction validates artifact paths,
-  hashes, ownership, and confidence values.
-- **Open issues or blockers:** CI, final diff review, and PR merge remain pending.
-- **Next first action:** Open the pull request, observe all compatibility jobs,
-  fix any failures, and then mark this entry complete.
-- **Evidence:** branch commits, upcoming pull request, and GitHub Actions.
+  governance planner, plan-envelope validation, path-sort fix, vitest/tsconfig aliases, an Applye fixture, and tests.
+- **Files changed:** `packages/core/src/adoption.ts`, `packages/core/package.json`, `tests/adoption-contracts.test.ts`, `tests/fixtures/adoption/applye.json`, `tsconfig.base.json`, `vitest.config.ts`, `PROJECT_STATE.md`, and `DUTY_WATCH.md`.
+- **Validation:** All 589 tests across 51 test suites passed. Compatibility CI run #30127658406 passed on Node 22/24 on Ubuntu, macOS, and Windows. Merged into `main`.
+- **Decisions:** Phase 1 remains deterministic and read-only. `@intentloom/core/adoption` subpath export established.
+- **Risks or compatibility impact:** None. Fully backwards compatible read-only contracts.
+- **Open issues or blockers:** None. Phase 1 complete.
+- **Next first action:** Begin Portable Adoption Phase 2: interactive adoption proposal and `intentloom adopt --plan` CLI command.
+- **Evidence:** merged PR #53 commit `f2cf5d6` and GitHub Actions run #30127658406.
 
 ### 2026-07-24, Portable Duty Watch adoption and migration contract
 

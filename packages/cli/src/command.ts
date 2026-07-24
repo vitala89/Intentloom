@@ -18,6 +18,7 @@ import {
   inspectProject,
   nodeFileSystem,
   planFeature,
+  planProjectAdoption,
   syncProject,
   type FileSystem,
   type DoctorPlan,
@@ -49,8 +50,10 @@ import {
 import {
   INTENTLOOM_VERSION,
   normalizeOutputPath,
+  resolveWithin,
   type AdapterName,
 } from "@intentloom/core";
+import { stableStringify, type AdoptionPlan } from "@intentloom/core/adoption";
 import {
   createArtifactValidator,
   SchemaCatalogError,
@@ -135,7 +138,13 @@ const projectPathCommands = new Set([
   "timeline",
   "conformance",
 ]);
-const booleanFlags = new Set(["--dry-run", "--force", "--json"]);
+const booleanFlags = new Set([
+  "--dry-run",
+  "--force",
+  "--json",
+  "--plan",
+  "--strict",
+]);
 const valueFlags = new Set([
   "--root",
   "--profile",
@@ -150,6 +159,7 @@ const valueFlags = new Set([
   "--policy",
   "--timeline",
   "--case-type",
+  "--output",
 ]);
 const mappingValueFlags = new Set([
   "--project-owned-mapping",
@@ -158,6 +168,7 @@ const mappingValueFlags = new Set([
 const adapters = new Set<AdapterName>(["claude", "codex", "cursor", "copilot"]);
 const usage = [
   "Usage: intentloom <init|plan> [--root PATH] [--dry-run]",
+  "       intentloom adopt --plan [PROJECT_PATH|--root PATH] [--json] [--output PATH] [--strict]",
   "       intentloom <adopt|diff|sync|doctor|inspect|timeline|conformance> [PROJECT_PATH|--root PATH] [--dry-run]",
   "       intentloom evidence import --provider github|gitlab --file PATH --project-key KEY [--json]",
   "       intentloom evidence analyze --provider github|gitlab --file PATH --project-key KEY [--root PATH] [--case-id ID] [--json]",
@@ -504,6 +515,46 @@ function formatAdoptionProposal(result: AdoptionProposal): string {
           (path) => `- ${path}`,
         ),
       );
+  }
+  return lines.join("\n");
+}
+
+function formatGovernanceAdoptionPlan(plan: AdoptionPlan): string {
+  const lines: string[] = [
+    `Adoption Plan: ${plan.packId} (v${plan.packVersion})`,
+    `Project ID: ${plan.projectId}`,
+    `Repository Hash: ${plan.repositoryHash}`,
+    `Automatic Apply Allowed: ${plan.automaticApplyAllowed ? "yes" : "no"}`,
+    "",
+    "Role Mappings:",
+  ];
+  if (plan.mappings.length === 0) {
+    lines.push("  (none)");
+  } else {
+    for (const mapping of plan.mappings) {
+      lines.push(
+        `  ${mapping.role.padEnd(30)} -> ${mapping.path} (${mapping.ownership})`,
+      );
+    }
+  }
+  lines.push("", "Findings:");
+  if (plan.findings.length === 0) {
+    lines.push("  (none)");
+  } else {
+    for (const finding of plan.findings) {
+      lines.push(
+        `  [${finding.status}] ${finding.code}: ${finding.summary} (${finding.paths.join(", ")})`,
+      );
+    }
+  }
+  lines.push("", "Operations:");
+  if (plan.operations.length === 0) {
+    lines.push("  (none)");
+  } else {
+    for (const op of plan.operations) {
+      const target = op.path ?? op.role ?? "workspace";
+      lines.push(`  [${op.kind}] ${target} (${op.approval}) — ${op.reason}`);
+    }
   }
   return lines.join("\n");
 }
@@ -1206,6 +1257,30 @@ export async function runCli(
           : formatDoctor(result),
       );
       return doctorExitCode(result);
+    }
+    if (parsed.command === "adopt" && parsed.flags.has("--plan")) {
+      const plan = await planProjectAdoption({ root }, fileSystem);
+      const outputText = parsed.flags.has("--json")
+        ? stableStringify(plan)
+        : formatGovernanceAdoptionPlan(plan);
+      const outputPath = parsed.values.get("--output");
+      if (outputPath !== undefined) {
+        const targetPath = resolveWithin(root, outputPath);
+        await fileSystem.write(targetPath, outputText);
+      }
+      io.stdout(`${outputText}\n`);
+      if (
+        parsed.flags.has("--strict") &&
+        (!plan.automaticApplyAllowed ||
+          plan.findings.some(
+            (finding) =>
+              finding.status === "ambiguous" ||
+              finding.status === "conflicting",
+          ))
+      ) {
+        return 3;
+      }
+      return 0;
     }
     if (invalidMetadata.length > 0 && parsed.command !== "adopt") {
       const output = formatValidationFailure(

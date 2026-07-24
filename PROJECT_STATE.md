@@ -22,8 +22,7 @@ later justifies separation.
 
 ## Current phase
 
-Portable adoption implementation, beginning with deterministic contracts and a
-synthetic Applye reference fixture.
+Portable Adoption Phase 2: Interactive Adoption Proposal (`intentloom adopt --plan`).
 
 The project must avoid premature structural migration. New applications,
 packages, and repository boundaries are introduced only when roadmap triggers
@@ -41,20 +40,19 @@ and real consumers justify them.
   connection, evidence, MCP, interactive surfaces, Agent Workspace, Neutron,
   persistent memory, security analysis, engineering process intelligence,
   public monorepo evolution, and portable Duty Watch adoption.
-- Duty Watch governance and its portable adoption contract are merged into
-  `main`.
+- Duty Watch governance and its portable adoption contracts (Phase 1) are merged into `main`.
 
 These statements must be revalidated against code, tags, CI, and Git history
 before a new release or implementation milestone is declared complete.
 
 ## Active focus
 
-1. Implement versioned portable-adoption TypeScript contracts.
-2. Provide runtime validation, stable serialization, and deterministic IDs.
-3. Add a synthetic Applye fixture proving role mapping without duplicate state.
-4. Keep the first phase read-only and deterministic.
-5. Preserve CLI, daemon, protocol, transaction, and security boundaries.
-6. Use the Duty Watch protocol for every agent session.
+1. Implement `intentloom adopt --plan` CLI command and application operation.
+2. Provide human-readable Markdown and machine-readable JSON plan output.
+3. Allow role remapping and selected approvals (`keep-local`, `merge`, `replace-generated`, `defer`, `reject`, `exception`).
+4. Validate hashes to block stale plans.
+5. Require explicit human confirmation for any destructive or executable changes.
+6. Preserve CLI, daemon, protocol, transaction, and security boundaries.
 
 ## Architectural invariants
 
@@ -72,28 +70,19 @@ before a new release or implementation milestone is declared complete.
 
 ## Current blockers and unknowns
 
-- The portable adoption planner currently exists as a documented contract and is
-  being implemented in phases.
-- Transactional apply, three-way updates, conformance automation, and security
-  profiles remain future phases after deterministic planning contracts.
-- The exact implementation status of daemon and versioned protocol must be
-  inspected before Desktop work begins.
-- The current package layout may still reflect the earlier AIF structure and
-  should not be reorganized only for aesthetics.
+- Phase 2 focuses on read-only proposal analysis and CLI reporting.
+- Transactional apply (Phase 3), three-way updates (Phase 4), conformance automation (Phase 5), and security profiles (Phase 6) remain future phases.
 
 ## Current milestone
 
-Implement Portable Adoption Phase 1 contracts and deterministic Applye fixture
-tests.
+Implement Portable Adoption Phase 2: Interactive Adoption Proposal (`intentloom adopt --plan`).
 
 Expected outputs:
 
-- canonical governance role and ownership types;
-- adoption-plan, finding, operation, validation, exception, and journal types;
-- runtime plan validation;
-- stable JSON serialization and deterministic identifiers;
-- synthetic Applye fixture and deterministic tests;
-- no project mutation, network access, hooks, or dependency installation.
+- application operation for scanning and planning governance adoption across a workspace;
+- CLI command `intentloom adopt --plan` supporting `--json`, `--output`, and `--strict`;
+- human-readable Markdown plan formatter and structured JSON output;
+- tests proving read-only inspection, dry-run safety, ambiguity blocking, stale plan detection, and role override contracts.
 
 ## Next platform milestone
 
