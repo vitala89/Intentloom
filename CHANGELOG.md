@@ -4,6 +4,8 @@ All notable changes are documented here. This project follows Keep a Changelog p
 
 ## [Unreleased]
 
+## [0.3.0-beta.1] - 2026-07-24
+
 ### Added
 
 - Added ADR-0020 and v0.3 Engineering Conformance Specification (`ENGINEERING_CONFORMANCE_V0_3_SPEC.md`).
@@ -11,6 +13,7 @@ All notable changes are documented here. This project follows Keep a Changelog p
 - Added `intentloom conformance` CLI command with `--policy`, `--timeline`, `--case-id`, `--case-type`, and `--json` flags.
 - Added `intentloom_engineering_conformance` tool to `@intentloom/mcp-server`.
 - Added ADR-0021 (`ADR-0021-managed-extension-lifecycle-and-manifest.md`) and Managed Extension Lifecycle Specification (`MANAGED_EXTENSION_LIFECYCLE_V0_3_SPEC.md`) defining `urn:aif:schema:extension-manifest:1` and `urn:aif:schema:extension-lock:1`.
+- Added v0.3 candidate release readiness audit (`docs/audits/V0_3_RELEASE_READINESS.md`).
 
 ## [0.2.0-beta.1] - 2026-07-24
 
