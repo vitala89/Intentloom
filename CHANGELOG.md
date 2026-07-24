@@ -8,6 +8,7 @@ All notable changes are documented here. This project follows Keep a Changelog p
 
 - Added ADR-0022 (`ADR-0022-live-read-only-provider-connections.md`) and Live Read-Only Provider Connections Specification (`LIVE_PROVIDER_CONNECTIONS_SPEC.md`).
 - Added JSON Schema files for Extension Manifest (`urn:aif:schema:extension-manifest:1`) and Extension Lock (`urn:aif:schema:extension-lock:1`) in `catalog/schemas/` with `@intentloom/validator` support.
+- Added ADR-0023 (`ADR-0023-external-mcp-evidence-ingestion.md`) and External MCP Evidence Ingestion Specification (`EXTERNAL_MCP_EVIDENCE_INGESTION_SPEC.md`).
 
 ## [0.3.0-beta.1] - 2026-07-24
 
