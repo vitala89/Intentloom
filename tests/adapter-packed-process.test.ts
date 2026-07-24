@@ -1,5 +1,6 @@
 import { execFileSync } from "node:child_process";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { INTENTLOOM_VERSION } from "@intentloom/core";
 import {
   mkdtemp,
   mkdir,
@@ -78,7 +79,7 @@ describe("packed adapter compatibility matrix", () => {
     expect(runPackedCommandShim(shim, ["--help"], runtime).status).toBe(0);
     expect(
       runPackedCommandShim(shim, ["--version"], runtime).stdout.trim(),
-    ).toBe("0.1.0-beta.1");
+    ).toBe(INTENTLOOM_VERSION);
   });
 
   it.each(["claude", "codex", "cursor", "copilot"])(
@@ -187,6 +188,6 @@ describe("packed adapter compatibility matrix", () => {
   }, 15_000);
 
   it("reports the unchanged framework version", () => {
-    expect(aif(["--version"]).stdout.trim()).toBe("0.1.0-beta.1");
+    expect(aif(["--version"]).stdout.trim()).toBe(INTENTLOOM_VERSION);
   });
 });

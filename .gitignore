@@ -1,3 +1,8 @@
 node_modules/
 packages/*/dist/
 *.tsbuildinfo
+
+# Local-only Intentloom planning material. Never commit by accident.
+.intentloom-private/
+docs/plans/
+docs/architecture/CURRENT_SYSTEM_INVENTORY.md

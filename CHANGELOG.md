@@ -6,9 +6,20 @@ All notable changes are documented here. This project follows Keep a Changelog p
 
 ### Added
 
-- Added a vendor-neutral managed extension lifecycle for optional Agent Skills, MCP servers, knowledge providers, adapters, and other external tool integrations.
-- Defined future requirements for license and notice review, source and integrity metadata, version pinning, compatibility checks, explicit update approval, migrations, health validation, rollback, revocation, and safe removal.
-- Documented Graphify as an example of an optional replaceable provider through a future CLI or MCP adapter, not as a bundled core dependency or an assumption of redistribution rights.
+- Added ADR-0020 and v0.3 Engineering Conformance Specification (`ENGINEERING_CONFORMANCE_V0_3_SPEC.md`).
+
+## [0.2.0-beta.1] - 2026-07-24
+
+### Added
+
+- Added project connection capability model and read-only `intentloom inspect` command (`v0.2.1`).
+- Added restricted local Git evidence collection, timeline normalization, and `intentloom timeline` command (`v0.2.2`).
+- Added vendor-neutral provider export adapters for GitHub and GitLab JSON exports and `intentloom import-provider` command (`v0.2.3`).
+- Added release timeline analysis, evidence quality findings, and `intentloom release-analysis` command (`v0.2.4`).
+- Added local `stdio` MCP server (`intentloom mcp serve --stdio`) exposing typed read-only tools for inspection, doctor, timeline, and release analysis (`v0.2.5`).
+- Added release conformance evaluation engine (`evaluateReleaseConformance`) and recorded dogfooding evidence (`v0.2.8`).
+- Added vendor-neutral managed extension lifecycle documentation for optional Agent Skills, MCP servers, knowledge providers, adapters, and external tool integrations.
+- Recorded the `0.2.0-beta.1` technical release readiness audit in `docs/audits/V0_2_RELEASE_READINESS.md`.
 
 ## [0.1.0-beta.1] - 2026-07-23
 

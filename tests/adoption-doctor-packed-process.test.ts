@@ -1,5 +1,6 @@
 import { execFileSync } from "node:child_process";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { INTENTLOOM_VERSION } from "@intentloom/core";
 import {
   mkdtemp,
   mkdir,
@@ -194,6 +195,6 @@ describe("packed adoption and doctor fixture cases", () => {
   });
 
   it("packed version remains unchanged", () => {
-    expect(aif(["--version"]).stdout.trim()).toBe("0.1.0-beta.1");
+    expect(aif(["--version"]).stdout.trim()).toBe(INTENTLOOM_VERSION);
   });
 });
