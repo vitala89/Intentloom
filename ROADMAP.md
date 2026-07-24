@@ -190,7 +190,9 @@ Training a foundation model from scratch is not a current commitment and require
 
 ## Later candidate — Live read-only providers
 
-Possible capabilities:
+Build explicit, least-privilege provider connections for GitHub and GitLab. The architectural contract and specification are defined in [ADR-0022](docs/decisions/ADR-0022-live-read-only-provider-connections.md) and [Live Read-Only Provider Connections Specification](docs/specs/LIVE_PROVIDER_CONNECTIONS_SPEC.md).
+
+Candidate scope:
 
 - Explicit, least-privilege, read-only GitHub and GitLab provider connections.
 - Credentials stored outside project metadata and evidence.
