@@ -202,10 +202,13 @@ Exit criteria: provider access is explicit and revocable, records remain project
 
 ## Later candidate — External MCP evidence ingestion
 
-Explicitly configured external MCP servers may provide untrusted evidence only.
-Every result requires validation, redaction, provenance, trust classification, and
-an explicit capability allowlist. External MCP servers cannot directly trigger
-adoption, sync, merge, release, or project mutation.
+Explicitly configured external MCP servers may provide untrusted evidence only. The architectural contract and specification are defined in [ADR-0023](docs/decisions/ADR-0023-external-mcp-evidence-ingestion.md) and [External MCP Evidence Ingestion Specification](docs/specs/EXTERNAL_MCP_EVIDENCE_INGESTION_SPEC.md).
+
+Candidate scope:
+
+- Explicitly configured external MCP servers may provide untrusted evidence only.
+- Every result requires validation, redaction, provenance, trust classification, and an explicit capability allowlist.
+- External MCP servers cannot directly trigger adoption, sync, merge, release, or project mutation.
 
 Exit criteria: adversarial fixtures prove bounded, project-isolated evidence ingestion and that external results cannot grant authority or cause mutation.
 
