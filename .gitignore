@@ -1,5 +1,8 @@
 node_modules/
 packages/*/dist/
+packages/*/**/*.d.ts
+packages/*/**/*.d.ts.map
+packages/*/**/*.js
 *.tsbuildinfo
 
 # Local-only Intentloom planning material. Never commit by accident.
