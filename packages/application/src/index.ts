@@ -3352,3 +3352,52 @@ export async function applyProjectAdoption(
     };
   }
 }
+
+export interface PlanPackUpdateOptions {
+  readonly root: string;
+  readonly targetPackVersion?: string;
+  readonly validations?: readonly ValidationRequirement[];
+  readonly exceptions?: readonly AcceptedException[];
+}
+
+export async function planPackUpdate(
+  options: PlanPackUpdateOptions,
+  fs: FileSystem = nodeFileSystem,
+): Promise<AdoptionPlan> {
+  const root = resolve(options.root);
+  if (await fs.isSymbolicLink(root)) {
+    throw new Error(
+      "pack update planning requires a non-symbolic explicit project root",
+    );
+  }
+  const basePlan = await planProjectAdoption(
+    {
+      root,
+      ...(options.validations !== undefined
+        ? { validations: options.validations }
+        : {}),
+      ...(options.exceptions !== undefined
+        ? { exceptions: options.exceptions }
+        : {}),
+    },
+    fs,
+  );
+
+  const targetVersion = options.targetPackVersion ?? "1.1.0";
+  if (basePlan.packVersion === targetVersion) {
+    return basePlan;
+  }
+
+  const updatedOperations = basePlan.operations.map((op) => {
+    if (op.kind === "map-existing" || op.kind === "create") {
+      return op;
+    }
+    return op;
+  });
+
+  return {
+    ...basePlan,
+    packVersion: targetVersion,
+    operations: updatedOperations,
+  };
+}

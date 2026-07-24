@@ -20,6 +20,7 @@ import {
   planFeature,
   planProjectAdoption,
   applyProjectAdoption,
+  planPackUpdate,
   syncProject,
   type FileSystem,
   type DoctorPlan,
@@ -125,6 +126,7 @@ interface ProjectConfiguration {
 const commands = new Set([
   "init",
   "adopt",
+  "update",
   "plan",
   "diff",
   "sync",
@@ -136,6 +138,7 @@ const commands = new Set([
 ]);
 const projectPathCommands = new Set([
   "adopt",
+  "update",
   "diff",
   "sync",
   "doctor",
@@ -175,7 +178,8 @@ const adapters = new Set<AdapterName>(["claude", "codex", "cursor", "copilot"]);
 const usage = [
   "Usage: intentloom <init|plan> [--root PATH] [--dry-run]",
   "       intentloom adopt <--plan|--apply PLAN_FILE> [PROJECT_PATH|--root PATH] [--json] [--output PATH] [--strict] [--dry-run]",
-  "       intentloom <adopt|diff|sync|doctor|inspect|timeline|conformance> [PROJECT_PATH|--root PATH] [--dry-run]",
+  "       intentloom update <--plan|--apply PLAN_FILE> [PROJECT_PATH|--root PATH] [--json] [--output PATH] [--strict] [--dry-run]",
+  "       intentloom <adopt|update|diff|sync|doctor|inspect|timeline|conformance> [PROJECT_PATH|--root PATH] [--dry-run]",
   "       intentloom evidence import --provider github|gitlab --file PATH --project-key KEY [--json]",
   "       intentloom evidence analyze --provider github|gitlab --file PATH --project-key KEY [--root PATH] [--case-id ID] [--json]",
   "       intentloom conformance [PROJECT_PATH|--root PATH] [--policy PATH] [--timeline PATH] [--case-id ID] [--case-type TYPE] [--json]",
@@ -1335,7 +1339,82 @@ export async function runCli(
       }
       return 0;
     }
-    if (invalidMetadata.length > 0 && parsed.command !== "adopt") {
+    if (parsed.command === "update" && parsed.flags.has("--plan")) {
+      const plan = await planPackUpdate({ root }, fileSystem);
+      const outputText = parsed.flags.has("--json")
+        ? stableStringify(plan)
+        : formatGovernanceAdoptionPlan(plan);
+      const outputPath = parsed.values.get("--output");
+      if (outputPath !== undefined) {
+        const targetPath = resolveWithin(root, outputPath);
+        await fileSystem.write(targetPath, outputText);
+      }
+      io.stdout(`${outputText}\n`);
+      if (
+        parsed.flags.has("--strict") &&
+        (!plan.automaticApplyAllowed ||
+          plan.findings.some(
+            (finding) =>
+              finding.status === "ambiguous" ||
+              finding.status === "conflicting",
+          ))
+      ) {
+        return 3;
+      }
+      return 0;
+    }
+    if (parsed.command === "update" && parsed.values.has("--apply")) {
+      const planFile = parsed.values.get("--apply")!;
+      const planPath = resolveWithin(root, planFile);
+      if (!(await fileSystem.exists(planPath))) {
+        io.stderr(`Update plan file not found: ${planFile}\n`);
+        return 3;
+      }
+      const rawPlan = await fileSystem.read(planPath);
+      let plan: AdoptionPlan;
+      try {
+        plan = parseAdoptionPlan(rawPlan);
+      } catch (err) {
+        io.stderr(
+          `Invalid update plan file: ${err instanceof Error ? err.message : String(err)}\n`,
+        );
+        return 3;
+      }
+      const applyResult = await applyProjectAdoption(
+        {
+          root,
+          plan,
+          dryRun: parsed.flags.has("--dry-run"),
+        },
+        fileSystem,
+      );
+      if (parsed.flags.has("--json")) {
+        io.stdout(`${JSON.stringify(applyResult, null, 2)}\n`);
+      } else {
+        io.stdout(
+          `Pack update apply status: ${applyResult.status}\n` +
+            `Applied operations: ${applyResult.appliedOperations.length}\n` +
+            `Created files: ${applyResult.createdFiles.length}\n` +
+            `Updated files: ${applyResult.updatedFiles.length}\n` +
+            (applyResult.error ? `Error: ${applyResult.error}\n` : ""),
+        );
+      }
+      if (
+        applyResult.status === "stale-hash" ||
+        applyResult.status === "failed"
+      ) {
+        return 3;
+      }
+      if (applyResult.status === "rolled-back") {
+        return 4;
+      }
+      return 0;
+    }
+    if (
+      invalidMetadata.length > 0 &&
+      parsed.command !== "adopt" &&
+      parsed.command !== "update"
+    ) {
       const output = formatValidationFailure(
         invalidMetadata,
         parsed.flags.has("--json"),
@@ -1344,7 +1423,7 @@ export async function runCli(
       return 3;
     }
     const invalidAdoptionConfig =
-      parsed.command === "adopt" &&
+      (parsed.command === "adopt" || parsed.command === "update") &&
       invalidMetadata.some((result) => result.artifactType === "aif-config");
     const storedConfig =
       readsProject && !invalidAdoptionConfig

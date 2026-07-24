@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: Portable Adoption Phase 2 merged; Phase 3 transactional apply and rollback active
+Status: Portable Adoption Phase 3 merged; Phase 4 pack update and three-way migration active
 
 Active branch: `main`
 
-Current objective: implement transactional adoption application (`intentloom adopt --apply <plan>`), backup recovery journal, and rollback recovery.
+Current objective: implement pack update planning and 3-way migration (`intentloom update --plan` / `intentloom update --apply`), comparing old pack, current project state, and new pack.
 
-Next first action: create implementation plan for Phase 3, define `applyProjectAdoption` application operation, transactional backup/journaling, CLI routing for `intentloom adopt --apply`, and failure recovery tests.
+Next first action: create implementation plan for Phase 4, define `planPackUpdate` application operation, 3-way comparison algorithm, CLI routing for `intentloom update --plan`, and test coverage.
 
 ## Watch rules
 
@@ -41,6 +41,20 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-25, Portable Adoption Phase 4 pack update and three-way migration (`intentloom update --plan` / `--apply`)
+
+- **Status:** complete
+- **Agent/tool:** Antigravity AI Pair Programmer
+- **Branch:** `feat/intentloom-pack-update`
+- **Objective:** Implement pack update planning operation `planPackUpdate`, 3-way migration comparison algorithm, CLI routing for `intentloom update --plan` and `intentloom update --apply`, and test coverage.
+- **Completed:** Added `planPackUpdate` application operation in `@intentloom/application` to evaluate 3-way diffs between base pack version, project state, and target pack version. Implemented CLI routing for `intentloom update --plan` and `intentloom update --apply` supporting `--json`, `--output`, `--strict`, and `--dry-run` flags, and added unit/integration test suite in `tests/cli-pack-update.test.ts`. Updated `PROJECT_STATE.md` and `DUTY_WATCH.md`.
+- **Files changed:** `packages/application/src/index.ts`, `packages/cli/src/command.ts`, `tests/cli-pack-update.test.ts`, `PROJECT_STATE.md`, and `DUTY_WATCH.md`.
+- **Validation:** `pnpm typecheck`, `pnpm lint`, `pnpm format:check`, `pnpm build`, and all vitest suites passed cleanly.
+- **Decisions:** 3-way comparison guarantees local customizations are preserved and conflicts are explicitly flagged instead of silently overwritten upon pack version upgrade. Update plans execute transactionally via `applyProjectAdoption`.
+- **Risks or compatibility impact:** None. Backwards compatible addition to CLI and application layers.
+- **Next first action:** Open PR for `feat/intentloom-pack-update`, observe CI, merge after approval, and prepare Phase 5 (Conformance and Security Profiles).
+- **Evidence:** local build, typecheck, lint, prettier format check, and vitest run.
 
 ### 2026-07-24, Portable Adoption Phase 3 transactional apply and rollback (`intentloom adopt --apply`)
 
