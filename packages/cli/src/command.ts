@@ -22,6 +22,13 @@ import {
   applyProjectAdoption,
   planPackUpdate,
   syncProject,
+  getTaskSummary,
+  listTaskSummaries,
+  recordTaskSummary,
+  recordSessionSummary,
+  listSessionSummaries,
+  type TrustClass,
+  type RetentionState,
   type FileSystem,
   type DoctorPlan,
   type AdoptionProposal,
@@ -135,6 +142,7 @@ const commands = new Set([
   "timeline",
   "evidence",
   "conformance",
+  "summary",
 ]);
 const projectPathCommands = new Set([
   "adopt",
@@ -169,6 +177,10 @@ const valueFlags = new Set([
   "--case-type",
   "--output",
   "--apply",
+  "--id",
+  "--trust-class",
+  "--retention-state",
+  "--json-input",
 ]);
 const mappingValueFlags = new Set([
   "--project-owned-mapping",
@@ -179,10 +191,11 @@ const usage = [
   "Usage: intentloom <init|plan> [--root PATH] [--dry-run]",
   "       intentloom adopt <--plan|--apply PLAN_FILE> [PROJECT_PATH|--root PATH] [--json] [--output PATH] [--strict] [--dry-run]",
   "       intentloom update <--plan|--apply PLAN_FILE> [PROJECT_PATH|--root PATH] [--json] [--output PATH] [--strict] [--dry-run]",
-  "       intentloom <adopt|update|diff|sync|doctor|inspect|timeline|conformance> [PROJECT_PATH|--root PATH] [--dry-run]",
+  "       intentloom <adopt|update|diff|sync|doctor|inspect|timeline|conformance|summary> [PROJECT_PATH|--root PATH] [--dry-run]",
   "       intentloom evidence import --provider github|gitlab --file PATH --project-key KEY [--json]",
   "       intentloom evidence analyze --provider github|gitlab --file PATH --project-key KEY [--root PATH] [--case-id ID] [--json]",
   "       intentloom conformance [PROJECT_PATH|--root PATH] [--policy PATH] [--timeline PATH] [--case-id ID] [--case-type TYPE] [--json]",
+  "       intentloom summary <list|get|record> [PROJECT_PATH|--root PATH] [--id ID] [--trust-class CLASS] [--retention-state STATE] [--json]",
   "       adoption mappings use --project-owned-mapping SOURCE=DESTINATION",
   "       or --documentation-mapping SOURCE=DESTINATION",
 ].join("\n");
@@ -194,11 +207,16 @@ function parseArguments(args: readonly string[]): ParsedArguments {
     throw new CliUsageError(
       "evidence requires the import or analyze subcommand",
     );
+  if (
+    command === "summary" &&
+    !["list", "get", "record"].includes(args[1] ?? "")
+  )
+    throw new CliUsageError("summary requires list, get, or record subcommand");
   const flags = new Set<string>();
   const values = new Map<string, string>();
   const mappingValues = new Map<string, string[]>();
   for (
-    let index = command === "evidence" ? 2 : 1;
+    let index = command === "evidence" || command === "summary" ? 2 : 1;
     index < args.length;
     index += 1
   ) {
@@ -1199,6 +1217,77 @@ export async function runCli(
       return report.summary.violations > 0 || report.summary.missingEvidence > 0
         ? 3
         : 0;
+    }
+    if (parsed.command === "summary") {
+      const subcommand = args[1] ?? "list";
+      if (subcommand === "list") {
+        const trustClass = parsed.values.get("--trust-class") as
+          TrustClass | undefined;
+        const retentionState = parsed.values.get("--retention-state") as
+          RetentionState | undefined;
+        const summaries = await listTaskSummaries(
+          {
+            root,
+            ...(trustClass ? { trustClass } : {}),
+            ...(retentionState ? { retentionState } : {}),
+          },
+          fileSystem,
+        );
+        io.stdout(
+          parsed.flags.has("--json")
+            ? JSON.stringify(summaries, null, 2)
+            : summaries.length === 0
+              ? "No task summaries recorded."
+              : summaries
+                  .map(
+                    (s) =>
+                      `[${s.id}] ${s.intent} (${s.validationOutcome}) [${s.trustClass}]`,
+                  )
+                  .join("\n"),
+        );
+        return 0;
+      }
+      if (subcommand === "get") {
+        const id = parsed.values.get("--id") ?? args[2];
+        if (!id) throw new CliUsageError("summary get requires --id <id>");
+        const summary = await getTaskSummary(id, { root }, fileSystem);
+        if (!summary) {
+          io.stderr(`Summary not found: ${id}\n`);
+          return 3;
+        }
+        io.stdout(
+          parsed.flags.has("--json")
+            ? JSON.stringify(summary, null, 2)
+            : `[${summary.id}] ${summary.intent}\nOutcome: ${summary.validationOutcome}\nTrust: ${summary.trustClass}\nCreated: ${summary.createdAt}`,
+        );
+        return 0;
+      }
+      if (subcommand === "record") {
+        const jsonInput = parsed.values.get("--json-input");
+        const jsonFile = parsed.values.get("--file");
+        let rawContent = jsonInput;
+        if (!rawContent && jsonFile) {
+          rawContent = await fileSystem.read(resolveWithin(root, jsonFile));
+        }
+        if (!rawContent) {
+          throw new CliUsageError(
+            "summary record requires --json-input <json> or --file <path>",
+          );
+        }
+        const parsedSummary = JSON.parse(rawContent);
+        const recorded = await recordTaskSummary(
+          parsedSummary,
+          { root },
+          fileSystem,
+        );
+        io.stdout(
+          parsed.flags.has("--json")
+            ? JSON.stringify(recorded, null, 2)
+            : `Recorded task summary [${recorded.id}]`,
+        );
+        return 0;
+      }
+      throw new CliUsageError(`unsupported summary subcommand: ${subcommand}`);
     }
     if (parsed.command === "doctor")
       invalidMetadata.push(
