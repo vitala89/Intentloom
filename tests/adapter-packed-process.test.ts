@@ -137,9 +137,9 @@ describe("packed adapter compatibility matrix", () => {
     "inspects an installed project through the packed CLI",
     async () => {
       const root = await project("packed-inspect");
-      expect(aif(["init", "--root", root, "--adapters", "codex"]).status).toBe(
-        0,
-      );
+      expect(
+        aif(["init", "--root", root, "--adapters", "codex"]).status,
+      ).toBe(0);
       const result = aif(["inspect", "--root", root, "--json"]);
       expect(result.status).toBe(0);
       expect(JSON.parse(result.stdout)).toMatchObject({
