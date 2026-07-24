@@ -4,6 +4,9 @@ import { fileURLToPath } from "node:url";
 export default defineConfig({
   resolve: {
     alias: {
+      "@intentloom/core/adoption": fileURLToPath(
+        new URL("./packages/core/src/adoption.ts", import.meta.url),
+      ),
       "@intentloom/core": fileURLToPath(
         new URL("./packages/core/src/index.ts", import.meta.url),
       ),

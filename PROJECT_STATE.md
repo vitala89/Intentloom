@@ -22,7 +22,8 @@ later justifies separation.
 
 ## Current phase
 
-Documentation, architecture consolidation, and implementation-readiness.
+Portable adoption implementation, beginning with deterministic contracts and a
+synthetic Applye reference fixture.
 
 The project must avoid premature structural migration. New applications,
 packages, and repository boundaries are introduced only when roadmap triggers
@@ -36,22 +37,23 @@ and real consumers justify them.
   filesystem safety, ownership and synchronization, rollback handling, schema
   validation, adoption and doctor fixtures, adapters, cross-platform
   compatibility, and explicit-path read-only verification.
-- The repository now carries architecture and roadmap documents for project
+- The repository carries architecture and roadmap documents for project
   connection, evidence, MCP, interactive surfaces, Agent Workspace, Neutron,
-  persistent memory, security analysis, engineering process intelligence, and
-  public monorepo evolution.
+  persistent memory, security analysis, engineering process intelligence,
+  public monorepo evolution, and portable Duty Watch adoption.
+- Duty Watch governance and its portable adoption contract are merged into
+  `main`.
 
 These statements must be revalidated against code, tags, CI, and Git history
 before a new release or implementation milestone is declared complete.
 
 ## Active focus
 
-1. Keep the architecture coherent and implementation-oriented.
-2. Stabilize CLI and daemon boundaries.
-3. Establish a versioned protocol suitable for external clients.
-4. Delay `apps/desktop` until daemon and protocol readiness criteria are
-   satisfied.
-5. Convert roadmap items into small, testable implementation milestones.
+1. Implement versioned portable-adoption TypeScript contracts.
+2. Provide runtime validation, stable serialization, and deterministic IDs.
+3. Add a synthetic Applye fixture proving role mapping without duplicate state.
+4. Keep the first phase read-only and deterministic.
+5. Preserve CLI, daemon, protocol, transaction, and security boundaries.
 6. Use the Duty Watch protocol for every agent session.
 
 ## Architectural invariants
@@ -70,28 +72,33 @@ before a new release or implementation milestone is declared complete.
 
 ## Current blockers and unknowns
 
+- The portable adoption planner currently exists as a documented contract and is
+  being implemented in phases.
+- Transactional apply, three-way updates, conformance automation, and security
+  profiles remain future phases after deterministic planning contracts.
 - The exact implementation status of daemon and versioned protocol must be
   inspected before Desktop work begins.
 - The current package layout may still reflect the earlier AIF structure and
   should not be reorganized only for aesthetics.
-- Roadmap concepts must be converted into prioritized issues or implementation
-  slices before broad feature development.
-- Funding is currently expected to begin with sponsorship and donations, while
-  optional hosted, team, enterprise, or support services remain future
-  possibilities rather than current commitments.
 
-## Next recommended milestone
+## Current milestone
 
-Define and verify the minimum stable daemon and protocol contract required by a
-second client.
+Implement Portable Adoption Phase 1 contracts and deterministic Applye fixture
+tests.
 
 Expected outputs:
 
-- current-state audit of daemon and protocol code;
-- explicit protocol versioning and compatibility policy;
-- minimal client interaction contract;
-- tests for the supported lifecycle;
-- updated roadmap and Duty Watch handoff.
+- canonical governance role and ownership types;
+- adoption-plan, finding, operation, validation, exception, and journal types;
+- runtime plan validation;
+- stable JSON serialization and deterministic identifiers;
+- synthetic Applye fixture and deterministic tests;
+- no project mutation, network access, hooks, or dependency installation.
+
+## Next platform milestone
+
+After Portable Adoption Phase 1 is merged, audit and define the minimum stable
+daemon and protocol contract required by a second client.
 
 ## State update rules
 

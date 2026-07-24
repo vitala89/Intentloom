@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "paths": {
+      "@intentloom/core/adoption": ["./packages/core/src/adoption.ts"],
       "@intentloom/core": ["./packages/core/src/index.ts"],
       "@intentloom/adapters": ["./packages/adapters/src/index.ts"],
       "@intentloom/validator": ["./packages/validator/src/index.ts"],

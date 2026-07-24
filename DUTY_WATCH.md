@@ -9,15 +9,15 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: portable Duty Watch adoption contract ready for review in PR #52
+Status: Portable Adoption Phase 1 implementation awaiting CI
 
-Active branch: `feat/portable-duty-watch-adoption`
+Active branch: `feat/portable-adoption-contracts`
 
-Current objective: define a reusable adoption and update capability for mature
-projects such as Applye.
+Current objective: implement deterministic portable-adoption contracts and the
+synthetic Applye reference fixture.
 
-Next first action: merge PR #52 after review, then implement the Phase 1 schemas
-and deterministic Applye fixture tests.
+Next first action: observe PR CI, correct any contract, type, formatting, or test
+failure, then complete the watch and merge after approval.
 
 ## Watch rules
 
@@ -43,6 +43,39 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-24, Portable Adoption Phase 1 contracts
+
+- **Status:** partial
+- **Agent/tool:** ChatGPT with GitHub connector
+- **Branch:** `feat/portable-adoption-contracts`
+- **Objective:** Implement versioned portable-adoption contracts, deterministic
+  planning primitives, runtime validation, and a synthetic Applye fixture.
+- **Completed:** Added governance roles, ownership classes, findings, operations,
+  validations, exceptions, migration journal, and adoption plan types. Added
+  stable serialization, deterministic identifiers, a deterministic read-only
+  governance planner, plan-envelope validation, an Applye fixture, and tests for
+  role mapping, provider derivatives, duplicate-state prevention, ambiguity, and
+  path safety. Updated the active project milestone.
+- **Files changed:** `packages/core/src/adoption.ts`,
+  `packages/core/package.json`, `tests/adoption-contracts.test.ts`,
+  `tests/fixtures/adoption/applye.json`, `PROJECT_STATE.md`, and
+  `DUTY_WATCH.md`.
+- **Validation:** Local execution was unavailable because the execution
+  environment could not resolve GitHub for a clean clone. GitHub Compatibility
+  CI is required before this watch can be complete.
+- **Decisions:** Phase 1 remains deterministic and read-only. Existing filenames
+  map to canonical roles. Equal-confidence source-of-truth candidates produce an
+  ambiguous finding and disable automatic apply. No mutation engine, network
+  access, hooks, or dependency installation was added.
+- **Risks or compatibility impact:** The new contracts are exported through the
+  `@intentloom/core/adoption` subpath. Runtime plan parsing currently validates
+  the versioned envelope, while planner construction validates artifact paths,
+  hashes, ownership, and confidence values.
+- **Open issues or blockers:** CI, final diff review, and PR merge remain pending.
+- **Next first action:** Open the pull request, observe all compatibility jobs,
+  fix any failures, and then mark this entry complete.
+- **Evidence:** branch commits, upcoming pull request, and GitHub Actions.
 
 ### 2026-07-24, Portable Duty Watch adoption and migration contract
 
