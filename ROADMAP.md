@@ -40,7 +40,7 @@ Exit criteria: a project can preview and safely adopt a pinned Intentloom profil
 
 ## Post-v0.1 delivery principles
 
-Future project connection, evidence, provider, and MCP work must reuse the existing application-operation boundary. CLI, daemon, desktop, and MCP integrations are adapters over the same operations, not independent implementations.
+Future project connection, evidence, provider, MCP, interactive UI, desktop, and agent work must reuse the existing application-operation boundary. CLI, TUI, daemon, desktop, MCP, and agent integrations are adapters over the same operations, not independent implementations.
 
 The sequencing rules are:
 
@@ -50,10 +50,13 @@ The sequencing rules are:
 - deterministic timelines before conformance claims;
 - conformance before workflow variants or bottleneck analysis;
 - local `stdio` MCP before HTTP transport;
-- prepare, preview, approve, and revalidate before any MCP-triggered mutation;
-- no generic shell, arbitrary file access, hidden network access, or mandatory telemetry.
+- structured read-only operations before TUI and desktop orchestration;
+- provider-neutral agent runtime before custom model training;
+- benchmark evidence before fine-tuning or reinforcement learning;
+- prepare, preview, approve, and revalidate before any agent- or MCP-triggered mutation;
+- no generic shell, arbitrary file access, hidden network access, mandatory telemetry, or implicit training-data collection.
 
-The combined direction is documented in [Project Connection, Evidence, and MCP](docs/concepts/PROJECT_CONNECTION_EVIDENCE_AND_MCP.md).
+The connected-project direction is documented in [Project Connection, Evidence, and MCP](docs/concepts/PROJECT_CONNECTION_EVIDENCE_AND_MCP.md). Interactive and agent surfaces are documented in [Interactive Surfaces and Agent Workspace](docs/concepts/INTERACTIVE_SURFACES_AND_AGENT_WORKSPACE.md). The model direction is documented in [Neutron Model Strategy](docs/concepts/NEUTRON_MODEL_STRATEGY.md).
 
 ## v0.2 candidate — Connected project and workflow evidence
 
@@ -134,6 +137,57 @@ Candidate scope:
 
 Exit criteria: Intentloom can explain why a workflow instance conforms, diverges, or cannot be verified, and securely govern external extension manifests without automatically changing repository state.
 
+## Future candidate — Interactive terminal UI
+
+Add an optional keyboard-first terminal application without replacing the normal CLI.
+
+Candidate scope:
+
+- Provide an entry point such as `intentloom ui`.
+- Guide project selection, initialization, and adoption with explicit root confirmation.
+- Visualize inspect, doctor, ownership, drift, diff, timeline, release analysis, conformance, and extension findings.
+- Use structured application or protocol results rather than parsing human CLI output.
+- Reuse the existing prepared-plan and transaction boundary for every future mutation.
+- Keep the first milestone local, terminal-native, and free of embedded browser or hosted-service requirements.
+
+Exit criteria: CLI and TUI results are equivalent for the same operation and state, cancellation leaves the project byte-for-byte unchanged, and packed-runtime, keyboard, accessibility, and snapshot coverage is recorded.
+
+## Future candidate — Desktop application and agent workspace
+
+Build a local desktop presentation and orchestration layer over the standalone daemon and versioned application protocol.
+
+Candidate scope:
+
+- Add read-only project, health, diff, timeline, release, conformance, extension, and knowledge views.
+- Store project-scoped local conversation and agent-session records with explicit export, retention, and deletion.
+- Define provider-neutral model and agent-session contracts.
+- Support bounded Discuss, Inspect, Plan, Review, and later Apply Approved Plan modes.
+- Generate reviewable feature briefs, context packs, architecture proposals, task graphs, test plans, and exact change plans.
+- Display selected root, provider, model, network state, tools, skills, policies, capabilities, permissions, and affected files.
+- Keep prompts, model output, and external evidence separate from mutation approval.
+- Add agent-triggered mutation only after plan identity, digest, expiry, root, ownership, capability, permission, and current-state revalidation are stable.
+
+Exit criteria for the first agent milestone: one selected project can be discussed and inspected through an explicitly configured provider and read-only typed tools; generated plans preserve provenance; no model response can directly mutate files, execute arbitrary commands, merge, release, deploy, or publish; session data can be exported and deleted locally.
+
+## Future candidate — Neutron engineering intelligence
+
+Develop **Neutron** first as the provider-neutral engineering-agent runtime behind Intentloom, not as a foundation-model claim.
+
+Candidate scope:
+
+- Build project-context, policy, workflow, skill, tool, planning, evidence, conformance, capability, approval, session, and evaluation layers.
+- Clearly display the underlying provider, model, version, network mode, data-handling mode, and permission grant.
+- Create NeutronBench for project inspection, architecture adherence, policy compliance, tool selection, safe planning, evidence-grounded claims, patch quality, test success, conformance, rollback awareness, long-horizon tasks, and efficiency.
+- Benchmark hosted and open-weight models through the same runtime.
+- Add an experimental Neutron Local configuration using a compatible existing open-weight model without initially training new weights.
+- Consider supervised fine-tuning, LoRA or QLoRA, preference optimization, distillation, and bounded reinforcement learning only after licensed data and reproducible benchmark evidence exist.
+- Require explicit opt-in before any private user project, session, prompt, artifact, evidence, or telemetry can be considered for training contribution.
+- Keep capability enforcement, validation, approval, and transaction safety outside model weights and prompts.
+
+Exit criteria for a first tuned-model candidate: base-model rights and derivative attribution are verified, training-data provenance is documented, target NeutronBench categories improve measurably over the base model, safety and regression checks pass, and serving or local-use requirements are published.
+
+Training a foundation model from scratch is not a current commitment and requires a separate business case, dataset-governance program, infrastructure plan, safety review, and sustained ML staffing.
+
 ## Later candidate — Live read-only providers
 
 Possible capabilities:
@@ -153,9 +207,9 @@ adoption, sync, merge, release, or project mutation.
 
 Exit criteria: adversarial fixtures prove bounded, project-isolated evidence ingestion and that external results cannot grant authority or cause mutation.
 
-## Later candidate — Safe MCP mutation
+## Later candidate — Safe MCP and agent mutation
 
-Mutating MCP tools may be considered only after read-only operations and conformance are stable.
+Mutating MCP tools and agent operations may be considered only after read-only operations, conformance, and the reviewed plan protocol are stable.
 
 Required boundary:
 
@@ -163,13 +217,13 @@ Required boundary:
 prepare plan
 → show exact paths and diff
 → explicit human approval
-→ verify plan identifier, digest, expiry, root, ownership, and current state
+→ verify plan identifier, digest, expiry, root, ownership, permissions, and current state
 → transactional apply or reject
 ```
 
 External evidence, prompts, recommendations, model output, or endpoint reachability never count as approval.
 
-Exit criteria: a prepared plan is rejected for changed root, ownership, state, digest, expiry, or capability scope; approved applies use the existing transactional rollback guarantee; no other signal is accepted as approval.
+Exit criteria: a prepared plan is rejected for changed root, ownership, state, digest, expiry, permission, or capability scope; approved applies use the existing transactional rollback guarantee; no other signal is accepted as approval.
 
 ## Later candidate — Managed external extensions
 
@@ -222,7 +276,8 @@ Exit criteria: repeated, privacy-safe timelines produce deterministic workflow-v
 - More profiles and tool adapters.
 - Policy and schema evolution tooling.
 - Compatibility certification.
-- Desktop application over the standalone daemon, without replacing CLI or core.
+- Optional local web presentation only after a concrete accessibility or multi-process requirement and separate security review.
+- Multi-agent delegation, background work, remote execution, and hosted agent services only as separately approved candidates.
 
 ## Final later candidate — Streamable HTTP MCP transport
 
@@ -236,4 +291,4 @@ until then.
 
 ## Explicitly not planned for v0.1
 
-MCP, CodeGraph/Graphify, hosted services, telemetry, marketplace, LLM API integration, automatic agent execution, cloud sync, GUI, plugin runtime, autonomous merging, workflow-event ingestion, process discovery, conformance analytics, process-mining dashboards, and managed external-extension installation or updates.
+MCP, CodeGraph/Graphify, hosted services, telemetry, marketplace, LLM API integration, automatic agent execution, cloud sync, GUI, TUI, desktop agent workspace, Neutron Runtime, custom model training, plugin runtime, autonomous merging, workflow-event ingestion, process discovery, conformance analytics, process-mining dashboards, and managed external-extension installation or updates.
