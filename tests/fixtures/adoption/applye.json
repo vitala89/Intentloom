@@ -1,0 +1,141 @@
+{
+  "projectId": "applye-reference",
+  "packId": "duty-watch",
+  "packVersion": "1.0.0",
+  "artifacts": [
+    {
+      "path": "AGENT_START_HERE.md",
+      "contentHash": "1111111111111111111111111111111111111111111111111111111111111111",
+      "ownership": "shared",
+      "roleCandidates": [
+        {
+          "role": "agent-entrypoint",
+          "confidence": 1,
+          "evidence": ["explicit entrypoint title", "links canonical context order"]
+        }
+      ]
+    },
+    {
+      "path": "AGENTS.md",
+      "contentHash": "2222222222222222222222222222222222222222222222222222222222222222",
+      "ownership": "project-owned",
+      "roleCandidates": [
+        {
+          "role": "working-agreement",
+          "confidence": 1,
+          "evidence": ["repository agent rules"]
+        }
+      ]
+    },
+    {
+      "path": "PROJECT_CONTEXT.md",
+      "contentHash": "3333333333333333333333333333333333333333333333333333333333333333",
+      "ownership": "project-owned",
+      "roleCandidates": [
+        {
+          "role": "durable-project-context",
+          "confidence": 0.98,
+          "evidence": ["durable product and architecture context"]
+        }
+      ]
+    },
+    {
+      "path": "docs/product/CURRENT_STATE.md",
+      "contentHash": "4444444444444444444444444444444444444444444444444444444444444444",
+      "ownership": "project-owned",
+      "roleCandidates": [
+        {
+          "role": "operational-project-state",
+          "confidence": 1,
+          "evidence": ["current focus blockers completed work next action"]
+        }
+      ]
+    },
+    {
+      "path": "DUTY_WATCH.md",
+      "contentHash": "5555555555555555555555555555555555555555555555555555555555555555",
+      "ownership": "shared",
+      "roleCandidates": [
+        {
+          "role": "duty-watch-log",
+          "confidence": 1,
+          "evidence": ["chronological agent handoff log"]
+        }
+      ]
+    },
+    {
+      "path": "docs/governance/VALIDATION_MATRIX.md",
+      "contentHash": "6666666666666666666666666666666666666666666666666666666666666666",
+      "ownership": "project-owned",
+      "roleCandidates": [
+        {
+          "role": "validation-policy",
+          "confidence": 1,
+          "evidence": ["stack-specific validation gates"]
+        }
+      ]
+    },
+    {
+      "path": "CLAUDE.md",
+      "contentHash": "7777777777777777777777777777777777777777777777777777777777777777",
+      "ownership": "provider-derivative",
+      "roleCandidates": [
+        {
+          "role": "provider-instructions:claude",
+          "confidence": 1,
+          "evidence": ["Claude-specific derivative instructions"]
+        }
+      ]
+    },
+    {
+      "path": "ROADMAP.md",
+      "contentHash": "8888888888888888888888888888888888888888888888888888888888888888",
+      "ownership": "project-owned",
+      "roleCandidates": [
+        {
+          "role": "roadmap",
+          "confidence": 1,
+          "evidence": ["strategic product roadmap"]
+        }
+      ]
+    },
+    {
+      "path": "STEP_BY_STEP_PLAN.md",
+      "contentHash": "9999999999999999999999999999999999999999999999999999999999999999",
+      "ownership": "project-owned",
+      "roleCandidates": [
+        {
+          "role": "execution-plan",
+          "confidence": 1,
+          "evidence": ["phased execution plan"]
+        }
+      ]
+    },
+    {
+      "path": "CHANGELOG.md",
+      "contentHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "ownership": "project-owned",
+      "roleCandidates": [
+        {
+          "role": "changelog",
+          "confidence": 1,
+          "evidence": ["shipped change history"]
+        }
+      ]
+    }
+  ],
+  "validations": [
+    {
+      "id": "validation-format",
+      "command": "pnpm format:check",
+      "category": "format",
+      "required": true
+    },
+    {
+      "id": "validation-test",
+      "command": "pnpm test",
+      "category": "test",
+      "required": true
+    }
+  ]
+}
