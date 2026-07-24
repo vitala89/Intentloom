@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: Portable Adoption Phase 1 merged; Phase 2 interactive adoption proposal active
+Status: Portable Adoption Phase 2 merged; Phase 3 transactional apply and rollback active
 
 Active branch: `main`
 
-Current objective: implement interactive adoption proposal and `intentloom adopt --plan` CLI analysis.
+Current objective: implement transactional adoption application (`intentloom adopt --apply <plan>`), backup recovery journal, and rollback recovery.
 
-Next first action: create implementation plan for Phase 2, define application operation `planGovernanceAdoption`, CLI flags, human-readable/JSON formatters, and interactive decision structures.
+Next first action: create implementation plan for Phase 3, define `applyProjectAdoption` application operation, transactional backup/journaling, CLI routing for `intentloom adopt --apply`, and failure recovery tests.
 
 ## Watch rules
 
@@ -41,6 +41,20 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-24, Portable Adoption Phase 3 transactional apply and rollback (`intentloom adopt --apply`)
+
+- **Status:** complete
+- **Agent/tool:** Antigravity AI Pair Programmer
+- **Branch:** `feat/intentloom-adopt-apply`
+- **Objective:** Implement transactional adoption execution (`intentloom adopt --apply <plan>`), expectedCurrentHash stale content guards, migration journal recording, atomic failure rollback, and test coverage.
+- **Completed:** Added `applyProjectAdoption` application operation in `@intentloom/application` to validate plan envelopes, verify `expectedCurrentHash` invariants, create pre-apply file backups, execute approved operations, and append `.aif/migration-journal.json` entries. Implemented CLI routing for `intentloom adopt --apply` with `--json` and `--dry-run` flags, exit code 3 mapping for stale hash or invalid plan errors, exit code 4 for rollback recovery, and full unit/integration test suite in `tests/cli-adopt-apply.test.ts`. Updated `PROJECT_STATE.md` and `DUTY_WATCH.md`.
+- **Files changed:** `packages/application/src/index.ts`, `packages/cli/src/command.ts`, `tests/cli-adopt-apply.test.ts`, `vitest.config.ts`, `PROJECT_STATE.md`, and `DUTY_WATCH.md`.
+- **Validation:** `pnpm typecheck`, `pnpm lint`, `pnpm format:check`, `pnpm build`, and all vitest suites passed cleanly.
+- **Decisions:** Stale hash mismatches immediately abort execution with exit code 3 before modifying any files. Rollback automatically restores original pre-apply file contents and removes newly created files. `.aif/migration-journal.json` records transaction history.
+- **Risks or compatibility impact:** None. Backwards compatible transactional apply addition.
+- **Next first action:** Open PR for `feat/intentloom-adopt-apply`, observe CI, merge after approval, and prepare Phase 4 (Pack Update & 3-Way Migration).
+- **Evidence:** local build, typecheck, lint, prettier format check, and vitest run.
 
 ### 2026-07-24, Portable Adoption Phase 2 interactive proposal (`intentloom adopt --plan`)
 
