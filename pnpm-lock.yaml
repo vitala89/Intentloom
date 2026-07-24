@@ -41,6 +41,9 @@ importers:
       "@intentloom/core":
         specifier: workspace:*
         version: link:../core
+      "@intentloom/protocol":
+        specifier: workspace:*
+        version: link:../protocol
       "@intentloom/validator":
         specifier: workspace:*
         version: link:../validator
