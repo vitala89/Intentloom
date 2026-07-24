@@ -38,7 +38,14 @@ import {
   type ProviderEvidenceResult,
   type ProviderName,
 } from "@intentloom/evidence-provider";
-import { analyzeReleaseEvidence } from "@intentloom/evidence-analysis";
+import {
+  analyzeReleaseEvidence,
+  evaluateEngineeringConformance,
+  type EngineeringWorkflowCaseType,
+  type EngineeringWorkflowPolicy,
+  type EngineeringConformanceReport,
+  type GenericTimeline,
+} from "@intentloom/evidence-analysis";
 import {
   INTENTLOOM_VERSION,
   normalizeOutputPath,
@@ -117,6 +124,7 @@ const commands = new Set([
   "inspect",
   "timeline",
   "evidence",
+  "conformance",
 ]);
 const projectPathCommands = new Set([
   "adopt",
@@ -125,6 +133,7 @@ const projectPathCommands = new Set([
   "doctor",
   "inspect",
   "timeline",
+  "conformance",
 ]);
 const booleanFlags = new Set(["--dry-run", "--force", "--json"]);
 const valueFlags = new Set([
@@ -138,6 +147,9 @@ const valueFlags = new Set([
   "--provider",
   "--file",
   "--project-key",
+  "--policy",
+  "--timeline",
+  "--case-type",
 ]);
 const mappingValueFlags = new Set([
   "--project-owned-mapping",
@@ -146,9 +158,10 @@ const mappingValueFlags = new Set([
 const adapters = new Set<AdapterName>(["claude", "codex", "cursor", "copilot"]);
 const usage = [
   "Usage: intentloom <init|plan> [--root PATH] [--dry-run]",
-  "       intentloom <adopt|diff|sync|doctor|inspect|timeline> [PROJECT_PATH|--root PATH] [--dry-run]",
+  "       intentloom <adopt|diff|sync|doctor|inspect|timeline|conformance> [PROJECT_PATH|--root PATH] [--dry-run]",
   "       intentloom evidence import --provider github|gitlab --file PATH --project-key KEY [--json]",
   "       intentloom evidence analyze --provider github|gitlab --file PATH --project-key KEY [--root PATH] [--case-id ID] [--json]",
+  "       intentloom conformance [PROJECT_PATH|--root PATH] [--policy PATH] [--timeline PATH] [--case-id ID] [--case-type TYPE] [--json]",
   "       adoption mappings use --project-owned-mapping SOURCE=DESTINATION",
   "       or --documentation-mapping SOURCE=DESTINATION",
 ].join("\n");
@@ -852,6 +865,79 @@ function formatValidationFailure(
   ].join("\n");
 }
 
+const defaultEngineeringPolicy: EngineeringWorkflowPolicy = {
+  schemaVersion: "1",
+  policyId: "policy:default-engineering-conformance",
+  description: "Default Intentloom engineering workflow policy",
+  rules: [
+    {
+      ruleId: "rule:require-commit-evidence",
+      caseType: "pull-request",
+      severity: "error",
+      title: "Commit Evidence Presence",
+      condition: {
+        type: "required-activity",
+        activity: "commit",
+      },
+      remediation: {
+        summary: "Pull request workflow timeline must contain commit evidence.",
+        actionableSteps: [
+          "Ensure local Git history contains commits on the topic branch.",
+        ],
+      },
+    },
+    {
+      ruleId: "rule:require-release-evidence",
+      caseType: "release",
+      severity: "error",
+      title: "Release Evidence Presence",
+      condition: {
+        type: "required-activity",
+        activity: "commit",
+      },
+      remediation: {
+        summary: "Release workflow timeline must contain commit evidence.",
+        actionableSteps: [
+          "Ensure Git tags and release commits exist in the repository.",
+        ],
+      },
+    },
+  ],
+};
+
+function formatEngineeringConformanceHuman(
+  report: EngineeringConformanceReport,
+): string {
+  const lines: string[] = [
+    `Intentloom Engineering Conformance Report [v${report.operationVersion}]`,
+    `Policy: ${report.policyId}`,
+    `Case: ${report.caseType} (${report.caseId})`,
+    `Summary: ${report.summary.passed}/${report.summary.totalRules} passed, ${report.summary.violations} violations, ${report.summary.missingEvidence} missing evidence, ${report.summary.ambiguousEvidence} ambiguous, ${report.summary.unsupported} unsupported`,
+    "",
+    "Findings:",
+  ];
+  for (const finding of report.findings) {
+    const icon =
+      finding.status === "pass"
+        ? "[PASS]"
+        : finding.status === "violation"
+          ? "[VIOLATION]"
+          : finding.status === "missing-evidence"
+            ? "[MISSING EVIDENCE]"
+            : `[${finding.status.toUpperCase()}]`;
+    lines.push(
+      `- ${icon} ${finding.title} (${finding.ruleId}) [Severity: ${finding.severity}]`,
+    );
+    if (finding.remediation) {
+      lines.push(`  Remediation: ${finding.remediation.summary}`);
+      for (const step of finding.remediation.actionableSteps) {
+        lines.push(`  - ${step}`);
+      }
+    }
+  }
+  return lines.join("\n");
+}
+
 export async function runCli(
   args: readonly string[],
   dependencies: CliDependencies,
@@ -1005,6 +1091,51 @@ export async function runCli(
           : formatTimeline(timeline),
       );
       return timeline.quality === "unavailable" ? 3 : 0;
+    }
+    if (parsed.command === "conformance") {
+      const policyFile = parsed.values.get("--policy");
+      const timelineFile = parsed.values.get("--timeline");
+      const caseId = parsed.values.get("--case-id") ?? "current";
+      const caseType =
+        (parsed.values.get("--case-type") as EngineeringWorkflowCaseType) ??
+        "pull-request";
+
+      let policy: EngineeringWorkflowPolicy;
+      if (policyFile) {
+        policy = JSON.parse(await readFile(resolve(root, policyFile), "utf8"));
+      } else {
+        policy = defaultEngineeringPolicy;
+      }
+
+      let timeline: GenericTimeline;
+      if (timelineFile) {
+        timeline = JSON.parse(
+          await readFile(resolve(root, timelineFile), "utf8"),
+        );
+      } else {
+        const rawGit = await collectGitEvidence({ root });
+        timeline = {
+          caseType,
+          caseId,
+          events: rawGit.commits.map((c) => ({
+            activity: "commit",
+            source: "git",
+            sourceId: c.id,
+            timestamp: new Date(c.timestamp * 1000).toISOString(),
+            commitIds: [c.id],
+          })),
+        };
+      }
+
+      const report = evaluateEngineeringConformance(timeline, policy);
+      io.stdout(
+        parsed.flags.has("--json")
+          ? JSON.stringify(report, null, 2)
+          : formatEngineeringConformanceHuman(report),
+      );
+      return report.summary.violations > 0 || report.summary.missingEvidence > 0
+        ? 3
+        : 0;
     }
     if (parsed.command === "doctor")
       invalidMetadata.push(
