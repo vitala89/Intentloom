@@ -244,9 +244,7 @@ function finding(
   };
 }
 
-function operation(
-  value: Omit<AdoptionOperation, "id">,
-): AdoptionOperation {
+function operation(value: Omit<AdoptionOperation, "id">): AdoptionOperation {
   return {
     ...value,
     id: deterministicId("operation", value),
