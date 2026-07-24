@@ -11,6 +11,7 @@ import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import {
   handleMcpRequest,
+  ENGINEERING_CONFORMANCE_TOOL,
   PROJECT_DOCTOR_TOOL,
   PROJECT_INSPECT_TOOL,
   RELEASE_ANALYSIS_TOOL,
@@ -28,7 +29,12 @@ describe("MCP release analysis server", () => {
     expect(
       (tools as { name: string }[]).map(({ name }) => name).sort(),
     ).toEqual(
-      [RELEASE_ANALYSIS_TOOL, PROJECT_INSPECT_TOOL, PROJECT_DOCTOR_TOOL].sort(),
+      [
+        RELEASE_ANALYSIS_TOOL,
+        PROJECT_INSPECT_TOOL,
+        PROJECT_DOCTOR_TOOL,
+        ENGINEERING_CONFORMANCE_TOOL,
+      ].sort(),
     );
     expect(
       (tools as { name: string; outputSchema?: { $id?: string } }[])
@@ -37,6 +43,7 @@ describe("MCP release analysis server", () => {
     ).toEqual([
       "urn:intentloom:mcp:project-inspect:output:1",
       "urn:intentloom:mcp:project-doctor:output:1",
+      "urn:intentloom:mcp:engineering-conformance:output:1",
     ]);
   });
 
@@ -175,6 +182,81 @@ describe("MCP release analysis server", () => {
             caseId: "mcp-case",
             projectKey: "org/repo",
             quality: "unavailable",
+          },
+        },
+      });
+    } finally {
+      await rm(root, { recursive: true, force: true });
+    }
+  });
+
+  it("evaluates engineering conformance via MCP request with explicit policy and timeline", async () => {
+    const root = await mkdtemp(join(tmpdir(), "intentloom-mcp-conformance-"));
+    try {
+      const policyFile = "policy.json";
+      const timelineFile = "timeline.json";
+
+      await writeFile(
+        join(root, policyFile),
+        JSON.stringify({
+          schemaVersion: "1",
+          policyId: "policy:mcp-test",
+          description: "MCP Conformance Test",
+          rules: [
+            {
+              ruleId: "rule:code-review",
+              caseType: "pull-request",
+              severity: "error",
+              title: "Code Review Required",
+              condition: {
+                type: "required-activity",
+                activity: "code-review",
+              },
+            },
+          ],
+        }),
+      );
+
+      await writeFile(
+        join(root, timelineFile),
+        JSON.stringify({
+          caseType: "pull-request",
+          caseId: "pr-mcp-1",
+          events: [
+            {
+              activity: "code-review",
+              source: "github",
+              sourceId: "review-mcp-1",
+            },
+          ],
+        }),
+      );
+
+      const response = await handleMcpRequest(
+        {
+          jsonrpc: "2.0",
+          id: "mcp-conformance",
+          method: "tools/call",
+          params: {
+            name: ENGINEERING_CONFORMANCE_TOOL,
+            arguments: {
+              policyFile,
+              timelineFile,
+            },
+          },
+        },
+        { root },
+      );
+
+      expect(response).toMatchObject({
+        result: {
+          structuredContent: {
+            policyId: "policy:mcp-test",
+            caseId: "pr-mcp-1",
+            summary: {
+              passed: 1,
+              violations: 0,
+            },
           },
         },
       });
