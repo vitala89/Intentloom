@@ -11,7 +11,10 @@
         {
           "role": "agent-entrypoint",
           "confidence": 1,
-          "evidence": ["explicit entrypoint title", "links canonical context order"]
+          "evidence": [
+            "explicit entrypoint title",
+            "links canonical context order"
+          ]
         }
       ]
     },
