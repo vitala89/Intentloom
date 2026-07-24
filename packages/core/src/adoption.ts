@@ -403,7 +403,8 @@ export function planGovernanceAdoption(
 }
 
 export function parseAdoptionPlan(value: string | unknown): AdoptionPlan {
-  const parsed = typeof value === "string" ? (JSON.parse(value) as unknown) : value;
+  const parsed =
+    typeof value === "string" ? (JSON.parse(value) as unknown) : value;
   if (!isRecord(parsed) || parsed.schemaVersion !== 1) {
     throw new Error("adoption plan must use schema version 1");
   }
