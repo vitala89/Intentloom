@@ -11,29 +11,23 @@ import {
 
 async function applyeFixture(): Promise<PlanGovernanceAdoptionInput> {
   return JSON.parse(
-    await readFile(
-      resolve("tests/fixtures/adoption/applye.json"),
-      "utf8",
-    ),
+    await readFile(resolve("tests/fixtures/adoption/applye.json"), "utf8"),
   ) as PlanGovernanceAdoptionInput;
 }
 
 describe("portable adoption contracts", () => {
-  it(
-    "creates a deterministic plan for the Applye reference fixture",
-    async () => {
-      const fixture = await applyeFixture();
-      const first = planGovernanceAdoption(fixture);
-      const second = planGovernanceAdoption({
-        ...fixture,
-        artifacts: [...fixture.artifacts].reverse(),
-      });
+  it("creates a deterministic plan for the Applye reference fixture", async () => {
+    const fixture = await applyeFixture();
+    const first = planGovernanceAdoption(fixture);
+    const second = planGovernanceAdoption({
+      ...fixture,
+      artifacts: [...fixture.artifacts].reverse(),
+    });
 
-      expect(stableStringify(first)).toBe(stableStringify(second));
-      expect(first.planId).toBe(second.planId);
-      expect(parseAdoptionPlan(stableStringify(first))).toEqual(first);
-    },
-  );
+    expect(stableStringify(first)).toBe(stableStringify(second));
+    expect(first.planId).toBe(second.planId);
+    expect(parseAdoptionPlan(stableStringify(first))).toEqual(first);
+  });
 
   it("maps Applye current state without proposing PROJECT_STATE.md", async () => {
     const plan = planGovernanceAdoption(await applyeFixture());
@@ -65,39 +59,38 @@ describe("portable adoption contracts", () => {
     );
   });
 
-  it(
-    "blocks automatic apply for an ambiguous source-of-truth role",
-    async () => {
-      const fixture = await applyeFixture();
-      const currentState = fixture.artifacts.find(
-        ({ path }) => path === "docs/product/CURRENT_STATE.md",
-      )!;
-      const plan = planGovernanceAdoption({
-        ...fixture,
-        artifacts: [
-          ...fixture.artifacts,
-          {
-            ...currentState,
-            path: "PROJECT_STATE.md",
-            contentHash:
-              "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
-          },
-        ],
-      });
+  it("blocks automatic apply for an ambiguous source-of-truth role", async () => {
+    const fixture = await applyeFixture();
+    const currentState = fixture.artifacts.find(
+      ({ path }) => path === "docs/product/CURRENT_STATE.md",
+    )!;
+    const plan = planGovernanceAdoption({
+      ...fixture,
+      artifacts: [
+        ...fixture.artifacts,
+        {
+          ...currentState,
+          path: "PROJECT_STATE.md",
+          contentHash:
+            "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        },
+      ],
+    });
 
-      expect(plan.automaticApplyAllowed).toBe(false);
-      expect(plan.findings).toContainEqual(
-        expect.objectContaining({
-          code: "ambiguous-role-mapping",
-          status: "ambiguous",
-          paths: ["docs/product/CURRENT_STATE.md", "PROJECT_STATE.md"].sort(),
-        }),
-      );
-      expect(plan.mappings).not.toContainEqual(
-        expect.objectContaining({ role: "operational-project-state" }),
-      );
-    },
-  );
+    expect(plan.automaticApplyAllowed).toBe(false);
+    expect(plan.findings).toContainEqual(
+      expect.objectContaining({
+        code: "ambiguous-role-mapping",
+        status: "ambiguous",
+        paths: ["docs/product/CURRENT_STATE.md", "PROJECT_STATE.md"].sort(
+          (left, right) => left.localeCompare(right),
+        ),
+      }),
+    );
+    expect(plan.mappings).not.toContainEqual(
+      expect.objectContaining({ role: "operational-project-state" }),
+    );
+  });
 
   it("generates stable identifiers from canonical object key ordering", () => {
     expect(deterministicId("finding", { a: 1, b: 2 })).toBe(

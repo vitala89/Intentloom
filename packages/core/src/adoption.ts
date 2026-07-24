@@ -14,8 +14,7 @@ export const GOVERNANCE_ROLES = [
 ] as const;
 
 export type GovernanceRole =
-  | (typeof GOVERNANCE_ROLES)[number]
-  | `provider-instructions:${string}`;
+  (typeof GOVERNANCE_ROLES)[number] | `provider-instructions:${string}`;
 
 export const OWNERSHIP_CLASSES = [
   "intentloom-managed",
@@ -45,17 +44,10 @@ export const OPERATION_KINDS = [
 export type AdoptionOperationKind = (typeof OPERATION_KINDS)[number];
 
 export type ApprovalClass =
-  | "automatic-safe"
-  | "review-required"
-  | "explicit-destructive"
-  | "manual-only";
+  "automatic-safe" | "review-required" | "explicit-destructive" | "manual-only";
 
 export type FindingStatus =
-  | "verified"
-  | "ambiguous"
-  | "missing"
-  | "conflicting"
-  | "unsupported";
+  "verified" | "ambiguous" | "missing" | "conflicting" | "unsupported";
 
 export interface RoleCandidate {
   readonly role: GovernanceRole;
@@ -168,7 +160,9 @@ function normalizeArtifact(
   artifact: DetectedProjectArtifact,
 ): DetectedProjectArtifact {
   if (!/^[a-f0-9]{64}$/u.test(artifact.contentHash)) {
-    throw new Error(`${artifact.path}: contentHash must be a sha256 hex digest`);
+    throw new Error(
+      `${artifact.path}: contentHash must be a sha256 hex digest`,
+    );
   }
   if (!OWNERSHIP_CLASSES.includes(artifact.ownership)) {
     throw new Error(`${artifact.path}: unsupported ownership class`);
@@ -362,7 +356,8 @@ export function planGovernanceAdoption(
 
   const normalizedMappings = mappings.sort(
     (left, right) =>
-      left.role.localeCompare(right.role) || left.path.localeCompare(right.path),
+      left.role.localeCompare(right.role) ||
+      left.path.localeCompare(right.path),
   );
   const normalizedFindings = findings.sort((left, right) =>
     left.id.localeCompare(right.id),
@@ -378,9 +373,7 @@ export function planGovernanceAdoption(
   );
   const automaticApplyAllowed =
     normalizedFindings.every(({ status }) => status !== "ambiguous") &&
-    normalizedOperations.every(
-      ({ approval }) => approval === "automatic-safe",
-    );
+    normalizedOperations.every(({ approval }) => approval === "automatic-safe");
   const planContent = {
     schemaVersion: 1 as const,
     projectId: input.projectId,
