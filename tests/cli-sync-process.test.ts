@@ -14,6 +14,7 @@ import { tmpdir } from "node:os";
 import { join, relative, resolve } from "node:path";
 import { promisify } from "node:util";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { INTENTLOOM_VERSION } from "@intentloom/core";
 
 const execute = promisify(execFile);
 const repositoryRoot = resolve(import.meta.dirname, "..");
@@ -656,9 +657,9 @@ describe("real CLI transactional sync", () => {
     expect(scenarios.packedDryRun.after).toEqual(scenarios.packedDryRun.before);
   });
 
-  it("packed CLI reports version 0.1.0-beta.1", () => {
+  it("packed CLI reports current version", () => {
     expect(scenarios.packedVersion.exitCode).toBe(0);
-    expect(scenarios.packedVersion.stdout.trim()).toBe("0.1.0-beta.1");
+    expect(scenarios.packedVersion.stdout.trim()).toBe(INTENTLOOM_VERSION);
   });
 
   it("JSON success uses the same exit code and structured outcome", () => {

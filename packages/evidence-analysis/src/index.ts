@@ -263,3 +263,253 @@ export function analyzeReleaseEvidence(
     findings,
   };
 }
+
+export type EngineeringWorkflowCaseType =
+  "pull-request" | "release" | "incident" | "migration" | "agent-task";
+
+export type EngineeringRuleSeverity = "error" | "warning" | "info";
+
+export type EngineeringRuleConditionType =
+  | "required-activity"
+  | "forbidden-activity"
+  | "ordered-sequence"
+  | "evidence-presence"
+  | "time-delta-threshold";
+
+export interface EngineeringRuleCondition {
+  readonly type: EngineeringRuleConditionType;
+  readonly activity?: string;
+  readonly sequence?: readonly string[];
+  readonly evidenceType?: string;
+  readonly maxMinutes?: number;
+}
+
+export interface EngineeringRuleRemediation {
+  readonly summary: string;
+  readonly actionableSteps: readonly string[];
+}
+
+export interface EngineeringRule {
+  readonly ruleId: string;
+  readonly caseType: EngineeringWorkflowCaseType;
+  readonly severity: EngineeringRuleSeverity;
+  readonly title: string;
+  readonly description?: string;
+  readonly condition: EngineeringRuleCondition;
+  readonly remediation?: EngineeringRuleRemediation;
+}
+
+export interface EngineeringWorkflowPolicy {
+  readonly schemaVersion: "1";
+  readonly policyId: string;
+  readonly description?: string;
+  readonly rules: readonly EngineeringRule[];
+}
+
+export type EngineeringConformanceStatus =
+  | "pass"
+  | "violation"
+  | "missing-evidence"
+  | "ambiguous-evidence"
+  | "unsupported";
+
+export interface EngineeringEvidenceRef {
+  readonly source: string;
+  readonly sourceId: string;
+  readonly timestamp?: string;
+}
+
+export interface EngineeringConformanceFinding {
+  readonly ruleId: string;
+  readonly caseType: EngineeringWorkflowCaseType;
+  readonly severity: EngineeringRuleSeverity;
+  readonly status: EngineeringConformanceStatus;
+  readonly title: string;
+  readonly evidence: readonly EngineeringEvidenceRef[];
+  readonly remediation?: EngineeringRuleRemediation;
+}
+
+export interface EngineeringConformanceSummary {
+  readonly totalRules: number;
+  readonly passed: number;
+  readonly violations: number;
+  readonly missingEvidence: number;
+  readonly ambiguousEvidence: number;
+  readonly unsupported: number;
+}
+
+export interface EngineeringConformanceReport {
+  readonly operationVersion: 1;
+  readonly policyId: string;
+  readonly evaluatedAt: string;
+  readonly caseType: EngineeringWorkflowCaseType;
+  readonly caseId: string;
+  readonly summary: EngineeringConformanceSummary;
+  readonly findings: readonly EngineeringConformanceFinding[];
+}
+
+export interface TimelineEventRef {
+  readonly activity: string;
+  readonly source: string;
+  readonly sourceId: string;
+  readonly timestamp?: string;
+  readonly commitIds?: readonly string[];
+  readonly evidenceType?: string;
+}
+
+export interface GenericTimeline {
+  readonly caseType: EngineeringWorkflowCaseType;
+  readonly caseId: string;
+  readonly events: readonly TimelineEventRef[];
+}
+
+function toEvidenceRef(event: TimelineEventRef): EngineeringEvidenceRef {
+  return {
+    source: event.source,
+    sourceId: event.sourceId,
+    ...(event.timestamp ? { timestamp: event.timestamp } : {}),
+  };
+}
+
+export function evaluateEngineeringConformance(
+  timeline: GenericTimeline,
+  policy: EngineeringWorkflowPolicy,
+): EngineeringConformanceReport {
+  if (policy.schemaVersion !== "1") {
+    throw new Error("unsupported engineering workflow policy schema version");
+  }
+  const ruleIds = policy.rules.map((rule) => rule.ruleId);
+  if (new Set(ruleIds).size !== ruleIds.length) {
+    throw new Error("engineering workflow policy rule IDs must be unique");
+  }
+
+  const matchingRules = policy.rules.filter(
+    (rule) => rule.caseType === timeline.caseType,
+  );
+  const findings: EngineeringConformanceFinding[] = [];
+
+  for (const rule of matchingRules) {
+    let status: EngineeringConformanceStatus = "unsupported";
+    let evidence: EngineeringEvidenceRef[] = [];
+
+    const condition = rule.condition;
+
+    if (condition.type === "required-activity") {
+      const matches = timeline.events.filter(
+        (event) => event.activity === condition.activity,
+      );
+      if (matches.length > 0) {
+        status = "pass";
+        evidence = matches.map(toEvidenceRef);
+      } else {
+        status = "missing-evidence";
+      }
+    } else if (condition.type === "forbidden-activity") {
+      const matches = timeline.events.filter(
+        (event) => event.activity === condition.activity,
+      );
+      if (matches.length > 0) {
+        status = "violation";
+        evidence = matches.map(toEvidenceRef);
+      } else {
+        status = "pass";
+      }
+    } else if (condition.type === "ordered-sequence") {
+      const seq = condition.sequence ?? [];
+      const indices: number[] = [];
+      let allPresent = true;
+
+      for (const requiredActivity of seq) {
+        const index = timeline.events.findIndex(
+          (event) => event.activity === requiredActivity,
+        );
+        if (index === -1) {
+          allPresent = false;
+          break;
+        }
+        indices.push(index);
+      }
+
+      if (!allPresent) {
+        status = "missing-evidence";
+      } else {
+        const isStrictlyAscending = indices.every(
+          (val, idx, arr) => idx === 0 || val > (arr[idx - 1] ?? -1),
+        );
+        if (isStrictlyAscending) {
+          status = "pass";
+          evidence = indices
+            .map((idx) => timeline.events[idx])
+            .filter((ev): ev is TimelineEventRef => ev !== undefined)
+            .map(toEvidenceRef);
+        } else {
+          status = "violation";
+        }
+      }
+    } else if (condition.type === "evidence-presence") {
+      const matches = timeline.events.filter(
+        (event) =>
+          event.evidenceType === condition.evidenceType ||
+          event.activity === condition.evidenceType,
+      );
+      if (matches.length > 0) {
+        status = "pass";
+        evidence = matches.map(toEvidenceRef);
+      } else {
+        status = "missing-evidence";
+      }
+    } else if (condition.type === "time-delta-threshold") {
+      if (timeline.events.length < 2) {
+        status = "missing-evidence";
+      } else {
+        const timestamps = timeline.events
+          .map((e) => (e.timestamp ? new Date(e.timestamp).getTime() : NaN))
+          .filter((t) => !isNaN(t));
+
+        if (timestamps.length < 2) {
+          status = "ambiguous-evidence";
+        } else {
+          const deltaMs = Math.max(...timestamps) - Math.min(...timestamps);
+          const deltaMinutes = deltaMs / (1000 * 60);
+          const maxMin = condition.maxMinutes ?? 0;
+          if (deltaMinutes <= maxMin) {
+            status = "pass";
+          } else {
+            status = "violation";
+          }
+        }
+      }
+    }
+
+    findings.push({
+      ruleId: rule.ruleId,
+      caseType: rule.caseType,
+      severity: rule.severity,
+      status,
+      title: rule.title,
+      evidence,
+      ...(rule.remediation ? { remediation: rule.remediation } : {}),
+    });
+  }
+
+  const summary: EngineeringConformanceSummary = {
+    totalRules: matchingRules.length,
+    passed: findings.filter((f) => f.status === "pass").length,
+    violations: findings.filter((f) => f.status === "violation").length,
+    missingEvidence: findings.filter((f) => f.status === "missing-evidence")
+      .length,
+    ambiguousEvidence: findings.filter((f) => f.status === "ambiguous-evidence")
+      .length,
+    unsupported: findings.filter((f) => f.status === "unsupported").length,
+  };
+
+  return {
+    operationVersion: 1,
+    policyId: policy.policyId,
+    evaluatedAt: new Date().toISOString(),
+    caseType: timeline.caseType,
+    caseId: timeline.caseId,
+    summary,
+    findings,
+  };
+}

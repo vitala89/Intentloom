@@ -2,6 +2,7 @@ import { execFileSync, spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { gunzipSync } from "node:zlib";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { INTENTLOOM_VERSION } from "@intentloom/core";
 import { mkdtemp, mkdir, readFile, readdir, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
@@ -183,7 +184,7 @@ describe("public package publishing readiness", () => {
     );
     expect(cli).toMatchObject({
       name: "intentloom",
-      version: "0.1.0-beta.1",
+      version: INTENTLOOM_VERSION,
       license: "MIT",
       private: false,
       repository: {
@@ -212,7 +213,7 @@ describe("public package publishing readiness", () => {
         ),
       );
       expect(manifest.private).toBe(true);
-      expect(manifest.version).toBe("0.1.0-beta.1");
+      expect(manifest.version).toBe(INTENTLOOM_VERSION);
     }
   });
 
@@ -244,7 +245,7 @@ describe("public package publishing readiness", () => {
       await mkdir(root);
       expect(runPackedCli(entry, ["--help"], runtime).status).toBe(0);
       expect(runPackedCli(entry, ["--version"], runtime).stdout.trim()).toBe(
-        "0.1.0-beta.1",
+        INTENTLOOM_VERSION,
       );
       expect(
         runPackedCli(

@@ -15,6 +15,10 @@ const packageFiles = [
   "packages/cli/package.json",
   "packages/protocol/package.json",
   "packages/daemon/package.json",
+  "packages/evidence-git/package.json",
+  "packages/evidence-provider/package.json",
+  "packages/evidence-analysis/package.json",
+  "packages/mcp-server/package.json",
 ];
 for (const file of packageFiles) {
   const value = JSON.parse(await readFile(file, "utf8"));

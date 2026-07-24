@@ -6,12 +6,13 @@ The milestones below are compatibility and evidence gates, not promised dates.
 Intentloom remains alpha until the generated configuration, schemas, and
 adoption workflow have been exercised in multiple real projects.
 
-| Milestone       | Focus                                         | Exit gate                                                                                                              | Gate status                                                                                       |
-| --------------- | --------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
-| `0.1.0-alpha.4` | Documentation consistency and release hygiene | Architecture, release, versioning, and public-status documents agree with the repository and verified release evidence | Met in unreleased `main`; no release has been cut                                                 |
-| `0.1.0-alpha.5` | Fixture depth and adapter compatibility       | Expanded snapshot and packed-CLI coverage across supported adapters and representative project fixtures                | Met in unreleased `main`; adapter snapshot, packed CLI, and adoption fixture coverage is recorded |
-| `0.1.0-beta.1`  | Compatibility-freeze candidate                | Explicit API/schema/output compatibility statement, migration policy, and successful dogfooding evidence               | Released 2026-07-23 as Git tag `v0.1.0-beta.1` and npm `intentloom@0.1.0-beta.1` under `next`     |
-| `1.0.0`         | Stable compatibility contract                 | Stable release criteria, documented support policy, verified upgrade path, and maintained compatibility commitments    | Not started                                                                                       |
+| Milestone       | Focus                                          | Exit gate                                                                                                               | Gate status                                                                                       |
+| --------------- | ---------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| `0.1.0-alpha.4` | Documentation consistency and release hygiene  | Architecture, release, versioning, and public-status documents agree with the repository and verified release evidence  | Met in unreleased `main`; no release has been cut                                                 |
+| `0.1.0-alpha.5` | Fixture depth and adapter compatibility        | Expanded snapshot and packed-CLI coverage across supported adapters and representative project fixtures                 | Met in unreleased `main`; adapter snapshot, packed CLI, and adoption fixture coverage is recorded |
+| `0.1.0-beta.1`  | Compatibility-freeze candidate                 | Explicit API/schema/output compatibility statement, migration policy, and successful dogfooding evidence                | Released 2026-07-23 as Git tag `v0.1.0-beta.1` and npm `intentloom@0.1.0-beta.1` under `next`     |
+| `0.2.0-beta.1`  | Connected project, evidence, MCP & conformance | Read-only inspection, local Git timeline, provider imports, release analysis, stdio MCP server, and release conformance | Met in unreleased `main`; verified in `docs/audits/V0_2_RELEASE_READINESS.md`                     |
+| `1.0.0`         | Stable compatibility contract                  | Stable release criteria, documented support policy, verified upgrade path, and maintained compatibility commitments     | Not started                                                                                       |
 
 Before beta, Intentloom needs at least three real dogfooding scenarios: a
 minimal project, a TypeScript project, and a sanitized existing-project example
@@ -119,7 +120,7 @@ Exit criteria: an MCP client can discover and invoke read-only Intentloom tools,
 
 ## v0.3 candidate — Engineering conformance
 
-Build deterministic conformance checks on top of the workflow evidence model.
+Build deterministic conformance checks on top of the workflow evidence model. The architectural contract and specification are defined in [ADR-0020](docs/decisions/ADR-0020-engineering-workflow-policy-and-conformance.md) and [v0.3 Engineering Conformance Specification](docs/specs/ENGINEERING_CONFORMANCE_V0_3_SPEC.md).
 
 Candidate scope:
 
