@@ -28,10 +28,12 @@ import {
   type GeneratedFile,
 } from "@intentloom/core";
 import {
+  deterministicId,
   planGovernanceAdoption,
   type AcceptedException,
   type AdoptionPlan,
   type DetectedProjectArtifact,
+  type MigrationJournalEntry,
   type OwnershipClass,
   type RoleCandidate,
   type ValidationRequirement,
@@ -3194,4 +3196,159 @@ export async function planProjectAdoption(
       ? { exceptions: options.exceptions }
       : {}),
   });
+}
+
+export interface ApplyProjectAdoptionOptions {
+  readonly root: string;
+  readonly plan: AdoptionPlan;
+  readonly dryRun?: boolean;
+}
+
+export interface AdoptionApplyResult {
+  readonly status:
+    "success" | "no-op" | "stale-hash" | "failed" | "rolled-back";
+  readonly appliedOperations: readonly string[];
+  readonly createdFiles: readonly string[];
+  readonly updatedFiles: readonly string[];
+  readonly journalEntryId?: string;
+  readonly error?: string;
+}
+
+export async function applyProjectAdoption(
+  options: ApplyProjectAdoptionOptions,
+  fs: FileSystem = nodeFileSystem,
+): Promise<AdoptionApplyResult> {
+  const root = resolve(options.root);
+  if (await fs.isSymbolicLink(root)) {
+    throw new Error(
+      "adoption apply requires a non-symbolic explicit project root",
+    );
+  }
+  const { plan, dryRun = false } = options;
+  if (plan.schemaVersion !== 1) {
+    throw new Error("unsupported adoption plan schema version");
+  }
+
+  for (const op of plan.operations) {
+    if (op.path !== undefined && op.expectedCurrentHash !== undefined) {
+      const fullPath = inside(root, op.path);
+      if (await fs.exists(fullPath)) {
+        let content: string;
+        try {
+          content = await fs.read(fullPath);
+        } catch {
+          return {
+            status: "stale-hash",
+            error: `Unable to read target file for hash verification: ${op.path}`,
+            appliedOperations: [],
+            createdFiles: [],
+            updatedFiles: [],
+          };
+        }
+        if (checksum(content) !== op.expectedCurrentHash) {
+          return {
+            status: "stale-hash",
+            error: `Stale content hash for ${op.path}`,
+            appliedOperations: [],
+            createdFiles: [],
+            updatedFiles: [],
+          };
+        }
+      }
+    }
+  }
+
+  if (dryRun) {
+    return {
+      status: "no-op",
+      appliedOperations: plan.operations.map((op) => op.id),
+      createdFiles: [],
+      updatedFiles: [],
+    };
+  }
+
+  const backups = new Map<string, string | null>();
+  const appliedOperations: string[] = [];
+  const createdFiles: string[] = [];
+  const updatedFiles: string[] = [];
+
+  try {
+    for (const op of plan.operations) {
+      if (op.kind === "create" && op.path !== undefined) {
+        const fullPath = inside(root, op.path);
+        const exists = await fs.exists(fullPath);
+        if (!backups.has(op.path)) {
+          backups.set(op.path, exists ? await fs.read(fullPath) : null);
+        }
+        const body =
+          op.role === "agent-entrypoint"
+            ? "# Agent Entrypoint\n\nStart here for repository instructions and workflows.\n"
+            : `# Intentloom Governance ${op.role ?? op.path}\n`;
+        await fs.mkdir(dirname(fullPath));
+        await fs.write(fullPath, body);
+        if (!exists) {
+          createdFiles.push(op.path);
+        } else {
+          updatedFiles.push(op.path);
+        }
+        appliedOperations.push(op.id);
+      } else {
+        appliedOperations.push(op.id);
+      }
+    }
+
+    const journalPath = inside(root, ".aif/migration-journal.json");
+    let journalEntries: MigrationJournalEntry[] = [];
+    if (await fs.exists(journalPath)) {
+      try {
+        journalEntries = JSON.parse(
+          await fs.read(journalPath),
+        ) as MigrationJournalEntry[];
+      } catch {
+        journalEntries = [];
+      }
+    }
+    const entryId = deterministicId("journal", {
+      planId: plan.planId,
+      timestamp: appliedOperations.join(","),
+    });
+    const entry: MigrationJournalEntry = {
+      id: entryId,
+      planId: plan.planId,
+      status: "applied",
+      operationIds: appliedOperations,
+      timestamp: new Date().toISOString(),
+    };
+    journalEntries.push(entry);
+    await fs.mkdir(dirname(journalPath));
+    await fs.write(journalPath, JSON.stringify(journalEntries, null, 2));
+
+    return {
+      status: "success",
+      appliedOperations,
+      createdFiles,
+      updatedFiles,
+      journalEntryId: entry.id,
+    };
+  } catch (err) {
+    for (const [relativePath, originalContent] of backups) {
+      const fullPath = inside(root, relativePath);
+      try {
+        if (originalContent === null) {
+          await fs.remove(fullPath);
+        } else {
+          await fs.write(fullPath, originalContent);
+        }
+      } catch {
+        /* rollback best-effort */
+      }
+    }
+    return {
+      status: "rolled-back",
+      error: err instanceof Error ? err.message : String(err),
+      appliedOperations: [],
+      createdFiles: [],
+      updatedFiles: [],
+    };
+  }
 }

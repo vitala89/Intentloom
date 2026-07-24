@@ -22,7 +22,7 @@ later justifies separation.
 
 ## Current phase
 
-Portable Adoption Phase 2: Interactive Adoption Proposal (`intentloom adopt --plan`).
+Portable Adoption Phase 3: Transactional Apply and Rollback (`intentloom adopt --apply <plan>`).
 
 The project must avoid premature structural migration. New applications,
 packages, and repository boundaries are introduced only when roadmap triggers
@@ -40,19 +40,19 @@ and real consumers justify them.
   connection, evidence, MCP, interactive surfaces, Agent Workspace, Neutron,
   persistent memory, security analysis, engineering process intelligence,
   public monorepo evolution, and portable Duty Watch adoption.
-- Duty Watch governance and its portable adoption contracts (Phase 1) are merged into `main`.
+- Duty Watch governance contracts (Phase 1) and interactive proposal CLI `intentloom adopt --plan` (Phase 2) are merged into `main`.
 
 These statements must be revalidated against code, tags, CI, and Git history
 before a new release or implementation milestone is declared complete.
 
 ## Active focus
 
-1. Implement `intentloom adopt --plan` CLI command and application operation.
-2. Provide human-readable Markdown and machine-readable JSON plan output.
-3. Allow role remapping and selected approvals (`keep-local`, `merge`, `replace-generated`, `defer`, `reject`, `exception`).
-4. Validate hashes to block stale plans.
-5. Require explicit human confirmation for any destructive or executable changes.
-6. Preserve CLI, daemon, protocol, transaction, and security boundaries.
+1. Implement `applyProjectAdoption` application operation and `intentloom adopt --apply <plan>` CLI command.
+2. Execute approved operations in a single transactional batch with backup creation and recovery journal (`.aif/migration-journal.json`).
+3. Preserve local sections, ownership boundaries, and project-owned files.
+4. Validate paths, symlinks, project root, and secret redaction before mutation.
+5. Provide atomic rollback recovery upon error or interrupted execution.
+6. Guarantee idempotency across repeated apply operations.
 
 ## Architectural invariants
 
@@ -70,19 +70,19 @@ before a new release or implementation milestone is declared complete.
 
 ## Current blockers and unknowns
 
-- Phase 2 focuses on read-only proposal analysis and CLI reporting.
-- Transactional apply (Phase 3), three-way updates (Phase 4), conformance automation (Phase 5), and security profiles (Phase 6) remain future phases.
+- Phase 3 focuses on transactional execution and failure rollback for governance plans.
+- Three-way updates (Phase 4), conformance automation (Phase 5), and security profiles (Phase 6) remain future phases.
 
 ## Current milestone
 
-Implement Portable Adoption Phase 2: Interactive Adoption Proposal (`intentloom adopt --plan`).
+Implement Portable Adoption Phase 3: Transactional Apply and Rollback (`intentloom adopt --apply <plan>`).
 
 Expected outputs:
 
-- application operation for scanning and planning governance adoption across a workspace;
-- CLI command `intentloom adopt --plan` supporting `--json`, `--output`, and `--strict`;
-- human-readable Markdown plan formatter and structured JSON output;
-- tests proving read-only inspection, dry-run safety, ambiguity blocking, stale plan detection, and role override contracts.
+- application operation `applyProjectAdoption` for applying approved plan operations in a single transaction;
+- CLI command `intentloom adopt --apply <plan>` supporting `--json` and `--dry-run`;
+- transactional backup creation, recovery journal, and atomic rollback on failure;
+- unit and integration tests proving atomic apply, rollback on error, and idempotency.
 
 ## Next platform milestone
 

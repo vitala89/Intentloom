@@ -19,6 +19,7 @@ import {
   nodeFileSystem,
   planFeature,
   planProjectAdoption,
+  applyProjectAdoption,
   syncProject,
   type FileSystem,
   type DoctorPlan,
@@ -53,7 +54,11 @@ import {
   resolveWithin,
   type AdapterName,
 } from "@intentloom/core";
-import { stableStringify, type AdoptionPlan } from "@intentloom/core/adoption";
+import {
+  parseAdoptionPlan,
+  stableStringify,
+  type AdoptionPlan,
+} from "@intentloom/core/adoption";
 import {
   createArtifactValidator,
   SchemaCatalogError,
@@ -160,6 +165,7 @@ const valueFlags = new Set([
   "--timeline",
   "--case-type",
   "--output",
+  "--apply",
 ]);
 const mappingValueFlags = new Set([
   "--project-owned-mapping",
@@ -168,7 +174,7 @@ const mappingValueFlags = new Set([
 const adapters = new Set<AdapterName>(["claude", "codex", "cursor", "copilot"]);
 const usage = [
   "Usage: intentloom <init|plan> [--root PATH] [--dry-run]",
-  "       intentloom adopt --plan [PROJECT_PATH|--root PATH] [--json] [--output PATH] [--strict]",
+  "       intentloom adopt <--plan|--apply PLAN_FILE> [PROJECT_PATH|--root PATH] [--json] [--output PATH] [--strict] [--dry-run]",
   "       intentloom <adopt|diff|sync|doctor|inspect|timeline|conformance> [PROJECT_PATH|--root PATH] [--dry-run]",
   "       intentloom evidence import --provider github|gitlab --file PATH --project-key KEY [--json]",
   "       intentloom evidence analyze --provider github|gitlab --file PATH --project-key KEY [--root PATH] [--case-id ID] [--json]",
@@ -1279,6 +1285,53 @@ export async function runCli(
           ))
       ) {
         return 3;
+      }
+      return 0;
+    }
+    if (parsed.command === "adopt" && parsed.values.has("--apply")) {
+      const planFile = parsed.values.get("--apply")!;
+      const planPath = resolveWithin(root, planFile);
+      if (!(await fileSystem.exists(planPath))) {
+        io.stderr(`Adoption plan file not found: ${planFile}\n`);
+        return 3;
+      }
+      const rawPlan = await fileSystem.read(planPath);
+      let plan: AdoptionPlan;
+      try {
+        plan = parseAdoptionPlan(rawPlan);
+      } catch (err) {
+        io.stderr(
+          `Invalid adoption plan file: ${err instanceof Error ? err.message : String(err)}\n`,
+        );
+        return 3;
+      }
+      const applyResult = await applyProjectAdoption(
+        {
+          root,
+          plan,
+          dryRun: parsed.flags.has("--dry-run"),
+        },
+        fileSystem,
+      );
+      if (parsed.flags.has("--json")) {
+        io.stdout(`${JSON.stringify(applyResult, null, 2)}\n`);
+      } else {
+        io.stdout(
+          `Adoption apply status: ${applyResult.status}\n` +
+            `Applied operations: ${applyResult.appliedOperations.length}\n` +
+            `Created files: ${applyResult.createdFiles.length}\n` +
+            `Updated files: ${applyResult.updatedFiles.length}\n` +
+            (applyResult.error ? `Error: ${applyResult.error}\n` : ""),
+        );
+      }
+      if (
+        applyResult.status === "stale-hash" ||
+        applyResult.status === "failed"
+      ) {
+        return 3;
+      }
+      if (applyResult.status === "rolled-back") {
+        return 4;
       }
       return 0;
     }
