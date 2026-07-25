@@ -1,6 +1,6 @@
 # Intentloom Project State
 
-Last verified: 2026-07-24
+Last verified: 2026-07-26
 
 This file records the durable current state of the project. It is not a
 chronological log. Session history and handoff details belong in
@@ -22,7 +22,7 @@ later justifies separation.
 
 ## Current phase
 
-Memory & Security Candidate M1: Bounded Project Context.
+Memory & Security Candidate M2: Accepted Persistent Memory.
 
 The project must avoid premature structural migration. New applications,
 packages, and repository boundaries are introduced only when roadmap triggers
@@ -47,11 +47,11 @@ before a new release or implementation milestone is declared complete.
 
 ## Active focus
 
-1. Define versioned `TaskSummary` and `SessionSummary` schemas in `@intentloom/protocol`.
-2. Record task ID, selected root, intent, plan reference, affected paths, validation outcome, evidence references, used skills, unresolved work, provenance, trust class, and retention state.
-3. Store summaries project-locally in `.aif/memory/tasks/` and `.aif/memory/sessions/` without storing raw chat transcripts.
-4. Exclude secret-like paths (`secretLikePath`) and enforce root-bounded access.
-5. Provide CLI command routing for `intentloom summary record`, `intentloom summary list`, and `intentloom summary get`.
+1. Define project-scoped persistent-memory records with classification, lifecycle, provenance, retention, redaction, and approval evidence.
+2. Keep proposed, accepted, superseded, and deleted records separate in `.aif/memory/items/`.
+3. Require explicit approval evidence before a proposal becomes accepted memory.
+4. Support bounded inspection, export, project-identity-checked import, supersession, and forget operations.
+5. Ensure imports are untrusted proposals and cannot silently override canonical sources or accepted records.
 
 ## Architectural invariants
 
@@ -69,19 +69,19 @@ before a new release or implementation milestone is declared complete.
 
 ## Current blockers and unknowns
 
-- Candidate L1 introduces structured summaries as the first step of controlled agent learning without transcript logging or remote uploads.
+- Persistent-memory writes must retain explicit approval and audit evidence while remaining local and provider-neutral.
 
 ## Current milestone
 
-Implement Controlled Agent Learning Candidate L1: Structured Task and Session Summaries.
+Implement Memory & Security Candidate M2: Accepted Persistent Memory.
 
 Expected outputs:
 
-- versioned schemas for task and session summaries in `@intentloom/protocol`;
-- application operations for recording, listing, retrieving, and inspecting task and session summaries in `@intentloom/application`;
-- path-sanitized storage in `.aif/memory/` redacting secret-like paths;
-- CLI command routing in `@intentloom/cli`;
-- unit and integration tests proving summary recording, listing, filtering, redaction, and CLI execution.
+- versioned persistent-memory item and export schemas in `@intentloom/protocol`;
+- proposal, review, explicit acceptance, supersession, export, import, and forget operations in `@intentloom/application`;
+- local storage with project identity checks and content redaction;
+- CLI routing for the persistent-memory lifecycle in `@intentloom/cli`;
+- tests proving approval requirements, project isolation, import safety, lifecycle audit state, redaction, and CLI execution.
 
 ## Next platform milestone
 

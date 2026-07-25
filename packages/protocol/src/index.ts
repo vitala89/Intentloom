@@ -1288,3 +1288,142 @@ export function validateContextRetrievalResult(
     retrievedAt: stringValue(value.retrievedAt, "retrievedAt"),
   };
 }
+
+export type MemoryClassification =
+  | "canonical-intent"
+  | "verified-evidence"
+  | "accepted-decision"
+  | "working-context"
+  | "untrusted-observation";
+export type MemoryLifecycleState =
+  "proposed" | "accepted" | "superseded" | "deleted";
+
+export interface MemoryApproval {
+  readonly approvedBy: string;
+  readonly evidence: string;
+  readonly approvedAt: string;
+}
+
+export interface PersistentMemoryItem {
+  readonly schemaVersion: "1";
+  readonly id: string;
+  readonly projectId: string;
+  readonly classification: MemoryClassification;
+  readonly lifecycleState: MemoryLifecycleState;
+  readonly trustClass: TrustClass;
+  readonly content: string;
+  readonly provenance: string;
+  readonly retentionState: RetentionState;
+  readonly createdAt: string;
+  readonly updatedAt: string;
+  readonly approval?: MemoryApproval;
+  readonly supersedesId?: string;
+  readonly audit: readonly string[];
+}
+
+export interface PersistentMemoryExport {
+  readonly schemaVersion: "1";
+  readonly projectId: string;
+  readonly exportedAt: string;
+  readonly items: readonly PersistentMemoryItem[];
+}
+
+export function validatePersistentMemoryItem(
+  value: unknown,
+): PersistentMemoryItem {
+  if (!isObject(value))
+    throw new ProtocolValidationError(
+      -32602,
+      "persistent memory item must be an object",
+    );
+  if (value.schemaVersion !== "1")
+    throw new ProtocolValidationError(
+      -32602,
+      "unsupported persistent memory item schema version",
+    );
+  const classifications: readonly MemoryClassification[] = [
+    "canonical-intent",
+    "verified-evidence",
+    "accepted-decision",
+    "working-context",
+    "untrusted-observation",
+  ];
+  const states: readonly MemoryLifecycleState[] = [
+    "proposed",
+    "accepted",
+    "superseded",
+    "deleted",
+  ];
+  const classification = stringValue(
+    value.classification,
+    "classification",
+  ) as MemoryClassification;
+  const lifecycleState = stringValue(
+    value.lifecycleState,
+    "lifecycleState",
+  ) as MemoryLifecycleState;
+  if (!classifications.includes(classification))
+    throw new ProtocolValidationError(-32602, "invalid memory classification");
+  if (!states.includes(lifecycleState))
+    throw new ProtocolValidationError(-32602, "invalid memory lifecycle state");
+  const approvalValue = value.approval;
+  const approval = isObject(approvalValue)
+    ? {
+        approvedBy: stringValue(
+          approvalValue.approvedBy,
+          "approval.approvedBy",
+        ),
+        evidence: stringValue(approvalValue.evidence, "approval.evidence"),
+        approvedAt: stringValue(
+          approvalValue.approvedAt,
+          "approval.approvedAt",
+        ),
+      }
+    : undefined;
+  if (lifecycleState === "accepted" && approval === undefined)
+    throw new ProtocolValidationError(
+      -32602,
+      "accepted memory requires approval evidence",
+    );
+  return {
+    schemaVersion: "1",
+    id: stringValue(value.id, "id"),
+    projectId: stringValue(value.projectId, "projectId"),
+    classification,
+    lifecycleState,
+    trustClass: stringValue(value.trustClass, "trustClass") as TrustClass,
+    content: stringValue(value.content, "content"),
+    provenance: stringValue(value.provenance, "provenance"),
+    retentionState: stringValue(
+      value.retentionState,
+      "retentionState",
+    ) as RetentionState,
+    createdAt: stringValue(value.createdAt, "createdAt"),
+    updatedAt: stringValue(value.updatedAt, "updatedAt"),
+    ...(approval !== undefined ? { approval } : {}),
+    ...(typeof value.supersedesId === "string"
+      ? { supersedesId: stringValue(value.supersedesId, "supersedesId") }
+      : {}),
+    audit: stringArray(value.audit, "audit"),
+  };
+}
+
+export function validatePersistentMemoryExport(
+  value: unknown,
+): PersistentMemoryExport {
+  if (
+    !isObject(value) ||
+    value.schemaVersion !== "1" ||
+    !Array.isArray(value.items)
+  )
+    throw new ProtocolValidationError(
+      -32602,
+      "invalid persistent memory export",
+    );
+  return {
+    schemaVersion: "1",
+    projectId: stringValue(value.projectId, "projectId"),
+    exportedAt: stringValue(value.exportedAt, "exportedAt"),
+    items: value.items.map(validatePersistentMemoryItem),
+  };
+}
