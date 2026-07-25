@@ -42,6 +42,20 @@ entry directly below this section.
 
 ## Watch entries
 
+### 2026-07-26, Controlled Agent Learning Candidate L3 skill proposal lifecycle
+
+- **Status:** complete
+- **Agent/tool:** Antigravity AI Pair Programmer
+- **Branch:** `feat/controlled-learning-l3`
+- **Objective:** Implement skill proposal lifecycle schemas (`proposed`, `under-review`, `approved`, `rejected`, `active`, `deprecated`, `archived`, `superseded`, `rolled-back`), local `.aif/memory/proposals/` storage, application operations (`createSkillProposal`, `listSkillProposals`, `getSkillProposal`, `updateSkillProposalState`, `rollbackSkill`), CLI command routing (`intentloom proposal`), and test coverage.
+- **Completed:** Implemented versioned `SkillProposal` schemas and validators in `@intentloom/protocol`. Added proposal operations (`createSkillProposal`, `listSkillProposals`, `getSkillProposal`, `updateSkillProposalState`, `rollbackSkill`) in `@intentloom/application` enforcing local `.aif/memory/proposals/` storage and mandatory approval evidence for activation. Added CLI routing for `intentloom proposal <list|get|create|approve>` in `@intentloom/cli`. Added unit & integration tests in `tests/controlled-learning-l3.test.ts`. Updated `PROJECT_STATE.md` and `DUTY_WATCH.md`.
+- **Files changed:** `packages/protocol/src/index.ts`, `packages/application/src/index.ts`, `packages/cli/src/command.ts`, `tests/controlled-learning-l3.test.ts`, `PROJECT_STATE.md`, and `DUTY_WATCH.md`.
+- **Validation:** `pnpm typecheck`, `pnpm lint`, `pnpm format:check`, `pnpm build`, and all vitest test suites passed cleanly (627 tests passed across 59 test files).
+- **Decisions:** Automatic skill activation is strictly prohibited. Every accepted proposal requires explicit approval evidence. Rejection and deletion do not modify project-owned files.
+- **Risks or compatibility impact:** None. Additive feature in `@intentloom/protocol`, `@intentloom/application`, and `@intentloom/cli`.
+- **Next first action:** Open PR for `feat/controlled-learning-l3`, observe CI, merge after approval, and prepare Candidate L4 (Skill Evaluation & Regression Gates).
+- **Evidence:** local build, typecheck, lint, prettier format check, and vitest run.
+
 ### 2026-07-25, Controlled Agent Learning Candidate L2 progressive skill discovery
 
 - **Status:** complete
