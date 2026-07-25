@@ -56,6 +56,13 @@ import {
   listProfiles,
   delegateTaskRole,
   getBoundedProjectContext,
+  proposePersistentMemory,
+  getPersistentMemoryItem,
+  listPersistentMemoryItems,
+  acceptPersistentMemory,
+  forgetPersistentMemory,
+  exportPersistentMemory,
+  importPersistentMemory,
   type SkillLoadingLevel,
   type SkillProposalState,
   type EvaluationOutcome,
@@ -242,6 +249,8 @@ const valueFlags = new Set([
   "--name",
   "--max-tokens",
   "--max-items",
+  "--approved-by",
+  "--project-id",
 ]);
 const mappingValueFlags = new Set([
   "--project-owned-mapping",
@@ -260,7 +269,7 @@ const usage = [
   "       intentloom skill discover [--level catalog|contract|procedure] [--pack PACK] [--role ROLE] [--query QUERY] [--max-budget NUM] [--root PATH] [--json]",
   "       intentloom proposal <list|get|create|approve|plan|apply> [PROJECT_PATH|--root PATH] [--id ID] [--action ACTION] [--plan-file PATH] [--evidence EVIDENCE] [--json]",
   "       intentloom evaluate <run|list> [PROJECT_PATH|--root PATH] [--proposal-id ID] [--skill-id ID] [--json]",
-  "       intentloom memory <inspect|summary> [PROJECT_PATH|--root PATH] [--json]",
+  "       intentloom memory <inspect|summary|propose|review|list|accept|forget|export|import> [PROJECT_PATH|--root PATH] [--json]",
   "       intentloom checkpoint <create|pause|cancel|redirect|resume|list|delete> [PROJECT_PATH|--root PATH] [--id ID] [--task-id ID] [--new-intent INTENT] [--json]",
   "       intentloom rank [QUERY|config] [--provider PROVIDER] [--enable|--disable] [--root PATH] [--json]",
   "       intentloom profile <create|get|list> [--name NAME] [--root PATH] [--json]",
@@ -295,8 +304,21 @@ function parseArguments(args: readonly string[]): ParsedArguments {
     );
   if (command === "evaluate" && !["run", "list"].includes(args[1] ?? ""))
     throw new CliUsageError("evaluate requires run or list subcommand");
-  if (command === "memory" && !["inspect", "summary"].includes(args[1] ?? ""))
-    throw new CliUsageError("memory requires inspect or summary subcommand");
+  if (
+    command === "memory" &&
+    ![
+      "inspect",
+      "summary",
+      "propose",
+      "review",
+      "list",
+      "accept",
+      "forget",
+      "export",
+      "import",
+    ].includes(args[1] ?? "")
+  )
+    throw new CliUsageError("unsupported memory subcommand");
   if (
     command === "checkpoint" &&
     ![
@@ -1693,6 +1715,109 @@ export async function runCli(
           ];
           io.stdout(lines.join("\n"));
         }
+        return 0;
+      }
+      if (subcommand === "list") {
+        const items = await listPersistentMemoryItems({ root }, fileSystem);
+        io.stdout(
+          parsed.flags.has("--json")
+            ? JSON.stringify(items, null, 2)
+            : items
+                .map(
+                  (item) =>
+                    `[${item.id}] ${item.lifecycleState} ${item.classification}`,
+                )
+                .join("\n"),
+        );
+        return 0;
+      }
+      if (subcommand === "review") {
+        const id = parsed.values.get("--id") ?? args[2];
+        if (!id) throw new CliUsageError("memory review requires --id <id>");
+        const item = await getPersistentMemoryItem(id, { root }, fileSystem);
+        if (!item) return 3;
+        io.stdout(
+          parsed.flags.has("--json")
+            ? JSON.stringify(item, null, 2)
+            : `[${item.id}] ${item.lifecycleState}\n${item.content}`,
+        );
+        return 0;
+      }
+      if (subcommand === "propose") {
+        const raw = parsed.values.get("--json-input");
+        if (!raw)
+          throw new CliUsageError(
+            "memory propose requires --json-input <json>",
+          );
+        const input = JSON.parse(raw);
+        const item = await proposePersistentMemory(input, { root }, fileSystem);
+        io.stdout(
+          parsed.flags.has("--json")
+            ? JSON.stringify(item, null, 2)
+            : `Proposed persistent memory [${item.id}]`,
+        );
+        return 0;
+      }
+      if (subcommand === "accept") {
+        const id = parsed.values.get("--id") ?? args[2];
+        const approvedBy = parsed.values.get("--approved-by");
+        const evidence = parsed.values.get("--evidence");
+        if (!id || !approvedBy || !evidence)
+          throw new CliUsageError(
+            "memory accept requires --id, --approved-by, and --evidence",
+          );
+        const item = await acceptPersistentMemory(
+          id,
+          { approvedBy, evidence },
+          { root },
+          fileSystem,
+        );
+        io.stdout(
+          parsed.flags.has("--json")
+            ? JSON.stringify(item, null, 2)
+            : `Accepted persistent memory [${item.id}]`,
+        );
+        return 0;
+      }
+      if (subcommand === "forget") {
+        const id = parsed.values.get("--id") ?? args[2];
+        if (!id) throw new CliUsageError("memory forget requires --id <id>");
+        const item = await forgetPersistentMemory(id, { root }, fileSystem);
+        io.stdout(
+          parsed.flags.has("--json")
+            ? JSON.stringify(item, null, 2)
+            : `Forgot persistent memory [${item.id}]`,
+        );
+        return 0;
+      }
+      if (subcommand === "export") {
+        const projectId = parsed.values.get("--project-id");
+        if (!projectId)
+          throw new CliUsageError("memory export requires --project-id <id>");
+        const bundle = await exportPersistentMemory(
+          { root, projectId },
+          fileSystem,
+        );
+        io.stdout(JSON.stringify(bundle, null, 2));
+        return 0;
+      }
+      if (subcommand === "import") {
+        const projectId = parsed.values.get("--project-id");
+        const raw = parsed.values.get("--json-input");
+        if (!projectId || !raw)
+          throw new CliUsageError(
+            "memory import requires --project-id and --json-input <json>",
+          );
+        const items = await importPersistentMemory(
+          JSON.parse(raw),
+          { root, projectId },
+          fileSystem,
+        );
+        io.stdout(
+          parsed.flags.has("--json")
+            ? JSON.stringify(items, null, 2)
+            : `Imported ${items.length} persistent memory proposals`,
+        );
         return 0;
       }
       throw new CliUsageError(`unsupported memory subcommand: ${subcommand}`);

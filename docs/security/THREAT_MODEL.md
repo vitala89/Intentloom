@@ -28,6 +28,8 @@ Assets include repository contents, developer secrets, project files, Intentloom
 | Unbounded repository discovery                       | Heavy, ignored, binary, or external trees are traversed                    | Bound depth/file count; ignore dependencies, VCS, vendor/build/cache output and binaries; never traverse symlinked directories.                               |
 | Local daemon endpoint exposure or peer impersonation | Another process reaches or controls the daemon                             | IPC-only explicit endpoint, private runtime directory, one-use in-memory session token, strict framing/limits, no TCP fallback, and authenticated shutdown.   |
 | MCP mutation replay or stale approval                | An agent applies a changed or previously approved plan                     | Short-lived root-bound plan ID, digest, expiry, exact path/diff preview, current-state revalidation, explicit human approval, and transactional apply.        |
+| Persistent-memory poisoning or stale acceptance      | Untrusted or superseded content is retrieved as trusted project knowledge  | Project-scoped IDs, explicit lifecycle states, provenance, review before acceptance, approval evidence, supersession history, deterministic trust filtering.  |
+| Memory import or export leakage                      | A bundle mixes projects, overrides policy, or exposes secret content       | Versioned bundles, project identity checks, proposal-only imports, canonical-source rejection, secret redaction, explicit export and deletion audit evidence. |
 
 ## Non-goals
 
@@ -55,3 +57,5 @@ Intentloom does not sandbox a coding agent, enforce provider permissions, scan a
 18. MCP exposes named typed capabilities, never a generic shell, unrestricted CLI execution, arbitrary file reads, or generic writes.
 19. Every MCP-triggered mutation requires a reviewed plan, explicit human approval, digest and expiry verification, root and current-state revalidation, and transactional rollback guarantees.
 20. Credentials remain outside project configuration, generated output, evidence bundles, logs, source maps, and MCP tool results.
+21. Persistent-memory imports are untrusted proposals and cannot silently replace canonical intent, verified evidence, or accepted records.
+22. Persistent-memory acceptance requires explicit approval evidence and revalidation of the reviewed proposal state.
