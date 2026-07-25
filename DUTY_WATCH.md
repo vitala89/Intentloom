@@ -42,6 +42,20 @@ entry directly below this section.
 
 ## Watch entries
 
+### 2026-07-26, Controlled Agent Learning Candidate L8 profile isolation and role-aware delegation
+
+- **Status:** complete
+- **Agent/tool:** Antigravity AI Pair Programmer
+- **Branch:** `feat/controlled-learning-l8`
+- **Objective:** Implement profile definition and delegation schemas (`DelegatedAgentRole`, `AgentRoleCapabilities`, `ProfileDefinition`, `DelegationRequest`, `DelegationResult`), application operations (`createProfile`, `getProfile`, `listProfiles`, `delegateTaskRole`), strict capability scoping, read-only enforcement for context-scout and reviewer roles, CLI command routing (`intentloom profile`, `intentloom delegate`), and test coverage.
+- **Completed:** Implemented versioned `DelegatedAgentRole`, `AgentRoleCapabilities`, `ProfileDefinition`, `DelegationRequest`, `DelegationResult` schemas and validators in `@intentloom/protocol`. Added profile and delegation operations (`createProfile`, `getProfile`, `listProfiles`, `delegateTaskRole`) in `@intentloom/application` enforcing profile isolation, subagent capability clamping, and read-only constraints for `context-scout` and `reviewer` roles. Added CLI routing for `intentloom profile <create|get|list>` and `intentloom delegate` in `@intentloom/cli`. Added unit & integration tests in `tests/controlled-learning-l8.test.ts`. Updated `PROJECT_STATE.md` and `DUTY_WATCH.md`.
+- **Files changed:** `packages/protocol/src/index.ts`, `packages/application/src/index.ts`, `packages/cli/src/command.ts`, `tests/controlled-learning-l8.test.ts`, `PROJECT_STATE.md`, and `DUTY_WATCH.md`.
+- **Validation:** `pnpm typecheck`, `pnpm lint`, `pnpm format:check`, `pnpm build`, and all vitest test suites passed cleanly (651 tests passed across 64 test files).
+- **Decisions:** Cross-profile and cross-project retrieval is denied by default. Delegated roles (`context-scout`, `reviewer`) cannot mutate project state or widen their own capability grants.
+- **Risks or compatibility impact:** None. Additive feature in `@intentloom/protocol`, `@intentloom/application`, and `@intentloom/cli`.
+- **Next first action:** Open PR for `feat/controlled-learning-l8`, observe CI, merge after approval, completing all candidates in the Controlled Agent Learning Roadmap!
+- **Evidence:** local build, typecheck, lint, prettier format check, and vitest run.
+
 ### 2026-07-26, Controlled Agent Learning Candidate L7 optional semantic ranking
 
 - **Status:** complete

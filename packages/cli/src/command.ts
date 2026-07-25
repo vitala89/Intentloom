@@ -51,10 +51,15 @@ import {
   rankProceduralMemory,
   getSemanticRankingConfig,
   updateSemanticRankingConfig,
+  createProfile,
+  getProfile,
+  listProfiles,
+  delegateTaskRole,
   type SkillLoadingLevel,
   type SkillProposalState,
   type EvaluationOutcome,
   type SemanticRankingProvider,
+  type DelegatedAgentRole,
   type TrustClass,
   type RetentionState,
   type FileSystem,
@@ -177,6 +182,8 @@ const commands = new Set([
   "memory",
   "checkpoint",
   "rank",
+  "profile",
+  "delegate",
 ]);
 const projectPathCommands = new Set([
   "adopt",
@@ -230,6 +237,7 @@ const valueFlags = new Set([
   "--plan-file",
   "--new-intent",
   "--task-id",
+  "--name",
 ]);
 const mappingValueFlags = new Set([
   "--project-owned-mapping",
@@ -240,7 +248,7 @@ const usage = [
   "Usage: intentloom <init|plan> [--root PATH] [--dry-run]",
   "       intentloom adopt <--plan|--apply PLAN_FILE> [PROJECT_PATH|--root PATH] [--json] [--output PATH] [--strict] [--dry-run]",
   "       intentloom update <--plan|--apply PLAN_FILE> [PROJECT_PATH|--root PATH] [--json] [--output PATH] [--strict] [--dry-run]",
-  "       intentloom <adopt|update|diff|sync|doctor|inspect|timeline|conformance|summary|skill|proposal|evaluate|memory|checkpoint|rank> [PROJECT_PATH|--root PATH] [--dry-run]",
+  "       intentloom <adopt|update|diff|sync|doctor|inspect|timeline|conformance|summary|skill|proposal|evaluate|memory|checkpoint|rank|profile|delegate> [PROJECT_PATH|--root PATH] [--dry-run]",
   "       intentloom evidence import --provider github|gitlab --file PATH --project-key KEY [--json]",
   "       intentloom evidence analyze --provider github|gitlab --file PATH --project-key KEY [--root PATH] [--case-id ID] [--json]",
   "       intentloom conformance [PROJECT_PATH|--root PATH] [--policy PATH] [--timeline PATH] [--case-id ID] [--case-type TYPE] [--json]",
@@ -251,6 +259,8 @@ const usage = [
   "       intentloom memory <inspect|summary> [PROJECT_PATH|--root PATH] [--json]",
   "       intentloom checkpoint <create|pause|cancel|redirect|resume|list|delete> [PROJECT_PATH|--root PATH] [--id ID] [--task-id ID] [--new-intent INTENT] [--json]",
   "       intentloom rank [QUERY|config] [--provider PROVIDER] [--enable|--disable] [--root PATH] [--json]",
+  "       intentloom profile <create|get|list> [--name NAME] [--root PATH] [--json]",
+  "       intentloom delegate --profile NAME --role ROLE --task-id ID [--root PATH] [--json]",
   "       adoption mappings use --project-owned-mapping SOURCE=DESTINATION",
   "       or --documentation-mapping SOURCE=DESTINATION",
 ].join("\n");
@@ -297,6 +307,11 @@ function parseArguments(args: readonly string[]): ParsedArguments {
     throw new CliUsageError(
       "checkpoint requires create, pause, cancel, redirect, resume, list, or delete subcommand",
     );
+  if (
+    command === "profile" &&
+    !["create", "get", "list"].includes(args[1] ?? "")
+  )
+    throw new CliUsageError("profile requires create, get, or list subcommand");
   const flags = new Set<string>();
   const values = new Map<string, string>();
   const mappingValues = new Map<string, string[]>();
@@ -309,6 +324,7 @@ function parseArguments(args: readonly string[]): ParsedArguments {
       command === "evaluate" ||
       command === "memory" ||
       command === "checkpoint" ||
+      command === "profile" ||
       (command === "rank" && args[1] !== undefined && !args[1].startsWith("--"))
         ? 2
         : 1;
@@ -1779,6 +1795,99 @@ export async function runCli(
       throw new CliUsageError(
         `unsupported checkpoint subcommand: ${subcommand}`,
       );
+    }
+    if (parsed.command === "profile") {
+      const subcommand = args[1];
+      if (subcommand === "create") {
+        const name = parsed.values.get("--name") ?? args[2];
+        if (!name) {
+          throw new CliUsageError("profile create requires --name <name>");
+        }
+        const created = await createProfile(
+          {
+            schemaVersion: "1",
+            name,
+            allowedCapabilities: {
+              readOnly: false,
+              allowedPaths: ["."],
+              allowedTools: ["*"],
+              maxBudget: 100,
+              allowNetwork: true,
+            },
+            activeRoles: [
+              "context-scout",
+              "feature-builder",
+              "test-engineer",
+              "reviewer",
+              "release-analyst",
+            ],
+            createdAt: new Date().toISOString(),
+          },
+          { root },
+          fileSystem,
+        );
+        io.stdout(
+          parsed.flags.has("--json")
+            ? JSON.stringify(created, null, 2)
+            : `Created profile [${created.name}]`,
+        );
+        return 0;
+      }
+      if (subcommand === "get") {
+        const name = parsed.values.get("--name") ?? args[2];
+        if (!name) {
+          throw new CliUsageError("profile get requires --name <name>");
+        }
+        const profile = await getProfile(name, { root }, fileSystem);
+        if (!profile) {
+          throw new Error(`Profile not found: ${name}`);
+        }
+        io.stdout(
+          parsed.flags.has("--json")
+            ? JSON.stringify(profile, null, 2)
+            : `Profile [${profile.name}]: ${profile.activeRoles.join(", ")}`,
+        );
+        return 0;
+      }
+      if (subcommand === "list") {
+        const profiles = await listProfiles({ root }, fileSystem);
+        if (parsed.flags.has("--json")) {
+          io.stdout(JSON.stringify(profiles, null, 2));
+        } else {
+          const lines = profiles.map(
+            (p) => `- [${p.name}] roles=${p.activeRoles.join(",")}`,
+          );
+          io.stdout(lines.join("\n"));
+        }
+        return 0;
+      }
+      throw new CliUsageError(`unsupported profile subcommand: ${subcommand}`);
+    }
+    if (parsed.command === "delegate") {
+      const profileName = parsed.values.get("--profile");
+      const role = parsed.values.get("--role");
+      const parentTaskId = parsed.values.get("--task-id");
+      if (!profileName || !role || !parentTaskId) {
+        throw new CliUsageError(
+          "delegate requires --profile <name>, --role <role>, and --task-id <id>",
+        );
+      }
+      const delegation = await delegateTaskRole(
+        {
+          schemaVersion: "1",
+          profileName,
+          role: role as DelegatedAgentRole,
+          parentTaskId,
+        },
+        { root },
+        fileSystem,
+      );
+      io.stdout(
+        parsed.flags.has("--json")
+          ? JSON.stringify(delegation, null, 2)
+          : `Delegated role [${delegation.grantedRole}] under profile [${profileName}] (ID: ${delegation.delegationId})`,
+      );
+      return 0;
     }
     if (parsed.command === "rank") {
       const subcommand = args[1];

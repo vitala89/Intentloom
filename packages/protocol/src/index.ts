@@ -979,3 +979,182 @@ export function validateSemanticRankResult(value: unknown): SemanticRankResult {
     enabled: value.enabled,
   };
 }
+
+export type DelegatedAgentRole =
+  | "context-scout"
+  | "feature-builder"
+  | "test-engineer"
+  | "reviewer"
+  | "release-analyst";
+
+export interface AgentRoleCapabilities {
+  readonly readOnly: boolean;
+  readonly allowedPaths: readonly string[];
+  readonly allowedTools: readonly string[];
+  readonly maxBudget: number;
+  readonly allowNetwork: boolean;
+}
+
+export interface ProfileDefinition {
+  readonly schemaVersion: "1";
+  readonly name: string;
+  readonly description?: string;
+  readonly allowedCapabilities: AgentRoleCapabilities;
+  readonly activeRoles: readonly DelegatedAgentRole[];
+  readonly createdAt: string;
+}
+
+export interface DelegationRequest {
+  readonly schemaVersion: "1";
+  readonly profileName: string;
+  readonly role: DelegatedAgentRole;
+  readonly requestedCapabilities?: Partial<AgentRoleCapabilities>;
+  readonly parentTaskId: string;
+}
+
+export interface DelegationResult {
+  readonly schemaVersion: "1";
+  readonly delegationId: string;
+  readonly grantedRole: DelegatedAgentRole;
+  readonly effectiveCapabilities: AgentRoleCapabilities;
+  readonly deniedCapabilities: readonly string[];
+  readonly createdAt: string;
+}
+
+export function validateProfileDefinition(value: unknown): ProfileDefinition {
+  if (!isObject(value))
+    throw new ProtocolValidationError(
+      -32602,
+      "profile definition must be an object",
+    );
+  if (value.schemaVersion !== "1")
+    throw new ProtocolValidationError(
+      -32602,
+      "unsupported profile definition schema version",
+    );
+
+  const caps = isObject(value.allowedCapabilities)
+    ? value.allowedCapabilities
+    : {};
+  const validRoles: DelegatedAgentRole[] = [
+    "context-scout",
+    "feature-builder",
+    "test-engineer",
+    "reviewer",
+    "release-analyst",
+  ];
+
+  const activeRoles = stringArray(value.activeRoles, "activeRoles").filter(
+    (r) => validRoles.includes(r as DelegatedAgentRole),
+  ) as DelegatedAgentRole[];
+
+  return {
+    schemaVersion: "1",
+    name: stringValue(value.name, "name"),
+    ...(typeof value.description === "string" && value.description.length > 0
+      ? { description: value.description }
+      : {}),
+    allowedCapabilities: {
+      readOnly: Boolean(caps["readOnly"]),
+      allowedPaths: stringArray(caps["allowedPaths"], "allowedPaths"),
+      allowedTools: stringArray(caps["allowedTools"], "allowedTools"),
+      maxBudget:
+        typeof caps["maxBudget"] === "number" ? caps["maxBudget"] : 100,
+      allowNetwork: Boolean(caps["allowNetwork"]),
+    },
+    activeRoles,
+    createdAt: stringValue(value.createdAt, "createdAt"),
+  };
+}
+
+export function validateDelegationRequest(value: unknown): DelegationRequest {
+  if (!isObject(value))
+    throw new ProtocolValidationError(
+      -32602,
+      "delegation request must be an object",
+    );
+  if (value.schemaVersion !== "1")
+    throw new ProtocolValidationError(
+      -32602,
+      "unsupported delegation request schema version",
+    );
+
+  const role = stringValue(value.role, "role");
+  const validRoles: DelegatedAgentRole[] = [
+    "context-scout",
+    "feature-builder",
+    "test-engineer",
+    "reviewer",
+    "release-analyst",
+  ];
+  if (!validRoles.includes(role as DelegatedAgentRole))
+    throw new ProtocolValidationError(
+      -32602,
+      `invalid delegated role: ${role}`,
+    );
+
+  const requestedCapsObj = isObject(value.requestedCapabilities)
+    ? value.requestedCapabilities
+    : undefined;
+
+  const requestedCapabilities = requestedCapsObj
+    ? {
+        ...(typeof requestedCapsObj["readOnly"] === "boolean"
+          ? { readOnly: Boolean(requestedCapsObj["readOnly"]) }
+          : {}),
+        ...(typeof requestedCapsObj["allowNetwork"] === "boolean"
+          ? { allowNetwork: Boolean(requestedCapsObj["allowNetwork"]) }
+          : {}),
+        ...(typeof requestedCapsObj["maxBudget"] === "number"
+          ? { maxBudget: Number(requestedCapsObj["maxBudget"]) }
+          : {}),
+      }
+    : undefined;
+
+  return {
+    schemaVersion: "1",
+    profileName: stringValue(value.profileName, "profileName"),
+    role: role as DelegatedAgentRole,
+    ...(requestedCapabilities !== undefined ? { requestedCapabilities } : {}),
+    parentTaskId: stringValue(value.parentTaskId, "parentTaskId"),
+  };
+}
+
+export function validateDelegationResult(value: unknown): DelegationResult {
+  if (!isObject(value))
+    throw new ProtocolValidationError(
+      -32602,
+      "delegation result must be an object",
+    );
+  if (value.schemaVersion !== "1")
+    throw new ProtocolValidationError(
+      -32602,
+      "unsupported delegation result schema version",
+    );
+
+  const caps = isObject(value.effectiveCapabilities)
+    ? value.effectiveCapabilities
+    : {};
+
+  return {
+    schemaVersion: "1",
+    delegationId: stringValue(value.delegationId, "delegationId"),
+    grantedRole: stringValue(
+      value.grantedRole,
+      "grantedRole",
+    ) as DelegatedAgentRole,
+    effectiveCapabilities: {
+      readOnly: Boolean(caps["readOnly"]),
+      allowedPaths: stringArray(caps["allowedPaths"], "allowedPaths"),
+      allowedTools: stringArray(caps["allowedTools"], "allowedTools"),
+      maxBudget:
+        typeof caps["maxBudget"] === "number" ? caps["maxBudget"] : 100,
+      allowNetwork: Boolean(caps["allowNetwork"]),
+    },
+    deniedCapabilities: stringArray(
+      value.deniedCapabilities,
+      "deniedCapabilities",
+    ),
+    createdAt: stringValue(value.createdAt, "createdAt"),
+  };
+}
