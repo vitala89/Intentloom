@@ -484,3 +484,120 @@ export function validateSkillDiscoveryResult(
     }),
   };
 }
+
+export type SkillProposalState =
+  | "proposed"
+  | "under-review"
+  | "approved"
+  | "rejected"
+  | "active"
+  | "deprecated"
+  | "archived"
+  | "superseded"
+  | "rolled-back";
+
+export interface SkillProposal {
+  readonly schemaVersion: "1";
+  readonly id: string;
+  readonly name: string;
+  readonly version: string;
+  readonly state: SkillProposalState;
+  readonly sourceTaskIds: readonly string[];
+  readonly observedPattern: string;
+  readonly confidence: number;
+  readonly uncertainty: string;
+  readonly requestedCapabilities: readonly string[];
+  readonly supportedProfiles: readonly string[];
+  readonly validationExpectations: readonly string[];
+  readonly privacyImpact: string;
+  readonly licenseNotice?: string;
+  readonly trustClass: TrustClass;
+  readonly content: string;
+  readonly approvalEvidence?: string;
+  readonly previousVersion?: string;
+  readonly createdAt: string;
+  readonly updatedAt: string;
+}
+
+export function validateSkillProposal(value: unknown): SkillProposal {
+  if (!isObject(value))
+    throw new ProtocolValidationError(
+      -32602,
+      "skill proposal must be an object",
+    );
+  if (value.schemaVersion !== "1")
+    throw new ProtocolValidationError(
+      -32602,
+      "unsupported skill proposal schema version",
+    );
+
+  const state = stringValue(value.state, "state");
+  const validStates: SkillProposalState[] = [
+    "proposed",
+    "under-review",
+    "approved",
+    "rejected",
+    "active",
+    "deprecated",
+    "archived",
+    "superseded",
+    "rolled-back",
+  ];
+  if (!validStates.includes(state as SkillProposalState))
+    throw new ProtocolValidationError(-32602, `invalid state: ${state}`);
+
+  const trustClass = stringValue(value.trustClass, "trustClass");
+  if (
+    ![
+      "canonical-policy",
+      "verified-evidence",
+      "user-supplied",
+      "agent-generated",
+    ].includes(trustClass)
+  )
+    throw new ProtocolValidationError(-32602, "invalid trustClass");
+
+  const confidence =
+    typeof value.confidence === "number" ? value.confidence : 0.5;
+
+  return {
+    schemaVersion: "1",
+    id: stringValue(value.id, "id"),
+    name: stringValue(value.name, "name"),
+    version: stringValue(value.version, "version"),
+    state: state as SkillProposalState,
+    sourceTaskIds: stringArray(value.sourceTaskIds, "sourceTaskIds"),
+    observedPattern: stringValue(value.observedPattern, "observedPattern"),
+    confidence,
+    uncertainty: stringValue(value.uncertainty, "uncertainty"),
+    requestedCapabilities: stringArray(
+      value.requestedCapabilities,
+      "requestedCapabilities",
+    ),
+    supportedProfiles: stringArray(
+      value.supportedProfiles,
+      "supportedProfiles",
+    ),
+    validationExpectations: stringArray(
+      value.validationExpectations,
+      "validationExpectations",
+    ),
+    privacyImpact: stringValue(value.privacyImpact, "privacyImpact"),
+    ...(typeof value.licenseNotice === "string" &&
+    value.licenseNotice.length > 0
+      ? { licenseNotice: value.licenseNotice }
+      : {}),
+    trustClass: trustClass as TrustClass,
+    content: stringValue(value.content, "content"),
+    ...(typeof value.approvalEvidence === "string" &&
+    value.approvalEvidence.length > 0
+      ? { approvalEvidence: value.approvalEvidence }
+      : {}),
+    ...(typeof value.previousVersion === "string" &&
+    value.previousVersion.length > 0
+      ? { previousVersion: value.previousVersion }
+      : {}),
+    createdAt: stringValue(value.createdAt, "createdAt"),
+    updatedAt: stringValue(value.updatedAt, "updatedAt"),
+  };
+}

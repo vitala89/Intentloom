@@ -22,7 +22,7 @@ later justifies separation.
 
 ## Current phase
 
-Controlled Agent Learning Candidate L2: Progressive Skill Discovery.
+Controlled Agent Learning Candidate L3: Skill Proposal Lifecycle.
 
 The project must avoid premature structural migration. New applications,
 packages, and repository boundaries are introduced only when roadmap triggers

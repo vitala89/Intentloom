@@ -29,7 +29,13 @@ import {
   listSessionSummaries,
   discoverSkills,
   getSkillAtLevel,
+  createSkillProposal,
+  listSkillProposals,
+  getSkillProposal,
+  updateSkillProposalState,
+  rollbackSkill,
   type SkillLoadingLevel,
+  type SkillProposalState,
   type TrustClass,
   type RetentionState,
   type FileSystem,
@@ -147,6 +153,7 @@ const commands = new Set([
   "conformance",
   "summary",
   "skill",
+  "proposal",
 ]);
 const projectPathCommands = new Set([
   "adopt",
@@ -190,6 +197,8 @@ const valueFlags = new Set([
   "--role",
   "--query",
   "--max-budget",
+  "--state",
+  "--evidence",
 ]);
 const mappingValueFlags = new Set([
   "--project-owned-mapping",
@@ -200,12 +209,13 @@ const usage = [
   "Usage: intentloom <init|plan> [--root PATH] [--dry-run]",
   "       intentloom adopt <--plan|--apply PLAN_FILE> [PROJECT_PATH|--root PATH] [--json] [--output PATH] [--strict] [--dry-run]",
   "       intentloom update <--plan|--apply PLAN_FILE> [PROJECT_PATH|--root PATH] [--json] [--output PATH] [--strict] [--dry-run]",
-  "       intentloom <adopt|update|diff|sync|doctor|inspect|timeline|conformance|summary|skill> [PROJECT_PATH|--root PATH] [--dry-run]",
+  "       intentloom <adopt|update|diff|sync|doctor|inspect|timeline|conformance|summary|skill|proposal> [PROJECT_PATH|--root PATH] [--dry-run]",
   "       intentloom evidence import --provider github|gitlab --file PATH --project-key KEY [--json]",
   "       intentloom evidence analyze --provider github|gitlab --file PATH --project-key KEY [--root PATH] [--case-id ID] [--json]",
   "       intentloom conformance [PROJECT_PATH|--root PATH] [--policy PATH] [--timeline PATH] [--case-id ID] [--case-type TYPE] [--json]",
   "       intentloom summary <list|get|record> [PROJECT_PATH|--root PATH] [--id ID] [--trust-class CLASS] [--retention-state STATE] [--json]",
   "       intentloom skill discover [--level catalog|contract|procedure] [--pack PACK] [--role ROLE] [--query QUERY] [--max-budget NUM] [--root PATH] [--json]",
+  "       intentloom proposal <list|get|create|approve> [PROJECT_PATH|--root PATH] [--id ID] [--state STATE] [--evidence EVIDENCE] [--json]",
   "       adoption mappings use --project-owned-mapping SOURCE=DESTINATION",
   "       or --documentation-mapping SOURCE=DESTINATION",
 ].join("\n");
@@ -224,12 +234,22 @@ function parseArguments(args: readonly string[]): ParsedArguments {
     throw new CliUsageError("summary requires list, get, or record subcommand");
   if (command === "skill" && args[1] !== "discover")
     throw new CliUsageError("skill requires discover subcommand");
+  if (
+    command === "proposal" &&
+    !["list", "get", "create", "approve"].includes(args[1] ?? "")
+  )
+    throw new CliUsageError(
+      "proposal requires list, get, create, or approve subcommand",
+    );
   const flags = new Set<string>();
   const values = new Map<string, string>();
   const mappingValues = new Map<string, string[]>();
   for (
     let index =
-      command === "evidence" || command === "summary" || command === "skill"
+      command === "evidence" ||
+      command === "summary" ||
+      command === "skill" ||
+      command === "proposal"
         ? 2
         : 1;
     index < args.length;
@@ -1361,6 +1381,95 @@ export async function runCli(
         return 0;
       }
       throw new CliUsageError(`unsupported skill subcommand: ${subcommand}`);
+    }
+    if (parsed.command === "proposal") {
+      const subcommand = args[1];
+      if (subcommand === "list") {
+        const rawState = parsed.values.get("--state");
+        const state = rawState as SkillProposalState | undefined;
+        const rawTrust = parsed.values.get("--trust-class");
+        const trustClass = rawTrust as TrustClass | undefined;
+        const proposals = await listSkillProposals(
+          {
+            root,
+            ...(state !== undefined ? { state } : {}),
+            ...(trustClass !== undefined ? { trustClass } : {}),
+          },
+          fileSystem,
+        );
+        if (parsed.flags.has("--json")) {
+          io.stdout(JSON.stringify(proposals, null, 2));
+        } else {
+          const lines = proposals.map(
+            (p) =>
+              `- [${p.id}] ${p.name} (v${p.version}) [State: ${p.state}] (Trust: ${p.trustClass})`,
+          );
+          io.stdout(lines.join("\n"));
+        }
+        return 0;
+      }
+      if (subcommand === "get") {
+        const id = parsed.values.get("--id") ?? args[2];
+        if (!id) throw new CliUsageError("proposal get requires --id <id>");
+        const proposal = await getSkillProposal(id, { root }, fileSystem);
+        if (!proposal) {
+          io.stderr(`Proposal not found: ${id}\n`);
+          return 3;
+        }
+        io.stdout(
+          parsed.flags.has("--json")
+            ? JSON.stringify(proposal, null, 2)
+            : `[${proposal.id}] ${proposal.name} (v${proposal.version})\nState: ${proposal.state}\nTrust: ${proposal.trustClass}\nObserved Pattern: ${proposal.observedPattern}`,
+        );
+        return 0;
+      }
+      if (subcommand === "create") {
+        const jsonInput = parsed.values.get("--json-input");
+        const jsonFile = parsed.values.get("--file");
+        let rawContent = jsonInput;
+        if (!rawContent && jsonFile) {
+          rawContent = await fileSystem.read(resolveWithin(root, jsonFile));
+        }
+        if (!rawContent) {
+          throw new CliUsageError(
+            "proposal create requires --json-input <json> or --file <path>",
+          );
+        }
+        const parsedProposal = JSON.parse(rawContent);
+        const created = await createSkillProposal(
+          parsedProposal,
+          { root },
+          fileSystem,
+        );
+        io.stdout(
+          parsed.flags.has("--json")
+            ? JSON.stringify(created, null, 2)
+            : `Created skill proposal [${created.id}]`,
+        );
+        return 0;
+      }
+      if (subcommand === "approve") {
+        const id = parsed.values.get("--id") ?? args[2];
+        const evidence = parsed.values.get("--evidence");
+        if (!id || !evidence) {
+          throw new CliUsageError(
+            "proposal approve requires --id <id> and --evidence <evidence>",
+          );
+        }
+        const approved = await updateSkillProposalState(
+          id,
+          "approved",
+          { root, approvalEvidence: evidence },
+          fileSystem,
+        );
+        io.stdout(
+          parsed.flags.has("--json")
+            ? JSON.stringify(approved, null, 2)
+            : `Approved skill proposal [${approved.id}]`,
+        );
+        return 0;
+      }
+      throw new CliUsageError(`unsupported proposal subcommand: ${subcommand}`);
     }
     if (parsed.command === "doctor")
       invalidMetadata.push(
