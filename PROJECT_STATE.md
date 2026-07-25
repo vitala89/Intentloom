@@ -22,7 +22,7 @@ later justifies separation.
 
 ## Current phase
 
-Controlled Agent Learning Candidate L8: Profile Isolation and Role-Aware Delegation.
+Memory & Security Candidate M1: Bounded Project Context.
 
 The project must avoid premature structural migration. New applications,
 packages, and repository boundaries are introduced only when roadmap triggers

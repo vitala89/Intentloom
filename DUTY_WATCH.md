@@ -42,6 +42,34 @@ entry directly below this section.
 
 ## Watch entries
 
+### 2026-07-26, Framework version bump and v0.4.0-beta.1 candidate release
+
+- **Status:** in_progress
+- **Agent/tool:** Antigravity AI Pair Programmer
+- **Branch:** `release/v0.4.0-beta.1`
+- **Objective:** Bump framework version from `0.3.0-beta.1` to `0.4.0-beta.1`, synchronize version across all workspace packages and `packages/core/src/version.ts`, create `v0.4` candidate release readiness audit, update versioning strategy docs, run full verification matrix, and open Release Pull Request.
+- **Completed:** Bumped root `package.json` to `0.4.0-beta.1`, executed `scripts/sync-version.mjs` via `pnpm build`, created `docs/audits/V0_4_RELEASE_READINESS.md`, updated `docs/releases/VERSIONING.md`, updated `PROJECT_STATE.md` and `DUTY_WATCH.md`.
+- **Files changed:** `package.json`, `packages/*/package.json`, `packages/core/src/version.ts`, `docs/releases/VERSIONING.md`, `docs/audits/V0_4_RELEASE_READINESS.md`, `PROJECT_STATE.md`, `DUTY_WATCH.md`.
+- **Validation:** `pnpm typecheck`, `pnpm lint`, `pnpm format:check`, `pnpm build`, and all vitest test suites passed cleanly.
+- **Decisions:** Release `0.4.0-beta.1` contains the complete Controlled Agent Learning & Procedural Memory Milestone (Candidates L1–L8).
+- **Risks or compatibility impact:** None. Lockstep pre-release bump for workspace packages.
+- **Next first action:** Open Release PR for `release/v0.4.0-beta.1`, observe CI, merge after approval, create git tag `v0.4.0-beta.1`, and publish `intentloom` to npmjs.
+- **Evidence:** local build, version sync, typecheck, lint, prettier format check, and vitest run.
+
+### 2026-07-26, Memory & Security Candidate M1 bounded project context
+
+- **Status:** in_progress
+- **Agent/tool:** Antigravity AI Pair Programmer
+- **Branch:** `main`
+- **Objective:** Implement context schemas (`ContextSourceType`, `ContextSource`, `ContextRetrievalRequest`, `ContextRetrievalResult`), application read-only operation (`getBoundedProjectContext`), secret path exclusion, item & token budget clamping, CLI command routing (`intentloom context get`), and test coverage.
+- **Completed:** Created `implementation_plan.md` artifact and updated `PROJECT_STATE.md` and `DUTY_WATCH.md`.
+- **Files changed:** `PROJECT_STATE.md` and `DUTY_WATCH.md`.
+- **Validation:** Pending implementation and test execution.
+- **Decisions:** `getBoundedProjectContext` is byte-for-byte read-only. Excluded files and secret paths can NEVER enter returned context.
+- **Risks or compatibility impact:** None. Additive feature in `@intentloom/protocol`, `@intentloom/application`, and `@intentloom/cli`.
+- **Next first action:** Obtain user approval on `implementation_plan.md`, create feature branch `feat/memory-security-m1`, and implement protocol schemas.
+- **Evidence:** implementation plan approval.
+
 ### 2026-07-26, Controlled Agent Learning Candidate L8 profile isolation and role-aware delegation
 
 - **Status:** complete
