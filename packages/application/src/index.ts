@@ -69,6 +69,11 @@ import {
   type SemanticRankingConfig,
   type SemanticRankItem,
   type SemanticRankResult,
+  type DelegatedAgentRole,
+  type AgentRoleCapabilities,
+  type ProfileDefinition,
+  type DelegationRequest,
+  type DelegationResult,
   type TaskSummary,
   type TrustClass,
   validateSessionSummary,
@@ -81,6 +86,9 @@ import {
   validateTaskRedirectRequest,
   validateSemanticRankingConfig,
   validateSemanticRankResult,
+  validateProfileDefinition,
+  validateDelegationRequest,
+  validateDelegationResult,
   validateTaskSummary,
 } from "@intentloom/protocol";
 export type {
@@ -108,6 +116,11 @@ export type {
   SemanticRankingConfig,
   SemanticRankItem,
   SemanticRankResult,
+  DelegatedAgentRole,
+  AgentRoleCapabilities,
+  ProfileDefinition,
+  DelegationRequest,
+  DelegationResult,
   TaskSummary,
   TrustClass,
 };
@@ -122,6 +135,9 @@ export {
   validateTaskRedirectRequest,
   validateSemanticRankingConfig,
   validateSemanticRankResult,
+  validateProfileDefinition,
+  validateDelegationRequest,
+  validateDelegationResult,
   validateTaskSummary,
 };
 import { parse, stringify } from "yaml";
@@ -4894,4 +4910,144 @@ export async function rankProceduralMemory(
     provider,
     enabled,
   });
+}
+
+export async function createProfile(
+  input: unknown,
+  options: { root: string },
+  fs: FileSystem = nodeFileSystem,
+): Promise<ProfileDefinition> {
+  const profile = validateProfileDefinition(input);
+  const path = inside(
+    options.root,
+    `.aif/memory/profiles/${profile.name}.json`,
+  );
+  const dir = dirname(path);
+  if (!(await fs.exists(dir))) {
+    await fs.mkdir(dir);
+  }
+  await fs.write(path, `${JSON.stringify(profile, null, 2)}\n`);
+  return profile;
+}
+
+export async function getProfile(
+  name: string,
+  options: { root: string },
+  fs: FileSystem = nodeFileSystem,
+): Promise<ProfileDefinition | null> {
+  const path = inside(options.root, `.aif/memory/profiles/${name}.json`);
+  if (!(await fs.exists(path))) return null;
+  try {
+    const content = await fs.read(path);
+    return validateProfileDefinition(JSON.parse(content));
+  } catch {
+    return null;
+  }
+}
+
+export async function listProfiles(
+  options: { root: string },
+  fs: FileSystem = nodeFileSystem,
+): Promise<readonly ProfileDefinition[]> {
+  const root = options.root;
+  const allPaths = await fs.list(root);
+  const results: ProfileDefinition[] = [];
+
+  for (const rawPath of allPaths) {
+    const rel = rawPath.startsWith(root) ? relative(root, rawPath) : rawPath;
+    const normalized = rel.replaceAll("\\", "/");
+    if (
+      !normalized.startsWith(".aif/memory/profiles/") ||
+      !normalized.endsWith(".json")
+    )
+      continue;
+
+    const fullPath = rawPath.startsWith(root)
+      ? rawPath
+      : inside(root, normalized);
+    try {
+      const content = await fs.read(fullPath);
+      const prof = validateProfileDefinition(JSON.parse(content));
+      results.push(prof);
+    } catch {
+      // Ignore invalid profile files
+    }
+  }
+
+  return results.sort((l, r) => l.name.localeCompare(r.name));
+}
+
+export async function delegateTaskRole(
+  input: unknown,
+  options: { root: string },
+  fs: FileSystem = nodeFileSystem,
+): Promise<DelegationResult> {
+  const req = validateDelegationRequest(input);
+  const profile = await getProfile(req.profileName, options, fs);
+  if (!profile) {
+    throw new Error(`Profile not found: ${req.profileName}`);
+  }
+
+  if (!profile.activeRoles.includes(req.role)) {
+    throw new Error(
+      `Role [${req.role}] is not allowed by profile [${profile.name}]`,
+    );
+  }
+
+  const deniedCapabilities: string[] = [];
+
+  // Enforce read-only roles
+  const isReadOnlyRole =
+    req.role === "context-scout" || req.role === "reviewer";
+  const readOnly = isReadOnlyRole || profile.allowedCapabilities.readOnly;
+
+  if (isReadOnlyRole && req.requestedCapabilities?.readOnly === false) {
+    deniedCapabilities.push("readOnly: false (role enforces read-only)");
+  }
+
+  const allowedPaths = profile.allowedCapabilities.allowedPaths;
+  const allowedTools = profile.allowedCapabilities.allowedTools;
+  const maxBudget = Math.min(
+    profile.allowedCapabilities.maxBudget,
+    req.requestedCapabilities?.maxBudget ??
+      profile.allowedCapabilities.maxBudget,
+  );
+  const allowNetwork =
+    profile.allowedCapabilities.allowNetwork &&
+    (req.requestedCapabilities?.allowNetwork ?? true);
+
+  if (
+    req.requestedCapabilities?.allowNetwork === true &&
+    !profile.allowedCapabilities.allowNetwork
+  ) {
+    deniedCapabilities.push("allowNetwork: true (profile disallows network)");
+  }
+
+  const delegationId = `del-${req.role}-${Date.now()}`;
+  const result = validateDelegationResult({
+    schemaVersion: "1",
+    delegationId,
+    grantedRole: req.role,
+    effectiveCapabilities: {
+      readOnly,
+      allowedPaths,
+      allowedTools,
+      maxBudget,
+      allowNetwork,
+    },
+    deniedCapabilities,
+    createdAt: new Date().toISOString(),
+  });
+
+  const path = inside(
+    options.root,
+    `.aif/memory/delegations/${delegationId}.json`,
+  );
+  const dir = dirname(path);
+  if (!(await fs.exists(dir))) {
+    await fs.mkdir(dir);
+  }
+  await fs.write(path, `${JSON.stringify(result, null, 2)}\n`);
+
+  return result;
 }
