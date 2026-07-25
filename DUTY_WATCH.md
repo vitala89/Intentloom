@@ -44,17 +44,19 @@ entry directly below this section.
 
 ### 2026-07-26, Memory & Security Candidate M2 accepted persistent memory
 
-- **Status:** partial
+- **Status:** complete
 - **Agent/tool:** Codex
 - **Branch:** `codex/memory-security-m2`
+- **Commit:** `c877714 feat(memory): add accepted persistent memory`
+- **Pull request:** #70 (draft)
 - **Objective:** Implement project-local accepted persistent memory with typed lifecycle, explicit approval, redaction, project isolation, import/export, supersession, and deletion safeguards.
 - **Completed:** Added ADR-0024 and persistent-memory threat controls. Implemented versioned `PersistentMemoryItem` and export schemas; local proposal, review, accept, supersede, forget, export, and import operations; import rollback; CLI routing under `intentloom memory`; and M2 unit/integration tests. Updated durable project state from M1 to M2.
 - **Files changed:** `packages/protocol/src/index.ts`, `packages/application/src/index.ts`, `packages/cli/src/command.ts`, `tests/memory-security-m2.test.ts`, `docs/decisions/ADR-0024-accepted-persistent-memory.md`, `docs/security/THREAT_MODEL.md`, `PROJECT_STATE.md`, and `DUTY_WATCH.md`.
 - **Validation:** `pnpm typecheck`, `pnpm lint`, `pnpm format:check`, `pnpm build`, `pnpm test`, and `git diff --check` passed. The daemon suite requires Unix-socket permissions unavailable in the workspace sandbox; it passed unchanged when rerun outside the sandbox (16 passed, 1 Windows-only skipped).
 - **Decisions:** Imports are always untrusted proposals; canonical and verified classifications cannot be imported. Accepted records require explicit approval evidence. Superseded and forgotten records retain lifecycle audit evidence.
 - **Risks or compatibility impact:** Additive protocol, application, CLI, and local storage behavior. No network calls, hooks, or background collection are introduced.
-- **Not completed:** No commit or pull request was created because external publishing was not explicitly authorized.
-- **Next first action:** Review the final diff, then commit and open a pull request for `codex/memory-security-m2` if authorized.
+- **Not completed:** Merge remains subject to human review and approval.
+- **Next first action:** Review draft PR #70, merge after approval, then begin Candidate M3 (Semantic Retrieval and Portable Adapters) with its required ADR and threat review.
 - **Evidence:** local typecheck, lint, Prettier check, build, full Vitest run, daemon validation outside sandbox, and `git diff --check`.
 
 ### 2026-07-26, Framework version bump and v0.4.0-beta.1 candidate release
