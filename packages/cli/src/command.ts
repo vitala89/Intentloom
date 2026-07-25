@@ -48,9 +48,13 @@ import {
   resumeTask,
   listTaskCheckpoints,
   deleteTaskCheckpoint,
+  rankProceduralMemory,
+  getSemanticRankingConfig,
+  updateSemanticRankingConfig,
   type SkillLoadingLevel,
   type SkillProposalState,
   type EvaluationOutcome,
+  type SemanticRankingProvider,
   type TrustClass,
   type RetentionState,
   type FileSystem,
@@ -172,6 +176,7 @@ const commands = new Set([
   "evaluate",
   "memory",
   "checkpoint",
+  "rank",
 ]);
 const projectPathCommands = new Set([
   "adopt",
@@ -189,6 +194,8 @@ const booleanFlags = new Set([
   "--json",
   "--plan",
   "--strict",
+  "--enable",
+  "--disable",
 ]);
 const valueFlags = new Set([
   "--root",
@@ -233,7 +240,7 @@ const usage = [
   "Usage: intentloom <init|plan> [--root PATH] [--dry-run]",
   "       intentloom adopt <--plan|--apply PLAN_FILE> [PROJECT_PATH|--root PATH] [--json] [--output PATH] [--strict] [--dry-run]",
   "       intentloom update <--plan|--apply PLAN_FILE> [PROJECT_PATH|--root PATH] [--json] [--output PATH] [--strict] [--dry-run]",
-  "       intentloom <adopt|update|diff|sync|doctor|inspect|timeline|conformance|summary|skill|proposal|evaluate|memory|checkpoint> [PROJECT_PATH|--root PATH] [--dry-run]",
+  "       intentloom <adopt|update|diff|sync|doctor|inspect|timeline|conformance|summary|skill|proposal|evaluate|memory|checkpoint|rank> [PROJECT_PATH|--root PATH] [--dry-run]",
   "       intentloom evidence import --provider github|gitlab --file PATH --project-key KEY [--json]",
   "       intentloom evidence analyze --provider github|gitlab --file PATH --project-key KEY [--root PATH] [--case-id ID] [--json]",
   "       intentloom conformance [PROJECT_PATH|--root PATH] [--policy PATH] [--timeline PATH] [--case-id ID] [--case-type TYPE] [--json]",
@@ -243,6 +250,7 @@ const usage = [
   "       intentloom evaluate <run|list> [PROJECT_PATH|--root PATH] [--proposal-id ID] [--skill-id ID] [--json]",
   "       intentloom memory <inspect|summary> [PROJECT_PATH|--root PATH] [--json]",
   "       intentloom checkpoint <create|pause|cancel|redirect|resume|list|delete> [PROJECT_PATH|--root PATH] [--id ID] [--task-id ID] [--new-intent INTENT] [--json]",
+  "       intentloom rank [QUERY|config] [--provider PROVIDER] [--enable|--disable] [--root PATH] [--json]",
   "       adoption mappings use --project-owned-mapping SOURCE=DESTINATION",
   "       or --documentation-mapping SOURCE=DESTINATION",
 ].join("\n");
@@ -300,7 +308,8 @@ function parseArguments(args: readonly string[]): ParsedArguments {
       command === "proposal" ||
       command === "evaluate" ||
       command === "memory" ||
-      command === "checkpoint"
+      command === "checkpoint" ||
+      (command === "rank" && args[1] !== undefined && !args[1].startsWith("--"))
         ? 2
         : 1;
     index < args.length;
@@ -1770,6 +1779,79 @@ export async function runCli(
       throw new CliUsageError(
         `unsupported checkpoint subcommand: ${subcommand}`,
       );
+    }
+    if (parsed.command === "rank") {
+      const subcommand = args[1];
+      if (subcommand === "config") {
+        let enabled: boolean | undefined;
+        if (parsed.flags.has("--enable")) enabled = true;
+        if (parsed.flags.has("--disable")) enabled = false;
+
+        const rawProvider = parsed.values.get("--provider");
+        const provider = rawProvider as SemanticRankingProvider | undefined;
+
+        if (enabled !== undefined || provider !== undefined) {
+          const current = await getSemanticRankingConfig({ root }, fileSystem);
+          const updated = await updateSemanticRankingConfig(
+            {
+              ...current,
+              ...(enabled !== undefined ? { enabled } : {}),
+              ...(provider !== undefined ? { provider } : {}),
+            },
+            { root },
+            fileSystem,
+          );
+          io.stdout(
+            parsed.flags.has("--json")
+              ? JSON.stringify(updated, null, 2)
+              : `Updated semantic ranking config: enabled=${updated.enabled}, provider=${updated.provider}`,
+          );
+          return 0;
+        }
+
+        const config = await getSemanticRankingConfig({ root }, fileSystem);
+        io.stdout(
+          parsed.flags.has("--json")
+            ? JSON.stringify(config, null, 2)
+            : `Semantic ranking config: enabled=${config.enabled}, provider=${config.provider}`,
+        );
+        return 0;
+      }
+
+      const query = parsed.values.get("--query") ?? args[1];
+      if (!query) {
+        throw new CliUsageError(
+          "rank requires a query string or 'config' subcommand",
+        );
+      }
+
+      const rawProvider = parsed.values.get("--provider");
+      const provider = rawProvider as SemanticRankingProvider | undefined;
+      const enabled = parsed.flags.has("--disable") ? false : undefined;
+
+      const result = await rankProceduralMemory(
+        query,
+        {
+          root,
+          ...(provider !== undefined ? { provider } : {}),
+          ...(enabled !== undefined ? { enabled } : {}),
+        },
+        fileSystem,
+      );
+
+      if (parsed.flags.has("--json")) {
+        io.stdout(JSON.stringify(result, null, 2));
+      } else {
+        const lines = [
+          `Semantic Rank Results for: "${result.query}" (Provider: ${result.provider}, Latency: ${result.rankingLatencyMs}ms)`,
+          ...result.items.map(
+            (item) =>
+              `- [${item.score.toFixed(2)}] [${item.type}] ${item.id}: ${item.relevanceReason}`,
+          ),
+        ];
+        io.stdout(lines.join("\n"));
+      }
+      return 0;
     }
     if (parsed.command === "doctor")
       invalidMetadata.push(

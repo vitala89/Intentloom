@@ -22,7 +22,7 @@ later justifies separation.
 
 ## Current phase
 
-Controlled Agent Learning Candidate L6: Pause, Redirect, Checkpoint, and Resume.
+Controlled Agent Learning Candidate L7: Optional Semantic Ranking.
 
 The project must avoid premature structural migration. New applications,
 packages, and repository boundaries are introduced only when roadmap triggers
