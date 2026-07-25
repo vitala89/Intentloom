@@ -27,6 +27,9 @@ import {
   recordTaskSummary,
   recordSessionSummary,
   listSessionSummaries,
+  discoverSkills,
+  getSkillAtLevel,
+  type SkillLoadingLevel,
   type TrustClass,
   type RetentionState,
   type FileSystem,
@@ -143,6 +146,7 @@ const commands = new Set([
   "evidence",
   "conformance",
   "summary",
+  "skill",
 ]);
 const projectPathCommands = new Set([
   "adopt",
@@ -181,6 +185,11 @@ const valueFlags = new Set([
   "--trust-class",
   "--retention-state",
   "--json-input",
+  "--level",
+  "--pack",
+  "--role",
+  "--query",
+  "--max-budget",
 ]);
 const mappingValueFlags = new Set([
   "--project-owned-mapping",
@@ -191,11 +200,12 @@ const usage = [
   "Usage: intentloom <init|plan> [--root PATH] [--dry-run]",
   "       intentloom adopt <--plan|--apply PLAN_FILE> [PROJECT_PATH|--root PATH] [--json] [--output PATH] [--strict] [--dry-run]",
   "       intentloom update <--plan|--apply PLAN_FILE> [PROJECT_PATH|--root PATH] [--json] [--output PATH] [--strict] [--dry-run]",
-  "       intentloom <adopt|update|diff|sync|doctor|inspect|timeline|conformance|summary> [PROJECT_PATH|--root PATH] [--dry-run]",
+  "       intentloom <adopt|update|diff|sync|doctor|inspect|timeline|conformance|summary|skill> [PROJECT_PATH|--root PATH] [--dry-run]",
   "       intentloom evidence import --provider github|gitlab --file PATH --project-key KEY [--json]",
   "       intentloom evidence analyze --provider github|gitlab --file PATH --project-key KEY [--root PATH] [--case-id ID] [--json]",
   "       intentloom conformance [PROJECT_PATH|--root PATH] [--policy PATH] [--timeline PATH] [--case-id ID] [--case-type TYPE] [--json]",
   "       intentloom summary <list|get|record> [PROJECT_PATH|--root PATH] [--id ID] [--trust-class CLASS] [--retention-state STATE] [--json]",
+  "       intentloom skill discover [--level catalog|contract|procedure] [--pack PACK] [--role ROLE] [--query QUERY] [--max-budget NUM] [--root PATH] [--json]",
   "       adoption mappings use --project-owned-mapping SOURCE=DESTINATION",
   "       or --documentation-mapping SOURCE=DESTINATION",
 ].join("\n");
@@ -212,11 +222,16 @@ function parseArguments(args: readonly string[]): ParsedArguments {
     !["list", "get", "record"].includes(args[1] ?? "")
   )
     throw new CliUsageError("summary requires list, get, or record subcommand");
+  if (command === "skill" && args[1] !== "discover")
+    throw new CliUsageError("skill requires discover subcommand");
   const flags = new Set<string>();
   const values = new Map<string, string>();
   const mappingValues = new Map<string, string[]>();
   for (
-    let index = command === "evidence" || command === "summary" ? 2 : 1;
+    let index =
+      command === "evidence" || command === "summary" || command === "skill"
+        ? 2
+        : 1;
     index < args.length;
     index += 1
   ) {
@@ -1288,6 +1303,64 @@ export async function runCli(
         return 0;
       }
       throw new CliUsageError(`unsupported summary subcommand: ${subcommand}`);
+    }
+    if (parsed.command === "skill") {
+      const subcommand = args[1];
+      if (subcommand === "discover") {
+        const rawLevel = parsed.values.get("--level");
+        if (
+          rawLevel !== undefined &&
+          !["catalog", "contract", "procedure"].includes(rawLevel)
+        ) {
+          throw new CliUsageError(
+            "--level must be catalog, contract, or procedure",
+          );
+        }
+        const level = (rawLevel as SkillLoadingLevel | undefined) ?? "catalog";
+        const pack = parsed.values.get("--pack");
+        const role = parsed.values.get("--role");
+        const query = parsed.values.get("--query");
+        const rawTrust = parsed.values.get("--trust-class");
+        const trustClass = rawTrust as TrustClass | undefined;
+        const rawBudget = parsed.values.get("--max-budget");
+        const maxBudget = rawBudget ? parseInt(rawBudget, 10) : undefined;
+
+        const result = await discoverSkills(
+          {
+            root,
+            ...(dependencies.catalogRoot !== undefined
+              ? { catalogRoot: dependencies.catalogRoot }
+              : {}),
+            level,
+            ...(pack !== undefined ? { pack } : {}),
+            ...(role !== undefined ? { role } : {}),
+            ...(query !== undefined ? { query } : {}),
+            ...(trustClass !== undefined ? { trustClass } : {}),
+            ...(maxBudget !== undefined && !Number.isNaN(maxBudget)
+              ? { maxBudget }
+              : {}),
+          },
+          fileSystem,
+        );
+
+        if (parsed.flags.has("--json")) {
+          io.stdout(JSON.stringify(result, null, 2));
+        } else {
+          const lines = [
+            `Discovered ${result.skills.length} skills (Level: ${result.level})`,
+            `Total context budget: ${result.totalBudgetEstimate} tokens (Savings: ${result.budgetSavingsPercentage}% vs eager loading)`,
+            "",
+          ];
+          for (const s of result.skills) {
+            lines.push(
+              `- [${s.id}] ${s.name} (v${s.version}): ${s.description}`,
+            );
+          }
+          io.stdout(lines.join("\n"));
+        }
+        return 0;
+      }
+      throw new CliUsageError(`unsupported skill subcommand: ${subcommand}`);
     }
     if (parsed.command === "doctor")
       invalidMetadata.push(

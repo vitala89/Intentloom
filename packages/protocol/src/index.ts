@@ -303,3 +303,184 @@ export function validateSessionSummary(value: unknown): SessionSummary {
     createdAt: stringValue(value.createdAt, "createdAt"),
   };
 }
+
+export type SkillLoadingLevel = "catalog" | "contract" | "procedure";
+
+export interface SkillContextCost {
+  readonly catalogCost: number;
+  readonly contractCost: number;
+  readonly procedureCost: number;
+}
+
+export interface SkillCatalogMetadata {
+  readonly level: "catalog";
+  readonly id: string;
+  readonly name: string;
+  readonly version: string;
+  readonly description: string;
+  readonly packs: readonly string[];
+  readonly roles: readonly string[];
+  readonly trustClass: TrustClass;
+  readonly compatibility: readonly string[];
+  readonly capabilities: readonly string[];
+  readonly permissions: readonly string[];
+  readonly contextCost: SkillContextCost;
+}
+
+export interface SkillExecutionContract extends Omit<
+  SkillCatalogMetadata,
+  "level"
+> {
+  readonly level: "contract";
+  readonly inputs: readonly {
+    readonly name: string;
+    readonly description: string;
+    readonly required: boolean;
+  }[];
+  readonly outputs: readonly {
+    readonly name: string;
+    readonly description: string;
+  }[];
+  readonly triggers: readonly string[];
+  readonly toolRequirements: readonly string[];
+  readonly executionConstraints: readonly string[];
+}
+
+export interface SkillProcedure extends Omit<SkillExecutionContract, "level"> {
+  readonly level: "procedure";
+  readonly content: string;
+}
+
+export interface SkillDiscoveryDecision {
+  readonly skillId: string;
+  readonly status: "selected" | "rejected" | "incompatible" | "unavailable";
+  readonly reason: string;
+}
+
+export interface SkillDiscoveryResult {
+  readonly level: SkillLoadingLevel;
+  readonly totalBudgetEstimate: number;
+  readonly eagerBudgetEstimate: number;
+  readonly budgetSavingsPercentage: number;
+  readonly skills: readonly (
+    SkillCatalogMetadata | SkillExecutionContract | SkillProcedure
+  )[];
+  readonly decisions: readonly SkillDiscoveryDecision[];
+}
+
+export function validateSkillCatalogMetadata(
+  value: unknown,
+): SkillCatalogMetadata {
+  if (!isObject(value))
+    throw new ProtocolValidationError(
+      -32602,
+      "skill catalog metadata must be an object",
+    );
+  if (value.level !== "catalog")
+    throw new ProtocolValidationError(-32602, "level must be catalog");
+
+  const trustClass = stringValue(value.trustClass, "trustClass");
+  if (
+    ![
+      "canonical-policy",
+      "verified-evidence",
+      "user-supplied",
+      "agent-generated",
+    ].includes(trustClass)
+  )
+    throw new ProtocolValidationError(-32602, "invalid trustClass");
+
+  if (!isObject(value.contextCost))
+    throw new ProtocolValidationError(-32602, "contextCost must be an object");
+
+  return {
+    level: "catalog",
+    id: stringValue(value.id, "id"),
+    name: stringValue(value.name, "name"),
+    version: stringValue(value.version, "version"),
+    description: stringValue(value.description, "description"),
+    packs: stringArray(value.packs, "packs"),
+    roles: stringArray(value.roles, "roles"),
+    trustClass: trustClass as TrustClass,
+    compatibility: stringArray(value.compatibility, "compatibility"),
+    capabilities: stringArray(value.capabilities, "capabilities"),
+    permissions: stringArray(value.permissions, "permissions"),
+    contextCost: {
+      catalogCost:
+        typeof value.contextCost.catalogCost === "number"
+          ? value.contextCost.catalogCost
+          : 0,
+      contractCost:
+        typeof value.contextCost.contractCost === "number"
+          ? value.contextCost.contractCost
+          : 0,
+      procedureCost:
+        typeof value.contextCost.procedureCost === "number"
+          ? value.contextCost.procedureCost
+          : 0,
+    },
+  };
+}
+
+export function validateSkillDiscoveryResult(
+  value: unknown,
+): SkillDiscoveryResult {
+  if (!isObject(value))
+    throw new ProtocolValidationError(
+      -32602,
+      "skill discovery result must be an object",
+    );
+
+  const level = stringValue(value.level, "level");
+  if (!["catalog", "contract", "procedure"].includes(level))
+    throw new ProtocolValidationError(-32602, "invalid level");
+
+  if (!Array.isArray(value.skills))
+    throw new ProtocolValidationError(-32602, "skills must be an array");
+
+  if (!Array.isArray(value.decisions))
+    throw new ProtocolValidationError(-32602, "decisions must be an array");
+
+  return {
+    level: level as SkillLoadingLevel,
+    totalBudgetEstimate:
+      typeof value.totalBudgetEstimate === "number"
+        ? value.totalBudgetEstimate
+        : 0,
+    eagerBudgetEstimate:
+      typeof value.eagerBudgetEstimate === "number"
+        ? value.eagerBudgetEstimate
+        : 0,
+    budgetSavingsPercentage:
+      typeof value.budgetSavingsPercentage === "number"
+        ? value.budgetSavingsPercentage
+        : 0,
+    skills: value.skills.map((entry) => {
+      if (!isObject(entry))
+        throw new ProtocolValidationError(
+          -32602,
+          "skill entry must be an object",
+        );
+      return validateSkillCatalogMetadata({
+        ...entry,
+        level: "catalog",
+      });
+    }),
+    decisions: value.decisions.map((dec) => {
+      if (!isObject(dec))
+        throw new ProtocolValidationError(-32602, "decision must be an object");
+      const status = stringValue(dec.status, "status");
+      if (
+        !["selected", "rejected", "incompatible", "unavailable"].includes(
+          status,
+        )
+      )
+        throw new ProtocolValidationError(-32602, "invalid decision status");
+      return {
+        skillId: stringValue(dec.skillId, "skillId"),
+        status: status as SkillDiscoveryDecision["status"],
+        reason: stringValue(dec.reason, "reason"),
+      };
+    }),
+  };
+}
