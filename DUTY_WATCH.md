@@ -42,6 +42,20 @@ entry directly below this section.
 
 ## Watch entries
 
+### 2026-07-25, Controlled Agent Learning Candidate L2 progressive skill discovery
+
+- **Status:** complete
+- **Agent/tool:** Antigravity AI Pair Programmer
+- **Branch:** `feat/controlled-learning-l2`
+- **Objective:** Implement 3 progressive skill loading levels (catalog metadata, execution contract, full procedure), context cost budget accounting, pack and role metadata filtering, discovery decision logs, application operations (`discoverSkills`, `getSkillAtLevel`), CLI routing (`intentloom skill discover`), and test coverage.
+- **Completed:** Implemented 3 progressive loading levels (`catalog`, `contract`, `procedure`), context cost calculation, pack/role filtering, decision logs in `@intentloom/protocol` and `@intentloom/application`. Added CLI routing for `intentloom skill discover` in `@intentloom/cli`. Added unit & integration tests in `tests/controlled-learning-l2.test.ts`. Updated `PROJECT_STATE.md` and `DUTY_WATCH.md`.
+- **Files changed:** `packages/protocol/src/index.ts`, `packages/application/src/index.ts`, `packages/cli/src/command.ts`, `tests/controlled-learning-l2.test.ts`, `PROJECT_STATE.md`, and `DUTY_WATCH.md`.
+- **Validation:** `pnpm typecheck`, `pnpm lint`, `pnpm format:check`, `pnpm build`, and all vitest test suites passed cleanly (622 tests passed across 58 test files).
+- **Decisions:** Skills support 3 loading levels (`catalog`, `contract`, `procedure`) to enable progressive discovery and measurable context budget savings without eagerly injecting full procedures into agent context.
+- **Risks or compatibility impact:** None. Additive feature in `@intentloom/protocol`, `@intentloom/application`, and `@intentloom/cli`.
+- **Next first action:** Open PR for `feat/controlled-learning-l2`, observe CI, merge after approval, and prepare Candidate L3 (Skill Proposal Lifecycle).
+- **Evidence:** local build, typecheck, lint, prettier format check, and vitest run.
+
 ### 2026-07-25, Controlled Agent Learning Candidate L1 structured task and session summaries
 
 - **Status:** complete

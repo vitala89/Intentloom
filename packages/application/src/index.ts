@@ -46,13 +46,37 @@ import {
 import {
   type RetentionState,
   type SessionSummary,
+  type SkillCatalogMetadata,
+  type SkillDiscoveryDecision,
+  type SkillDiscoveryResult,
+  type SkillExecutionContract,
+  type SkillLoadingLevel,
+  type SkillProcedure,
   type TaskSummary,
   type TrustClass,
   validateSessionSummary,
+  validateSkillCatalogMetadata,
+  validateSkillDiscoveryResult,
   validateTaskSummary,
 } from "@intentloom/protocol";
-export type { RetentionState, SessionSummary, TaskSummary, TrustClass };
-export { validateSessionSummary, validateTaskSummary };
+export type {
+  RetentionState,
+  SessionSummary,
+  SkillCatalogMetadata,
+  SkillDiscoveryDecision,
+  SkillDiscoveryResult,
+  SkillExecutionContract,
+  SkillLoadingLevel,
+  SkillProcedure,
+  TaskSummary,
+  TrustClass,
+};
+export {
+  validateSessionSummary,
+  validateSkillCatalogMetadata,
+  validateSkillDiscoveryResult,
+  validateTaskSummary,
+};
 import { parse, stringify } from "yaml";
 
 export type ChangeKind =
@@ -3639,4 +3663,339 @@ export async function listSessionSummaries(
   return results.sort((left, right) =>
     right.createdAt.localeCompare(left.createdAt),
   );
+}
+
+export function parseSkillProgressive(
+  id: string,
+  content: string,
+): {
+  catalog: SkillCatalogMetadata;
+  contract: SkillExecutionContract;
+  procedure: SkillProcedure;
+} {
+  const match = /^---\r?\n([\s\S]*?)\r?\n---\r?\n([\s\S]*)$/u.exec(content);
+  const frontmatterStr = match ? (match[1] ?? "") : "";
+  const body = match ? (match[2] ?? "") : content;
+
+  let fields: Record<string, unknown> = {};
+  if (frontmatterStr.trim().length > 0) {
+    try {
+      const parsed = parse(frontmatterStr) as unknown;
+      if (typeof parsed === "object" && parsed !== null) {
+        fields = parsed as Record<string, unknown>;
+      }
+    } catch {
+      // fallback to empty frontmatter
+    }
+  }
+
+  const name = typeof fields.name === "string" ? fields.name : id;
+  const description =
+    typeof fields.description === "string" ? fields.description : `Skill ${id}`;
+  const version = typeof fields.version === "string" ? fields.version : "1.0.0";
+  const packs = Array.isArray(fields.packs)
+    ? fields.packs.filter((p): p is string => typeof p === "string")
+    : ["all"];
+  const roles = Array.isArray(fields.roles)
+    ? fields.roles.filter((r): r is string => typeof r === "string")
+    : ["engineer"];
+  const trustClass: TrustClass =
+    typeof fields.trustClass === "string" &&
+    [
+      "canonical-policy",
+      "verified-evidence",
+      "user-supplied",
+      "agent-generated",
+    ].includes(fields.trustClass)
+      ? (fields.trustClass as TrustClass)
+      : "canonical-policy";
+  const compatibility = Array.isArray(fields.compatibility)
+    ? fields.compatibility.filter((c): c is string => typeof c === "string")
+    : ["v1.0"];
+  const capabilities = Array.isArray(fields.capabilities)
+    ? fields.capabilities.filter((c): c is string => typeof c === "string")
+    : [id];
+  const permissions = Array.isArray(fields.permissions)
+    ? fields.permissions.filter((p): p is string => typeof p === "string")
+    : [];
+
+  const catalogCost = Math.ceil(
+    (name.length + description.length + id.length + 50) / 4,
+  );
+  const contractCost = catalogCost + Math.ceil(body.length / 8);
+  const procedureCost = Math.ceil(content.length / 4);
+
+  const catalog: SkillCatalogMetadata = {
+    level: "catalog",
+    id,
+    name,
+    version,
+    description,
+    packs,
+    roles,
+    trustClass,
+    compatibility,
+    capabilities,
+    permissions,
+    contextCost: {
+      catalogCost,
+      contractCost,
+      procedureCost,
+    },
+  };
+
+  const inputs: { name: string; description: string; required: boolean }[] = [];
+  const inputsMatch = /## Inputs\r?\n([\s\S]*?)(?=\r?\n## |$)/u.exec(body);
+  if (inputsMatch?.[1]) {
+    const lines = inputsMatch[1]
+      .split("\n")
+      .map((l) => l.trim())
+      .filter((l) => l.startsWith("-"));
+    for (const line of lines) {
+      const text = line.replace(/^- /, "").trim();
+      inputs.push({
+        name: text.split(" ")[0] ?? "input",
+        description: text,
+        required: true,
+      });
+    }
+  }
+
+  const outputs: { name: string; description: string }[] = [];
+  const outputsMatch = /## Exact outputs\r?\n([\s\S]*?)(?=\r?\n## |$)/u.exec(
+    body,
+  );
+  if (outputsMatch?.[1]) {
+    const lines = outputsMatch[1]
+      .split("\n")
+      .map((l) => l.trim())
+      .filter((l) => l.length > 0);
+    for (const line of lines) {
+      outputs.push({
+        name: "output",
+        description: line.replace(/^- /, ""),
+      });
+    }
+  }
+
+  const triggers: string[] = [];
+  const triggerMatch = /## Trigger\r?\n([\s\S]*?)(?=\r?\n## |$)/u.exec(body);
+  if (triggerMatch?.[1]) {
+    triggers.push(triggerMatch[1].trim());
+  }
+
+  const contract: SkillExecutionContract = {
+    ...catalog,
+    level: "contract",
+    inputs,
+    outputs,
+    triggers,
+    toolRequirements: [],
+    executionConstraints: [],
+  };
+
+  const procedure: SkillProcedure = {
+    ...contract,
+    level: "procedure",
+    content,
+  };
+
+  return { catalog, contract, procedure };
+}
+
+export async function discoverSkills(
+  options: {
+    root: string;
+    catalogRoot?: string;
+    level?: SkillLoadingLevel;
+    pack?: string;
+    role?: string;
+    query?: string;
+    trustClass?: TrustClass;
+    maxBudget?: number;
+  },
+  fs: FileSystem = nodeFileSystem,
+): Promise<SkillDiscoveryResult> {
+  const level: SkillLoadingLevel = options.level ?? "catalog";
+  const catalogDir = options.catalogRoot ?? inside(options.root, "catalog");
+  const skillsDir = inside(catalogDir, "skills");
+
+  const allFiles = await fs.list(options.root);
+  const skillMap = new Map<string, string>();
+
+  for (const rawPath of allFiles) {
+    const rel = rawPath.startsWith(options.root)
+      ? relative(options.root, rawPath)
+      : rawPath;
+    const normalized = rel.replaceAll("\\", "/");
+    const match = /(?:catalog\/)?skills\/([^/]+)\/SKILL\.md$/u.exec(normalized);
+    if (match?.[1]) {
+      const fullPath = rawPath.startsWith(options.root)
+        ? rawPath
+        : inside(options.root, normalized);
+      skillMap.set(match[1], fullPath);
+    }
+  }
+
+  const selectedSkills: (
+    SkillCatalogMetadata | SkillExecutionContract | SkillProcedure
+  )[] = [];
+  const decisions: SkillDiscoveryDecision[] = [];
+
+  let accumulatedBudget = 0;
+  let eagerBudget = 0;
+
+  const sortedSkillIds = [...skillMap.keys()].sort();
+
+  for (const skillId of sortedSkillIds) {
+    const filePath = skillMap.get(skillId)!;
+    try {
+      const content = await fs.read(filePath);
+      const progressive = parseSkillProgressive(skillId, content);
+      const meta = progressive.catalog;
+
+      if (
+        options.trustClass !== undefined &&
+        meta.trustClass !== options.trustClass
+      ) {
+        decisions.push({
+          skillId,
+          status: "rejected",
+          reason: `Trust class ${meta.trustClass} does not match ${options.trustClass}`,
+        });
+        continue;
+      }
+
+      if (
+        options.pack !== undefined &&
+        !meta.packs.includes(options.pack) &&
+        !meta.packs.includes("all")
+      ) {
+        decisions.push({
+          skillId,
+          status: "rejected",
+          reason: `Skill pack does not match requested pack: ${options.pack}`,
+        });
+        continue;
+      }
+
+      if (
+        options.role !== undefined &&
+        !meta.roles.includes(options.role) &&
+        !meta.roles.includes("engineer")
+      ) {
+        decisions.push({
+          skillId,
+          status: "rejected",
+          reason: `Skill role does not match requested role: ${options.role}`,
+        });
+        continue;
+      }
+
+      if (options.query !== undefined) {
+        const q = options.query.toLowerCase();
+        const matches =
+          meta.id.toLowerCase().includes(q) ||
+          meta.name.toLowerCase().includes(q) ||
+          meta.description.toLowerCase().includes(q) ||
+          meta.capabilities.some((c) => c.toLowerCase().includes(q));
+        if (!matches) {
+          decisions.push({
+            skillId,
+            status: "rejected",
+            reason: `Skill metadata does not match query: ${options.query}`,
+          });
+          continue;
+        }
+      }
+
+      const costAtLevel =
+        level === "catalog"
+          ? meta.contextCost.catalogCost
+          : level === "contract"
+            ? meta.contextCost.contractCost
+            : meta.contextCost.procedureCost;
+
+      if (
+        options.maxBudget !== undefined &&
+        accumulatedBudget + costAtLevel > options.maxBudget
+      ) {
+        decisions.push({
+          skillId,
+          status: "incompatible",
+          reason: `Exceeds remaining context budget constraint of ${options.maxBudget}`,
+        });
+        continue;
+      }
+
+      accumulatedBudget += costAtLevel;
+      eagerBudget += meta.contextCost.procedureCost;
+
+      const chosenSkill =
+        level === "catalog"
+          ? progressive.catalog
+          : level === "contract"
+            ? progressive.contract
+            : progressive.procedure;
+
+      selectedSkills.push(chosenSkill);
+      decisions.push({
+        skillId,
+        status: "selected",
+        reason: `Selected at level ${level}`,
+      });
+    } catch (error) {
+      decisions.push({
+        skillId,
+        status: "unavailable",
+        reason: `Failed to parse skill: ${error instanceof Error ? error.message : String(error)}`,
+      });
+    }
+  }
+
+  const budgetSavingsPercentage =
+    eagerBudget > 0
+      ? Math.round(((eagerBudget - accumulatedBudget) / eagerBudget) * 100)
+      : 0;
+
+  return {
+    level,
+    totalBudgetEstimate: accumulatedBudget,
+    eagerBudgetEstimate: eagerBudget,
+    budgetSavingsPercentage,
+    skills: selectedSkills,
+    decisions,
+  };
+}
+
+export async function getSkillAtLevel(
+  id: string,
+  level: SkillLoadingLevel,
+  options: { root: string; catalogRoot?: string },
+  fs: FileSystem = nodeFileSystem,
+): Promise<
+  SkillCatalogMetadata | SkillExecutionContract | SkillProcedure | null
+> {
+  const catalogDir = options.catalogRoot ?? inside(options.root, "catalog");
+  const filePath = inside(catalogDir, `skills/${id}/SKILL.md`);
+
+  let content: string | null = null;
+  if (await fs.exists(filePath)) {
+    content = await fs.read(filePath);
+  } else {
+    const fallbackPath = inside(options.root, `skills/${id}/SKILL.md`);
+    if (await fs.exists(fallbackPath)) {
+      content = await fs.read(fallbackPath);
+    }
+  }
+  if (!content) return null;
+
+  try {
+    const progressive = parseSkillProgressive(id, content);
+    if (level === "catalog") return progressive.catalog;
+    if (level === "contract") return progressive.contract;
+    return progressive.procedure;
+  } catch {
+    return null;
+  }
 }

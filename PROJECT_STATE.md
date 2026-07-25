@@ -22,7 +22,7 @@ later justifies separation.
 
 ## Current phase
 
-Controlled Agent Learning Candidate L1: Structured Task & Session Summaries.
+Controlled Agent Learning Candidate L2: Progressive Skill Discovery.
 
 The project must avoid premature structural migration. New applications,
 packages, and repository boundaries are introduced only when roadmap triggers
