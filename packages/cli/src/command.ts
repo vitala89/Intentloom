@@ -37,6 +37,10 @@ import {
   evaluateSkillProposal,
   listSkillEvaluations,
   getSkillEvaluation,
+  listProceduralMemorySummary,
+  inspectProceduralMemory,
+  prepareSkillMutationPlan,
+  applySkillMutationPlan,
   type SkillLoadingLevel,
   type SkillProposalState,
   type EvaluationOutcome,
@@ -159,6 +163,7 @@ const commands = new Set([
   "skill",
   "proposal",
   "evaluate",
+  "memory",
 ]);
 const projectPathCommands = new Set([
   "adopt",
@@ -206,6 +211,8 @@ const valueFlags = new Set([
   "--evidence",
   "--proposal-id",
   "--skill-id",
+  "--action",
+  "--plan-file",
 ]);
 const mappingValueFlags = new Set([
   "--project-owned-mapping",
@@ -216,14 +223,15 @@ const usage = [
   "Usage: intentloom <init|plan> [--root PATH] [--dry-run]",
   "       intentloom adopt <--plan|--apply PLAN_FILE> [PROJECT_PATH|--root PATH] [--json] [--output PATH] [--strict] [--dry-run]",
   "       intentloom update <--plan|--apply PLAN_FILE> [PROJECT_PATH|--root PATH] [--json] [--output PATH] [--strict] [--dry-run]",
-  "       intentloom <adopt|update|diff|sync|doctor|inspect|timeline|conformance|summary|skill|proposal|evaluate> [PROJECT_PATH|--root PATH] [--dry-run]",
+  "       intentloom <adopt|update|diff|sync|doctor|inspect|timeline|conformance|summary|skill|proposal|evaluate|memory> [PROJECT_PATH|--root PATH] [--dry-run]",
   "       intentloom evidence import --provider github|gitlab --file PATH --project-key KEY [--json]",
   "       intentloom evidence analyze --provider github|gitlab --file PATH --project-key KEY [--root PATH] [--case-id ID] [--json]",
   "       intentloom conformance [PROJECT_PATH|--root PATH] [--policy PATH] [--timeline PATH] [--case-id ID] [--case-type TYPE] [--json]",
   "       intentloom summary <list|get|record> [PROJECT_PATH|--root PATH] [--id ID] [--trust-class CLASS] [--retention-state STATE] [--json]",
   "       intentloom skill discover [--level catalog|contract|procedure] [--pack PACK] [--role ROLE] [--query QUERY] [--max-budget NUM] [--root PATH] [--json]",
-  "       intentloom proposal <list|get|create|approve> [PROJECT_PATH|--root PATH] [--id ID] [--state STATE] [--evidence EVIDENCE] [--json]",
+  "       intentloom proposal <list|get|create|approve|plan|apply> [PROJECT_PATH|--root PATH] [--id ID] [--action ACTION] [--plan-file PATH] [--evidence EVIDENCE] [--json]",
   "       intentloom evaluate <run|list> [PROJECT_PATH|--root PATH] [--proposal-id ID] [--skill-id ID] [--json]",
+  "       intentloom memory <inspect|summary> [PROJECT_PATH|--root PATH] [--json]",
   "       adoption mappings use --project-owned-mapping SOURCE=DESTINATION",
   "       or --documentation-mapping SOURCE=DESTINATION",
 ].join("\n");
@@ -244,13 +252,17 @@ function parseArguments(args: readonly string[]): ParsedArguments {
     throw new CliUsageError("skill requires discover subcommand");
   if (
     command === "proposal" &&
-    !["list", "get", "create", "approve"].includes(args[1] ?? "")
+    !["list", "get", "create", "approve", "plan", "apply"].includes(
+      args[1] ?? "",
+    )
   )
     throw new CliUsageError(
-      "proposal requires list, get, create, or approve subcommand",
+      "proposal requires list, get, create, approve, plan, or apply subcommand",
     );
   if (command === "evaluate" && !["run", "list"].includes(args[1] ?? ""))
     throw new CliUsageError("evaluate requires run or list subcommand");
+  if (command === "memory" && !["inspect", "summary"].includes(args[1] ?? ""))
+    throw new CliUsageError("memory requires inspect or summary subcommand");
   const flags = new Set<string>();
   const values = new Map<string, string>();
   const mappingValues = new Map<string, string[]>();
@@ -260,7 +272,8 @@ function parseArguments(args: readonly string[]): ParsedArguments {
       command === "summary" ||
       command === "skill" ||
       command === "proposal" ||
-      command === "evaluate"
+      command === "evaluate" ||
+      command === "memory"
         ? 2
         : 1;
     index < args.length;
@@ -1480,6 +1493,69 @@ export async function runCli(
         );
         return 0;
       }
+      if (subcommand === "plan") {
+        const action = parsed.values.get("--action") as
+          "approve" | "activate" | "deprecate" | "rollback" | undefined;
+        const id =
+          parsed.values.get("--id") ??
+          parsed.values.get("--proposal-id") ??
+          args[2];
+        const evidence = parsed.values.get("--evidence");
+        if (!action || !id) {
+          throw new CliUsageError(
+            "proposal plan requires --action <approve|activate|deprecate|rollback> and --id <id>",
+          );
+        }
+        const plan = await prepareSkillMutationPlan(
+          {
+            root,
+            action,
+            proposalId: id,
+            ...(evidence !== undefined ? { approvalEvidence: evidence } : {}),
+          },
+          fileSystem,
+        );
+        const outputText = parsed.flags.has("--json")
+          ? JSON.stringify(plan, null, 2)
+          : `Prepared skill mutation plan [${plan.id}] (${plan.action} -> ${plan.targetState}) checksum=${plan.checksum}`;
+        const outputPath = parsed.values.get("--output");
+        if (outputPath !== undefined) {
+          const targetPath = resolveWithin(root, outputPath);
+          await fileSystem.write(
+            targetPath,
+            `${JSON.stringify(plan, null, 2)}\n`,
+          );
+        }
+        io.stdout(`${outputText}\n`);
+        return 0;
+      }
+      if (subcommand === "apply") {
+        const planFile =
+          parsed.values.get("--plan-file") ??
+          parsed.values.get("--file") ??
+          args[2];
+        if (!planFile) {
+          throw new CliUsageError("proposal apply requires --plan-file <path>");
+        }
+        const planPath = resolveWithin(root, planFile);
+        if (!(await fileSystem.exists(planPath))) {
+          io.stderr(`Skill mutation plan file not found: ${planFile}\n`);
+          return 3;
+        }
+        const rawPlan = await fileSystem.read(planPath);
+        const plan = JSON.parse(rawPlan);
+        const updated = await applySkillMutationPlan(
+          plan,
+          { root },
+          fileSystem,
+        );
+        io.stdout(
+          parsed.flags.has("--json")
+            ? JSON.stringify(updated, null, 2)
+            : `Applied skill mutation plan: proposal [${updated.id}] state is now ${updated.state}`,
+        );
+        return 0;
+      }
       throw new CliUsageError(`unsupported proposal subcommand: ${subcommand}`);
     }
     if (parsed.command === "evaluate") {
@@ -1526,6 +1602,40 @@ export async function runCli(
         return 0;
       }
       throw new CliUsageError(`unsupported evaluate subcommand: ${subcommand}`);
+    }
+    if (parsed.command === "memory") {
+      const subcommand = args[1];
+      if (subcommand === "summary") {
+        const summary = await listProceduralMemorySummary({ root }, fileSystem);
+        io.stdout(
+          parsed.flags.has("--json")
+            ? JSON.stringify(summary, null, 2)
+            : `Procedural Memory Summary:\n- Total Proposals: ${summary.totalProposals}\n- Active Skills: ${summary.activeSkillsCount}\n- Evaluations: ${summary.totalEvaluations} (Pass Rate: ${summary.evaluationPassRate}%)\n- Lock Status: ${summary.extensionLockStatus}`,
+        );
+        return 0;
+      }
+      if (subcommand === "inspect") {
+        const inspection = await inspectProceduralMemory({ root }, fileSystem);
+        if (parsed.flags.has("--json")) {
+          io.stdout(JSON.stringify(inspection, null, 2));
+        } else {
+          const lines = [
+            `Procedural Memory Inspection:`,
+            `- Total Proposals: ${inspection.summary.totalProposals}`,
+            `- Active Skills: ${inspection.summary.activeSkillsCount}`,
+            `- Evaluation Pass Rate: ${inspection.summary.evaluationPassRate}%`,
+            `- Lock Status: ${inspection.summary.extensionLockStatus}`,
+            "",
+            `Issues (${inspection.issues.length}):`,
+            ...(inspection.issues.length > 0
+              ? inspection.issues.map((i) => `  - ${i}`)
+              : ["  - None"]),
+          ];
+          io.stdout(lines.join("\n"));
+        }
+        return 0;
+      }
+      throw new CliUsageError(`unsupported memory subcommand: ${subcommand}`);
     }
     if (parsed.command === "doctor")
       invalidMetadata.push(
