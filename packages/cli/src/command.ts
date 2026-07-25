@@ -41,6 +41,13 @@ import {
   inspectProceduralMemory,
   prepareSkillMutationPlan,
   applySkillMutationPlan,
+  createTaskCheckpoint,
+  pauseTask,
+  cancelTask,
+  redirectTask,
+  resumeTask,
+  listTaskCheckpoints,
+  deleteTaskCheckpoint,
   type SkillLoadingLevel,
   type SkillProposalState,
   type EvaluationOutcome,
@@ -164,6 +171,7 @@ const commands = new Set([
   "proposal",
   "evaluate",
   "memory",
+  "checkpoint",
 ]);
 const projectPathCommands = new Set([
   "adopt",
@@ -213,6 +221,8 @@ const valueFlags = new Set([
   "--skill-id",
   "--action",
   "--plan-file",
+  "--new-intent",
+  "--task-id",
 ]);
 const mappingValueFlags = new Set([
   "--project-owned-mapping",
@@ -223,7 +233,7 @@ const usage = [
   "Usage: intentloom <init|plan> [--root PATH] [--dry-run]",
   "       intentloom adopt <--plan|--apply PLAN_FILE> [PROJECT_PATH|--root PATH] [--json] [--output PATH] [--strict] [--dry-run]",
   "       intentloom update <--plan|--apply PLAN_FILE> [PROJECT_PATH|--root PATH] [--json] [--output PATH] [--strict] [--dry-run]",
-  "       intentloom <adopt|update|diff|sync|doctor|inspect|timeline|conformance|summary|skill|proposal|evaluate|memory> [PROJECT_PATH|--root PATH] [--dry-run]",
+  "       intentloom <adopt|update|diff|sync|doctor|inspect|timeline|conformance|summary|skill|proposal|evaluate|memory|checkpoint> [PROJECT_PATH|--root PATH] [--dry-run]",
   "       intentloom evidence import --provider github|gitlab --file PATH --project-key KEY [--json]",
   "       intentloom evidence analyze --provider github|gitlab --file PATH --project-key KEY [--root PATH] [--case-id ID] [--json]",
   "       intentloom conformance [PROJECT_PATH|--root PATH] [--policy PATH] [--timeline PATH] [--case-id ID] [--case-type TYPE] [--json]",
@@ -232,6 +242,7 @@ const usage = [
   "       intentloom proposal <list|get|create|approve|plan|apply> [PROJECT_PATH|--root PATH] [--id ID] [--action ACTION] [--plan-file PATH] [--evidence EVIDENCE] [--json]",
   "       intentloom evaluate <run|list> [PROJECT_PATH|--root PATH] [--proposal-id ID] [--skill-id ID] [--json]",
   "       intentloom memory <inspect|summary> [PROJECT_PATH|--root PATH] [--json]",
+  "       intentloom checkpoint <create|pause|cancel|redirect|resume|list|delete> [PROJECT_PATH|--root PATH] [--id ID] [--task-id ID] [--new-intent INTENT] [--json]",
   "       adoption mappings use --project-owned-mapping SOURCE=DESTINATION",
   "       or --documentation-mapping SOURCE=DESTINATION",
 ].join("\n");
@@ -263,6 +274,21 @@ function parseArguments(args: readonly string[]): ParsedArguments {
     throw new CliUsageError("evaluate requires run or list subcommand");
   if (command === "memory" && !["inspect", "summary"].includes(args[1] ?? ""))
     throw new CliUsageError("memory requires inspect or summary subcommand");
+  if (
+    command === "checkpoint" &&
+    ![
+      "create",
+      "pause",
+      "cancel",
+      "redirect",
+      "resume",
+      "list",
+      "delete",
+    ].includes(args[1] ?? "")
+  )
+    throw new CliUsageError(
+      "checkpoint requires create, pause, cancel, redirect, resume, list, or delete subcommand",
+    );
   const flags = new Set<string>();
   const values = new Map<string, string>();
   const mappingValues = new Map<string, string[]>();
@@ -273,7 +299,8 @@ function parseArguments(args: readonly string[]): ParsedArguments {
       command === "skill" ||
       command === "proposal" ||
       command === "evaluate" ||
-      command === "memory"
+      command === "memory" ||
+      command === "checkpoint"
         ? 2
         : 1;
     index < args.length;
@@ -1636,6 +1663,113 @@ export async function runCli(
         return 0;
       }
       throw new CliUsageError(`unsupported memory subcommand: ${subcommand}`);
+    }
+    if (parsed.command === "checkpoint") {
+      const subcommand = args[1];
+      if (subcommand === "create") {
+        const taskId = parsed.values.get("--task-id") ?? args[2];
+        if (!taskId) {
+          throw new CliUsageError("checkpoint create requires --task-id <id>");
+        }
+        const created = await createTaskCheckpoint(
+          taskId,
+          { root },
+          fileSystem,
+        );
+        io.stdout(
+          parsed.flags.has("--json")
+            ? JSON.stringify(created, null, 2)
+            : `Created task checkpoint [${created.id}] for task [${taskId}]`,
+        );
+        return 0;
+      }
+      if (subcommand === "pause") {
+        const id = parsed.values.get("--id") ?? args[2];
+        if (!id) throw new CliUsageError("checkpoint pause requires --id <id>");
+        const paused = await pauseTask(id, { root }, fileSystem);
+        io.stdout(
+          parsed.flags.has("--json")
+            ? JSON.stringify(paused, null, 2)
+            : `Paused task checkpoint [${id}]`,
+        );
+        return 0;
+      }
+      if (subcommand === "cancel") {
+        const id = parsed.values.get("--id") ?? args[2];
+        if (!id)
+          throw new CliUsageError("checkpoint cancel requires --id <id>");
+        const cancelled = await cancelTask(id, { root }, fileSystem);
+        io.stdout(
+          parsed.flags.has("--json")
+            ? JSON.stringify(cancelled, null, 2)
+            : `Cancelled task checkpoint [${id}]`,
+        );
+        return 0;
+      }
+      if (subcommand === "redirect") {
+        const id = parsed.values.get("--id") ?? args[2];
+        const newIntent = parsed.values.get("--new-intent");
+        if (!id || !newIntent) {
+          throw new CliUsageError(
+            "checkpoint redirect requires --id <id> and --new-intent <intent>",
+          );
+        }
+        const redirected = await redirectTask(
+          id,
+          newIntent,
+          { root },
+          fileSystem,
+        );
+        io.stdout(
+          parsed.flags.has("--json")
+            ? JSON.stringify(redirected, null, 2)
+            : `Redirected task checkpoint [${id}] to: ${newIntent}`,
+        );
+        return 0;
+      }
+      if (subcommand === "resume") {
+        const id = parsed.values.get("--id") ?? args[2];
+        if (!id)
+          throw new CliUsageError("checkpoint resume requires --id <id>");
+        const resumed = await resumeTask(id, { root }, fileSystem);
+        io.stdout(
+          parsed.flags.has("--json")
+            ? JSON.stringify(resumed, null, 2)
+            : `Resumed task checkpoint [${id}] (invalidated ${resumed.invalidatedCount} stale plans)`,
+        );
+        return 0;
+      }
+      if (subcommand === "list") {
+        const taskId = parsed.values.get("--task-id");
+        const checkpoints = await listTaskCheckpoints(
+          { root, ...(taskId !== undefined ? { taskId } : {}) },
+          fileSystem,
+        );
+        if (parsed.flags.has("--json")) {
+          io.stdout(JSON.stringify(checkpoints, null, 2));
+        } else {
+          const lines = checkpoints.map(
+            (c) => `- [${c.id}] task=${c.taskId} state=${c.state}`,
+          );
+          io.stdout(lines.join("\n"));
+        }
+        return 0;
+      }
+      if (subcommand === "delete") {
+        const id = parsed.values.get("--id") ?? args[2];
+        if (!id)
+          throw new CliUsageError("checkpoint delete requires --id <id>");
+        const deleted = await deleteTaskCheckpoint(id, { root }, fileSystem);
+        io.stdout(
+          parsed.flags.has("--json")
+            ? JSON.stringify({ id, deleted })
+            : `Deleted checkpoint [${id}]: ${deleted}`,
+        );
+        return 0;
+      }
+      throw new CliUsageError(
+        `unsupported checkpoint subcommand: ${subcommand}`,
+      );
     }
     if (parsed.command === "doctor")
       invalidMetadata.push(
