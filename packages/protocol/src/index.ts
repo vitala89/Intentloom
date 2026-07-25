@@ -850,3 +850,132 @@ export function validateTaskRedirectRequest(
       : {}),
   };
 }
+
+export type SemanticRankingProvider =
+  "local-tf-idf" | "local-embeddings" | "external-provider";
+
+export interface SemanticRankingConfig {
+  readonly schemaVersion: "1";
+  readonly enabled: boolean;
+  readonly provider: SemanticRankingProvider;
+  readonly model?: string;
+  readonly networkDestination?: string;
+  readonly maxMemoryMb?: number;
+}
+
+export interface SemanticRankItem {
+  readonly id: string;
+  readonly type: "skill" | "proposal" | "summary" | "evidence";
+  readonly score: number;
+  readonly relevanceReason: string;
+  readonly record: Record<string, unknown>;
+}
+
+export interface SemanticRankResult {
+  readonly schemaVersion: "1";
+  readonly query: string;
+  readonly items: readonly SemanticRankItem[];
+  readonly rankingLatencyMs: number;
+  readonly provider: SemanticRankingProvider;
+  readonly enabled: boolean;
+}
+
+export function validateSemanticRankingConfig(
+  value: unknown,
+): SemanticRankingConfig {
+  if (!isObject(value))
+    throw new ProtocolValidationError(
+      -32602,
+      "semantic ranking config must be an object",
+    );
+  if (value.schemaVersion !== "1")
+    throw new ProtocolValidationError(
+      -32602,
+      "unsupported semantic ranking config schema version",
+    );
+
+  if (typeof value.enabled !== "boolean")
+    throw new ProtocolValidationError(-32602, "enabled must be a boolean");
+
+  const provider = stringValue(value.provider, "provider");
+  const validProviders: SemanticRankingProvider[] = [
+    "local-tf-idf",
+    "local-embeddings",
+    "external-provider",
+  ];
+  if (!validProviders.includes(provider as SemanticRankingProvider))
+    throw new ProtocolValidationError(-32602, `invalid provider: ${provider}`);
+
+  return {
+    schemaVersion: "1",
+    enabled: value.enabled,
+    provider: provider as SemanticRankingProvider,
+    ...(typeof value.model === "string" && value.model.length > 0
+      ? { model: value.model }
+      : {}),
+    ...(typeof value.networkDestination === "string" &&
+    value.networkDestination.length > 0
+      ? { networkDestination: value.networkDestination }
+      : {}),
+    ...(typeof value.maxMemoryMb === "number" && value.maxMemoryMb > 0
+      ? { maxMemoryMb: value.maxMemoryMb }
+      : {}),
+  };
+}
+
+export function validateSemanticRankResult(value: unknown): SemanticRankResult {
+  if (!isObject(value))
+    throw new ProtocolValidationError(
+      -32602,
+      "semantic rank result must be an object",
+    );
+  if (value.schemaVersion !== "1")
+    throw new ProtocolValidationError(
+      -32602,
+      "unsupported semantic rank result schema version",
+    );
+
+  if (typeof value.enabled !== "boolean")
+    throw new ProtocolValidationError(-32602, "enabled must be a boolean");
+
+  if (typeof value.rankingLatencyMs !== "number")
+    throw new ProtocolValidationError(
+      -32602,
+      "rankingLatencyMs must be a number",
+    );
+
+  if (!Array.isArray(value.items))
+    throw new ProtocolValidationError(-32602, "items must be an array");
+
+  const provider = stringValue(value.provider, "provider");
+
+  return {
+    schemaVersion: "1",
+    query: stringValue(value.query, "query"),
+    items: value.items.map((item, idx) => {
+      if (!isObject(item))
+        throw new ProtocolValidationError(
+          -32602,
+          `item at index ${idx} must be an object`,
+        );
+      return {
+        id: stringValue(item["id"], `items[${idx}].id`),
+        type: stringValue(
+          item["type"],
+          `items[${idx}].type`,
+        ) as SemanticRankItem["type"],
+        score: typeof item["score"] === "number" ? item["score"] : 0,
+        relevanceReason: stringValue(
+          item["relevanceReason"],
+          `items[${idx}].relevanceReason`,
+        ),
+        record: isObject(item["record"])
+          ? (item["record"] as Record<string, unknown>)
+          : {},
+      };
+    }),
+    rankingLatencyMs: value.rankingLatencyMs,
+    provider: provider as SemanticRankingProvider,
+    enabled: value.enabled,
+  };
+}

@@ -42,6 +42,20 @@ entry directly below this section.
 
 ## Watch entries
 
+### 2026-07-26, Controlled Agent Learning Candidate L7 optional semantic ranking
+
+- **Status:** complete
+- **Agent/tool:** Antigravity AI Pair Programmer
+- **Branch:** `feat/controlled-learning-l7`
+- **Objective:** Implement provider-neutral semantic ranking contract (`SemanticRankingProvider`, `SemanticRankingConfig`, `SemanticRankItem`, `SemanticRankResult`), application memory ranking operations (`rankProceduralMemory`, `getSemanticRankingConfig`, `updateSemanticRankingConfig`), preservation of canonical records, privacy exclusions, CLI command routing (`intentloom rank`), and test coverage.
+- **Completed:** Implemented versioned `SemanticRankingProvider`, `SemanticRankingConfig`, `SemanticRankItem`, `SemanticRankResult` schemas and validators in `@intentloom/protocol`. Added memory ranking operations (`rankProceduralMemory`, `getSemanticRankingConfig`, `updateSemanticRankingConfig`) in `@intentloom/application` enforcing canonical record preservation, deterministic baseline keyword ranking, and secret path filtering. Added CLI routing for `intentloom rank [QUERY|config]` in `@intentloom/cli`. Added unit & integration tests in `tests/controlled-learning-l7.test.ts`. Updated `PROJECT_STATE.md` and `DUTY_WATCH.md`.
+- **Files changed:** `packages/protocol/src/index.ts`, `packages/application/src/index.ts`, `packages/cli/src/command.ts`, `tests/controlled-learning-l7.test.ts`, `PROJECT_STATE.md`, and `DUTY_WATCH.md`.
+- **Validation:** `pnpm typecheck`, `pnpm lint`, `pnpm format:check`, `pnpm build`, and all vitest test suites passed cleanly (646 tests passed across 63 test files).
+- **Decisions:** Removing or rebuilding the semantic ranking index does NOT remove canonical memory records. Deterministic keyword and structural retrieval remain available as the default baseline.
+- **Risks or compatibility impact:** None. Additive feature in `@intentloom/protocol`, `@intentloom/application`, and `@intentloom/cli`.
+- **Next first action:** Open PR for `feat/controlled-learning-l7`, observe CI, merge after approval, and prepare Candidate L8 (Profile Isolation and Role-Aware Delegation).
+- **Evidence:** local build, typecheck, lint, prettier format check, and vitest run.
+
 ### 2026-07-26, Controlled Agent Learning Candidate L6 pause, redirect, checkpoint, and resume
 
 - **Status:** complete
