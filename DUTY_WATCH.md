@@ -42,6 +42,20 @@ entry directly below this section.
 
 ## Watch entries
 
+### 2026-07-26, Controlled Agent Learning Candidate L6 pause, redirect, checkpoint, and resume
+
+- **Status:** complete
+- **Agent/tool:** Antigravity AI Pair Programmer
+- **Branch:** `feat/controlled-learning-l6`
+- **Objective:** Implement checkpoint schemas (`TaskCheckpoint`, `TaskCheckpointState`, `TaskRedirectRequest`, `TaskResumeResult`), application memory operations (`createTaskCheckpoint`, `pauseTask`, `cancelTask`, `redirectTask`, `resumeTask`, `listTaskCheckpoints`, `deleteTaskCheckpoint`, `exportTaskCheckpoint`), byte-for-byte file preservation on pause/cancel, plan invalidation on redirect, state verification on resume, CLI command routing (`intentloom checkpoint`), and test coverage.
+- **Completed:** Implemented versioned `TaskCheckpointState`, `TaskCheckpoint`, `TaskRedirectRequest`, `TaskResumeResult` schemas and validators in `@intentloom/protocol`. Added checkpoint operations (`createTaskCheckpoint`, `pauseTask`, `cancelTask`, `redirectTask`, `resumeTask`, `listTaskCheckpoints`, `deleteTaskCheckpoint`) in `@intentloom/application` enforcing byte-for-byte file safety on pause/cancel, plan invalidation on redirect, and root/state verification on resume. Added CLI routing for `intentloom checkpoint <create|pause|cancel|redirect|resume|list|delete>` in `@intentloom/cli`. Added unit & integration tests in `tests/controlled-learning-l6.test.ts`. Updated `PROJECT_STATE.md` and `DUTY_WATCH.md`.
+- **Files changed:** `packages/protocol/src/index.ts`, `packages/application/src/index.ts`, `packages/cli/src/command.ts`, `tests/controlled-learning-l6.test.ts`, `PROJECT_STATE.md`, and `DUTY_WATCH.md`.
+- **Validation:** `pnpm typecheck`, `pnpm lint`, `pnpm format:check`, `pnpm build`, and all vitest test suites passed cleanly (641 tests passed across 62 test files).
+- **Decisions:** Pause and cancellation leave project files byte-for-byte unchanged unless an already approved transaction completed atomically. Redirect invalidates every stale digest or approval affected by the new intent.
+- **Risks or compatibility impact:** None. Additive feature in `@intentloom/protocol`, `@intentloom/application`, and `@intentloom/cli`.
+- **Next first action:** Open PR for `feat/controlled-learning-l6`, observe CI, merge after approval, and prepare Candidate L7 (Optional Semantic Ranking).
+- **Evidence:** local build, typecheck, lint, prettier format check, and vitest run.
+
 ### 2026-07-26, Controlled Agent Learning Candidate L5 accepted procedural memory operations
 
 - **Status:** complete

@@ -762,3 +762,91 @@ export function validateSkillMutationPlan(value: unknown): SkillMutationPlan {
     createdAt: stringValue(value.createdAt, "createdAt"),
   };
 }
+
+export type TaskCheckpointState =
+  "active" | "paused" | "cancelled" | "redirected" | "resumed";
+
+export interface TaskCheckpoint {
+  readonly schemaVersion: "1";
+  readonly id: string;
+  readonly taskId: string;
+  readonly state: TaskCheckpointState;
+  readonly completedSteps: readonly string[];
+  readonly unresolvedWork: readonly string[];
+  readonly createdSnapshotChecksum: string;
+  readonly invalidatedPlans: readonly string[];
+  readonly createdAt: string;
+  readonly updatedAt: string;
+}
+
+export interface TaskRedirectRequest {
+  readonly checkpointId: string;
+  readonly newIntent: string;
+  readonly reason?: string;
+}
+
+export interface TaskResumeResult {
+  readonly checkpointId: string;
+  readonly verifiedRoot: string;
+  readonly valid: boolean;
+  readonly invalidatedCount: number;
+  readonly resumedAt: string;
+}
+
+export function validateTaskCheckpoint(value: unknown): TaskCheckpoint {
+  if (!isObject(value))
+    throw new ProtocolValidationError(
+      -32602,
+      "task checkpoint must be an object",
+    );
+  if (value.schemaVersion !== "1")
+    throw new ProtocolValidationError(
+      -32602,
+      "unsupported task checkpoint schema version",
+    );
+
+  const state = stringValue(value.state, "state");
+  const validStates: TaskCheckpointState[] = [
+    "active",
+    "paused",
+    "cancelled",
+    "redirected",
+    "resumed",
+  ];
+  if (!validStates.includes(state as TaskCheckpointState))
+    throw new ProtocolValidationError(-32602, `invalid state: ${state}`);
+
+  return {
+    schemaVersion: "1",
+    id: stringValue(value.id, "id"),
+    taskId: stringValue(value.taskId, "taskId"),
+    state: state as TaskCheckpointState,
+    completedSteps: stringArray(value.completedSteps, "completedSteps"),
+    unresolvedWork: stringArray(value.unresolvedWork, "unresolvedWork"),
+    createdSnapshotChecksum: stringValue(
+      value.createdSnapshotChecksum,
+      "createdSnapshotChecksum",
+    ),
+    invalidatedPlans: stringArray(value.invalidatedPlans, "invalidatedPlans"),
+    createdAt: stringValue(value.createdAt, "createdAt"),
+    updatedAt: stringValue(value.updatedAt, "updatedAt"),
+  };
+}
+
+export function validateTaskRedirectRequest(
+  value: unknown,
+): TaskRedirectRequest {
+  if (!isObject(value))
+    throw new ProtocolValidationError(
+      -32602,
+      "task redirect request must be an object",
+    );
+
+  return {
+    checkpointId: stringValue(value.checkpointId, "checkpointId"),
+    newIntent: stringValue(value.newIntent, "newIntent"),
+    ...(typeof value.reason === "string" && value.reason.length > 0
+      ? { reason: value.reason }
+      : {}),
+  };
+}
