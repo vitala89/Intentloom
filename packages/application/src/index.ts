@@ -74,6 +74,10 @@ import {
   type ProfileDefinition,
   type DelegationRequest,
   type DelegationResult,
+  type ContextSourceType,
+  type ContextSource,
+  type ContextRetrievalRequest,
+  type ContextRetrievalResult,
   type TaskSummary,
   type TrustClass,
   validateSessionSummary,
@@ -89,6 +93,8 @@ import {
   validateProfileDefinition,
   validateDelegationRequest,
   validateDelegationResult,
+  validateContextRetrievalRequest,
+  validateContextRetrievalResult,
   validateTaskSummary,
 } from "@intentloom/protocol";
 export type {
@@ -121,6 +127,10 @@ export type {
   ProfileDefinition,
   DelegationRequest,
   DelegationResult,
+  ContextSourceType,
+  ContextSource,
+  ContextRetrievalRequest,
+  ContextRetrievalResult,
   TaskSummary,
   TrustClass,
 };
@@ -138,6 +148,8 @@ export {
   validateProfileDefinition,
   validateDelegationRequest,
   validateDelegationResult,
+  validateContextRetrievalRequest,
+  validateContextRetrievalResult,
   validateTaskSummary,
 };
 import { parse, stringify } from "yaml";
@@ -5050,4 +5062,121 @@ export async function delegateTaskRole(
   await fs.write(path, `${JSON.stringify(result, null, 2)}\n`);
 
   return result;
+}
+
+export async function getBoundedProjectContext(
+  requestInput: unknown,
+  options: { root: string },
+  fs: FileSystem = nodeFileSystem,
+): Promise<ContextRetrievalResult> {
+  const req = validateContextRetrievalRequest(
+    requestInput ?? { schemaVersion: "1" },
+  );
+  const root = options.root;
+
+  const maxTokens = req.maxTokens ?? 4000;
+  const maxItems = req.maxItems ?? 20;
+
+  const secretPatterns = [
+    /\.env$/u,
+    /\.env\./u,
+    /\.pem$/u,
+    /\.key$/u,
+    /credentials\.json$/u,
+    /id_rsa$/u,
+    /id_ed25519$/u,
+    /\.git\//u,
+    /node_modules\//u,
+  ];
+
+  let excludedPathsCount = 0;
+  const rawList = await fs.list(root);
+  const candidateItems: ContextSource[] = [];
+
+  for (const rawPath of rawList) {
+    const rel = rawPath.startsWith(root) ? relative(root, rawPath) : rawPath;
+    const normalized = rel.replaceAll("\\", "/");
+
+    if (secretPatterns.some((pattern) => pattern.test(normalized))) {
+      excludedPathsCount += 1;
+      continue;
+    }
+
+    let type: ContextSourceType | null = null;
+    let trustClass: TrustClass = "verified-evidence";
+
+    if (normalized.startsWith("docs/specs/")) {
+      type = "intent";
+      trustClass = "canonical-policy";
+    } else if (normalized.startsWith("docs/decisions/")) {
+      type = "adr";
+      trustClass = "canonical-policy";
+    } else if (normalized.startsWith("docs/")) {
+      type = "documentation";
+      trustClass = "verified-evidence";
+    } else if (
+      normalized === "PROJECT_STATE.md" ||
+      normalized === "DUTY_WATCH.md"
+    ) {
+      type = "ownership";
+      trustClass = "verified-evidence";
+    } else if (normalized.startsWith(".aif/memory/")) {
+      type = "evidence";
+      trustClass = "verified-evidence";
+    }
+
+    if (!type) continue;
+    if (req.sourceTypes && !req.sourceTypes.includes(type)) continue;
+
+    try {
+      const fullPath = rawPath.startsWith(root)
+        ? rawPath
+        : inside(root, normalized);
+      const content = await fs.read(fullPath);
+      const tokenCount = Math.ceil(content.length / 4);
+      const summary = content.slice(0, 150).replace(/\n+/gu, " ").trim();
+
+      if (req.query) {
+        const q = req.query.toLowerCase();
+        if (
+          !normalized.toLowerCase().includes(q) &&
+          !content.toLowerCase().includes(q)
+        ) {
+          continue;
+        }
+      }
+
+      candidateItems.push({
+        id: `ctx-${type}-${normalized.replaceAll("/", "-")}`,
+        type,
+        path: normalized,
+        summary,
+        trustClass,
+        tokenCount,
+      });
+    } catch {
+      // Ignore unreadable files
+    }
+  }
+
+  let currentTokens = 0;
+  const slicedItems: ContextSource[] = [];
+
+  for (const item of candidateItems) {
+    if (slicedItems.length >= maxItems) break;
+    if (currentTokens + item.tokenCount > maxTokens && slicedItems.length > 0)
+      break;
+
+    slicedItems.push(item);
+    currentTokens += item.tokenCount;
+  }
+
+  return validateContextRetrievalResult({
+    schemaVersion: "1",
+    root,
+    totalTokens: currentTokens,
+    items: slicedItems,
+    excludedPathsCount,
+    retrievedAt: new Date().toISOString(),
+  });
 }
