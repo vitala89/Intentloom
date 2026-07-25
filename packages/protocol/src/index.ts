@@ -701,3 +701,64 @@ export function validateSkillEvaluationResult(
     evaluatedAt: stringValue(value.evaluatedAt, "evaluatedAt"),
   };
 }
+
+export interface ProceduralMemorySummary {
+  readonly totalProposals: number;
+  readonly proposalCountsByState: Record<string, number>;
+  readonly totalEvaluations: number;
+  readonly evaluationPassRate: number;
+  readonly activeSkillsCount: number;
+  readonly extensionLockStatus: "clean" | "stale" | "unverified" | "corrupted";
+}
+
+export interface ProceduralMemoryInspection {
+  readonly summary: ProceduralMemorySummary;
+  readonly proposals: readonly SkillProposal[];
+  readonly evaluations: readonly SkillEvaluationResult[];
+  readonly issues: readonly string[];
+}
+
+export interface SkillMutationPlan {
+  readonly schemaVersion: "1";
+  readonly id: string;
+  readonly action: "approve" | "activate" | "deprecate" | "rollback";
+  readonly proposalId: string;
+  readonly targetState: SkillProposalState;
+  readonly approvalEvidence?: string;
+  readonly checksum: string;
+  readonly createdAt: string;
+}
+
+export function validateSkillMutationPlan(value: unknown): SkillMutationPlan {
+  if (!isObject(value))
+    throw new ProtocolValidationError(
+      -32602,
+      "skill mutation plan must be an object",
+    );
+  if (value.schemaVersion !== "1")
+    throw new ProtocolValidationError(
+      -32602,
+      "unsupported skill mutation plan schema version",
+    );
+
+  const action = stringValue(value.action, "action");
+  const validActions = ["approve", "activate", "deprecate", "rollback"];
+  if (!validActions.includes(action))
+    throw new ProtocolValidationError(-32602, `invalid action: ${action}`);
+
+  const targetState = stringValue(value.targetState, "targetState");
+
+  return {
+    schemaVersion: "1",
+    id: stringValue(value.id, "id"),
+    action: action as SkillMutationPlan["action"],
+    proposalId: stringValue(value.proposalId, "proposalId"),
+    targetState: targetState as SkillProposalState,
+    ...(typeof value.approvalEvidence === "string" &&
+    value.approvalEvidence.length > 0
+      ? { approvalEvidence: value.approvalEvidence }
+      : {}),
+    checksum: stringValue(value.checksum, "checksum"),
+    createdAt: stringValue(value.createdAt, "createdAt"),
+  };
+}

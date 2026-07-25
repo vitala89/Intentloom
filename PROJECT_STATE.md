@@ -22,7 +22,7 @@ later justifies separation.
 
 ## Current phase
 
-Controlled Agent Learning Candidate L4: Skill Evaluation & Regression Gates.
+Controlled Agent Learning Candidate L5: Accepted Procedural Memory Operations.
 
 The project must avoid premature structural migration. New applications,
 packages, and repository boundaries are introduced only when roadmap triggers

@@ -10,6 +10,7 @@ import {
   realpath,
   writeFile,
 } from "node:fs/promises";
+import { createHash } from "node:crypto";
 import { dirname, relative, resolve, sep } from "node:path";
 import {
   adapterVersion,
@@ -57,12 +58,16 @@ import {
   type EvaluationCase,
   type EvaluationOutcome,
   type SkillEvaluationResult,
+  type ProceduralMemorySummary,
+  type ProceduralMemoryInspection,
+  type SkillMutationPlan,
   type TaskSummary,
   type TrustClass,
   validateSessionSummary,
   validateSkillCatalogMetadata,
   validateSkillDiscoveryResult,
   validateSkillEvaluationResult,
+  validateSkillMutationPlan,
   validateSkillProposal,
   validateTaskSummary,
 } from "@intentloom/protocol";
@@ -80,6 +85,9 @@ export type {
   EvaluationCase,
   EvaluationOutcome,
   SkillEvaluationResult,
+  ProceduralMemorySummary,
+  ProceduralMemoryInspection,
+  SkillMutationPlan,
   TaskSummary,
   TrustClass,
 };
@@ -88,6 +96,7 @@ export {
   validateSkillCatalogMetadata,
   validateSkillDiscoveryResult,
   validateSkillEvaluationResult,
+  validateSkillMutationPlan,
   validateSkillProposal,
   validateTaskSummary,
 };
@@ -4353,4 +4362,182 @@ export async function getSkillEvaluation(
   } catch {
     return null;
   }
+}
+
+export async function validateSkillExtensionLock(
+  options: { root: string },
+  fs: FileSystem = nodeFileSystem,
+): Promise<"clean" | "stale" | "unverified" | "corrupted"> {
+  const lockPath = inside(options.root, ".aif/memory/lock.json");
+  if (!(await fs.exists(lockPath))) return "unverified";
+  try {
+    const content = await fs.read(lockPath);
+    JSON.parse(content);
+    return "clean";
+  } catch {
+    return "corrupted";
+  }
+}
+
+export async function listProceduralMemorySummary(
+  options: { root: string },
+  fs: FileSystem = nodeFileSystem,
+): Promise<ProceduralMemorySummary> {
+  const proposals = await listSkillProposals({ root: options.root }, fs);
+  const evaluations = await listSkillEvaluations({ root: options.root }, fs);
+  const extensionLockStatus = await validateSkillExtensionLock(options, fs);
+
+  const proposalCountsByState: Record<string, number> = {};
+  let activeSkillsCount = 0;
+  for (const p of proposals) {
+    proposalCountsByState[p.state] = (proposalCountsByState[p.state] ?? 0) + 1;
+    if (p.state === "active" || p.state === "approved") {
+      activeSkillsCount += 1;
+    }
+  }
+
+  const passedEvals = evaluations.filter((e) => e.passed && e.securityPass);
+  const evaluationPassRate =
+    evaluations.length > 0
+      ? Math.round((passedEvals.length / evaluations.length) * 100)
+      : 100;
+
+  return {
+    totalProposals: proposals.length,
+    proposalCountsByState,
+    totalEvaluations: evaluations.length,
+    evaluationPassRate,
+    activeSkillsCount,
+    extensionLockStatus,
+  };
+}
+
+export async function inspectProceduralMemory(
+  options: { root: string },
+  fs: FileSystem = nodeFileSystem,
+): Promise<ProceduralMemoryInspection> {
+  const summary = await listProceduralMemorySummary(options, fs);
+  const proposals = await listSkillProposals({ root: options.root }, fs);
+  const evaluations = await listSkillEvaluations({ root: options.root }, fs);
+  const issues: string[] = [];
+
+  if (summary.extensionLockStatus === "corrupted") {
+    issues.push("Extension lock file .aif/memory/lock.json is corrupted");
+  } else if (summary.extensionLockStatus === "unverified") {
+    issues.push("Extension lock file .aif/memory/lock.json is missing");
+  }
+
+  for (const p of proposals) {
+    if (p.state === "approved" || p.state === "active") {
+      const propEvals = evaluations.filter(
+        (e) => e.proposalId === p.id || e.skillId === p.name,
+      );
+      if (propEvals.length === 0) {
+        issues.push(
+          `Proposal [${p.id}] (${p.name}) is ${p.state} but has no evaluations`,
+        );
+      } else if (!propEvals[0]!.passed || !propEvals[0]!.securityPass) {
+        issues.push(
+          `Proposal [${p.id}] (${p.name}) is ${p.state} but latest evaluation failed`,
+        );
+      }
+    }
+  }
+
+  return {
+    summary,
+    proposals,
+    evaluations,
+    issues,
+  };
+}
+
+export async function prepareSkillMutationPlan(
+  options: {
+    root: string;
+    action: "approve" | "activate" | "deprecate" | "rollback";
+    proposalId: string;
+    approvalEvidence?: string;
+  },
+  fs: FileSystem = nodeFileSystem,
+): Promise<SkillMutationPlan> {
+  const proposal = await getSkillProposal(options.proposalId, options, fs);
+  if (!proposal)
+    throw new Error(`Skill proposal not found: ${options.proposalId}`);
+
+  let targetState: SkillProposalState;
+  switch (options.action) {
+    case "approve":
+      targetState = "approved";
+      break;
+    case "activate":
+      targetState = "active";
+      break;
+    case "deprecate":
+      targetState = "deprecated";
+      break;
+    case "rollback":
+      targetState = "rolled-back";
+      break;
+  }
+
+  const planId = `plan-skill-${options.proposalId}-${Date.now()}`;
+  const checksumPayload = `${planId}:${options.action}:${options.proposalId}:${targetState}:${options.approvalEvidence ?? ""}`;
+  const checksum = createHash("sha256").update(checksumPayload).digest("hex");
+
+  return validateSkillMutationPlan({
+    schemaVersion: "1",
+    id: planId,
+    action: options.action,
+    proposalId: options.proposalId,
+    targetState,
+    ...(options.approvalEvidence !== undefined
+      ? { approvalEvidence: options.approvalEvidence }
+      : {}),
+    checksum,
+    createdAt: new Date().toISOString(),
+  });
+}
+
+export async function applySkillMutationPlan(
+  planInput: unknown,
+  options: { root: string },
+  fs: FileSystem = nodeFileSystem,
+): Promise<SkillProposal> {
+  const plan = validateSkillMutationPlan(planInput);
+
+  let result: SkillProposal;
+  if (plan.action === "rollback") {
+    result = await rollbackSkill(
+      plan.proposalId,
+      {
+        root: options.root,
+        ...(plan.approvalEvidence !== undefined
+          ? { approvalEvidence: plan.approvalEvidence }
+          : {}),
+      },
+      fs,
+    );
+  } else {
+    result = await updateSkillProposalState(
+      plan.proposalId,
+      plan.targetState,
+      {
+        root: options.root,
+        ...(plan.approvalEvidence !== undefined
+          ? { approvalEvidence: plan.approvalEvidence }
+          : {}),
+      },
+      fs,
+    );
+  }
+
+  const logPath = inside(options.root, `.aif/memory/mutations/${plan.id}.json`);
+  const dir = dirname(logPath);
+  if (!(await fs.exists(dir))) {
+    await fs.mkdir(dir);
+  }
+  await fs.write(logPath, `${JSON.stringify(plan, null, 2)}\n`);
+
+  return result;
 }
