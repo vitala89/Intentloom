@@ -90,7 +90,7 @@ describe("Controlled Agent Learning Candidate L3 — Skill Proposal Lifecycle", 
       updateSkillProposalState(
         "prop-001",
         "approved",
-        { root: "/project" },
+        { root: "/project", bypassEvaluationGate: true },
         fs,
       ),
     ).rejects.toThrow(/approvalEvidence/);
@@ -101,6 +101,7 @@ describe("Controlled Agent Learning Candidate L3 — Skill Proposal Lifecycle", 
       {
         root: "/project",
         approvalEvidence: "Reviewed and verified by Lead Tech",
+        bypassEvaluationGate: true,
       },
       fs,
     );
@@ -149,6 +150,21 @@ describe("Controlled Agent Learning Candidate L3 — Skill Proposal Lifecycle", 
     expect(createExit).toBe(0);
     const created = JSON.parse(createOutput.join("\n"));
     expect(created.id).toBe("prop-001");
+
+    // Run evaluation first so evaluation gate passes
+    await runCli(
+      [
+        "evaluate",
+        "run",
+        "--root",
+        "/project",
+        "--proposal-id",
+        "prop-001",
+        "--json",
+      ],
+      { catalogRoot: resolve("catalog"), fileSystem: fs },
+      { stdout: () => undefined, stderr: () => undefined },
+    );
 
     const approveOutput: string[] = [];
     const approveExit = await runCli(
