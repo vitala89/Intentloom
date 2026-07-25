@@ -1158,3 +1158,133 @@ export function validateDelegationResult(value: unknown): DelegationResult {
     createdAt: stringValue(value.createdAt, "createdAt"),
   };
 }
+
+export type ContextSourceType =
+  "intent" | "adr" | "documentation" | "ownership" | "evidence" | "provisional";
+
+export interface ContextSource {
+  readonly id: string;
+  readonly type: ContextSourceType;
+  readonly path: string;
+  readonly summary: string;
+  readonly trustClass: TrustClass;
+  readonly tokenCount: number;
+}
+
+export interface ContextRetrievalRequest {
+  readonly schemaVersion: "1";
+  readonly query?: string;
+  readonly sourceTypes?: readonly ContextSourceType[];
+  readonly maxTokens?: number;
+  readonly maxItems?: number;
+}
+
+export interface ContextRetrievalResult {
+  readonly schemaVersion: "1";
+  readonly root: string;
+  readonly totalTokens: number;
+  readonly items: readonly ContextSource[];
+  readonly excludedPathsCount: number;
+  readonly retrievedAt: string;
+}
+
+export function validateContextRetrievalRequest(
+  value: unknown,
+): ContextRetrievalRequest {
+  if (!isObject(value))
+    throw new ProtocolValidationError(
+      -32602,
+      "context retrieval request must be an object",
+    );
+  if (value.schemaVersion !== "1")
+    throw new ProtocolValidationError(
+      -32602,
+      "unsupported context retrieval request schema version",
+    );
+
+  const validTypes: ContextSourceType[] = [
+    "intent",
+    "adr",
+    "documentation",
+    "ownership",
+    "evidence",
+    "provisional",
+  ];
+
+  const sourceTypes = Array.isArray(value.sourceTypes)
+    ? (stringArray(value.sourceTypes, "sourceTypes").filter((t) =>
+        validTypes.includes(t as ContextSourceType),
+      ) as ContextSourceType[])
+    : undefined;
+
+  return {
+    schemaVersion: "1",
+    ...(typeof value.query === "string" && value.query.length > 0
+      ? { query: value.query }
+      : {}),
+    ...(sourceTypes !== undefined ? { sourceTypes } : {}),
+    ...(typeof value.maxTokens === "number" && value.maxTokens > 0
+      ? { maxTokens: value.maxTokens }
+      : {}),
+    ...(typeof value.maxItems === "number" && value.maxItems > 0
+      ? { maxItems: value.maxItems }
+      : {}),
+  };
+}
+
+export function validateContextRetrievalResult(
+  value: unknown,
+): ContextRetrievalResult {
+  if (!isObject(value))
+    throw new ProtocolValidationError(
+      -32602,
+      "context retrieval result must be an object",
+    );
+  if (value.schemaVersion !== "1")
+    throw new ProtocolValidationError(
+      -32602,
+      "unsupported context retrieval result schema version",
+    );
+
+  if (typeof value.totalTokens !== "number")
+    throw new ProtocolValidationError(-32602, "totalTokens must be a number");
+
+  if (typeof value.excludedPathsCount !== "number")
+    throw new ProtocolValidationError(
+      -32602,
+      "excludedPathsCount must be a number",
+    );
+
+  if (!Array.isArray(value.items))
+    throw new ProtocolValidationError(-32602, "items must be an array");
+
+  return {
+    schemaVersion: "1",
+    root: stringValue(value.root, "root"),
+    totalTokens: value.totalTokens,
+    items: value.items.map((item, idx) => {
+      if (!isObject(item))
+        throw new ProtocolValidationError(
+          -32602,
+          `item at index ${idx} must be an object`,
+        );
+      return {
+        id: stringValue(item["id"], `items[${idx}].id`),
+        type: stringValue(
+          item["type"],
+          `items[${idx}].type`,
+        ) as ContextSourceType,
+        path: stringValue(item["path"], `items[${idx}].path`),
+        summary: stringValue(item["summary"], `items[${idx}].summary`),
+        trustClass: stringValue(
+          item["trustClass"],
+          `items[${idx}].trustClass`,
+        ) as TrustClass,
+        tokenCount:
+          typeof item["tokenCount"] === "number" ? item["tokenCount"] : 0,
+      };
+    }),
+    excludedPathsCount: value.excludedPathsCount,
+    retrievedAt: stringValue(value.retrievedAt, "retrievedAt"),
+  };
+}

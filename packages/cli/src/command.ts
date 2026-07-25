@@ -55,6 +55,7 @@ import {
   getProfile,
   listProfiles,
   delegateTaskRole,
+  getBoundedProjectContext,
   type SkillLoadingLevel,
   type SkillProposalState,
   type EvaluationOutcome,
@@ -184,6 +185,7 @@ const commands = new Set([
   "rank",
   "profile",
   "delegate",
+  "context",
 ]);
 const projectPathCommands = new Set([
   "adopt",
@@ -238,6 +240,8 @@ const valueFlags = new Set([
   "--new-intent",
   "--task-id",
   "--name",
+  "--max-tokens",
+  "--max-items",
 ]);
 const mappingValueFlags = new Set([
   "--project-owned-mapping",
@@ -248,7 +252,7 @@ const usage = [
   "Usage: intentloom <init|plan> [--root PATH] [--dry-run]",
   "       intentloom adopt <--plan|--apply PLAN_FILE> [PROJECT_PATH|--root PATH] [--json] [--output PATH] [--strict] [--dry-run]",
   "       intentloom update <--plan|--apply PLAN_FILE> [PROJECT_PATH|--root PATH] [--json] [--output PATH] [--strict] [--dry-run]",
-  "       intentloom <adopt|update|diff|sync|doctor|inspect|timeline|conformance|summary|skill|proposal|evaluate|memory|checkpoint|rank|profile|delegate> [PROJECT_PATH|--root PATH] [--dry-run]",
+  "       intentloom <adopt|update|diff|sync|doctor|inspect|timeline|conformance|summary|skill|proposal|evaluate|memory|checkpoint|rank|profile|delegate|context> [PROJECT_PATH|--root PATH] [--dry-run]",
   "       intentloom evidence import --provider github|gitlab --file PATH --project-key KEY [--json]",
   "       intentloom evidence analyze --provider github|gitlab --file PATH --project-key KEY [--root PATH] [--case-id ID] [--json]",
   "       intentloom conformance [PROJECT_PATH|--root PATH] [--policy PATH] [--timeline PATH] [--case-id ID] [--case-type TYPE] [--json]",
@@ -261,6 +265,7 @@ const usage = [
   "       intentloom rank [QUERY|config] [--provider PROVIDER] [--enable|--disable] [--root PATH] [--json]",
   "       intentloom profile <create|get|list> [--name NAME] [--root PATH] [--json]",
   "       intentloom delegate --profile NAME --role ROLE --task-id ID [--root PATH] [--json]",
+  "       intentloom context <get> [--query QUERY] [--max-tokens NUM] [--max-items NUM] [--root PATH] [--json]",
   "       adoption mappings use --project-owned-mapping SOURCE=DESTINATION",
   "       or --documentation-mapping SOURCE=DESTINATION",
 ].join("\n");
@@ -312,6 +317,8 @@ function parseArguments(args: readonly string[]): ParsedArguments {
     !["create", "get", "list"].includes(args[1] ?? "")
   )
     throw new CliUsageError("profile requires create, get, or list subcommand");
+  if (command === "context" && args[1] !== "get")
+    throw new CliUsageError("context requires get subcommand");
   const flags = new Set<string>();
   const values = new Map<string, string>();
   const mappingValues = new Map<string, string[]>();
@@ -325,6 +332,7 @@ function parseArguments(args: readonly string[]): ParsedArguments {
       command === "memory" ||
       command === "checkpoint" ||
       command === "profile" ||
+      command === "context" ||
       (command === "rank" && args[1] !== undefined && !args[1].startsWith("--"))
         ? 2
         : 1;
@@ -1956,6 +1964,43 @@ export async function runCli(
           ...result.items.map(
             (item) =>
               `- [${item.score.toFixed(2)}] [${item.type}] ${item.id}: ${item.relevanceReason}`,
+          ),
+        ];
+        io.stdout(lines.join("\n"));
+      }
+      return 0;
+    }
+    if (parsed.command === "context") {
+      const subcommand = args[1];
+      if (subcommand !== "get") {
+        throw new CliUsageError("context requires get subcommand");
+      }
+      const query = parsed.values.get("--query");
+      const rawMaxTokens = parsed.values.get("--max-tokens");
+      const rawMaxItems = parsed.values.get("--max-items");
+
+      const maxTokens = rawMaxTokens ? parseInt(rawMaxTokens, 10) : undefined;
+      const maxItems = rawMaxItems ? parseInt(rawMaxItems, 10) : undefined;
+
+      const result = await getBoundedProjectContext(
+        {
+          schemaVersion: "1",
+          query,
+          maxTokens,
+          maxItems,
+        },
+        { root },
+        fileSystem,
+      );
+
+      if (parsed.flags.has("--json")) {
+        io.stdout(JSON.stringify(result, null, 2));
+      } else {
+        const lines = [
+          `Bounded Project Context (Root: ${result.root}, Tokens: ${result.totalTokens}, Excluded: ${result.excludedPathsCount})`,
+          ...result.items.map(
+            (item) =>
+              `- [${item.trustClass}] [${item.type}] ${item.path} (${item.tokenCount} tokens): ${item.summary}`,
           ),
         ];
         io.stdout(lines.join("\n"));
