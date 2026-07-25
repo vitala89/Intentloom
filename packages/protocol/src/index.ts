@@ -601,3 +601,103 @@ export function validateSkillProposal(value: unknown): SkillProposal {
     updatedAt: stringValue(value.updatedAt, "updatedAt"),
   };
 }
+
+export type EvaluationOutcome =
+  "improved" | "regressed" | "ambiguous" | "unsupported" | "unsafe" | "passed";
+
+export interface EvaluationCase {
+  readonly id: string;
+  readonly title: string;
+  readonly profile: string;
+  readonly prompt: string;
+  readonly expectedCapabilities: readonly string[];
+  readonly expectedTools: readonly string[];
+  readonly maxContextBudget?: number;
+}
+
+export interface SkillEvaluationResult {
+  readonly schemaVersion: "1";
+  readonly id: string;
+  readonly skillId: string;
+  readonly proposalId?: string;
+  readonly outcome: EvaluationOutcome;
+  readonly passed: boolean;
+  readonly contextCost: number;
+  readonly toolSelectionScore: number;
+  readonly capabilityScore: number;
+  readonly securityPass: boolean;
+  readonly details: readonly string[];
+  readonly provenance: {
+    readonly runtime: string;
+    readonly provider: string;
+    readonly model: string;
+    readonly environment: string;
+  };
+  readonly evaluatedAt: string;
+}
+
+export function validateSkillEvaluationResult(
+  value: unknown,
+): SkillEvaluationResult {
+  if (!isObject(value))
+    throw new ProtocolValidationError(
+      -32602,
+      "skill evaluation result must be an object",
+    );
+  if (value.schemaVersion !== "1")
+    throw new ProtocolValidationError(
+      -32602,
+      "unsupported skill evaluation schema version",
+    );
+
+  const outcome = stringValue(value.outcome, "outcome");
+  const validOutcomes: EvaluationOutcome[] = [
+    "improved",
+    "regressed",
+    "ambiguous",
+    "unsupported",
+    "unsafe",
+    "passed",
+  ];
+  if (!validOutcomes.includes(outcome as EvaluationOutcome))
+    throw new ProtocolValidationError(-32602, `invalid outcome: ${outcome}`);
+
+  if (typeof value.passed !== "boolean")
+    throw new ProtocolValidationError(-32602, "passed must be a boolean");
+
+  if (typeof value.securityPass !== "boolean")
+    throw new ProtocolValidationError(-32602, "securityPass must be a boolean");
+
+  if (!isObject(value.provenance))
+    throw new ProtocolValidationError(-32602, "provenance must be an object");
+
+  return {
+    schemaVersion: "1",
+    id: stringValue(value.id, "id"),
+    skillId: stringValue(value.skillId, "skillId"),
+    ...(typeof value.proposalId === "string" && value.proposalId.length > 0
+      ? { proposalId: value.proposalId }
+      : {}),
+    outcome: outcome as EvaluationOutcome,
+    passed: value.passed,
+    contextCost: typeof value.contextCost === "number" ? value.contextCost : 0,
+    toolSelectionScore:
+      typeof value.toolSelectionScore === "number"
+        ? value.toolSelectionScore
+        : 1.0,
+    capabilityScore:
+      typeof value.capabilityScore === "number" ? value.capabilityScore : 1.0,
+    securityPass: value.securityPass,
+    details: stringArray(value.details, "details"),
+    provenance: {
+      runtime: stringValue(value.provenance.runtime, "provenance.runtime"),
+      provider: stringValue(value.provenance.provider, "provenance.provider"),
+      model: stringValue(value.provenance.model, "provenance.model"),
+      environment: stringValue(
+        value.provenance.environment,
+        "provenance.environment",
+      ),
+    },
+    evaluatedAt: stringValue(value.evaluatedAt, "evaluatedAt"),
+  };
+}

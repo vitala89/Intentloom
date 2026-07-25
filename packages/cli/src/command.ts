@@ -34,8 +34,12 @@ import {
   getSkillProposal,
   updateSkillProposalState,
   rollbackSkill,
+  evaluateSkillProposal,
+  listSkillEvaluations,
+  getSkillEvaluation,
   type SkillLoadingLevel,
   type SkillProposalState,
+  type EvaluationOutcome,
   type TrustClass,
   type RetentionState,
   type FileSystem,
@@ -154,6 +158,7 @@ const commands = new Set([
   "summary",
   "skill",
   "proposal",
+  "evaluate",
 ]);
 const projectPathCommands = new Set([
   "adopt",
@@ -199,6 +204,8 @@ const valueFlags = new Set([
   "--max-budget",
   "--state",
   "--evidence",
+  "--proposal-id",
+  "--skill-id",
 ]);
 const mappingValueFlags = new Set([
   "--project-owned-mapping",
@@ -209,13 +216,14 @@ const usage = [
   "Usage: intentloom <init|plan> [--root PATH] [--dry-run]",
   "       intentloom adopt <--plan|--apply PLAN_FILE> [PROJECT_PATH|--root PATH] [--json] [--output PATH] [--strict] [--dry-run]",
   "       intentloom update <--plan|--apply PLAN_FILE> [PROJECT_PATH|--root PATH] [--json] [--output PATH] [--strict] [--dry-run]",
-  "       intentloom <adopt|update|diff|sync|doctor|inspect|timeline|conformance|summary|skill|proposal> [PROJECT_PATH|--root PATH] [--dry-run]",
+  "       intentloom <adopt|update|diff|sync|doctor|inspect|timeline|conformance|summary|skill|proposal|evaluate> [PROJECT_PATH|--root PATH] [--dry-run]",
   "       intentloom evidence import --provider github|gitlab --file PATH --project-key KEY [--json]",
   "       intentloom evidence analyze --provider github|gitlab --file PATH --project-key KEY [--root PATH] [--case-id ID] [--json]",
   "       intentloom conformance [PROJECT_PATH|--root PATH] [--policy PATH] [--timeline PATH] [--case-id ID] [--case-type TYPE] [--json]",
   "       intentloom summary <list|get|record> [PROJECT_PATH|--root PATH] [--id ID] [--trust-class CLASS] [--retention-state STATE] [--json]",
   "       intentloom skill discover [--level catalog|contract|procedure] [--pack PACK] [--role ROLE] [--query QUERY] [--max-budget NUM] [--root PATH] [--json]",
   "       intentloom proposal <list|get|create|approve> [PROJECT_PATH|--root PATH] [--id ID] [--state STATE] [--evidence EVIDENCE] [--json]",
+  "       intentloom evaluate <run|list> [PROJECT_PATH|--root PATH] [--proposal-id ID] [--skill-id ID] [--json]",
   "       adoption mappings use --project-owned-mapping SOURCE=DESTINATION",
   "       or --documentation-mapping SOURCE=DESTINATION",
 ].join("\n");
@@ -241,6 +249,8 @@ function parseArguments(args: readonly string[]): ParsedArguments {
     throw new CliUsageError(
       "proposal requires list, get, create, or approve subcommand",
     );
+  if (command === "evaluate" && !["run", "list"].includes(args[1] ?? ""))
+    throw new CliUsageError("evaluate requires run or list subcommand");
   const flags = new Set<string>();
   const values = new Map<string, string>();
   const mappingValues = new Map<string, string[]>();
@@ -249,7 +259,8 @@ function parseArguments(args: readonly string[]): ParsedArguments {
       command === "evidence" ||
       command === "summary" ||
       command === "skill" ||
-      command === "proposal"
+      command === "proposal" ||
+      command === "evaluate"
         ? 2
         : 1;
     index < args.length;
@@ -1470,6 +1481,51 @@ export async function runCli(
         return 0;
       }
       throw new CliUsageError(`unsupported proposal subcommand: ${subcommand}`);
+    }
+    if (parsed.command === "evaluate") {
+      const subcommand = args[1];
+      if (subcommand === "run") {
+        const proposalId = parsed.values.get("--proposal-id") ?? args[2];
+        if (!proposalId) {
+          throw new CliUsageError("evaluate run requires --proposal-id <id>");
+        }
+        const caseId = parsed.values.get("--case-id");
+        const evalResult = await evaluateSkillProposal(
+          proposalId,
+          {
+            root,
+            ...(caseId !== undefined ? { caseId } : {}),
+          },
+          fileSystem,
+        );
+        io.stdout(
+          parsed.flags.has("--json")
+            ? JSON.stringify(evalResult, null, 2)
+            : `Evaluated proposal [${proposalId}]: outcome=${evalResult.outcome}, passed=${evalResult.passed}, securityPass=${evalResult.securityPass}`,
+        );
+        return 0;
+      }
+      if (subcommand === "list") {
+        const skillId = parsed.values.get("--skill-id");
+        const evaluations = await listSkillEvaluations(
+          {
+            root,
+            ...(skillId !== undefined ? { skillId } : {}),
+          },
+          fileSystem,
+        );
+        if (parsed.flags.has("--json")) {
+          io.stdout(JSON.stringify(evaluations, null, 2));
+        } else {
+          const lines = evaluations.map(
+            (e) =>
+              `- [${e.id}] skill=${e.skillId} outcome=${e.outcome} passed=${e.passed}`,
+          );
+          io.stdout(lines.join("\n"));
+        }
+        return 0;
+      }
+      throw new CliUsageError(`unsupported evaluate subcommand: ${subcommand}`);
     }
     if (parsed.command === "doctor")
       invalidMetadata.push(

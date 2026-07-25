@@ -42,6 +42,20 @@ entry directly below this section.
 
 ## Watch entries
 
+### 2026-07-26, Controlled Agent Learning Candidate L4 skill evaluation and regression gates
+
+- **Status:** complete
+- **Agent/tool:** Antigravity AI Pair Programmer
+- **Branch:** `feat/controlled-learning-l4`
+- **Objective:** Implement evaluation schemas (`EvaluationCase`, `EvaluationOutcome`, `SkillEvaluationResult`), regression classification (`improved`, `regressed`, `ambiguous`, `unsupported`, `unsafe`, `passed`), evaluation runner (`evaluateSkillProposal`), regression gates blocking proposal activation on failed or unsafe evaluation, CLI command routing (`intentloom evaluate`), and test coverage.
+- **Completed:** Implemented versioned `SkillEvaluationResult` and `EvaluationCase` schemas in `@intentloom/protocol`. Added evaluation operations (`evaluateSkillProposal`, `listSkillEvaluations`, `getSkillEvaluation`) in `@intentloom/application` with prompt injection security analysis and outcome classification (`improved`, `regressed`, `ambiguous`, `unsupported`, `unsafe`, `passed`). Enforced strict regression gate in `updateSkillProposalState` blocking proposal activation if evaluations fail, regress, or are missing. Added CLI routing for `intentloom evaluate <run|list>` in `@intentloom/cli`. Added unit & integration tests in `tests/controlled-learning-l4.test.ts`. Updated `PROJECT_STATE.md` and `DUTY_WATCH.md`.
+- **Files changed:** `packages/protocol/src/index.ts`, `packages/application/src/index.ts`, `packages/cli/src/command.ts`, `tests/controlled-learning-l4.test.ts`, `PROJECT_STATE.md`, and `DUTY_WATCH.md`.
+- **Validation:** `pnpm typecheck`, `pnpm lint`, `pnpm format:check`, `pnpm build`, and all vitest test suites passed cleanly (632 tests passed across 60 test files).
+- **Decisions:** Proposal activation is strictly blocked if required evaluations fail, regress, or lack security verification.
+- **Risks or compatibility impact:** None. Additive feature in `@intentloom/protocol`, `@intentloom/application`, and `@intentloom/cli`.
+- **Next first action:** Open PR for `feat/controlled-learning-l4`, observe CI, merge after approval, and prepare Candidate L5 (Accepted Procedural Memory Operations).
+- **Evidence:** local build, typecheck, lint, prettier format check, and vitest run.
+
 ### 2026-07-26, Controlled Agent Learning Candidate L3 skill proposal lifecycle
 
 - **Status:** complete
