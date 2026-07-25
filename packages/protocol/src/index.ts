@@ -188,3 +188,118 @@ export function parseDoctorResponse(value: unknown): DoctorResponse {
     exitCode,
   });
 }
+
+export type TrustClass =
+  | "canonical-policy"
+  | "verified-evidence"
+  | "user-supplied"
+  | "agent-generated";
+
+export type RetentionState = "active" | "archived" | "superseded" | "deleted";
+
+export interface TaskSummary {
+  readonly schemaVersion: "1";
+  readonly id: string;
+  readonly root: string;
+  readonly intent: string;
+  readonly planRef?: string;
+  readonly affectedPaths: readonly string[];
+  readonly validationOutcome: "passed" | "failed" | "partial" | "skipped";
+  readonly evidenceReferences: readonly string[];
+  readonly usedSkills: readonly string[];
+  readonly unresolvedWork: readonly string[];
+  readonly provenance: string;
+  readonly trustClass: TrustClass;
+  readonly retentionState: RetentionState;
+  readonly createdAt: string;
+}
+
+export interface SessionSummary {
+  readonly schemaVersion: "1";
+  readonly id: string;
+  readonly root: string;
+  readonly profile: string;
+  readonly activeAdapters: readonly string[];
+  readonly completedTaskIds: readonly string[];
+  readonly summaryNotes?: string;
+  readonly createdAt: string;
+}
+
+export function validateTaskSummary(value: unknown): TaskSummary {
+  if (!isObject(value))
+    throw new ProtocolValidationError(-32602, "task summary must be an object");
+  if (value.schemaVersion !== "1")
+    throw new ProtocolValidationError(
+      -32602,
+      "unsupported task summary schema version",
+    );
+  const trustClass = stringValue(value.trustClass, "trustClass");
+  if (
+    ![
+      "canonical-policy",
+      "verified-evidence",
+      "user-supplied",
+      "agent-generated",
+    ].includes(trustClass)
+  )
+    throw new ProtocolValidationError(-32602, "invalid trustClass");
+
+  const retentionState = stringValue(value.retentionState, "retentionState");
+  if (!["active", "archived", "superseded", "deleted"].includes(retentionState))
+    throw new ProtocolValidationError(-32602, "invalid retentionState");
+
+  const validationOutcome = stringValue(
+    value.validationOutcome,
+    "validationOutcome",
+  );
+  if (!["passed", "failed", "partial", "skipped"].includes(validationOutcome))
+    throw new ProtocolValidationError(-32602, "invalid validationOutcome");
+
+  return {
+    schemaVersion: "1",
+    id: stringValue(value.id, "id"),
+    root: stringValue(value.root, "root"),
+    intent: stringValue(value.intent, "intent"),
+    ...(typeof value.planRef === "string" && value.planRef.length > 0
+      ? { planRef: value.planRef }
+      : {}),
+    affectedPaths: stringArray(value.affectedPaths, "affectedPaths"),
+    validationOutcome: validationOutcome as TaskSummary["validationOutcome"],
+    evidenceReferences: stringArray(
+      value.evidenceReferences,
+      "evidenceReferences",
+    ),
+    usedSkills: stringArray(value.usedSkills, "usedSkills"),
+    unresolvedWork: stringArray(value.unresolvedWork, "unresolvedWork"),
+    provenance: stringValue(value.provenance, "provenance"),
+    trustClass: trustClass as TrustClass,
+    retentionState: retentionState as RetentionState,
+    createdAt: stringValue(value.createdAt, "createdAt"),
+  };
+}
+
+export function validateSessionSummary(value: unknown): SessionSummary {
+  if (!isObject(value))
+    throw new ProtocolValidationError(
+      -32602,
+      "session summary must be an object",
+    );
+  if (value.schemaVersion !== "1")
+    throw new ProtocolValidationError(
+      -32602,
+      "unsupported session summary schema version",
+    );
+
+  return {
+    schemaVersion: "1",
+    id: stringValue(value.id, "id"),
+    root: stringValue(value.root, "root"),
+    profile: stringValue(value.profile, "profile"),
+    activeAdapters: stringArray(value.activeAdapters, "activeAdapters"),
+    completedTaskIds: stringArray(value.completedTaskIds, "completedTaskIds"),
+    ...(typeof value.summaryNotes === "string" && value.summaryNotes.length > 0
+      ? { summaryNotes: value.summaryNotes }
+      : {}),
+    createdAt: stringValue(value.createdAt, "createdAt"),
+  };
+}

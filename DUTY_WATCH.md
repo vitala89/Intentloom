@@ -42,6 +42,20 @@ entry directly below this section.
 
 ## Watch entries
 
+### 2026-07-25, Controlled Agent Learning Candidate L1 structured task and session summaries
+
+- **Status:** complete
+- **Agent/tool:** Antigravity AI Pair Programmer
+- **Branch:** `feat/controlled-learning-l1`
+- **Objective:** Implement versioned schemas for task and session summaries, local `.aif/memory/` storage, path redaction for secret files (`secretLikePath`), application operations (`recordTaskSummary`, `listTaskSummaries`, `getTaskSummary`), CLI routing, and unit/integration test coverage.
+- **Completed:** Implemented versioned `TaskSummary` and `SessionSummary` schemas and validators in `@intentloom/protocol`. Added `recordTaskSummary`, `listTaskSummaries`, `getTaskSummary`, `recordSessionSummary`, and `listSessionSummaries` in `@intentloom/application` with secret path redaction (`secretLikePath`). Added CLI command routing for `intentloom summary <list|get|record>` in `@intentloom/cli`. Added unit & integration tests in `tests/controlled-learning-l1.test.ts`. Updated `PROJECT_STATE.md` and `DUTY_WATCH.md`.
+- **Files changed:** `packages/protocol/src/index.ts`, `packages/application/src/index.ts`, `packages/application/package.json`, `packages/application/tsconfig.json`, `packages/cli/src/command.ts`, `vitest.config.ts`, `tests/controlled-learning-l1.test.ts`, `PROJECT_STATE.md`, and `DUTY_WATCH.md`.
+- **Validation:** `pnpm typecheck`, `pnpm lint`, `pnpm format:check`, `pnpm build`, and all vitest test suites passed cleanly (614 tests passed).
+- **Decisions:** Task and session summaries store structured execution metadata (intent, plan ref, affected paths, validation outcome, evidence, used skills, unresolved work, trust class, retention state) locally in `.aif/memory/` without storing raw chat transcripts or secret file paths.
+- **Risks or compatibility impact:** None. Additive feature in `@intentloom/protocol`, `@intentloom/application`, and `@intentloom/cli`.
+- **Next first action:** Open PR for `feat/controlled-learning-l1`, observe CI, merge after approval, and prepare Candidate L2 (Progressive Skill Discovery).
+- **Evidence:** local build, typecheck, lint, prettier format check, and vitest run.
+
 ### 2026-07-25, Portable Adoption Phase 6 provider synchronization (`intentloom sync` / `intentloom diff`)
 
 - **Status:** complete

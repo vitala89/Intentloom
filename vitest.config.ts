@@ -16,6 +16,9 @@ export default defineConfig({
       "@intentloom/validator": fileURLToPath(
         new URL("./packages/validator/src/index.ts", import.meta.url),
       ),
+      "@intentloom/protocol": fileURLToPath(
+        new URL("./packages/protocol/src/index.ts", import.meta.url),
+      ),
       "@intentloom/application": fileURLToPath(
         new URL("./packages/application/src/index.ts", import.meta.url),
       ),

@@ -22,7 +22,7 @@ later justifies separation.
 
 ## Current phase
 
-Portable Adoption Phase 6: Provider Synchronization (`intentloom sync` / `intentloom diff`).
+Controlled Agent Learning Candidate L1: Structured Task & Session Summaries.
 
 The project must avoid premature structural migration. New applications,
 packages, and repository boundaries are introduced only when roadmap triggers
@@ -40,18 +40,18 @@ and real consumers justify them.
   connection, evidence, MCP, interactive surfaces, Agent Workspace, Neutron,
   persistent memory, security analysis, engineering process intelligence,
   public monorepo evolution, controlled agent learning, and portable Duty Watch adoption.
-- Duty Watch governance contracts (Phase 1), proposal CLI `intentloom adopt --plan` (Phase 2), transactional apply & rollback engine `intentloom adopt --apply` (Phase 3), pack update 3-way migration `intentloom update` (Phase 4), and conformance & security profiles `intentloom conformance` (Phase 5) are merged into `main`.
+- Duty Watch governance contracts (Phase 1), proposal CLI `intentloom adopt --plan` (Phase 2), transactional apply & rollback engine `intentloom adopt --apply` (Phase 3), pack update 3-way migration `intentloom update` (Phase 4), conformance & security profiles `intentloom conformance` (Phase 5), and provider synchronization `intentloom sync` / `intentloom diff` (Phase 6) are merged into `main`.
 
 These statements must be revalidated against code, tags, CI, and Git history
 before a new release or implementation milestone is declared complete.
 
 ## Active focus
 
-1. Generate provider-specific instruction derivatives from canonical project roles (Claude Code, Codex, Cursor, Copilot, Antigravity, Gemini CLI).
-2. Support versioned instruction generators in `@intentloom/adapters`.
-3. Detect drift between canonical policy and provider files.
-4. Preserve user-owned local additions and custom sections during synchronization.
-5. Show clear diffs before executing synchronization (`intentloom diff` / `intentloom sync --dry-run`).
+1. Define versioned `TaskSummary` and `SessionSummary` schemas in `@intentloom/protocol`.
+2. Record task ID, selected root, intent, plan reference, affected paths, validation outcome, evidence references, used skills, unresolved work, provenance, trust class, and retention state.
+3. Store summaries project-locally in `.aif/memory/tasks/` and `.aif/memory/sessions/` without storing raw chat transcripts.
+4. Exclude secret-like paths (`secretLikePath`) and enforce root-bounded access.
+5. Provide CLI command routing for `intentloom summary record`, `intentloom summary list`, and `intentloom summary get`.
 
 ## Architectural invariants
 
@@ -69,18 +69,19 @@ before a new release or implementation milestone is declared complete.
 
 ## Current blockers and unknowns
 
-- Phase 6 focuses on provider synchronization, completing the 6-phase Portable Adoption & Migration roadmap.
+- Candidate L1 introduces structured summaries as the first step of controlled agent learning without transcript logging or remote uploads.
 
 ## Current milestone
 
-Implement Portable Adoption Phase 6: Provider Synchronization (`intentloom sync` / `intentloom diff`).
+Implement Controlled Agent Learning Candidate L1: Structured Task and Session Summaries.
 
 Expected outputs:
 
-- provider instruction generators for Claude Code, Codex, Cursor, Copilot, Antigravity, and Gemini CLI;
-- drift detection and local section preservation across provider instruction files;
-- diff generation before mutation via `intentloom diff` and `intentloom sync --dry-run`;
-- unit and integration tests proving provider derivative generation, drift detection, and local section preservation.
+- versioned schemas for task and session summaries in `@intentloom/protocol`;
+- application operations for recording, listing, retrieving, and inspecting task and session summaries in `@intentloom/application`;
+- path-sanitized storage in `.aif/memory/` redacting secret-like paths;
+- CLI command routing in `@intentloom/cli`;
+- unit and integration tests proving summary recording, listing, filtering, redaction, and CLI execution.
 
 ## Next platform milestone
 

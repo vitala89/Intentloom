@@ -4,6 +4,7 @@
   "references": [
     { "path": "../core" },
     { "path": "../adapters" },
+    { "path": "../protocol" },
     { "path": "../validator" }
   ],
   "include": ["src/**/*.ts"]
