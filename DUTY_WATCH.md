@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: partial — release-state unification published as draft PR #87; CI/review remain
+Status: partial — PR #87 merged; next process-intelligence candidate is unselected
 
-Active branch: `codex/release-state-unification`
+Active branch: `codex/process-intelligence-next-roadmap-3`
 
 Current objective: unify version and capability documentation around the canonical release-state matrix.
 
-Next first action: inspect PR #87 CI and review feedback; merge only after all required checks and explicit approval.
+Next first action: inspect the process-intelligence roadmap and ADR boundaries, then propose one bounded candidate.
 
 ## Watch rules
 
@@ -41,6 +41,33 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-27, PR #87 merged and local main updated
+
+- **Status:** partial
+- **Agent/tool:** Codex with GitHub merge verification
+- **Branch:** `main` → `codex/process-intelligence-next-roadmap-3`
+- **Commits:** merge commit `f546b76`; next branch created from updated `main`
+- **Pull request:** [#87](https://github.com/vitala89/Intentloom/pull/87), merged
+- **Objective:** Complete the release-state documentation milestone and move to the next roadmap step.
+- **Completed:** Confirmed PR #87 is `MERGED`, all 12 compatibility checks succeeded, fetched `origin/main`, fast-forwarded local `main` from `83941ab` to `f546b76`, and created `codex/process-intelligence-next-roadmap-3`.
+- **Not completed:** Selection, ADR, specification, implementation, PR, and merge for the next process-intelligence candidate.
+- **Validation:** GitHub PR metadata reports merge commit `f546b76` and successful Ubuntu, macOS, and Windows Node 22/24 checks; local `main` matches `origin/main` and is clean at branch creation.
+- **Decisions and assumptions:** The release-state matrix is now part of `main`. Process-intelligence capabilities remain merged in `main` but unreleased to npm; the next candidate must stay descriptive, deterministic, local, read-only, and separately reviewed.
+- **Risks or compatibility impact:** No new runtime behavior was added in this watch. Candidate selection must not introduce waiting-time, rework, bottleneck, causal, remote, persistence, or model claims without a new boundary review.
+- **Open issues or blockers:** The next bounded candidate is intentionally unselected.
+- **Next first action:** Review the process-intelligence concept, current ADRs/specs, and existing protocol/application boundaries; propose one candidate with explicit non-goals.
+- **Evidence:** merge commit `f546b76`, [PR #87](https://github.com/vitala89/Intentloom/pull/87), and local `git pull --ff-only origin main`.
+
+#### Duty completion checklist
+
+- [x] Merge and CI verified
+- [x] Local `main` updated
+- [x] New roadmap branch created
+- [x] `PROJECT_STATE.md` updated
+- [x] `DUTY_WATCH.md` handoff updated
+- [ ] Next candidate selected and specified
+- [ ] Next candidate implemented and merged
 
 ### 2026-07-26, PR #87 format failure fixed
 

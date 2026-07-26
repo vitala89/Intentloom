@@ -1,6 +1,6 @@
 # Intentloom Project State
 
-Last verified: 2026-07-26
+Last verified: 2026-07-27
 
 This file records the durable current state of the project. It is not a
 chronological log. Session history and handoff details belong in
@@ -67,9 +67,8 @@ before a new release or implementation milestone is declared complete.
 ## Current blockers and unknowns
 
 - Any expansion to bottleneck, performance, causal, actor, repository-reading, persisted, remote, or model-assisted analysis requires a new ADR, specification, and threat review.
-- PR #84, PR #85, and PR #86 are merged; current local `main` is `83941ab`.
-- Draft PR #87 publishes the release-state unification branch for CI and review;
-  it has not been merged.
+- PR #84, PR #85, PR #86, and PR #87 are merged; current local `main` is
+  `f546b76`.
 - npm currently reports `latest=0.1.0-alpha.3` and `next=0.4.0-beta.1`.
 - Release-state documentation now distinguishes the published `0.4.0-beta.1` artifact from post-release process-intelligence code in `main`.
 
@@ -90,9 +89,9 @@ Expected outputs:
 
 ## Next platform milestone
 
-Review draft PR #87 for the release-state documentation branch, then merge only
-after CI and maintainer review; keep the matrix current for the next release
-decision.
+Select and specify the next bounded process-intelligence candidate after the
+release-state milestone; implementation requires an accepted ADR, specification,
+and threat-boundary review before code changes.
 
 ## State update rules
 
