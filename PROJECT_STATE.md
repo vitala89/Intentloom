@@ -22,7 +22,7 @@ later justifies separation.
 
 ## Current phase
 
-Engineering Process Intelligence & Agent Memory Evaluation System — conformance, workflow variants, and observed duration metrics merged into `main`; conformance trend summary implementation reviewed locally and pending PR/merge.
+Engineering Process Intelligence & Agent Memory Evaluation System — conformance, workflow variants, and observed duration metrics merged into `main`; conformance trend summary is in draft PR #84 pending checks/review/merge.
 
 The project must avoid premature structural migration. New applications,
 packages, and repository boundaries are introduced only when roadmap triggers
@@ -47,7 +47,7 @@ before a new release or implementation milestone is declared complete.
 
 ## Active focus
 
-1. Open and review a PR for the conformance trend summary implementation over the merged application/daemon contracts.
+1. Review and merge draft PR #84 for the conformance trend summary implementation over the merged application/daemon contracts.
 2. Keep bottleneck inference, remote ingestion, and model-based judgments behind separate approved specifications and threat review.
 
 ## Architectural invariants
@@ -67,7 +67,7 @@ before a new release or implementation milestone is declared complete.
 ## Current blockers and unknowns
 
 - Any expansion to bottleneck, performance, causal, actor, repository-reading, persisted, remote, or model-assisted analysis requires a new ADR, specification, and threat review.
-- The trend-summary PR is not open yet; user authorization is present, but no GitHub connector is loaded and the local GitHub CLI token is invalid.
+- Draft PR #84 is open; twelve compatibility checks are in progress and maintainer review is pending.
 
 ## Current milestone
 
@@ -81,7 +81,7 @@ Expected outputs:
 
 ## Next platform milestone
 
-Open and merge the conformance trend summary PR, then select the next candidate through a separate ADR/specification/threat review.
+Review and merge PR #84, then select the next candidate through a separate ADR/specification/threat review.
 
 ## State update rules
 

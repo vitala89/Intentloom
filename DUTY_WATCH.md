@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: partial — implementation reviewed locally; authorized PR handoff is blocked because no GitHub connector is loaded and local CLI credentials are invalid
+Status: partial — draft PR #84 is open; CI and maintainer review are pending
 
 Active branch: `codex/process-intelligence-next-candidate`
 
-Current objective: preserve a truthful review handoff for the accepted conformance trend summary implementation.
+Current objective: monitor PR #84 checks and complete review/merge of the accepted conformance trend summary implementation.
 
-Next first action: enable the GitHub connector (or run `gh auth login -h github.com`), verify access, then push and open a PR from `codex/process-intelligence-next-candidate` into `main`.
+Next first action: review PR #84 after its compatibility checks complete, then merge only after required human approval.
 
 ## Watch rules
 
@@ -41,6 +41,37 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-26, Draft PR #84 published
+
+- **Status:** partial
+- **Agent/tool:** Codex with GitHub publish workflow
+- **Branch:** `codex/process-intelligence-next-candidate`
+- **Commits:** `ff92506`, `6bbdd36`, `eb52e65`, `1b789d0`, `b402271`, `29ad679`, `b7787d5`
+- **Pull request:** [#84](https://github.com/vitala89/Intentloom/pull/84), draft, targeting `main`
+- **Objective:** Publish the reviewed conformance trend summary implementation for remote checks and maintainer review.
+- **Completed:** Reauthenticated GitHub CLI through device flow, verified API access as `vitala89`, pushed the branch, and created draft PR #84 with scope, safety boundary, changelog impact, and validation results.
+- **Not completed:** Compatibility checks, maintainer review, conversion from draft, and merge into `main`.
+- **Files or packages changed:** No files changed in this watch; all implementation and documentation are in the listed commits.
+- **Validation:** Local `pnpm test` (717 passed, 3 skipped), typecheck, lint, build, format, diff-check, and two-axis review passed. PR checks are currently in progress for Ubuntu/macOS/Windows on Node 22/24.
+- **Decisions and assumptions:** PR remains draft until required checks and human review complete; no merge or release was performed.
+- **Risks or compatibility impact:** Additive protocol and daemon method only; remote CI is the remaining compatibility gate.
+- **Open issues or blockers:** PR checks are in progress and maintainer review is pending.
+- **Next first action:** Inspect PR #84 checks and review feedback, then merge after required approval.
+- **Evidence:** PR #84 metadata and `gh pr view 84` status show `OPEN`, `isDraft: true`, base `main`, and twelve checks `IN_PROGRESS`.
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant tests, type checks, builds, or compatibility checks passed
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `PROJECT_STATE.md` updated when applicable
+- [x] `DUTY_WATCH.md` handoff completed
+- [x] Related roadmap, ADR, changelog, migration, or reference docs updated
+- [x] Failed or unavailable checks recorded
+- [ ] Pull request checks and maintainer review complete
 
 ### 2026-07-26, GitHub connector availability check
 
