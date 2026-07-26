@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: partial — post-merge state PR #89 open; v0.5 publication authorization remains
+Status: partial — PR #89 merged; v0.5 publication authorization remains
 
-Active branch: `codex/post-v05-merge-release-state`
+Active branch: `codex/post-v05-state-merge`
 
-Current objective: validate the post-merge release-state documentation in PR #89 and keep publication behind explicit authorization.
+Current objective: record PR #89 merge and keep the v0.5 publication gate explicit.
 
-Next first action: inspect PR #89 checks and review, then obtain explicit authorization for any v0.5 tag or npm publication.
+Next first action: obtain explicit authorization for any v0.5 tag or npm publication; do not perform either action implicitly.
 
 ## Watch rules
 
@@ -41,6 +41,30 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-27, post-merge release-state PR #89 merged
+
+- **Status:** partial
+- **Agent/tool:** Codex with GitHub and local release-state verification
+- **Branch:** `codex/post-v05-state-merge`
+- **Commits:** merge `8f4bec4`; state update pending
+- **Pull request:** [#89](https://github.com/vitala89/Intentloom/pull/89), merged
+- **Objective:** Synchronize local `main` and handoff records after the post-merge release-state PR.
+- **Completed:** Verified PR #89 merged, fast-forwarded local `main` to `8f4bec4`, and confirmed the merged documentation records the remote 12-check compatibility verification and the untagged/unpublished v0.5 boundary.
+- **Validation:** Local `main` is clean and tracks `origin/main`; PR #89 merge commit is `8f4bec4`.
+- **Decisions and assumptions:** The workspace remains `0.5.0-beta.1`; npm `next` remains `0.4.0-beta.1`. The completed PR merge does not authorize a Git tag, dist-tag change, or npm publication.
+- **Risks or compatibility impact:** Local `pnpm build` remains unavailable because the interrupted dependency environment lacks `@types/node`; remote CI is the verified evidence for the merged release-preparation changes.
+- **Open issues or blockers:** Explicit authorization for v0.5 publication is still required.
+- **Next first action:** Obtain explicit authorization for any v0.5 tag or npm publication; do not perform either action implicitly.
+- **Evidence:** merge commit `8f4bec4`, [PR #89](https://github.com/vitala89/Intentloom/pull/89), `PROJECT_STATE.md`, `DUTY_WATCH.md`, and `docs/audits/V0_5_RELEASE_READINESS.md`.
+
+#### Duty completion checklist
+
+- [x] PR #89 merge verified
+- [x] Local `main` fast-forwarded to `8f4bec4`
+- [x] Release-state records are on `main`
+- [ ] Explicit tag/npm publication authorization obtained
+- [ ] Tag and npm publication completed
 
 ### 2026-07-27, v0.5 release-preparation PR #88 merged
 
