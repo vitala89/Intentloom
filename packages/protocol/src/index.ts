@@ -2539,3 +2539,83 @@ export function validateContinuousSecurityAuditReport(
     auditedAt: stringValue(value.auditedAt, "auditedAt"),
   };
 }
+
+export type AgentWorkspaceMode = "discuss" | "inspect" | "plan" | "review";
+
+export interface WorkspaceMessage {
+  readonly id: string;
+  readonly role: "user" | "assistant";
+  readonly content: string;
+  readonly timestamp: string;
+}
+
+export interface WorkspaceConversationRecord {
+  readonly schemaVersion: "1";
+  readonly id: string;
+  readonly projectId: string;
+  readonly mode: AgentWorkspaceMode;
+  readonly messages: readonly WorkspaceMessage[];
+  readonly createdAt: string;
+  readonly updatedAt: string;
+}
+
+export function validateWorkspaceConversationRecord(
+  value: unknown,
+): WorkspaceConversationRecord {
+  if (!isObject(value))
+    throw new ProtocolValidationError(
+      -32602,
+      "workspace conversation record must be an object",
+    );
+  if (value.schemaVersion !== "1")
+    throw new ProtocolValidationError(
+      -32602,
+      "unsupported workspace conversation record schema version",
+    );
+
+  const modes: readonly AgentWorkspaceMode[] = [
+    "discuss",
+    "inspect",
+    "plan",
+    "review",
+  ];
+  const mode = stringValue(value.mode, "mode") as AgentWorkspaceMode;
+  if (!modes.includes(mode))
+    throw new ProtocolValidationError(
+      -32602,
+      `invalid workspace mode '${mode}'`,
+    );
+
+  if (!Array.isArray(value.messages))
+    throw new ProtocolValidationError(-32602, "messages must be an array");
+
+  const messages: WorkspaceMessage[] = value.messages.map((item, idx) => {
+    if (!isObject(item))
+      throw new ProtocolValidationError(
+        -32602,
+        `messages at index ${idx} must be an object`,
+      );
+    const role = stringValue(item.role, `messages[${idx}].role`);
+    if (role !== "user" && role !== "assistant")
+      throw new ProtocolValidationError(
+        -32602,
+        `messages[${idx}].role must be 'user' or 'assistant'`,
+      );
+    return {
+      id: stringValue(item.id, `messages[${idx}].id`),
+      role: role as "user" | "assistant",
+      content: stringValue(item.content, `messages[${idx}].content`),
+      timestamp: stringValue(item.timestamp, `messages[${idx}].timestamp`),
+    };
+  });
+
+  return {
+    schemaVersion: "1",
+    id: stringValue(value.id, "id"),
+    projectId: stringValue(value.projectId, "projectId"),
+    mode,
+    messages,
+    createdAt: stringValue(value.createdAt, "createdAt"),
+    updatedAt: stringValue(value.updatedAt, "updatedAt"),
+  };
+}
