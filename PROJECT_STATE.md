@@ -98,8 +98,9 @@ Expected outputs:
 
 ## Next platform milestone
 
-Select and document the first `v1.0.0` compatibility milestone, including its
-stable support policy, upgrade path, and required desktop/MCP/security gates.
+Review [the v1.0 compatibility plan](docs/roadmap/V1_0_STABLE_COMPATIBILITY_PLAN.md)
+and draft the first compatibility-contract ADR/specification; implementation
+of Desktop or hosted features remains downstream of that contract.
 
 ## State update rules
 

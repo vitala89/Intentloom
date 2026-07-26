@@ -42,6 +42,30 @@ entry directly below this section.
 
 ## Watch entries
 
+### 2026-07-27, v1.0 stable compatibility plan drafted
+
+- **Status:** partial
+- **Agent/tool:** Codex with decomposition-planning-roadmap workflow adapted to compatibility sequencing
+- **Branch:** `codex/v1-compatibility-planning`
+- **Commits:** pending
+- **Pull request:** None yet; planning draft is under review locally
+- **Objective:** Define the next roadmap step after the v0.5 release without prematurely implementing a broad v1.0 surface.
+- **Completed:** Added `docs/roadmap/V1_0_STABLE_COMPATIBILITY_PLAN.md` with ordered phases for the stable contract, upgrade path, client-surface readiness, security/supply-chain review, and final release evidence; linked it from `ROADMAP.md` and updated the next first action in `PROJECT_STATE.md`.
+- **Validation:** Documentation scope reviewed against the current compatibility policy, runtime/host matrix, public monorepo evolution plan, ADR-0033, v0.5 release evidence, and existing release process. Formatter and diff checks remain to be run before commit.
+- **Decisions and assumptions:** v1.0 planning starts with the compatibility contract and upgrade evidence. Desktop, hosted services, model training, live providers, external MCP ingestion, and autonomous mutation remain separately gated candidates.
+- **Risks or compatibility impact:** This is a planning-only change and does not claim v1.0 implementation or stable support commitments.
+- **Open issues or blockers:** Maintainer review of the v1.0 planning draft and selection of the first compatibility-contract ADR/specification scope are pending.
+- **Next first action:** Review the v1.0 plan, then draft the first compatibility-contract ADR/specification.
+- **Evidence:** `docs/roadmap/V1_0_STABLE_COMPATIBILITY_PLAN.md`, `ROADMAP.md`, `docs/releases/COMPATIBILITY_POLICY.md`, and `docs/compatibility/COMPATIBILITY_MATRIX.md`.
+
+#### Duty completion checklist
+
+- [x] v1.0 planning draft created
+- [x] Roadmap and Project State linked to the draft
+- [ ] Formatter and diff checks passed
+- [ ] Planning PR opened
+- [ ] First compatibility-contract ADR/specification selected
+
 ### 2026-07-27, v0.5.0-beta.1 published to npm
 
 - **Status:** partial
