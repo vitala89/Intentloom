@@ -47,11 +47,13 @@ entry directly below this section.
 - **Status:** complete
 - **Agent/tool:** Codex
 - **Branch:** `codex/memory-security-m3`
+- **Commit:** `bc0d973 feat(memory): add semantic retrieval adapters`
+- **Pull request:** #71 (draft)
 - **Objective:** Begin M3 semantic retrieval and portable adapter work after merged M2.
 - **Completed:** Added provider-neutral persistent-memory search and bounded rendering contracts, plus explicit rebuild/clear lifecycle for `.aif/memory/index.json` derived state and CLI `memory search`, `memory render`, and `memory index` routing. Accepted, project-scoped records are deterministically ranked by local terms and render to named portable targets without network access.
 - **Validation:** `pnpm typecheck` and `pnpm vitest run tests/memory-security-m3.test.ts` passed.
-- **Not completed:** Commit and pull request creation remain pending.
-- **Next first action:** Commit the validated M3 work and open a draft PR for `codex/memory-security-m3`.
+- **Not completed:** Merge remains subject to human review and approval.
+- **Next first action:** Review draft PR #71, merge after approval, then begin Candidate M4 (Agent Session Lifecycle) with its required ADR and threat review.
 
 ### 2026-07-26, Memory & Security Candidate M2 accepted persistent memory
 
