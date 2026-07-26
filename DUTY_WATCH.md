@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: Memory & Security Candidates M1–M3 merged into main; Candidate M4 Agent Session Lifecycle complete locally
+Status: Memory & Security Candidates M1–M4 merged into main; Candidate S1 Security Evidence and Posture complete locally
 
-Active branch: `feat/memory-security-m4`
+Active branch: `feat/memory-security-s1`
 
-Current objective: commit and open a pull request for Candidate M4 Agent Session Lifecycle.
+Current objective: commit and open a pull request for Candidate S1 Security Evidence and Posture.
 
-Next first action: review Candidate M4 final diff, commit it, open a pull request, and merge after review.
+Next first action: review Candidate S1 final diff, commit it, open a pull request, and merge after review.
 
 ## Watch rules
 
@@ -41,6 +41,21 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-26, Memory & Security Candidate S1 security evidence and posture
+
+- **Status:** complete
+- **Agent/tool:** Antigravity AI Pair Programmer
+- **Branch:** `feat/memory-security-s1`
+- **Pull request:** #73
+- **Objective:** Implement Candidate S1: Security Evidence and Posture, including ADR-0027, threat model updates, versioned protocol schemas, private application operations, CLI command routing (`intentloom security`), and comprehensive test coverage.
+- **Completed:** Added `ADR-0027-security-evidence-and-posture.md` and updated `THREAT_MODEL.md` with threat boundary analysis and security invariant 25. Implemented `SecurityFinding`, `SecurityCoverageReport`, `SarifImportResult` schemas and validators in `@intentloom/protocol`. Added security operations (`importSarifSecurityReport`, `getSecurityCoverageReport`, `dismissSecurityFinding`, `acceptSecurityRisk`, `listSecurityFindings`, `getSecurityFinding`) in `@intentloom/application` with secret path redaction (`secretLikePath`) and local `.aif/security/` JSON persistence. Exposed CLI routing for `intentloom security <import|inspect|coverage|dismiss|accept-risk|list>` in `@intentloom/cli`. Added unit & integration tests in `tests/memory-security-s1.test.ts`. Updated `PROJECT_STATE.md` and `DUTY_WATCH.md`.
+- **Files changed:** `docs/decisions/ADR-0027-security-evidence-and-posture.md`, `docs/security/THREAT_MODEL.md`, `packages/protocol/src/index.ts`, `packages/application/src/index.ts`, `packages/cli/src/command.ts`, `tests/memory-security-s1.test.ts`, `PROJECT_STATE.md`, and `DUTY_WATCH.md`.
+- **Validation:** `pnpm typecheck`, `pnpm lint`, `pnpm format:check`, `pnpm build`, `pnpm vitest run tests/memory-security-s1.test.ts` (5/5 passed), `pnpm test` (full Vitest run), and `git diff --check` passed cleanly.
+- **Decisions:** Security evidence and finding ingestion are provider-neutral, local-first, project-isolated under `.aif/security/`, redact secret paths, process SARIF reports as untrusted input, and cannot execute scripts or alter project configuration without review.
+- **Risks or compatibility impact:** Additive feature in `@intentloom/protocol`, `@intentloom/application`, and `@intentloom/cli`.
+- **Next first action:** Commit `feat/memory-security-s1`, open a pull request, merge after approval, and prepare Candidate S2 (Local Deterministic Security Adapters).
+- **Evidence:** local typecheck, lint, prettier format check, full Vitest run, and `git diff --check`.
 
 ### 2026-07-26, Memory & Security Candidate M4 agent session lifecycle
 

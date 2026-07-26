@@ -73,6 +73,14 @@ import {
   closeAgentSession,
   deleteAgentSession,
   exportAgentSession,
+  importSarifSecurityReport,
+  getSecurityCoverageReport,
+  dismissSecurityFinding,
+  acceptSecurityRisk,
+  listSecurityFindings,
+  getSecurityFinding,
+  type SecurityFindingSeverity,
+  type SecurityFindingState,
   type AgentSessionState,
   type SkillLoadingLevel,
   type SkillProposalState,
@@ -205,6 +213,7 @@ const commands = new Set([
   "delegate",
   "context",
   "session",
+  "security",
 ]);
 const projectPathCommands = new Set([
   "adopt",
@@ -252,6 +261,8 @@ const valueFlags = new Set([
   "--query",
   "--max-budget",
   "--state",
+  "--severity",
+  "--reason",
   "--evidence",
   "--proposal-id",
   "--skill-id",
@@ -275,7 +286,7 @@ const usage = [
   "Usage: intentloom <init|plan> [--root PATH] [--dry-run]",
   "       intentloom adopt <--plan|--apply PLAN_FILE> [PROJECT_PATH|--root PATH] [--json] [--output PATH] [--strict] [--dry-run]",
   "       intentloom update <--plan|--apply PLAN_FILE> [PROJECT_PATH|--root PATH] [--json] [--output PATH] [--strict] [--dry-run]",
-  "       intentloom <adopt|update|diff|sync|doctor|inspect|timeline|conformance|summary|skill|proposal|evaluate|memory|checkpoint|rank|profile|delegate|context|session> [PROJECT_PATH|--root PATH] [--dry-run]",
+  "       intentloom <adopt|update|diff|sync|doctor|inspect|timeline|conformance|summary|skill|proposal|evaluate|memory|checkpoint|rank|profile|delegate|context|session|security> [PROJECT_PATH|--root PATH] [--dry-run]",
   "       intentloom evidence import --provider github|gitlab --file PATH --project-key KEY [--json]",
   "       intentloom evidence analyze --provider github|gitlab --file PATH --project-key KEY [--root PATH] [--case-id ID] [--json]",
   "       intentloom conformance [PROJECT_PATH|--root PATH] [--policy PATH] [--timeline PATH] [--case-id ID] [--case-type TYPE] [--json]",
@@ -290,6 +301,7 @@ const usage = [
   "       intentloom delegate --profile NAME --role ROLE --task-id ID [--root PATH] [--json]",
   "       intentloom context <get> [--query QUERY] [--max-tokens NUM] [--max-items NUM] [--root PATH] [--json]",
   "       intentloom session <start|close|list|get|delete|export> [--id ID] [--task TASK] [--state STATE] [--root PATH] [--json]",
+  "       intentloom security <import|inspect|coverage|dismiss|accept-risk|list> [--file PATH] [--id ID] [--reason REASON] [--approved-by USER] [--severity SEVERITY] [--state STATE] [--root PATH] [--json]",
   "       adoption mappings use --project-owned-mapping SOURCE=DESTINATION",
   "       or --documentation-mapping SOURCE=DESTINATION",
 ].join("\n");
@@ -368,6 +380,20 @@ function parseArguments(args: readonly string[]): ParsedArguments {
     throw new CliUsageError(
       "session requires start, close, list, get, delete, or export subcommand",
     );
+  if (
+    command === "security" &&
+    ![
+      "import",
+      "inspect",
+      "coverage",
+      "dismiss",
+      "accept-risk",
+      "list",
+    ].includes(args[1] ?? "")
+  )
+    throw new CliUsageError(
+      "security requires import, inspect, coverage, dismiss, accept-risk, or list subcommand",
+    );
   const flags = new Set<string>();
   const values = new Map<string, string>();
   const mappingValues = new Map<string, string[]>();
@@ -383,6 +409,7 @@ function parseArguments(args: readonly string[]): ParsedArguments {
       command === "profile" ||
       command === "context" ||
       command === "session" ||
+      command === "security" ||
       (command === "rank" && args[1] !== undefined && !args[1].startsWith("--"))
         ? 2
         : 1;
@@ -2351,6 +2378,152 @@ export async function runCli(
           io.stdout(
             `Exported agent session ${sessionId} for project ${projectId}${targetPath ? ` to ${targetPath}` : ""}`,
           );
+        }
+        return 0;
+      }
+    }
+    if (parsed.command === "security") {
+      const subcommand = args[1];
+      if (
+        ![
+          "import",
+          "inspect",
+          "coverage",
+          "dismiss",
+          "accept-risk",
+          "list",
+        ].includes(subcommand ?? "")
+      ) {
+        throw new CliUsageError(
+          "security requires import, inspect, coverage, dismiss, accept-risk, or list subcommand",
+        );
+      }
+      const projectId = parsed.values.get("--project-id") ?? "project-local";
+
+      if (subcommand === "import") {
+        const filePath = parsed.values.get("--file");
+        if (!filePath) {
+          throw new CliUsageError("security import requires --file <path>");
+        }
+        const fullPath = resolveWithin(root, filePath);
+        if (!(await fileSystem.exists(fullPath))) {
+          throw new Error(`security report file not found: ${filePath}`);
+        }
+        const content = await fileSystem.read(fullPath);
+        const result = await importSarifSecurityReport(
+          content,
+          filePath,
+          { root },
+          fileSystem,
+        );
+        if (parsed.flags.has("--json")) {
+          io.stdout(JSON.stringify(result, null, 2));
+        } else {
+          io.stdout(
+            `Imported ${result.importedCount} security findings from ${filePath}`,
+          );
+        }
+        return 0;
+      }
+
+      if (subcommand === "coverage" || subcommand === "inspect") {
+        const report = await getSecurityCoverageReport(
+          { root, projectId },
+          fileSystem,
+        );
+        if (parsed.flags.has("--json")) {
+          io.stdout(JSON.stringify(report, null, 2));
+        } else {
+          const lines = [
+            `Security Posture Report for project ${report.projectId}:`,
+            `Total Findings: ${report.totalFindings}`,
+            `Scanners: ${report.scanners.join(", ") || "none"}`,
+            `Severities: critical=${report.findingsBySeverity.critical}, high=${report.findingsBySeverity.high}, medium=${report.findingsBySeverity.medium}, low=${report.findingsBySeverity.low}, info=${report.findingsBySeverity.info}`,
+            `States: open=${report.findingsByState.open}, verified=${report.findingsByState.verified}, dismissed=${report.findingsByState.dismissed}, accepted-risk=${report.findingsByState["accepted-risk"]}, remediated=${report.findingsByState.remediated}`,
+          ];
+          io.stdout(lines.join("\n"));
+        }
+        return 0;
+      }
+
+      if (subcommand === "dismiss") {
+        const id =
+          parsed.values.get("--id") ??
+          (args[2] && !args[2].startsWith("--") ? args[2] : undefined);
+        const reason =
+          parsed.values.get("--reason") ?? "Dismissed by maintainer";
+        if (!id) {
+          throw new CliUsageError(
+            "security dismiss requires finding ID (--id or positional argument)",
+          );
+        }
+        const updated = await dismissSecurityFinding(
+          id,
+          { root, reason },
+          fileSystem,
+        );
+        if (parsed.flags.has("--json")) {
+          io.stdout(JSON.stringify(updated, null, 2));
+        } else {
+          io.stdout(
+            `Dismissed security finding ${id}: ${updated.dismissalReason}`,
+          );
+        }
+        return 0;
+      }
+
+      if (subcommand === "accept-risk") {
+        const id =
+          parsed.values.get("--id") ??
+          (args[2] && !args[2].startsWith("--") ? args[2] : undefined);
+        const approvedBy = parsed.values.get("--approved-by") ?? "maintainer";
+        const reason = parsed.values.get("--reason") ?? "Accepted risk";
+        if (!id) {
+          throw new CliUsageError(
+            "security accept-risk requires finding ID (--id or positional argument)",
+          );
+        }
+        const updated = await acceptSecurityRisk(
+          id,
+          { root, approvedBy, reason },
+          fileSystem,
+        );
+        if (parsed.flags.has("--json")) {
+          io.stdout(JSON.stringify(updated, null, 2));
+        } else {
+          io.stdout(
+            `Accepted risk for security finding ${id} by ${approvedBy}`,
+          );
+        }
+        return 0;
+      }
+
+      if (subcommand === "list") {
+        const rawSeverity = parsed.values.get("--severity");
+        const rawState = parsed.values.get("--state");
+        const severity = rawSeverity as SecurityFindingSeverity | undefined;
+        const state = rawState as SecurityFindingState | undefined;
+
+        const findings = await listSecurityFindings(
+          {
+            root,
+            ...(severity !== undefined ? { severity } : {}),
+            ...(state !== undefined ? { state } : {}),
+          },
+          fileSystem,
+        );
+
+        if (parsed.flags.has("--json")) {
+          io.stdout(JSON.stringify(findings, null, 2));
+        } else {
+          const lines = [
+            `Security Findings (${findings.length}):`,
+            ...findings.map(
+              (f) =>
+                `- [${f.severity.toUpperCase()}] [${f.state}] ${f.id} (${f.title}): ${f.scanner}`,
+            ),
+          ];
+          io.stdout(lines.join("\n"));
         }
         return 0;
       }
