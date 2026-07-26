@@ -20,6 +20,7 @@ import {
 import {
   evaluateEngineeringConformance,
   summarizeWorkflowVariants,
+  summarizeWorkflowDurations,
 } from "@intentloom/evidence-analysis";
 import {
   INTENTLOOM_VERSION,
@@ -122,6 +123,7 @@ import {
   type EngineeringWorkflowPolicy,
   type GenericTimeline,
   type WorkflowVariantSummaryReport,
+  type WorkflowDurationSummaryReport,
   type NeutronSubagentRole,
   type NeutronSubagentStatus,
   type NeutronSubagentTaskRecord,
@@ -174,6 +176,12 @@ export function summarizeProjectWorkflowVariants(
   timelines: readonly GenericTimeline[],
 ): WorkflowVariantSummaryReport {
   return summarizeWorkflowVariants(timelines);
+}
+
+export function summarizeProjectWorkflowDurations(
+  timelines: readonly GenericTimeline[],
+): WorkflowDurationSummaryReport {
+  return summarizeWorkflowDurations(timelines);
 }
 export type {
   RetentionState,

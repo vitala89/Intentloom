@@ -21,6 +21,7 @@ import {
   createMemoryEvaluationsListRequest,
   createEngineeringConformanceRequest,
   createWorkflowVariantSummaryRequest,
+  createWorkflowDurationSummaryRequest,
   createSessionGetRequest,
 } from "../packages/protocol/src/index.js";
 import {
@@ -29,6 +30,7 @@ import {
   nodeFileSystem,
   evaluateProjectEngineeringConformance,
   summarizeProjectWorkflowVariants,
+  summarizeProjectWorkflowDurations,
 } from "../packages/application/src/index.js";
 import {
   startLocalDaemon,
@@ -595,6 +597,9 @@ describe.skipIf(process.platform === "win32")("local daemon", () => {
       workflowVariantSummary: async (req) => ({
         report: summarizeProjectWorkflowVariants(req.params.timelines),
       }),
+      workflowDurationSummary: async (req) => ({
+        report: summarizeProjectWorkflowDurations(req.params.timelines),
+      }),
       sessionGet: async () => ({
         session: null,
       }),
@@ -686,6 +691,33 @@ describe.skipIf(process.platform === "win32")("local daemon", () => {
       }),
     )) as { result: { report: { timelineCount: number } } };
     expect(variantsRes.result.report.timelineCount).toBe(2);
+
+    const durationRes = (await sendReq(
+      createWorkflowDurationSummaryRequest(8, {
+        timelines: [
+          {
+            caseType: "release",
+            caseId: "release:1",
+            events: [
+              {
+                activity: "release.started",
+                source: "fixture",
+                sourceId: "1",
+                timestamp: "2026-07-26T00:00:00.000Z",
+              },
+              {
+                activity: "release.finished",
+                source: "fixture",
+                sourceId: "2",
+                timestamp: "2026-07-26T00:01:00.000Z",
+              },
+            ],
+          },
+          { caseType: "release", caseId: "release:2", events: [] },
+        ],
+      }),
+    )) as { result: { report: { observableCaseCount: number } } };
+    expect(durationRes.result.report.observableCaseCount).toBe(1);
 
     const sessionRes = (await sendReq(
       createSessionGetRequest(4, { root, sessionId: "s1" }),

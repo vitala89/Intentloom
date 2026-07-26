@@ -1,6 +1,6 @@
 # ADR-0038: Observed workflow duration metrics boundary
 
-- **Status:** Proposed
+- **Status:** Accepted
 - **Date:** 2026-07-26
 
 ## Context

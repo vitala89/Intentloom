@@ -9,6 +9,8 @@ export const ENGINEERING_CONFORMANCE_METHOD =
   "intentloom.engineering.conformance.v1" as const;
 export const WORKFLOW_VARIANT_SUMMARY_METHOD =
   "intentloom.workflow.variants.summary.v1" as const;
+export const WORKFLOW_DURATION_SUMMARY_METHOD =
+  "intentloom.workflow.durations.summary.v1" as const;
 export const SESSION_GET_METHOD = "intentloom.session.get.v1" as const;
 
 export type JsonPrimitive = boolean | null | number | string;
@@ -158,6 +160,21 @@ export type WorkflowVariantSummaryRequest = JsonRpcRequest<
 export type WorkflowVariantSummaryResponse =
   JsonRpcSuccess<WorkflowVariantSummaryResultPayload>;
 
+export interface WorkflowDurationSummaryParams {
+  readonly protocolVersion: typeof PROTOCOL_VERSION;
+  readonly timelines: readonly GenericTimeline[];
+}
+export interface WorkflowDurationSummaryResultPayload {
+  readonly protocolVersion: typeof PROTOCOL_VERSION;
+  readonly report: WorkflowDurationSummaryReport;
+}
+export type WorkflowDurationSummaryRequest = JsonRpcRequest<
+  typeof WORKFLOW_DURATION_SUMMARY_METHOD,
+  WorkflowDurationSummaryParams
+>;
+export type WorkflowDurationSummaryResponse =
+  JsonRpcSuccess<WorkflowDurationSummaryResultPayload>;
+
 export interface SessionGetParams {
   readonly protocolVersion: typeof PROTOCOL_VERSION;
   readonly root: string;
@@ -181,6 +198,7 @@ export type DaemonRequest =
   | MemoryEvaluationsListRequest
   | EngineeringConformanceRequest
   | WorkflowVariantSummaryRequest
+  | WorkflowDurationSummaryRequest
   | SessionGetRequest;
 
 export type DaemonResponse =
@@ -191,6 +209,7 @@ export type DaemonResponse =
   | MemoryEvaluationsListResponse
   | EngineeringConformanceResponse
   | WorkflowVariantSummaryResponse
+  | WorkflowDurationSummaryResponse
   | SessionGetResponse;
 
 export class ProtocolValidationError extends Error {
@@ -344,6 +363,18 @@ export function createWorkflowVariantSummaryRequest(
   };
 }
 
+export function createWorkflowDurationSummaryRequest(
+  id: RequestId,
+  params: Omit<WorkflowDurationSummaryParams, "protocolVersion">,
+): WorkflowDurationSummaryRequest {
+  return {
+    jsonrpc: "2.0",
+    id,
+    method: WORKFLOW_DURATION_SUMMARY_METHOD,
+    params: { protocolVersion: PROTOCOL_VERSION, timelines: params.timelines },
+  };
+}
+
 export function createSessionGetRequest(
   id: RequestId,
   params: Omit<SessionGetParams, "protocolVersion">,
@@ -389,6 +420,7 @@ export function parseDaemonRequest(value: unknown): DaemonRequest {
     MEMORY_EVALUATIONS_LIST_METHOD,
     ENGINEERING_CONFORMANCE_METHOD,
     WORKFLOW_VARIANT_SUMMARY_METHOD,
+    WORKFLOW_DURATION_SUMMARY_METHOD,
     SESSION_GET_METHOD,
   ];
   if (typeof value.method !== "string" || !validMethods.includes(value.method))
@@ -460,6 +492,13 @@ export function parseDaemonRequest(value: unknown): DaemonRequest {
     if (!Array.isArray(value.params.timelines))
       throw new ProtocolValidationError(-32602, "timelines must be an array");
     return createWorkflowVariantSummaryRequest(id, {
+      timelines: value.params.timelines.map(validateGenericTimeline),
+    });
+  }
+  if (value.method === WORKFLOW_DURATION_SUMMARY_METHOD) {
+    if (!Array.isArray(value.params.timelines))
+      throw new ProtocolValidationError(-32602, "timelines must be an array");
+    return createWorkflowDurationSummaryRequest(id, {
       timelines: value.params.timelines.map(validateGenericTimeline),
     });
   }
@@ -584,6 +623,20 @@ export function createWorkflowVariantSummaryResponse(
     result: {
       protocolVersion: PROTOCOL_VERSION,
       report: validateWorkflowVariantSummaryReport(result.report),
+    },
+  };
+}
+
+export function createWorkflowDurationSummaryResponse(
+  id: RequestId,
+  result: Omit<WorkflowDurationSummaryResultPayload, "protocolVersion">,
+): WorkflowDurationSummaryResponse {
+  return {
+    jsonrpc: "2.0",
+    id,
+    result: {
+      protocolVersion: PROTOCOL_VERSION,
+      report: validateWorkflowDurationSummaryReport(result.report),
     },
   };
 }
@@ -3343,5 +3396,94 @@ export function validateWorkflowVariantSummaryReport(
         caseIds,
       };
     }),
+  };
+}
+
+export interface WorkflowElapsedMinutes {
+  readonly minimum: number;
+  readonly median: number;
+  readonly maximum: number;
+}
+
+export interface WorkflowDurationSummaryReport {
+  readonly operationVersion: 1;
+  readonly caseType: EngineeringWorkflowCaseType;
+  readonly timelineCount: number;
+  readonly timestampCoverage: WorkflowTimestampCoverage;
+  readonly observableCaseCount: number;
+  readonly elapsedMinutes?: WorkflowElapsedMinutes;
+}
+
+export function validateWorkflowDurationSummaryReport(
+  value: unknown,
+): WorkflowDurationSummaryReport {
+  if (!isObject(value) || value.operationVersion !== 1)
+    throw new ProtocolValidationError(
+      -32602,
+      "workflow duration summary report is invalid",
+    );
+  const timestampCoverage = stringValue(
+    value.timestampCoverage,
+    "timestampCoverage",
+  ) as WorkflowTimestampCoverage;
+  if (
+    !(["complete", "partial", "unavailable"] as const).includes(
+      timestampCoverage,
+    )
+  )
+    throw new ProtocolValidationError(-32602, "invalid timestampCoverage");
+  const integer = (field: "timelineCount" | "observableCaseCount") => {
+    const result = value[field];
+    if (typeof result !== "number" || !Number.isInteger(result) || result < 0)
+      throw new ProtocolValidationError(
+        -32602,
+        `${field} must be a non-negative integer`,
+      );
+    return result;
+  };
+  const timelineCount = integer("timelineCount");
+  const observableCaseCount = integer("observableCaseCount");
+  if (timelineCount < 2 || observableCaseCount > timelineCount)
+    throw new ProtocolValidationError(
+      -32602,
+      "invalid workflow duration case counts",
+    );
+  let elapsedMinutes: WorkflowElapsedMinutes | undefined;
+  if (value.elapsedMinutes !== undefined) {
+    if (!isObject(value.elapsedMinutes) || observableCaseCount === 0)
+      throw new ProtocolValidationError(-32602, "elapsedMinutes is invalid");
+    const rawElapsedMinutes = value.elapsedMinutes;
+    const metric = (field: keyof WorkflowElapsedMinutes) => {
+      const result = rawElapsedMinutes[field];
+      if (typeof result !== "number" || !Number.isFinite(result) || result < 0)
+        throw new ProtocolValidationError(
+          -32602,
+          `elapsedMinutes.${field} is invalid`,
+        );
+      return result;
+    };
+    elapsedMinutes = {
+      minimum: metric("minimum"),
+      median: metric("median"),
+      maximum: metric("maximum"),
+    };
+    if (
+      elapsedMinutes.minimum > elapsedMinutes.median ||
+      elapsedMinutes.median > elapsedMinutes.maximum
+    )
+      throw new ProtocolValidationError(
+        -32602,
+        "elapsedMinutes values are not ordered",
+      );
+  } else if (observableCaseCount > 0) {
+    throw new ProtocolValidationError(-32602, "elapsedMinutes is required");
+  }
+  return {
+    operationVersion: 1,
+    caseType: engineeringCaseType(value.caseType, "caseType"),
+    timelineCount,
+    timestampCoverage,
+    observableCaseCount,
+    ...(elapsedMinutes ? { elapsedMinutes } : {}),
   };
 }

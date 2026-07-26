@@ -11,6 +11,7 @@ import {
   type GenericTimeline,
   type TimelineEventRef,
   type WorkflowVariantSummaryReport,
+  type WorkflowDurationSummaryReport,
 } from "@intentloom/protocol";
 
 export interface ReleaseAnalysisGitEvent {
@@ -290,6 +291,7 @@ export type {
   GenericTimeline,
   TimelineEventRef,
   WorkflowVariantSummaryReport,
+  WorkflowDurationSummaryReport,
 } from "@intentloom/protocol";
 
 function toEvidenceRef(event: TimelineEventRef): EngineeringEvidenceRef {
@@ -501,5 +503,61 @@ export function summarizeWorkflowVariants(
             JSON.stringify(right.activities),
           ),
       ),
+  };
+}
+
+export function summarizeWorkflowDurations(
+  timelines: readonly GenericTimeline[],
+): WorkflowDurationSummaryReport {
+  if (timelines.length < 2)
+    throw new Error("at least two timelines are required");
+  const normalized = timelines.map(validateGenericTimeline);
+  const caseType = normalized[0]!.caseType;
+  if (normalized.some((timeline) => timeline.caseType !== caseType))
+    throw new Error("workflow duration timelines must share one case type");
+  const caseIds = normalized.map((timeline) => timeline.caseId);
+  if (new Set(caseIds).size !== caseIds.length)
+    throw new Error("workflow duration timeline case IDs must be unique");
+
+  let timestampedEvents = 0;
+  let totalEvents = 0;
+  const elapsed: number[] = [];
+  for (const timeline of normalized) {
+    const timestamps = timeline.events
+      .map((event) => (event.timestamp ? Date.parse(event.timestamp) : NaN))
+      .filter((timestamp) => Number.isFinite(timestamp));
+    totalEvents += timeline.events.length;
+    timestampedEvents += timestamps.length;
+    if (timestamps.length >= 2)
+      elapsed.push(
+        (Math.max(...timestamps) - Math.min(...timestamps)) / 60_000,
+      );
+  }
+  const sortedElapsed = [...elapsed].sort((left, right) => left - right);
+  const middle = Math.floor(sortedElapsed.length / 2);
+  const median =
+    sortedElapsed.length % 2 === 0
+      ? ((sortedElapsed[middle - 1] ?? 0) + (sortedElapsed[middle] ?? 0)) / 2
+      : (sortedElapsed[middle] ?? 0);
+  return {
+    operationVersion: 1,
+    caseType,
+    timelineCount: normalized.length,
+    timestampCoverage:
+      totalEvents === 0 || timestampedEvents === 0
+        ? "unavailable"
+        : timestampedEvents === totalEvents
+          ? "complete"
+          : "partial",
+    observableCaseCount: sortedElapsed.length,
+    ...(sortedElapsed.length > 0
+      ? {
+          elapsedMinutes: {
+            minimum: sortedElapsed[0]!,
+            median,
+            maximum: sortedElapsed.at(-1)!,
+          },
+        }
+      : {}),
   };
 }

@@ -7,6 +7,7 @@ import {
   createDoctorResponse,
   createEngineeringConformanceRequest,
   createWorkflowVariantSummaryRequest,
+  createWorkflowDurationSummaryRequest,
   parseDoctorRequest,
   parseSerializedRequest,
   serializeRequest,
@@ -124,6 +125,16 @@ describe("versioned local protocol", () => {
 
   it("round-trips a workflow variant summary request", () => {
     const request = createWorkflowVariantSummaryRequest("variants-1", {
+      timelines: [
+        { caseType: "release", caseId: "release:1", events: [] },
+        { caseType: "release", caseId: "release:2", events: [] },
+      ],
+    });
+    expect(parseSerializedRequest(serializeRequest(request))).toEqual(request);
+  });
+
+  it("round-trips a workflow duration summary request", () => {
+    const request = createWorkflowDurationSummaryRequest("durations-1", {
       timelines: [
         { caseType: "release", caseId: "release:1", events: [] },
         { caseType: "release", caseId: "release:2", events: [] },

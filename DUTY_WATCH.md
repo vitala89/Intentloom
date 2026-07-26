@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: Workflow-duration metrics candidate specified; approval required before implementation
+Status: Observed workflow-duration metrics implementation complete locally
 
 Active branch: `codex/process-intelligence-memory-evaluation`
 
-Current objective: review and approve or revise the workflow-duration metrics candidate before implementation.
+Current objective: commit and open a pull request for observed workflow-duration metrics implementation.
 
-Next first action: review ADR-0038 and `WORKFLOW_DURATION_METRICS_V0_1_SPEC.md`; if approved, implement the pure report and deterministic fixtures.
+Next first action: review, commit, and open a pull request for workflow-duration metrics; then select the next candidate through a separate ADR/specification/threat review.
 
 ## Watch rules
 
@@ -41,6 +41,19 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-26, Observed workflow-duration metrics implementation
+
+- **Status:** complete
+- **Agent/tool:** Codex
+- **Branch:** `codex/process-intelligence-memory-evaluation`
+- **Objective:** Implement accepted aggregate observed-duration metrics without creating bottleneck, performance, or causal analysis.
+- **Completed:** Added `WorkflowDurationSummaryReport` protocol contracts and `intentloom.workflow.durations.summary.v1`. Implemented pure `summarizeWorkflowDurations`, which validates caller-supplied timelines, rejects insufficient/mixed/duplicate cases, derives timestamp coverage, and returns aggregate observed elapsed minutes (minimum, median, maximum) only for cases with at least two valid timestamps. Added equivalent application and authenticated daemon adapters plus focused tests. ADR-0038 and the v0.1 specification are now accepted.
+- **Files changed:** `PROJECT_STATE.md`, `DUTY_WATCH.md`, `docs/decisions/ADR-0038-observed-workflow-duration-metrics.md`, `docs/specs/WORKFLOW_DURATION_METRICS_V0_1_SPEC.md`, `packages/protocol/src/index.ts`, `packages/evidence-analysis/src/index.ts`, `packages/application/src/index.ts`, `packages/daemon/src/index.ts`, `tests/workflow-duration-metrics.test.ts`, `tests/protocol.test.ts`, and `tests/daemon.test.ts`.
+- **Validation:** `pnpm typecheck`; `pnpm vitest run tests/workflow-duration-metrics.test.ts tests/protocol.test.ts` (9 passed); `pnpm vitest run tests/daemon.test.ts` (16 passed, 1 Windows-only skipped); `pnpm format:check`; and `git diff --check` passed.
+- **Decisions:** An invalid timestamp is unavailable evidence, not an error repair target. The report omits `elapsedMinutes` when no case has an observable interval and never returns raw timestamps or per-case duration values.
+- **Risks or compatibility impact:** Additive protocol and daemon method. Existing timeline, conformance, and workflow-variant contracts are unchanged.
+- **Next first action:** Review, commit, and open a pull request. Before any broader process-intelligence capability, prepare a separate ADR, specification, and threat review.
 
 ### 2026-07-26, Observed workflow-duration metrics candidate
 

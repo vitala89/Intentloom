@@ -22,7 +22,7 @@ later justifies separation.
 
 ## Current phase
 
-Engineering Process Intelligence & Agent Memory Evaluation System — deterministic workflow-variant summary complete locally.
+Engineering Process Intelligence & Agent Memory Evaluation System — observed workflow-duration metrics complete locally.
 
 The project must avoid premature structural migration. New applications,
 packages, and repository boundaries are introduced only when roadmap triggers
@@ -47,9 +47,8 @@ before a new release or implementation milestone is declared complete.
 
 ## Active focus
 
-1. Review and merge the deterministic workflow-variant summary implementation; it uses only caller-supplied canonical timelines and makes no causal claims.
-2. Review and approve or revise the proposed workflow-duration metrics candidate before implementation; it may report observed intervals but never bottlenecks, performance, or causality.
-3. Keep bottleneck inference, remote ingestion, and model-based judgments behind separate approved specifications and threat review.
+1. Review and merge the deterministic workflow-variant summary and observed workflow-duration metrics implementations; both use only caller-supplied canonical timelines and make no causal claims.
+2. Keep bottleneck inference, remote ingestion, and model-based judgments behind separate approved specifications and threat review.
 
 ## Architectural invariants
 
@@ -67,7 +66,7 @@ before a new release or implementation milestone is declared complete.
 
 ## Current blockers and unknowns
 
-- Workflow duration metrics ADR-0038 and its v0.1 specification are proposed, not approved. No timing implementation may begin until their privacy boundary, aggregation rules, and deterministic fixtures receive review.
+- Workflow-duration metrics are intentionally limited to aggregate observed intervals. Any expansion to bottleneck, performance, causal, actor, repository-reading, persisted, remote, or model-assisted analysis requires a new ADR, specification, and threat review.
 
 ## Current milestone
 
@@ -82,7 +81,7 @@ Expected outputs:
 
 ## Next platform milestone
 
-Review and approve or revise the proposed workflow-duration metrics candidate before implementation.
+Merge the observed workflow-duration metrics implementation, then specify the next candidate only with a separate ADR, specification, and threat review.
 
 ## State update rules
 

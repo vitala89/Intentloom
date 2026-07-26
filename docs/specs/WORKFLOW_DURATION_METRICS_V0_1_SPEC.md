@@ -1,7 +1,7 @@
 # Workflow Duration Metrics v0.1 Specification
 
-Version: `0.1-draft`
-Status: Draft / Proposed
+Version: `0.1-candidate`
+Status: Accepted
 
 ## 1. Purpose
 
@@ -53,7 +53,7 @@ must not score or rank people, teams, repositories, or providers.
 
 ## 5. Required implementation evidence
 
-Before implementation, add fixtures for complete, partial, unavailable, and
-invalid timestamp coverage; duration statistics; mixed case-type and duplicate
-case rejection; deterministic results under input reordering; and pure
-read-only behavior across protocol, analysis, application, and daemon adapters.
+Tests cover complete, partial, unavailable, and invalid timestamp coverage;
+duration statistics; mixed case-type and duplicate case rejection; deterministic
+results under input reordering; and pure read-only behavior across protocol,
+analysis, application, and daemon adapters.
