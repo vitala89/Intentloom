@@ -47,6 +47,7 @@ entry directly below this section.
 - **Status:** complete
 - **Agent/tool:** Antigravity AI Pair Programmer
 - **Branch:** `feat/daemon-protocol-contracts`
+- **Pull request:** #78
 - **Objective:** Implement Daemon & Protocol Contracts for Second Clients, including ADR-0032, expanded RPC request/response schemas (`doctor`, `inspect`, `securityAudit`, `memorySearch`, `sessionGet`), daemon dispatch handlers, secret token authentication, and multi-operation IPC integration tests.
 - **Completed:** Added `ADR-0032-second-client-daemon-protocol-contracts.md`. Expanded `DaemonRequest` and `DaemonResponse` types, request creators, and validators in `@intentloom/protocol`. Implemented typed RPC request handlers in `@intentloom/daemon`. Added multi-operation IPC integration tests in `tests/daemon.test.ts`. Updated `PROJECT_STATE.md` and `DUTY_WATCH.md`.
 - **Files changed:** `docs/decisions/ADR-0032-second-client-daemon-protocol-contracts.md`, `packages/protocol/src/index.ts`, `packages/daemon/src/index.ts`, `tests/daemon.test.ts`, `PROJECT_STATE.md`, and `DUTY_WATCH.md`.
