@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: blocked — v0.5 publication authorized, but npm authentication is missing
+Status: partial — npm authorization confirmed; PR #90 merge remains before release
 
 Active branch: `codex/post-v05-state-merge`
 
-Current objective: complete PR #90 documentation merge and unblock the authorized v0.5 publication safely.
+Current objective: complete PR #90 documentation merge, then execute the authorized v0.5 release safely.
 
-Next first action: authenticate an approved npm account with publish rights, then re-run the authorization checklist before tagging or publishing.
+Next first action: merge PR #90, then execute the verified v0.5 tag and npm publication sequence.
 
 ## Watch rules
 
@@ -42,28 +42,29 @@ entry directly below this section.
 
 ## Watch entries
 
-### 2026-07-27, v0.5 publication authorization received but npm auth blocked
+### 2026-07-27, v0.5 publication authorization and npm access verified
 
-- **Status:** blocked
+- **Status:** partial
 - **Agent/tool:** Codex with controlled release authorization checks
 - **Branch:** `codex/post-v05-state-merge`
-- **Commits:** this handoff update is pending
+- **Commits:** `44babb1`, plus this handoff update
 - **Pull request:** [#90](https://github.com/vitala89/Intentloom/pull/90), draft and open
 - **Objective:** Begin the explicitly authorized v0.5 tag/npm release gate without bypassing repository controls.
-- **Completed:** Recorded the maintainer's explicit authorization for the v0.5 publication step; verified public npm metadata and confirmed current `latest=0.1.0-alpha.3` and `next=0.4.0-beta.1`; updated `RELEASE_STATE.md` to main commit `8f4bec4`.
-- **Validation:** `npm view intentloom --registry=https://registry.npmjs.org/ version dist-tags time --json` succeeded. `npm whoami --registry=https://registry.npmjs.org/` returned HTTP 401 Unauthorized, so no tag or publication was attempted.
-- **Decisions and assumptions:** Authorization covers the v0.5 release action, but does not create npm credentials or package ownership. The npm package remains unchanged.
-- **Risks or compatibility impact:** Publishing without verified account rights could target the wrong package or fail partway through the release sequence; the policy requires stopping until authentication and access are confirmed.
-- **Open issues or blockers:** Authenticate an approved npm account with `intentloom` publish rights; PR #90 CI/review and merge are also pending.
-- **Next first action:** Authenticate an approved npm account, rerun `npm whoami` and `npm access list packages`, then continue only if the checklist gates are satisfied.
-- **Evidence:** `npm whoami` HTTP 401, npm registry metadata captured on 2026-07-27, `docs/releases/PUBLISH_AUTHORIZATION_CHECKLIST.md`, and [PR #90](https://github.com/vitala89/Intentloom/pull/90).
+- **Completed:** Recorded the maintainer's explicit authorization for the v0.5 publication step; verified public npm metadata and confirmed current `latest=0.1.0-alpha.3` and `next=0.4.0-beta.1`; verified npm user and `intentloom: read-write` access; updated `RELEASE_STATE.md` to main commit `8f4bec4`; and completed both package dry-runs for `intentloom@0.5.0-beta.1`.
+- **Validation:** `npm whoami --registry=https://registry.npmjs.org/` returned `vitalii.kas`; `npm access list packages --json --registry=https://registry.npmjs.org/` returned `intentloom: read-write`; `npm pack --dry-run --json` and `npm publish --dry-run --tag next --access public` passed with shasum `21d5ec78b9cd840ccdcd263af71eb3d8b12a1c71`.
+- **Decisions and assumptions:** Authorization covers the v0.5 release action. The npm package remains unchanged until PR #90 is merged and the controlled release sequence begins.
+- **Risks or compatibility impact:** The remaining release prerequisite is the PR #90 merge; no tag or publication has been attempted.
+- **Open issues or blockers:** PR #90 is still draft/open, although both duplicate Compatibility runs passed all 12 checks.
+- **Next first action:** Merge PR #90, then execute the verified v0.5 tag and npm publication sequence.
+- **Evidence:** npm access commands and dry-run outputs, [PR #90](https://github.com/vitala89/Intentloom/pull/90), and Compatibility runs `30223921117` and `30223919725`.
 
 #### Duty completion checklist
 
 - [x] Explicit v0.5 publication authorization recorded
 - [x] Registry metadata verified
-- [x] Missing npm authentication recorded
-- [x] No tag or npm publication attempted while blocked
+- [x] npm account authenticated and package rights verified
+- [x] Package dry-runs passed and artifact hash recorded
+- [x] No tag or npm publication attempted before PR merge
 - [ ] PR #90 merged
 - [ ] npm account authenticated and package rights verified
 - [ ] v0.5 tag created
