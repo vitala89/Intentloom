@@ -22,7 +22,7 @@ later justifies separation.
 
 ## Current phase
 
-Memory & Security Candidate M3: Semantic Retrieval and Portable Adapters.
+Memory & Security Candidate M4: Agent Session Lifecycle.
 
 The project must avoid premature structural migration. New applications,
 packages, and repository boundaries are introduced only when roadmap triggers
@@ -40,17 +40,17 @@ and real consumers justify them.
   connection, evidence, MCP, interactive surfaces, Agent Workspace, Neutron,
   persistent memory, security analysis, engineering process intelligence,
   public monorepo evolution, controlled agent learning, and portable Duty Watch adoption.
-- Duty Watch governance contracts (Phase 1), proposal CLI `intentloom adopt --plan` (Phase 2), transactional apply & rollback engine `intentloom adopt --apply` (Phase 3), pack update 3-way migration `intentloom update` (Phase 4), conformance & security profiles `intentloom conformance` (Phase 5), and provider synchronization `intentloom sync` / `intentloom diff` (Phase 6) are merged into `main`.
+- Duty Watch governance contracts (Phase 1), proposal CLI `intentloom adopt --plan` (Phase 2), transactional apply & rollback engine `intentloom adopt --apply` (Phase 3), pack update 3-way migration `intentloom update` (Phase 4), conformance & security profiles `intentloom conformance` (Phase 5), provider synchronization `intentloom sync` / `intentloom diff` (Phase 6), and Memory & Security Candidates M1–M3 are merged into `main`.
 
 These statements must be revalidated against code, tags, CI, and Git history
 before a new release or implementation milestone is declared complete.
 
 ## Active focus
 
-1. Provide deterministic local retrieval and rebuildable index state over accepted project memory.
-2. Render bounded provider-neutral context for supported agent and interactive targets.
-3. Require explicit disclosure and approval before future external embedding or reranking providers.
-4. Keep semantic indexes non-canonical, deletable, local-first, and project-isolated.
+1. Provide vendor-neutral, project-scoped agent session lifecycle tracking stored under `.aif/memory/sessions/`.
+2. Capture active tasks, unresolved questions, decisions, and outcomes with secret path redaction.
+3. Support pre-compaction export and clean session deletion without mutating canonical project intent.
+4. Expose CLI subcommands under `intentloom session <start|close|list|get|delete|export>`.
 
 ## Architectural invariants
 
@@ -68,19 +68,19 @@ before a new release or implementation milestone is declared complete.
 
 ## Current blockers and unknowns
 
-- Optional semantic providers must remain disabled unless their data scope, model, network destination, retention policy, and approval are explicit.
+- Session compaction and export operations must not alter canonical intent or bypass human review boundaries.
 
 ## Current milestone
 
-Implement Memory & Security Candidate M3: Semantic Retrieval and Portable Adapters.
+Implement Memory & Security Candidate M4: Agent Session Lifecycle.
 
 Expected outputs:
 
-- provider-neutral local retrieval and portable rendering contracts;
-- rebuildable local index lifecycle and CLI search/render/index commands;
-- explicit external-provider disclosure and approval validation;
-- documented Obsidian-compatible adapter evaluation;
-- tests proving deterministic search, safe index deletion, portable rendering, and disclosure enforcement.
+- ADR-0026 documenting agent session lifecycle architecture;
+- versioned `AgentSessionItem` schemas and validators in `@intentloom/protocol`;
+- session operations (`startAgentSession`, `closeAgentSession`, `getAgentSession`, `listAgentSessions`, `deleteAgentSession`, `exportAgentSession`) in `@intentloom/application`;
+- CLI command routing under `intentloom session`;
+- unit and integration tests covering session state transitions, secret path redaction, export, and deletion.
 
 ## Next platform milestone
 

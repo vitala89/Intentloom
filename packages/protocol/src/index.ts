@@ -1487,3 +1487,100 @@ export function validatePersistentMemorySearchResult(
     indexRebuilt: Boolean(value.indexRebuilt),
   };
 }
+
+export type AgentSessionState = "active" | "closed" | "compacted" | "archived";
+
+export interface AgentSessionItem {
+  readonly schemaVersion: "1";
+  readonly sessionId: string;
+  readonly projectId: string;
+  readonly state: AgentSessionState;
+  readonly activeTask: string;
+  readonly unresolvedQuestions: readonly string[];
+  readonly decisions: readonly string[];
+  readonly outcomes: readonly string[];
+  readonly trustClass: TrustClass;
+  readonly retentionPolicy: RetentionState;
+  readonly createdAt: string;
+  readonly updatedAt: string;
+  readonly closedAt?: string;
+  readonly metadata?: Record<string, unknown>;
+}
+
+export interface AgentSessionExportResult {
+  readonly schemaVersion: "1";
+  readonly projectId: string;
+  readonly exportedAt: string;
+  readonly session: AgentSessionItem;
+}
+
+export function validateAgentSessionItem(value: unknown): AgentSessionItem {
+  if (!isObject(value))
+    throw new ProtocolValidationError(
+      -32602,
+      "agent session item must be an object",
+    );
+  if (value.schemaVersion !== "1")
+    throw new ProtocolValidationError(
+      -32602,
+      "unsupported agent session item schema version",
+    );
+
+  const states: readonly AgentSessionState[] = [
+    "active",
+    "closed",
+    "compacted",
+    "archived",
+  ];
+  const state = stringValue(value.state, "state") as AgentSessionState;
+  if (!states.includes(state))
+    throw new ProtocolValidationError(-32602, "invalid agent session state");
+
+  return {
+    schemaVersion: "1",
+    sessionId: stringValue(value.sessionId, "sessionId"),
+    projectId: stringValue(value.projectId, "projectId"),
+    state,
+    activeTask: stringValue(value.activeTask, "activeTask"),
+    unresolvedQuestions: stringArray(
+      value.unresolvedQuestions,
+      "unresolvedQuestions",
+    ),
+    decisions: stringArray(value.decisions, "decisions"),
+    outcomes: stringArray(value.outcomes, "outcomes"),
+    trustClass: stringValue(value.trustClass, "trustClass") as TrustClass,
+    retentionPolicy: stringValue(
+      value.retentionPolicy,
+      "retentionPolicy",
+    ) as RetentionState,
+    createdAt: stringValue(value.createdAt, "createdAt"),
+    updatedAt: stringValue(value.updatedAt, "updatedAt"),
+    ...(typeof value.closedAt === "string" && value.closedAt.length > 0
+      ? { closedAt: value.closedAt }
+      : {}),
+    ...(isObject(value.metadata)
+      ? { metadata: value.metadata as Record<string, unknown> }
+      : {}),
+  };
+}
+
+export function validateAgentSessionExportResult(
+  value: unknown,
+): AgentSessionExportResult {
+  if (!isObject(value))
+    throw new ProtocolValidationError(
+      -32602,
+      "agent session export result must be an object",
+    );
+  if (value.schemaVersion !== "1")
+    throw new ProtocolValidationError(
+      -32602,
+      "unsupported agent session export result schema version",
+    );
+  return {
+    schemaVersion: "1",
+    projectId: stringValue(value.projectId, "projectId"),
+    exportedAt: stringValue(value.exportedAt, "exportedAt"),
+    session: validateAgentSessionItem(value.session),
+  };
+}

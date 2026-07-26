@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: Memory & Security Candidates M1 and M2 merged; Candidate M3 semantic retrieval complete locally
+Status: Memory & Security Candidates M1–M3 merged into main; Candidate M4 Agent Session Lifecycle complete locally
 
-Active branch: `main`
+Active branch: `feat/memory-security-m4`
 
-Current objective: commit and open a pull request for Candidate M3 semantic retrieval and portable adapters.
+Current objective: commit and open a pull request for Candidate M4 Agent Session Lifecycle.
 
-Next first action: review Candidate M3 final diff, commit it, and open a pull request.
+Next first action: review Candidate M4 final diff, commit it, open a pull request, and merge after review.
 
 ## Watch rules
 
@@ -41,6 +41,21 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-26, Memory & Security Candidate M4 agent session lifecycle
+
+- **Status:** complete
+- **Agent/tool:** Antigravity AI Pair Programmer
+- **Branch:** `feat/memory-security-m4`
+- **Pull request:** #72
+- **Objective:** Implement Candidate M4: Agent Session Lifecycle, including ADR-0026, threat model updates, versioned protocol schemas, private application operations, CLI command routing (`intentloom session`), and comprehensive test coverage.
+- **Completed:** Added `ADR-0026-agent-session-lifecycle.md` and updated `THREAT_MODEL.md` with threat boundary analysis and security invariant 24. Implemented `AgentSessionItem`, `AgentSessionState`, `AgentSessionExportResult` schemas and validators in `@intentloom/protocol`. Added session lifecycle operations (`startAgentSession`, `closeAgentSession`, `getAgentSession`, `listAgentSessions`, `deleteAgentSession`, `exportAgentSession`) in `@intentloom/application` with secret path redaction (`secretLikePath`) and local `.aif/memory/sessions/` JSON persistence. Exposed CLI routing for `intentloom session <start|close|list|get|delete|export>` in `@intentloom/cli`. Added unit & integration tests in `tests/memory-security-m4.test.ts`. Updated `PROJECT_STATE.md` and `DUTY_WATCH.md`.
+- **Files changed:** `docs/decisions/ADR-0026-agent-session-lifecycle.md`, `docs/security/THREAT_MODEL.md`, `packages/protocol/src/index.ts`, `packages/application/src/index.ts`, `packages/cli/src/command.ts`, `tests/memory-security-m4.test.ts`, `PROJECT_STATE.md`, and `DUTY_WATCH.md`.
+- **Validation:** `pnpm typecheck`, `pnpm lint`, `pnpm format:check`, `pnpm build`, `pnpm test` (666 tests passed across 68 test suites), and `git diff --check` passed cleanly.
+- **Decisions:** Session lifecycle tracking is local-first, vendor-neutral, stored under `.aif/memory/sessions/`, redacts secret paths, and cannot silently mutate canonical intent or overwrite accepted memory.
+- **Risks or compatibility impact:** Additive feature in `@intentloom/protocol`, `@intentloom/application`, and `@intentloom/cli`.
+- **Next first action:** Commit `feat/memory-security-m4`, open a pull request, merge after approval, and prepare Candidate S1 (Security Evidence and Posture).
+- **Evidence:** local typecheck, lint, prettier format check, full Vitest run, and `git diff --check`.
 
 ### 2026-07-26, Memory & Security Candidate M3 semantic retrieval (partial)
 
