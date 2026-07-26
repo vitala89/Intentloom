@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: Conformance trend summary implementation complete locally; review/merge handoff ready
+Status: partial — implementation reviewed locally; PR handoff requires explicit authorization and available GitHub access
 
 Active branch: `codex/process-intelligence-next-candidate`
 
-Current objective: commit and hand off the accepted conformance trend summary implementation for review and merge.
+Current objective: preserve a truthful review handoff for the accepted conformance trend summary implementation.
 
-Next first action: review the implementation diff, then commit and open the review handoff.
+Next first action: obtain explicit authorization and GitHub access, then open a PR from `codex/process-intelligence-next-candidate` into `main`.
 
 ## Watch rules
 
@@ -41,6 +41,37 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-26, Conformance trend summary review and PR handoff
+
+- **Status:** partial
+- **Agent/tool:** Codex with two-axis review
+- **Branch:** `codex/process-intelligence-next-candidate`
+- **Commits:** `ff92506`, `6bbdd36`, `eb52e65`, `1b789d0`, plus this handoff update
+- **Pull request:** Not opened; explicit authorization and GitHub API access are still required.
+- **Objective:** Review the conformance trend summary diff against repository standards and ADR-0039/specification, then prepare an accurate handoff.
+- **Completed:** Standards review found no code-boundary violations. Specification review found no missing requirements, scope creep, or incorrect behavior. Added the required Unreleased changelog entry and corrected the handoff status/evidence fields.
+- **Not completed:** Opening/reviewing a remote pull request and merging into `main`.
+- **Files or packages changed:** `CHANGELOG.md` and `DUTY_WATCH.md`; implementation remains in the preceding commits.
+- **Validation:** `pnpm test` (717 passed, 3 skipped), `pnpm typecheck`, `pnpm lint`, `pnpm build`, `pnpm format:check`, `git diff --check`, plus local two-axis review. `gh pr list` could not reach `api.github.com` in this environment.
+- **Decisions and assumptions:** The implementation remains local and read-only; no push, PR, merge, release, or network fallback was performed. The accepted ADR/spec boundary is unchanged.
+- **Risks or compatibility impact:** Additive protocol and daemon method only. Remote review status is unknown until a PR is opened.
+- **Open issues or blockers:** PR creation needs explicit user authorization and working GitHub connectivity.
+- **Next first action:** Obtain authorization, verify `gh auth status`, and open the PR with validation results and changelog impact.
+- **Evidence:** `git diff origin/main...HEAD`, the two review reports, local test/build results, and clean committed working tree.
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant tests, type checks, builds, or compatibility checks passed
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `PROJECT_STATE.md` updated when applicable
+- [x] `DUTY_WATCH.md` handoff completed
+- [x] Related roadmap, ADR, changelog, migration, or reference docs updated
+- [x] Failed or unavailable checks recorded
+- [ ] Pull request opened and reviewed
 
 ### 2026-07-26, Conformance trend summary implementation
 

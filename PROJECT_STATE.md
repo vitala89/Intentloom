@@ -22,7 +22,7 @@ later justifies separation.
 
 ## Current phase
 
-Engineering Process Intelligence & Agent Memory Evaluation System — conformance, workflow variants, and observed duration metrics merged into `main`; conformance trend summary implementation complete locally and pending review/merge.
+Engineering Process Intelligence & Agent Memory Evaluation System — conformance, workflow variants, and observed duration metrics merged into `main`; conformance trend summary implementation reviewed locally and pending PR/merge.
 
 The project must avoid premature structural migration. New applications,
 packages, and repository boundaries are introduced only when roadmap triggers
@@ -47,7 +47,7 @@ before a new release or implementation milestone is declared complete.
 
 ## Active focus
 
-1. Review and merge the conformance trend summary implementation over the merged application/daemon contracts.
+1. Open and review a PR for the conformance trend summary implementation over the merged application/daemon contracts.
 2. Keep bottleneck inference, remote ingestion, and model-based judgments behind separate approved specifications and threat review.
 
 ## Architectural invariants
@@ -67,6 +67,7 @@ before a new release or implementation milestone is declared complete.
 ## Current blockers and unknowns
 
 - Any expansion to bottleneck, performance, causal, actor, repository-reading, persisted, remote, or model-assisted analysis requires a new ADR, specification, and threat review.
+- The trend-summary PR is not open yet; explicit authorization and working GitHub access are required before remote publication.
 
 ## Current milestone
 
@@ -80,7 +81,7 @@ Expected outputs:
 
 ## Next platform milestone
 
-Merge the conformance trend summary implementation, then select the next candidate through a separate ADR/specification/threat review.
+Open and merge the conformance trend summary PR, then select the next candidate through a separate ADR/specification/threat review.
 
 ## State update rules
 
