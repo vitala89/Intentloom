@@ -47,7 +47,7 @@ entry directly below this section.
 - **Status:** partial
 - **Agent/tool:** Codex with TDD workflow
 - **Branch:** `codex/process-intelligence-next-roadmap-2`
-- **Commits:** local implementation commit created in this watch; hash to be recorded after commit
+- **Commits:** `cf4ace1` local implementation commit
 - **Pull request:** None; publishing is not authorized in this watch.
 - **Objective:** Implement the accepted observed workflow transition interval boundary from ADR-0041.
 - **Completed:** Accepted ADR-0041 and the v0.1 specification. Added canonical protocol request/response contracts and validation for `intentloom.workflow.transitions.intervals.v1`, pure adjacent-interval aggregation with minimum/median/maximum elapsed minutes and coverage, application bridge, authenticated daemon routing, deterministic protocol/analysis/daemon fixtures, and accepted security/state/changelog documentation.
