@@ -6,6 +6,9 @@ All notable changes are documented here. This project follows Keep a Changelog p
 
 ### Added
 
+- Added accepted ADR-0041 and Workflow Transition Intervals v0.1, including the
+  deterministic `intentloom.workflow.transitions.intervals.v1` protocol,
+  application, analysis, and authenticated local daemon operation.
 - Added accepted ADR-0040 and Workflow Repetition Summary v0.1, including the
   deterministic `intentloom.workflow.repetitions.summary.v1` protocol,
   application, analysis, and daemon operation.

@@ -11,6 +11,8 @@ import {
   createConformanceTrendSummaryRequest,
   createWorkflowRepetitionSummaryRequest,
   createWorkflowRepetitionSummaryResponse,
+  createWorkflowTransitionIntervalsRequest,
+  createWorkflowTransitionIntervalsResponse,
   parseDoctorRequest,
   parseSerializedRequest,
   serializeRequest,
@@ -212,5 +214,62 @@ describe("versioned local protocol", () => {
         },
       }).result.report.repeatedActivities,
     ).toHaveLength(1);
+  });
+
+  it("round-trips workflow transition interval requests and validates reports", () => {
+    const timeline = {
+      caseType: "release" as const,
+      caseId: "release:1",
+      events: [
+        {
+          activity: "release.started",
+          source: "fixture",
+          sourceId: "1",
+          timestamp: "2026-07-26T00:00:00.000Z",
+        },
+        {
+          activity: "release.published",
+          source: "fixture",
+          sourceId: "2",
+          timestamp: "2026-07-26T00:02:00.000Z",
+        },
+      ],
+    };
+    const request = createWorkflowTransitionIntervalsRequest("transitions-1", {
+      timelines: [timeline, { ...timeline, caseId: "release:2" }],
+    });
+    expect(parseSerializedRequest(serializeRequest(request))).toEqual(request);
+    expect(() =>
+      createWorkflowTransitionIntervalsResponse("transitions-2", {
+        report: {
+          operationVersion: 1,
+          caseType: "release",
+          timelineCount: 1,
+          timestampCoverage: "unavailable",
+          observableIntervalCount: 0,
+          transitions: [],
+        },
+      }),
+    ).toThrow("timelineCount must be at least two");
+    expect(
+      createWorkflowTransitionIntervalsResponse("transitions-3", {
+        report: {
+          operationVersion: 1,
+          caseType: "release",
+          timelineCount: 2,
+          timestampCoverage: "complete",
+          observableIntervalCount: 1,
+          transitions: [
+            {
+              from: "release.started",
+              to: "release.published",
+              intervalCount: 1,
+              observableCaseCount: 1,
+              elapsedMinutes: { minimum: 2, median: 2, maximum: 2 },
+            },
+          ],
+        },
+      }).result.report.observableIntervalCount,
+    ).toBe(1);
   });
 });

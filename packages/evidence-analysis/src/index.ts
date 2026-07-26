@@ -15,6 +15,7 @@ import {
   type WorkflowDurationSummaryReport,
   type ConformanceTrendSummaryReport,
   type WorkflowRepetitionSummaryReport,
+  type WorkflowTransitionIntervalsReport,
 } from "@intentloom/protocol";
 
 export interface ReleaseAnalysisGitEvent {
@@ -297,6 +298,7 @@ export type {
   WorkflowDurationSummaryReport,
   ConformanceTrendSummaryReport,
   WorkflowRepetitionSummaryReport,
+  WorkflowTransitionIntervalsReport,
 } from "@intentloom/protocol";
 
 function toEvidenceRef(event: TimelineEventRef): EngineeringEvidenceRef {
@@ -564,6 +566,104 @@ export function summarizeWorkflowDurations(
           },
         }
       : {}),
+  };
+}
+
+export function summarizeWorkflowTransitionIntervals(
+  timelines: readonly GenericTimeline[],
+): WorkflowTransitionIntervalsReport {
+  if (timelines.length < 2)
+    throw new Error("at least two timelines are required");
+  const normalized = timelines.map(validateGenericTimeline);
+  const caseType = normalized[0]!.caseType;
+  if (normalized.some((timeline) => timeline.caseType !== caseType))
+    throw new Error(
+      "workflow transition interval timelines must share one case type",
+    );
+  const caseIds = normalized.map((timeline) => timeline.caseId);
+  if (new Set(caseIds).size !== caseIds.length)
+    throw new Error(
+      "workflow transition interval timeline case IDs must be unique",
+    );
+
+  let totalEvents = 0;
+  let validTimestampCount = 0;
+  let observableIntervalCount = 0;
+  const aggregates = new Map<
+    string,
+    { from: string; to: string; intervals: number[]; caseIds: Set<string> }
+  >();
+  for (const timeline of normalized) {
+    totalEvents += timeline.events.length;
+    const parsed = timeline.events.map((event) => {
+      const timestamp = event.timestamp ? Date.parse(event.timestamp) : NaN;
+      if (Number.isFinite(timestamp)) validTimestampCount += 1;
+      return { event, timestamp };
+    });
+    for (let index = 1; index < parsed.length; index += 1) {
+      const previous = parsed[index - 1]!;
+      const current = parsed[index]!;
+      if (
+        !Number.isFinite(previous.timestamp) ||
+        !Number.isFinite(current.timestamp) ||
+        current.timestamp < previous.timestamp
+      )
+        continue;
+      const key = `${previous.event.activity}\u0000${current.event.activity}`;
+      const aggregate = aggregates.get(key) ?? {
+        from: previous.event.activity,
+        to: current.event.activity,
+        intervals: [],
+        caseIds: new Set<string>(),
+      };
+      aggregate.intervals.push(
+        (current.timestamp - previous.timestamp) / 60_000,
+      );
+      aggregate.caseIds.add(timeline.caseId);
+      aggregates.set(key, aggregate);
+      observableIntervalCount += 1;
+    }
+  }
+  const transitions = [...aggregates.values()]
+    .map((aggregate) => {
+      const elapsed = [...aggregate.intervals].sort(
+        (left, right) => left - right,
+      );
+      const middle = Math.floor(elapsed.length / 2);
+      const median =
+        elapsed.length % 2 === 0
+          ? ((elapsed[middle - 1] ?? 0) + (elapsed[middle] ?? 0)) / 2
+          : (elapsed[middle] ?? 0);
+      return {
+        from: aggregate.from,
+        to: aggregate.to,
+        intervalCount: elapsed.length,
+        observableCaseCount: aggregate.caseIds.size,
+        elapsedMinutes: {
+          minimum: elapsed[0]!,
+          median,
+          maximum: elapsed.at(-1)!,
+        },
+      };
+    })
+    .sort(
+      (left, right) =>
+        right.intervalCount - left.intervalCount ||
+        left.from.localeCompare(right.from) ||
+        left.to.localeCompare(right.to),
+    );
+  return {
+    operationVersion: 1,
+    caseType,
+    timelineCount: normalized.length,
+    timestampCoverage:
+      totalEvents === 0 || validTimestampCount === 0
+        ? "unavailable"
+        : validTimestampCount === totalEvents
+          ? "complete"
+          : "partial",
+    observableIntervalCount,
+    transitions,
   };
 }
 

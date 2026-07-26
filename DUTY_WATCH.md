@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: partial — next candidate specified locally; approval required before implementation
+Status: partial — implementation complete locally; review/merge remains
 
 Active branch: `codex/process-intelligence-next-roadmap-2`
 
-Current objective: review ADR-0041 and the draft observed workflow transition interval specification.
+Current objective: review the accepted ADR-0041 implementation and prepare the local branch for maintainer review.
 
-Next first action: review and approve or revise ADR-0041 and `WORKFLOW_TRANSITION_INTERVALS_V0_1_SPEC.md`; do not implement before approval.
+Next first action: review the final diff and local commit, then open a PR only after explicit authorization.
 
 ## Watch rules
 
@@ -41,6 +41,37 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-26, Observed workflow transition interval implementation
+
+- **Status:** partial
+- **Agent/tool:** Codex with TDD workflow
+- **Branch:** `codex/process-intelligence-next-roadmap-2`
+- **Commits:** local implementation commit created in this watch; hash to be recorded after commit
+- **Pull request:** None; publishing is not authorized in this watch.
+- **Objective:** Implement the accepted observed workflow transition interval boundary from ADR-0041.
+- **Completed:** Accepted ADR-0041 and the v0.1 specification. Added canonical protocol request/response contracts and validation for `intentloom.workflow.transitions.intervals.v1`, pure adjacent-interval aggregation with minimum/median/maximum elapsed minutes and coverage, application bridge, authenticated daemon routing, deterministic protocol/analysis/daemon fixtures, and accepted security/state/changelog documentation.
+- **Not completed:** Maintainer review, PR publication, CI, and merge into `main`.
+- **Files or packages changed:** `packages/protocol/src/index.ts`, `packages/evidence-analysis/src/index.ts`, `packages/application/src/index.ts`, `packages/daemon/src/index.ts`, `tests/workflow-transition-intervals.test.ts`, `tests/protocol.test.ts`, `tests/daemon.test.ts`, ADR/spec/security/state/changelog documentation.
+- **Validation:** Focused protocol/analysis tests (13 passed); daemon IPC tests (16 passed, 1 skipped); full `pnpm test` (727 passed, 3 skipped across 82 files); `pnpm typecheck`; `pnpm lint`; `pnpm build`; `git diff --check`; formatter passed. Daemon tests required unsandboxed Unix-socket access because the sandbox returned `EPERM` on `server.listen`.
+- **Decisions and assumptions:** Only valid, non-decreasing adjacent timestamp pairs contribute intervals. Out-of-order pairs are excluded without repair. Output remains aggregate and descriptive; no queue-time, latency, rework, bottleneck, performance, causal, actor, provider, persistence, or model interpretation is introduced.
+- **Risks or compatibility impact:** Additive protocol/application/daemon method; no existing method behavior changed. The local branch is ahead of merged `main` and has not passed remote CI yet.
+- **Open issues or blockers:** Maintainer review and explicit authorization are required before pushing or opening a PR.
+- **Next first action:** Review the final diff and local commit, then publish for CI/review only when authorized.
+- **Evidence:** ADR-0041, `WORKFLOW_TRANSITION_INTERVALS_V0_1_SPEC.md`, `pnpm test` output, and the focused daemon/protocol/analysis results above.
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant tests, type checks, builds, or compatibility checks passed
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `PROJECT_STATE.md` updated when applicable
+- [x] `DUTY_WATCH.md` handoff completed
+- [x] Related roadmap, ADR, changelog, migration, or reference docs updated
+- [x] Failed or unavailable checks recorded
+- [ ] Pull request published, reviewed, and merged
 
 ### 2026-07-26, Observed workflow transition interval candidate
 

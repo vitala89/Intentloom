@@ -24,6 +24,7 @@ import {
   createWorkflowDurationSummaryRequest,
   createConformanceTrendSummaryRequest,
   createWorkflowRepetitionSummaryRequest,
+  createWorkflowTransitionIntervalsRequest,
   createSessionGetRequest,
 } from "../packages/protocol/src/index.js";
 import {
@@ -35,6 +36,7 @@ import {
   summarizeProjectWorkflowDurations,
   summarizeProjectConformanceTrend,
   summarizeProjectWorkflowRepetitions,
+  summarizeProjectWorkflowTransitionIntervals,
 } from "../packages/application/src/index.js";
 import {
   startLocalDaemon,
@@ -610,6 +612,11 @@ describe.skipIf(process.platform === "win32")("local daemon", () => {
       workflowRepetitionSummary: async (req) => ({
         report: summarizeProjectWorkflowRepetitions(req.params.timelines),
       }),
+      workflowTransitionIntervals: async (req) => ({
+        report: summarizeProjectWorkflowTransitionIntervals(
+          req.params.timelines,
+        ),
+      }),
       sessionGet: async () => ({
         session: null,
       }),
@@ -792,6 +799,47 @@ describe.skipIf(process.platform === "win32")("local daemon", () => {
       }),
     )) as { result: { report: { repeatedActivities: unknown[] } } };
     expect(repetitionRes.result.report.repeatedActivities).toHaveLength(1);
+
+    const transitionRes = (await sendReq(
+      createWorkflowTransitionIntervalsRequest(11, {
+        timelines: [
+          {
+            caseType: "release",
+            caseId: "release:1",
+            events: [
+              {
+                activity: "release.started",
+                source: "fixture",
+                sourceId: "7",
+                timestamp: "2026-07-26T00:00:00.000Z",
+              },
+              {
+                activity: "release.published",
+                source: "fixture",
+                sourceId: "8",
+                timestamp: "2026-07-26T00:02:00.000Z",
+              },
+            ],
+          },
+          {
+            caseType: "release",
+            caseId: "release:2",
+            events: [],
+          },
+        ],
+      }),
+    )) as {
+      result: {
+        report: {
+          observableIntervalCount: number;
+          transitions: { elapsedMinutes: { median: number } }[];
+        };
+      };
+    };
+    expect(transitionRes.result.report.observableIntervalCount).toBe(1);
+    expect(
+      transitionRes.result.report.transitions[0]?.elapsedMinutes.median,
+    ).toBe(2);
 
     const sessionRes = (await sendReq(
       createSessionGetRequest(4, { root, sessionId: "s1" }),

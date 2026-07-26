@@ -1,6 +1,6 @@
 # ADR-0041: Observed workflow transition interval boundary
 
-- **Status:** Proposed
+- **Status:** Accepted
 - **Date:** 2026-07-26
 
 ## Context

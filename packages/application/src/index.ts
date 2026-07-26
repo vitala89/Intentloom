@@ -23,6 +23,7 @@ import {
   summarizeWorkflowDurations,
   summarizeConformanceTrend,
   summarizeWorkflowRepetitions,
+  summarizeWorkflowTransitionIntervals,
 } from "@intentloom/evidence-analysis";
 import {
   INTENTLOOM_VERSION,
@@ -128,6 +129,7 @@ import {
   type WorkflowDurationSummaryReport,
   type ConformanceTrendSummaryReport,
   type WorkflowRepetitionSummaryReport,
+  type WorkflowTransitionIntervalsReport,
   type NeutronSubagentRole,
   type NeutronSubagentStatus,
   type NeutronSubagentTaskRecord,
@@ -198,6 +200,12 @@ export function summarizeProjectWorkflowRepetitions(
   timelines: readonly GenericTimeline[],
 ): WorkflowRepetitionSummaryReport {
   return summarizeWorkflowRepetitions(timelines);
+}
+
+export function summarizeProjectWorkflowTransitionIntervals(
+  timelines: readonly GenericTimeline[],
+): WorkflowTransitionIntervalsReport {
+  return summarizeWorkflowTransitionIntervals(timelines);
 }
 export type {
   RetentionState,

@@ -1,7 +1,7 @@
 # Observed Workflow Transition Intervals v0.1 Specification
 
-Version: `0.1-candidate`
-Status: Draft / Proposed
+Version: `0.1`
+Status: Accepted
 
 ## 1. Purpose
 
@@ -91,7 +91,7 @@ guess missing relationships between events.
 
 ## 7. Required implementation evidence
 
-If approved, deterministic fixtures must cover complete, partial, unavailable,
+Implementation evidence covers complete, partial, unavailable,
 and out-of-order timestamp coverage; repeated transitions; median/minimum/
 maximum calculations; sorting; mixed case-type rejection; duplicate case
 rejection; invalid timelines; input-order independence; and read-only behavior.

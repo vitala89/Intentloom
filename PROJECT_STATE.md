@@ -22,7 +22,7 @@ later justifies separation.
 
 ## Current phase
 
-Engineering Process Intelligence & Agent Memory Evaluation System — conformance, workflow variants, observed duration metrics, conformance trend summary, and deterministic workflow repetition summary merged into `main` at `57a2c9b`; observed workflow transition intervals proposed locally.
+Engineering Process Intelligence & Agent Memory Evaluation System — conformance, workflow variants, observed duration metrics, conformance trend summary, and deterministic workflow repetition summary merged into `main` at `57a2c9b`; observed workflow transition intervals implemented locally on `codex/process-intelligence-next-roadmap-2` pending review and merge.
 
 The project must avoid premature structural migration. New applications,
 packages, and repository boundaries are introduced only when roadmap triggers
@@ -47,7 +47,7 @@ before a new release or implementation milestone is declared complete.
 
 ## Active focus
 
-1. Review and approve or revise the proposed observed workflow transition interval summary over the merged application/daemon contracts.
+1. Review the local observed workflow transition interval implementation and prepare it for review/merge.
 2. Keep bottleneck inference, remote ingestion, and model-based judgments behind separate approved specifications and threat review.
 
 ## Architectural invariants
@@ -67,25 +67,27 @@ before a new release or implementation milestone is declared complete.
 ## Current blockers and unknowns
 
 - Any expansion to bottleneck, performance, causal, actor, repository-reading, persisted, remote, or model-assisted analysis requires a new ADR, specification, and threat review.
-- PR #84 is merged and local `main` is fast-forwarded to `c0e7cb0`; no next candidate has been approved yet.
-- PR #85 is merged and local `main` is fast-forwarded to `57a2c9b`; no next candidate has been approved yet.
-- ADR-0041 and `WORKFLOW_TRANSITION_INTERVALS_V0_1_SPEC.md` are proposed only; no transition-interval implementation is authorized yet.
+- PR #84 is merged and local `main` is fast-forwarded to `c0e7cb0`.
+- PR #85 is merged and local `main` is fast-forwarded to `57a2c9b`.
+- ADR-0041 and `WORKFLOW_TRANSITION_INTERVALS_V0_1_SPEC.md` are accepted; the implementation is local and has not yet been reviewed or merged.
 
 ## Current milestone
 
-The first Engineering Process Intelligence & Agent Memory Evaluation increment, including conformance trend summary, is complete and merged.
+The first Engineering Process Intelligence & Agent Memory Evaluation increment, including conformance trend summary, is complete and merged; the accepted transition-interval increment is implemented locally pending review.
 
 Expected outputs:
 
 - versioned protocol contracts for deterministic, project-scoped conformance, workflow-variant, workflow-duration, and procedural-memory evaluation reads;
 - versioned protocol contracts for deterministic workflow repetition summaries;
+- versioned protocol contracts for deterministic observed transition interval summaries;
 - shared application operations and authenticated local daemon handlers for the read-only operations;
 - ADR-0020, ADR-0037, ADR-0038, and ADR-0039 documenting canonical boundaries and safety constraints.
 - ADR-0040 documenting the deterministic workflow repetition boundary and safety constraints.
+- ADR-0041 documenting the deterministic observed transition interval boundary and safety constraints.
 
 ## Next platform milestone
 
-Review ADR-0041 and the draft transition-interval specification before implementation.
+Review the local ADR-0041 implementation diff, then open a PR after maintainer approval.
 
 ## State update rules
 
