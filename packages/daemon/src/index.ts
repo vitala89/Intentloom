@@ -17,6 +17,7 @@ import {
   WORKFLOW_DURATION_SUMMARY_METHOD,
   CONFORMANCE_TREND_SUMMARY_METHOD,
   WORKFLOW_REPETITION_SUMMARY_METHOD,
+  WORKFLOW_TRANSITION_INTERVALS_METHOD,
   SESSION_GET_METHOD,
   createDoctorResponse,
   createInspectResponse,
@@ -28,6 +29,7 @@ import {
   createWorkflowDurationSummaryResponse,
   createConformanceTrendSummaryResponse,
   createWorkflowRepetitionSummaryResponse,
+  createWorkflowTransitionIntervalsResponse,
   createSessionGetResponse,
   parseDaemonRequest,
   parseDoctorResponse,
@@ -51,6 +53,8 @@ import {
   type ConformanceTrendSummaryResultPayload,
   type WorkflowRepetitionSummaryRequest,
   type WorkflowRepetitionSummaryResultPayload,
+  type WorkflowTransitionIntervalsRequest,
+  type WorkflowTransitionIntervalsResultPayload,
   type SessionGetRequest,
   type SessionGetResultPayload,
 } from "../../protocol/src/index.js";
@@ -93,6 +97,11 @@ export interface DaemonOptions {
   readonly workflowRepetitionSummary?: (
     request: WorkflowRepetitionSummaryRequest,
   ) => Promise<Omit<WorkflowRepetitionSummaryResultPayload, "protocolVersion">>;
+  readonly workflowTransitionIntervals?: (
+    request: WorkflowTransitionIntervalsRequest,
+  ) => Promise<
+    Omit<WorkflowTransitionIntervalsResultPayload, "protocolVersion">
+  >;
   readonly sessionGet?: (
     request: SessionGetRequest,
   ) => Promise<Omit<SessionGetResultPayload, "protocolVersion">>;
@@ -278,6 +287,20 @@ export async function startLocalDaemon(
             createWorkflowRepetitionSummaryResponse(
               request.id,
               await options.workflowRepetitionSummary(request),
+            ),
+          );
+        } else if (request.method === WORKFLOW_TRANSITION_INTERVALS_METHOD) {
+          if (!options.workflowTransitionIntervals)
+            return failure(
+              socket,
+              -32601,
+              "unsupported method workflowTransitionIntervals",
+            );
+          response(
+            socket,
+            createWorkflowTransitionIntervalsResponse(
+              request.id,
+              await options.workflowTransitionIntervals(request),
             ),
           );
         } else if (request.method === SESSION_GET_METHOD) {

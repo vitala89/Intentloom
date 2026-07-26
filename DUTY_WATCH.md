@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: partial — draft PR #85 is open; CI and maintainer review are pending
+Status: partial — draft PR #86 open; CI and maintainer review remain
 
-Active branch: `codex/process-intelligence-next-roadmap`
+Active branch: `codex/process-intelligence-next-roadmap-2`
 
-Current objective: monitor PR #85 checks and complete review/merge of the accepted workflow repetition summary implementation.
+Current objective: monitor draft PR #86 for CI and maintainer review.
 
-Next first action: review PR #85 after its compatibility checks complete, then merge only after required human approval.
+Next first action: inspect PR #86 checks and review feedback; do not merge until checks and explicit authorization are complete.
 
 ## Watch rules
 
@@ -41,6 +41,160 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-26, Draft PR #86 published
+
+- **Status:** partial
+- **Agent/tool:** Codex with GitHub publish workflow
+- **Branch:** `codex/process-intelligence-next-roadmap-2`
+- **Commits:** `e999667`, `bfc1c9c`, `cf4ace1`, `6e1bcfa`, `48306b8`, `70d9a78`, `98de493`
+- **Pull request:** [#86](https://github.com/vitala89/Intentloom/pull/86), draft, targeting `main`
+- **Objective:** Publish the reviewed ADR-0041 transition interval implementation for CI and maintainer review.
+- **Completed:** Verified a clean branch, pushed `codex/process-intelligence-next-roadmap-2`, created draft PR #86, and confirmed twelve GitHub checks are in progress on Ubuntu, macOS, and Windows with Node 22/24.
+- **Not completed:** CI, maintainer review, conversion from draft, merge into `main`, and release.
+- **Files or packages changed:** No additional source files after the reviewed implementation; PR includes protocol, evidence-analysis, application, daemon, tests, ADR/spec/security/state/changelog, and Duty Watch updates.
+- **Validation:** Local full test suite (727 passed, 3 skipped across 82 files), focused tests, typecheck, lint, build, formatter, and diff-check passed before publication. GitHub PR checks are currently `IN_PROGRESS`.
+- **Decisions and assumptions:** PR is intentionally draft. No merge, release, or publication beyond the branch/PR was performed.
+- **Risks or compatibility impact:** Additive read-only protocol and daemon operation; remote CI remains the compatibility gate.
+- **Open issues or blockers:** CI and maintainer review are pending; merge requires explicit authorization.
+- **Next first action:** Inspect PR #86 checks and review feedback, then merge only when all required checks and explicit approval are present.
+- **Evidence:** [PR #86](https://github.com/vitala89/Intentloom/pull/86), pushed branch, and `gh pr view 86` showing `OPEN`, `isDraft: true`, base `main`, and twelve checks `IN_PROGRESS`.
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant tests, type checks, builds, or compatibility checks passed
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `PROJECT_STATE.md` updated when applicable
+- [x] `DUTY_WATCH.md` handoff completed
+- [x] Related roadmap, ADR, changelog, migration, or reference docs updated
+- [x] Failed or unavailable checks recorded
+- [ ] Pull request checks and maintainer review complete
+
+### 2026-07-26, Observed workflow transition interval implementation
+
+- **Status:** partial
+- **Agent/tool:** Codex with TDD workflow
+- **Branch:** `codex/process-intelligence-next-roadmap-2`
+- **Commits:** `e999667`, `bfc1c9c`, `cf4ace1`, `6e1bcfa`
+- **Pull request:** None; publishing is not authorized in this watch.
+- **Objective:** Implement the accepted observed workflow transition interval boundary from ADR-0041.
+- **Completed:** Accepted ADR-0041 and the v0.1 specification. Added canonical protocol request/response contracts and validation for `intentloom.workflow.transitions.intervals.v1`, pure adjacent-interval aggregation with minimum/median/maximum elapsed minutes and coverage, application bridge, authenticated daemon routing, deterministic protocol/analysis/daemon fixtures, and accepted security/state/changelog documentation.
+- **Not completed:** Maintainer review, PR publication, CI, and merge into `main`.
+- **Files or packages changed:** `packages/protocol/src/index.ts`, `packages/evidence-analysis/src/index.ts`, `packages/application/src/index.ts`, `packages/daemon/src/index.ts`, `tests/workflow-transition-intervals.test.ts`, `tests/protocol.test.ts`, `tests/daemon.test.ts`, ADR/spec/security/state/changelog documentation, and `DUTY_WATCH.md`.
+- **Validation:** Focused protocol/analysis tests (13 passed); daemon IPC tests (16 passed, 1 skipped); full `pnpm test` (727 passed, 3 skipped across 82 files); `pnpm typecheck`; `pnpm lint`; `pnpm build`; `git diff --check`; formatter passed. Daemon tests required unsandboxed Unix-socket access because the sandbox returned `EPERM` on `server.listen`.
+- **Decisions and assumptions:** Only valid, non-decreasing adjacent timestamp pairs contribute intervals. Out-of-order pairs are excluded without repair. Output remains aggregate and descriptive; no queue-time, latency, rework, bottleneck, performance, causal, actor, provider, persistence, or model interpretation is introduced.
+- **Risks or compatibility impact:** Additive protocol/application/daemon method; no existing method behavior changed. The local branch is ahead of merged `main` and has not passed remote CI yet.
+- **Open issues or blockers:** Maintainer review and explicit authorization are required before pushing or opening a PR.
+- **Next first action:** Review the final diff and local commit, then publish for CI/review only when authorized.
+- **Evidence:** ADR-0041, `WORKFLOW_TRANSITION_INTERVALS_V0_1_SPEC.md`, `pnpm test` output, and the focused daemon/protocol/analysis results above.
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant tests, type checks, builds, or compatibility checks passed
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `PROJECT_STATE.md` updated when applicable
+- [x] `DUTY_WATCH.md` handoff completed
+- [x] Related roadmap, ADR, changelog, migration, or reference docs updated
+- [x] Failed or unavailable checks recorded
+- [ ] Pull request published, reviewed, and merged
+
+### 2026-07-26, Final branch review and contract correction
+
+- **Status:** partial
+- **Agent/tool:** Codex with two-axis review
+- **Branch:** `codex/process-intelligence-next-roadmap-2`
+- **Commits:** `48306b8` review correction commit
+- **Pull request:** None; publishing remains unauthorized in this watch.
+- **Objective:** Review the transition-interval branch against `main` and resolve actionable findings before publication.
+- **Completed:** Confirmed the branch is clean and the diff is scoped to ADR-0041. Corrected strict ISO timestamp eligibility, clarified that reports contain only observable transitions, removed stale current-main state, and completed the Duty Watch commit/file inventory.
+- **Not completed:** Follow-up validation/commit, maintainer review, PR publication, CI, and merge into `main`.
+- **Files or packages changed:** `packages/evidence-analysis/src/index.ts`, `tests/workflow-transition-intervals.test.ts`, `PROJECT_STATE.md`, `docs/specs/WORKFLOW_TRANSITION_INTERVALS_V0_1_SPEC.md`, and `DUTY_WATCH.md`.
+- **Validation:** Two-axis review completed; focused transition/protocol tests (13 passed), daemon IPC tests (16 passed, 1 skipped), full `pnpm test` (727 passed, 3 skipped across 82 files), `pnpm typecheck`, `pnpm lint`, `pnpm build`, `pnpm format:check`, and `git diff --check` all passed after the correction. Daemon/full tests required unsandboxed Unix-socket access.
+- **Decisions and assumptions:** Non-ISO date strings are invalid evidence for this operation even if the JavaScript parser can interpret them. Zero-count transition records are not emitted because they carry no observable interval statistics.
+- **Risks or compatibility impact:** The correction narrows interval eligibility to the accepted specification; valid ISO timestamps and existing report shape remain unchanged.
+- **Open issues or blockers:** Maintainer review and explicit authorization are still required before pushing or opening a PR.
+- **Next first action:** Commit the correction, update this handoff with the exact commit, then wait for explicit authorization before publication.
+- **Evidence:** Two-axis review reports and `git diff main...HEAD --check`/`pnpm format:check` before the correction.
+
+#### Duty completion checklist
+
+- [x] Formatter passed after correction
+- [x] Relevant tests, type checks, builds, or compatibility checks passed
+- [x] `git diff --check` passed after correction
+- [x] Final diff reviewed
+- [x] `PROJECT_STATE.md` updated when applicable
+- [x] `DUTY_WATCH.md` handoff updated
+- [x] Related specification updated
+- [x] Findings and unresolved authorization blocker recorded
+- [ ] Pull request published, reviewed, and merged
+
+### 2026-07-26, Observed workflow transition interval candidate
+
+- **Status:** partial
+- **Agent/tool:** Codex
+- **Branch:** `codex/process-intelligence-next-roadmap-2`
+- **Commits:** `57a2c9b` merge baseline, `e999667` candidate proposal
+- **Pull request:** None; this is a local proposal only.
+- **Objective:** Select and specify the next bounded process-intelligence candidate after workflow repetition summary merge.
+- **Completed:** Reviewed the engineering process-intelligence concept and existing duration/repetition boundaries. Proposed ADR-0041 and `WORKFLOW_TRANSITION_INTERVALS_V0_1_SPEC.md`, constraining the candidate to aggregate elapsed minutes for valid adjacent timestamp pairs without queue-time, latency, rework, bottleneck, causal, quality, actor, persistence, remote, or model claims. Added security invariant 34 and updated durable project state.
+- **Not completed:** ADR/spec approval, protocol/analysis implementation, adapters, fixtures, PR, and merge.
+- **Files or packages changed:** `docs/decisions/ADR-0041-observed-workflow-transition-intervals.md`, `docs/specs/WORKFLOW_TRANSITION_INTERVALS_V0_1_SPEC.md`, `docs/security/THREAT_MODEL.md`, `PROJECT_STATE.md`, and `DUTY_WATCH.md`.
+- **Validation:** Roadmap/ADR/concept review completed; `pnpm format:check` and `git diff --check` passed. No runtime tests were rerun because this commit is documentation-only.
+- **Decisions and assumptions:** An interval is an observed evidence fact only when adjacent valid timestamps are non-decreasing; out-of-order pairs are unavailable evidence and are not repaired.
+- **Risks or compatibility impact:** Documentation-only proposal; no runtime behavior or protocol surface changed.
+- **Open issues or blockers:** Maintainer/user review is required before implementation.
+- **Next first action:** Review ADR-0041 and the draft specification, then approve, revise, or reject the candidate.
+- **Evidence:** `docs/concepts/ENGINEERING_PROCESS_INTELLIGENCE.md`, ADR-0038, ADR-0040, and merged baseline `57a2c9b`.
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [ ] Relevant tests, type checks, builds, or compatibility checks passed
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `PROJECT_STATE.md` updated when applicable
+- [x] `DUTY_WATCH.md` handoff completed
+- [x] Related roadmap, ADR, changelog, migration, or reference docs updated
+- [x] Failed or unavailable checks recorded
+- [ ] Candidate approved and implemented
+
+### 2026-07-26, PR #85 merged and local main updated
+
+- **Status:** complete
+- **Agent/tool:** Codex with GitHub publish workflow
+- **Branch:** `main` → `codex/process-intelligence-next-roadmap-2`
+- **Commits:** merge commit `57a2c9b`; local main fast-forwarded from `c0e7cb0`
+- **Pull request:** [#85](https://github.com/vitala89/Intentloom/pull/85), merged
+- **Objective:** Merge the reviewed workflow repetition summary and update the local checkout for the next roadmap step.
+- **Completed:** Confirmed all twelve compatibility checks succeeded, verified PR #85 is merged, fetched `origin/main`, fast-forwarded local `main` to `57a2c9b`, and created the next roadmap branch.
+- **Not completed:** Selection or implementation of the next process-intelligence candidate.
+- **Files or packages changed:** No files changed in this watch; the merged PR contains the implementation and documentation changes.
+- **Validation:** `gh pr view 85` reports `MERGED` with merge commit `57a2c9b`; `git pull --ff-only origin main` succeeded; local `main` is clean and matches `origin/main`.
+- **Decisions and assumptions:** Workflow repetition summary is now part of `main`. Any broader rework, retry, bottleneck, causal, actor, persisted, remote, or model-assisted capability still requires a separate ADR, specification, and threat review.
+- **Risks or compatibility impact:** No new code was added after the merged PR; next work must preserve the additive, local, read-only boundary.
+- **Open issues or blockers:** The next candidate is intentionally unselected.
+- **Next first action:** Inspect the roadmap and relevant ADRs, then propose the next bounded candidate before implementation.
+- **Evidence:** PR #85 metadata, twelve successful CI checks, merge commit `57a2c9b`, and clean local `main` at `origin/main`.
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant tests, type checks, builds, or compatibility checks passed
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `PROJECT_STATE.md` updated when applicable
+- [x] `DUTY_WATCH.md` handoff completed
+- [x] Related roadmap, ADR, changelog, migration, or reference docs updated
+- [x] Failed or unavailable checks recorded
+- [x] Pull request merged and local main updated
 
 ### 2026-07-26, Draft PR #85 published
 

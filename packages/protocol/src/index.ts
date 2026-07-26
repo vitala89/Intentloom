@@ -15,6 +15,8 @@ export const CONFORMANCE_TREND_SUMMARY_METHOD =
   "intentloom.conformance.trend.summary.v1" as const;
 export const WORKFLOW_REPETITION_SUMMARY_METHOD =
   "intentloom.workflow.repetitions.summary.v1" as const;
+export const WORKFLOW_TRANSITION_INTERVALS_METHOD =
+  "intentloom.workflow.transitions.intervals.v1" as const;
 export const SESSION_GET_METHOD = "intentloom.session.get.v1" as const;
 
 export type JsonPrimitive = boolean | null | number | string;
@@ -209,6 +211,21 @@ export type WorkflowRepetitionSummaryRequest = JsonRpcRequest<
 export type WorkflowRepetitionSummaryResponse =
   JsonRpcSuccess<WorkflowRepetitionSummaryResultPayload>;
 
+export interface WorkflowTransitionIntervalsParams {
+  readonly protocolVersion: typeof PROTOCOL_VERSION;
+  readonly timelines: readonly GenericTimeline[];
+}
+export interface WorkflowTransitionIntervalsResultPayload {
+  readonly protocolVersion: typeof PROTOCOL_VERSION;
+  readonly report: WorkflowTransitionIntervalsReport;
+}
+export type WorkflowTransitionIntervalsRequest = JsonRpcRequest<
+  typeof WORKFLOW_TRANSITION_INTERVALS_METHOD,
+  WorkflowTransitionIntervalsParams
+>;
+export type WorkflowTransitionIntervalsResponse =
+  JsonRpcSuccess<WorkflowTransitionIntervalsResultPayload>;
+
 export interface SessionGetParams {
   readonly protocolVersion: typeof PROTOCOL_VERSION;
   readonly root: string;
@@ -235,6 +252,7 @@ export type DaemonRequest =
   | WorkflowDurationSummaryRequest
   | ConformanceTrendSummaryRequest
   | WorkflowRepetitionSummaryRequest
+  | WorkflowTransitionIntervalsRequest
   | SessionGetRequest;
 
 export type DaemonResponse =
@@ -248,6 +266,7 @@ export type DaemonResponse =
   | WorkflowDurationSummaryResponse
   | ConformanceTrendSummaryResponse
   | WorkflowRepetitionSummaryResponse
+  | WorkflowTransitionIntervalsResponse
   | SessionGetResponse;
 
 export class ProtocolValidationError extends Error {
@@ -437,6 +456,18 @@ export function createWorkflowRepetitionSummaryRequest(
   };
 }
 
+export function createWorkflowTransitionIntervalsRequest(
+  id: RequestId,
+  params: Omit<WorkflowTransitionIntervalsParams, "protocolVersion">,
+): WorkflowTransitionIntervalsRequest {
+  return {
+    jsonrpc: "2.0",
+    id,
+    method: WORKFLOW_TRANSITION_INTERVALS_METHOD,
+    params: { protocolVersion: PROTOCOL_VERSION, timelines: params.timelines },
+  };
+}
+
 export function createSessionGetRequest(
   id: RequestId,
   params: Omit<SessionGetParams, "protocolVersion">,
@@ -485,6 +516,7 @@ export function parseDaemonRequest(value: unknown): DaemonRequest {
     WORKFLOW_DURATION_SUMMARY_METHOD,
     CONFORMANCE_TREND_SUMMARY_METHOD,
     WORKFLOW_REPETITION_SUMMARY_METHOD,
+    WORKFLOW_TRANSITION_INTERVALS_METHOD,
     SESSION_GET_METHOD,
   ];
   if (typeof value.method !== "string" || !validMethods.includes(value.method))
@@ -577,6 +609,13 @@ export function parseDaemonRequest(value: unknown): DaemonRequest {
     if (!Array.isArray(value.params.timelines))
       throw new ProtocolValidationError(-32602, "timelines must be an array");
     return createWorkflowRepetitionSummaryRequest(id, {
+      timelines: value.params.timelines.map(validateGenericTimeline),
+    });
+  }
+  if (value.method === WORKFLOW_TRANSITION_INTERVALS_METHOD) {
+    if (!Array.isArray(value.params.timelines))
+      throw new ProtocolValidationError(-32602, "timelines must be an array");
+    return createWorkflowTransitionIntervalsRequest(id, {
       timelines: value.params.timelines.map(validateGenericTimeline),
     });
   }
@@ -743,6 +782,20 @@ export function createWorkflowRepetitionSummaryResponse(
     result: {
       protocolVersion: PROTOCOL_VERSION,
       report: validateWorkflowRepetitionSummaryReport(result.report),
+    },
+  };
+}
+
+export function createWorkflowTransitionIntervalsResponse(
+  id: RequestId,
+  result: Omit<WorkflowTransitionIntervalsResultPayload, "protocolVersion">,
+): WorkflowTransitionIntervalsResponse {
+  return {
+    jsonrpc: "2.0",
+    id,
+    result: {
+      protocolVersion: PROTOCOL_VERSION,
+      report: validateWorkflowTransitionIntervalsReport(result.report),
     },
   };
 }
@@ -3763,5 +3816,135 @@ export function validateWorkflowRepetitionSummaryReport(
     caseType: engineeringCaseType(value.caseType, "caseType"),
     timelineCount,
     repeatedActivities,
+  };
+}
+
+export interface WorkflowTransitionInterval {
+  readonly from: string;
+  readonly to: string;
+  readonly intervalCount: number;
+  readonly observableCaseCount: number;
+  readonly elapsedMinutes: WorkflowElapsedMinutes;
+}
+
+export interface WorkflowTransitionIntervalsReport {
+  readonly operationVersion: 1;
+  readonly caseType: EngineeringWorkflowCaseType;
+  readonly timelineCount: number;
+  readonly timestampCoverage: WorkflowTimestampCoverage;
+  readonly observableIntervalCount: number;
+  readonly transitions: readonly WorkflowTransitionInterval[];
+}
+
+export function validateWorkflowTransitionIntervalsReport(
+  value: unknown,
+): WorkflowTransitionIntervalsReport {
+  if (
+    !isObject(value) ||
+    value.operationVersion !== 1 ||
+    !Array.isArray(value.transitions)
+  )
+    throw new ProtocolValidationError(
+      -32602,
+      "workflow transition intervals report is invalid",
+    );
+  const timestampCoverage = stringValue(
+    value.timestampCoverage,
+    "timestampCoverage",
+  ) as WorkflowTimestampCoverage;
+  if (
+    !(["complete", "partial", "unavailable"] as const).includes(
+      timestampCoverage,
+    )
+  )
+    throw new ProtocolValidationError(-32602, "invalid timestampCoverage");
+  const integer = (field: "timelineCount" | "observableIntervalCount") => {
+    const result = value[field];
+    if (typeof result !== "number" || !Number.isInteger(result) || result < 0)
+      throw new ProtocolValidationError(
+        -32602,
+        `${field} must be a non-negative integer`,
+      );
+    return result;
+  };
+  const timelineCount = integer("timelineCount");
+  const observableIntervalCount = integer("observableIntervalCount");
+  if (timelineCount < 2)
+    throw new ProtocolValidationError(
+      -32602,
+      "timelineCount must be at least two",
+    );
+  let countedIntervals = 0;
+  const transitions = value.transitions.map((transition, index) => {
+    if (!isObject(transition))
+      throw new ProtocolValidationError(
+        -32602,
+        `transitions[${index}] is invalid`,
+      );
+    const from = stringValue(transition.from, `transitions[${index}].from`);
+    const to = stringValue(transition.to, `transitions[${index}].to`);
+    const intervalCount = transition.intervalCount;
+    const observableCaseCount = transition.observableCaseCount;
+    if (
+      typeof intervalCount !== "number" ||
+      !Number.isInteger(intervalCount) ||
+      intervalCount < 1 ||
+      typeof observableCaseCount !== "number" ||
+      !Number.isInteger(observableCaseCount) ||
+      observableCaseCount < 1 ||
+      observableCaseCount > timelineCount
+    )
+      throw new ProtocolValidationError(
+        -32602,
+        `transitions[${index}] counts are invalid`,
+      );
+    if (!isObject(transition.elapsedMinutes))
+      throw new ProtocolValidationError(
+        -32602,
+        `transitions[${index}].elapsedMinutes is invalid`,
+      );
+    const elapsedObject = transition.elapsedMinutes;
+    const metric = (field: keyof WorkflowElapsedMinutes) => {
+      const result = elapsedObject[field];
+      if (typeof result !== "number" || !Number.isFinite(result) || result < 0)
+        throw new ProtocolValidationError(
+          -32602,
+          `transitions[${index}].elapsedMinutes.${field} is invalid`,
+        );
+      return result;
+    };
+    const elapsedMinutes = {
+      minimum: metric("minimum"),
+      median: metric("median"),
+      maximum: metric("maximum"),
+    };
+    if (
+      elapsedMinutes.minimum > elapsedMinutes.median ||
+      elapsedMinutes.median > elapsedMinutes.maximum
+    )
+      throw new ProtocolValidationError(
+        -32602,
+        `transitions[${index}].elapsedMinutes values are not ordered`,
+      );
+    countedIntervals += intervalCount;
+    return { from, to, intervalCount, observableCaseCount, elapsedMinutes };
+  });
+  if (countedIntervals !== observableIntervalCount)
+    throw new ProtocolValidationError(
+      -32602,
+      "transition interval counts do not match observableIntervalCount",
+    );
+  if (observableIntervalCount === 0 && transitions.length > 0)
+    throw new ProtocolValidationError(
+      -32602,
+      "transitions must be empty when no intervals are observable",
+    );
+  return {
+    operationVersion: 1,
+    caseType: engineeringCaseType(value.caseType, "caseType"),
+    timelineCount,
+    timestampCoverage,
+    observableIntervalCount,
+    transitions,
   };
 }
