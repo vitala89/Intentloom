@@ -78,7 +78,7 @@ entry directly below this section.
 - **Status:** partial
 - **Agent/tool:** Codex with two-axis review
 - **Branch:** `codex/process-intelligence-next-roadmap-2`
-- **Commits:** follow-up fix commit pending
+- **Commits:** `48306b8` review correction commit
 - **Pull request:** None; publishing remains unauthorized in this watch.
 - **Objective:** Review the transition-interval branch against `main` and resolve actionable findings before publication.
 - **Completed:** Confirmed the branch is clean and the diff is scoped to ADR-0041. Corrected strict ISO timestamp eligibility, clarified that reports contain only observable transitions, removed stale current-main state, and completed the Duty Watch commit/file inventory.
