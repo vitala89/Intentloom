@@ -22,7 +22,7 @@ later justifies separation.
 
 ## Current phase
 
-Engineering Process Intelligence & Agent Memory Evaluation System — conformance, workflow variants, and observed duration metrics merged into `main`; conformance trend summary is in draft PR #84 pending checks/review/merge.
+Engineering Process Intelligence & Agent Memory Evaluation System — conformance, workflow variants, observed duration metrics, and conformance trend summary merged into `main` at `c0e7cb0`.
 
 The project must avoid premature structural migration. New applications,
 packages, and repository boundaries are introduced only when roadmap triggers
@@ -47,7 +47,7 @@ before a new release or implementation milestone is declared complete.
 
 ## Active focus
 
-1. Review and merge draft PR #84 for the conformance trend summary implementation over the merged application/daemon contracts.
+1. Select and specify the next bounded process-intelligence candidate over the merged application/daemon contracts.
 2. Keep bottleneck inference, remote ingestion, and model-based judgments behind separate approved specifications and threat review.
 
 ## Architectural invariants
@@ -67,11 +67,11 @@ before a new release or implementation milestone is declared complete.
 ## Current blockers and unknowns
 
 - Any expansion to bottleneck, performance, causal, actor, repository-reading, persisted, remote, or model-assisted analysis requires a new ADR, specification, and threat review.
-- Draft PR #84 is open; twelve compatibility checks are in progress and maintainer review is pending.
+- PR #84 is merged and local `main` is fast-forwarded to `c0e7cb0`; no next candidate has been approved yet.
 
 ## Current milestone
 
-The first Engineering Process Intelligence & Agent Memory Evaluation increment is complete and merged.
+The first Engineering Process Intelligence & Agent Memory Evaluation increment, including conformance trend summary, is complete and merged.
 
 Expected outputs:
 
@@ -81,7 +81,7 @@ Expected outputs:
 
 ## Next platform milestone
 
-Review and merge PR #84, then select the next candidate through a separate ADR/specification/threat review.
+Select the next candidate through a separate ADR, specification, and threat review before implementation.
 
 ## State update rules
 

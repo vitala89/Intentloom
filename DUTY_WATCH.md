@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: partial — draft PR #84 is open; CI and maintainer review are pending
+Status: complete — PR #84 merged and local main updated; next candidate selection ready
 
-Active branch: `codex/process-intelligence-next-candidate`
+Active branch: `codex/process-intelligence-next-roadmap`
 
-Current objective: monitor PR #84 checks and complete review/merge of the accepted conformance trend summary implementation.
+Current objective: select and specify the next bounded process-intelligence candidate after the merged conformance trend summary.
 
-Next first action: review PR #84 after its compatibility checks complete, then merge only after required human approval.
+Next first action: inspect the process-intelligence roadmap and propose the next ADR/specification boundary; do not implement it before approval.
 
 ## Watch rules
 
@@ -41,6 +41,37 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-26, PR #84 merged and local main updated
+
+- **Status:** complete
+- **Agent/tool:** Codex with GitHub publish workflow
+- **Branch:** `main` → `codex/process-intelligence-next-roadmap`
+- **Commits:** merge commit `c0e7cb0`; local main fast-forwarded from `890d6d3`
+- **Pull request:** [#84](https://github.com/vitala89/Intentloom/pull/84), merged
+- **Objective:** Merge the reviewed conformance trend summary and update the local checkout for the next roadmap step.
+- **Completed:** Confirmed all twelve compatibility checks succeeded, converted PR #84 from draft to ready, merged it into `main`, fetched `origin/main`, fast-forwarded local `main` to `c0e7cb0`, and created the next roadmap branch.
+- **Not completed:** Selection or implementation of the next process-intelligence candidate.
+- **Files or packages changed:** No files changed in this watch; the merged PR contains the implementation and documentation changes.
+- **Validation:** `gh pr view 84` reports `MERGED` with merge commit `c0e7cb0`; `git pull --ff-only origin main` succeeded; local `main` is clean and matches `origin/main`.
+- **Decisions and assumptions:** The conformance trend summary is now part of `main`. Any broader bottleneck, causal, actor, persisted, remote, or model-assisted capability still requires a separate ADR, specification, and threat review.
+- **Risks or compatibility impact:** No new code was added after the merged PR; next work must preserve the additive, local, read-only boundary.
+- **Open issues or blockers:** The next candidate is intentionally unselected.
+- **Next first action:** Inspect the roadmap and relevant ADRs, then propose the next bounded candidate before implementation.
+- **Evidence:** PR #84 metadata, twelve successful CI checks, merge commit `c0e7cb0`, and clean local `main` at `origin/main`.
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant tests, type checks, builds, or compatibility checks passed
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `PROJECT_STATE.md` updated when applicable
+- [x] `DUTY_WATCH.md` handoff completed
+- [x] Related roadmap, ADR, changelog, migration, or reference docs updated
+- [x] Failed or unavailable checks recorded
+- [x] Pull request merged and local main updated
 
 ### 2026-07-26, Draft PR #84 published
 
