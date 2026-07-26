@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: partial — PR #88 merged with green CI; v0.5 publication authorization remains
+Status: partial — post-merge state PR #89 open; v0.5 publication authorization remains
 
 Active branch: `codex/post-v05-merge-release-state`
 
-Current objective: record the merged v0.5 release-preparation state and keep publication behind explicit authorization.
+Current objective: validate the post-merge release-state documentation in PR #89 and keep publication behind explicit authorization.
 
-Next first action: review the updated readiness audit and obtain explicit authorization for any v0.5 tag or npm publication.
+Next first action: inspect PR #89 checks and review, then obtain explicit authorization for any v0.5 tag or npm publication.
 
 ## Watch rules
 
@@ -67,6 +67,31 @@ entry directly below this section.
 - [x] Release-state and readiness records updated
 - [ ] Explicit tag/npm publication authorization obtained
 - [ ] Tag and npm publication completed
+
+### 2026-07-27, post-merge v0.5 release-state PR #89 opened
+
+- **Status:** partial
+- **Agent/tool:** Codex with controlled documentation and release-state workflow
+- **Branch:** `codex/post-v05-merge-release-state`
+- **Commits:** `e681cf4`, `5da5081`
+- **Pull request:** [#89](https://github.com/vitala89/Intentloom/pull/89), draft
+- **Objective:** Publish the post-merge state corrections for review without performing release side effects.
+- **Completed:** Opened draft PR #89 with the final merge commit, remote CI verification, readiness-audit PASS status, current `main` pointer, and explicit no-tag/no-npm boundary.
+- **Validation:** Prettier 3.9.5 and `git diff --check` passed before publication. The source evidence is PR #88 merge `f6232e4` and successful Compatibility runs `30223382394` and `30223381378`.
+- **Decisions and assumptions:** v0.5 remains synchronized in the workspace but unpublished; npm `next` remains `0.4.0-beta.1`. PR #89 is documentation-only.
+- **Risks or compatibility impact:** PR #89 CI and review are pending. Local `pnpm build` remains unavailable because `@types/node` is missing from the interrupted dependency environment.
+- **Open issues or blockers:** Explicit authorization for a v0.5 tag, dist-tag change, or npm publication has not been granted.
+- **Next first action:** Inspect PR #89 checks and review, then keep release publication as a separately authorized action.
+- **Evidence:** [PR #89](https://github.com/vitala89/Intentloom/pull/89), `docs/audits/V0_5_RELEASE_READINESS.md`, `PROJECT_STATE.md`, and `f6232e4`.
+
+#### Duty completion checklist
+
+- [x] Post-merge state and readiness records updated
+- [x] Branch pushed
+- [x] Draft PR #89 opened
+- [ ] PR #89 checks passed
+- [ ] PR #89 review completed
+- [ ] Tag/npm publication authorized and completed
 
 ### 2026-07-27, PR #88 CI formatting failure corrected
 
