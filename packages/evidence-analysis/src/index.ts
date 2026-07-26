@@ -1,3 +1,18 @@
+import { createHash } from "node:crypto";
+import {
+  validateGenericTimeline,
+  type EngineeringConformanceFinding,
+  type EngineeringConformanceReport,
+  type EngineeringConformanceSummary,
+  type EngineeringConformanceStatus,
+  type EngineeringEvidenceRef,
+  type EngineeringWorkflowCaseType,
+  type EngineeringWorkflowPolicy,
+  type GenericTimeline,
+  type TimelineEventRef,
+  type WorkflowVariantSummaryReport,
+} from "@intentloom/protocol";
+
 export interface ReleaseAnalysisGitEvent {
   readonly commitId: string;
   readonly timestamp: number;
@@ -264,18 +279,6 @@ export function analyzeReleaseEvidence(
   };
 }
 
-import type {
-  EngineeringConformanceFinding,
-  EngineeringConformanceReport,
-  EngineeringConformanceSummary,
-  EngineeringConformanceStatus,
-  EngineeringEvidenceRef,
-  EngineeringWorkflowCaseType,
-  EngineeringWorkflowPolicy,
-  GenericTimeline,
-  TimelineEventRef,
-} from "@intentloom/protocol";
-
 export type {
   EngineeringConformanceFinding,
   EngineeringConformanceReport,
@@ -286,6 +289,7 @@ export type {
   EngineeringWorkflowPolicy,
   GenericTimeline,
   TimelineEventRef,
+  WorkflowVariantSummaryReport,
 } from "@intentloom/protocol";
 
 function toEvidenceRef(event: TimelineEventRef): EngineeringEvidenceRef {
@@ -436,5 +440,66 @@ export function evaluateEngineeringConformance(
     caseId: timeline.caseId,
     summary,
     findings,
+  };
+}
+
+export function summarizeWorkflowVariants(
+  timelines: readonly GenericTimeline[],
+): WorkflowVariantSummaryReport {
+  if (timelines.length < 2)
+    throw new Error("at least two timelines are required");
+  const normalized = timelines.map(validateGenericTimeline);
+  const caseType = normalized[0]!.caseType;
+  if (normalized.some((timeline) => timeline.caseType !== caseType))
+    throw new Error("workflow variant timelines must share one case type");
+  const caseIds = normalized.map((timeline) => timeline.caseId);
+  if (new Set(caseIds).size !== caseIds.length)
+    throw new Error("workflow variant timeline case IDs must be unique");
+
+  let timestampedEvents = 0;
+  let totalEvents = 0;
+  const variants = new Map<
+    string,
+    { activities: readonly string[]; caseIds: string[] }
+  >();
+  for (const timeline of normalized) {
+    const activities = timeline.events.map((event) => event.activity);
+    totalEvents += timeline.events.length;
+    timestampedEvents += timeline.events.filter(
+      (event) => event.timestamp !== undefined,
+    ).length;
+    const normalizedSequence = JSON.stringify(activities);
+    const variantId = `variant:sha256:${createHash("sha256")
+      .update(normalizedSequence)
+      .digest("hex")}`;
+    const variant = variants.get(variantId);
+    if (variant) variant.caseIds.push(timeline.caseId);
+    else variants.set(variantId, { activities, caseIds: [timeline.caseId] });
+  }
+
+  return {
+    operationVersion: 1,
+    caseType,
+    timelineCount: normalized.length,
+    timestampCoverage:
+      totalEvents === 0 || timestampedEvents === 0
+        ? "unavailable"
+        : timestampedEvents === totalEvents
+          ? "complete"
+          : "partial",
+    variants: [...variants.entries()]
+      .map(([variantId, variant]) => ({
+        variantId,
+        activities: variant.activities,
+        occurrenceCount: variant.caseIds.length,
+        caseIds: [...variant.caseIds].sort(),
+      }))
+      .sort(
+        (left, right) =>
+          right.occurrenceCount - left.occurrenceCount ||
+          JSON.stringify(left.activities).localeCompare(
+            JSON.stringify(right.activities),
+          ),
+      ),
   };
 }

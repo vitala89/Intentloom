@@ -7,6 +7,8 @@ export const MEMORY_EVALUATIONS_LIST_METHOD =
   "intentloom.memory.evaluations.list.v1" as const;
 export const ENGINEERING_CONFORMANCE_METHOD =
   "intentloom.engineering.conformance.v1" as const;
+export const WORKFLOW_VARIANT_SUMMARY_METHOD =
+  "intentloom.workflow.variants.summary.v1" as const;
 export const SESSION_GET_METHOD = "intentloom.session.get.v1" as const;
 
 export type JsonPrimitive = boolean | null | number | string;
@@ -141,6 +143,21 @@ export type EngineeringConformanceRequest = JsonRpcRequest<
 export type EngineeringConformanceResponse =
   JsonRpcSuccess<EngineeringConformanceResultPayload>;
 
+export interface WorkflowVariantSummaryParams {
+  readonly protocolVersion: typeof PROTOCOL_VERSION;
+  readonly timelines: readonly GenericTimeline[];
+}
+export interface WorkflowVariantSummaryResultPayload {
+  readonly protocolVersion: typeof PROTOCOL_VERSION;
+  readonly report: WorkflowVariantSummaryReport;
+}
+export type WorkflowVariantSummaryRequest = JsonRpcRequest<
+  typeof WORKFLOW_VARIANT_SUMMARY_METHOD,
+  WorkflowVariantSummaryParams
+>;
+export type WorkflowVariantSummaryResponse =
+  JsonRpcSuccess<WorkflowVariantSummaryResultPayload>;
+
 export interface SessionGetParams {
   readonly protocolVersion: typeof PROTOCOL_VERSION;
   readonly root: string;
@@ -163,6 +180,7 @@ export type DaemonRequest =
   | MemorySearchRequest
   | MemoryEvaluationsListRequest
   | EngineeringConformanceRequest
+  | WorkflowVariantSummaryRequest
   | SessionGetRequest;
 
 export type DaemonResponse =
@@ -172,6 +190,7 @@ export type DaemonResponse =
   | MemorySearchResponse
   | MemoryEvaluationsListResponse
   | EngineeringConformanceResponse
+  | WorkflowVariantSummaryResponse
   | SessionGetResponse;
 
 export class ProtocolValidationError extends Error {
@@ -310,6 +329,21 @@ export function createEngineeringConformanceRequest(
   };
 }
 
+export function createWorkflowVariantSummaryRequest(
+  id: RequestId,
+  params: Omit<WorkflowVariantSummaryParams, "protocolVersion">,
+): WorkflowVariantSummaryRequest {
+  return {
+    jsonrpc: "2.0",
+    id,
+    method: WORKFLOW_VARIANT_SUMMARY_METHOD,
+    params: {
+      protocolVersion: PROTOCOL_VERSION,
+      timelines: params.timelines,
+    },
+  };
+}
+
 export function createSessionGetRequest(
   id: RequestId,
   params: Omit<SessionGetParams, "protocolVersion">,
@@ -354,6 +388,7 @@ export function parseDaemonRequest(value: unknown): DaemonRequest {
     MEMORY_SEARCH_METHOD,
     MEMORY_EVALUATIONS_LIST_METHOD,
     ENGINEERING_CONFORMANCE_METHOD,
+    WORKFLOW_VARIANT_SUMMARY_METHOD,
     SESSION_GET_METHOD,
   ];
   if (typeof value.method !== "string" || !validMethods.includes(value.method))
@@ -419,6 +454,13 @@ export function parseDaemonRequest(value: unknown): DaemonRequest {
       root: stringValue(value.params.root, "root"),
       timeline: validateGenericTimeline(value.params.timeline),
       policy: validateEngineeringWorkflowPolicy(value.params.policy),
+    });
+  }
+  if (value.method === WORKFLOW_VARIANT_SUMMARY_METHOD) {
+    if (!Array.isArray(value.params.timelines))
+      throw new ProtocolValidationError(-32602, "timelines must be an array");
+    return createWorkflowVariantSummaryRequest(id, {
+      timelines: value.params.timelines.map(validateGenericTimeline),
     });
   }
   if (value.method === SESSION_GET_METHOD) {
@@ -528,6 +570,20 @@ export function createEngineeringConformanceResponse(
     result: {
       protocolVersion: PROTOCOL_VERSION,
       report: validateEngineeringConformanceReport(result.report),
+    },
+  };
+}
+
+export function createWorkflowVariantSummaryResponse(
+  id: RequestId,
+  result: Omit<WorkflowVariantSummaryResultPayload, "protocolVersion">,
+): WorkflowVariantSummaryResponse {
+  return {
+    jsonrpc: "2.0",
+    id,
+    result: {
+      protocolVersion: PROTOCOL_VERSION,
+      report: validateWorkflowVariantSummaryReport(result.report),
     },
   };
 }
@@ -3193,5 +3249,99 @@ export function validateEngineeringConformanceReport(
         };
       },
     ),
+  };
+}
+
+export type WorkflowTimestampCoverage = "complete" | "partial" | "unavailable";
+
+export interface WorkflowVariant {
+  readonly variantId: string;
+  readonly activities: readonly string[];
+  readonly occurrenceCount: number;
+  readonly caseIds: readonly string[];
+}
+
+export interface WorkflowVariantSummaryReport {
+  readonly operationVersion: 1;
+  readonly caseType: EngineeringWorkflowCaseType;
+  readonly timelineCount: number;
+  readonly timestampCoverage: WorkflowTimestampCoverage;
+  readonly variants: readonly WorkflowVariant[];
+}
+
+export function validateWorkflowVariantSummaryReport(
+  value: unknown,
+): WorkflowVariantSummaryReport {
+  if (
+    !isObject(value) ||
+    value.operationVersion !== 1 ||
+    !Array.isArray(value.variants)
+  )
+    throw new ProtocolValidationError(
+      -32602,
+      "workflow variant summary report is invalid",
+    );
+  const timestampCoverage = stringValue(
+    value.timestampCoverage,
+    "timestampCoverage",
+  ) as WorkflowTimestampCoverage;
+  if (
+    !(["complete", "partial", "unavailable"] as const).includes(
+      timestampCoverage,
+    )
+  )
+    throw new ProtocolValidationError(-32602, "invalid timestampCoverage");
+  if (
+    typeof value.timelineCount !== "number" ||
+    !Number.isInteger(value.timelineCount) ||
+    value.timelineCount < 2
+  )
+    throw new ProtocolValidationError(
+      -32602,
+      "timelineCount must be an integer of at least two",
+    );
+  return {
+    operationVersion: 1,
+    caseType: engineeringCaseType(value.caseType, "caseType"),
+    timelineCount: value.timelineCount,
+    timestampCoverage,
+    variants: value.variants.map((variant, index): WorkflowVariant => {
+      if (!isObject(variant))
+        throw new ProtocolValidationError(
+          -32602,
+          `variants[${index}] must be an object`,
+        );
+      const occurrenceCount = variant.occurrenceCount;
+      if (
+        typeof occurrenceCount !== "number" ||
+        !Number.isInteger(occurrenceCount) ||
+        occurrenceCount < 1
+      )
+        throw new ProtocolValidationError(
+          -32602,
+          `variants[${index}].occurrenceCount must be a positive integer`,
+        );
+      const caseIds = stringArray(
+        variant.caseIds,
+        `variants[${index}].caseIds`,
+      );
+      if (caseIds.length !== occurrenceCount)
+        throw new ProtocolValidationError(
+          -32602,
+          `variants[${index}] case count does not match occurrenceCount`,
+        );
+      return {
+        variantId: stringValue(
+          variant.variantId,
+          `variants[${index}].variantId`,
+        ),
+        activities: stringArray(
+          variant.activities,
+          `variants[${index}].activities`,
+        ),
+        occurrenceCount,
+        caseIds,
+      };
+    }),
   };
 }

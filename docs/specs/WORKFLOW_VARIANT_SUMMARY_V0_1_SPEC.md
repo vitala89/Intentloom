@@ -1,7 +1,7 @@
 # Workflow Variant Summary v0.1 Specification
 
-Version: `0.1-draft`  
-Status: Draft / Proposed
+Version: `0.1-candidate`
+Status: Accepted
 
 ## 1. Purpose
 
@@ -93,7 +93,7 @@ guess relationships between cases.
 
 ## 7. Required implementation evidence
 
-Before implementation, add deterministic fixtures covering recurring variants,
-sorting, mixed case-type rejection, duplicate case rejection, timestamp coverage,
-and read-only behavior. The protocol, analysis, application, and daemon adapters
-must return equivalent structured reports.
+Deterministic tests cover recurring variants, sorting, mixed case-type rejection,
+duplicate case rejection, timestamp coverage, and read-only pure behavior. The
+protocol, analysis, application, and daemon adapters return equivalent structured
+reports.

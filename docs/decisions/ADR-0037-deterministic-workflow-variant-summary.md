@@ -1,6 +1,6 @@
 # ADR-0037: Deterministic workflow variant summary boundary
 
-- **Status:** Proposed
+- **Status:** Accepted
 - **Date:** 2026-07-26
 
 ## Context
@@ -20,7 +20,7 @@ The smallest useful next question is descriptive:
 Define a pure, local `summarizeWorkflowVariants` operation over an explicitly
 provided set of at least two `GenericTimeline` values of one case type.
 
-The operation will:
+The operation:
 
 1. validate every timeline through the canonical protocol contract;
 2. reject mixed case types and duplicate case identifiers;

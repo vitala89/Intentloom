@@ -17,7 +17,10 @@ import {
   generateAdapters,
   getAdapterContract,
 } from "@intentloom/adapters";
-import { evaluateEngineeringConformance } from "@intentloom/evidence-analysis";
+import {
+  evaluateEngineeringConformance,
+  summarizeWorkflowVariants,
+} from "@intentloom/evidence-analysis";
 import {
   INTENTLOOM_VERSION,
   checksum,
@@ -118,6 +121,7 @@ import {
   type EngineeringConformanceReport,
   type EngineeringWorkflowPolicy,
   type GenericTimeline,
+  type WorkflowVariantSummaryReport,
   type NeutronSubagentRole,
   type NeutronSubagentStatus,
   type NeutronSubagentTaskRecord,
@@ -164,6 +168,12 @@ export function evaluateProjectEngineeringConformance(options: {
 }): EngineeringConformanceReport {
   if (options.root.length === 0) throw new Error("project root is required");
   return evaluateEngineeringConformance(options.timeline, options.policy);
+}
+
+export function summarizeProjectWorkflowVariants(
+  timelines: readonly GenericTimeline[],
+): WorkflowVariantSummaryReport {
+  return summarizeWorkflowVariants(timelines);
 }
 export type {
   RetentionState,

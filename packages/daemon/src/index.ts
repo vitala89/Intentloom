@@ -13,6 +13,7 @@ import {
   MEMORY_SEARCH_METHOD,
   MEMORY_EVALUATIONS_LIST_METHOD,
   ENGINEERING_CONFORMANCE_METHOD,
+  WORKFLOW_VARIANT_SUMMARY_METHOD,
   SESSION_GET_METHOD,
   createDoctorResponse,
   createInspectResponse,
@@ -20,6 +21,7 @@ import {
   createMemorySearchResponse,
   createMemoryEvaluationsListResponse,
   createEngineeringConformanceResponse,
+  createWorkflowVariantSummaryResponse,
   createSessionGetResponse,
   parseDaemonRequest,
   parseDoctorResponse,
@@ -35,6 +37,8 @@ import {
   type MemoryEvaluationsListResultPayload,
   type EngineeringConformanceRequest,
   type EngineeringConformanceResultPayload,
+  type WorkflowVariantSummaryRequest,
+  type WorkflowVariantSummaryResultPayload,
   type SessionGetRequest,
   type SessionGetResultPayload,
 } from "../../protocol/src/index.js";
@@ -65,6 +69,9 @@ export interface DaemonOptions {
   readonly engineeringConformance?: (
     request: EngineeringConformanceRequest,
   ) => Promise<Omit<EngineeringConformanceResultPayload, "protocolVersion">>;
+  readonly workflowVariantSummary?: (
+    request: WorkflowVariantSummaryRequest,
+  ) => Promise<Omit<WorkflowVariantSummaryResultPayload, "protocolVersion">>;
   readonly sessionGet?: (
     request: SessionGetRequest,
   ) => Promise<Omit<SessionGetResultPayload, "protocolVersion">>;
@@ -194,6 +201,20 @@ export async function startLocalDaemon(
             createEngineeringConformanceResponse(
               request.id,
               await options.engineeringConformance(request),
+            ),
+          );
+        } else if (request.method === WORKFLOW_VARIANT_SUMMARY_METHOD) {
+          if (!options.workflowVariantSummary)
+            return failure(
+              socket,
+              -32601,
+              "unsupported method workflowVariantSummary",
+            );
+          response(
+            socket,
+            createWorkflowVariantSummaryResponse(
+              request.id,
+              await options.workflowVariantSummary(request),
             ),
           );
         } else if (request.method === SESSION_GET_METHOD) {

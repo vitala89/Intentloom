@@ -20,6 +20,7 @@ import {
   createMemorySearchRequest,
   createMemoryEvaluationsListRequest,
   createEngineeringConformanceRequest,
+  createWorkflowVariantSummaryRequest,
   createSessionGetRequest,
 } from "../packages/protocol/src/index.js";
 import {
@@ -27,6 +28,7 @@ import {
   initProject,
   nodeFileSystem,
   evaluateProjectEngineeringConformance,
+  summarizeProjectWorkflowVariants,
 } from "../packages/application/src/index.js";
 import {
   startLocalDaemon,
@@ -590,6 +592,9 @@ describe.skipIf(process.platform === "win32")("local daemon", () => {
           policy: req.params.policy,
         }),
       }),
+      workflowVariantSummary: async (req) => ({
+        report: summarizeProjectWorkflowVariants(req.params.timelines),
+      }),
       sessionGet: async () => ({
         session: null,
       }),
@@ -663,6 +668,24 @@ describe.skipIf(process.platform === "win32")("local daemon", () => {
       }),
     )) as { result: { report: { summary: { passed: number } } } };
     expect(conformanceRes.result.report.summary.passed).toBe(1);
+
+    const variantsRes = (await sendReq(
+      createWorkflowVariantSummaryRequest(7, {
+        timelines: [
+          {
+            caseType: "release",
+            caseId: "release:1",
+            events: [],
+          },
+          {
+            caseType: "release",
+            caseId: "release:2",
+            events: [],
+          },
+        ],
+      }),
+    )) as { result: { report: { timelineCount: number } } };
+    expect(variantsRes.result.report.timelineCount).toBe(2);
 
     const sessionRes = (await sendReq(
       createSessionGetRequest(4, { root, sessionId: "s1" }),

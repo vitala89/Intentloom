@@ -22,7 +22,7 @@ later justifies separation.
 
 ## Current phase
 
-Engineering Process Intelligence & Agent Memory Evaluation System — first IPC increment complete.
+Engineering Process Intelligence & Agent Memory Evaluation System — deterministic workflow-variant summary complete locally.
 
 The project must avoid premature structural migration. New applications,
 packages, and repository boundaries are introduced only when roadmap triggers
@@ -47,7 +47,7 @@ before a new release or implementation milestone is declared complete.
 
 ## Active focus
 
-1. Review and approve or revise the proposed deterministic workflow-variant summary specification and ADR before implementation; it uses only caller-supplied canonical timelines and makes no causal claims.
+1. Review and merge the deterministic workflow-variant summary implementation; it uses only caller-supplied canonical timelines and makes no causal claims.
 2. Keep bottleneck inference, remote ingestion, and model-based judgments behind separate approved specifications and threat review.
 
 ## Architectural invariants
@@ -66,7 +66,7 @@ before a new release or implementation milestone is declared complete.
 
 ## Current blockers and unknowns
 
-- ADR-0037 and `WORKFLOW_VARIANT_SUMMARY_V0_1_SPEC.md` are proposed, not approved. No workflow-variant implementation may begin until their scope, privacy boundary, and deterministic fixtures receive review.
+- Workflow-variant summary is intentionally limited to explicitly supplied canonical timelines. Any expansion to bottleneck, delay, causal, actor, repository-reading, persisted, remote, or model-assisted analysis requires a new ADR, specification, and threat review.
 
 ## Current milestone
 
@@ -81,7 +81,7 @@ Expected outputs:
 
 ## Next platform milestone
 
-Review and approve or revise the proposed deterministic workflow-variant summary candidate before implementation.
+Merge the deterministic workflow-variant summary implementation, then specify the next candidate only with a separate ADR, specification, and threat review.
 
 ## State update rules
 

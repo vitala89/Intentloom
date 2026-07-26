@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: Workflow-variant summary candidate specified; approval required before implementation
+Status: Deterministic workflow-variant summary implementation complete locally
 
 Active branch: `codex/process-intelligence-memory-evaluation`
 
-Current objective: review and approve or revise the deterministic workflow-variant summary candidate before implementation.
+Current objective: commit and open a pull request for deterministic workflow-variant summary implementation.
 
-Next first action: review ADR-0037 and `WORKFLOW_VARIANT_SUMMARY_V0_1_SPEC.md`; if approved, implement the pure report and its deterministic fixtures.
+Next first action: review, commit, and open a pull request for the workflow-variant summary; then select the next candidate through a separate ADR/specification/threat review.
 
 ## Watch rules
 
@@ -41,6 +41,19 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-26, Deterministic workflow-variant summary implementation
+
+- **Status:** complete
+- **Agent/tool:** Codex
+- **Branch:** `codex/process-intelligence-memory-evaluation`
+- **Objective:** Implement the accepted narrow workflow-variant summary without expanding into process mining, causal analysis, persistence, or evidence collection.
+- **Completed:** Added `WorkflowVariantSummaryReport` protocol contracts and `intentloom.workflow.variants.summary.v1`. Implemented pure `summarizeWorkflowVariants` using only caller-supplied canonical timelines; it groups ordered activity sequences using SHA-256 identifiers, validates timeline count/case type/case-ID isolation, reports timestamp coverage only, and deterministically sorts variants. Added equivalent application and authenticated daemon adapters plus protocol, pure-analysis, application, and daemon test coverage. ADR-0037 and the v0.1 specification are now accepted.
+- **Files changed:** `PROJECT_STATE.md`, `DUTY_WATCH.md`, `docs/decisions/ADR-0037-deterministic-workflow-variant-summary.md`, `docs/specs/WORKFLOW_VARIANT_SUMMARY_V0_1_SPEC.md`, `packages/protocol/src/index.ts`, `packages/evidence-analysis/src/index.ts`, `packages/application/src/index.ts`, `packages/daemon/src/index.ts`, `tests/workflow-variant-summary.test.ts`, `tests/protocol.test.ts`, and `tests/daemon.test.ts`.
+- **Validation:** `pnpm typecheck`; `pnpm vitest run tests/workflow-variant-summary.test.ts tests/protocol.test.ts` (8 passed); `pnpm vitest run tests/daemon.test.ts` (16 passed, 1 Windows-only skipped); `pnpm format:check`; and `git diff --check` passed.
+- **Decisions:** The operation is pure and accepts no root path, credentials, provider configuration, persistence target, actor, or raw evidence payload. Empty timelines produce `unavailable` timestamp coverage rather than a delay claim.
+- **Risks or compatibility impact:** Additive protocol and daemon method. Existing timeline, conformance, and evidence contracts are unchanged.
+- **Next first action:** Review, commit, and open a pull request. Before any broader process-intelligence capability, prepare a separate ADR, specification, and threat review.
 
 ### 2026-07-26, Deterministic workflow-variant summary candidate
 

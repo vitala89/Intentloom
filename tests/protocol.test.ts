@@ -6,6 +6,7 @@ import {
   createDoctorRequest,
   createDoctorResponse,
   createEngineeringConformanceRequest,
+  createWorkflowVariantSummaryRequest,
   parseDoctorRequest,
   parseSerializedRequest,
   serializeRequest,
@@ -119,5 +120,15 @@ describe("versioned local protocol", () => {
         }),
       ),
     ).toThrow("unsupported engineering workflow policy schema version");
+  });
+
+  it("round-trips a workflow variant summary request", () => {
+    const request = createWorkflowVariantSummaryRequest("variants-1", {
+      timelines: [
+        { caseType: "release", caseId: "release:1", events: [] },
+        { caseType: "release", caseId: "release:2", events: [] },
+      ],
+    });
+    expect(parseSerializedRequest(serializeRequest(request))).toEqual(request);
   });
 });
