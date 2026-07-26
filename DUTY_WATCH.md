@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: partial — npm authorization confirmed; PR #90 merge remains before release
+Status: partial — v0.5 release gate remains first; post-release Desktop/TUI sequence is in PR #91
 
-Active branch: `codex/post-v05-state-merge`
+Active branch: `agent/desktop-tui-sequencing-roadmap`
 
-Current objective: complete PR #90 documentation merge, then execute the authorized v0.5 release safely.
+Current objective: preserve the authorized v0.5 release path while establishing the exact post-release Desktop vertical-slice and TUI-parity milestone.
 
-Next first action: merge PR #90, then execute the verified v0.5 tag and npm publication sequence.
+Next first action: merge PR #90, complete and record the authorized v0.5 release, then retarget PR #91 to synchronized `main` for review.
 
 ## Watch rules
 
@@ -41,6 +41,33 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-27, Desktop and TUI milestone sequence documented
+
+- **Status:** partial
+- **Agent/tool:** Codex with GitHub repository analysis and controlled roadmap update
+- **Branch:** `agent/desktop-tui-sequencing-roadmap`
+- **Commits:** roadmap and state documentation commits on the branch; final PR #90 reconciliation included
+- **Pull request:** [#91](https://github.com/vitala89/Intentloom/pull/91), draft and stacked on PR #90
+- **Objective:** Define the exact gate for starting the official Desktop application and the subsequent TUI completion milestone.
+- **Completed:** Added planned `v0.6.0-beta.1`; made completion and recording of the authorized v0.5 release the entry gate; sequenced client contract inventory, a Tauri 2 read-only Desktop vertical slice, Desktop workspace review, TUI parity/hardening, and only then approved apply; preserved the standalone daemon, TypeScript-first core, CLI, MCP, and no-full-Rust-rewrite boundaries.
+- **Validation:** Reviewed current `main`, PRs #88–#91, the v0.5 readiness audit, release-state matrix, roadmap, interactive-surfaces concept, governance rules, daemon/TUI/Agent Workspace implementation evidence, and the resulting three-file documentation scope.
+- **Decisions and assumptions:** The partial TUI remains available as a contract probe. Full TUI product hardening follows the first Desktop vertical slice so both clients use the same proven daemon, protocol, and presentation contracts.
+- **Risks or compatibility impact:** Documentation-only and backwards compatible. PR #91 remains stacked until PR #90 is merged and the authorized release is recorded. No Tauri package, dependency, tag, npm publication, or runtime behavior is introduced by PR #91.
+- **Open issues or blockers:** PR #90 merge and the authorized v0.5 release remain the active gate. Desktop implementation must not begin from an unsynchronized release state.
+- **Next first action:** Merge PR #90, execute and record the authorized v0.5 release, retarget PR #91 to synchronized `main`, and review its checks before merge.
+- **Evidence:** `ROADMAP.md`, `PROJECT_STATE.md`, `docs/concepts/INTERACTIVE_SURFACES_AND_AGENT_WORKSPACE.md`, PR #90, PR #91, and merged release-preparation commit `8f4bec4`.
+
+#### Duty completion checklist
+
+- [x] Current release and implementation state reverified
+- [x] Desktop/TUI sequencing and v0.6 entry gate documented
+- [x] Project state updated
+- [x] Draft PR #91 opened
+- [x] Scope kept documentation-only
+- [ ] PR #90 merged and v0.5 release recorded
+- [ ] PR #91 retargeted to synchronized `main`
+- [ ] PR #91 checks reviewed
 
 ### 2026-07-27, v0.5 publication authorization and npm access verified
 
