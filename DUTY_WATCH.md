@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: partial — draft PR #84 is open; CI and maintainer review are pending
+Status: partial — draft PR #85 is open; CI and maintainer review are pending
 
-Active branch: `codex/process-intelligence-next-candidate`
+Active branch: `codex/process-intelligence-next-roadmap`
 
-Current objective: monitor PR #84 checks and complete review/merge of the accepted conformance trend summary implementation.
+Current objective: monitor PR #85 checks and complete review/merge of the accepted workflow repetition summary implementation.
 
-Next first action: review PR #84 after its compatibility checks complete, then merge only after required human approval.
+Next first action: review PR #85 after its compatibility checks complete, then merge only after required human approval.
 
 ## Watch rules
 
@@ -41,6 +41,130 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-26, Draft PR #85 published
+
+- **Status:** partial
+- **Agent/tool:** Codex with GitHub publish workflow
+- **Branch:** `codex/process-intelligence-next-roadmap`
+- **Commits:** `0bbe550`, `9c16b1d`, `40f58de`, `2cf866d`
+- **Pull request:** [#85](https://github.com/vitala89/Intentloom/pull/85), draft, targeting `main`
+- **Objective:** Publish the reviewed workflow repetition summary implementation for remote checks and maintainer review.
+- **Completed:** Verified clean branch and GitHub authentication, pushed the branch, and created draft PR #85 with scope, safety boundary, changelog impact, and validation results.
+- **Not completed:** Compatibility checks, maintainer review, conversion from draft, and merge into `main`.
+- **Files or packages changed:** No files changed in this watch; implementation and documentation are in the listed commits.
+- **Validation:** Local `pnpm test` (723 passed, 3 skipped across 81 files), typecheck, lint, build, format, diff-check, and TDD-focused review passed. PR checks are currently in progress for Ubuntu/macOS/Windows on Node 22/24.
+- **Decisions and assumptions:** PR remains draft until required checks and human review complete; no merge or release was performed.
+- **Risks or compatibility impact:** Additive protocol and daemon method only; remote CI is the remaining compatibility gate.
+- **Open issues or blockers:** PR checks are in progress and maintainer review is pending.
+- **Next first action:** Inspect PR #85 checks and review feedback, then merge after required approval.
+- **Evidence:** PR #85 metadata and `gh pr view 85` status show `OPEN`, `isDraft: true`, base `main`, and twelve checks `IN_PROGRESS`.
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant tests, type checks, builds, or compatibility checks passed
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `PROJECT_STATE.md` updated when applicable
+- [x] `DUTY_WATCH.md` handoff completed
+- [x] Related roadmap, ADR, changelog, migration, or reference docs updated
+- [x] Failed or unavailable checks recorded
+- [ ] Pull request checks and maintainer review complete
+
+### 2026-07-26, Deterministic workflow repetition summary implementation
+
+- **Status:** partial
+- **Agent/tool:** Codex with TDD workflow
+- **Branch:** `codex/process-intelligence-next-roadmap`
+- **Commits:** `0bbe550`, `9c16b1d`, `40f58de`
+- **Pull request:** Not opened; local implementation is ready for review.
+- **Objective:** Implement the accepted bounded workflow repetition summary over caller-supplied timelines.
+- **Completed:** Accepted ADR-0040 and the v0.1 specification. Added canonical protocol contracts and validation for `intentloom.workflow.repetitions.summary.v1`, pure repeated-activity aggregation, application bridge, authenticated daemon routing, protocol/analysis/application/daemon fixtures, security invariant 33, changelog, and durable state updates.
+- **Not completed:** Final commit/push, PR review, CI, and merge into `main`.
+- **Files or packages changed:** `CHANGELOG.md`, `PROJECT_STATE.md`, `DUTY_WATCH.md`, `docs/decisions/ADR-0040-deterministic-workflow-repetition-summary.md`, `docs/specs/WORKFLOW_REPETITION_SUMMARY_V0_1_SPEC.md`, `docs/security/THREAT_MODEL.md`, `packages/protocol/src/index.ts`, `packages/evidence-analysis/src/index.ts`, `packages/application/src/index.ts`, `packages/daemon/src/index.ts`, `tests/workflow-repetition-summary.test.ts`, `tests/protocol.test.ts`, and `tests/daemon.test.ts`.
+- **Validation:** Focused workflow/protocol tests (13 passed); daemon IPC tests (16 passed, 1 skipped); full `pnpm test` (723 passed, 3 skipped across 81 files); `pnpm typecheck`; `pnpm lint`; `pnpm build`; `pnpm format:check`; and `git diff --check` passed. Daemon tests required unsandboxed Unix-socket access.
+- **Decisions and assumptions:** Repeated activity is a descriptive count only. The operation never labels repetition as rework, retry, delay, bottleneck, quality, performance, or cause.
+- **Risks or compatibility impact:** Additive protocol and daemon method; no persistence, provider access, network calls, or mutation path was added.
+- **Open issues or blockers:** Final validation and PR review remain.
+- **Next first action:** Complete validation, review the diff, commit, and open a PR only after checks pass.
+- **Evidence:** ADR-0040/specification, TDD tracer cycles, focused tests, and current branch diff.
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant tests, type checks, builds, or compatibility checks passed
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `PROJECT_STATE.md` updated when applicable
+- [x] `DUTY_WATCH.md` handoff completed
+- [x] Related roadmap, ADR, changelog, migration, or reference docs updated
+- [x] Failed or unavailable checks recorded
+- [ ] Pull request opened and reviewed
+
+### 2026-07-26, Deterministic workflow repetition summary candidate
+
+- **Status:** partial
+- **Agent/tool:** Codex
+- **Branch:** `codex/process-intelligence-next-roadmap`
+- **Commits:** `c0e7cb0` merge baseline, `0bbe550` candidate proposal
+- **Pull request:** None; this is a local proposal only.
+- **Objective:** Select and specify the next bounded process-intelligence candidate after conformance trend summary merge.
+- **Completed:** Reviewed the engineering process-intelligence concept and roadmap. Proposed ADR-0040 and `WORKFLOW_REPETITION_SUMMARY_V0_1_SPEC.md`, constraining the candidate to repeated activity counts over caller-supplied, same-type timelines without rework, retry, bottleneck, causal, quality, actor, persistence, remote, or model claims. Added security invariant 33 and updated durable project state.
+- **Not completed:** ADR/spec approval, protocol/analysis implementation, adapters, fixtures, PR, and merge.
+- **Files or packages changed:** `docs/decisions/ADR-0040-deterministic-workflow-repetition-summary.md`, `docs/specs/WORKFLOW_REPETITION_SUMMARY_V0_1_SPEC.md`, `docs/security/THREAT_MODEL.md`, `PROJECT_STATE.md`, and `DUTY_WATCH.md`.
+- **Validation:** Roadmap/ADR/concept review completed; `pnpm format:check` and `git diff --check` passed. No runtime tests were rerun because this commit is documentation-only.
+- **Decisions and assumptions:** Repeated activity is a descriptive count only. Any interpretation as rework, retry, delay, bottleneck, performance, or cause requires a separate approved boundary.
+- **Risks or compatibility impact:** Documentation-only proposal; no runtime behavior or protocol surface changed.
+- **Open issues or blockers:** Maintainer/user review is required before implementation.
+- **Next first action:** Review ADR-0040 and the draft specification, then approve, revise, or reject the candidate.
+- **Evidence:** `docs/concepts/ENGINEERING_PROCESS_INTELLIGENCE.md`, existing ADR-0037/0038/0039, and merged baseline `c0e7cb0`.
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [ ] Relevant tests, type checks, builds, or compatibility checks passed
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `PROJECT_STATE.md` updated when applicable
+- [x] `DUTY_WATCH.md` handoff completed
+- [x] Related roadmap, ADR, changelog, migration, or reference docs updated
+- [x] Failed or unavailable checks recorded
+- [ ] Candidate approved and implemented
+
+### 2026-07-26, PR #84 merged and local main updated
+
+- **Status:** complete
+- **Agent/tool:** Codex with GitHub publish workflow
+- **Branch:** `main` → `codex/process-intelligence-next-roadmap`
+- **Commits:** merge commit `c0e7cb0`; local main fast-forwarded from `890d6d3`
+- **Pull request:** [#84](https://github.com/vitala89/Intentloom/pull/84), merged
+- **Objective:** Merge the reviewed conformance trend summary and update the local checkout for the next roadmap step.
+- **Completed:** Confirmed all twelve compatibility checks succeeded, converted PR #84 from draft to ready, merged it into `main`, fetched `origin/main`, fast-forwarded local `main` to `c0e7cb0`, and created the next roadmap branch.
+- **Not completed:** Selection or implementation of the next process-intelligence candidate.
+- **Files or packages changed:** No files changed in this watch; the merged PR contains the implementation and documentation changes.
+- **Validation:** `gh pr view 84` reports `MERGED` with merge commit `c0e7cb0`; `git pull --ff-only origin main` succeeded; local `main` is clean and matches `origin/main`.
+- **Decisions and assumptions:** The conformance trend summary is now part of `main`. Any broader bottleneck, causal, actor, persisted, remote, or model-assisted capability still requires a separate ADR, specification, and threat review.
+- **Risks or compatibility impact:** No new code was added after the merged PR; next work must preserve the additive, local, read-only boundary.
+- **Open issues or blockers:** The next candidate is intentionally unselected.
+- **Next first action:** Inspect the roadmap and relevant ADRs, then propose the next bounded candidate before implementation.
+- **Evidence:** PR #84 metadata, twelve successful CI checks, merge commit `c0e7cb0`, and clean local `main` at `origin/main`.
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant tests, type checks, builds, or compatibility checks passed
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `PROJECT_STATE.md` updated when applicable
+- [x] `DUTY_WATCH.md` handoff completed
+- [x] Related roadmap, ADR, changelog, migration, or reference docs updated
+- [x] Failed or unavailable checks recorded
+- [x] Pull request merged and local main updated
 
 ### 2026-07-26, Draft PR #84 published
 

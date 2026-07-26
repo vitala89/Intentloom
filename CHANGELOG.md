@@ -6,6 +6,9 @@ All notable changes are documented here. This project follows Keep a Changelog p
 
 ### Added
 
+- Added accepted ADR-0040 and Workflow Repetition Summary v0.1, including the
+  deterministic `intentloom.workflow.repetitions.summary.v1` protocol,
+  application, analysis, and daemon operation.
 - Added accepted ADR-0039 and the Conformance Trend Summary v0.1
   specification, plus the deterministic `intentloom.conformance.trend.summary.v1`
   protocol/application/daemon operation over caller-supplied conformance reports.

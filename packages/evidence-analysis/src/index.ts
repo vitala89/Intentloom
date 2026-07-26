@@ -14,6 +14,7 @@ import {
   type WorkflowVariantSummaryReport,
   type WorkflowDurationSummaryReport,
   type ConformanceTrendSummaryReport,
+  type WorkflowRepetitionSummaryReport,
 } from "@intentloom/protocol";
 
 export interface ReleaseAnalysisGitEvent {
@@ -295,6 +296,7 @@ export type {
   WorkflowVariantSummaryReport,
   WorkflowDurationSummaryReport,
   ConformanceTrendSummaryReport,
+  WorkflowRepetitionSummaryReport,
 } from "@intentloom/protocol";
 
 function toEvidenceRef(event: TimelineEventRef): EngineeringEvidenceRef {
@@ -606,5 +608,66 @@ export function summarizeConformanceTrend(
     findingCount,
     statusCounts,
     severityCounts,
+  };
+}
+
+export function summarizeWorkflowRepetitions(
+  timelines: readonly GenericTimeline[],
+): WorkflowRepetitionSummaryReport {
+  if (timelines.length < 2)
+    throw new Error("at least two timelines are required");
+  const normalized = timelines.map((timeline) =>
+    validateGenericTimeline(timeline),
+  );
+  const first = normalized[0]!;
+  if (normalized.some((timeline) => timeline.caseType !== first.caseType))
+    throw new Error("workflow repetition timelines must share one case type");
+  const caseIds = new Set<string>();
+  const aggregates = new Map<
+    string,
+    {
+      caseCount: number;
+      occurrenceCount: number;
+      maxOccurrencesPerCase: number;
+    }
+  >();
+  for (const timeline of normalized) {
+    if (caseIds.has(timeline.caseId))
+      throw new Error(
+        "workflow repetition timelines must have unique case ids",
+      );
+    caseIds.add(timeline.caseId);
+    const counts = new Map<string, number>();
+    for (const event of timeline.events)
+      counts.set(event.activity, (counts.get(event.activity) ?? 0) + 1);
+    for (const [activity, count] of counts) {
+      if (count < 2) continue;
+      const aggregate = aggregates.get(activity) ?? {
+        caseCount: 0,
+        occurrenceCount: 0,
+        maxOccurrencesPerCase: 0,
+      };
+      aggregate.caseCount += 1;
+      aggregate.occurrenceCount += count;
+      aggregate.maxOccurrencesPerCase = Math.max(
+        aggregate.maxOccurrencesPerCase,
+        count,
+      );
+      aggregates.set(activity, aggregate);
+    }
+  }
+  const repeatedActivities = [...aggregates.entries()]
+    .map(([activity, counts]) => ({ activity, ...counts }))
+    .sort(
+      (left, right) =>
+        right.caseCount - left.caseCount ||
+        right.occurrenceCount - left.occurrenceCount ||
+        left.activity.localeCompare(right.activity),
+    );
+  return {
+    operationVersion: 1,
+    caseType: first.caseType,
+    timelineCount: normalized.length,
+    repeatedActivities,
   };
 }
