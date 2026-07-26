@@ -18,6 +18,7 @@ import {
   createInspectRequest,
   createSecurityAuditRequest,
   createMemorySearchRequest,
+  createMemoryEvaluationsListRequest,
   createSessionGetRequest,
 } from "../packages/protocol/src/index.js";
 import {
@@ -577,6 +578,9 @@ describe.skipIf(process.platform === "win32")("local daemon", () => {
         query: req.params.query,
         items: [],
       }),
+      memoryEvaluationsList: async () => ({
+        evaluations: [],
+      }),
       sessionGet: async () => ({
         session: null,
       }),
@@ -611,6 +615,11 @@ describe.skipIf(process.platform === "win32")("local daemon", () => {
       createMemorySearchRequest(3, { root, query: "pattern" }),
     )) as { result: { query: string } };
     expect(memRes.result.query).toBe("pattern");
+
+    const evaluationRes = (await sendReq(
+      createMemoryEvaluationsListRequest(5, { root, outcome: "passed" }),
+    )) as { result: { evaluations: unknown[] } };
+    expect(evaluationRes.result.evaluations).toEqual([]);
 
     const sessionRes = (await sendReq(
       createSessionGetRequest(4, { root, sessionId: "s1" }),

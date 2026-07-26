@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: Agent Workspace Plan, Review & Apply Modes merged into main; Neutron Autonomous Subagent Orchestration & Local Workspace Sync Engine complete locally
+Status: Neutron Autonomous Subagent Orchestration & Local Workspace Sync Engine merged into main (PR #82)
 
-Active branch: `feat/neutron-orchestration`
+Active branch: `codex/process-intelligence-memory-evaluation`
 
-Current objective: commit and open a pull request for Neutron Autonomous Subagent Orchestration & Local Workspace Sync Engine.
+Current objective: implement the first Engineering Process Intelligence & Agent Memory Evaluation system increment through shared application operations and authenticated local daemon IPC.
 
-Next first action: review Neutron Orchestration final diff, commit it, open a pull request, and merge after review.
+Next first action: add versioned, read-only contracts for existing deterministic conformance and procedural-memory evaluation records; do not duplicate the established timeline, conformance, or evaluation engines.
 
 ## Watch rules
 
@@ -41,6 +41,19 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-26, Engineering Process Intelligence & Agent Memory Evaluation system (first IPC increment)
+
+- **Status:** partial
+- **Agent/tool:** Codex
+- **Branch:** `codex/process-intelligence-memory-evaluation`
+- **Objective:** Begin the next platform milestone without duplicating the existing deterministic conformance or procedural-memory evaluation engines.
+- **Completed:** Verified that PR #82 is merged in `main` (`152ab09`) and corrected the resulting stale Duty Watch and project-state records. Added the versioned authenticated local IPC method `intentloom.memory.evaluations.list.v1`, which exposes existing project-scoped `SkillEvaluationResult` records with optional `skillId` and outcome filters. The daemon operation is read-only and requires the same session-token authentication as existing IPC methods.
+- **Files changed:** `PROJECT_STATE.md`, `DUTY_WATCH.md`, `packages/protocol/src/index.ts`, `packages/daemon/src/index.ts`, and `tests/daemon.test.ts`.
+- **Validation:** `pnpm typecheck`, `pnpm vitest run tests/daemon.test.ts` (16 passed, 1 Windows-only skipped), `pnpm format:check`, and `git diff --check` passed. The daemon test requires an unsandboxed temporary Unix socket; sandboxed execution fails before handlers run with `EPERM`.
+- **Decisions:** Existing `listSkillEvaluations` remains the shared application operation and authoritative evaluation-record reader. The daemon only adapts that typed operation; it creates no new memory authority, writes, network access, or model capability.
+- **Not completed:** No daemon IPC contract has yet been added for engineering-conformance evaluation. Process-variant discovery, bottleneck inference, remote evidence ingestion, and model-based judgments remain out of scope pending separate specification and threat review.
+- **Next first action:** Add a canonical, versioned engineering-conformance request/report contract before exposing the existing evaluator through application and daemon boundaries; avoid duplicating the types currently owned by `@intentloom/evidence-analysis`.
 
 ### 2026-07-26, Neutron autonomous subagent orchestration & local workspace sync engine
 

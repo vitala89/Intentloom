@@ -11,11 +11,13 @@ import {
   INSPECT_METHOD,
   SECURITY_AUDIT_METHOD,
   MEMORY_SEARCH_METHOD,
+  MEMORY_EVALUATIONS_LIST_METHOD,
   SESSION_GET_METHOD,
   createDoctorResponse,
   createInspectResponse,
   createSecurityAuditResponse,
   createMemorySearchResponse,
+  createMemoryEvaluationsListResponse,
   createSessionGetResponse,
   parseDaemonRequest,
   parseDoctorResponse,
@@ -27,6 +29,8 @@ import {
   type SecurityAuditResult,
   type MemorySearchRequest,
   type MemorySearchResultPayload,
+  type MemoryEvaluationsListRequest,
+  type MemoryEvaluationsListResultPayload,
   type SessionGetRequest,
   type SessionGetResultPayload,
 } from "../../protocol/src/index.js";
@@ -51,6 +55,9 @@ export interface DaemonOptions {
   readonly memorySearch?: (
     request: MemorySearchRequest,
   ) => Promise<Omit<MemorySearchResultPayload, "protocolVersion">>;
+  readonly memoryEvaluationsList?: (
+    request: MemoryEvaluationsListRequest,
+  ) => Promise<Omit<MemoryEvaluationsListResultPayload, "protocolVersion">>;
   readonly sessionGet?: (
     request: SessionGetRequest,
   ) => Promise<Omit<SessionGetResultPayload, "protocolVersion">>;
@@ -152,6 +159,20 @@ export async function startLocalDaemon(
             createMemorySearchResponse(
               request.id,
               await options.memorySearch(request),
+            ),
+          );
+        } else if (request.method === MEMORY_EVALUATIONS_LIST_METHOD) {
+          if (!options.memoryEvaluationsList)
+            return failure(
+              socket,
+              -32601,
+              "unsupported method memoryEvaluationsList",
+            );
+          response(
+            socket,
+            createMemoryEvaluationsListResponse(
+              request.id,
+              await options.memoryEvaluationsList(request),
             ),
           );
         } else if (request.method === SESSION_GET_METHOD) {

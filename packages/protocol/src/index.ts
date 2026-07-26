@@ -3,6 +3,8 @@ export const DOCTOR_METHOD = "intentloom.project.doctor.v1" as const;
 export const INSPECT_METHOD = "intentloom.project.inspect.v1" as const;
 export const SECURITY_AUDIT_METHOD = "intentloom.security.audit.v1" as const;
 export const MEMORY_SEARCH_METHOD = "intentloom.memory.search.v1" as const;
+export const MEMORY_EVALUATIONS_LIST_METHOD =
+  "intentloom.memory.evaluations.list.v1" as const;
 export const SESSION_GET_METHOD = "intentloom.session.get.v1" as const;
 
 export type JsonPrimitive = boolean | null | number | string;
@@ -103,6 +105,23 @@ export type MemorySearchRequest = JsonRpcRequest<
 >;
 export type MemorySearchResponse = JsonRpcSuccess<MemorySearchResultPayload>;
 
+export interface MemoryEvaluationsListParams {
+  readonly protocolVersion: typeof PROTOCOL_VERSION;
+  readonly root: string;
+  readonly skillId?: string;
+  readonly outcome?: EvaluationOutcome;
+}
+export interface MemoryEvaluationsListResultPayload {
+  readonly protocolVersion: typeof PROTOCOL_VERSION;
+  readonly evaluations: readonly SkillEvaluationResult[];
+}
+export type MemoryEvaluationsListRequest = JsonRpcRequest<
+  typeof MEMORY_EVALUATIONS_LIST_METHOD,
+  MemoryEvaluationsListParams
+>;
+export type MemoryEvaluationsListResponse =
+  JsonRpcSuccess<MemoryEvaluationsListResultPayload>;
+
 export interface SessionGetParams {
   readonly protocolVersion: typeof PROTOCOL_VERSION;
   readonly root: string;
@@ -123,6 +142,7 @@ export type DaemonRequest =
   | InspectRequest
   | SecurityAuditRequest
   | MemorySearchRequest
+  | MemoryEvaluationsListRequest
   | SessionGetRequest;
 
 export type DaemonResponse =
@@ -130,6 +150,7 @@ export type DaemonResponse =
   | InspectResponse
   | SecurityAuditResponse
   | MemorySearchResponse
+  | MemoryEvaluationsListResponse
   | SessionGetResponse;
 
 export class ProtocolValidationError extends Error {
@@ -234,6 +255,23 @@ export function createMemorySearchRequest(
   };
 }
 
+export function createMemoryEvaluationsListRequest(
+  id: RequestId,
+  params: Omit<MemoryEvaluationsListParams, "protocolVersion">,
+): MemoryEvaluationsListRequest {
+  return {
+    jsonrpc: "2.0",
+    id,
+    method: MEMORY_EVALUATIONS_LIST_METHOD,
+    params: {
+      protocolVersion: PROTOCOL_VERSION,
+      root: params.root,
+      ...(params.skillId !== undefined ? { skillId: params.skillId } : {}),
+      ...(params.outcome !== undefined ? { outcome: params.outcome } : {}),
+    },
+  };
+}
+
 export function createSessionGetRequest(
   id: RequestId,
   params: Omit<SessionGetParams, "protocolVersion">,
@@ -276,6 +314,7 @@ export function parseDaemonRequest(value: unknown): DaemonRequest {
     INSPECT_METHOD,
     SECURITY_AUDIT_METHOD,
     MEMORY_SEARCH_METHOD,
+    MEMORY_EVALUATIONS_LIST_METHOD,
     SESSION_GET_METHOD,
   ];
   if (typeof value.method !== "string" || !validMethods.includes(value.method))
@@ -307,6 +346,33 @@ export function parseDaemonRequest(value: unknown): DaemonRequest {
     return createMemorySearchRequest(id, {
       root: stringValue(value.params.root, "root"),
       query: stringValue(value.params.query, "query"),
+    });
+  }
+  if (value.method === MEMORY_EVALUATIONS_LIST_METHOD) {
+    const outcome = value.params.outcome;
+    if (
+      outcome !== undefined &&
+      ![
+        "passed",
+        "failed",
+        "improved",
+        "regressed",
+        "ambiguous",
+        "unsupported",
+        "unsafe",
+      ].includes(stringValue(outcome, "outcome"))
+    ) {
+      throw new ProtocolValidationError(-32602, "invalid evaluation outcome");
+    }
+    return createMemoryEvaluationsListRequest(id, {
+      root: stringValue(value.params.root, "root"),
+      ...(typeof value.params.skillId === "string" &&
+      value.params.skillId.length > 0
+        ? { skillId: value.params.skillId }
+        : {}),
+      ...(outcome !== undefined
+        ? { outcome: outcome as EvaluationOutcome }
+        : {}),
     });
   }
   if (value.method === SESSION_GET_METHOD) {
@@ -388,6 +454,20 @@ export function createMemorySearchResponse(
       protocolVersion: PROTOCOL_VERSION,
       query: result.query,
       items: [...result.items],
+    },
+  };
+}
+
+export function createMemoryEvaluationsListResponse(
+  id: RequestId,
+  result: Omit<MemoryEvaluationsListResultPayload, "protocolVersion">,
+): MemoryEvaluationsListResponse {
+  return {
+    jsonrpc: "2.0",
+    id,
+    result: {
+      protocolVersion: PROTOCOL_VERSION,
+      evaluations: [...result.evaluations],
     },
   };
 }
