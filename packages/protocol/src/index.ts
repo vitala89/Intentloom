@@ -2071,3 +2071,139 @@ export function validateSecurityBaselineCheckResult(
     checkedAt: stringValue(value.checkedAt, "checkedAt"),
   };
 }
+
+export type SandboxCapabilityMode = "read-only" | "proposal-only" | "mutating";
+
+export interface SandboxPathRule {
+  readonly pathPrefix: string;
+  readonly allowWrite: boolean;
+  readonly allowDelete: boolean;
+}
+
+export interface SandboxCommandRule {
+  readonly commandPrefix: string;
+  readonly allowArgs?: readonly string[];
+}
+
+export interface SandboxCapabilityPolicy {
+  readonly schemaVersion: "1";
+  readonly projectId: string;
+  readonly mode: SandboxCapabilityMode;
+  readonly pathRules: readonly SandboxPathRule[];
+  readonly commandRules: readonly SandboxCommandRule[];
+  readonly allowNetwork: boolean;
+  readonly updatedAt: string;
+}
+
+export interface SandboxEvaluationResult {
+  readonly schemaVersion: "1";
+  readonly projectId: string;
+  readonly allowed: boolean;
+  readonly violations: readonly string[];
+  readonly evaluatedAt: string;
+}
+
+export function validateSandboxCapabilityPolicy(
+  value: unknown,
+): SandboxCapabilityPolicy {
+  if (!isObject(value))
+    throw new ProtocolValidationError(
+      -32602,
+      "sandbox capability policy must be an object",
+    );
+  if (value.schemaVersion !== "1")
+    throw new ProtocolValidationError(
+      -32602,
+      "unsupported sandbox capability policy schema version",
+    );
+
+  const modes: readonly SandboxCapabilityMode[] = [
+    "read-only",
+    "proposal-only",
+    "mutating",
+  ];
+  const mode = stringValue(value.mode, "mode") as SandboxCapabilityMode;
+  if (!modes.includes(mode))
+    throw new ProtocolValidationError(
+      -32602,
+      "invalid sandbox capability policy mode",
+    );
+
+  const rawPathRules = Array.isArray(value.pathRules) ? value.pathRules : [];
+  const pathRules: SandboxPathRule[] = rawPathRules.map((r, idx) => {
+    if (!isObject(r))
+      throw new ProtocolValidationError(
+        -32602,
+        `pathRules at index ${idx} must be an object`,
+      );
+    return {
+      pathPrefix: stringValue(r.pathPrefix, `pathRules[${idx}].pathPrefix`),
+      allowWrite: r.allowWrite === true,
+      allowDelete: r.allowDelete === true,
+    };
+  });
+
+  const rawCommandRules = Array.isArray(value.commandRules)
+    ? value.commandRules
+    : [];
+  const commandRules: SandboxCommandRule[] = rawCommandRules.map((c, idx) => {
+    if (!isObject(c))
+      throw new ProtocolValidationError(
+        -32602,
+        `commandRules at index ${idx} must be an object`,
+      );
+    return {
+      commandPrefix: stringValue(
+        c.commandPrefix,
+        `commandRules[${idx}].commandPrefix`,
+      ),
+      ...(Array.isArray(c.allowArgs)
+        ? {
+            allowArgs: stringArray(
+              c.allowArgs,
+              `commandRules[${idx}].allowArgs`,
+            ),
+          }
+        : {}),
+    };
+  });
+
+  return {
+    schemaVersion: "1",
+    projectId: stringValue(value.projectId, "projectId"),
+    mode,
+    pathRules,
+    commandRules,
+    allowNetwork: value.allowNetwork === true,
+    updatedAt: stringValue(value.updatedAt, "updatedAt"),
+  };
+}
+
+export function validateSandboxEvaluationResult(
+  value: unknown,
+): SandboxEvaluationResult {
+  if (!isObject(value))
+    throw new ProtocolValidationError(
+      -32602,
+      "sandbox evaluation result must be an object",
+    );
+  if (value.schemaVersion !== "1")
+    throw new ProtocolValidationError(
+      -32602,
+      "unsupported sandbox evaluation result schema version",
+    );
+
+  if (!Array.isArray(value.violations))
+    throw new ProtocolValidationError(
+      -32602,
+      "violations must be an array of strings",
+    );
+
+  return {
+    schemaVersion: "1",
+    projectId: stringValue(value.projectId, "projectId"),
+    allowed: value.allowed === true,
+    violations: stringArray(value.violations, "violations"),
+    evaluatedAt: stringValue(value.evaluatedAt, "evaluatedAt"),
+  };
+}

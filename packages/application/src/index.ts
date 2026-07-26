@@ -103,6 +103,11 @@ import {
   type SecurityPolicy,
   type SecurityBaseline,
   type SecurityBaselineCheckResult,
+  type SandboxCapabilityMode,
+  type SandboxPathRule,
+  type SandboxCommandRule,
+  type SandboxCapabilityPolicy,
+  type SandboxEvaluationResult,
   validateSessionSummary,
   validateSkillCatalogMetadata,
   validateSkillDiscoveryResult,
@@ -132,6 +137,8 @@ import {
   validateSecurityPolicy,
   validateSecurityBaseline,
   validateSecurityBaselineCheckResult,
+  validateSandboxCapabilityPolicy,
+  validateSandboxEvaluationResult,
 } from "@intentloom/protocol";
 export type {
   RetentionState,
@@ -192,6 +199,11 @@ export type {
   SecurityPolicy,
   SecurityBaseline,
   SecurityBaselineCheckResult,
+  SandboxCapabilityMode,
+  SandboxPathRule,
+  SandboxCommandRule,
+  SandboxCapabilityPolicy,
+  SandboxEvaluationResult,
 };
 export {
   validateSessionSummary,
@@ -6434,5 +6446,140 @@ export async function checkSecurityPolicyAndBaseline(
     policyViolations,
     exitCode: hasFailViolation ? 3 : 0,
     checkedAt: new Date().toISOString(),
+  });
+}
+
+function sandboxCapabilityPolicyPath(root: string): string {
+  return inside(root, ".aif/security/sandbox.json");
+}
+
+export async function getSandboxCapabilityPolicy(
+  options: { root: string; projectId?: string },
+  fs: FileSystem = nodeFileSystem,
+): Promise<SandboxCapabilityPolicy> {
+  const path = sandboxCapabilityPolicyPath(options.root);
+  if (await fs.exists(path)) {
+    try {
+      const raw = JSON.parse(await fs.read(path));
+      return validateSandboxCapabilityPolicy(raw);
+    } catch {
+      // fallback to default
+    }
+  }
+  return validateSandboxCapabilityPolicy({
+    schemaVersion: "1",
+    projectId: options.projectId ?? "project-local",
+    mode: "proposal-only",
+    pathRules: [
+      { pathPrefix: "src/", allowWrite: true, allowDelete: false },
+      { pathPrefix: ".aif/", allowWrite: true, allowDelete: false },
+    ],
+    commandRules: [
+      { commandPrefix: "pnpm test" },
+      { commandPrefix: "pnpm lint" },
+      { commandPrefix: "git diff" },
+    ],
+    allowNetwork: false,
+    updatedAt: new Date().toISOString(),
+  });
+}
+
+export async function writeSandboxCapabilityPolicy(
+  policy: SandboxCapabilityPolicy,
+  options: { root: string },
+  fs: FileSystem = nodeFileSystem,
+): Promise<SandboxCapabilityPolicy> {
+  const validated = validateSandboxCapabilityPolicy(policy);
+  const path = sandboxCapabilityPolicyPath(options.root);
+  if (!(await fs.exists(dirname(path)))) {
+    await fs.mkdir(dirname(path));
+  }
+  await fs.write(path, `${JSON.stringify(validated, null, 2)}\n`);
+  return validated;
+}
+
+export async function evaluateProposalAgainstSandbox(
+  proposal: {
+    actions?: readonly {
+      type: string;
+      path?: string;
+      command?: string;
+      networkAccess?: boolean;
+    }[];
+    changes?: readonly {
+      type: string;
+      path?: string;
+    }[];
+  },
+  options: { root: string; projectId: string },
+  fs: FileSystem = nodeFileSystem,
+): Promise<SandboxEvaluationResult> {
+  const policy = await getSandboxCapabilityPolicy(options, fs);
+  const violations: string[] = [];
+
+  if (policy.mode === "read-only") {
+    violations.push(
+      "Sandbox policy is in read-only mode: all mutation proposals are rejected",
+    );
+  }
+
+  interface SandboxActionItem {
+    type: string;
+    path?: string;
+    command?: string;
+    networkAccess?: boolean;
+  }
+  const rawActions: readonly SandboxActionItem[] =
+    (proposal.actions as readonly SandboxActionItem[] | undefined) ??
+    (proposal.changes as readonly SandboxActionItem[] | undefined) ??
+    [];
+  for (const act of rawActions) {
+    const actionType = act.type ?? "write";
+    const path = act.path ? act.path.replaceAll("\\", "/") : undefined;
+
+    if (path) {
+      const isDelete = actionType === "delete" || actionType === "remove";
+      const matchedRule = policy.pathRules.find(
+        (r) => path.startsWith(r.pathPrefix) || r.pathPrefix === "*",
+      );
+
+      if (!matchedRule) {
+        violations.push(`Path '${path}' is outside allowed sandbox path rules`);
+      } else if (isDelete && !matchedRule.allowDelete) {
+        violations.push(
+          `Delete operation on path '${path}' violates sandbox policy (allowDelete: false)`,
+        );
+      } else if (!isDelete && !matchedRule.allowWrite) {
+        violations.push(
+          `Write operation on path '${path}' violates sandbox policy (allowWrite: false)`,
+        );
+      }
+    }
+
+    if (act.command) {
+      const matchedCmd = policy.commandRules.find(
+        (c) =>
+          act.command?.startsWith(c.commandPrefix) || c.commandPrefix === "*",
+      );
+      if (!matchedCmd) {
+        violations.push(
+          `Command '${act.command}' is not in allowed sandbox command rules`,
+        );
+      }
+    }
+
+    if (act.networkAccess === true && !policy.allowNetwork) {
+      violations.push(
+        "Action requires network access, which is disabled by sandbox policy (allowNetwork: false)",
+      );
+    }
+  }
+
+  return validateSandboxEvaluationResult({
+    schemaVersion: "1",
+    projectId: options.projectId,
+    allowed: violations.length === 0,
+    violations,
+    evaluatedAt: new Date().toISOString(),
   });
 }

@@ -22,7 +22,7 @@ later justifies separation.
 
 ## Current phase
 
-Memory & Security Candidate S3: Deterministic Security Policies and Baselines.
+Memory & Security Candidate S4: Controlled Agentic Security Sandbox.
 
 The project must avoid premature structural migration. New applications,
 packages, and repository boundaries are introduced only when roadmap triggers
@@ -40,17 +40,17 @@ and real consumers justify them.
   connection, evidence, MCP, interactive surfaces, Agent Workspace, Neutron,
   persistent memory, security analysis, engineering process intelligence,
   public monorepo evolution, controlled agent learning, and portable Duty Watch adoption.
-- Duty Watch governance contracts (Phase 1), proposal CLI `intentloom adopt --plan` (Phase 2), transactional apply & rollback engine `intentloom adopt --apply` (Phase 3), pack update 3-way migration `intentloom update` (Phase 4), conformance & security profiles `intentloom conformance` (Phase 5), provider synchronization `intentloom sync` / `intentloom diff` (Phase 6), and Memory & Security Candidates M1–M4, S1, S2 are merged into `main`.
+- Duty Watch governance contracts (Phase 1), proposal CLI `intentloom adopt --plan` (Phase 2), transactional apply & rollback engine `intentloom adopt --apply` (Phase 3), pack update 3-way migration `intentloom update` (Phase 4), conformance & security profiles `intentloom conformance` (Phase 5), provider synchronization `intentloom sync` / `intentloom diff` (Phase 6), and Memory & Security Candidates M1–M4, S1–S3 are merged into `main`.
 
 These statements must be revalidated against code, tags, CI, and Git history
 before a new release or implementation milestone is declared complete.
 
 ## Active focus
 
-1. Provide versioned security policy definitions (`.aif/security/policy.json`) with enforcement levels (`ignore`, `warn`, `fail`).
-2. Provide baseline finding snapshots (`.aif/security/baseline.json`) with SHA-256 integrity digests.
-3. Detect posture drift (`newFindings`, `resolvedFindings`, `policyViolations`) and trigger deterministic non-zero exit codes on policy failure.
-4. Expose CLI subcommands under `intentloom security baseline <check|update>` and `intentloom security policy <check|validate>`.
+1. Provide versioned sandbox capability policy contracts (`.aif/security/sandbox.json`) with capability modes (`read-only`, `proposal-only`, `mutating`).
+2. Restrict agent mutations using path prefix rules, command allowlists, and network controls.
+3. Evaluate agent mutation proposals against sandbox policies before execution with structured violation diagnostics.
+4. Expose CLI subcommands under `intentloom security sandbox <check|validate|policy>`.
 
 ## Architectural invariants
 
@@ -68,19 +68,19 @@ before a new release or implementation milestone is declared complete.
 
 ## Current blockers and unknowns
 
-- Baseline updates require explicit maintainer invocation to avoid unreviewed vulnerability suppression.
+- Agent mutation proposals violating sandbox capability policies are blocked before execution to prevent out-of-sandbox mutations.
 
 ## Current milestone
 
-Implement Memory & Security Candidate S3: Deterministic Security Policies and Baselines.
+Implement Memory & Security Candidate S4: Controlled Agentic Security Sandbox.
 
 Expected outputs:
 
-- ADR-0029 documenting security policies and baselines architecture;
-- versioned `SecurityPolicy`, `SecurityBaseline`, `SecurityBaselineCheckResult` schemas and validators in `@intentloom/protocol`;
-- security policy and baseline operations (`getSecurityPolicy`, `writeSecurityPolicy`, `getSecurityBaseline`, `updateSecurityBaseline`, `checkSecurityPolicyAndBaseline`) in `@intentloom/application`;
-- CLI command routing under `intentloom security baseline` and `intentloom security policy`;
-- unit and integration tests covering policy enforcement, baseline snapshots, posture drift detection, non-zero exit codes, and CLI routing.
+- ADR-0030 documenting controlled agentic security sandbox architecture;
+- versioned `SandboxCapabilityPolicy` and `SandboxEvaluationResult` schemas and validators in `@intentloom/protocol`;
+- sandbox capability policy and evaluation operations (`getSandboxCapabilityPolicy`, `writeSandboxCapabilityPolicy`, `evaluateProposalAgainstSandbox`) in `@intentloom/application`;
+- CLI command routing under `intentloom security sandbox`;
+- unit and integration tests covering sandbox policy management, path allowlists, command restrictions, capability mode enforcement, and CLI routing.
 
 ## Next platform milestone
 

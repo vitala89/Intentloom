@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: Memory & Security Candidates M1–M4, S1, S2 merged into main; Candidate S3 Deterministic Security Policies and Baselines complete locally
+Status: Memory & Security Candidates M1–M4, S1–S3 merged into main; Candidate S4 Controlled Agentic Security Sandbox complete locally
 
-Active branch: `feat/memory-security-s3`
+Active branch: `feat/memory-security-s4`
 
-Current objective: commit and open a pull request for Candidate S3 Deterministic Security Policies and Baselines.
+Current objective: commit and open a pull request for Candidate S4 Controlled Agentic Security Sandbox.
 
-Next first action: review Candidate S3 final diff, commit it, open a pull request, and merge after review.
+Next first action: review Candidate S4 final diff, commit it, open a pull request, and merge after review.
 
 ## Watch rules
 
@@ -41,6 +41,20 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-26, Memory & Security Candidate S4 controlled agentic security sandbox
+
+- **Status:** complete
+- **Agent/tool:** Antigravity AI Pair Programmer
+- **Branch:** `feat/memory-security-s4`
+- **Objective:** Implement Candidate S4: Controlled Agentic Security Sandbox, including ADR-0030, threat model updates, versioned protocol schemas, private application operations (`getSandboxCapabilityPolicy`, `writeSandboxCapabilityPolicy`, `evaluateProposalAgainstSandbox`), CLI command routing (`intentloom security sandbox`), and comprehensive test coverage.
+- **Completed:** Added `ADR-0030-controlled-agentic-security-sandbox.md` and updated `THREAT_MODEL.md` with threat boundary analysis and security invariant 28. Implemented `SandboxCapabilityMode`, `SandboxPathRule`, `SandboxCommandRule`, `SandboxCapabilityPolicy`, `SandboxEvaluationResult` schemas and validators in `@intentloom/protocol`. Implemented sandbox policy management and proposal evaluation algorithm (`evaluateProposalAgainstSandbox`) in `@intentloom/application`. Exposed CLI routing for `intentloom security sandbox <check|validate|policy>` in `@intentloom/cli`. Added unit & integration tests in `tests/memory-security-s4.test.ts`. Updated `PROJECT_STATE.md` and `DUTY_WATCH.md`.
+- **Files changed:** `docs/decisions/ADR-0030-controlled-agentic-security-sandbox.md`, `docs/security/THREAT_MODEL.md`, `packages/protocol/src/index.ts`, `packages/application/src/index.ts`, `packages/cli/src/command.ts`, `tests/memory-security-s4.test.ts`, `PROJECT_STATE.md`, and `DUTY_WATCH.md`.
+- **Validation:** `pnpm typecheck`, `pnpm lint`, `pnpm format:check`, `pnpm build`, `pnpm vitest run tests/memory-security-s4.test.ts` (5/5 passed), `pnpm test` (full Vitest run), and `git diff --check` passed cleanly.
+- **Decisions:** Sandbox capability policies are schema-validated files stored under `.aif/security/sandbox.json`; proposals violating capability mode, path rules, command allowlists, or network settings are blocked before execution with structured violation diagnostics.
+- **Risks or compatibility impact:** Additive feature in `@intentloom/protocol`, `@intentloom/application`, and `@intentloom/cli`.
+- **Next first action:** Commit `feat/memory-security-s4`, open a pull request, merge after approval, and prepare Candidate S5 (Continuous Security Audit and Verification).
+- **Evidence:** local typecheck, lint, prettier format check, full Vitest run, and `git diff --check`.
 
 ### 2026-07-26, Memory & Security Candidate S3 deterministic security policies and baselines
 

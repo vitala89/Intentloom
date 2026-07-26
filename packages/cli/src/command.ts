@@ -84,6 +84,9 @@ import {
   getSecurityBaseline,
   updateSecurityBaseline,
   checkSecurityPolicyAndBaseline,
+  getSandboxCapabilityPolicy,
+  writeSandboxCapabilityPolicy,
+  evaluateProposalAgainstSandbox,
   type SecurityFindingSeverity,
   type SecurityFindingState,
   type SecurityAdapterCategory,
@@ -283,6 +286,7 @@ const valueFlags = new Set([
   "--approved-by",
   "--project-id",
   "--target",
+  "--path",
 ]);
 const mappingValueFlags = new Set([
   "--project-owned-mapping",
@@ -308,7 +312,7 @@ const usage = [
   "       intentloom delegate --profile NAME --role ROLE --task-id ID [--root PATH] [--json]",
   "       intentloom context <get> [--query QUERY] [--max-tokens NUM] [--max-items NUM] [--root PATH] [--json]",
   "       intentloom session <start|close|list|get|delete|export> [--id ID] [--task TASK] [--state STATE] [--root PATH] [--json]",
-  "       intentloom security <import|inspect|coverage|dismiss|accept-risk|list|scan|baseline|policy> [--file PATH] [--id ID] [--reason REASON] [--approved-by USER] [--severity SEVERITY] [--state STATE] [--category CATEGORY] [--root PATH] [--json]",
+  "       intentloom security <import|inspect|coverage|dismiss|accept-risk|list|scan|baseline|policy|sandbox> [--file PATH] [--id ID] [--reason REASON] [--approved-by USER] [--severity SEVERITY] [--state STATE] [--category CATEGORY] [--root PATH] [--json]",
   "       adoption mappings use --project-owned-mapping SOURCE=DESTINATION",
   "       or --documentation-mapping SOURCE=DESTINATION",
 ].join("\n");
@@ -399,10 +403,11 @@ function parseArguments(args: readonly string[]): ParsedArguments {
       "scan",
       "baseline",
       "policy",
+      "sandbox",
     ].includes(args[1] ?? "")
   )
     throw new CliUsageError(
-      "security requires import, inspect, coverage, dismiss, accept-risk, list, scan, baseline, or policy subcommand",
+      "security requires import, inspect, coverage, dismiss, accept-risk, list, scan, baseline, policy, or sandbox subcommand",
     );
   const flags = new Set<string>();
   const values = new Map<string, string>();
@@ -410,7 +415,7 @@ function parseArguments(args: readonly string[]): ParsedArguments {
   for (
     let index =
       command === "security" &&
-      args[1] === "baseline" &&
+      (args[1] === "baseline" || args[1] === "sandbox") &&
       args[2] !== undefined &&
       !args[2].startsWith("--")
         ? 3
@@ -2412,10 +2417,11 @@ export async function runCli(
           "scan",
           "baseline",
           "policy",
+          "sandbox",
         ].includes(subcommand ?? "")
       ) {
         throw new CliUsageError(
-          "security requires import, inspect, coverage, dismiss, accept-risk, list, scan, baseline, or policy subcommand",
+          "security requires import, inspect, coverage, dismiss, accept-risk, list, scan, baseline, policy, or sandbox subcommand",
         );
       }
       const projectId = parsed.values.get("--project-id") ?? "project-local";
@@ -2624,6 +2630,59 @@ export async function runCli(
             ...policy.rules.map((r) => `- ${r.target}: ${r.enforcement}`),
           ];
           io.stdout(lines.join("\n"));
+        }
+        return 0;
+      }
+
+      if (subcommand === "sandbox") {
+        const action = args[2] ?? "policy";
+        if (action === "policy" || action === "check") {
+          const policy = await getSandboxCapabilityPolicy(
+            { root, projectId },
+            fileSystem,
+          );
+          if (parsed.flags.has("--json")) {
+            io.stdout(JSON.stringify(policy, null, 2));
+          } else {
+            const lines = [
+              `Sandbox Capability Policy for ${policy.projectId}:`,
+              `Mode: ${policy.mode}`,
+              `Allow Network: ${policy.allowNetwork}`,
+              `Path Rules (${policy.pathRules.length}):`,
+              ...policy.pathRules.map(
+                (r) =>
+                  `- ${r.pathPrefix} (write: ${r.allowWrite}, delete: ${r.allowDelete})`,
+              ),
+              `Command Rules (${policy.commandRules.length}):`,
+              ...policy.commandRules.map((c) => `- ${c.commandPrefix}`),
+            ];
+            io.stdout(lines.join("\n"));
+          }
+          return 0;
+        }
+
+        if (action === "validate" || action === "eval") {
+          const targetPath = parsed.values.get("--path") ?? "src/app.ts";
+          const sampleProposal = {
+            actions: [{ type: "write", path: targetPath }],
+          };
+          const result = await evaluateProposalAgainstSandbox(
+            sampleProposal,
+            { root, projectId },
+            fileSystem,
+          );
+          if (parsed.flags.has("--json")) {
+            io.stdout(JSON.stringify(result, null, 2));
+          } else {
+            const lines = [
+              `Sandbox Evaluation for ${projectId}:`,
+              `Allowed: ${result.allowed}`,
+              `Violations (${result.violations.length}):`,
+              ...result.violations.map((v) => `- ${v}`),
+            ];
+            io.stdout(lines.join("\n"));
+          }
+          return (result.allowed ? 0 : 3) as CliExitCode;
         }
         return 0;
       }
