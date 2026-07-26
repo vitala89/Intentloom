@@ -161,6 +161,32 @@ describe("summarizeWorkflowTransitionIntervals", () => {
       timestampCoverage: "complete",
       observableIntervalCount: 0,
     });
+    expect(
+      summarizeWorkflowTransitionIntervals([
+        {
+          caseType: "release",
+          caseId: "release:1",
+          events: [
+            {
+              activity: "a",
+              source: "fixture",
+              sourceId: "1",
+              timestamp: "07/26/2026",
+            },
+            {
+              activity: "b",
+              source: "fixture",
+              sourceId: "2",
+              timestamp: "2026-07-26T00:01:00.000Z",
+            },
+          ],
+        },
+        { caseType: "release", caseId: "release:2", events: [] },
+      ]),
+    ).toMatchObject({
+      timestampCoverage: "partial",
+      observableIntervalCount: 0,
+    });
   });
 
   it("rejects insufficient, mixed, duplicate, and invalid timelines", () => {

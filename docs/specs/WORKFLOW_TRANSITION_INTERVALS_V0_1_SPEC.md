@@ -54,10 +54,11 @@ filesystem location, URL, raw source payload, actor, or model input.
 `unavailable` when no event has a valid timestamp. Out-of-order adjacent pairs
 are unavailable evidence and do not contribute an interval.
 
-Transitions sort by descending `intervalCount`, then `from`, then `to`.
-`elapsedMinutes` is omitted when `intervalCount` is zero; all reported metrics
-are finite non-negative numbers derived from observable intervals only. Raw
-timestamps and per-case intervals are never returned.
+Transitions sort by descending `intervalCount`, then `from`, then `to`. The
+report includes only transitions with at least one observable interval, so
+`elapsedMinutes` is always present for each returned transition. All reported
+metrics are finite non-negative numbers derived from observable intervals only.
+Raw timestamps and per-case intervals are never returned.
 
 ## 4. Validation and errors
 

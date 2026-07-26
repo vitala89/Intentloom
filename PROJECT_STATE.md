@@ -67,8 +67,7 @@ before a new release or implementation milestone is declared complete.
 ## Current blockers and unknowns
 
 - Any expansion to bottleneck, performance, causal, actor, repository-reading, persisted, remote, or model-assisted analysis requires a new ADR, specification, and threat review.
-- PR #84 is merged and local `main` is fast-forwarded to `c0e7cb0`.
-- PR #85 is merged and local `main` is fast-forwarded to `57a2c9b`.
+- PR #84 is merged historically; PR #85 is merged and current local `main` is fast-forwarded to `57a2c9b`.
 - ADR-0041 and `WORKFLOW_TRANSITION_INTERVALS_V0_1_SPEC.md` are accepted; the implementation is local and has not yet been reviewed or merged.
 
 ## Current milestone

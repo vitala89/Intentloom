@@ -593,10 +593,15 @@ export function summarizeWorkflowTransitionIntervals(
     string,
     { from: string; to: string; intervals: number[]; caseIds: Set<string> }
   >();
+  const isoTimestamp =
+    /^(\d{4}-\d{2}-\d{2})T(\d{2}:\d{2}(?::\d{2}(?:\.\d{1,9})?)?)(Z|[+-]\d{2}:\d{2})$/;
   for (const timeline of normalized) {
     totalEvents += timeline.events.length;
     const parsed = timeline.events.map((event) => {
-      const timestamp = event.timestamp ? Date.parse(event.timestamp) : NaN;
+      const timestamp =
+        event.timestamp && isoTimestamp.test(event.timestamp)
+          ? Date.parse(event.timestamp)
+          : NaN;
       if (Number.isFinite(timestamp)) validTimestampCount += 1;
       return { event, timestamp };
     });

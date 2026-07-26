@@ -47,12 +47,12 @@ entry directly below this section.
 - **Status:** partial
 - **Agent/tool:** Codex with TDD workflow
 - **Branch:** `codex/process-intelligence-next-roadmap-2`
-- **Commits:** `cf4ace1` local implementation commit
+- **Commits:** `e999667`, `bfc1c9c`, `cf4ace1`, `6e1bcfa`
 - **Pull request:** None; publishing is not authorized in this watch.
 - **Objective:** Implement the accepted observed workflow transition interval boundary from ADR-0041.
 - **Completed:** Accepted ADR-0041 and the v0.1 specification. Added canonical protocol request/response contracts and validation for `intentloom.workflow.transitions.intervals.v1`, pure adjacent-interval aggregation with minimum/median/maximum elapsed minutes and coverage, application bridge, authenticated daemon routing, deterministic protocol/analysis/daemon fixtures, and accepted security/state/changelog documentation.
 - **Not completed:** Maintainer review, PR publication, CI, and merge into `main`.
-- **Files or packages changed:** `packages/protocol/src/index.ts`, `packages/evidence-analysis/src/index.ts`, `packages/application/src/index.ts`, `packages/daemon/src/index.ts`, `tests/workflow-transition-intervals.test.ts`, `tests/protocol.test.ts`, `tests/daemon.test.ts`, ADR/spec/security/state/changelog documentation.
+- **Files or packages changed:** `packages/protocol/src/index.ts`, `packages/evidence-analysis/src/index.ts`, `packages/application/src/index.ts`, `packages/daemon/src/index.ts`, `tests/workflow-transition-intervals.test.ts`, `tests/protocol.test.ts`, `tests/daemon.test.ts`, ADR/spec/security/state/changelog documentation, and `DUTY_WATCH.md`.
 - **Validation:** Focused protocol/analysis tests (13 passed); daemon IPC tests (16 passed, 1 skipped); full `pnpm test` (727 passed, 3 skipped across 82 files); `pnpm typecheck`; `pnpm lint`; `pnpm build`; `git diff --check`; formatter passed. Daemon tests required unsandboxed Unix-socket access because the sandbox returned `EPERM` on `server.listen`.
 - **Decisions and assumptions:** Only valid, non-decreasing adjacent timestamp pairs contribute intervals. Out-of-order pairs are excluded without repair. Output remains aggregate and descriptive; no queue-time, latency, rework, bottleneck, performance, causal, actor, provider, persistence, or model interpretation is introduced.
 - **Risks or compatibility impact:** Additive protocol/application/daemon method; no existing method behavior changed. The local branch is ahead of merged `main` and has not passed remote CI yet.
@@ -71,6 +71,36 @@ entry directly below this section.
 - [x] `DUTY_WATCH.md` handoff completed
 - [x] Related roadmap, ADR, changelog, migration, or reference docs updated
 - [x] Failed or unavailable checks recorded
+- [ ] Pull request published, reviewed, and merged
+
+### 2026-07-26, Final branch review and contract correction
+
+- **Status:** partial
+- **Agent/tool:** Codex with two-axis review
+- **Branch:** `codex/process-intelligence-next-roadmap-2`
+- **Commits:** follow-up fix commit pending
+- **Pull request:** None; publishing remains unauthorized in this watch.
+- **Objective:** Review the transition-interval branch against `main` and resolve actionable findings before publication.
+- **Completed:** Confirmed the branch is clean and the diff is scoped to ADR-0041. Corrected strict ISO timestamp eligibility, clarified that reports contain only observable transitions, removed stale current-main state, and completed the Duty Watch commit/file inventory.
+- **Not completed:** Follow-up validation/commit, maintainer review, PR publication, CI, and merge into `main`.
+- **Files or packages changed:** `packages/evidence-analysis/src/index.ts`, `tests/workflow-transition-intervals.test.ts`, `PROJECT_STATE.md`, `docs/specs/WORKFLOW_TRANSITION_INTERVALS_V0_1_SPEC.md`, and `DUTY_WATCH.md`.
+- **Validation:** Two-axis review completed; focused transition/protocol tests (13 passed), daemon IPC tests (16 passed, 1 skipped), full `pnpm test` (727 passed, 3 skipped across 82 files), `pnpm typecheck`, `pnpm lint`, `pnpm build`, `pnpm format:check`, and `git diff --check` all passed after the correction. Daemon/full tests required unsandboxed Unix-socket access.
+- **Decisions and assumptions:** Non-ISO date strings are invalid evidence for this operation even if the JavaScript parser can interpret them. Zero-count transition records are not emitted because they carry no observable interval statistics.
+- **Risks or compatibility impact:** The correction narrows interval eligibility to the accepted specification; valid ISO timestamps and existing report shape remain unchanged.
+- **Open issues or blockers:** Maintainer review and explicit authorization are still required before pushing or opening a PR.
+- **Next first action:** Commit the correction, update this handoff with the exact commit, then wait for explicit authorization before publication.
+- **Evidence:** Two-axis review reports and `git diff main...HEAD --check`/`pnpm format:check` before the correction.
+
+#### Duty completion checklist
+
+- [x] Formatter passed after correction
+- [x] Relevant tests, type checks, builds, or compatibility checks passed
+- [x] `git diff --check` passed after correction
+- [x] Final diff reviewed
+- [x] `PROJECT_STATE.md` updated when applicable
+- [x] `DUTY_WATCH.md` handoff updated
+- [x] Related specification updated
+- [x] Findings and unresolved authorization blocker recorded
 - [ ] Pull request published, reviewed, and merged
 
 ### 2026-07-26, Observed workflow transition interval candidate
