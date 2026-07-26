@@ -67,25 +67,23 @@ before a new release or implementation milestone is declared complete.
 ## Current blockers and unknowns
 
 - Any expansion to bottleneck, performance, causal, actor, repository-reading, persisted, remote, or model-assisted analysis requires a new ADR, specification, and threat review.
-- PR #84 through PR #90 are merged; current local `main` is `a0e0b13`. PR #90
+- PR #84 through PR #92 are merged; current local `main` is `9966066`. PR #90
   remote compatibility CI passed all 12 checks.
-- npm currently reports `latest=0.1.0-alpha.3` and `next=0.4.0-beta.1`.
+- npm currently reports `latest=0.1.0-alpha.3` and `next=0.5.0-beta.1`.
 - Workspace packages are synchronized to `0.5.0-beta.1`; Git tag
-  `v0.5.0-beta.1` is pushed, but npm publication has not completed.
-- The maintainer authorized the v0.5 publication step; npm authentication is
-  confirmed with `intentloom` read-write access, package dry-runs passed, and
-  real publication stopped at npm `EOTP` pending browser confirmation.
-- Local `pnpm build` remains blocked by the interrupted dependency restore
-  missing `@types/node`; remote CI verified the merged release-preparation
-  branch.
+  `v0.5.0-beta.1` is pushed and npm publication is complete.
+- Published tarball registry shasum is
+  `58b2e27eb66789f57c1e91cec46aea710a6fc241`; local build remains blocked by
+  the interrupted dependency restore missing `@types/node`, while remote CI
+  verified the release commit.
 
 ## Current milestone
 
 The first Engineering Process Intelligence & Agent Memory Evaluation increment,
 including transition intervals, is complete and merged in `main`; the
-`v0.5.0-beta.1` release-readiness and tag gates are complete; the npm
-publication confirmation and post-publish registry verification are the active
-follow-up gate.
+`v0.5.0-beta.1` release-readiness, tag, npm publication, and registry
+verification gates are complete; the next active milestone is planning the
+stable compatibility path toward `v1.0.0`.
 
 Expected outputs:
 
@@ -100,9 +98,8 @@ Expected outputs:
 
 ## Next platform milestone
 
-Complete the npm one-time-password confirmation, rerun the controlled publish,
-verify registry metadata, then update release records with the published
-artifact.
+Select and document the first `v1.0.0` compatibility milestone, including its
+stable support policy, upgrade path, and required desktop/MCP/security gates.
 
 ## State update rules
 

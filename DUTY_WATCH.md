@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: partial — v0.5 tag pushed; npm publication awaits one-time-password confirmation
+Status: partial — v0.5.0-beta.1 published; final release-record PR #93 remains
 
-Active branch: `codex/v05-publish-otp-followup`
+Active branch: `codex/v05-cwd-guidance`
 
-Current objective: complete the authorized v0.5 npm publication and verify registry state.
+Current objective: finalize published v0.5 release records and identify the next v1.0 planning gate.
 
-Next first action: complete npm's one-time-password browser confirmation, rerun publish, and verify `next` metadata.
+Next first action: merge/review PR #93, then select the first v1.0 compatibility milestone from the roadmap.
 
 ## Watch rules
 
@@ -41,6 +41,31 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-27, v0.5.0-beta.1 published to npm
+
+- **Status:** partial
+- **Agent/tool:** Codex with authorized release verification workflow
+- **Branch:** `codex/v05-cwd-guidance`
+- **Commits:** release commit `a0e0b13`; tag `v0.5.0-beta.1`; follow-up docs pending in PR #93
+- **Pull request:** [#93](https://github.com/vitala89/Intentloom/pull/93), draft and open
+- **Objective:** Confirm the authorized v0.5 publication and transition to the next roadmap gate.
+- **Completed:** Verified npm `next=0.5.0-beta.1`, confirmed `intentloom@0.5.0-beta.1` exists in the registry, and recorded the published tarball metadata.
+- **Validation:** Registry reports version `0.5.0-beta.1`, 70 files, unpacked size 972987 bytes, shasum `58b2e27eb66789f57c1e91cec46aea710a6fc241`, and integrity `sha512-x+dyIoKjcjVd5EGIUnFLA37nA4k5aY/EQlDC2jy0BmFX8h35WXshe0Hd2UZ7gv3DJp6MODEglGxJQYbsmaWFMA==`. `latest` remains `0.1.0-alpha.3` by prerelease policy.
+- **Decisions and assumptions:** v0.5 is released under `next`; `latest` is intentionally unchanged. The next roadmap table milestone is `v1.0.0`, while TUI, Desktop, live providers, external MCP ingestion, and managed extensions remain candidate tracks requiring scope selection.
+- **Risks or compatibility impact:** The release-record documentation is not yet merged in PR #93; no runtime code changed after the tagged release commit.
+- **Open issues or blockers:** Merge/review PR #93, then choose the first v1.0 compatibility milestone with its support, upgrade, Desktop/MCP, and security gates.
+- **Next first action:** Merge/review PR #93, then draft the first v1.0 compatibility milestone and required ADR/specification updates.
+- **Evidence:** npm registry metadata, tag `v0.5.0-beta.1`, release commit `a0e0b13`, and [PR #93](https://github.com/vitala89/Intentloom/pull/93).
+
+#### Duty completion checklist
+
+- [x] v0.5 Git tag pushed
+- [x] v0.5 npm package published under `next`
+- [x] Registry metadata verified
+- [x] `latest` prerelease policy preserved
+- [ ] PR #93 release records merged
+- [ ] v1.0 compatibility milestone selected
 
 ### 2026-07-27, npm EPRIVATE traced to private workspace cwd
 
