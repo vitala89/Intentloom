@@ -12,9 +12,9 @@ intentloom --help
 ```
 
 Prefer `@next` while Intentloom is beta; APIs and generated output may change. To
-pin this release, use `npm install --global intentloom@0.1.0-beta.1`. An unqualified
-install may resolve to the first prerelease, but it is not the supported beta
-installation form.
+pin the current prerelease, use `npm install --global intentloom@0.4.0-beta.1`.
+The default `latest` tag remains `0.1.0-alpha.3`; see the repository
+[release state](../../docs/releases/RELEASE_STATE.md) for the distinction.
 
 Start safely in a project:
 

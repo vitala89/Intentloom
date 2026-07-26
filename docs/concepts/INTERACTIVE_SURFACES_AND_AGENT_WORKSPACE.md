@@ -4,7 +4,7 @@
 
 Intentloom should support progressively richer user interfaces without creating independent implementations of project inspection, evidence analysis, conformance, planning, ownership, or filesystem mutation.
 
-The existing command-oriented CLI remains the stable automation and expert interface. An optional terminal UI and a future desktop agent workspace are presentation and orchestration adapters over the same application-operation boundary.
+The existing command-oriented CLI remains the stable automation and expert interface. Read-only UI state and Agent Workspace discuss/inspect/plan/review/apply modes are implemented adapters over the shared application boundary; a full keyboard-first TUI and desktop agent workspace remain future presentation milestones.
 
 ## Product surfaces
 
@@ -12,9 +12,9 @@ The existing command-oriented CLI remains the stable automation and expert inter
 
 The normal CLI remains the authoritative non-interactive interface for local development, scripts, CI, reproducible documentation, and troubleshooting.
 
-### Interactive terminal UI
+### Interactive terminal UI (partial foundation)
 
-A future optional terminal UI may provide a keyboard-first guided experience through an entry point such as:
+The current optional UI foundation provides read-only structured state through an entry point such as:
 
 ```bash
 intentloom ui

@@ -1,11 +1,17 @@
 # Memory and Security Roadmap
 
-This roadmap supplement records two future Intentloom product directions:
+Candidates M1–M4 and S1–S5 are implemented in `main` and included in the
+published `0.4.0-beta.1` prerelease. This roadmap supplement records their
+completed scope and the later expansions that remain future Intentloom product
+directions:
 
 1. persistent, project-scoped, vendor-neutral memory for AI engineering agents;
 2. defensive project security analysis, finding verification, and reviewed remediation.
 
-Neither direction changes the current release commitment. Both remain future candidates behind the existing application-operation, capability, evidence, approval, and transaction boundaries.
+Later expansions remain future candidates behind the existing
+application-operation, capability, evidence, approval, and transaction
+boundaries. See the [release state](../releases/RELEASE_STATE.md) for the
+current main-versus-npm boundary.
 
 ## Delivery principles
 
@@ -19,7 +25,7 @@ Neither direction changes the current release commitment. Both remain future can
 - model output never counts as approval or verified evidence;
 - CLI, MCP, daemon, TUI, desktop, and Neutron reuse the same application operations.
 
-## Candidate M1: Bounded project context
+## Completed Candidate M1: Bounded project context
 
 Scope:
 
@@ -34,7 +40,7 @@ Exit gate:
 - excluded files and detected secrets never enter returned context;
 - the operation is byte-for-byte read-only and cannot cross the selected root.
 
-## Candidate M2: Accepted persistent memory
+## Completed Candidate M2: Accepted persistent memory
 
 Scope:
 
@@ -49,7 +55,7 @@ Exit gate:
 - imports cannot mix projects or override canonical sources silently;
 - users can inspect, export, supersede, and delete eligible records with audit evidence.
 
-## Candidate M3: Semantic retrieval and portable adapters
+## Completed Candidate M3: Semantic retrieval and portable adapters
 
 Scope:
 
@@ -65,7 +71,7 @@ Exit gate:
 - provider, network, model-download, data-retention, and privacy behavior are visible;
 - removal or rebuilding of an index does not destroy canonical memory.
 
-## Candidate M4: Agent session lifecycle
+## Completed Candidate M4: Agent session lifecycle
 
 Scope:
 
@@ -81,7 +87,7 @@ Exit gate:
 - optional hooks call only reviewed typed operations or fixed commands;
 - closing, cancelling, or compacting a session cannot silently mutate canonical intent.
 
-## Candidate S1: Security evidence and posture
+## Completed Candidate S1: Security evidence and posture
 
 Scope:
 
@@ -96,7 +102,7 @@ Exit gate:
 - unsupported coverage remains visible;
 - malformed or malicious reports cannot escape the project or grant capabilities.
 
-## Candidate S2: Local deterministic security adapters
+## Completed Candidate S2: Local deterministic security adapters
 
 Scope:
 
@@ -111,7 +117,7 @@ Exit gate:
 - scans are byte-for-byte read-only;
 - adversarial fixtures cover path escape, command construction, secret leakage, oversized input, and cross-project mixing.
 
-## Candidate S3: AI-assisted reasoning and verification
+## Completed Candidate S3: AI-assisted reasoning and verification
 
 Scope:
 
@@ -127,7 +133,7 @@ Exit gate:
 - provider and model identity, network behavior, source scope, and data policy are displayed;
 - model confidence is never presented as proof.
 
-## Candidate S4: Reviewed remediation
+## Completed Candidate S4: Reviewed remediation
 
 Scope:
 
@@ -143,7 +149,7 @@ Exit gate:
 - changed root, state, digest, ownership, permission, or capability rejects the plan;
 - failed changes roll back or report incomplete recovery explicitly.
 
-## Candidate S5: Security Center and workflow integration
+## Completed Candidate S5: Security Center and workflow integration
 
 Scope:
 

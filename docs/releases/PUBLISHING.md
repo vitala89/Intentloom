@@ -1,13 +1,17 @@
 # Publishing Intentloom
 
-The planned beta package is `intentloom`; the command is `intentloom`. The package is
+The public beta package is `intentloom`; the command is `intentloom`. The package is
 unscoped and public. No fallback name is authorized: any scoped fallback must
 be a scope demonstrably controlled by the authenticated release account. Do
 not publish, tag, reserve a name, or change a version as part of
 package-readiness work.
 
-For the `0.1.0-beta.1` release, an authorized maintainer must confirm
-ownership of the chosen npm name, complete
+Current registry evidence is recorded in [`RELEASE_STATE.md`](RELEASE_STATE.md):
+`intentloom@0.4.0-beta.1` is under `next`, while `latest` remains
+`0.1.0-alpha.3`.
+
+For every prerelease, an authorized maintainer must confirm ownership of the
+npm name, complete
 [the authorization checklist](PUBLISH_AUTHORIZATION_CHECKLIST.md), use the
 `next` dist-tag, and enable npm provenance only in the approved release
 workflow. Run `pnpm build`, `npm pack

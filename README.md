@@ -11,7 +11,11 @@ and synchronizing engineering intent across AI-assisted development workflows. I
 turns a canonical catalog of policies, workflows, templates, schemas, and skills
 into deterministic, reviewable tool-specific guidance.
 
-**Status:** Beta · **Current release:** `0.1.0-beta.1` · **Node.js:** `>=22`
+**Status:** Beta · **Current prerelease:** `0.4.0-beta.1` (`next`) · **Default npm:** `0.1.0-alpha.3` (`latest`) · **Node.js:** `>=22`
+
+See the [release state](docs/releases/RELEASE_STATE.md) for the exact boundary
+between the published npm artifact and capabilities currently merged into
+`main`.
 
 [Repository](https://github.com/vitala89/Intentloom) · [Documentation](docs/README.md) · [Security](SECURITY.md) · [npm package](https://www.npmjs.com/package/intentloom)
 
@@ -71,7 +75,7 @@ pnpm add --save-dev intentloom@next
 For reproducible installs, pin the current release:
 
 ```bash
-npm install --save-dev intentloom@0.1.0-beta.1
+npm install --save-dev intentloom@0.4.0-beta.1
 ```
 
 You can also inspect the CLI without installing it globally:
@@ -197,6 +201,7 @@ and [generated-files reference](docs/reference/GENERATED_FILES.md) for detail.
 - [Troubleshooting](docs/guides/TROUBLESHOOTING.md)
 - [v0.1 specification](docs/specs/AIF_V0_1_SPEC.md)
 - [Release process](docs/releases/RELEASE_PROCESS.md)
+- [Release state](docs/releases/RELEASE_STATE.md)
 - [Versioning policy](docs/releases/VERSIONING.md)
 
 Public examples include [minimal](examples/minimal/README.md),
@@ -216,7 +221,7 @@ pnpm build
 pnpm vitest run
 ```
 
-The latest documented local result is **35 test files, 522 passed, 2 expected
+The latest documented local result is **82 test files, 728 passed, 3 expected
 skips, and 0 failures**. Package verification also checks byte-identical
 archives and isolated npm and pnpm local-tarball installs. Hosted Compatibility
 CI runs the declared checks on Linux, macOS, and Windows for Node.js 22 and 24.

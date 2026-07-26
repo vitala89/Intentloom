@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: partial — draft PR #86 open; CI and maintainer review remain
+Status: partial — release-state unification published as draft PR #87; CI/review remain
 
-Active branch: `codex/process-intelligence-next-roadmap-2`
+Active branch: `codex/release-state-unification`
 
-Current objective: monitor draft PR #86 for CI and maintainer review.
+Current objective: unify version and capability documentation around the canonical release-state matrix.
 
-Next first action: inspect PR #86 checks and review feedback; do not merge until checks and explicit authorization are complete.
+Next first action: inspect PR #87 CI and review feedback; merge only after all required checks and explicit approval.
 
 ## Watch rules
 
@@ -41,6 +41,116 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-26, PR #87 format failure fixed
+
+- **Status:** partial
+- **Agent/tool:** Codex with GitHub Actions CI fix workflow
+- **Branch:** `codex/release-state-unification`
+- **Commits:** `07264b8` (pushed after CI failure)
+- **Pull request:** [#87](https://github.com/vitala89/Intentloom/pull/87), draft, targeting `main`
+- **Objective:** Resolve the common failure reported by all PR #87 compatibility jobs.
+- **Completed:** Inspected all 12 failed jobs and their logs. Every job passed install, typecheck, and lint, then failed only at `pnpm format:check` because `docs/releases/VERSIONING.md` was not Prettier-formatted. Ran Prettier 3.9.5, verified the full repository with `pnpm dlx prettier@3.9.5 --check "**/*.{ts,md,json,yaml,yml}"`, passed `git diff --check`, committed `07264b8`, and pushed it to the PR branch.
+- **Not completed:** New remote CI, maintainer review, conversion from draft, merge, and release.
+- **Validation:** Full Prettier check passes locally. Previous dependency-backed test/typecheck/lint/build results remain recorded; no new full test run was needed because the fix is formatting-only.
+- **Decisions and assumptions:** The failure was one shared formatting defect, not a platform-specific compatibility issue. No source behavior changed.
+- **Open issues or blockers:** Awaiting the rerun of PR #87 checks.
+- **Next first action:** Inspect the new PR #87 check results and address only any remaining evidenced failures.
+- **Evidence:** Failed run `30221479786`, failed run `30221478844`, `docs/releases/VERSIONING.md`, commit `07264b8`, and PR #87.
+
+#### Duty completion checklist
+
+- [x] Failure root cause identified from GitHub Actions logs
+- [x] Focused fix implemented
+- [x] Full formatter check passed
+- [x] `git diff --check` passed
+- [x] Fix committed and pushed
+- [x] Duty Watch handoff updated
+- [ ] New remote CI complete
+- [ ] Pull request reviewed and merged
+
+### 2026-07-26, Release-state draft PR #87 published
+
+- **Status:** partial
+- **Agent/tool:** Codex with GitHub publish workflow
+- **Branch:** `codex/release-state-unification`
+- **Commits:** `6829942` plus the release-state commits below (local and remote)
+- **Pull request:** [#87](https://github.com/vitala89/Intentloom/pull/87), draft, targeting `main`
+- **Objective:** Publish the reviewed release-state unification branch for remote CI and maintainer review.
+- **Completed:** Pushed `codex/release-state-unification` to `origin` and created draft PR #87 with the release-state scope, npm/main boundary, validation history, and compatibility notes.
+- **Not completed:** Remote CI, maintainer review, conversion from draft, merge, and release.
+- **Validation:** Local branch was clean; `git diff main...HEAD --check` passed. Before the dependency-environment interruption, full tests, MCP tests, typecheck, lint, build, and format checks passed; dependency-backed reruns remain unavailable because the offline cache lacks the required esbuild tarball.
+- **Decisions and assumptions:** PR remains draft until remote checks and maintainer review are available. No merge or release was performed.
+- **Risks or compatibility impact:** Documentation-led release-state clarification plus synchronized MCP version reporting; no protocol behavior or package version change.
+- **Open issues or blockers:** PR #87 CI/review are pending; network API access was intermittent during creation but the PR was successfully created.
+- **Next first action:** Inspect PR #87 checks and review feedback, then merge only after all required checks and explicit approval.
+- **Evidence:** [PR #87](https://github.com/vitala89/Intentloom/pull/87), pushed branch, `git diff main...HEAD --check`, and release-state matrix.
+
+#### Duty completion checklist
+
+- [x] Final diff reviewed for scope
+- [x] Relevant prior validation and unavailable checks recorded
+- [x] `PROJECT_STATE.md` updated
+- [x] `DUTY_WATCH.md` handoff updated
+- [x] Pull request published
+- [ ] Remote CI and maintainer review complete
+- [ ] Pull request merged
+
+### 2026-07-26, Release-state branch final local review
+
+- **Status:** partial
+- **Agent/tool:** Codex with local Git review
+- **Branch:** `codex/release-state-unification`
+- **Commits:** `1b9997e`, `2aad42e`, `fec2e69`, `ea10395`, `9804235`, `dd7c027`
+- **Pull request:** None; publication requires explicit authorization.
+- **Objective:** Complete the final local review before the release-state documentation PR.
+- **Completed:** Confirmed the branch is clean and six commits ahead of merged `main` at `83941ab`; reviewed all 22 changed paths; verified all workspace package versions and the generated core version are `0.4.0-beta.1`; confirmed the release-state matrix distinguishes npm `latest`, npm `next`, and post-tag `main` capabilities; and passed `git diff main...HEAD --check`.
+- **Not completed:** Push, PR, remote CI, review, and merge.
+- **Validation:** Local dependency-backed checks remain unavailable because the interrupted offline install left `node_modules` incomplete; prior successful test/typecheck/lint/build/format results are recorded in the preceding entry. GitHub API read-only lookup was unavailable in this session due network connectivity.
+- **Risks or compatibility impact:** No new source behavior beyond synchronized MCP version reporting; documentation remains the primary scope.
+- **Open issues or blockers:** External publication and dependency restoration require explicit authorization and/or network availability.
+- **Next first action:** Publish `codex/release-state-unification` and open a PR after explicit authorization.
+- **Evidence:** `git diff main...HEAD --check`, synchronized package/version files, `docs/releases/RELEASE_STATE.md`, and clean branch status.
+
+#### Duty completion checklist
+
+- [x] Final diff reviewed for scope
+- [x] Version synchronization checked against package manifests and generated source
+- [x] `git diff --check` passed
+- [x] Duty Watch handoff updated
+- [x] Failed or unavailable validation recorded
+- [ ] Pull request published, reviewed, and merged
+
+### 2026-07-26, Release-state documentation unification
+
+- **Status:** partial
+- **Agent/tool:** Codex with release-state verification
+- **Branch:** `codex/release-state-unification`
+- **Commits:** `1b9997e`, `2aad42e`, `fec2e69`, `ea10395`, `9804235` (local)
+- **Pull request:** None; publication requires explicit authorization.
+- **Objective:** Reconcile source versions, npm registry state, release audits, README/install guidance, and roadmap status into one capability matrix.
+- **Completed:** Confirmed merged `main` at `83941ab`, GitHub release/tag `v0.4.0-beta.1`, npm `latest=0.1.0-alpha.3` and `next=0.4.0-beta.1`. Added `docs/releases/RELEASE_STATE.md` with capability/CLI/daemon/MCP/experimental columns; updated README, CLI/getting-started/reference docs, changelog, release policy/versioning, v0.4 audit, roadmap, concept/roadmap supplements, and MCP server version reporting. Process-intelligence capabilities are explicitly marked as merged in `main` but not in the published npm artifact.
+- **Not completed:** PR, CI, and merge.
+- **Files or packages changed:** `docs/releases/RELEASE_STATE.md`, README/install/reference docs, changelog, release/versioning docs, roadmap/concept docs, `packages/application/src/index.ts`, `packages/mcp-server/src/index.ts`, `tests/mcp-server.test.ts`, `PROJECT_STATE.md`, and `DUTY_WATCH.md`.
+- **Validation:** Before the dependency-environment interruption: full `pnpm test` (728 passed, 3 skipped across 82 files), MCP-focused tests (8 passed), `pnpm typecheck`, `pnpm lint`, `pnpm build`, `pnpm format:check`, and `git diff --check` passed. `pnpm install --offline --frozen-lockfile` confirmed the lockfile resolution is up to date but could not restore a missing cached esbuild tarball; a subsequent network install requires explicit dependency-install authorization.
+- **Decisions and assumptions:** `main` and npm are intentionally separate release boundaries. `0.4.0-beta.1` is the current published prerelease under `next`; `latest` remains `0.1.0-alpha.3`. MCP server version now comes from the synchronized framework version source.
+- **Risks or compatibility impact:** Documentation clarifies existing behavior; the only code change removes a hardcoded stale MCP version. No protocol behavior or package version was changed.
+- **Open issues or blockers:** Local `node_modules` needs restoration before any new validation run; PR publication and any dependency install require explicit authorization.
+- **Next first action:** Review commit `1b9997e`, then open a PR after explicit authorization.
+- **Evidence:** `docs/releases/RELEASE_STATE.md`, npm registry metadata, GitHub release `v0.4.0-beta.1`, merge commit `83941ab`, and the validation outputs above.
+
+#### Duty completion checklist
+
+- [x] Formatter passed before the dependency interruption
+- [x] Markdown and lint checks passed before the dependency interruption
+- [x] Relevant tests, type checks, and build passed before the dependency interruption
+- [x] `git diff --check` passed before the dependency interruption
+- [x] Final diff reviewed for scope (final commit review pending)
+- [x] `PROJECT_STATE.md` updated when applicable
+- [x] `DUTY_WATCH.md` handoff updated
+- [x] Related release, roadmap, versioning, changelog, and reference docs updated
+- [x] Failed or unavailable checks recorded
+- [ ] Pull request published, reviewed, and merged
 
 ### 2026-07-26, Draft PR #86 published
 

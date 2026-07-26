@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Intentloom currently defines, validates, and synchronizes how engineering work is expected to be performed. Engineering Process Intelligence is a possible future capability for comparing that declared intent with verifiable evidence of how work was actually performed.
+Intentloom currently defines, validates, and synchronizes how engineering work is expected to be performed. A bounded Engineering Process Intelligence foundation is implemented in `main`: workflow variants, observed durations, conformance trends, repetition, and adjacent transition intervals operate over explicitly supplied evidence. Broader waiting-time, rework, bottleneck, causal, and process-mining analysis remains future work.
 
 The direction borrows selected ideas from process mining, especially event timelines, workflow variants, conformance checking, and bottleneck analysis. It does not attempt to turn Intentloom into a general enterprise process-mining platform.
 

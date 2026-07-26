@@ -24,6 +24,7 @@ import {
   importProviderExport,
   type ProviderName,
 } from "@intentloom/evidence-provider";
+import { INTENTLOOM_VERSION } from "@intentloom/application";
 
 export const MCP_PROTOCOL_VERSION = "2024-11-05" as const;
 export const RELEASE_ANALYSIS_TOOL = "intentloom_release_analysis" as const;
@@ -526,7 +527,7 @@ export async function handleMcpRequest(
       result: {
         protocolVersion: MCP_PROTOCOL_VERSION,
         capabilities: { tools: {} },
-        serverInfo: { name: "intentloom", version: "0.1.0-beta.1" },
+        serverInfo: { name: "intentloom", version: INTENTLOOM_VERSION },
       },
     };
   if (request.method === "tools/list")

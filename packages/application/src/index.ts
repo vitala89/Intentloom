@@ -169,6 +169,8 @@ import {
   validateNeutronSubagentTaskRecord,
 } from "@intentloom/protocol";
 
+export { INTENTLOOM_VERSION } from "@intentloom/core";
+
 export function evaluateProjectEngineeringConformance(options: {
   readonly root: string;
   readonly timeline: GenericTimeline;

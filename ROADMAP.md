@@ -6,15 +6,18 @@ The milestones below are compatibility and evidence gates, not promised dates.
 Intentloom remains alpha until the generated configuration, schemas, and
 adoption workflow have been exercised in multiple real projects.
 
-| Milestone       | Focus                                          | Exit gate                                                                                                               | Gate status                                                                                       |
-| --------------- | ---------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
-| `0.1.0-alpha.4` | Documentation consistency and release hygiene  | Architecture, release, versioning, and public-status documents agree with the repository and verified release evidence  | Met in unreleased `main`; no release has been cut                                                 |
-| `0.1.0-alpha.5` | Fixture depth and adapter compatibility        | Expanded snapshot and packed-CLI coverage across supported adapters and representative project fixtures                 | Met in unreleased `main`; adapter snapshot, packed CLI, and adoption fixture coverage is recorded |
-| `0.1.0-beta.1`  | Compatibility-freeze candidate                 | Explicit API/schema/output compatibility statement, migration policy, and successful dogfooding evidence                | Released 2026-07-23 as Git tag `v0.1.0-beta.1` and npm `intentloom@0.1.0-beta.1` under `next`     |
-| `0.2.0-beta.1`  | Connected project, evidence, MCP & conformance | Read-only inspection, local Git timeline, provider imports, release analysis, stdio MCP server, and release conformance | Met in unreleased `main`; verified in `docs/audits/V0_2_RELEASE_READINESS.md`                     |
-| `1.0.0`         | Stable compatibility contract                  | Stable release criteria, documented support policy, verified upgrade path, and maintained compatibility commitments     | Not started                                                                                       |
+| Milestone                   | Focus                                                                    | Exit gate                                                                                                               | Gate status                                                                                   |
+| --------------------------- | ------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| `0.1.0-alpha.4`             | Documentation consistency and release hygiene                            | Architecture, release, versioning, and public-status documents agree with the repository and verified release evidence  | Historical gate; included in `0.1.0-beta.1`                                                   |
+| `0.1.0-alpha.5`             | Fixture depth and adapter compatibility                                  | Expanded snapshot and packed-CLI coverage across supported adapters and representative project fixtures                 | Historical gate; included in `0.1.0-beta.1`                                                   |
+| `0.1.0-beta.1`              | Compatibility-freeze candidate                                           | Explicit API/schema/output compatibility statement, migration policy, and successful dogfooding evidence                | Released 2026-07-23 as Git tag `v0.1.0-beta.1` and npm `intentloom@0.1.0-beta.1` under `next` |
+| `0.2.0-beta.1`              | Connected project, evidence, MCP & conformance                           | Read-only inspection, local Git timeline, provider imports, release analysis, stdio MCP server, and release conformance | Released 2026-07-24 as npm `intentloom@0.2.0-beta.1` under `next`                             |
+| `0.3.0-beta.1`              | Engineering conformance and extension governance                         | Engineering Conformance Engine and managed-extension schemas/governance                                                 | Released 2026-07-24 as npm `intentloom@0.3.0-beta.1` under `next`                             |
+| `0.4.0-beta.1`              | Controlled learning, memory/security, workspace, and Neutron foundations | Candidates L1–L8, M1–M4, S1–S5, workspace modes, and local Neutron foundations                                          | Released 2026-07-25 as Git tag `v0.4.0-beta.1` and npm `intentloom@0.4.0-beta.1` under `next` |
+| `main` after `0.4.0-beta.1` | Engineering Process Intelligence increment                               | Workflow variants, durations, conformance trends, repetition, and transition intervals                                  | Implemented in `main` at `83941ab`; not yet released to npm                                   |
+| `1.0.0`                     | Stable compatibility contract                                            | Stable release criteria, documented support policy, verified upgrade path, and maintained compatibility commitments     | Not started                                                                                   |
 
-Before beta, Intentloom needs at least three real dogfooding scenarios: a
+Before the first beta, Intentloom needed at least three real dogfooding scenarios: a
 minimal project, a TypeScript project, and a sanitized existing-project example
 such as Applye or an Angular + Tauri project. The goal is evidence that
 configuration, schemas, and generated output are not changing accidentally.
@@ -58,7 +61,12 @@ The sequencing rules are:
 
 The connected-project direction is documented in [Project Connection, Evidence, and MCP](docs/concepts/PROJECT_CONNECTION_EVIDENCE_AND_MCP.md). Interactive and agent surfaces are documented in [Interactive Surfaces and Agent Workspace](docs/concepts/INTERACTIVE_SURFACES_AND_AGENT_WORKSPACE.md). The model direction is documented in [Neutron Model Strategy](docs/concepts/NEUTRON_MODEL_STRATEGY.md).
 
-## v0.2 candidate — Connected project and workflow evidence
+## Completed v0.2 milestone — Connected project and workflow evidence
+
+The v0.2.0-beta.1 capability set is implemented in `main` and published in
+`intentloom@0.2.0-beta.1`. The subsections below preserve the historical scope
+and exit criteria; they are not pending candidates. See the
+[release state](docs/releases/RELEASE_STATE.md) for current surfaces.
 
 Intentloom should be able to connect to one explicitly selected project, inspect it safely, and construct reviewable workflow evidence without changing project state.
 
@@ -121,7 +129,11 @@ Candidate scope:
 
 Exit criteria: an MCP client can discover and invoke read-only Intentloom tools, and CLI/MCP results are equivalent for the same operation and project state.
 
-## v0.3 candidate — Engineering conformance and managed extension lifecycle
+## Completed v0.3 milestone — Engineering conformance and managed extension lifecycle
+
+The v0.3.0-beta.1 capability set is implemented in `main` and published in
+`intentloom@0.3.0-beta.1`. The scope below is retained as historical milestone
+documentation.
 
 Build deterministic conformance checks on top of the workflow evidence model and govern external integrations. The architectural contracts and specifications are defined in [ADR-0020](docs/decisions/ADR-0020-engineering-workflow-policy-and-conformance.md), [ADR-0021](docs/decisions/ADR-0021-managed-extension-lifecycle-and-manifest.md), [v0.3 Engineering Conformance Specification](docs/specs/ENGINEERING_CONFORMANCE_V0_3_SPEC.md), and [Managed Extension Lifecycle Specification](docs/specs/MANAGED_EXTENSION_LIFECYCLE_V0_3_SPEC.md).
 
@@ -137,7 +149,12 @@ Candidate scope:
 
 Exit criteria: Intentloom can explain why a workflow instance conforms, diverges, or cannot be verified, and securely govern external extension manifests without automatically changing repository state.
 
-## Future candidate — Interactive terminal UI
+## Partial implementation — Interactive terminal UI
+
+The current `intentloom ui` command and read-only workspace state collector are
+implemented and released in `0.4.0-beta.1`. A full keyboard-first terminal UI
+with cancellation, accessibility, and snapshot guarantees remains a future
+candidate.
 
 Add an optional keyboard-first terminal application without replacing the normal CLI.
 
@@ -152,7 +169,11 @@ Candidate scope:
 
 Exit criteria: CLI and TUI results are equivalent for the same operation and state, cancellation leaves the project byte-for-byte unchanged, and packed-runtime, keyboard, accessibility, and snapshot coverage is recorded.
 
-## Future candidate — Desktop application and agent workspace
+## Implemented agent-workspace foundation — Desktop application remains future
+
+Agent Workspace discuss, inspect, plan, review, and apply modes are implemented
+through the CLI/application boundary and released in `0.4.0-beta.1`. A full
+desktop presentation layer remains a future candidate.
 
 Build a local desktop presentation and orchestration layer over the standalone daemon and versioned application protocol.
 
@@ -169,7 +190,11 @@ Candidate scope:
 
 Exit criteria for the first agent milestone: one selected project can be discussed and inspected through an explicitly configured provider and read-only typed tools; generated plans preserve provenance; no model response can directly mutate files, execute arbitrary commands, merge, release, deploy, or publish; session data can be exported and deleted locally.
 
-## Future candidate — Neutron engineering intelligence
+## Experimental Neutron foundation — Model strategy remains future
+
+The local Neutron workspace-sync and autonomous-subagent orchestration
+foundations are implemented and released in `0.4.0-beta.1`. Provider/model
+runtime expansion, benchmarked tuning, and training remain future candidates.
 
 Develop **Neutron** first as the provider-neutral engineering-agent runtime behind Intentloom, not as a foundation-model claim.
 
@@ -260,7 +285,13 @@ and removed without modifying project-owned files. A Graphify-style provider can
 be supported without coupling the canonical core to that vendor or implying
 redistribution rights.
 
-## Later candidate — Engineering Process Intelligence
+## Implemented process-intelligence foundation — broader mining remains future
+
+Workflow variants, observed duration metrics, conformance trends, repetition,
+and transition intervals are implemented in `main` at `83941ab` but were merged
+after the `0.4.0-beta.1` tag. They are not yet available from npm. Waiting-time,
+rework, bottleneck, causal, and broader process-mining analysis remain future
+candidates behind separate ADRs and threat review.
 
 Intentloom may later apply selected process-mining principles to software delivery and AI-agent workflows. This is intentionally narrower than a general enterprise process-mining platform.
 
