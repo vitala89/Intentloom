@@ -12,12 +12,14 @@ import {
   SECURITY_AUDIT_METHOD,
   MEMORY_SEARCH_METHOD,
   MEMORY_EVALUATIONS_LIST_METHOD,
+  ENGINEERING_CONFORMANCE_METHOD,
   SESSION_GET_METHOD,
   createDoctorResponse,
   createInspectResponse,
   createSecurityAuditResponse,
   createMemorySearchResponse,
   createMemoryEvaluationsListResponse,
+  createEngineeringConformanceResponse,
   createSessionGetResponse,
   parseDaemonRequest,
   parseDoctorResponse,
@@ -31,6 +33,8 @@ import {
   type MemorySearchResultPayload,
   type MemoryEvaluationsListRequest,
   type MemoryEvaluationsListResultPayload,
+  type EngineeringConformanceRequest,
+  type EngineeringConformanceResultPayload,
   type SessionGetRequest,
   type SessionGetResultPayload,
 } from "../../protocol/src/index.js";
@@ -58,6 +62,9 @@ export interface DaemonOptions {
   readonly memoryEvaluationsList?: (
     request: MemoryEvaluationsListRequest,
   ) => Promise<Omit<MemoryEvaluationsListResultPayload, "protocolVersion">>;
+  readonly engineeringConformance?: (
+    request: EngineeringConformanceRequest,
+  ) => Promise<Omit<EngineeringConformanceResultPayload, "protocolVersion">>;
   readonly sessionGet?: (
     request: SessionGetRequest,
   ) => Promise<Omit<SessionGetResultPayload, "protocolVersion">>;
@@ -173,6 +180,20 @@ export async function startLocalDaemon(
             createMemoryEvaluationsListResponse(
               request.id,
               await options.memoryEvaluationsList(request),
+            ),
+          );
+        } else if (request.method === ENGINEERING_CONFORMANCE_METHOD) {
+          if (!options.engineeringConformance)
+            return failure(
+              socket,
+              -32601,
+              "unsupported method engineeringConformance",
+            );
+          response(
+            socket,
+            createEngineeringConformanceResponse(
+              request.id,
+              await options.engineeringConformance(request),
             ),
           );
         } else if (request.method === SESSION_GET_METHOD) {

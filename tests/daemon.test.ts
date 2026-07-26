@@ -19,12 +19,14 @@ import {
   createSecurityAuditRequest,
   createMemorySearchRequest,
   createMemoryEvaluationsListRequest,
+  createEngineeringConformanceRequest,
   createSessionGetRequest,
 } from "../packages/protocol/src/index.js";
 import {
   doctorProject,
   initProject,
   nodeFileSystem,
+  evaluateProjectEngineeringConformance,
 } from "../packages/application/src/index.js";
 import {
   startLocalDaemon,
@@ -581,6 +583,13 @@ describe.skipIf(process.platform === "win32")("local daemon", () => {
       memoryEvaluationsList: async () => ({
         evaluations: [],
       }),
+      engineeringConformance: async (req) => ({
+        report: evaluateProjectEngineeringConformance({
+          root: req.params.root,
+          timeline: req.params.timeline,
+          policy: req.params.policy,
+        }),
+      }),
       sessionGet: async () => ({
         session: null,
       }),
@@ -620,6 +629,40 @@ describe.skipIf(process.platform === "win32")("local daemon", () => {
       createMemoryEvaluationsListRequest(5, { root, outcome: "passed" }),
     )) as { result: { evaluations: unknown[] } };
     expect(evaluationRes.result.evaluations).toEqual([]);
+
+    const conformanceRes = (await sendReq(
+      createEngineeringConformanceRequest(6, {
+        root,
+        timeline: {
+          caseType: "release",
+          caseId: "release:1",
+          events: [
+            {
+              activity: "release.published",
+              source: "local-fixture",
+              sourceId: "release:1",
+            },
+          ],
+        },
+        policy: {
+          schemaVersion: "1",
+          policyId: "policy:release",
+          rules: [
+            {
+              ruleId: "require-release",
+              caseType: "release",
+              severity: "error",
+              title: "Release evidence",
+              condition: {
+                type: "required-activity",
+                activity: "release.published",
+              },
+            },
+          ],
+        },
+      }),
+    )) as { result: { report: { summary: { passed: number } } } };
+    expect(conformanceRes.result.report.summary.passed).toBe(1);
 
     const sessionRes = (await sendReq(
       createSessionGetRequest(4, { root, sessionId: "s1" }),

@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: Neutron Autonomous Subagent Orchestration & Local Workspace Sync Engine merged into main (PR #82)
+Status: Engineering Process Intelligence & Agent Memory Evaluation system first IPC increment complete locally
 
 Active branch: `codex/process-intelligence-memory-evaluation`
 
-Current objective: implement the first Engineering Process Intelligence & Agent Memory Evaluation system increment through shared application operations and authenticated local daemon IPC.
+Current objective: commit and open a pull request for the first Engineering Process Intelligence & Agent Memory Evaluation system IPC increment.
 
-Next first action: add versioned, read-only contracts for existing deterministic conformance and procedural-memory evaluation records; do not duplicate the established timeline, conformance, or evaluation engines.
+Next first action: review the final IPC increment diff, commit it, and open a pull request; then specify the next narrow process-intelligence candidate.
 
 ## Watch rules
 
@@ -41,6 +41,31 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-26, Engineering Process Intelligence & Agent Memory Evaluation system (IPC increment complete)
+
+- **Status:** complete
+- **Agent/tool:** Codex
+- **Branch:** `codex/process-intelligence-memory-evaluation`
+- **Objective:** Complete the first shared-application and authenticated-local-daemon increment for deterministic engineering conformance and procedural-memory evaluation reads.
+- **Completed:** Moved engineering workflow policy, timeline, and conformance report contracts to `@intentloom/protocol`, retaining `@intentloom/evidence-analysis` as the pure evaluator and a compatibility re-export surface. Added `intentloom.engineering.conformance.v1`, application operation `evaluateProjectEngineeringConformance`, and authenticated daemon routing. The existing `intentloom.memory.evaluations.list.v1` exposes procedural-memory evaluation records. Updated ADR-0020 and durable project state.
+- **Files changed:** `PROJECT_STATE.md`, `DUTY_WATCH.md`, `docs/decisions/ADR-0020-engineering-workflow-policy-and-conformance.md`, `pnpm-lock.yaml`, `packages/application/`, `packages/daemon/src/index.ts`, `packages/evidence-analysis/`, `packages/protocol/src/index.ts`, `tests/daemon.test.ts`, `tests/engineering-conformance.test.ts`, and `tests/protocol.test.ts`.
+- **Validation:** `pnpm install --offline`, `pnpm typecheck`, `pnpm lint`, `pnpm format:check`, `pnpm build`, focused `pnpm vitest run tests/engineering-conformance.test.ts tests/protocol.test.ts` (11 passed), and `pnpm vitest run tests/daemon.test.ts` (16 passed, 1 Windows-only skipped) passed. `git diff --check` passed before the final state/documentation edits. A full `pnpm test` run emitted all progress markers but this environment did not return its final summary; it is not claimed as passed.
+- **Decisions:** Protocol owns the conformance contract; evidence analysis owns the deterministic algorithm; application and daemon are adapters. All new operations remain local, token-authenticated for daemon access, deterministic, and read-only.
+- **Risks or compatibility impact:** Additive protocol and daemon methods; package dependency graph now explicitly reflects `application → evidence-analysis → protocol`.
+- **Next first action:** Review, rerun `git diff --check`, commit, and open a pull request. After merge, write a separate ADR/specification before any process-variant or bottleneck implementation.
+
+### 2026-07-26, Engineering conformance IPC contract (interrupted)
+
+- **Status:** partial
+- **Agent/tool:** Codex
+- **Branch:** `codex/process-intelligence-memory-evaluation`
+- **Objective:** Move engineering-conformance contract types into `@intentloom/protocol`, then expose the existing pure evaluator through application and authenticated local daemon IPC.
+- **Completed:** Began the canonical-contract migration: protocol request/response shapes and validators, daemon routing, and application bridge are present in the working tree. `@intentloom/evidence-analysis` now declares `@intentloom/protocol` as its source for conformance types and `@intentloom/application` declares `@intentloom/evidence-analysis` as a dependency.
+- **Blocked:** TypeScript cannot resolve the newly declared `@intentloom/evidence-analysis` workspace alias until pnpm updates local workspace links. `pnpm install --offline` was requested solely to synchronize existing workspace metadata without network access, but was rejected because repository policy requires explicit authorization for dependency installation or synchronization.
+- **Validation:** `pnpm typecheck` currently fails only with `TS2307: Cannot find module '@intentloom/evidence-analysis'`; before that, the referenced project was corrected to `composite: true` and missing type re-exports were fixed. Do not claim this increment is validated.
+- **Recovery:** With explicit authorization, run `pnpm install --offline`, then run `pnpm typecheck`, `pnpm vitest run tests/engineering-conformance.test.ts tests/protocol.test.ts tests/daemon.test.ts`, `pnpm format:check`, and `git diff --check`. Add focused application/daemon integration coverage before committing. If authorization is not granted, revert the uncommitted conformance-contract changes rather than replacing the package dependency with an unreviewed relative-import workaround.
+- **Next first action:** Obtain explicit authorization for `pnpm install --offline` or direct the intended alternative; no external package download is required.
 
 ### 2026-07-26, Engineering Process Intelligence & Agent Memory Evaluation system (first IPC increment)
 

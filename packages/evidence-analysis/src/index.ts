@@ -264,104 +264,29 @@ export function analyzeReleaseEvidence(
   };
 }
 
-export type EngineeringWorkflowCaseType =
-  "pull-request" | "release" | "incident" | "migration" | "agent-task";
+import type {
+  EngineeringConformanceFinding,
+  EngineeringConformanceReport,
+  EngineeringConformanceSummary,
+  EngineeringConformanceStatus,
+  EngineeringEvidenceRef,
+  EngineeringWorkflowCaseType,
+  EngineeringWorkflowPolicy,
+  GenericTimeline,
+  TimelineEventRef,
+} from "@intentloom/protocol";
 
-export type EngineeringRuleSeverity = "error" | "warning" | "info";
-
-export type EngineeringRuleConditionType =
-  | "required-activity"
-  | "forbidden-activity"
-  | "ordered-sequence"
-  | "evidence-presence"
-  | "time-delta-threshold";
-
-export interface EngineeringRuleCondition {
-  readonly type: EngineeringRuleConditionType;
-  readonly activity?: string;
-  readonly sequence?: readonly string[];
-  readonly evidenceType?: string;
-  readonly maxMinutes?: number;
-}
-
-export interface EngineeringRuleRemediation {
-  readonly summary: string;
-  readonly actionableSteps: readonly string[];
-}
-
-export interface EngineeringRule {
-  readonly ruleId: string;
-  readonly caseType: EngineeringWorkflowCaseType;
-  readonly severity: EngineeringRuleSeverity;
-  readonly title: string;
-  readonly description?: string;
-  readonly condition: EngineeringRuleCondition;
-  readonly remediation?: EngineeringRuleRemediation;
-}
-
-export interface EngineeringWorkflowPolicy {
-  readonly schemaVersion: "1";
-  readonly policyId: string;
-  readonly description?: string;
-  readonly rules: readonly EngineeringRule[];
-}
-
-export type EngineeringConformanceStatus =
-  | "pass"
-  | "violation"
-  | "missing-evidence"
-  | "ambiguous-evidence"
-  | "unsupported";
-
-export interface EngineeringEvidenceRef {
-  readonly source: string;
-  readonly sourceId: string;
-  readonly timestamp?: string;
-}
-
-export interface EngineeringConformanceFinding {
-  readonly ruleId: string;
-  readonly caseType: EngineeringWorkflowCaseType;
-  readonly severity: EngineeringRuleSeverity;
-  readonly status: EngineeringConformanceStatus;
-  readonly title: string;
-  readonly evidence: readonly EngineeringEvidenceRef[];
-  readonly remediation?: EngineeringRuleRemediation;
-}
-
-export interface EngineeringConformanceSummary {
-  readonly totalRules: number;
-  readonly passed: number;
-  readonly violations: number;
-  readonly missingEvidence: number;
-  readonly ambiguousEvidence: number;
-  readonly unsupported: number;
-}
-
-export interface EngineeringConformanceReport {
-  readonly operationVersion: 1;
-  readonly policyId: string;
-  readonly evaluatedAt: string;
-  readonly caseType: EngineeringWorkflowCaseType;
-  readonly caseId: string;
-  readonly summary: EngineeringConformanceSummary;
-  readonly findings: readonly EngineeringConformanceFinding[];
-}
-
-export interface TimelineEventRef {
-  readonly activity: string;
-  readonly source: string;
-  readonly sourceId: string;
-  readonly timestamp?: string;
-  readonly commitIds?: readonly string[];
-  readonly evidenceType?: string;
-}
-
-export interface GenericTimeline {
-  readonly caseType: EngineeringWorkflowCaseType;
-  readonly caseId: string;
-  readonly events: readonly TimelineEventRef[];
-}
+export type {
+  EngineeringConformanceFinding,
+  EngineeringConformanceReport,
+  EngineeringConformanceSummary,
+  EngineeringConformanceStatus,
+  EngineeringEvidenceRef,
+  EngineeringWorkflowCaseType,
+  EngineeringWorkflowPolicy,
+  GenericTimeline,
+  TimelineEventRef,
+} from "@intentloom/protocol";
 
 function toEvidenceRef(event: TimelineEventRef): EngineeringEvidenceRef {
   return {

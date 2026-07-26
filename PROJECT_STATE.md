@@ -22,7 +22,7 @@ later justifies separation.
 
 ## Current phase
 
-Engineering Process Intelligence & Agent Memory Evaluation System.
+Engineering Process Intelligence & Agent Memory Evaluation System — first IPC increment complete.
 
 The project must avoid premature structural migration. New applications,
 packages, and repository boundaries are introduced only when roadmap triggers
@@ -47,9 +47,8 @@ before a new release or implementation milestone is declared complete.
 
 ## Active focus
 
-1. Expose existing deterministic engineering-conformance and procedural-memory evaluation records through shared application operations.
-2. Add versioned, read-only daemon IPC contracts for those operations, preserving the current local-only, project-scoped boundaries.
-3. Add cross-surface integration tests and reference documentation without duplicating timeline, conformance, or memory-evaluation engines.
+1. Specify the next narrow, read-only process-intelligence candidate before implementation; it must use only existing canonical evidence and must not infer causality.
+2. Keep process-variant discovery, bottleneck inference, remote ingestion, and model-based judgments behind separate approved specifications and threat review.
 
 ## Architectural invariants
 
@@ -71,18 +70,18 @@ before a new release or implementation milestone is declared complete.
 
 ## Current milestone
 
-Implement the first Engineering Process Intelligence & Agent Memory Evaluation system increment.
+Complete the first Engineering Process Intelligence & Agent Memory Evaluation system increment.
 
 Expected outputs:
 
 - versioned protocol contracts for deterministic, project-scoped conformance and procedural-memory evaluation reads;
 - shared application operations that adapt existing conformance and evaluation engines rather than reimplement them;
 - authenticated local daemon handlers and integration tests for the new read-only operations;
-- updated reference documentation and cross-surface evidence.
+- ADR-0020 updated to name `@intentloom/protocol` as the canonical conformance-contract source.
 
 ## Next platform milestone
 
-Design and implement Engineering Process Intelligence & Agent Memory Evaluation System over shared application operations and daemon IPC.
+Specify the next narrow, read-only Engineering Process Intelligence candidate over the shared application and daemon boundaries.
 
 ## State update rules
 

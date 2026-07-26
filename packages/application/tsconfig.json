@@ -4,6 +4,7 @@
   "references": [
     { "path": "../core" },
     { "path": "../adapters" },
+    { "path": "../evidence-analysis" },
     { "path": "../protocol" },
     { "path": "../validator" }
   ],

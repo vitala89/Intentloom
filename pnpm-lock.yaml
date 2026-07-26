@@ -41,6 +41,9 @@ importers:
       "@intentloom/core":
         specifier: workspace:*
         version: link:../core
+      "@intentloom/evidence-analysis":
+        specifier: workspace:*
+        version: link:../evidence-analysis
       "@intentloom/protocol":
         specifier: workspace:*
         version: link:../protocol
@@ -78,7 +81,11 @@ importers:
         specifier: workspace:*
         version: link:../protocol
 
-  packages/evidence-analysis: {}
+  packages/evidence-analysis:
+    dependencies:
+      "@intentloom/protocol":
+        specifier: workspace:*
+        version: link:../protocol
 
   packages/evidence-git: {}
 
