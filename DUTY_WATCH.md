@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: Observed workflow-duration metrics implementation published as draft PR #83
+Status: partial — draft PR #84 is open; CI and maintainer review are pending
 
-Active branch: `codex/process-intelligence-memory-evaluation`
+Active branch: `codex/process-intelligence-next-candidate`
 
-Current objective: review draft PR #83 and merge after required CI and human approval.
+Current objective: monitor PR #84 checks and complete review/merge of the accepted conformance trend summary implementation.
 
-Next first action: inspect PR #83 checks/review, address actionable feedback, and merge after approval; then select the next candidate through a separate ADR/specification/threat review.
+Next first action: review PR #84 after its compatibility checks complete, then merge only after required human approval.
 
 ## Watch rules
 
@@ -41,6 +41,166 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-26, Draft PR #84 published
+
+- **Status:** partial
+- **Agent/tool:** Codex with GitHub publish workflow
+- **Branch:** `codex/process-intelligence-next-candidate`
+- **Commits:** `ff92506`, `6bbdd36`, `eb52e65`, `1b789d0`, `b402271`, `29ad679`, `b7787d5`
+- **Pull request:** [#84](https://github.com/vitala89/Intentloom/pull/84), draft, targeting `main`
+- **Objective:** Publish the reviewed conformance trend summary implementation for remote checks and maintainer review.
+- **Completed:** Reauthenticated GitHub CLI through device flow, verified API access as `vitala89`, pushed the branch, and created draft PR #84 with scope, safety boundary, changelog impact, and validation results.
+- **Not completed:** Compatibility checks, maintainer review, conversion from draft, and merge into `main`.
+- **Files or packages changed:** No files changed in this watch; all implementation and documentation are in the listed commits.
+- **Validation:** Local `pnpm test` (717 passed, 3 skipped), typecheck, lint, build, format, diff-check, and two-axis review passed. PR checks are currently in progress for Ubuntu/macOS/Windows on Node 22/24.
+- **Decisions and assumptions:** PR remains draft until required checks and human review complete; no merge or release was performed.
+- **Risks or compatibility impact:** Additive protocol and daemon method only; remote CI is the remaining compatibility gate.
+- **Open issues or blockers:** PR checks are in progress and maintainer review is pending.
+- **Next first action:** Inspect PR #84 checks and review feedback, then merge after required approval.
+- **Evidence:** PR #84 metadata and `gh pr view 84` status show `OPEN`, `isDraft: true`, base `main`, and twelve checks `IN_PROGRESS`.
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant tests, type checks, builds, or compatibility checks passed
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `PROJECT_STATE.md` updated when applicable
+- [x] `DUTY_WATCH.md` handoff completed
+- [x] Related roadmap, ADR, changelog, migration, or reference docs updated
+- [x] Failed or unavailable checks recorded
+- [ ] Pull request checks and maintainer review complete
+
+### 2026-07-26, GitHub connector availability check
+
+- **Status:** partial
+- **Agent/tool:** Codex
+- **Branch:** `codex/process-intelligence-next-candidate`
+- **Commits:** `29ad679` and preceding trend-summary commits
+- **Pull request:** Not opened; the requested GitHub connector is not available in the current tool set.
+- **Objective:** Continue the authorized PR publication through the requested GitHub plugin.
+- **Completed:** Checked the active tools and confirmed no callable GitHub connector is loaded. The local repository remains clean and no push or PR mutation was attempted.
+- **Not completed:** Remote branch publication, PR creation, checks, and merge.
+- **Files or packages changed:** None in this watch.
+- **Validation:** Tool availability inspection completed; the prior `gh auth status` remains failed because the local token is invalid.
+- **Decisions and assumptions:** Do not bypass the requested plugin path or use unauthenticated remote mutation. Preserve the existing reviewed branch and commits.
+- **Risks or compatibility impact:** None locally; remote review status remains unknown.
+- **Open issues or blockers:** Enable the GitHub connector in this session or refresh GitHub CLI authentication.
+- **Next first action:** After connector/auth availability, verify repository/head/base and open the authorized draft PR.
+- **Evidence:** Current `ALL_TOOLS` inventory, clean branch status, and prior GitHub authentication check.
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant tests, type checks, builds, or compatibility checks passed
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `PROJECT_STATE.md` updated when applicable
+- [x] `DUTY_WATCH.md` handoff completed
+- [x] Related roadmap, ADR, changelog, migration, or reference docs updated
+- [x] Failed or unavailable checks recorded
+- [ ] Pull request opened and reviewed
+
+### 2026-07-26, Authorized PR publication blocked by GitHub authentication
+
+- **Status:** partial
+- **Agent/tool:** Codex with GitHub publish workflow
+- **Branch:** `codex/process-intelligence-next-candidate`
+- **Commits:** `b402271` and preceding trend-summary commits
+- **Pull request:** Not opened; publication stopped before push because `gh auth status` reports an invalid token for `vitala89`.
+- **Objective:** Publish the reviewed conformance trend summary branch and open a draft PR after explicit user authorization.
+- **Completed:** Confirmed clean working tree, remote `https://github.com/vitala89/Intentloom.git`, installed GitHub CLI, and explicit user authorization. No remote mutation was attempted after authentication failed.
+- **Not completed:** Git push, PR creation, remote checks, and merge.
+- **Files or packages changed:** No files changed in this watch; the prior implementation and handoff commits remain intact.
+- **Validation:** `gh --version` passed; `gh auth status` failed with an invalid token. Local validation remains recorded in the preceding handoff.
+- **Decisions and assumptions:** Followed the publish skill's stop condition for unauthenticated GitHub CLI; did not bypass it with unverified credentials or alternate remote mutation.
+- **Risks or compatibility impact:** None locally; branch remains unpublished and remote review status is unknown.
+- **Open issues or blockers:** User must re-authenticate with `gh auth login -h github.com` before publication can continue.
+- **Next first action:** Re-run `gh auth status` after login, then push with tracking and open a draft PR.
+- **Evidence:** `git status -sb`, `git remote get-url origin`, `gh --version`, and `gh auth status` output.
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant tests, type checks, builds, or compatibility checks passed
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `PROJECT_STATE.md` updated when applicable
+- [x] `DUTY_WATCH.md` handoff completed
+- [x] Related roadmap, ADR, changelog, migration, or reference docs updated
+- [x] Failed or unavailable checks recorded
+- [ ] Pull request opened and reviewed
+
+### 2026-07-26, Conformance trend summary review and PR handoff
+
+- **Status:** partial
+- **Agent/tool:** Codex with two-axis review
+- **Branch:** `codex/process-intelligence-next-candidate`
+- **Commits:** `ff92506`, `6bbdd36`, `eb52e65`, `1b789d0`, plus this handoff update
+- **Pull request:** Not opened; explicit authorization and GitHub API access are still required.
+- **Objective:** Review the conformance trend summary diff against repository standards and ADR-0039/specification, then prepare an accurate handoff.
+- **Completed:** Standards review found no code-boundary violations. Specification review found no missing requirements, scope creep, or incorrect behavior. Added the required Unreleased changelog entry and corrected the handoff status/evidence fields.
+- **Not completed:** Opening/reviewing a remote pull request and merging into `main`.
+- **Files or packages changed:** `CHANGELOG.md` and `DUTY_WATCH.md`; implementation remains in the preceding commits.
+- **Validation:** `pnpm test` (717 passed, 3 skipped), `pnpm typecheck`, `pnpm lint`, `pnpm build`, `pnpm format:check`, `git diff --check`, plus local two-axis review. `gh pr list` could not reach `api.github.com` in this environment.
+- **Decisions and assumptions:** The implementation remains local and read-only; no push, PR, merge, release, or network fallback was performed. The accepted ADR/spec boundary is unchanged.
+- **Risks or compatibility impact:** Additive protocol and daemon method only. Remote review status is unknown until a PR is opened.
+- **Open issues or blockers:** PR creation needs explicit user authorization and working GitHub connectivity.
+- **Next first action:** Obtain authorization, verify `gh auth status`, and open the PR with validation results and changelog impact.
+- **Evidence:** `git diff origin/main...HEAD`, the two review reports, local test/build results, and clean committed working tree.
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant tests, type checks, builds, or compatibility checks passed
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `PROJECT_STATE.md` updated when applicable
+- [x] `DUTY_WATCH.md` handoff completed
+- [x] Related roadmap, ADR, changelog, migration, or reference docs updated
+- [x] Failed or unavailable checks recorded
+- [ ] Pull request opened and reviewed
+
+### 2026-07-26, Conformance trend summary implementation
+
+- **Status:** complete
+- **Agent/tool:** Codex
+- **Branch:** `codex/process-intelligence-next-candidate`
+- **Objective:** Implement the accepted bounded conformance trend summary over caller-supplied reports.
+- **Completed:** Accepted ADR-0039 and `CONFORMANCE_TREND_SUMMARY_V0_1_SPEC.md`. Added canonical protocol request/response contracts and validation for `intentloom.conformance.trend.summary.v1`, pure deterministic status/severity aggregation, application bridge, authenticated daemon routing, and focused protocol/analysis/application/daemon fixtures. Updated security invariant 32 and durable project state.
+- **Validation:** `pnpm typecheck`; focused protocol and trend tests (10 passed); daemon IPC tests (16 passed, 1 skipped); full `pnpm test` (717 passed, 3 skipped); `pnpm format:check`; `pnpm lint`; `pnpm build`; and `git diff --check` passed.
+- **Decisions:** The operation requires at least two schema-validated reports with one case type and policy; it returns counts only and does not infer causes, bottlenecks, compliance, actors, or remediation priority.
+- **Risks or compatibility impact:** Additive protocol and daemon method. No persistence, provider access, network calls, or mutation path was added.
+- **Next first action:** Review the final diff, commit, and open a pull request only with explicit user authorization.
+
+### 2026-07-26, PR #83 merge and conformance trend summary candidate
+
+- **Status:** partial
+- **Agent/tool:** Codex
+- **Branch:** `codex/process-intelligence-next-candidate`
+- **Pull request:** #83 merged as `890d6d3`
+- **Objective:** Record the merged first process-intelligence increment and define the next bounded candidate.
+- **Completed:** Verified PR #83 merge and all 12 Compatibility checks. Added proposed ADR-0039 and Draft `CONFORMANCE_TREND_SUMMARY_V0_1_SPEC.md`. The candidate aggregates only existing schema-validated conformance reports for one policy and case type; it exposes status/severity counts and forbids raw evidence, actor data, certification, bottleneck claims, remediation ranking, persistence, remote ingestion, and model interpretation. Added security invariant 32 and updated durable project state.
+- **Validation:** GitHub merge/check verification passed. Markdown formatting and `git diff --check` are required before commit.
+- **Decisions:** This is a proposed boundary only. No conformance-trend implementation may begin until ADR-0039 and its specification receive review.
+- **Next first action:** Review and approve or revise ADR-0039 and the draft specification.
+
+### 2026-07-26, PR #83 merged and first process-intelligence increment accepted
+
+- **Status:** complete
+- **Agent/tool:** Codex
+- **Branch:** `main` → `codex/process-intelligence-next-candidate`
+- **Pull request:** #83, merged as `890d6d3`
+- **Objective:** Verify the merge of conformance, workflow-variant, and observed-duration contracts and move the watch to the next roadmap decision.
+- **Completed:** Confirmed PR #83 is merged into `origin/main`; all 12 Compatibility checks for Ubuntu/macOS/Windows on Node 22/24 completed successfully. Updated durable project state and Duty Watch to remove the stale draft-PR status. The merged increment includes versioned conformance, memory-evaluation, workflow-variant, and workflow-duration read-only IPC/application contracts.
+- **Validation:** Git fetch and GitHub PR metadata verification passed; PR #83 state is `MERGED`, merge commit `890d6d3`, and all required Compatibility checks are `SUCCESS`.
+- **Decisions:** The next process-intelligence capability is intentionally unselected until a separate ADR, specification, and threat review define its evidence and privacy boundaries.
+- **Next first action:** Select and specify the next candidate; do not implement broader bottleneck, performance, causal, remote-ingestion, or model-assisted analysis without that review.
 
 ### 2026-07-26, Observed workflow-duration metrics implementation
 

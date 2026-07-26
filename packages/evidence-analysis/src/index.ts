@@ -1,6 +1,7 @@
 import { createHash } from "node:crypto";
 import {
   validateGenericTimeline,
+  validateEngineeringConformanceReport,
   type EngineeringConformanceFinding,
   type EngineeringConformanceReport,
   type EngineeringConformanceSummary,
@@ -12,6 +13,7 @@ import {
   type TimelineEventRef,
   type WorkflowVariantSummaryReport,
   type WorkflowDurationSummaryReport,
+  type ConformanceTrendSummaryReport,
 } from "@intentloom/protocol";
 
 export interface ReleaseAnalysisGitEvent {
@@ -292,6 +294,7 @@ export type {
   TimelineEventRef,
   WorkflowVariantSummaryReport,
   WorkflowDurationSummaryReport,
+  ConformanceTrendSummaryReport,
 } from "@intentloom/protocol";
 
 function toEvidenceRef(event: TimelineEventRef): EngineeringEvidenceRef {
@@ -559,5 +562,49 @@ export function summarizeWorkflowDurations(
           },
         }
       : {}),
+  };
+}
+
+export function summarizeConformanceTrend(
+  reports: readonly EngineeringConformanceReport[],
+): ConformanceTrendSummaryReport {
+  if (reports.length < 2)
+    throw new Error("at least two conformance reports are required");
+  const normalized = reports.map((report) =>
+    validateEngineeringConformanceReport(report),
+  );
+  const first = normalized[0]!;
+  if (normalized.some((report) => report.caseType !== first.caseType))
+    throw new Error("conformance trend reports must share one case type");
+  if (normalized.some((report) => report.policyId !== first.policyId))
+    throw new Error("conformance trend reports must share one policy");
+  const statusCounts = {
+    pass: 0,
+    violation: 0,
+    "missing-evidence": 0,
+    "ambiguous-evidence": 0,
+    unsupported: 0,
+  };
+  const severityCounts = {
+    error: 0,
+    warning: 0,
+    info: 0,
+  };
+  let findingCount = 0;
+  for (const report of normalized) {
+    for (const finding of report.findings) {
+      statusCounts[finding.status] += 1;
+      severityCounts[finding.severity] += 1;
+      findingCount += 1;
+    }
+  }
+  return {
+    operationVersion: 1,
+    caseType: first.caseType,
+    policyId: first.policyId,
+    reportCount: normalized.length,
+    findingCount,
+    statusCounts,
+    severityCounts,
   };
 }
