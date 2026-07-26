@@ -94,7 +94,11 @@ import {
   getWorkspaceConversation,
   appendWorkspaceMessage,
   listWorkspaceConversations,
+  promoteWorkspaceConversationToProposal,
+  reviewWorkspaceProposal,
+  applyWorkspaceProposal,
   type AgentWorkspaceMode,
+  type WorkspaceProposalReviewResult,
   type SecurityFindingSeverity,
   type SecurityFindingState,
   type SecurityAdapterCategory,
@@ -328,7 +332,7 @@ const usage = [
   "       intentloom session <start|close|list|get|delete|export> [--id ID] [--task TASK] [--state STATE] [--root PATH] [--json]",
   "       intentloom security <import|inspect|coverage|dismiss|accept-risk|list|scan|baseline|policy|sandbox|audit|verify> [--file PATH] [--id ID] [--reason REASON] [--approved-by USER] [--severity SEVERITY] [--state STATE] [--category CATEGORY] [--root PATH] [--json]",
   "       intentloom ui [PROJECT_PATH|--root PATH] [--json]",
-  "       intentloom workspace <start|get|list|append> [--mode MODE] [--conversation-id ID] [--content TEXT] [--root PATH] [--json]",
+  "       intentloom workspace <start|get|list|append|promote|review|apply> [--mode MODE] [--conversation-id ID] [--proposal-id ID] [--plan-file PATH] [--approved-by USER] [--content TEXT] [--root PATH] [--json]",
   "       adoption mappings use --project-owned-mapping SOURCE=DESTINATION",
   "       or --documentation-mapping SOURCE=DESTINATION",
 ].join("\n");
@@ -429,10 +433,12 @@ function parseArguments(args: readonly string[]): ParsedArguments {
     );
   if (
     command === "workspace" &&
-    !["start", "get", "list", "append"].includes(args[1] ?? "")
+    !["start", "get", "list", "append", "promote", "review", "apply"].includes(
+      args[1] ?? "",
+    )
   )
     throw new CliUsageError(
-      "workspace requires start, get, list, or append subcommand",
+      "workspace requires start, get, list, append, promote, review, or apply subcommand",
     );
   const flags = new Set<string>();
   const values = new Map<string, string>();
@@ -2843,6 +2849,77 @@ export async function runCli(
           io.stdout(lines.join("\n"));
         }
         return 0;
+      }
+      if (subcommand === "promote") {
+        const conversationId = parsed.values.get("--conversation-id") ?? "";
+        const proposalId = parsed.values.get("--proposal-id");
+        const proposal = await promoteWorkspaceConversationToProposal(
+          {
+            root,
+            conversationId,
+            ...(proposalId !== undefined ? { proposalId } : {}),
+          },
+          fileSystem,
+        );
+        if (json) {
+          io.stdout(JSON.stringify(proposal, null, 2));
+        } else {
+          io.stdout(
+            `Promoted conversation ${conversationId} to proposal ${proposalId ?? "default"} (items: ${proposal.items.length})`,
+          );
+        }
+        return 0;
+      }
+      if (subcommand === "review") {
+        const proposalId = parsed.values.get("--proposal-id") ?? "";
+        const policyPath = parsed.values.get("--policy");
+        const review = await reviewWorkspaceProposal(
+          {
+            root,
+            proposalId,
+            ...(policyPath !== undefined ? { policyPath } : {}),
+          },
+          fileSystem,
+        );
+        if (json) {
+          io.stdout(JSON.stringify(review, null, 2));
+        } else {
+          const lines = [
+            `Workspace Proposal Review (${review.proposalId}):`,
+            `Items: ${review.itemsCount}`,
+            `Affected Paths: ${review.affectedPaths.join(", ") || "none"}`,
+            `Sandbox Evaluation: ${review.sandboxEvaluation.allowed ? "ALLOWED" : "BLOCKED"}`,
+            `Ready To Apply: ${review.readyToApply}`,
+          ];
+          io.stdout(lines.join("\n"));
+        }
+        return (review.readyToApply ? 0 : 3) as CliExitCode;
+      }
+      if (subcommand === "apply") {
+        const proposalId = parsed.values.get("--proposal-id") ?? "";
+        const approvedBy = parsed.values.get("--approved-by") ?? "";
+        const planFile = parsed.values.get("--plan-file");
+        const dryRun = parsed.flags.has("--dry-run");
+        const result = await applyWorkspaceProposal(
+          {
+            root,
+            proposalId,
+            approvedBy,
+            ...(planFile !== undefined ? { planFile } : {}),
+            dryRun,
+          },
+          fileSystem,
+        );
+        if (json) {
+          io.stdout(JSON.stringify(result, null, 2));
+        } else {
+          io.stdout(
+            `Applied workspace proposal ${proposalId} (status: ${result.applicationStatus ?? "applied"}, items: ${result.items.length})`,
+          );
+        }
+        return (
+          result.transactionOutcome?.status === "failed" ? 3 : 0
+        ) as CliExitCode;
       }
     }
     if (parsed.command === "doctor")
