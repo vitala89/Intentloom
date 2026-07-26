@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: partial — implementation complete locally; review/merge remains
+Status: partial — draft PR #86 open; CI and maintainer review remain
 
 Active branch: `codex/process-intelligence-next-roadmap-2`
 
-Current objective: review the accepted ADR-0041 implementation and prepare the local branch for maintainer review.
+Current objective: monitor draft PR #86 for CI and maintainer review.
 
-Next first action: review the final diff and local commit, then open a PR only after explicit authorization.
+Next first action: inspect PR #86 checks and review feedback; do not merge until checks and explicit authorization are complete.
 
 ## Watch rules
 
@@ -41,6 +41,37 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-26, Draft PR #86 published
+
+- **Status:** partial
+- **Agent/tool:** Codex with GitHub publish workflow
+- **Branch:** `codex/process-intelligence-next-roadmap-2`
+- **Commits:** `e999667`, `bfc1c9c`, `cf4ace1`, `6e1bcfa`, `48306b8`, `70d9a78`
+- **Pull request:** [#86](https://github.com/vitala89/Intentloom/pull/86), draft, targeting `main`
+- **Objective:** Publish the reviewed ADR-0041 transition interval implementation for CI and maintainer review.
+- **Completed:** Verified a clean branch, pushed `codex/process-intelligence-next-roadmap-2`, created draft PR #86, and confirmed twelve GitHub checks are in progress on Ubuntu, macOS, and Windows with Node 22/24.
+- **Not completed:** CI, maintainer review, conversion from draft, merge into `main`, and release.
+- **Files or packages changed:** No additional source files after the reviewed implementation; PR includes protocol, evidence-analysis, application, daemon, tests, ADR/spec/security/state/changelog, and Duty Watch updates.
+- **Validation:** Local full test suite (727 passed, 3 skipped across 82 files), focused tests, typecheck, lint, build, formatter, and diff-check passed before publication. GitHub PR checks are currently `IN_PROGRESS`.
+- **Decisions and assumptions:** PR is intentionally draft. No merge, release, or publication beyond the branch/PR was performed.
+- **Risks or compatibility impact:** Additive read-only protocol and daemon operation; remote CI remains the compatibility gate.
+- **Open issues or blockers:** CI and maintainer review are pending; merge requires explicit authorization.
+- **Next first action:** Inspect PR #86 checks and review feedback, then merge only when all required checks and explicit approval are present.
+- **Evidence:** [PR #86](https://github.com/vitala89/Intentloom/pull/86), pushed branch, and `gh pr view 86` showing `OPEN`, `isDraft: true`, base `main`, and twelve checks `IN_PROGRESS`.
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant tests, type checks, builds, or compatibility checks passed
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `PROJECT_STATE.md` updated when applicable
+- [x] `DUTY_WATCH.md` handoff completed
+- [x] Related roadmap, ADR, changelog, migration, or reference docs updated
+- [x] Failed or unavailable checks recorded
+- [ ] Pull request checks and maintainer review complete
 
 ### 2026-07-26, Observed workflow transition interval implementation
 

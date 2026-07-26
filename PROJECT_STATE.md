@@ -22,7 +22,7 @@ later justifies separation.
 
 ## Current phase
 
-Engineering Process Intelligence & Agent Memory Evaluation System — conformance, workflow variants, observed duration metrics, conformance trend summary, and deterministic workflow repetition summary merged into `main` at `57a2c9b`; observed workflow transition intervals implemented locally on `codex/process-intelligence-next-roadmap-2` pending review and merge.
+Engineering Process Intelligence & Agent Memory Evaluation System — conformance, workflow variants, observed duration metrics, conformance trend summary, and deterministic workflow repetition summary merged into `main` at `57a2c9b`; observed workflow transition intervals are in draft PR #86 pending CI and maintainer review.
 
 The project must avoid premature structural migration. New applications,
 packages, and repository boundaries are introduced only when roadmap triggers
@@ -47,7 +47,7 @@ before a new release or implementation milestone is declared complete.
 
 ## Active focus
 
-1. Review the local observed workflow transition interval implementation and prepare it for review/merge.
+1. Monitor draft PR #86 for CI and maintainer review before merge.
 2. Keep bottleneck inference, remote ingestion, and model-based judgments behind separate approved specifications and threat review.
 
 ## Architectural invariants
@@ -68,11 +68,11 @@ before a new release or implementation milestone is declared complete.
 
 - Any expansion to bottleneck, performance, causal, actor, repository-reading, persisted, remote, or model-assisted analysis requires a new ADR, specification, and threat review.
 - PR #84 is merged historically; PR #85 is merged and current local `main` is fast-forwarded to `57a2c9b`.
-- ADR-0041 and `WORKFLOW_TRANSITION_INTERVALS_V0_1_SPEC.md` are accepted; the implementation is local and has not yet been reviewed or merged.
+- ADR-0041 and `WORKFLOW_TRANSITION_INTERVALS_V0_1_SPEC.md` are accepted; draft PR #86 is open with CI in progress and has not been reviewed or merged.
 
 ## Current milestone
 
-The first Engineering Process Intelligence & Agent Memory Evaluation increment, including conformance trend summary, is complete and merged; the accepted transition-interval increment is implemented locally pending review.
+The first Engineering Process Intelligence & Agent Memory Evaluation increment, including conformance trend summary, is complete and merged; the accepted transition-interval increment is under review in draft PR #86.
 
 Expected outputs:
 
@@ -86,7 +86,7 @@ Expected outputs:
 
 ## Next platform milestone
 
-Review the local ADR-0041 implementation diff, then open a PR after maintainer approval.
+Complete CI and maintainer review for draft PR #86, then merge only after explicit authorization.
 
 ## State update rules
 
