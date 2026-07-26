@@ -47,17 +47,17 @@ entry directly below this section.
 - **Status:** partial
 - **Agent/tool:** Codex with release-state verification
 - **Branch:** `codex/release-state-unification`
-- **Commits:** local commit pending
+- **Commits:** `1b9997e` (local)
 - **Pull request:** None; publication requires explicit authorization.
 - **Objective:** Reconcile source versions, npm registry state, release audits, README/install guidance, and roadmap status into one capability matrix.
 - **Completed:** Confirmed merged `main` at `83941ab`, GitHub release/tag `v0.4.0-beta.1`, npm `latest=0.1.0-alpha.3` and `next=0.4.0-beta.1`. Added `docs/releases/RELEASE_STATE.md` with capability/CLI/daemon/MCP/experimental columns; updated README, CLI/getting-started/reference docs, changelog, release policy/versioning, v0.4 audit, roadmap, concept/roadmap supplements, and MCP server version reporting. Process-intelligence capabilities are explicitly marked as merged in `main` but not in the published npm artifact.
-- **Not completed:** Final diff review, commit, PR, CI, and merge.
+- **Not completed:** PR, CI, and merge.
 - **Files or packages changed:** `docs/releases/RELEASE_STATE.md`, README/install/reference docs, changelog, release/versioning docs, roadmap/concept docs, `packages/application/src/index.ts`, `packages/mcp-server/src/index.ts`, `tests/mcp-server.test.ts`, `PROJECT_STATE.md`, and `DUTY_WATCH.md`.
 - **Validation:** Before the dependency-environment interruption: full `pnpm test` (728 passed, 3 skipped across 82 files), MCP-focused tests (8 passed), `pnpm typecheck`, `pnpm lint`, `pnpm build`, `pnpm format:check`, and `git diff --check` passed. `pnpm install --offline --frozen-lockfile` confirmed the lockfile resolution is up to date but could not restore a missing cached esbuild tarball; a subsequent network install requires explicit dependency-install authorization.
 - **Decisions and assumptions:** `main` and npm are intentionally separate release boundaries. `0.4.0-beta.1` is the current published prerelease under `next`; `latest` remains `0.1.0-alpha.3`. MCP server version now comes from the synchronized framework version source.
 - **Risks or compatibility impact:** Documentation clarifies existing behavior; the only code change removes a hardcoded stale MCP version. No protocol behavior or package version was changed.
 - **Open issues or blockers:** Local `node_modules` needs restoration before any new validation run; PR publication and any dependency install require explicit authorization.
-- **Next first action:** Review the final diff, commit the documentation/source fix, then open a PR after authorization.
+- **Next first action:** Review commit `1b9997e`, then open a PR after explicit authorization.
 - **Evidence:** `docs/releases/RELEASE_STATE.md`, npm registry metadata, GitHub release `v0.4.0-beta.1`, merge commit `83941ab`, and the validation outputs above.
 
 #### Duty completion checklist
