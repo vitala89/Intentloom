@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: partial — v0.5 release-readiness audit reviewed; release preparation awaits scope approval
+Status: partial — v0.5.0-beta.1 artifacts prepared; remote build/test verification remains
 
 Active branch: `codex/process-intelligence-next-roadmap-3`
 
-Current objective: prepare the `v0.5.0-beta.1` release artifacts after readiness scope approval.
+Current objective: verify the prepared `v0.5.0-beta.1` artifacts remotely before release publication.
 
-Next first action: obtain approval for the five-operation v0.5 scope, then synchronize version/changelog/release-state artifacts.
+Next first action: publish the release-preparation branch for remote CI, then review build/test results before any tag or npm publication.
 
 ## Watch rules
 
@@ -41,6 +41,34 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-27, v0.5.0-beta.1 release artifacts prepared
+
+- **Status:** partial
+- **Agent/tool:** Codex with controlled release-preparation workflow
+- **Branch:** `codex/process-intelligence-next-roadmap-3`
+- **Commits:** `128080d` (local)
+- **Pull request:** None for v0.5 preparation; external publication requires explicit authorization.
+- **Objective:** Prepare the synchronized v0.5 candidate artifacts after scope approval.
+- **Completed:** Synchronized the root, all workspace manifests, and generated core version to `0.5.0-beta.1`; added the unreleased v0.5 changelog section; updated README/install guidance, versioning, publishing, roadmap, release-state, project state, and readiness audit; and kept npm `latest=0.1.0-alpha.3` / `next=0.4.0-beta.1` explicit.
+- **Validation:** Full Prettier 3.9.5 check and `git diff --check` pass. `npm pack --dry-run --json` and `npm publish --dry-run --tag next --access public` pass for `intentloom@0.5.0-beta.1` using an isolated npm cache. Local `pnpm build` is blocked by the damaged dependency environment (`TS2688: Cannot find type definition file for 'node'`); no real publish or tag was attempted.
+- **Decisions and assumptions:** Version synchronization is preparation only. The published npm artifact remains `0.4.0-beta.1`; the v0.5 artifact is not yet tagged or published.
+- **Risks or compatibility impact:** Remote CI must verify build and tests against the new version before release. Existing process-intelligence boundaries and no-CLI/no-MCP claims remain unchanged.
+- **Open issues or blockers:** Local dependency restoration and remote verification are pending; tag/npm publication remains separately authorized.
+- **Next first action:** Publish the release-preparation branch for remote CI, then review build/test results before any tag or npm publication.
+- **Evidence:** commit `128080d`, `docs/audits/V0_5_RELEASE_READINESS.md`, package dry-run outputs, and version synchronization script output.
+
+#### Duty completion checklist
+
+- [x] Scope approval recorded
+- [x] Workspace versions synchronized
+- [x] Changelog and release-state artifacts updated
+- [x] Formatter and diff checks passed
+- [x] Package dry-runs passed
+- [x] Local build limitation recorded
+- [ ] Release-preparation PR published
+- [ ] Remote build/test matrix passed
+- [ ] Tag and npm publication authorized and completed
 
 ### 2026-07-27, v0.5 readiness audit reviewed
 

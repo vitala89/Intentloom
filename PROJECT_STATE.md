@@ -72,6 +72,8 @@ before a new release or implementation milestone is declared complete.
 - npm currently reports `latest=0.1.0-alpha.3` and `next=0.4.0-beta.1`.
 - Workspace packages are synchronized to `0.5.0-beta.1` for release preparation;
   no v0.5 tag or npm publication exists.
+- Local `pnpm build` is currently blocked by the interrupted dependency restore
+  missing `@types/node`; the release PR must re-verify build and tests remotely.
 
 ## Current milestone
 
@@ -93,9 +95,9 @@ Expected outputs:
 
 ## Next platform milestone
 
-Run v0.5 build and package dry-run gates, review the outputs, and prepare a
-release PR; tagging and npm publication remain separate explicitly authorized
-release actions.
+Review the package dry-run outputs, publish the v0.5 release-preparation PR for
+remote build/test verification, and keep tagging/npm publication as separate
+explicitly authorized release actions.
 
 ## State update rules
 
