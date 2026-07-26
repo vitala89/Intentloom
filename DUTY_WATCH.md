@@ -47,7 +47,7 @@ entry directly below this section.
 - **Status:** partial
 - **Agent/tool:** Codex with GitHub publish workflow
 - **Branch:** `codex/process-intelligence-next-roadmap-2`
-- **Commits:** `e999667`, `bfc1c9c`, `cf4ace1`, `6e1bcfa`, `48306b8`, `70d9a78`
+- **Commits:** `e999667`, `bfc1c9c`, `cf4ace1`, `6e1bcfa`, `48306b8`, `70d9a78`, `98de493`
 - **Pull request:** [#86](https://github.com/vitala89/Intentloom/pull/86), draft, targeting `main`
 - **Objective:** Publish the reviewed ADR-0041 transition interval implementation for CI and maintainer review.
 - **Completed:** Verified a clean branch, pushed `codex/process-intelligence-next-roadmap-2`, created draft PR #86, and confirmed twelve GitHub checks are in progress on Ubuntu, macOS, and Windows with Node 22/24.
