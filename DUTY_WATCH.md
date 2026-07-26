@@ -47,6 +47,7 @@ entry directly below this section.
 - **Status:** complete
 - **Agent/tool:** Antigravity AI Pair Programmer
 - **Branch:** `feat/interactive-surfaces-tui`
+- **Pull request:** #79
 - **Objective:** Implement Interactive Surfaces: Read-Only TUI and Desktop Application Shell, including ADR-0033, workspace state provider (`getInteractiveWorkspaceState`), CLI subcommand routing (`intentloom ui`), and comprehensive test coverage.
 - **Completed:** Added `ADR-0033-interactive-surfaces-tui-and-desktop-shell.md`. Implemented `getInteractiveWorkspaceState` in `@intentloom/application` aggregating doctor findings, security audit, and session history into structured presentation view models. Exposed CLI routing for `intentloom ui [--root PATH] [--json]` in `@intentloom/cli`. Added unit & integration tests in `tests/interactive-ui.test.ts`. Updated `PROJECT_STATE.md` and `DUTY_WATCH.md`.
 - **Files changed:** `docs/decisions/ADR-0033-interactive-surfaces-tui-and-desktop-shell.md`, `packages/application/src/index.ts`, `packages/cli/src/command.ts`, `tests/interactive-ui.test.ts`, `PROJECT_STATE.md`, and `DUTY_WATCH.md`.
