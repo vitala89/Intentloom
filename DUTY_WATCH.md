@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: Agent Workspace Discuss & Inspect Modes merged into main; Agent Workspace Plan, Review, and Transactional Apply Modes complete locally
+Status: Agent Workspace Plan, Review & Apply Modes merged into main; Neutron Autonomous Subagent Orchestration & Local Workspace Sync Engine complete locally
 
-Active branch: `feat/agent-workspace-apply-modes`
+Active branch: `feat/neutron-orchestration`
 
-Current objective: commit and open a pull request for Agent Workspace Plan, Review, and Transactional Apply Modes.
+Current objective: commit and open a pull request for Neutron Autonomous Subagent Orchestration & Local Workspace Sync Engine.
 
-Next first action: review Agent Workspace Plan, Review, and Apply Modes final diff, commit it, open a pull request, and merge after review.
+Next first action: review Neutron Orchestration final diff, commit it, open a pull request, and merge after review.
 
 ## Watch rules
 
@@ -41,6 +41,20 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-26, Neutron autonomous subagent orchestration & local workspace sync engine
+
+- **Status:** complete
+- **Agent/tool:** Antigravity AI Pair Programmer
+- **Branch:** `feat/neutron-orchestration`
+- **Objective:** Implement Neutron Autonomous Subagent Orchestration & Local Workspace Sync Engine, including ADR-0036, subagent task record schemas (`NeutronSubagentTaskRecord`), task lifecycle operations (`spawnNeutronSubagentTask`, `getNeutronSubagentTask`, `listNeutronSubagentTasks`), local workspace sync (`syncLocalWorkspaceState`), CLI subcommand routing (`intentloom neutron subagent <spawn|get|list>` and `intentloom neutron sync`), and test coverage.
+- **Completed:** Added `ADR-0036-neutron-autonomous-subagent-orchestration-and-local-workspace-sync.md`. Implemented `NeutronSubagentTaskRecord` schemas and validators in `@intentloom/protocol`. Implemented `spawnNeutronSubagentTask`, `getNeutronSubagentTask`, `listNeutronSubagentTasks`, and `syncLocalWorkspaceState` in `@intentloom/application`. Exposed CLI routing for `intentloom neutron subagent` and `intentloom neutron sync` in `@intentloom/cli`. Added unit & integration tests in `tests/neutron-orchestration.test.ts`. Updated `PROJECT_STATE.md` and `DUTY_WATCH.md`.
+- **Files changed:** `docs/decisions/ADR-0036-neutron-autonomous-subagent-orchestration-and-local-workspace-sync.md`, `packages/protocol/src/index.ts`, `packages/application/src/index.ts`, `packages/cli/src/command.ts`, `tests/neutron-orchestration.test.ts`, `PROJECT_STATE.md`, and `DUTY_WATCH.md`.
+- **Validation:** `pnpm typecheck`, `pnpm lint`, `pnpm format:check`, `pnpm build`, `pnpm vitest run tests/neutron-orchestration.test.ts` (3/3 passed), `pnpm test` (full Vitest run), and `git diff --check` passed cleanly.
+- **Decisions:** Neutron subagent tasks are project-isolated (`.aif/neutron/subagents/`), role-bound (`research`, `arch-checker`, `test-runner`, `conformance-auditor`, `custom`), and enforce zero-mutation read-only guarantees during research and workspace state synchronization.
+- **Risks or compatibility impact:** Additive features in `@intentloom/protocol`, `@intentloom/application`, and `@intentloom/cli`.
+- **Next first action:** Commit `feat/neutron-orchestration`, open a pull request, and merge after approval.
+- **Evidence:** local typecheck, lint, prettier format check, full Vitest run, and `git diff --check`.
 
 ### 2026-07-26, Agent workspace plan, review, and transactional apply modes
 

@@ -2619,3 +2619,84 @@ export function validateWorkspaceConversationRecord(
     updatedAt: stringValue(value.updatedAt, "updatedAt"),
   };
 }
+
+export type NeutronSubagentRole =
+  | "research"
+  | "arch-checker"
+  | "test-runner"
+  | "conformance-auditor"
+  | "custom";
+
+export type NeutronSubagentStatus =
+  "pending" | "running" | "completed" | "failed";
+
+export interface NeutronSubagentTaskRecord {
+  readonly schemaVersion: "1";
+  readonly id: string;
+  readonly projectId: string;
+  readonly conversationId: string | null;
+  readonly role: NeutronSubagentRole;
+  readonly status: NeutronSubagentStatus;
+  readonly taskInput: string;
+  readonly resultOutput: string | null;
+  readonly createdAt: string;
+  readonly completedAt: string | null;
+}
+
+export function validateNeutronSubagentTaskRecord(
+  value: unknown,
+): NeutronSubagentTaskRecord {
+  if (!isObject(value))
+    throw new ProtocolValidationError(
+      -32602,
+      "neutron subagent task record must be an object",
+    );
+  if (value.schemaVersion !== "1")
+    throw new ProtocolValidationError(
+      -32602,
+      "unsupported neutron subagent task record schema version",
+    );
+
+  const roles: readonly NeutronSubagentRole[] = [
+    "research",
+    "arch-checker",
+    "test-runner",
+    "conformance-auditor",
+    "custom",
+  ];
+  const role = stringValue(value.role, "role") as NeutronSubagentRole;
+  if (!roles.includes(role))
+    throw new ProtocolValidationError(
+      -32602,
+      `invalid neutron subagent role '${role}'`,
+    );
+
+  const statuses: readonly NeutronSubagentStatus[] = [
+    "pending",
+    "running",
+    "completed",
+    "failed",
+  ];
+  const status = stringValue(value.status, "status") as NeutronSubagentStatus;
+  if (!statuses.includes(status))
+    throw new ProtocolValidationError(
+      -32602,
+      `invalid neutron subagent status '${status}'`,
+    );
+
+  return {
+    schemaVersion: "1",
+    id: stringValue(value.id, "id"),
+    projectId: stringValue(value.projectId, "projectId"),
+    conversationId:
+      typeof value.conversationId === "string" ? value.conversationId : null,
+    role,
+    status,
+    taskInput: stringValue(value.taskInput, "taskInput"),
+    resultOutput:
+      typeof value.resultOutput === "string" ? value.resultOutput : null,
+    createdAt: stringValue(value.createdAt, "createdAt"),
+    completedAt:
+      typeof value.completedAt === "string" ? value.completedAt : null,
+  };
+}

@@ -22,7 +22,7 @@ later justifies separation.
 
 ## Current phase
 
-Agent Workspace: Plan, Review, and Transactional Apply Modes.
+Neutron Autonomous Subagent Orchestration & Local Workspace Sync Engine.
 
 The project must avoid premature structural migration. New applications,
 packages, and repository boundaries are introduced only when roadmap triggers
@@ -40,16 +40,16 @@ and real consumers justify them.
   connection, evidence, MCP, interactive surfaces, Agent Workspace, Neutron,
   persistent memory, security analysis, engineering process intelligence,
   public monorepo evolution, controlled agent learning, and portable Duty Watch adoption.
-- Duty Watch governance contracts (Phase 1), proposal CLI `intentloom adopt --plan` (Phase 2), transactional apply & rollback engine `intentloom adopt --apply` (Phase 3), pack update 3-way migration `intentloom update` (Phase 4), conformance & security profiles `intentloom conformance` (Phase 5), provider synchronization `intentloom sync` / `intentloom diff` (Phase 6), Memory & Security Candidates M1–M4, S1–S5, Daemon Protocol Contracts for Second Clients, Read-Only Interactive Surfaces TUI, and Agent Workspace Discuss & Inspect Modes are merged into `main`.
+- Duty Watch governance contracts (Phase 1), proposal CLI `intentloom adopt --plan` (Phase 2), transactional apply & rollback engine `intentloom adopt --apply` (Phase 3), pack update 3-way migration `intentloom update` (Phase 4), conformance & security profiles `intentloom conformance` (Phase 5), provider synchronization `intentloom sync` / `intentloom diff` (Phase 6), Memory & Security Candidates M1–M4, S1–S5, Daemon Protocol Contracts for Second Clients, Read-Only Interactive Surfaces TUI, Agent Workspace Discuss & Inspect Modes, and Agent Workspace Plan, Review & Apply Modes are merged into `main`.
 
 These statements must be revalidated against code, tags, CI, and Git history
 before a new release or implementation milestone is declared complete.
 
 ## Active focus
 
-1. Provide proposal promotion (`promoteWorkspaceConversationToProposal`) from conversation context in `packages/application/src/index.ts`.
-2. Provide workspace proposal review diagnostics (`reviewWorkspaceProposal`) evaluating affected paths, risk metrics, and sandbox capability policies in `packages/application/src/index.ts`.
-3. Provide transactional workspace apply (`applyWorkspaceProposal`) with mandatory human approval verification (`--approved-by USER`) and rollback protection.
+1. Provide versioned `NeutronSubagentTaskRecord` schemas and validators in `@intentloom/protocol`.
+2. Provide subagent lifecycle operations (`spawnNeutronSubagentTask`, `getNeutronSubagentTask`, `listNeutronSubagentTasks`) and real-time local workspace sync (`syncLocalWorkspaceState`) in `@intentloom/application`.
+3. Provide CLI subcommand routing for `intentloom neutron subagent <spawn|get|list>` and `intentloom neutron sync` in `@intentloom/cli`.
 
 ## Architectural invariants
 
@@ -67,22 +67,23 @@ before a new release or implementation milestone is declared complete.
 
 ## Current blockers and unknowns
 
-- Plan and Review modes are strictly read-only; codebase mutations occur ONLY during explicit Apply mode execution backed by human approval gates and transactional rollback.
+- Neutron subagent tasks are project-scoped (`.aif/neutron/subagents/`), support role-bound delegation (`research`, `arch-checker`, `test-runner`, `conformance-auditor`, `custom`), and enforce zero-mutation read-only guarantees during research and workspace state synchronization.
 
 ## Current milestone
 
-Implement Agent Workspace: Plan, Review, and Transactional Apply Modes.
+Implement Neutron Autonomous Subagent Orchestration & Local Workspace Sync Engine.
 
 Expected outputs:
 
-- ADR-0035 documenting conversation-to-proposal promotion, workspace review diagnostics, human approval gates, and transactional apply boundaries;
-- application operations (`promoteWorkspaceConversationToProposal`, `reviewWorkspaceProposal`, `applyWorkspaceProposal`) in `@intentloom/application`;
-- CLI subcommand routing for `intentloom workspace promote`, `review`, `apply`;
-- unit and integration tests in `tests/workspace-apply.test.ts`.
+- ADR-0036 documenting subagent task records, role delegation, lifecycle states, and workspace sync engine;
+- `NeutronSubagentTaskRecord` schemas and validators in `@intentloom/protocol`;
+- subagent lifecycle operations and workspace sync engine in `@intentloom/application`;
+- CLI subcommand routing for `intentloom neutron subagent` and `intentloom neutron sync`;
+- unit and integration tests in `tests/neutron-orchestration.test.ts`.
 
 ## Next platform milestone
 
-Design and implement Neutron Autonomous Subagent Orchestration & Local Workspace Sync engine over shared application operations and daemon IPC.
+Design and implement Engineering Process Intelligence & Agent Memory Evaluation System over shared application operations and daemon IPC.
 
 ## State update rules
 
