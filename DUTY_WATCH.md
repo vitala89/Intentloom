@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: partial — PR #87 merged; next process-intelligence candidate is unselected
+Status: partial — PR #87 merged; v0.5 release-readiness audit is next
 
 Active branch: `codex/process-intelligence-next-roadmap-3`
 
-Current objective: unify version and capability documentation around the canonical release-state matrix.
+Current objective: prepare the `v0.5.0-beta.1` release-readiness audit for the merged process-intelligence increment.
 
-Next first action: inspect the process-intelligence roadmap and ADR boundaries, then propose one bounded candidate.
+Next first action: inspect the v0.5 process-intelligence scope, ADRs/specs, and release criteria, then draft the readiness audit.
 
 ## Watch rules
 
@@ -49,14 +49,14 @@ entry directly below this section.
 - **Branch:** `main` → `codex/process-intelligence-next-roadmap-3`
 - **Commits:** merge commit `f546b76`; next branch created from updated `main`
 - **Pull request:** [#87](https://github.com/vitala89/Intentloom/pull/87), merged
-- **Objective:** Complete the release-state documentation milestone and move to the next roadmap step.
+- **Objective:** Complete the release-state documentation milestone and move to the next release-readiness step.
 - **Completed:** Confirmed PR #87 is `MERGED`, all 12 compatibility checks succeeded, fetched `origin/main`, fast-forwarded local `main` from `83941ab` to `f546b76`, and created `codex/process-intelligence-next-roadmap-3`.
-- **Not completed:** Selection, ADR, specification, implementation, PR, and merge for the next process-intelligence candidate.
+- **Not completed:** v0.5 readiness audit, version bump, release tag, npm publication, and merge for the next release.
 - **Validation:** GitHub PR metadata reports merge commit `f546b76` and successful Ubuntu, macOS, and Windows Node 22/24 checks; local `main` matches `origin/main` and is clean at branch creation.
-- **Decisions and assumptions:** The release-state matrix is now part of `main`. Process-intelligence capabilities remain merged in `main` but unreleased to npm; the next candidate must stay descriptive, deterministic, local, read-only, and separately reviewed.
-- **Risks or compatibility impact:** No new runtime behavior was added in this watch. Candidate selection must not introduce waiting-time, rework, bottleneck, causal, remote, persistence, or model claims without a new boundary review.
-- **Open issues or blockers:** The next bounded candidate is intentionally unselected.
-- **Next first action:** Review the process-intelligence concept, current ADRs/specs, and existing protocol/application boundaries; propose one candidate with explicit non-goals.
+- **Decisions and assumptions:** The release-state matrix is now part of `main`. Process-intelligence capabilities remain merged in `main` but unreleased to npm; the next planned release milestone is `v0.5.0-beta.1`.
+- **Risks or compatibility impact:** No new runtime behavior was added in this watch. Release preparation must preserve the explicit process-intelligence boundaries and must not add waiting-time, rework, bottleneck, causal, remote, persistence, or model claims.
+- **Open issues or blockers:** v0.5 release readiness, version synchronization, tag creation, npm publication, and release authorization are pending.
+- **Next first action:** Inspect the v0.5 process-intelligence scope, ADRs/specs, and release criteria, then draft the readiness audit.
 - **Evidence:** merge commit `f546b76`, [PR #87](https://github.com/vitala89/Intentloom/pull/87), and local `git pull --ff-only origin main`.
 
 #### Duty completion checklist
@@ -66,8 +66,8 @@ entry directly below this section.
 - [x] New roadmap branch created
 - [x] `PROJECT_STATE.md` updated
 - [x] `DUTY_WATCH.md` handoff updated
-- [ ] Next candidate selected and specified
-- [ ] Next candidate implemented and merged
+- [ ] v0.5 readiness audit drafted and reviewed
+- [ ] v0.5 release prepared, published, and merged
 
 ### 2026-07-26, PR #87 format failure fixed
 

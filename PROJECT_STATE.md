@@ -89,9 +89,9 @@ Expected outputs:
 
 ## Next platform milestone
 
-Select and specify the next bounded process-intelligence candidate after the
-release-state milestone; implementation requires an accepted ADR, specification,
-and threat-boundary review before code changes.
+Prepare the `v0.5.0-beta.1` release-readiness audit for the process-intelligence
+increment already merged in `main`; publication remains a separate explicitly
+authorized release action.
 
 ## State update rules
 
