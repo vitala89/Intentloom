@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: partial — implementation reviewed locally; authorized PR handoff is blocked by invalid GitHub CLI credentials
+Status: partial — implementation reviewed locally; authorized PR handoff is blocked because no GitHub connector is loaded and local CLI credentials are invalid
 
 Active branch: `codex/process-intelligence-next-candidate`
 
 Current objective: preserve a truthful review handoff for the accepted conformance trend summary implementation.
 
-Next first action: run `gh auth login -h github.com`, verify `gh auth status`, then push and open a PR from `codex/process-intelligence-next-candidate` into `main`.
+Next first action: enable the GitHub connector (or run `gh auth login -h github.com`), verify access, then push and open a PR from `codex/process-intelligence-next-candidate` into `main`.
 
 ## Watch rules
 
@@ -41,6 +41,37 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-26, GitHub connector availability check
+
+- **Status:** partial
+- **Agent/tool:** Codex
+- **Branch:** `codex/process-intelligence-next-candidate`
+- **Commits:** `29ad679` and preceding trend-summary commits
+- **Pull request:** Not opened; the requested GitHub connector is not available in the current tool set.
+- **Objective:** Continue the authorized PR publication through the requested GitHub plugin.
+- **Completed:** Checked the active tools and confirmed no callable GitHub connector is loaded. The local repository remains clean and no push or PR mutation was attempted.
+- **Not completed:** Remote branch publication, PR creation, checks, and merge.
+- **Files or packages changed:** None in this watch.
+- **Validation:** Tool availability inspection completed; the prior `gh auth status` remains failed because the local token is invalid.
+- **Decisions and assumptions:** Do not bypass the requested plugin path or use unauthenticated remote mutation. Preserve the existing reviewed branch and commits.
+- **Risks or compatibility impact:** None locally; remote review status remains unknown.
+- **Open issues or blockers:** Enable the GitHub connector in this session or refresh GitHub CLI authentication.
+- **Next first action:** After connector/auth availability, verify repository/head/base and open the authorized draft PR.
+- **Evidence:** Current `ALL_TOOLS` inventory, clean branch status, and prior GitHub authentication check.
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant tests, type checks, builds, or compatibility checks passed
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `PROJECT_STATE.md` updated when applicable
+- [x] `DUTY_WATCH.md` handoff completed
+- [x] Related roadmap, ADR, changelog, migration, or reference docs updated
+- [x] Failed or unavailable checks recorded
+- [ ] Pull request opened and reviewed
 
 ### 2026-07-26, Authorized PR publication blocked by GitHub authentication
 
