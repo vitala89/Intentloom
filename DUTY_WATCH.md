@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: partial — PR #89 merged; v0.5 publication authorization remains
+Status: blocked — v0.5 publication authorized, but npm authentication is missing
 
 Active branch: `codex/post-v05-state-merge`
 
-Current objective: record PR #89 merge and keep the v0.5 publication gate explicit.
+Current objective: complete PR #90 documentation merge and unblock the authorized v0.5 publication safely.
 
-Next first action: obtain explicit authorization for any v0.5 tag or npm publication; do not perform either action implicitly.
+Next first action: authenticate an approved npm account with publish rights, then re-run the authorization checklist before tagging or publishing.
 
 ## Watch rules
 
@@ -41,6 +41,33 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-27, v0.5 publication authorization received but npm auth blocked
+
+- **Status:** blocked
+- **Agent/tool:** Codex with controlled release authorization checks
+- **Branch:** `codex/post-v05-state-merge`
+- **Commits:** this handoff update is pending
+- **Pull request:** [#90](https://github.com/vitala89/Intentloom/pull/90), draft and open
+- **Objective:** Begin the explicitly authorized v0.5 tag/npm release gate without bypassing repository controls.
+- **Completed:** Recorded the maintainer's explicit authorization for the v0.5 publication step; verified public npm metadata and confirmed current `latest=0.1.0-alpha.3` and `next=0.4.0-beta.1`; updated `RELEASE_STATE.md` to main commit `8f4bec4`.
+- **Validation:** `npm view intentloom --registry=https://registry.npmjs.org/ version dist-tags time --json` succeeded. `npm whoami --registry=https://registry.npmjs.org/` returned HTTP 401 Unauthorized, so no tag or publication was attempted.
+- **Decisions and assumptions:** Authorization covers the v0.5 release action, but does not create npm credentials or package ownership. The npm package remains unchanged.
+- **Risks or compatibility impact:** Publishing without verified account rights could target the wrong package or fail partway through the release sequence; the policy requires stopping until authentication and access are confirmed.
+- **Open issues or blockers:** Authenticate an approved npm account with `intentloom` publish rights; PR #90 CI/review and merge are also pending.
+- **Next first action:** Authenticate an approved npm account, rerun `npm whoami` and `npm access list packages`, then continue only if the checklist gates are satisfied.
+- **Evidence:** `npm whoami` HTTP 401, npm registry metadata captured on 2026-07-27, `docs/releases/PUBLISH_AUTHORIZATION_CHECKLIST.md`, and [PR #90](https://github.com/vitala89/Intentloom/pull/90).
+
+#### Duty completion checklist
+
+- [x] Explicit v0.5 publication authorization recorded
+- [x] Registry metadata verified
+- [x] Missing npm authentication recorded
+- [x] No tag or npm publication attempted while blocked
+- [ ] PR #90 merged
+- [ ] npm account authenticated and package rights verified
+- [ ] v0.5 tag created
+- [ ] v0.5 npm publication completed
 
 ### 2026-07-27, post-merge release-state PR #89 merged
 

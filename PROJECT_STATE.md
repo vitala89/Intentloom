@@ -74,6 +74,10 @@ before a new release or implementation milestone is declared complete.
 - npm currently reports `latest=0.1.0-alpha.3` and `next=0.4.0-beta.1`.
 - Workspace packages are synchronized to `0.5.0-beta.1` for release preparation;
   no v0.5 tag or npm publication exists.
+- The maintainer authorized the v0.5 publication step, but the current npm
+  context is unauthenticated (`npm whoami` returned HTTP 401); publication is
+  blocked until an approved npm account with package publish rights is
+  authenticated.
 - Local `pnpm build` remains blocked by the interrupted dependency restore
   missing `@types/node`; remote CI verified the merged release-preparation
   branch.
@@ -98,8 +102,9 @@ Expected outputs:
 
 ## Next platform milestone
 
-Review the merged v0.5 artifacts, then obtain explicit authorization before any
-tagging or npm publication; keep those release actions separate and auditable.
+Complete PR #90 review/merge, authenticate an approved npm account, then run
+the controlled v0.5 tag and npm publication; keep those release actions
+separate and auditable.
 
 ## State update rules
 

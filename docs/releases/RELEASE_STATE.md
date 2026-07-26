@@ -6,7 +6,7 @@ Historical release audits and roadmap sections retain their original scope, but
 this document is the source of truth for the current status.
 
 Snapshot: 2026-07-27
-Main commit: `f546b76` (PR #87 merged)
+Main commit: `8f4bec4` (PR #89 merged)
 Workspace release-preparation version: `0.5.0-beta.1`
 Published npm package: `intentloom@0.4.0-beta.1` under `next`
 Default npm `latest`: `intentloom@0.1.0-alpha.3`
@@ -49,8 +49,8 @@ preparation; this is not evidence that the new artifact is already published.
 - npm registry: [`intentloom` package](https://www.npmjs.com/package/intentloom)
   reports `latest=0.1.0-alpha.3` and `next=0.4.0-beta.1`.
 - GitHub release: [`v0.4.0-beta.1`](https://github.com/vitala89/Intentloom/releases/tag/v0.4.0-beta.1).
-- Current merge: [PR #87](https://github.com/vitala89/Intentloom/pull/87), merged
-  as `f546b76`.
+- Current merge: [PR #89](https://github.com/vitala89/Intentloom/pull/89), merged
+  as `8f4bec4`.
 - Version source: root `package.json`, synchronized by
   `scripts/sync-version.mjs`.
 
