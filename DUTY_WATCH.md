@@ -47,7 +47,7 @@ entry directly below this section.
 - **Status:** partial
 - **Agent/tool:** Codex with release-state verification
 - **Branch:** `codex/release-state-unification`
-- **Commits:** `1b9997e`, `2aad42e`, `fec2e69` (local)
+- **Commits:** `1b9997e`, `2aad42e`, `fec2e69`, `ea10395`, `9804235` (local)
 - **Pull request:** None; publication requires explicit authorization.
 - **Objective:** Reconcile source versions, npm registry state, release audits, README/install guidance, and roadmap status into one capability matrix.
 - **Completed:** Confirmed merged `main` at `83941ab`, GitHub release/tag `v0.4.0-beta.1`, npm `latest=0.1.0-alpha.3` and `next=0.4.0-beta.1`. Added `docs/releases/RELEASE_STATE.md` with capability/CLI/daemon/MCP/experimental columns; updated README, CLI/getting-started/reference docs, changelog, release policy/versioning, v0.4 audit, roadmap, concept/roadmap supplements, and MCP server version reporting. Process-intelligence capabilities are explicitly marked as merged in `main` but not in the published npm artifact.
