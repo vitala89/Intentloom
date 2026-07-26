@@ -116,7 +116,7 @@ describe("packed adapter compatibility matrix", () => {
     const result = aif(["sync", "--root", root]);
     expect(result.status).toBe(0);
     expect(result.stdout).toContain("No changes required.");
-  });
+  }, 20_000);
 
   it("doctors an all-adapter installation", async () => {
     const root = await project("packed-doctor-all");

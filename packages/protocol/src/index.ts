@@ -861,6 +861,9 @@ export interface SemanticRankingConfig {
   readonly model?: string;
   readonly networkDestination?: string;
   readonly maxMemoryMb?: number;
+  readonly dataScope?: string;
+  readonly retentionPolicy?: string;
+  readonly externalProviderApproved?: boolean;
 }
 
 export interface SemanticRankItem {
@@ -906,6 +909,18 @@ export function validateSemanticRankingConfig(
   if (!validProviders.includes(provider as SemanticRankingProvider))
     throw new ProtocolValidationError(-32602, `invalid provider: ${provider}`);
 
+  if (
+    provider === "external-provider" &&
+    (typeof value.networkDestination !== "string" ||
+      typeof value.model !== "string" ||
+      typeof value.dataScope !== "string" ||
+      typeof value.retentionPolicy !== "string" ||
+      value.externalProviderApproved !== true)
+  )
+    throw new ProtocolValidationError(
+      -32602,
+      "external provider requires model, network destination, data scope, retention policy, and explicit approval",
+    );
   return {
     schemaVersion: "1",
     enabled: value.enabled,
@@ -919,6 +934,16 @@ export function validateSemanticRankingConfig(
       : {}),
     ...(typeof value.maxMemoryMb === "number" && value.maxMemoryMb > 0
       ? { maxMemoryMb: value.maxMemoryMb }
+      : {}),
+    ...(typeof value.dataScope === "string" && value.dataScope.length > 0
+      ? { dataScope: value.dataScope }
+      : {}),
+    ...(typeof value.retentionPolicy === "string" &&
+    value.retentionPolicy.length > 0
+      ? { retentionPolicy: value.retentionPolicy }
+      : {}),
+    ...(value.externalProviderApproved === true
+      ? { externalProviderApproved: true }
       : {}),
   };
 }
@@ -1425,5 +1450,40 @@ export function validatePersistentMemoryExport(
     projectId: stringValue(value.projectId, "projectId"),
     exportedAt: stringValue(value.exportedAt, "exportedAt"),
     items: value.items.map(validatePersistentMemoryItem),
+  };
+}
+
+export type MemoryRenderTarget =
+  | "claude"
+  | "codex"
+  | "gemini"
+  | "cursor"
+  | "copilot"
+  | "mcp"
+  | "desktop"
+  | "neutron";
+export interface PersistentMemorySearchResult {
+  readonly schemaVersion: "1";
+  readonly query: string;
+  readonly items: readonly PersistentMemoryItem[];
+  readonly indexRebuilt: boolean;
+}
+export function validatePersistentMemorySearchResult(
+  value: unknown,
+): PersistentMemorySearchResult {
+  if (
+    !isObject(value) ||
+    value.schemaVersion !== "1" ||
+    !Array.isArray(value.items)
+  )
+    throw new ProtocolValidationError(
+      -32602,
+      "invalid persistent memory search result",
+    );
+  return {
+    schemaVersion: "1",
+    query: stringValue(value.query, "query"),
+    items: value.items.map(validatePersistentMemoryItem),
+    indexRebuilt: Boolean(value.indexRebuilt),
   };
 }

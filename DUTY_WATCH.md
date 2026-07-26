@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: Memory & Security Candidate M1 merged; Candidate M2 accepted persistent memory active
+Status: Memory & Security Candidates M1 and M2 merged; Candidate M3 semantic retrieval complete locally
 
 Active branch: `main`
 
-Current objective: implement accepted persistent-memory lifecycle with proposal, review, explicit approval, supersession, export/import, retention, deletion, and redaction safeguards.
+Current objective: commit and open a pull request for Candidate M3 semantic retrieval and portable adapters.
 
-Next first action: validate Candidate M2 implementation, review its diff, commit it, and open a pull request.
+Next first action: review Candidate M3 final diff, commit it, and open a pull request.
 
 ## Watch rules
 
@@ -42,6 +42,19 @@ entry directly below this section.
 
 ## Watch entries
 
+### 2026-07-26, Memory & Security Candidate M3 semantic retrieval (partial)
+
+- **Status:** complete
+- **Agent/tool:** Codex
+- **Branch:** `codex/memory-security-m3`
+- **Commit:** `bc0d973 feat(memory): add semantic retrieval adapters`
+- **Pull request:** #71 (draft)
+- **Objective:** Begin M3 semantic retrieval and portable adapter work after merged M2.
+- **Completed:** Added provider-neutral persistent-memory search and bounded rendering contracts, plus explicit rebuild/clear lifecycle for `.aif/memory/index.json` derived state and CLI `memory search`, `memory render`, and `memory index` routing. Accepted, project-scoped records are deterministically ranked by local terms and render to named portable targets without network access.
+- **Validation:** `pnpm typecheck` and `pnpm vitest run tests/memory-security-m3.test.ts` passed.
+- **Not completed:** Merge remains subject to human review and approval.
+- **Next first action:** Review draft PR #71, merge after approval, then begin Candidate M4 (Agent Session Lifecycle) with its required ADR and threat review.
+
 ### 2026-07-26, Memory & Security Candidate M2 accepted persistent memory
 
 - **Status:** complete
@@ -58,6 +71,16 @@ entry directly below this section.
 - **Not completed:** Merge remains subject to human review and approval.
 - **Next first action:** Review draft PR #70, merge after approval, then begin Candidate M3 (Semantic Retrieval and Portable Adapters) with its required ADR and threat review.
 - **Evidence:** local typecheck, lint, Prettier check, build, full Vitest run, daemon validation outside sandbox, and `git diff --check`.
+
+### 2026-07-26, PR #71 Windows packed adapter test timeout
+
+- **Status:** complete
+- **Agent/tool:** Codex
+- **Branch:** `codex/memory-security-m3`
+- **Objective:** Fix the failing Windows Node 22 compatibility check for PR #71.
+- **Completed:** Increased only `performs a second all-adapter sync with zero changes` in `tests/adapter-packed-process.test.ts` from Vitest's default five-second timeout to 20 seconds. The Windows runner recorded this deterministic packed CLI integration test at 7.5 seconds; no production code changed.
+- **Validation:** `pnpm vitest run tests/adapter-packed-process.test.ts` passed (13 passed, 1 skipped) in 5.17 seconds; `git diff --check` passed.
+- **Next first action:** Observe rerun CI for PR #71; merge after all required checks pass and approval is granted.
 
 ### 2026-07-26, Framework version bump and v0.4.0-beta.1 candidate release
 
