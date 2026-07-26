@@ -69,11 +69,14 @@ before a new release or implementation milestone is declared complete.
 - Any expansion to bottleneck, performance, causal, actor, repository-reading, persisted, remote, or model-assisted analysis requires a new ADR, specification, and threat review.
 - PR #84 through PR #88 are merged; current local `main` is `f6232e4`. PR #88
   remote compatibility CI passed all 12 checks after the audit formatting fix.
-- Draft PR #89 carries the post-merge readiness and state-document corrections;
-  it does not change runtime behavior or publish artifacts.
+- PR #89 is merged at `8f4bec4`; its post-merge readiness and state-document
+  corrections do not change runtime behavior or publish artifacts.
 - npm currently reports `latest=0.1.0-alpha.3` and `next=0.4.0-beta.1`.
 - Workspace packages are synchronized to `0.5.0-beta.1` for release preparation;
   no v0.5 tag or npm publication exists.
+- The maintainer authorized the v0.5 publication step; npm authentication is
+  confirmed with `intentloom` read-write access, and package dry-runs passed.
+  Publication remains pending the merge of PR #90.
 - Local `pnpm build` remains blocked by the interrupted dependency restore
   missing `@types/node`; remote CI verified the merged release-preparation
   branch.
@@ -98,8 +101,8 @@ Expected outputs:
 
 ## Next platform milestone
 
-Review draft PR #89, then obtain explicit authorization before any tagging or
-npm publication; keep those release actions separate and auditable.
+Complete PR #90 merge, then run the controlled v0.5 tag and npm publication;
+keep those release actions separate and auditable.
 
 ## State update rules
 
