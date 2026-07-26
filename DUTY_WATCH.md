@@ -47,8 +47,8 @@ entry directly below this section.
 - **Status:** partial
 - **Agent/tool:** Codex with local repository and GitHub state verification
 - **Branch:** `agent/desktop-v06-execution-plan`
-- **Commits:** pending final documentation commit
-- **Pull request:** pending
+- **Commits:** local documentation commit `9e3628a`; GitHub connector head `fe53e725`
+- **Pull request:** [#95](https://github.com/vitala89/Intentloom/pull/95), draft
 - **Objective:** Create one durable design and engineering handoff for the next Desktop milestone and recover the Desktop/TUI roadmap intent that did not land in `main`.
 - **Completed:** Verified published `intentloom@0.5.0-beta.1`, tag `v0.5.0-beta.1`, current remote `main` at `05aa0c6`, merged PR #93, misplaced PR #91 base, and open draft PR #94. Added a Desktop documentation entrypoint, System Designer brief, phased v0.6 implementation plan, and copy-ready execution prompt. Updated roadmap and durable state so v0.6 precedes stable v1 planning. Recorded the verified current contract gaps for Diff, root-bound Timeline, capability discovery, client cancellation/errors, and Workspace RPC.
 - **Not completed:** No ADR, protocol, daemon, Tauri, UI, TUI, packaging, merge, tag, publication, or release work was performed. PR #94 is not modified or closed by this branch.
@@ -69,8 +69,8 @@ entry directly below this section.
 - [x] Formatter and Markdown checks passed
 - [x] `git diff --check` passed
 - [x] Final diff reviewed
-- [ ] Documentation commit created
-- [ ] Draft pull request opened
+- [x] Documentation commit created
+- [x] Draft pull request opened
 
 ### 2026-07-27, v0.5.0-beta.1 published to npm
 
