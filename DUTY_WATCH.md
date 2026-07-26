@@ -47,6 +47,7 @@ entry directly below this section.
 - **Status:** complete
 - **Agent/tool:** Antigravity AI Pair Programmer
 - **Branch:** `feat/agent-workspace-apply-modes`
+- **Pull request:** #81
 - **Objective:** Implement Agent Workspace: Plan, Review, and Transactional Apply Modes, including ADR-0035, proposal promotion (`promoteWorkspaceConversationToProposal`), review diagnostics (`reviewWorkspaceProposal`), human approval gates (`applyWorkspaceProposal`), CLI subcommand routing (`intentloom workspace promote|review|apply`), and test coverage.
 - **Completed:** Added `ADR-0035-agent-workspace-plan-review-apply-modes.md`. Implemented `promoteWorkspaceConversationToProposal`, `reviewWorkspaceProposal`, and `applyWorkspaceProposal` in `@intentloom/application`. Exposed CLI routing for `intentloom workspace promote`, `review`, `apply` in `@intentloom/cli`. Added unit & integration tests in `tests/workspace-apply.test.ts`. Updated `PROJECT_STATE.md` and `DUTY_WATCH.md`.
 - **Files changed:** `docs/decisions/ADR-0035-agent-workspace-plan-review-apply-modes.md`, `packages/application/src/index.ts`, `packages/cli/src/command.ts`, `tests/workspace-apply.test.ts`, `PROJECT_STATE.md`, and `DUTY_WATCH.md`.
