@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: partial — workflow repetition summary implementation complete locally; review/merge handoff ready
+Status: partial — draft PR #85 is open; CI and maintainer review are pending
 
 Active branch: `codex/process-intelligence-next-roadmap`
 
-Current objective: commit and hand off the accepted workflow repetition summary implementation for review and merge.
+Current objective: monitor PR #85 checks and complete review/merge of the accepted workflow repetition summary implementation.
 
-Next first action: review the final diff, commit, and open a PR for the accepted workflow repetition summary implementation.
+Next first action: review PR #85 after its compatibility checks complete, then merge only after required human approval.
 
 ## Watch rules
 
@@ -41,6 +41,37 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-26, Draft PR #85 published
+
+- **Status:** partial
+- **Agent/tool:** Codex with GitHub publish workflow
+- **Branch:** `codex/process-intelligence-next-roadmap`
+- **Commits:** `0bbe550`, `9c16b1d`, `40f58de`, `2cf866d`
+- **Pull request:** [#85](https://github.com/vitala89/Intentloom/pull/85), draft, targeting `main`
+- **Objective:** Publish the reviewed workflow repetition summary implementation for remote checks and maintainer review.
+- **Completed:** Verified clean branch and GitHub authentication, pushed the branch, and created draft PR #85 with scope, safety boundary, changelog impact, and validation results.
+- **Not completed:** Compatibility checks, maintainer review, conversion from draft, and merge into `main`.
+- **Files or packages changed:** No files changed in this watch; implementation and documentation are in the listed commits.
+- **Validation:** Local `pnpm test` (723 passed, 3 skipped across 81 files), typecheck, lint, build, format, diff-check, and TDD-focused review passed. PR checks are currently in progress for Ubuntu/macOS/Windows on Node 22/24.
+- **Decisions and assumptions:** PR remains draft until required checks and human review complete; no merge or release was performed.
+- **Risks or compatibility impact:** Additive protocol and daemon method only; remote CI is the remaining compatibility gate.
+- **Open issues or blockers:** PR checks are in progress and maintainer review is pending.
+- **Next first action:** Inspect PR #85 checks and review feedback, then merge after required approval.
+- **Evidence:** PR #85 metadata and `gh pr view 85` status show `OPEN`, `isDraft: true`, base `main`, and twelve checks `IN_PROGRESS`.
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant tests, type checks, builds, or compatibility checks passed
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `PROJECT_STATE.md` updated when applicable
+- [x] `DUTY_WATCH.md` handoff completed
+- [x] Related roadmap, ADR, changelog, migration, or reference docs updated
+- [x] Failed or unavailable checks recorded
+- [ ] Pull request checks and maintainer review complete
 
 ### 2026-07-26, Deterministic workflow repetition summary implementation
 
