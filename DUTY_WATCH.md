@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: Observed workflow-duration metrics implementation published as draft PR #83
+Status: Conformance trend summary candidate specified; approval required before implementation
 
-Active branch: `codex/process-intelligence-memory-evaluation`
+Active branch: `codex/process-intelligence-next-candidate`
 
-Current objective: review draft PR #83 and merge after required CI and human approval.
+Current objective: review and approve or revise the conformance trend summary candidate before implementation.
 
-Next first action: inspect PR #83 checks/review, address actionable feedback, and merge after approval; then select the next candidate through a separate ADR/specification/threat review.
+Next first action: review ADR-0039 and `CONFORMANCE_TREND_SUMMARY_V0_1_SPEC.md`; if approved, implement the pure report and deterministic fixtures.
 
 ## Watch rules
 
@@ -41,6 +41,30 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-26, PR #83 merge and conformance trend summary candidate
+
+- **Status:** partial
+- **Agent/tool:** Codex
+- **Branch:** `codex/process-intelligence-next-candidate`
+- **Pull request:** #83 merged as `890d6d3`
+- **Objective:** Record the merged first process-intelligence increment and define the next bounded candidate.
+- **Completed:** Verified PR #83 merge and all 12 Compatibility checks. Added proposed ADR-0039 and Draft `CONFORMANCE_TREND_SUMMARY_V0_1_SPEC.md`. The candidate aggregates only existing schema-validated conformance reports for one policy and case type; it exposes status/severity counts and forbids raw evidence, actor data, certification, bottleneck claims, remediation ranking, persistence, remote ingestion, and model interpretation. Added security invariant 32 and updated durable project state.
+- **Validation:** GitHub merge/check verification passed. Markdown formatting and `git diff --check` are required before commit.
+- **Decisions:** This is a proposed boundary only. No conformance-trend implementation may begin until ADR-0039 and its specification receive review.
+- **Next first action:** Review and approve or revise ADR-0039 and the draft specification.
+
+### 2026-07-26, PR #83 merged and first process-intelligence increment accepted
+
+- **Status:** complete
+- **Agent/tool:** Codex
+- **Branch:** `main` → `codex/process-intelligence-next-candidate`
+- **Pull request:** #83, merged as `890d6d3`
+- **Objective:** Verify the merge of conformance, workflow-variant, and observed-duration contracts and move the watch to the next roadmap decision.
+- **Completed:** Confirmed PR #83 is merged into `origin/main`; all 12 Compatibility checks for Ubuntu/macOS/Windows on Node 22/24 completed successfully. Updated durable project state and Duty Watch to remove the stale draft-PR status. The merged increment includes versioned conformance, memory-evaluation, workflow-variant, and workflow-duration read-only IPC/application contracts.
+- **Validation:** Git fetch and GitHub PR metadata verification passed; PR #83 state is `MERGED`, merge commit `890d6d3`, and all required Compatibility checks are `SUCCESS`.
+- **Decisions:** The next process-intelligence capability is intentionally unselected until a separate ADR, specification, and threat review define its evidence and privacy boundaries.
+- **Next first action:** Select and specify the next candidate; do not implement broader bottleneck, performance, causal, remote-ingestion, or model-assisted analysis without that review.
 
 ### 2026-07-26, Observed workflow-duration metrics implementation
 

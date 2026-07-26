@@ -22,7 +22,7 @@ later justifies separation.
 
 ## Current phase
 
-Engineering Process Intelligence & Agent Memory Evaluation System — observed workflow-duration metrics complete locally.
+Engineering Process Intelligence & Agent Memory Evaluation System — conformance, workflow variants, and observed duration metrics merged into `main`.
 
 The project must avoid premature structural migration. New applications,
 packages, and repository boundaries are introduced only when roadmap triggers
@@ -47,7 +47,7 @@ before a new release or implementation milestone is declared complete.
 
 ## Active focus
 
-1. Review and merge the deterministic workflow-variant summary and observed workflow-duration metrics implementations; both use only caller-supplied canonical timelines and make no causal claims.
+1. Review and approve or revise the proposed conformance trend summary candidate over the merged application/daemon contracts.
 2. Keep bottleneck inference, remote ingestion, and model-based judgments behind separate approved specifications and threat review.
 
 ## Architectural invariants
@@ -66,22 +66,21 @@ before a new release or implementation milestone is declared complete.
 
 ## Current blockers and unknowns
 
-- Workflow-duration metrics are intentionally limited to aggregate observed intervals. Any expansion to bottleneck, performance, causal, actor, repository-reading, persisted, remote, or model-assisted analysis requires a new ADR, specification, and threat review.
+- ADR-0039 and `CONFORMANCE_TREND_SUMMARY_V0_1_SPEC.md` are proposed, not approved. Any expansion to bottleneck, performance, causal, actor, repository-reading, persisted, remote, or model-assisted analysis requires a new ADR, specification, and threat review.
 
 ## Current milestone
 
-Complete the first Engineering Process Intelligence & Agent Memory Evaluation system increment.
+The first Engineering Process Intelligence & Agent Memory Evaluation increment is complete and merged.
 
 Expected outputs:
 
-- versioned protocol contracts for deterministic, project-scoped conformance and procedural-memory evaluation reads;
-- shared application operations that adapt existing conformance and evaluation engines rather than reimplement them;
-- authenticated local daemon handlers and integration tests for the new read-only operations;
-- ADR-0020 updated to name `@intentloom/protocol` as the canonical conformance-contract source.
+- versioned protocol contracts for deterministic, project-scoped conformance, workflow-variant, workflow-duration, and procedural-memory evaluation reads;
+- shared application operations and authenticated local daemon handlers for the read-only operations;
+- ADR-0020, ADR-0037, and ADR-0038 documenting canonical boundaries and safety constraints.
 
 ## Next platform milestone
 
-Merge the observed workflow-duration metrics implementation, then specify the next candidate only with a separate ADR, specification, and threat review.
+Review and approve or revise the proposed conformance trend summary candidate before implementation.
 
 ## State update rules
 
