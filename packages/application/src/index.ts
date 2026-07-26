@@ -98,6 +98,11 @@ import {
   type SecurityAdapterCategory,
   type SecurityAdapterMetadata,
   type SecurityAdapterResult,
+  type SecurityPolicyEnforcementLevel,
+  type SecurityPolicyRule,
+  type SecurityPolicy,
+  type SecurityBaseline,
+  type SecurityBaselineCheckResult,
   validateSessionSummary,
   validateSkillCatalogMetadata,
   validateSkillDiscoveryResult,
@@ -124,6 +129,9 @@ import {
   validateSarifImportResult,
   validateSecurityAdapterMetadata,
   validateSecurityAdapterResult,
+  validateSecurityPolicy,
+  validateSecurityBaseline,
+  validateSecurityBaselineCheckResult,
 } from "@intentloom/protocol";
 export type {
   RetentionState,
@@ -179,6 +187,11 @@ export type {
   SecurityAdapterCategory,
   SecurityAdapterMetadata,
   SecurityAdapterResult,
+  SecurityPolicyEnforcementLevel,
+  SecurityPolicyRule,
+  SecurityPolicy,
+  SecurityBaseline,
+  SecurityBaselineCheckResult,
 };
 export {
   validateSessionSummary,
@@ -6248,4 +6261,178 @@ export async function runLocalSecurityAdapters(
   }
 
   return results;
+}
+
+function securityPolicyPath(root: string): string {
+  return inside(root, ".aif/security/policy.json");
+}
+
+function securityBaselinePath(root: string): string {
+  return inside(root, ".aif/security/baseline.json");
+}
+
+export async function getSecurityPolicy(
+  options: { root: string; projectId?: string },
+  fs: FileSystem = nodeFileSystem,
+): Promise<SecurityPolicy> {
+  const path = securityPolicyPath(options.root);
+  if (await fs.exists(path)) {
+    try {
+      const raw = JSON.parse(await fs.read(path));
+      return validateSecurityPolicy(raw);
+    } catch {
+      // fallback to default
+    }
+  }
+  return validateSecurityPolicy({
+    schemaVersion: "1",
+    projectId: options.projectId ?? "project-local",
+    defaultEnforcement: "warn",
+    rules: [
+      { target: "critical", enforcement: "fail" },
+      { target: "high", enforcement: "fail" },
+      { target: "medium", enforcement: "warn" },
+      { target: "low", enforcement: "ignore" },
+    ],
+    updatedAt: new Date().toISOString(),
+  });
+}
+
+export async function writeSecurityPolicy(
+  policy: SecurityPolicy,
+  options: { root: string },
+  fs: FileSystem = nodeFileSystem,
+): Promise<SecurityPolicy> {
+  const validated = validateSecurityPolicy(policy);
+  const path = securityPolicyPath(options.root);
+  if (!(await fs.exists(dirname(path)))) {
+    await fs.mkdir(dirname(path));
+  }
+  await fs.write(path, `${JSON.stringify(validated, null, 2)}\n`);
+  return validated;
+}
+
+export async function getSecurityBaseline(
+  options: { root: string },
+  fs: FileSystem = nodeFileSystem,
+): Promise<SecurityBaseline | null> {
+  const path = securityBaselinePath(options.root);
+  if (!(await fs.exists(path))) return null;
+  try {
+    const raw = JSON.parse(await fs.read(path));
+    return validateSecurityBaseline(raw);
+  } catch {
+    return null;
+  }
+}
+
+export async function updateSecurityBaseline(
+  options: { root: string; projectId: string },
+  fs: FileSystem = nodeFileSystem,
+): Promise<SecurityBaseline> {
+  const findings = await listSecurityFindings({ root: options.root }, fs);
+  const now = new Date().toISOString();
+  const sorted = [...findings].sort((a, b) => a.id.localeCompare(b.id));
+  const rawData = JSON.stringify(sorted);
+  const baselineHash = createHash("sha256").update(rawData).digest("hex");
+
+  const baseline = validateSecurityBaseline({
+    schemaVersion: "1",
+    projectId: options.projectId,
+    acceptedFindings: sorted,
+    baselineHash,
+    createdAt: now,
+    updatedAt: now,
+  });
+
+  const path = securityBaselinePath(options.root);
+  if (!(await fs.exists(dirname(path)))) {
+    await fs.mkdir(dirname(path));
+  }
+  await fs.write(path, `${JSON.stringify(baseline, null, 2)}\n`);
+  return baseline;
+}
+
+export async function checkSecurityPolicyAndBaseline(
+  options: { root: string; projectId: string },
+  fs: FileSystem = nodeFileSystem,
+): Promise<SecurityBaselineCheckResult> {
+  const policy = await getSecurityPolicy(options, fs);
+  const baseline = await getSecurityBaseline(options, fs);
+  const currentFindings = await listSecurityFindings(
+    { root: options.root },
+    fs,
+  );
+
+  const baselineMap = new Map<string, SecurityFinding>();
+  if (baseline) {
+    for (const f of baseline.acceptedFindings) {
+      baselineMap.set(f.id, f);
+    }
+  }
+
+  const currentMap = new Map<string, SecurityFinding>();
+  for (const f of currentFindings) {
+    currentMap.set(f.id, f);
+  }
+
+  const newFindings: SecurityFinding[] = [];
+  const resolvedFindings: SecurityFinding[] = [];
+  const policyViolations: SecurityFinding[] = [];
+
+  for (const f of currentFindings) {
+    if (!baselineMap.has(f.id)) {
+      newFindings.push(f);
+    }
+  }
+
+  if (baseline) {
+    for (const f of baseline.acceptedFindings) {
+      if (!currentMap.has(f.id)) {
+        resolvedFindings.push(f);
+      }
+    }
+  }
+
+  let hasFailViolation = false;
+  for (const f of currentFindings) {
+    if (
+      f.state === "dismissed" ||
+      f.state === "accepted-risk" ||
+      f.state === "remediated"
+    ) {
+      continue;
+    }
+
+    let ruleEnforcement = policy.defaultEnforcement;
+    const matchedRule = policy.rules.find(
+      (r) =>
+        r.target === f.ruleId ||
+        r.target === f.category ||
+        r.target === f.severity,
+    );
+    if (matchedRule) {
+      ruleEnforcement = matchedRule.enforcement;
+    }
+
+    if (
+      ruleEnforcement === "fail" ||
+      (ruleEnforcement === "warn" && f.severity === "critical")
+    ) {
+      policyViolations.push(f);
+      if (ruleEnforcement === "fail") {
+        hasFailViolation = true;
+      }
+    }
+  }
+
+  return validateSecurityBaselineCheckResult({
+    schemaVersion: "1",
+    projectId: options.projectId,
+    newFindings,
+    resolvedFindings,
+    policyViolations,
+    exitCode: hasFailViolation ? 3 : 0,
+    checkedAt: new Date().toISOString(),
+  });
 }

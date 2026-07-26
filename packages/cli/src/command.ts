@@ -80,6 +80,10 @@ import {
   listSecurityFindings,
   getSecurityFinding,
   runLocalSecurityAdapters,
+  getSecurityPolicy,
+  getSecurityBaseline,
+  updateSecurityBaseline,
+  checkSecurityPolicyAndBaseline,
   type SecurityFindingSeverity,
   type SecurityFindingState,
   type SecurityAdapterCategory,
@@ -304,7 +308,7 @@ const usage = [
   "       intentloom delegate --profile NAME --role ROLE --task-id ID [--root PATH] [--json]",
   "       intentloom context <get> [--query QUERY] [--max-tokens NUM] [--max-items NUM] [--root PATH] [--json]",
   "       intentloom session <start|close|list|get|delete|export> [--id ID] [--task TASK] [--state STATE] [--root PATH] [--json]",
-  "       intentloom security <import|inspect|coverage|dismiss|accept-risk|list|scan> [--file PATH] [--id ID] [--reason REASON] [--approved-by USER] [--severity SEVERITY] [--state STATE] [--category CATEGORY] [--root PATH] [--json]",
+  "       intentloom security <import|inspect|coverage|dismiss|accept-risk|list|scan|baseline|policy> [--file PATH] [--id ID] [--reason REASON] [--approved-by USER] [--severity SEVERITY] [--state STATE] [--category CATEGORY] [--root PATH] [--json]",
   "       adoption mappings use --project-owned-mapping SOURCE=DESTINATION",
   "       or --documentation-mapping SOURCE=DESTINATION",
 ].join("\n");
@@ -393,30 +397,39 @@ function parseArguments(args: readonly string[]): ParsedArguments {
       "accept-risk",
       "list",
       "scan",
+      "baseline",
+      "policy",
     ].includes(args[1] ?? "")
   )
     throw new CliUsageError(
-      "security requires import, inspect, coverage, dismiss, accept-risk, list, or scan subcommand",
+      "security requires import, inspect, coverage, dismiss, accept-risk, list, scan, baseline, or policy subcommand",
     );
   const flags = new Set<string>();
   const values = new Map<string, string>();
   const mappingValues = new Map<string, string[]>();
   for (
     let index =
-      command === "evidence" ||
-      command === "summary" ||
-      command === "skill" ||
-      command === "proposal" ||
-      command === "evaluate" ||
-      command === "memory" ||
-      command === "checkpoint" ||
-      command === "profile" ||
-      command === "context" ||
-      command === "session" ||
-      command === "security" ||
-      (command === "rank" && args[1] !== undefined && !args[1].startsWith("--"))
-        ? 2
-        : 1;
+      command === "security" &&
+      args[1] === "baseline" &&
+      args[2] !== undefined &&
+      !args[2].startsWith("--")
+        ? 3
+        : command === "evidence" ||
+            command === "summary" ||
+            command === "skill" ||
+            command === "proposal" ||
+            command === "evaluate" ||
+            command === "memory" ||
+            command === "checkpoint" ||
+            command === "profile" ||
+            command === "context" ||
+            command === "session" ||
+            command === "security" ||
+            (command === "rank" &&
+              args[1] !== undefined &&
+              !args[1].startsWith("--"))
+          ? 2
+          : 1;
     index < args.length;
     index += 1
   ) {
@@ -2397,10 +2410,12 @@ export async function runCli(
           "accept-risk",
           "list",
           "scan",
+          "baseline",
+          "policy",
         ].includes(subcommand ?? "")
       ) {
         throw new CliUsageError(
-          "security requires import, inspect, coverage, dismiss, accept-risk, list, or scan subcommand",
+          "security requires import, inspect, coverage, dismiss, accept-risk, list, scan, baseline, or policy subcommand",
         );
       }
       const projectId = parsed.values.get("--project-id") ?? "project-local";
@@ -2556,6 +2571,57 @@ export async function runCli(
               (r) =>
                 `- [${r.adapter.category}] ${r.adapter.name}: ${r.totalCount} findings`,
             ),
+          ];
+          io.stdout(lines.join("\n"));
+        }
+        return 0;
+      }
+
+      if (subcommand === "baseline") {
+        const action = args[2] ?? "check";
+        if (action === "update") {
+          const baseline = await updateSecurityBaseline(
+            { root, projectId },
+            fileSystem,
+          );
+          if (parsed.flags.has("--json")) {
+            io.stdout(JSON.stringify(baseline, null, 2));
+          } else {
+            io.stdout(
+              `Updated security baseline for ${projectId}: ${baseline.acceptedFindings.length} findings accepted (hash: ${baseline.baselineHash.slice(0, 8)})`,
+            );
+          }
+          return 0;
+        }
+        const result = await checkSecurityPolicyAndBaseline(
+          { root, projectId },
+          fileSystem,
+        );
+        if (parsed.flags.has("--json")) {
+          io.stdout(JSON.stringify(result, null, 2));
+        } else {
+          const lines = [
+            `Security Baseline & Policy Check for ${projectId}:`,
+            `New Findings: ${result.newFindings.length}`,
+            `Resolved Findings: ${result.resolvedFindings.length}`,
+            `Policy Violations: ${result.policyViolations.length}`,
+            `Exit Code: ${result.exitCode}`,
+          ];
+          io.stdout(lines.join("\n"));
+        }
+        return result.exitCode as CliExitCode;
+      }
+
+      if (subcommand === "policy") {
+        const policy = await getSecurityPolicy({ root, projectId }, fileSystem);
+        if (parsed.flags.has("--json")) {
+          io.stdout(JSON.stringify(policy, null, 2));
+        } else {
+          const lines = [
+            `Security Policy for ${policy.projectId}:`,
+            `Default Enforcement: ${policy.defaultEnforcement}`,
+            `Rules (${policy.rules.length}):`,
+            ...policy.rules.map((r) => `- ${r.target}: ${r.enforcement}`),
           ];
           io.stdout(lines.join("\n"));
         }

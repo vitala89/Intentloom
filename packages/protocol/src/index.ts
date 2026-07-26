@@ -1899,3 +1899,175 @@ export function validateSecurityAdapterResult(
     executedAt: stringValue(value.executedAt, "executedAt"),
   };
 }
+
+export type SecurityPolicyEnforcementLevel = "ignore" | "warn" | "fail";
+
+export interface SecurityPolicyRule {
+  readonly target: string;
+  readonly enforcement: SecurityPolicyEnforcementLevel;
+  readonly severityOverride?: SecurityFindingSeverity;
+}
+
+export interface SecurityPolicy {
+  readonly schemaVersion: "1";
+  readonly projectId: string;
+  readonly defaultEnforcement: SecurityPolicyEnforcementLevel;
+  readonly rules: readonly SecurityPolicyRule[];
+  readonly allowedScanners?: readonly string[];
+  readonly updatedAt: string;
+}
+
+export interface SecurityBaseline {
+  readonly schemaVersion: "1";
+  readonly projectId: string;
+  readonly acceptedFindings: readonly SecurityFinding[];
+  readonly baselineHash: string;
+  readonly createdAt: string;
+  readonly updatedAt: string;
+}
+
+export interface SecurityBaselineCheckResult {
+  readonly schemaVersion: "1";
+  readonly projectId: string;
+  readonly newFindings: readonly SecurityFinding[];
+  readonly resolvedFindings: readonly SecurityFinding[];
+  readonly policyViolations: readonly SecurityFinding[];
+  readonly exitCode: number;
+  readonly checkedAt: string;
+}
+
+export function validateSecurityPolicy(value: unknown): SecurityPolicy {
+  if (!isObject(value))
+    throw new ProtocolValidationError(
+      -32602,
+      "security policy must be an object",
+    );
+  if (value.schemaVersion !== "1")
+    throw new ProtocolValidationError(
+      -32602,
+      "unsupported security policy schema version",
+    );
+
+  const levels: readonly SecurityPolicyEnforcementLevel[] = [
+    "ignore",
+    "warn",
+    "fail",
+  ];
+  const defaultEnforcement = stringValue(
+    value.defaultEnforcement,
+    "defaultEnforcement",
+  ) as SecurityPolicyEnforcementLevel;
+  if (!levels.includes(defaultEnforcement))
+    throw new ProtocolValidationError(
+      -32602,
+      "invalid security policy default enforcement level",
+    );
+
+  const rawRules = Array.isArray(value.rules) ? value.rules : [];
+  const rules: SecurityPolicyRule[] = rawRules.map((r, idx) => {
+    if (!isObject(r))
+      throw new ProtocolValidationError(
+        -32602,
+        `rules at index ${idx} must be an object`,
+      );
+    const enf = stringValue(
+      r.enforcement,
+      `rules[${idx}].enforcement`,
+    ) as SecurityPolicyEnforcementLevel;
+    if (!levels.includes(enf))
+      throw new ProtocolValidationError(
+        -32602,
+        `invalid enforcement level at rules[${idx}]`,
+      );
+    return {
+      target: stringValue(r.target, `rules[${idx}].target`),
+      enforcement: enf,
+      ...(typeof r.severityOverride === "string" &&
+      r.severityOverride.length > 0
+        ? { severityOverride: r.severityOverride as SecurityFindingSeverity }
+        : {}),
+    };
+  });
+
+  return {
+    schemaVersion: "1",
+    projectId: stringValue(value.projectId, "projectId"),
+    defaultEnforcement,
+    rules,
+    ...(Array.isArray(value.allowedScanners)
+      ? {
+          allowedScanners: stringArray(
+            value.allowedScanners,
+            "allowedScanners",
+          ),
+        }
+      : {}),
+    updatedAt: stringValue(value.updatedAt, "updatedAt"),
+  };
+}
+
+export function validateSecurityBaseline(value: unknown): SecurityBaseline {
+  if (!isObject(value))
+    throw new ProtocolValidationError(
+      -32602,
+      "security baseline must be an object",
+    );
+  if (value.schemaVersion !== "1")
+    throw new ProtocolValidationError(
+      -32602,
+      "unsupported security baseline schema version",
+    );
+
+  if (!Array.isArray(value.acceptedFindings))
+    throw new ProtocolValidationError(
+      -32602,
+      "acceptedFindings must be an array",
+    );
+
+  return {
+    schemaVersion: "1",
+    projectId: stringValue(value.projectId, "projectId"),
+    acceptedFindings: value.acceptedFindings.map(validateSecurityFinding),
+    baselineHash: stringValue(value.baselineHash, "baselineHash"),
+    createdAt: stringValue(value.createdAt, "createdAt"),
+    updatedAt: stringValue(value.updatedAt, "updatedAt"),
+  };
+}
+
+export function validateSecurityBaselineCheckResult(
+  value: unknown,
+): SecurityBaselineCheckResult {
+  if (!isObject(value))
+    throw new ProtocolValidationError(
+      -32602,
+      "security baseline check result must be an object",
+    );
+  if (value.schemaVersion !== "1")
+    throw new ProtocolValidationError(
+      -32602,
+      "unsupported security baseline check result schema version",
+    );
+
+  if (!Array.isArray(value.newFindings))
+    throw new ProtocolValidationError(-32602, "newFindings must be an array");
+  if (!Array.isArray(value.resolvedFindings))
+    throw new ProtocolValidationError(
+      -32602,
+      "resolvedFindings must be an array",
+    );
+  if (!Array.isArray(value.policyViolations))
+    throw new ProtocolValidationError(
+      -32602,
+      "policyViolations must be an array",
+    );
+
+  return {
+    schemaVersion: "1",
+    projectId: stringValue(value.projectId, "projectId"),
+    newFindings: value.newFindings.map(validateSecurityFinding),
+    resolvedFindings: value.resolvedFindings.map(validateSecurityFinding),
+    policyViolations: value.policyViolations.map(validateSecurityFinding),
+    exitCode: typeof value.exitCode === "number" ? value.exitCode : 0,
+    checkedAt: stringValue(value.checkedAt, "checkedAt"),
+  };
+}
