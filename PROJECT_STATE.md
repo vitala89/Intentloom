@@ -22,7 +22,7 @@ later justifies separation.
 
 ## Current phase
 
-Engineering Process Intelligence & Agent Memory Evaluation System — conformance, workflow variants, observed duration metrics, conformance trend summary, deterministic workflow repetition summary, and transition intervals are merged into `main` at `83941ab`; the process-intelligence increment is post-`0.4.0-beta.1` and not yet published to npm.
+Engineering Process Intelligence & Agent Memory Evaluation System — conformance, workflow variants, observed duration metrics, conformance trend summary, deterministic workflow repetition summary, and transition intervals are merged into `main` at `f546b76`; workspace release preparation is synchronized to `0.5.0-beta.1`, while npm still serves `0.4.0-beta.1` under `next`.
 
 The project must avoid premature structural migration. New applications,
 packages, and repository boundaries are introduced only when roadmap triggers
@@ -70,13 +70,15 @@ before a new release or implementation milestone is declared complete.
 - PR #84, PR #85, PR #86, and PR #87 are merged; current local `main` is
   `f546b76`.
 - npm currently reports `latest=0.1.0-alpha.3` and `next=0.4.0-beta.1`.
-- Release-state documentation now distinguishes the published `0.4.0-beta.1` artifact from post-release process-intelligence code in `main`.
+- Workspace packages are synchronized to `0.5.0-beta.1` for release preparation;
+  no v0.5 tag or npm publication exists.
 
 ## Current milestone
 
 The first Engineering Process Intelligence & Agent Memory Evaluation increment,
 including transition intervals, is complete and merged in `main`; the
-`v0.5.0-beta.1` release-readiness audit is the active follow-up milestone.
+`v0.5.0-beta.1` release-readiness audit and artifact preparation are the active
+follow-up milestone.
 
 Expected outputs:
 
@@ -91,9 +93,9 @@ Expected outputs:
 
 ## Next platform milestone
 
-Prepare version, changelog, and release-state changes for `v0.5.0-beta.1` after
-the readiness audit scope is approved; publication remains a separate explicitly
-authorized release action.
+Run v0.5 build and package dry-run gates, review the outputs, and prepare a
+release PR; tagging and npm publication remain separate explicitly authorized
+release actions.
 
 ## State update rules
 

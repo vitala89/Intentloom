@@ -11,7 +11,7 @@ and synchronizing engineering intent across AI-assisted development workflows. I
 turns a canonical catalog of policies, workflows, templates, schemas, and skills
 into deterministic, reviewable tool-specific guidance.
 
-**Status:** Beta · **Current prerelease:** `0.4.0-beta.1` (`next`) · **Default npm:** `0.1.0-alpha.3` (`latest`) · **Node.js:** `>=22`
+**Status:** Beta · **Workspace candidate:** `0.5.0-beta.1` (unpublished) · **Published prerelease:** `0.4.0-beta.1` (`next`) · **Default npm:** `0.1.0-alpha.3` (`latest`) · **Node.js:** `>=22`
 
 See the [release state](docs/releases/RELEASE_STATE.md) for the exact boundary
 between the published npm artifact and capabilities currently merged into
@@ -72,11 +72,14 @@ npm install --save-dev intentloom@next
 pnpm add --save-dev intentloom@next
 ```
 
-For reproducible installs, pin the current release:
+For reproducible installs, pin the current published release:
 
 ```bash
 npm install --save-dev intentloom@0.4.0-beta.1
 ```
+
+The workspace is preparing `0.5.0-beta.1`; it is not available from npm until
+an explicitly authorized release.
 
 You can also inspect the CLI without installing it globally:
 

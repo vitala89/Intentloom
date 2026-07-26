@@ -8,9 +8,9 @@ merged in `main` at `83941ab` and carried into the release-state merge commit
 
 The v0.5 candidate implementation scope is present in `main` and covered by
 accepted ADRs, versioned protocol contracts, pure application analysis, and
-authenticated local daemon handlers. It is not yet a release: workspace
-packages still report `0.4.0-beta.1`, npm `next` still points to `0.4.0-beta.1`,
-and no v0.5 tag or npm publication is authorized.
+authenticated local daemon handlers. Release preparation has synchronized the
+workspace packages to `0.5.0-beta.1`; npm `next` still points to the published
+`0.4.0-beta.1` artifact, and no v0.5 tag or npm publication is authorized.
 
 This audit is therefore a readiness baseline, not a release approval.
 
@@ -36,9 +36,9 @@ persistence, or model judgments.
 | ADR and specification coverage             | PASS    | ADR-0037 through ADR-0041 and matching v0.1 specifications are merged                                                                                                     |
 | Protocol/application/daemon implementation | PASS    | Canonical protocol methods, pure analysis operations, application bridges, and authenticated daemon routing are in `main`                                                 |
 | Deterministic tests                        | PASS    | Process-intelligence focused tests and the merged baseline full suite passed before the release-state documentation work; PR #87 CI also passed all 12 compatibility jobs |
-| Workspace version synchronization          | PENDING | Run `scripts/sync-version.mjs` for `0.5.0-beta.1` only after the release decision is approved                                                                             |
-| Release changelog and release-state update | PENDING | Add the v0.5 section and change the main/npm boundary only after version preparation                                                                                      |
-| Build, pack, and dry-run publication       | PENDING | Run `pnpm build`, `npm pack --dry-run --json`, and `npm publish --dry-run --tag next --access public` from `packages/cli`                                                 |
+| Workspace version synchronization          | PASS    | Root, all workspace manifests, and generated core version are synchronized to `0.5.0-beta.1`                                                                              |
+| Release changelog and release-state update | PASS    | v0.5 candidate section, workspace/npm boundary, roadmap, and publishing notes are updated                                                                                 |
+| Build, pack, and dry-run publication       | PARTIAL | `npm pack --dry-run --json` and `npm publish --dry-run --tag next --access public` pass for `intentloom@0.5.0-beta.1`; local `pnpm build` is blocked by the interrupted environment missing `@types/node`, so remote CI must re-verify |
 | Git tag and npm publication                | BLOCKED | Requires explicit maintainer authorization, npm ownership/permissions, and a successful readiness review                                                                  |
 
 ## Release blockers and non-goals
@@ -50,12 +50,12 @@ persistence, or model judgments.
 - Waiting-time semantics, rework classification, bottleneck inference, causal
   analysis, live providers, external MCP ingestion, persistence, and model
   interpretation remain outside this candidate.
-- No version bump, tag, npm publication, dist-tag change, or trusted-publishing
-  configuration is performed by this audit.
+- No tag, npm publication, dist-tag change, or trusted-publishing configuration
+  is performed by this preparation step.
 
 ## Verdict
 
-**Implementation baseline ready for release review; publication not yet
-authorized.** The next action is to review this audit, decide whether the
-five bounded operations are the intended v0.5 scope, then prepare the version
-and release artifacts under the publishing checklist.
+**Release preparation ready for remote artifact verification; publication not
+yet authorized.** Package dry-runs pass for `0.5.0-beta.1`. Local build remains
+blocked by the damaged dependency environment; the release PR must run the full
+build/test matrix before any tag or npm publication decision.

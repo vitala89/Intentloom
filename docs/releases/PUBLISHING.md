@@ -8,7 +8,8 @@ package-readiness work.
 
 Current registry evidence is recorded in [`RELEASE_STATE.md`](RELEASE_STATE.md):
 `intentloom@0.4.0-beta.1` is under `next`, while `latest` remains
-`0.1.0-alpha.3`.
+`0.1.0-alpha.3`. The workspace is preparing `0.5.0-beta.1`; no tag or npm
+publication has been performed for it.
 
 For every prerelease, an authorized maintainer must confirm ownership of the
 npm name, complete
