@@ -87,6 +87,8 @@ import {
   getSandboxCapabilityPolicy,
   writeSandboxCapabilityPolicy,
   evaluateProposalAgainstSandbox,
+  getSecurityAuditReport,
+  runContinuousSecurityAudit,
   type SecurityFindingSeverity,
   type SecurityFindingState,
   type SecurityAdapterCategory,
@@ -312,7 +314,7 @@ const usage = [
   "       intentloom delegate --profile NAME --role ROLE --task-id ID [--root PATH] [--json]",
   "       intentloom context <get> [--query QUERY] [--max-tokens NUM] [--max-items NUM] [--root PATH] [--json]",
   "       intentloom session <start|close|list|get|delete|export> [--id ID] [--task TASK] [--state STATE] [--root PATH] [--json]",
-  "       intentloom security <import|inspect|coverage|dismiss|accept-risk|list|scan|baseline|policy|sandbox> [--file PATH] [--id ID] [--reason REASON] [--approved-by USER] [--severity SEVERITY] [--state STATE] [--category CATEGORY] [--root PATH] [--json]",
+  "       intentloom security <import|inspect|coverage|dismiss|accept-risk|list|scan|baseline|policy|sandbox|audit|verify> [--file PATH] [--id ID] [--reason REASON] [--approved-by USER] [--severity SEVERITY] [--state STATE] [--category CATEGORY] [--root PATH] [--json]",
   "       adoption mappings use --project-owned-mapping SOURCE=DESTINATION",
   "       or --documentation-mapping SOURCE=DESTINATION",
 ].join("\n");
@@ -404,10 +406,12 @@ function parseArguments(args: readonly string[]): ParsedArguments {
       "baseline",
       "policy",
       "sandbox",
+      "audit",
+      "verify",
     ].includes(args[1] ?? "")
   )
     throw new CliUsageError(
-      "security requires import, inspect, coverage, dismiss, accept-risk, list, scan, baseline, policy, or sandbox subcommand",
+      "security requires import, inspect, coverage, dismiss, accept-risk, list, scan, baseline, policy, sandbox, audit, or verify subcommand",
     );
   const flags = new Set<string>();
   const values = new Map<string, string>();
@@ -2418,10 +2422,12 @@ export async function runCli(
           "baseline",
           "policy",
           "sandbox",
+          "audit",
+          "verify",
         ].includes(subcommand ?? "")
       ) {
         throw new CliUsageError(
-          "security requires import, inspect, coverage, dismiss, accept-risk, list, scan, baseline, policy, or sandbox subcommand",
+          "security requires import, inspect, coverage, dismiss, accept-risk, list, scan, baseline, policy, sandbox, audit, or verify subcommand",
         );
       }
       const projectId = parsed.values.get("--project-id") ?? "project-local";
@@ -2685,6 +2691,34 @@ export async function runCli(
           return (result.allowed ? 0 : 3) as CliExitCode;
         }
         return 0;
+      }
+
+      if (subcommand === "audit" || subcommand === "verify") {
+        const report = await runContinuousSecurityAudit(
+          { root, projectId },
+          fileSystem,
+        );
+        if (parsed.flags.has("--json")) {
+          io.stdout(JSON.stringify(report, null, 2));
+        } else {
+          const lines = [
+            `Continuous Security Audit & Verification for ${report.projectId}:`,
+            `Security Health Score: ${report.healthScore}%`,
+            `Audit Hash: ${report.auditHash.slice(0, 8)}`,
+            `Invariant Verification (${report.invariantChecks.length} checks):`,
+            ...report.invariantChecks.map(
+              (c) =>
+                `- [#${c.invariantId}] ${c.title}: ${c.status.toUpperCase()} (${c.details})`,
+            ),
+          ];
+          io.stdout(lines.join("\n"));
+        }
+        const hasFailedInvariant = report.invariantChecks.some(
+          (c) => c.status === "failed",
+        );
+        return (
+          report.healthScore >= 80 && !hasFailedInvariant ? 0 : 3
+        ) as CliExitCode;
       }
     }
     if (parsed.command === "doctor")

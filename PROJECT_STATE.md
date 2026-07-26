@@ -22,7 +22,7 @@ later justifies separation.
 
 ## Current phase
 
-Memory & Security Candidate S4: Controlled Agentic Security Sandbox.
+Memory & Security Candidate S5: Continuous Security Audit and Verification.
 
 The project must avoid premature structural migration. New applications,
 packages, and repository boundaries are introduced only when roadmap triggers
@@ -40,17 +40,17 @@ and real consumers justify them.
   connection, evidence, MCP, interactive surfaces, Agent Workspace, Neutron,
   persistent memory, security analysis, engineering process intelligence,
   public monorepo evolution, controlled agent learning, and portable Duty Watch adoption.
-- Duty Watch governance contracts (Phase 1), proposal CLI `intentloom adopt --plan` (Phase 2), transactional apply & rollback engine `intentloom adopt --apply` (Phase 3), pack update 3-way migration `intentloom update` (Phase 4), conformance & security profiles `intentloom conformance` (Phase 5), provider synchronization `intentloom sync` / `intentloom diff` (Phase 6), and Memory & Security Candidates M1–M4, S1–S3 are merged into `main`.
+- Duty Watch governance contracts (Phase 1), proposal CLI `intentloom adopt --plan` (Phase 2), transactional apply & rollback engine `intentloom adopt --apply` (Phase 3), pack update 3-way migration `intentloom update` (Phase 4), conformance & security profiles `intentloom conformance` (Phase 5), provider synchronization `intentloom sync` / `intentloom diff` (Phase 6), and Memory & Security Candidates M1–M4, S1–S4 are merged into `main`.
 
 These statements must be revalidated against code, tags, CI, and Git history
 before a new release or implementation milestone is declared complete.
 
 ## Active focus
 
-1. Provide versioned sandbox capability policy contracts (`.aif/security/sandbox.json`) with capability modes (`read-only`, `proposal-only`, `mutating`).
-2. Restrict agent mutations using path prefix rules, command allowlists, and network controls.
-3. Evaluate agent mutation proposals against sandbox policies before execution with structured violation diagnostics.
-4. Expose CLI subcommands under `intentloom security sandbox <check|validate|policy>`.
+1. Provide versioned continuous security audit report schemas (`.aif/security/audit-report.json`).
+2. Automate verification of security invariants (Invariants 1–28) across memory, sessions, policies, baselines, and sandboxes.
+3. Compute quantitative security health score (0–100%) and maintain tamper-evident SHA-256 audit hashes.
+4. Expose CLI subcommands under `intentloom security audit` and `intentloom security verify`.
 
 ## Architectural invariants
 
@@ -68,19 +68,19 @@ before a new release or implementation milestone is declared complete.
 
 ## Current blockers and unknowns
 
-- Agent mutation proposals violating sandbox capability policies are blocked before execution to prevent out-of-sandbox mutations.
+- Continuous security audit reports are tamper-evident via SHA-256 digests and exit with non-zero code 3 on security posture failure.
 
 ## Current milestone
 
-Implement Memory & Security Candidate S4: Controlled Agentic Security Sandbox.
+Implement Memory & Security Candidate S5: Continuous Security Audit and Verification.
 
 Expected outputs:
 
-- ADR-0030 documenting controlled agentic security sandbox architecture;
-- versioned `SandboxCapabilityPolicy` and `SandboxEvaluationResult` schemas and validators in `@intentloom/protocol`;
-- sandbox capability policy and evaluation operations (`getSandboxCapabilityPolicy`, `writeSandboxCapabilityPolicy`, `evaluateProposalAgainstSandbox`) in `@intentloom/application`;
-- CLI command routing under `intentloom security sandbox`;
-- unit and integration tests covering sandbox policy management, path allowlists, command restrictions, capability mode enforcement, and CLI routing.
+- ADR-0031 documenting continuous security audit and verification architecture;
+- versioned `ContinuousSecurityAuditReport` schema and validator in `@intentloom/protocol`;
+- continuous security audit operations (`runContinuousSecurityAudit`, `getSecurityAuditReport`) in `@intentloom/application`;
+- CLI command routing under `intentloom security audit` and `intentloom security verify`;
+- unit and integration tests covering invariant checks 1–28, health score calculation, audit hash logging, and CLI routing.
 
 ## Next platform milestone
 
