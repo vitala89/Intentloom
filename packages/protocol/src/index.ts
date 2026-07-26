@@ -2207,3 +2207,84 @@ export function validateSandboxEvaluationResult(
     evaluatedAt: stringValue(value.evaluatedAt, "evaluatedAt"),
   };
 }
+
+export type SecurityInvariantStatus = "passed" | "warning" | "failed";
+
+export interface SecurityInvariantCheck {
+  readonly invariantId: number;
+  readonly title: string;
+  readonly status: SecurityInvariantStatus;
+  readonly details: string;
+}
+
+export interface ContinuousSecurityAuditReport {
+  readonly schemaVersion: "1";
+  readonly projectId: string;
+  readonly healthScore: number;
+  readonly invariantChecks: readonly SecurityInvariantCheck[];
+  readonly auditHash: string;
+  readonly auditedAt: string;
+}
+
+export function validateContinuousSecurityAuditReport(
+  value: unknown,
+): ContinuousSecurityAuditReport {
+  if (!isObject(value))
+    throw new ProtocolValidationError(
+      -32602,
+      "continuous security audit report must be an object",
+    );
+  if (value.schemaVersion !== "1")
+    throw new ProtocolValidationError(
+      -32602,
+      "unsupported continuous security audit report schema version",
+    );
+
+  if (!Array.isArray(value.invariantChecks))
+    throw new ProtocolValidationError(
+      -32602,
+      "invariantChecks must be an array",
+    );
+
+  const statuses: readonly SecurityInvariantStatus[] = [
+    "passed",
+    "warning",
+    "failed",
+  ];
+
+  const invariantChecks: SecurityInvariantCheck[] = value.invariantChecks.map(
+    (item, idx) => {
+      if (!isObject(item))
+        throw new ProtocolValidationError(
+          -32602,
+          `invariantChecks at index ${idx} must be an object`,
+        );
+      const status = stringValue(
+        item.status,
+        `invariantChecks[${idx}].status`,
+      ) as SecurityInvariantStatus;
+      if (!statuses.includes(status))
+        throw new ProtocolValidationError(
+          -32602,
+          `invalid invariant check status at index ${idx}`,
+        );
+
+      return {
+        invariantId:
+          typeof item.invariantId === "number" ? item.invariantId : 0,
+        title: stringValue(item.title, `invariantChecks[${idx}].title`),
+        status,
+        details: stringValue(item.details, `invariantChecks[${idx}].details`),
+      };
+    },
+  );
+
+  return {
+    schemaVersion: "1",
+    projectId: stringValue(value.projectId, "projectId"),
+    healthScore: typeof value.healthScore === "number" ? value.healthScore : 0,
+    invariantChecks,
+    auditHash: stringValue(value.auditHash, "auditHash"),
+    auditedAt: stringValue(value.auditedAt, "auditedAt"),
+  };
+}

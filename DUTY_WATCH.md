@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: Memory & Security Candidates M1–M4, S1–S3 merged into main; Candidate S4 Controlled Agentic Security Sandbox complete locally
+Status: Memory & Security Candidates M1–M4, S1–S4 merged into main; Candidate S5 Continuous Security Audit and Verification complete locally
 
-Active branch: `feat/memory-security-s4`
+Active branch: `feat/memory-security-s5`
 
-Current objective: commit and open a pull request for Candidate S4 Controlled Agentic Security Sandbox.
+Current objective: commit and open a pull request for Candidate S5 Continuous Security Audit and Verification.
 
-Next first action: review Candidate S4 final diff, commit it, open a pull request, and merge after review.
+Next first action: review Candidate S5 final diff, commit it, open a pull request, and merge after review.
 
 ## Watch rules
 
@@ -41,6 +41,21 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-26, Memory & Security Candidate S5 continuous security audit and verification
+
+- **Status:** complete
+- **Agent/tool:** Antigravity AI Pair Programmer
+- **Branch:** `feat/memory-security-s5`
+- **Pull request:** #77
+- **Objective:** Implement Candidate S5: Continuous Security Audit and Verification, including ADR-0031, threat model updates, versioned protocol schemas, private application operations (`runContinuousSecurityAudit`, `getSecurityAuditReport`), CLI command routing (`intentloom security audit`, `intentloom security verify`), and comprehensive test coverage.
+- **Completed:** Added `ADR-0031-continuous-security-audit-and-verification.md` and updated `THREAT_MODEL.md` with threat boundary analysis and security invariant 29. Implemented `SecurityInvariantStatus`, `SecurityInvariantCheck`, `ContinuousSecurityAuditReport` schemas and validators in `@intentloom/protocol`. Implemented invariant verification engine (1–28 checks), health score calculation (0–100%), and tamper-evident SHA-256 audit hashing (`runContinuousSecurityAudit`) in `@intentloom/application`. Exposed CLI routing for `intentloom security audit` and `intentloom security verify` in `@intentloom/cli`. Added unit & integration tests in `tests/memory-security-s5.test.ts`. Updated `PROJECT_STATE.md` and `DUTY_WATCH.md`.
+- **Files changed:** `docs/decisions/ADR-0031-continuous-security-audit-and-verification.md`, `docs/security/THREAT_MODEL.md`, `packages/protocol/src/index.ts`, `packages/application/src/index.ts`, `packages/cli/src/command.ts`, `tests/memory-security-s5.test.ts`, `PROJECT_STATE.md`, and `DUTY_WATCH.md`.
+- **Validation:** `pnpm typecheck`, `pnpm lint`, `pnpm format:check`, `pnpm build`, `pnpm vitest run tests/memory-security-s5.test.ts` (3/3 passed), `pnpm test` (full Vitest run), and `git diff --check` passed cleanly.
+- **Decisions:** Continuous security audit verifies active invariants (1–28), logs tamper-evident SHA-256 digests under `.aif/security/audit-report.json`, and returns exit code 3 on health score < 80% or failing invariant checks.
+- **Risks or compatibility impact:** Additive feature in `@intentloom/protocol`, `@intentloom/application`, and `@intentloom/cli`. Completes Memory & Security Roadmap Candidates M1–M4 and S1–S5.
+- **Next first action:** Commit `feat/memory-security-s5`, open a pull request, merge after approval, and conclude Memory & Security roadmap.
+- **Evidence:** local typecheck, lint, prettier format check, full Vitest run, and `git diff --check`.
 
 ### 2026-07-26, Memory & Security Candidate S4 controlled agentic security sandbox
 
