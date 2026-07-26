@@ -68,6 +68,8 @@ before a new release or implementation milestone is declared complete.
 
 - Any expansion to bottleneck, performance, causal, actor, repository-reading, persisted, remote, or model-assisted analysis requires a new ADR, specification, and threat review.
 - PR #84, PR #85, and PR #86 are merged; current local `main` is `83941ab`.
+- Draft PR #87 publishes the release-state unification branch for CI and review;
+  it has not been merged.
 - npm currently reports `latest=0.1.0-alpha.3` and `next=0.4.0-beta.1`.
 - Release-state documentation now distinguishes the published `0.4.0-beta.1` artifact from post-release process-intelligence code in `main`.
 
@@ -88,7 +90,9 @@ Expected outputs:
 
 ## Next platform milestone
 
-Review and publish the release-state documentation branch, then keep the matrix current for the next release decision.
+Review draft PR #87 for the release-state documentation branch, then merge only
+after CI and maintainer review; keep the matrix current for the next release
+decision.
 
 ## State update rules
 

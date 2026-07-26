@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: partial — release-state unification implemented and locally reviewed; PR remains
+Status: partial — release-state unification published as draft PR #87; CI/review remain
 
 Active branch: `codex/release-state-unification`
 
 Current objective: unify version and capability documentation around the canonical release-state matrix.
 
-Next first action: publish this branch and open a PR after explicit authorization.
+Next first action: inspect PR #87 CI and review feedback; merge only after all required checks and explicit approval.
 
 ## Watch rules
 
@@ -41,6 +41,33 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-26, Release-state draft PR #87 published
+
+- **Status:** partial
+- **Agent/tool:** Codex with GitHub publish workflow
+- **Branch:** `codex/release-state-unification`
+- **Commits:** `6829942` plus the release-state commits below (local and remote)
+- **Pull request:** [#87](https://github.com/vitala89/Intentloom/pull/87), draft, targeting `main`
+- **Objective:** Publish the reviewed release-state unification branch for remote CI and maintainer review.
+- **Completed:** Pushed `codex/release-state-unification` to `origin` and created draft PR #87 with the release-state scope, npm/main boundary, validation history, and compatibility notes.
+- **Not completed:** Remote CI, maintainer review, conversion from draft, merge, and release.
+- **Validation:** Local branch was clean; `git diff main...HEAD --check` passed. Before the dependency-environment interruption, full tests, MCP tests, typecheck, lint, build, and format checks passed; dependency-backed reruns remain unavailable because the offline cache lacks the required esbuild tarball.
+- **Decisions and assumptions:** PR remains draft until remote checks and maintainer review are available. No merge or release was performed.
+- **Risks or compatibility impact:** Documentation-led release-state clarification plus synchronized MCP version reporting; no protocol behavior or package version change.
+- **Open issues or blockers:** PR #87 CI/review are pending; network API access was intermittent during creation but the PR was successfully created.
+- **Next first action:** Inspect PR #87 checks and review feedback, then merge only after all required checks and explicit approval.
+- **Evidence:** [PR #87](https://github.com/vitala89/Intentloom/pull/87), pushed branch, `git diff main...HEAD --check`, and release-state matrix.
+
+#### Duty completion checklist
+
+- [x] Final diff reviewed for scope
+- [x] Relevant prior validation and unavailable checks recorded
+- [x] `PROJECT_STATE.md` updated
+- [x] `DUTY_WATCH.md` handoff updated
+- [x] Pull request published
+- [ ] Remote CI and maintainer review complete
+- [ ] Pull request merged
 
 ### 2026-07-26, Release-state branch final local review
 
