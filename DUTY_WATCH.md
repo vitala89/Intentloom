@@ -47,6 +47,7 @@ entry directly below this section.
 - **Status:** complete
 - **Agent/tool:** Antigravity AI Pair Programmer
 - **Branch:** `feat/memory-security-s4`
+- **Pull request:** #76
 - **Objective:** Implement Candidate S4: Controlled Agentic Security Sandbox, including ADR-0030, threat model updates, versioned protocol schemas, private application operations (`getSandboxCapabilityPolicy`, `writeSandboxCapabilityPolicy`, `evaluateProposalAgainstSandbox`), CLI command routing (`intentloom security sandbox`), and comprehensive test coverage.
 - **Completed:** Added `ADR-0030-controlled-agentic-security-sandbox.md` and updated `THREAT_MODEL.md` with threat boundary analysis and security invariant 28. Implemented `SandboxCapabilityMode`, `SandboxPathRule`, `SandboxCommandRule`, `SandboxCapabilityPolicy`, `SandboxEvaluationResult` schemas and validators in `@intentloom/protocol`. Implemented sandbox policy management and proposal evaluation algorithm (`evaluateProposalAgainstSandbox`) in `@intentloom/application`. Exposed CLI routing for `intentloom security sandbox <check|validate|policy>` in `@intentloom/cli`. Added unit & integration tests in `tests/memory-security-s4.test.ts`. Updated `PROJECT_STATE.md` and `DUTY_WATCH.md`.
 - **Files changed:** `docs/decisions/ADR-0030-controlled-agentic-security-sandbox.md`, `docs/security/THREAT_MODEL.md`, `packages/protocol/src/index.ts`, `packages/application/src/index.ts`, `packages/cli/src/command.ts`, `tests/memory-security-s4.test.ts`, `PROJECT_STATE.md`, and `DUTY_WATCH.md`.
