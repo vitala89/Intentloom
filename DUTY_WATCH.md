@@ -47,6 +47,7 @@ entry directly below this section.
 - **Status:** complete
 - **Agent/tool:** Antigravity AI Pair Programmer
 - **Branch:** `feat/memory-security-s1`
+- **Pull request:** #73
 - **Objective:** Implement Candidate S1: Security Evidence and Posture, including ADR-0027, threat model updates, versioned protocol schemas, private application operations, CLI command routing (`intentloom security`), and comprehensive test coverage.
 - **Completed:** Added `ADR-0027-security-evidence-and-posture.md` and updated `THREAT_MODEL.md` with threat boundary analysis and security invariant 25. Implemented `SecurityFinding`, `SecurityCoverageReport`, `SarifImportResult` schemas and validators in `@intentloom/protocol`. Added security operations (`importSarifSecurityReport`, `getSecurityCoverageReport`, `dismissSecurityFinding`, `acceptSecurityRisk`, `listSecurityFindings`, `getSecurityFinding`) in `@intentloom/application` with secret path redaction (`secretLikePath`) and local `.aif/security/` JSON persistence. Exposed CLI routing for `intentloom security <import|inspect|coverage|dismiss|accept-risk|list>` in `@intentloom/cli`. Added unit & integration tests in `tests/memory-security-s1.test.ts`. Updated `PROJECT_STATE.md` and `DUTY_WATCH.md`.
 - **Files changed:** `docs/decisions/ADR-0027-security-evidence-and-posture.md`, `docs/security/THREAT_MODEL.md`, `packages/protocol/src/index.ts`, `packages/application/src/index.ts`, `packages/cli/src/command.ts`, `tests/memory-security-s1.test.ts`, `PROJECT_STATE.md`, and `DUTY_WATCH.md`.
