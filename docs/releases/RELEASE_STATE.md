@@ -5,10 +5,10 @@ It distinguishes code merged into `main` from artifacts published to npm.
 Historical release audits and roadmap sections retain their original scope, but
 this document is the source of truth for the current status.
 
-Snapshot: 2026-07-26  
-Main commit: `83941ab` (PR #86 merged)  
-Workspace development version: `0.4.0-beta.1`  
-Published npm package: `intentloom@0.4.0-beta.1` under `next`  
+Snapshot: 2026-07-26
+Main commit: `83941ab` (PR #86 merged)
+Workspace development version: `0.4.0-beta.1`
+Published npm package: `intentloom@0.4.0-beta.1` under `next`
 Default npm `latest`: `intentloom@0.1.0-alpha.3`
 
 `Implemented in main` means the capability is present in the current source
