@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: partial — PR #88 formatting failure corrected; remote CI rerun remains
+Status: partial — PR #88 compatibility CI green; review and release decision remain
 
 Active branch: `codex/process-intelligence-next-roadmap-3`
 
 Current objective: review PR #88 build/test results and release-readiness evidence before any release publication.
 
-Next first action: push the formatting correction, then inspect the rerun of PR #88 checks; do not merge, tag, or publish npm without separate explicit authorization.
+Next first action: review the green PR #88 checks and draft diff; do not merge, tag, or publish npm without separate explicit authorization.
 
 ## Watch rules
 
@@ -47,15 +47,15 @@ entry directly below this section.
 - **Status:** partial
 - **Agent/tool:** Codex with GitHub Actions CI-fix workflow
 - **Branch:** `codex/process-intelligence-next-roadmap-3`
-- **Commits:** pending; correction is not committed yet
+- **Commits:** `321c06e`
 - **Pull request:** [#88](https://github.com/vitala89/Intentloom/pull/88), draft
 - **Objective:** Diagnose and correct the failed compatibility checks without changing release scope.
 - **Completed:** Inspected both failed Compatibility runs (`30223037624` and `30223036688`) and confirmed all 12 matrix jobs stopped at `pnpm format:check` because `docs/audits/V0_5_RELEASE_READINESS.md` was not Prettier-formatted. Formatted only that file.
 - **Validation:** Full Prettier 3.9.5 check passes and `git diff --check` passes. Typecheck and lint had already completed before the failing format step in the remote logs; the local dependency environment remains incomplete for a full build.
 - **Decisions and assumptions:** This is a documentation-only correction. No package version, runtime behavior, release scope, tag, npm publication, or merge was changed.
 - **Risks or compatibility impact:** PR checks must be rerun after the correction; no claim is made that remote CI is green yet.
-- **Open issues or blockers:** The correction must be committed and pushed, then the new CI result reviewed.
-- **Next first action:** Commit and push the formatting correction, then inspect the rerun of PR #88 checks.
+- **Open issues or blockers:** Formatting is corrected and the latest 12-job compatibility matrix is green; review and release authorization remain pending.
+- **Next first action:** Review the green PR #88 checks and draft diff before any separately authorized release action.
 - **Evidence:** [PR run 30223037624](https://github.com/vitala89/Intentloom/actions/runs/30223037624), [push run 30223036688](https://github.com/vitala89/Intentloom/actions/runs/30223036688), and `docs/audits/V0_5_RELEASE_READINESS.md`.
 
 #### Duty completion checklist
@@ -64,8 +64,8 @@ entry directly below this section.
 - [x] Minimal formatting correction applied
 - [x] Full Prettier check passed
 - [x] `git diff --check` passed
-- [ ] Correction committed and pushed
-- [ ] PR #88 remote checks rerun and passed
+- [x] Correction committed and pushed
+- [x] PR #88 remote checks rerun and passed
 - [ ] Review completed
 
 ### 2026-07-27, v0.5 release-preparation PR #88 published
