@@ -31,15 +31,15 @@ persistence, or model judgments.
 
 ## Verification matrix
 
-| Gate                                       | Status  | Evidence or remaining action                                                                                                                                              |
-| ------------------------------------------ | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| ADR and specification coverage             | PASS    | ADR-0037 through ADR-0041 and matching v0.1 specifications are merged                                                                                                     |
-| Protocol/application/daemon implementation | PASS    | Canonical protocol methods, pure analysis operations, application bridges, and authenticated daemon routing are in `main`                                                 |
-| Deterministic tests                        | PASS    | Process-intelligence focused tests and the merged baseline full suite passed before the release-state documentation work; PR #87 CI also passed all 12 compatibility jobs |
-| Workspace version synchronization          | PASS    | Root, all workspace manifests, and generated core version are synchronized to `0.5.0-beta.1`                                                                              |
-| Release changelog and release-state update | PASS    | v0.5 candidate section, workspace/npm boundary, roadmap, and publishing notes are updated                                                                                 |
+| Gate                                       | Status  | Evidence or remaining action                                                                                                                                                                                                           |
+| ------------------------------------------ | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ADR and specification coverage             | PASS    | ADR-0037 through ADR-0041 and matching v0.1 specifications are merged                                                                                                                                                                  |
+| Protocol/application/daemon implementation | PASS    | Canonical protocol methods, pure analysis operations, application bridges, and authenticated daemon routing are in `main`                                                                                                              |
+| Deterministic tests                        | PASS    | Process-intelligence focused tests and the merged baseline full suite passed before the release-state documentation work; PR #87 CI also passed all 12 compatibility jobs                                                              |
+| Workspace version synchronization          | PASS    | Root, all workspace manifests, and generated core version are synchronized to `0.5.0-beta.1`                                                                                                                                           |
+| Release changelog and release-state update | PASS    | v0.5 candidate section, workspace/npm boundary, roadmap, and publishing notes are updated                                                                                                                                              |
 | Build, pack, and dry-run publication       | PARTIAL | `npm pack --dry-run --json` and `npm publish --dry-run --tag next --access public` pass for `intentloom@0.5.0-beta.1`; local `pnpm build` is blocked by the interrupted environment missing `@types/node`, so remote CI must re-verify |
-| Git tag and npm publication                | BLOCKED | Requires explicit maintainer authorization, npm ownership/permissions, and a successful readiness review                                                                  |
+| Git tag and npm publication                | BLOCKED | Requires explicit maintainer authorization, npm ownership/permissions, and a successful readiness review                                                                                                                               |
 
 ## Release blockers and non-goals
 
