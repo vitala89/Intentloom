@@ -22,7 +22,7 @@ later justifies separation.
 
 ## Current phase
 
-Memory & Security Candidate S1: Security Evidence and Posture.
+Memory & Security Candidate S2: Local Deterministic Security Adapters.
 
 The project must avoid premature structural migration. New applications,
 packages, and repository boundaries are introduced only when roadmap triggers
@@ -40,17 +40,17 @@ and real consumers justify them.
   connection, evidence, MCP, interactive surfaces, Agent Workspace, Neutron,
   persistent memory, security analysis, engineering process intelligence,
   public monorepo evolution, controlled agent learning, and portable Duty Watch adoption.
-- Duty Watch governance contracts (Phase 1), proposal CLI `intentloom adopt --plan` (Phase 2), transactional apply & rollback engine `intentloom adopt --apply` (Phase 3), pack update 3-way migration `intentloom update` (Phase 4), conformance & security profiles `intentloom conformance` (Phase 5), provider synchronization `intentloom sync` / `intentloom diff` (Phase 6), and Memory & Security Candidates M1–M4 are merged into `main`.
+- Duty Watch governance contracts (Phase 1), proposal CLI `intentloom adopt --plan` (Phase 2), transactional apply & rollback engine `intentloom adopt --apply` (Phase 3), pack update 3-way migration `intentloom update` (Phase 4), conformance & security profiles `intentloom conformance` (Phase 5), provider synchronization `intentloom sync` / `intentloom diff` (Phase 6), and Memory & Security Candidates M1–M4, S1 are merged into `main`.
 
 These statements must be revalidated against code, tags, CI, and Git history
 before a new release or implementation milestone is declared complete.
 
 ## Active focus
 
-1. Provide vendor-neutral security finding, evidence, risk acceptance, and posture coverage tracking stored under `.aif/security/`.
-2. Support safe local importing of SARIF static analysis reports with secret path redaction and project isolation.
-3. Support finding dismissal, risk acceptance with approver/reason metadata, and posture reporting without silent capability grants.
-4. Expose CLI subcommands under `intentloom security <import|inspect|coverage|dismiss|accept-risk|list>`.
+1. Provide built-in, local, deterministic, read-only security adapters across eight categories (dependency, secret, config, source, extension, mcp, hook, agentic).
+2. Execute scanner adapters using pure internal file inspections without shell scripts, build execution, or network access.
+3. Automatically correlate and deduplicate findings across scanner rules and evidence locations using `correlateSecurityFindings`.
+4. Expose CLI subcommand `intentloom security scan [--category CATEGORY]`.
 
 ## Architectural invariants
 
@@ -68,19 +68,19 @@ before a new release or implementation milestone is declared complete.
 
 ## Current blockers and unknowns
 
-- External scanner output and imported findings are untrusted evidence and cannot execute scripts or alter project configuration without maintainer review.
+- Local security adapters must execute strictly read-only and never trigger unreviewed repository mutations.
 
 ## Current milestone
 
-Implement Memory & Security Candidate S1: Security Evidence and Posture.
+Implement Memory & Security Candidate S2: Local Deterministic Security Adapters.
 
 Expected outputs:
 
-- ADR-0027 documenting security evidence and posture architecture;
-- versioned `SecurityFinding`, `SecurityCoverageReport`, `SarifImportResult` schemas and validators in `@intentloom/protocol`;
-- security operations (`importSarifSecurityReport`, `getSecurityCoverageReport`, `dismissSecurityFinding`, `acceptSecurityRisk`, `listSecurityFindings`, `getSecurityFinding`) in `@intentloom/application`;
-- CLI command routing under `intentloom security`;
-- unit and integration tests covering SARIF report parsing, secret redaction, risk acceptance, and CLI routing.
+- ADR-0028 documenting local deterministic security adapters architecture;
+- versioned `SecurityAdapterMetadata` and `SecurityAdapterResult` schemas and validators in `@intentloom/protocol`;
+- security adapter runner `runLocalSecurityAdapters` and deduplication engine `correlateSecurityFindings` in `@intentloom/application`;
+- CLI command routing under `intentloom security scan`;
+- unit and integration tests covering security adapter execution, allowlisted operations, finding correlation, and CLI routing.
 
 ## Next platform milestone
 

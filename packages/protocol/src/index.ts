@@ -1802,3 +1802,100 @@ export function validateSarifImportResult(value: unknown): SarifImportResult {
     importedAt: stringValue(value.importedAt, "importedAt"),
   };
 }
+
+export type SecurityAdapterCategory =
+  | "dependency"
+  | "secret"
+  | "config"
+  | "source"
+  | "extension"
+  | "mcp"
+  | "hook"
+  | "agentic";
+
+export interface SecurityAdapterMetadata {
+  readonly schemaVersion: "1";
+  readonly name: string;
+  readonly category: SecurityAdapterCategory;
+  readonly version: string;
+  readonly readOnly: boolean;
+  readonly networkAccess: boolean;
+}
+
+export interface SecurityAdapterResult {
+  readonly schemaVersion: "1";
+  readonly adapter: SecurityAdapterMetadata;
+  readonly findings: readonly SecurityFinding[];
+  readonly totalCount: number;
+  readonly executedAt: string;
+}
+
+export function validateSecurityAdapterMetadata(
+  value: unknown,
+): SecurityAdapterMetadata {
+  if (!isObject(value))
+    throw new ProtocolValidationError(
+      -32602,
+      "security adapter metadata must be an object",
+    );
+  if (value.schemaVersion !== "1")
+    throw new ProtocolValidationError(
+      -32602,
+      "unsupported security adapter metadata schema version",
+    );
+
+  const categories: readonly SecurityAdapterCategory[] = [
+    "dependency",
+    "secret",
+    "config",
+    "source",
+    "extension",
+    "mcp",
+    "hook",
+    "agentic",
+  ];
+  const category = stringValue(
+    value.category,
+    "category",
+  ) as SecurityAdapterCategory;
+  if (!categories.includes(category))
+    throw new ProtocolValidationError(
+      -32602,
+      "invalid security adapter category",
+    );
+
+  return {
+    schemaVersion: "1",
+    name: stringValue(value.name, "name"),
+    category,
+    version: stringValue(value.version, "version"),
+    readOnly: value.readOnly === true,
+    networkAccess: value.networkAccess === true,
+  };
+}
+
+export function validateSecurityAdapterResult(
+  value: unknown,
+): SecurityAdapterResult {
+  if (!isObject(value))
+    throw new ProtocolValidationError(
+      -32602,
+      "security adapter result must be an object",
+    );
+  if (value.schemaVersion !== "1")
+    throw new ProtocolValidationError(
+      -32602,
+      "unsupported security adapter result schema version",
+    );
+
+  if (!Array.isArray(value.findings))
+    throw new ProtocolValidationError(-32602, "findings must be an array");
+
+  return {
+    schemaVersion: "1",
+    adapter: validateSecurityAdapterMetadata(value.adapter),
+    findings: value.findings.map(validateSecurityFinding),
+    totalCount: typeof value.totalCount === "number" ? value.totalCount : 0,
+    executedAt: stringValue(value.executedAt, "executedAt"),
+  };
+}
