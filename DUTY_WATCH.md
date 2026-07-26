@@ -51,7 +51,7 @@ entry directly below this section.
 - **Pull request:** [#91](https://github.com/vitala89/Intentloom/pull/91), draft and stacked on PR #90
 - **Objective:** Define the exact gate for starting the official Desktop application and the subsequent TUI completion milestone.
 - **Completed:** Added planned `v0.6.0-beta.1`; made completion and recording of the authorized v0.5 release the entry gate; sequenced client contract inventory, a Tauri 2 read-only Desktop vertical slice, Desktop workspace review, TUI parity/hardening, and only then approved apply; preserved the standalone daemon, TypeScript-first core, CLI, MCP, and no-full-Rust-rewrite boundaries.
-- **Validation:** Reviewed current `main`, PRs #88–#91, the v0.5 readiness audit, release-state matrix, roadmap, interactive-surfaces concept, governance rules, daemon/TUI/Agent Workspace implementation evidence, and the resulting three-file documentation scope. Compatibility run `30224202359` passed typecheck and lint, then identified only `ROADMAP.md` formatting; Prettier 3.9.5 corrected the table spacing and the three changed Markdown files pass the formatter locally.
+- **Validation:** Reviewed current `main`, PRs #88–#91, the v0.5 readiness audit, release-state matrix, roadmap, interactive-surfaces concept, governance rules, daemon/TUI/Agent Workspace implementation evidence, and the resulting three-file documentation scope. Compatibility run `30224202359` passed typecheck and lint, then identified only `ROADMAP.md` formatting; Prettier 3.9.5 corrected the table spacing. Corrected run `30224279020` passed the complete six-job Linux, macOS, and Windows Node 22/24 matrix.
 - **Decisions and assumptions:** The partial TUI remains available as a contract probe. Full TUI product hardening follows the first Desktop vertical slice so both clients use the same proven daemon, protocol, and presentation contracts.
 - **Risks or compatibility impact:** Documentation-only and backwards compatible. PR #91 remains stacked until PR #90 is merged and the authorized release is recorded. No Tauri package, dependency, tag, npm publication, or runtime behavior is introduced by PR #91.
 - **Open issues or blockers:** PR #90 merge and the authorized v0.5 release remain the active gate. Desktop implementation must not begin from an unsynchronized release state.
@@ -66,7 +66,7 @@ entry directly below this section.
 - [x] Draft PR #91 opened
 - [x] Scope kept documentation-only
 - [x] Prettier formatting correction applied
-- [ ] Corrected PR #91 checks reviewed
+- [x] Corrected PR #91 checks passed
 - [ ] PR #90 merged and v0.5 release recorded
 - [ ] PR #91 retargeted to synchronized `main`
 - [ ] PR #91 checks reviewed
