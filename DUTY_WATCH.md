@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: complete — PR #85 merged and local main updated; next candidate selection ready
+Status: partial — next candidate specified locally; approval required before implementation
 
 Active branch: `codex/process-intelligence-next-roadmap-2`
 
-Current objective: select and specify the next bounded process-intelligence candidate after the merged workflow repetition summary.
+Current objective: review ADR-0041 and the draft observed workflow transition interval specification.
 
-Next first action: inspect the process-intelligence roadmap and propose the next ADR/specification boundary; do not implement before approval.
+Next first action: review and approve or revise ADR-0041 and `WORKFLOW_TRANSITION_INTERVALS_V0_1_SPEC.md`; do not implement before approval.
 
 ## Watch rules
 
@@ -41,6 +41,37 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-26, Observed workflow transition interval candidate
+
+- **Status:** partial
+- **Agent/tool:** Codex
+- **Branch:** `codex/process-intelligence-next-roadmap-2`
+- **Commits:** `57a2c9b` merge baseline; candidate docs uncommitted at handoff
+- **Pull request:** None; this is a local proposal only.
+- **Objective:** Select and specify the next bounded process-intelligence candidate after workflow repetition summary merge.
+- **Completed:** Reviewed the engineering process-intelligence concept and existing duration/repetition boundaries. Proposed ADR-0041 and `WORKFLOW_TRANSITION_INTERVALS_V0_1_SPEC.md`, constraining the candidate to aggregate elapsed minutes for valid adjacent timestamp pairs without queue-time, latency, rework, bottleneck, causal, quality, actor, persistence, remote, or model claims. Added security invariant 34 and updated durable project state.
+- **Not completed:** ADR/spec approval, protocol/analysis implementation, adapters, fixtures, PR, and merge.
+- **Files or packages changed:** `docs/decisions/ADR-0041-observed-workflow-transition-intervals.md`, `docs/specs/WORKFLOW_TRANSITION_INTERVALS_V0_1_SPEC.md`, `docs/security/THREAT_MODEL.md`, `PROJECT_STATE.md`, and `DUTY_WATCH.md`.
+- **Validation:** Roadmap/ADR/concept review completed; Markdown formatting and `git diff --check` are required before commit.
+- **Decisions and assumptions:** An interval is an observed evidence fact only when adjacent valid timestamps are non-decreasing; out-of-order pairs are unavailable evidence and are not repaired.
+- **Risks or compatibility impact:** Documentation-only proposal; no runtime behavior or protocol surface changed.
+- **Open issues or blockers:** Maintainer/user review is required before implementation.
+- **Next first action:** Review ADR-0041 and the draft specification, then approve, revise, or reject the candidate.
+- **Evidence:** `docs/concepts/ENGINEERING_PROCESS_INTELLIGENCE.md`, ADR-0038, ADR-0040, and merged baseline `57a2c9b`.
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [ ] Relevant tests, type checks, builds, or compatibility checks passed
+- [ ] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `PROJECT_STATE.md` updated when applicable
+- [x] `DUTY_WATCH.md` handoff completed
+- [x] Related roadmap, ADR, changelog, migration, or reference docs updated
+- [ ] Failed or unavailable checks recorded
+- [ ] Candidate approved and implemented
 
 ### 2026-07-26, PR #85 merged and local main updated
 

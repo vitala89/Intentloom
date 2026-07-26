@@ -22,7 +22,7 @@ later justifies separation.
 
 ## Current phase
 
-Engineering Process Intelligence & Agent Memory Evaluation System — conformance, workflow variants, observed duration metrics, conformance trend summary, and deterministic workflow repetition summary merged into `main` at `57a2c9b`.
+Engineering Process Intelligence & Agent Memory Evaluation System — conformance, workflow variants, observed duration metrics, conformance trend summary, and deterministic workflow repetition summary merged into `main` at `57a2c9b`; observed workflow transition intervals proposed locally.
 
 The project must avoid premature structural migration. New applications,
 packages, and repository boundaries are introduced only when roadmap triggers
@@ -47,7 +47,7 @@ before a new release or implementation milestone is declared complete.
 
 ## Active focus
 
-1. Select and specify the next bounded process-intelligence candidate over the merged application/daemon contracts.
+1. Review and approve or revise the proposed observed workflow transition interval summary over the merged application/daemon contracts.
 2. Keep bottleneck inference, remote ingestion, and model-based judgments behind separate approved specifications and threat review.
 
 ## Architectural invariants
@@ -69,6 +69,7 @@ before a new release or implementation milestone is declared complete.
 - Any expansion to bottleneck, performance, causal, actor, repository-reading, persisted, remote, or model-assisted analysis requires a new ADR, specification, and threat review.
 - PR #84 is merged and local `main` is fast-forwarded to `c0e7cb0`; no next candidate has been approved yet.
 - PR #85 is merged and local `main` is fast-forwarded to `57a2c9b`; no next candidate has been approved yet.
+- ADR-0041 and `WORKFLOW_TRANSITION_INTERVALS_V0_1_SPEC.md` are proposed only; no transition-interval implementation is authorized yet.
 
 ## Current milestone
 
@@ -84,7 +85,7 @@ Expected outputs:
 
 ## Next platform milestone
 
-Select the next candidate through a separate ADR, specification, and threat review before implementation.
+Review ADR-0041 and the draft transition-interval specification before implementation.
 
 ## State update rules
 
