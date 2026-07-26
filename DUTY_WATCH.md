@@ -47,6 +47,7 @@ entry directly below this section.
 - **Status:** complete
 - **Agent/tool:** Antigravity AI Pair Programmer
 - **Branch:** `feat/neutron-orchestration`
+- **Pull request:** #82
 - **Objective:** Implement Neutron Autonomous Subagent Orchestration & Local Workspace Sync Engine, including ADR-0036, subagent task record schemas (`NeutronSubagentTaskRecord`), task lifecycle operations (`spawnNeutronSubagentTask`, `getNeutronSubagentTask`, `listNeutronSubagentTasks`), local workspace sync (`syncLocalWorkspaceState`), CLI subcommand routing (`intentloom neutron subagent <spawn|get|list>` and `intentloom neutron sync`), and test coverage.
 - **Completed:** Added `ADR-0036-neutron-autonomous-subagent-orchestration-and-local-workspace-sync.md`. Implemented `NeutronSubagentTaskRecord` schemas and validators in `@intentloom/protocol`. Implemented `spawnNeutronSubagentTask`, `getNeutronSubagentTask`, `listNeutronSubagentTasks`, and `syncLocalWorkspaceState` in `@intentloom/application`. Exposed CLI routing for `intentloom neutron subagent` and `intentloom neutron sync` in `@intentloom/cli`. Added unit & integration tests in `tests/neutron-orchestration.test.ts`. Updated `PROJECT_STATE.md` and `DUTY_WATCH.md`.
 - **Files changed:** `docs/decisions/ADR-0036-neutron-autonomous-subagent-orchestration-and-local-workspace-sync.md`, `packages/protocol/src/index.ts`, `packages/application/src/index.ts`, `packages/cli/src/command.ts`, `tests/neutron-orchestration.test.ts`, `PROJECT_STATE.md`, and `DUTY_WATCH.md`.
