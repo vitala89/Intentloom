@@ -128,6 +128,11 @@ before creating product pages. Then deliver the Tauri 2 read-only vertical
 slice and harden `intentloom ui` to parity. Stable v1 compatibility planning
 uses this client evidence later and does not block the v0.6 product milestone.
 
+The [v1.0 compatibility plan](docs/roadmap/V1_0_STABLE_COMPATIBILITY_PLAN.md)
+remains the later stability gate. Its first compatibility-contract ADR/specification
+should be prepared alongside the Desktop work where it does not block the v0.6
+read-only milestone.
+
 ## State update rules
 
 Update this file only when durable project state changes, for example:
