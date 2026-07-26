@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: Daemon Protocol Contracts merged into main; Interactive Surfaces Read-Only TUI and Desktop Application Shell complete locally
+Status: Interactive Surfaces TUI merged into main; Agent Workspace Discuss and Inspect Modes complete locally
 
-Active branch: `feat/interactive-surfaces-tui`
+Active branch: `feat/agent-workspace-modes`
 
-Current objective: commit and open a pull request for Interactive Surfaces Read-Only TUI and Desktop Application Shell.
+Current objective: commit and open a pull request for Agent Workspace Discuss and Inspect Modes.
 
-Next first action: review Interactive Surfaces TUI final diff, commit it, open a pull request, and merge after review.
+Next first action: review Agent Workspace Discuss & Inspect Modes final diff, commit it, open a pull request, and merge after review.
 
 ## Watch rules
 
@@ -41,6 +41,21 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-26, Agent workspace discuss and inspect modes
+
+- **Status:** complete
+- **Agent/tool:** Antigravity AI Pair Programmer
+- **Branch:** `feat/agent-workspace-modes`
+- **Pull request:** #80
+- **Objective:** Implement Agent Workspace: Discuss and Inspect Modes, including ADR-0034, WorkspaceConversationRecord schemas, conversation lifecycle operations in `@intentloom/application`, CLI subcommand routing (`intentloom workspace`), and comprehensive test coverage.
+- **Completed:** Added `ADR-0034-agent-workspace-discuss-and-inspect-modes.md`. Implemented `WorkspaceConversationRecord` schemas and validator in `@intentloom/protocol`. Implemented `startWorkspaceConversation`, `getWorkspaceConversation`, `appendWorkspaceMessage`, and `listWorkspaceConversations` in `@intentloom/application` with secret redaction. Exposed CLI routing for `intentloom workspace <start|get|list|append>` in `@intentloom/cli`. Added unit & integration tests in `tests/workspace-agent.test.ts`. Updated `PROJECT_STATE.md` and `DUTY_WATCH.md`.
+- **Files changed:** `docs/decisions/ADR-0034-agent-workspace-discuss-and-inspect-modes.md`, `packages/protocol/src/index.ts`, `packages/application/src/index.ts`, `packages/cli/src/command.ts`, `tests/workspace-agent.test.ts`, `PROJECT_STATE.md`, and `DUTY_WATCH.md`.
+- **Validation:** `pnpm typecheck`, `pnpm lint`, `pnpm format:check`, `pnpm build`, `pnpm vitest run tests/workspace-agent.test.ts` (4/4 passed), `pnpm test` (full Vitest run), and `git diff --check` passed cleanly.
+- **Decisions:** Workspace conversations are local (`.aif/workspace/conversations/`), project-isolated, auto-redact credentials, and enforce 100% read-only guarantees for Discuss and Inspect modes.
+- **Risks or compatibility impact:** Additive features in `@intentloom/protocol`, `@intentloom/application`, and `@intentloom/cli`.
+- **Next first action:** Commit `feat/agent-workspace-modes`, open a pull request, and merge after approval.
+- **Evidence:** local typecheck, lint, prettier format check, full Vitest run, and `git diff --check`.
 
 ### 2026-07-26, Interactive surfaces read-only TUI and desktop application shell
 

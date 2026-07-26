@@ -90,6 +90,11 @@ import {
   getSecurityAuditReport,
   runContinuousSecurityAudit,
   getInteractiveWorkspaceState,
+  startWorkspaceConversation,
+  getWorkspaceConversation,
+  appendWorkspaceMessage,
+  listWorkspaceConversations,
+  type AgentWorkspaceMode,
   type SecurityFindingSeverity,
   type SecurityFindingState,
   type SecurityAdapterCategory,
@@ -227,6 +232,7 @@ const commands = new Set([
   "session",
   "security",
   "ui",
+  "workspace",
 ]);
 const projectPathCommands = new Set([
   "adopt",
@@ -292,6 +298,9 @@ const valueFlags = new Set([
   "--project-id",
   "--target",
   "--path",
+  "--conversation-id",
+  "--content",
+  "--mode",
 ]);
 const mappingValueFlags = new Set([
   "--project-owned-mapping",
@@ -302,7 +311,7 @@ const usage = [
   "Usage: intentloom <init|plan> [--root PATH] [--dry-run]",
   "       intentloom adopt <--plan|--apply PLAN_FILE> [PROJECT_PATH|--root PATH] [--json] [--output PATH] [--strict] [--dry-run]",
   "       intentloom update <--plan|--apply PLAN_FILE> [PROJECT_PATH|--root PATH] [--json] [--output PATH] [--strict] [--dry-run]",
-  "       intentloom <adopt|update|diff|sync|doctor|inspect|timeline|conformance|summary|skill|proposal|evaluate|memory|checkpoint|rank|profile|delegate|context|session|security|ui> [PROJECT_PATH|--root PATH] [--dry-run]",
+  "       intentloom <adopt|update|diff|sync|doctor|inspect|timeline|conformance|summary|skill|proposal|evaluate|memory|checkpoint|rank|profile|delegate|context|session|security|ui|workspace> [PROJECT_PATH|--root PATH] [--dry-run]",
   "       intentloom evidence import --provider github|gitlab --file PATH --project-key KEY [--json]",
   "       intentloom evidence analyze --provider github|gitlab --file PATH --project-key KEY [--root PATH] [--case-id ID] [--json]",
   "       intentloom conformance [PROJECT_PATH|--root PATH] [--policy PATH] [--timeline PATH] [--case-id ID] [--case-type TYPE] [--json]",
@@ -319,6 +328,7 @@ const usage = [
   "       intentloom session <start|close|list|get|delete|export> [--id ID] [--task TASK] [--state STATE] [--root PATH] [--json]",
   "       intentloom security <import|inspect|coverage|dismiss|accept-risk|list|scan|baseline|policy|sandbox|audit|verify> [--file PATH] [--id ID] [--reason REASON] [--approved-by USER] [--severity SEVERITY] [--state STATE] [--category CATEGORY] [--root PATH] [--json]",
   "       intentloom ui [PROJECT_PATH|--root PATH] [--json]",
+  "       intentloom workspace <start|get|list|append> [--mode MODE] [--conversation-id ID] [--content TEXT] [--root PATH] [--json]",
   "       adoption mappings use --project-owned-mapping SOURCE=DESTINATION",
   "       or --documentation-mapping SOURCE=DESTINATION",
 ].join("\n");
@@ -417,6 +427,13 @@ function parseArguments(args: readonly string[]): ParsedArguments {
     throw new CliUsageError(
       "security requires import, inspect, coverage, dismiss, accept-risk, list, scan, baseline, policy, sandbox, audit, or verify subcommand",
     );
+  if (
+    command === "workspace" &&
+    !["start", "get", "list", "append"].includes(args[1] ?? "")
+  )
+    throw new CliUsageError(
+      "workspace requires start, get, list, or append subcommand",
+    );
   const flags = new Set<string>();
   const values = new Map<string, string>();
   const mappingValues = new Map<string, string[]>();
@@ -438,6 +455,7 @@ function parseArguments(args: readonly string[]): ParsedArguments {
             command === "context" ||
             command === "session" ||
             command === "security" ||
+            command === "workspace" ||
             (command === "rank" &&
               args[1] !== undefined &&
               !args[1].startsWith("--"))
@@ -2746,6 +2764,86 @@ export async function runCli(
         io.stdout(lines.join("\n"));
       }
       return 0;
+    }
+    if (parsed.command === "workspace") {
+      const subcommand = args[1] ?? "";
+      const json = parsed.flags.has("--json");
+      const projectId = parsed.values.get("--project-id") ?? "project-local";
+
+      if (subcommand === "start") {
+        const mode = (parsed.values.get("--mode") ??
+          "discuss") as AgentWorkspaceMode;
+        const conv = await startWorkspaceConversation(
+          { root, projectId, mode },
+          fileSystem,
+        );
+        if (json) {
+          io.stdout(JSON.stringify(conv, null, 2));
+        } else {
+          io.stdout(
+            `Started workspace conversation: ${conv.id} [mode=${conv.mode}]`,
+          );
+        }
+        return 0;
+      }
+      if (subcommand === "get") {
+        const conversationId = parsed.values.get("--conversation-id") ?? "";
+        const conv = await getWorkspaceConversation(
+          { root, conversationId },
+          fileSystem,
+        );
+        if (!conv) {
+          const err = `Workspace conversation ${conversationId} not found`;
+          if (json) io.stdout(JSON.stringify({ error: err }, null, 2));
+          else io.stderr(err);
+          return 3;
+        }
+        if (json) {
+          io.stdout(JSON.stringify(conv, null, 2));
+        } else {
+          const lines = [
+            `Conversation: ${conv.id} (Project: ${conv.projectId}, Mode: ${conv.mode})`,
+            `Messages (${conv.messages.length}):`,
+            ...conv.messages.map(
+              (m) => `[${m.role.toUpperCase()} ${m.timestamp}]: ${m.content}`,
+            ),
+          ];
+          io.stdout(lines.join("\n"));
+        }
+        return 0;
+      }
+      if (subcommand === "append") {
+        const conversationId = parsed.values.get("--conversation-id") ?? "";
+        const content = parsed.values.get("--content") ?? "";
+        const conv = await appendWorkspaceMessage(
+          { root, conversationId, role: "user", content },
+          fileSystem,
+        );
+        if (json) {
+          io.stdout(JSON.stringify(conv, null, 2));
+        } else {
+          io.stdout(
+            `Appended message to conversation ${conv.id} (total messages: ${conv.messages.length})`,
+          );
+        }
+        return 0;
+      }
+      if (subcommand === "list") {
+        const list = await listWorkspaceConversations({ root }, fileSystem);
+        if (json) {
+          io.stdout(JSON.stringify(list, null, 2));
+        } else {
+          const lines = [
+            `Workspace Conversations (${list.length}):`,
+            ...list.map(
+              (c) =>
+                `- ${c.id} [mode=${c.mode}, messages=${c.messages.length}, updated=${c.updatedAt}]`,
+            ),
+          ];
+          io.stdout(lines.join("\n"));
+        }
+        return 0;
+      }
     }
     if (parsed.command === "doctor")
       invalidMetadata.push(
