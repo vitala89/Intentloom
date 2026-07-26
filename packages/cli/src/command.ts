@@ -67,6 +67,13 @@ import {
   renderPersistentMemoryContext,
   rebuildPersistentMemoryIndex,
   clearPersistentMemoryIndex,
+  startAgentSession,
+  getAgentSession,
+  listAgentSessions,
+  closeAgentSession,
+  deleteAgentSession,
+  exportAgentSession,
+  type AgentSessionState,
   type SkillLoadingLevel,
   type SkillProposalState,
   type EvaluationOutcome,
@@ -197,6 +204,7 @@ const commands = new Set([
   "profile",
   "delegate",
   "context",
+  "session",
 ]);
 const projectPathCommands = new Set([
   "adopt",
@@ -267,7 +275,7 @@ const usage = [
   "Usage: intentloom <init|plan> [--root PATH] [--dry-run]",
   "       intentloom adopt <--plan|--apply PLAN_FILE> [PROJECT_PATH|--root PATH] [--json] [--output PATH] [--strict] [--dry-run]",
   "       intentloom update <--plan|--apply PLAN_FILE> [PROJECT_PATH|--root PATH] [--json] [--output PATH] [--strict] [--dry-run]",
-  "       intentloom <adopt|update|diff|sync|doctor|inspect|timeline|conformance|summary|skill|proposal|evaluate|memory|checkpoint|rank|profile|delegate|context> [PROJECT_PATH|--root PATH] [--dry-run]",
+  "       intentloom <adopt|update|diff|sync|doctor|inspect|timeline|conformance|summary|skill|proposal|evaluate|memory|checkpoint|rank|profile|delegate|context|session> [PROJECT_PATH|--root PATH] [--dry-run]",
   "       intentloom evidence import --provider github|gitlab --file PATH --project-key KEY [--json]",
   "       intentloom evidence analyze --provider github|gitlab --file PATH --project-key KEY [--root PATH] [--case-id ID] [--json]",
   "       intentloom conformance [PROJECT_PATH|--root PATH] [--policy PATH] [--timeline PATH] [--case-id ID] [--case-type TYPE] [--json]",
@@ -281,6 +289,7 @@ const usage = [
   "       intentloom profile <create|get|list> [--name NAME] [--root PATH] [--json]",
   "       intentloom delegate --profile NAME --role ROLE --task-id ID [--root PATH] [--json]",
   "       intentloom context <get> [--query QUERY] [--max-tokens NUM] [--max-items NUM] [--root PATH] [--json]",
+  "       intentloom session <start|close|list|get|delete|export> [--id ID] [--task TASK] [--state STATE] [--root PATH] [--json]",
   "       adoption mappings use --project-owned-mapping SOURCE=DESTINATION",
   "       or --documentation-mapping SOURCE=DESTINATION",
 ].join("\n");
@@ -350,6 +359,15 @@ function parseArguments(args: readonly string[]): ParsedArguments {
     throw new CliUsageError("profile requires create, get, or list subcommand");
   if (command === "context" && args[1] !== "get")
     throw new CliUsageError("context requires get subcommand");
+  if (
+    command === "session" &&
+    !["start", "close", "list", "get", "delete", "export"].includes(
+      args[1] ?? "",
+    )
+  )
+    throw new CliUsageError(
+      "session requires start, close, list, get, delete, or export subcommand",
+    );
   const flags = new Set<string>();
   const values = new Map<string, string>();
   const mappingValues = new Map<string, string[]>();
@@ -364,6 +382,7 @@ function parseArguments(args: readonly string[]): ParsedArguments {
       command === "checkpoint" ||
       command === "profile" ||
       command === "context" ||
+      command === "session" ||
       (command === "rank" && args[1] !== undefined && !args[1].startsWith("--"))
         ? 2
         : 1;
@@ -2195,6 +2214,146 @@ export async function runCli(
         io.stdout(lines.join("\n"));
       }
       return 0;
+    }
+    if (parsed.command === "session") {
+      const subcommand = args[1];
+      if (
+        !["start", "close", "list", "get", "delete", "export"].includes(
+          subcommand ?? "",
+        )
+      ) {
+        throw new CliUsageError(
+          "session requires start, close, list, get, delete, or export subcommand",
+        );
+      }
+      const sessionId =
+        parsed.values.get("--id") ??
+        (args[2] && !args[2].startsWith("--") ? args[2] : undefined);
+      const activeTask = parsed.values.get("--task") ?? "unspecified-task";
+      const projectId = parsed.values.get("--project-id") ?? "project-local";
+
+      if (subcommand === "start") {
+        const session = await startAgentSession(
+          {
+            root,
+            projectId,
+            activeTask,
+            ...(sessionId !== undefined ? { sessionId } : {}),
+          },
+          fileSystem,
+        );
+        if (parsed.flags.has("--json")) {
+          io.stdout(JSON.stringify(session, null, 2));
+        } else {
+          io.stdout(
+            `Started agent session ${session.sessionId} [${session.state}] for task: ${session.activeTask}`,
+          );
+        }
+        return 0;
+      }
+      if (subcommand === "close") {
+        if (!sessionId)
+          throw new CliUsageError(
+            "session close requires session ID (--id or positional argument)",
+          );
+        const session = await closeAgentSession(
+          sessionId,
+          { root },
+          fileSystem,
+        );
+        if (parsed.flags.has("--json")) {
+          io.stdout(JSON.stringify(session, null, 2));
+        } else {
+          io.stdout(
+            `Closed agent session ${session.sessionId} [${session.state}]`,
+          );
+        }
+        return 0;
+      }
+      if (subcommand === "list") {
+        const rawState = parsed.values.get("--state");
+        const state = rawState as AgentSessionState | undefined;
+        const sessions = await listAgentSessions(
+          {
+            root,
+            ...(state !== undefined ? { state } : {}),
+          },
+          fileSystem,
+        );
+        if (parsed.flags.has("--json")) {
+          io.stdout(JSON.stringify(sessions, null, 2));
+        } else {
+          const lines = [
+            `Agent Sessions (${sessions.length}):`,
+            ...sessions.map(
+              (s) => `- ${s.sessionId} [${s.state}] (${s.activeTask})`,
+            ),
+          ];
+          io.stdout(lines.join("\n"));
+        }
+        return 0;
+      }
+      if (subcommand === "get") {
+        if (!sessionId)
+          throw new CliUsageError(
+            "session get requires session ID (--id or positional argument)",
+          );
+        const session = await getAgentSession(sessionId, { root }, fileSystem);
+        if (!session) {
+          throw new Error(`agent session not found: ${sessionId}`);
+        }
+        if (parsed.flags.has("--json")) {
+          io.stdout(JSON.stringify(session, null, 2));
+        } else {
+          const lines = [
+            `Agent Session: ${session.sessionId}`,
+            `State: ${session.state}`,
+            `Task: ${session.activeTask}`,
+            `Created: ${session.createdAt}`,
+            `Updated: ${session.updatedAt}`,
+            ...(session.closedAt ? [`Closed: ${session.closedAt}`] : []),
+          ];
+          io.stdout(lines.join("\n"));
+        }
+        return 0;
+      }
+      if (subcommand === "delete") {
+        if (!sessionId)
+          throw new CliUsageError(
+            "session delete requires session ID (--id or positional argument)",
+          );
+        await deleteAgentSession(sessionId, { root }, fileSystem);
+        if (parsed.flags.has("--json")) {
+          io.stdout(JSON.stringify({ status: "deleted", sessionId }, null, 2));
+        } else {
+          io.stdout(`Deleted agent session: ${sessionId}`);
+        }
+        return 0;
+      }
+      if (subcommand === "export") {
+        if (!sessionId)
+          throw new CliUsageError(
+            "session export requires session ID (--id or positional argument)",
+          );
+        const targetPath = parsed.values.get("--output");
+        const result = await exportAgentSession(
+          sessionId,
+          {
+            root,
+            projectId,
+            ...(targetPath !== undefined ? { targetPath } : {}),
+          },
+          fileSystem,
+        );
+        if (parsed.flags.has("--json")) {
+          io.stdout(JSON.stringify(result, null, 2));
+        } else {
+          io.stdout(
+            `Exported agent session ${sessionId} for project ${projectId}${targetPath ? ` to ${targetPath}` : ""}`,
+          );
+        }
+        return 0;
+      }
     }
     if (parsed.command === "doctor")
       invalidMetadata.push(
