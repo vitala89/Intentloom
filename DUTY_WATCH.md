@@ -72,6 +72,16 @@ entry directly below this section.
 - **Next first action:** Review draft PR #70, merge after approval, then begin Candidate M3 (Semantic Retrieval and Portable Adapters) with its required ADR and threat review.
 - **Evidence:** local typecheck, lint, Prettier check, build, full Vitest run, daemon validation outside sandbox, and `git diff --check`.
 
+### 2026-07-26, PR #71 Windows packed adapter test timeout
+
+- **Status:** complete
+- **Agent/tool:** Codex
+- **Branch:** `codex/memory-security-m3`
+- **Objective:** Fix the failing Windows Node 22 compatibility check for PR #71.
+- **Completed:** Increased only `performs a second all-adapter sync with zero changes` in `tests/adapter-packed-process.test.ts` from Vitest's default five-second timeout to 20 seconds. The Windows runner recorded this deterministic packed CLI integration test at 7.5 seconds; no production code changed.
+- **Validation:** `pnpm vitest run tests/adapter-packed-process.test.ts` passed (13 passed, 1 skipped) in 5.17 seconds; `git diff --check` passed.
+- **Next first action:** Observe rerun CI for PR #71; merge after all required checks pass and approval is granted.
+
 ### 2026-07-26, Framework version bump and v0.4.0-beta.1 candidate release
 
 - **Status:** complete
