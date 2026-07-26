@@ -22,7 +22,7 @@ later justifies separation.
 
 ## Current phase
 
-Engineering Process Intelligence & Agent Memory Evaluation System — conformance, workflow variants, and observed duration metrics merged into `main`.
+Engineering Process Intelligence & Agent Memory Evaluation System — conformance, workflow variants, observed duration metrics, and conformance trend summaries merged into `main`.
 
 The project must avoid premature structural migration. New applications,
 packages, and repository boundaries are introduced only when roadmap triggers
@@ -47,7 +47,7 @@ before a new release or implementation milestone is declared complete.
 
 ## Active focus
 
-1. Review and approve or revise the proposed conformance trend summary candidate over the merged application/daemon contracts.
+1. Review and merge the conformance trend summary implementation over the merged application/daemon contracts.
 2. Keep bottleneck inference, remote ingestion, and model-based judgments behind separate approved specifications and threat review.
 
 ## Architectural invariants
@@ -66,7 +66,7 @@ before a new release or implementation milestone is declared complete.
 
 ## Current blockers and unknowns
 
-- ADR-0039 and `CONFORMANCE_TREND_SUMMARY_V0_1_SPEC.md` are proposed, not approved. Any expansion to bottleneck, performance, causal, actor, repository-reading, persisted, remote, or model-assisted analysis requires a new ADR, specification, and threat review.
+- Any expansion to bottleneck, performance, causal, actor, repository-reading, persisted, remote, or model-assisted analysis requires a new ADR, specification, and threat review.
 
 ## Current milestone
 
@@ -76,11 +76,11 @@ Expected outputs:
 
 - versioned protocol contracts for deterministic, project-scoped conformance, workflow-variant, workflow-duration, and procedural-memory evaluation reads;
 - shared application operations and authenticated local daemon handlers for the read-only operations;
-- ADR-0020, ADR-0037, and ADR-0038 documenting canonical boundaries and safety constraints.
+- ADR-0020, ADR-0037, ADR-0038, and ADR-0039 documenting canonical boundaries and safety constraints.
 
 ## Next platform milestone
 
-Review and approve or revise the proposed conformance trend summary candidate before implementation.
+Merge the conformance trend summary implementation, then select the next candidate through a separate ADR/specification/threat review.
 
 ## State update rules
 

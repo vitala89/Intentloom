@@ -1,6 +1,6 @@
 # ADR-0039: Conformance trend summary boundary
 
-- **Status:** Proposed
+- **Status:** Accepted
 - **Date:** 2026-07-26
 
 ## Context
@@ -17,7 +17,7 @@ Define a pure `summarizeConformanceTrend` operation over at least two
 schema-validated `EngineeringConformanceReport` values of one case type and
 one policy identifier.
 
-The operation will return only deterministic counts by conformance status and
+The operation returns only deterministic counts by conformance status and
 severity, the number of reports, and the covered case type/policy. It will not
 return raw evidence, case payloads, actor identities, paths, timestamps, or
 recommendations.

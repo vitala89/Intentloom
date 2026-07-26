@@ -8,6 +8,7 @@ import {
   createEngineeringConformanceRequest,
   createWorkflowVariantSummaryRequest,
   createWorkflowDurationSummaryRequest,
+  createConformanceTrendSummaryRequest,
   parseDoctorRequest,
   parseSerializedRequest,
   serializeRequest,
@@ -139,6 +140,29 @@ describe("versioned local protocol", () => {
         { caseType: "release", caseId: "release:1", events: [] },
         { caseType: "release", caseId: "release:2", events: [] },
       ],
+    });
+    expect(parseSerializedRequest(serializeRequest(request))).toEqual(request);
+  });
+
+  it("round-trips a conformance trend summary request", () => {
+    const report = {
+      operationVersion: 1 as const,
+      policyId: "policy:release-v1",
+      evaluatedAt: "2026-07-26T00:00:00.000Z",
+      caseType: "release" as const,
+      caseId: "release:1",
+      summary: {
+        totalRules: 0,
+        passed: 0,
+        violations: 0,
+        missingEvidence: 0,
+        ambiguousEvidence: 0,
+        unsupported: 0,
+      },
+      findings: [],
+    };
+    const request = createConformanceTrendSummaryRequest("trend-1", {
+      reports: [report, { ...report, caseId: "release:2" }],
     });
     expect(parseSerializedRequest(serializeRequest(request))).toEqual(request);
   });

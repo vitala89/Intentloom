@@ -11,6 +11,8 @@ export const WORKFLOW_VARIANT_SUMMARY_METHOD =
   "intentloom.workflow.variants.summary.v1" as const;
 export const WORKFLOW_DURATION_SUMMARY_METHOD =
   "intentloom.workflow.durations.summary.v1" as const;
+export const CONFORMANCE_TREND_SUMMARY_METHOD =
+  "intentloom.conformance.trend.summary.v1" as const;
 export const SESSION_GET_METHOD = "intentloom.session.get.v1" as const;
 
 export type JsonPrimitive = boolean | null | number | string;
@@ -175,6 +177,21 @@ export type WorkflowDurationSummaryRequest = JsonRpcRequest<
 export type WorkflowDurationSummaryResponse =
   JsonRpcSuccess<WorkflowDurationSummaryResultPayload>;
 
+export interface ConformanceTrendSummaryParams {
+  readonly protocolVersion: typeof PROTOCOL_VERSION;
+  readonly reports: readonly EngineeringConformanceReport[];
+}
+export interface ConformanceTrendSummaryResultPayload {
+  readonly protocolVersion: typeof PROTOCOL_VERSION;
+  readonly report: ConformanceTrendSummaryReport;
+}
+export type ConformanceTrendSummaryRequest = JsonRpcRequest<
+  typeof CONFORMANCE_TREND_SUMMARY_METHOD,
+  ConformanceTrendSummaryParams
+>;
+export type ConformanceTrendSummaryResponse =
+  JsonRpcSuccess<ConformanceTrendSummaryResultPayload>;
+
 export interface SessionGetParams {
   readonly protocolVersion: typeof PROTOCOL_VERSION;
   readonly root: string;
@@ -199,6 +216,7 @@ export type DaemonRequest =
   | EngineeringConformanceRequest
   | WorkflowVariantSummaryRequest
   | WorkflowDurationSummaryRequest
+  | ConformanceTrendSummaryRequest
   | SessionGetRequest;
 
 export type DaemonResponse =
@@ -210,6 +228,7 @@ export type DaemonResponse =
   | EngineeringConformanceResponse
   | WorkflowVariantSummaryResponse
   | WorkflowDurationSummaryResponse
+  | ConformanceTrendSummaryResponse
   | SessionGetResponse;
 
 export class ProtocolValidationError extends Error {
@@ -375,6 +394,18 @@ export function createWorkflowDurationSummaryRequest(
   };
 }
 
+export function createConformanceTrendSummaryRequest(
+  id: RequestId,
+  params: Omit<ConformanceTrendSummaryParams, "protocolVersion">,
+): ConformanceTrendSummaryRequest {
+  return {
+    jsonrpc: "2.0",
+    id,
+    method: CONFORMANCE_TREND_SUMMARY_METHOD,
+    params: { protocolVersion: PROTOCOL_VERSION, reports: params.reports },
+  };
+}
+
 export function createSessionGetRequest(
   id: RequestId,
   params: Omit<SessionGetParams, "protocolVersion">,
@@ -421,6 +452,7 @@ export function parseDaemonRequest(value: unknown): DaemonRequest {
     ENGINEERING_CONFORMANCE_METHOD,
     WORKFLOW_VARIANT_SUMMARY_METHOD,
     WORKFLOW_DURATION_SUMMARY_METHOD,
+    CONFORMANCE_TREND_SUMMARY_METHOD,
     SESSION_GET_METHOD,
   ];
   if (typeof value.method !== "string" || !validMethods.includes(value.method))
@@ -500,6 +532,13 @@ export function parseDaemonRequest(value: unknown): DaemonRequest {
       throw new ProtocolValidationError(-32602, "timelines must be an array");
     return createWorkflowDurationSummaryRequest(id, {
       timelines: value.params.timelines.map(validateGenericTimeline),
+    });
+  }
+  if (value.method === CONFORMANCE_TREND_SUMMARY_METHOD) {
+    if (!Array.isArray(value.params.reports))
+      throw new ProtocolValidationError(-32602, "reports must be an array");
+    return createConformanceTrendSummaryRequest(id, {
+      reports: value.params.reports.map(validateEngineeringConformanceReport),
     });
   }
   if (value.method === SESSION_GET_METHOD) {
@@ -637,6 +676,20 @@ export function createWorkflowDurationSummaryResponse(
     result: {
       protocolVersion: PROTOCOL_VERSION,
       report: validateWorkflowDurationSummaryReport(result.report),
+    },
+  };
+}
+
+export function createConformanceTrendSummaryResponse(
+  id: RequestId,
+  result: Omit<ConformanceTrendSummaryResultPayload, "protocolVersion">,
+): ConformanceTrendSummaryResponse {
+  return {
+    jsonrpc: "2.0",
+    id,
+    result: {
+      protocolVersion: PROTOCOL_VERSION,
+      report: validateConformanceTrendSummaryReport(result.report),
     },
   };
 }
@@ -3485,5 +3538,100 @@ export function validateWorkflowDurationSummaryReport(
     timestampCoverage,
     observableCaseCount,
     ...(elapsedMinutes ? { elapsedMinutes } : {}),
+  };
+}
+
+export interface ConformanceStatusCounts {
+  readonly pass: number;
+  readonly violation: number;
+  readonly "missing-evidence": number;
+  readonly "ambiguous-evidence": number;
+  readonly unsupported: number;
+}
+
+export interface ConformanceSeverityCounts {
+  readonly error: number;
+  readonly warning: number;
+  readonly info: number;
+}
+
+export interface ConformanceTrendSummaryReport {
+  readonly operationVersion: 1;
+  readonly caseType: EngineeringWorkflowCaseType;
+  readonly policyId: string;
+  readonly reportCount: number;
+  readonly findingCount: number;
+  readonly statusCounts: ConformanceStatusCounts;
+  readonly severityCounts: ConformanceSeverityCounts;
+}
+
+export function validateConformanceTrendSummaryReport(
+  value: unknown,
+): ConformanceTrendSummaryReport {
+  if (
+    !isObject(value) ||
+    value.operationVersion !== 1 ||
+    !isObject(value.statusCounts) ||
+    !isObject(value.severityCounts)
+  )
+    throw new ProtocolValidationError(
+      -32602,
+      "conformance trend summary report is invalid",
+    );
+  const nonNegativeInteger = (
+    source: Record<string, unknown>,
+    field: string,
+  ) => {
+    const result = source[field];
+    if (typeof result !== "number" || !Number.isInteger(result) || result < 0)
+      throw new ProtocolValidationError(
+        -32602,
+        `${field} must be a non-negative integer`,
+      );
+    return result;
+  };
+  const reportCount = nonNegativeInteger(value, "reportCount");
+  const findingCount = nonNegativeInteger(value, "findingCount");
+  if (reportCount < 2)
+    throw new ProtocolValidationError(
+      -32602,
+      "reportCount must be at least two",
+    );
+  const statusCounts = {
+    pass: nonNegativeInteger(value.statusCounts, "pass"),
+    violation: nonNegativeInteger(value.statusCounts, "violation"),
+    "missing-evidence": nonNegativeInteger(
+      value.statusCounts,
+      "missing-evidence",
+    ),
+    "ambiguous-evidence": nonNegativeInteger(
+      value.statusCounts,
+      "ambiguous-evidence",
+    ),
+    unsupported: nonNegativeInteger(value.statusCounts, "unsupported"),
+  };
+  const severityCounts = {
+    error: nonNegativeInteger(value.severityCounts, "error"),
+    warning: nonNegativeInteger(value.severityCounts, "warning"),
+    info: nonNegativeInteger(value.severityCounts, "info"),
+  };
+  if (
+    Object.values(statusCounts).reduce((sum, count) => sum + count, 0) !==
+      findingCount ||
+    Object.values(severityCounts).reduce((sum, count) => sum + count, 0) !==
+      findingCount
+  )
+    throw new ProtocolValidationError(
+      -32602,
+      "trend counts must equal findingCount",
+    );
+  return {
+    operationVersion: 1,
+    caseType: engineeringCaseType(value.caseType, "caseType"),
+    policyId: stringValue(value.policyId, "policyId"),
+    reportCount,
+    findingCount,
+    statusCounts,
+    severityCounts,
   };
 }

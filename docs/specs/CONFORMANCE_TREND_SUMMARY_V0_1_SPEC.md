@@ -1,7 +1,7 @@
 # Conformance Trend Summary v0.1 Specification
 
-Version: `0.1-draft`
-Status: Draft / Proposed
+Version: `0.1`
+Status: Accepted
 
 ## 1. Purpose
 
@@ -52,6 +52,7 @@ priority. Any such interpretation requires a separately approved contract.
 
 ## 5. Required implementation evidence
 
-Fixtures must cover deterministic aggregation, mixed policy/case rejection,
-status and severity counts, invalid reports, input-order independence, and
-read-only behavior across protocol, analysis, application, and daemon adapters.
+Implementation evidence covers deterministic aggregation, mixed policy/case
+rejection, status and severity counts, invalid reports, input-order
+independence, and read-only behavior across protocol, analysis, application,
+and daemon adapters.

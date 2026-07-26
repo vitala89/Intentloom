@@ -15,6 +15,7 @@ import {
   ENGINEERING_CONFORMANCE_METHOD,
   WORKFLOW_VARIANT_SUMMARY_METHOD,
   WORKFLOW_DURATION_SUMMARY_METHOD,
+  CONFORMANCE_TREND_SUMMARY_METHOD,
   SESSION_GET_METHOD,
   createDoctorResponse,
   createInspectResponse,
@@ -24,6 +25,7 @@ import {
   createEngineeringConformanceResponse,
   createWorkflowVariantSummaryResponse,
   createWorkflowDurationSummaryResponse,
+  createConformanceTrendSummaryResponse,
   createSessionGetResponse,
   parseDaemonRequest,
   parseDoctorResponse,
@@ -43,6 +45,8 @@ import {
   type WorkflowVariantSummaryResultPayload,
   type WorkflowDurationSummaryRequest,
   type WorkflowDurationSummaryResultPayload,
+  type ConformanceTrendSummaryRequest,
+  type ConformanceTrendSummaryResultPayload,
   type SessionGetRequest,
   type SessionGetResultPayload,
 } from "../../protocol/src/index.js";
@@ -79,6 +83,9 @@ export interface DaemonOptions {
   readonly workflowDurationSummary?: (
     request: WorkflowDurationSummaryRequest,
   ) => Promise<Omit<WorkflowDurationSummaryResultPayload, "protocolVersion">>;
+  readonly conformanceTrendSummary?: (
+    request: ConformanceTrendSummaryRequest,
+  ) => Promise<Omit<ConformanceTrendSummaryResultPayload, "protocolVersion">>;
   readonly sessionGet?: (
     request: SessionGetRequest,
   ) => Promise<Omit<SessionGetResultPayload, "protocolVersion">>;
@@ -236,6 +243,20 @@ export async function startLocalDaemon(
             createWorkflowDurationSummaryResponse(
               request.id,
               await options.workflowDurationSummary(request),
+            ),
+          );
+        } else if (request.method === CONFORMANCE_TREND_SUMMARY_METHOD) {
+          if (!options.conformanceTrendSummary)
+            return failure(
+              socket,
+              -32601,
+              "unsupported method conformanceTrendSummary",
+            );
+          response(
+            socket,
+            createConformanceTrendSummaryResponse(
+              request.id,
+              await options.conformanceTrendSummary(request),
             ),
           );
         } else if (request.method === SESSION_GET_METHOD) {

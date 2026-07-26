@@ -22,6 +22,7 @@ import {
   createEngineeringConformanceRequest,
   createWorkflowVariantSummaryRequest,
   createWorkflowDurationSummaryRequest,
+  createConformanceTrendSummaryRequest,
   createSessionGetRequest,
 } from "../packages/protocol/src/index.js";
 import {
@@ -31,6 +32,7 @@ import {
   evaluateProjectEngineeringConformance,
   summarizeProjectWorkflowVariants,
   summarizeProjectWorkflowDurations,
+  summarizeProjectConformanceTrend,
 } from "../packages/application/src/index.js";
 import {
   startLocalDaemon,
@@ -600,6 +602,9 @@ describe.skipIf(process.platform === "win32")("local daemon", () => {
       workflowDurationSummary: async (req) => ({
         report: summarizeProjectWorkflowDurations(req.params.timelines),
       }),
+      conformanceTrendSummary: async (req) => ({
+        report: summarizeProjectConformanceTrend(req.params.reports),
+      }),
       sessionGet: async () => ({
         session: null,
       }),
@@ -718,6 +723,46 @@ describe.skipIf(process.platform === "win32")("local daemon", () => {
       }),
     )) as { result: { report: { observableCaseCount: number } } };
     expect(durationRes.result.report.observableCaseCount).toBe(1);
+
+    const trendRes = (await sendReq(
+      createConformanceTrendSummaryRequest(9, {
+        reports: [
+          {
+            operationVersion: 1,
+            policyId: "policy:release-v1",
+            evaluatedAt: "2026-07-26T00:00:00.000Z",
+            caseType: "release",
+            caseId: "release:1",
+            summary: {
+              totalRules: 0,
+              passed: 0,
+              violations: 0,
+              missingEvidence: 0,
+              ambiguousEvidence: 0,
+              unsupported: 0,
+            },
+            findings: [],
+          },
+          {
+            operationVersion: 1,
+            policyId: "policy:release-v1",
+            evaluatedAt: "2026-07-27T00:00:00.000Z",
+            caseType: "release",
+            caseId: "release:2",
+            summary: {
+              totalRules: 0,
+              passed: 0,
+              violations: 0,
+              missingEvidence: 0,
+              ambiguousEvidence: 0,
+              unsupported: 0,
+            },
+            findings: [],
+          },
+        ],
+      }),
+    )) as { result: { report: { reportCount: number } } };
+    expect(trendRes.result.report.reportCount).toBe(2);
 
     const sessionRes = (await sendReq(
       createSessionGetRequest(4, { root, sessionId: "s1" }),
