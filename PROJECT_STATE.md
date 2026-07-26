@@ -22,7 +22,7 @@ later justifies separation.
 
 ## Current phase
 
-Memory & Security Candidate S5: Continuous Security Audit and Verification.
+Daemon & Protocol Contracts for Second Clients.
 
 The project must avoid premature structural migration. New applications,
 packages, and repository boundaries are introduced only when roadmap triggers
@@ -40,17 +40,16 @@ and real consumers justify them.
   connection, evidence, MCP, interactive surfaces, Agent Workspace, Neutron,
   persistent memory, security analysis, engineering process intelligence,
   public monorepo evolution, controlled agent learning, and portable Duty Watch adoption.
-- Duty Watch governance contracts (Phase 1), proposal CLI `intentloom adopt --plan` (Phase 2), transactional apply & rollback engine `intentloom adopt --apply` (Phase 3), pack update 3-way migration `intentloom update` (Phase 4), conformance & security profiles `intentloom conformance` (Phase 5), provider synchronization `intentloom sync` / `intentloom diff` (Phase 6), and Memory & Security Candidates M1–M4, S1–S4 are merged into `main`.
+- Duty Watch governance contracts (Phase 1), proposal CLI `intentloom adopt --plan` (Phase 2), transactional apply & rollback engine `intentloom adopt --apply` (Phase 3), pack update 3-way migration `intentloom update` (Phase 4), conformance & security profiles `intentloom conformance` (Phase 5), provider synchronization `intentloom sync` / `intentloom diff` (Phase 6), and Memory & Security Candidates M1–M4, S1–S5 are merged into `main`.
 
 These statements must be revalidated against code, tags, CI, and Git history
 before a new release or implementation milestone is declared complete.
 
 ## Active focus
 
-1. Provide versioned continuous security audit report schemas (`.aif/security/audit-report.json`).
-2. Automate verification of security invariants (Invariants 1–28) across memory, sessions, policies, baselines, and sandboxes.
-3. Compute quantitative security health score (0–100%) and maintain tamper-evident SHA-256 audit hashes.
-4. Expose CLI subcommands under `intentloom security audit` and `intentloom security verify`.
+1. Provide expanded typed RPC request/response schemas for daemon operations (`doctor`, `inspect`, `securityAudit`, `memorySearch`, `sessionGet`) in `@intentloom/protocol`.
+2. Implement local IPC request handlers in `@intentloom/daemon` with secret session token authentication.
+3. Verify local IPC RPC execution across project inspection, security audit, persistent memory search, and agent session retrieval.
 
 ## Architectural invariants
 
@@ -68,24 +67,22 @@ before a new release or implementation milestone is declared complete.
 
 ## Current blockers and unknowns
 
-- Continuous security audit reports are tamper-evident via SHA-256 digests and exit with non-zero code 3 on security posture failure.
+- Daemon local IPC handlers process typed RPC requests under secret session token authentication, returning structured responses over domain sockets / named pipes.
 
 ## Current milestone
 
-Implement Memory & Security Candidate S5: Continuous Security Audit and Verification.
+Implement Daemon & Protocol Contracts for Second Clients.
 
 Expected outputs:
 
-- ADR-0031 documenting continuous security audit and verification architecture;
-- versioned `ContinuousSecurityAuditReport` schema and validator in `@intentloom/protocol`;
-- continuous security audit operations (`runContinuousSecurityAudit`, `getSecurityAuditReport`) in `@intentloom/application`;
-- CLI command routing under `intentloom security audit` and `intentloom security verify`;
-- unit and integration tests covering invariant checks 1–28, health score calculation, audit hash logging, and CLI routing.
+- ADR-0032 documenting second client daemon protocol contracts architecture;
+- expanded `DaemonRequest` and `DaemonResponse` schemas, request creators, and validators in `@intentloom/protocol`;
+- multi-operation daemon handlers (`doctor`, `inspect`, `securityAudit`, `memorySearch`, `sessionGet`) in `@intentloom/daemon`;
+- integration test coverage in `tests/daemon.test.ts`.
 
 ## Next platform milestone
 
-After Portable Adoption Phase 1 is merged, audit and define the minimum stable
-daemon and protocol contract required by a second client.
+Design and implement read-only Desktop / GUI application shell over shared application operations and daemon protocol contracts.
 
 ## State update rules
 
