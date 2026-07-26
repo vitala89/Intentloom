@@ -1,7 +1,7 @@
 # Workflow Repetition Summary v0.1 Specification
 
-Version: `0.1-candidate`
-Status: Draft / Proposed
+Version: `0.1`
+Status: Accepted
 
 ## 1. Purpose
 
@@ -82,7 +82,7 @@ guess relationships between cases.
 
 ## 7. Required implementation evidence
 
-If approved, deterministic fixtures must cover repeated and non-repeated
+Implementation evidence covers repeated and non-repeated
 activities, sorting, empty output, mixed case-type rejection, duplicate case
 rejection, invalid timelines, input-order independence, and read-only behavior.
 Protocol, analysis, application, and daemon adapters must return equivalent

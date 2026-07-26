@@ -22,7 +22,7 @@ later justifies separation.
 
 ## Current phase
 
-Engineering Process Intelligence & Agent Memory Evaluation System — conformance, workflow variants, observed duration metrics, and conformance trend summary merged into `main` at `c0e7cb0`; deterministic workflow repetition summary proposed locally.
+Engineering Process Intelligence & Agent Memory Evaluation System — conformance, workflow variants, observed duration metrics, and conformance trend summary merged into `main` at `c0e7cb0`; deterministic workflow repetition summary complete locally and pending review/merge.
 
 The project must avoid premature structural migration. New applications,
 packages, and repository boundaries are introduced only when roadmap triggers
@@ -47,7 +47,7 @@ before a new release or implementation milestone is declared complete.
 
 ## Active focus
 
-1. Review and approve or revise the proposed deterministic workflow repetition summary over the merged application/daemon contracts.
+1. Review and merge the deterministic workflow repetition summary over the merged application/daemon contracts.
 2. Keep bottleneck inference, remote ingestion, and model-based judgments behind separate approved specifications and threat review.
 
 ## Architectural invariants
@@ -68,7 +68,7 @@ before a new release or implementation milestone is declared complete.
 
 - Any expansion to bottleneck, performance, causal, actor, repository-reading, persisted, remote, or model-assisted analysis requires a new ADR, specification, and threat review.
 - PR #84 is merged and local `main` is fast-forwarded to `c0e7cb0`; no next candidate has been approved yet.
-- ADR-0040 and `WORKFLOW_REPETITION_SUMMARY_V0_1_SPEC.md` are proposed only; no repetition-summary implementation is authorized yet.
+- The repetition-summary implementation is local only until its review PR is merged.
 
 ## Current milestone
 
@@ -79,10 +79,11 @@ Expected outputs:
 - versioned protocol contracts for deterministic, project-scoped conformance, workflow-variant, workflow-duration, and procedural-memory evaluation reads;
 - shared application operations and authenticated local daemon handlers for the read-only operations;
 - ADR-0020, ADR-0037, ADR-0038, and ADR-0039 documenting canonical boundaries and safety constraints.
+- ADR-0040 documenting the deterministic workflow repetition boundary and safety constraints.
 
 ## Next platform milestone
 
-Review ADR-0040 and the draft repetition-summary specification before any implementation.
+Review and merge the workflow repetition summary implementation, then select the next candidate through a separate ADR/specification/threat review.
 
 ## State update rules
 

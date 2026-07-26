@@ -13,6 +13,8 @@ export const WORKFLOW_DURATION_SUMMARY_METHOD =
   "intentloom.workflow.durations.summary.v1" as const;
 export const CONFORMANCE_TREND_SUMMARY_METHOD =
   "intentloom.conformance.trend.summary.v1" as const;
+export const WORKFLOW_REPETITION_SUMMARY_METHOD =
+  "intentloom.workflow.repetitions.summary.v1" as const;
 export const SESSION_GET_METHOD = "intentloom.session.get.v1" as const;
 
 export type JsonPrimitive = boolean | null | number | string;
@@ -192,6 +194,21 @@ export type ConformanceTrendSummaryRequest = JsonRpcRequest<
 export type ConformanceTrendSummaryResponse =
   JsonRpcSuccess<ConformanceTrendSummaryResultPayload>;
 
+export interface WorkflowRepetitionSummaryParams {
+  readonly protocolVersion: typeof PROTOCOL_VERSION;
+  readonly timelines: readonly GenericTimeline[];
+}
+export interface WorkflowRepetitionSummaryResultPayload {
+  readonly protocolVersion: typeof PROTOCOL_VERSION;
+  readonly report: WorkflowRepetitionSummaryReport;
+}
+export type WorkflowRepetitionSummaryRequest = JsonRpcRequest<
+  typeof WORKFLOW_REPETITION_SUMMARY_METHOD,
+  WorkflowRepetitionSummaryParams
+>;
+export type WorkflowRepetitionSummaryResponse =
+  JsonRpcSuccess<WorkflowRepetitionSummaryResultPayload>;
+
 export interface SessionGetParams {
   readonly protocolVersion: typeof PROTOCOL_VERSION;
   readonly root: string;
@@ -217,6 +234,7 @@ export type DaemonRequest =
   | WorkflowVariantSummaryRequest
   | WorkflowDurationSummaryRequest
   | ConformanceTrendSummaryRequest
+  | WorkflowRepetitionSummaryRequest
   | SessionGetRequest;
 
 export type DaemonResponse =
@@ -229,6 +247,7 @@ export type DaemonResponse =
   | WorkflowVariantSummaryResponse
   | WorkflowDurationSummaryResponse
   | ConformanceTrendSummaryResponse
+  | WorkflowRepetitionSummaryResponse
   | SessionGetResponse;
 
 export class ProtocolValidationError extends Error {
@@ -406,6 +425,18 @@ export function createConformanceTrendSummaryRequest(
   };
 }
 
+export function createWorkflowRepetitionSummaryRequest(
+  id: RequestId,
+  params: Omit<WorkflowRepetitionSummaryParams, "protocolVersion">,
+): WorkflowRepetitionSummaryRequest {
+  return {
+    jsonrpc: "2.0",
+    id,
+    method: WORKFLOW_REPETITION_SUMMARY_METHOD,
+    params: { protocolVersion: PROTOCOL_VERSION, timelines: params.timelines },
+  };
+}
+
 export function createSessionGetRequest(
   id: RequestId,
   params: Omit<SessionGetParams, "protocolVersion">,
@@ -453,6 +484,7 @@ export function parseDaemonRequest(value: unknown): DaemonRequest {
     WORKFLOW_VARIANT_SUMMARY_METHOD,
     WORKFLOW_DURATION_SUMMARY_METHOD,
     CONFORMANCE_TREND_SUMMARY_METHOD,
+    WORKFLOW_REPETITION_SUMMARY_METHOD,
     SESSION_GET_METHOD,
   ];
   if (typeof value.method !== "string" || !validMethods.includes(value.method))
@@ -539,6 +571,13 @@ export function parseDaemonRequest(value: unknown): DaemonRequest {
       throw new ProtocolValidationError(-32602, "reports must be an array");
     return createConformanceTrendSummaryRequest(id, {
       reports: value.params.reports.map(validateEngineeringConformanceReport),
+    });
+  }
+  if (value.method === WORKFLOW_REPETITION_SUMMARY_METHOD) {
+    if (!Array.isArray(value.params.timelines))
+      throw new ProtocolValidationError(-32602, "timelines must be an array");
+    return createWorkflowRepetitionSummaryRequest(id, {
+      timelines: value.params.timelines.map(validateGenericTimeline),
     });
   }
   if (value.method === SESSION_GET_METHOD) {
@@ -690,6 +729,20 @@ export function createConformanceTrendSummaryResponse(
     result: {
       protocolVersion: PROTOCOL_VERSION,
       report: validateConformanceTrendSummaryReport(result.report),
+    },
+  };
+}
+
+export function createWorkflowRepetitionSummaryResponse(
+  id: RequestId,
+  result: Omit<WorkflowRepetitionSummaryResultPayload, "protocolVersion">,
+): WorkflowRepetitionSummaryResponse {
+  return {
+    jsonrpc: "2.0",
+    id,
+    result: {
+      protocolVersion: PROTOCOL_VERSION,
+      report: validateWorkflowRepetitionSummaryReport(result.report),
     },
   };
 }
@@ -3633,5 +3686,82 @@ export function validateConformanceTrendSummaryReport(
     findingCount,
     statusCounts,
     severityCounts,
+  };
+}
+
+export interface WorkflowRepetitionPattern {
+  readonly activity: string;
+  readonly caseCount: number;
+  readonly occurrenceCount: number;
+  readonly maxOccurrencesPerCase: number;
+}
+
+export interface WorkflowRepetitionSummaryReport {
+  readonly operationVersion: 1;
+  readonly caseType: EngineeringWorkflowCaseType;
+  readonly timelineCount: number;
+  readonly repeatedActivities: readonly WorkflowRepetitionPattern[];
+}
+
+export function validateWorkflowRepetitionSummaryReport(
+  value: unknown,
+): WorkflowRepetitionSummaryReport {
+  if (!isObject(value) || value.operationVersion !== 1)
+    throw new ProtocolValidationError(
+      -32602,
+      "workflow repetition summary report is invalid",
+    );
+  const nonNegativeInteger = (
+    source: Record<string, unknown>,
+    field: string,
+  ) => {
+    const result = source[field];
+    if (typeof result !== "number" || !Number.isInteger(result) || result < 0)
+      throw new ProtocolValidationError(
+        -32602,
+        `${field} must be a non-negative integer`,
+      );
+    return result;
+  };
+  const timelineCount = nonNegativeInteger(value, "timelineCount");
+  if (timelineCount < 2)
+    throw new ProtocolValidationError(
+      -32602,
+      "timelineCount must be at least two",
+    );
+  if (!Array.isArray(value.repeatedActivities))
+    throw new ProtocolValidationError(
+      -32602,
+      "repeatedActivities must be an array",
+    );
+  const repeatedActivities = value.repeatedActivities.map((item) => {
+    if (!isObject(item))
+      throw new ProtocolValidationError(
+        -32602,
+        "repetition pattern is invalid",
+      );
+    const activity = stringValue(item.activity, "activity");
+    const caseCount = nonNegativeInteger(item, "caseCount");
+    const occurrenceCount = nonNegativeInteger(item, "occurrenceCount");
+    const maxOccurrencesPerCase = nonNegativeInteger(
+      item,
+      "maxOccurrencesPerCase",
+    );
+    if (
+      caseCount < 1 ||
+      occurrenceCount < caseCount ||
+      maxOccurrencesPerCase < 2
+    )
+      throw new ProtocolValidationError(
+        -32602,
+        "repetition pattern counts are invalid",
+      );
+    return { activity, caseCount, occurrenceCount, maxOccurrencesPerCase };
+  });
+  return {
+    operationVersion: 1,
+    caseType: engineeringCaseType(value.caseType, "caseType"),
+    timelineCount,
+    repeatedActivities,
   };
 }

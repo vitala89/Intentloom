@@ -1,6 +1,6 @@
 # ADR-0040: Deterministic workflow repetition summary boundary
 
-- **Status:** Proposed
+- **Status:** Accepted
 - **Date:** 2026-07-26
 
 ## Context

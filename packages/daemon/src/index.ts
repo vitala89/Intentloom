@@ -16,6 +16,7 @@ import {
   WORKFLOW_VARIANT_SUMMARY_METHOD,
   WORKFLOW_DURATION_SUMMARY_METHOD,
   CONFORMANCE_TREND_SUMMARY_METHOD,
+  WORKFLOW_REPETITION_SUMMARY_METHOD,
   SESSION_GET_METHOD,
   createDoctorResponse,
   createInspectResponse,
@@ -26,6 +27,7 @@ import {
   createWorkflowVariantSummaryResponse,
   createWorkflowDurationSummaryResponse,
   createConformanceTrendSummaryResponse,
+  createWorkflowRepetitionSummaryResponse,
   createSessionGetResponse,
   parseDaemonRequest,
   parseDoctorResponse,
@@ -47,6 +49,8 @@ import {
   type WorkflowDurationSummaryResultPayload,
   type ConformanceTrendSummaryRequest,
   type ConformanceTrendSummaryResultPayload,
+  type WorkflowRepetitionSummaryRequest,
+  type WorkflowRepetitionSummaryResultPayload,
   type SessionGetRequest,
   type SessionGetResultPayload,
 } from "../../protocol/src/index.js";
@@ -86,6 +90,9 @@ export interface DaemonOptions {
   readonly conformanceTrendSummary?: (
     request: ConformanceTrendSummaryRequest,
   ) => Promise<Omit<ConformanceTrendSummaryResultPayload, "protocolVersion">>;
+  readonly workflowRepetitionSummary?: (
+    request: WorkflowRepetitionSummaryRequest,
+  ) => Promise<Omit<WorkflowRepetitionSummaryResultPayload, "protocolVersion">>;
   readonly sessionGet?: (
     request: SessionGetRequest,
   ) => Promise<Omit<SessionGetResultPayload, "protocolVersion">>;
@@ -257,6 +264,20 @@ export async function startLocalDaemon(
             createConformanceTrendSummaryResponse(
               request.id,
               await options.conformanceTrendSummary(request),
+            ),
+          );
+        } else if (request.method === WORKFLOW_REPETITION_SUMMARY_METHOD) {
+          if (!options.workflowRepetitionSummary)
+            return failure(
+              socket,
+              -32601,
+              "unsupported method workflowRepetitionSummary",
+            );
+          response(
+            socket,
+            createWorkflowRepetitionSummaryResponse(
+              request.id,
+              await options.workflowRepetitionSummary(request),
             ),
           );
         } else if (request.method === SESSION_GET_METHOD) {

@@ -9,6 +9,8 @@ import {
   createWorkflowVariantSummaryRequest,
   createWorkflowDurationSummaryRequest,
   createConformanceTrendSummaryRequest,
+  createWorkflowRepetitionSummaryRequest,
+  createWorkflowRepetitionSummaryResponse,
   parseDoctorRequest,
   parseSerializedRequest,
   serializeRequest,
@@ -165,5 +167,50 @@ describe("versioned local protocol", () => {
       reports: [report, { ...report, caseId: "release:2" }],
     });
     expect(parseSerializedRequest(serializeRequest(request))).toEqual(request);
+  });
+
+  it("round-trips a workflow repetition summary request", () => {
+    const timeline = {
+      caseType: "release" as const,
+      caseId: "release:1",
+      events: [
+        { activity: "checks.failed", source: "fixture", sourceId: "1" },
+        { activity: "checks.failed", source: "fixture", sourceId: "2" },
+      ],
+    };
+    const request = createWorkflowRepetitionSummaryRequest("repetition-1", {
+      timelines: [timeline, { ...timeline, caseId: "release:2" }],
+    });
+    expect(parseSerializedRequest(serializeRequest(request))).toEqual(request);
+  });
+
+  it("validates workflow repetition summary responses", () => {
+    expect(() =>
+      createWorkflowRepetitionSummaryResponse("repetition-2", {
+        report: {
+          operationVersion: 1,
+          caseType: "release",
+          timelineCount: 1,
+          repeatedActivities: [],
+        },
+      }),
+    ).toThrow("timelineCount must be at least two");
+    expect(
+      createWorkflowRepetitionSummaryResponse("repetition-3", {
+        report: {
+          operationVersion: 1,
+          caseType: "release",
+          timelineCount: 2,
+          repeatedActivities: [
+            {
+              activity: "checks.failed",
+              caseCount: 1,
+              occurrenceCount: 2,
+              maxOccurrencesPerCase: 2,
+            },
+          ],
+        },
+      }).result.report.repeatedActivities,
+    ).toHaveLength(1);
   });
 });

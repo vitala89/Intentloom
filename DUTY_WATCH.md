@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: partial — next candidate specified locally; approval required before implementation
+Status: partial — workflow repetition summary implementation complete locally; review/merge handoff ready
 
 Active branch: `codex/process-intelligence-next-roadmap`
 
-Current objective: review ADR-0040 and the draft workflow repetition summary specification.
+Current objective: commit and hand off the accepted workflow repetition summary implementation for review and merge.
 
-Next first action: review and approve or revise ADR-0040 and `WORKFLOW_REPETITION_SUMMARY_V0_1_SPEC.md`; do not implement before approval.
+Next first action: review the final diff, commit, and open a PR for the accepted workflow repetition summary implementation.
 
 ## Watch rules
 
@@ -41,6 +41,37 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-26, Deterministic workflow repetition summary implementation
+
+- **Status:** partial
+- **Agent/tool:** Codex with TDD workflow
+- **Branch:** `codex/process-intelligence-next-roadmap`
+- **Commits:** `0bbe550`, `9c16b1d`, plus implementation changes in this watch
+- **Pull request:** Not opened; local implementation is ready for review.
+- **Objective:** Implement the accepted bounded workflow repetition summary over caller-supplied timelines.
+- **Completed:** Accepted ADR-0040 and the v0.1 specification. Added canonical protocol contracts and validation for `intentloom.workflow.repetitions.summary.v1`, pure repeated-activity aggregation, application bridge, authenticated daemon routing, protocol/analysis/application/daemon fixtures, security invariant 33, changelog, and durable state updates.
+- **Not completed:** Final commit/push, PR review, CI, and merge into `main`.
+- **Files or packages changed:** `CHANGELOG.md`, `PROJECT_STATE.md`, `DUTY_WATCH.md`, `docs/decisions/ADR-0040-deterministic-workflow-repetition-summary.md`, `docs/specs/WORKFLOW_REPETITION_SUMMARY_V0_1_SPEC.md`, `docs/security/THREAT_MODEL.md`, `packages/protocol/src/index.ts`, `packages/evidence-analysis/src/index.ts`, `packages/application/src/index.ts`, `packages/daemon/src/index.ts`, `tests/workflow-repetition-summary.test.ts`, `tests/protocol.test.ts`, and `tests/daemon.test.ts`.
+- **Validation:** Focused workflow/protocol tests (13 passed); daemon IPC tests (16 passed, 1 skipped); full `pnpm test` (723 passed, 3 skipped across 81 files); `pnpm typecheck`; `pnpm lint`; `pnpm build`; `pnpm format:check`; and `git diff --check` passed. Daemon tests required unsandboxed Unix-socket access.
+- **Decisions and assumptions:** Repeated activity is a descriptive count only. The operation never labels repetition as rework, retry, delay, bottleneck, quality, performance, or cause.
+- **Risks or compatibility impact:** Additive protocol and daemon method; no persistence, provider access, network calls, or mutation path was added.
+- **Open issues or blockers:** Final validation and PR review remain.
+- **Next first action:** Complete validation, review the diff, commit, and open a PR only after checks pass.
+- **Evidence:** ADR-0040/specification, TDD tracer cycles, focused tests, and current branch diff.
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant tests, type checks, builds, or compatibility checks passed
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `PROJECT_STATE.md` updated when applicable
+- [x] `DUTY_WATCH.md` handoff completed
+- [x] Related roadmap, ADR, changelog, migration, or reference docs updated
+- [x] Failed or unavailable checks recorded
+- [ ] Pull request opened and reviewed
 
 ### 2026-07-26, Deterministic workflow repetition summary candidate
 
