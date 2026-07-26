@@ -47,6 +47,7 @@ entry directly below this section.
 - **Status:** complete
 - **Agent/tool:** Antigravity AI Pair Programmer
 - **Branch:** `feat/memory-security-s2`
+- **Pull request:** #74
 - **Objective:** Implement Candidate S2: Local Deterministic Security Adapters, including ADR-0028, threat model updates, versioned protocol schemas, private application operations (`runLocalSecurityAdapters`, `correlateSecurityFindings`), CLI command routing (`intentloom security scan`), and comprehensive test coverage.
 - **Completed:** Added `ADR-0028-local-deterministic-security-adapters.md` and updated `THREAT_MODEL.md` with threat boundary analysis and security invariant 26. Implemented `SecurityAdapterCategory`, `SecurityAdapterMetadata`, `SecurityAdapterResult` schemas and validators in `@intentloom/protocol`. Implemented built-in deterministic read-only security adapters (`dependency`, `secret`, `config`, `mcp`, etc.) and finding deduplication/correlation (`correlateSecurityFindings`) in `@intentloom/application`. Exposed CLI routing for `intentloom security scan [--category CATEGORY]` in `@intentloom/cli`. Added unit & integration tests in `tests/memory-security-s2.test.ts`. Updated `PROJECT_STATE.md` and `DUTY_WATCH.md`.
 - **Files changed:** `docs/decisions/ADR-0028-local-deterministic-security-adapters.md`, `docs/security/THREAT_MODEL.md`, `packages/protocol/src/index.ts`, `packages/application/src/index.ts`, `packages/cli/src/command.ts`, `tests/memory-security-s2.test.ts`, `PROJECT_STATE.md`, and `DUTY_WATCH.md`.
