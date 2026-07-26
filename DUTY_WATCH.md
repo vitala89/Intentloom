@@ -42,6 +42,34 @@ entry directly below this section.
 
 ## Watch entries
 
+### 2026-07-27, v0.5 release-readiness audit drafted
+
+- **Status:** partial
+- **Agent/tool:** Codex with release-readiness review
+- **Branch:** `codex/process-intelligence-next-roadmap-3`
+- **Commits:** `e10d84f` (local)
+- **Pull request:** None; publication requires explicit authorization.
+- **Objective:** Start the next planned release-readiness step after the release-state merge.
+- **Completed:** Reviewed the process-intelligence concept, ADR-0037 through ADR-0041, matching specifications, protocol/application/daemon surfaces, publishing policy, and roadmap. Added `docs/audits/V0_5_RELEASE_READINESS.md` covering the five bounded operations, exact CLI/daemon/MCP availability, verification gates, release blockers, and non-goals; added the audit to the documentation index and marked `v0.5.0-beta.1` readiness in the roadmap.
+- **Not completed:** Maintainer approval, version synchronization to `0.5.0-beta.1`, changelog/release-state publication update, package dry runs, tag, npm publication, and release PR.
+- **Validation:** Full Prettier 3.9.5 check passes; `git diff --check` passes. The merged PR #87 compatibility matrix is green; no new dependency-backed runtime suite was required for this documentation-only audit draft.
+- **Decisions and assumptions:** v0.5 scope is the five already merged process-intelligence operations. CLI and MCP remain unavailable for these operations by design; no broader process-mining semantics are added.
+- **Risks or compatibility impact:** The audit does not change package versions or runtime behavior. Publication remains blocked until explicit release authorization and package ownership/permissions are confirmed.
+- **Open issues or blockers:** Audit review and release decision are pending.
+- **Next first action:** Review the v0.5 audit, then prepare version/changelog/release-state changes only after the release scope is approved.
+- **Evidence:** `docs/audits/V0_5_RELEASE_READINESS.md`, ADR-0037 through ADR-0041, PR #87 merge commit `f546b76`, and green compatibility checks.
+
+#### Duty completion checklist
+
+- [x] Relevant ADRs/specs and implementation surfaces reviewed
+- [x] Readiness audit drafted
+- [x] Roadmap and documentation index updated
+- [x] Formatter passed
+- [x] `git diff --check` passed
+- [x] Project state and Duty Watch updated
+- [ ] Audit approved
+- [ ] Version bump, release artifacts, and publication completed
+
 ### 2026-07-27, PR #87 merged and local main updated
 
 - **Status:** partial

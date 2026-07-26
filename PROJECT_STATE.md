@@ -74,7 +74,9 @@ before a new release or implementation milestone is declared complete.
 
 ## Current milestone
 
-The first Engineering Process Intelligence & Agent Memory Evaluation increment, including transition intervals, is complete and merged in `main`; release-state documentation is the active follow-up milestone.
+The first Engineering Process Intelligence & Agent Memory Evaluation increment,
+including transition intervals, is complete and merged in `main`; the
+`v0.5.0-beta.1` release-readiness audit is the active follow-up milestone.
 
 Expected outputs:
 
