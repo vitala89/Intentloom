@@ -221,7 +221,7 @@ pnpm build
 pnpm vitest run
 ```
 
-The latest documented local result is **82 test files, 727 passed, 3 expected
+The latest documented local result is **82 test files, 728 passed, 3 expected
 skips, and 0 failures**. Package verification also checks byte-identical
 archives and isolated npm and pnpm local-tarball installs. Hosted Compatibility
 CI runs the declared checks on Linux, macOS, and Windows for Node.js 22 and 24.
