@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: Observed workflow-duration metrics implementation complete locally
+Status: Observed workflow-duration metrics implementation published as draft PR #83
 
 Active branch: `codex/process-intelligence-memory-evaluation`
 
-Current objective: commit and open a pull request for observed workflow-duration metrics implementation.
+Current objective: review draft PR #83 and merge after required CI and human approval.
 
-Next first action: review, commit, and open a pull request for workflow-duration metrics; then select the next candidate through a separate ADR/specification/threat review.
+Next first action: inspect PR #83 checks/review, address actionable feedback, and merge after approval; then select the next candidate through a separate ADR/specification/threat review.
 
 ## Watch rules
 
@@ -53,7 +53,8 @@ entry directly below this section.
 - **Validation:** `pnpm typecheck`; `pnpm vitest run tests/workflow-duration-metrics.test.ts tests/protocol.test.ts` (9 passed); `pnpm vitest run tests/daemon.test.ts` (16 passed, 1 Windows-only skipped); `pnpm format:check`; and `git diff --check` passed.
 - **Decisions:** An invalid timestamp is unavailable evidence, not an error repair target. The report omits `elapsedMinutes` when no case has an observable interval and never returns raw timestamps or per-case duration values.
 - **Risks or compatibility impact:** Additive protocol and daemon method. Existing timeline, conformance, and workflow-variant contracts are unchanged.
-- **Next first action:** Review, commit, and open a pull request. Before any broader process-intelligence capability, prepare a separate ADR, specification, and threat review.
+- **Pull request:** #83 (draft)
+- **Next first action:** Review PR #83 checks and feedback, then merge after required CI and human approval. Before any broader process-intelligence capability, prepare a separate ADR, specification, and threat review.
 
 ### 2026-07-26, Observed workflow-duration metrics candidate
 
