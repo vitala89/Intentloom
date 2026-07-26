@@ -11,11 +11,19 @@ import {
   INSPECT_METHOD,
   SECURITY_AUDIT_METHOD,
   MEMORY_SEARCH_METHOD,
+  MEMORY_EVALUATIONS_LIST_METHOD,
+  ENGINEERING_CONFORMANCE_METHOD,
+  WORKFLOW_VARIANT_SUMMARY_METHOD,
+  WORKFLOW_DURATION_SUMMARY_METHOD,
   SESSION_GET_METHOD,
   createDoctorResponse,
   createInspectResponse,
   createSecurityAuditResponse,
   createMemorySearchResponse,
+  createMemoryEvaluationsListResponse,
+  createEngineeringConformanceResponse,
+  createWorkflowVariantSummaryResponse,
+  createWorkflowDurationSummaryResponse,
   createSessionGetResponse,
   parseDaemonRequest,
   parseDoctorResponse,
@@ -27,6 +35,14 @@ import {
   type SecurityAuditResult,
   type MemorySearchRequest,
   type MemorySearchResultPayload,
+  type MemoryEvaluationsListRequest,
+  type MemoryEvaluationsListResultPayload,
+  type EngineeringConformanceRequest,
+  type EngineeringConformanceResultPayload,
+  type WorkflowVariantSummaryRequest,
+  type WorkflowVariantSummaryResultPayload,
+  type WorkflowDurationSummaryRequest,
+  type WorkflowDurationSummaryResultPayload,
   type SessionGetRequest,
   type SessionGetResultPayload,
 } from "../../protocol/src/index.js";
@@ -51,6 +67,18 @@ export interface DaemonOptions {
   readonly memorySearch?: (
     request: MemorySearchRequest,
   ) => Promise<Omit<MemorySearchResultPayload, "protocolVersion">>;
+  readonly memoryEvaluationsList?: (
+    request: MemoryEvaluationsListRequest,
+  ) => Promise<Omit<MemoryEvaluationsListResultPayload, "protocolVersion">>;
+  readonly engineeringConformance?: (
+    request: EngineeringConformanceRequest,
+  ) => Promise<Omit<EngineeringConformanceResultPayload, "protocolVersion">>;
+  readonly workflowVariantSummary?: (
+    request: WorkflowVariantSummaryRequest,
+  ) => Promise<Omit<WorkflowVariantSummaryResultPayload, "protocolVersion">>;
+  readonly workflowDurationSummary?: (
+    request: WorkflowDurationSummaryRequest,
+  ) => Promise<Omit<WorkflowDurationSummaryResultPayload, "protocolVersion">>;
   readonly sessionGet?: (
     request: SessionGetRequest,
   ) => Promise<Omit<SessionGetResultPayload, "protocolVersion">>;
@@ -152,6 +180,62 @@ export async function startLocalDaemon(
             createMemorySearchResponse(
               request.id,
               await options.memorySearch(request),
+            ),
+          );
+        } else if (request.method === MEMORY_EVALUATIONS_LIST_METHOD) {
+          if (!options.memoryEvaluationsList)
+            return failure(
+              socket,
+              -32601,
+              "unsupported method memoryEvaluationsList",
+            );
+          response(
+            socket,
+            createMemoryEvaluationsListResponse(
+              request.id,
+              await options.memoryEvaluationsList(request),
+            ),
+          );
+        } else if (request.method === ENGINEERING_CONFORMANCE_METHOD) {
+          if (!options.engineeringConformance)
+            return failure(
+              socket,
+              -32601,
+              "unsupported method engineeringConformance",
+            );
+          response(
+            socket,
+            createEngineeringConformanceResponse(
+              request.id,
+              await options.engineeringConformance(request),
+            ),
+          );
+        } else if (request.method === WORKFLOW_VARIANT_SUMMARY_METHOD) {
+          if (!options.workflowVariantSummary)
+            return failure(
+              socket,
+              -32601,
+              "unsupported method workflowVariantSummary",
+            );
+          response(
+            socket,
+            createWorkflowVariantSummaryResponse(
+              request.id,
+              await options.workflowVariantSummary(request),
+            ),
+          );
+        } else if (request.method === WORKFLOW_DURATION_SUMMARY_METHOD) {
+          if (!options.workflowDurationSummary)
+            return failure(
+              socket,
+              -32601,
+              "unsupported method workflowDurationSummary",
+            );
+          response(
+            socket,
+            createWorkflowDurationSummaryResponse(
+              request.id,
+              await options.workflowDurationSummary(request),
             ),
           );
         } else if (request.method === SESSION_GET_METHOD) {

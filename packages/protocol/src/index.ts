@@ -3,6 +3,14 @@ export const DOCTOR_METHOD = "intentloom.project.doctor.v1" as const;
 export const INSPECT_METHOD = "intentloom.project.inspect.v1" as const;
 export const SECURITY_AUDIT_METHOD = "intentloom.security.audit.v1" as const;
 export const MEMORY_SEARCH_METHOD = "intentloom.memory.search.v1" as const;
+export const MEMORY_EVALUATIONS_LIST_METHOD =
+  "intentloom.memory.evaluations.list.v1" as const;
+export const ENGINEERING_CONFORMANCE_METHOD =
+  "intentloom.engineering.conformance.v1" as const;
+export const WORKFLOW_VARIANT_SUMMARY_METHOD =
+  "intentloom.workflow.variants.summary.v1" as const;
+export const WORKFLOW_DURATION_SUMMARY_METHOD =
+  "intentloom.workflow.durations.summary.v1" as const;
 export const SESSION_GET_METHOD = "intentloom.session.get.v1" as const;
 
 export type JsonPrimitive = boolean | null | number | string;
@@ -103,6 +111,70 @@ export type MemorySearchRequest = JsonRpcRequest<
 >;
 export type MemorySearchResponse = JsonRpcSuccess<MemorySearchResultPayload>;
 
+export interface MemoryEvaluationsListParams {
+  readonly protocolVersion: typeof PROTOCOL_VERSION;
+  readonly root: string;
+  readonly skillId?: string;
+  readonly outcome?: EvaluationOutcome;
+}
+export interface MemoryEvaluationsListResultPayload {
+  readonly protocolVersion: typeof PROTOCOL_VERSION;
+  readonly evaluations: readonly SkillEvaluationResult[];
+}
+export type MemoryEvaluationsListRequest = JsonRpcRequest<
+  typeof MEMORY_EVALUATIONS_LIST_METHOD,
+  MemoryEvaluationsListParams
+>;
+export type MemoryEvaluationsListResponse =
+  JsonRpcSuccess<MemoryEvaluationsListResultPayload>;
+
+export interface EngineeringConformanceParams {
+  readonly protocolVersion: typeof PROTOCOL_VERSION;
+  readonly root: string;
+  readonly timeline: GenericTimeline;
+  readonly policy: EngineeringWorkflowPolicy;
+}
+export interface EngineeringConformanceResultPayload {
+  readonly protocolVersion: typeof PROTOCOL_VERSION;
+  readonly report: EngineeringConformanceReport;
+}
+export type EngineeringConformanceRequest = JsonRpcRequest<
+  typeof ENGINEERING_CONFORMANCE_METHOD,
+  EngineeringConformanceParams
+>;
+export type EngineeringConformanceResponse =
+  JsonRpcSuccess<EngineeringConformanceResultPayload>;
+
+export interface WorkflowVariantSummaryParams {
+  readonly protocolVersion: typeof PROTOCOL_VERSION;
+  readonly timelines: readonly GenericTimeline[];
+}
+export interface WorkflowVariantSummaryResultPayload {
+  readonly protocolVersion: typeof PROTOCOL_VERSION;
+  readonly report: WorkflowVariantSummaryReport;
+}
+export type WorkflowVariantSummaryRequest = JsonRpcRequest<
+  typeof WORKFLOW_VARIANT_SUMMARY_METHOD,
+  WorkflowVariantSummaryParams
+>;
+export type WorkflowVariantSummaryResponse =
+  JsonRpcSuccess<WorkflowVariantSummaryResultPayload>;
+
+export interface WorkflowDurationSummaryParams {
+  readonly protocolVersion: typeof PROTOCOL_VERSION;
+  readonly timelines: readonly GenericTimeline[];
+}
+export interface WorkflowDurationSummaryResultPayload {
+  readonly protocolVersion: typeof PROTOCOL_VERSION;
+  readonly report: WorkflowDurationSummaryReport;
+}
+export type WorkflowDurationSummaryRequest = JsonRpcRequest<
+  typeof WORKFLOW_DURATION_SUMMARY_METHOD,
+  WorkflowDurationSummaryParams
+>;
+export type WorkflowDurationSummaryResponse =
+  JsonRpcSuccess<WorkflowDurationSummaryResultPayload>;
+
 export interface SessionGetParams {
   readonly protocolVersion: typeof PROTOCOL_VERSION;
   readonly root: string;
@@ -123,6 +195,10 @@ export type DaemonRequest =
   | InspectRequest
   | SecurityAuditRequest
   | MemorySearchRequest
+  | MemoryEvaluationsListRequest
+  | EngineeringConformanceRequest
+  | WorkflowVariantSummaryRequest
+  | WorkflowDurationSummaryRequest
   | SessionGetRequest;
 
 export type DaemonResponse =
@@ -130,6 +206,10 @@ export type DaemonResponse =
   | InspectResponse
   | SecurityAuditResponse
   | MemorySearchResponse
+  | MemoryEvaluationsListResponse
+  | EngineeringConformanceResponse
+  | WorkflowVariantSummaryResponse
+  | WorkflowDurationSummaryResponse
   | SessionGetResponse;
 
 export class ProtocolValidationError extends Error {
@@ -234,6 +314,67 @@ export function createMemorySearchRequest(
   };
 }
 
+export function createMemoryEvaluationsListRequest(
+  id: RequestId,
+  params: Omit<MemoryEvaluationsListParams, "protocolVersion">,
+): MemoryEvaluationsListRequest {
+  return {
+    jsonrpc: "2.0",
+    id,
+    method: MEMORY_EVALUATIONS_LIST_METHOD,
+    params: {
+      protocolVersion: PROTOCOL_VERSION,
+      root: params.root,
+      ...(params.skillId !== undefined ? { skillId: params.skillId } : {}),
+      ...(params.outcome !== undefined ? { outcome: params.outcome } : {}),
+    },
+  };
+}
+
+export function createEngineeringConformanceRequest(
+  id: RequestId,
+  params: Omit<EngineeringConformanceParams, "protocolVersion">,
+): EngineeringConformanceRequest {
+  return {
+    jsonrpc: "2.0",
+    id,
+    method: ENGINEERING_CONFORMANCE_METHOD,
+    params: {
+      protocolVersion: PROTOCOL_VERSION,
+      root: params.root,
+      timeline: params.timeline,
+      policy: params.policy,
+    },
+  };
+}
+
+export function createWorkflowVariantSummaryRequest(
+  id: RequestId,
+  params: Omit<WorkflowVariantSummaryParams, "protocolVersion">,
+): WorkflowVariantSummaryRequest {
+  return {
+    jsonrpc: "2.0",
+    id,
+    method: WORKFLOW_VARIANT_SUMMARY_METHOD,
+    params: {
+      protocolVersion: PROTOCOL_VERSION,
+      timelines: params.timelines,
+    },
+  };
+}
+
+export function createWorkflowDurationSummaryRequest(
+  id: RequestId,
+  params: Omit<WorkflowDurationSummaryParams, "protocolVersion">,
+): WorkflowDurationSummaryRequest {
+  return {
+    jsonrpc: "2.0",
+    id,
+    method: WORKFLOW_DURATION_SUMMARY_METHOD,
+    params: { protocolVersion: PROTOCOL_VERSION, timelines: params.timelines },
+  };
+}
+
 export function createSessionGetRequest(
   id: RequestId,
   params: Omit<SessionGetParams, "protocolVersion">,
@@ -276,6 +417,10 @@ export function parseDaemonRequest(value: unknown): DaemonRequest {
     INSPECT_METHOD,
     SECURITY_AUDIT_METHOD,
     MEMORY_SEARCH_METHOD,
+    MEMORY_EVALUATIONS_LIST_METHOD,
+    ENGINEERING_CONFORMANCE_METHOD,
+    WORKFLOW_VARIANT_SUMMARY_METHOD,
+    WORKFLOW_DURATION_SUMMARY_METHOD,
     SESSION_GET_METHOD,
   ];
   if (typeof value.method !== "string" || !validMethods.includes(value.method))
@@ -307,6 +452,54 @@ export function parseDaemonRequest(value: unknown): DaemonRequest {
     return createMemorySearchRequest(id, {
       root: stringValue(value.params.root, "root"),
       query: stringValue(value.params.query, "query"),
+    });
+  }
+  if (value.method === MEMORY_EVALUATIONS_LIST_METHOD) {
+    const outcome = value.params.outcome;
+    if (
+      outcome !== undefined &&
+      ![
+        "passed",
+        "failed",
+        "improved",
+        "regressed",
+        "ambiguous",
+        "unsupported",
+        "unsafe",
+      ].includes(stringValue(outcome, "outcome"))
+    ) {
+      throw new ProtocolValidationError(-32602, "invalid evaluation outcome");
+    }
+    return createMemoryEvaluationsListRequest(id, {
+      root: stringValue(value.params.root, "root"),
+      ...(typeof value.params.skillId === "string" &&
+      value.params.skillId.length > 0
+        ? { skillId: value.params.skillId }
+        : {}),
+      ...(outcome !== undefined
+        ? { outcome: outcome as EvaluationOutcome }
+        : {}),
+    });
+  }
+  if (value.method === ENGINEERING_CONFORMANCE_METHOD) {
+    return createEngineeringConformanceRequest(id, {
+      root: stringValue(value.params.root, "root"),
+      timeline: validateGenericTimeline(value.params.timeline),
+      policy: validateEngineeringWorkflowPolicy(value.params.policy),
+    });
+  }
+  if (value.method === WORKFLOW_VARIANT_SUMMARY_METHOD) {
+    if (!Array.isArray(value.params.timelines))
+      throw new ProtocolValidationError(-32602, "timelines must be an array");
+    return createWorkflowVariantSummaryRequest(id, {
+      timelines: value.params.timelines.map(validateGenericTimeline),
+    });
+  }
+  if (value.method === WORKFLOW_DURATION_SUMMARY_METHOD) {
+    if (!Array.isArray(value.params.timelines))
+      throw new ProtocolValidationError(-32602, "timelines must be an array");
+    return createWorkflowDurationSummaryRequest(id, {
+      timelines: value.params.timelines.map(validateGenericTimeline),
     });
   }
   if (value.method === SESSION_GET_METHOD) {
@@ -388,6 +581,62 @@ export function createMemorySearchResponse(
       protocolVersion: PROTOCOL_VERSION,
       query: result.query,
       items: [...result.items],
+    },
+  };
+}
+
+export function createMemoryEvaluationsListResponse(
+  id: RequestId,
+  result: Omit<MemoryEvaluationsListResultPayload, "protocolVersion">,
+): MemoryEvaluationsListResponse {
+  return {
+    jsonrpc: "2.0",
+    id,
+    result: {
+      protocolVersion: PROTOCOL_VERSION,
+      evaluations: [...result.evaluations],
+    },
+  };
+}
+
+export function createEngineeringConformanceResponse(
+  id: RequestId,
+  result: Omit<EngineeringConformanceResultPayload, "protocolVersion">,
+): EngineeringConformanceResponse {
+  return {
+    jsonrpc: "2.0",
+    id,
+    result: {
+      protocolVersion: PROTOCOL_VERSION,
+      report: validateEngineeringConformanceReport(result.report),
+    },
+  };
+}
+
+export function createWorkflowVariantSummaryResponse(
+  id: RequestId,
+  result: Omit<WorkflowVariantSummaryResultPayload, "protocolVersion">,
+): WorkflowVariantSummaryResponse {
+  return {
+    jsonrpc: "2.0",
+    id,
+    result: {
+      protocolVersion: PROTOCOL_VERSION,
+      report: validateWorkflowVariantSummaryReport(result.report),
+    },
+  };
+}
+
+export function createWorkflowDurationSummaryResponse(
+  id: RequestId,
+  result: Omit<WorkflowDurationSummaryResultPayload, "protocolVersion">,
+): WorkflowDurationSummaryResponse {
+  return {
+    jsonrpc: "2.0",
+    id,
+    result: {
+      protocolVersion: PROTOCOL_VERSION,
+      report: validateWorkflowDurationSummaryReport(result.report),
     },
   };
 }
@@ -2698,5 +2947,543 @@ export function validateNeutronSubagentTaskRecord(
     createdAt: stringValue(value.createdAt, "createdAt"),
     completedAt:
       typeof value.completedAt === "string" ? value.completedAt : null,
+  };
+}
+
+export type EngineeringWorkflowCaseType =
+  "pull-request" | "release" | "incident" | "migration" | "agent-task";
+export type EngineeringRuleSeverity = "error" | "warning" | "info";
+export type EngineeringRuleConditionType =
+  | "required-activity"
+  | "forbidden-activity"
+  | "ordered-sequence"
+  | "evidence-presence"
+  | "time-delta-threshold";
+export interface EngineeringRuleCondition {
+  readonly type: EngineeringRuleConditionType;
+  readonly activity?: string;
+  readonly sequence?: readonly string[];
+  readonly evidenceType?: string;
+  readonly maxMinutes?: number;
+}
+export interface EngineeringRuleRemediation {
+  readonly summary: string;
+  readonly actionableSteps: readonly string[];
+}
+export interface EngineeringRule {
+  readonly ruleId: string;
+  readonly caseType: EngineeringWorkflowCaseType;
+  readonly severity: EngineeringRuleSeverity;
+  readonly title: string;
+  readonly description?: string;
+  readonly condition: EngineeringRuleCondition;
+  readonly remediation?: EngineeringRuleRemediation;
+}
+export interface EngineeringWorkflowPolicy {
+  readonly schemaVersion: "1";
+  readonly policyId: string;
+  readonly description?: string;
+  readonly rules: readonly EngineeringRule[];
+}
+export type EngineeringConformanceStatus =
+  | "pass"
+  | "violation"
+  | "missing-evidence"
+  | "ambiguous-evidence"
+  | "unsupported";
+export interface EngineeringEvidenceRef {
+  readonly source: string;
+  readonly sourceId: string;
+  readonly timestamp?: string;
+}
+export interface EngineeringConformanceFinding {
+  readonly ruleId: string;
+  readonly caseType: EngineeringWorkflowCaseType;
+  readonly severity: EngineeringRuleSeverity;
+  readonly status: EngineeringConformanceStatus;
+  readonly title: string;
+  readonly evidence: readonly EngineeringEvidenceRef[];
+  readonly remediation?: EngineeringRuleRemediation;
+}
+export interface EngineeringConformanceSummary {
+  readonly totalRules: number;
+  readonly passed: number;
+  readonly violations: number;
+  readonly missingEvidence: number;
+  readonly ambiguousEvidence: number;
+  readonly unsupported: number;
+}
+export interface EngineeringConformanceReport {
+  readonly operationVersion: 1;
+  readonly policyId: string;
+  readonly evaluatedAt: string;
+  readonly caseType: EngineeringWorkflowCaseType;
+  readonly caseId: string;
+  readonly summary: EngineeringConformanceSummary;
+  readonly findings: readonly EngineeringConformanceFinding[];
+}
+export interface TimelineEventRef {
+  readonly activity: string;
+  readonly source: string;
+  readonly sourceId: string;
+  readonly timestamp?: string;
+  readonly commitIds?: readonly string[];
+  readonly evidenceType?: string;
+}
+export interface GenericTimeline {
+  readonly caseType: EngineeringWorkflowCaseType;
+  readonly caseId: string;
+  readonly events: readonly TimelineEventRef[];
+}
+
+const engineeringCaseTypes: readonly EngineeringWorkflowCaseType[] = [
+  "pull-request",
+  "release",
+  "incident",
+  "migration",
+  "agent-task",
+];
+const engineeringConditionTypes: readonly EngineeringRuleConditionType[] = [
+  "required-activity",
+  "forbidden-activity",
+  "ordered-sequence",
+  "evidence-presence",
+  "time-delta-threshold",
+];
+const engineeringSeverities: readonly EngineeringRuleSeverity[] = [
+  "error",
+  "warning",
+  "info",
+];
+const engineeringStatuses: readonly EngineeringConformanceStatus[] = [
+  "pass",
+  "violation",
+  "missing-evidence",
+  "ambiguous-evidence",
+  "unsupported",
+];
+
+function engineeringCaseType(
+  value: unknown,
+  field: string,
+): EngineeringWorkflowCaseType {
+  const candidate = stringValue(value, field) as EngineeringWorkflowCaseType;
+  if (!engineeringCaseTypes.includes(candidate))
+    throw new ProtocolValidationError(-32602, `invalid ${field}`);
+  return candidate;
+}
+
+function engineeringRemediation(
+  value: unknown,
+): EngineeringRuleRemediation | undefined {
+  if (value === undefined) return undefined;
+  if (!isObject(value))
+    throw new ProtocolValidationError(-32602, "remediation must be an object");
+  return {
+    summary: stringValue(value.summary, "remediation.summary"),
+    actionableSteps: stringArray(
+      value.actionableSteps,
+      "remediation.actionableSteps",
+    ),
+  };
+}
+
+export function validateEngineeringWorkflowPolicy(
+  value: unknown,
+): EngineeringWorkflowPolicy {
+  if (!isObject(value) || value.schemaVersion !== "1")
+    throw new ProtocolValidationError(
+      -32602,
+      "unsupported engineering workflow policy schema version",
+    );
+  if (!Array.isArray(value.rules))
+    throw new ProtocolValidationError(-32602, "policy rules must be an array");
+  const rules = value.rules.map((rule, index): EngineeringRule => {
+    if (!isObject(rule) || !isObject(rule.condition))
+      throw new ProtocolValidationError(
+        -32602,
+        `rule ${index} must include a condition`,
+      );
+    const conditionType = stringValue(
+      rule.condition.type,
+      `rules[${index}].condition.type`,
+    ) as EngineeringRuleConditionType;
+    if (!engineeringConditionTypes.includes(conditionType))
+      throw new ProtocolValidationError(
+        -32602,
+        `invalid rules[${index}].condition.type`,
+      );
+    const severity = stringValue(
+      rule.severity,
+      `rules[${index}].severity`,
+    ) as EngineeringRuleSeverity;
+    if (!engineeringSeverities.includes(severity))
+      throw new ProtocolValidationError(
+        -32602,
+        `invalid rules[${index}].severity`,
+      );
+    const remediation = engineeringRemediation(rule.remediation);
+    return {
+      ruleId: stringValue(rule.ruleId, `rules[${index}].ruleId`),
+      caseType: engineeringCaseType(rule.caseType, `rules[${index}].caseType`),
+      severity,
+      title: stringValue(rule.title, `rules[${index}].title`),
+      ...(typeof rule.description === "string" && rule.description.length > 0
+        ? { description: rule.description }
+        : {}),
+      condition: {
+        type: conditionType,
+        ...(typeof rule.condition.activity === "string" &&
+        rule.condition.activity.length > 0
+          ? { activity: rule.condition.activity }
+          : {}),
+        ...(Array.isArray(rule.condition.sequence)
+          ? {
+              sequence: stringArray(
+                rule.condition.sequence,
+                `rules[${index}].condition.sequence`,
+              ),
+            }
+          : {}),
+        ...(typeof rule.condition.evidenceType === "string" &&
+        rule.condition.evidenceType.length > 0
+          ? { evidenceType: rule.condition.evidenceType }
+          : {}),
+        ...(typeof rule.condition.maxMinutes === "number" &&
+        Number.isFinite(rule.condition.maxMinutes)
+          ? { maxMinutes: rule.condition.maxMinutes }
+          : {}),
+      },
+      ...(remediation ? { remediation } : {}),
+    };
+  });
+  if (new Set(rules.map((rule) => rule.ruleId)).size !== rules.length)
+    throw new ProtocolValidationError(
+      -32602,
+      "engineering workflow policy rule IDs must be unique",
+    );
+  return {
+    schemaVersion: "1",
+    policyId: stringValue(value.policyId, "policyId"),
+    ...(typeof value.description === "string" && value.description.length > 0
+      ? { description: value.description }
+      : {}),
+    rules,
+  };
+}
+
+export function validateGenericTimeline(value: unknown): GenericTimeline {
+  if (!isObject(value) || !Array.isArray(value.events))
+    throw new ProtocolValidationError(
+      -32602,
+      "timeline events must be an array",
+    );
+  return {
+    caseType: engineeringCaseType(value.caseType, "caseType"),
+    caseId: stringValue(value.caseId, "caseId"),
+    events: value.events.map((event, index): TimelineEventRef => {
+      if (!isObject(event))
+        throw new ProtocolValidationError(
+          -32602,
+          `events[${index}] must be an object`,
+        );
+      return {
+        activity: stringValue(event.activity, `events[${index}].activity`),
+        source: stringValue(event.source, `events[${index}].source`),
+        sourceId: stringValue(event.sourceId, `events[${index}].sourceId`),
+        ...(typeof event.timestamp === "string" && event.timestamp.length > 0
+          ? { timestamp: event.timestamp }
+          : {}),
+        ...(Array.isArray(event.commitIds)
+          ? {
+              commitIds: stringArray(
+                event.commitIds,
+                `events[${index}].commitIds`,
+              ),
+            }
+          : {}),
+        ...(typeof event.evidenceType === "string" &&
+        event.evidenceType.length > 0
+          ? { evidenceType: event.evidenceType }
+          : {}),
+      };
+    }),
+  };
+}
+
+export function validateEngineeringConformanceReport(
+  value: unknown,
+): EngineeringConformanceReport {
+  if (
+    !isObject(value) ||
+    value.operationVersion !== 1 ||
+    !isObject(value.summary) ||
+    !Array.isArray(value.findings)
+  )
+    throw new ProtocolValidationError(
+      -32602,
+      "engineering conformance report is invalid",
+    );
+  const summary = value.summary;
+  const numberValue = (field: keyof EngineeringConformanceSummary) => {
+    const number = summary[field];
+    if (typeof number !== "number" || !Number.isFinite(number))
+      throw new ProtocolValidationError(
+        -32602,
+        `summary.${field} must be a number`,
+      );
+    return number;
+  };
+  return {
+    operationVersion: 1,
+    policyId: stringValue(value.policyId, "policyId"),
+    evaluatedAt: stringValue(value.evaluatedAt, "evaluatedAt"),
+    caseType: engineeringCaseType(value.caseType, "caseType"),
+    caseId: stringValue(value.caseId, "caseId"),
+    summary: {
+      totalRules: numberValue("totalRules"),
+      passed: numberValue("passed"),
+      violations: numberValue("violations"),
+      missingEvidence: numberValue("missingEvidence"),
+      ambiguousEvidence: numberValue("ambiguousEvidence"),
+      unsupported: numberValue("unsupported"),
+    },
+    findings: value.findings.map(
+      (finding, index): EngineeringConformanceFinding => {
+        if (!isObject(finding) || !Array.isArray(finding.evidence))
+          throw new ProtocolValidationError(
+            -32602,
+            `findings[${index}] is invalid`,
+          );
+        const severity = stringValue(
+          finding.severity,
+          `findings[${index}].severity`,
+        ) as EngineeringRuleSeverity;
+        const status = stringValue(
+          finding.status,
+          `findings[${index}].status`,
+        ) as EngineeringConformanceStatus;
+        if (
+          !engineeringSeverities.includes(severity) ||
+          !engineeringStatuses.includes(status)
+        )
+          throw new ProtocolValidationError(
+            -32602,
+            `findings[${index}] has an invalid status or severity`,
+          );
+        const remediation = engineeringRemediation(finding.remediation);
+        return {
+          ruleId: stringValue(finding.ruleId, `findings[${index}].ruleId`),
+          caseType: engineeringCaseType(
+            finding.caseType,
+            `findings[${index}].caseType`,
+          ),
+          severity,
+          status,
+          title: stringValue(finding.title, `findings[${index}].title`),
+          evidence: finding.evidence.map(
+            (evidence, evidenceIndex): EngineeringEvidenceRef => {
+              if (!isObject(evidence))
+                throw new ProtocolValidationError(
+                  -32602,
+                  `findings[${index}].evidence[${evidenceIndex}] is invalid`,
+                );
+              return {
+                source: stringValue(evidence.source, "evidence.source"),
+                sourceId: stringValue(evidence.sourceId, "evidence.sourceId"),
+                ...(typeof evidence.timestamp === "string" &&
+                evidence.timestamp.length > 0
+                  ? { timestamp: evidence.timestamp }
+                  : {}),
+              };
+            },
+          ),
+          ...(remediation ? { remediation } : {}),
+        };
+      },
+    ),
+  };
+}
+
+export type WorkflowTimestampCoverage = "complete" | "partial" | "unavailable";
+
+export interface WorkflowVariant {
+  readonly variantId: string;
+  readonly activities: readonly string[];
+  readonly occurrenceCount: number;
+  readonly caseIds: readonly string[];
+}
+
+export interface WorkflowVariantSummaryReport {
+  readonly operationVersion: 1;
+  readonly caseType: EngineeringWorkflowCaseType;
+  readonly timelineCount: number;
+  readonly timestampCoverage: WorkflowTimestampCoverage;
+  readonly variants: readonly WorkflowVariant[];
+}
+
+export function validateWorkflowVariantSummaryReport(
+  value: unknown,
+): WorkflowVariantSummaryReport {
+  if (
+    !isObject(value) ||
+    value.operationVersion !== 1 ||
+    !Array.isArray(value.variants)
+  )
+    throw new ProtocolValidationError(
+      -32602,
+      "workflow variant summary report is invalid",
+    );
+  const timestampCoverage = stringValue(
+    value.timestampCoverage,
+    "timestampCoverage",
+  ) as WorkflowTimestampCoverage;
+  if (
+    !(["complete", "partial", "unavailable"] as const).includes(
+      timestampCoverage,
+    )
+  )
+    throw new ProtocolValidationError(-32602, "invalid timestampCoverage");
+  if (
+    typeof value.timelineCount !== "number" ||
+    !Number.isInteger(value.timelineCount) ||
+    value.timelineCount < 2
+  )
+    throw new ProtocolValidationError(
+      -32602,
+      "timelineCount must be an integer of at least two",
+    );
+  return {
+    operationVersion: 1,
+    caseType: engineeringCaseType(value.caseType, "caseType"),
+    timelineCount: value.timelineCount,
+    timestampCoverage,
+    variants: value.variants.map((variant, index): WorkflowVariant => {
+      if (!isObject(variant))
+        throw new ProtocolValidationError(
+          -32602,
+          `variants[${index}] must be an object`,
+        );
+      const occurrenceCount = variant.occurrenceCount;
+      if (
+        typeof occurrenceCount !== "number" ||
+        !Number.isInteger(occurrenceCount) ||
+        occurrenceCount < 1
+      )
+        throw new ProtocolValidationError(
+          -32602,
+          `variants[${index}].occurrenceCount must be a positive integer`,
+        );
+      const caseIds = stringArray(
+        variant.caseIds,
+        `variants[${index}].caseIds`,
+      );
+      if (caseIds.length !== occurrenceCount)
+        throw new ProtocolValidationError(
+          -32602,
+          `variants[${index}] case count does not match occurrenceCount`,
+        );
+      return {
+        variantId: stringValue(
+          variant.variantId,
+          `variants[${index}].variantId`,
+        ),
+        activities: stringArray(
+          variant.activities,
+          `variants[${index}].activities`,
+        ),
+        occurrenceCount,
+        caseIds,
+      };
+    }),
+  };
+}
+
+export interface WorkflowElapsedMinutes {
+  readonly minimum: number;
+  readonly median: number;
+  readonly maximum: number;
+}
+
+export interface WorkflowDurationSummaryReport {
+  readonly operationVersion: 1;
+  readonly caseType: EngineeringWorkflowCaseType;
+  readonly timelineCount: number;
+  readonly timestampCoverage: WorkflowTimestampCoverage;
+  readonly observableCaseCount: number;
+  readonly elapsedMinutes?: WorkflowElapsedMinutes;
+}
+
+export function validateWorkflowDurationSummaryReport(
+  value: unknown,
+): WorkflowDurationSummaryReport {
+  if (!isObject(value) || value.operationVersion !== 1)
+    throw new ProtocolValidationError(
+      -32602,
+      "workflow duration summary report is invalid",
+    );
+  const timestampCoverage = stringValue(
+    value.timestampCoverage,
+    "timestampCoverage",
+  ) as WorkflowTimestampCoverage;
+  if (
+    !(["complete", "partial", "unavailable"] as const).includes(
+      timestampCoverage,
+    )
+  )
+    throw new ProtocolValidationError(-32602, "invalid timestampCoverage");
+  const integer = (field: "timelineCount" | "observableCaseCount") => {
+    const result = value[field];
+    if (typeof result !== "number" || !Number.isInteger(result) || result < 0)
+      throw new ProtocolValidationError(
+        -32602,
+        `${field} must be a non-negative integer`,
+      );
+    return result;
+  };
+  const timelineCount = integer("timelineCount");
+  const observableCaseCount = integer("observableCaseCount");
+  if (timelineCount < 2 || observableCaseCount > timelineCount)
+    throw new ProtocolValidationError(
+      -32602,
+      "invalid workflow duration case counts",
+    );
+  let elapsedMinutes: WorkflowElapsedMinutes | undefined;
+  if (value.elapsedMinutes !== undefined) {
+    if (!isObject(value.elapsedMinutes) || observableCaseCount === 0)
+      throw new ProtocolValidationError(-32602, "elapsedMinutes is invalid");
+    const rawElapsedMinutes = value.elapsedMinutes;
+    const metric = (field: keyof WorkflowElapsedMinutes) => {
+      const result = rawElapsedMinutes[field];
+      if (typeof result !== "number" || !Number.isFinite(result) || result < 0)
+        throw new ProtocolValidationError(
+          -32602,
+          `elapsedMinutes.${field} is invalid`,
+        );
+      return result;
+    };
+    elapsedMinutes = {
+      minimum: metric("minimum"),
+      median: metric("median"),
+      maximum: metric("maximum"),
+    };
+    if (
+      elapsedMinutes.minimum > elapsedMinutes.median ||
+      elapsedMinutes.median > elapsedMinutes.maximum
+    )
+      throw new ProtocolValidationError(
+        -32602,
+        "elapsedMinutes values are not ordered",
+      );
+  } else if (observableCaseCount > 0) {
+    throw new ProtocolValidationError(-32602, "elapsedMinutes is required");
+  }
+  return {
+    operationVersion: 1,
+    caseType: engineeringCaseType(value.caseType, "caseType"),
+    timelineCount,
+    timestampCoverage,
+    observableCaseCount,
+    ...(elapsedMinutes ? { elapsedMinutes } : {}),
   };
 }

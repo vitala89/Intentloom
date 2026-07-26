@@ -18,12 +18,19 @@ import {
   createInspectRequest,
   createSecurityAuditRequest,
   createMemorySearchRequest,
+  createMemoryEvaluationsListRequest,
+  createEngineeringConformanceRequest,
+  createWorkflowVariantSummaryRequest,
+  createWorkflowDurationSummaryRequest,
   createSessionGetRequest,
 } from "../packages/protocol/src/index.js";
 import {
   doctorProject,
   initProject,
   nodeFileSystem,
+  evaluateProjectEngineeringConformance,
+  summarizeProjectWorkflowVariants,
+  summarizeProjectWorkflowDurations,
 } from "../packages/application/src/index.js";
 import {
   startLocalDaemon,
@@ -577,6 +584,22 @@ describe.skipIf(process.platform === "win32")("local daemon", () => {
         query: req.params.query,
         items: [],
       }),
+      memoryEvaluationsList: async () => ({
+        evaluations: [],
+      }),
+      engineeringConformance: async (req) => ({
+        report: evaluateProjectEngineeringConformance({
+          root: req.params.root,
+          timeline: req.params.timeline,
+          policy: req.params.policy,
+        }),
+      }),
+      workflowVariantSummary: async (req) => ({
+        report: summarizeProjectWorkflowVariants(req.params.timelines),
+      }),
+      workflowDurationSummary: async (req) => ({
+        report: summarizeProjectWorkflowDurations(req.params.timelines),
+      }),
       sessionGet: async () => ({
         session: null,
       }),
@@ -611,6 +634,90 @@ describe.skipIf(process.platform === "win32")("local daemon", () => {
       createMemorySearchRequest(3, { root, query: "pattern" }),
     )) as { result: { query: string } };
     expect(memRes.result.query).toBe("pattern");
+
+    const evaluationRes = (await sendReq(
+      createMemoryEvaluationsListRequest(5, { root, outcome: "passed" }),
+    )) as { result: { evaluations: unknown[] } };
+    expect(evaluationRes.result.evaluations).toEqual([]);
+
+    const conformanceRes = (await sendReq(
+      createEngineeringConformanceRequest(6, {
+        root,
+        timeline: {
+          caseType: "release",
+          caseId: "release:1",
+          events: [
+            {
+              activity: "release.published",
+              source: "local-fixture",
+              sourceId: "release:1",
+            },
+          ],
+        },
+        policy: {
+          schemaVersion: "1",
+          policyId: "policy:release",
+          rules: [
+            {
+              ruleId: "require-release",
+              caseType: "release",
+              severity: "error",
+              title: "Release evidence",
+              condition: {
+                type: "required-activity",
+                activity: "release.published",
+              },
+            },
+          ],
+        },
+      }),
+    )) as { result: { report: { summary: { passed: number } } } };
+    expect(conformanceRes.result.report.summary.passed).toBe(1);
+
+    const variantsRes = (await sendReq(
+      createWorkflowVariantSummaryRequest(7, {
+        timelines: [
+          {
+            caseType: "release",
+            caseId: "release:1",
+            events: [],
+          },
+          {
+            caseType: "release",
+            caseId: "release:2",
+            events: [],
+          },
+        ],
+      }),
+    )) as { result: { report: { timelineCount: number } } };
+    expect(variantsRes.result.report.timelineCount).toBe(2);
+
+    const durationRes = (await sendReq(
+      createWorkflowDurationSummaryRequest(8, {
+        timelines: [
+          {
+            caseType: "release",
+            caseId: "release:1",
+            events: [
+              {
+                activity: "release.started",
+                source: "fixture",
+                sourceId: "1",
+                timestamp: "2026-07-26T00:00:00.000Z",
+              },
+              {
+                activity: "release.finished",
+                source: "fixture",
+                sourceId: "2",
+                timestamp: "2026-07-26T00:01:00.000Z",
+              },
+            ],
+          },
+          { caseType: "release", caseId: "release:2", events: [] },
+        ],
+      }),
+    )) as { result: { report: { observableCaseCount: number } } };
+    expect(durationRes.result.report.observableCaseCount).toBe(1);
 
     const sessionRes = (await sendReq(
       createSessionGetRequest(4, { root, sessionId: "s1" }),

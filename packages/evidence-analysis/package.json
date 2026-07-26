@@ -6,6 +6,9 @@
   "engines": {
     "node": ">=22"
   },
+  "dependencies": {
+    "@intentloom/protocol": "workspace:*"
+  },
   "exports": {
     ".": "./src/index.ts"
   }

@@ -1,6 +1,6 @@
 # ADR-0020: Engineering workflow policy contract and conformance engine
 
-- Status: Proposed
+- Status: Accepted
 - Date: 2026-07-24
 
 ## Context
@@ -50,6 +50,7 @@ Each evaluated rule produces a deterministic finding with one of the following s
 ## Consequences
 
 - Engineering policies become reviewable, versioned artifacts stored within the repository or Intentloom catalog.
-- Conformance results are deterministic and reproducible across CLI, daemon, and MCP adapters.
+- The canonical policy, timeline, and report contracts live in `@intentloom/protocol`; `@intentloom/evidence-analysis` owns only the pure deterministic evaluator and re-exports the compatible types.
+- Conformance results are deterministic and reproducible across CLI, authenticated local daemon, and MCP adapters.
 - Missing evidence is strictly distinguished from a confirmed policy violation.
 - Future MCP tools can safely expose `evaluate_engineering_conformance` over the existing stdio application boundary.

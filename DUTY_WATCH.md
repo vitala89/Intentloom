@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: Agent Workspace Plan, Review & Apply Modes merged into main; Neutron Autonomous Subagent Orchestration & Local Workspace Sync Engine complete locally
+Status: Observed workflow-duration metrics implementation published as draft PR #83
 
-Active branch: `feat/neutron-orchestration`
+Active branch: `codex/process-intelligence-memory-evaluation`
 
-Current objective: commit and open a pull request for Neutron Autonomous Subagent Orchestration & Local Workspace Sync Engine.
+Current objective: review draft PR #83 and merge after required CI and human approval.
 
-Next first action: review Neutron Orchestration final diff, commit it, open a pull request, and merge after review.
+Next first action: inspect PR #83 checks/review, address actionable feedback, and merge after approval; then select the next candidate through a separate ADR/specification/threat review.
 
 ## Watch rules
 
@@ -41,6 +41,95 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-26, Observed workflow-duration metrics implementation
+
+- **Status:** complete
+- **Agent/tool:** Codex
+- **Branch:** `codex/process-intelligence-memory-evaluation`
+- **Objective:** Implement accepted aggregate observed-duration metrics without creating bottleneck, performance, or causal analysis.
+- **Completed:** Added `WorkflowDurationSummaryReport` protocol contracts and `intentloom.workflow.durations.summary.v1`. Implemented pure `summarizeWorkflowDurations`, which validates caller-supplied timelines, rejects insufficient/mixed/duplicate cases, derives timestamp coverage, and returns aggregate observed elapsed minutes (minimum, median, maximum) only for cases with at least two valid timestamps. Added equivalent application and authenticated daemon adapters plus focused tests. ADR-0038 and the v0.1 specification are now accepted.
+- **Files changed:** `PROJECT_STATE.md`, `DUTY_WATCH.md`, `docs/decisions/ADR-0038-observed-workflow-duration-metrics.md`, `docs/specs/WORKFLOW_DURATION_METRICS_V0_1_SPEC.md`, `packages/protocol/src/index.ts`, `packages/evidence-analysis/src/index.ts`, `packages/application/src/index.ts`, `packages/daemon/src/index.ts`, `tests/workflow-duration-metrics.test.ts`, `tests/protocol.test.ts`, and `tests/daemon.test.ts`.
+- **Validation:** `pnpm typecheck`; `pnpm vitest run tests/workflow-duration-metrics.test.ts tests/protocol.test.ts` (9 passed); `pnpm vitest run tests/daemon.test.ts` (16 passed, 1 Windows-only skipped); `pnpm format:check`; and `git diff --check` passed.
+- **Decisions:** An invalid timestamp is unavailable evidence, not an error repair target. The report omits `elapsedMinutes` when no case has an observable interval and never returns raw timestamps or per-case duration values.
+- **Risks or compatibility impact:** Additive protocol and daemon method. Existing timeline, conformance, and workflow-variant contracts are unchanged.
+- **Pull request:** #83 (draft)
+- **Next first action:** Review PR #83 checks and feedback, then merge after required CI and human approval. Before any broader process-intelligence capability, prepare a separate ADR, specification, and threat review.
+
+### 2026-07-26, Observed workflow-duration metrics candidate
+
+- **Status:** complete
+- **Agent/tool:** Codex
+- **Branch:** `codex/process-intelligence-memory-evaluation`
+- **Objective:** Specify the next narrowly bounded timing candidate without claiming bottlenecks, performance, or causality.
+- **Completed:** Added proposed ADR-0038 and Draft `WORKFLOW_DURATION_METRICS_V0_1_SPEC.md`. The candidate accepts only explicitly supplied, same-type canonical timelines and emits aggregate elapsed-minute statistics when timestamps permit, plus evidence coverage. It prohibits persistence, project or network access, actors, raw timestamps, rankings, alerts, bottleneck labels, performance claims, and causal interpretation. Added security invariant 31 and updated durable project state.
+- **Files changed:** `PROJECT_STATE.md`, `DUTY_WATCH.md`, `docs/decisions/ADR-0038-observed-workflow-duration-metrics.md`, `docs/specs/WORKFLOW_DURATION_METRICS_V0_1_SPEC.md`, and `docs/security/THREAT_MODEL.md`.
+- **Validation:** Markdown formatting and `git diff --check` are required before commit.
+- **Decisions:** This is a proposed boundary only. It is not authorization to implement duration metrics or broader workflow timing analysis.
+- **Next first action:** Review and approve or revise ADR-0038 and the draft specification. Only after approval, add canonical protocol types, deterministic fixtures, the pure analysis operation, application adapter, and authenticated daemon IPC.
+
+### 2026-07-26, Deterministic workflow-variant summary implementation
+
+- **Status:** complete
+- **Agent/tool:** Codex
+- **Branch:** `codex/process-intelligence-memory-evaluation`
+- **Objective:** Implement the accepted narrow workflow-variant summary without expanding into process mining, causal analysis, persistence, or evidence collection.
+- **Completed:** Added `WorkflowVariantSummaryReport` protocol contracts and `intentloom.workflow.variants.summary.v1`. Implemented pure `summarizeWorkflowVariants` using only caller-supplied canonical timelines; it groups ordered activity sequences using SHA-256 identifiers, validates timeline count/case type/case-ID isolation, reports timestamp coverage only, and deterministically sorts variants. Added equivalent application and authenticated daemon adapters plus protocol, pure-analysis, application, and daemon test coverage. ADR-0037 and the v0.1 specification are now accepted.
+- **Files changed:** `PROJECT_STATE.md`, `DUTY_WATCH.md`, `docs/decisions/ADR-0037-deterministic-workflow-variant-summary.md`, `docs/specs/WORKFLOW_VARIANT_SUMMARY_V0_1_SPEC.md`, `packages/protocol/src/index.ts`, `packages/evidence-analysis/src/index.ts`, `packages/application/src/index.ts`, `packages/daemon/src/index.ts`, `tests/workflow-variant-summary.test.ts`, `tests/protocol.test.ts`, and `tests/daemon.test.ts`.
+- **Validation:** `pnpm typecheck`; `pnpm vitest run tests/workflow-variant-summary.test.ts tests/protocol.test.ts` (8 passed); `pnpm vitest run tests/daemon.test.ts` (16 passed, 1 Windows-only skipped); `pnpm format:check`; and `git diff --check` passed.
+- **Decisions:** The operation is pure and accepts no root path, credentials, provider configuration, persistence target, actor, or raw evidence payload. Empty timelines produce `unavailable` timestamp coverage rather than a delay claim.
+- **Risks or compatibility impact:** Additive protocol and daemon method. Existing timeline, conformance, and evidence contracts are unchanged.
+- **Next first action:** Review, commit, and open a pull request. Before any broader process-intelligence capability, prepare a separate ADR, specification, and threat review.
+
+### 2026-07-26, Deterministic workflow-variant summary candidate
+
+- **Status:** complete
+- **Agent/tool:** Codex
+- **Branch:** `codex/process-intelligence-memory-evaluation`
+- **Objective:** Specify the next narrow Engineering Process Intelligence increment without prematurely implementing process mining or causal analysis.
+- **Completed:** Added proposed ADR-0037 and Draft `WORKFLOW_VARIANT_SUMMARY_V0_1_SPEC.md`. The candidate is constrained to pure, in-memory aggregation of at least two explicitly supplied, same-type canonical timelines. It exposes normalized activity sequences, case identifiers, counts, and timestamp coverage only; it prohibits root access, persistence, network, actors, raw payloads, bottleneck/delay claims, causality, recommendations, and model interpretation. Added security invariant 30 and updated durable project state.
+- **Files changed:** `PROJECT_STATE.md`, `DUTY_WATCH.md`, `docs/decisions/ADR-0037-deterministic-workflow-variant-summary.md`, `docs/specs/WORKFLOW_VARIANT_SUMMARY_V0_1_SPEC.md`, and `docs/security/THREAT_MODEL.md`.
+- **Validation:** Markdown formatting and `git diff --check` are required before commit.
+- **Decisions:** This is a proposed boundary only. It is not authorization to implement workflow-variant analysis or to expand toward bottleneck/process-mining capabilities.
+- **Next first action:** Review and approve or revise ADR-0037 and the draft specification. Only after approval, add canonical protocol types, deterministic fixtures, the pure analysis operation, application adapter, and authenticated daemon IPC.
+
+### 2026-07-26, Engineering Process Intelligence & Agent Memory Evaluation system (IPC increment complete)
+
+- **Status:** complete
+- **Agent/tool:** Codex
+- **Branch:** `codex/process-intelligence-memory-evaluation`
+- **Objective:** Complete the first shared-application and authenticated-local-daemon increment for deterministic engineering conformance and procedural-memory evaluation reads.
+- **Completed:** Moved engineering workflow policy, timeline, and conformance report contracts to `@intentloom/protocol`, retaining `@intentloom/evidence-analysis` as the pure evaluator and a compatibility re-export surface. Added `intentloom.engineering.conformance.v1`, application operation `evaluateProjectEngineeringConformance`, and authenticated daemon routing. The existing `intentloom.memory.evaluations.list.v1` exposes procedural-memory evaluation records. Updated ADR-0020 and durable project state.
+- **Files changed:** `PROJECT_STATE.md`, `DUTY_WATCH.md`, `docs/decisions/ADR-0020-engineering-workflow-policy-and-conformance.md`, `pnpm-lock.yaml`, `packages/application/`, `packages/daemon/src/index.ts`, `packages/evidence-analysis/`, `packages/protocol/src/index.ts`, `tests/daemon.test.ts`, `tests/engineering-conformance.test.ts`, and `tests/protocol.test.ts`.
+- **Validation:** `pnpm install --offline`, `pnpm typecheck`, `pnpm lint`, `pnpm format:check`, `pnpm build`, focused `pnpm vitest run tests/engineering-conformance.test.ts tests/protocol.test.ts` (11 passed), and `pnpm vitest run tests/daemon.test.ts` (16 passed, 1 Windows-only skipped) passed. `git diff --check` passed before the final state/documentation edits. A full `pnpm test` run emitted all progress markers but this environment did not return its final summary; it is not claimed as passed.
+- **Decisions:** Protocol owns the conformance contract; evidence analysis owns the deterministic algorithm; application and daemon are adapters. All new operations remain local, token-authenticated for daemon access, deterministic, and read-only.
+- **Risks or compatibility impact:** Additive protocol and daemon methods; package dependency graph now explicitly reflects `application → evidence-analysis → protocol`.
+- **Next first action:** Review, rerun `git diff --check`, commit, and open a pull request. After merge, write a separate ADR/specification before any process-variant or bottleneck implementation.
+
+### 2026-07-26, Engineering conformance IPC contract (interrupted)
+
+- **Status:** partial
+- **Agent/tool:** Codex
+- **Branch:** `codex/process-intelligence-memory-evaluation`
+- **Objective:** Move engineering-conformance contract types into `@intentloom/protocol`, then expose the existing pure evaluator through application and authenticated local daemon IPC.
+- **Completed:** Began the canonical-contract migration: protocol request/response shapes and validators, daemon routing, and application bridge are present in the working tree. `@intentloom/evidence-analysis` now declares `@intentloom/protocol` as its source for conformance types and `@intentloom/application` declares `@intentloom/evidence-analysis` as a dependency.
+- **Blocked:** TypeScript cannot resolve the newly declared `@intentloom/evidence-analysis` workspace alias until pnpm updates local workspace links. `pnpm install --offline` was requested solely to synchronize existing workspace metadata without network access, but was rejected because repository policy requires explicit authorization for dependency installation or synchronization.
+- **Validation:** `pnpm typecheck` currently fails only with `TS2307: Cannot find module '@intentloom/evidence-analysis'`; before that, the referenced project was corrected to `composite: true` and missing type re-exports were fixed. Do not claim this increment is validated.
+- **Recovery:** With explicit authorization, run `pnpm install --offline`, then run `pnpm typecheck`, `pnpm vitest run tests/engineering-conformance.test.ts tests/protocol.test.ts tests/daemon.test.ts`, `pnpm format:check`, and `git diff --check`. Add focused application/daemon integration coverage before committing. If authorization is not granted, revert the uncommitted conformance-contract changes rather than replacing the package dependency with an unreviewed relative-import workaround.
+- **Next first action:** Obtain explicit authorization for `pnpm install --offline` or direct the intended alternative; no external package download is required.
+
+### 2026-07-26, Engineering Process Intelligence & Agent Memory Evaluation system (first IPC increment)
+
+- **Status:** partial
+- **Agent/tool:** Codex
+- **Branch:** `codex/process-intelligence-memory-evaluation`
+- **Objective:** Begin the next platform milestone without duplicating the existing deterministic conformance or procedural-memory evaluation engines.
+- **Completed:** Verified that PR #82 is merged in `main` (`152ab09`) and corrected the resulting stale Duty Watch and project-state records. Added the versioned authenticated local IPC method `intentloom.memory.evaluations.list.v1`, which exposes existing project-scoped `SkillEvaluationResult` records with optional `skillId` and outcome filters. The daemon operation is read-only and requires the same session-token authentication as existing IPC methods.
+- **Files changed:** `PROJECT_STATE.md`, `DUTY_WATCH.md`, `packages/protocol/src/index.ts`, `packages/daemon/src/index.ts`, and `tests/daemon.test.ts`.
+- **Validation:** `pnpm typecheck`, `pnpm vitest run tests/daemon.test.ts` (16 passed, 1 Windows-only skipped), `pnpm format:check`, and `git diff --check` passed. The daemon test requires an unsandboxed temporary Unix socket; sandboxed execution fails before handlers run with `EPERM`.
+- **Decisions:** Existing `listSkillEvaluations` remains the shared application operation and authoritative evaluation-record reader. The daemon only adapts that typed operation; it creates no new memory authority, writes, network access, or model capability.
+- **Not completed:** No daemon IPC contract has yet been added for engineering-conformance evaluation. Process-variant discovery, bottleneck inference, remote evidence ingestion, and model-based judgments remain out of scope pending separate specification and threat review.
+- **Next first action:** Add a canonical, versioned engineering-conformance request/report contract before exposing the existing evaluator through application and daemon boundaries; avoid duplicating the types currently owned by `@intentloom/evidence-analysis`.
 
 ### 2026-07-26, Neutron autonomous subagent orchestration & local workspace sync engine
 

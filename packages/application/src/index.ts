@@ -18,6 +18,11 @@ import {
   getAdapterContract,
 } from "@intentloom/adapters";
 import {
+  evaluateEngineeringConformance,
+  summarizeWorkflowVariants,
+  summarizeWorkflowDurations,
+} from "@intentloom/evidence-analysis";
+import {
   INTENTLOOM_VERSION,
   checksum,
   loadCatalog,
@@ -114,6 +119,11 @@ import {
   type AgentWorkspaceMode,
   type WorkspaceMessage,
   type WorkspaceConversationRecord,
+  type EngineeringConformanceReport,
+  type EngineeringWorkflowPolicy,
+  type GenericTimeline,
+  type WorkflowVariantSummaryReport,
+  type WorkflowDurationSummaryReport,
   type NeutronSubagentRole,
   type NeutronSubagentStatus,
   type NeutronSubagentTaskRecord,
@@ -152,6 +162,27 @@ import {
   validateWorkspaceConversationRecord,
   validateNeutronSubagentTaskRecord,
 } from "@intentloom/protocol";
+
+export function evaluateProjectEngineeringConformance(options: {
+  readonly root: string;
+  readonly timeline: GenericTimeline;
+  readonly policy: EngineeringWorkflowPolicy;
+}): EngineeringConformanceReport {
+  if (options.root.length === 0) throw new Error("project root is required");
+  return evaluateEngineeringConformance(options.timeline, options.policy);
+}
+
+export function summarizeProjectWorkflowVariants(
+  timelines: readonly GenericTimeline[],
+): WorkflowVariantSummaryReport {
+  return summarizeWorkflowVariants(timelines);
+}
+
+export function summarizeProjectWorkflowDurations(
+  timelines: readonly GenericTimeline[],
+): WorkflowDurationSummaryReport {
+  return summarizeWorkflowDurations(timelines);
+}
 export type {
   RetentionState,
   SessionSummary,

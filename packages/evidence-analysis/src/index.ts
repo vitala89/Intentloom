@@ -1,3 +1,19 @@
+import { createHash } from "node:crypto";
+import {
+  validateGenericTimeline,
+  type EngineeringConformanceFinding,
+  type EngineeringConformanceReport,
+  type EngineeringConformanceSummary,
+  type EngineeringConformanceStatus,
+  type EngineeringEvidenceRef,
+  type EngineeringWorkflowCaseType,
+  type EngineeringWorkflowPolicy,
+  type GenericTimeline,
+  type TimelineEventRef,
+  type WorkflowVariantSummaryReport,
+  type WorkflowDurationSummaryReport,
+} from "@intentloom/protocol";
+
 export interface ReleaseAnalysisGitEvent {
   readonly commitId: string;
   readonly timestamp: number;
@@ -264,104 +280,19 @@ export function analyzeReleaseEvidence(
   };
 }
 
-export type EngineeringWorkflowCaseType =
-  "pull-request" | "release" | "incident" | "migration" | "agent-task";
-
-export type EngineeringRuleSeverity = "error" | "warning" | "info";
-
-export type EngineeringRuleConditionType =
-  | "required-activity"
-  | "forbidden-activity"
-  | "ordered-sequence"
-  | "evidence-presence"
-  | "time-delta-threshold";
-
-export interface EngineeringRuleCondition {
-  readonly type: EngineeringRuleConditionType;
-  readonly activity?: string;
-  readonly sequence?: readonly string[];
-  readonly evidenceType?: string;
-  readonly maxMinutes?: number;
-}
-
-export interface EngineeringRuleRemediation {
-  readonly summary: string;
-  readonly actionableSteps: readonly string[];
-}
-
-export interface EngineeringRule {
-  readonly ruleId: string;
-  readonly caseType: EngineeringWorkflowCaseType;
-  readonly severity: EngineeringRuleSeverity;
-  readonly title: string;
-  readonly description?: string;
-  readonly condition: EngineeringRuleCondition;
-  readonly remediation?: EngineeringRuleRemediation;
-}
-
-export interface EngineeringWorkflowPolicy {
-  readonly schemaVersion: "1";
-  readonly policyId: string;
-  readonly description?: string;
-  readonly rules: readonly EngineeringRule[];
-}
-
-export type EngineeringConformanceStatus =
-  | "pass"
-  | "violation"
-  | "missing-evidence"
-  | "ambiguous-evidence"
-  | "unsupported";
-
-export interface EngineeringEvidenceRef {
-  readonly source: string;
-  readonly sourceId: string;
-  readonly timestamp?: string;
-}
-
-export interface EngineeringConformanceFinding {
-  readonly ruleId: string;
-  readonly caseType: EngineeringWorkflowCaseType;
-  readonly severity: EngineeringRuleSeverity;
-  readonly status: EngineeringConformanceStatus;
-  readonly title: string;
-  readonly evidence: readonly EngineeringEvidenceRef[];
-  readonly remediation?: EngineeringRuleRemediation;
-}
-
-export interface EngineeringConformanceSummary {
-  readonly totalRules: number;
-  readonly passed: number;
-  readonly violations: number;
-  readonly missingEvidence: number;
-  readonly ambiguousEvidence: number;
-  readonly unsupported: number;
-}
-
-export interface EngineeringConformanceReport {
-  readonly operationVersion: 1;
-  readonly policyId: string;
-  readonly evaluatedAt: string;
-  readonly caseType: EngineeringWorkflowCaseType;
-  readonly caseId: string;
-  readonly summary: EngineeringConformanceSummary;
-  readonly findings: readonly EngineeringConformanceFinding[];
-}
-
-export interface TimelineEventRef {
-  readonly activity: string;
-  readonly source: string;
-  readonly sourceId: string;
-  readonly timestamp?: string;
-  readonly commitIds?: readonly string[];
-  readonly evidenceType?: string;
-}
-
-export interface GenericTimeline {
-  readonly caseType: EngineeringWorkflowCaseType;
-  readonly caseId: string;
-  readonly events: readonly TimelineEventRef[];
-}
+export type {
+  EngineeringConformanceFinding,
+  EngineeringConformanceReport,
+  EngineeringConformanceSummary,
+  EngineeringConformanceStatus,
+  EngineeringEvidenceRef,
+  EngineeringWorkflowCaseType,
+  EngineeringWorkflowPolicy,
+  GenericTimeline,
+  TimelineEventRef,
+  WorkflowVariantSummaryReport,
+  WorkflowDurationSummaryReport,
+} from "@intentloom/protocol";
 
 function toEvidenceRef(event: TimelineEventRef): EngineeringEvidenceRef {
   return {
@@ -511,5 +442,122 @@ export function evaluateEngineeringConformance(
     caseId: timeline.caseId,
     summary,
     findings,
+  };
+}
+
+export function summarizeWorkflowVariants(
+  timelines: readonly GenericTimeline[],
+): WorkflowVariantSummaryReport {
+  if (timelines.length < 2)
+    throw new Error("at least two timelines are required");
+  const normalized = timelines.map(validateGenericTimeline);
+  const caseType = normalized[0]!.caseType;
+  if (normalized.some((timeline) => timeline.caseType !== caseType))
+    throw new Error("workflow variant timelines must share one case type");
+  const caseIds = normalized.map((timeline) => timeline.caseId);
+  if (new Set(caseIds).size !== caseIds.length)
+    throw new Error("workflow variant timeline case IDs must be unique");
+
+  let timestampedEvents = 0;
+  let totalEvents = 0;
+  const variants = new Map<
+    string,
+    { activities: readonly string[]; caseIds: string[] }
+  >();
+  for (const timeline of normalized) {
+    const activities = timeline.events.map((event) => event.activity);
+    totalEvents += timeline.events.length;
+    timestampedEvents += timeline.events.filter(
+      (event) => event.timestamp !== undefined,
+    ).length;
+    const normalizedSequence = JSON.stringify(activities);
+    const variantId = `variant:sha256:${createHash("sha256")
+      .update(normalizedSequence)
+      .digest("hex")}`;
+    const variant = variants.get(variantId);
+    if (variant) variant.caseIds.push(timeline.caseId);
+    else variants.set(variantId, { activities, caseIds: [timeline.caseId] });
+  }
+
+  return {
+    operationVersion: 1,
+    caseType,
+    timelineCount: normalized.length,
+    timestampCoverage:
+      totalEvents === 0 || timestampedEvents === 0
+        ? "unavailable"
+        : timestampedEvents === totalEvents
+          ? "complete"
+          : "partial",
+    variants: [...variants.entries()]
+      .map(([variantId, variant]) => ({
+        variantId,
+        activities: variant.activities,
+        occurrenceCount: variant.caseIds.length,
+        caseIds: [...variant.caseIds].sort(),
+      }))
+      .sort(
+        (left, right) =>
+          right.occurrenceCount - left.occurrenceCount ||
+          JSON.stringify(left.activities).localeCompare(
+            JSON.stringify(right.activities),
+          ),
+      ),
+  };
+}
+
+export function summarizeWorkflowDurations(
+  timelines: readonly GenericTimeline[],
+): WorkflowDurationSummaryReport {
+  if (timelines.length < 2)
+    throw new Error("at least two timelines are required");
+  const normalized = timelines.map(validateGenericTimeline);
+  const caseType = normalized[0]!.caseType;
+  if (normalized.some((timeline) => timeline.caseType !== caseType))
+    throw new Error("workflow duration timelines must share one case type");
+  const caseIds = normalized.map((timeline) => timeline.caseId);
+  if (new Set(caseIds).size !== caseIds.length)
+    throw new Error("workflow duration timeline case IDs must be unique");
+
+  let timestampedEvents = 0;
+  let totalEvents = 0;
+  const elapsed: number[] = [];
+  for (const timeline of normalized) {
+    const timestamps = timeline.events
+      .map((event) => (event.timestamp ? Date.parse(event.timestamp) : NaN))
+      .filter((timestamp) => Number.isFinite(timestamp));
+    totalEvents += timeline.events.length;
+    timestampedEvents += timestamps.length;
+    if (timestamps.length >= 2)
+      elapsed.push(
+        (Math.max(...timestamps) - Math.min(...timestamps)) / 60_000,
+      );
+  }
+  const sortedElapsed = [...elapsed].sort((left, right) => left - right);
+  const middle = Math.floor(sortedElapsed.length / 2);
+  const median =
+    sortedElapsed.length % 2 === 0
+      ? ((sortedElapsed[middle - 1] ?? 0) + (sortedElapsed[middle] ?? 0)) / 2
+      : (sortedElapsed[middle] ?? 0);
+  return {
+    operationVersion: 1,
+    caseType,
+    timelineCount: normalized.length,
+    timestampCoverage:
+      totalEvents === 0 || timestampedEvents === 0
+        ? "unavailable"
+        : timestampedEvents === totalEvents
+          ? "complete"
+          : "partial",
+    observableCaseCount: sortedElapsed.length,
+    ...(sortedElapsed.length > 0
+      ? {
+          elapsedMinutes: {
+            minimum: sortedElapsed[0]!,
+            median,
+            maximum: sortedElapsed.at(-1)!,
+          },
+        }
+      : {}),
   };
 }

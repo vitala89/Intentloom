@@ -9,6 +9,7 @@
   "dependencies": {
     "@intentloom/adapters": "workspace:*",
     "@intentloom/core": "workspace:*",
+    "@intentloom/evidence-analysis": "workspace:*",
     "@intentloom/protocol": "workspace:*",
     "@intentloom/validator": "workspace:*",
     "yaml": "^2.9.0"

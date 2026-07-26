@@ -5,6 +5,9 @@ import {
   ProtocolValidationError,
   createDoctorRequest,
   createDoctorResponse,
+  createEngineeringConformanceRequest,
+  createWorkflowVariantSummaryRequest,
+  createWorkflowDurationSummaryRequest,
   parseDoctorRequest,
   parseSerializedRequest,
   serializeRequest,
@@ -90,5 +93,53 @@ describe("versioned local protocol", () => {
         exitCode: 0,
       },
     });
+  });
+
+  it("validates a versioned engineering conformance request", () => {
+    const request = createEngineeringConformanceRequest("conformance-1", {
+      root: "/project",
+      timeline: {
+        caseType: "release",
+        caseId: "release:1",
+        events: [],
+      },
+      policy: {
+        schemaVersion: "1",
+        policyId: "policy:release",
+        rules: [],
+      },
+    });
+    expect(parseSerializedRequest(serializeRequest(request))).toEqual(request);
+    expect(() =>
+      parseSerializedRequest(
+        JSON.stringify({
+          ...request,
+          params: {
+            ...request.params,
+            policy: { ...request.params.policy, schemaVersion: "2" },
+          },
+        }),
+      ),
+    ).toThrow("unsupported engineering workflow policy schema version");
+  });
+
+  it("round-trips a workflow variant summary request", () => {
+    const request = createWorkflowVariantSummaryRequest("variants-1", {
+      timelines: [
+        { caseType: "release", caseId: "release:1", events: [] },
+        { caseType: "release", caseId: "release:2", events: [] },
+      ],
+    });
+    expect(parseSerializedRequest(serializeRequest(request))).toEqual(request);
+  });
+
+  it("round-trips a workflow duration summary request", () => {
+    const request = createWorkflowDurationSummaryRequest("durations-1", {
+      timelines: [
+        { caseType: "release", caseId: "release:1", events: [] },
+        { caseType: "release", caseId: "release:2", events: [] },
+      ],
+    });
+    expect(parseSerializedRequest(serializeRequest(request))).toEqual(request);
   });
 });

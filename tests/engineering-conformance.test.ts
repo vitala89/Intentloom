@@ -4,6 +4,7 @@ import {
   type EngineeringWorkflowPolicy,
   type GenericTimeline,
 } from "../packages/evidence-analysis/src/index.js";
+import { evaluateProjectEngineeringConformance } from "@intentloom/application";
 
 describe("evaluateEngineeringConformance", () => {
   const samplePolicy: EngineeringWorkflowPolicy = {
@@ -125,6 +126,31 @@ describe("evaluateEngineeringConformance", () => {
     expect(report.summary.passed).toBe(5);
     expect(report.summary.violations).toBe(0);
     expect(report.summary.missingEvidence).toBe(0);
+  });
+
+  it("exposes the same pure result through the shared application operation", () => {
+    const timeline: GenericTimeline = {
+      caseType: "pull-request",
+      caseId: "pr:application",
+      events: [
+        {
+          activity: "pull-request.reviewed",
+          source: "fixture",
+          sourceId: "review:1",
+        },
+      ],
+    };
+    const direct = evaluateEngineeringConformance(timeline, samplePolicy);
+    const application = evaluateProjectEngineeringConformance({
+      root: "/project",
+      timeline,
+      policy: samplePolicy,
+    });
+
+    expect(application).toEqual({
+      ...direct,
+      evaluatedAt: application.evaluatedAt,
+    });
   });
 
   it("detects forbidden activity violations", () => {

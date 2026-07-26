@@ -22,7 +22,7 @@ later justifies separation.
 
 ## Current phase
 
-Neutron Autonomous Subagent Orchestration & Local Workspace Sync Engine.
+Engineering Process Intelligence & Agent Memory Evaluation System — observed workflow-duration metrics complete locally.
 
 The project must avoid premature structural migration. New applications,
 packages, and repository boundaries are introduced only when roadmap triggers
@@ -40,16 +40,15 @@ and real consumers justify them.
   connection, evidence, MCP, interactive surfaces, Agent Workspace, Neutron,
   persistent memory, security analysis, engineering process intelligence,
   public monorepo evolution, controlled agent learning, and portable Duty Watch adoption.
-- Duty Watch governance contracts (Phase 1), proposal CLI `intentloom adopt --plan` (Phase 2), transactional apply & rollback engine `intentloom adopt --apply` (Phase 3), pack update 3-way migration `intentloom update` (Phase 4), conformance & security profiles `intentloom conformance` (Phase 5), provider synchronization `intentloom sync` / `intentloom diff` (Phase 6), Memory & Security Candidates M1–M4, S1–S5, Daemon Protocol Contracts for Second Clients, Read-Only Interactive Surfaces TUI, Agent Workspace Discuss & Inspect Modes, and Agent Workspace Plan, Review & Apply Modes are merged into `main`.
+- Duty Watch governance contracts (Phase 1), proposal CLI `intentloom adopt --plan` (Phase 2), transactional apply & rollback engine `intentloom adopt --apply` (Phase 3), pack update 3-way migration `intentloom update` (Phase 4), conformance & security profiles `intentloom conformance` (Phase 5), provider synchronization `intentloom sync` / `intentloom diff` (Phase 6), Memory & Security Candidates M1–M4, S1–S5, Daemon Protocol Contracts for Second Clients, Read-Only Interactive Surfaces TUI, Agent Workspace Discuss & Inspect Modes, Agent Workspace Plan, Review & Apply Modes, and Neutron Autonomous Subagent Orchestration & Local Workspace Sync Engine are merged into `main`.
 
 These statements must be revalidated against code, tags, CI, and Git history
 before a new release or implementation milestone is declared complete.
 
 ## Active focus
 
-1. Provide versioned `NeutronSubagentTaskRecord` schemas and validators in `@intentloom/protocol`.
-2. Provide subagent lifecycle operations (`spawnNeutronSubagentTask`, `getNeutronSubagentTask`, `listNeutronSubagentTasks`) and real-time local workspace sync (`syncLocalWorkspaceState`) in `@intentloom/application`.
-3. Provide CLI subcommand routing for `intentloom neutron subagent <spawn|get|list>` and `intentloom neutron sync` in `@intentloom/cli`.
+1. Review and merge the deterministic workflow-variant summary and observed workflow-duration metrics implementations; both use only caller-supplied canonical timelines and make no causal claims.
+2. Keep bottleneck inference, remote ingestion, and model-based judgments behind separate approved specifications and threat review.
 
 ## Architectural invariants
 
@@ -67,23 +66,22 @@ before a new release or implementation milestone is declared complete.
 
 ## Current blockers and unknowns
 
-- Neutron subagent tasks are project-scoped (`.aif/neutron/subagents/`), support role-bound delegation (`research`, `arch-checker`, `test-runner`, `conformance-auditor`, `custom`), and enforce zero-mutation read-only guarantees during research and workspace state synchronization.
+- Workflow-duration metrics are intentionally limited to aggregate observed intervals. Any expansion to bottleneck, performance, causal, actor, repository-reading, persisted, remote, or model-assisted analysis requires a new ADR, specification, and threat review.
 
 ## Current milestone
 
-Implement Neutron Autonomous Subagent Orchestration & Local Workspace Sync Engine.
+Complete the first Engineering Process Intelligence & Agent Memory Evaluation system increment.
 
 Expected outputs:
 
-- ADR-0036 documenting subagent task records, role delegation, lifecycle states, and workspace sync engine;
-- `NeutronSubagentTaskRecord` schemas and validators in `@intentloom/protocol`;
-- subagent lifecycle operations and workspace sync engine in `@intentloom/application`;
-- CLI subcommand routing for `intentloom neutron subagent` and `intentloom neutron sync`;
-- unit and integration tests in `tests/neutron-orchestration.test.ts`.
+- versioned protocol contracts for deterministic, project-scoped conformance and procedural-memory evaluation reads;
+- shared application operations that adapt existing conformance and evaluation engines rather than reimplement them;
+- authenticated local daemon handlers and integration tests for the new read-only operations;
+- ADR-0020 updated to name `@intentloom/protocol` as the canonical conformance-contract source.
 
 ## Next platform milestone
 
-Design and implement Engineering Process Intelligence & Agent Memory Evaluation System over shared application operations and daemon IPC.
+Merge the observed workflow-duration metrics implementation, then specify the next candidate only with a separate ADR, specification, and threat review.
 
 ## State update rules
 
