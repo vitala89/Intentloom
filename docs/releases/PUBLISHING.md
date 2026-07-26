@@ -7,18 +7,27 @@ not publish, tag, reserve a name, or change a version as part of
 package-readiness work.
 
 Current registry evidence is recorded in [`RELEASE_STATE.md`](RELEASE_STATE.md):
-`intentloom@0.4.0-beta.1` is under `next`, while `latest` remains
-`0.1.0-alpha.3`. The `v0.5.0-beta.1` Git tag is pushed; npm publication of
-`0.5.0-beta.1` is pending one-time-password confirmation.
+`intentloom@0.5.0-beta.1` is under `next`, while `latest` remains
+`0.1.0-alpha.3`. The `v0.5.0-beta.1` Git tag is pushed and
+`intentloom@0.5.0-beta.1` is published under `next`.
 
 For every prerelease, an authorized maintainer must confirm ownership of the
 npm name, complete
 [the authorization checklist](PUBLISH_AUTHORIZATION_CHECKLIST.md), use the
 `next` dist-tag, and enable npm provenance only in the approved release
-workflow. Run `pnpm build`, `npm pack
---dry-run --json`, and `npm publish --dry-run --tag next --access public` from
-`packages/cli` first. A real publish requires explicit approval and npm
-permissions; it must not run from ordinary pushes or pull requests.
+workflow. The root workspace is private; run the package commands from the
+public CLI package directory:
+
+```sh
+cd packages/cli
+npm pack --dry-run --json
+npm publish --dry-run --tag next --access public
+npm publish --tag next --access public
+```
+
+Run `pnpm build` from the workspace root first. A real publish requires
+explicit approval and npm permissions; it must not run from ordinary pushes or
+pull requests.
 
 ## Trusted publishing
 

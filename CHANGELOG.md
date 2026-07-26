@@ -13,7 +13,7 @@ are not included in the current npm artifact until a later release.
 - Added JSON Schema files for Extension Manifest (`urn:aif:schema:extension-manifest:1`) and Extension Lock (`urn:aif:schema:extension-lock:1`) in `catalog/schemas/` with `@intentloom/validator` support.
 - Added ADR-0023 (`ADR-0023-external-mcp-evidence-ingestion.md`) and External MCP Evidence Ingestion Specification (`EXTERNAL_MCP_EVIDENCE_INGESTION_SPEC.md`).
 
-## [0.5.0-beta.1] - Unreleased
+## [0.5.0-beta.1] - 2026-07-27
 
 ### Added
 
@@ -35,9 +35,8 @@ are not included in the current npm artifact until a later release.
 
 ### Notes
 
-- Workspace packages are synchronized to `0.5.0-beta.1`; Git tag
-  `v0.5.0-beta.1` is pushed, while npm publication is pending one-time-password
-  confirmation.
+- Published `intentloom@0.5.0-beta.1` under npm dist-tag `next` and pushed Git
+  tag `v0.5.0-beta.1`.
 - CLI and MCP surfaces are intentionally not claimed for these operations.
 - Waiting-time semantics, rework, bottleneck, causal, remote, persistent, and
   model-assisted analysis remain outside this candidate.
