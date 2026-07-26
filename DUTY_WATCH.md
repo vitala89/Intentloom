@@ -47,6 +47,7 @@ entry directly below this section.
 - **Status:** complete
 - **Agent/tool:** Antigravity AI Pair Programmer
 - **Branch:** `feat/memory-security-s5`
+- **Pull request:** #77
 - **Objective:** Implement Candidate S5: Continuous Security Audit and Verification, including ADR-0031, threat model updates, versioned protocol schemas, private application operations (`runContinuousSecurityAudit`, `getSecurityAuditReport`), CLI command routing (`intentloom security audit`, `intentloom security verify`), and comprehensive test coverage.
 - **Completed:** Added `ADR-0031-continuous-security-audit-and-verification.md` and updated `THREAT_MODEL.md` with threat boundary analysis and security invariant 29. Implemented `SecurityInvariantStatus`, `SecurityInvariantCheck`, `ContinuousSecurityAuditReport` schemas and validators in `@intentloom/protocol`. Implemented invariant verification engine (1–28 checks), health score calculation (0–100%), and tamper-evident SHA-256 audit hashing (`runContinuousSecurityAudit`) in `@intentloom/application`. Exposed CLI routing for `intentloom security audit` and `intentloom security verify` in `@intentloom/cli`. Added unit & integration tests in `tests/memory-security-s5.test.ts`. Updated `PROJECT_STATE.md` and `DUTY_WATCH.md`.
 - **Files changed:** `docs/decisions/ADR-0031-continuous-security-audit-and-verification.md`, `docs/security/THREAT_MODEL.md`, `packages/protocol/src/index.ts`, `packages/application/src/index.ts`, `packages/cli/src/command.ts`, `tests/memory-security-s5.test.ts`, `PROJECT_STATE.md`, and `DUTY_WATCH.md`.
