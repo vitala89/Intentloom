@@ -53,7 +53,7 @@ entry directly below this section.
 - **Completed:** Verified published `intentloom@0.5.0-beta.1`, tag `v0.5.0-beta.1`, current remote `main` at `05aa0c6`, merged PR #93, misplaced PR #91 base, and open draft PR #94. Added a Desktop documentation entrypoint, System Designer brief, phased v0.6 implementation plan, and copy-ready execution prompt. Updated roadmap and durable state so v0.6 precedes stable v1 planning. Recorded the verified current contract gaps for Diff, root-bound Timeline, capability discovery, client cancellation/errors, and Workspace RPC.
 - **Not completed:** No ADR, protocol, daemon, Tauri, UI, TUI, packaging, merge, tag, publication, or release work was performed. PR #94 is not modified or closed by this branch.
 - **Files or packages changed:** `docs/desktop/README.md`, `docs/desktop/DESIGN_BRIEF.md`, `docs/desktop/AGENT_EXECUTION_PROMPT.md`, `docs/roadmap/DESKTOP_V0_6_IMPLEMENTATION_PLAN.md`, `docs/README.md`, `ROADMAP.md`, `PROJECT_STATE.md`, and `DUTY_WATCH.md`.
-- **Validation:** Prettier 3.9.5 passed for all eight changed Markdown documents. `git diff --check` passed. A local relative-link target check passed. The final documentation diff was reviewed. Runtime build and tests were not required because no runtime, schema, package, or dependency changed; the existing interrupted local dependency environment also remains unsuitable for a truthful full build.
+- **Validation:** Prettier 3.9.5 passed for all eight changed Markdown documents. `git diff --check` passed. A local relative-link target check passed. The final documentation diff was reviewed. Compatibility run `30225884569` passed the complete Linux, macOS, and Windows Node 22/24 matrix, including install, typecheck, lint, format, build, and tests.
 - **Decisions and assumptions:** Desktop remains a Tauri 2 client over the standalone daemon. The first product slice is read-only. Full TUI hardening follows stable Desktop presentation contracts. Approved Apply remains a separate threat-reviewed gate. Stable v1 planning consumes Desktop/TUI compatibility evidence later rather than blocking v0.6.
 - **Risks or compatibility impact:** Documentation-only and backwards compatible. Draft PR #94 overlaps `ROADMAP.md`, `PROJECT_STATE.md`, and `DUTY_WATCH.md` and requires reconciliation before either branch is merged without conflict.
 - **Open issues or blockers:** UI framework, daemon self-contained distribution, Tauri transport, capability discovery, cancellation, Diff/Timeline RPC, and approved design assets remain unresolved implementation inputs.
@@ -71,6 +71,7 @@ entry directly below this section.
 - [x] Final diff reviewed
 - [x] Documentation commit created
 - [x] Draft pull request opened
+- [x] Compatibility run `30225884569` passed
 
 ### 2026-07-27, v0.5.0-beta.1 published to npm
 
