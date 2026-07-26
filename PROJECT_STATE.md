@@ -67,16 +67,14 @@ before a new release or implementation milestone is declared complete.
 ## Current blockers and unknowns
 
 - Any expansion to bottleneck, performance, causal, actor, repository-reading, persisted, remote, or model-assisted analysis requires a new ADR, specification, and threat review.
-- PR #84 through PR #88 are merged; current local `main` is `f6232e4`. PR #88
-  remote compatibility CI passed all 12 checks after the audit formatting fix.
-- PR #89 is merged at `8f4bec4`; its post-merge readiness and state-document
-  corrections do not change runtime behavior or publish artifacts.
+- PR #84 through PR #90 are merged; current local `main` is `a0e0b13`. PR #90
+  remote compatibility CI passed all 12 checks.
 - npm currently reports `latest=0.1.0-alpha.3` and `next=0.4.0-beta.1`.
-- Workspace packages are synchronized to `0.5.0-beta.1` for release preparation;
-  no v0.5 tag or npm publication exists.
+- Workspace packages are synchronized to `0.5.0-beta.1`; Git tag
+  `v0.5.0-beta.1` is pushed, but npm publication has not completed.
 - The maintainer authorized the v0.5 publication step; npm authentication is
-  confirmed with `intentloom` read-write access, and package dry-runs passed.
-  Publication remains pending the merge of PR #90.
+  confirmed with `intentloom` read-write access, package dry-runs passed, and
+  real publication stopped at npm `EOTP` pending browser confirmation.
 - Local `pnpm build` remains blocked by the interrupted dependency restore
   missing `@types/node`; remote CI verified the merged release-preparation
   branch.
@@ -85,8 +83,9 @@ before a new release or implementation milestone is declared complete.
 
 The first Engineering Process Intelligence & Agent Memory Evaluation increment,
 including transition intervals, is complete and merged in `main`; the
-`v0.5.0-beta.1` release-readiness audit and artifact preparation are complete;
-the explicit publication decision is the active follow-up gate.
+`v0.5.0-beta.1` release-readiness and tag gates are complete; the npm
+publication confirmation and post-publish registry verification are the active
+follow-up gate.
 
 Expected outputs:
 
@@ -101,8 +100,9 @@ Expected outputs:
 
 ## Next platform milestone
 
-Complete PR #90 merge, then run the controlled v0.5 tag and npm publication;
-keep those release actions separate and auditable.
+Complete the npm one-time-password confirmation, rerun the controlled publish,
+verify registry metadata, then update release records with the published
+artifact.
 
 ## State update rules
 

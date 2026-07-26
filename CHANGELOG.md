@@ -35,8 +35,9 @@ are not included in the current npm artifact until a later release.
 
 ### Notes
 
-- Workspace packages are synchronized to `0.5.0-beta.1` for release
-  preparation; the artifact is not tagged or published yet.
+- Workspace packages are synchronized to `0.5.0-beta.1`; Git tag
+  `v0.5.0-beta.1` is pushed, while npm publication is pending one-time-password
+  confirmation.
 - CLI and MCP surfaces are intentionally not claimed for these operations.
 - Waiting-time semantics, rework, bottleneck, causal, remote, persistent, and
   model-assisted analysis remain outside this candidate.

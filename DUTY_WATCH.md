@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: partial — npm authorization confirmed; PR #90 merge remains before release
+Status: partial — v0.5 tag pushed; npm publication awaits one-time-password confirmation
 
-Active branch: `codex/post-v05-state-merge`
+Active branch: `codex/v05-publish-otp-followup`
 
-Current objective: complete PR #90 documentation merge, then execute the authorized v0.5 release safely.
+Current objective: complete the authorized v0.5 npm publication and verify registry state.
 
-Next first action: merge PR #90, then execute the verified v0.5 tag and npm publication sequence.
+Next first action: complete npm's one-time-password browser confirmation, rerun publish, and verify `next` metadata.
 
 ## Watch rules
 
@@ -41,6 +41,33 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-27, v0.5 tag pushed; npm publish awaits OTP
+
+- **Status:** partial
+- **Agent/tool:** Codex with authorized release workflow
+- **Branch:** `codex/v05-publish-otp-followup`
+- **Commits:** release commit `a0e0b13`; tag object `b9234ce`; follow-up state update pending
+- **Pull request:** None; release tag is already pushed from verified `main`
+- **Objective:** Execute the authorized v0.5 release while preserving a recoverable partial state.
+- **Completed:** Verified PR #90 merged and `main` at `a0e0b13`; created and pushed `v0.5.0-beta.1`; reran pack dry-run with the recorded shasum; started the real npm publish under `next`.
+- **Validation:** Tag resolves locally and on origin. Pack dry-run reports `intentloom@0.5.0-beta.1`, 70 files, shasum `21d5ec78b9cd840ccdcd263af71eb3d8b12a1c71`, integrity `sha512-w8uADr0INb0HBRk/IOs/uNA0QPTEbg8NJ6YSL8LC4b4u9dwxTmlkkcCxaDSm5enDiCIin6ncKsuoaLqmbescAg==`. npm publish stopped with `EOTP`; registry still reports `next=0.4.0-beta.1` and `intentloom@0.5.0-beta.1` returns 404.
+- **Decisions and assumptions:** The Git tag is intentionally retained; no rollback or tag deletion is attempted. npm publication is incomplete and must be retried only after the one-time-password confirmation.
+- **Risks or compatibility impact:** The release is in a partial external state: consumers cannot install `0.5.0-beta.1` from npm yet, while the Git tag is public.
+- **Open issues or blockers:** Complete npm's browser OTP challenge, then rerun `npm publish --tag next --access public` from `packages/cli` and verify registry metadata.
+- **Next first action:** Complete the npm OTP confirmation, rerun publish, and verify `npm view intentloom version dist-tags`.
+- **Evidence:** tag `v0.5.0-beta.1`, npm publish `EOTP`, registry metadata query, and package shasum/integrity above.
+
+#### Duty completion checklist
+
+- [x] PR #90 merged and release commit verified
+- [x] v0.5.0-beta.1 tag created and pushed
+- [x] Final pack dry-run passed
+- [x] npm publish authorization and package access verified
+- [ ] OTP confirmation completed
+- [ ] npm publication accepted
+- [ ] Registry metadata and install verification completed
+- [ ] Release records finalized
 
 ### 2026-07-27, v0.5 publication authorization and npm access verified
 

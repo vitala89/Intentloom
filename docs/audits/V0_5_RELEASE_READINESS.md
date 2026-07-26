@@ -58,5 +58,6 @@ persistence, or model judgments.
 
 **Release preparation ready for an explicit publication decision; publication is
 not authorized by this audit.** Package dry-runs and the PR #88 remote
-compatibility matrix pass for `0.5.0-beta.1`. The workspace remains untagged and
-unpublished on npm.
+compatibility matrix pass for `0.5.0-beta.1`. The subsequent release step has
+pushed Git tag `v0.5.0-beta.1`; npm publication remains incomplete pending
+one-time-password confirmation.
