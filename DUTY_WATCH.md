@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: partial — implementation reviewed locally; PR handoff requires explicit authorization and available GitHub access
+Status: partial — implementation reviewed locally; authorized PR handoff is blocked by invalid GitHub CLI credentials
 
 Active branch: `codex/process-intelligence-next-candidate`
 
 Current objective: preserve a truthful review handoff for the accepted conformance trend summary implementation.
 
-Next first action: obtain explicit authorization and GitHub access, then open a PR from `codex/process-intelligence-next-candidate` into `main`.
+Next first action: run `gh auth login -h github.com`, verify `gh auth status`, then push and open a PR from `codex/process-intelligence-next-candidate` into `main`.
 
 ## Watch rules
 
@@ -41,6 +41,37 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-26, Authorized PR publication blocked by GitHub authentication
+
+- **Status:** partial
+- **Agent/tool:** Codex with GitHub publish workflow
+- **Branch:** `codex/process-intelligence-next-candidate`
+- **Commits:** `b402271` and preceding trend-summary commits
+- **Pull request:** Not opened; publication stopped before push because `gh auth status` reports an invalid token for `vitala89`.
+- **Objective:** Publish the reviewed conformance trend summary branch and open a draft PR after explicit user authorization.
+- **Completed:** Confirmed clean working tree, remote `https://github.com/vitala89/Intentloom.git`, installed GitHub CLI, and explicit user authorization. No remote mutation was attempted after authentication failed.
+- **Not completed:** Git push, PR creation, remote checks, and merge.
+- **Files or packages changed:** No files changed in this watch; the prior implementation and handoff commits remain intact.
+- **Validation:** `gh --version` passed; `gh auth status` failed with an invalid token. Local validation remains recorded in the preceding handoff.
+- **Decisions and assumptions:** Followed the publish skill's stop condition for unauthenticated GitHub CLI; did not bypass it with unverified credentials or alternate remote mutation.
+- **Risks or compatibility impact:** None locally; branch remains unpublished and remote review status is unknown.
+- **Open issues or blockers:** User must re-authenticate with `gh auth login -h github.com` before publication can continue.
+- **Next first action:** Re-run `gh auth status` after login, then push with tracking and open a draft PR.
+- **Evidence:** `git status -sb`, `git remote get-url origin`, `gh --version`, and `gh auth status` output.
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant tests, type checks, builds, or compatibility checks passed
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `PROJECT_STATE.md` updated when applicable
+- [x] `DUTY_WATCH.md` handoff completed
+- [x] Related roadmap, ADR, changelog, migration, or reference docs updated
+- [x] Failed or unavailable checks recorded
+- [ ] Pull request opened and reviewed
 
 ### 2026-07-26, Conformance trend summary review and PR handoff
 

@@ -67,7 +67,7 @@ before a new release or implementation milestone is declared complete.
 ## Current blockers and unknowns
 
 - Any expansion to bottleneck, performance, causal, actor, repository-reading, persisted, remote, or model-assisted analysis requires a new ADR, specification, and threat review.
-- The trend-summary PR is not open yet; explicit authorization and working GitHub access are required before remote publication.
+- The trend-summary PR is not open yet; user authorization is present, but the local GitHub CLI token is invalid and must be refreshed before remote publication.
 
 ## Current milestone
 
