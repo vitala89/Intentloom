@@ -97,8 +97,13 @@ import {
   promoteWorkspaceConversationToProposal,
   reviewWorkspaceProposal,
   applyWorkspaceProposal,
+  spawnNeutronSubagentTask,
+  getNeutronSubagentTask,
+  listNeutronSubagentTasks,
+  syncLocalWorkspaceState,
   type AgentWorkspaceMode,
   type WorkspaceProposalReviewResult,
+  type NeutronSubagentRole,
   type SecurityFindingSeverity,
   type SecurityFindingState,
   type SecurityAdapterCategory,
@@ -237,6 +242,7 @@ const commands = new Set([
   "security",
   "ui",
   "workspace",
+  "neutron",
 ]);
 const projectPathCommands = new Set([
   "adopt",
@@ -248,6 +254,7 @@ const projectPathCommands = new Set([
   "timeline",
   "conformance",
   "ui",
+  "neutron",
 ]);
 const booleanFlags = new Set([
   "--dry-run",
@@ -305,6 +312,7 @@ const valueFlags = new Set([
   "--conversation-id",
   "--content",
   "--mode",
+  "--input",
 ]);
 const mappingValueFlags = new Set([
   "--project-owned-mapping",
@@ -315,7 +323,7 @@ const usage = [
   "Usage: intentloom <init|plan> [--root PATH] [--dry-run]",
   "       intentloom adopt <--plan|--apply PLAN_FILE> [PROJECT_PATH|--root PATH] [--json] [--output PATH] [--strict] [--dry-run]",
   "       intentloom update <--plan|--apply PLAN_FILE> [PROJECT_PATH|--root PATH] [--json] [--output PATH] [--strict] [--dry-run]",
-  "       intentloom <adopt|update|diff|sync|doctor|inspect|timeline|conformance|summary|skill|proposal|evaluate|memory|checkpoint|rank|profile|delegate|context|session|security|ui|workspace> [PROJECT_PATH|--root PATH] [--dry-run]",
+  "       intentloom <adopt|update|diff|sync|doctor|inspect|timeline|conformance|summary|skill|proposal|evaluate|memory|checkpoint|rank|profile|delegate|context|session|security|ui|workspace|neutron> [PROJECT_PATH|--root PATH] [--dry-run]",
   "       intentloom evidence import --provider github|gitlab --file PATH --project-key KEY [--json]",
   "       intentloom evidence analyze --provider github|gitlab --file PATH --project-key KEY [--root PATH] [--case-id ID] [--json]",
   "       intentloom conformance [PROJECT_PATH|--root PATH] [--policy PATH] [--timeline PATH] [--case-id ID] [--case-type TYPE] [--json]",
@@ -333,6 +341,8 @@ const usage = [
   "       intentloom security <import|inspect|coverage|dismiss|accept-risk|list|scan|baseline|policy|sandbox|audit|verify> [--file PATH] [--id ID] [--reason REASON] [--approved-by USER] [--severity SEVERITY] [--state STATE] [--category CATEGORY] [--root PATH] [--json]",
   "       intentloom ui [PROJECT_PATH|--root PATH] [--json]",
   "       intentloom workspace <start|get|list|append|promote|review|apply> [--mode MODE] [--conversation-id ID] [--proposal-id ID] [--plan-file PATH] [--approved-by USER] [--content TEXT] [--root PATH] [--json]",
+  "       intentloom neutron subagent <spawn|get|list> [--role ROLE] [--task-id ID] [--input TEXT] [--root PATH] [--json]",
+  "       intentloom neutron sync [PROJECT_PATH|--root PATH] [--json]",
   "       adoption mappings use --project-owned-mapping SOURCE=DESTINATION",
   "       or --documentation-mapping SOURCE=DESTINATION",
 ].join("\n");
@@ -440,15 +450,18 @@ function parseArguments(args: readonly string[]): ParsedArguments {
     throw new CliUsageError(
       "workspace requires start, get, list, append, promote, review, or apply subcommand",
     );
+  if (command === "neutron" && !["subagent", "sync"].includes(args[1] ?? ""))
+    throw new CliUsageError("neutron requires subagent or sync subcommand");
   const flags = new Set<string>();
   const values = new Map<string, string>();
   const mappingValues = new Map<string, string[]>();
   for (
     let index =
-      command === "security" &&
-      (args[1] === "baseline" || args[1] === "sandbox") &&
-      args[2] !== undefined &&
-      !args[2].startsWith("--")
+      (command === "security" &&
+        (args[1] === "baseline" || args[1] === "sandbox") &&
+        args[2] !== undefined &&
+        !args[2].startsWith("--")) ||
+      (command === "neutron" && args[1] === "subagent")
         ? 3
         : command === "evidence" ||
             command === "summary" ||
@@ -462,6 +475,7 @@ function parseArguments(args: readonly string[]): ParsedArguments {
             command === "session" ||
             command === "security" ||
             command === "workspace" ||
+            (command === "neutron" && args[1] === "sync") ||
             (command === "rank" &&
               args[1] !== undefined &&
               !args[1].startsWith("--"))
@@ -2920,6 +2934,99 @@ export async function runCli(
         return (
           result.transactionOutcome?.status === "failed" ? 3 : 0
         ) as CliExitCode;
+      }
+    }
+    if (parsed.command === "neutron") {
+      const section = args[1] ?? "";
+      const json = parsed.flags.has("--json");
+      if (section === "sync") {
+        const syncState = await syncLocalWorkspaceState({ root }, fileSystem);
+        if (json) {
+          io.stdout(JSON.stringify(syncState, null, 2));
+        } else {
+          const lines = [
+            `Neutron Workspace Sync (${syncState.projectId}):`,
+            `Readiness: ${syncState.readiness}`,
+            `Findings: ${syncState.findingsCount}`,
+            `Security Score: ${syncState.securityScore ?? "N/A"}`,
+            `Active Conversations: ${syncState.activeConversationsCount}`,
+            `Subagent Tasks: ${syncState.subagentTasksCount}`,
+          ];
+          io.stdout(lines.join("\n"));
+        }
+        return 0;
+      }
+      if (section === "subagent") {
+        const subaction = args[2] ?? "";
+        if (subaction === "spawn") {
+          const roleArg = (parsed.values.get("--role") ??
+            "research") as NeutronSubagentRole;
+          const taskInput =
+            parsed.values.get("--input") ??
+            parsed.values.get("--content") ??
+            "General research task";
+          const conversationId = parsed.values.get("--conversation-id");
+          const task = await spawnNeutronSubagentTask(
+            {
+              root,
+              projectId: "project-local",
+              role: roleArg,
+              taskInput,
+              ...(conversationId !== undefined ? { conversationId } : {}),
+            },
+            fileSystem,
+          );
+          if (json) {
+            io.stdout(JSON.stringify(task, null, 2));
+          } else {
+            io.stdout(
+              `Spawned Neutron subagent task ${task.id} (role: ${task.role}, status: ${task.status})`,
+            );
+          }
+          return 0;
+        }
+        if (subaction === "get") {
+          const taskId =
+            parsed.values.get("--task-id") ?? parsed.values.get("--id") ?? "";
+          const task = await getNeutronSubagentTask(
+            { root, taskId },
+            fileSystem,
+          );
+          if (!task) {
+            io.stderr(`Neutron subagent task ${taskId} not found\n`);
+            return 3;
+          }
+          if (json) {
+            io.stdout(JSON.stringify(task, null, 2));
+          } else {
+            io.stdout(
+              `Neutron subagent task ${task.id} [${task.role}]: ${task.status}\nOutput: ${task.resultOutput ?? "none"}`,
+            );
+          }
+          return 0;
+        }
+        if (subaction === "list") {
+          const conversationId = parsed.values.get("--conversation-id");
+          const tasks = await listNeutronSubagentTasks(
+            {
+              root,
+              ...(conversationId !== undefined ? { conversationId } : {}),
+            },
+            fileSystem,
+          );
+          if (json) {
+            io.stdout(JSON.stringify(tasks, null, 2));
+          } else {
+            const lines = [
+              `Neutron Subagent Tasks (${tasks.length}):`,
+              ...tasks.map(
+                (t) => `- ${t.id} [${t.role}] (${t.status}): ${t.taskInput}`,
+              ),
+            ];
+            io.stdout(lines.join("\n"));
+          }
+          return 0;
+        }
       }
     }
     if (parsed.command === "doctor")
