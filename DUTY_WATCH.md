@@ -49,7 +49,7 @@ entry directly below this section.
 - **Branch:** `codex/process-intelligence-next-candidate`
 - **Objective:** Implement the accepted bounded conformance trend summary over caller-supplied reports.
 - **Completed:** Accepted ADR-0039 and `CONFORMANCE_TREND_SUMMARY_V0_1_SPEC.md`. Added canonical protocol request/response contracts and validation for `intentloom.conformance.trend.summary.v1`, pure deterministic status/severity aggregation, application bridge, authenticated daemon routing, and focused protocol/analysis/application/daemon fixtures. Updated security invariant 32 and durable project state.
-- **Validation:** `pnpm typecheck`; focused protocol and trend tests (9 passed); daemon IPC tests (16 passed, 1 skipped); full `pnpm test` (716 passed, 3 skipped); `pnpm format:check`; `pnpm lint`; `pnpm build`; and `git diff --check` passed.
+- **Validation:** `pnpm typecheck`; focused protocol and trend tests (10 passed); daemon IPC tests (16 passed, 1 skipped); full `pnpm test` (717 passed, 3 skipped); `pnpm format:check`; `pnpm lint`; `pnpm build`; and `git diff --check` passed.
 - **Decisions:** The operation requires at least two schema-validated reports with one case type and policy; it returns counts only and does not infer causes, bottlenecks, compliance, actors, or remediation priority.
 - **Risks or compatibility impact:** Additive protocol and daemon method. No persistence, provider access, network calls, or mutation path was added.
 - **Next first action:** Review the final diff, commit, and open a pull request only with explicit user authorization.
