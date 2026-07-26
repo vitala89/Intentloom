@@ -13,7 +13,13 @@ import {
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
-import { createDoctorRequest } from "../packages/protocol/src/index.js";
+import {
+  createDoctorRequest,
+  createInspectRequest,
+  createSecurityAuditRequest,
+  createMemorySearchRequest,
+  createSessionGetRequest,
+} from "../packages/protocol/src/index.js";
 import {
   doctorProject,
   initProject,
@@ -541,6 +547,75 @@ describe.skipIf(process.platform === "win32")("local daemon", () => {
     expect(errors).toEqual([
       "--daemon-endpoint and --daemon-token-file must be used together",
     ]);
+  });
+
+  it("serves inspect, securityAudit, memorySearch, and sessionGet requests over local IPC socket", async () => {
+    const parent = await mkdtemp(join(tmpdir(), "intentloomd-multi-op-"));
+    const root = join(parent, "project");
+    const endpoint = join(parent, "daemon.sock");
+    const token = "x".repeat(32);
+    await mkdir(root);
+
+    const daemon = await startLocalDaemon({
+      endpoint,
+      sessionToken: token,
+      inspect: async (req) => ({
+        projectId: "p-inspect",
+        root: req.params.root,
+      }),
+      securityAudit: async (req) => ({
+        report: {
+          schemaVersion: "1",
+          projectId: req.params.projectId,
+          healthScore: 100,
+          invariantChecks: [],
+          auditHash: "00".repeat(32),
+          auditedAt: new Date().toISOString(),
+        },
+      }),
+      memorySearch: async (req) => ({
+        query: req.params.query,
+        items: [],
+      }),
+      sessionGet: async () => ({
+        session: null,
+      }),
+    });
+    daemons.push(daemon);
+
+    const sendReq = (payload: unknown) =>
+      new Promise<unknown>((res, rej) => {
+        const socket = createConnection(endpoint);
+        let out = "";
+        socket.on("connect", () =>
+          socket.write(`${JSON.stringify({ token, request: payload })}\n`),
+        );
+        socket.on("data", (chunk: Buffer) => {
+          out += chunk.toString("utf8");
+        });
+        socket.on("end", () => res(JSON.parse(out)));
+        socket.on("error", rej);
+      });
+
+    const inspectRes = (await sendReq(createInspectRequest(1, { root }))) as {
+      result: { projectId: string };
+    };
+    expect(inspectRes.result.projectId).toBe("p-inspect");
+
+    const auditRes = (await sendReq(
+      createSecurityAuditRequest(2, { root, projectId: "p1" }),
+    )) as { result: { report: { healthScore: number } } };
+    expect(auditRes.result.report.healthScore).toBe(100);
+
+    const memRes = (await sendReq(
+      createMemorySearchRequest(3, { root, query: "pattern" }),
+    )) as { result: { query: string } };
+    expect(memRes.result.query).toBe("pattern");
+
+    const sessionRes = (await sendReq(
+      createSessionGetRequest(4, { root, sessionId: "s1" }),
+    )) as { result: { session: null } };
+    expect(sessionRes.result.session).toBeNull();
   });
 });
 

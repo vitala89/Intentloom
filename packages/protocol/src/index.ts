@@ -1,5 +1,9 @@
 export const PROTOCOL_VERSION = 1 as const;
 export const DOCTOR_METHOD = "intentloom.project.doctor.v1" as const;
+export const INSPECT_METHOD = "intentloom.project.inspect.v1" as const;
+export const SECURITY_AUDIT_METHOD = "intentloom.security.audit.v1" as const;
+export const MEMORY_SEARCH_METHOD = "intentloom.memory.search.v1" as const;
+export const SESSION_GET_METHOD = "intentloom.session.get.v1" as const;
 
 export type JsonPrimitive = boolean | null | number | string;
 export type JsonValue = JsonPrimitive | JsonObject | readonly JsonValue[];
@@ -52,6 +56,81 @@ export interface DoctorResult {
 }
 export type DoctorRequest = JsonRpcRequest<typeof DOCTOR_METHOD, DoctorParams>;
 export type DoctorResponse = JsonRpcSuccess<DoctorResult>;
+
+export interface InspectParams {
+  readonly protocolVersion: typeof PROTOCOL_VERSION;
+  readonly root: string;
+}
+export interface InspectResult {
+  readonly protocolVersion: typeof PROTOCOL_VERSION;
+  readonly projectId: string;
+  readonly root: string;
+}
+export type InspectRequest = JsonRpcRequest<
+  typeof INSPECT_METHOD,
+  InspectParams
+>;
+export type InspectResponse = JsonRpcSuccess<InspectResult>;
+
+export interface SecurityAuditParams {
+  readonly protocolVersion: typeof PROTOCOL_VERSION;
+  readonly root: string;
+  readonly projectId: string;
+}
+export interface SecurityAuditResult {
+  readonly protocolVersion: typeof PROTOCOL_VERSION;
+  readonly report: ContinuousSecurityAuditReport;
+}
+export type SecurityAuditRequest = JsonRpcRequest<
+  typeof SECURITY_AUDIT_METHOD,
+  SecurityAuditParams
+>;
+export type SecurityAuditResponse = JsonRpcSuccess<SecurityAuditResult>;
+
+export interface MemorySearchParams {
+  readonly protocolVersion: typeof PROTOCOL_VERSION;
+  readonly root: string;
+  readonly query: string;
+}
+export interface MemorySearchResultPayload {
+  readonly protocolVersion: typeof PROTOCOL_VERSION;
+  readonly query: string;
+  readonly items: readonly PersistentMemoryItem[];
+}
+export type MemorySearchRequest = JsonRpcRequest<
+  typeof MEMORY_SEARCH_METHOD,
+  MemorySearchParams
+>;
+export type MemorySearchResponse = JsonRpcSuccess<MemorySearchResultPayload>;
+
+export interface SessionGetParams {
+  readonly protocolVersion: typeof PROTOCOL_VERSION;
+  readonly root: string;
+  readonly sessionId: string;
+}
+export interface SessionGetResultPayload {
+  readonly protocolVersion: typeof PROTOCOL_VERSION;
+  readonly session: AgentSessionItem | null;
+}
+export type SessionGetRequest = JsonRpcRequest<
+  typeof SESSION_GET_METHOD,
+  SessionGetParams
+>;
+export type SessionGetResponse = JsonRpcSuccess<SessionGetResultPayload>;
+
+export type DaemonRequest =
+  | DoctorRequest
+  | InspectRequest
+  | SecurityAuditRequest
+  | MemorySearchRequest
+  | SessionGetRequest;
+
+export type DaemonResponse =
+  | DoctorResponse
+  | InspectResponse
+  | SecurityAuditResponse
+  | MemorySearchResponse
+  | SessionGetResponse;
 
 export class ProtocolValidationError extends Error {
   constructor(
@@ -108,6 +187,69 @@ export function createDoctorRequest(
   };
 }
 
+export function createInspectRequest(
+  id: RequestId,
+  params: Omit<InspectParams, "protocolVersion">,
+): InspectRequest {
+  return {
+    jsonrpc: "2.0",
+    id,
+    method: INSPECT_METHOD,
+    params: {
+      protocolVersion: PROTOCOL_VERSION,
+      root: params.root,
+    },
+  };
+}
+
+export function createSecurityAuditRequest(
+  id: RequestId,
+  params: Omit<SecurityAuditParams, "protocolVersion">,
+): SecurityAuditRequest {
+  return {
+    jsonrpc: "2.0",
+    id,
+    method: SECURITY_AUDIT_METHOD,
+    params: {
+      protocolVersion: PROTOCOL_VERSION,
+      root: params.root,
+      projectId: params.projectId,
+    },
+  };
+}
+
+export function createMemorySearchRequest(
+  id: RequestId,
+  params: Omit<MemorySearchParams, "protocolVersion">,
+): MemorySearchRequest {
+  return {
+    jsonrpc: "2.0",
+    id,
+    method: MEMORY_SEARCH_METHOD,
+    params: {
+      protocolVersion: PROTOCOL_VERSION,
+      root: params.root,
+      query: params.query,
+    },
+  };
+}
+
+export function createSessionGetRequest(
+  id: RequestId,
+  params: Omit<SessionGetParams, "protocolVersion">,
+): SessionGetRequest {
+  return {
+    jsonrpc: "2.0",
+    id,
+    method: SESSION_GET_METHOD,
+    params: {
+      protocolVersion: PROTOCOL_VERSION,
+      root: params.root,
+      sessionId: params.sessionId,
+    },
+  };
+}
+
 export function parseDoctorRequest(value: unknown): DoctorRequest {
   if (!isObject(value) || value.jsonrpc !== "2.0")
     throw new ProtocolValidationError(-32600, "jsonrpc must equal 2.0");
@@ -125,18 +267,69 @@ export function parseDoctorRequest(value: unknown): DoctorRequest {
   });
 }
 
-export function serializeRequest(request: DoctorRequest): string {
+export function parseDaemonRequest(value: unknown): DaemonRequest {
+  if (!isObject(value) || value.jsonrpc !== "2.0")
+    throw new ProtocolValidationError(-32600, "jsonrpc must equal 2.0");
+  const id = requestId(value.id);
+  const validMethods: readonly string[] = [
+    DOCTOR_METHOD,
+    INSPECT_METHOD,
+    SECURITY_AUDIT_METHOD,
+    MEMORY_SEARCH_METHOD,
+    SESSION_GET_METHOD,
+  ];
+  if (typeof value.method !== "string" || !validMethods.includes(value.method))
+    throw new ProtocolValidationError(-32601, "unsupported protocol method");
+  if (!isObject(value.params))
+    throw new ProtocolValidationError(-32602, "params must be an object");
+  if (value.params.protocolVersion !== PROTOCOL_VERSION)
+    throw new ProtocolValidationError(-32602, "unsupported protocol version");
+
+  if (value.method === DOCTOR_METHOD) {
+    return createDoctorRequest(id, {
+      root: stringValue(value.params.root, "root"),
+      profile: stringValue(value.params.profile, "profile"),
+      adapters: stringArray(value.params.adapters, "adapters"),
+    });
+  }
+  if (value.method === INSPECT_METHOD) {
+    return createInspectRequest(id, {
+      root: stringValue(value.params.root, "root"),
+    });
+  }
+  if (value.method === SECURITY_AUDIT_METHOD) {
+    return createSecurityAuditRequest(id, {
+      root: stringValue(value.params.root, "root"),
+      projectId: stringValue(value.params.projectId, "projectId"),
+    });
+  }
+  if (value.method === MEMORY_SEARCH_METHOD) {
+    return createMemorySearchRequest(id, {
+      root: stringValue(value.params.root, "root"),
+      query: stringValue(value.params.query, "query"),
+    });
+  }
+  if (value.method === SESSION_GET_METHOD) {
+    return createSessionGetRequest(id, {
+      root: stringValue(value.params.root, "root"),
+      sessionId: stringValue(value.params.sessionId, "sessionId"),
+    });
+  }
+  throw new ProtocolValidationError(-32601, "unsupported protocol method");
+}
+
+export function serializeRequest(request: DaemonRequest): string {
   return JSON.stringify(request);
 }
 
-export function parseSerializedRequest(serialized: string): DoctorRequest {
+export function parseSerializedRequest(serialized: string): DaemonRequest {
   let parsed: unknown;
   try {
     parsed = JSON.parse(serialized);
   } catch {
     throw new ProtocolValidationError(-32600, "request is not valid JSON");
   }
-  return parseDoctorRequest(parsed);
+  return parseDaemonRequest(parsed);
 }
 
 export function createDoctorResponse(
@@ -151,6 +344,64 @@ export function createDoctorResponse(
       findings: result.findings.map((finding) => ({ ...finding })),
       diagnostics: [...result.diagnostics],
       exitCode: result.exitCode,
+    },
+  };
+}
+
+export function createInspectResponse(
+  id: RequestId,
+  result: Omit<InspectResult, "protocolVersion">,
+): InspectResponse {
+  return {
+    jsonrpc: "2.0",
+    id,
+    result: {
+      protocolVersion: PROTOCOL_VERSION,
+      projectId: result.projectId,
+      root: result.root,
+    },
+  };
+}
+
+export function createSecurityAuditResponse(
+  id: RequestId,
+  result: Omit<SecurityAuditResult, "protocolVersion">,
+): SecurityAuditResponse {
+  return {
+    jsonrpc: "2.0",
+    id,
+    result: {
+      protocolVersion: PROTOCOL_VERSION,
+      report: result.report,
+    },
+  };
+}
+
+export function createMemorySearchResponse(
+  id: RequestId,
+  result: Omit<MemorySearchResultPayload, "protocolVersion">,
+): MemorySearchResponse {
+  return {
+    jsonrpc: "2.0",
+    id,
+    result: {
+      protocolVersion: PROTOCOL_VERSION,
+      query: result.query,
+      items: [...result.items],
+    },
+  };
+}
+
+export function createSessionGetResponse(
+  id: RequestId,
+  result: Omit<SessionGetResultPayload, "protocolVersion">,
+): SessionGetResponse {
+  return {
+    jsonrpc: "2.0",
+    id,
+    result: {
+      protocolVersion: PROTOCOL_VERSION,
+      session: result.session,
     },
   };
 }

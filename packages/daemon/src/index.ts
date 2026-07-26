@@ -7,11 +7,28 @@ import {
 import { isAbsolute } from "node:path";
 import {
   ProtocolValidationError,
+  DOCTOR_METHOD,
+  INSPECT_METHOD,
+  SECURITY_AUDIT_METHOD,
+  MEMORY_SEARCH_METHOD,
+  SESSION_GET_METHOD,
   createDoctorResponse,
-  parseDoctorRequest,
+  createInspectResponse,
+  createSecurityAuditResponse,
+  createMemorySearchResponse,
+  createSessionGetResponse,
+  parseDaemonRequest,
   parseDoctorResponse,
   type DoctorRequest,
   type DoctorResult,
+  type InspectRequest,
+  type InspectResult,
+  type SecurityAuditRequest,
+  type SecurityAuditResult,
+  type MemorySearchRequest,
+  type MemorySearchResultPayload,
+  type SessionGetRequest,
+  type SessionGetResultPayload,
 } from "../../protocol/src/index.js";
 
 const maxMessageBytes = 1024 * 1024;
@@ -22,9 +39,21 @@ export interface DaemonOptions {
   readonly maxConnections?: number;
   readonly requestTimeoutMs?: number;
   readonly shutdownTimeoutMs?: number;
-  readonly doctor: (
+  readonly doctor?: (
     request: DoctorRequest,
   ) => Promise<Omit<DoctorResult, "protocolVersion">>;
+  readonly inspect?: (
+    request: InspectRequest,
+  ) => Promise<Omit<InspectResult, "protocolVersion">>;
+  readonly securityAudit?: (
+    request: SecurityAuditRequest,
+  ) => Promise<Omit<SecurityAuditResult, "protocolVersion">>;
+  readonly memorySearch?: (
+    request: MemorySearchRequest,
+  ) => Promise<Omit<MemorySearchResultPayload, "protocolVersion">>;
+  readonly sessionGet?: (
+    request: SessionGetRequest,
+  ) => Promise<Omit<SessionGetResultPayload, "protocolVersion">>;
 }
 
 export interface LocalDaemon {
@@ -89,14 +118,67 @@ export async function startLocalDaemon(
         };
         if (envelope.token !== options.sessionToken)
           return failure(socket, -32600, "authentication failed");
-        const request = parseDoctorRequest(envelope.request);
-        response(
-          socket,
-          createDoctorResponse(request.id, await options.doctor(request)),
-        );
+        const request = parseDaemonRequest(envelope.request);
+
+        if (request.method === DOCTOR_METHOD) {
+          if (!options.doctor)
+            return failure(socket, -32601, "unsupported method doctor");
+          response(
+            socket,
+            createDoctorResponse(request.id, await options.doctor(request)),
+          );
+        } else if (request.method === INSPECT_METHOD) {
+          if (!options.inspect)
+            return failure(socket, -32601, "unsupported method inspect");
+          response(
+            socket,
+            createInspectResponse(request.id, await options.inspect(request)),
+          );
+        } else if (request.method === SECURITY_AUDIT_METHOD) {
+          if (!options.securityAudit)
+            return failure(socket, -32601, "unsupported method securityAudit");
+          response(
+            socket,
+            createSecurityAuditResponse(
+              request.id,
+              await options.securityAudit(request),
+            ),
+          );
+        } else if (request.method === MEMORY_SEARCH_METHOD) {
+          if (!options.memorySearch)
+            return failure(socket, -32601, "unsupported method memorySearch");
+          response(
+            socket,
+            createMemorySearchResponse(
+              request.id,
+              await options.memorySearch(request),
+            ),
+          );
+        } else if (request.method === SESSION_GET_METHOD) {
+          if (!options.sessionGet)
+            return failure(socket, -32601, "unsupported method sessionGet");
+          response(
+            socket,
+            createSessionGetResponse(
+              request.id,
+              await options.sessionGet(request),
+            ),
+          );
+        }
       } catch (error) {
-        if (error instanceof ProtocolValidationError)
-          return failure(socket, error.code, error.message);
+        if (
+          error instanceof ProtocolValidationError ||
+          (error &&
+            typeof error === "object" &&
+            "code" in error &&
+            typeof (error as Record<string, unknown>).code === "number")
+        ) {
+          const err = error as {
+            code: -32600 | -32601 | -32602;
+            message?: string;
+          };
+          return failure(socket, err.code, err.message ?? "invalid request");
+        }
         return failure(socket, -32600, "invalid request");
       }
     });

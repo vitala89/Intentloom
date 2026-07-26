@@ -9,20 +9,20 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: Memory & Security Candidates M1–M4, S1–S4 merged into main; Candidate S5 Continuous Security Audit and Verification complete locally
+Status: Memory & Security Candidates M1–M4, S1–S5 merged into main; Daemon Protocol Contracts complete locally
 
-Active branch: `feat/memory-security-s5`
+Active branch: `feat/daemon-protocol-contracts`
 
-Current objective: commit and open a pull request for Candidate S5 Continuous Security Audit and Verification.
+Current objective: commit and open a pull request for Daemon & Protocol Contracts for Second Clients.
 
-Next first action: review Candidate S5 final diff, commit it, open a pull request, and merge after review.
+Next first action: review Daemon Protocol Contracts final diff, commit it, open a pull request, and merge after review.
 
 ## Watch rules
 
 - Read the latest entry before starting work.
 - Verify important claims against code, Git history, pull requests, releases,
   and CI.
-- Never overwrite historical entries to hide mistakes or unfinished work.
+- Never overwrite historical entries to hide mistakes or overwrite unfinished work.
 - Append a new entry for each meaningful completed task or work session.
 - Small typo-only changes may share one entry when performed in the same branch
   and pull request.
@@ -41,6 +41,21 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-26, Daemon and protocol contracts for second clients
+
+- **Status:** complete
+- **Agent/tool:** Antigravity AI Pair Programmer
+- **Branch:** `feat/daemon-protocol-contracts`
+- **Pull request:** #78
+- **Objective:** Implement Daemon & Protocol Contracts for Second Clients, including ADR-0032, expanded RPC request/response schemas (`doctor`, `inspect`, `securityAudit`, `memorySearch`, `sessionGet`), daemon dispatch handlers, secret token authentication, and multi-operation IPC integration tests.
+- **Completed:** Added `ADR-0032-second-client-daemon-protocol-contracts.md`. Expanded `DaemonRequest` and `DaemonResponse` types, request creators, and validators in `@intentloom/protocol`. Implemented typed RPC request handlers in `@intentloom/daemon`. Added multi-operation IPC integration tests in `tests/daemon.test.ts`. Updated `PROJECT_STATE.md` and `DUTY_WATCH.md`.
+- **Files changed:** `docs/decisions/ADR-0032-second-client-daemon-protocol-contracts.md`, `packages/protocol/src/index.ts`, `packages/daemon/src/index.ts`, `tests/daemon.test.ts`, `PROJECT_STATE.md`, and `DUTY_WATCH.md`.
+- **Validation:** `pnpm typecheck`, `pnpm lint`, `pnpm format:check`, `pnpm build`, `pnpm vitest run tests/daemon.test.ts` (16/16 passed), `pnpm test` (full Vitest run), and `git diff --check` passed cleanly.
+- **Decisions:** Daemon RPC expands beyond doctor to serve inspect, securityAudit, memorySearch, and sessionGet over authenticated local IPC.
+- **Risks or compatibility impact:** Additive feature in `@intentloom/protocol` and `@intentloom/daemon`.
+- **Next first action:** Commit `feat/daemon-protocol-contracts`, open a pull request, and merge after approval.
+- **Evidence:** local typecheck, lint, prettier format check, full Vitest run, and `git diff --check`.
 
 ### 2026-07-26, Memory & Security Candidate S5 continuous security audit and verification
 
