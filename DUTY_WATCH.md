@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: Memory & Security Candidates M1–M4, S1–S5 merged into main; Daemon Protocol Contracts complete locally
+Status: Daemon Protocol Contracts merged into main; Interactive Surfaces Read-Only TUI and Desktop Application Shell complete locally
 
-Active branch: `feat/daemon-protocol-contracts`
+Active branch: `feat/interactive-surfaces-tui`
 
-Current objective: commit and open a pull request for Daemon & Protocol Contracts for Second Clients.
+Current objective: commit and open a pull request for Interactive Surfaces Read-Only TUI and Desktop Application Shell.
 
-Next first action: review Daemon Protocol Contracts final diff, commit it, open a pull request, and merge after review.
+Next first action: review Interactive Surfaces TUI final diff, commit it, open a pull request, and merge after review.
 
 ## Watch rules
 
@@ -41,6 +41,20 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-26, Interactive surfaces read-only TUI and desktop application shell
+
+- **Status:** complete
+- **Agent/tool:** Antigravity AI Pair Programmer
+- **Branch:** `feat/interactive-surfaces-tui`
+- **Objective:** Implement Interactive Surfaces: Read-Only TUI and Desktop Application Shell, including ADR-0033, workspace state provider (`getInteractiveWorkspaceState`), CLI subcommand routing (`intentloom ui`), and comprehensive test coverage.
+- **Completed:** Added `ADR-0033-interactive-surfaces-tui-and-desktop-shell.md`. Implemented `getInteractiveWorkspaceState` in `@intentloom/application` aggregating doctor findings, security audit, and session history into structured presentation view models. Exposed CLI routing for `intentloom ui [--root PATH] [--json]` in `@intentloom/cli`. Added unit & integration tests in `tests/interactive-ui.test.ts`. Updated `PROJECT_STATE.md` and `DUTY_WATCH.md`.
+- **Files changed:** `docs/decisions/ADR-0033-interactive-surfaces-tui-and-desktop-shell.md`, `packages/application/src/index.ts`, `packages/cli/src/command.ts`, `tests/interactive-ui.test.ts`, `PROJECT_STATE.md`, and `DUTY_WATCH.md`.
+- **Validation:** `pnpm typecheck`, `pnpm lint`, `pnpm format:check`, `pnpm build`, `pnpm vitest run tests/interactive-ui.test.ts` (3/3 passed), `pnpm test` (full Vitest run), and `git diff --check` passed cleanly.
+- **Decisions:** TUI and Desktop shells consume shared application operations (`getInteractiveWorkspaceState`) and daemon IPC, maintaining 100% read-only zero-mutation guarantees.
+- **Risks or compatibility impact:** Additive feature in `@intentloom/application` and `@intentloom/cli`.
+- **Next first action:** Commit `feat/interactive-surfaces-tui`, open a pull request, and merge after approval.
+- **Evidence:** local typecheck, lint, prettier format check, full Vitest run, and `git diff --check`.
 
 ### 2026-07-26, Daemon and protocol contracts for second clients
 

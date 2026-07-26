@@ -89,6 +89,7 @@ import {
   evaluateProposalAgainstSandbox,
   getSecurityAuditReport,
   runContinuousSecurityAudit,
+  getInteractiveWorkspaceState,
   type SecurityFindingSeverity,
   type SecurityFindingState,
   type SecurityAdapterCategory,
@@ -225,6 +226,7 @@ const commands = new Set([
   "context",
   "session",
   "security",
+  "ui",
 ]);
 const projectPathCommands = new Set([
   "adopt",
@@ -235,6 +237,7 @@ const projectPathCommands = new Set([
   "inspect",
   "timeline",
   "conformance",
+  "ui",
 ]);
 const booleanFlags = new Set([
   "--dry-run",
@@ -299,7 +302,7 @@ const usage = [
   "Usage: intentloom <init|plan> [--root PATH] [--dry-run]",
   "       intentloom adopt <--plan|--apply PLAN_FILE> [PROJECT_PATH|--root PATH] [--json] [--output PATH] [--strict] [--dry-run]",
   "       intentloom update <--plan|--apply PLAN_FILE> [PROJECT_PATH|--root PATH] [--json] [--output PATH] [--strict] [--dry-run]",
-  "       intentloom <adopt|update|diff|sync|doctor|inspect|timeline|conformance|summary|skill|proposal|evaluate|memory|checkpoint|rank|profile|delegate|context|session|security> [PROJECT_PATH|--root PATH] [--dry-run]",
+  "       intentloom <adopt|update|diff|sync|doctor|inspect|timeline|conformance|summary|skill|proposal|evaluate|memory|checkpoint|rank|profile|delegate|context|session|security|ui> [PROJECT_PATH|--root PATH] [--dry-run]",
   "       intentloom evidence import --provider github|gitlab --file PATH --project-key KEY [--json]",
   "       intentloom evidence analyze --provider github|gitlab --file PATH --project-key KEY [--root PATH] [--case-id ID] [--json]",
   "       intentloom conformance [PROJECT_PATH|--root PATH] [--policy PATH] [--timeline PATH] [--case-id ID] [--case-type TYPE] [--json]",
@@ -315,6 +318,7 @@ const usage = [
   "       intentloom context <get> [--query QUERY] [--max-tokens NUM] [--max-items NUM] [--root PATH] [--json]",
   "       intentloom session <start|close|list|get|delete|export> [--id ID] [--task TASK] [--state STATE] [--root PATH] [--json]",
   "       intentloom security <import|inspect|coverage|dismiss|accept-risk|list|scan|baseline|policy|sandbox|audit|verify> [--file PATH] [--id ID] [--reason REASON] [--approved-by USER] [--severity SEVERITY] [--state STATE] [--category CATEGORY] [--root PATH] [--json]",
+  "       intentloom ui [PROJECT_PATH|--root PATH] [--json]",
   "       adoption mappings use --project-owned-mapping SOURCE=DESTINATION",
   "       or --documentation-mapping SOURCE=DESTINATION",
 ].join("\n");
@@ -2720,6 +2724,28 @@ export async function runCli(
           report.healthScore >= 80 && !hasFailedInvariant ? 0 : 3
         ) as CliExitCode;
       }
+    }
+    if (parsed.command === "ui") {
+      const projectId = parsed.values.get("--project-id") ?? "project-local";
+      const state = await getInteractiveWorkspaceState(
+        { root, projectId },
+        fileSystem,
+      );
+      if (parsed.flags.has("--json")) {
+        io.stdout(JSON.stringify(state, null, 2));
+      } else {
+        const lines = [
+          `Intentloom Interactive Terminal UI - Workspace State (${state.projectId})`,
+          `Root: ${state.root}`,
+          `Active View: ${state.activeView}`,
+          `Doctor Findings: ${state.findings.length}`,
+          `Security Health Score: ${state.auditReport ? `${state.auditReport.healthScore}%` : "Not audited"}`,
+          `Recent Agent Sessions: ${state.sessions.length}`,
+          `Generated At: ${state.generatedAt}`,
+        ];
+        io.stdout(lines.join("\n"));
+      }
+      return 0;
     }
     if (parsed.command === "doctor")
       invalidMetadata.push(

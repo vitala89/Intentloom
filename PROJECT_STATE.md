@@ -22,7 +22,7 @@ later justifies separation.
 
 ## Current phase
 
-Daemon & Protocol Contracts for Second Clients.
+Interactive Surfaces: Read-Only TUI and Desktop Application Shell.
 
 The project must avoid premature structural migration. New applications,
 packages, and repository boundaries are introduced only when roadmap triggers
@@ -40,16 +40,16 @@ and real consumers justify them.
   connection, evidence, MCP, interactive surfaces, Agent Workspace, Neutron,
   persistent memory, security analysis, engineering process intelligence,
   public monorepo evolution, controlled agent learning, and portable Duty Watch adoption.
-- Duty Watch governance contracts (Phase 1), proposal CLI `intentloom adopt --plan` (Phase 2), transactional apply & rollback engine `intentloom adopt --apply` (Phase 3), pack update 3-way migration `intentloom update` (Phase 4), conformance & security profiles `intentloom conformance` (Phase 5), provider synchronization `intentloom sync` / `intentloom diff` (Phase 6), and Memory & Security Candidates M1–M4, S1–S5 are merged into `main`.
+- Duty Watch governance contracts (Phase 1), proposal CLI `intentloom adopt --plan` (Phase 2), transactional apply & rollback engine `intentloom adopt --apply` (Phase 3), pack update 3-way migration `intentloom update` (Phase 4), conformance & security profiles `intentloom conformance` (Phase 5), provider synchronization `intentloom sync` / `intentloom diff` (Phase 6), Memory & Security Candidates M1–M4, S1–S5, and Daemon Protocol Contracts for Second Clients are merged into `main`.
 
 These statements must be revalidated against code, tags, CI, and Git history
 before a new release or implementation milestone is declared complete.
 
 ## Active focus
 
-1. Provide expanded typed RPC request/response schemas for daemon operations (`doctor`, `inspect`, `securityAudit`, `memorySearch`, `sessionGet`) in `@intentloom/protocol`.
-2. Implement local IPC request handlers in `@intentloom/daemon` with secret session token authentication.
-3. Verify local IPC RPC execution across project inspection, security audit, persistent memory search, and agent session retrieval.
+1. Provide structured workspace state provider (`getInteractiveWorkspaceState`) in `@intentloom/application`.
+2. Provide keyboard-first read-only terminal UI routing under `intentloom ui [--root PATH] [--json]`.
+3. Ensure zero persistent project mutation during interactive navigation across project inspection, doctor diagnostics, security audit, and agent session views.
 
 ## Architectural invariants
 
@@ -67,22 +67,22 @@ before a new release or implementation milestone is declared complete.
 
 ## Current blockers and unknowns
 
-- Daemon local IPC handlers process typed RPC requests under secret session token authentication, returning structured responses over domain sockets / named pipes.
+- Interactive surface operations are 100% read-only and return structured view models over shared application operations and daemon IPC without mutating project files.
 
 ## Current milestone
 
-Implement Daemon & Protocol Contracts for Second Clients.
+Implement Interactive Surfaces: Read-Only TUI and Desktop Application Shell.
 
 Expected outputs:
 
-- ADR-0032 documenting second client daemon protocol contracts architecture;
-- expanded `DaemonRequest` and `DaemonResponse` schemas, request creators, and validators in `@intentloom/protocol`;
-- multi-operation daemon handlers (`doctor`, `inspect`, `securityAudit`, `memorySearch`, `sessionGet`) in `@intentloom/daemon`;
-- integration test coverage in `tests/daemon.test.ts`.
+- ADR-0033 documenting interactive surfaces, read-only terminal UI navigation, presentation view models, and daemon IPC integration;
+- workspace state provider operation (`getInteractiveWorkspaceState`) in `@intentloom/application`;
+- CLI subcommand routing for `intentloom ui`;
+- unit and integration tests in `tests/interactive-ui.test.ts`.
 
 ## Next platform milestone
 
-Design and implement read-only Desktop / GUI application shell over shared application operations and daemon protocol contracts.
+Implement project-scoped local conversation records, provider-neutral model adapters, and Agent Workspace Discuss and Inspect modes.
 
 ## State update rules
 

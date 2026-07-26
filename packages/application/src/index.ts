@@ -6823,3 +6823,40 @@ export async function runContinuousSecurityAudit(
 
   return report;
 }
+
+export interface InteractiveWorkspaceState {
+  readonly projectId: string;
+  readonly root: string;
+  readonly activeView: "inspect" | "health" | "security" | "sessions";
+  readonly findings: readonly DoctorFinding[];
+  readonly auditReport: ContinuousSecurityAuditReport | null;
+  readonly sessions: readonly AgentSessionItem[];
+  readonly generatedAt: string;
+}
+
+export async function getInteractiveWorkspaceState(
+  options: {
+    root: string;
+    projectId?: string;
+    activeView?: "inspect" | "health" | "security" | "sessions";
+  },
+  fs: FileSystem = nodeFileSystem,
+): Promise<InteractiveWorkspaceState> {
+  const projectId = options.projectId ?? "project-local";
+  const doctor = await doctorProject(
+    { root: options.root, profile: "generic", adapters: ["codex"] },
+    fs,
+  );
+  const auditReport = await getSecurityAuditReport({ root: options.root }, fs);
+  const sessions = await listAgentSessions({ root: options.root }, fs);
+
+  return {
+    projectId,
+    root: options.root,
+    activeView: options.activeView ?? "inspect",
+    findings: doctor.findings,
+    auditReport,
+    sessions,
+    generatedAt: new Date().toISOString(),
+  };
+}
