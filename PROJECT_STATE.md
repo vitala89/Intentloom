@@ -47,8 +47,9 @@ before a new release or implementation milestone is declared complete.
 
 ## Active focus
 
-1. Establish and maintain one canonical release-state matrix for published npm artifacts versus current `main` capabilities.
-2. Keep bottleneck inference, remote ingestion, and model-based judgments behind separate approved specifications and threat review.
+1. Merge PR #90 and complete the explicitly authorized `v0.5.0-beta.1` tag/npm publication sequence.
+2. Synchronize the final v0.5 release state, then start planned `v0.6.0-beta.1`: first the Tauri 2 Desktop vertical slice, then TUI parity and hardening over the same contracts.
+3. Keep bottleneck inference, remote ingestion, and model-based judgments behind separate approved specifications and threat review.
 
 ## Architectural invariants
 
@@ -86,7 +87,10 @@ before a new release or implementation milestone is declared complete.
 The first Engineering Process Intelligence & Agent Memory Evaluation increment,
 including transition intervals, is complete and merged in `main`; the
 `v0.5.0-beta.1` release-readiness audit and artifact preparation are complete;
-the explicit publication decision is the active follow-up gate.
+publication is explicitly authorized and remains gated on PR #90 merge. The next
+approved product direction after the release-state closure is
+`v0.6.0-beta.1`: a Tauri 2 Desktop vertical slice followed by TUI parity and
+hardening.
 
 Expected outputs:
 
@@ -101,8 +105,13 @@ Expected outputs:
 
 ## Next platform milestone
 
-Complete PR #90 merge, then run the controlled v0.5 tag and npm publication;
-keep those release actions separate and auditable.
+Complete PR #90 merge, run the authorized v0.5 tag and npm publication, and
+synchronize the release-state records. Then begin `v0.6.0-beta.1` with a
+client-contract inventory and the Tauri 2 read-only vertical slice
+`Select project → Inspect → Doctor → Diff → Timeline`. After that slice
+stabilizes shared presentation contracts, harden `intentloom ui` to
+CLI/TUI/Desktop parity before expanding provider, extension, hosted, or
+autonomous scope.
 
 ## State update rules
 
