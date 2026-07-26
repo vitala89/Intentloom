@@ -47,6 +47,7 @@ entry directly below this section.
 - **Status:** complete
 - **Agent/tool:** Antigravity AI Pair Programmer
 - **Branch:** `feat/memory-security-m4`
+- **Pull request:** #72
 - **Objective:** Implement Candidate M4: Agent Session Lifecycle, including ADR-0026, threat model updates, versioned protocol schemas, private application operations, CLI command routing (`intentloom session`), and comprehensive test coverage.
 - **Completed:** Added `ADR-0026-agent-session-lifecycle.md` and updated `THREAT_MODEL.md` with threat boundary analysis and security invariant 24. Implemented `AgentSessionItem`, `AgentSessionState`, `AgentSessionExportResult` schemas and validators in `@intentloom/protocol`. Added session lifecycle operations (`startAgentSession`, `closeAgentSession`, `getAgentSession`, `listAgentSessions`, `deleteAgentSession`, `exportAgentSession`) in `@intentloom/application` with secret path redaction (`secretLikePath`) and local `.aif/memory/sessions/` JSON persistence. Exposed CLI routing for `intentloom session <start|close|list|get|delete|export>` in `@intentloom/cli`. Added unit & integration tests in `tests/memory-security-m4.test.ts`. Updated `PROJECT_STATE.md` and `DUTY_WATCH.md`.
 - **Files changed:** `docs/decisions/ADR-0026-agent-session-lifecycle.md`, `docs/security/THREAT_MODEL.md`, `packages/protocol/src/index.ts`, `packages/application/src/index.ts`, `packages/cli/src/command.ts`, `tests/memory-security-m4.test.ts`, `PROJECT_STATE.md`, and `DUTY_WATCH.md`.
