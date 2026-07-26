@@ -47,7 +47,7 @@ entry directly below this section.
 - **Status:** partial
 - **Agent/tool:** Codex with GitHub and local release-state verification
 - **Branch:** `codex/post-v05-merge-release-state`
-- **Commits:** merge `f6232e4`; state update pending
+- **Commits:** merge `f6232e4`, state update `e681cf4`, plus this handoff update
 - **Pull request:** [#88](https://github.com/vitala89/Intentloom/pull/88), merged
 - **Objective:** Synchronize local `main` and durable project records after the approved release-preparation merge.
 - **Completed:** Verified PR #88 merged into `main`, fast-forwarded local `main` to `f6232e4`, confirmed both duplicate Compatibility runs passed all 12 checks, and confirmed no `v0.5` tag exists.
