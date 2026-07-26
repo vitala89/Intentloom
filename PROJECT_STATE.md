@@ -91,8 +91,8 @@ Expected outputs:
 
 ## Next platform milestone
 
-Prepare the `v0.5.0-beta.1` release-readiness audit for the process-intelligence
-increment already merged in `main`; publication remains a separate explicitly
+Prepare version, changelog, and release-state changes for `v0.5.0-beta.1` after
+the readiness audit scope is approved; publication remains a separate explicitly
 authorized release action.
 
 ## State update rules

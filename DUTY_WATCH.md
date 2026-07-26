@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: partial — PR #87 merged; v0.5 release-readiness audit is next
+Status: partial — v0.5 release-readiness audit reviewed; release preparation awaits scope approval
 
 Active branch: `codex/process-intelligence-next-roadmap-3`
 
-Current objective: prepare the `v0.5.0-beta.1` release-readiness audit for the merged process-intelligence increment.
+Current objective: prepare the `v0.5.0-beta.1` release artifacts after readiness scope approval.
 
-Next first action: inspect the v0.5 process-intelligence scope, ADRs/specs, and release criteria, then draft the readiness audit.
+Next first action: obtain approval for the five-operation v0.5 scope, then synchronize version/changelog/release-state artifacts.
 
 ## Watch rules
 
@@ -41,6 +41,32 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-27, v0.5 readiness audit reviewed
+
+- **Status:** partial
+- **Agent/tool:** Codex with release-readiness verification
+- **Branch:** `codex/process-intelligence-next-roadmap-3`
+- **Commits:** `9b41808` plus audit commits below (local)
+- **Pull request:** None; release preparation requires explicit scope approval.
+- **Objective:** Review the drafted v0.5 release-readiness audit against repository evidence.
+- **Completed:** Verified all five operations in the audit against protocol constants/validators, pure evidence-analysis functions, application bridges, authenticated daemon routing, ADR-0037 through ADR-0041, and matching specifications. Confirmed the branch is clean and `git diff main...HEAD --check` passes.
+- **Not completed:** Scope approval, version synchronization to `0.5.0-beta.1`, changelog/release-state updates for the new artifact, package dry runs, tag, npm publication, and release PR.
+- **Validation:** Local evidence review passed; the full Prettier check for the audit and state documents passed. Runtime and compatibility evidence remains the green merged PR #87 matrix and the prior full test record.
+- **Decisions and assumptions:** The proposed v0.5 scope is limited to workflow variants, observed durations, conformance trends, repetition, and transition intervals. CLI and MCP remain intentionally unavailable for these operations.
+- **Risks or compatibility impact:** Version bumping would change the release boundary and must not occur until the scope is approved. No runtime behavior changed in this review.
+- **Open issues or blockers:** Maintainer/user approval of the v0.5 scope and release preparation is pending.
+- **Next first action:** Obtain scope approval, then run the controlled version synchronization and prepare changelog/release-state updates.
+- **Evidence:** `docs/audits/V0_5_RELEASE_READINESS.md`, protocol/application/daemon sources, ADR-0037 through ADR-0041, and green PR #87 checks.
+
+#### Duty completion checklist
+
+- [x] Audit reviewed against code and ADR/spec evidence
+- [x] Surface availability verified
+- [x] Formatter and diff checks passed
+- [x] Handoff updated
+- [ ] v0.5 scope approved
+- [ ] Version and release artifacts prepared
 
 ### 2026-07-27, v0.5 release-readiness audit drafted
 
