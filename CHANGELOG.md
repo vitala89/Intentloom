@@ -4,6 +4,9 @@ All notable changes are documented here. This project follows Keep a Changelog p
 
 ## [Unreleased]
 
+Changes listed here are merged after `0.4.0-beta.1` and are not included in
+the current npm artifact until a later release.
+
 ### Added
 
 - Added accepted ADR-0041 and Workflow Transition Intervals v0.1, including the
@@ -18,6 +21,26 @@ All notable changes are documented here. This project follows Keep a Changelog p
 - Added ADR-0022 (`ADR-0022-live-read-only-provider-connections.md`) and Live Read-Only Provider Connections Specification (`LIVE_PROVIDER_CONNECTIONS_SPEC.md`).
 - Added JSON Schema files for Extension Manifest (`urn:aif:schema:extension-manifest:1`) and Extension Lock (`urn:aif:schema:extension-lock:1`) in `catalog/schemas/` with `@intentloom/validator` support.
 - Added ADR-0023 (`ADR-0023-external-mcp-evidence-ingestion.md`) and External MCP Evidence Ingestion Specification (`EXTERNAL_MCP_EVIDENCE_INGESTION_SPEC.md`).
+
+## [0.4.0-beta.1] - 2026-07-25
+
+### Added
+
+- Released the Controlled Agent Learning & Procedural Memory milestone
+  (Candidates L1–L8), including task summaries, skill discovery and proposals,
+  evaluation gates, memory operations, checkpoints, ranking, profiles, and
+  delegation.
+- Released the bounded Memory & Security milestone (Candidates M1–M4 and
+  S1–S5), read-only interactive/workspace surfaces, and Neutron local workspace
+  synchronization and orchestration foundations.
+
+### Notes
+
+- Published as `intentloom@0.4.0-beta.1` under npm `next`; npm `latest` remains
+  `0.1.0-alpha.3`.
+- The later workflow-variant, duration, trend, repetition, and transition
+  interval summaries remain in `[Unreleased]` because they were merged after
+  this tag.
 
 ## [0.3.0-beta.1] - 2026-07-24
 

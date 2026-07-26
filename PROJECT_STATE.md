@@ -22,7 +22,7 @@ later justifies separation.
 
 ## Current phase
 
-Engineering Process Intelligence & Agent Memory Evaluation System — conformance, workflow variants, observed duration metrics, conformance trend summary, and deterministic workflow repetition summary merged into `main` at `57a2c9b`; observed workflow transition intervals are in draft PR #86 pending CI and maintainer review.
+Engineering Process Intelligence & Agent Memory Evaluation System — conformance, workflow variants, observed duration metrics, conformance trend summary, deterministic workflow repetition summary, and transition intervals are merged into `main` at `83941ab`; the process-intelligence increment is post-`0.4.0-beta.1` and not yet published to npm.
 
 The project must avoid premature structural migration. New applications,
 packages, and repository boundaries are introduced only when roadmap triggers
@@ -47,7 +47,7 @@ before a new release or implementation milestone is declared complete.
 
 ## Active focus
 
-1. Monitor draft PR #86 for CI and maintainer review before merge.
+1. Establish and maintain one canonical release-state matrix for published npm artifacts versus current `main` capabilities.
 2. Keep bottleneck inference, remote ingestion, and model-based judgments behind separate approved specifications and threat review.
 
 ## Architectural invariants
@@ -67,12 +67,13 @@ before a new release or implementation milestone is declared complete.
 ## Current blockers and unknowns
 
 - Any expansion to bottleneck, performance, causal, actor, repository-reading, persisted, remote, or model-assisted analysis requires a new ADR, specification, and threat review.
-- PR #84 is merged historically; PR #85 is merged and current local `main` is fast-forwarded to `57a2c9b`.
-- ADR-0041 and `WORKFLOW_TRANSITION_INTERVALS_V0_1_SPEC.md` are accepted; draft PR #86 is open with CI in progress and has not been reviewed or merged.
+- PR #84, PR #85, and PR #86 are merged; current local `main` is `83941ab`.
+- npm currently reports `latest=0.1.0-alpha.3` and `next=0.4.0-beta.1`.
+- Release-state documentation now distinguishes the published `0.4.0-beta.1` artifact from post-release process-intelligence code in `main`.
 
 ## Current milestone
 
-The first Engineering Process Intelligence & Agent Memory Evaluation increment, including conformance trend summary, is complete and merged; the accepted transition-interval increment is under review in draft PR #86.
+The first Engineering Process Intelligence & Agent Memory Evaluation increment, including transition intervals, is complete and merged in `main`; release-state documentation is the active follow-up milestone.
 
 Expected outputs:
 
@@ -83,10 +84,11 @@ Expected outputs:
 - ADR-0020, ADR-0037, ADR-0038, and ADR-0039 documenting canonical boundaries and safety constraints.
 - ADR-0040 documenting the deterministic workflow repetition boundary and safety constraints.
 - ADR-0041 documenting the deterministic observed transition interval boundary and safety constraints.
+- `docs/releases/RELEASE_STATE.md` documenting capability availability across `main`, npm, CLI, daemon, MCP, and experimental surfaces.
 
 ## Next platform milestone
 
-Complete CI and maintainer review for draft PR #86, then merge only after explicit authorization.
+Review and publish the release-state documentation branch, then keep the matrix current for the next release decision.
 
 ## State update rules
 

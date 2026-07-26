@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Intentloom should support a controlled learning loop for engineering agents without allowing model output, conversation history, or repeated behavior to become trusted project guidance automatically.
+Intentloom implements a controlled learning loop for engineering agents without allowing model output, conversation history, or repeated behavior to become trusted project guidance automatically. Candidates L1–L8 are released in `0.4.0-beta.1`; later hosted, scheduled, cross-project, and training extensions remain future work.
 
 The goal is to preserve useful engineering experience across sessions while keeping canonical intent, accepted memory, executable skills, and generated observations separate, reviewable, versioned, and reversible.
 

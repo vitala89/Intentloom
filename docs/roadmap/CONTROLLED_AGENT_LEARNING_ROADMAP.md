@@ -1,6 +1,9 @@
 # Controlled Agent Learning Roadmap
 
-This roadmap supplement turns the controlled-learning direction into staged, reviewable candidates. It does not change the current release commitment and does not authorize autonomous agent mutation.
+Candidates L1–L8 are implemented in `main` and included in the published
+`0.4.0-beta.1` prerelease. This supplement retains their scope and exit gates
+as historical evidence; only the later candidates remain future work. The
+roadmap does not authorize autonomous agent mutation.
 
 The architectural contract is defined in [Controlled Agent Learning and Procedural Memory](../concepts/CONTROLLED_AGENT_LEARNING_AND_PROCEDURAL_MEMORY.md). Persistent records and retrieval also remain subject to [Persistent Agent Memory](../concepts/PERSISTENT_AGENT_MEMORY.md), the managed extension lifecycle, project capability boundaries, and the existing prepare, preview, approve, revalidate, and transact model.
 
@@ -17,7 +20,7 @@ The architectural contract is defined in [Controlled Agent Learning and Procedur
 - no hidden background work, telemetry, uploads, or training contribution;
 - CLI, MCP, daemon, TUI, desktop, IDE, and Neutron reuse the same typed operations.
 
-## Candidate L1: Structured task and session summaries
+## Completed Candidate L1: Structured task and session summaries
 
 Scope:
 
@@ -35,7 +38,7 @@ Exit gate:
 - records can be inspected, exported, retained, and deleted through typed operations;
 - the index is rebuildable derived state rather than canonical memory.
 
-## Candidate L2: Progressive skill discovery
+## Completed Candidate L2: Progressive skill discovery
 
 Scope:
 
@@ -53,7 +56,7 @@ Exit gate:
 - fixtures demonstrate measurable context reduction compared with eager loading;
 - no skill discovery operation changes project or extension state.
 
-## Candidate L3: Skill proposal lifecycle
+## Completed Candidate L3: Skill proposal lifecycle
 
 Scope:
 
@@ -71,7 +74,7 @@ Exit gate:
 - rejection and deletion do not modify project-owned files;
 - a previous skill version can be restored deterministically.
 
-## Candidate L4: Skill evaluation and regression gates
+## Completed Candidate L4: Skill evaluation and regression gates
 
 Scope:
 
@@ -89,7 +92,7 @@ Exit gate:
 - prompt injection and malicious imported-skill fixtures cannot grant capabilities or bypass approval;
 - rollback after a failed post-activation health check is verified.
 
-## Candidate L5: Accepted procedural memory operations
+## Completed Candidate L5: Accepted procedural memory operations
 
 Scope:
 
@@ -107,7 +110,7 @@ Exit gate:
 - no presentation surface becomes an independent memory or skill authority;
 - doctor reports stale, incompatible, unverified, modified, deprecated, or rollback-required skills.
 
-## Candidate L6: Pause, redirect, checkpoint, and resume
+## Completed Candidate L6: Pause, redirect, checkpoint, and resume
 
 Scope:
 
@@ -125,7 +128,7 @@ Exit gate:
 - checkpoints are project-isolated, exportable, and deletable;
 - interrupted execution cannot silently continue in the background.
 
-## Candidate L7: Optional semantic ranking
+## Completed Candidate L7: Optional semantic ranking
 
 Scope:
 
@@ -143,7 +146,7 @@ Exit gate:
 - secrets, excluded paths, and unrelated projects cannot enter requests or indexes;
 - users can disable semantic ranking without losing core functionality.
 
-## Candidate L8: Profile isolation and role-aware delegation
+## Completed Candidate L8: Profile isolation and role-aware delegation
 
 Scope:
 

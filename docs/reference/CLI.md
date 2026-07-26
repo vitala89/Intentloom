@@ -1,8 +1,12 @@
 # CLI
 
-Install the alpha CLI with `npm install --global intentloom`. The public package
+Install the current beta CLI with `npm install --global intentloom@next`. The public package
 supports the `intentloom` binary only; programmatic imports and deep imports are not
-part of the alpha contract.
+part of the public CLI contract. Pin `0.4.0-beta.1` when reproducibility is
+required; the npm `latest` tag still points to `0.1.0-alpha.3`.
+
+See the [release state](../releases/RELEASE_STATE.md) for capability availability
+across the published package and current `main`.
 
 Intentloom commands are local and deterministic. Generated files are Intentloom-owned only when recorded in the source map; the persisted ownership value remains `aif-owned-generated` for v0.1 compatibility. Project-owned files are never silently replaced.
 

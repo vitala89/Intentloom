@@ -17,8 +17,20 @@ import {
   RELEASE_ANALYSIS_TOOL,
   type McpRequest,
 } from "../packages/mcp-server/src/index.js";
+import { INTENTLOOM_VERSION } from "../packages/core/src/index.js";
 
 describe("MCP release analysis server", () => {
+  it("advertises the synchronized framework version", async () => {
+    const response = await handleMcpRequest(
+      { jsonrpc: "2.0", id: "initialize", method: "initialize" },
+      { root: process.cwd() },
+    );
+    expect(response?.result?.serverInfo).toEqual({
+      name: "intentloom",
+      version: INTENTLOOM_VERSION,
+    });
+  });
+
   it("advertises bounded read-only analysis and project tools", async () => {
     const response = await handleMcpRequest(
       { jsonrpc: "2.0", id: 1, method: "tools/list" },

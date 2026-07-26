@@ -46,9 +46,13 @@ The current repository already provides most of the required architectural seams
 - `intentloomd` exposes authenticated local IPC only;
 - adoption, diff, sync, and doctor already use explicit project roots;
 - dry-run, ownership, source-map, path-safety, and transactional-write rules are established;
-- Engineering Process Intelligence documents a future direction for events, evidence, timelines, trust states, and conformance.
+- Engineering Process Intelligence now provides bounded event, evidence, timeline,
+  conformance, variant, duration, trend, repetition, and transition summaries;
+  live providers and broader process-mining claims remain future candidates.
 
-The missing work is a formal project-access contract, evidence-source implementations, stable inspection operations, and MCP-specific adapters.
+Remaining work is limited to future live-provider access, external MCP evidence,
+and broader remote or mutating integrations; the local inspection, evidence,
+conformance, and MCP read-only foundations are implemented.
 
 ## User journeys
 

@@ -32,6 +32,19 @@ All 64 test files comprising 651 unit and integration tests pass cleanly. Monore
 | Git Safety               | **PASS** | Clean `git diff --check` with no whitespace or conflict markers |
 | Release Target Version   | **PASS** | `0.4.0-beta.1`                                                  |
 
-## Release Recommendation
+## Release Recommendation (historical snapshot)
 
-The framework version should be bumped from `0.3.0-beta.1` to **`0.4.0-beta.1`** across all workspace packages via `scripts/sync-version.mjs` and published to npm under `intentloom`.
+At the time of this audit, the framework version needed to be bumped from
+`0.3.0-beta.1` to **`0.4.0-beta.1`** across all workspace packages via
+`scripts/sync-version.mjs` and published to npm under `intentloom`. The
+recommendation was completed after this audit snapshot; see the release
+follow-up below.
+
+## Release follow-up
+
+This audit's recommendation was completed after the audit snapshot: the
+repository was synchronized to `0.4.0-beta.1`, tagged as `v0.4.0-beta.1`, and
+published to npm under `next` on 2026-07-25. The current registry state is
+`latest=0.1.0-alpha.3` and `next=0.4.0-beta.1`. This document remains the
+historical readiness audit; [`docs/releases/RELEASE_STATE.md`](../releases/RELEASE_STATE.md)
+is the current capability and release-status source of truth.
