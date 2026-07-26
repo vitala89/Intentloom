@@ -22,7 +22,7 @@ later justifies separation.
 
 ## Current phase
 
-Engineering Process Intelligence & Agent Memory Evaluation System — conformance, workflow variants, observed duration metrics, conformance trend summary, deterministic workflow repetition summary, and transition intervals are merged into `main` at `f546b76`; workspace release preparation is synchronized to `0.5.0-beta.1`, while npm still serves `0.4.0-beta.1` under `next`.
+Engineering Process Intelligence & Agent Memory Evaluation System — conformance, workflow variants, observed duration metrics, conformance trend summary, deterministic workflow repetition summary, and transition intervals are merged into `main` at `f6232e4`; workspace release preparation is synchronized to `0.5.0-beta.1`, while npm still serves `0.4.0-beta.1` under `next`.
 
 The project must avoid premature structural migration. New applications,
 packages, and repository boundaries are introduced only when roadmap triggers
@@ -67,23 +67,23 @@ before a new release or implementation milestone is declared complete.
 ## Current blockers and unknowns
 
 - Any expansion to bottleneck, performance, causal, actor, repository-reading, persisted, remote, or model-assisted analysis requires a new ADR, specification, and threat review.
-- PR #84, PR #85, PR #86, and PR #87 are merged; current local `main` is
-  `f546b76`. Draft PR #88 contains the v0.5 release-preparation artifacts and
-  awaits review. Its first compatibility run failed solely on Prettier
-  formatting in `docs/audits/V0_5_RELEASE_READINESS.md`; commit `321c06e`
-  corrected the file and the subsequent 12-job compatibility matrix passed.
+- PR #84 through PR #88 are merged; current local `main` is `f6232e4`. PR #88
+  remote compatibility CI passed all 12 checks after the audit formatting fix.
+- Draft PR #89 carries the post-merge readiness and state-document corrections;
+  it does not change runtime behavior or publish artifacts.
 - npm currently reports `latest=0.1.0-alpha.3` and `next=0.4.0-beta.1`.
 - Workspace packages are synchronized to `0.5.0-beta.1` for release preparation;
   no v0.5 tag or npm publication exists.
-- Local `pnpm build` is currently blocked by the interrupted dependency restore
-  missing `@types/node`; the release PR must re-verify build and tests remotely.
+- Local `pnpm build` remains blocked by the interrupted dependency restore
+  missing `@types/node`; remote CI verified the merged release-preparation
+  branch.
 
 ## Current milestone
 
 The first Engineering Process Intelligence & Agent Memory Evaluation increment,
 including transition intervals, is complete and merged in `main`; the
-`v0.5.0-beta.1` release-readiness audit and artifact preparation are the active
-follow-up milestone.
+`v0.5.0-beta.1` release-readiness audit and artifact preparation are complete;
+the explicit publication decision is the active follow-up gate.
 
 Expected outputs:
 
@@ -98,8 +98,8 @@ Expected outputs:
 
 ## Next platform milestone
 
-Review draft PR #88 and its remote build/test verification, and keep
-tagging/npm publication as separate explicitly authorized release actions.
+Review draft PR #89, then obtain explicit authorization before any tagging or
+npm publication; keep those release actions separate and auditable.
 
 ## State update rules
 

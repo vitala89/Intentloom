@@ -1,8 +1,8 @@
 # v0.5 Candidate Release Readiness Audit
 
 Audit date: 2026-07-27. Scope: the Engineering Process Intelligence increment
-merged in `main` at `83941ab` and carried into the release-state merge commit
-`f546b76`.
+merged in `main` at `83941ab`, carried into the release-state merge commit
+`f546b76`, and included in the final PR #88 merge `f6232e4`.
 
 ## Executive summary
 
@@ -12,7 +12,8 @@ authenticated local daemon handlers. Release preparation has synchronized the
 workspace packages to `0.5.0-beta.1`; npm `next` still points to the published
 `0.4.0-beta.1` artifact, and no v0.5 tag or npm publication is authorized.
 
-This audit is therefore a readiness baseline, not a release approval.
+Remote compatibility verification is complete. This audit remains a readiness
+record, not authorization to publish a tag or npm artifact.
 
 ## Candidate scope
 
@@ -31,15 +32,15 @@ persistence, or model judgments.
 
 ## Verification matrix
 
-| Gate                                       | Status  | Evidence or remaining action                                                                                                                                                                                                           |
-| ------------------------------------------ | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| ADR and specification coverage             | PASS    | ADR-0037 through ADR-0041 and matching v0.1 specifications are merged                                                                                                                                                                  |
-| Protocol/application/daemon implementation | PASS    | Canonical protocol methods, pure analysis operations, application bridges, and authenticated daemon routing are in `main`                                                                                                              |
-| Deterministic tests                        | PASS    | Process-intelligence focused tests and the merged baseline full suite passed before the release-state documentation work; PR #87 CI also passed all 12 compatibility jobs                                                              |
-| Workspace version synchronization          | PASS    | Root, all workspace manifests, and generated core version are synchronized to `0.5.0-beta.1`                                                                                                                                           |
-| Release changelog and release-state update | PASS    | v0.5 candidate section, workspace/npm boundary, roadmap, and publishing notes are updated                                                                                                                                              |
-| Build, pack, and dry-run publication       | PARTIAL | `npm pack --dry-run --json` and `npm publish --dry-run --tag next --access public` pass for `intentloom@0.5.0-beta.1`; local `pnpm build` is blocked by the interrupted environment missing `@types/node`, so remote CI must re-verify |
-| Git tag and npm publication                | BLOCKED | Requires explicit maintainer authorization, npm ownership/permissions, and a successful readiness review                                                                                                                               |
+| Gate                                       | Status  | Evidence or remaining action                                                                                                                                                                                                                                         |
+| ------------------------------------------ | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ADR and specification coverage             | PASS    | ADR-0037 through ADR-0041 and matching v0.1 specifications are merged                                                                                                                                                                                                |
+| Protocol/application/daemon implementation | PASS    | Canonical protocol methods, pure analysis operations, application bridges, and authenticated daemon routing are in `main`                                                                                                                                            |
+| Deterministic tests                        | PASS    | Process-intelligence focused tests and the merged baseline full suite passed before the release-state documentation work; PR #88 CI passed all 12 compatibility checks                                                                                               |
+| Workspace version synchronization          | PASS    | Root, all workspace manifests, and generated core version are synchronized to `0.5.0-beta.1`                                                                                                                                                                         |
+| Release changelog and release-state update | PASS    | v0.5 candidate section, workspace/npm boundary, roadmap, and publishing notes are updated                                                                                                                                                                            |
+| Build, pack, and dry-run publication       | PASS    | `npm pack --dry-run --json` and `npm publish --dry-run --tag next --access public` pass for `intentloom@0.5.0-beta.1`; PR #88 remote compatibility CI passed all 12 checks (local `pnpm build` remains unavailable because the environment is missing `@types/node`) |
+| Git tag and npm publication                | BLOCKED | Requires explicit maintainer authorization, npm ownership/permissions, and a successful readiness review                                                                                                                                                             |
 
 ## Release blockers and non-goals
 
@@ -55,7 +56,7 @@ persistence, or model judgments.
 
 ## Verdict
 
-**Release preparation ready for remote artifact verification; publication not
-yet authorized.** Package dry-runs pass for `0.5.0-beta.1`. Local build remains
-blocked by the damaged dependency environment; the release PR must run the full
-build/test matrix before any tag or npm publication decision.
+**Release preparation ready for an explicit publication decision; publication is
+not authorized by this audit.** Package dry-runs and the PR #88 remote
+compatibility matrix pass for `0.5.0-beta.1`. The workspace remains untagged and
+unpublished on npm.
