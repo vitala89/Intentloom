@@ -15,6 +15,7 @@ adoption workflow have been exercised in multiple real projects.
 | `0.3.0-beta.1`  | Engineering conformance and extension governance                         | Engineering Conformance Engine and managed-extension schemas/governance                                                 | Released 2026-07-24 as npm `intentloom@0.3.0-beta.1` under `next`                             |
 | `0.4.0-beta.1`  | Controlled learning, memory/security, workspace, and Neutron foundations | Candidates L1–L8, M1–M4, S1–S5, workspace modes, and local Neutron foundations                                          | Released 2026-07-25 as Git tag `v0.4.0-beta.1` and npm `intentloom@0.4.0-beta.1` under `next` |
 | `v0.5.0-beta.1` | Engineering Process Intelligence increment                               | Workflow variants, durations, conformance trends, repetition, and transition intervals                                  | Released 2026-07-27 as Git tag `v0.5.0-beta.1` and npm `intentloom@0.5.0-beta.1` under `next` |
+| `v0.6.0-beta.1` | Desktop vertical slice and TUI parity                                    | Packaged Tauri 2 read-only project flow over daemon contracts, followed by TUI parity and cross-platform evidence       | Planned; design and client-contract preparation are the next product milestone                |
 | `1.0.0`         | Stable compatibility contract                                            | Stable release criteria, documented support policy, verified upgrade path, and maintained compatibility commitments     | Not started                                                                                   |
 
 Before the first beta, Intentloom needed at least three real dogfooding scenarios: a
@@ -54,6 +55,9 @@ The sequencing rules are:
 - conformance before workflow variants or bottleneck analysis;
 - local `stdio` MCP before HTTP transport;
 - structured read-only operations before TUI and desktop orchestration;
+- freeze the shared second-client contracts before building product pages;
+- build the first Desktop read-only vertical slice before completing TUI
+  product hardening over the same presentation contracts;
 - provider-neutral agent runtime before custom model training;
 - benchmark evidence before fine-tuning or reinforcement learning;
 - prepare, preview, approve, and revalidate before any agent- or MCP-triggered mutation;
@@ -149,12 +153,49 @@ Candidate scope:
 
 Exit criteria: Intentloom can explain why a workflow instance conforms, diverges, or cannot be verified, and securely govern external extension manifests without automatically changing repository state.
 
+## Planned v0.6 milestone: Desktop vertical slice, then TUI parity
+
+The v0.5 release gate is complete. The next product milestone makes the
+existing local platform visible through one coherent client before adding
+another major analysis, provider, extension, or autonomous feature block.
+
+The full implementation sequence, verified starting inventory, PR breakdown,
+security boundaries, and exit gates are defined in the
+[Desktop v0.6 implementation plan](docs/roadmap/DESKTOP_V0_6_IMPLEMENTATION_PLAN.md).
+The product and visual-system requirements are defined in the
+[Desktop design brief](docs/desktop/DESIGN_BRIEF.md).
+
+Implementation order:
+
+1. Reconcile the roadmap and approve the Desktop stack and distribution ADR.
+2. Inventory and freeze capability discovery, Inspect, Doctor, Diff, Timeline,
+   cancellation, error, and compatibility contracts.
+3. Create the Tauri 2 shell and secure daemon lifecycle boundary.
+4. Implement the token-based design system and the read-only product flow:
+   `Select project → Inspect → Doctor → Diff → Timeline`.
+5. Add bounded Workspace review surfaces after the read-only slice is stable.
+6. Complete keyboard-first TUI parity and packaged-runtime evidence over the
+   same contracts.
+7. Consider Approved Apply only through a separate threat-reviewed security
+   gate.
+
+The milestone does not include live provider connections, external MCP
+ingestion, managed extension installation, hosted services, model training,
+generic shell access, or autonomous repository operations.
+
+Exit criteria: a clean packaged Desktop installation can connect to or start
+the authenticated local daemon, confirm one canonical project root, complete
+the read-only flow, recover explicitly from daemon and protocol failures, and
+close without changing project bytes. The hardened TUI reproduces the same
+structured results. Any later Apply action remains explicit, revalidated,
+transactional, and separately approved.
+
 ## Partial implementation — Interactive terminal UI
 
 The current `intentloom ui` command and read-only workspace state collector are
 implemented and released in `0.4.0-beta.1`. A full keyboard-first terminal UI
-with cancellation, accessibility, and snapshot guarantees remains a future
-candidate.
+with cancellation, accessibility, snapshot guarantees, and Desktop parity is
+sequenced after the first v0.6 Desktop vertical slice.
 
 Add an optional keyboard-first terminal application without replacing the normal CLI.
 
@@ -169,13 +210,17 @@ Candidate scope:
 
 Exit criteria: CLI and TUI results are equivalent for the same operation and state, cancellation leaves the project byte-for-byte unchanged, and packed-runtime, keyboard, accessibility, and snapshot coverage is recorded.
 
-## Implemented agent-workspace foundation — Desktop application remains future
+## Implemented agent-workspace foundation — Desktop v0.6 is planned
 
 Agent Workspace discuss, inspect, plan, review, and apply modes are implemented
-through the CLI/application boundary and released in `0.4.0-beta.1`. A full
-desktop presentation layer remains a future candidate.
+through the CLI/application boundary and released in `0.4.0-beta.1`. The first
+Desktop presentation milestone is planned in v0.6. Workspace daemon coverage
+and product UI remain follow-up work after the read-only project slice.
 
-Build a local desktop presentation and orchestration layer over the standalone daemon and versioned application protocol.
+Build a local Tauri 2 presentation and orchestration layer over the standalone
+daemon and versioned application protocol. The Desktop client does not replace
+the TypeScript-first core, CLI, MCP server, or daemon, and it does not require a
+full Rust rewrite.
 
 Candidate scope:
 

@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: partial — v0.5.0-beta.1 published; final release-record PR #93 remains
+Status: partial — Desktop v0.6 execution baseline prepared for review
 
-Active branch: `codex/v05-cwd-guidance`
+Active branch: `agent/desktop-v06-execution-plan`
 
-Current objective: finalize published v0.5 release records and identify the next v1.0 planning gate.
+Current objective: recover the misplaced PR #91 Desktop milestone on current main and define design, contract, implementation, TUI, security, and release gates.
 
-Next first action: merge/review PR #93, then select the first v1.0 compatibility milestone from the roadmap.
+Next first action: review and merge the Desktop documentation baseline, reconcile draft PR #94, then draft the Desktop stack and distribution ADR before runtime implementation.
 
 ## Watch rules
 
@@ -41,6 +41,36 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-27, Desktop v0.6 design and execution baseline
+
+- **Status:** partial
+- **Agent/tool:** Codex with local repository and GitHub state verification
+- **Branch:** `agent/desktop-v06-execution-plan`
+- **Commits:** pending final documentation commit
+- **Pull request:** pending
+- **Objective:** Create one durable design and engineering handoff for the next Desktop milestone and recover the Desktop/TUI roadmap intent that did not land in `main`.
+- **Completed:** Verified published `intentloom@0.5.0-beta.1`, tag `v0.5.0-beta.1`, current remote `main` at `05aa0c6`, merged PR #93, misplaced PR #91 base, and open draft PR #94. Added a Desktop documentation entrypoint, System Designer brief, phased v0.6 implementation plan, and copy-ready execution prompt. Updated roadmap and durable state so v0.6 precedes stable v1 planning. Recorded the verified current contract gaps for Diff, root-bound Timeline, capability discovery, client cancellation/errors, and Workspace RPC.
+- **Not completed:** No ADR, protocol, daemon, Tauri, UI, TUI, packaging, merge, tag, publication, or release work was performed. PR #94 is not modified or closed by this branch.
+- **Files or packages changed:** `docs/desktop/README.md`, `docs/desktop/DESIGN_BRIEF.md`, `docs/desktop/AGENT_EXECUTION_PROMPT.md`, `docs/roadmap/DESKTOP_V0_6_IMPLEMENTATION_PLAN.md`, `docs/README.md`, `ROADMAP.md`, `PROJECT_STATE.md`, and `DUTY_WATCH.md`.
+- **Validation:** Prettier 3.9.5 passed for all eight changed Markdown documents. `git diff --check` passed. A local relative-link target check passed. The final documentation diff was reviewed. Runtime build and tests were not required because no runtime, schema, package, or dependency changed; the existing interrupted local dependency environment also remains unsuitable for a truthful full build.
+- **Decisions and assumptions:** Desktop remains a Tauri 2 client over the standalone daemon. The first product slice is read-only. Full TUI hardening follows stable Desktop presentation contracts. Approved Apply remains a separate threat-reviewed gate. Stable v1 planning consumes Desktop/TUI compatibility evidence later rather than blocking v0.6.
+- **Risks or compatibility impact:** Documentation-only and backwards compatible. Draft PR #94 overlaps `ROADMAP.md`, `PROJECT_STATE.md`, and `DUTY_WATCH.md` and requires reconciliation before either branch is merged without conflict.
+- **Open issues or blockers:** UI framework, daemon self-contained distribution, Tauri transport, capability discovery, cancellation, Diff/Timeline RPC, and approved design assets remain unresolved implementation inputs.
+- **Next first action:** Review and merge this documentation baseline, reconcile PR #94 as a later stability plan, then create the Desktop stack and distribution ADR on a new branch.
+- **Evidence:** remote `main` commit `05aa0c6`, npm `next=0.5.0-beta.1`, Git tag `v0.5.0-beta.1`, PR #91, PR #93, PR #94, ADR-0032 through ADR-0035, protocol/daemon/application sources, and the new Desktop documents.
+
+#### Duty completion checklist
+
+- [x] Current release, main, PR, protocol, daemon, application, and roadmap state reverified
+- [x] Desktop design brief and implementation plan added
+- [x] Copy-ready implementation-agent prompt added
+- [x] Project state and roadmap updated
+- [x] Formatter and Markdown checks passed
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [ ] Documentation commit created
+- [ ] Draft pull request opened
 
 ### 2026-07-27, v0.5.0-beta.1 published to npm
 
