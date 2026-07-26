@@ -47,8 +47,8 @@ before a new release or implementation milestone is declared complete.
 
 ## Active focus
 
-1. Specify the next narrow, read-only process-intelligence candidate before implementation; it must use only existing canonical evidence and must not infer causality.
-2. Keep process-variant discovery, bottleneck inference, remote ingestion, and model-based judgments behind separate approved specifications and threat review.
+1. Review and approve or revise the proposed deterministic workflow-variant summary specification and ADR before implementation; it uses only caller-supplied canonical timelines and makes no causal claims.
+2. Keep bottleneck inference, remote ingestion, and model-based judgments behind separate approved specifications and threat review.
 
 ## Architectural invariants
 
@@ -66,7 +66,7 @@ before a new release or implementation milestone is declared complete.
 
 ## Current blockers and unknowns
 
-- The exact first operation set must remain constrained to evidence already represented by the existing deterministic timeline, conformance, and procedural-memory evaluation contracts. Variant discovery, bottleneck inference, remote ingestion, and model-based judgments require separate approved specifications and threat review.
+- ADR-0037 and `WORKFLOW_VARIANT_SUMMARY_V0_1_SPEC.md` are proposed, not approved. No workflow-variant implementation may begin until their scope, privacy boundary, and deterministic fixtures receive review.
 
 ## Current milestone
 
@@ -81,7 +81,7 @@ Expected outputs:
 
 ## Next platform milestone
 
-Specify the next narrow, read-only Engineering Process Intelligence candidate over the shared application and daemon boundaries.
+Review and approve or revise the proposed deterministic workflow-variant summary candidate before implementation.
 
 ## State update rules
 

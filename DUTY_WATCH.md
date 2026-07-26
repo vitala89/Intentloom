@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: Engineering Process Intelligence & Agent Memory Evaluation system first IPC increment complete locally
+Status: Workflow-variant summary candidate specified; approval required before implementation
 
 Active branch: `codex/process-intelligence-memory-evaluation`
 
-Current objective: commit and open a pull request for the first Engineering Process Intelligence & Agent Memory Evaluation system IPC increment.
+Current objective: review and approve or revise the deterministic workflow-variant summary candidate before implementation.
 
-Next first action: review the final IPC increment diff, commit it, and open a pull request; then specify the next narrow process-intelligence candidate.
+Next first action: review ADR-0037 and `WORKFLOW_VARIANT_SUMMARY_V0_1_SPEC.md`; if approved, implement the pure report and its deterministic fixtures.
 
 ## Watch rules
 
@@ -41,6 +41,18 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-26, Deterministic workflow-variant summary candidate
+
+- **Status:** complete
+- **Agent/tool:** Codex
+- **Branch:** `codex/process-intelligence-memory-evaluation`
+- **Objective:** Specify the next narrow Engineering Process Intelligence increment without prematurely implementing process mining or causal analysis.
+- **Completed:** Added proposed ADR-0037 and Draft `WORKFLOW_VARIANT_SUMMARY_V0_1_SPEC.md`. The candidate is constrained to pure, in-memory aggregation of at least two explicitly supplied, same-type canonical timelines. It exposes normalized activity sequences, case identifiers, counts, and timestamp coverage only; it prohibits root access, persistence, network, actors, raw payloads, bottleneck/delay claims, causality, recommendations, and model interpretation. Added security invariant 30 and updated durable project state.
+- **Files changed:** `PROJECT_STATE.md`, `DUTY_WATCH.md`, `docs/decisions/ADR-0037-deterministic-workflow-variant-summary.md`, `docs/specs/WORKFLOW_VARIANT_SUMMARY_V0_1_SPEC.md`, and `docs/security/THREAT_MODEL.md`.
+- **Validation:** Markdown formatting and `git diff --check` are required before commit.
+- **Decisions:** This is a proposed boundary only. It is not authorization to implement workflow-variant analysis or to expand toward bottleneck/process-mining capabilities.
+- **Next first action:** Review and approve or revise ADR-0037 and the draft specification. Only after approval, add canonical protocol types, deterministic fixtures, the pure analysis operation, application adapter, and authenticated daemon IPC.
 
 ### 2026-07-26, Engineering Process Intelligence & Agent Memory Evaluation system (IPC increment complete)
 
