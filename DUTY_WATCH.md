@@ -42,6 +42,31 @@ entry directly below this section.
 
 ## Watch entries
 
+### 2026-07-27, npm EPRIVATE traced to private workspace cwd
+
+- **Status:** partial
+- **Agent/tool:** Codex with release-publish diagnosis
+- **Branch:** `codex/v05-publish-otp-followup`
+- **Commits:** follow-up documentation pending
+- **Pull request:** [#92](https://github.com/vitala89/Intentloom/pull/92), draft
+- **Objective:** Diagnose the failed retry without changing the published state.
+- **Completed:** Confirmed root `package.json` is intentionally `private: true`, while `packages/cli/package.json` is `private: false` and publishes `intentloom`. Reproduced a successful dry-run from `packages/cli`.
+- **Validation:** `npm publish --dry-run --tag next --access public` from `packages/cli` reports `intentloom@0.5.0-beta.1`, 70 files, and the expected shasum. The EPRIVATE error is therefore a working-directory error, not a package metadata defect.
+- **Decisions and assumptions:** Do not remove `private` from the root workspace. Publish only from `packages/cli` after the OTP challenge is completed.
+- **Risks or compatibility impact:** Publishing from the repository root targets the private `@intentloom/workspace` package and must remain prohibited.
+- **Open issues or blockers:** Complete OTP confirmation, then run the publish command from `packages/cli` explicitly.
+- **Next first action:** `cd packages/cli && npm publish --tag next --access public`, complete any OTP prompt, and verify registry metadata.
+- **Evidence:** root `package.json`, `packages/cli/package.json`, successful CLI dry-run, and the reported npm `EPRIVATE` error.
+
+#### Duty completion checklist
+
+- [x] Root/private versus CLI/public package boundary verified
+- [x] CLI dry-run reproduced successfully
+- [x] Publishing guidance made cwd-explicit
+- [ ] OTP confirmation completed
+- [ ] npm publication accepted
+- [ ] Registry metadata and install verification completed
+
 ### 2026-07-27, v0.5 tag pushed; npm publish awaits OTP
 
 - **Status:** partial
