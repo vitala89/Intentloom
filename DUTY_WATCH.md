@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: Memory & Security Candidates M1–M4, S1 merged into main; Candidate S2 Local Deterministic Security Adapters complete locally
+Status: Memory & Security Candidates M1–M4, S1, S2 merged into main; Candidate S3 Deterministic Security Policies and Baselines complete locally
 
-Active branch: `feat/memory-security-s2`
+Active branch: `feat/memory-security-s3`
 
-Current objective: commit and open a pull request for Candidate S2 Local Deterministic Security Adapters.
+Current objective: commit and open a pull request for Candidate S3 Deterministic Security Policies and Baselines.
 
-Next first action: review Candidate S2 final diff, commit it, open a pull request, and merge after review.
+Next first action: review Candidate S3 final diff, commit it, open a pull request, and merge after review.
 
 ## Watch rules
 
@@ -41,6 +41,21 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-26, Memory & Security Candidate S3 deterministic security policies and baselines
+
+- **Status:** complete
+- **Agent/tool:** Antigravity AI Pair Programmer
+- **Branch:** `feat/memory-security-s3`
+- **Pull request:** #75
+- **Objective:** Implement Candidate S3: Deterministic Security Policies and Baselines, including ADR-0029, threat model updates, versioned protocol schemas, private application operations (`getSecurityPolicy`, `writeSecurityPolicy`, `getSecurityBaseline`, `updateSecurityBaseline`, `checkSecurityPolicyAndBaseline`), CLI command routing (`intentloom security baseline`, `intentloom security policy`), and comprehensive test coverage.
+- **Completed:** Added `ADR-0029-security-policies-and-baselines.md` and updated `THREAT_MODEL.md` with threat boundary analysis and security invariant 27. Implemented `SecurityPolicy`, `SecurityBaseline`, `SecurityBaselineCheckResult` schemas and validators in `@intentloom/protocol`. Implemented security policy/baseline operations and drift detection algorithm (`checkSecurityPolicyAndBaseline`) in `@intentloom/application`. Exposed CLI routing for `intentloom security baseline <check|update>` and `intentloom security policy <check|validate>` in `@intentloom/cli`. Added unit & integration tests in `tests/memory-security-s3.test.ts`. Updated `PROJECT_STATE.md` and `DUTY_WATCH.md`.
+- **Files changed:** `docs/decisions/ADR-0029-security-policies-and-baselines.md`, `docs/security/THREAT_MODEL.md`, `packages/protocol/src/index.ts`, `packages/application/src/index.ts`, `packages/cli/src/command.ts`, `tests/memory-security-s3.test.ts`, `PROJECT_STATE.md`, and `DUTY_WATCH.md`.
+- **Validation:** `pnpm typecheck`, `pnpm lint`, `pnpm format:check`, `pnpm build`, `pnpm vitest run tests/memory-security-s3.test.ts` (5/5 passed), `pnpm test` (full Vitest run), and `git diff --check` passed cleanly.
+- **Decisions:** Security policies and baselines are schema-validated files under `.aif/security/`; baseline updates require explicit maintainer invocation; policy violations with `fail` enforcement exit with deterministic non-zero codes.
+- **Risks or compatibility impact:** Additive feature in `@intentloom/protocol`, `@intentloom/application`, and `@intentloom/cli`.
+- **Next first action:** Commit `feat/memory-security-s3`, open a pull request, merge after approval, and prepare Candidate S4 (Controlled Agentic Security Sandbox).
+- **Evidence:** local typecheck, lint, prettier format check, full Vitest run, and `git diff --check`.
 
 ### 2026-07-26, Memory & Security Candidate S2 local deterministic security adapters
 

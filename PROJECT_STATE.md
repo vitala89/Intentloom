@@ -22,7 +22,7 @@ later justifies separation.
 
 ## Current phase
 
-Memory & Security Candidate S2: Local Deterministic Security Adapters.
+Memory & Security Candidate S3: Deterministic Security Policies and Baselines.
 
 The project must avoid premature structural migration. New applications,
 packages, and repository boundaries are introduced only when roadmap triggers
@@ -40,17 +40,17 @@ and real consumers justify them.
   connection, evidence, MCP, interactive surfaces, Agent Workspace, Neutron,
   persistent memory, security analysis, engineering process intelligence,
   public monorepo evolution, controlled agent learning, and portable Duty Watch adoption.
-- Duty Watch governance contracts (Phase 1), proposal CLI `intentloom adopt --plan` (Phase 2), transactional apply & rollback engine `intentloom adopt --apply` (Phase 3), pack update 3-way migration `intentloom update` (Phase 4), conformance & security profiles `intentloom conformance` (Phase 5), provider synchronization `intentloom sync` / `intentloom diff` (Phase 6), and Memory & Security Candidates M1–M4, S1 are merged into `main`.
+- Duty Watch governance contracts (Phase 1), proposal CLI `intentloom adopt --plan` (Phase 2), transactional apply & rollback engine `intentloom adopt --apply` (Phase 3), pack update 3-way migration `intentloom update` (Phase 4), conformance & security profiles `intentloom conformance` (Phase 5), provider synchronization `intentloom sync` / `intentloom diff` (Phase 6), and Memory & Security Candidates M1–M4, S1, S2 are merged into `main`.
 
 These statements must be revalidated against code, tags, CI, and Git history
 before a new release or implementation milestone is declared complete.
 
 ## Active focus
 
-1. Provide built-in, local, deterministic, read-only security adapters across eight categories (dependency, secret, config, source, extension, mcp, hook, agentic).
-2. Execute scanner adapters using pure internal file inspections without shell scripts, build execution, or network access.
-3. Automatically correlate and deduplicate findings across scanner rules and evidence locations using `correlateSecurityFindings`.
-4. Expose CLI subcommand `intentloom security scan [--category CATEGORY]`.
+1. Provide versioned security policy definitions (`.aif/security/policy.json`) with enforcement levels (`ignore`, `warn`, `fail`).
+2. Provide baseline finding snapshots (`.aif/security/baseline.json`) with SHA-256 integrity digests.
+3. Detect posture drift (`newFindings`, `resolvedFindings`, `policyViolations`) and trigger deterministic non-zero exit codes on policy failure.
+4. Expose CLI subcommands under `intentloom security baseline <check|update>` and `intentloom security policy <check|validate>`.
 
 ## Architectural invariants
 
@@ -68,19 +68,19 @@ before a new release or implementation milestone is declared complete.
 
 ## Current blockers and unknowns
 
-- Local security adapters must execute strictly read-only and never trigger unreviewed repository mutations.
+- Baseline updates require explicit maintainer invocation to avoid unreviewed vulnerability suppression.
 
 ## Current milestone
 
-Implement Memory & Security Candidate S2: Local Deterministic Security Adapters.
+Implement Memory & Security Candidate S3: Deterministic Security Policies and Baselines.
 
 Expected outputs:
 
-- ADR-0028 documenting local deterministic security adapters architecture;
-- versioned `SecurityAdapterMetadata` and `SecurityAdapterResult` schemas and validators in `@intentloom/protocol`;
-- security adapter runner `runLocalSecurityAdapters` and deduplication engine `correlateSecurityFindings` in `@intentloom/application`;
-- CLI command routing under `intentloom security scan`;
-- unit and integration tests covering security adapter execution, allowlisted operations, finding correlation, and CLI routing.
+- ADR-0029 documenting security policies and baselines architecture;
+- versioned `SecurityPolicy`, `SecurityBaseline`, `SecurityBaselineCheckResult` schemas and validators in `@intentloom/protocol`;
+- security policy and baseline operations (`getSecurityPolicy`, `writeSecurityPolicy`, `getSecurityBaseline`, `updateSecurityBaseline`, `checkSecurityPolicyAndBaseline`) in `@intentloom/application`;
+- CLI command routing under `intentloom security baseline` and `intentloom security policy`;
+- unit and integration tests covering policy enforcement, baseline snapshots, posture drift detection, non-zero exit codes, and CLI routing.
 
 ## Next platform milestone
 
