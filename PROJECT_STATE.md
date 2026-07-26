@@ -48,7 +48,8 @@ before a new release or implementation milestone is declared complete.
 ## Active focus
 
 1. Review and merge the deterministic workflow-variant summary implementation; it uses only caller-supplied canonical timelines and makes no causal claims.
-2. Keep bottleneck inference, remote ingestion, and model-based judgments behind separate approved specifications and threat review.
+2. Review and approve or revise the proposed workflow-duration metrics candidate before implementation; it may report observed intervals but never bottlenecks, performance, or causality.
+3. Keep bottleneck inference, remote ingestion, and model-based judgments behind separate approved specifications and threat review.
 
 ## Architectural invariants
 
@@ -66,7 +67,7 @@ before a new release or implementation milestone is declared complete.
 
 ## Current blockers and unknowns
 
-- Workflow-variant summary is intentionally limited to explicitly supplied canonical timelines. Any expansion to bottleneck, delay, causal, actor, repository-reading, persisted, remote, or model-assisted analysis requires a new ADR, specification, and threat review.
+- Workflow duration metrics ADR-0038 and its v0.1 specification are proposed, not approved. No timing implementation may begin until their privacy boundary, aggregation rules, and deterministic fixtures receive review.
 
 ## Current milestone
 
@@ -81,7 +82,7 @@ Expected outputs:
 
 ## Next platform milestone
 
-Merge the deterministic workflow-variant summary implementation, then specify the next candidate only with a separate ADR, specification, and threat review.
+Review and approve or revise the proposed workflow-duration metrics candidate before implementation.
 
 ## State update rules
 

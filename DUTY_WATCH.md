@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: Deterministic workflow-variant summary implementation complete locally
+Status: Workflow-duration metrics candidate specified; approval required before implementation
 
 Active branch: `codex/process-intelligence-memory-evaluation`
 
-Current objective: commit and open a pull request for deterministic workflow-variant summary implementation.
+Current objective: review and approve or revise the workflow-duration metrics candidate before implementation.
 
-Next first action: review, commit, and open a pull request for the workflow-variant summary; then select the next candidate through a separate ADR/specification/threat review.
+Next first action: review ADR-0038 and `WORKFLOW_DURATION_METRICS_V0_1_SPEC.md`; if approved, implement the pure report and deterministic fixtures.
 
 ## Watch rules
 
@@ -41,6 +41,18 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-26, Observed workflow-duration metrics candidate
+
+- **Status:** complete
+- **Agent/tool:** Codex
+- **Branch:** `codex/process-intelligence-memory-evaluation`
+- **Objective:** Specify the next narrowly bounded timing candidate without claiming bottlenecks, performance, or causality.
+- **Completed:** Added proposed ADR-0038 and Draft `WORKFLOW_DURATION_METRICS_V0_1_SPEC.md`. The candidate accepts only explicitly supplied, same-type canonical timelines and emits aggregate elapsed-minute statistics when timestamps permit, plus evidence coverage. It prohibits persistence, project or network access, actors, raw timestamps, rankings, alerts, bottleneck labels, performance claims, and causal interpretation. Added security invariant 31 and updated durable project state.
+- **Files changed:** `PROJECT_STATE.md`, `DUTY_WATCH.md`, `docs/decisions/ADR-0038-observed-workflow-duration-metrics.md`, `docs/specs/WORKFLOW_DURATION_METRICS_V0_1_SPEC.md`, and `docs/security/THREAT_MODEL.md`.
+- **Validation:** Markdown formatting and `git diff --check` are required before commit.
+- **Decisions:** This is a proposed boundary only. It is not authorization to implement duration metrics or broader workflow timing analysis.
+- **Next first action:** Review and approve or revise ADR-0038 and the draft specification. Only after approval, add canonical protocol types, deterministic fixtures, the pure analysis operation, application adapter, and authenticated daemon IPC.
 
 ### 2026-07-26, Deterministic workflow-variant summary implementation
 
