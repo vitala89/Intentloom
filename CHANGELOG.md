@@ -4,23 +4,42 @@ All notable changes are documented here. This project follows Keep a Changelog p
 
 ## [Unreleased]
 
-Changes listed here are merged after `0.4.0-beta.1` and are not included in
-the current npm artifact until a later release.
+Changes listed here are merged after the current release-preparation scope and
+are not included in the current npm artifact until a later release.
 
 ### Added
 
-- Added accepted ADR-0041 and Workflow Transition Intervals v0.1, including the
-  deterministic `intentloom.workflow.transitions.intervals.v1` protocol,
-  application, analysis, and authenticated local daemon operation.
-- Added accepted ADR-0040 and Workflow Repetition Summary v0.1, including the
-  deterministic `intentloom.workflow.repetitions.summary.v1` protocol,
-  application, analysis, and daemon operation.
-- Added accepted ADR-0039 and the Conformance Trend Summary v0.1
-  specification, plus the deterministic `intentloom.conformance.trend.summary.v1`
-  protocol/application/daemon operation over caller-supplied conformance reports.
 - Added ADR-0022 (`ADR-0022-live-read-only-provider-connections.md`) and Live Read-Only Provider Connections Specification (`LIVE_PROVIDER_CONNECTIONS_SPEC.md`).
 - Added JSON Schema files for Extension Manifest (`urn:aif:schema:extension-manifest:1`) and Extension Lock (`urn:aif:schema:extension-lock:1`) in `catalog/schemas/` with `@intentloom/validator` support.
 - Added ADR-0023 (`ADR-0023-external-mcp-evidence-ingestion.md`) and External MCP Evidence Ingestion Specification (`EXTERNAL_MCP_EVIDENCE_INGESTION_SPEC.md`).
+
+## [0.5.0-beta.1] - Unreleased
+
+### Added
+
+- Added accepted ADR-0037 and Workflow Variant Summary v0.1 with the
+  deterministic `intentloom.workflow.variants.summary.v1` protocol,
+  application, analysis, and authenticated local daemon operation.
+- Added accepted ADR-0038 and Workflow Duration Metrics v0.1 with the
+  deterministic `intentloom.workflow.durations.summary.v1` protocol,
+  application, analysis, and authenticated local daemon operation.
+- Added accepted ADR-0039 and Conformance Trend Summary v0.1 with the
+  deterministic `intentloom.conformance.trend.summary.v1` protocol,
+  application, analysis, and authenticated local daemon operation.
+- Added accepted ADR-0040 and Workflow Repetition Summary v0.1 with the
+  deterministic `intentloom.workflow.repetitions.summary.v1` protocol,
+  application, analysis, and authenticated local daemon operation.
+- Added accepted ADR-0041 and Workflow Transition Intervals v0.1 with the
+  deterministic `intentloom.workflow.transitions.intervals.v1` protocol,
+  application, analysis, and authenticated local daemon operation.
+
+### Notes
+
+- Workspace packages are synchronized to `0.5.0-beta.1` for release
+  preparation; the artifact is not tagged or published yet.
+- CLI and MCP surfaces are intentionally not claimed for these operations.
+- Waiting-time semantics, rework, bottleneck, causal, remote, persistent, and
+  model-assisted analysis remain outside this candidate.
 
 ## [0.4.0-beta.1] - 2026-07-25
 
@@ -38,9 +57,8 @@ the current npm artifact until a later release.
 
 - Published as `intentloom@0.4.0-beta.1` under npm `next`; npm `latest` remains
   `0.1.0-alpha.3`.
-- The later workflow-variant, duration, trend, repetition, and transition
-  interval summaries remain in `[Unreleased]` because they were merged after
-  this tag.
+- The workflow-variant, duration, trend, repetition, and transition interval
+  summaries are tracked in the unreleased `0.5.0-beta.1` candidate section.
 
 ## [0.3.0-beta.1] - 2026-07-24
 

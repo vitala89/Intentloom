@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: partial — release-state unification published as draft PR #87; CI/review remain
+Status: partial — PR #88 compatibility CI green; review and release decision remain
 
-Active branch: `codex/release-state-unification`
+Active branch: `codex/process-intelligence-next-roadmap-3`
 
-Current objective: unify version and capability documentation around the canonical release-state matrix.
+Current objective: review PR #88 build/test results and release-readiness evidence before any release publication.
 
-Next first action: inspect PR #87 CI and review feedback; merge only after all required checks and explicit approval.
+Next first action: review the green PR #88 checks and draft diff; do not merge, tag, or publish npm without separate explicit authorization.
 
 ## Watch rules
 
@@ -41,6 +41,168 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-27, PR #88 CI formatting failure corrected
+
+- **Status:** partial
+- **Agent/tool:** Codex with GitHub Actions CI-fix workflow
+- **Branch:** `codex/process-intelligence-next-roadmap-3`
+- **Commits:** `321c06e`
+- **Pull request:** [#88](https://github.com/vitala89/Intentloom/pull/88), draft
+- **Objective:** Diagnose and correct the failed compatibility checks without changing release scope.
+- **Completed:** Inspected both failed Compatibility runs (`30223037624` and `30223036688`) and confirmed all 12 matrix jobs stopped at `pnpm format:check` because `docs/audits/V0_5_RELEASE_READINESS.md` was not Prettier-formatted. Formatted only that file.
+- **Validation:** Full Prettier 3.9.5 check passes and `git diff --check` passes. Typecheck and lint had already completed before the failing format step in the remote logs; the local dependency environment remains incomplete for a full build.
+- **Decisions and assumptions:** This is a documentation-only correction. No package version, runtime behavior, release scope, tag, npm publication, or merge was changed.
+- **Risks or compatibility impact:** PR checks must be rerun after the correction; no claim is made that remote CI is green yet.
+- **Open issues or blockers:** Formatting is corrected and the latest 12-job compatibility matrix is green; review and release authorization remain pending.
+- **Next first action:** Review the green PR #88 checks and draft diff before any separately authorized release action.
+- **Evidence:** [PR run 30223037624](https://github.com/vitala89/Intentloom/actions/runs/30223037624), [push run 30223036688](https://github.com/vitala89/Intentloom/actions/runs/30223036688), and `docs/audits/V0_5_RELEASE_READINESS.md`.
+
+#### Duty completion checklist
+
+- [x] Failure cause verified from GitHub Actions logs
+- [x] Minimal formatting correction applied
+- [x] Full Prettier check passed
+- [x] `git diff --check` passed
+- [x] Correction committed and pushed
+- [x] PR #88 remote checks rerun and passed
+- [ ] Review completed
+
+### 2026-07-27, v0.5 release-preparation PR #88 published
+
+- **Status:** partial
+- **Agent/tool:** Codex with GitHub release-preparation workflow
+- **Branch:** `codex/process-intelligence-next-roadmap-3`
+- **Commits:** `128080d` release artifacts, `b2d459f` artifact handoff, plus this handoff update
+- **Pull request:** [#88](https://github.com/vitala89/Intentloom/pull/88), draft
+- **Objective:** Publish the synchronized v0.5 candidate for remote build/test verification.
+- **Completed:** Pushed the release-preparation branch and opened draft PR #88 with the v0.5 version synchronization, release-state documentation, changelog, roadmap, and readiness audit.
+- **Validation:** Prettier and `git diff --check` passed before publication. `npm pack --dry-run --json` and `npm publish --dry-run --tag next --access public` passed for `intentloom@0.5.0-beta.1`. Local `pnpm build` remains blocked by the interrupted dependency environment (`TS2688: Cannot find type definition file for 'node'`).
+- **Decisions and assumptions:** PR #88 is for remote verification only. No tag, npm publication, dist-tag change, or merge was performed.
+- **Risks or compatibility impact:** Remote CI must establish the build/test result for the synchronized version. The workspace candidate remains unpublished while npm `next` remains `0.4.0-beta.1`.
+- **Open issues or blockers:** PR checks and review are pending; local dependency restoration remains incomplete.
+- **Next first action:** Inspect PR #88 checks and review results, then decide whether an explicitly authorized release action is appropriate.
+- **Evidence:** PR #88, branch `codex/process-intelligence-next-roadmap-3`, `docs/audits/V0_5_RELEASE_READINESS.md`, and package dry-run outputs.
+
+#### Duty completion checklist
+
+- [x] Release-preparation branch pushed
+- [x] Draft PR #88 opened
+- [x] Version and release-state artifacts included
+- [x] Package dry-runs passed
+- [x] Local build limitation recorded
+- [ ] Remote build/test matrix passed
+- [ ] Review completed
+- [ ] Merge, tag, and npm publication separately authorized and completed
+
+### 2026-07-27, v0.5.0-beta.1 release artifacts prepared
+
+- **Status:** partial
+- **Agent/tool:** Codex with controlled release-preparation workflow
+- **Branch:** `codex/process-intelligence-next-roadmap-3`
+- **Commits:** `128080d` (local)
+- **Pull request:** None for v0.5 preparation; external publication requires explicit authorization.
+- **Objective:** Prepare the synchronized v0.5 candidate artifacts after scope approval.
+- **Completed:** Synchronized the root, all workspace manifests, and generated core version to `0.5.0-beta.1`; added the unreleased v0.5 changelog section; updated README/install guidance, versioning, publishing, roadmap, release-state, project state, and readiness audit; and kept npm `latest=0.1.0-alpha.3` / `next=0.4.0-beta.1` explicit.
+- **Validation:** Full Prettier 3.9.5 check and `git diff --check` pass. `npm pack --dry-run --json` and `npm publish --dry-run --tag next --access public` pass for `intentloom@0.5.0-beta.1` using an isolated npm cache. Local `pnpm build` is blocked by the damaged dependency environment (`TS2688: Cannot find type definition file for 'node'`); no real publish or tag was attempted.
+- **Decisions and assumptions:** Version synchronization is preparation only. The published npm artifact remains `0.4.0-beta.1`; the v0.5 artifact is not yet tagged or published.
+- **Risks or compatibility impact:** Remote CI must verify build and tests against the new version before release. Existing process-intelligence boundaries and no-CLI/no-MCP claims remain unchanged.
+- **Open issues or blockers:** Local dependency restoration and remote verification are pending; tag/npm publication remains separately authorized.
+- **Next first action:** Publish the release-preparation branch for remote CI, then review build/test results before any tag or npm publication.
+- **Evidence:** commit `128080d`, `docs/audits/V0_5_RELEASE_READINESS.md`, package dry-run outputs, and version synchronization script output.
+
+#### Duty completion checklist
+
+- [x] Scope approval recorded
+- [x] Workspace versions synchronized
+- [x] Changelog and release-state artifacts updated
+- [x] Formatter and diff checks passed
+- [x] Package dry-runs passed
+- [x] Local build limitation recorded
+- [ ] Release-preparation PR published
+- [ ] Remote build/test matrix passed
+- [ ] Tag and npm publication authorized and completed
+
+### 2026-07-27, v0.5 readiness audit reviewed
+
+- **Status:** partial
+- **Agent/tool:** Codex with release-readiness verification
+- **Branch:** `codex/process-intelligence-next-roadmap-3`
+- **Commits:** `9b41808` plus audit commits below (local)
+- **Pull request:** None; release preparation requires explicit scope approval.
+- **Objective:** Review the drafted v0.5 release-readiness audit against repository evidence.
+- **Completed:** Verified all five operations in the audit against protocol constants/validators, pure evidence-analysis functions, application bridges, authenticated daemon routing, ADR-0037 through ADR-0041, and matching specifications. Confirmed the branch is clean and `git diff main...HEAD --check` passes.
+- **Not completed:** Scope approval, version synchronization to `0.5.0-beta.1`, changelog/release-state updates for the new artifact, package dry runs, tag, npm publication, and release PR.
+- **Validation:** Local evidence review passed; the full Prettier check for the audit and state documents passed. Runtime and compatibility evidence remains the green merged PR #87 matrix and the prior full test record.
+- **Decisions and assumptions:** The proposed v0.5 scope is limited to workflow variants, observed durations, conformance trends, repetition, and transition intervals. CLI and MCP remain intentionally unavailable for these operations.
+- **Risks or compatibility impact:** Version bumping would change the release boundary and must not occur until the scope is approved. No runtime behavior changed in this review.
+- **Open issues or blockers:** Maintainer/user approval of the v0.5 scope and release preparation is pending.
+- **Next first action:** Obtain scope approval, then run the controlled version synchronization and prepare changelog/release-state updates.
+- **Evidence:** `docs/audits/V0_5_RELEASE_READINESS.md`, protocol/application/daemon sources, ADR-0037 through ADR-0041, and green PR #87 checks.
+
+#### Duty completion checklist
+
+- [x] Audit reviewed against code and ADR/spec evidence
+- [x] Surface availability verified
+- [x] Formatter and diff checks passed
+- [x] Handoff updated
+- [ ] v0.5 scope approved
+- [ ] Version and release artifacts prepared
+
+### 2026-07-27, v0.5 release-readiness audit drafted
+
+- **Status:** partial
+- **Agent/tool:** Codex with release-readiness review
+- **Branch:** `codex/process-intelligence-next-roadmap-3`
+- **Commits:** `e10d84f` (local)
+- **Pull request:** None; publication requires explicit authorization.
+- **Objective:** Start the next planned release-readiness step after the release-state merge.
+- **Completed:** Reviewed the process-intelligence concept, ADR-0037 through ADR-0041, matching specifications, protocol/application/daemon surfaces, publishing policy, and roadmap. Added `docs/audits/V0_5_RELEASE_READINESS.md` covering the five bounded operations, exact CLI/daemon/MCP availability, verification gates, release blockers, and non-goals; added the audit to the documentation index and marked `v0.5.0-beta.1` readiness in the roadmap.
+- **Not completed:** Maintainer approval, version synchronization to `0.5.0-beta.1`, changelog/release-state publication update, package dry runs, tag, npm publication, and release PR.
+- **Validation:** Full Prettier 3.9.5 check passes; `git diff --check` passes. The merged PR #87 compatibility matrix is green; no new dependency-backed runtime suite was required for this documentation-only audit draft.
+- **Decisions and assumptions:** v0.5 scope is the five already merged process-intelligence operations. CLI and MCP remain unavailable for these operations by design; no broader process-mining semantics are added.
+- **Risks or compatibility impact:** The audit does not change package versions or runtime behavior. Publication remains blocked until explicit release authorization and package ownership/permissions are confirmed.
+- **Open issues or blockers:** Audit review and release decision are pending.
+- **Next first action:** Review the v0.5 audit, then prepare version/changelog/release-state changes only after the release scope is approved.
+- **Evidence:** `docs/audits/V0_5_RELEASE_READINESS.md`, ADR-0037 through ADR-0041, PR #87 merge commit `f546b76`, and green compatibility checks.
+
+#### Duty completion checklist
+
+- [x] Relevant ADRs/specs and implementation surfaces reviewed
+- [x] Readiness audit drafted
+- [x] Roadmap and documentation index updated
+- [x] Formatter passed
+- [x] `git diff --check` passed
+- [x] Project state and Duty Watch updated
+- [ ] Audit approved
+- [ ] Version bump, release artifacts, and publication completed
+
+### 2026-07-27, PR #87 merged and local main updated
+
+- **Status:** partial
+- **Agent/tool:** Codex with GitHub merge verification
+- **Branch:** `main` → `codex/process-intelligence-next-roadmap-3`
+- **Commits:** merge commit `f546b76`; next branch created from updated `main`
+- **Pull request:** [#87](https://github.com/vitala89/Intentloom/pull/87), merged
+- **Objective:** Complete the release-state documentation milestone and move to the next release-readiness step.
+- **Completed:** Confirmed PR #87 is `MERGED`, all 12 compatibility checks succeeded, fetched `origin/main`, fast-forwarded local `main` from `83941ab` to `f546b76`, and created `codex/process-intelligence-next-roadmap-3`.
+- **Not completed:** v0.5 readiness audit, version bump, release tag, npm publication, and merge for the next release.
+- **Validation:** GitHub PR metadata reports merge commit `f546b76` and successful Ubuntu, macOS, and Windows Node 22/24 checks; local `main` matches `origin/main` and is clean at branch creation.
+- **Decisions and assumptions:** The release-state matrix is now part of `main`. Process-intelligence capabilities remain merged in `main` but unreleased to npm; the next planned release milestone is `v0.5.0-beta.1`.
+- **Risks or compatibility impact:** No new runtime behavior was added in this watch. Release preparation must preserve the explicit process-intelligence boundaries and must not add waiting-time, rework, bottleneck, causal, remote, persistence, or model claims.
+- **Open issues or blockers:** v0.5 release readiness, version synchronization, tag creation, npm publication, and release authorization are pending.
+- **Next first action:** Inspect the v0.5 process-intelligence scope, ADRs/specs, and release criteria, then draft the readiness audit.
+- **Evidence:** merge commit `f546b76`, [PR #87](https://github.com/vitala89/Intentloom/pull/87), and local `git pull --ff-only origin main`.
+
+#### Duty completion checklist
+
+- [x] Merge and CI verified
+- [x] Local `main` updated
+- [x] New roadmap branch created
+- [x] `PROJECT_STATE.md` updated
+- [x] `DUTY_WATCH.md` handoff updated
+- [ ] v0.5 readiness audit drafted and reviewed
+- [ ] v0.5 release prepared, published, and merged
 
 ### 2026-07-26, PR #87 format failure fixed
 

@@ -2,8 +2,9 @@
 
 Install the current beta CLI with `npm install --global intentloom@next`. The public package
 supports the `intentloom` binary only; programmatic imports and deep imports are not
-part of the public CLI contract. Pin `0.4.0-beta.1` when reproducibility is
-required; the npm `latest` tag still points to `0.1.0-alpha.3`.
+part of the public CLI contract. Pin the published `0.4.0-beta.1` when
+reproducibility is required; the workspace candidate `0.5.0-beta.1` is not yet
+published, and the npm `latest` tag still points to `0.1.0-alpha.3`.
 
 See the [release state](../releases/RELEASE_STATE.md) for capability availability
 across the published package and current `main`.
