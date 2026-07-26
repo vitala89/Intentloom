@@ -68,7 +68,8 @@ before a new release or implementation milestone is declared complete.
 
 - Any expansion to bottleneck, performance, causal, actor, repository-reading, persisted, remote, or model-assisted analysis requires a new ADR, specification, and threat review.
 - PR #84, PR #85, PR #86, and PR #87 are merged; current local `main` is
-  `f546b76`.
+  `f546b76`. Draft PR #88 contains the v0.5 release-preparation artifacts and
+  awaits remote verification.
 - npm currently reports `latest=0.1.0-alpha.3` and `next=0.4.0-beta.1`.
 - Workspace packages are synchronized to `0.5.0-beta.1` for release preparation;
   no v0.5 tag or npm publication exists.
@@ -95,9 +96,8 @@ Expected outputs:
 
 ## Next platform milestone
 
-Review the package dry-run outputs, publish the v0.5 release-preparation PR for
-remote build/test verification, and keep tagging/npm publication as separate
-explicitly authorized release actions.
+Review draft PR #88 and its remote build/test verification, and keep
+tagging/npm publication as separate explicitly authorized release actions.
 
 ## State update rules
 

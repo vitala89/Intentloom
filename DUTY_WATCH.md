@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: partial — v0.5.0-beta.1 artifacts prepared; remote build/test verification remains
+Status: partial — v0.5.0-beta.1 release-preparation PR #88 published; remote verification remains
 
 Active branch: `codex/process-intelligence-next-roadmap-3`
 
-Current objective: verify the prepared `v0.5.0-beta.1` artifacts remotely before release publication.
+Current objective: review PR #88 build/test results and release-readiness evidence before any release publication.
 
-Next first action: publish the release-preparation branch for remote CI, then review build/test results before any tag or npm publication.
+Next first action: inspect PR #88 checks and review results; do not merge, tag, or publish npm without separate explicit authorization.
 
 ## Watch rules
 
@@ -41,6 +41,33 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-27, v0.5 release-preparation PR #88 published
+
+- **Status:** partial
+- **Agent/tool:** Codex with GitHub release-preparation workflow
+- **Branch:** `codex/process-intelligence-next-roadmap-3`
+- **Commits:** `128080d` release artifacts, `b2d459f` artifact handoff, plus this handoff update
+- **Pull request:** [#88](https://github.com/vitala89/Intentloom/pull/88), draft
+- **Objective:** Publish the synchronized v0.5 candidate for remote build/test verification.
+- **Completed:** Pushed the release-preparation branch and opened draft PR #88 with the v0.5 version synchronization, release-state documentation, changelog, roadmap, and readiness audit.
+- **Validation:** Prettier and `git diff --check` passed before publication. `npm pack --dry-run --json` and `npm publish --dry-run --tag next --access public` passed for `intentloom@0.5.0-beta.1`. Local `pnpm build` remains blocked by the interrupted dependency environment (`TS2688: Cannot find type definition file for 'node'`).
+- **Decisions and assumptions:** PR #88 is for remote verification only. No tag, npm publication, dist-tag change, or merge was performed.
+- **Risks or compatibility impact:** Remote CI must establish the build/test result for the synchronized version. The workspace candidate remains unpublished while npm `next` remains `0.4.0-beta.1`.
+- **Open issues or blockers:** PR checks and review are pending; local dependency restoration remains incomplete.
+- **Next first action:** Inspect PR #88 checks and review results, then decide whether an explicitly authorized release action is appropriate.
+- **Evidence:** PR #88, branch `codex/process-intelligence-next-roadmap-3`, `docs/audits/V0_5_RELEASE_READINESS.md`, and package dry-run outputs.
+
+#### Duty completion checklist
+
+- [x] Release-preparation branch pushed
+- [x] Draft PR #88 opened
+- [x] Version and release-state artifacts included
+- [x] Package dry-runs passed
+- [x] Local build limitation recorded
+- [ ] Remote build/test matrix passed
+- [ ] Review completed
+- [ ] Merge, tag, and npm publication separately authorized and completed
 
 ### 2026-07-27, v0.5.0-beta.1 release artifacts prepared
 
