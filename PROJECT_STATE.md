@@ -77,6 +77,7 @@ The first Engineering Process Intelligence & Agent Memory Evaluation increment, 
 Expected outputs:
 
 - versioned protocol contracts for deterministic, project-scoped conformance, workflow-variant, workflow-duration, and procedural-memory evaluation reads;
+- versioned protocol contracts for deterministic workflow repetition summaries;
 - shared application operations and authenticated local daemon handlers for the read-only operations;
 - ADR-0020, ADR-0037, ADR-0038, and ADR-0039 documenting canonical boundaries and safety constraints.
 - ADR-0040 documenting the deterministic workflow repetition boundary and safety constraints.

@@ -47,7 +47,7 @@ entry directly below this section.
 - **Status:** partial
 - **Agent/tool:** Codex with TDD workflow
 - **Branch:** `codex/process-intelligence-next-roadmap`
-- **Commits:** `0bbe550`, `9c16b1d`, plus implementation changes in this watch
+- **Commits:** `0bbe550`, `9c16b1d`, `40f58de`
 - **Pull request:** Not opened; local implementation is ready for review.
 - **Objective:** Implement the accepted bounded workflow repetition summary over caller-supplied timelines.
 - **Completed:** Accepted ADR-0040 and the v0.1 specification. Added canonical protocol contracts and validation for `intentloom.workflow.repetitions.summary.v1`, pure repeated-activity aggregation, application bridge, authenticated daemon routing, protocol/analysis/application/daemon fixtures, security invariant 33, changelog, and durable state updates.
