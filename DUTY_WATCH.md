@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: partial — release-state unification implemented locally; review/PR remains
+Status: partial — release-state unification implemented and locally reviewed; PR remains
 
 Active branch: `codex/release-state-unification`
 
 Current objective: unify version and capability documentation around the canonical release-state matrix.
 
-Next first action: review the release-state diff, commit it, and open a PR after explicit authorization.
+Next first action: publish this branch and open a PR after explicit authorization.
 
 ## Watch rules
 
@@ -41,6 +41,31 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-26, Release-state branch final local review
+
+- **Status:** partial
+- **Agent/tool:** Codex with local Git review
+- **Branch:** `codex/release-state-unification`
+- **Commits:** `1b9997e`, `2aad42e`, `fec2e69`, `ea10395`, `9804235`, `dd7c027`
+- **Pull request:** None; publication requires explicit authorization.
+- **Objective:** Complete the final local review before the release-state documentation PR.
+- **Completed:** Confirmed the branch is clean and six commits ahead of merged `main` at `83941ab`; reviewed all 22 changed paths; verified all workspace package versions and the generated core version are `0.4.0-beta.1`; confirmed the release-state matrix distinguishes npm `latest`, npm `next`, and post-tag `main` capabilities; and passed `git diff main...HEAD --check`.
+- **Not completed:** Push, PR, remote CI, review, and merge.
+- **Validation:** Local dependency-backed checks remain unavailable because the interrupted offline install left `node_modules` incomplete; prior successful test/typecheck/lint/build/format results are recorded in the preceding entry. GitHub API read-only lookup was unavailable in this session due network connectivity.
+- **Risks or compatibility impact:** No new source behavior beyond synchronized MCP version reporting; documentation remains the primary scope.
+- **Open issues or blockers:** External publication and dependency restoration require explicit authorization and/or network availability.
+- **Next first action:** Publish `codex/release-state-unification` and open a PR after explicit authorization.
+- **Evidence:** `git diff main...HEAD --check`, synchronized package/version files, `docs/releases/RELEASE_STATE.md`, and clean branch status.
+
+#### Duty completion checklist
+
+- [x] Final diff reviewed for scope
+- [x] Version synchronization checked against package manifests and generated source
+- [x] `git diff --check` passed
+- [x] Duty Watch handoff updated
+- [x] Failed or unavailable validation recorded
+- [ ] Pull request published, reviewed, and merged
 
 ### 2026-07-26, Release-state documentation unification
 
