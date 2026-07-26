@@ -42,6 +42,33 @@ entry directly below this section.
 
 ## Watch entries
 
+### 2026-07-26, PR #87 format failure fixed
+
+- **Status:** partial
+- **Agent/tool:** Codex with GitHub Actions CI fix workflow
+- **Branch:** `codex/release-state-unification`
+- **Commits:** `07264b8` (pushed after CI failure)
+- **Pull request:** [#87](https://github.com/vitala89/Intentloom/pull/87), draft, targeting `main`
+- **Objective:** Resolve the common failure reported by all PR #87 compatibility jobs.
+- **Completed:** Inspected all 12 failed jobs and their logs. Every job passed install, typecheck, and lint, then failed only at `pnpm format:check` because `docs/releases/VERSIONING.md` was not Prettier-formatted. Ran Prettier 3.9.5, verified the full repository with `pnpm dlx prettier@3.9.5 --check "**/*.{ts,md,json,yaml,yml}"`, passed `git diff --check`, committed `07264b8`, and pushed it to the PR branch.
+- **Not completed:** New remote CI, maintainer review, conversion from draft, merge, and release.
+- **Validation:** Full Prettier check passes locally. Previous dependency-backed test/typecheck/lint/build results remain recorded; no new full test run was needed because the fix is formatting-only.
+- **Decisions and assumptions:** The failure was one shared formatting defect, not a platform-specific compatibility issue. No source behavior changed.
+- **Open issues or blockers:** Awaiting the rerun of PR #87 checks.
+- **Next first action:** Inspect the new PR #87 check results and address only any remaining evidenced failures.
+- **Evidence:** Failed run `30221479786`, failed run `30221478844`, `docs/releases/VERSIONING.md`, commit `07264b8`, and PR #87.
+
+#### Duty completion checklist
+
+- [x] Failure root cause identified from GitHub Actions logs
+- [x] Focused fix implemented
+- [x] Full formatter check passed
+- [x] `git diff --check` passed
+- [x] Fix committed and pushed
+- [x] Duty Watch handoff updated
+- [ ] New remote CI complete
+- [ ] Pull request reviewed and merged
+
 ### 2026-07-26, Release-state draft PR #87 published
 
 - **Status:** partial
