@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: partial — draft PR #85 is open; CI and maintainer review are pending
+Status: complete — PR #85 merged and local main updated; next candidate selection ready
 
-Active branch: `codex/process-intelligence-next-roadmap`
+Active branch: `codex/process-intelligence-next-roadmap-2`
 
-Current objective: monitor PR #85 checks and complete review/merge of the accepted workflow repetition summary implementation.
+Current objective: select and specify the next bounded process-intelligence candidate after the merged workflow repetition summary.
 
-Next first action: review PR #85 after its compatibility checks complete, then merge only after required human approval.
+Next first action: inspect the process-intelligence roadmap and propose the next ADR/specification boundary; do not implement before approval.
 
 ## Watch rules
 
@@ -41,6 +41,37 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-26, PR #85 merged and local main updated
+
+- **Status:** complete
+- **Agent/tool:** Codex with GitHub publish workflow
+- **Branch:** `main` → `codex/process-intelligence-next-roadmap-2`
+- **Commits:** merge commit `57a2c9b`; local main fast-forwarded from `c0e7cb0`
+- **Pull request:** [#85](https://github.com/vitala89/Intentloom/pull/85), merged
+- **Objective:** Merge the reviewed workflow repetition summary and update the local checkout for the next roadmap step.
+- **Completed:** Confirmed all twelve compatibility checks succeeded, verified PR #85 is merged, fetched `origin/main`, fast-forwarded local `main` to `57a2c9b`, and created the next roadmap branch.
+- **Not completed:** Selection or implementation of the next process-intelligence candidate.
+- **Files or packages changed:** No files changed in this watch; the merged PR contains the implementation and documentation changes.
+- **Validation:** `gh pr view 85` reports `MERGED` with merge commit `57a2c9b`; `git pull --ff-only origin main` succeeded; local `main` is clean and matches `origin/main`.
+- **Decisions and assumptions:** Workflow repetition summary is now part of `main`. Any broader rework, retry, bottleneck, causal, actor, persisted, remote, or model-assisted capability still requires a separate ADR, specification, and threat review.
+- **Risks or compatibility impact:** No new code was added after the merged PR; next work must preserve the additive, local, read-only boundary.
+- **Open issues or blockers:** The next candidate is intentionally unselected.
+- **Next first action:** Inspect the roadmap and relevant ADRs, then propose the next bounded candidate before implementation.
+- **Evidence:** PR #85 metadata, twelve successful CI checks, merge commit `57a2c9b`, and clean local `main` at `origin/main`.
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant tests, type checks, builds, or compatibility checks passed
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `PROJECT_STATE.md` updated when applicable
+- [x] `DUTY_WATCH.md` handoff completed
+- [x] Related roadmap, ADR, changelog, migration, or reference docs updated
+- [x] Failed or unavailable checks recorded
+- [x] Pull request merged and local main updated
 
 ### 2026-07-26, Draft PR #85 published
 
