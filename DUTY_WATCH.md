@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: Interactive Surfaces TUI merged into main; Agent Workspace Discuss and Inspect Modes complete locally
+Status: Agent Workspace Discuss & Inspect Modes merged into main; Agent Workspace Plan, Review, and Transactional Apply Modes complete locally
 
-Active branch: `feat/agent-workspace-modes`
+Active branch: `feat/agent-workspace-apply-modes`
 
-Current objective: commit and open a pull request for Agent Workspace Discuss and Inspect Modes.
+Current objective: commit and open a pull request for Agent Workspace Plan, Review, and Transactional Apply Modes.
 
-Next first action: review Agent Workspace Discuss & Inspect Modes final diff, commit it, open a pull request, and merge after review.
+Next first action: review Agent Workspace Plan, Review, and Apply Modes final diff, commit it, open a pull request, and merge after review.
 
 ## Watch rules
 
@@ -41,6 +41,20 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-26, Agent workspace plan, review, and transactional apply modes
+
+- **Status:** complete
+- **Agent/tool:** Antigravity AI Pair Programmer
+- **Branch:** `feat/agent-workspace-apply-modes`
+- **Objective:** Implement Agent Workspace: Plan, Review, and Transactional Apply Modes, including ADR-0035, proposal promotion (`promoteWorkspaceConversationToProposal`), review diagnostics (`reviewWorkspaceProposal`), human approval gates (`applyWorkspaceProposal`), CLI subcommand routing (`intentloom workspace promote|review|apply`), and test coverage.
+- **Completed:** Added `ADR-0035-agent-workspace-plan-review-apply-modes.md`. Implemented `promoteWorkspaceConversationToProposal`, `reviewWorkspaceProposal`, and `applyWorkspaceProposal` in `@intentloom/application`. Exposed CLI routing for `intentloom workspace promote`, `review`, `apply` in `@intentloom/cli`. Added unit & integration tests in `tests/workspace-apply.test.ts`. Updated `PROJECT_STATE.md` and `DUTY_WATCH.md`.
+- **Files changed:** `docs/decisions/ADR-0035-agent-workspace-plan-review-apply-modes.md`, `packages/application/src/index.ts`, `packages/cli/src/command.ts`, `tests/workspace-apply.test.ts`, `PROJECT_STATE.md`, and `DUTY_WATCH.md`.
+- **Validation:** `pnpm typecheck`, `pnpm lint`, `pnpm format:check`, `pnpm build`, `pnpm vitest run tests/workspace-apply.test.ts` (4/4 passed), `pnpm test` (full Vitest run), and `git diff --check` passed cleanly.
+- **Decisions:** Plan and Review modes maintain 100% zero-mutation guarantees. Codebase mutations occur ONLY during explicit Apply mode execution backed by human approval gates (`--approved-by USER`) and transactional rollback protection.
+- **Risks or compatibility impact:** Additive features in `@intentloom/application` and `@intentloom/cli`.
+- **Next first action:** Commit `feat/agent-workspace-apply-modes`, open a pull request, and merge after approval.
+- **Evidence:** local typecheck, lint, prettier format check, full Vitest run, and `git diff --check`.
 
 ### 2026-07-26, Agent workspace discuss and inspect modes
 
