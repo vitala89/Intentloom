@@ -63,6 +63,10 @@ import {
   forgetPersistentMemory,
   exportPersistentMemory,
   importPersistentMemory,
+  searchPersistentMemory,
+  renderPersistentMemoryContext,
+  rebuildPersistentMemoryIndex,
+  clearPersistentMemoryIndex,
   type SkillLoadingLevel,
   type SkillProposalState,
   type EvaluationOutcome,
@@ -212,6 +216,7 @@ const booleanFlags = new Set([
   "--strict",
   "--enable",
   "--disable",
+  "--clear",
 ]);
 const valueFlags = new Set([
   "--root",
@@ -251,6 +256,7 @@ const valueFlags = new Set([
   "--max-items",
   "--approved-by",
   "--project-id",
+  "--target",
 ]);
 const mappingValueFlags = new Set([
   "--project-owned-mapping",
@@ -269,7 +275,7 @@ const usage = [
   "       intentloom skill discover [--level catalog|contract|procedure] [--pack PACK] [--role ROLE] [--query QUERY] [--max-budget NUM] [--root PATH] [--json]",
   "       intentloom proposal <list|get|create|approve|plan|apply> [PROJECT_PATH|--root PATH] [--id ID] [--action ACTION] [--plan-file PATH] [--evidence EVIDENCE] [--json]",
   "       intentloom evaluate <run|list> [PROJECT_PATH|--root PATH] [--proposal-id ID] [--skill-id ID] [--json]",
-  "       intentloom memory <inspect|summary|propose|review|list|accept|forget|export|import> [PROJECT_PATH|--root PATH] [--json]",
+  "       intentloom memory <inspect|summary|propose|review|list|accept|forget|export|import|search|render|index> [PROJECT_PATH|--root PATH] [--json]",
   "       intentloom checkpoint <create|pause|cancel|redirect|resume|list|delete> [PROJECT_PATH|--root PATH] [--id ID] [--task-id ID] [--new-intent INTENT] [--json]",
   "       intentloom rank [QUERY|config] [--provider PROVIDER] [--enable|--disable] [--root PATH] [--json]",
   "       intentloom profile <create|get|list> [--name NAME] [--root PATH] [--json]",
@@ -316,6 +322,9 @@ function parseArguments(args: readonly string[]): ParsedArguments {
       "forget",
       "export",
       "import",
+      "search",
+      "render",
+      "index",
     ].includes(args[1] ?? "")
   )
     throw new CliUsageError("unsupported memory subcommand");
@@ -1817,6 +1826,61 @@ export async function runCli(
           parsed.flags.has("--json")
             ? JSON.stringify(items, null, 2)
             : `Imported ${items.length} persistent memory proposals`,
+        );
+        return 0;
+      }
+      if (subcommand === "search" || subcommand === "render") {
+        const projectId = parsed.values.get("--project-id");
+        const query = parsed.values.get("--query");
+        if (!projectId || !query)
+          throw new CliUsageError(
+            `memory ${subcommand} requires --project-id and --query`,
+          );
+        if (subcommand === "search") {
+          io.stdout(
+            JSON.stringify(
+              await searchPersistentMemory(
+                query,
+                { root, projectId },
+                fileSystem,
+              ),
+              null,
+              2,
+            ),
+          );
+        } else {
+          const target = parsed.values.get("--target") as any;
+          if (!target)
+            throw new CliUsageError("memory render requires --target");
+          const result = await renderPersistentMemoryContext(
+            target,
+            query,
+            { root, projectId },
+            fileSystem,
+          );
+          io.stdout(
+            parsed.flags.has("--json")
+              ? JSON.stringify(result, null, 2)
+              : result.content,
+          );
+        }
+        return 0;
+      }
+      if (subcommand === "index") {
+        if (parsed.flags.has("--clear")) {
+          await clearPersistentMemoryIndex({ root }, fileSystem);
+          io.stdout("Cleared persistent memory index");
+          return 0;
+        }
+        const projectId = parsed.values.get("--project-id");
+        if (!projectId)
+          throw new CliUsageError("memory index requires --project-id");
+        io.stdout(
+          JSON.stringify(
+            await rebuildPersistentMemoryIndex({ root, projectId }, fileSystem),
+            null,
+            2,
+          ),
         );
         return 0;
       }

@@ -30,6 +30,7 @@ Assets include repository contents, developer secrets, project files, Intentloom
 | MCP mutation replay or stale approval                | An agent applies a changed or previously approved plan                     | Short-lived root-bound plan ID, digest, expiry, exact path/diff preview, current-state revalidation, explicit human approval, and transactional apply.        |
 | Persistent-memory poisoning or stale acceptance      | Untrusted or superseded content is retrieved as trusted project knowledge  | Project-scoped IDs, explicit lifecycle states, provenance, review before acceptance, approval evidence, supersession history, deterministic trust filtering.  |
 | Memory import or export leakage                      | A bundle mixes projects, overrides policy, or exposes secret content       | Versioned bundles, project identity checks, proposal-only imports, canonical-source rejection, secret redaction, explicit export and deletion audit evidence. |
+| Semantic index or provider disclosure confusion      | Derived state is treated as canonical or private data is sent unexpectedly | Rebuildable local index, accepted-record filtering, explicit provider/model/network/retention disclosure, no implicit downloads or network access.            |
 
 ## Non-goals
 
@@ -59,3 +60,4 @@ Intentloom does not sandbox a coding agent, enforce provider permissions, scan a
 20. Credentials remain outside project configuration, generated output, evidence bundles, logs, source maps, and MCP tool results.
 21. Persistent-memory imports are untrusted proposals and cannot silently replace canonical intent, verified evidence, or accepted records.
 22. Persistent-memory acceptance requires explicit approval evidence and revalidation of the reviewed proposal state.
+23. Derived memory indexes are non-canonical and deletable; external semantic providers require explicit reviewed disclosure before any data leaves the project.

@@ -22,7 +22,7 @@ later justifies separation.
 
 ## Current phase
 
-Memory & Security Candidate M2: Accepted Persistent Memory.
+Memory & Security Candidate M3: Semantic Retrieval and Portable Adapters.
 
 The project must avoid premature structural migration. New applications,
 packages, and repository boundaries are introduced only when roadmap triggers
@@ -47,11 +47,10 @@ before a new release or implementation milestone is declared complete.
 
 ## Active focus
 
-1. Define project-scoped persistent-memory records with classification, lifecycle, provenance, retention, redaction, and approval evidence.
-2. Keep proposed, accepted, superseded, and deleted records separate in `.aif/memory/items/`.
-3. Require explicit approval evidence before a proposal becomes accepted memory.
-4. Support bounded inspection, export, project-identity-checked import, supersession, and forget operations.
-5. Ensure imports are untrusted proposals and cannot silently override canonical sources or accepted records.
+1. Provide deterministic local retrieval and rebuildable index state over accepted project memory.
+2. Render bounded provider-neutral context for supported agent and interactive targets.
+3. Require explicit disclosure and approval before future external embedding or reranking providers.
+4. Keep semantic indexes non-canonical, deletable, local-first, and project-isolated.
 
 ## Architectural invariants
 
@@ -69,19 +68,19 @@ before a new release or implementation milestone is declared complete.
 
 ## Current blockers and unknowns
 
-- Persistent-memory writes must retain explicit approval and audit evidence while remaining local and provider-neutral.
+- Optional semantic providers must remain disabled unless their data scope, model, network destination, retention policy, and approval are explicit.
 
 ## Current milestone
 
-Implement Memory & Security Candidate M2: Accepted Persistent Memory.
+Implement Memory & Security Candidate M3: Semantic Retrieval and Portable Adapters.
 
 Expected outputs:
 
-- versioned persistent-memory item and export schemas in `@intentloom/protocol`;
-- proposal, review, explicit acceptance, supersession, export, import, and forget operations in `@intentloom/application`;
-- local storage with project identity checks and content redaction;
-- CLI routing for the persistent-memory lifecycle in `@intentloom/cli`;
-- tests proving approval requirements, project isolation, import safety, lifecycle audit state, redaction, and CLI execution.
+- provider-neutral local retrieval and portable rendering contracts;
+- rebuildable local index lifecycle and CLI search/render/index commands;
+- explicit external-provider disclosure and approval validation;
+- documented Obsidian-compatible adapter evaluation;
+- tests proving deterministic search, safe index deletion, portable rendering, and disclosure enforcement.
 
 ## Next platform milestone
 

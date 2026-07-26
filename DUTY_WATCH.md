@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: Memory & Security Candidate M1 merged; Candidate M2 accepted persistent memory active
+Status: Memory & Security Candidates M1 and M2 merged; Candidate M3 semantic retrieval complete locally
 
 Active branch: `main`
 
-Current objective: implement accepted persistent-memory lifecycle with proposal, review, explicit approval, supersession, export/import, retention, deletion, and redaction safeguards.
+Current objective: commit and open a pull request for Candidate M3 semantic retrieval and portable adapters.
 
-Next first action: validate Candidate M2 implementation, review its diff, commit it, and open a pull request.
+Next first action: review Candidate M3 final diff, commit it, and open a pull request.
 
 ## Watch rules
 
@@ -41,6 +41,17 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-26, Memory & Security Candidate M3 semantic retrieval (partial)
+
+- **Status:** complete
+- **Agent/tool:** Codex
+- **Branch:** `codex/memory-security-m3`
+- **Objective:** Begin M3 semantic retrieval and portable adapter work after merged M2.
+- **Completed:** Added provider-neutral persistent-memory search and bounded rendering contracts, plus explicit rebuild/clear lifecycle for `.aif/memory/index.json` derived state and CLI `memory search`, `memory render`, and `memory index` routing. Accepted, project-scoped records are deterministically ranked by local terms and render to named portable targets without network access.
+- **Validation:** `pnpm typecheck` and `pnpm vitest run tests/memory-security-m3.test.ts` passed.
+- **Not completed:** Commit and pull request creation remain pending.
+- **Next first action:** Commit the validated M3 work and open a draft PR for `codex/memory-security-m3`.
 
 ### 2026-07-26, Memory & Security Candidate M2 accepted persistent memory
 
