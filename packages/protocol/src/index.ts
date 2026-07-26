@@ -1584,3 +1584,221 @@ export function validateAgentSessionExportResult(
     session: validateAgentSessionItem(value.session),
   };
 }
+
+export type SecurityFindingSeverity =
+  "critical" | "high" | "medium" | "low" | "info";
+
+export type SecurityFindingState =
+  "open" | "verified" | "dismissed" | "accepted-risk" | "remediated";
+
+export interface SecurityEvidence {
+  readonly path: string;
+  readonly startLine?: number;
+  readonly endLine?: number;
+  readonly snippet?: string;
+}
+
+export interface AcceptedSecurityRisk {
+  readonly approvedBy: string;
+  readonly reason: string;
+  readonly approvedAt: string;
+  readonly expiresAt?: string;
+}
+
+export interface SecurityFinding {
+  readonly schemaVersion: "1";
+  readonly id: string;
+  readonly ruleId: string;
+  readonly title: string;
+  readonly severity: SecurityFindingSeverity;
+  readonly state: SecurityFindingState;
+  readonly category: string;
+  readonly description: string;
+  readonly scanner: string;
+  readonly evidence: readonly SecurityEvidence[];
+  readonly trustClass: TrustClass;
+  readonly createdAt: string;
+  readonly updatedAt: string;
+  readonly dismissalReason?: string;
+  readonly acceptedRisk?: AcceptedSecurityRisk;
+}
+
+export interface SecurityCoverageReport {
+  readonly schemaVersion: "1";
+  readonly projectId: string;
+  readonly totalFindings: number;
+  readonly findingsBySeverity: Record<SecurityFindingSeverity, number>;
+  readonly findingsByState: Record<SecurityFindingState, number>;
+  readonly scanners: readonly string[];
+  readonly reportedAt: string;
+}
+
+export interface SarifImportResult {
+  readonly schemaVersion: "1";
+  readonly reportPath: string;
+  readonly importedCount: number;
+  readonly findings: readonly SecurityFinding[];
+  readonly importedAt: string;
+}
+
+export function validateSecurityFinding(value: unknown): SecurityFinding {
+  if (!isObject(value))
+    throw new ProtocolValidationError(
+      -32602,
+      "security finding must be an object",
+    );
+  if (value.schemaVersion !== "1")
+    throw new ProtocolValidationError(
+      -32602,
+      "unsupported security finding schema version",
+    );
+
+  const severities: readonly SecurityFindingSeverity[] = [
+    "critical",
+    "high",
+    "medium",
+    "low",
+    "info",
+  ];
+  const states: readonly SecurityFindingState[] = [
+    "open",
+    "verified",
+    "dismissed",
+    "accepted-risk",
+    "remediated",
+  ];
+
+  const severity = stringValue(
+    value.severity,
+    "severity",
+  ) as SecurityFindingSeverity;
+  if (!severities.includes(severity))
+    throw new ProtocolValidationError(
+      -32602,
+      "invalid security finding severity",
+    );
+
+  const state = stringValue(value.state, "state") as SecurityFindingState;
+  if (!states.includes(state))
+    throw new ProtocolValidationError(-32602, "invalid security finding state");
+
+  const rawEvidence = Array.isArray(value.evidence) ? value.evidence : [];
+  const evidence: SecurityEvidence[] = rawEvidence.map((ev, idx) => {
+    if (!isObject(ev))
+      throw new ProtocolValidationError(
+        -32602,
+        `evidence at index ${idx} must be an object`,
+      );
+    return {
+      path: stringValue(ev.path, `evidence[${idx}].path`),
+      ...(typeof ev.startLine === "number" ? { startLine: ev.startLine } : {}),
+      ...(typeof ev.endLine === "number" ? { endLine: ev.endLine } : {}),
+      ...(typeof ev.snippet === "string" && ev.snippet.length > 0
+        ? { snippet: ev.snippet }
+        : {}),
+    };
+  });
+
+  const acceptedRiskVal = value.acceptedRisk;
+  const acceptedRisk: AcceptedSecurityRisk | undefined = isObject(
+    acceptedRiskVal,
+  )
+    ? {
+        approvedBy: stringValue(
+          acceptedRiskVal.approvedBy,
+          "acceptedRisk.approvedBy",
+        ),
+        reason: stringValue(acceptedRiskVal.reason, "acceptedRisk.reason"),
+        approvedAt: stringValue(
+          acceptedRiskVal.approvedAt,
+          "acceptedRisk.approvedAt",
+        ),
+        ...(typeof acceptedRiskVal.expiresAt === "string" &&
+        acceptedRiskVal.expiresAt.length > 0
+          ? { expiresAt: acceptedRiskVal.expiresAt }
+          : {}),
+      }
+    : undefined;
+
+  return {
+    schemaVersion: "1",
+    id: stringValue(value.id, "id"),
+    ruleId: stringValue(value.ruleId, "ruleId"),
+    title: stringValue(value.title, "title"),
+    severity,
+    state,
+    category: stringValue(value.category, "category"),
+    description: stringValue(value.description, "description"),
+    scanner: stringValue(value.scanner, "scanner"),
+    evidence,
+    trustClass: stringValue(value.trustClass, "trustClass") as TrustClass,
+    createdAt: stringValue(value.createdAt, "createdAt"),
+    updatedAt: stringValue(value.updatedAt, "updatedAt"),
+    ...(typeof value.dismissalReason === "string" &&
+    value.dismissalReason.length > 0
+      ? { dismissalReason: value.dismissalReason }
+      : {}),
+    ...(acceptedRisk ? { acceptedRisk } : {}),
+  };
+}
+
+export function validateSecurityCoverageReport(
+  value: unknown,
+): SecurityCoverageReport {
+  if (!isObject(value))
+    throw new ProtocolValidationError(
+      -32602,
+      "security coverage report must be an object",
+    );
+  if (value.schemaVersion !== "1")
+    throw new ProtocolValidationError(
+      -32602,
+      "unsupported security coverage report schema version",
+    );
+
+  return {
+    schemaVersion: "1",
+    projectId: stringValue(value.projectId, "projectId"),
+    totalFindings:
+      typeof value.totalFindings === "number" ? value.totalFindings : 0,
+    findingsBySeverity: isObject(value.findingsBySeverity)
+      ? (value.findingsBySeverity as Record<SecurityFindingSeverity, number>)
+      : { critical: 0, high: 0, medium: 0, low: 0, info: 0 },
+    findingsByState: isObject(value.findingsByState)
+      ? (value.findingsByState as Record<SecurityFindingState, number>)
+      : {
+          open: 0,
+          verified: 0,
+          dismissed: 0,
+          "accepted-risk": 0,
+          remediated: 0,
+        },
+    scanners: stringArray(value.scanners, "scanners"),
+    reportedAt: stringValue(value.reportedAt, "reportedAt"),
+  };
+}
+
+export function validateSarifImportResult(value: unknown): SarifImportResult {
+  if (!isObject(value))
+    throw new ProtocolValidationError(
+      -32602,
+      "sarif import result must be an object",
+    );
+  if (value.schemaVersion !== "1")
+    throw new ProtocolValidationError(
+      -32602,
+      "unsupported sarif import result schema version",
+    );
+
+  if (!Array.isArray(value.findings))
+    throw new ProtocolValidationError(-32602, "findings must be an array");
+
+  return {
+    schemaVersion: "1",
+    reportPath: stringValue(value.reportPath, "reportPath"),
+    importedCount:
+      typeof value.importedCount === "number" ? value.importedCount : 0,
+    findings: value.findings.map(validateSecurityFinding),
+    importedAt: stringValue(value.importedAt, "importedAt"),
+  };
+}

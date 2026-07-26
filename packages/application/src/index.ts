@@ -88,6 +88,13 @@ import {
   type AgentSessionState,
   type AgentSessionItem,
   type AgentSessionExportResult,
+  type SecurityFindingSeverity,
+  type SecurityFindingState,
+  type SecurityEvidence,
+  type AcceptedSecurityRisk,
+  type SecurityFinding,
+  type SecurityCoverageReport,
+  type SarifImportResult,
   validateSessionSummary,
   validateSkillCatalogMetadata,
   validateSkillDiscoveryResult,
@@ -109,6 +116,9 @@ import {
   validateTaskSummary,
   validateAgentSessionItem,
   validateAgentSessionExportResult,
+  validateSecurityFinding,
+  validateSecurityCoverageReport,
+  validateSarifImportResult,
 } from "@intentloom/protocol";
 export type {
   RetentionState,
@@ -154,6 +164,13 @@ export type {
   AgentSessionState,
   AgentSessionItem,
   AgentSessionExportResult,
+  SecurityFindingSeverity,
+  SecurityFindingState,
+  SecurityEvidence,
+  AcceptedSecurityRisk,
+  SecurityFinding,
+  SecurityCoverageReport,
+  SarifImportResult,
 };
 export {
   validateSessionSummary,
@@ -5727,4 +5744,274 @@ export async function exportAgentSession(
     await fs.write(dest, `${JSON.stringify(exportResult, null, 2)}\n`);
   }
   return exportResult;
+}
+
+function securityFindingPath(root: string, id: string): string {
+  return inside(root, `.aif/security/findings/${id}.json`);
+}
+
+export async function getSecurityFinding(
+  id: string,
+  options: { root: string },
+  fs: FileSystem = nodeFileSystem,
+): Promise<SecurityFinding | null> {
+  const path = securityFindingPath(options.root, id);
+  if (!(await fs.exists(path))) return null;
+  try {
+    const raw = JSON.parse(await fs.read(path));
+    return validateSecurityFinding(raw);
+  } catch {
+    return null;
+  }
+}
+
+export async function listSecurityFindings(
+  options: {
+    root: string;
+    severity?: SecurityFindingSeverity;
+    state?: SecurityFindingState;
+  },
+  fs: FileSystem = nodeFileSystem,
+): Promise<readonly SecurityFinding[]> {
+  const findings: SecurityFinding[] = [];
+  for (const rawPath of await fs.list(options.root)) {
+    const normalized = (
+      rawPath.startsWith(options.root)
+        ? relative(options.root, rawPath)
+        : rawPath
+    ).replaceAll("\\", "/");
+    if (
+      !normalized.startsWith(".aif/security/findings/") ||
+      !normalized.endsWith(".json")
+    )
+      continue;
+    const id = normalized
+      .replace(/^\.aif\/security\/findings\//u, "")
+      .replace(/\.json$/u, "");
+    const finding = await getSecurityFinding(id, options, fs);
+    if (finding) {
+      if (
+        (!options.severity || finding.severity === options.severity) &&
+        (!options.state || finding.state === options.state)
+      ) {
+        findings.push(finding);
+      }
+    }
+  }
+  return findings.sort((a, b) => a.id.localeCompare(b.id));
+}
+
+export async function dismissSecurityFinding(
+  id: string,
+  options: { root: string; reason: string },
+  fs: FileSystem = nodeFileSystem,
+): Promise<SecurityFinding> {
+  const existing = await getSecurityFinding(id, options, fs);
+  if (!existing) {
+    throw new Error(`security finding not found: ${id}`);
+  }
+  const now = new Date().toISOString();
+  const updated = validateSecurityFinding({
+    ...existing,
+    state: "dismissed",
+    dismissalReason: options.reason,
+    updatedAt: now,
+  });
+  const path = securityFindingPath(options.root, id);
+  await fs.write(path, `${JSON.stringify(updated, null, 2)}\n`);
+  return updated;
+}
+
+export async function acceptSecurityRisk(
+  id: string,
+  options: {
+    root: string;
+    approvedBy: string;
+    reason: string;
+    expiresAt?: string;
+  },
+  fs: FileSystem = nodeFileSystem,
+): Promise<SecurityFinding> {
+  const existing = await getSecurityFinding(id, options, fs);
+  if (!existing) {
+    throw new Error(`security finding not found: ${id}`);
+  }
+  const now = new Date().toISOString();
+  const acceptedRisk: AcceptedSecurityRisk = {
+    approvedBy: options.approvedBy,
+    reason: options.reason,
+    approvedAt: now,
+    ...(options.expiresAt ? { expiresAt: options.expiresAt } : {}),
+  };
+  const updated = validateSecurityFinding({
+    ...existing,
+    state: "accepted-risk",
+    acceptedRisk,
+    updatedAt: now,
+  });
+  const path = securityFindingPath(options.root, id);
+  await fs.write(path, `${JSON.stringify(updated, null, 2)}\n`);
+  return updated;
+}
+
+function isObjectRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+export async function importSarifSecurityReport(
+  reportContent: string,
+  reportPath: string,
+  options: { root: string },
+  fs: FileSystem = nodeFileSystem,
+): Promise<SarifImportResult> {
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(reportContent);
+  } catch {
+    throw new Error("malformed SARIF JSON document");
+  }
+
+  if (!isObjectRecord(parsed) || !Array.isArray(parsed.runs)) {
+    throw new Error("invalid SARIF structure: missing runs array");
+  }
+
+  const now = new Date().toISOString();
+  const findings: SecurityFinding[] = [];
+
+  let findingCounter = 1;
+  for (const run of parsed.runs) {
+    if (!isObjectRecord(run)) continue;
+    const toolObj = isObjectRecord(run.tool) ? run.tool : {};
+    const driverObj = isObjectRecord(toolObj.driver) ? toolObj.driver : {};
+    const scannerName =
+      typeof driverObj.name === "string" ? driverObj.name : "sarif-scanner";
+
+    const results = Array.isArray(run.results) ? run.results : [];
+    for (const result of results) {
+      if (!isObjectRecord(result)) continue;
+      const ruleId =
+        typeof result.ruleId === "string" ? result.ruleId : "SARIF-RULE";
+      const messageObj = isObjectRecord(result.message) ? result.message : {};
+      const title =
+        typeof messageObj.text === "string" ? messageObj.text : "SARIF Finding";
+      const level =
+        typeof result.level === "string"
+          ? result.level.toLowerCase()
+          : "warning";
+
+      let severity: SecurityFindingSeverity = "medium";
+      if (level === "error") severity = "high";
+      else if (level === "warning") severity = "medium";
+      else if (level === "note") severity = "low";
+      else severity = "info";
+
+      const locations = Array.isArray(result.locations) ? result.locations : [];
+      const evidence: SecurityEvidence[] = locations.map((loc: unknown) => {
+        if (!isObjectRecord(loc)) return { path: "unknown" };
+        const phys = isObjectRecord(loc.physicalLocation)
+          ? loc.physicalLocation
+          : {};
+        const art = isObjectRecord(phys.artifactLocation)
+          ? phys.artifactLocation
+          : {};
+        const rawUri = typeof art.uri === "string" ? art.uri : "unknown";
+        const region = isObjectRecord(phys.region) ? phys.region : {};
+        const startLine =
+          typeof region.startLine === "number" ? region.startLine : undefined;
+        const endLine =
+          typeof region.endLine === "number" ? region.endLine : undefined;
+        const snippetObj = isObjectRecord(region.snippet) ? region.snippet : {};
+        const snippetText =
+          typeof snippetObj.text === "string" ? snippetObj.text : undefined;
+
+        const path = secretLikePath(rawUri) ? "[REDACTED]" : rawUri;
+        return {
+          path,
+          ...(startLine !== undefined ? { startLine } : {}),
+          ...(endLine !== undefined ? { endLine } : {}),
+          ...(snippetText !== undefined
+            ? {
+                snippet: secretLikePath(snippetText)
+                  ? "[REDACTED]"
+                  : snippetText,
+              }
+            : {}),
+        };
+      });
+
+      const findingId = `sarif-finding-${findingCounter++}`;
+      const finding: SecurityFinding = validateSecurityFinding({
+        schemaVersion: "1",
+        id: findingId,
+        ruleId,
+        title: secretLikePath(title) ? "[REDACTED]" : title,
+        severity,
+        state: "open",
+        category: "vulnerability",
+        description: `Imported from ${scannerName}`,
+        scanner: scannerName,
+        evidence,
+        trustClass: "verified-evidence",
+        createdAt: now,
+        updatedAt: now,
+      });
+
+      const path = securityFindingPath(options.root, findingId);
+      if (!(await fs.exists(dirname(path)))) {
+        await fs.mkdir(dirname(path));
+      }
+      await fs.write(path, `${JSON.stringify(finding, null, 2)}\n`);
+      findings.push(finding);
+    }
+  }
+
+  const result: SarifImportResult = validateSarifImportResult({
+    schemaVersion: "1",
+    reportPath,
+    importedCount: findings.length,
+    findings,
+    importedAt: now,
+  });
+
+  return result;
+}
+
+export async function getSecurityCoverageReport(
+  options: { root: string; projectId: string },
+  fs: FileSystem = nodeFileSystem,
+): Promise<SecurityCoverageReport> {
+  const findings = await listSecurityFindings({ root: options.root }, fs);
+
+  const findingsBySeverity: Record<SecurityFindingSeverity, number> = {
+    critical: 0,
+    high: 0,
+    medium: 0,
+    low: 0,
+    info: 0,
+  };
+  const findingsByState: Record<SecurityFindingState, number> = {
+    open: 0,
+    verified: 0,
+    dismissed: 0,
+    "accepted-risk": 0,
+    remediated: 0,
+  };
+
+  const scannerSet = new Set<string>();
+
+  for (const f of findings) {
+    findingsBySeverity[f.severity] = (findingsBySeverity[f.severity] ?? 0) + 1;
+    findingsByState[f.state] = (findingsByState[f.state] ?? 0) + 1;
+    if (f.scanner) scannerSet.add(f.scanner);
+  }
+
+  return validateSecurityCoverageReport({
+    schemaVersion: "1",
+    projectId: options.projectId,
+    totalFindings: findings.length,
+    findingsBySeverity,
+    findingsByState,
+    scanners: [...scannerSet].sort(),
+    reportedAt: new Date().toISOString(),
+  });
 }

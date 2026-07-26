@@ -22,7 +22,7 @@ later justifies separation.
 
 ## Current phase
 
-Memory & Security Candidate M4: Agent Session Lifecycle.
+Memory & Security Candidate S1: Security Evidence and Posture.
 
 The project must avoid premature structural migration. New applications,
 packages, and repository boundaries are introduced only when roadmap triggers
@@ -40,17 +40,17 @@ and real consumers justify them.
   connection, evidence, MCP, interactive surfaces, Agent Workspace, Neutron,
   persistent memory, security analysis, engineering process intelligence,
   public monorepo evolution, controlled agent learning, and portable Duty Watch adoption.
-- Duty Watch governance contracts (Phase 1), proposal CLI `intentloom adopt --plan` (Phase 2), transactional apply & rollback engine `intentloom adopt --apply` (Phase 3), pack update 3-way migration `intentloom update` (Phase 4), conformance & security profiles `intentloom conformance` (Phase 5), provider synchronization `intentloom sync` / `intentloom diff` (Phase 6), and Memory & Security Candidates M1–M3 are merged into `main`.
+- Duty Watch governance contracts (Phase 1), proposal CLI `intentloom adopt --plan` (Phase 2), transactional apply & rollback engine `intentloom adopt --apply` (Phase 3), pack update 3-way migration `intentloom update` (Phase 4), conformance & security profiles `intentloom conformance` (Phase 5), provider synchronization `intentloom sync` / `intentloom diff` (Phase 6), and Memory & Security Candidates M1–M4 are merged into `main`.
 
 These statements must be revalidated against code, tags, CI, and Git history
 before a new release or implementation milestone is declared complete.
 
 ## Active focus
 
-1. Provide vendor-neutral, project-scoped agent session lifecycle tracking stored under `.aif/memory/sessions/`.
-2. Capture active tasks, unresolved questions, decisions, and outcomes with secret path redaction.
-3. Support pre-compaction export and clean session deletion without mutating canonical project intent.
-4. Expose CLI subcommands under `intentloom session <start|close|list|get|delete|export>`.
+1. Provide vendor-neutral security finding, evidence, risk acceptance, and posture coverage tracking stored under `.aif/security/`.
+2. Support safe local importing of SARIF static analysis reports with secret path redaction and project isolation.
+3. Support finding dismissal, risk acceptance with approver/reason metadata, and posture reporting without silent capability grants.
+4. Expose CLI subcommands under `intentloom security <import|inspect|coverage|dismiss|accept-risk|list>`.
 
 ## Architectural invariants
 
@@ -68,19 +68,19 @@ before a new release or implementation milestone is declared complete.
 
 ## Current blockers and unknowns
 
-- Session compaction and export operations must not alter canonical intent or bypass human review boundaries.
+- External scanner output and imported findings are untrusted evidence and cannot execute scripts or alter project configuration without maintainer review.
 
 ## Current milestone
 
-Implement Memory & Security Candidate M4: Agent Session Lifecycle.
+Implement Memory & Security Candidate S1: Security Evidence and Posture.
 
 Expected outputs:
 
-- ADR-0026 documenting agent session lifecycle architecture;
-- versioned `AgentSessionItem` schemas and validators in `@intentloom/protocol`;
-- session operations (`startAgentSession`, `closeAgentSession`, `getAgentSession`, `listAgentSessions`, `deleteAgentSession`, `exportAgentSession`) in `@intentloom/application`;
-- CLI command routing under `intentloom session`;
-- unit and integration tests covering session state transitions, secret path redaction, export, and deletion.
+- ADR-0027 documenting security evidence and posture architecture;
+- versioned `SecurityFinding`, `SecurityCoverageReport`, `SarifImportResult` schemas and validators in `@intentloom/protocol`;
+- security operations (`importSarifSecurityReport`, `getSecurityCoverageReport`, `dismissSecurityFinding`, `acceptSecurityRisk`, `listSecurityFindings`, `getSecurityFinding`) in `@intentloom/application`;
+- CLI command routing under `intentloom security`;
+- unit and integration tests covering SARIF report parsing, secret redaction, risk acceptance, and CLI routing.
 
 ## Next platform milestone
 
