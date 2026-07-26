@@ -95,6 +95,9 @@ import {
   type SecurityFinding,
   type SecurityCoverageReport,
   type SarifImportResult,
+  type SecurityAdapterCategory,
+  type SecurityAdapterMetadata,
+  type SecurityAdapterResult,
   validateSessionSummary,
   validateSkillCatalogMetadata,
   validateSkillDiscoveryResult,
@@ -119,6 +122,8 @@ import {
   validateSecurityFinding,
   validateSecurityCoverageReport,
   validateSarifImportResult,
+  validateSecurityAdapterMetadata,
+  validateSecurityAdapterResult,
 } from "@intentloom/protocol";
 export type {
   RetentionState,
@@ -171,6 +176,9 @@ export type {
   SecurityFinding,
   SecurityCoverageReport,
   SarifImportResult,
+  SecurityAdapterCategory,
+  SecurityAdapterMetadata,
+  SecurityAdapterResult,
 };
 export {
   validateSessionSummary,
@@ -6014,4 +6022,230 @@ export async function getSecurityCoverageReport(
     scanners: [...scannerSet].sort(),
     reportedAt: new Date().toISOString(),
   });
+}
+
+export function correlateSecurityFindings(
+  findings: readonly SecurityFinding[],
+): readonly SecurityFinding[] {
+  const map = new Map<string, SecurityFinding>();
+  for (const finding of findings) {
+    const primaryPath = finding.evidence[0]?.path ?? "unknown";
+    const key = `${finding.ruleId}:${primaryPath}`;
+    if (!map.has(key)) {
+      map.set(key, finding);
+    } else {
+      const existing = map.get(key)!;
+      const severityRank: Record<SecurityFindingSeverity, number> = {
+        critical: 5,
+        high: 4,
+        medium: 3,
+        low: 2,
+        info: 1,
+      };
+      if (severityRank[finding.severity] > severityRank[existing.severity]) {
+        map.set(key, finding);
+      }
+    }
+  }
+  return [...map.values()].sort((a, b) => a.id.localeCompare(b.id));
+}
+
+export async function runLocalSecurityAdapters(
+  options: {
+    root: string;
+    categories?: readonly SecurityAdapterCategory[];
+  },
+  fs: FileSystem = nodeFileSystem,
+): Promise<readonly SecurityAdapterResult[]> {
+  const activeCategories = options.categories?.length
+    ? options.categories
+    : ([
+        "dependency",
+        "secret",
+        "config",
+        "source",
+        "extension",
+        "mcp",
+        "hook",
+        "agentic",
+      ] as const);
+
+  const results: SecurityAdapterResult[] = [];
+  const now = new Date().toISOString();
+  let findingCounter = 1;
+
+  for (const category of activeCategories) {
+    const rawFindings: SecurityFinding[] = [];
+
+    if (category === "dependency") {
+      const pkgPath = inside(options.root, "package.json");
+      if (await fs.exists(pkgPath)) {
+        try {
+          const content = JSON.parse(await fs.read(pkgPath));
+          const deps = {
+            ...(content.dependencies ?? {}),
+            ...(content.devDependencies ?? {}),
+          };
+          for (const [name, version] of Object.entries(deps)) {
+            if (
+              typeof version === "string" &&
+              (version === "*" ||
+                version === "latest" ||
+                version.startsWith(">="))
+            ) {
+              rawFindings.push(
+                validateSecurityFinding({
+                  schemaVersion: "1",
+                  id: `sec-dep-${findingCounter++}`,
+                  ruleId: "dep/unpinned-wildcard",
+                  title: `Unpinned dependency version for ${name}`,
+                  severity: "medium",
+                  state: "open",
+                  category: "dependency",
+                  description: `Dependency ${name} uses floating version specifier ${version}`,
+                  scanner: "built-in:dependency-adapter",
+                  evidence: [{ path: "package.json" }],
+                  trustClass: "verified-evidence",
+                  createdAt: now,
+                  updatedAt: now,
+                }),
+              );
+            }
+          }
+        } catch {
+          // ignore malformed package.json
+        }
+      }
+    }
+
+    if (category === "secret") {
+      const files = await fs.list(options.root);
+      for (const rawPath of files) {
+        const rel = rawPath.startsWith(options.root)
+          ? relative(options.root, rawPath)
+          : rawPath;
+        if (
+          rel.includes("node_modules") ||
+          rel.startsWith(".git") ||
+          rel.endsWith(".png") ||
+          rel.endsWith(".jpg")
+        )
+          continue;
+
+        if (secretLikePath(rel)) {
+          rawFindings.push(
+            validateSecurityFinding({
+              schemaVersion: "1",
+              id: `sec-secret-${findingCounter++}`,
+              ruleId: "secret/sensitive-file-location",
+              title: "Sensitive file in repository workspace",
+              severity: "high",
+              state: "open",
+              category: "secret",
+              description: `File path ${rel} matches sensitive secret filename pattern`,
+              scanner: "built-in:secret-adapter",
+              evidence: [{ path: secretLikePath(rel) ? "[REDACTED]" : rel }],
+              trustClass: "verified-evidence",
+              createdAt: now,
+              updatedAt: now,
+            }),
+          );
+        }
+      }
+    }
+
+    if (category === "config") {
+      const files = await fs.list(options.root);
+      const hasAif = files.some((f) => f.includes(".aif/"));
+      const hasPolicy = files.some((f) => f.includes(".aif/policy"));
+      if (hasAif && !hasPolicy) {
+        rawFindings.push(
+          validateSecurityFinding({
+            schemaVersion: "1",
+            id: `sec-cfg-${findingCounter++}`,
+            ruleId: "config/missing-security-policy",
+            title: "No explicit security policy declared in .aif/",
+            severity: "low",
+            state: "open",
+            category: "config",
+            description:
+              "Project .aif directory exists without an explicit security policy",
+            scanner: "built-in:config-adapter",
+            evidence: [{ path: ".aif" }],
+            trustClass: "verified-evidence",
+            createdAt: now,
+            updatedAt: now,
+          }),
+        );
+      }
+    }
+
+    if (category === "mcp") {
+      const files = await fs.list(options.root);
+      for (const rawPath of files) {
+        const normalized = rawPath.replaceAll("\\", "/");
+        if (normalized.includes(".aif/mcp/") && normalized.endsWith(".json")) {
+          try {
+            const content = JSON.parse(await fs.read(rawPath));
+            if (content.allowGenericShell === true) {
+              const rel = rawPath.startsWith(options.root)
+                ? relative(options.root, rawPath)
+                : rawPath;
+              rawFindings.push(
+                validateSecurityFinding({
+                  schemaVersion: "1",
+                  id: `sec-mcp-${findingCounter++}`,
+                  ruleId: "mcp/unrestricted-shell-permission",
+                  title:
+                    "MCP server configuration enables generic shell capability",
+                  severity: "critical",
+                  state: "open",
+                  category: "mcp",
+                  description: `MCP server config ${rel} allows generic shell execution`,
+                  scanner: "built-in:mcp-adapter",
+                  evidence: [{ path: rel }],
+                  trustClass: "verified-evidence",
+                  createdAt: now,
+                  updatedAt: now,
+                }),
+              );
+            }
+          } catch {
+            // ignore malformed mcp configs
+          }
+        }
+      }
+    }
+
+    const correlated = correlateSecurityFindings(rawFindings);
+    for (const finding of correlated) {
+      const path = securityFindingPath(options.root, finding.id);
+      if (!(await fs.exists(dirname(path)))) {
+        await fs.mkdir(dirname(path));
+      }
+      await fs.write(path, `${JSON.stringify(finding, null, 2)}\n`);
+    }
+
+    const adapterMeta: SecurityAdapterMetadata =
+      validateSecurityAdapterMetadata({
+        schemaVersion: "1",
+        name: `built-in:${category}-adapter`,
+        category,
+        version: "1.0.0",
+        readOnly: true,
+        networkAccess: false,
+      });
+
+    results.push(
+      validateSecurityAdapterResult({
+        schemaVersion: "1",
+        adapter: adapterMeta,
+        findings: correlated,
+        totalCount: correlated.length,
+        executedAt: now,
+      }),
+    );
+  }
+
+  return results;
 }

@@ -79,8 +79,10 @@ import {
   acceptSecurityRisk,
   listSecurityFindings,
   getSecurityFinding,
+  runLocalSecurityAdapters,
   type SecurityFindingSeverity,
   type SecurityFindingState,
+  type SecurityAdapterCategory,
   type AgentSessionState,
   type SkillLoadingLevel,
   type SkillProposalState,
@@ -263,6 +265,7 @@ const valueFlags = new Set([
   "--state",
   "--severity",
   "--reason",
+  "--category",
   "--evidence",
   "--proposal-id",
   "--skill-id",
@@ -301,7 +304,7 @@ const usage = [
   "       intentloom delegate --profile NAME --role ROLE --task-id ID [--root PATH] [--json]",
   "       intentloom context <get> [--query QUERY] [--max-tokens NUM] [--max-items NUM] [--root PATH] [--json]",
   "       intentloom session <start|close|list|get|delete|export> [--id ID] [--task TASK] [--state STATE] [--root PATH] [--json]",
-  "       intentloom security <import|inspect|coverage|dismiss|accept-risk|list> [--file PATH] [--id ID] [--reason REASON] [--approved-by USER] [--severity SEVERITY] [--state STATE] [--root PATH] [--json]",
+  "       intentloom security <import|inspect|coverage|dismiss|accept-risk|list|scan> [--file PATH] [--id ID] [--reason REASON] [--approved-by USER] [--severity SEVERITY] [--state STATE] [--category CATEGORY] [--root PATH] [--json]",
   "       adoption mappings use --project-owned-mapping SOURCE=DESTINATION",
   "       or --documentation-mapping SOURCE=DESTINATION",
 ].join("\n");
@@ -389,10 +392,11 @@ function parseArguments(args: readonly string[]): ParsedArguments {
       "dismiss",
       "accept-risk",
       "list",
+      "scan",
     ].includes(args[1] ?? "")
   )
     throw new CliUsageError(
-      "security requires import, inspect, coverage, dismiss, accept-risk, or list subcommand",
+      "security requires import, inspect, coverage, dismiss, accept-risk, list, or scan subcommand",
     );
   const flags = new Set<string>();
   const values = new Map<string, string>();
@@ -2392,10 +2396,11 @@ export async function runCli(
           "dismiss",
           "accept-risk",
           "list",
+          "scan",
         ].includes(subcommand ?? "")
       ) {
         throw new CliUsageError(
-          "security requires import, inspect, coverage, dismiss, accept-risk, or list subcommand",
+          "security requires import, inspect, coverage, dismiss, accept-risk, list, or scan subcommand",
         );
       }
       const projectId = parsed.values.get("--project-id") ?? "project-local";
@@ -2521,6 +2526,35 @@ export async function runCli(
             ...findings.map(
               (f) =>
                 `- [${f.severity.toUpperCase()}] [${f.state}] ${f.id} (${f.title}): ${f.scanner}`,
+            ),
+          ];
+          io.stdout(lines.join("\n"));
+        }
+        return 0;
+      }
+
+      if (subcommand === "scan") {
+        const rawCategory = parsed.values.get("--category");
+        const categories = rawCategory
+          ? ([rawCategory] as SecurityAdapterCategory[])
+          : undefined;
+
+        const results = await runLocalSecurityAdapters(
+          {
+            root,
+            ...(categories !== undefined ? { categories } : {}),
+          },
+          fileSystem,
+        );
+        if (parsed.flags.has("--json")) {
+          io.stdout(JSON.stringify(results, null, 2));
+        } else {
+          const total = results.reduce((acc, r) => acc + r.totalCount, 0);
+          const lines = [
+            `Ran ${results.length} security adapters (${total} total findings discovered):`,
+            ...results.map(
+              (r) =>
+                `- [${r.adapter.category}] ${r.adapter.name}: ${r.totalCount} findings`,
             ),
           ];
           io.stdout(lines.join("\n"));
