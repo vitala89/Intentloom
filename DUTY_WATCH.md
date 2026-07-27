@@ -97,7 +97,6 @@ entry directly below this section.
 - [x] Planning PR opened and merged
 - [ ] First compatibility-contract ADR/specification selected
 
-
 ### 2026-07-27, v0.5.0-beta.1 published to npm
 
 - **Status:** partial
