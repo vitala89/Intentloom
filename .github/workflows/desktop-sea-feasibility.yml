@@ -79,7 +79,7 @@ jobs:
         run: |
           mkdir -p "$RUNNER_TEMP/postject"
           npm pack postject@1.0.0-alpha.6 --pack-destination "$RUNNER_TEMP"
-          tar --force-local -xzf "$RUNNER_TEMP/postject-1.0.0-alpha.6.tgz" -C "$RUNNER_TEMP/postject"
+          (cd "$RUNNER_TEMP" && tar -xzf postject-1.0.0-alpha.6.tgz -C postject)
           echo "POSTJECT_API=$RUNNER_TEMP/postject/package/dist/api.js" >> "$GITHUB_ENV"
 
       # ── Run SEA feasibility spike ──────────────────────────────────────────
