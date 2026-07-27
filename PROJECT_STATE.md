@@ -22,10 +22,11 @@ later justifies separation.
 
 ## Current phase
 
-`v0.5.0-beta.1` is released through Git tag and npm `next`. The next approved
-product milestone is planning and delivery of `v0.6.0-beta.1`: a Tauri 2
-read-only Desktop vertical slice over the standalone daemon, followed by TUI
-parity and hardening over the same contracts.
+`v0.5.0-beta.1` is released through Git tag and npm `next`. The `v0.6.0-beta.1`
+product milestone (Tauri 2 read-only Desktop application, WCAG 2.x a11y,
+cancellation, Command Palette, Settings & Diagnostics, TUI parity, and
+three-platform SEA sidecar CI verification) has completed implementation, testing,
+and readiness auditing (`docs/desktop/V0_6_READINESS_AUDIT.md`).
 
 The project must avoid premature structural migration. New applications,
 packages, and repository boundaries are introduced only when roadmap triggers

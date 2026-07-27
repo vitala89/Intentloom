@@ -1,6 +1,6 @@
 # Intentloom Desktop
 
-Status: `v0.6.0-beta.1` implementation scaffold in progress.
+Status: `v0.6.0-beta.1` milestone complete.
 
 Intentloom Desktop is the official local graphical client for the existing
 Intentloom platform. It is built over the standalone authenticated daemon and
@@ -9,15 +9,17 @@ TypeScript-first core, application operations, or transaction engine.
 
 ## Read in this order
 
-1. [Desktop design brief](DESIGN_BRIEF.md)
-2. [Desktop v0.6 implementation plan](../roadmap/DESKTOP_V0_6_IMPLEMENTATION_PLAN.md)
-3. [ADR-0042: Desktop Stack and Self-Contained Daemon Distribution](../decisions/ADR-0042-desktop-stack-and-daemon-distribution.md)
-4. [Self-contained daemon SEA feasibility spike](SEA_FEASIBILITY_SPIKE.md)
-5. [Phase 1 client contracts](PHASE1_CONTRACTS.md)
-6. [Interactive Surfaces and Agent Workspace](../concepts/INTERACTIVE_SURFACES_AND_AGENT_WORKSPACE.md)
-7. [ADR-0032: Second Client Daemon Protocol Contracts](../decisions/ADR-0032-second-client-daemon-protocol-contracts.md)
-8. [ADR-0033: Interactive Surfaces](../decisions/ADR-0033-interactive-surfaces-tui-and-desktop-shell.md)
-9. [Agent execution prompt](AGENT_EXECUTION_PROMPT.md)
+1. [v0.6.0-beta.1 Readiness Audit](V0_6_READINESS_AUDIT.md)
+2. [Desktop design brief](DESIGN_BRIEF.md)
+3. [Desktop v0.6 implementation plan](../roadmap/DESKTOP_V0_6_IMPLEMENTATION_PLAN.md)
+4. [ADR-0042: Desktop Stack and Self-Contained Daemon Distribution](../decisions/ADR-0042-desktop-stack-and-daemon-distribution.md)
+5. [Self-contained daemon SEA feasibility spike](SEA_FEASIBILITY_SPIKE.md)
+6. [Phase 1 client contracts](PHASE1_CONTRACTS.md)
+7. [Accessibility Audit](A11Y_AUDIT.md)
+8. [Interactive Surfaces and Agent Workspace](../concepts/INTERACTIVE_SURFACES_AND_AGENT_WORKSPACE.md)
+9. [ADR-0032: Second Client Daemon Protocol Contracts](../decisions/ADR-0032-second-client-daemon-protocol-contracts.md)
+10. [ADR-0033: Interactive Surfaces](../decisions/ADR-0033-interactive-surfaces-tui-and-desktop-shell.md)
+11. [Agent execution prompt](AGENT_EXECUTION_PROMPT.md)
 
 ## Product sequence
 

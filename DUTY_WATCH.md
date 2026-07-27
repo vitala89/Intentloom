@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **PR #98 merged into main; PR #99 opened** — Phase 6 TUI parity (`intentloom ui`) completed; PR https://github.com/vitala89/Intentloom/pull/99 opened for review with CI in progress across Windows, Linux, and macOS
+Status: **v0.6.0-beta.1 milestone complete & audited** — PR #98 merged into main; PR #99 green on CI; `v0.6.0-beta.1` readiness audit complete (`docs/desktop/V0_6_READINESS_AUDIT.md`)
 
 Active branch: `codex/desktop-v06-stack-adr`
 
-Current objective: monitor GitHub Actions CI for PR #99 and obtain maintainer approval to merge into `main`.
+Current objective: PR #99 is ready for maintainer review and merge into `main`, after which `v0.6.0-beta.1` can be tagged.
 
-Next first action: verify `gh pr checks 99` until green, then tag the `v0.6.0-beta.1` Desktop milestone release.
+Next first action: merge PR #99 upon maintainer approval and tag the `v0.6.0-beta.1` release.
 
 ## Watch rules
 
@@ -41,6 +41,21 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-28, v0.6.0-beta.1 Milestone Readiness Audit
+
+- **Status:** complete (validated)
+- **Agent/tool:** Antigravity — Milestone readiness audit, documentation closure
+- **Branch:** `codex/desktop-v06-stack-adr`
+- **Commits:** local uncommitted documentation changes
+- **Pull request:** https://github.com/vitala89/Intentloom/pull/99 (all checks green)
+- **Objective:** Perform and record the `v0.6.0-beta.1` readiness audit across all 8 phases of `DESKTOP_V0_6_IMPLEMENTATION_PLAN.md`.
+- **Completed:**
+  - **Readiness Audit Document:** Authored [`docs/desktop/V0_6_READINESS_AUDIT.md`](file:///Users/eugenekasap/WebstormProjects/Intentloom/docs/desktop/V0_6_READINESS_AUDIT.md) auditing all 11 categories: Architecture, Daemon Transport, Sidecar Distribution, Packaging & CI, Read-Only Product Slice, Command Palette, Settings & Diagnostics, Accessibility (a11y), Cancellation & Progress, TUI Parity, and Zero Mutation.
+  - **Documentation Updates:** Updated `docs/desktop/README.md` and `PROJECT_STATE.md` to reflect `v0.6.0-beta.1` milestone readiness audit completion.
+  - **CI & Release State:** Verified PR #98 merged into `main` and PR #99 100% green on GitHub Actions CI across Windows, Linux, and macOS.
+- **Validation:** `pnpm typecheck` passed; `pnpm format:check` passed; `git diff --check` passed; `pnpm test` passed — 83 files, 742 tests passed, 3 skipped.
+- **Evidence:** `docs/desktop/V0_6_READINESS_AUDIT.md`, `docs/desktop/README.md`, `PROJECT_STATE.md`, `DUTY_WATCH.md`.
 
 ### 2026-07-28, Phase 6 TUI Parity & Hardening (`intentloom ui`)
 
