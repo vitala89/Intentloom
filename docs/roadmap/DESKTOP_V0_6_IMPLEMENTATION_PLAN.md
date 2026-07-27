@@ -1,6 +1,6 @@
 # Desktop v0.6 Implementation Plan
 
-Status: proposed implementation baseline.
+Status: active implementation baseline.
 
 Milestone: `v0.6.0-beta.1`.
 
@@ -58,20 +58,20 @@ Dependency rules:
 
 ## Verified starting inventory
 
-| Capability                            | Application                         | Protocol                         | Daemon                  | Desktop readiness                                            |
-| ------------------------------------- | ----------------------------------- | -------------------------------- | ----------------------- | ------------------------------------------------------------ |
-| Authenticated local request transport | N/A                                 | Request/response envelope exists | Client and server exist | Needs lifecycle and mismatch UX                              |
-| Capability discovery                  | No dedicated operation              | Missing                          | Missing                 | Required before UI routing                                   |
-| Project inspect                       | Implemented                         | Implemented                      | Implemented             | Ready for integration                                        |
-| Doctor                                | Implemented                         | Implemented                      | Implemented             | Ready for integration                                        |
-| Interactive workspace snapshot        | Implemented                         | Missing                          | Missing                 | Optional facade, inventory first                             |
-| Project diff                          | Implemented                         | Missing                          | Missing                 | Required                                                     |
-| Local project timeline                | CLI/evidence path exists            | No root-bound Desktop operation  | Missing                 | Required                                                     |
-| Operation cancellation and progress   | Task checkpoints exist elsewhere    | Missing for daemon calls         | Timeout only            | Required contract decision                                   |
-| Structured client error taxonomy      | Partial                             | JSON-RPC validation errors only  | Partial                 | Must cover auth, mismatch, stale root, timeout, cancellation |
-| Workspace conversation list/get       | Implemented                         | Missing                          | Missing                 | Follow-up                                                    |
-| Workspace start/append/promote/review | Implemented                         | Missing                          | Missing                 | Follow-up, contains writes to `.aif`                         |
-| Approved apply                        | Implemented through application/CLI | Missing                          | Missing                 | Later high-risk slice                                        |
+| Capability                            | Application                         | Protocol                         | Daemon                  | Desktop readiness                                |
+| ------------------------------------- | ----------------------------------- | -------------------------------- | ----------------------- | ------------------------------------------------ |
+| Authenticated local request transport | N/A                                 | Request/response envelope exists | Client and server exist | Needs lifecycle and mismatch UX                  |
+| Capability discovery                  | No dedicated operation              | `daemon.info.v1` contract        | Implemented             | Typed discovery slice; client/UI routing remains |
+| Project inspect                       | Implemented                         | Implemented                      | Implemented             | Ready for integration                            |
+| Doctor                                | Implemented                         | Implemented                      | Implemented             | Ready for integration                            |
+| Interactive workspace snapshot        | Implemented                         | Missing                          | Missing                 | Optional facade, inventory first                 |
+| Project diff                          | Implemented                         | `project.diff.v1` contract       | Typed handler/client    | Deterministic read-only daemon slice             |
+| Local project timeline                | Application facade added            | `project.timeline.v1` contract   | Typed handler/client    | Root-bound local-git slice; UI remains           |
+| Operation cancellation and progress   | Task checkpoints exist elsewhere    | Missing for daemon calls         | Timeout only            | Required contract decision                       |
+| Structured client error taxonomy      | Partial                             | Typed codes and wire metadata    | Discovery path emits    | Project-root and operation mapping remains       |
+| Workspace conversation list/get       | Implemented                         | Missing                          | Missing                 | Follow-up                                        |
+| Workspace start/append/promote/review | Implemented                         | Missing                          | Missing                 | Follow-up, contains writes to `.aif`             |
+| Approved apply                        | Implemented through application/CLI | Missing                          | Missing                 | Later high-risk slice                            |
 
 This inventory must be rechecked against the current `main` at the start of
 implementation. It is a planning snapshot, not a permanent compatibility
@@ -81,13 +81,14 @@ claim.
 
 Before Desktop implementation:
 
-- [ ] This plan and its roadmap/state links are merged into `main`.
-- [ ] Open PR #94 is reconciled so stable `v1.0` planning does not displace the
-      approved pre-1.0 Desktop milestone.
-- [ ] The System Designer handoff is approved, or implementation is limited to
+- [x] This plan and its roadmap/state links are merged into `main`.
+- [x] PR #94 is reconciled: its v1.0 compatibility plan remains a later
+      stability gate and does not displace the approved pre-1.0 Desktop
+      milestone.
+- [x] The System Designer handoff is approved, or implementation is limited to
       protocol and native-shell work that does not invent visual decisions.
-- [ ] A Desktop stack and distribution ADR is accepted.
-- [ ] The branch begins from a verified clean `main`.
+- [x] A Desktop stack and distribution ADR is accepted.
+- [x] The branch begins from a verified clean `main`.
 
 ## Phase 0: Roadmap and architecture closure
 
@@ -198,7 +199,9 @@ the daemon with deterministic fixtures and explicit compatibility behavior.
 
 ## Phase 2: Tauri shell and secure daemon lifecycle
 
-Create `apps/desktop` only after Phase 0 approves the package boundary.
+The Phase 0 package boundary is approved and the initial `apps/desktop` shell
+scaffold exists. Complete the native responsibilities below before claiming
+the Phase 2 exit gate.
 
 ### Native responsibilities
 

@@ -1,0 +1,20 @@
+[package]
+name = "intentloom-desktop"
+version = "0.6.0-beta.1"
+description = "Intentloom Desktop native shell"
+authors = ["Intentloom maintainers"]
+edition = "2021"
+
+[build-dependencies]
+tauri-build = { version = "2.4", features = [] }
+
+[dependencies]
+getrandom = "0.3"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tauri = { version = "2.11", features = [] }
+tauri-plugin-dialog = "2.7"
+tokio = { version = "1", features = ["io-util", "net", "rt", "time"] }
+
+[features]
+custom-protocol = ["tauri/custom-protocol"]

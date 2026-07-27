@@ -6,6 +6,7 @@ import {
   readFile,
   readdir,
   readlink,
+  realpath,
   stat,
   symlink,
   writeFile,
@@ -15,6 +16,8 @@ import { join, resolve } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
 import {
   createDoctorRequest,
+  createProjectDiffRequest,
+  createProjectTimelineRequest,
   createInspectRequest,
   createSecurityAuditRequest,
   createMemorySearchRequest,
@@ -39,6 +42,12 @@ import {
   summarizeProjectWorkflowTransitionIntervals,
 } from "../packages/application/src/index.js";
 import {
+  DaemonClientError,
+  requestDaemonDiff,
+  requestDaemonInfo,
+  requestDaemonInspect,
+  requestDaemonDoctor,
+  requestDaemonTimeline,
   startLocalDaemon,
   type LocalDaemon,
 } from "../packages/daemon/src/index.js";
@@ -169,6 +178,363 @@ function sendRequest(
 }
 
 describe.skipIf(process.platform === "win32")("local daemon", () => {
+  it("discovers the daemon version, bounded limits, and enabled capabilities", async () => {
+    const directory = await mkdtemp(join(tmpdir(), "intentloomd-"));
+    const endpoint = join(directory, "daemon.sock");
+    const daemon = await startLocalDaemon({
+      endpoint,
+      sessionToken: "c".repeat(32),
+      daemonVersion: "0.6.0-test",
+      doctor: async () => ({ findings: [], diagnostics: [], exitCode: 0 }),
+    });
+    daemons.push(daemon);
+
+    await expect(
+      requestDaemonInfo({
+        endpoint,
+        sessionToken: "c".repeat(32),
+      }),
+    ).resolves.toMatchObject({
+      daemonVersion: "0.6.0-test",
+      compatibility: {
+        status: "compatible",
+        clientProtocolVersion: 1,
+        daemonProtocolVersion: 1,
+      },
+      capabilities: [
+        {
+          method: "intentloom.daemon.info.v1",
+          operation: "daemon.info",
+          classification: "read-only",
+        },
+        {
+          method: "intentloom.project.doctor.v1",
+          operation: "project.doctor",
+          classification: "read-only",
+        },
+      ],
+      limits: {
+        maxMessageBytes: 1024 * 1024,
+        maxResponseBytes: 1024 * 1024,
+        maxConnections: 16,
+        requestTimeoutMs: 30_000,
+      },
+    });
+    await expect(
+      requestDaemonInfo({
+        endpoint,
+        sessionToken: "c".repeat(32),
+        clientProtocolVersion: 2,
+      }),
+    ).resolves.toMatchObject({
+      compatibility: {
+        status: "incompatible",
+        clientProtocolVersion: 2,
+        daemonProtocolVersion: 1,
+      },
+    });
+  });
+
+  it("returns a structured authentication error from the typed client", async () => {
+    const directory = await mkdtemp(join(tmpdir(), "intentloomd-"));
+    const endpoint = join(directory, "daemon.sock");
+    const daemon = await startLocalDaemon({
+      endpoint,
+      sessionToken: "d".repeat(32),
+    });
+    daemons.push(daemon);
+
+    await expect(
+      requestDaemonInfo({ endpoint, sessionToken: "wrong".repeat(8) }),
+    ).rejects.toMatchObject<DaemonClientError>({
+      code: "authentication_failed",
+      message: "authentication failed",
+      retryable: false,
+    });
+  });
+
+  it("invokes typed Inspect and Doctor clients through the shared transport", async () => {
+    const parent = await mkdtemp(join(tmpdir(), "intentloomd-inspect-"));
+    const root = join(parent, "project");
+    const endpoint = join(parent, "daemon.sock");
+    await mkdir(root);
+    const canonicalRoot = await realpath(root);
+    const daemon = await startLocalDaemon({
+      endpoint,
+      sessionToken: "i".repeat(32),
+      enforceCanonicalRoots: true,
+      inspect: async (request) => ({
+        projectId: "project-local",
+        root: request.params.root,
+      }),
+      doctor: async () => ({ findings: [], diagnostics: [], exitCode: 0 }),
+      diff: async (request) => ({
+        operationVersion: 1,
+        root: request.params.root,
+        changes: [],
+        diagnostics: [],
+      }),
+      timeline: async (request) => ({
+        operationVersion: 1,
+        root: request.params.root,
+        caseType: "release",
+        caseId: request.params.caseId,
+        quality: "complete",
+        events: [],
+        findings: [],
+        diagnostics: [],
+      }),
+    });
+    daemons.push(daemon);
+
+    await expect(
+      requestDaemonInspect({
+        endpoint,
+        sessionToken: "i".repeat(32),
+        root,
+      }),
+    ).resolves.toEqual({
+      protocolVersion: 1,
+      projectId: "project-local",
+      root: canonicalRoot,
+    });
+    await expect(
+      requestDaemonDoctor({
+        endpoint,
+        sessionToken: "i".repeat(32),
+        request: createDoctorRequest(1, {
+          root,
+          profile: "generic",
+          adapters: [],
+        }),
+      }),
+    ).resolves.toMatchObject({
+      protocolVersion: 1,
+      findings: [],
+      diagnostics: [],
+      exitCode: 0,
+    });
+    await expect(
+      requestDaemonDoctor({
+        endpoint,
+        sessionToken: "wrong".repeat(8),
+        request: createDoctorRequest(2, {
+          root,
+          profile: "generic",
+          adapters: [],
+        }),
+      }),
+    ).rejects.toMatchObject<DaemonClientError>({
+      code: "authentication_failed",
+      retryable: false,
+    });
+    const info = await requestDaemonInfo({
+      endpoint,
+      sessionToken: "i".repeat(32),
+    });
+    expect(info.capabilities.map(({ method }) => method)).toEqual([
+      "intentloom.daemon.info.v1",
+      "intentloom.project.doctor.v1",
+      "intentloom.project.inspect.v1",
+      "intentloom.project.diff.v1",
+      "intentloom.project.timeline.v1",
+    ]);
+  });
+
+  it("invokes typed Diff and root-bound Timeline operations through local IPC", async () => {
+    const parent = await mkdtemp(join(tmpdir(), "intentloomd-project-"));
+    const root = join(parent, "project");
+    const endpoint = join(parent, "daemon.sock");
+    await mkdir(root);
+    const canonicalRoot = await realpath(root);
+    const daemon = await startLocalDaemon({
+      endpoint,
+      sessionToken: "g".repeat(32),
+      enforceCanonicalRoots: true,
+      diff: async (request) => ({
+        operationVersion: 1,
+        root: request.params.root,
+        changes: [
+          {
+            path: ".aif/config.yaml",
+            kind: "create",
+            reason: "configuration is missing",
+          },
+        ],
+        diagnostics: [],
+      }),
+      timeline: async (request) => ({
+        operationVersion: 1,
+        root: request.params.root,
+        caseType: "release",
+        caseId: request.params.caseId,
+        quality: "complete",
+        events: [],
+        findings: [],
+        diagnostics: [],
+      }),
+    });
+    daemons.push(daemon);
+
+    await expect(
+      requestDaemonDiff({
+        endpoint,
+        sessionToken: "g".repeat(32),
+        root,
+        profile: "generic",
+        adapters: ["codex"],
+      }),
+    ).resolves.toMatchObject({
+      root: canonicalRoot,
+      changes: [{ path: ".aif/config.yaml", kind: "create" }],
+    });
+    await expect(
+      requestDaemonTimeline({
+        endpoint,
+        sessionToken: "g".repeat(32),
+        root,
+        caseId: "release:test",
+      }),
+    ).resolves.toMatchObject({
+      root: canonicalRoot,
+      caseId: "release:test",
+      quality: "complete",
+    });
+    expect(
+      createProjectDiffRequest(1, {
+        root,
+        profile: "generic",
+        adapters: ["codex"],
+      }).method,
+    ).toBe("intentloom.project.diff.v1");
+    expect(
+      createProjectTimelineRequest(1, { root, caseId: "release:test" }).method,
+    ).toBe("intentloom.project.timeline.v1");
+  });
+
+  it("rejects a symlink project root with an explicit stale-root error", async () => {
+    const parent = await mkdtemp(join(tmpdir(), "intentloomd-root-"));
+    const target = join(parent, "target");
+    const root = join(parent, "project");
+    const endpoint = join(parent, "daemon.sock");
+    await mkdir(target);
+    await symlink(target, root);
+    const daemon = await startLocalDaemon({
+      endpoint,
+      sessionToken: "h".repeat(32),
+      enforceCanonicalRoots: true,
+      timeline: async () => ({
+        operationVersion: 1,
+        root: target,
+        caseType: "release",
+        caseId: "release:test",
+        quality: "complete",
+        events: [],
+        findings: [],
+        diagnostics: [],
+      }),
+    });
+    daemons.push(daemon);
+
+    await expect(
+      requestDaemonTimeline({
+        endpoint,
+        sessionToken: "h".repeat(32),
+        root,
+        caseId: "release:test",
+      }),
+    ).rejects.toMatchObject<DaemonClientError>({
+      code: "stale_root",
+      message: "project root is a symbolic link and is not stable",
+    });
+  });
+
+  it("reports cancellation before opening a daemon request", async () => {
+    const controller = new AbortController();
+    controller.abort();
+
+    await expect(
+      requestDaemonInfo({
+        endpoint: join(tmpdir(), "not-running.sock"),
+        sessionToken: "e".repeat(32),
+        signal: controller.signal,
+      }),
+    ).rejects.toMatchObject<DaemonClientError>({
+      code: "cancelled",
+      retryable: false,
+    });
+  });
+
+  it("cancels an in-flight read-only transport without pretending to cancel the operation", async () => {
+    const parent = await mkdtemp(join(tmpdir(), "intentloomd-cancel-"));
+    const root = join(parent, "project");
+    const endpoint = join(parent, "daemon.sock");
+    await mkdir(root);
+    let completed = false;
+    const controller = new AbortController();
+    const daemon = await startLocalDaemon({
+      endpoint,
+      sessionToken: "j".repeat(32),
+      enforceCanonicalRoots: true,
+      timeline: async (request) => {
+        setTimeout(() => controller.abort(), 5);
+        await new Promise((resolve) => setTimeout(resolve, 50));
+        completed = true;
+        return {
+          operationVersion: 1,
+          root: request.params.root,
+          caseType: "release",
+          caseId: request.params.caseId,
+          quality: "complete",
+          events: [],
+          findings: [],
+          diagnostics: [],
+        };
+      },
+    });
+    daemons.push(daemon);
+    const request = requestDaemonTimeline({
+      endpoint,
+      sessionToken: "j".repeat(32),
+      root,
+      caseId: "release:cancel",
+      signal: controller.signal,
+    });
+
+    await expect(request).rejects.toMatchObject<DaemonClientError>({
+      code: "cancelled",
+      retryable: false,
+    });
+    await new Promise((resolve) => setTimeout(resolve, 75));
+    expect(completed).toBe(true);
+  });
+
+  it("labels disabled methods as unsupported capabilities on the wire", async () => {
+    const directory = await mkdtemp(join(tmpdir(), "intentloomd-"));
+    const endpoint = join(directory, "daemon.sock");
+    const daemon = await startLocalDaemon({
+      endpoint,
+      sessionToken: "f".repeat(32),
+      doctor: async () => ({ findings: [], diagnostics: [], exitCode: 0 }),
+    });
+    daemons.push(daemon);
+
+    await expect(
+      rawRequest(
+        endpoint,
+        JSON.stringify({
+          token: "f".repeat(32),
+          request: createInspectRequest(1, { root: "/project" }),
+        }),
+      ),
+    ).resolves.toMatchObject({
+      error: {
+        code: -32601,
+        data: { clientErrorCode: "unsupported_capability" },
+      },
+    });
+  });
+
   it("requires a session token and returns a doctor response", async () => {
     const directory = await mkdtemp(join(tmpdir(), "intentloomd-"));
     const endpoint = join(directory, "daemon.sock");
@@ -545,7 +911,7 @@ describe.skipIf(process.platform === "win32")("local daemon", () => {
         { stdout: () => undefined, stderr: (message) => errors.push(message) },
       ),
     ).resolves.toBe(2);
-    expect(errors).toEqual(["daemon returned an invalid response"]);
+    expect(errors).toEqual(["authentication failed"]);
   });
 
   it("requires explicit paired doctor daemon options", async () => {

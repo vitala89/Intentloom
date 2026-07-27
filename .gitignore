@@ -4,6 +4,12 @@ packages/*/**/*.d.ts
 packages/*/**/*.d.ts.map
 packages/*/**/*.js
 *.tsbuildinfo
+apps/*/dist/
+apps/*/node_modules/
+apps/*/*.tsbuildinfo
+apps/*/src-tauri/target/
+apps/*/src-tauri/gen/
+apps/*/src-tauri/resources/
 
 # Local-only Intentloom planning material. Never commit by accident.
 .intentloom-private/

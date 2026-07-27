@@ -13,6 +13,7 @@
     "test": "vitest run",
     "lint": "tsc -b --pretty false",
     "format:check": "prettier --check \"**/*.{ts,md,json,yaml,yml}\"",
+    "desktop:prepare-sidecar": "node scripts/desktop/prepare-tauri-sidecar.mjs",
     "pack:cli": "pnpm --filter ./packages/cli pack --pack-destination ./artifacts"
   },
   "dependencies": {

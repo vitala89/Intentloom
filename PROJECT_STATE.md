@@ -50,12 +50,20 @@ before a new release or implementation milestone is declared complete.
 
 ## Active focus
 
-1. Merge the Desktop v0.6 roadmap, design, and execution baseline.
-2. Approve the Desktop stack and self-contained daemon distribution ADR.
-3. Inventory and freeze capability discovery, Inspect, Doctor, Diff, Timeline,
-   compatibility, cancellation, and structured client errors.
-4. Complete System Designer handoff before visual product implementation.
-5. Keep stable v1 compatibility planning as a later release gate and keep
+1. Complete the Phase 1 typed contract freeze: all five required operations
+   now have typed client invocation paths and connected read-only Desktop views.
+   Overview, Inspect, Doctor, Diff Review, and Timeline are implemented and
+   validated. Legacy-handler root coverage, application-level
+   cancellation/progress, and Workspace RPC coverage remain follow-up hardening.
+2. Complete Windows and Linux self-contained daemon feasibility runs before
+   packaged Desktop claims. macOS SEA feasibility is locally validated
+   (doctor response confirmed, sidecar embedded in Intentloom.app at 114 MB).
+   The expanded `desktop-sea-feasibility.yml` workflow is ready; a GitHub
+   Actions green run on all three platforms remains required to close this item.
+3. Deliver automated axe-core/Playwright a11y testing once maintainer authorization
+   for new devDependencies is granted. The WCAG 2.x code-level baseline is
+   implemented; dialog focus trap and color contrast measurement remain gaps.
+4. Keep stable v1 compatibility planning as a later release gate and keep
    bottleneck inference, remote ingestion, and model-based judgments behind
    separate approved specifications and threat review.
 
@@ -76,29 +84,89 @@ before a new release or implementation milestone is declared complete.
 ## Current blockers and unknowns
 
 - Any expansion to bottleneck, performance, causal, actor, repository-reading, persisted, remote, or model-assisted analysis requires a new ADR, specification, and threat review.
-- PR #84 through PR #93 are merged; this planning branch was created from
-  verified remote `main` commit `05aa0c6`. PR #90 remote compatibility CI
-  passed all 12 checks.
+- PR #84 through PR #95 are merged; current remote `main` is verified at
+  `7025051`.
 - npm currently reports `latest=0.1.0-alpha.3` and `next=0.5.0-beta.1`.
 - Workspace packages are synchronized to `0.5.0-beta.1`; Git tag
   `v0.5.0-beta.1` is pushed and npm publication is complete.
 - Published tarball registry shasum is
-  `58b2e27eb66789f57c1e91cec46aea710a6fc241`; local build remains blocked by
-  the interrupted dependency restore missing `@types/node`, while remote CI
-  verified the release commit.
-- PR #91 was merged into the already closed PR #90 branch rather than `main`;
-  its Desktop/TUI roadmap intent must be recovered through a clean `main`-based
-  change.
-- Draft PR #94 currently places Desktop downstream of the v1 compatibility
-  contract. It must be reconciled with the approved pre-1.0 v0.6 milestone
-  before merge.
-- `apps/desktop` does not exist. The UI framework, Tauri boundary, daemon
-  lifecycle, token ownership, and self-contained packaged daemon strategy need
-  an accepted ADR.
-- Inspect and Doctor have application, protocol, and daemon paths. Project
-  Diff, root-bound local Timeline, capability discovery, operation
-  cancellation/progress, complete client errors, and Workspace RPC coverage
-  require implementation inventory and contract work.
+  `58b2e27eb66789f57c1e91cec46aea710a6fc241`; the current Desktop branch
+  restored its locked dependencies and passes the local build and full test
+  suite.
+- PR #91 did not land the Desktop/TUI roadmap intent on `main`; PR #95
+  recovered the Desktop design and execution baseline from clean `main` and
+  merged it as commit `7025051`.
+- PR #94 is merged as commit `7402687`. Its v1 compatibility plan is retained
+  as a later stability gate and does not block the pre-1.0 v0.6 Desktop
+  milestone.
+- ADR-0042 is accepted. The macOS arm64 SEA feasibility run and local Tauri
+  `.app`/`.dmg` package smoke passed, including embedded sidecar hash and
+  catalog-resource verification; a three-platform GitHub Actions feasibility
+  workflow is now defined. A green workflow run on Windows, Linux, and macOS
+  remains required before packaged Desktop readiness is claimed. A private
+  `apps/desktop` Tauri/React/Vite shell scaffold now exists with Unix native
+  lifecycle, token ownership, canonical project selection, bounded IPC, and a
+  Tokio Windows named-pipe source path; native Windows/Linux validation remains.
+- The latest post-merge compatibility run for `main` has one Windows Node 24
+  timeout in `tests/adapter-packed-process.test.ts`; the other matrix jobs
+  passed. This is an existing validation warning, not a Desktop implementation
+  result.
+- The accepted UI framework, Tauri boundary, daemon lifecycle, token ownership,
+  and self-contained packaged daemon strategy are recorded in ADR-0042. The
+  System Designer handoff is approved, Phase 1 contracts are validated, and
+  the native bridge is connected to the fixed daemon launch/attach boundary;
+  the webview now renders validated daemon information, Inspect identity,
+  Doctor findings, and ProjectDiff changes in connected read-only Overview,
+  Inspect, Doctor, and Diff Review views. Timeline and cross-platform transport
+  remain follow-up work.
+- Inspect and Doctor have application, protocol, and daemon paths. The
+  `intentloom.daemon.info.v1` discovery contract now reports enabled methods,
+  read-only/mutating classification, bounded limits, daemon version, and exact
+  protocol compatibility. Project Diff and root-bound local Timeline now have
+  typed protocol/client/daemon paths over existing read-only application
+  operations, including bounded Timeline inputs and stale-root- Application-level transport cancellation delivered: `desktopClient` call() races
+  `invoke()` against an `AbortSignal`, matching PHASE1_CONTRACTS.md. A compact
+  `.cancel-button` renders in the topbar during any loading operation (`isConnecting`,
+  `inspectStatus`, `diffStatus`, `timelineStatus`), calling `cancelOperation()`.
+- Command Palette (`⌘K` / `Ctrl+K`) & Settings View delivered: global keyboard shortcut
+  opens an accessible filterable command modal (`CommandPaletteModal`) with instant
+  search, arrow navigation, and enter execution for all 6 views and primary actions.
+  Settings & Diagnostics view renders theme settings, daemon IPC diagnostics,
+  project data boundary declaration, and a keyboard shortcuts cheat sheet. All Phase 4
+  items of `DESKTOP_V0_6_IMPLEMENTATION_PLAN.md` are complete. Full deterministic validation,
+  legacy-handler root coverage, application-level cancellation/progress,
+  complete project-operation error mapping, and Workspace RPC coverage still
+  require implementation work.
+- The System Designer handoff is approved by the maintainer on 2026-07-27;
+  visual implementation may begin within ADR-0042 boundaries.
+- The read-only Desktop shell now renders connected data across all five
+  approved views: Overview, Inspect, Doctor, Diff Review, and Timeline. The
+  Timeline view covers quality badges (complete/bounded/unavailable), findings
+  chips, a keyboard-accessible event table (source/trust/timestamp/commit/paths),
+  a detail panel per event, quality notice banners for bounded and unavailable
+  results, and all nine lifecycle states. No apply, mutation, shell, or network
+  access was added. Timeline state is cleared on root change to prevent stale
+  data across views.
+- Root Confirmation UX is implemented: a backdrop-blur overlay appears when
+  the user attempts to switch the project root while any view holds loaded data.
+  The overlay lists the views that will be cleared and offers "Change project" or
+  "Keep current". The confirmation is skipped when no data is loaded (first
+  selection). Reconnect Retry Depth is implemented: `connectDaemon` performs one
+  automatic retry (1500ms delay) on transient `disconnected` errors, with a
+  visible amber notice in the Overview. Protocol mismatch and root errors are not
+  retried automatically.
+- macOS SEA feasibility spike validated locally: SEA blob (392 kB) injected into
+  a 105 MB `intentloomd-sea` executable via `postject@1.0.0-alpha.6`. Daemon
+  started from the SEA binary, responded to a Doctor request (`protocolVersion:
+1`, `exitCode: 3`, 5 findings), shut down gracefully, and removed its Unix
+  socket. `pnpm desktop:prepare-sidecar` copied the SEA binary to
+  `apps/desktop/src-tauri/resources/intentloomd` (105 MB, 0755). Tauri macOS
+  `.app` with packaged sidecar produced at 114 MB with sidecar embedded at
+  `Contents/Resources/resources/intentloomd`. The `desktop-sea-feasibility.yml`
+  CI workflow expanded with Linux apt deps, Rust toolchain + cache, SEA
+  assertion step, conditional Tauri bundle steps (Linux .deb / macOS .app),
+  and artifact upload. Windows CI runs sidecar boundary verification only
+  (no code signing available for full bundle).
 
 ## Current milestone
 
@@ -121,12 +189,14 @@ Expected outputs:
 
 ## Next platform milestone
 
-Merge the
-[Desktop v0.6 implementation plan](docs/roadmap/DESKTOP_V0_6_IMPLEMENTATION_PLAN.md),
-approve the stack/distribution ADR, and implement the client contract freeze
-before creating product pages. Then deliver the Tauri 2 read-only vertical
-slice and harden `intentloom ui` to parity. Stable v1 compatibility planning
-uses this client evidence later and does not block the v0.6 product milestone.
+Continue with the three-platform
+[self-contained daemon SEA feasibility workflow](.github/workflows/desktop-sea-feasibility.yml)
+to validate Windows and Linux packaging. Then deliver Root Confirmation UX,
+reconnect/retry depth, and accessibility automation as hardening steps before
+the packaged read-only flow evidence claim. The discovery/error and Diff/Timeline
+slices are complete and recorded in [PHASE1_CONTRACTS.md](docs/desktop/PHASE1_CONTRACTS.md).
+Stable v1 compatibility planning uses this client evidence later and does not
+block the v0.6 product milestone.
 
 The [v1.0 compatibility plan](docs/roadmap/V1_0_STABLE_COMPATIBILITY_PLAN.md)
 remains the later stability gate. Its first compatibility-contract ADR/specification
