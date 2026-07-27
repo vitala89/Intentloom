@@ -22,7 +22,10 @@ later justifies separation.
 
 ## Current phase
 
-Engineering Process Intelligence & Agent Memory Evaluation System — conformance, workflow variants, observed duration metrics, conformance trend summary, deterministic workflow repetition summary, and transition intervals are merged into `main` at `f6232e4`; workspace release preparation is synchronized to `0.5.0-beta.1`, while npm still serves `0.4.0-beta.1` under `next`.
+`v0.5.0-beta.1` is released through Git tag and npm `next`. The next approved
+product milestone is planning and delivery of `v0.6.0-beta.1`: a Tauri 2
+read-only Desktop vertical slice over the standalone daemon, followed by TUI
+parity and hardening over the same contracts.
 
 The project must avoid premature structural migration. New applications,
 packages, and repository boundaries are introduced only when roadmap triggers
@@ -47,8 +50,14 @@ before a new release or implementation milestone is declared complete.
 
 ## Active focus
 
-1. Establish and maintain one canonical release-state matrix for published npm artifacts versus current `main` capabilities.
-2. Keep bottleneck inference, remote ingestion, and model-based judgments behind separate approved specifications and threat review.
+1. Merge the Desktop v0.6 roadmap, design, and execution baseline.
+2. Approve the Desktop stack and self-contained daemon distribution ADR.
+3. Inventory and freeze capability discovery, Inspect, Doctor, Diff, Timeline,
+   compatibility, cancellation, and structured client errors.
+4. Complete System Designer handoff before visual product implementation.
+5. Keep stable v1 compatibility planning as a later release gate and keep
+   bottleneck inference, remote ingestion, and model-based judgments behind
+   separate approved specifications and threat review.
 
 ## Architectural invariants
 
@@ -67,8 +76,9 @@ before a new release or implementation milestone is declared complete.
 ## Current blockers and unknowns
 
 - Any expansion to bottleneck, performance, causal, actor, repository-reading, persisted, remote, or model-assisted analysis requires a new ADR, specification, and threat review.
-- PR #84 through PR #92 are merged; current local `main` is `9966066`. PR #90
-  remote compatibility CI passed all 12 checks.
+- PR #84 through PR #93 are merged; this planning branch was created from
+  verified remote `main` commit `05aa0c6`. PR #90 remote compatibility CI
+  passed all 12 checks.
 - npm currently reports `latest=0.1.0-alpha.3` and `next=0.5.0-beta.1`.
 - Workspace packages are synchronized to `0.5.0-beta.1`; Git tag
   `v0.5.0-beta.1` is pushed and npm publication is complete.
@@ -76,31 +86,52 @@ before a new release or implementation milestone is declared complete.
   `58b2e27eb66789f57c1e91cec46aea710a6fc241`; local build remains blocked by
   the interrupted dependency restore missing `@types/node`, while remote CI
   verified the release commit.
+- PR #91 was merged into the already closed PR #90 branch rather than `main`;
+  its Desktop/TUI roadmap intent must be recovered through a clean `main`-based
+  change.
+- Draft PR #94 currently places Desktop downstream of the v1 compatibility
+  contract. It must be reconciled with the approved pre-1.0 v0.6 milestone
+  before merge.
+- `apps/desktop` does not exist. The UI framework, Tauri boundary, daemon
+  lifecycle, token ownership, and self-contained packaged daemon strategy need
+  an accepted ADR.
+- Inspect and Doctor have application, protocol, and daemon paths. Project
+  Diff, root-bound local Timeline, capability discovery, operation
+  cancellation/progress, complete client errors, and Workspace RPC coverage
+  require implementation inventory and contract work.
 
 ## Current milestone
 
-The first Engineering Process Intelligence & Agent Memory Evaluation increment,
-including transition intervals, is complete and merged in `main`; the
-`v0.5.0-beta.1` release-readiness, tag, npm publication, and registry
-verification gates are complete; the next active milestone is planning the
-stable compatibility path toward `v1.0.0`.
+The v0.5 Engineering Process Intelligence increment and release gates are
+complete. The active product direction is `v0.6.0-beta.1`.
 
 Expected outputs:
 
-- versioned protocol contracts for deterministic, project-scoped conformance, workflow-variant, workflow-duration, and procedural-memory evaluation reads;
-- versioned protocol contracts for deterministic workflow repetition summaries;
-- versioned protocol contracts for deterministic observed transition interval summaries;
-- shared application operations and authenticated local daemon handlers for the read-only operations;
-- ADR-0020, ADR-0037, ADR-0038, and ADR-0039 documenting canonical boundaries and safety constraints.
-- ADR-0040 documenting the deterministic workflow repetition boundary and safety constraints.
-- ADR-0041 documenting the deterministic observed transition interval boundary and safety constraints.
-- `docs/releases/RELEASE_STATE.md` documenting capability availability across `main`, npm, CLI, daemon, MCP, and experimental surfaces.
+- accepted Desktop stack and distribution ADR;
+- versioned capability discovery and client compatibility behavior;
+- typed daemon operations for the first read-only project slice;
+- official `apps/desktop` Tauri 2 client;
+- approved light and dark token-based design system;
+- packaged `Select project → Inspect → Doctor → Diff → Timeline` flow;
+- explicit daemon mismatch, disconnect, cancellation, and recovery behavior;
+- byte-for-byte read-only evidence;
+- TUI parity over the stabilized shared contracts;
+- cross-platform packaging, accessibility, dogfooding, and release-readiness
+  evidence.
 
 ## Next platform milestone
 
-Review [the v1.0 compatibility plan](docs/roadmap/V1_0_STABLE_COMPATIBILITY_PLAN.md)
-and draft the first compatibility-contract ADR/specification; implementation
-of Desktop or hosted features remains downstream of that contract.
+Merge the
+[Desktop v0.6 implementation plan](docs/roadmap/DESKTOP_V0_6_IMPLEMENTATION_PLAN.md),
+approve the stack/distribution ADR, and implement the client contract freeze
+before creating product pages. Then deliver the Tauri 2 read-only vertical
+slice and harden `intentloom ui` to parity. Stable v1 compatibility planning
+uses this client evidence later and does not block the v0.6 product milestone.
+
+The [v1.0 compatibility plan](docs/roadmap/V1_0_STABLE_COMPATIBILITY_PLAN.md)
+remains the later stability gate. Its first compatibility-contract ADR/specification
+should be prepared alongside the Desktop work where it does not block the v0.6
+read-only milestone.
 
 ## State update rules
 
