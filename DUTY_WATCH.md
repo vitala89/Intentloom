@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **complete** — Phase 6 TUI parity (`intentloom ui`) implemented; PR #98 green on CI across Windows, Linux, and macOS
+Status: **PR #98 merged into main; PR #99 opened** — Phase 6 TUI parity (`intentloom ui`) completed; PR https://github.com/vitala89/Intentloom/pull/99 opened for review with CI in progress across Windows, Linux, and macOS
 
 Active branch: `codex/desktop-v06-stack-adr`
 
-Current objective: PR #98 is ready for maintainer review and merge into `main`.
+Current objective: monitor GitHub Actions CI for PR #99 and obtain maintainer approval to merge into `main`.
 
-Next first action: merge PR #98 upon maintainer approval and tag the `v0.6.0-beta.1` Desktop milestone release.
+Next first action: verify `gh pr checks 99` until green, then tag the `v0.6.0-beta.1` Desktop milestone release.
 
 ## Watch rules
 
@@ -47,8 +47,8 @@ entry directly below this section.
 - **Status:** complete (validated)
 - **Agent/tool:** Antigravity — CLI TUI formatting & view routing, InteractiveWorkspaceState extension
 - **Branch:** `codex/desktop-v06-stack-adr`
-- **Commits:** local uncommitted changes
-- **Pull request:** https://github.com/vitala89/Intentloom/pull/98
+- **Commits:** `c9f3636` (`feat(cli): implement Phase 6 TUI parity for intentloom ui over shared application contracts`)
+- **Pull request:** https://github.com/vitala89/Intentloom/pull/99 (CI in progress)
 - **Objective:** Complete Phase 6 TUI parity (`intentloom ui [PROJECT_PATH|--root PATH] [--view inspect|doctor|diff|timeline] [--json]`) over stabilized shared application contracts.
 - **Completed:**
   - **`packages/application/src/index.ts` — `InteractiveWorkspaceState`:** Extended interface to include `inspect` (`ProjectInspection`), `diff` (`Plan`), and `timeline` (`ProjectTimeline`) alongside `findings`, `auditReport`, and `sessions`. Updated `getInteractiveWorkspaceState` to collect full read-only workspace state concurrently via `Promise.all` with zero project mutations.
