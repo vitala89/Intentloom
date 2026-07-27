@@ -9,7 +9,7 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **complete** — PR https://github.com/vitala89/Intentloom/pull/98 created and green on GitHub Actions CI across all three platforms (Windows, Linux, macOS)
+Status: **complete** — Phase 6 TUI parity (`intentloom ui`) implemented; PR #98 green on CI across Windows, Linux, and macOS
 
 Active branch: `codex/desktop-v06-stack-adr`
 
@@ -41,6 +41,22 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-28, Phase 6 TUI Parity & Hardening (`intentloom ui`)
+
+- **Status:** complete (validated)
+- **Agent/tool:** Antigravity — CLI TUI formatting & view routing, InteractiveWorkspaceState extension
+- **Branch:** `codex/desktop-v06-stack-adr`
+- **Commits:** local uncommitted changes
+- **Pull request:** https://github.com/vitala89/Intentloom/pull/98
+- **Objective:** Complete Phase 6 TUI parity (`intentloom ui [PROJECT_PATH|--root PATH] [--view inspect|doctor|diff|timeline] [--json]`) over stabilized shared application contracts.
+- **Completed:**
+  - **`packages/application/src/index.ts` — `InteractiveWorkspaceState`:** Extended interface to include `inspect` (`ProjectInspection`), `diff` (`Plan`), and `timeline` (`ProjectTimeline`) alongside `findings`, `auditReport`, and `sessions`. Updated `getInteractiveWorkspaceState` to collect full read-only workspace state concurrently via `Promise.all` with zero project mutations.
+  - **`packages/cli/src/command.ts` — `intentloom ui`:** Registered `--view` option flag in `optionValues`. Implemented rich formatted terminal rendering for `--view inspect` (profile, adapters, instruction paths, findings), `--view doctor` (severity counts, finding list, paths, remediation), `--view diff` (change kinds, paths, reasons), and `--view timeline` (case ID, quality, timestamped events list). `--json` flag outputs the complete structured `InteractiveWorkspaceState` payload matching Desktop data models.
+  - **`tests/interactive-ui.test.ts`:** Added TUI view routing tests (`inspect`, `doctor`, `diff`, `timeline`), text-formatted terminal output assertions, and zero-mutation read-only guarantees.
+- **Validation:** `pnpm typecheck` passed (0 errors); `pnpm format:check` passed; `git diff --check` passed; `pnpm test` passed — 83 files, 742 tests passed, 3 skipped.
+- **Decisions and assumptions:** `intentloom ui` shares exact application operations with Desktop, maintaining 100% read-only zero mutation guarantees.
+- **Evidence:** `packages/application/src/index.ts`, `packages/cli/src/command.ts`, `tests/interactive-ui.test.ts`.
 
 ### 2026-07-28, Command Palette (⌘K / Ctrl+K) + Settings & Diagnostics View
 
