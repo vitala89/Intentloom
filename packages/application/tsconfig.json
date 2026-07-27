@@ -5,6 +5,7 @@
     { "path": "../core" },
     { "path": "../adapters" },
     { "path": "../evidence-analysis" },
+    { "path": "../evidence-git" },
     { "path": "../protocol" },
     { "path": "../validator" }
   ],

@@ -1,6 +1,6 @@
 # Intentloom Desktop v0.6 Design Brief
 
-Status: ready for System Designer.
+Status: approved by maintainer on 2026-07-27.
 
 Product stage: `v0.6.0-beta.1`.
 

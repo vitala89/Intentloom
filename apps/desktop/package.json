@@ -1,0 +1,30 @@
+{
+  "name": "@intentloom/desktop",
+  "version": "0.6.0-beta.1",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "vite --host 127.0.0.1 --port 1420",
+    "build": "tsc -b && vite build",
+    "package": "tauri build --config src-tauri/tauri.packaging.conf.json",
+    "preview": "vite preview",
+    "tauri": "tauri",
+    "typecheck": "tsc -b --pretty false"
+  },
+  "dependencies": {
+    "@intentloom/protocol": "workspace:*",
+    "@tauri-apps/api": "^2.11.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.11.0",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "@vitejs/plugin-react": "^6.0.1",
+    "vite": "^8.1.0"
+  }
+}

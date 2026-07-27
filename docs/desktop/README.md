@@ -1,6 +1,6 @@
 # Intentloom Desktop
 
-Status: planned `v0.6.0-beta.1` product milestone.
+Status: `v0.6.0-beta.1` implementation scaffold in progress.
 
 Intentloom Desktop is the official local graphical client for the existing
 Intentloom platform. It is built over the standalone authenticated daemon and
@@ -11,10 +11,13 @@ TypeScript-first core, application operations, or transaction engine.
 
 1. [Desktop design brief](DESIGN_BRIEF.md)
 2. [Desktop v0.6 implementation plan](../roadmap/DESKTOP_V0_6_IMPLEMENTATION_PLAN.md)
-3. [Interactive Surfaces and Agent Workspace](../concepts/INTERACTIVE_SURFACES_AND_AGENT_WORKSPACE.md)
-4. [ADR-0032: Second Client Daemon Protocol Contracts](../decisions/ADR-0032-second-client-daemon-protocol-contracts.md)
-5. [ADR-0033: Interactive Surfaces](../decisions/ADR-0033-interactive-surfaces-tui-and-desktop-shell.md)
-6. [Agent execution prompt](AGENT_EXECUTION_PROMPT.md)
+3. [ADR-0042: Desktop Stack and Self-Contained Daemon Distribution](../decisions/ADR-0042-desktop-stack-and-daemon-distribution.md)
+4. [Self-contained daemon SEA feasibility spike](SEA_FEASIBILITY_SPIKE.md)
+5. [Phase 1 client contracts](PHASE1_CONTRACTS.md)
+6. [Interactive Surfaces and Agent Workspace](../concepts/INTERACTIVE_SURFACES_AND_AGENT_WORKSPACE.md)
+7. [ADR-0032: Second Client Daemon Protocol Contracts](../decisions/ADR-0032-second-client-daemon-protocol-contracts.md)
+8. [ADR-0033: Interactive Surfaces](../decisions/ADR-0033-interactive-surfaces-tui-and-desktop-shell.md)
+9. [Agent execution prompt](AGENT_EXECUTION_PROMPT.md)
 
 ## Product sequence
 
@@ -48,9 +51,10 @@ Launch
 → Timeline
 ```
 
-The first slice is read-only. Opening, navigating, refreshing, cancelling, or
-closing the application must leave the selected project byte-for-byte
-unchanged.
+The first slice is read-only. The current shell is intentionally disconnected
+from the daemon until native lifecycle, token ownership, and bounded IPC are
+wired. Opening, navigating, refreshing, cancelling, or closing the connected
+application must leave the selected project byte-for-byte unchanged.
 
 ## Scope labels
 
@@ -86,3 +90,10 @@ The Tauri Rust layer may own native window, dialog, secure process, endpoint,
 token, and IPC transport concerns. It must not reimplement project inspection,
 doctor, diff, timeline, evidence, conformance, ownership, approval, or
 transaction rules.
+
+Packaging requires a platform-matched self-contained daemon artifact. Prepare
+it with `INTENTLOOM_DESKTOP_SIDECAR=/absolute/path/to/intentloomd-sea` and
+`pnpm desktop:prepare-sidecar`, then run
+`pnpm --filter @intentloom/desktop package`. Development `cargo check` keeps
+bundling disabled and never substitutes a system Node runtime for a packaged
+sidecar.

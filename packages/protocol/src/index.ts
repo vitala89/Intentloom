@@ -1,6 +1,10 @@
 export const PROTOCOL_VERSION = 1 as const;
+export const DAEMON_INFO_METHOD = "intentloom.daemon.info.v1" as const;
 export const DOCTOR_METHOD = "intentloom.project.doctor.v1" as const;
 export const INSPECT_METHOD = "intentloom.project.inspect.v1" as const;
+export const PROJECT_DIFF_METHOD = "intentloom.project.diff.v1" as const;
+export const PROJECT_TIMELINE_METHOD =
+  "intentloom.project.timeline.v1" as const;
 export const SECURITY_AUDIT_METHOD = "intentloom.security.audit.v1" as const;
 export const MEMORY_SEARCH_METHOD = "intentloom.memory.search.v1" as const;
 export const MEMORY_EVALUATIONS_LIST_METHOD =
@@ -46,8 +50,134 @@ export interface JsonRpcFailure {
   readonly error: {
     readonly code: -32600 | -32601 | -32602;
     readonly message: string;
+    readonly data?: JsonObject;
   };
 }
+
+export type ClientErrorCode =
+  | "authentication_failed"
+  | "protocol_incompatible"
+  | "unsupported_capability"
+  | "invalid_root"
+  | "stale_root"
+  | "bounded_validation_failed"
+  | "timed_out"
+  | "cancelled"
+  | "disconnected"
+  | "internal_failure";
+
+export type CapabilityClassification = "read-only" | "mutating";
+
+export interface DaemonCapability {
+  readonly method: string;
+  readonly operation: string;
+  readonly classification: CapabilityClassification;
+}
+
+export interface DaemonLimits {
+  readonly maxMessageBytes: number;
+  readonly maxResponseBytes: number;
+  readonly maxConnections: number;
+  readonly requestTimeoutMs: number;
+}
+
+export interface DaemonCompatibility {
+  readonly status: "compatible" | "incompatible";
+  readonly clientProtocolVersion: number;
+  readonly daemonProtocolVersion: typeof PROTOCOL_VERSION;
+  readonly reason?: string;
+}
+
+export interface DaemonInfoParams {
+  readonly protocolVersion: typeof PROTOCOL_VERSION;
+  readonly clientProtocolVersion: number;
+}
+export interface DaemonInfoResult {
+  readonly protocolVersion: typeof PROTOCOL_VERSION;
+  readonly daemonVersion: string;
+  readonly capabilities: readonly DaemonCapability[];
+  readonly limits: DaemonLimits;
+  readonly compatibility: DaemonCompatibility;
+}
+export type DaemonInfoRequest = JsonRpcRequest<
+  typeof DAEMON_INFO_METHOD,
+  DaemonInfoParams
+>;
+export type DaemonInfoResponse = JsonRpcSuccess<DaemonInfoResult>;
+
+export interface ProjectDiffParams {
+  readonly protocolVersion: typeof PROTOCOL_VERSION;
+  readonly root: string;
+  readonly profile: string;
+  readonly adapters: readonly string[];
+}
+export interface ProjectDiffChange {
+  readonly path: string;
+  readonly kind:
+    | "create"
+    | "update"
+    | "conflict"
+    | "modified"
+    | "missing"
+    | "stale"
+    | "security-error";
+  readonly reason: string;
+  readonly content?: string;
+}
+export interface ProjectDiffResult {
+  readonly protocolVersion: typeof PROTOCOL_VERSION;
+  readonly operationVersion: 1;
+  readonly root: string;
+  readonly changes: readonly ProjectDiffChange[];
+  readonly diagnostics: readonly string[];
+}
+export type ProjectDiffRequest = JsonRpcRequest<
+  typeof PROJECT_DIFF_METHOD,
+  ProjectDiffParams
+>;
+export type ProjectDiffResponse = JsonRpcSuccess<ProjectDiffResult>;
+
+export const TIMELINE_DEFAULT_LIMIT = 50;
+export const TIMELINE_MAX_LIMIT = 500;
+export const TIMELINE_DEFAULT_TIMEOUT_MS = 5_000;
+export const TIMELINE_MAX_TIMEOUT_MS = 30_000;
+export const TIMELINE_DEFAULT_MAX_OUTPUT_BYTES = 512 * 1024;
+export const TIMELINE_MAX_OUTPUT_BYTES = 4 * 1024 * 1024;
+
+export interface ProjectTimelineParams {
+  readonly protocolVersion: typeof PROTOCOL_VERSION;
+  readonly root: string;
+  readonly caseId: string;
+  readonly limit: number;
+  readonly timeoutMs: number;
+  readonly maxOutputBytes: number;
+}
+export interface ProjectTimelineEvent {
+  readonly id: string;
+  readonly eventType: "commit";
+  readonly timestamp: number;
+  readonly commitId: string;
+  readonly parents: readonly string[];
+  readonly changedPaths: readonly string[];
+  readonly source: "local-git";
+  readonly trust: "local-observed-unverified";
+}
+export interface ProjectTimelineResult {
+  readonly protocolVersion: typeof PROTOCOL_VERSION;
+  readonly operationVersion: 1;
+  readonly root: string;
+  readonly caseType: "release";
+  readonly caseId: string;
+  readonly quality: "complete" | "bounded" | "unavailable";
+  readonly events: readonly ProjectTimelineEvent[];
+  readonly findings: readonly ("evidence-bounded" | "evidence-unavailable")[];
+  readonly diagnostics: readonly string[];
+}
+export type ProjectTimelineRequest = JsonRpcRequest<
+  typeof PROJECT_TIMELINE_METHOD,
+  ProjectTimelineParams
+>;
+export type ProjectTimelineResponse = JsonRpcSuccess<ProjectTimelineResult>;
 
 export interface DoctorParams {
   readonly protocolVersion: typeof PROTOCOL_VERSION;
@@ -242,8 +372,11 @@ export type SessionGetRequest = JsonRpcRequest<
 export type SessionGetResponse = JsonRpcSuccess<SessionGetResultPayload>;
 
 export type DaemonRequest =
+  | DaemonInfoRequest
   | DoctorRequest
   | InspectRequest
+  | ProjectDiffRequest
+  | ProjectTimelineRequest
   | SecurityAuditRequest
   | MemorySearchRequest
   | MemoryEvaluationsListRequest
@@ -256,8 +389,11 @@ export type DaemonRequest =
   | SessionGetRequest;
 
 export type DaemonResponse =
+  | DaemonInfoResponse
   | DoctorResponse
   | InspectResponse
+  | ProjectDiffResponse
+  | ProjectTimelineResponse
   | SecurityAuditResponse
   | MemorySearchResponse
   | MemoryEvaluationsListResponse
@@ -307,6 +443,45 @@ function stringArray(value: unknown, field: string): readonly string[] {
   );
 }
 
+function positiveInteger(value: unknown, field: string): number {
+  if (typeof value === "number" && Number.isInteger(value) && value > 0)
+    return value;
+  throw new ProtocolValidationError(
+    -32602,
+    `${field} must be a positive integer`,
+  );
+}
+
+function validateTimelineBounds(
+  limit: number,
+  timeoutMs: number,
+  maxOutputBytes: number,
+): void {
+  if (!Number.isInteger(limit) || limit < 1 || limit > TIMELINE_MAX_LIMIT)
+    throw new ProtocolValidationError(
+      -32602,
+      `limit must be between 1 and ${TIMELINE_MAX_LIMIT}`,
+    );
+  if (
+    !Number.isInteger(timeoutMs) ||
+    timeoutMs < 100 ||
+    timeoutMs > TIMELINE_MAX_TIMEOUT_MS
+  )
+    throw new ProtocolValidationError(
+      -32602,
+      `timeoutMs must be between 100 and ${TIMELINE_MAX_TIMEOUT_MS}`,
+    );
+  if (
+    !Number.isInteger(maxOutputBytes) ||
+    maxOutputBytes < 4096 ||
+    maxOutputBytes > TIMELINE_MAX_OUTPUT_BYTES
+  )
+    throw new ProtocolValidationError(
+      -32602,
+      `maxOutputBytes must be between 4096 and ${TIMELINE_MAX_OUTPUT_BYTES}`,
+    );
+}
+
 export function createDoctorRequest(
   id: RequestId,
   params: Omit<DoctorParams, "protocolVersion">,
@@ -320,6 +495,73 @@ export function createDoctorRequest(
       root: params.root,
       profile: params.profile,
       adapters: [...params.adapters],
+    },
+  };
+}
+
+export function createDaemonInfoRequest(
+  id: RequestId,
+  clientProtocolVersion: number = PROTOCOL_VERSION,
+): DaemonInfoRequest {
+  if (!Number.isInteger(clientProtocolVersion) || clientProtocolVersion < 1)
+    throw new ProtocolValidationError(
+      -32602,
+      "clientProtocolVersion must be a positive integer",
+    );
+  return {
+    jsonrpc: "2.0",
+    id,
+    method: DAEMON_INFO_METHOD,
+    params: {
+      protocolVersion: PROTOCOL_VERSION,
+      clientProtocolVersion,
+    },
+  };
+}
+
+export function createProjectDiffRequest(
+  id: RequestId,
+  params: Omit<ProjectDiffParams, "protocolVersion">,
+): ProjectDiffRequest {
+  return {
+    jsonrpc: "2.0",
+    id,
+    method: PROJECT_DIFF_METHOD,
+    params: {
+      protocolVersion: PROTOCOL_VERSION,
+      root: params.root,
+      profile: params.profile,
+      adapters: [...params.adapters],
+    },
+  };
+}
+
+export function createProjectTimelineRequest(
+  id: RequestId,
+  params: Omit<
+    ProjectTimelineParams,
+    "protocolVersion" | "limit" | "timeoutMs" | "maxOutputBytes"
+  > &
+    Partial<
+      Pick<ProjectTimelineParams, "limit" | "timeoutMs" | "maxOutputBytes">
+    >,
+): ProjectTimelineRequest {
+  const limit = params.limit ?? TIMELINE_DEFAULT_LIMIT;
+  const timeoutMs = params.timeoutMs ?? TIMELINE_DEFAULT_TIMEOUT_MS;
+  const maxOutputBytes =
+    params.maxOutputBytes ?? TIMELINE_DEFAULT_MAX_OUTPUT_BYTES;
+  validateTimelineBounds(limit, timeoutMs, maxOutputBytes);
+  return {
+    jsonrpc: "2.0",
+    id,
+    method: PROJECT_TIMELINE_METHOD,
+    params: {
+      protocolVersion: PROTOCOL_VERSION,
+      root: params.root,
+      caseId: params.caseId,
+      limit,
+      timeoutMs,
+      maxOutputBytes,
     },
   };
 }
@@ -506,8 +748,11 @@ export function parseDaemonRequest(value: unknown): DaemonRequest {
     throw new ProtocolValidationError(-32600, "jsonrpc must equal 2.0");
   const id = requestId(value.id);
   const validMethods: readonly string[] = [
+    DAEMON_INFO_METHOD,
     DOCTOR_METHOD,
     INSPECT_METHOD,
+    PROJECT_DIFF_METHOD,
+    PROJECT_TIMELINE_METHOD,
     SECURITY_AUDIT_METHOD,
     MEMORY_SEARCH_METHOD,
     MEMORY_EVALUATIONS_LIST_METHOD,
@@ -526,6 +771,20 @@ export function parseDaemonRequest(value: unknown): DaemonRequest {
   if (value.params.protocolVersion !== PROTOCOL_VERSION)
     throw new ProtocolValidationError(-32602, "unsupported protocol version");
 
+  if (value.method === DAEMON_INFO_METHOD) {
+    const clientProtocolVersion = value.params.clientProtocolVersion;
+    if (
+      typeof clientProtocolVersion !== "number" ||
+      !Number.isInteger(clientProtocolVersion) ||
+      clientProtocolVersion < 1
+    )
+      throw new ProtocolValidationError(
+        -32602,
+        "clientProtocolVersion must be a positive integer",
+      );
+    return createDaemonInfoRequest(id, clientProtocolVersion);
+  }
+
   if (value.method === DOCTOR_METHOD) {
     return createDoctorRequest(id, {
       root: stringValue(value.params.root, "root"),
@@ -536,6 +795,25 @@ export function parseDaemonRequest(value: unknown): DaemonRequest {
   if (value.method === INSPECT_METHOD) {
     return createInspectRequest(id, {
       root: stringValue(value.params.root, "root"),
+    });
+  }
+  if (value.method === PROJECT_DIFF_METHOD) {
+    return createProjectDiffRequest(id, {
+      root: stringValue(value.params.root, "root"),
+      profile: stringValue(value.params.profile, "profile"),
+      adapters: stringArray(value.params.adapters, "adapters"),
+    });
+  }
+  if (value.method === PROJECT_TIMELINE_METHOD) {
+    return createProjectTimelineRequest(id, {
+      root: stringValue(value.params.root, "root"),
+      caseId: stringValue(value.params.caseId, "caseId"),
+      limit: positiveInteger(value.params.limit, "limit"),
+      timeoutMs: positiveInteger(value.params.timeoutMs, "timeoutMs"),
+      maxOutputBytes: positiveInteger(
+        value.params.maxOutputBytes,
+        "maxOutputBytes",
+      ),
     });
   }
   if (value.method === SECURITY_AUDIT_METHOD) {
@@ -654,6 +932,67 @@ export function createDoctorResponse(
       findings: result.findings.map((finding) => ({ ...finding })),
       diagnostics: [...result.diagnostics],
       exitCode: result.exitCode,
+    },
+  };
+}
+
+export function createDaemonInfoResponse(
+  id: RequestId,
+  result: Omit<DaemonInfoResult, "protocolVersion">,
+): DaemonInfoResponse {
+  return {
+    jsonrpc: "2.0",
+    id,
+    result: {
+      protocolVersion: PROTOCOL_VERSION,
+      daemonVersion: result.daemonVersion,
+      capabilities: result.capabilities.map((capability) => ({
+        ...capability,
+      })),
+      limits: { ...result.limits },
+      compatibility: { ...result.compatibility },
+    },
+  };
+}
+
+export function createProjectDiffResponse(
+  id: RequestId,
+  result: Omit<ProjectDiffResult, "protocolVersion">,
+): ProjectDiffResponse {
+  return {
+    jsonrpc: "2.0",
+    id,
+    result: {
+      protocolVersion: PROTOCOL_VERSION,
+      operationVersion: 1,
+      root: result.root,
+      changes: result.changes.map((change) => ({ ...change })),
+      diagnostics: [...result.diagnostics],
+    },
+  };
+}
+
+export function createProjectTimelineResponse(
+  id: RequestId,
+  result: Omit<ProjectTimelineResult, "protocolVersion">,
+): ProjectTimelineResponse {
+  return {
+    jsonrpc: "2.0",
+    id,
+    result: {
+      protocolVersion: PROTOCOL_VERSION,
+      operationVersion: 1,
+      root: result.root,
+      caseType: "release",
+      caseId: result.caseId,
+      quality: result.quality,
+      events: result.events.map((event) => ({
+        ...event,
+        parents: [...event.parents],
+        changedPaths: [...event.changedPaths],
+      })),
+      findings: [...result.findings],
+      diagnostics: [...result.diagnostics],
     },
   };
 }
@@ -845,6 +1184,240 @@ export function parseDoctorResponse(value: unknown): DoctorResponse {
     findings,
     diagnostics: stringArray(value.result.diagnostics, "diagnostics"),
     exitCode,
+  });
+}
+
+export function parseInspectResponse(value: unknown): InspectResponse {
+  if (!isObject(value) || value.jsonrpc !== "2.0")
+    throw new ProtocolValidationError(-32600, "jsonrpc must equal 2.0");
+  const id = requestId(value.id);
+  if (!isObject(value.result))
+    throw new ProtocolValidationError(-32600, "result must be an object");
+  if (value.result.protocolVersion !== PROTOCOL_VERSION)
+    throw new ProtocolValidationError(-32602, "unsupported protocol version");
+  return createInspectResponse(id, {
+    projectId: stringValue(value.result.projectId, "projectId"),
+    root: stringValue(value.result.root, "root"),
+  });
+}
+
+export function parseDaemonInfoResponse(value: unknown): DaemonInfoResponse {
+  if (!isObject(value) || value.jsonrpc !== "2.0")
+    throw new ProtocolValidationError(-32600, "jsonrpc must equal 2.0");
+  const id = requestId(value.id);
+  if (!isObject(value.result))
+    throw new ProtocolValidationError(-32600, "result must be an object");
+  if (value.result.protocolVersion !== PROTOCOL_VERSION)
+    throw new ProtocolValidationError(-32602, "unsupported protocol version");
+  const daemonVersion = stringValue(
+    value.result.daemonVersion,
+    "daemonVersion",
+  );
+  if (!Array.isArray(value.result.capabilities))
+    throw new ProtocolValidationError(-32602, "capabilities must be an array");
+  const capabilities: readonly DaemonCapability[] =
+    value.result.capabilities.map((capability) => {
+      if (!isObject(capability))
+        throw new ProtocolValidationError(
+          -32602,
+          "capability must be an object",
+        );
+      const classification = stringValue(
+        capability.classification,
+        "capability classification",
+      );
+      if (classification !== "read-only" && classification !== "mutating")
+        throw new ProtocolValidationError(
+          -32602,
+          "invalid capability classification",
+        );
+      return {
+        method: stringValue(capability.method, "capability method"),
+        operation: stringValue(capability.operation, "capability operation"),
+        classification: classification as CapabilityClassification,
+      };
+    });
+  if (!isObject(value.result.limits))
+    throw new ProtocolValidationError(-32602, "limits must be an object");
+  const limits = value.result.limits;
+  const limit = (field: keyof DaemonLimits): number => {
+    const valueForField = limits[field];
+    if (
+      typeof valueForField !== "number" ||
+      !Number.isInteger(valueForField) ||
+      valueForField < 1
+    )
+      throw new ProtocolValidationError(
+        -32602,
+        `${field} must be a positive integer`,
+      );
+    return valueForField;
+  };
+  if (!isObject(value.result.compatibility))
+    throw new ProtocolValidationError(
+      -32602,
+      "compatibility must be an object",
+    );
+  const status = stringValue(
+    value.result.compatibility.status,
+    "compatibility status",
+  );
+  if (status !== "compatible" && status !== "incompatible")
+    throw new ProtocolValidationError(-32602, "invalid compatibility status");
+  const clientProtocolVersion =
+    value.result.compatibility.clientProtocolVersion;
+  const daemonProtocolVersion =
+    value.result.compatibility.daemonProtocolVersion;
+  if (
+    typeof clientProtocolVersion !== "number" ||
+    !Number.isInteger(clientProtocolVersion) ||
+    clientProtocolVersion < 1 ||
+    daemonProtocolVersion !== PROTOCOL_VERSION
+  )
+    throw new ProtocolValidationError(-32602, "invalid compatibility versions");
+  return createDaemonInfoResponse(id, {
+    daemonVersion,
+    capabilities,
+    limits: {
+      maxMessageBytes: limit("maxMessageBytes"),
+      maxResponseBytes: limit("maxResponseBytes"),
+      maxConnections: limit("maxConnections"),
+      requestTimeoutMs: limit("requestTimeoutMs"),
+    },
+    compatibility: {
+      status,
+      clientProtocolVersion,
+      daemonProtocolVersion,
+      ...(typeof value.result.compatibility.reason === "string"
+        ? { reason: value.result.compatibility.reason }
+        : {}),
+    },
+  });
+}
+
+export function parseProjectDiffResponse(value: unknown): ProjectDiffResponse {
+  if (!isObject(value) || value.jsonrpc !== "2.0")
+    throw new ProtocolValidationError(-32600, "jsonrpc must equal 2.0");
+  const id = requestId(value.id);
+  if (!isObject(value.result))
+    throw new ProtocolValidationError(-32600, "result must be an object");
+  if (
+    value.result.protocolVersion !== PROTOCOL_VERSION ||
+    value.result.operationVersion !== 1
+  )
+    throw new ProtocolValidationError(
+      -32602,
+      "unsupported project diff version",
+    );
+  if (!Array.isArray(value.result.changes))
+    throw new ProtocolValidationError(-32602, "changes must be an array");
+  const changes = value.result.changes.map((change) => {
+    if (!isObject(change))
+      throw new ProtocolValidationError(-32602, "change must be an object");
+    const kind = stringValue(change.kind, "change kind");
+    if (
+      ![
+        "create",
+        "update",
+        "conflict",
+        "modified",
+        "missing",
+        "stale",
+        "security-error",
+      ].includes(kind)
+    )
+      throw new ProtocolValidationError(-32602, "invalid change kind");
+    if (change.content !== undefined && typeof change.content !== "string")
+      throw new ProtocolValidationError(
+        -32602,
+        "change content must be a string",
+      );
+    return {
+      path: stringValue(change.path, "change path"),
+      kind: kind as ProjectDiffChange["kind"],
+      reason: stringValue(change.reason, "change reason"),
+      ...(typeof change.content === "string"
+        ? { content: change.content }
+        : {}),
+    };
+  });
+  return createProjectDiffResponse(id, {
+    operationVersion: 1,
+    root: stringValue(value.result.root, "root"),
+    changes,
+    diagnostics: stringArray(value.result.diagnostics, "diagnostics"),
+  });
+}
+
+export function parseProjectTimelineResponse(
+  value: unknown,
+): ProjectTimelineResponse {
+  if (!isObject(value) || value.jsonrpc !== "2.0")
+    throw new ProtocolValidationError(-32600, "jsonrpc must equal 2.0");
+  const id = requestId(value.id);
+  if (!isObject(value.result))
+    throw new ProtocolValidationError(-32600, "result must be an object");
+  if (
+    value.result.protocolVersion !== PROTOCOL_VERSION ||
+    value.result.operationVersion !== 1 ||
+    value.result.caseType !== "release"
+  )
+    throw new ProtocolValidationError(
+      -32602,
+      "unsupported project timeline version",
+    );
+  const quality = stringValue(value.result.quality, "timeline quality");
+  if (!["complete", "bounded", "unavailable"].includes(quality))
+    throw new ProtocolValidationError(-32602, "invalid timeline quality");
+  if (!Array.isArray(value.result.events))
+    throw new ProtocolValidationError(-32602, "events must be an array");
+  const events = value.result.events.map((event) => {
+    if (!isObject(event))
+      throw new ProtocolValidationError(
+        -32602,
+        "timeline event must be an object",
+      );
+    if (
+      event.eventType !== "commit" ||
+      event.source !== "local-git" ||
+      event.trust !== "local-observed-unverified"
+    )
+      throw new ProtocolValidationError(-32602, "invalid timeline event");
+    if (
+      typeof event.timestamp !== "number" ||
+      !Number.isFinite(event.timestamp)
+    )
+      throw new ProtocolValidationError(-32602, "invalid timeline timestamp");
+    return {
+      id: stringValue(event.id, "timeline event id"),
+      eventType: "commit" as const,
+      timestamp: event.timestamp,
+      commitId: stringValue(event.commitId, "timeline commit id"),
+      parents: stringArray(event.parents, "timeline parents"),
+      changedPaths: stringArray(event.changedPaths, "timeline changedPaths"),
+      source: "local-git" as const,
+      trust: "local-observed-unverified" as const,
+    };
+  });
+  if (!Array.isArray(value.result.findings))
+    throw new ProtocolValidationError(
+      -32602,
+      "timeline findings must be an array",
+    );
+  const findings = value.result.findings.map((finding) => {
+    if (finding !== "evidence-bounded" && finding !== "evidence-unavailable")
+      throw new ProtocolValidationError(-32602, "invalid timeline finding");
+    return finding;
+  });
+  return createProjectTimelineResponse(id, {
+    operationVersion: 1,
+    root: stringValue(value.result.root, "root"),
+    caseType: "release",
+    caseId: stringValue(value.result.caseId, "caseId"),
+    quality: quality as ProjectTimelineResult["quality"],
+    events,
+    findings,
+    diagnostics: stringArray(value.result.diagnostics, "diagnostics"),
   });
 }
 

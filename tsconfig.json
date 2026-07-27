@@ -11,6 +11,7 @@
     { "path": "./packages/evidence-provider" },
     { "path": "./packages/evidence-analysis" },
     { "path": "./packages/mcp-server" },
-    { "path": "./packages/cli" }
+    { "path": "./packages/cli" },
+    { "path": "./apps/desktop" }
   ]
 }

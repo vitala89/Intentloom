@@ -1,8 +1,22 @@
 import { describe, expect, it } from "vitest";
 import {
+  DAEMON_INFO_METHOD,
   DOCTOR_METHOD,
+  PROJECT_DIFF_METHOD,
+  PROJECT_TIMELINE_METHOD,
   PROTOCOL_VERSION,
   ProtocolValidationError,
+  createDaemonInfoRequest,
+  createDaemonInfoResponse,
+  createProjectDiffRequest,
+  createProjectDiffResponse,
+  createProjectTimelineRequest,
+  createProjectTimelineResponse,
+  createInspectResponse,
+  parseDaemonInfoResponse,
+  parseProjectDiffResponse,
+  parseProjectTimelineResponse,
+  parseInspectResponse,
   createDoctorRequest,
   createDoctorResponse,
   createEngineeringConformanceRequest,
@@ -41,6 +55,55 @@ describe("versioned local protocol", () => {
     expect(parseSerializedRequest(serialized)).toEqual(request);
   });
 
+  it("round-trips daemon capability discovery with compatibility metadata", () => {
+    const request = createDaemonInfoRequest("info-1", 2);
+    expect(request).toEqual({
+      jsonrpc: "2.0",
+      id: "info-1",
+      method: DAEMON_INFO_METHOD,
+      params: {
+        protocolVersion: PROTOCOL_VERSION,
+        clientProtocolVersion: 2,
+      },
+    });
+    expect(parseSerializedRequest(serializeRequest(request))).toEqual(request);
+    const response = createDaemonInfoResponse("info-1", {
+      daemonVersion: "0.6.0-dev",
+      capabilities: [
+        {
+          method: DAEMON_INFO_METHOD,
+          operation: "daemon.info",
+          classification: "read-only",
+        },
+      ],
+      limits: {
+        maxMessageBytes: 1024,
+        maxResponseBytes: 1024,
+        maxConnections: 4,
+        requestTimeoutMs: 5000,
+      },
+      compatibility: {
+        status: "incompatible",
+        clientProtocolVersion: 2,
+        daemonProtocolVersion: PROTOCOL_VERSION,
+        reason: "client protocol version is not supported",
+      },
+    });
+    expect(parseDaemonInfoResponse(response).result).toEqual(response.result);
+    expect(response.result.protocolVersion).toBe(PROTOCOL_VERSION);
+    expect(response.result.compatibility.status).toBe("incompatible");
+    expect(response.result.capabilities[0]?.method).toBe(DAEMON_INFO_METHOD);
+    expect(() =>
+      parseDaemonInfoResponse({
+        ...response,
+        result: {
+          ...response.result,
+          limits: { ...response.result.limits, maxMessageBytes: 0 },
+        },
+      }),
+    ).toThrow("maxMessageBytes must be a positive integer");
+  });
+
   it("rejects unknown methods and protocol versions", () => {
     expect(() =>
       parseDoctorRequest({
@@ -63,6 +126,78 @@ describe("versioned local protocol", () => {
         },
       }),
     ).toThrow("unsupported protocol version");
+  });
+
+  it("round-trips bounded project diff and root-bound timeline contracts", () => {
+    const diffRequest = createProjectDiffRequest("diff-1", {
+      root: "/project",
+      profile: "generic",
+      adapters: ["codex"],
+    });
+    expect(diffRequest.method).toBe(PROJECT_DIFF_METHOD);
+    expect(parseSerializedRequest(serializeRequest(diffRequest))).toEqual(
+      diffRequest,
+    );
+    const diffResponse = createProjectDiffResponse("diff-1", {
+      operationVersion: 1,
+      root: "/canonical/project",
+      changes: [
+        {
+          path: ".aif/config.yaml",
+          kind: "create",
+          reason: "configuration is missing",
+          content: "profile: generic\n",
+        },
+      ],
+      diagnostics: [],
+    });
+    expect(parseProjectDiffResponse(diffResponse).result).toEqual(
+      diffResponse.result,
+    );
+
+    const timelineRequest = createProjectTimelineRequest("timeline-1", {
+      root: "/project",
+      caseId: "release:project",
+    });
+    expect(timelineRequest.method).toBe(PROJECT_TIMELINE_METHOD);
+    expect(timelineRequest.params.limit).toBe(50);
+    expect(parseSerializedRequest(serializeRequest(timelineRequest))).toEqual(
+      timelineRequest,
+    );
+    expect(() =>
+      createProjectTimelineRequest("timeline-invalid", {
+        root: "/project",
+        caseId: "release:project",
+        limit: 501,
+      }),
+    ).toThrow("limit must be between 1 and 500");
+    const timelineResponse = createProjectTimelineResponse("timeline-1", {
+      operationVersion: 1,
+      root: "/canonical/project",
+      caseType: "release",
+      caseId: "release:project",
+      quality: "complete",
+      events: [],
+      findings: [],
+      diagnostics: [],
+    });
+    expect(parseProjectTimelineResponse(timelineResponse).result).toEqual(
+      timelineResponse.result,
+    );
+  });
+
+  it("validates the existing Inspect response for the typed client", () => {
+    const response = createInspectResponse("inspect-1", {
+      projectId: "project-local",
+      root: "/canonical/project",
+    });
+    expect(parseInspectResponse(response).result).toEqual(response.result);
+    expect(() =>
+      parseInspectResponse({
+        ...response,
+        result: { ...response.result, root: "" },
+      }),
+    ).toThrow("root must be a non-empty string");
   });
 
   it("creates a versioned, content-safe doctor response", () => {

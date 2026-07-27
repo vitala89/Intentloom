@@ -1,0 +1,145 @@
+import { invoke } from "@tauri-apps/api/core";
+import {
+  createDaemonInfoRequest,
+  createDoctorRequest,
+  createInspectRequest,
+  createProjectDiffRequest,
+  createProjectTimelineRequest,
+  parseDaemonInfoResponse,
+  parseDoctorResponse,
+  parseInspectResponse,
+  parseProjectDiffResponse,
+  parseProjectTimelineResponse,
+  type DaemonInfoResult,
+  type DoctorResult,
+  type InspectResult,
+  type ProjectDiffParams,
+  type ProjectDiffResult,
+  type ProjectTimelineParams,
+  type ProjectTimelineResult,
+} from "@intentloom/protocol";
+
+export class DesktopBridgeError extends Error {
+  readonly code: string;
+
+  constructor(message: string, code = "native_bridge_unavailable") {
+    super(message);
+    this.code = code;
+    this.name = "DesktopBridgeError";
+  }
+}
+
+/**
+ * Invoke a Tauri command with optional AbortSignal support.
+ *
+ * Tauri's `invoke` does not natively support AbortSignal, so we simulate
+ * transport-level cancellation:
+ * - Reject immediately if the signal is already aborted before the call.
+ * - Race the invoke against an abort-triggered rejection so the caller's
+ *   Promise resolves as `cancelled` as soon as the signal fires, even if
+ *   the Rust handler is still running (its result is discarded).
+ *
+ * This matches the cancellation boundary documented in PHASE1_CONTRACTS.md:
+ * the daemon-side read-only operation may still complete; its result is
+ * simply discarded on the client side.
+ */
+async function call<T>(
+  command: string,
+  args: Record<string, unknown>,
+  signal?: AbortSignal,
+): Promise<T> {
+  if (signal?.aborted) {
+    throw new DesktopBridgeError("Operation cancelled", "cancelled");
+  }
+
+  let abortReject!: (error: DesktopBridgeError) => void;
+  const abortPromise = new Promise<never>((_, reject) => {
+    abortReject = reject;
+  });
+
+  const onAbort = () =>
+    abortReject(new DesktopBridgeError("Operation cancelled", "cancelled"));
+
+  if (signal) signal.addEventListener("abort", onAbort, { once: true });
+
+  try {
+    const result = await Promise.race([
+      invoke<T>(command, args).catch((error: unknown) => {
+        if (typeof error === "object" && error !== null) {
+          const record = error as { code?: unknown; message?: unknown };
+          if (typeof record.message === "string") {
+            throw new DesktopBridgeError(
+              record.message,
+              typeof record.code === "string"
+                ? record.code
+                : "native_bridge_unavailable",
+            );
+          }
+        }
+        const message = error instanceof Error ? error.message : String(error);
+        throw new DesktopBridgeError(message);
+      }),
+      abortPromise,
+    ]);
+    return result;
+  } finally {
+    if (signal) signal.removeEventListener("abort", onAbort);
+  }
+}
+
+export const desktopClient = {
+  async selectProjectRoot(): Promise<string | null> {
+    return call<string | null>("select_project_root", {});
+  },
+
+  async daemonInfo(signal?: AbortSignal): Promise<DaemonInfoResult> {
+    const request = createDaemonInfoRequest("desktop-info", 1);
+    return parseDaemonInfoResponse(
+      await call("get_daemon_info", { request }, signal),
+    ).result;
+  },
+
+  async inspectProject(
+    root: string,
+    signal?: AbortSignal,
+  ): Promise<InspectResult> {
+    const request = createInspectRequest("desktop-inspect", { root });
+    return parseInspectResponse(
+      await call("inspect_project", { root, request }, signal),
+    ).result;
+  },
+
+  async doctorProject(
+    root: string,
+    signal?: AbortSignal,
+  ): Promise<DoctorResult> {
+    const request = createDoctorRequest("desktop-doctor", {
+      root,
+      profile: "generic",
+      adapters: [],
+    });
+    return parseDoctorResponse(
+      await call("run_doctor", { root, request }, signal),
+    ).result;
+  },
+
+  async projectDiff(
+    params: Omit<ProjectDiffParams, "protocolVersion">,
+    signal?: AbortSignal,
+  ) {
+    const request = createProjectDiffRequest("desktop-diff", params);
+    return parseProjectDiffResponse(
+      await call("preview_project_diff", { request }, signal),
+    ).result as ProjectDiffResult;
+  },
+
+  async projectTimeline(
+    params: Omit<ProjectTimelineParams, "protocolVersion">,
+    signal?: AbortSignal,
+  ): Promise<ProjectTimelineResult> {
+    const request = createProjectTimelineRequest("desktop-timeline", params);
+    return parseProjectTimelineResponse(
+      await call("load_project_timeline", { request }, signal),
+    ).result;
+  },
+};

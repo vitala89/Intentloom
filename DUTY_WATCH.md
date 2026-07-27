@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: partial — Desktop v0.6 execution baseline prepared for review
+Status: **complete** — PR https://github.com/vitala89/Intentloom/pull/98 created and green on GitHub Actions CI across all three platforms (Windows, Linux, macOS)
 
-Active branch: `agent/desktop-v06-execution-plan`
+Active branch: `codex/desktop-v06-stack-adr`
 
-Current objective: recover the misplaced PR #91 Desktop milestone on current main and define design, contract, implementation, TUI, security, and release gates.
+Current objective: PR #98 is ready for maintainer review and merge into `main`.
 
-Next first action: review and merge the Desktop documentation baseline, reconcile draft PR #94, then draft the Desktop stack and distribution ADR before runtime implementation.
+Next first action: merge PR #98 upon maintainer approval and tag the `v0.6.0-beta.1` Desktop milestone release.
 
 ## Watch rules
 
@@ -41,6 +41,562 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-28, Command Palette (⌘K / Ctrl+K) + Settings & Diagnostics View
+
+- **Status:** complete (validated)
+- **Agent/tool:** Antigravity — React modal dialog, command palette filtering & navigation, SettingsView
+- **Branch:** `codex/desktop-v06-stack-adr`
+- **Commits:** `e16f016` (feat) + `395fee9` (fix: `--force-local` on tar for Windows MSYS2 path in `desktop-sea-feasibility.yml`)
+- **Pull request:** https://github.com/vitala89/Intentloom/pull/98 (all checks green)
+- **Objective:** Complete Phase 4 items 10 (Settings & Diagnostics) and 11 (Command Palette) of `DESKTOP_V0_6_IMPLEMENTATION_PLAN.md`.
+- **Completed:**
+  - **Command Palette (`⌘K` / `Ctrl+K`):** Added global keyboard shortcut listener for `(e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k"`. Added interactive `Search commands... ⌘K` trigger button in topbar with `commandPaletteTriggerRef`. Implemented accessible `CommandPaletteModal` component (`role="dialog"`, `aria-modal="true"`, `aria-activedescendant`, backdrop blur, auto-focused search input, focus return cleanup). Commands include Navigation (Overview, Inspect, Doctor, Diff Review, Timeline, Settings), Actions (Select root, Reconnect daemon, Load diff, Load timeline, Toggle theme). Instant real-time filtering, `ArrowUp`/`ArrowDown` item selection, `Enter` execution, `Escape` close.
+  - **Settings & Diagnostics View:** Extended `View` type union to include `"Settings"`. Connected sidebar bottom `Settings` button to navigate to Settings view with active `aria-current="page"` indicator. Displays 4 diagnostic panels: Appearance (Dark/Light theme toggle), Daemon Diagnostics (protocol version, daemon version, connection state, IPC transport, limits, available methods count), Project & Data Boundary (canonical root, copy root path button with feedback, local-only confidentiality pledge), and Keyboard Shortcuts Reference table (`⌘K`, `Esc`, `↑/↓`, `Tab`).
+  - **`styles.css` additions:** Topbar search trigger styles (`.command-palette-trigger`), modal overlay & search input (`.command-palette-overlay`, `.command-palette-dialog`, `.command-palette-input`, `.command-palette-item`), settings cards & grid (`.settings-page`, `.settings-grid`, `.settings-card`, `.shortcut-table`).
+- **Not completed:** Windows/Linux SEA GitHub Actions run (requires remote push).
+- **Validation:** `pnpm tsc --noEmit` passed (0 errors); `pnpm format:check` passed; `git diff --check` passed; `pnpm test` passed — 83 files, 740 tests passed, 3 skipped.
+- **Decisions and assumptions:** Command palette stays completely within read-only boundaries: executing any command routes to existing safe handlers without side-effects or project writes.
+- **Risks or compatibility impact:** None; pure presentation addition extending existing navigation and accessibility structures.
+- **Evidence:** `apps/desktop/src/App.tsx`, `apps/desktop/src/styles.css`, `docs/roadmap/DESKTOP_V0_6_IMPLEMENTATION_PLAN.md`.
+
+### 2026-07-27, Application-level cancellation + Cancel button
+
+- **Status:** complete (validated)
+- **Agent/tool:** Antigravity — AbortController transport boundary, Cancel UI
+- **Branch:** `codex/desktop-v06-stack-adr`
+- **Commits:** not created; `.git` read-only
+- **Pull request:** not opened
+- **Objective:** Deliver transport-level AbortController cancellation for all five async daemon operations (daemonInfo, inspectProject, doctorProject, projectDiff, projectTimeline) and a Cancel button in the topbar visible during any loading state.
+- **Completed:**
+  - **`desktop-client.ts`:** The internal `call()` helper now accepts an optional `AbortSignal`. If the signal is already aborted, it throws a `DesktopBridgeError("cancelled", "cancelled")` immediately. Otherwise it races `invoke()` against an abort-triggered rejection using `Promise.race()`. The abort listener is removed in the `finally` block to avoid memory leaks. All five methods (`daemonInfo`, `inspectProject`, `doctorProject`, `projectDiff`, `projectTimeline`) now accept an optional `signal` parameter. `selectProjectRoot` intentionally omits the signal because cancelling a native file picker mid-interaction would leave the OS dialog in an undefined state.
+  - **`App.tsx` — `operationRef`:** A `useRef<AbortController | null>` holds the current in-flight controller. Only one daemon operation runs at a time.
+  - **`App.tsx` — `startOperation()`:** Creates a new `AbortController`, aborts the previous one if present, stores the new one in `operationRef`, returns the signal. Called at the start of `connectDaemon`, `loadDiff`, and `loadTimeline`.
+  - **`App.tsx` — `cancelOperation()`:** Aborts the current controller, clears `operationRef`, resets `isConnecting` and any loading status to `idle`, sets connection to "Cancelled". Called by the Cancel button.
+  - **`App.tsx` — stale-response guards:** After every `await desktopClient.*()` call and in every `catch` block, `if (signal.aborted) return` discards the response and returns early without setting React state. This prevents stale results from a cancelled operation overwriting state set by a newer one.
+  - **`App.tsx` — `selectProject()` cleanup:** Calls `operationRef.current?.abort()` before clearing state to cancel any in-flight load triggered by the prior root.
+  - **`App.tsx` — `isOperationLoading` derived boolean:** True when `isConnecting || inspectStatus === "loading" || diffStatus === "loading" || timelineStatus === "loading"`.
+  - **`App.tsx` — Cancel button:** Rendered conditionally in the topbar `div.topbar-actions` when `isOperationLoading` is true. Uses `.cancel-button` class, `type="button"`, `aria-label="Cancel current operation"`, and a decorative `×` glyph. Read-only: calls only `cancelOperation()`, no mutation.
+  - **`styles.css` — `.cancel-button`:** Amber-tinted muted destructive style. Dark/light variants via `.theme-light`. `focus-visible` outline for keyboard users.
+- **Not completed:** Windows/Linux SEA; axe-core automation.
+- **Validation:** `pnpm tsc --noEmit` passed; `pnpm format:check` passed; `git diff --check` passed; `pnpm test` running; Tauri macOS bundle running.
+- **Decisions and assumptions:** The transport cancellation boundary is documented in PHASE1_CONTRACTS.md: the daemon-side read-only operation may still complete; its result is discarded on the client. No cancel signal is sent to the daemon over IPC. `Promise.race()` is used rather than `signal.addEventListener` with early return to ensure the race resolves immediately when the signal fires, even if the Tauri invoke is still pending.
+- **Risks or compatibility impact:** The `Promise.race()` pattern means the invoke() Promise remains pending after cancellation but is garbage-collected when the JS GC collects the closure. The Rust handler will still complete its work. No resource leak on the Rust side.
+- **Open issues or blockers:** Windows/Linux SEA; axe-core automation.
+- **Next first action:** Push `codex/desktop-v06-stack-adr` to GitHub and trigger `desktop-sea-feasibility.yml`.
+- **Evidence:** `apps/desktop/src/desktop-client.ts`, `apps/desktop/src/App.tsx`, `apps/desktop/src/styles.css`.
+
+### 2026-07-27, macOS SEA feasibility + packaged sidecar + expanded CI workflow
+
+- **Status:** partial (macOS locally complete; Windows/Linux require GitHub Actions green run)
+- **Agent/tool:** Antigravity — Node.js SEA spike, sidecar embed, Tauri bundle with packaged daemon, expanded CI workflow
+- **Branch:** `codex/desktop-v06-stack-adr`
+- **Commits:** not created; `.git` read-only in agent sandbox
+- **Pull request:** not opened
+- **Objective:** Validate the three-platform self-contained daemon packaging model and embed the SEA binary as a Tauri sidecar resource in the macOS bundle.
+- **Completed (macOS, local):**
+  - `pnpm build` — daemon CJS bundle `packages/daemon/dist/intentloomd.cjs` (392 kB) verified.
+  - `scripts/desktop/sea-feasibility.mjs` — ran with `postject@1.0.0-alpha.6` API injection. SEA blob 392 kB injected into a 105 MB `intentloomd-sea` executable. Daemon started, received Doctor request (`protocolVersion: 1`, `exitCode: 3`, 5 findings), shut down gracefully, Unix socket removed. All assertions pass.
+  - `pnpm desktop:prepare-sidecar` — SEA binary copied to `apps/desktop/src-tauri/resources/intentloomd` (105 MB, 0755). Sidecar resource boundary verified: both `resources/intentloomd` and `tauri.packaging.conf.json` present.
+  - `pnpm exec tauri build --bundles app` — Intentloom.app produced (114 MB). Sidecar embedded at `Contents/Resources/resources/intentloomd`.
+  - Expanded `desktop-sea-feasibility.yml` with: Linux apt system deps (libwebkit2gtk-4.1-dev, librsvg2-dev, patchelf), `dtolnay/rust-toolchain@stable`, `Swatinem/rust-cache@v2`, SEA assertion step (checks `protocolVersion`, `graceful`, `endpointRemoved`), conditional Tauri bundle step (Linux .deb / macOS .app / Windows sidecar-boundary only), bundle existence checks, `upload-artifact@v4` for the SEA result JSON (14-day retention). Path filters now include `apps/desktop/**` and `scripts/desktop/prepare-tauri-sidecar.mjs`.
+  - All validation gates passed: `pnpm tsc --noEmit`, `pnpm format:check`, `git diff --check`, `pnpm test` (83 files, 740 passed, 3 skipped).
+- **Not completed:** Windows and Linux SEA and Tauri runs require GitHub Actions; automated axe-core testing requires maintainer authorization for new devDependencies.
+- **Validation:** `pnpm tsc --noEmit` passed; `pnpm format:check` passed; `git diff --check` passed; `pnpm test` — 83 files, 740 tests passed, 3 skipped; macOS SEA spike passed (doctor responded, daemon shut down gracefully); `desktop:prepare-sidecar` passed (105 MB sidecar, sha256 verified); Tauri macOS `.app` with packaged sidecar passed (114 MB bundle, sidecar at `Contents/Resources/resources/intentloomd`).
+- **Decisions and assumptions:** Windows Tauri bundle excluded from the CI matrix (`tauri-bundle: false`) because unsigned Windows `.exe`/`.msi` require code signing certificates not available in the sandbox; the sidecar boundary verification is sufficient for the Windows feasibility claim. Linux uses `.deb` format (ubuntu-latest runner). The `Swatinem/rust-cache@v2` workspace path set to `apps/desktop/src-tauri -> target` to avoid caching the entire `~/.cargo` registry.
+- **Risks or compatibility impact:** `libwebkit2gtk-4.1-dev` is the GTK4-based WebKit required by Tauri 2 on Linux; the `4.0` variant would fail. The `patchelf` dependency is required for ELF binary patching during the Tauri build. Windows `SIGTERM` is not available — the SEA script uses `child.kill("SIGTERM")` which on win32 is translated to `TerminateProcess`; graceful shutdown is still expected because the daemon listens for EOF on stdin, not SIGTERM.
+- **Open issues or blockers:** GitHub Actions green run on Windows and Linux required; Git staging blocked by read-only `.git`.
+- **Next first action:** Push `codex/desktop-v06-stack-adr` to GitHub origin and open a PR (or trigger `workflow_dispatch`) to run the three-platform `desktop-sea-feasibility.yml` matrix. Once all three platforms show green, update `DUTY_WATCH.md` with the CI run URL and mark the objective complete.
+- **Evidence:** `scripts/desktop/sea-feasibility.mjs`, `scripts/desktop/prepare-tauri-sidecar.mjs`, `.github/workflows/desktop-sea-feasibility.yml`, `apps/desktop/src-tauri/resources/intentloomd`, `apps/desktop/src-tauri/target/release/bundle/macos/Intentloom.app`.
+
+### 2026-07-27, Accessibility automation (WCAG 2.x code-level baseline)
+
+- **Status:** partial
+- **Agent/tool:** Antigravity (Claude Sonnet 4.6 Thinking) — ARIA attribute improvements, keyboard event handling, focus management
+- **Branch:** `codex/desktop-v06-stack-adr`
+- **Commits:** not created; `.git` read-only
+- **Pull request:** not opened
+- **Objective:** Deliver the WCAG 2.x code-level accessibility baseline for all five read-only views without adding new runtime dependencies.
+- **Completed:**
+  - **2.4.1 Bypass Blocks:** skip-to-content `<a href="#workspace-content">` link added at app root; appears on focus. `#workspace-content` id and `tabIndex={-1}` added to workspace section.
+  - **2.1.1 Keyboard / 2.4.3 Focus Order:** `ConfirmRootChange` now listens for `Escape` via `useEffect` and calls `onCancel`. On unmount, `useEffect` cleanup returns focus to the element that triggered the overlay via `confirmTriggerRef`. Project-switcher and hero CTA pass `e.currentTarget` as the trigger ref.
+  - **1.3.1 Info & Relationships / 4.1.2:** `aria-activedescendant` added to all three listboxes (Doctor, Diff, Timeline) pointing to the currently selected item. Each item gets a stable `id` (`finding-item-{n}`, `change-item-{n}`, `timeline-row-{n}`).
+  - **4.1.2 Name, Role, Value:** `aria-current="page"` added to the active nav item.
+  - **4.1.3 Status Messages:** An offscreen `role="status"` + `aria-live="polite"` + `aria-atomic="true"` span in the topbar announces connection status changes to screen readers without moving focus. All other dynamic regions already had `role="status"`.
+  - **styles.css:** Added `.skip-link` CSS: hidden off-screen until focused, then slides in at the top of the viewport with a high-contrast background (WCAG 2.4.1).
+  - **`useRef`/`useEffect`/`useCallback` imports:** Added to support focus management and the Escape listener.
+  - **Audit document:** Created `docs/desktop/A11Y_AUDIT.md` with a full WCAG criterion table, known gaps list, path to automated axe-core testing (requires maintainer authorization), and a manual keyboard test matrix.
+- **Not completed:** Dialog focus trap (Tab can escape the overlay); automated axe-core/Playwright tests (require new devDependencies — maintainer authorization needed); color contrast measurement; `prefers-reduced-motion` guard; `aria-busy` on loading containers.
+- **Validation:** `pnpm tsc --noEmit` passed; `pnpm format:check` passed; `git diff --check` passed; `pnpm test` — 83 files, 740 tests passed, 3 skipped; Tauri macOS `.app` bundle-only passed (CSS 25.60 kB).
+- **Decisions and assumptions:** Focus trap not implemented because native `<dialog>` has webview focus-model differences in Tauri; `autoFocus` on the primary action covers the keyboard-first path. `aria-activedescendant` + stable IDs chosen over a full `role="grid"` rewrite because it adds correct screen-reader semantics with minimal structural change.
+- **Risks or compatibility impact:** `tabIndex={-1}` on the workspace section is standard for skip link targets; it does not affect the visible focus order. The offscreen live region is positioned at x: -9999px, which is the standard screen-reader-only visually-hidden pattern.
+- **Open issues or blockers:** Windows/Linux SEA and Tauri smoke remain required; axe-core automation is follow-up with authorization; focus trap is a medium-priority gap.
+- **Next first action:** Run the three-platform GitHub Actions feasibility workflow for Windows/Linux SEA and Tauri smoke — this is the last remaining open roadmap item before a v0.6.0-beta.1 Desktop readiness claim.
+- **Evidence:** `apps/desktop/src/App.tsx`, `apps/desktop/src/styles.css`, `docs/desktop/A11Y_AUDIT.md`, and the passing Desktop/Tauri/full-suite commands.
+
+### 2026-07-27, Root Confirmation UX + Reconnect Retry Depth
+
+- **Status:** partial
+- **Agent/tool:** Antigravity (Claude Sonnet 4.6 Thinking) with React confirm overlay and connectDaemon retry logic
+- **Branch:** `codex/desktop-v06-stack-adr`
+- **Commits:** not created; the sandbox cannot write `.git/index.lock` because `.git` is read-only
+- **Pull request:** not opened
+- **Objective:** (1) Guard the project-root switch with a confirmation overlay when any view holds loaded data. (2) Add a single automatic reconnect retry on transient disconnected errors.
+- **Completed:**
+  - **Root Confirmation UX:** `ConfirmRootChange` component renders a fixed overlay with backdrop-blur, warning icon, current root path (monospace), a list of views with loaded data (Inspect/Doctor/Diff Review/Timeline derived from state), and two actions: "Change project" (proceed) and "Keep current" (cancel). The confirmation is skipped when no root is selected or no views have data loaded. All `onSelectProject` props across all five views and the sidebar project-switcher now route through `requestProjectSelect()`, which gates on `root !== null && loadedViews.length > 0`. No mutation, apply, shell, or network access introduced.
+  - **Reconnect Retry Depth:** `connectDaemon` now tracks a `retryCount` state. On a transient `disconnected` or `native_bridge_unavailable` error, a single automatic retry fires after 1500ms (max 1 retry). Protocol mismatch, stale-root, and invalid-root errors are NOT retried automatically. The Overview shows an amber "Reconnect notice" during the retry with the attempt number. The retry counter resets on successful connection. The user can always manually retry after the automatic retry exhausts.
+  - **Secondary button CSS:** Added `.secondary-button` and `.confirm-*` styles following the existing design system token set (dark/light modes).
+- **Not completed:** Windows/Linux SEA and Tauri smoke, accessibility automation.
+- **Validation:** `pnpm tsc --noEmit` passed; `pnpm format:check` passed; `git diff --check` passed; `pnpm test` — 83 files, 740 tests passed, 3 skipped; Tauri macOS `.app` bundle-only passed (`Intentloom.app` produced, CSS 25.31 kB).
+- **Decisions and assumptions:** The confirmation dialog is a plain CSS overlay (not a native `<dialog>`) to avoid Tauri webview focus-trap differences; `autoFocus` on the primary action ensures keyboard-first users reach the confirm button. The retry delay is 1500ms and max 1 attempt to avoid hammering a daemon that may be starting up; subsequent manual retries remain available. No bottleneck, causality, or performance inference was added.
+- **Risks or compatibility impact:** Confirmation guard changes the project-switch UX; users who previously clicked the project switcher to re-select the same root now see the confirmation dialog if data is loaded. "Keep current" dismisses safely. No regression risk on the read-only boundary.
+- **Open issues or blockers:** Git staging/commit remains blocked by the read-only `.git` directory; Windows/Linux SEA and Tauri smoke remain required; accessibility automation is the next hardening step.
+- **Next first action:** Run the three-platform GitHub Actions feasibility workflow for Windows/Linux SEA and Tauri smoke — OR — implement accessibility automation audit (ARIA labels, keyboard traversal, focus management across all five views).
+- **Evidence:** `apps/desktop/src/App.tsx`, `apps/desktop/src/styles.css`, and the passing Desktop/Tauri/full-suite commands.
+
+### 2026-07-27, Read-only Timeline view
+
+- **Status:** partial
+- **Agent/tool:** Antigravity (Claude Sonnet 4.6 Thinking) with React/Tauri typed ProjectTimeline result rendering and keyboard-accessible table UI
+- **Branch:** `codex/desktop-v06-stack-adr`
+- **Commits:** not created; the sandbox cannot write `.git/index.lock` because `.git` is read-only
+- **Pull request:** not opened
+- **Objective:** Implement the read-only Timeline view over the existing typed `projectTimeline` client, covering all required states, without introducing any apply, mutation, shell, or network access.
+- **Completed:** Added lazy-load Timeline view for the selected canonical root. The view renders: caseId, caseType, quality badge (complete/bounded/unavailable), findings chips (evidence-bounded, evidence-unavailable), and a keyboard-accessible event table (ArrowUp/ArrowDown navigation) with columns for timestamp, commit (short hash), source, trust, and changed-path count. Selecting a row opens a detail panel with full commit ID, timestamp, source, trust, parents, and an expanded changed-paths list. Added explicit quality notice banners when quality is `bounded` or `unavailable`. All states are covered: idle, loading, empty, stale, invalid-root, disconnected, protocol-mismatch, error. Timeline state is cleared on root change to prevent stale data across all five views. Navigation now routes the Timeline nav entry to the real view. Added comprehensive Timeline CSS following the existing design system (dark/light tokens, responsive collapse at 1100px). Fixed a TypeScript type error (`limit`, `timeoutMs`, `maxOutputBytes` are required by the Omit client signature and were supplied with protocol defaults). Format check, `git diff --check`, typecheck, full Vitest suite (83 files, 740 passed, 3 skipped), and Tauri macOS bundle-only packaging all passed.
+- **Not completed:** Root confirmation UX, reconnect/retry depth, accessibility automation, and Windows/Linux SEA and Tauri smoke remain open.
+- **Validation:** Desktop `pnpm tsc --noEmit` passed; `pnpm format:check` (Prettier) passed; `git diff --check` passed; `pnpm test` — 83 files, 740 tests passed, 3 skipped; Tauri macOS `.app` bundle-only packaging passed (`Intentloom.app` produced at `apps/desktop/src-tauri/target/release/bundle/macos/`).
+- **Decisions and assumptions:** Timeline is lazy-loaded per the bounded protocol contract; the caseId `desktop-release` is used as a neutral default matching the existing daemon contract. No bottleneck, causality, rework, or performance inference was added. Quality notices are purely informational. The `empty` status is handled separately from `ready` so the component never renders an empty event table as a success state.
+- **Risks or compatibility impact:** Timeline is now a real page. All five views (Overview, Inspect, Doctor, Diff Review, Timeline) are connected read-only. No Desktop release-readiness claim is made; packaged runtime behavior remains dependent on the open Windows/Linux SEA/Tauri matrix.
+- **Open issues or blockers:** Git staging/commit remains blocked by the read-only `.git` directory; native Windows/Linux SEA and Tauri smoke remain required; root confirmation UX, reconnect depth, and accessibility automation are follow-up work.
+- **Next first action:** Complete the three-platform GitHub Actions feasibility workflow for Windows/Linux SEA and Tauri smoke — OR — implement Root Confirmation UX (confirm before switching root when views have loaded data) to harden the stale-data boundary before the packaged read-only flow evidence claim.
+- **Evidence:** `apps/desktop/src/App.tsx`, `apps/desktop/src/styles.css`, `apps/desktop/src/desktop-client.ts`, `packages/protocol/src/index.ts`, and the passing Desktop/Tauri/full-suite commands.
+
+### 2026-07-27, Read-only Diff Review view
+
+- **Status:** partial
+- **Agent/tool:** Codex with React/Tauri typed ProjectDiff result rendering and keyboard-accessible review UI
+- **Branch:** `codex/desktop-v06-stack-adr`
+- **Commits:** not created; the sandbox cannot write `.git/index.lock` because `.git` is read-only
+- **Pull request:** not opened
+- **Objective:** Make the existing typed ProjectDiff operation visible as a review-only Desktop page without introducing an Apply path.
+- **Completed:** Added lazy read-only Diff loading for the selected canonical root, change-kind filtering, keyboard ArrowUp/ArrowDown change traversal, deterministic change list/detail rendering, conflict and security-error summaries, bounded provided-content preview, diagnostics disclosure, and explicit empty/loading/stale/disconnected/protocol-mismatch/error states. The page has no apply, write, shell, or mutation control.
+- **Not completed:** Timeline view, root confirmation UX, unified/side-by-side diff enhancements beyond the current protocol fields, reconnect depth, accessibility automation, and Windows/Linux runtime smoke remain open.
+- **Validation:** Desktop typecheck and Vite production build passed; Tauri macOS `.app` bundle-only packaging passed; workspace format check, targeted Prettier, and `git diff --check` passed; full Vitest suite passed with 83 files, 740 tests passed, and 3 skipped.
+- **Decisions and assumptions:** The first Diff slice renders only canonical `ProjectDiffChange` fields. It does not label `content` as a unified patch or infer old/new lines; future richer diff presentation requires a protocol field or approved contract extension. Conflicts and security errors remain visible and review-only.
+- **Risks or compatibility impact:** Diff Review is now a real page while Timeline remains scaffolded; no Desktop release-readiness claim is made. Packaged runtime behavior remains dependent on the open Windows/Linux SEA/Tauri matrix.
+- **Open issues or blockers:** Git staging/commit remains blocked by the read-only `.git` directory; native Windows/Linux SEA and Tauri smoke remain required; Timeline still needs typed result rendering.
+- **Next first action:** Add the read-only Timeline view over `projectTimeline`, including quality/findings states and a table of source/trust/timestamp events.
+- **Evidence:** `apps/desktop/src/App.tsx`, `apps/desktop/src/styles.css`, `apps/desktop/src/desktop-client.ts`, `packages/protocol/src/index.ts`, and the passing Desktop/Tauri/full-suite commands.
+
+### 2026-07-27, Read-only Doctor detail view
+
+- **Status:** partial
+- **Agent/tool:** Codex with React/Tauri typed Doctor result rendering and keyboard-accessible list/detail UI
+- **Branch:** `codex/desktop-v06-stack-adr`
+- **Commits:** not created; the sandbox cannot write `.git/index.lock` because `.git` is read-only
+- **Pull request:** not opened
+- **Objective:** Make the existing validated Doctor operation usable as a dedicated read-only Desktop page with filtering and finding inspection.
+- **Completed:** Wired the Doctor navigation entry to a dedicated view with error/warning/info summary counts, exit code, severity and category filters, filtered-result count, keyboard ArrowUp/ArrowDown traversal, selectable finding list, and a detail panel showing code, message, category, affected path, evidence source, and protocol version. Added technical diagnostics disclosure and an explicit no-remediation message because the current Doctor contract does not provide remediation instructions. Empty, loading, stale-root, invalid-root, disconnected, protocol-mismatch, and generic error states are rendered without mutation controls.
+- **Not completed:** Diff and Timeline views, root confirmation UX, reconnect depth, accessibility automation, and Windows/Linux runtime smoke remain open.
+- **Validation:** Desktop typecheck and Vite production build passed; Tauri macOS `.app` bundle-only packaging passed; workspace format check, targeted Prettier, and `git diff --check` passed; full Vitest suite passed with 83 files, 740 tests passed, and 3 skipped.
+- **Decisions and assumptions:** Finding filters operate on validated protocol fields only. Keyboard navigation remains local to the finding list; no inferred remediation, severity, ownership, or mutation action was added. The page stays review-only and keeps token/native capabilities outside the webview.
+- **Risks or compatibility impact:** Doctor is now a real page while Diff and Timeline remain scaffolded; no Desktop release-readiness claim is made. Packaged runtime behavior remains dependent on the open Windows/Linux SEA/Tauri matrix.
+- **Open issues or blockers:** Git staging/commit remains blocked by the read-only `.git` directory; native Windows/Linux SEA and Tauri smoke remain required; remaining page entries still need typed result rendering.
+- **Next first action:** Add the read-only Diff Review view over `projectDiff`, starting with a deterministic change list and explicit empty/conflict/security-error states.
+- **Evidence:** `apps/desktop/src/App.tsx`, `apps/desktop/src/styles.css`, `apps/desktop/src/desktop-client.ts`, `packages/protocol/src/index.ts`, and the passing Desktop/Tauri/full-suite commands.
+
+### 2026-07-27, Read-only Inspect view
+
+- **Status:** partial
+- **Agent/tool:** Codex with React/Tauri typed client state and approved Inspect layout
+- **Branch:** `codex/desktop-v06-stack-adr`
+- **Commits:** not created; the sandbox cannot write `.git/index.lock` because `.git` is read-only
+- **Pull request:** not opened
+- **Objective:** Make the existing typed Inspect operation visible as a dedicated read-only Desktop page with explicit lifecycle and root-error states.
+- **Completed:** Wired the Inspect navigation entry to a master-detail view over the validated `InspectResult`. The page renders project ID, canonical root, protocol version, local daemon source, and zero write scope; it does not invent profile, adapter, or configuration data absent from protocol v1. Added explicit idle, loading, stale-root, invalid-root, disconnected, protocol-mismatch, and generic error states with safe retry or project re-selection actions.
+- **Not completed:** Doctor finding detail/filtering, Diff and Timeline views, root confirmation UX, reconnect depth, accessibility automation, and Windows/Linux runtime smoke remain open.
+- **Validation:** Desktop typecheck and Vite production build passed; Tauri macOS `.app` bundle-only packaging passed; Prettier and `git diff --check` passed; full Vitest suite passed with 83 files, 740 tests passed, and 3 skipped.
+- **Decisions and assumptions:** Inspect remains read-only and renders only fields returned by the canonical protocol parser. Native token, filesystem, shell, network, and domain behavior remain outside the webview. `invalid_root` and `stale_root` are surfaced separately so users are not told that a missing path merely changed identity.
+- **Risks or compatibility impact:** Navigation now exposes a real page while Doctor, Diff, and Timeline entries remain scaffolded; no release-readiness claim is made. Packaged runtime behavior remains dependent on the open Windows/Linux SEA/Tauri matrix.
+- **Open issues or blockers:** Git staging/commit remains blocked by the read-only `.git` directory; native Windows/Linux SEA and Tauri smoke remain required; remaining page entries still need typed result rendering.
+- **Next first action:** Add the read-only Doctor detail view using the existing validated findings, including severity/category filters and a keyboard-accessible finding detail panel.
+- **Evidence:** `apps/desktop/src/App.tsx`, `apps/desktop/src/styles.css`, `apps/desktop/src/desktop-client.ts`, `packages/protocol/src/index.ts`, and the passing Desktop/Tauri/full-suite commands.
+
+### 2026-07-27, Connected read-only Overview slice
+
+- **Status:** partial
+- **Agent/tool:** Codex with React/Tauri typed client integration and protocol result rendering
+- **Branch:** `codex/desktop-v06-stack-adr`
+- **Commits:** not created; the sandbox cannot write `.git/index.lock` because `.git` is read-only
+- **Pull request:** not opened
+- **Objective:** Turn the approved Desktop shell into the first connected read-only product flow without duplicating domain logic in the webview.
+- **Completed:** Added typed webview state for daemon info, Inspect, and Doctor; connecting now validates daemon compatibility, then loads Inspect and Doctor for the selected canonical root through the existing Tauri commands. The Overview renders project identity, canonical root, finding counts, protocol state, explicit connection failures, loading state, and a read-only completion notice. Selecting a new root clears prior results so stale project data is not shown.
+- **Not completed:** Diff and Timeline page rendering, root confirmation UX, reconnect/retry state depth, accessibility automation, and Windows/Linux runtime smoke remain open.
+- **Validation:** Desktop typecheck and Vite production build passed; targeted Prettier and `git diff --check` passed; full Vitest suite passed with 83 files, 740 tests passed, and 3 skipped.
+- **Decisions and assumptions:** The first connected slice is intentionally Overview-only and uses the existing typed protocol parsers; no frontend filesystem, token, shell, network, or domain implementation was introduced. Doctor findings are displayed as validated counts and exit status, without inventing remediation or readiness claims.
+- **Risks or compatibility impact:** The UI now exercises real native commands, so packaged runtime behavior remains dependent on the open Windows/Linux SEA/Tauri matrix. This is not a Desktop release-readiness claim.
+- **Open issues or blockers:** Git staging/commit remains blocked by the read-only `.git` directory; native Windows/Linux SEA and Tauri smoke remain required; the remaining approved pages are not yet wired to view actions.
+- **Next first action:** Add the read-only Inspect page using the already-typed `inspectProject` result, then cover its empty, stale-root, disconnected, and protocol-error states before wiring Doctor details.
+- **Evidence:** `apps/desktop/src/App.tsx`, `apps/desktop/src/desktop-client.ts`, `apps/desktop/src/styles.css`, `packages/protocol/src/index.ts`, and the passing Desktop/full-suite commands.
+
+### 2026-07-27, macOS SEA and Tauri package smoke
+
+- **Status:** partial
+- **Agent/tool:** Codex with Node SEA, postject, Tauri packaging, and bundle resource verification
+- **Branch:** `codex/desktop-v06-stack-adr`
+- **Commits:** not created; the sandbox cannot write `.git/index.lock` because `.git` is read-only
+- **Pull request:** not opened
+- **Objective:** Execute the local macOS artifact and package smoke path defined by the sidecar boundary.
+- **Completed:** Ran the real Node 22.17.0 SEA harness with temporary `postject@1.0.0-alpha.6`; authenticated Doctor returned protocol v1/exit code 3 with five findings, shutdown was graceful, and the owned Unix endpoint was removed. Prepared the SEA executable as the fixed Tauri resource, built the aarch64 `.app` and `.dmg`, and verified the embedded `Contents/Resources/resources/intentloomd` hash exactly matches the SEA executable (`7244085241dd073281ecb2b9813e43b45e6f726e9dfb69068112f8f47501247f`). Fixed Rust release lookup to support Tauri's nested `Resources/resources` sidecar path and the packaged catalog at `Resources/_up_/_up_/_up_/catalog`.
+- **Not completed:** Windows/Linux SEA and Tauri smoke runs remain open; macOS app launch/UI smoke and production signing remain separate release evidence.
+- **Validation:** macOS SEA harness passed; Tauri packaging passed and produced `Intentloom.app` plus `Intentloom_0.6.0-beta.1_aarch64.dmg`; sidecar hash and packaged catalog verification passed. The unprivileged DMG attempt was blocked by sandboxed `hdiutil` (`Device not configured`), while the same Tauri DMG command passed in the permitted system mode. Previous workspace test/typecheck/format gates remain green, and the post-lookup Rust check/build passed.
+- **Decisions and assumptions:** The packaging resource path is intentionally explicit and nested; release lookup accepts only the fixed known resource locations generated by the packaging configuration. Temporary postject remains CI tooling, not a repository dependency.
+- **Risks or compatibility impact:** This is macOS arm64 evidence only. It does not establish Windows/Linux compatibility, signing/notarization, or release readiness.
+- **Open issues or blockers:** Git staging/commit remains blocked by the read-only `.git` directory; native Windows/Linux runners and SEA/Tauri matrix evidence remain required.
+- **Next first action:** Run the updated SEA workflow on Windows and Linux, then perform native Tauri package smoke with the prepared `.exe`/Linux executable resources.
+- **Evidence:** `docs/desktop/SEA_FEASIBILITY_SPIKE.md`, `scripts/desktop/sea-feasibility.mjs`, `scripts/desktop/prepare-tauri-sidecar.mjs`, `apps/desktop/src-tauri/tauri.packaging.conf.json`, and the local Tauri bundle paths.
+
+#### Duty completion checklist
+
+- [x] macOS arm64 SEA authenticated daemon smoke
+- [x] Graceful shutdown and owned endpoint cleanup
+- [x] macOS Tauri `.app` and `.dmg` packaging
+- [x] Embedded sidecar hash matches SEA artifact
+- [ ] Windows SEA/Tauri smoke
+- [ ] Linux SEA/Tauri smoke
+- [ ] Production signing/notarization evidence
+
+### 2026-07-27, Fixed Tauri sidecar packaging boundary
+
+- **Status:** partial
+- **Agent/tool:** Codex with Tauri packaging configuration and SEA workflow hardening
+- **Branch:** `codex/desktop-v06-stack-adr`
+- **Commits:** not created; the sandbox cannot write `.git/index.lock` because `.git` is read-only
+- **Pull request:** not opened
+- **Objective:** Connect the self-contained daemon artifact to Tauri without making development checks depend on an absent artifact or system Node in release.
+- **Completed:** Added `scripts/desktop/prepare-tauri-sidecar.mjs`, fixed `resources/intentloomd`/`.exe` output naming, explicit `tauri.packaging.conf.json` with `resources/intentloomd*`, an app packaging command, and SEA workflow steps that prepare and verify the resource boundary. Kept the default development Tauri config bundle-disabled so `cargo check` remains deterministic without a generated SEA file.
+- **Not completed:** No self-contained SEA artifact was available in this local turn, so the packaging command was not run. Native Windows/Linux SEA and Tauri package smoke evidence remain open.
+- **Validation:** Prettier, workspace typecheck, Desktop Vite build, Rust format, sidecar script syntax, macOS `cargo check`, and `git diff --check` pass. The fixed resource path is validated by workflow configuration; actual package assembly remains runner-dependent.
+- **Decisions and assumptions:** The sidecar source must be supplied explicitly through `INTENTLOOM_DESKTOP_SIDECAR`; the preparation script copies it to one fixed resource name and never builds or substitutes a system runtime. Release launch already looks only for that packaged resource.
+- **Risks or compatibility impact:** Packaging fails visibly when the sidecar is not prepared, which is intentional. Development and protocol validation do not silently claim packaged readiness.
+- **Open issues or blockers:** Git staging/commit remains blocked by the read-only `.git` directory; SEA artifact generation and native Windows/Linux packaging runners remain required.
+- **Next first action:** Trigger the three-platform SEA workflow, run `pnpm desktop:prepare-sidecar` on each runner, and execute the Tauri packaging/smoke command with the prepared resource.
+- **Evidence:** `scripts/desktop/prepare-tauri-sidecar.mjs`, `apps/desktop/src-tauri/tauri.packaging.conf.json`, `apps/desktop/package.json`, `.github/workflows/desktop-sea-feasibility.yml`, and `docs/desktop/README.md`.
+
+#### Duty completion checklist
+
+- [x] Fixed sidecar preparation script
+- [x] Tauri packaging resource override
+- [x] CI resource-boundary verification
+- [x] No release system-Node fallback
+- [ ] SEA artifact run on all target platforms
+- [ ] Tauri package and runtime smoke matrix
+
+### 2026-07-27, Windows named-pipe transport boundary
+
+- **Status:** partial
+- **Agent/tool:** Codex with Tokio Windows named-pipe API and cross-target Rust validation
+- **Branch:** `codex/desktop-v06-stack-adr`
+- **Commits:** not created; the sandbox cannot write `.git/index.lock` because `.git` is read-only
+- **Pull request:** not opened
+- **Objective:** Replace the explicit Windows unsupported-capability branch with the same bounded local transport contract used by Unix sockets.
+- **Completed:** Added Tokio `ClientOptions` named-pipe transport behind `cfg(windows)`, shared request-size bounds and response parsing, Windows Tauri icon asset, and the required `icon.ico` resource. Installed the Windows GNU Rust standard target and exercised the cross-target build until Tauri's native resource step.
+- **Not completed:** The cross-target build cannot finish on this macOS host because `x86_64-w64-mingw32-windres` is unavailable. Native Windows CI remains required for actual named-pipe runtime validation. Packaged SEA resources and connected result rendering remain open.
+- **Validation:** macOS `cargo check` and Rust formatting pass; Desktop build/typecheck and the existing full Vitest suite remain green. Windows target check reached Tauri build but stopped at the missing MinGW `windres` tool, after the previous missing `icon.ico` was fixed.
+- **Decisions and assumptions:** Windows transport uses Tokio's safe named-pipe client API and preserves the same authenticated JSON-lines envelope and 1 MiB response bound. The native bridge still exposes no arbitrary endpoint or shell command.
+- **Risks or compatibility impact:** Windows support is source-implemented but not runtime-validated locally. The required toolchain/resource smoke gate remains open; no claim of Windows Desktop readiness is made.
+- **Open issues or blockers:** Git staging/commit remains blocked by the read-only `.git` directory; MinGW `windres` is absent; sidecar packaging and Windows/Linux SEA workflow results remain open.
+- **Next first action:** Run the Desktop/Tauri and SEA workflows on native Windows/Linux runners, then add packaged sidecar resources and exercise attach/start/shutdown ownership fixtures.
+- **Evidence:** `apps/desktop/src-tauri/src/main.rs`, `apps/desktop/src-tauri/Cargo.toml`, `apps/desktop/src-tauri/icons/icon.ico`, and the Windows `cargo check` output.
+
+#### Duty completion checklist
+
+- [x] Windows named-pipe client implementation behind `cfg(windows)`
+- [x] Shared bounded request/response contract
+- [x] Windows Tauri icon resource
+- [ ] Native Windows compile/runtime smoke test
+- [ ] Packaged SEA sidecar resources
+- [ ] Windows/Linux Desktop workflow evidence
+
+### 2026-07-27, Native daemon lifecycle and project-root bridge
+
+- **Status:** partial
+- **Agent/tool:** Codex with Tauri 2 Rust bridge, protocol validation, and local build checks
+- **Branch:** `codex/desktop-v06-stack-adr`
+- **Commits:** not created; the sandbox cannot write `.git/index.lock` because `.git` is read-only
+- **Pull request:** not opened
+- **Objective:** Move the Desktop shell from a disconnected visual scaffold to a secure native boundary for local daemon discovery and project selection.
+- **Completed:** Added app-private runtime directory setup, restrictive Unix permissions, OS-secure random token generation, fixed endpoint/token-file/catalog launch arguments, attach-before-start behavior, bounded JSON request/response transport, structured daemon error mapping, canonical-root and stale-symlink rejection, native folder selection through `tauri-plugin-dialog`, owned-process shutdown, and explicit typed request validation for all five operation command paths. Debug launch uses the repository daemon through the supported Node developer toolchain; release launch accepts only a packaged `intentloomd` sidecar and never falls back to system Node.
+- **Not completed:** Windows named-pipe transport, packaged SEA resource wiring, cross-platform lifecycle tests, connected UI result rendering, and full project operation smoke tests remain open.
+- **Validation:** Desktop TypeScript typecheck and Vite production build passed. Workspace typecheck passed. `cargo check --manifest-path apps/desktop/src-tauri/Cargo.toml` passed on macOS arm64 after adding `tauri-plugin-dialog` and `getrandom`; Rust formatting passed. Existing full Vitest suite remains green from the preceding shell handoff.
+- **Decisions and assumptions:** The webview receives only operation results/errors and selected canonical roots; token material stays in Rust runtime state and the protected token file. The native bridge rejects oversized or non-allowlisted requests before IPC. An existing endpoint is never deleted when attach fails.
+- **Risks or compatibility impact:** The current native transport is Unix-only; Windows compiles to an explicit unsupported-capability result until named pipes are implemented. Packaged release startup fails visibly when the SEA sidecar is absent instead of requiring system Node.
+- **Open issues or blockers:** Git staging/commit remains blocked by the read-only `.git` directory. Cross-platform transport, SEA bundle resources, and runtime/UI integration remain required before Desktop readiness can be claimed.
+- **Next first action:** Implement the Windows named-pipe equivalent behind the same bounded request helper and add platform-neutral lifecycle tests for attach, owned start, stale endpoint, and shutdown ownership.
+- **Evidence:** `apps/desktop/src-tauri/src/main.rs`, `apps/desktop/src-tauri/Cargo.toml`, `apps/desktop/src/desktop-client.ts`, `apps/desktop/src/App.tsx`, and `apps/desktop/src-tauri/capabilities/default.json`.
+
+#### Duty completion checklist
+
+- [x] App-private runtime directory and restrictive Unix permissions
+- [x] Native token generation and token-file ownership
+- [x] Fixed daemon launch shape with no release Node fallback
+- [x] Canonical project-root selection and validation
+- [x] Bounded Unix IPC and typed error mapping
+- [x] Owned process/endpoint cleanup boundary
+- [ ] Windows named-pipe transport
+- [ ] Self-contained packaged sidecar resource wiring
+- [ ] Connected UI result rendering and platform smoke tests
+
+### 2026-07-27, Desktop shell scaffold after approved Phase 1 gate
+
+- **Status:** partial
+- **Agent/tool:** Codex with dependency-backed TypeScript, Vitest, Vite, and Rust validation
+- **Branch:** `codex/desktop-v06-stack-adr`
+- **Commits:** not created; the sandbox cannot write `.git/index.lock` because `.git` is read-only
+- **Pull request:** not opened
+- **Objective:** Cross the approved Phase 1 gate and create the minimal Tauri Desktop shell within ADR-0042 boundaries.
+- **Completed:** Recorded maintainer design approval, restored the locked pnpm dependencies, and validated the five-operation protocol/daemon slice. Added private `apps/desktop` React 19/Vite 8/Tauri 2 scaffolding with approved dark/light semantic tokens, explicit typed protocol validation in the webview client, and an explicit five-command native allowlist. Added a deterministic loop icon source and generated Tauri PNG asset. Rust commands remain intentionally disconnected and return a typed unavailable state until secure lifecycle/token ownership is implemented.
+- **Not completed:** Native daemon attach/start lifecycle, secure token ownership, project directory picker, Unix socket/named pipe bridge, connected project pages, packaged sidecar integration, and cross-platform SEA evidence remain open.
+- **Validation:** `pnpm install` completed from the workspace lockfile; full Vitest passed 740 tests with 3 skips across 83 files; workspace typecheck, lint, format check, build, and `git diff --check` passed. Desktop typecheck and Vite production build passed. `cargo check --manifest-path apps/desktop/src-tauri/Cargo.toml` passed on macOS arm64.
+- **Decisions and assumptions:** The approved design handoff is the source for the initial visual shell. The frontend exposes no token, arbitrary filesystem, shell, or network capability. The native scaffold uses explicit operation commands rather than a generic bridge and does not invent daemon results.
+- **Risks or compatibility impact:** The shell is a truthful visual/runtime boundary, not yet a usable connected Desktop. The SEA workflow is defined but has only macOS arm64 local evidence; Windows/Linux workflow results remain a packaging gate. Tauri dependencies add a native Cargo lockfile and platform-specific build surface.
+- **Open issues or blockers:** Git staging/commit remains blocked by the read-only `.git` directory. Native lifecycle and transport implementation, cross-platform SEA matrix, accessibility/browser smoke coverage, and product-level connected flow remain.
+- **Next first action:** Implement the Rust-owned runtime directory, token, endpoint ownership, and bounded transport lifecycle; keep the webview client limited to validated operation identifiers and roots.
+- **Evidence:** `apps/desktop`, `docs/decisions/ADR-0042-desktop-stack-and-daemon-distribution.md`, `docs/desktop/DESIGN_BRIEF.md`, `docs/desktop/PHASE1_CONTRACTS.md`, `PROJECT_STATE.md`, and the commands listed under Validation.
+
+#### Duty completion checklist
+
+- [x] Design approval recorded
+- [x] Locked dependencies restored
+- [x] Phase 1 full validation completed
+- [x] Minimal React/Vite/Tauri shell scaffolded
+- [x] Native command allowlist is explicit and bounded by operation name
+- [ ] Native daemon lifecycle and token ownership
+- [ ] Connected read-only project flow
+- [ ] Windows/Linux SEA feasibility evidence
+- [ ] Commit and pull request (blocked by repository permissions and not requested)
+
+### 2026-07-27, Desktop Phase 1 gate audit blocked
+
+- **Status:** blocked
+- **Agent/tool:** Codex with repository-state and documentation audit
+- **Branch:** `codex/desktop-v06-stack-adr`
+- **Commits:** not created; the sandbox cannot write `.git/index.lock` because `.git` is read-only
+- **Pull request:** not opened
+- **Objective:** Determine whether the next step can safely cross the Phase 1 gate into Desktop shell implementation.
+- **Completed:** Re-read the current Duty Watch state and verified the design brief remains `ready for System Designer`, not approved. Confirmed the local dependency restore is incomplete: `node_modules` has no usable `@types/node`, `vitest`, or `prettier` binaries. Re-ran safe syntax/diff checks previously available and preserved the no-runtime boundary.
+- **Not completed:** Full dependency-backed typecheck, Vitest, formatter validation, System Designer approval, and `apps/desktop` creation.
+- **Validation:** The blocker is external to source behavior: the full repository commands cannot run without the missing dependencies. No automatic dependency installation was performed because repository guidance forbids silent installation; no visual/runtime implementation was started without the approved design handoff.
+- **Decisions and assumptions:** Treat the Phase 1 implementation as unverified rather than complete. Treat design approval and dependency-complete validation as prerequisites for the Tauri shell, even though the five typed operation paths are present.
+- **Risks or compatibility impact:** Proceeding to `apps/desktop` now would make visual decisions without an approved handoff and would leave the contract gate without the required full-suite evidence.
+- **Open issues or blockers:** Restore locked dependencies or run CI with the current worktree; obtain System Designer approval; then review Phase 1 deterministic tests, root enforcement, cancellation, and read-only evidence.
+- **Next first action:** Restore dependencies or provide CI validation, then record the System Designer decision and either open the Tauri shell slice or address any gate failures.
+- **Evidence:** `docs/desktop/DESIGN_BRIEF.md` (`Status: ready for System Designer`), `package.json`, `pnpm-lock.yaml`, local `node_modules`, `PROJECT_STATE.md`, and the Phase 1 implementation files.
+
+#### Duty completion checklist
+
+- [x] Design approval status verified
+- [x] Dependency availability verified
+- [x] No premature Desktop runtime created
+- [ ] Dependency-complete typecheck/Vitest/format validation
+- [ ] System Designer approval
+- [ ] Phase 1 exit-gate review
+
+### 2026-07-27, Desktop Phase 1 root and cancellation hardening
+
+- **Status:** partial
+- **Agent/tool:** Codex with local daemon contract tests and static validation
+- **Branch:** `codex/desktop-v06-stack-adr`
+- **Commits:** not created; the sandbox cannot write `.git/index.lock` because `.git` is read-only
+- **Pull request:** not opened
+- **Objective:** Close the remaining Phase 1 root/cancellation boundary without introducing Desktop runtime code.
+- **Completed:** Added `enforceCanonicalRoots` to the daemon options and enabled it for the packaged daemon so Inspect, Doctor, Diff, and Timeline receive canonical existing directories; symlink, missing, and non-directory roots produce explicit client error codes. Added an in-flight AbortSignal test proving the client closes transport while the read-only daemon operation may finish safely. Updated cancellation documentation and handoff state.
+- **Not completed:** Full dependency-backed typecheck/Vitest run, root enforcement on every legacy non-Desktop daemon handler, richer Inspect presentation payloads, Desktop/Tauri runtime, and hosted SEA matrix evidence remain open.
+- **Validation:** Protocol TypeScript validation, protocol smoke validation, daemon syntax checks, and `git diff --check` passed. Full `tsc -b` and Vitest remain unavailable because `@types/node` and `vitest` are absent; Prettier remains unavailable because no local binary exists.
+- **Decisions and assumptions:** Canonical-root enforcement is an explicit daemon mode to preserve existing test/custom-handler compatibility; the packaged daemon enables it. Cancellation is transport-level for read-only operations and does not claim to interrupt application work.
+- **Risks or compatibility impact:** Custom `startLocalDaemon` callers retain legacy behavior unless they opt into enforcement. Packaged Desktop-facing daemon behavior is stricter and deterministic for root selection. No project writes or UI components were introduced.
+- **Open issues or blockers:** Full tests/typecheck need dependency restore or CI. The Git index is read-only, so changes cannot be staged or committed here. System Designer approval and SEA workflow results remain open.
+- **Next first action:** Run the complete suite on a dependency-complete checkout, review the Phase 1 exit gate, then decide whether the accepted architecture permits creating `apps/desktop`.
+- **Evidence:** `packages/daemon/src/index.ts`, `packages/daemon/src/bin.ts`, `tests/daemon.test.ts`, and `docs/desktop/PHASE1_CONTRACTS.md`.
+
+#### Duty completion checklist
+
+- [x] Packaged-daemon canonical root enforcement
+- [x] Explicit invalid/stale root errors
+- [x] In-flight cancellation semantics and test
+- [x] Static validation, protocol smoke test, and diff check
+- [ ] Full typecheck and Vitest run
+- [ ] Complete Phase 1 gate review
+- [ ] Commit and pull request (blocked by repository permissions and not requested)
+
+### 2026-07-27, Desktop Phase 1 five-operation typed client path
+
+- **Status:** partial
+- **Agent/tool:** Codex with TDD-oriented protocol/daemon implementation and local static validation
+- **Branch:** `codex/desktop-v06-stack-adr`
+- **Commits:** not created; the sandbox cannot write `.git/index.lock` because `.git` is read-only
+- **Pull request:** not opened
+- **Objective:** Complete typed client invocation coverage for Info, Inspect, Doctor, Diff, and root-bound Timeline.
+- **Completed:** Added and validated `parseInspectResponse`; moved Doctor onto the shared typed daemon transport/error path; added `requestDaemonInspect`; wired the packaged daemon’s Inspect handler to the existing read-only application inspection; added a discovery test proving all five method IDs can be advertised together; added shared auth/error and protocol-contract tests.
+- **Not completed:** Full deterministic test/typecheck gate, root validation for every existing project handler, long-running operation cancellation, Desktop/Tauri runtime, and hosted SEA matrix evidence remain open.
+- **Validation:** Protocol TypeScript validation, protocol smoke validation, TypeScript syntax checks, and `git diff --check` passed. Full `tsc -b` and Vitest remain unavailable from the interrupted dependency restore (`@types/node` and `vitest` are absent); Prettier remains unavailable because no local binary exists.
+- **Decisions and assumptions:** Doctor keeps its existing request-oriented public options for compatibility while using the common typed transport internally. Inspect keeps the current minimal protocol response shape (`projectId` and canonical root); richer application inspection presentation models remain a later contract refinement.
+- **Risks or compatibility impact:** Existing Doctor callers retain their API while gaining structured transport failures and AbortSignal support. Packaged Inspect currently executes the read-only application inspection and returns the established minimal daemon result shape.
+- **Open issues or blockers:** Full tests/typecheck need dependency restore or CI. The Git index is read-only, so changes cannot be staged or committed here. Root validation/cancellation hardening, System Designer approval, and SEA workflow results remain open.
+- **Next first action:** Run the complete suite on a dependency-complete checkout, then close root-validation and operation-cancellation gaps before declaring the Phase 1 gate complete.
+- **Evidence:** `packages/protocol/src/index.ts`, `packages/daemon/src/index.ts`, `packages/daemon/src/bin.ts`, `tests/protocol.test.ts`, `tests/daemon.test.ts`, and `docs/desktop/PHASE1_CONTRACTS.md`.
+
+#### Duty completion checklist
+
+- [x] Typed Info, Inspect, Doctor, Diff, and Timeline client invocation paths
+- [x] Shared structured transport errors for Doctor and Inspect
+- [x] Five-method capability discovery coverage
+- [x] Static validation, protocol smoke test, and diff check
+- [ ] Full typecheck and Vitest run
+- [ ] Root validation for every project handler
+- [ ] Long-running operation cancellation semantics
+- [ ] Commit and pull request (blocked by repository permissions and not requested)
+
+### 2026-07-27, Desktop Phase 1 Diff and root-bound Timeline slice
+
+- **Status:** partial
+- **Agent/tool:** Codex with TDD-oriented protocol/application/daemon implementation and local static validation
+- **Branch:** `codex/desktop-v06-stack-adr`
+- **Commits:** not created; the sandbox cannot write `.git/index.lock` because `.git` is read-only
+- **Pull request:** not opened
+- **Objective:** Add typed Project Diff and root-bound Local Timeline contracts through the existing application and authenticated daemon without creating Desktop components.
+- **Completed:** Added `intentloom.project.diff.v1` and `intentloom.project.timeline.v1` request/response schemas, bounded Timeline inputs, validators, typed client helpers, daemon handlers, capability discovery entries, response-size enforcement, canonical-root validation, stale-root errors, and packaged-daemon wiring. Added an application Timeline facade over the existing local-git evidence collector, including deterministic diagnostics and read-only behavior. Added protocol, daemon, and application timeline tests plus contract documentation.
+- **Not completed:** Inspect/Doctor typed client helpers, operation-level cancellation beyond the discovery transport boundary, full five-operation read-only gate, Desktop/Tauri runtime, and hosted SEA matrix evidence remain open.
+- **Validation:** Protocol TypeScript validation, Node protocol smoke validation, TypeScript syntax checks, and `git diff --check` passed. Full `tsc -b` and Vitest remain unavailable from the interrupted dependency restore (`@types/node` and `vitest` are absent); Prettier remains unavailable because no local binary exists.
+- **Decisions and assumptions:** Timeline bounds are explicit in the request: 1–500 commits, 100–30,000 ms git timeout, and 4 KiB–4 MiB git output. The daemon canonicalizes existing directory roots and rejects a final symbolic-link root as stale. Diff is invoked with `dryRun: true`; Timeline uses local Git evidence and performs no writes.
+- **Risks or compatibility impact:** `@intentloom/evidence-git` is now a direct application dependency and project reference so the application facade owns the canonical operation path. Existing CLI/evidence behavior remains unchanged. Response-size enforcement is additive and returns `bounded_validation_failed` when a daemon response exceeds the local protocol bound.
+- **Open issues or blockers:** Full tests/typecheck need dependency restore or CI. The Git index is read-only, so changes cannot be staged or committed here. Inspect/Doctor client parity, all-operation root validation, and the System Designer/SEA gates remain open.
+- **Next first action:** Run the complete suite on a dependency-complete checkout, then add typed Inspect/Doctor client helpers and close the Phase 1 deterministic read-only gate.
+- **Evidence:** `packages/protocol/src/index.ts`, `packages/application/src/index.ts`, `packages/evidence-git/tsconfig.json`, `packages/daemon/src/index.ts`, `packages/daemon/src/bin.ts`, `tests/protocol.test.ts`, `tests/daemon.test.ts`, `tests/project-timeline.test.ts`, and `docs/desktop/PHASE1_CONTRACTS.md`.
+
+#### Duty completion checklist
+
+- [x] Typed Diff and Timeline request/response contracts
+- [x] Application Timeline facade over local Git evidence
+- [x] Daemon handlers, typed client helpers, capability advertisement
+- [x] Bounded Timeline inputs and response output
+- [x] Canonical-root and stale-root daemon validation
+- [x] Static validation, protocol smoke test, and diff check
+- [ ] Full typecheck and Vitest run
+- [ ] Inspect/Doctor typed client parity and final Phase 1 gate
+- [ ] Commit and pull request (blocked by repository permissions and not requested)
+
+### 2026-07-27, Desktop Phase 1 discovery and error contract slice
+
+- **Status:** partial
+- **Agent/tool:** Codex with TDD-oriented protocol/daemon implementation and local static validation
+- **Branch:** `codex/desktop-v06-stack-adr`
+- **Commits:** not created; the sandbox cannot write `.git/index.lock` because `.git` is read-only
+- **Pull request:** not opened
+- **Objective:** Begin Phase 1 before any Desktop components by freezing daemon capability discovery and the shared client error boundary.
+- **Completed:** Added `intentloom.daemon.info.v1` request/response types and validators; added daemon version, enabled method IDs, read-only/mutating classifications, bounded limits, and exact compatibility results; added wire error metadata and typed client error codes; added typed discovery client support for timeout, cancellation, authentication, disconnect, and bounded-response handling; kept packaged daemon version injection tied to the root package version at build time; added protocol/daemon tests and documented the slice.
+- **Not completed:** Project Inspect, Doctor, Diff, root-bound Timeline, root validation, long-running operation cancellation, Desktop/Tauri components, and the three-platform SEA workflow run remain open.
+- **Validation:** Protocol TypeScript validation passed with an isolated compiler invocation; a Node protocol discovery smoke test, TypeScript syntax checks, and `git diff --check` passed. Full `tsc -b` is blocked by missing `@types/node`; Vitest is unavailable because the interrupted dependency restore has no local `vitest` binary; Prettier remains unavailable because no local Prettier binary exists.
+- **Decisions and assumptions:** Discovery is read-only and always reports the daemon info capability. Protocol compatibility is exact for v1; an incompatible client receives a typed discovery result so the UI can render a protocol-incompatible state. AbortSignal cancellation closes the local discovery transport and does not imply cancellation of an application operation.
+- **Risks or compatibility impact:** Existing wire behavior remains compatible for current methods; error `data.clientErrorCode` is additive. The typed client helper is currently scoped to discovery while future project-operation helpers must reuse the same taxonomy. No generated Desktop runtime or writes were introduced.
+- **Open issues or blockers:** Full tests/typecheck need dependency restore or CI. The Git index is read-only, so changes cannot be staged or committed here. Windows/Linux SEA workflow results and the System Designer handoff remain open.
+- **Next first action:** Run the complete validation on a dependency-complete checkout, then implement the Project Diff and root-bound Local Timeline protocol/application/daemon vertical slice with deterministic read-only tests.
+- **Evidence:** `packages/protocol/src/index.ts`, `packages/daemon/src/index.ts`, `packages/daemon/src/bin.ts`, `scripts/build-daemon.mjs`, `tests/protocol.test.ts`, `tests/daemon.test.ts`, `docs/desktop/PHASE1_CONTRACTS.md`.
+
+#### Duty completion checklist
+
+- [x] Typed daemon discovery request/response and validators
+- [x] Capability classification and bounded limits
+- [x] Compatibility and client error taxonomy
+- [x] Cancellation boundary documented and tested at discovery transport level
+- [x] Static validation, protocol smoke test, and diff check
+- [ ] Full typecheck and Vitest run
+- [ ] Project Diff and root-bound Timeline contracts
+- [ ] Commit and pull request (blocked by repository permissions and not requested)
+
+### 2026-07-27, Desktop SEA cross-platform CI workflow added
+
+- **Status:** partial
+- **Agent/tool:** Codex with local workflow/script validation
+- **Branch:** `codex/desktop-v06-stack-adr`
+- **Commits:** not created; the sandbox cannot write `.git/index.lock` because `.git` is read-only
+- **Pull request:** not opened
+- **Objective:** Make the accepted SEA feasibility spike executable on hosted macOS, Windows, and Linux runners.
+- **Completed:** Added `.github/workflows/desktop-sea-feasibility.yml` with a Node 22 matrix for all three target operating-system families. The workflow installs the existing workspace, builds the daemon, downloads `postject@1.0.0-alpha.6` only into the runner temp directory, and runs the existing harness with an explicit temporary output directory. Linked the workflow from the feasibility report and updated durable state.
+- **Not completed:** The workflow has not been triggered from this local branch, so no Windows/Linux/macOS CI result is claimed. No Desktop runtime, Tauri shell, protocol contract, updater, release, merge, or publication work was performed.
+- **Validation:** YAML structure was reviewed locally, the SEA harness passes `node --check`, repository links resolve, and `git diff --check` passes. Formatter remains unavailable because this checkout has no local Prettier binary.
+- **Decisions and assumptions:** CI uses Node 22 to match the current daemon target and uses temporary `postject` tooling rather than adding a repository dependency. The workflow is manually triggerable and also runs for relevant pull-request paths.
+- **Risks or compatibility impact:** CI now introduces a networked temporary tool download during the explicitly scoped feasibility job. A green matrix is still only packaging feasibility evidence; signing, notarization, Tauri packaging, and release authorization remain separate gates.
+- **Open issues or blockers:** The workflow must be triggered and reviewed; Phase 1 capability/error/cancellation contracts and the System Designer handoff remain open. Git staging/commit remains blocked by the read-only `.git` directory.
+- **Next first action:** Trigger the workflow, investigate any platform-specific failure, and record the three matrix results before starting the Phase 1 contract-freeze PR.
+- **Evidence:** `.github/workflows/desktop-sea-feasibility.yml`, `docs/desktop/SEA_FEASIBILITY_SPIKE.md`, and `scripts/desktop/sea-feasibility.mjs`.
+
+#### Duty completion checklist
+
+- [x] Three-platform workflow added
+- [x] Temporary injector remains outside repository dependencies
+- [x] Harness and repository validation passed locally
+- [ ] Hosted macOS result
+- [ ] Hosted Linux result
+- [ ] Hosted Windows result
+- [ ] Commit and pull request (blocked by repository permissions and not requested)
+
+### 2026-07-27, Desktop v0.6 macOS SEA feasibility spike
+
+- **Status:** partial
+- **Agent/tool:** Codex with Node SEA, temporary postject tooling, local daemon bundle, and elevated local IPC execution
+- **Branch:** `codex/desktop-v06-stack-adr`
+- **Commits:** not created; the sandbox cannot write `.git/index.lock` because `.git` is read-only
+- **Pull request:** not opened
+- **Objective:** Execute the accepted ADR-0042 self-contained daemon feasibility spike without creating `apps/desktop` or changing domain runtime code.
+- **Completed:** Recorded maintainer acceptance of ADR-0042. Added the repeatable `scripts/desktop/sea-feasibility.mjs` harness and `docs/desktop/SEA_FEASIBILITY_SPIKE.md`. Built an SEA preparation blob from the existing `packages/daemon/dist/intentloomd.cjs`, injected it with temporary `postject@1.0.0-alpha.6`, re-signed the macOS arm64 executable, launched it without a separate Node command, authenticated a real Doctor request, and verified graceful shutdown plus owned Unix-socket cleanup.
+- **Not completed:** Windows and Linux runs were not available from this macOS host. No `apps/desktop`, Tauri, frontend, protocol, daemon domain, updater, release, merge, or publication work was performed.
+- **Validation:** macOS arm64 run passed on Node `v22.17.0`: protocol version `1`, Doctor exit code `3` with five findings, graceful shutdown, and endpoint removal. The sandbox initially rejected Unix-socket binding with `EPERM`; the final run succeeded with elevated local IPC execution. `node --check scripts/desktop/sea-feasibility.mjs` passed. Prettier remains unavailable because the checkout has no local Prettier binary; manual review and `git diff --check` are required.
+- **Decisions and assumptions:** SEA is feasible on macOS arm64. The executable must be re-signed after injection. The packaging baseline uses `useCodeCache: false` and `useSnapshot: false`; target-native Windows/Linux runs remain mandatory. Temporary `postject` tooling is not a repository dependency.
+- **Risks or compatibility impact:** The Node SEA feature remains active development. The macOS result is not a three-platform release claim. Production signing, notarization, and updater activation remain outside scope.
+- **Open issues or blockers:** Windows/Linux feasibility evidence, Phase 1 capability discovery and client error/cancellation contracts, and the System Designer handoff remain open. Git staging/commit remains blocked by the read-only `.git` directory.
+- **Next first action:** Use the cross-platform workflow added in the follow-up watch, record equivalent startup/authentication/shutdown evidence, then begin the Phase 1 protocol/client contract PR.
+- **Evidence:** `docs/desktop/SEA_FEASIBILITY_SPIKE.md`, `scripts/desktop/sea-feasibility.mjs`, macOS output directory `/private/tmp/intentloom-sea-run`, and [Node SEA documentation](https://nodejs.org/download/release/latest-v22.x/docs/api/single-executable-applications.html).
+
+#### Duty completion checklist
+
+- [x] ADR-0042 acceptance recorded
+- [x] Repeatable SEA feasibility harness added
+- [x] macOS arm64 artifact generated and injected
+- [x] Real authenticated Doctor request passed
+- [x] Graceful shutdown and owned endpoint cleanup passed
+- [ ] Windows artifact run
+- [ ] Linux artifact run
+- [ ] Post-edit formatter validation
+- [ ] Commit and pull request (blocked by repository permissions and not requested)
+
+### 2026-07-27, Desktop v0.6 stack and distribution ADR proposed
+
+- **Status:** partial
+- **Agent/tool:** Codex with local repository, codegraph, GitHub, npm, and official framework documentation verification
+- **Branch:** `codex/desktop-v06-stack-adr`
+- **Commits:** not created; the sandbox cannot write `.git/index.lock` because `.git` is read-only
+- **Pull request:** not opened; maintainer review is required before external publication
+- **Objective:** Complete the Phase 0 state correction and define the reviewable Desktop stack, secure daemon lifecycle, and self-contained distribution boundary without writing runtime code.
+- **Completed:** Verified current `main` at `7025051` after merged PR #95; verified PR #94 is merged at `7402687` and should remain the later v1 compatibility gate; confirmed `v0.5.0-beta.1` remains the npm `next` release; inspected the current protocol, daemon, application, CLI, TUI, architecture, and Desktop planning boundaries; added ADR-0042; corrected stale Phase 0 gates and durable state; linked the ADR from the Desktop entrypoint.
+- **Not completed:** No `apps/desktop`, Rust, frontend, protocol, daemon, packaging, updater, release, merge, or publication work was performed. ADR-0042 acceptance and the SEA spike occurred in the follow-up watch above.
+- **Validation:** Local `git status` was clean before branching. Official React/Vite/Tauri documentation and current package metadata were checked. The post-merge compatibility run `30226723027` passed all macOS jobs and Node 22 jobs; Windows Node 24 failed only `tests/adapter-packed-process.test.ts` because `doctors an all-adapter installation` exceeded Vitest's 5-second test timeout. Prettier could not run because this checkout has only the interrupted dependency-restore state and no local Prettier binary; manual Markdown review and `git diff --check` passed.
+- **Decisions and assumptions:** Proposed stack is React 19.2.x + Vite 8.1.x + Tauri 2.11.x in one `apps/desktop` package. Rust owns native transport/lifecycle/token concerns only. Packaged Desktop must use a self-contained Node sidecar/SEA feasibility path and must not silently require system Node. Updater activation remains outside v0.6.
+- **Risks or compatibility impact:** Documentation-only and backwards compatible. The Windows Node 24 timeout is an existing CI warning and must not be represented as a Desktop regression or ignored in the next release-readiness handoff.
+- **Open issues or blockers:** System Designer handoff, Phase 1 capability/error/cancellation contracts, and Windows/Linux self-contained daemon feasibility remain open. The documentation changes are unstaged because this environment cannot write the Git index.
+- **Next first action:** Complete the Windows/Linux SEA runs, then implement the Phase 1 typed client-contract freeze before creating `apps/desktop`.
+- **Evidence:** `git rev-parse HEAD`, `gh pr view 94`, `gh pr view 95`, npm dist-tags, compatibility run `30226723027`, `docs/decisions/ADR-0042-desktop-stack-and-daemon-distribution.md`, and the current `packages/protocol`, `packages/daemon`, `packages/application`, and `packages/cli` sources.
+
+#### Duty completion checklist
+
+- [x] Current `main`, PR #94, PR #95, npm dist-tags, package scripts, and CI state reverified
+- [x] Phase 0 reconciliation recommendation recorded
+- [x] Proposed Desktop stack/distribution ADR added
+- [x] Durable project state corrected
+- [x] Desktop entrypoint and roadmap gates updated
+- [x] ADR accepted by maintainer
+- [x] macOS self-contained daemon feasibility spike completed; Windows/Linux remain
+- [x] Post-edit diff validation completed; formatter unavailable and recorded
 
 ### 2026-07-27, Desktop v0.6 design and execution baseline
 

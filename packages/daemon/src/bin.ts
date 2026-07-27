@@ -1,7 +1,13 @@
 #!/usr/bin/env node
 import { readFile, stat } from "node:fs/promises";
 import { resolve } from "node:path";
-import { doctorProject, nodeFileSystem } from "../../application/dist/index.js";
+import {
+  diffProject,
+  doctorProject,
+  inspectProject,
+  nodeFileSystem,
+  timelineProject,
+} from "../../application/dist/index.js";
 import { startLocalDaemon } from "./index.js";
 
 function value(args: readonly string[], flag: string): string {
@@ -28,6 +34,33 @@ async function main(): Promise<void> {
   const daemon = await startLocalDaemon({
     endpoint,
     sessionToken,
+    daemonVersion: process.env.INTENTLOOM_DAEMON_VERSION ?? "development",
+    enforceCanonicalRoots: true,
+    diff: async (request) => {
+      const result = await diffProject(
+        {
+          root: request.params.root,
+          profile: request.params.profile,
+          adapters: request.params.adapters as never,
+          dryRun: true,
+          catalogRoot,
+        },
+        nodeFileSystem,
+      );
+      return {
+        operationVersion: 1,
+        root: request.params.root,
+        changes: result.changes,
+        diagnostics: result.diagnostics,
+      };
+    },
+    inspect: async (request) => {
+      await inspectProject(resolve(request.params.root), nodeFileSystem);
+      return {
+        projectId: "project-local",
+        root: resolve(request.params.root),
+      };
+    },
     doctor: async (request) => {
       const report = await doctorProject(
         {
@@ -55,6 +88,25 @@ async function main(): Promise<void> {
         )
           ? 3
           : 0,
+      };
+    },
+    timeline: async (request) => {
+      const result = await timelineProject({
+        root: request.params.root,
+        caseId: request.params.caseId,
+        limit: request.params.limit,
+        timeoutMs: request.params.timeoutMs,
+        maxOutputBytes: request.params.maxOutputBytes,
+      });
+      return {
+        operationVersion: 1,
+        root: result.root,
+        caseType: result.caseType,
+        caseId: result.caseId,
+        quality: result.quality,
+        events: result.events,
+        findings: result.findings,
+        diagnostics: result.diagnostics,
       };
     },
   });

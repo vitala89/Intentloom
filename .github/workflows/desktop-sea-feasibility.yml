@@ -1,0 +1,151 @@
+name: Desktop SEA Feasibility
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - ".github/workflows/desktop-sea-feasibility.yml"
+      - "packages/application/**"
+      - "packages/daemon/**"
+      - "packages/protocol/**"
+      - "scripts/build-daemon.mjs"
+      - "scripts/desktop/sea-feasibility.mjs"
+      - "scripts/desktop/prepare-tauri-sidecar.mjs"
+      - "apps/desktop/**"
+      - "pnpm-lock.yaml"
+      - "package.json"
+
+permissions:
+  contents: read
+
+jobs:
+  sea:
+    name: ${{ matrix.os }} / Node 22
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            tauri-bundle: true
+            bundle-format: deb
+          - os: macos-latest
+            tauri-bundle: true
+            bundle-format: app
+          - os: windows-latest
+            tauri-bundle: false
+            bundle-format: ""
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.12.4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install workspace dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build daemon bundle
+        run: pnpm build
+
+      # ── Linux: install Tauri system dependencies ───────────────────────────
+      - name: Install Tauri Linux dependencies
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y \
+            libwebkit2gtk-4.1-dev \
+            libappindicator3-dev \
+            librsvg2-dev \
+            patchelf
+
+      # ── Install Rust (needed for tauri build on all platforms) ─────────────
+      - name: Install stable Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache Rust build artifacts
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: apps/desktop/src-tauri -> target
+
+      # ── Prepare postject for SEA injection ────────────────────────────────
+      - name: Prepare postject injector
+        shell: bash
+        run: |
+          mkdir -p "$RUNNER_TEMP/postject"
+          npm pack postject@1.0.0-alpha.6 --pack-destination "$RUNNER_TEMP"
+          (cd "$RUNNER_TEMP" && tar -xzf postject-1.0.0-alpha.6.tgz -C postject)
+          echo "POSTJECT_API=$RUNNER_TEMP/postject/package/dist/api.js" >> "$GITHUB_ENV"
+
+      # ── Run SEA feasibility spike ──────────────────────────────────────────
+      - name: Run self-contained daemon feasibility spike
+        id: sea-spike
+        shell: bash
+        env:
+          INTENTLOOM_SEA_OUTPUT_DIR: ${{ runner.temp }}/intentloom-sea
+        run: |
+          node scripts/desktop/sea-feasibility.mjs | tee "$RUNNER_TEMP/sea-result.json"
+
+      - name: Assert doctor response from SEA daemon
+        shell: bash
+        run: |
+          PROTOCOL=$(jq -r '.doctor.protocolVersion' "$RUNNER_TEMP/sea-result.json")
+          GRACEFUL=$(jq -r '.shutdown.graceful' "$RUNNER_TEMP/sea-result.json")
+          REMOVED=$(jq -r '.endpointRemoved' "$RUNNER_TEMP/sea-result.json")
+          echo "protocolVersion=$PROTOCOL  graceful=$GRACEFUL  endpointRemoved=$REMOVED"
+          test "$PROTOCOL" = "1"
+          test "$GRACEFUL" = "true"
+          test "$REMOVED"  = "true"
+
+      # ── Prepare fixed Tauri sidecar resource ──────────────────────────────
+      - name: Prepare fixed Tauri sidecar resource
+        shell: bash
+        env:
+          INTENTLOOM_DESKTOP_SIDECAR: >-
+            ${{ runner.temp }}/intentloom-sea/intentloomd-sea${{ runner.os == 'Windows' && '.exe' || '' }}
+        run: pnpm desktop:prepare-sidecar
+
+      # ── Verify sidecar resource boundary ──────────────────────────────────
+      - name: Verify Tauri sidecar resource boundary
+        shell: bash
+        run: |
+          test -f "apps/desktop/src-tauri/resources/intentloomd${{ runner.os == 'Windows' && '.exe' || '' }}"
+          test -f apps/desktop/src-tauri/tauri.packaging.conf.json
+          echo "Sidecar resource boundary verified"
+
+      # ── Tauri bundle (Linux: .deb, macOS: .app) ───────────────────────────
+      - name: Tauri bundle (${{ matrix.bundle-format }})
+        if: matrix.tauri-bundle
+        shell: bash
+        run: |
+          pnpm --filter @intentloom/desktop exec tauri build \
+            --config src-tauri/tauri.packaging.conf.json \
+            --bundles ${{ matrix.bundle-format }}
+
+      - name: Verify bundle artifact exists (Linux)
+        if: runner.os == 'Linux'
+        shell: bash
+        run: |
+          ls -lh apps/desktop/src-tauri/target/release/bundle/deb/*.deb
+          echo "Linux .deb bundle verified"
+
+      - name: Verify bundle artifact exists (macOS)
+        if: runner.os == 'macOS'
+        shell: bash
+        run: |
+          ls -lhd apps/desktop/src-tauri/target/release/bundle/macos/Intentloom.app
+          echo "macOS .app bundle verified"
+
+      # ── Upload SEA result JSON ─────────────────────────────────────────────
+      - name: Upload SEA result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sea-result-${{ matrix.os }}
+          path: ${{ runner.temp }}/sea-result.json
+          retention-days: 14
