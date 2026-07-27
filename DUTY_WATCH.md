@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **complete** — PR https://github.com/vitala89/Intentloom/pull/98 created and green on GitHub Actions CI across all three platforms (Windows, Linux, macOS)
+Status: **v0.6.0-beta.1 milestone complete & audited** — PR #98 merged into main; PR #99 green on CI; `v0.6.0-beta.1` readiness audit complete (`docs/desktop/V0_6_READINESS_AUDIT.md`)
 
 Active branch: `codex/desktop-v06-stack-adr`
 
-Current objective: PR #98 is ready for maintainer review and merge into `main`.
+Current objective: PR #99 is ready for maintainer review and merge into `main`, after which `v0.6.0-beta.1` can be tagged.
 
-Next first action: merge PR #98 upon maintainer approval and tag the `v0.6.0-beta.1` Desktop milestone release.
+Next first action: merge PR #99 upon maintainer approval and tag the `v0.6.0-beta.1` release.
 
 ## Watch rules
 
@@ -41,6 +41,37 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-28, v0.6.0-beta.1 Milestone Readiness Audit
+
+- **Status:** complete (validated)
+- **Agent/tool:** Antigravity — Milestone readiness audit, documentation closure
+- **Branch:** `codex/desktop-v06-stack-adr`
+- **Commits:** local uncommitted documentation changes
+- **Pull request:** https://github.com/vitala89/Intentloom/pull/99 (all checks green)
+- **Objective:** Perform and record the `v0.6.0-beta.1` readiness audit across all 8 phases of `DESKTOP_V0_6_IMPLEMENTATION_PLAN.md`.
+- **Completed:**
+  - **Readiness Audit Document:** Authored [`docs/desktop/V0_6_READINESS_AUDIT.md`](file:///Users/eugenekasap/WebstormProjects/Intentloom/docs/desktop/V0_6_READINESS_AUDIT.md) auditing all 11 categories: Architecture, Daemon Transport, Sidecar Distribution, Packaging & CI, Read-Only Product Slice, Command Palette, Settings & Diagnostics, Accessibility (a11y), Cancellation & Progress, TUI Parity, and Zero Mutation.
+  - **Documentation Updates:** Updated `docs/desktop/README.md` and `PROJECT_STATE.md` to reflect `v0.6.0-beta.1` milestone readiness audit completion.
+  - **CI & Release State:** Verified PR #98 merged into `main` and PR #99 100% green on GitHub Actions CI across Windows, Linux, and macOS.
+- **Validation:** `pnpm typecheck` passed; `pnpm format:check` passed; `git diff --check` passed; `pnpm test` passed — 83 files, 742 tests passed, 3 skipped.
+- **Evidence:** `docs/desktop/V0_6_READINESS_AUDIT.md`, `docs/desktop/README.md`, `PROJECT_STATE.md`, `DUTY_WATCH.md`.
+
+### 2026-07-28, Phase 6 TUI Parity & Hardening (`intentloom ui`)
+
+- **Status:** complete (validated)
+- **Agent/tool:** Antigravity — CLI TUI formatting & view routing, InteractiveWorkspaceState extension
+- **Branch:** `codex/desktop-v06-stack-adr`
+- **Commits:** `c9f3636` (`feat(cli): implement Phase 6 TUI parity for intentloom ui over shared application contracts`)
+- **Pull request:** https://github.com/vitala89/Intentloom/pull/99 (CI in progress)
+- **Objective:** Complete Phase 6 TUI parity (`intentloom ui [PROJECT_PATH|--root PATH] [--view inspect|doctor|diff|timeline] [--json]`) over stabilized shared application contracts.
+- **Completed:**
+  - **`packages/application/src/index.ts` — `InteractiveWorkspaceState`:** Extended interface to include `inspect` (`ProjectInspection`), `diff` (`Plan`), and `timeline` (`ProjectTimeline`) alongside `findings`, `auditReport`, and `sessions`. Updated `getInteractiveWorkspaceState` to collect full read-only workspace state concurrently via `Promise.all` with zero project mutations.
+  - **`packages/cli/src/command.ts` — `intentloom ui`:** Registered `--view` option flag in `optionValues`. Implemented rich formatted terminal rendering for `--view inspect` (profile, adapters, instruction paths, findings), `--view doctor` (severity counts, finding list, paths, remediation), `--view diff` (change kinds, paths, reasons), and `--view timeline` (case ID, quality, timestamped events list). `--json` flag outputs the complete structured `InteractiveWorkspaceState` payload matching Desktop data models.
+  - **`tests/interactive-ui.test.ts`:** Added TUI view routing tests (`inspect`, `doctor`, `diff`, `timeline`), text-formatted terminal output assertions, and zero-mutation read-only guarantees.
+- **Validation:** `pnpm typecheck` passed (0 errors); `pnpm format:check` passed; `git diff --check` passed; `pnpm test` passed — 83 files, 742 tests passed, 3 skipped.
+- **Decisions and assumptions:** `intentloom ui` shares exact application operations with Desktop, maintaining 100% read-only zero mutation guarantees.
+- **Evidence:** `packages/application/src/index.ts`, `packages/cli/src/command.ts`, `tests/interactive-ui.test.ts`.
 
 ### 2026-07-28, Command Palette (⌘K / Ctrl+K) + Settings & Diagnostics View
 

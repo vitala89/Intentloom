@@ -59,4 +59,48 @@ describe("Interactive Surfaces: Read-Only TUI and Desktop Application Shell", ()
     expect(parsed.root).toBe(root);
     expect(parsed.activeView).toBe("inspect");
   });
+
+  it("supports TUI view routing for inspect, doctor, diff, and timeline", async () => {
+    const fs = createMemoryFileSystem();
+    const root = "/project";
+    await initProject({ root, adapters: ["codex"] }, fs);
+    const dependencies = { catalogRoot: resolve("catalog"), fileSystem: fs };
+
+    for (const view of ["inspect", "doctor", "diff", "timeline"] as const) {
+      let output = "";
+      const stdout = (msg: string) => {
+        output += `${msg}\n`;
+      };
+      const exitCode = await runCli(
+        ["ui", "--root", root, "--view", view, "--json"],
+        dependencies,
+        { stdout, stderr: () => undefined },
+      );
+      expect(exitCode).toBe(0);
+
+      const parsed = JSON.parse(output);
+      expect(parsed.activeView).toBe(view);
+      expect(parsed.root).toBe(root);
+    }
+  });
+
+  it("renders text-formatted terminal views cleanly", async () => {
+    const fs = createMemoryFileSystem();
+    const root = "/project";
+    await initProject({ root, adapters: ["codex"] }, fs);
+    const dependencies = { catalogRoot: resolve("catalog"), fileSystem: fs };
+
+    let output = "";
+    const stdout = (msg: string) => {
+      output += `${msg}\n`;
+    };
+    const exitCode = await runCli(
+      ["ui", "--root", root, "--view", "doctor"],
+      dependencies,
+      { stdout, stderr: () => undefined },
+    );
+    expect(exitCode).toBe(0);
+    expect(output).toContain("Intentloom Interactive Terminal UI");
+    expect(output).toContain("[DOCTOR VIEW]");
+  });
 });

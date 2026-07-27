@@ -6967,8 +6967,18 @@ export async function runContinuousSecurityAudit(
 export interface InteractiveWorkspaceState {
   readonly projectId: string;
   readonly root: string;
-  readonly activeView: "inspect" | "health" | "security" | "sessions";
+  readonly activeView:
+    | "inspect"
+    | "doctor"
+    | "diff"
+    | "timeline"
+    | "health"
+    | "security"
+    | "sessions";
+  readonly inspect: ProjectInspection | null;
   readonly findings: readonly DoctorFinding[];
+  readonly diff: Plan | null;
+  readonly timeline: ProjectTimeline | null;
   readonly auditReport: ContinuousSecurityAuditReport | null;
   readonly sessions: readonly AgentSessionItem[];
   readonly generatedAt: string;
@@ -6978,23 +6988,51 @@ export async function getInteractiveWorkspaceState(
   options: {
     root: string;
     projectId?: string;
-    activeView?: "inspect" | "health" | "security" | "sessions";
+    activeView?:
+      | "inspect"
+      | "doctor"
+      | "diff"
+      | "timeline"
+      | "health"
+      | "security"
+      | "sessions";
   },
   fs: FileSystem = nodeFileSystem,
 ): Promise<InteractiveWorkspaceState> {
   const projectId = options.projectId ?? "project-local";
-  const doctor = await doctorProject(
-    { root: options.root, profile: "generic", adapters: ["codex"] },
-    fs,
-  );
-  const auditReport = await getSecurityAuditReport({ root: options.root }, fs);
-  const sessions = await listAgentSessions({ root: options.root }, fs);
+  const [inspect, doctor, diff, timeline, auditReport, sessions] =
+    await Promise.all([
+      inspectProject(options.root, fs).catch(() => null),
+      doctorProject(
+        { root: options.root, profile: "generic", adapters: ["codex"] },
+        fs,
+      ),
+      diffProject(
+        {
+          root: options.root,
+          profile: "generic",
+          adapters: ["codex"],
+          dryRun: true,
+        },
+        fs,
+      ).catch(() => null),
+      timelineProject({
+        root: options.root,
+        caseId: "tui-timeline",
+        limit: 50,
+      }).catch(() => null),
+      getSecurityAuditReport({ root: options.root }, fs).catch(() => null),
+      listAgentSessions({ root: options.root }, fs).catch(() => []),
+    ]);
 
   return {
     projectId,
     root: options.root,
     activeView: options.activeView ?? "inspect",
+    inspect,
     findings: doctor.findings,
+    diff,
+    timeline,
     auditReport,
     sessions,
     generatedAt: new Date().toISOString(),
