@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **v1.0 Phase 1–4 merged; Phase 5 stable-release gate active** — PR #105 is merged as `86a1aee`, the fast-uri high alert is closed, and one medium glib alert remains for disposition
+Status: **v1.0 Phase 1–4 merged; Phase 5 stable-release gate active** — PR #106 is merged as `b8f1e31`, the fast-uri high alert is closed, and one medium glib alert remains for disposition
 
-Active branch: `codex/v1-phase5-dependency-review`
+Active branch: `codex/v1-phase5-glib-disposition`
 
 Current objective: execute Phase 5 of `V1_0_STABLE_COMPATIBILITY_PLAN.md`: assemble the v1.0 readiness audit and obtain maintainer release approval without implying a tag or publication.
 
-Next first action: assess the `glib@0.18.5` alert against the Desktop GTK 0.18 dependency chain, then choose a compatible upgrade or documented maintainer exception.
+Next first action: obtain the maintainer disposition for alert #2: a coordinated GTK/WebKit/Tauri upgrade plan or a documented exception with rationale and review date.
 
 ## Watch rules
 
@@ -41,6 +41,24 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-29, Phase 5: glib alert compatibility assessment
+
+- **Status:** partial
+- **Agent/tool:** Codex with Cargo and GitHub CLI — dependency graph assessment after PR #106 merge
+- **Branch:** `codex/v1-phase5-glib-disposition`
+- **Commits:** pending
+- **Pull request:** pending; release/tag/publication not authorized
+- **Objective:** Determine whether Dependabot alert #2 can be remediated by a safe point update or requires a coordinated Desktop stack change.
+- **Completed:** Confirmed PR #106 merged as `b8f1e31` with all compatibility checks passing; synchronized local `main`; queried the only open Dependabot alert; and ran `cargo tree --manifest-path apps/desktop/src-tauri/Cargo.toml --locked --target x86_64-unknown-linux-gnu --invert glib@0.18.5`.
+- **Not completed:** No dependency upgrade or maintainer exception was applied. Release-candidate verification, support-policy approval, dogfooding acceptance, and final release approval remain open.
+- **Files or packages changed:** Phase 5 state, readiness, and release records only; no Cargo manifest or lockfile change.
+- **Validation:** Cargo tree completed successfully and showed `glib 0.18.5` shared by `gtk 0.18.2`, `webkit2gtk 2.0.2`, `wry 0.55.1`, and Tauri 2.11.5. The local `main` is clean at `b8f1e31` before this documentation update.
+- **Decisions and assumptions:** The current `gtk 0.18.2` and `webkit2gtk 2.0.2` crate manifests require `glib 0.18`; a direct `glib 0.20` override would leave the vulnerable 0.18 branch and is rejected as an incomplete remediation.
+- **Risks or compatibility impact:** A real remediation may require a coordinated GTK/WebKit/Tauri/Wry upgrade and the corresponding Linux/macOS/Windows Desktop SEA validation.
+- **Open issues or blockers:** Dependabot alert #2 remains open at medium severity; maintainer must choose the coordinated upgrade path or accept a scoped exception before v1.0 approval.
+- **Next first action:** Record that maintainer disposition, then implement and validate the selected path in a focused PR.
+- **Evidence:** [PR #106](https://github.com/vitala89/Intentloom/pull/106), merge commit [`b8f1e31`](https://github.com/vitala89/Intentloom/commit/b8f1e31), and [Dependabot alert #2](https://github.com/vitala89/Intentloom/security/dependabot/2).
 
 ### 2026-07-29, Phase 5: dependency remediation merged
 
