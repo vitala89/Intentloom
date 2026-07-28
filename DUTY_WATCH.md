@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **v1.0 Phase 1–4 merged; Phase 5 stable-release gate active** — PR #109 is merged as `d191205`, the fast-uri high alert is closed, and one medium glib alert remains for disposition
+Status: **v1.0 Phase 1–4 merged; Phase 5 stable-release gate active** — PR #110 contains the release-candidate verification and Windows compatibility fix, and its Compatibility matrix is green; the fast-uri high alert is closed, and one medium glib alert remains for disposition
 
 Active branch: `codex/v1-phase5-release-candidate`
 
 Current objective: execute Phase 5 of `V1_0_STABLE_COMPATIBILITY_PLAN.md`: assemble the v1.0 readiness audit and obtain maintainer release approval without implying a tag or publication.
 
-Next first action: accept or refresh the dogfooding records and approve the support policy, then obtain maintainer approval for the exact release candidate commit.
+Next first action: obtain maintainer review and merge approval for PR #110, then accept or refresh dogfooding records and approve the support policy and glib exception.
 
 ## Watch rules
 
@@ -44,21 +44,21 @@ entry directly below this section.
 
 ### 2026-07-29, Compatibility: Windows Node 22 process timeout
 
-- **Status:** partial
+- **Status:** complete
 - **Agent/tool:** Codex with GitHub CLI, Vitest, pnpm, and Git
 - **Branch:** `codex/v1-phase5-release-candidate`
 - **Commits:** `b1e500c` — `test: allow Windows CLI schema process startup`
 - **Pull request:** [PR #110](https://github.com/vitala89/Intentloom/pull/110); release/tag/publication not authorized
 - **Objective:** Diagnose and correct the failing `windows-latest / Node 22` Compatibility job without broadening the change beyond the flaky process test.
 - **Completed:** Confirmed the only failure was `tests/cli-schema-process.test.ts` test `structural validation uses exit code 3`, which exceeded Vitest's default 5-second timeout; added a 15-second timeout only on Windows while retaining 5 seconds elsewhere.
-- **Not completed:** Hosted CI rerun for PR #110 is pending after the fix is pushed; release approval and publication remain open.
+- **Not completed:** Release approval, tag, and publication remain open; the PR itself still requires maintainer disposition.
 - **Files or packages changed:** `tests/cli-schema-process.test.ts` and this handoff record; no runtime or dependency changes.
-- **Validation:** `pnpm exec vitest run tests/cli-schema-process.test.ts --reporter=dot` passed with 16 tests; escalated `pnpm test` passed with 87 files, 753 tests, and 3 skipped; `pnpm typecheck`, `pnpm lint`, `pnpm build`, `pnpm format:check`, and `git diff --check` passed.
+- **Validation:** `pnpm exec vitest run tests/cli-schema-process.test.ts --reporter=dot` passed with 16 tests; escalated `pnpm test` passed with 87 files, 753 tests, and 3 skipped; `pnpm typecheck`, `pnpm lint`, `pnpm build`, `pnpm format:check`, and `git diff --check` passed. Both post-push Compatibility runs passed for all Ubuntu, macOS, and Windows Node 22/24 jobs, including [Windows Node 22](https://github.com/vitala89/Intentloom/actions/runs/30408373724/job/90438845964).
 - **Decisions and assumptions:** Keep the timeout platform-specific and test-local; do not mask the issue with a global Vitest or workflow timeout. The PR's original changes are documentation-only, so this is a CI robustness correction.
 - **Risks or compatibility impact:** The test now tolerates slower Windows Node 22 process startup while preserving the same assertions and exit-code contract. No product behavior changes.
-- **Open issues or blockers:** The hosted Windows Node 22 job must pass on the pushed commit before PR #110 can be treated as green.
-- **Next first action:** Push `b1e500c` and verify the complete PR #110 Compatibility matrix, especially Windows Node 22.
-- **Evidence:** [failing Windows Node 22 job](https://github.com/vitala89/Intentloom/actions/runs/30407490120/job/90436071623?pr=110), local test and validation commands above.
+- **Open issues or blockers:** No compatibility or local validation blocker remains; maintainer review and release-gate decisions remain open.
+- **Next first action:** Obtain maintainer review and merge approval for PR #110.
+- **Evidence:** [original failing Windows Node 22 job](https://github.com/vitala89/Intentloom/actions/runs/30407490120/job/90436071623?pr=110), [successful post-fix Windows Node 22 job](https://github.com/vitala89/Intentloom/actions/runs/30408373724/job/90438845964), and the local command results above.
 
 #### Duty completion checklist
 
