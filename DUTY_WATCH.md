@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **v1.0 Phase 2 upgrade & protocol path verified** — PR #100 merged into main; `MIGRATION_GUIDE_V1.md` created; `tests/v1-upgrade-migration-path.test.ts` passing; 85 test files 100% green
+Status: **v1.0 Phase 3 client-surface readiness verified** — PR #101 merged into main; `CLIENT_SURFACE_EQUIVALENCE.md` created; `tests/v1-client-surface-equivalence.test.ts` passing; 86 test files 100% green
 
-Active branch: `codex/v1-upgrade-migration-path`
+Active branch: `codex/v1-client-surface-readiness`
 
-Current objective: prepare PR for Phase 2 of `V1_0_STABLE_COMPATIBILITY_PLAN.md` (`MIGRATION_GUIDE_V1.md` + upgrade test suite).
+Current objective: prepare PR for Phase 3 of `V1_0_STABLE_COMPATIBILITY_PLAN.md` (`CLIENT_SURFACE_EQUIVALENCE.md` + equivalence test suite).
 
-Next first action: open PR for maintainer review on `codex/v1-upgrade-migration-path`.
+Next first action: open PR for maintainer review on `codex/v1-client-surface-readiness`.
 
 ## Watch rules
 
@@ -41,6 +41,19 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-28, Phase 3: Client-Surface Readiness (`v1.0.0` Milestone)
+
+- **Status:** complete (validated)
+- **Agent/tool:** Antigravity — Client surface equivalence document, multi-surface test suite
+- **Branch:** `codex/v1-client-surface-readiness`
+- **Commits:** local uncommitted changes
+- **Objective:** Implement Phase 3 of `V1_0_STABLE_COMPATIBILITY_PLAN.md`: verify read-only typed result equivalence across CLI, TUI, MCP, and Desktop application surfaces.
+- **Completed:**
+  - **Equivalence Document:** Authored [`docs/compatibility/CLIENT_SURFACE_EQUIVALENCE.md`](file:///Users/eugenekasap/WebstormProjects/Intentloom/docs/compatibility/CLIENT_SURFACE_EQUIVALENCE.md) establishing shared `@intentloom/application` operations as single source of truth across CLI (`intentloom`), TUI (`intentloom ui`), MCP stdio server (`@intentloom/mcp`), and Desktop client shell (`apps/desktop`).
+  - **Equivalence Test Suite:** Created [`tests/v1-client-surface-equivalence.test.ts`](file:///Users/eugenekasap/WebstormProjects/Intentloom/tests/v1-client-surface-equivalence.test.ts) testing typed payload equivalence between direct application operations and `InteractiveWorkspaceState`, as well as 100% zero-mutation guarantees across multi-client inspection flows.
+- **Validation:** `pnpm typecheck` passed (0 errors); `pnpm format:check` passed; `git diff --check` passed; `pnpm test` passed — 86 files, 751 tests passed, 3 skipped.
+- **Evidence:** `docs/compatibility/CLIENT_SURFACE_EQUIVALENCE.md`, `tests/v1-client-surface-equivalence.test.ts`, `DUTY_WATCH.md`.
 
 ### 2026-07-28, Phase 2: Upgrade & Protocol Path (`v1.0.0` Milestone)
 
