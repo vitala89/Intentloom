@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **v1.0 Phase 1–4 merged; Phase 5 stable-release gate active** — PR #108 is merged as `542633a`, the fast-uri high alert is closed, and one medium glib alert remains for disposition
+Status: **v1.0 Phase 1–4 merged; Phase 5 stable-release gate active** — PR #110 contains the release-candidate verification and Windows compatibility fix, and its Compatibility matrix is green; the fast-uri high alert is closed, and one medium glib alert remains for disposition
 
-Active branch: `codex/v1-phase5-glib-exception`
+Active branch: `codex/v1-phase5-release-candidate`
 
 Current objective: execute Phase 5 of `V1_0_STABLE_COMPATIBILITY_PLAN.md`: assemble the v1.0 readiness audit and obtain maintainer release approval without implying a tag or publication.
 
-Next first action: review and explicitly approve or reject the proposed scoped glib exception, with the 2026-10-29 review date and Desktop-release expiry conditions.
+Next first action: obtain maintainer review and merge approval for PR #110, then accept or refresh dogfooding records and approve the support policy and glib exception.
 
 ## Watch rules
 
@@ -41,6 +41,54 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-29, Compatibility: Windows Node 22 process timeout
+
+- **Status:** complete
+- **Agent/tool:** Codex with GitHub CLI, Vitest, pnpm, and Git
+- **Branch:** `codex/v1-phase5-release-candidate`
+- **Commits:** `b1e500c` — `test: allow Windows CLI schema process startup`
+- **Pull request:** [PR #110](https://github.com/vitala89/Intentloom/pull/110); release/tag/publication not authorized
+- **Objective:** Diagnose and correct the failing `windows-latest / Node 22` Compatibility job without broadening the change beyond the flaky process test.
+- **Completed:** Confirmed the only failure was `tests/cli-schema-process.test.ts` test `structural validation uses exit code 3`, which exceeded Vitest's default 5-second timeout; added a 15-second timeout only on Windows while retaining 5 seconds elsewhere.
+- **Not completed:** Release approval, tag, and publication remain open; the PR itself still requires maintainer disposition.
+- **Files or packages changed:** `tests/cli-schema-process.test.ts` and this handoff record; no runtime or dependency changes.
+- **Validation:** `pnpm exec vitest run tests/cli-schema-process.test.ts --reporter=dot` passed with 16 tests; escalated `pnpm test` passed with 87 files, 753 tests, and 3 skipped; `pnpm typecheck`, `pnpm lint`, `pnpm build`, `pnpm format:check`, and `git diff --check` passed. Both post-push Compatibility runs passed for all Ubuntu, macOS, and Windows Node 22/24 jobs, including [Windows Node 22](https://github.com/vitala89/Intentloom/actions/runs/30408373724/job/90438845964).
+- **Decisions and assumptions:** Keep the timeout platform-specific and test-local; do not mask the issue with a global Vitest or workflow timeout. The PR's original changes are documentation-only, so this is a CI robustness correction.
+- **Risks or compatibility impact:** The test now tolerates slower Windows Node 22 process startup while preserving the same assertions and exit-code contract. No product behavior changes.
+- **Open issues or blockers:** No compatibility or local validation blocker remains; maintainer review and release-gate decisions remain open.
+- **Next first action:** Obtain maintainer review and merge approval for PR #110.
+- **Evidence:** [original failing Windows Node 22 job](https://github.com/vitala89/Intentloom/actions/runs/30407490120/job/90436071623?pr=110), [successful post-fix Windows Node 22 job](https://github.com/vitala89/Intentloom/actions/runs/30408373724/job/90438845964), and the local command results above.
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant tests, type checks, builds, or compatibility checks passed
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [ ] `PROJECT_STATE.md` updated when applicable
+- [x] `DUTY_WATCH.md` handoff completed
+- [ ] Related roadmap, ADR, changelog, migration, or reference docs updated
+- [x] Failed or unavailable checks recorded
+
+### 2026-07-29, Phase 5: release-candidate verification
+
+- **Status:** partial
+- **Agent/tool:** Codex with pnpm, Vitest, Node, and GitHub CLI — local release-candidate verification after PR #109 merge
+- **Branch:** `codex/v1-phase5-release-candidate`
+- **Commits:** pending
+- **Pull request:** pending; release/tag/publication not authorized
+- **Objective:** Run the Phase 5 local install, build, test, and packed CLI verification against the merged `main` baseline.
+- **Completed:** Confirmed PR #109 merged as `d191205` with all Compatibility checks passing; synchronized local `main`; completed frozen reinstall, typecheck, build, full test suite, packed CLI creation, and CLI help smoke.
+- **Not completed:** Support-policy approval, dogfooding acceptance or refresh, proposed glib exception approval, final release approval, release PR, tag, and publication remain open.
+- **Files or packages changed:** Release readiness, release state, project state, and Duty Watch records only; no runtime or dependency source changes.
+- **Validation:** `CI=1 pnpm install --frozen-lockfile --ignore-scripts` passed with pnpm 10.12.4; `pnpm typecheck` passed; `pnpm build` passed; escalated `pnpm test` passed with 87 files, 753 tests, and 3 skipped; `pnpm pack:cli` created the expected `intentloom@0.5.0-beta.1` tarball; `node packages/cli/dist/intentloom.cjs --help` passed; `pnpm format:check` and `git diff --check` passed before this documentation update. The initial sandbox install/test attempts were not counted as passes because DNS and Unix-socket permissions were restricted.
+- **Decisions and assumptions:** Treat the escalated full test as the authoritative local IPC result; retain the sandbox limitation as environment evidence, not a product failure. The temporary packed tarball was removed and no artifact is staged.
+- **Risks or compatibility impact:** These are local candidate checks; they do not replace hosted matrix evidence, maintainer approval, clean-room publication checks, or Desktop SEA CI evidence.
+- **Open issues or blockers:** The medium glib alert remains covered by a proposed, not yet approved, exception; support policy and dogfooding evidence still need maintainer disposition.
+- **Next first action:** Refresh or explicitly accept dogfooding records, approve the support policy and glib exception, then select the exact release commit.
+- **Evidence:** [PR #109](https://github.com/vitala89/Intentloom/pull/109), merge commit [`d191205`](https://github.com/vitala89/Intentloom/commit/d191205), and the local command results above.
 
 ### 2026-07-29, Phase 5: proposed glib security exception
 

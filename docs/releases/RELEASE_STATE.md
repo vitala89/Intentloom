@@ -6,7 +6,7 @@ Historical release audits and roadmap sections retain their original scope, but
 this document is the source of truth for the current status.
 
 Snapshot: 2026-07-29
-Main commit: `542633a` (PR #108 merged)
+Main commit: `d191205` (PR #109 merged)
 Release commit: `a0e0b13` (tagged `v0.5.0-beta.1`)
 Workspace version: `0.5.0-beta.1`
 Git tag: `v0.5.0-beta.1` (pushed)
@@ -58,6 +58,8 @@ listed in the last table row. `latest` intentionally remains the historical
 - The proposed glib exception and release-gate conditions are prepared after
   [PR #108](https://github.com/vitala89/Intentloom/pull/108), merged as
   `542633a`; maintainer approval remains pending.
+- Local release-candidate verification is recorded after [PR #109](https://github.com/vitala89/Intentloom/pull/109),
+  merged as `d191205`; no tag or publication is authorized by that evidence.
 - Release tag: [`v0.5.0-beta.1`](https://github.com/vitala89/Intentloom/releases/tag/v0.5.0-beta.1)
   points to the verified release commit `a0e0b13`.
 - Version source: root `package.json`, synchronized by
