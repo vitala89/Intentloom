@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **v1.0 Phase 1–4 merged; Phase 5 stable-release gate active** — `main` is at `6d8bd4f`; draft PR #105 has green CI, but Dependabot reports one open high-severity dependency alert
+Status: **v1.0 Phase 1–4 merged; Phase 5 stable-release gate active** — draft PR #105 has green CI and a validated lockfile remediation for the high-severity dependency alert; `main` remains at `6d8bd4f` until merge
 
 Active branch: `codex/v1-phase5-dependency-review`
 
 Current objective: execute Phase 5 of `V1_0_STABLE_COMPATIBILITY_PLAN.md`: assemble the v1.0 readiness audit and obtain maintainer release approval without implying a tag or publication.
 
-Next first action: remediate or explicitly disposition Dependabot alert #1 for `fast-uri@3.1.3`, then continue the remaining release-candidate and approval gates.
+Next first action: push and verify the `fast-uri@3.1.4` remediation in PR #105, then recheck the default-branch alert after merge approval.
 
 ## Watch rules
 
@@ -41,6 +41,24 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-29, Phase 5: fast-uri vulnerability remediation
+
+- **Status:** partial
+- **Agent/tool:** Codex — dependency lockfile remediation and validator regression verification
+- **Branch:** `codex/v1-phase5-dependency-review`
+- **Commits:** `c235d8c`
+- **Pull request:** [#105](https://github.com/vitala89/Intentloom/pull/105), draft; release/tag/publication not authorized
+- **Objective:** Remediate Dependabot alert #1 without changing application behavior or the direct `ajv` dependency.
+- **Completed:** Updated only `pnpm-lock.yaml` from `fast-uri@3.1.3` to patched `3.1.4` with registry integrity `sha512-8JnbkQ4juDyvYs4mgFGQqg4yCYtFDtUtmp2QIQq11ZZe5CFQ5wcqm1rqDgAh/QdMySuBnPzMUiJUNZG5N/AiQw==`. Frozen install and `pnpm why fast-uri --recursive` confirm the validator chain resolves to `3.1.4`.
+- **Not completed:** Remote PR validation for this commit, default-branch alert closure after merge, release-candidate verification, support-policy approval, dogfooding acceptance, maintainer release approval, release PR, tag, and publication.
+- **Files or packages changed:** `pnpm-lock.yaml`; this handoff records the remediation evidence.
+- **Validation:** `pnpm install --frozen-lockfile --ignore-scripts` passed; `pnpm typecheck` passed; validator/schema/security/v1 tests passed — 4 files, 11 tests; `pnpm format:check` and `git diff --check` passed.
+- **Decisions and assumptions:** Keep `ajv@8.20.0` and `packages/validator/package.json` unchanged because the patched transitive version is compatible within the existing range.
+- **Risks or compatibility impact:** Lockfile-only dependency patch; no runtime source or public contract changes. The alert remains visible on `main` until the PR is merged and GitHub rescans the default branch.
+- **Open issues or blockers:** The remediation has not yet been pushed or validated remotely; maintainer approval and the remaining Phase 5 evidence are still required.
+- **Next first action:** Commit and push the lockfile patch, verify PR #105 checks, and confirm the Dependabot alert is cleared after the verified merge.
+- **Evidence:** `pnpm-lock.yaml`, `packages/validator/package.json`, Dependabot alert [#1](https://github.com/vitala89/Intentloom/security/dependabot/1), and the local validation commands above.
 
 ### 2026-07-28, Phase 5: dependency review green rerun
 

@@ -31,17 +31,17 @@ No v1.0 tag or npm artifact is claimed by this document.
 
 ## Stable-release checklist
 
-| Requirement                                                  | Status              | Evidence or remaining action                                                                                                                                            |
-| ------------------------------------------------------------ | ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Public CLI and package compatibility promise                 | PASS                | [COMPATIBILITY_POLICY.md](COMPATIBILITY_POLICY.md), ADR-0043; workspace libraries remain private                                                                        |
-| Supported Node/host/provider matrix                          | PASS with recheck   | [COMPATIBILITY_MATRIX.md](../compatibility/COMPATIBILITY_MATRIX.md); retain exact CI run evidence for the release candidate                                             |
-| Deprecation and support policy                               | PENDING             | Deprecation is defined in ADR-0043; [SUPPORT_POLICY_V1.md](SUPPORT_POLICY_V1.md) needs maintainer approval                                                              |
-| Upgrade, migration, and rollback path                        | PASS with recheck   | [MIGRATION_GUIDE_V1.md](MIGRATION_GUIDE_V1.md), migration tests, and `.aif/migration-journal.json` contract; clean-install release verification remains                 |
-| Daemon/MCP/client compatibility and discovery                | PASS                | Protocol/client tests and the typed v1 method contracts                                                                                                                 |
-| Desktop/TUI read-only equivalence and cancellation           | PASS with recheck   | [CLIENT_SURFACE_EQUIVALENCE.md](../compatibility/CLIENT_SURFACE_EQUIVALENCE.md), Desktop readiness audit, and `tests/interactive-ui.test.ts`                            |
-| Threat model, permissions, provenance, and incident response | PENDING             | Dependency Review run `30401862928` is green on draft PR #105, but open high alert #1 for `fast-uri@3.1.3` requires remediation or an approved exception before release |
-| Dogfooding evidence                                          | PASS with follow-up | Three required scenario records exist under `docs/releases/dogfooding/`; records predate v1.0 and must be explicitly accepted or refreshed for the stable candidate     |
-| Final readiness audit and maintainer approval                | OPEN                | Approve this audit only after the remaining evidence is attached to one release commit                                                                                  |
+| Requirement                                                  | Status              | Evidence or remaining action                                                                                                                                         |
+| ------------------------------------------------------------ | ------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Public CLI and package compatibility promise                 | PASS                | [COMPATIBILITY_POLICY.md](COMPATIBILITY_POLICY.md), ADR-0043; workspace libraries remain private                                                                     |
+| Supported Node/host/provider matrix                          | PASS with recheck   | [COMPATIBILITY_MATRIX.md](../compatibility/COMPATIBILITY_MATRIX.md); retain exact CI run evidence for the release candidate                                          |
+| Deprecation and support policy                               | PENDING             | Deprecation is defined in ADR-0043; [SUPPORT_POLICY_V1.md](SUPPORT_POLICY_V1.md) needs maintainer approval                                                           |
+| Upgrade, migration, and rollback path                        | PASS with recheck   | [MIGRATION_GUIDE_V1.md](MIGRATION_GUIDE_V1.md), migration tests, and `.aif/migration-journal.json` contract; clean-install release verification remains              |
+| Daemon/MCP/client compatibility and discovery                | PASS                | Protocol/client tests and the typed v1 method contracts                                                                                                              |
+| Desktop/TUI read-only equivalence and cancellation           | PASS with recheck   | [CLIENT_SURFACE_EQUIVALENCE.md](../compatibility/CLIENT_SURFACE_EQUIVALENCE.md), Desktop readiness audit, and `tests/interactive-ui.test.ts`                         |
+| Threat model, permissions, provenance, and incident response | PENDING             | Dependency Review is green; PR #105 contains the `fast-uri@3.1.4` remediation for high alert #1, but default-branch rescan and release authorization remain required |
+| Dogfooding evidence                                          | PASS with follow-up | Three required scenario records exist under `docs/releases/dogfooding/`; records predate v1.0 and must be explicitly accepted or refreshed for the stable candidate  |
+| Final readiness audit and maintainer approval                | OPEN                | Approve this audit only after the remaining evidence is attached to one release commit                                                                               |
 
 ## Release-state facts
 
@@ -58,14 +58,16 @@ No v1.0 tag or npm artifact is claimed by this document.
 - Dependabot alert [#1](https://github.com/vitala89/Intentloom/security/dependabot/1)
   is open at high severity for `fast-uri@3.1.3` in `pnpm-lock.yaml`; GitHub
   reports `3.1.4` as the first patched version. The dependency path is
-  `packages/validator` → `ajv@8.20.0` → `fast-uri`.
+  `packages/validator` → `ajv@8.20.0` → `fast-uri`. Draft PR #105 contains a
+  lockfile-only update to `3.1.4`; the alert remains open on `main` until that
+  change is merged and rescanned.
 
 ## Required actions before approval
 
 1. Review and approve [SUPPORT_POLICY_V1.md](SUPPORT_POLICY_V1.md).
-2. Remediate or explicitly approve an exception for Dependabot alert #1, then
-   run the new Dependency Review workflow on the release PR and retain its
-   green result with the release evidence.
+2. Merge the validated `fast-uri@3.1.4` remediation, confirm the default branch
+   alert is cleared, then run the new Dependency Review workflow on the release
+   PR and retain its green result with the release evidence.
 3. Run the release-candidate clean install, build, packed CLI smoke, full
    validation, security/path tests, and explicit-path dogfooding checks; retain
    exact commands and results.
