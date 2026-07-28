@@ -5,8 +5,8 @@ not authorize a tag, npm publication, or release announcement.
 
 Date: 2026-07-29.
 
-Candidate baseline under review: `542633a` (`main` and `origin/main` after PR
-#108 merge). The documentation updates in this branch still require review
+Candidate baseline under review: `d191205` (`main` and `origin/main` after PR
+#109 merge). The documentation updates in this branch still require review
 before a final release commit is selected.
 
 ## Decision summary
@@ -23,7 +23,7 @@ No v1.0 tag or npm artifact is claimed by this document.
 | Phase                             | Evidence                                                                                                                                                                        | Assessment                                                                                                      |
 | --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
 | 1 — Stable compatibility contract | [ADR-0043](../decisions/ADR-0043-v1-stable-compatibility-contract-and-deprecation-policy.md), `tests/v1-compatibility-contract.test.ts`                                         | Evidence present; contract approval recorded in ADR                                                             |
-| 2 — Upgrade and protocol path     | [MIGRATION_GUIDE_V1.md](MIGRATION_GUIDE_V1.md), `tests/v1-upgrade-migration-path.test.ts`                                                                                       | Evidence present; release-candidate clean-install verification remains required                                 |
+| 2 — Upgrade and protocol path     | [MIGRATION_GUIDE_V1.md](MIGRATION_GUIDE_V1.md), `tests/v1-upgrade-migration-path.test.ts`                                                                                       | Local release-candidate verification passed; clean-room and final release-commit evidence remain required       |
 | 3 — Client-surface readiness      | [CLIENT_SURFACE_EQUIVALENCE.md](../compatibility/CLIENT_SURFACE_EQUIVALENCE.md), `tests/v1-client-surface-equivalence.test.ts`                                                  | Evidence present; no domain duplication found in the documented boundary                                        |
 | 4 — Security and supply chain     | [V1_SECURITY_AND_SUPPLY_CHAIN_AUDIT.md](../security/V1_SECURITY_AND_SUPPLY_CHAIN_AUDIT.md), `tests/v1-security-supply-chain.test.ts`, `.github/workflows/dependency-review.yml` | Control merged in `86a1aee`; high fast-uri alert closed; proposed glib exception is pending maintainer approval |
 | 5 — Stable release gate           | This document, [SUPPORT_POLICY_V1.md](SUPPORT_POLICY_V1.md), release and dogfooding records                                                                                     | Open; maintainer approval pending                                                                               |
@@ -62,6 +62,9 @@ No v1.0 tag or npm artifact is claimed by this document.
 - PR [#108](https://github.com/vitala89/Intentloom/pull/108) merged as
   `542633a`; its documentation-only compatibility checks passed and recorded
   the proposed exception path.
+- PR [#109](https://github.com/vitala89/Intentloom/pull/109) merged as
+  `d191205`; its documentation-only compatibility checks passed and the local
+  release-candidate verification below passed.
 - Dependabot alert [#2](https://github.com/vitala89/Intentloom/security/dependabot/2)
   remains open at medium severity for `glib@0.18.5` in
   `apps/desktop/src-tauri/Cargo.lock`; GitHub reports `0.20.0` as the first
@@ -97,6 +100,26 @@ The proposed exception is documented in
 [V1_SECURITY_AND_SUPPLY_CHAIN_AUDIT.md](../security/V1_SECURITY_AND_SUPPLY_CHAIN_AUDIT.md)
 and remains pending maintainer approval.
 
+## Release-candidate verification
+
+Verified locally against `d191205` on 2026-07-29:
+
+| Check                                                  | Result                                                                           |
+| ------------------------------------------------------ | -------------------------------------------------------------------------------- |
+| `CI=1 pnpm install --frozen-lockfile --ignore-scripts` | PASS; lockfile up to date, pnpm 10.12.4                                          |
+| `pnpm typecheck`                                       | PASS                                                                             |
+| `pnpm build`                                           | PASS                                                                             |
+| `pnpm test`                                            | PASS with 87 files, 753 tests passed, 3 skipped                                  |
+| `pnpm pack:cli`                                        | PASS; expected `intentloom@0.5.0-beta.1` tarball created and removed after smoke |
+| `node packages/cli/dist/intentloom.cjs --help`         | PASS                                                                             |
+| `pnpm format:check`                                    | PASS                                                                             |
+| `git diff --check`                                     | PASS                                                                             |
+
+The first sandbox attempts were not counted as results: npm DNS resolution was
+blocked during reinstall and Unix-socket tests returned `EPERM`. The install
+and full test suite were rerun with the required access and passed. This local
+evidence does not authorize a tag, npm publication, or release announcement.
+
 ## Required actions before approval
 
 1. Review and approve [SUPPORT_POLICY_V1.md](SUPPORT_POLICY_V1.md).
@@ -104,9 +127,9 @@ and remains pending maintainer approval.
    [V1_SECURITY_AND_SUPPLY_CHAIN_AUDIT.md](../security/V1_SECURITY_AND_SUPPLY_CHAIN_AUDIT.md),
    or approve a separate coordinated GTK/WebKit/Tauri-compatible stack
    migration instead.
-3. Run the release-candidate clean install, build, packed CLI smoke, full
-   validation, security/path tests, and explicit-path dogfooding checks; retain
-   exact commands and results.
+3. Local release-candidate install, build, packed CLI smoke, and full validation
+   are recorded above. Still run or retain clean-room installation evidence and
+   complete the explicit-path dogfooding checks for the exact approved commit.
 4. Accept or refresh the existing dogfooding records against the stable
    candidate without including private project data.
 5. Complete the applicable [publish authorization checklist](PUBLISH_AUTHORIZATION_CHECKLIST.md)

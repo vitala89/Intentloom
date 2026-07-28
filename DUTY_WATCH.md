@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **v1.0 Phase 1–4 merged; Phase 5 stable-release gate active** — PR #108 is merged as `542633a`, the fast-uri high alert is closed, and one medium glib alert remains for disposition
+Status: **v1.0 Phase 1–4 merged; Phase 5 stable-release gate active** — PR #109 is merged as `d191205`, the fast-uri high alert is closed, and one medium glib alert remains for disposition
 
-Active branch: `codex/v1-phase5-glib-exception`
+Active branch: `codex/v1-phase5-release-candidate`
 
 Current objective: execute Phase 5 of `V1_0_STABLE_COMPATIBILITY_PLAN.md`: assemble the v1.0 readiness audit and obtain maintainer release approval without implying a tag or publication.
 
-Next first action: review and explicitly approve or reject the proposed scoped glib exception, with the 2026-10-29 review date and Desktop-release expiry conditions.
+Next first action: accept or refresh the dogfooding records and approve the support policy, then obtain maintainer approval for the exact release candidate commit.
 
 ## Watch rules
 
@@ -41,6 +41,24 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-29, Phase 5: release-candidate verification
+
+- **Status:** partial
+- **Agent/tool:** Codex with pnpm, Vitest, Node, and GitHub CLI — local release-candidate verification after PR #109 merge
+- **Branch:** `codex/v1-phase5-release-candidate`
+- **Commits:** pending
+- **Pull request:** pending; release/tag/publication not authorized
+- **Objective:** Run the Phase 5 local install, build, test, and packed CLI verification against the merged `main` baseline.
+- **Completed:** Confirmed PR #109 merged as `d191205` with all Compatibility checks passing; synchronized local `main`; completed frozen reinstall, typecheck, build, full test suite, packed CLI creation, and CLI help smoke.
+- **Not completed:** Support-policy approval, dogfooding acceptance or refresh, proposed glib exception approval, final release approval, release PR, tag, and publication remain open.
+- **Files or packages changed:** Release readiness, release state, project state, and Duty Watch records only; no runtime or dependency source changes.
+- **Validation:** `CI=1 pnpm install --frozen-lockfile --ignore-scripts` passed with pnpm 10.12.4; `pnpm typecheck` passed; `pnpm build` passed; escalated `pnpm test` passed with 87 files, 753 tests, and 3 skipped; `pnpm pack:cli` created the expected `intentloom@0.5.0-beta.1` tarball; `node packages/cli/dist/intentloom.cjs --help` passed; `pnpm format:check` and `git diff --check` passed before this documentation update. The initial sandbox install/test attempts were not counted as passes because DNS and Unix-socket permissions were restricted.
+- **Decisions and assumptions:** Treat the escalated full test as the authoritative local IPC result; retain the sandbox limitation as environment evidence, not a product failure. The temporary packed tarball was removed and no artifact is staged.
+- **Risks or compatibility impact:** These are local candidate checks; they do not replace hosted matrix evidence, maintainer approval, clean-room publication checks, or Desktop SEA CI evidence.
+- **Open issues or blockers:** The medium glib alert remains covered by a proposed, not yet approved, exception; support policy and dogfooding evidence still need maintainer disposition.
+- **Next first action:** Refresh or explicitly accept dogfooding records, approve the support policy and glib exception, then select the exact release commit.
+- **Evidence:** [PR #109](https://github.com/vitala89/Intentloom/pull/109), merge commit [`d191205`](https://github.com/vitala89/Intentloom/commit/d191205), and the local command results above.
 
 ### 2026-07-29, Phase 5: proposed glib security exception
 
