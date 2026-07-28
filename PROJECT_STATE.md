@@ -1,6 +1,6 @@
 # Intentloom Project State
 
-Last verified: 2026-07-27
+Last verified: 2026-07-28
 
 This file records the durable current state of the project. It is not a
 chronological log. Session history and handoff details belong in
@@ -26,7 +26,9 @@ later justifies separation.
 product milestone (Tauri 2 read-only Desktop application, WCAG 2.x a11y,
 cancellation, Command Palette, Settings & Diagnostics, TUI parity, and
 three-platform SEA sidecar CI verification) has completed implementation, testing,
-and readiness auditing (`docs/desktop/V0_6_READINESS_AUDIT.md`).
+and readiness auditing (`docs/desktop/V0_6_READINESS_AUDIT.md`). The v1.0
+compatibility phases 1–4 are now merged into `main`; the active gate is Phase 5,
+the stable-release evidence and approval audit.
 
 The project must avoid premature structural migration. New applications,
 packages, and repository boundaries are introduced only when roadmap triggers
@@ -45,28 +47,22 @@ and real consumers justify them.
   persistent memory, security analysis, engineering process intelligence,
   public monorepo evolution, controlled agent learning, and portable Duty Watch adoption.
 - Duty Watch governance contracts (Phase 1), proposal CLI `intentloom adopt --plan` (Phase 2), transactional apply & rollback engine `intentloom adopt --apply` (Phase 3), pack update 3-way migration `intentloom update` (Phase 4), conformance & security profiles `intentloom conformance` (Phase 5), provider synchronization `intentloom sync` / `intentloom diff` (Phase 6), Memory & Security Candidates M1–M4, S1–S5, Daemon Protocol Contracts for Second Clients, Read-Only Interactive Surfaces TUI, Agent Workspace Discuss & Inspect Modes, Agent Workspace Plan, Review & Apply Modes, and Neutron Autonomous Subagent Orchestration & Local Workspace Sync Engine are merged into `main`.
+- v1.0 compatibility phases 1–4 are merged into `main`: ADR-0043 and contract tests, the v1 migration/protocol guide and upgrade tests, client-surface equivalence evidence and tests, and the security/supply-chain audit and tests.
 
 These statements must be revalidated against code, tags, CI, and Git history
 before a new release or implementation milestone is declared complete.
 
 ## Active focus
 
-1. Complete the Phase 1 typed contract freeze: all five required operations
-   now have typed client invocation paths and connected read-only Desktop views.
-   Overview, Inspect, Doctor, Diff Review, and Timeline are implemented and
-   validated. Legacy-handler root coverage, application-level
-   cancellation/progress, and Workspace RPC coverage remain follow-up hardening.
-2. Complete Windows and Linux self-contained daemon feasibility runs before
-   packaged Desktop claims. macOS SEA feasibility is locally validated
-   (doctor response confirmed, sidecar embedded in Intentloom.app at 114 MB).
-   The expanded `desktop-sea-feasibility.yml` workflow is ready; a GitHub
-   Actions green run on all three platforms remains required to close this item.
-3. Deliver automated axe-core/Playwright a11y testing once maintainer authorization
-   for new devDependencies is granted. The WCAG 2.x code-level baseline is
-   implemented; dialog focus trap and color contrast measurement remain gaps.
-4. Keep stable v1 compatibility planning as a later release gate and keep
-   bottleneck inference, remote ingestion, and model-based judgments behind
-   separate approved specifications and threat review.
+1. Execute Phase 5 of `V1_0_STABLE_COMPATIBILITY_PLAN.md`: assemble the v1.0
+   readiness audit, compatibility/support evidence, migration and dogfooding
+   records, and maintainer release approval on one verified `main` commit.
+2. Reconcile remaining v0.6 follow-up hardening (legacy-handler root coverage,
+   application-level cancellation/progress, Workspace RPC coverage, dialog focus
+   trap, and automated axe-core/Playwright checks) without reopening the closed
+   read-only milestone or changing the provider-neutral platform boundary.
+3. Keep bottleneck inference, remote ingestion, model-based judgments, and any
+   autonomous mutation behind separate approved specifications and threat review.
 
 ## Architectural invariants
 
@@ -85,8 +81,8 @@ before a new release or implementation milestone is declared complete.
 ## Current blockers and unknowns
 
 - Any expansion to bottleneck, performance, causal, actor, repository-reading, persisted, remote, or model-assisted analysis requires a new ADR, specification, and threat review.
-- PR #84 through PR #95 are merged; current remote `main` is verified at
-  `7025051`.
+- PR #84 through PR #104 are merged in the local history; current `main` is
+  verified at `6d8bd4f` and tracks `origin/main`.
 - npm currently reports `latest=0.1.0-alpha.3` and `next=0.5.0-beta.1`.
 - Workspace packages are synchronized to `0.5.0-beta.1`; Git tag
   `v0.5.0-beta.1` is pushed and npm publication is complete.
@@ -97,17 +93,38 @@ before a new release or implementation milestone is declared complete.
 - PR #91 did not land the Desktop/TUI roadmap intent on `main`; PR #95
   recovered the Desktop design and execution baseline from clean `main` and
   merged it as commit `7025051`.
-- PR #94 is merged as commit `7402687`. Its v1 compatibility plan is retained
-  as a later stability gate and does not block the pre-1.0 v0.6 Desktop
-  milestone.
+- PR #94 is merged as commit `7402687`; the resulting v1 compatibility plan is
+  now active, with phases 1–4 completed and Phase 5 remaining.
+- The v1.0 readiness audit and support policy are drafted in
+  `docs/releases/V1_0_READINESS_AUDIT.md` and
+  `docs/releases/SUPPORT_POLICY_V1.md`. Maintainer approval, release-candidate
+  verification, refreshed/accepted v1 dogfooding evidence, and a green
+  dependency-review workflow run remain open. The equivalent PR dependency
+  review control is now defined in `.github/workflows/dependency-review.yml`;
+  its release-gate result must be retained before the stable gate can close.
+- Draft PR #105 contains this Phase 5 control. Dependabot alerts are enabled,
+  the Dependency Review API is available, and rerun `30401862928` passed;
+  compatibility matrix checks for the PR also passed. No release approval or
+  publication is implied.
+- Dependabot alert #1 is open at high severity for `fast-uri@3.1.3` in
+  `pnpm-lock.yaml`; `packages/validator` reaches it through `ajv@8.20.0`, and
+  GitHub reports `3.1.4` as the first patched version. The stable release gate
+  remains blocked until this remediation is merged and the default branch is
+  rescanned.
+- The active Phase 5 branch contains a lockfile-only remediation to
+  `fast-uri@3.1.4`; local frozen install, typecheck, and targeted validator,
+  schema, security, and v1 tests pass. Dependency Review run `30403145025`
+  passes; one compatibility matrix job remains queued, and merge remains
+  pending.
 - ADR-0042 is accepted. The macOS arm64 SEA feasibility run and local Tauri
   `.app`/`.dmg` package smoke passed, including embedded sidecar hash and
-  catalog-resource verification; a three-platform GitHub Actions feasibility
-  workflow is now defined. A green workflow run on Windows, Linux, and macOS
-  remains required before packaged Desktop readiness is claimed. A private
+  catalog-resource verification. The repository history records the
+  three-platform GitHub Actions feasibility run as green in `57ff1d9`, and
+  `V0_6_READINESS_AUDIT.md` records the resulting readiness claim. A private
   `apps/desktop` Tauri/React/Vite shell scaffold now exists with Unix native
   lifecycle, token ownership, canonical project selection, bounded IPC, and a
-  Tokio Windows named-pipe source path; native Windows/Linux validation remains.
+  Tokio Windows named-pipe source path; remaining work is follow-up hardening,
+  not the closed v0.6 packaging gate.
 - The latest post-merge compatibility run for `main` has one Windows Node 24
   timeout in `tests/adapter-packed-process.test.ts`; the other matrix jobs
   passed. This is an existing validation warning, not a Desktop implementation
@@ -171,38 +188,27 @@ before a new release or implementation milestone is declared complete.
 
 ## Current milestone
 
-The v0.5 Engineering Process Intelligence increment and release gates are
-complete. The active product direction is `v0.6.0-beta.1`.
+The v0.5 Engineering Process Intelligence increment and v0.6 Desktop
+implementation/readiness gates are complete. The active product direction is
+the `1.0.0` stable compatibility release gate, Phase 5.
 
 Expected outputs:
 
-- accepted Desktop stack and distribution ADR;
-- versioned capability discovery and client compatibility behavior;
-- typed daemon operations for the first read-only project slice;
-- official `apps/desktop` Tauri 2 client;
-- approved light and dark token-based design system;
-- packaged `Select project → Inspect → Doctor → Diff → Timeline` flow;
-- explicit daemon mismatch, disconnect, cancellation, and recovery behavior;
-- byte-for-byte read-only evidence;
-- TUI parity over the stabilized shared contracts;
-- cross-platform packaging, accessibility, dogfooding, and release-readiness
-  evidence.
+- v1.0 readiness audit and stable support policy;
+- compatibility matrix and verified `v0.5.0-beta.1`/`v0.6.0-beta.1` upgrade evidence;
+- client-surface equivalence, security, supply-chain, and rollback evidence;
+- dogfooding records and maintainer release approval;
+- one verified `main` commit suitable for a future v1.0 tag and publication.
 
 ## Next platform milestone
 
-Continue with the three-platform
-[self-contained daemon SEA feasibility workflow](.github/workflows/desktop-sea-feasibility.yml)
-to validate Windows and Linux packaging. Then deliver Root Confirmation UX,
-reconnect/retry depth, and accessibility automation as hardening steps before
-the packaged read-only flow evidence claim. The discovery/error and Diff/Timeline
-slices are complete and recorded in [PHASE1_CONTRACTS.md](docs/desktop/PHASE1_CONTRACTS.md).
-Stable v1 compatibility planning uses this client evidence later and does not
-block the v0.6 product milestone.
-
-The [v1.0 compatibility plan](docs/roadmap/V1_0_STABLE_COMPATIBILITY_PLAN.md)
-remains the later stability gate. Its first compatibility-contract ADR/specification
-should be prepared alongside the Desktop work where it does not block the v0.6
-read-only milestone.
+Start the [v1.0 stable release gate](docs/roadmap/V1_0_STABLE_COMPATIBILITY_PLAN.md)
+by inventorying the required Phase 5 evidence and identifying any unsupported
+claims. The Desktop discovery/error and Diff/Timeline slices remain recorded in
+[PHASE1_CONTRACTS.md](docs/desktop/PHASE1_CONTRACTS.md), while the packaged
+readiness evidence is recorded in [V0_6_READINESS_AUDIT.md](docs/desktop/V0_6_READINESS_AUDIT.md).
+Do not tag or publish v1.0 until all Phase 5 outputs are reviewed and approved
+on one verified `main` commit.
 
 ## State update rules
 

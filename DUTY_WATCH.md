@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **v1.0 Phase 4 security & supply chain audit verified** — PR #102 merged into main; `V1_SECURITY_AND_SUPPLY_CHAIN_AUDIT.md` created; `tests/v1-security-supply-chain.test.ts` passing; 87 test files 100% green
+Status: **v1.0 Phase 1–4 merged; Phase 5 stable-release gate active** — draft PR #105 has green CI and a validated lockfile remediation for the high-severity dependency alert; `main` remains at `6d8bd4f` until merge
 
-Active branch: `codex/v1-security-supply-chain`
+Active branch: `codex/v1-phase5-dependency-review`
 
-Current objective: prepare PR for Phase 4 of `V1_0_STABLE_COMPATIBILITY_PLAN.md` (`V1_SECURITY_AND_SUPPLY_CHAIN_AUDIT.md` + security test suite).
+Current objective: execute Phase 5 of `V1_0_STABLE_COMPATIBILITY_PLAN.md`: assemble the v1.0 readiness audit and obtain maintainer release approval without implying a tag or publication.
 
-Next first action: open PR for maintainer review on `codex/v1-security-supply-chain`.
+Next first action: push and verify the `fast-uri@3.1.4` remediation in PR #105, then recheck the default-branch alert after merge approval.
 
 ## Watch rules
 
@@ -41,6 +41,126 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-29, Phase 5: fast-uri vulnerability remediation
+
+- **Status:** partial
+- **Agent/tool:** Codex — dependency lockfile remediation and validator regression verification
+- **Branch:** `codex/v1-phase5-dependency-review`
+- **Commits:** `6000154`
+- **Pull request:** [#105](https://github.com/vitala89/Intentloom/pull/105), draft; release/tag/publication not authorized
+- **Objective:** Remediate Dependabot alert #1 without changing application behavior or the direct `ajv` dependency.
+- **Completed:** Updated only `pnpm-lock.yaml` from `fast-uri@3.1.3` to patched `3.1.4` with registry integrity `sha512-8JnbkQ4juDyvYs4mgFGQqg4yCYtFDtUtmp2QIQq11ZZe5CFQ5wcqm1rqDgAh/QdMySuBnPzMUiJUNZG5N/AiQw==`. Frozen install and `pnpm why fast-uri --recursive` confirm the validator chain resolves to `3.1.4`.
+- **Not completed:** One compatibility matrix job remains pending in GitHub Actions; default-branch alert closure after merge, release-candidate verification, support-policy approval, dogfooding acceptance, maintainer release approval, release PR, tag, and publication also remain open.
+- **Files or packages changed:** `pnpm-lock.yaml`; this handoff records the remediation evidence.
+- **Validation:** `pnpm install --frozen-lockfile --ignore-scripts` passed; `pnpm typecheck` passed; validator/schema/security/v1 tests passed — 4 files, 11 tests; `pnpm format:check` and `git diff --check` passed. Dependency Review run `30403145025` passed; all compatibility jobs observed so far passed except one pending `ubuntu-latest / Node 22` job.
+- **Decisions and assumptions:** Keep `ajv@8.20.0` and `packages/validator/package.json` unchanged because the patched transitive version is compatible within the existing range.
+- **Risks or compatibility impact:** Lockfile-only dependency patch; no runtime source or public contract changes. The alert remains visible on `main` until the PR is merged and GitHub rescans the default branch.
+- **Open issues or blockers:** One compatibility job is still queued; the high alert remains on `main` until this PR is merged and rescanned. Maintainer approval and the remaining Phase 5 evidence are still required.
+- **Next first action:** Recheck the queued compatibility job, then confirm the Dependabot alert is cleared after the verified merge.
+- **Evidence:** `pnpm-lock.yaml`, `packages/validator/package.json`, Dependabot alert [#1](https://github.com/vitala89/Intentloom/security/dependabot/1), and the local validation commands above.
+
+### 2026-07-28, Phase 5: dependency review green rerun
+
+- **Status:** partial
+- **Agent/tool:** Codex with GitHub CLI — security setting recovery and CI verification
+- **Branch:** `codex/v1-phase5-dependency-review`
+- **Commits:** `4f2a5f2`
+- **Pull request:** [#105](https://github.com/vitala89/Intentloom/pull/105), draft; release/tag/publication not authorized
+- **Objective:** Restore the Dependency Review prerequisite and obtain a truthful remote gate result.
+- **Completed:** Enabled Dependabot alerts, which made the repository Dependency Review API available; reran the failed job; Dependency Review passed in run `30401862928`. All compatibility matrix jobs on PR #105 are also passing.
+- **Not completed:** Support-policy approval, release-candidate verification, dogfooding acceptance, maintainer release approval, release PR, tag, and publication.
+- **Files or packages changed:** `docs/releases/V1_0_READINESS_AUDIT.md`, `PROJECT_STATE.md`, and `DUTY_WATCH.md` receive evidence updates; no application or workflow source change was required.
+- **Validation:** `gh api` Dependency Review compare returned HTTP 200 after the setting change; `gh run watch 30401862928 --exit-status` passed; `gh pr checks 105` reported all checks passed.
+- **Decisions and assumptions:** Dependabot alerts were enabled as the supported repository control that generated the dependency graph required by Dependency Review; secret scanning and code scanning remain unchanged.
+- **Risks or compatibility impact:** The security control is read-only for repository dependency analysis; the stable release remains unapproved and untagged.
+- **Open issues or blockers:** Dependabot alert #1 reports `fast-uri@3.1.3` with high severity in `pnpm-lock.yaml`; patched version `3.1.4` is available. The green run is evidence for the focused draft PR, while the release candidate still needs remediation or an approved exception plus the remaining Phase 5 evidence and maintainer approval.
+- **Next first action:** Remediate or explicitly disposition Dependabot alert #1, then run release-candidate verification and obtain support-policy and maintainer approval.
+- **Evidence:** [green Dependency Review job](https://github.com/vitala89/Intentloom/actions/runs/30401862928/job/90419508003), [PR #105](https://github.com/vitala89/Intentloom/pull/105), and the Dependency Review API response.
+
+### 2026-07-28, Phase 5: dependency review draft PR
+
+- **Status:** partial
+- **Agent/tool:** Codex with GitHub CLI — publish workflow and remote gate verification
+- **Branch:** `codex/v1-phase5-dependency-review`
+- **Commits:** `5ac09cb`
+- **Pull request:** [#105](https://github.com/vitala89/Intentloom/pull/105), draft; release/tag/publication not authorized
+- **Objective:** Publish the Phase 5 dependency-review control and trigger its remote validation.
+- **Completed:** Pushed the branch and opened draft PR #105 against `main`. The Dependency Review log was inspected and identified the repository Dependency Graph prerequisite.
+- **Not completed:** Green workflow result, release-candidate verification, support-policy approval, dogfooding acceptance, maintainer release approval, release PR, tag, and publication.
+- **Files or packages changed:** No source changes after `5ac09cb`; PR contains the Phase 5 dependency-review workflow and readiness documentation recorded in the preceding entry.
+- **Validation:** `gh auth status` passed; branch push succeeded; `gh pr view 105` confirmed the draft PR and in-progress checks.
+- **Decisions and assumptions:** The PR is intentionally draft and exists to collect remote dependency-review evidence; it is not the v1.0 release PR.
+- **Risks or compatibility impact:** No runtime behavior changed after the committed control; the stable-release gate remains open until remote evidence and maintainer approval are recorded.
+- **Open issues or blockers:** Dependency Review failed because Dependency Graph is not enabled for the repository; no green result is claimed. Compatibility checks are separate and remain subject to their own results.
+- **Next first action:** Obtain approval to enable Dependency Graph, rerun PR #105 checks, and record the Dependency Review run ID and conclusion in `V1_0_READINESS_AUDIT.md`.
+- **Evidence:** [PR #105](https://github.com/vitala89/Intentloom/pull/105), [failed Dependency Review job](https://github.com/vitala89/Intentloom/actions/runs/30400928807/job/90415274208?pr=105), `.github/workflows/dependency-review.yml`, and `docs/releases/V1_0_READINESS_AUDIT.md`.
+
+### 2026-07-28, Phase 5: dependency review control
+
+- **Status:** partial
+- **Agent/tool:** Codex — dependency-audit control and v1.0 security evidence reconciliation
+- **Branch:** `codex/v1-phase5-dependency-review`
+- **Commits:** `54fb963` (local commit; remote push/PR pending authorization)
+- **Pull request:** none opened; release/tag/publication not authorized
+- **Objective:** Resolve the Phase 5 dependency-audit gap without adding runtime dependencies or relying on the unavailable legacy `pnpm audit` endpoint.
+- **Completed:**
+  - Added `.github/workflows/dependency-review.yml` for pull requests that change package manifests or `pnpm-lock.yaml`.
+  - Configured the official GitHub Dependency Review Action to fail on newly introduced `high` or `critical` vulnerabilities with read-only workflow permissions.
+  - Updated `docs/security/V1_SECURITY_AND_SUPPLY_CHAIN_AUDIT.md`, `docs/releases/V1_0_READINESS_AUDIT.md`, and `PROJECT_STATE.md` to describe the actual control and its remaining green-run requirement.
+  - Local `pnpm audit --audit-level=high` could not reach `registry.npmjs.org` (`ENOTFOUND`); the workflow uses dependency review instead of masking that network failure as a clean audit.
+- **Not completed:** A remote green Dependency Review run, support-policy approval, release-candidate verification, dogfooding acceptance, maintainer release approval, release PR, tag, and publication.
+- **Files or packages changed:** `.github/workflows/dependency-review.yml`, `docs/security/V1_SECURITY_AND_SUPPLY_CHAIN_AUDIT.md`, `docs/releases/V1_0_READINESS_AUDIT.md`, `PROJECT_STATE.md`, `DUTY_WATCH.md`.
+- **Validation:** `pnpm typecheck` passed; four v1 suites passed — 4 files, 11 tests; final `pnpm format:check` and `git diff --check` passed. `pnpm audit --audit-level=high` was attempted but was blocked by registry DNS resolution in the current environment.
+- **Decisions and assumptions:** Dependency Review is treated as an equivalent PR dependency-change control, not as proof that the entire existing dependency graph is vulnerability-free. The release candidate still requires a recorded green workflow result.
+- **Risks or compatibility impact:** The new workflow adds no application/runtime dependency and only reads repository contents and GitHub dependency-review data. It does not replace maintainer review or release authorization.
+- **Open issues or blockers:** The workflow has not run remotely in this session; the Phase 5 gate remains open until its result and the other release evidence are attached to one verified release commit.
+- **Next first action:** Open the focused review PR or otherwise trigger `.github/workflows/dependency-review.yml`, verify the green result, and record its run identifier in `V1_0_READINESS_AUDIT.md`.
+- **Evidence:** `.github/workflows/dependency-review.yml`, `docs/releases/V1_0_READINESS_AUDIT.md`, `docs/security/V1_SECURITY_AND_SUPPLY_CHAIN_AUDIT.md`, and the GitHub Dependency Review documentation.
+
+### 2026-07-28, Phase 5: v1.0 readiness audit draft
+
+- **Status:** partial
+- **Agent/tool:** Codex — v1.0 release-readiness evidence audit and support-policy draft
+- **Branch:** `main`
+- **Commits:** baseline `6d8bd4f`; current documentation changes are uncommitted
+- **Pull request:** none opened; release/tag/publication not authorized
+- **Objective:** Begin Phase 5 of `V1_0_STABLE_COMPATIBILITY_PLAN.md` by assembling the readiness audit, support policy, current release state, and explicit release blockers.
+- **Completed:**
+  - Audited the Phase 1–4 ADRs, guides, client-equivalence/security documents, tests, dogfooding records, release state, and CI workflow definitions.
+  - Added [`docs/releases/V1_0_READINESS_AUDIT.md`](docs/releases/V1_0_READINESS_AUDIT.md) with PASS, PASS-with-recheck, PENDING, and OPEN assessments.
+  - Added [`docs/releases/SUPPORT_POLICY_V1.md`](docs/releases/SUPPORT_POLICY_V1.md) as a maintainer-approval draft.
+  - Refreshed [`docs/releases/RELEASE_STATE.md`](docs/releases/RELEASE_STATE.md) to `main` commit `6d8bd4f` and linked the new Phase 5 documents from [`docs/README.md`](docs/README.md).
+  - Confirmed the key unresolved control: `pnpm audit` is claimed by the Phase 4 security document but is not present in `.github/workflows`.
+- **Not completed:** Maintainer approval; dependency-audit control decision/implementation; clean-install, build, packed-CLI, and release-candidate verification; refreshed or explicitly accepted v1 dogfooding records; publish authorization; release PR, tag, and npm publication.
+- **Files or packages changed:** `docs/releases/V1_0_READINESS_AUDIT.md`, `docs/releases/SUPPORT_POLICY_V1.md`, `docs/releases/RELEASE_STATE.md`, `docs/README.md`, `PROJECT_STATE.md`, `DUTY_WATCH.md`.
+- **Validation:** `pnpm typecheck` passed; `pnpm format:check` passed; `git diff --check` passed; four v1 suites passed — 4 files, 11 tests. The full suite was already verified in the previous watch outside the restricted Unix-socket sandbox; no source code changed in this watch.
+- **Decisions and assumptions:** The audit remains a draft and deliberately does not convert documentation into release approval. Existing dogfooding records are supporting evidence but are marked follow-up because they predate v1.0.
+- **Risks or compatibility impact:** No runtime or protocol behavior changed. The main release risk is an evidence mismatch between the security audit claim and the actual CI workflow configuration.
+- **Open issues or blockers:** The Phase 5 exit gate remains open until the listed evidence is attached to one release commit and a maintainer approves it.
+- **Next first action:** Resolve the dependency-audit control (`pnpm audit` CI step or an explicitly approved equivalent), then run the release-candidate verification matrix and record exact results in the readiness audit.
+- **Evidence:** `f7d4830`, `e5a20ed`, `3d8f938`, `7e2d82a`, `.github/workflows/compatibility.yml`, `docs/releases/V1_0_READINESS_AUDIT.md`, and `docs/releases/SUPPORT_POLICY_V1.md`.
+
+### 2026-07-28, Post-merge state audit and Phase 5 handoff
+
+- **Status:** complete (validated)
+- **Agent/tool:** Codex — repository state audit and roadmap/handoff reconciliation
+- **Branch:** `main`
+- **Commits:** `6d8bd4f` (current HEAD; documentation changes uncommitted)
+- **Pull request:** PR #104 is represented by the current merge commit; no new pull request opened
+- **Objective:** Verify where development stopped after the v1.0 Phase 4 merge, reconcile stale project-state records, and identify the next executable roadmap step.
+- **Completed:**
+  - Confirmed `main` is clean before the audit and at `6d8bd4f`, with the Phase 1–4 merge sequence present in local Git history.
+  - Confirmed the v0.6 Desktop readiness audit and the recorded three-platform SEA CI evidence are already present; the next roadmap gate is v1.0 Phase 5.
+  - Updated `PROJECT_STATE.md`, `ROADMAP.md`, and `docs/roadmap/V1_0_STABLE_COMPATIBILITY_PLAN.md` so they no longer direct the next agent to redo the closed v0.6/Phase 1–4 work.
+- **Not completed:** The v1.0 readiness audit, final support/dogfooding reconciliation, maintainer approval, tag, and publication remain open.
+- **Files or packages changed:** `PROJECT_STATE.md`, `ROADMAP.md`, `docs/roadmap/V1_0_STABLE_COMPATIBILITY_PLAN.md`, `DUTY_WATCH.md`.
+- **Validation:** `pnpm typecheck` passed; final `pnpm format:check` and `git diff --check` passed; full `pnpm test` passed outside the restricted sandbox with 87 files, 753 tests passed, 3 skipped. The sandbox run cannot bind Unix domain sockets and reported 22 `EPERM` failures; this is recorded as an environment limitation, not a product assertion failure. GitHub API checks were unavailable in this session; CI claims were checked against repository history and committed readiness evidence.
+- **Decisions and assumptions:** Treat local merge history and committed readiness documents as the repository evidence for the current stopping point. Keep v0.6 hardening as follow-up and do not reopen it before the v1.0 release gate.
+- **Risks or compatibility impact:** Documentation now reflects the active v1.0 gate but does not claim a v1.0 tag, release, or publication. Remaining Desktop hardening must preserve the shared application/protocol boundary.
+- **Open issues or blockers:** Phase 5 evidence and maintainer approval are still required. Automated a11y and Workspace/legacy-handler hardening remain follow-up work. Full IPC tests require a host that permits Unix-socket binding.
+- **Next first action:** Create the Phase 5 evidence inventory and draft the v1.0 readiness audit from the existing compatibility, migration, client-surface, security, release, and dogfooding records.
+- **Evidence:** `6d8bd4f`, `f7d4830`, `e5a20ed`, `3d8f938`, `7e2d82a`, `docs/desktop/V0_6_READINESS_AUDIT.md`, `docs/compatibility/CLIENT_SURFACE_EQUIVALENCE.md`, `docs/releases/MIGRATION_GUIDE_V1.md`, and `docs/security/V1_SECURITY_AND_SUPPLY_CHAIN_AUDIT.md`.
 
 ### 2026-07-28, Phase 4: Security & Supply Chain Audit (`v1.0.0` Milestone)
 
