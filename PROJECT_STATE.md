@@ -81,8 +81,8 @@ before a new release or implementation milestone is declared complete.
 ## Current blockers and unknowns
 
 - Any expansion to bottleneck, performance, causal, actor, repository-reading, persisted, remote, or model-assisted analysis requires a new ADR, specification, and threat review.
-- PR #84 through PR #104 are merged in the local history; current `main` is
-  verified at `6d8bd4f` and tracks `origin/main`.
+- PR #84 through PR #105 are merged in the local history; current `main` is
+  verified at `86a1aee` and tracks `origin/main`.
 - npm currently reports `latest=0.1.0-alpha.3` and `next=0.5.0-beta.1`.
 - Workspace packages are synchronized to `0.5.0-beta.1`; Git tag
   `v0.5.0-beta.1` is pushed and npm publication is complete.
@@ -102,20 +102,14 @@ before a new release or implementation milestone is declared complete.
   dependency-review workflow run remain open. The equivalent PR dependency
   review control is now defined in `.github/workflows/dependency-review.yml`;
   its release-gate result must be retained before the stable gate can close.
-- Draft PR #105 contains this Phase 5 control. Dependabot alerts are enabled,
-  the Dependency Review API is available, and rerun `30401862928` passed;
-  compatibility matrix checks for the PR also passed. No release approval or
-  publication is implied.
-- Dependabot alert #1 is open at high severity for `fast-uri@3.1.3` in
-  `pnpm-lock.yaml`; `packages/validator` reaches it through `ajv@8.20.0`, and
-  GitHub reports `3.1.4` as the first patched version. The stable release gate
-  remains blocked until this remediation is merged and the default branch is
-  rescanned.
-- The active Phase 5 branch contains a lockfile-only remediation to
-  `fast-uri@3.1.4`; local frozen install, typecheck, and targeted validator,
-  schema, security, and v1 tests pass. Dependency Review run `30403145025`
-  passes; one compatibility matrix job remains queued, and merge remains
-  pending.
+- PR #105 is merged as `86a1aee`; its Dependency Review, Compatibility, and
+  Desktop SEA Feasibility checks passed. Dependabot alert #1 for
+  `fast-uri@3.1.3` is closed after the lockfile remediation to `3.1.4`.
+- Dependabot alert #2 remains open at medium severity for `glib@0.18.5` in
+  `apps/desktop/src-tauri/Cargo.lock`; GitHub reports `0.20.0` as the first
+  patched version. The current Desktop graph uses the GTK 0.18.x stack, so a
+  coordinated upgrade assessment or explicit maintainer exception is required
+  before the stable release gate can close.
 - ADR-0042 is accepted. The macOS arm64 SEA feasibility run and local Tauri
   `.app`/`.dmg` package smoke passed, including embedded sidecar hash and
   catalog-resource verification. The repository history records the

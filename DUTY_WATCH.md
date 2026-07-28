@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **v1.0 Phase 1–4 merged; Phase 5 stable-release gate active** — draft PR #105 has green CI and a validated lockfile remediation for the high-severity dependency alert; `main` remains at `6d8bd4f` until merge
+Status: **v1.0 Phase 1–4 merged; Phase 5 stable-release gate active** — PR #105 is merged as `86a1aee`, the fast-uri high alert is closed, and one medium glib alert remains for disposition
 
 Active branch: `codex/v1-phase5-dependency-review`
 
 Current objective: execute Phase 5 of `V1_0_STABLE_COMPATIBILITY_PLAN.md`: assemble the v1.0 readiness audit and obtain maintainer release approval without implying a tag or publication.
 
-Next first action: push and verify the `fast-uri@3.1.4` remediation in PR #105, then recheck the default-branch alert after merge approval.
+Next first action: assess the `glib@0.18.5` alert against the Desktop GTK 0.18 dependency chain, then choose a compatible upgrade or documented maintainer exception.
 
 ## Watch rules
 
@@ -41,6 +41,24 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-29, Phase 5: dependency remediation merged
+
+- **Status:** partial
+- **Agent/tool:** Codex with GitHub CLI — post-merge verification and release-gate reconciliation
+- **Branch:** `codex/v1-phase5-post-merge-state`
+- **Commits:** merge `86a1aee` from PR #105
+- **Pull request:** [#105](https://github.com/vitala89/Intentloom/pull/105), merged; release/tag/publication not authorized
+- **Objective:** Verify the merged dependency-review control and determine the next open Phase 5 security gate.
+- **Completed:** Confirmed PR #105 merged into `main` at `86a1aee`; all Compatibility, Desktop SEA Feasibility, and Dependency Review checks passed. Dependabot alert #1 for `fast-uri` is no longer open after the merge.
+- **Not completed:** Medium Dependabot alert #2 for `glib@0.18.5`, release-candidate verification, support-policy approval, dogfooding acceptance, maintainer release approval, release PR, tag, and publication.
+- **Files or packages changed:** State and release-audit records are being reconciled; no application code changed in this verification.
+- **Validation:** `gh pr view 105` reported `MERGED` with merge commit `86a1aee` and successful checks; open-alert query returned only alert #2 for `glib` in `apps/desktop/src-tauri/Cargo.lock`.
+- **Decisions and assumptions:** `glib@0.20.0` is not treated as a safe point update because the lockfile carries the GTK 0.18.x stack; the upgrade path must be assessed before changing Desktop dependencies.
+- **Risks or compatibility impact:** The remaining medium alert is in the Desktop Rust dependency graph and may require a coordinated GTK/WebKit stack upgrade or explicit maintainer exception.
+- **Open issues or blockers:** Alert #2 is open with patched version `glib@0.20.0`; the stable release gate remains open.
+- **Next first action:** Inspect the compatible GTK/WebKit upgrade path, run the relevant Desktop build/SEA checks if changed, or record a maintainer-approved exception with rationale.
+- **Evidence:** merge commit [`86a1aee`](https://github.com/vitala89/Intentloom/commit/86a1aee), [PR #105](https://github.com/vitala89/Intentloom/pull/105), [Dependabot alert #2](https://github.com/vitala89/Intentloom/security/dependabot/2), and the successful [Dependency Review check](https://github.com/vitala89/Intentloom/actions/runs/30403512016/job/90423601160).
 
 ### 2026-07-29, Phase 5: fast-uri vulnerability remediation
 
