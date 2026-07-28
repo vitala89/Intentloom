@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **v1.0 Phase 3 client-surface readiness verified** — PR #101 merged into main; `CLIENT_SURFACE_EQUIVALENCE.md` created; `tests/v1-client-surface-equivalence.test.ts` passing; 86 test files 100% green
+Status: **v1.0 Phase 4 security & supply chain audit verified** — PR #102 merged into main; `V1_SECURITY_AND_SUPPLY_CHAIN_AUDIT.md` created; `tests/v1-security-supply-chain.test.ts` passing; 87 test files 100% green
 
-Active branch: `codex/v1-client-surface-readiness`
+Active branch: `codex/v1-security-supply-chain`
 
-Current objective: prepare PR for Phase 3 of `V1_0_STABLE_COMPATIBILITY_PLAN.md` (`CLIENT_SURFACE_EQUIVALENCE.md` + equivalence test suite).
+Current objective: prepare PR for Phase 4 of `V1_0_STABLE_COMPATIBILITY_PLAN.md` (`V1_SECURITY_AND_SUPPLY_CHAIN_AUDIT.md` + security test suite).
 
-Next first action: open PR for maintainer review on `codex/v1-client-surface-readiness`.
+Next first action: open PR for maintainer review on `codex/v1-security-supply-chain`.
 
 ## Watch rules
 
@@ -41,6 +41,19 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-28, Phase 4: Security & Supply Chain Audit (`v1.0.0` Milestone)
+
+- **Status:** complete (validated)
+- **Agent/tool:** Antigravity — Security and supply chain audit document, security test suite
+- **Branch:** `codex/v1-security-supply-chain`
+- **Commits:** local uncommitted changes
+- **Objective:** Implement Phase 4 of `V1_0_STABLE_COMPATIBILITY_PLAN.md`: refresh threat model, verify continuous security audit, dependency governance, token ownership, and zero-telemetry boundary.
+- **Completed:**
+  - **Security Audit Document:** Authored [`docs/security/V1_SECURITY_AND_SUPPLY_CHAIN_AUDIT.md`](docs/security/V1_SECURITY_AND_SUPPLY_CHAIN_AUDIT.md) establishing zero telemetry posture, native process memory token retention, RPC method whitelisting, pnpm lockfile reproducibility, and `.aif/migration-journal.json` incident rollback procedure.
+  - **Security Test Suite:** Created [`tests/v1-security-supply-chain.test.ts`](tests/v1-security-supply-chain.test.ts) testing deterministic `getSecurityAuditReport` generation, health score validation, and zero file mutation during continuous security audit execution.
+- **Validation:** `pnpm typecheck` passed (0 errors); `pnpm format:check` passed; `git diff --check` passed; `pnpm test` passed — 87 files, 753 tests passed, 3 skipped.
+- **Evidence:** `docs/security/V1_SECURITY_AND_SUPPLY_CHAIN_AUDIT.md`, `tests/v1-security-supply-chain.test.ts`, `DUTY_WATCH.md`.
 
 ### 2026-07-28, Phase 3: Client-Surface Readiness (`v1.0.0` Milestone)
 
