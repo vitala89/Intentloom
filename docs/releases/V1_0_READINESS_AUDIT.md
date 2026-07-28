@@ -5,8 +5,8 @@ not authorize a tag, npm publication, or release announcement.
 
 Date: 2026-07-29.
 
-Candidate baseline under review: `88d6f6b` (`main` and `origin/main` after PR
-#107 merge). The documentation updates in this branch still require review
+Candidate baseline under review: `542633a` (`main` and `origin/main` after PR
+#108 merge). The documentation updates in this branch still require review
 before a final release commit is selected.
 
 ## Decision summary
@@ -20,13 +20,13 @@ No v1.0 tag or npm artifact is claimed by this document.
 
 ## Phase evidence
 
-| Phase                             | Evidence                                                                                                                                                                        | Assessment                                                                                                                                                         |
-| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| 1 — Stable compatibility contract | [ADR-0043](../decisions/ADR-0043-v1-stable-compatibility-contract-and-deprecation-policy.md), `tests/v1-compatibility-contract.test.ts`                                         | Evidence present; contract approval recorded in ADR                                                                                                                |
-| 2 — Upgrade and protocol path     | [MIGRATION_GUIDE_V1.md](MIGRATION_GUIDE_V1.md), `tests/v1-upgrade-migration-path.test.ts`                                                                                       | Evidence present; release-candidate clean-install verification remains required                                                                                    |
-| 3 — Client-surface readiness      | [CLIENT_SURFACE_EQUIVALENCE.md](../compatibility/CLIENT_SURFACE_EQUIVALENCE.md), `tests/v1-client-surface-equivalence.test.ts`                                                  | Evidence present; no domain duplication found in the documented boundary                                                                                           |
-| 4 — Security and supply chain     | [V1_SECURITY_AND_SUPPLY_CHAIN_AUDIT.md](../security/V1_SECURITY_AND_SUPPLY_CHAIN_AUDIT.md), `tests/v1-security-supply-chain.test.ts`, `.github/workflows/dependency-review.yml` | Control merged in `86a1aee`; high fast-uri alert closed; medium glib alert #2 assessed, with no current upstream point upgrade, but not yet accepted or remediated |
-| 5 — Stable release gate           | This document, [SUPPORT_POLICY_V1.md](SUPPORT_POLICY_V1.md), release and dogfooding records                                                                                     | Open; maintainer approval pending                                                                                                                                  |
+| Phase                             | Evidence                                                                                                                                                                        | Assessment                                                                                                      |
+| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| 1 — Stable compatibility contract | [ADR-0043](../decisions/ADR-0043-v1-stable-compatibility-contract-and-deprecation-policy.md), `tests/v1-compatibility-contract.test.ts`                                         | Evidence present; contract approval recorded in ADR                                                             |
+| 2 — Upgrade and protocol path     | [MIGRATION_GUIDE_V1.md](MIGRATION_GUIDE_V1.md), `tests/v1-upgrade-migration-path.test.ts`                                                                                       | Evidence present; release-candidate clean-install verification remains required                                 |
+| 3 — Client-surface readiness      | [CLIENT_SURFACE_EQUIVALENCE.md](../compatibility/CLIENT_SURFACE_EQUIVALENCE.md), `tests/v1-client-surface-equivalence.test.ts`                                                  | Evidence present; no domain duplication found in the documented boundary                                        |
+| 4 — Security and supply chain     | [V1_SECURITY_AND_SUPPLY_CHAIN_AUDIT.md](../security/V1_SECURITY_AND_SUPPLY_CHAIN_AUDIT.md), `tests/v1-security-supply-chain.test.ts`, `.github/workflows/dependency-review.yml` | Control merged in `86a1aee`; high fast-uri alert closed; proposed glib exception is pending maintainer approval |
+| 5 — Stable release gate           | This document, [SUPPORT_POLICY_V1.md](SUPPORT_POLICY_V1.md), release and dogfooding records                                                                                     | Open; maintainer approval pending                                                                               |
 
 ## Stable-release checklist
 
@@ -59,6 +59,9 @@ No v1.0 tag or npm artifact is claimed by this document.
 - PR [#107](https://github.com/vitala89/Intentloom/pull/107) merged as
   `88d6f6b`; its documentation-only compatibility checks passed and recorded
   the upstream availability assessment.
+- PR [#108](https://github.com/vitala89/Intentloom/pull/108) merged as
+  `542633a`; its documentation-only compatibility checks passed and recorded
+  the proposed exception path.
 - Dependabot alert [#2](https://github.com/vitala89/Intentloom/security/dependabot/2)
   remains open at medium severity for `glib@0.18.5` in
   `apps/desktop/src-tauri/Cargo.lock`; GitHub reports `0.20.0` as the first
@@ -90,13 +93,17 @@ check found no newer version in those package lines that could provide the
 required coordinated lift. This leaves a scoped maintainer exception as the
 near-term option unless a separate Desktop stack migration is approved.
 
+The proposed exception is documented in
+[V1_SECURITY_AND_SUPPLY_CHAIN_AUDIT.md](../security/V1_SECURITY_AND_SUPPLY_CHAIN_AUDIT.md)
+and remains pending maintainer approval.
+
 ## Required actions before approval
 
 1. Review and approve [SUPPORT_POLICY_V1.md](SUPPORT_POLICY_V1.md).
-2. Choose one disposition for Dependabot alert #2: approve a separate
-   coordinated GTK/WebKit/Tauri-compatible stack migration, or record an
-   explicit scoped maintainer exception with rationale, owner, review date,
-   and re-evaluation trigger.
+2. Review and explicitly approve or reject the proposed scoped exception in
+   [V1_SECURITY_AND_SUPPLY_CHAIN_AUDIT.md](../security/V1_SECURITY_AND_SUPPLY_CHAIN_AUDIT.md),
+   or approve a separate coordinated GTK/WebKit/Tauri-compatible stack
+   migration instead.
 3. Run the release-candidate clean install, build, packed CLI smoke, full
    validation, security/path tests, and explicit-path dogfooding checks; retain
    exact commands and results.

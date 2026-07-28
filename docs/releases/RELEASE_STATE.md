@@ -6,7 +6,7 @@ Historical release audits and roadmap sections retain their original scope, but
 this document is the source of truth for the current status.
 
 Snapshot: 2026-07-29
-Main commit: `88d6f6b` (PR #107 merged)
+Main commit: `542633a` (PR #108 merged)
 Release commit: `a0e0b13` (tagged `v0.5.0-beta.1`)
 Workspace version: `0.5.0-beta.1`
 Git tag: `v0.5.0-beta.1` (pushed)
@@ -55,6 +55,9 @@ listed in the last table row. `latest` intentionally remains the historical
   `86a1aee`.
 - The GTK/WebKit dependency assessment is recorded in [PR #107](https://github.com/vitala89/Intentloom/pull/107),
   merged as `88d6f6b`; no dependency or runtime files changed.
+- The proposed glib exception and release-gate conditions are prepared after
+  [PR #108](https://github.com/vitala89/Intentloom/pull/108), merged as
+  `542633a`; maintainer approval remains pending.
 - Release tag: [`v0.5.0-beta.1`](https://github.com/vitala89/Intentloom/releases/tag/v0.5.0-beta.1)
   points to the verified release commit `a0e0b13`.
 - Version source: root `package.json`, synchronized by
