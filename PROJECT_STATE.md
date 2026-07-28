@@ -106,6 +106,10 @@ before a new release or implementation milestone is declared complete.
   the Dependency Review API is available, and rerun `30401862928` passed;
   compatibility matrix checks for the PR also passed. No release approval or
   publication is implied.
+- Dependabot alert #1 is open at high severity for `fast-uri@3.1.3` in
+  `pnpm-lock.yaml`; `packages/validator` reaches it through `ajv@8.20.0`, and
+  GitHub reports `3.1.4` as the first patched version. The stable release gate
+  remains blocked until this is remediated or explicitly dispositioned.
 - ADR-0042 is accepted. The macOS arm64 SEA feasibility run and local Tauri
   `.app`/`.dmg` package smoke passed, including embedded sidecar hash and
   catalog-resource verification. The repository history records the

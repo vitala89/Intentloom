@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **v1.0 Phase 1–4 merged; Phase 5 stable-release gate active** — `main` is at `6d8bd4f`; draft PR #105 has a green Dependency Review run and compatibility matrix
+Status: **v1.0 Phase 1–4 merged; Phase 5 stable-release gate active** — `main` is at `6d8bd4f`; draft PR #105 has green CI, but Dependabot reports one open high-severity dependency alert
 
 Active branch: `codex/v1-phase5-dependency-review`
 
 Current objective: execute Phase 5 of `V1_0_STABLE_COMPATIBILITY_PLAN.md`: assemble the v1.0 readiness audit and obtain maintainer release approval without implying a tag or publication.
 
-Next first action: retain Dependency Review run `30401862928` in the readiness evidence, then execute the remaining release-candidate and approval gates.
+Next first action: remediate or explicitly disposition Dependabot alert #1 for `fast-uri@3.1.3`, then continue the remaining release-candidate and approval gates.
 
 ## Watch rules
 
@@ -56,8 +56,8 @@ entry directly below this section.
 - **Validation:** `gh api` Dependency Review compare returned HTTP 200 after the setting change; `gh run watch 30401862928 --exit-status` passed; `gh pr checks 105` reported all checks passed.
 - **Decisions and assumptions:** Dependabot alerts were enabled as the supported repository control that generated the dependency graph required by Dependency Review; secret scanning and code scanning remain unchanged.
 - **Risks or compatibility impact:** The security control is read-only for repository dependency analysis; the stable release remains unapproved and untagged.
-- **Open issues or blockers:** The green run is evidence for the focused draft PR, while the release candidate still needs the remaining Phase 5 evidence and maintainer approval.
-- **Next first action:** Record the green run in `V1_0_READINESS_AUDIT.md`, run release-candidate verification, and obtain support-policy and maintainer approval.
+- **Open issues or blockers:** Dependabot alert #1 reports `fast-uri@3.1.3` with high severity in `pnpm-lock.yaml`; patched version `3.1.4` is available. The green run is evidence for the focused draft PR, while the release candidate still needs remediation or an approved exception plus the remaining Phase 5 evidence and maintainer approval.
+- **Next first action:** Remediate or explicitly disposition Dependabot alert #1, then run release-candidate verification and obtain support-policy and maintainer approval.
 - **Evidence:** [green Dependency Review job](https://github.com/vitala89/Intentloom/actions/runs/30401862928/job/90419508003), [PR #105](https://github.com/vitala89/Intentloom/pull/105), and the Dependency Review API response.
 
 ### 2026-07-28, Phase 5: dependency review draft PR
