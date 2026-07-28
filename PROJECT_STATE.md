@@ -81,8 +81,8 @@ before a new release or implementation milestone is declared complete.
 ## Current blockers and unknowns
 
 - Any expansion to bottleneck, performance, causal, actor, repository-reading, persisted, remote, or model-assisted analysis requires a new ADR, specification, and threat review.
-- PR #84 through PR #107 are merged in the local history; current `main` is
-  verified at `88d6f6b` and tracks `origin/main`.
+- PR #84 through PR #108 are merged in the local history; current `main` is
+  verified at `542633a` and tracks `origin/main`.
 - npm currently reports `latest=0.1.0-alpha.3` and `next=0.5.0-beta.1`.
 - Workspace packages are synchronized to `0.5.0-beta.1`; Git tag
   `v0.5.0-beta.1` is pushed and npm publication is complete.
@@ -109,6 +109,8 @@ before a new release or implementation milestone is declared complete.
   passed and reconciled the post-merge Phase 5 state.
 - PR #107 is merged as `88d6f6b`; its documentation-only Compatibility checks
   passed and recorded the GTK/WebKit compatibility assessment.
+- PR #108 is merged as `542633a`; its documentation-only Compatibility checks
+  passed and recorded the upstream availability evidence.
 - Dependabot alert #2 remains open at medium severity for `glib@0.18.5` in
   `apps/desktop/src-tauri/Cargo.lock`; GitHub reports `0.20.0` as the first
   patched version. A read-only Cargo tree assessment confirms it is shared by
@@ -118,7 +120,9 @@ before a new release or implementation milestone is declared complete.
   0.55.1, and WebKitGTK 2.0.2 versions already in the lockfile, so no
   compatible upstream point upgrade is currently available. A separate
   coordinated stack migration or explicit maintainer exception is required
-  before the stable release gate can close.
+  before the stable release gate can close. The recommended near-term path is
+  a time-bounded scoped exception because the repository has no direct use of
+  the affected `VariantStrIter` API; maintainer approval is still pending.
 - ADR-0042 is accepted. The macOS arm64 SEA feasibility run and local Tauri
   `.app`/`.dmg` package smoke passed, including embedded sidecar hash and
   catalog-resource verification. The repository history records the

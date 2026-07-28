@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **v1.0 Phase 1–4 merged; Phase 5 stable-release gate active** — PR #107 is merged as `88d6f6b`, the fast-uri high alert is closed, and one medium glib alert remains for disposition
+Status: **v1.0 Phase 1–4 merged; Phase 5 stable-release gate active** — PR #108 is merged as `542633a`, the fast-uri high alert is closed, and one medium glib alert remains for disposition
 
-Active branch: `codex/v1-phase5-upstream-disposition`
+Active branch: `codex/v1-phase5-glib-exception`
 
 Current objective: execute Phase 5 of `V1_0_STABLE_COMPATIBILITY_PLAN.md`: assemble the v1.0 readiness audit and obtain maintainer release approval without implying a tag or publication.
 
-Next first action: obtain the maintainer disposition for alert #2; current upstream crate versions do not provide a newer Tauri/Wry/WebKitGTK path, so choose a scoped exception or approve a separate Desktop stack migration.
+Next first action: review and explicitly approve or reject the proposed scoped glib exception, with the 2026-10-29 review date and Desktop-release expiry conditions.
 
 ## Watch rules
 
@@ -41,6 +41,24 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-29, Phase 5: proposed glib security exception
+
+- **Status:** partial
+- **Agent/tool:** Codex with RustSec, Cargo, and GitHub CLI — security exception preparation after PR #108 merge
+- **Branch:** `codex/v1-phase5-glib-exception`
+- **Commits:** pending
+- **Pull request:** pending; release/tag/publication not authorized
+- **Objective:** Convert the recommended disposition for Dependabot alert #2 into a bounded, reviewable exception record without hiding the open alert.
+- **Completed:** Confirmed PR #108 merged as `542633a` with all Compatibility checks passing; synchronized local `main`; verified the RustSec advisory affects `glib::VariantStrIter`; and confirmed the repository has no direct `glib` or `VariantStrIter` usage in the Desktop source.
+- **Not completed:** The exception is proposed, not maintainer-approved; alert #2 remains open. Release-candidate verification, support-policy approval, dogfooding acceptance, and final release approval remain open.
+- **Files or packages changed:** Security audit, Phase 5 readiness/state, release state, and Duty Watch records; no Cargo manifest or lockfile change.
+- **Validation:** Advisory reviewed at RustSec RUSTSEC-2024-0429; local source search found no `VariantStrIter`, `variant_str`, or direct `glib` references under `apps/desktop/src-tauri` or `apps/desktop/src`; `pnpm format:check` and `git diff --check` are required before PR creation.
+- **Decisions and assumptions:** The recommended near-term path is a scoped exception because the alert is transitive, no direct affected API use is present, and no compatible upstream point upgrade exists. This does not claim the dependency is patched.
+- **Risks or compatibility impact:** The exception leaves a known unsound transitive dependency in the private/read-only Desktop graph and expires at the first of 2026-10-29 or any public Desktop stable release.
+- **Open issues or blockers:** Maintainer approval is required; the exception must be rejected if direct `glib`/`VariantStrIter` use is added or if a compatible coordinated stack release becomes available.
+- **Next first action:** Review the proposed exception record, approve it with owner/review date, or reject it in favor of a coordinated Desktop stack migration.
+- **Evidence:** [PR #108](https://github.com/vitala89/Intentloom/pull/108), merge commit [`542633a`](https://github.com/vitala89/Intentloom/commit/542633a), [Dependabot alert #2](https://github.com/vitala89/Intentloom/security/dependabot/2), and [RustSec RUSTSEC-2024-0429](https://rustsec.org/advisories/RUSTSEC-2024-0429.html).
 
 ### 2026-07-29, Phase 5: upstream availability check for glib alert
 
