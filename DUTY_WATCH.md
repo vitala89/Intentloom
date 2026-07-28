@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **v1.0 Phase 4 security & supply chain audit verified** — PR #102 merged into main; `V1_SECURITY_AND_SUPPLY_CHAIN_AUDIT.md` created; `tests/v1-security-supply-chain.test.ts` passing; 87 test files 100% green
+Status: **v1.0 Phase 1–4 merged; Phase 5 stable-release gate active** — `main` is at `6d8bd4f`; the compatibility contract, upgrade path, client-surface equivalence, and security/supply-chain evidence are present and validated
 
-Active branch: `codex/v1-security-supply-chain`
+Active branch: `codex/v1-phase5-dependency-review`
 
-Current objective: prepare PR for Phase 4 of `V1_0_STABLE_COMPATIBILITY_PLAN.md` (`V1_SECURITY_AND_SUPPLY_CHAIN_AUDIT.md` + security test suite).
+Current objective: execute Phase 5 of `V1_0_STABLE_COMPATIBILITY_PLAN.md`: assemble the v1.0 readiness audit and obtain maintainer release approval without implying a tag or publication.
 
-Next first action: open PR for maintainer review on `codex/v1-security-supply-chain`.
+Next first action: run the new Dependency Review workflow on the release PR and retain its green result in the v1.0 readiness evidence.
 
 ## Watch rules
 
@@ -41,6 +41,72 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-28, Phase 5: dependency review control
+
+- **Status:** partial
+- **Agent/tool:** Codex — dependency-audit control and v1.0 security evidence reconciliation
+- **Branch:** `codex/v1-phase5-dependency-review`
+- **Commits:** `54fb963` (local commit; remote push/PR pending authorization)
+- **Pull request:** none opened; release/tag/publication not authorized
+- **Objective:** Resolve the Phase 5 dependency-audit gap without adding runtime dependencies or relying on the unavailable legacy `pnpm audit` endpoint.
+- **Completed:**
+  - Added `.github/workflows/dependency-review.yml` for pull requests that change package manifests or `pnpm-lock.yaml`.
+  - Configured the official GitHub Dependency Review Action to fail on newly introduced `high` or `critical` vulnerabilities with read-only workflow permissions.
+  - Updated `docs/security/V1_SECURITY_AND_SUPPLY_CHAIN_AUDIT.md`, `docs/releases/V1_0_READINESS_AUDIT.md`, and `PROJECT_STATE.md` to describe the actual control and its remaining green-run requirement.
+  - Local `pnpm audit --audit-level=high` could not reach `registry.npmjs.org` (`ENOTFOUND`); the workflow uses dependency review instead of masking that network failure as a clean audit.
+- **Not completed:** A remote green Dependency Review run, support-policy approval, release-candidate verification, dogfooding acceptance, maintainer release approval, release PR, tag, and publication.
+- **Files or packages changed:** `.github/workflows/dependency-review.yml`, `docs/security/V1_SECURITY_AND_SUPPLY_CHAIN_AUDIT.md`, `docs/releases/V1_0_READINESS_AUDIT.md`, `PROJECT_STATE.md`, `DUTY_WATCH.md`.
+- **Validation:** `pnpm typecheck` passed; four v1 suites passed — 4 files, 11 tests; final `pnpm format:check` and `git diff --check` passed. `pnpm audit --audit-level=high` was attempted but was blocked by registry DNS resolution in the current environment.
+- **Decisions and assumptions:** Dependency Review is treated as an equivalent PR dependency-change control, not as proof that the entire existing dependency graph is vulnerability-free. The release candidate still requires a recorded green workflow result.
+- **Risks or compatibility impact:** The new workflow adds no application/runtime dependency and only reads repository contents and GitHub dependency-review data. It does not replace maintainer review or release authorization.
+- **Open issues or blockers:** The workflow has not run remotely in this session; the Phase 5 gate remains open until its result and the other release evidence are attached to one verified release commit.
+- **Next first action:** Open the focused review PR or otherwise trigger `.github/workflows/dependency-review.yml`, verify the green result, and record its run identifier in `V1_0_READINESS_AUDIT.md`.
+- **Evidence:** `.github/workflows/dependency-review.yml`, `docs/releases/V1_0_READINESS_AUDIT.md`, `docs/security/V1_SECURITY_AND_SUPPLY_CHAIN_AUDIT.md`, and the GitHub Dependency Review documentation.
+
+### 2026-07-28, Phase 5: v1.0 readiness audit draft
+
+- **Status:** partial
+- **Agent/tool:** Codex — v1.0 release-readiness evidence audit and support-policy draft
+- **Branch:** `main`
+- **Commits:** baseline `6d8bd4f`; current documentation changes are uncommitted
+- **Pull request:** none opened; release/tag/publication not authorized
+- **Objective:** Begin Phase 5 of `V1_0_STABLE_COMPATIBILITY_PLAN.md` by assembling the readiness audit, support policy, current release state, and explicit release blockers.
+- **Completed:**
+  - Audited the Phase 1–4 ADRs, guides, client-equivalence/security documents, tests, dogfooding records, release state, and CI workflow definitions.
+  - Added [`docs/releases/V1_0_READINESS_AUDIT.md`](docs/releases/V1_0_READINESS_AUDIT.md) with PASS, PASS-with-recheck, PENDING, and OPEN assessments.
+  - Added [`docs/releases/SUPPORT_POLICY_V1.md`](docs/releases/SUPPORT_POLICY_V1.md) as a maintainer-approval draft.
+  - Refreshed [`docs/releases/RELEASE_STATE.md`](docs/releases/RELEASE_STATE.md) to `main` commit `6d8bd4f` and linked the new Phase 5 documents from [`docs/README.md`](docs/README.md).
+  - Confirmed the key unresolved control: `pnpm audit` is claimed by the Phase 4 security document but is not present in `.github/workflows`.
+- **Not completed:** Maintainer approval; dependency-audit control decision/implementation; clean-install, build, packed-CLI, and release-candidate verification; refreshed or explicitly accepted v1 dogfooding records; publish authorization; release PR, tag, and npm publication.
+- **Files or packages changed:** `docs/releases/V1_0_READINESS_AUDIT.md`, `docs/releases/SUPPORT_POLICY_V1.md`, `docs/releases/RELEASE_STATE.md`, `docs/README.md`, `PROJECT_STATE.md`, `DUTY_WATCH.md`.
+- **Validation:** `pnpm typecheck` passed; `pnpm format:check` passed; `git diff --check` passed; four v1 suites passed — 4 files, 11 tests. The full suite was already verified in the previous watch outside the restricted Unix-socket sandbox; no source code changed in this watch.
+- **Decisions and assumptions:** The audit remains a draft and deliberately does not convert documentation into release approval. Existing dogfooding records are supporting evidence but are marked follow-up because they predate v1.0.
+- **Risks or compatibility impact:** No runtime or protocol behavior changed. The main release risk is an evidence mismatch between the security audit claim and the actual CI workflow configuration.
+- **Open issues or blockers:** The Phase 5 exit gate remains open until the listed evidence is attached to one release commit and a maintainer approves it.
+- **Next first action:** Resolve the dependency-audit control (`pnpm audit` CI step or an explicitly approved equivalent), then run the release-candidate verification matrix and record exact results in the readiness audit.
+- **Evidence:** `f7d4830`, `e5a20ed`, `3d8f938`, `7e2d82a`, `.github/workflows/compatibility.yml`, `docs/releases/V1_0_READINESS_AUDIT.md`, and `docs/releases/SUPPORT_POLICY_V1.md`.
+
+### 2026-07-28, Post-merge state audit and Phase 5 handoff
+
+- **Status:** complete (validated)
+- **Agent/tool:** Codex — repository state audit and roadmap/handoff reconciliation
+- **Branch:** `main`
+- **Commits:** `6d8bd4f` (current HEAD; documentation changes uncommitted)
+- **Pull request:** PR #104 is represented by the current merge commit; no new pull request opened
+- **Objective:** Verify where development stopped after the v1.0 Phase 4 merge, reconcile stale project-state records, and identify the next executable roadmap step.
+- **Completed:**
+  - Confirmed `main` is clean before the audit and at `6d8bd4f`, with the Phase 1–4 merge sequence present in local Git history.
+  - Confirmed the v0.6 Desktop readiness audit and the recorded three-platform SEA CI evidence are already present; the next roadmap gate is v1.0 Phase 5.
+  - Updated `PROJECT_STATE.md`, `ROADMAP.md`, and `docs/roadmap/V1_0_STABLE_COMPATIBILITY_PLAN.md` so they no longer direct the next agent to redo the closed v0.6/Phase 1–4 work.
+- **Not completed:** The v1.0 readiness audit, final support/dogfooding reconciliation, maintainer approval, tag, and publication remain open.
+- **Files or packages changed:** `PROJECT_STATE.md`, `ROADMAP.md`, `docs/roadmap/V1_0_STABLE_COMPATIBILITY_PLAN.md`, `DUTY_WATCH.md`.
+- **Validation:** `pnpm typecheck` passed; final `pnpm format:check` and `git diff --check` passed; full `pnpm test` passed outside the restricted sandbox with 87 files, 753 tests passed, 3 skipped. The sandbox run cannot bind Unix domain sockets and reported 22 `EPERM` failures; this is recorded as an environment limitation, not a product assertion failure. GitHub API checks were unavailable in this session; CI claims were checked against repository history and committed readiness evidence.
+- **Decisions and assumptions:** Treat local merge history and committed readiness documents as the repository evidence for the current stopping point. Keep v0.6 hardening as follow-up and do not reopen it before the v1.0 release gate.
+- **Risks or compatibility impact:** Documentation now reflects the active v1.0 gate but does not claim a v1.0 tag, release, or publication. Remaining Desktop hardening must preserve the shared application/protocol boundary.
+- **Open issues or blockers:** Phase 5 evidence and maintainer approval are still required. Automated a11y and Workspace/legacy-handler hardening remain follow-up work. Full IPC tests require a host that permits Unix-socket binding.
+- **Next first action:** Create the Phase 5 evidence inventory and draft the v1.0 readiness audit from the existing compatibility, migration, client-surface, security, release, and dogfooding records.
+- **Evidence:** `6d8bd4f`, `f7d4830`, `e5a20ed`, `3d8f938`, `7e2d82a`, `docs/desktop/V0_6_READINESS_AUDIT.md`, `docs/compatibility/CLIENT_SURFACE_EQUIVALENCE.md`, `docs/releases/MIGRATION_GUIDE_V1.md`, and `docs/security/V1_SECURITY_AND_SUPPLY_CHAIN_AUDIT.md`.
 
 ### 2026-07-28, Phase 4: Security & Supply Chain Audit (`v1.0.0` Milestone)
 

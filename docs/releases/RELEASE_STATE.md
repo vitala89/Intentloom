@@ -5,8 +5,8 @@ It distinguishes code merged into `main` from artifacts published to npm.
 Historical release audits and roadmap sections retain their original scope, but
 this document is the source of truth for the current status.
 
-Snapshot: 2026-07-27
-Main commit: `9966066` (PR #92 merged)
+Snapshot: 2026-07-28
+Main commit: `6d8bd4f` (PR #104 merged)
 Release commit: `a0e0b13` (tagged `v0.5.0-beta.1`)
 Workspace version: `0.5.0-beta.1`
 Git tag: `v0.5.0-beta.1` (pushed)
@@ -49,8 +49,8 @@ listed in the last table row. `latest` intentionally remains the historical
   reports `latest=0.1.0-alpha.3` and `next=0.5.0-beta.1`; published tarball
   shasum is `58b2e27eb66789f57c1e91cec46aea710a6fc241`.
 - GitHub release: [`v0.4.0-beta.1`](https://github.com/vitala89/Intentloom/releases/tag/v0.4.0-beta.1).
-- Current merge: [PR #92](https://github.com/vitala89/Intentloom/pull/92), merged
-  as `9966066`.
+- Current `main`: [PR #104](https://github.com/vitala89/Intentloom/pull/104),
+  merged as `6d8bd4f`.
 - Release tag: [`v0.5.0-beta.1`](https://github.com/vitala89/Intentloom/releases/tag/v0.5.0-beta.1)
   points to the verified release commit `a0e0b13`.
 - Version source: root `package.json`, synchronized by

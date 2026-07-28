@@ -6,17 +6,17 @@ The milestones below are compatibility and evidence gates, not promised dates.
 Intentloom remains alpha until the generated configuration, schemas, and
 adoption workflow have been exercised in multiple real projects.
 
-| Milestone       | Focus                                                                    | Exit gate                                                                                                               | Gate status                                                                                             |
-| --------------- | ------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
-| `0.1.0-alpha.4` | Documentation consistency and release hygiene                            | Architecture, release, versioning, and public-status documents agree with the repository and verified release evidence  | Historical gate; included in `0.1.0-beta.1`                                                             |
-| `0.1.0-alpha.5` | Fixture depth and adapter compatibility                                  | Expanded snapshot and packed-CLI coverage across supported adapters and representative project fixtures                 | Historical gate; included in `0.1.0-beta.1`                                                             |
-| `0.1.0-beta.1`  | Compatibility-freeze candidate                                           | Explicit API/schema/output compatibility statement, migration policy, and successful dogfooding evidence                | Released 2026-07-23 as Git tag `v0.1.0-beta.1` and npm `intentloom@0.1.0-beta.1` under `next`           |
-| `0.2.0-beta.1`  | Connected project, evidence, MCP & conformance                           | Read-only inspection, local Git timeline, provider imports, release analysis, stdio MCP server, and release conformance | Released 2026-07-24 as npm `intentloom@0.2.0-beta.1` under `next`                                       |
-| `0.3.0-beta.1`  | Engineering conformance and extension governance                         | Engineering Conformance Engine and managed-extension schemas/governance                                                 | Released 2026-07-24 as npm `intentloom@0.3.0-beta.1` under `next`                                       |
-| `0.4.0-beta.1`  | Controlled learning, memory/security, workspace, and Neutron foundations | Candidates L1–L8, M1–M4, S1–S5, workspace modes, and local Neutron foundations                                          | Released 2026-07-25 as Git tag `v0.4.0-beta.1` and npm `intentloom@0.4.0-beta.1` under `next`           |
-| `v0.5.0-beta.1` | Engineering Process Intelligence increment                               | Workflow variants, durations, conformance trends, repetition, and transition intervals                                  | Released 2026-07-27 as Git tag `v0.5.0-beta.1` and npm `intentloom@0.5.0-beta.1` under `next`           |
-| `v0.6.0-beta.1` | Desktop vertical slice and TUI parity                                    | Packaged Tauri 2 read-only project flow over daemon contracts, followed by TUI parity and cross-platform evidence       | Planned; design and client-contract preparation are the next product milestone                          |
-| `1.0.0`         | Stable compatibility contract                                            | Stable release criteria, documented support policy, verified upgrade path, and maintained compatibility commitments     | Planning draft: [v1.0 plan](docs/roadmap/V1_0_STABLE_COMPATIBILITY_PLAN.md); implementation not started |
+| Milestone       | Focus                                                                    | Exit gate                                                                                                               | Gate status                                                                                                                    |
+| --------------- | ------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| `0.1.0-alpha.4` | Documentation consistency and release hygiene                            | Architecture, release, versioning, and public-status documents agree with the repository and verified release evidence  | Historical gate; included in `0.1.0-beta.1`                                                                                    |
+| `0.1.0-alpha.5` | Fixture depth and adapter compatibility                                  | Expanded snapshot and packed-CLI coverage across supported adapters and representative project fixtures                 | Historical gate; included in `0.1.0-beta.1`                                                                                    |
+| `0.1.0-beta.1`  | Compatibility-freeze candidate                                           | Explicit API/schema/output compatibility statement, migration policy, and successful dogfooding evidence                | Released 2026-07-23 as Git tag `v0.1.0-beta.1` and npm `intentloom@0.1.0-beta.1` under `next`                                  |
+| `0.2.0-beta.1`  | Connected project, evidence, MCP & conformance                           | Read-only inspection, local Git timeline, provider imports, release analysis, stdio MCP server, and release conformance | Released 2026-07-24 as npm `intentloom@0.2.0-beta.1` under `next`                                                              |
+| `0.3.0-beta.1`  | Engineering conformance and extension governance                         | Engineering Conformance Engine and managed-extension schemas/governance                                                 | Released 2026-07-24 as npm `intentloom@0.3.0-beta.1` under `next`                                                              |
+| `0.4.0-beta.1`  | Controlled learning, memory/security, workspace, and Neutron foundations | Candidates L1–L8, M1–M4, S1–S5, workspace modes, and local Neutron foundations                                          | Released 2026-07-25 as Git tag `v0.4.0-beta.1` and npm `intentloom@0.4.0-beta.1` under `next`                                  |
+| `v0.5.0-beta.1` | Engineering Process Intelligence increment                               | Workflow variants, durations, conformance trends, repetition, and transition intervals                                  | Released 2026-07-27 as Git tag `v0.5.0-beta.1` and npm `intentloom@0.5.0-beta.1` under `next`                                  |
+| `v0.6.0-beta.1` | Desktop vertical slice and TUI parity                                    | Packaged Tauri 2 read-only project flow over daemon contracts, followed by TUI parity and cross-platform evidence       | Implementation and readiness audit complete; release/tag authorization remains explicit                                        |
+| `1.0.0`         | Stable compatibility contract                                            | Stable release criteria, documented support policy, verified upgrade path, and maintained compatibility commitments     | Phases 1–4 merged into `main`; Phase 5 stable-release gate active: [v1.0 plan](docs/roadmap/V1_0_STABLE_COMPATIBILITY_PLAN.md) |
 
 Before the first beta, Intentloom needed at least three real dogfooding scenarios: a
 minimal project, a TypeScript project, and a sanitized existing-project example
@@ -153,11 +153,12 @@ Candidate scope:
 
 Exit criteria: Intentloom can explain why a workflow instance conforms, diverges, or cannot be verified, and securely govern external extension manifests without automatically changing repository state.
 
-## Planned v0.6 milestone: Desktop vertical slice, then TUI parity
+## Completed v0.6 milestone: Desktop vertical slice, then TUI parity
 
-The v0.5 release gate is complete. The next product milestone makes the
-existing local platform visible through one coherent client before adding
-another major analysis, provider, extension, or autonomous feature block.
+The v0.5 release gate is complete, and the v0.6 implementation and readiness
+audit are complete. The milestone made the existing local platform visible
+through one coherent client before adding another major analysis, provider,
+extension, or autonomous feature block.
 
 The full implementation sequence, verified starting inventory, PR breakdown,
 security boundaries, and exit gates are defined in the
@@ -190,12 +191,12 @@ close without changing project bytes. The hardened TUI reproduces the same
 structured results. Any later Apply action remains explicit, revalidated,
 transactional, and separately approved.
 
-## Partial implementation — Interactive terminal UI
+## Completed v0.6 TUI parity
 
 The current `intentloom ui` command and read-only workspace state collector are
-implemented and released in `0.4.0-beta.1`. A full keyboard-first terminal UI
-with cancellation, accessibility, snapshot guarantees, and Desktop parity is
-sequenced after the first v0.6 Desktop vertical slice.
+implemented and released in `0.4.0-beta.1`. The v0.6 keyboard-first terminal UI
+parity, cancellation, accessibility, snapshot guarantees, and Desktop parity
+are now implemented over the shared contracts.
 
 Add an optional keyboard-first terminal application without replacing the normal CLI.
 
@@ -210,12 +211,13 @@ Candidate scope:
 
 Exit criteria: CLI and TUI results are equivalent for the same operation and state, cancellation leaves the project byte-for-byte unchanged, and packed-runtime, keyboard, accessibility, and snapshot coverage is recorded.
 
-## Implemented agent-workspace foundation — Desktop v0.6 is planned
+## Implemented agent-workspace foundation — Desktop v0.6 presentation complete
 
 Agent Workspace discuss, inspect, plan, review, and apply modes are implemented
-through the CLI/application boundary and released in `0.4.0-beta.1`. The first
-Desktop presentation milestone is planned in v0.6. Workspace daemon coverage
-and product UI remain follow-up work after the read-only project slice.
+through the CLI/application boundary and released in `0.4.0-beta.1`. The v0.6
+Desktop presentation milestone is complete; Workspace daemon coverage and
+product UI remain explicitly scoped follow-up work after the read-only project
+slice.
 
 Build a local Tauri 2 presentation and orchestration layer over the standalone
 daemon and versioned application protocol. The Desktop client does not replace
