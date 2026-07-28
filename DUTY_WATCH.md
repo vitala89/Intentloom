@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **v0.6.0-beta.1 milestone complete & audited** — PR #98 merged into main; PR #99 green on CI; `v0.6.0-beta.1` readiness audit complete (`docs/desktop/V0_6_READINESS_AUDIT.md`)
+Status: **v1.0 Phase 1 compatibility contract defined & verified** — ADR-0043 accepted; `tests/v1-compatibility-contract.test.ts` passing; 84 test files 100% green
 
-Active branch: `codex/desktop-v06-stack-adr`
+Active branch: `codex/v1-compatibility-contract`
 
-Current objective: PR #99 is ready for maintainer review and merge into `main`, after which `v0.6.0-beta.1` can be tagged.
+Current objective: prepare PR for Phase 1 of `V1_0_STABLE_COMPATIBILITY_PLAN.md` (`ADR-0043` + compatibility test suite).
 
-Next first action: merge PR #99 upon maintainer approval and tag the `v0.6.0-beta.1` release.
+Next first action: open PR for maintainer review on `codex/v1-compatibility-contract`.
 
 ## Watch rules
 
@@ -41,6 +41,19 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-28, ADR-0043: v1.0 Stable Compatibility Contract & Deprecation Policy
+
+- **Status:** complete (validated)
+- **Agent/tool:** Antigravity — Architecture decision record, compatibility contract test suite
+- **Branch:** `codex/v1-compatibility-contract`
+- **Commits:** local uncommitted changes
+- **Objective:** Implement Phase 1 of `V1_0_STABLE_COMPATIBILITY_PLAN.md`: define and enforce the SemVer 2.0 public contract, wire protocol versioning, deprecation windows, and schema migration rules.
+- **Completed:**
+  - **ADR-0043:** Authored [`docs/decisions/ADR-0043-v1-stable-compatibility-contract-and-deprecation-policy.md`](file:///Users/eugenekasap/WebstormProjects/Intentloom/docs/decisions/ADR-0043-v1-stable-compatibility-contract-and-deprecation-policy.md) establishing SemVer 2.0 public CLI guarantees, `v1` protocol wire envelope standards, a mandatory 2-minor-release deprecation window, Node.js 22 LTS / Node 24 support guarantees, and non-destructive `.aif/` schema migrations.
+  - **Contract Test Suite:** Created [`tests/v1-compatibility-contract.test.ts`](file:///Users/eugenekasap/WebstormProjects/Intentloom/tests/v1-compatibility-contract.test.ts) testing protocol version invariants (`PROTOCOL_VERSION === 1`), `daemonInfo` wire payload compatibility, explicit rejection of invalid protocol versions, and `InteractiveWorkspaceState` schema stability.
+- **Validation:** `pnpm typecheck` passed (0 errors); `pnpm format:check` passed; `git diff --check` passed; `pnpm test` passed — 84 files, 746 tests passed, 3 skipped.
+- **Evidence:** `docs/decisions/ADR-0043-v1-stable-compatibility-contract-and-deprecation-policy.md`, `tests/v1-compatibility-contract.test.ts`, `DUTY_WATCH.md`.
 
 ### 2026-07-28, v0.6.0-beta.1 Milestone Readiness Audit
 
