@@ -50,8 +50,8 @@ entry directly below this section.
 - **Commits:** local uncommitted changes
 - **Objective:** Implement Phase 3 of `V1_0_STABLE_COMPATIBILITY_PLAN.md`: verify read-only typed result equivalence across CLI, TUI, MCP, and Desktop application surfaces.
 - **Completed:**
-  - **Equivalence Document:** Authored [`docs/compatibility/CLIENT_SURFACE_EQUIVALENCE.md`](file:///Users/eugenekasap/WebstormProjects/Intentloom/docs/compatibility/CLIENT_SURFACE_EQUIVALENCE.md) establishing shared `@intentloom/application` operations as single source of truth across CLI (`intentloom`), TUI (`intentloom ui`), MCP stdio server (`@intentloom/mcp`), and Desktop client shell (`apps/desktop`).
-  - **Equivalence Test Suite:** Created [`tests/v1-client-surface-equivalence.test.ts`](file:///Users/eugenekasap/WebstormProjects/Intentloom/tests/v1-client-surface-equivalence.test.ts) testing typed payload equivalence between direct application operations and `InteractiveWorkspaceState`, as well as 100% zero-mutation guarantees across multi-client inspection flows.
+  - **Equivalence Document:** Authored [`docs/compatibility/CLIENT_SURFACE_EQUIVALENCE.md`](docs/compatibility/CLIENT_SURFACE_EQUIVALENCE.md) establishing shared `@intentloom/application` operations as single source of truth across CLI (`intentloom`), TUI (`intentloom ui`), MCP stdio server (`@intentloom/mcp`), and Desktop client shell (`apps/desktop`).
+  - **Equivalence Test Suite:** Created [`tests/v1-client-surface-equivalence.test.ts`](tests/v1-client-surface-equivalence.test.ts) testing typed payload equivalence between direct application operations and `InteractiveWorkspaceState`, as well as 100% zero-mutation guarantees across multi-client inspection flows.
 - **Validation:** `pnpm typecheck` passed (0 errors); `pnpm format:check` passed; `git diff --check` passed; `pnpm test` passed — 86 files, 751 tests passed, 3 skipped.
 - **Evidence:** `docs/compatibility/CLIENT_SURFACE_EQUIVALENCE.md`, `tests/v1-client-surface-equivalence.test.ts`, `DUTY_WATCH.md`.
 
@@ -63,8 +63,8 @@ entry directly below this section.
 - **Commits:** local uncommitted changes
 - **Objective:** Implement Phase 2 of `V1_0_STABLE_COMPATIBILITY_PLAN.md`: document migration path and verify upgrade fixtures, capability discovery, structured errors, and zero-mutation guarantees.
 - **Completed:**
-  - **Migration Guide:** Authored [`docs/releases/MIGRATION_GUIDE_V1.md`](file:///Users/eugenekasap/WebstormProjects/Intentloom/docs/releases/MIGRATION_GUIDE_V1.md) establishing non-destructive automatic `.aif/` schema migration, wire protocol `v1` capability discovery, typed RPC error codes (`-32600` through `-32602`), and CLI compatibility.
-  - **Upgrade Test Suite:** Created [`tests/v1-upgrade-migration-path.test.ts`](file:///Users/eugenekasap/WebstormProjects/Intentloom/tests/v1-upgrade-migration-path.test.ts) verifying automatic migration of legacy `v0.5`/`v0.6` project configs, byte-for-byte source file preservation (`AGENTS.md`), structured RPC error parsing, and protocol limit negotiation.
+  - **Migration Guide:** Authored [`docs/releases/MIGRATION_GUIDE_V1.md`](docs/releases/MIGRATION_GUIDE_V1.md) establishing non-destructive automatic `.aif/` schema migration, wire protocol `v1` capability discovery, typed RPC error codes (`-32600` through `-32602`), and CLI compatibility.
+  - **Upgrade Test Suite:** Created [`tests/v1-upgrade-migration-path.test.ts`](tests/v1-upgrade-migration-path.test.ts) verifying automatic migration of legacy `v0.5`/`v0.6` project configs, byte-for-byte source file preservation (`AGENTS.md`), structured RPC error parsing, and protocol limit negotiation.
 - **Validation:** `pnpm typecheck` passed (0 errors); `pnpm format:check` passed; `git diff --check` passed; `pnpm test` passed — 85 files, 749 tests passed, 3 skipped.
 - **Evidence:** `docs/releases/MIGRATION_GUIDE_V1.md`, `tests/v1-upgrade-migration-path.test.ts`, `DUTY_WATCH.md`.
 
@@ -76,8 +76,8 @@ entry directly below this section.
 - **Commits:** local uncommitted changes
 - **Objective:** Implement Phase 1 of `V1_0_STABLE_COMPATIBILITY_PLAN.md`: define and enforce the SemVer 2.0 public contract, wire protocol versioning, deprecation windows, and schema migration rules.
 - **Completed:**
-  - **ADR-0043:** Authored [`docs/decisions/ADR-0043-v1-stable-compatibility-contract-and-deprecation-policy.md`](file:///Users/eugenekasap/WebstormProjects/Intentloom/docs/decisions/ADR-0043-v1-stable-compatibility-contract-and-deprecation-policy.md) establishing SemVer 2.0 public CLI guarantees, `v1` protocol wire envelope standards, a mandatory 2-minor-release deprecation window, Node.js 22 LTS / Node 24 support guarantees, and non-destructive `.aif/` schema migrations.
-  - **Contract Test Suite:** Created [`tests/v1-compatibility-contract.test.ts`](file:///Users/eugenekasap/WebstormProjects/Intentloom/tests/v1-compatibility-contract.test.ts) testing protocol version invariants (`PROTOCOL_VERSION === 1`), `daemonInfo` wire payload compatibility, explicit rejection of invalid protocol versions, and `InteractiveWorkspaceState` schema stability.
+  - **ADR-0043:** Authored [`docs/decisions/ADR-0043-v1-stable-compatibility-contract-and-deprecation-policy.md`](docs/decisions/ADR-0043-v1-stable-compatibility-contract-and-deprecation-policy.md) establishing SemVer 2.0 public CLI guarantees, `v1` protocol wire envelope standards, a mandatory 2-minor-release deprecation window, Node.js 22 LTS / Node 24 support guarantees, and non-destructive `.aif/` schema migrations.
+  - **Contract Test Suite:** Created [`tests/v1-compatibility-contract.test.ts`](tests/v1-compatibility-contract.test.ts) testing protocol version invariants (`PROTOCOL_VERSION === 1`), `daemonInfo` wire payload compatibility, explicit rejection of invalid protocol versions, and `InteractiveWorkspaceState` schema stability.
 - **Validation:** `pnpm typecheck` passed (0 errors); `pnpm format:check` passed; `git diff --check` passed; `pnpm test` passed — 84 files, 746 tests passed, 3 skipped.
 - **Evidence:** `docs/decisions/ADR-0043-v1-stable-compatibility-contract-and-deprecation-policy.md`, `tests/v1-compatibility-contract.test.ts`, `DUTY_WATCH.md`.
 
@@ -90,7 +90,7 @@ entry directly below this section.
 - **Pull request:** https://github.com/vitala89/Intentloom/pull/99 (all checks green)
 - **Objective:** Perform and record the `v0.6.0-beta.1` readiness audit across all 8 phases of `DESKTOP_V0_6_IMPLEMENTATION_PLAN.md`.
 - **Completed:**
-  - **Readiness Audit Document:** Authored [`docs/desktop/V0_6_READINESS_AUDIT.md`](file:///Users/eugenekasap/WebstormProjects/Intentloom/docs/desktop/V0_6_READINESS_AUDIT.md) auditing all 11 categories: Architecture, Daemon Transport, Sidecar Distribution, Packaging & CI, Read-Only Product Slice, Command Palette, Settings & Diagnostics, Accessibility (a11y), Cancellation & Progress, TUI Parity, and Zero Mutation.
+  - **Readiness Audit Document:** Authored [`docs/desktop/V0_6_READINESS_AUDIT.md`](docs/desktop/V0_6_READINESS_AUDIT.md) auditing all 11 categories: Architecture, Daemon Transport, Sidecar Distribution, Packaging & CI, Read-Only Product Slice, Command Palette, Settings & Diagnostics, Accessibility (a11y), Cancellation & Progress, TUI Parity, and Zero Mutation.
   - **Documentation Updates:** Updated `docs/desktop/README.md` and `PROJECT_STATE.md` to reflect `v0.6.0-beta.1` milestone readiness audit completion.
   - **CI & Release State:** Verified PR #98 merged into `main` and PR #99 100% green on GitHub Actions CI across Windows, Linux, and macOS.
 - **Validation:** `pnpm typecheck` passed; `pnpm format:check` passed; `git diff --check` passed; `pnpm test` passed — 83 files, 742 tests passed, 3 skipped.
