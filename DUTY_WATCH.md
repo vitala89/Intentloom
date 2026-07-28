@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **v1.0 Phase 1–4 merged; Phase 5 stable-release gate active** — `main` is at `6d8bd4f`; the compatibility contract, upgrade path, client-surface equivalence, and security/supply-chain evidence are present and validated
+Status: **v1.0 Phase 1–4 merged; Phase 5 stable-release gate active** — `main` is at `6d8bd4f`; draft PR #105 carries the dependency-review control and its remote checks are in progress
 
 Active branch: `codex/v1-phase5-dependency-review`
 
 Current objective: execute Phase 5 of `V1_0_STABLE_COMPATIBILITY_PLAN.md`: assemble the v1.0 readiness audit and obtain maintainer release approval without implying a tag or publication.
 
-Next first action: run the new Dependency Review workflow on the release PR and retain its green result in the v1.0 readiness evidence.
+Next first action: verify the Dependency Review check on draft PR #105 is green, then record its run identifier in the v1.0 readiness evidence.
 
 ## Watch rules
 
@@ -41,6 +41,24 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-28, Phase 5: dependency review draft PR
+
+- **Status:** partial
+- **Agent/tool:** Codex with GitHub CLI — publish workflow and remote gate verification
+- **Branch:** `codex/v1-phase5-dependency-review`
+- **Commits:** `5ac09cb`
+- **Pull request:** [#105](https://github.com/vitala89/Intentloom/pull/105), draft; release/tag/publication not authorized
+- **Objective:** Publish the Phase 5 dependency-review control and trigger its remote validation.
+- **Completed:** Pushed the branch and opened draft PR #105 against `main`. Compatibility matrix checks and the `Dependency review` check were observed in progress.
+- **Not completed:** Green workflow result, release-candidate verification, support-policy approval, dogfooding acceptance, maintainer release approval, release PR, tag, and publication.
+- **Files or packages changed:** No source changes after `5ac09cb`; PR contains the Phase 5 dependency-review workflow and readiness documentation recorded in the preceding entry.
+- **Validation:** `gh auth status` passed; branch push succeeded; `gh pr view 105` confirmed the draft PR and in-progress checks.
+- **Decisions and assumptions:** The PR is intentionally draft and exists to collect remote dependency-review evidence; it is not the v1.0 release PR.
+- **Risks or compatibility impact:** No runtime behavior changed after the committed control; the stable-release gate remains open until remote evidence and maintainer approval are recorded.
+- **Open issues or blockers:** Checks are still running; no green result is claimed yet.
+- **Next first action:** Recheck PR #105 checks, record the Dependency Review run ID and conclusion in `V1_0_READINESS_AUDIT.md`, and continue the remaining Phase 5 evidence work.
+- **Evidence:** [PR #105](https://github.com/vitala89/Intentloom/pull/105), `.github/workflows/dependency-review.yml`, and `docs/releases/V1_0_READINESS_AUDIT.md`.
 
 ### 2026-07-28, Phase 5: dependency review control
 

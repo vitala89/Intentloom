@@ -102,6 +102,9 @@ before a new release or implementation milestone is declared complete.
   dependency-review workflow run remain open. The equivalent PR dependency
   review control is now defined in `.github/workflows/dependency-review.yml`;
   its release-gate result must be retained before the stable gate can close.
+- Draft PR #105 contains this Phase 5 control and is currently running its
+  remote compatibility and Dependency Review checks; no green result is
+  claimed until GitHub reports completion.
 - ADR-0042 is accepted. The macOS arm64 SEA feasibility run and local Tauri
   `.app`/`.dmg` package smoke passed, including embedded sidecar hash and
   catalog-resource verification. The repository history records the
