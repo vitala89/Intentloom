@@ -16,6 +16,7 @@ import { resolvePackedCliEntry, runPackedCli } from "./helpers/packed-cli.js";
 const repositoryRoot = resolve(".");
 const cli = resolve("packages/cli/dist/intentloom.cjs");
 const windows = process.platform === "win32";
+const structuralValidationTestTimeout = windows ? 15_000 : 5_000;
 const command = (name: string) => (windows ? `${name}.cmd` : name);
 
 function tarEntries(archive: Buffer) {
@@ -210,11 +211,15 @@ describe("built CLI schema validation process cases", () => {
     const outcome = aif(["sync", "--root", root]);
     expect(`${outcome.stdout}${outcome.stderr}`).not.toContain(secret);
   });
-  it("structural validation uses exit code 3", async () => {
-    const root = await project();
-    await writeFile(join(root, ".aif/config.yaml"), "null", "utf8");
-    expect(aif(["sync", "--root", root]).status).toBe(3);
-  });
+  it(
+    "structural validation uses exit code 3",
+    async () => {
+      const root = await project();
+      await writeFile(join(root, ".aif/config.yaml"), "null", "utf8");
+      expect(aif(["sync", "--root", root]).status).toBe(3);
+    },
+    structuralValidationTestTimeout,
+  );
   it("usage failure remains exit code 2", () => {
     expect(aif(["sync", "--unknown-option"]).status).toBe(2);
   });
