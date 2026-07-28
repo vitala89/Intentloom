@@ -5,16 +5,16 @@ not authorize a tag, npm publication, or release announcement.
 
 Date: 2026-07-29.
 
-Candidate baseline under review: `d191205` (`main` and `origin/main` after PR
-#109 merge). The documentation updates in this branch still require review
+Candidate baseline under review: `ae63b7a` (`main` and `origin/main` after PR
+#110 merge). The documentation updates in this branch still require review
 before a final release commit is selected.
 
 ## Decision summary
 
-The Phase 1–4 implementation evidence is present in `main`. The v1.0 release
-gate remains **open** because support-policy approval, release-candidate
-verification, continuous dependency-audit evidence, final dogfooding/release
-records, and maintainer approval are not yet complete.
+The Phase 1–4 implementation evidence and the release-candidate Compatibility
+matrix are present in `main`. The v1.0 release gate remains **open** because
+support-policy approval, continuous dependency-audit evidence, final
+dogfooding/release records, and maintainer approval are not yet complete.
 
 No v1.0 tag or npm artifact is claimed by this document.
 
@@ -30,17 +30,17 @@ No v1.0 tag or npm artifact is claimed by this document.
 
 ## Stable-release checklist
 
-| Requirement                                                  | Status              | Evidence or remaining action                                                                                                                                                                     |
-| ------------------------------------------------------------ | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Public CLI and package compatibility promise                 | PASS                | [COMPATIBILITY_POLICY.md](COMPATIBILITY_POLICY.md), ADR-0043; workspace libraries remain private                                                                                                 |
-| Supported Node/host/provider matrix                          | PASS with recheck   | [COMPATIBILITY_MATRIX.md](../compatibility/COMPATIBILITY_MATRIX.md); retain exact CI run evidence for the release candidate                                                                      |
-| Deprecation and support policy                               | PENDING             | Deprecation is defined in ADR-0043; [SUPPORT_POLICY_V1.md](SUPPORT_POLICY_V1.md) needs maintainer approval                                                                                       |
-| Upgrade, migration, and rollback path                        | PASS with recheck   | [MIGRATION_GUIDE_V1.md](MIGRATION_GUIDE_V1.md), migration tests, and `.aif/migration-journal.json` contract; clean-install release verification remains                                          |
-| Daemon/MCP/client compatibility and discovery                | PASS                | Protocol/client tests and the typed v1 method contracts                                                                                                                                          |
-| Desktop/TUI read-only equivalence and cancellation           | PASS with recheck   | [CLIENT_SURFACE_EQUIVALENCE.md](../compatibility/CLIENT_SURFACE_EQUIVALENCE.md), Desktop readiness audit, and `tests/interactive-ui.test.ts`                                                     |
-| Threat model, permissions, provenance, and incident response | PENDING             | PR #105 merged with green Dependency Review and closed high alert #1; alert #2 has no safe point update in the current GTK/WebKit graph and requires a coordinated upgrade or approved exception |
-| Dogfooding evidence                                          | PASS with follow-up | Three required scenario records exist under `docs/releases/dogfooding/`; records predate v1.0 and must be explicitly accepted or refreshed for the stable candidate                              |
-| Final readiness audit and maintainer approval                | OPEN                | Approve this audit only after the remaining evidence is attached to one release commit                                                                                                           |
+| Requirement                                                  | Status              | Evidence or remaining action                                                                                                                                                                                                               |
+| ------------------------------------------------------------ | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Public CLI and package compatibility promise                 | PASS                | [COMPATIBILITY_POLICY.md](COMPATIBILITY_POLICY.md), ADR-0043; workspace libraries remain private                                                                                                                                           |
+| Supported Node/host/provider matrix                          | PASS                | [COMPATIBILITY_MATRIX.md](../compatibility/COMPATIBILITY_MATRIX.md); post-merge Compatibility run [30409035485](https://github.com/vitala89/Intentloom/actions/runs/30409035485) passed all six Ubuntu, macOS, and Windows Node 22/24 jobs |
+| Deprecation and support policy                               | PENDING             | Deprecation is defined in ADR-0043; [SUPPORT_POLICY_V1.md](SUPPORT_POLICY_V1.md) needs maintainer approval                                                                                                                                 |
+| Upgrade, migration, and rollback path                        | PASS with recheck   | [MIGRATION_GUIDE_V1.md](MIGRATION_GUIDE_V1.md), migration tests, and `.aif/migration-journal.json` contract; clean-install release verification remains                                                                                    |
+| Daemon/MCP/client compatibility and discovery                | PASS                | Protocol/client tests and the typed v1 method contracts                                                                                                                                                                                    |
+| Desktop/TUI read-only equivalence and cancellation           | PASS with recheck   | [CLIENT_SURFACE_EQUIVALENCE.md](../compatibility/CLIENT_SURFACE_EQUIVALENCE.md), Desktop readiness audit, and `tests/interactive-ui.test.ts`                                                                                               |
+| Threat model, permissions, provenance, and incident response | PENDING             | PR #105 merged with green Dependency Review and closed high alert #1; alert #2 has no safe point update in the current GTK/WebKit graph and requires a coordinated upgrade or approved exception                                           |
+| Dogfooding evidence                                          | PASS with follow-up | Three required scenario records exist under `docs/releases/dogfooding/`; records predate v1.0 and must be explicitly accepted or refreshed for the stable candidate                                                                        |
+| Final readiness audit and maintainer approval                | OPEN                | Approve this audit only after the remaining evidence is attached to one release commit                                                                                                                                                     |
 
 ## Release-state facts
 
@@ -63,8 +63,12 @@ No v1.0 tag or npm artifact is claimed by this document.
   `542633a`; its documentation-only compatibility checks passed and recorded
   the proposed exception path.
 - PR [#109](https://github.com/vitala89/Intentloom/pull/109) merged as
-  `d191205`; its documentation-only compatibility checks passed and the local
-  release-candidate verification below passed.
+  `d191205`; its documentation-only compatibility checks passed and recorded
+  the proposed exception path.
+- PR [#110](https://github.com/vitala89/Intentloom/pull/110) merged as
+  `ae63b7a`; it recorded the release-candidate verification and Windows
+  process-test correction. The post-merge Compatibility run [30409035485](https://github.com/vitala89/Intentloom/actions/runs/30409035485)
+  passed all six jobs on `main`.
 - Dependabot alert [#2](https://github.com/vitala89/Intentloom/security/dependabot/2)
   remains open at medium severity for `glib@0.18.5` in
   `apps/desktop/src-tauri/Cargo.lock`; GitHub reports `0.20.0` as the first
@@ -102,7 +106,9 @@ and remains pending maintainer approval.
 
 ## Release-candidate verification
 
-Verified locally against `d191205` on 2026-07-29:
+Verified locally against `d191205` on 2026-07-29; the resulting candidate is
+merged in `main` as `ae63b7a`. Hosted Compatibility verification for `ae63b7a`
+passed in [run 30409035485](https://github.com/vitala89/Intentloom/actions/runs/30409035485):
 
 | Check                                                  | Result                                                                           |
 | ------------------------------------------------------ | -------------------------------------------------------------------------------- |
@@ -114,6 +120,9 @@ Verified locally against `d191205` on 2026-07-29:
 | `node packages/cli/dist/intentloom.cjs --help`         | PASS                                                                             |
 | `pnpm format:check`                                    | PASS                                                                             |
 | `git diff --check`                                     | PASS                                                                             |
+
+The hosted run completed all six Ubuntu, macOS, and Windows Node 22/24 jobs;
+GitHub emitted only the existing Node.js 20 action deprecation annotations.
 
 The first sandbox attempts were not counted as results: npm DNS resolution was
 blocked during reinstall and Unix-socket tests returned `EPERM`. The install
@@ -128,8 +137,9 @@ evidence does not authorize a tag, npm publication, or release announcement.
    or approve a separate coordinated GTK/WebKit/Tauri-compatible stack
    migration instead.
 3. Local release-candidate install, build, packed CLI smoke, and full validation
-   are recorded above. Still run or retain clean-room installation evidence and
-   complete the explicit-path dogfooding checks for the exact approved commit.
+   are recorded above, and the merged candidate has a green hosted matrix.
+   Still run or retain clean-room installation evidence and complete the
+   explicit-path dogfooding checks for the exact approved commit.
 4. Accept or refresh the existing dogfooding records against the stable
    candidate without including private project data.
 5. Complete the applicable [publish authorization checklist](PUBLISH_AUTHORIZATION_CHECKLIST.md)

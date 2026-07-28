@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **v1.0 Phase 1–4 merged; Phase 5 stable-release gate active** — PR #110 contains the release-candidate verification and Windows compatibility fix, and its Compatibility matrix is green; the fast-uri high alert is closed, and one medium glib alert remains for disposition
+Status: **v1.0 Phase 1–4 merged; Phase 5 stable-release gate active** — PR #110 is merged as `ae63b7a`, and the post-merge Compatibility matrix is green; the fast-uri high alert is closed, and one medium glib alert remains for disposition
 
-Active branch: `codex/v1-phase5-release-candidate`
+Active branch: `codex/v1-phase5-post-merge-reconciliation`
 
 Current objective: execute Phase 5 of `V1_0_STABLE_COMPATIBILITY_PLAN.md`: assemble the v1.0 readiness audit and obtain maintainer release approval without implying a tag or publication.
 
-Next first action: obtain maintainer review and merge approval for PR #110, then accept or refresh dogfooding records and approve the support policy and glib exception.
+Next first action: obtain maintainer review and merge approval for the post-merge state reconciliation, then accept or refresh dogfooding records and approve the support policy and glib exception.
 
 ## Watch rules
 
@@ -41,6 +41,36 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-29, Phase 5: post-merge state reconciliation
+
+- **Status:** partial
+- **Agent/tool:** Codex with GitHub CLI and Git — post-merge release-state verification
+- **Branch:** `codex/v1-phase5-post-merge-reconciliation`
+- **Commits:** pending
+- **Pull request:** pending; release/tag/publication not authorized
+- **Objective:** Reconcile the durable project and release records with PR #110's merge into `main`.
+- **Completed:** Confirmed PR #110 merged as `ae63b7a`; synchronized the working branch from `origin/main`; confirmed Compatibility run `30409035485` passed all six Ubuntu, macOS, and Windows Node 22/24 jobs; and prepared updates to the project state, release state, readiness audit, and this handoff.
+- **Not completed:** The reconciliation changes still require commit, review, and merge. Support-policy approval, dogfooding disposition, glib exception approval, final release approval, tag, and publication remain open.
+- **Files or packages changed:** `PROJECT_STATE.md`, `docs/releases/RELEASE_STATE.md`, `docs/releases/V1_0_READINESS_AUDIT.md`, and `DUTY_WATCH.md`; no runtime, dependency, or release artifact changes.
+- **Validation:** GitHub PR #110 is `MERGED` with merge commit `ae63b7a`; hosted Compatibility run `30409035485` passed all six matrix jobs. `pnpm format:check` and `git diff --check` pass for this reconciliation diff.
+- **Decisions and assumptions:** Treat `ae63b7a` as the current candidate baseline, distinguish local verification on `d191205` from hosted verification on the merged commit, and keep the v1.0 gate open until maintainer decisions are recorded.
+- **Risks or compatibility impact:** Documentation-only state reconciliation; no product behavior or dependency graph changes. GitHub emits existing Node.js 20 action deprecation annotations.
+- **Open issues or blockers:** Maintainer approval is still required for `SUPPORT_POLICY_V1.md`, the scoped glib exception, dogfooding evidence, and the exact release commit; the dependency-review release-gate evidence also remains to be retained.
+- **Next first action:** Commit the reconciliation and open a focused post-merge state PR.
+- **Evidence:** [PR #110](https://github.com/vitala89/Intentloom/pull/110), merge commit [`ae63b7a`](https://github.com/vitala89/Intentloom/commit/ae63b7a), and [Compatibility run 30409035485](https://github.com/vitala89/Intentloom/actions/runs/30409035485).
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [ ] Markdown and lint checks passed when configured
+- [x] Relevant hosted compatibility checks passed
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `PROJECT_STATE.md` updated when applicable
+- [x] `DUTY_WATCH.md` handoff completed
+- [ ] Related roadmap, ADR, changelog, migration, or reference docs updated
+- [x] Failed or unavailable checks recorded
 
 ### 2026-07-29, Compatibility: Windows Node 22 process timeout
 
