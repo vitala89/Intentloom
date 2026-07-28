@@ -17,7 +17,7 @@ Without a vendor-neutral governance model:
 
 ## Decision
 
-Intentloom adopts a Managed Extension Lifecycle based on [EXTENSION_LIFECYCLE.md](file:///Users/eugenekasap/WebstormProjects/Intentloom/docs/concepts/EXTENSION_LIFECYCLE.md):
+Intentloom adopts a Managed Extension Lifecycle based on [EXTENSION_LIFECYCLE.md](../concepts/EXTENSION_LIFECYCLE.md):
 
 1. **Extension Manifest (`urn:aif:schema:extension-manifest:1`)**: Every external extension must declare a manifest defining its category, publisher, license, version bounds, required capabilities (filesystem access, process execution, network endpoints), and entry points.
 2. **Extension Lockfile (`urn:aif:schema:extension-lock:1`)**: Resolved extensions are pinned in `.aif/extension-lock.json` with exact resolved versions, source URLs, artifact digests, and granted capability approvals.
