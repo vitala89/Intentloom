@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **v1.0 Phase 1 compatibility contract defined & verified** — ADR-0043 accepted; `tests/v1-compatibility-contract.test.ts` passing; 84 test files 100% green
+Status: **v1.0 Phase 2 upgrade & protocol path verified** — PR #100 merged into main; `MIGRATION_GUIDE_V1.md` created; `tests/v1-upgrade-migration-path.test.ts` passing; 85 test files 100% green
 
-Active branch: `codex/v1-compatibility-contract`
+Active branch: `codex/v1-upgrade-migration-path`
 
-Current objective: prepare PR for Phase 1 of `V1_0_STABLE_COMPATIBILITY_PLAN.md` (`ADR-0043` + compatibility test suite).
+Current objective: prepare PR for Phase 2 of `V1_0_STABLE_COMPATIBILITY_PLAN.md` (`MIGRATION_GUIDE_V1.md` + upgrade test suite).
 
-Next first action: open PR for maintainer review on `codex/v1-compatibility-contract`.
+Next first action: open PR for maintainer review on `codex/v1-upgrade-migration-path`.
 
 ## Watch rules
 
@@ -41,6 +41,19 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-28, Phase 2: Upgrade & Protocol Path (`v1.0.0` Milestone)
+
+- **Status:** complete (validated)
+- **Agent/tool:** Antigravity — Migration guide, upgrade test suite
+- **Branch:** `codex/v1-upgrade-migration-path`
+- **Commits:** local uncommitted changes
+- **Objective:** Implement Phase 2 of `V1_0_STABLE_COMPATIBILITY_PLAN.md`: document migration path and verify upgrade fixtures, capability discovery, structured errors, and zero-mutation guarantees.
+- **Completed:**
+  - **Migration Guide:** Authored [`docs/releases/MIGRATION_GUIDE_V1.md`](file:///Users/eugenekasap/WebstormProjects/Intentloom/docs/releases/MIGRATION_GUIDE_V1.md) establishing non-destructive automatic `.aif/` schema migration, wire protocol `v1` capability discovery, typed RPC error codes (`-32600` through `-32602`), and CLI compatibility.
+  - **Upgrade Test Suite:** Created [`tests/v1-upgrade-migration-path.test.ts`](file:///Users/eugenekasap/WebstormProjects/Intentloom/tests/v1-upgrade-migration-path.test.ts) verifying automatic migration of legacy `v0.5`/`v0.6` project configs, byte-for-byte source file preservation (`AGENTS.md`), structured RPC error parsing, and protocol limit negotiation.
+- **Validation:** `pnpm typecheck` passed (0 errors); `pnpm format:check` passed; `git diff --check` passed; `pnpm test` passed — 85 files, 749 tests passed, 3 skipped.
+- **Evidence:** `docs/releases/MIGRATION_GUIDE_V1.md`, `tests/v1-upgrade-migration-path.test.ts`, `DUTY_WATCH.md`.
 
 ### 2026-07-28, ADR-0043: v1.0 Stable Compatibility Contract & Deprecation Policy
 
