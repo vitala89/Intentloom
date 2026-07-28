@@ -81,8 +81,8 @@ before a new release or implementation milestone is declared complete.
 ## Current blockers and unknowns
 
 - Any expansion to bottleneck, performance, causal, actor, repository-reading, persisted, remote, or model-assisted analysis requires a new ADR, specification, and threat review.
-- PR #84 through PR #106 are merged in the local history; current `main` is
-  verified at `b8f1e31` and tracks `origin/main`.
+- PR #84 through PR #107 are merged in the local history; current `main` is
+  verified at `88d6f6b` and tracks `origin/main`.
 - npm currently reports `latest=0.1.0-alpha.3` and `next=0.5.0-beta.1`.
 - Workspace packages are synchronized to `0.5.0-beta.1`; Git tag
   `v0.5.0-beta.1` is pushed and npm publication is complete.
@@ -107,12 +107,17 @@ before a new release or implementation milestone is declared complete.
   `fast-uri@3.1.3` is closed after the lockfile remediation to `3.1.4`.
 - PR #106 is merged as `b8f1e31`; its documentation-only Compatibility checks
   passed and reconciled the post-merge Phase 5 state.
+- PR #107 is merged as `88d6f6b`; its documentation-only Compatibility checks
+  passed and recorded the GTK/WebKit compatibility assessment.
 - Dependabot alert #2 remains open at medium severity for `glib@0.18.5` in
   `apps/desktop/src-tauri/Cargo.lock`; GitHub reports `0.20.0` as the first
   patched version. A read-only Cargo tree assessment confirms it is shared by
   the GTK 0.18.x/WebKit 2.0.2 stack through Tauri/Wry; a direct `glib 0.20`
   override would leave the vulnerable 0.18 branch and is not acceptable. A
-  coordinated compatible upgrade or explicit maintainer exception is required
+  read-only crates.io check reports the current published Tauri 2.11.5, Wry
+  0.55.1, and WebKitGTK 2.0.2 versions already in the lockfile, so no
+  compatible upstream point upgrade is currently available. A separate
+  coordinated stack migration or explicit maintainer exception is required
   before the stable release gate can close.
 - ADR-0042 is accepted. The macOS arm64 SEA feasibility run and local Tauri
   `.app`/`.dmg` package smoke passed, including embedded sidecar hash and

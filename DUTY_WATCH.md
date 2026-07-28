@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **v1.0 Phase 1–4 merged; Phase 5 stable-release gate active** — PR #106 is merged as `b8f1e31`, the fast-uri high alert is closed, and one medium glib alert remains for disposition
+Status: **v1.0 Phase 1–4 merged; Phase 5 stable-release gate active** — PR #107 is merged as `88d6f6b`, the fast-uri high alert is closed, and one medium glib alert remains for disposition
 
-Active branch: `codex/v1-phase5-glib-disposition`
+Active branch: `codex/v1-phase5-upstream-disposition`
 
 Current objective: execute Phase 5 of `V1_0_STABLE_COMPATIBILITY_PLAN.md`: assemble the v1.0 readiness audit and obtain maintainer release approval without implying a tag or publication.
 
-Next first action: obtain the maintainer disposition for alert #2: a coordinated GTK/WebKit/Tauri upgrade plan or a documented exception with rationale and review date.
+Next first action: obtain the maintainer disposition for alert #2; current upstream crate versions do not provide a newer Tauri/Wry/WebKitGTK path, so choose a scoped exception or approve a separate Desktop stack migration.
 
 ## Watch rules
 
@@ -41,6 +41,24 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-29, Phase 5: upstream availability check for glib alert
+
+- **Status:** partial
+- **Agent/tool:** Codex with Cargo and GitHub CLI — post-merge upstream availability assessment
+- **Branch:** `codex/v1-phase5-upstream-disposition`
+- **Commits:** pending
+- **Pull request:** pending; release/tag/publication not authorized
+- **Objective:** Determine whether the current Tauri/Wry/WebKitGTK dependency path has an available upstream version that can lift the GTK3 `glib 0.18` constraint.
+- **Completed:** Confirmed PR #107 merged as `88d6f6b` with all Compatibility checks passing; synchronized local `main`; queried crates.io read-only with `cargo search`; and found `tauri 2.11.5`, `wry 0.55.1`, and `webkit2gtk 2.0.2` are still the current published versions, matching the existing lockfile.
+- **Not completed:** No dependency upgrade or security exception was applied. Release-candidate verification, support-policy approval, dogfooding acceptance, and final release approval remain open.
+- **Files or packages changed:** Phase 5 state, readiness, and release records only; no Cargo manifest or lockfile change.
+- **Validation:** `cargo search tauri --limit 3`, `cargo search wry --limit 3`, and `cargo search webkit2gtk --limit 5` completed successfully; all reported versions already used by the Desktop graph.
+- **Decisions and assumptions:** There is no currently available upstream point upgrade that removes the GTK3 `glib 0.18` constraint. A scoped exception is the near-term disposition if the project does not authorize a separate Desktop stack migration.
+- **Risks or compatibility impact:** An exception leaves the medium alert open and must include rationale, scope, owner, review date, and a trigger for re-evaluation; a future migration would require cross-platform Desktop SEA validation.
+- **Open issues or blockers:** Dependabot alert #2 remains open at medium severity; maintainer decision is still required before v1.0 approval.
+- **Next first action:** Record the maintainer decision, then either document the exception or open a focused coordinated-upgrade implementation PR.
+- **Evidence:** [PR #107](https://github.com/vitala89/Intentloom/pull/107), merge commit [`88d6f6b`](https://github.com/vitala89/Intentloom/commit/88d6f6b), and [Dependabot alert #2](https://github.com/vitala89/Intentloom/security/dependabot/2).
 
 ### 2026-07-29, Phase 5: glib alert compatibility assessment
 
