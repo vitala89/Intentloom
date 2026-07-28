@@ -113,7 +113,8 @@ before a new release or implementation milestone is declared complete.
   rescanned.
 - The active Phase 5 branch contains a lockfile-only remediation to
   `fast-uri@3.1.4`; local frozen install, typecheck, and targeted validator,
-  schema, security, and v1 tests pass. Remote validation and merge remain
+  schema, security, and v1 tests pass. Dependency Review run `30403145025`
+  passes; one compatibility matrix job remains queued, and merge remains
   pending.
 - ADR-0042 is accepted. The macOS arm64 SEA feasibility run and local Tauri
   `.app`/`.dmg` package smoke passed, including embedded sidecar hash and

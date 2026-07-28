@@ -47,17 +47,17 @@ entry directly below this section.
 - **Status:** partial
 - **Agent/tool:** Codex — dependency lockfile remediation and validator regression verification
 - **Branch:** `codex/v1-phase5-dependency-review`
-- **Commits:** `c235d8c`
+- **Commits:** `6000154`
 - **Pull request:** [#105](https://github.com/vitala89/Intentloom/pull/105), draft; release/tag/publication not authorized
 - **Objective:** Remediate Dependabot alert #1 without changing application behavior or the direct `ajv` dependency.
 - **Completed:** Updated only `pnpm-lock.yaml` from `fast-uri@3.1.3` to patched `3.1.4` with registry integrity `sha512-8JnbkQ4juDyvYs4mgFGQqg4yCYtFDtUtmp2QIQq11ZZe5CFQ5wcqm1rqDgAh/QdMySuBnPzMUiJUNZG5N/AiQw==`. Frozen install and `pnpm why fast-uri --recursive` confirm the validator chain resolves to `3.1.4`.
-- **Not completed:** Remote PR validation for this commit, default-branch alert closure after merge, release-candidate verification, support-policy approval, dogfooding acceptance, maintainer release approval, release PR, tag, and publication.
+- **Not completed:** One compatibility matrix job remains pending in GitHub Actions; default-branch alert closure after merge, release-candidate verification, support-policy approval, dogfooding acceptance, maintainer release approval, release PR, tag, and publication also remain open.
 - **Files or packages changed:** `pnpm-lock.yaml`; this handoff records the remediation evidence.
-- **Validation:** `pnpm install --frozen-lockfile --ignore-scripts` passed; `pnpm typecheck` passed; validator/schema/security/v1 tests passed — 4 files, 11 tests; `pnpm format:check` and `git diff --check` passed.
+- **Validation:** `pnpm install --frozen-lockfile --ignore-scripts` passed; `pnpm typecheck` passed; validator/schema/security/v1 tests passed — 4 files, 11 tests; `pnpm format:check` and `git diff --check` passed. Dependency Review run `30403145025` passed; all compatibility jobs observed so far passed except one pending `ubuntu-latest / Node 22` job.
 - **Decisions and assumptions:** Keep `ajv@8.20.0` and `packages/validator/package.json` unchanged because the patched transitive version is compatible within the existing range.
 - **Risks or compatibility impact:** Lockfile-only dependency patch; no runtime source or public contract changes. The alert remains visible on `main` until the PR is merged and GitHub rescans the default branch.
-- **Open issues or blockers:** The remediation has not yet been pushed or validated remotely; maintainer approval and the remaining Phase 5 evidence are still required.
-- **Next first action:** Commit and push the lockfile patch, verify PR #105 checks, and confirm the Dependabot alert is cleared after the verified merge.
+- **Open issues or blockers:** One compatibility job is still queued; the high alert remains on `main` until this PR is merged and rescanned. Maintainer approval and the remaining Phase 5 evidence are still required.
+- **Next first action:** Recheck the queued compatibility job, then confirm the Dependabot alert is cleared after the verified merge.
 - **Evidence:** `pnpm-lock.yaml`, `packages/validator/package.json`, Dependabot alert [#1](https://github.com/vitala89/Intentloom/security/dependabot/1), and the local validation commands above.
 
 ### 2026-07-28, Phase 5: dependency review green rerun

@@ -55,6 +55,9 @@ No v1.0 tag or npm artifact is claimed by this document.
   [30401862928](https://github.com/vitala89/Intentloom/actions/runs/30401862928)
   passed after Dependabot alerts were enabled; all PR compatibility matrix
   jobs passed as well.
+- The remediation commit's Dependency Review run
+  [30403145025](https://github.com/vitala89/Intentloom/actions/runs/30403145025)
+  also passed; the remaining compatibility matrix job is still queued.
 - Dependabot alert [#1](https://github.com/vitala89/Intentloom/security/dependabot/1)
   is open at high severity for `fast-uri@3.1.3` in `pnpm-lock.yaml`; GitHub
   reports `3.1.4` as the first patched version. The dependency path is
