@@ -21,13 +21,13 @@ No v1.0 tag or npm artifact is claimed by this document.
 
 ## Phase evidence
 
-| Phase                             | Evidence                                                                                                                                                                        | Assessment                                                                         |
-| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
-| 1 — Stable compatibility contract | [ADR-0043](../decisions/ADR-0043-v1-stable-compatibility-contract-and-deprecation-policy.md), `tests/v1-compatibility-contract.test.ts`                                         | Evidence present; contract approval recorded in ADR                                |
-| 2 — Upgrade and protocol path     | [MIGRATION_GUIDE_V1.md](MIGRATION_GUIDE_V1.md), `tests/v1-upgrade-migration-path.test.ts`                                                                                       | Evidence present; release-candidate clean-install verification remains required    |
-| 3 — Client-surface readiness      | [CLIENT_SURFACE_EQUIVALENCE.md](../compatibility/CLIENT_SURFACE_EQUIVALENCE.md), `tests/v1-client-surface-equivalence.test.ts`                                                  | Evidence present; no domain duplication found in the documented boundary           |
-| 4 — Security and supply chain     | [V1_SECURITY_AND_SUPPLY_CHAIN_AUDIT.md](../security/V1_SECURITY_AND_SUPPLY_CHAIN_AUDIT.md), `tests/v1-security-supply-chain.test.ts`, `.github/workflows/dependency-review.yml` | Control present; green release-gate workflow and provenance checks remain required |
-| 5 — Stable release gate           | This document, [SUPPORT_POLICY_V1.md](SUPPORT_POLICY_V1.md), release and dogfooding records                                                                                     | Open; maintainer approval pending                                                  |
+| Phase                             | Evidence                                                                                                                                                                        | Assessment                                                                                        |
+| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| 1 — Stable compatibility contract | [ADR-0043](../decisions/ADR-0043-v1-stable-compatibility-contract-and-deprecation-policy.md), `tests/v1-compatibility-contract.test.ts`                                         | Evidence present; contract approval recorded in ADR                                               |
+| 2 — Upgrade and protocol path     | [MIGRATION_GUIDE_V1.md](MIGRATION_GUIDE_V1.md), `tests/v1-upgrade-migration-path.test.ts`                                                                                       | Evidence present; release-candidate clean-install verification remains required                   |
+| 3 — Client-surface readiness      | [CLIENT_SURFACE_EQUIVALENCE.md](../compatibility/CLIENT_SURFACE_EQUIVALENCE.md), `tests/v1-client-surface-equivalence.test.ts`                                                  | Evidence present; no domain duplication found in the documented boundary                          |
+| 4 — Security and supply chain     | [V1_SECURITY_AND_SUPPLY_CHAIN_AUDIT.md](../security/V1_SECURITY_AND_SUPPLY_CHAIN_AUDIT.md), `tests/v1-security-supply-chain.test.ts`, `.github/workflows/dependency-review.yml` | Control present; focused PR run `30401862928` is green; release provenance checks remain required |
+| 5 — Stable release gate           | This document, [SUPPORT_POLICY_V1.md](SUPPORT_POLICY_V1.md), release and dogfooding records                                                                                     | Open; maintainer approval pending                                                                 |
 
 ## Stable-release checklist
 
@@ -39,7 +39,7 @@ No v1.0 tag or npm artifact is claimed by this document.
 | Upgrade, migration, and rollback path                        | PASS with recheck   | [MIGRATION_GUIDE_V1.md](MIGRATION_GUIDE_V1.md), migration tests, and `.aif/migration-journal.json` contract; clean-install release verification remains             |
 | Daemon/MCP/client compatibility and discovery                | PASS                | Protocol/client tests and the typed v1 method contracts                                                                                                             |
 | Desktop/TUI read-only equivalence and cancellation           | PASS with recheck   | [CLIENT_SURFACE_EQUIVALENCE.md](../compatibility/CLIENT_SURFACE_EQUIVALENCE.md), Desktop readiness audit, and `tests/interactive-ui.test.ts`                        |
-| Threat model, permissions, provenance, and incident response | PENDING             | Dependency Review control is present; its green workflow result and publication authorization checklist items remain outstanding                                    |
+| Threat model, permissions, provenance, and incident response | PENDING             | Dependency Review run `30401862928` is green on draft PR #105; publication authorization and remaining provenance evidence are outstanding                          |
 | Dogfooding evidence                                          | PASS with follow-up | Three required scenario records exist under `docs/releases/dogfooding/`; records predate v1.0 and must be explicitly accepted or refreshed for the stable candidate |
 | Final readiness audit and maintainer approval                | OPEN                | Approve this audit only after the remaining evidence is attached to one release commit                                                                              |
 
@@ -49,6 +49,12 @@ No v1.0 tag or npm artifact is claimed by this document.
 - The published prerelease is `intentloom@0.5.0-beta.1` under npm `next`.
 - `v1.0.0` has not been tagged or published.
 - Current release-state details are maintained in [RELEASE_STATE.md](RELEASE_STATE.md).
+
+- Draft PR [#105](https://github.com/vitala89/Intentloom/pull/105) provides the
+  focused dependency-review evidence. Run
+  [30401862928](https://github.com/vitala89/Intentloom/actions/runs/30401862928)
+  passed after Dependabot alerts were enabled; all PR compatibility matrix
+  jobs passed as well.
 
 ## Required actions before approval
 

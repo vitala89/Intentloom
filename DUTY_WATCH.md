@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **v1.0 Phase 1–4 merged; Phase 5 stable-release gate active** — `main` is at `6d8bd4f`; draft PR #105 carries the dependency-review control, but the remote gate is blocked by a disabled repository Dependency Graph
+Status: **v1.0 Phase 1–4 merged; Phase 5 stable-release gate active** — `main` is at `6d8bd4f`; draft PR #105 has a green Dependency Review run and compatibility matrix
 
 Active branch: `codex/v1-phase5-dependency-review`
 
 Current objective: execute Phase 5 of `V1_0_STABLE_COMPATIBILITY_PLAN.md`: assemble the v1.0 readiness audit and obtain maintainer release approval without implying a tag or publication.
 
-Next first action: enable the repository Dependency Graph, rerun PR #105 checks, and record the Dependency Review result in the v1.0 readiness evidence.
+Next first action: retain Dependency Review run `30401862928` in the readiness evidence, then execute the remaining release-candidate and approval gates.
 
 ## Watch rules
 
@@ -41,6 +41,24 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-28, Phase 5: dependency review green rerun
+
+- **Status:** partial
+- **Agent/tool:** Codex with GitHub CLI — security setting recovery and CI verification
+- **Branch:** `codex/v1-phase5-dependency-review`
+- **Commits:** `4f2a5f2`
+- **Pull request:** [#105](https://github.com/vitala89/Intentloom/pull/105), draft; release/tag/publication not authorized
+- **Objective:** Restore the Dependency Review prerequisite and obtain a truthful remote gate result.
+- **Completed:** Enabled Dependabot alerts, which made the repository Dependency Review API available; reran the failed job; Dependency Review passed in run `30401862928`. All compatibility matrix jobs on PR #105 are also passing.
+- **Not completed:** Support-policy approval, release-candidate verification, dogfooding acceptance, maintainer release approval, release PR, tag, and publication.
+- **Files or packages changed:** `docs/releases/V1_0_READINESS_AUDIT.md`, `PROJECT_STATE.md`, and `DUTY_WATCH.md` receive evidence updates; no application or workflow source change was required.
+- **Validation:** `gh api` Dependency Review compare returned HTTP 200 after the setting change; `gh run watch 30401862928 --exit-status` passed; `gh pr checks 105` reported all checks passed.
+- **Decisions and assumptions:** Dependabot alerts were enabled as the supported repository control that generated the dependency graph required by Dependency Review; secret scanning and code scanning remain unchanged.
+- **Risks or compatibility impact:** The security control is read-only for repository dependency analysis; the stable release remains unapproved and untagged.
+- **Open issues or blockers:** The green run is evidence for the focused draft PR, while the release candidate still needs the remaining Phase 5 evidence and maintainer approval.
+- **Next first action:** Record the green run in `V1_0_READINESS_AUDIT.md`, run release-candidate verification, and obtain support-policy and maintainer approval.
+- **Evidence:** [green Dependency Review job](https://github.com/vitala89/Intentloom/actions/runs/30401862928/job/90419508003), [PR #105](https://github.com/vitala89/Intentloom/pull/105), and the Dependency Review API response.
 
 ### 2026-07-28, Phase 5: dependency review draft PR
 
