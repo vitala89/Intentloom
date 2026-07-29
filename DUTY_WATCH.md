@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **v1.0 Phase 1–4 merged; Phase 5 stable-release gate active** — PR #110 is merged as `ae63b7a`, and the post-merge Compatibility matrix is green; the fast-uri high alert is closed, and one medium glib alert remains for disposition
+Status: **v1.0 Phase 1–4 merged; Phase 5 stable-release gate active** — PR #111 is merged as `c21939e`, and the post-merge Compatibility matrix is green; the fast-uri high alert is closed, and one medium glib alert remains for disposition
 
-Active branch: `codex/v1-phase5-post-merge-reconciliation`
+Active branch: `codex/v1-phase5-dogfooding-evidence`
 
 Current objective: execute Phase 5 of `V1_0_STABLE_COMPATIBILITY_PLAN.md`: assemble the v1.0 readiness audit and obtain maintainer release approval without implying a tag or publication.
 
-Next first action: obtain maintainer review and merge approval for PR #111, then accept or refresh dogfooding records and approve the support policy and glib exception.
+Next first action: obtain maintainer approval for dogfooding acceptance, the support policy, and the scoped glib exception.
 
 ## Watch rules
 
@@ -41,6 +41,36 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-29, Phase 5: post-merge state reconciliation after PR #111
+
+- **Status:** partial
+- **Agent/tool:** Codex with GitHub CLI and Git — post-merge release-state verification
+- **Branch:** `codex/v1-phase5-dogfooding-evidence`
+- **Commits:** `a34ddcc` — `docs: reconcile release state after PR 111`
+- **Pull request:** [PR #112](https://github.com/vitala89/Intentloom/pull/112); release/tag/publication not authorized
+- **Objective:** Reconcile the durable project and release records with PR #111's merge into `main`.
+- **Completed:** Confirmed PR #111 merged as `c21939e`; synchronized the working branch from `origin/main`; confirmed Compatibility run `30409627721` passed all six Ubuntu, macOS, and Windows Node 22/24 jobs; and prepared updates to the project state, release state, readiness audit, and this handoff.
+- **Not completed:** PR #112 still requires review and merge. Maintainer acceptance of dogfooding evidence, support-policy approval, glib exception approval, final release approval, tag, and publication remain open.
+- **Files or packages changed:** `PROJECT_STATE.md`, `docs/releases/RELEASE_STATE.md`, `docs/releases/V1_0_READINESS_AUDIT.md`, and `DUTY_WATCH.md`; no runtime, dependency, or release artifact changes.
+- **Validation:** GitHub PR #111 is `MERGED` with merge commit `c21939e`; hosted Compatibility run `30409627721` passed all six matrix jobs. `pnpm format:check` and `git diff --check` pass for this reconciliation diff.
+- **Decisions and assumptions:** Treat `c21939e` as the current candidate baseline, distinguish local verification on `d191205` from hosted verification on the merged commit, and keep the v1.0 gate open until maintainer decisions are recorded.
+- **Risks or compatibility impact:** Documentation-only state reconciliation; no product behavior or dependency graph changes. GitHub emits existing Node.js 20 action deprecation annotations.
+- **Open issues or blockers:** The remaining gates require maintainer or real-project evidence: explicit acceptance or refresh of dogfooding records, support-policy approval, glib exception approval, dependency-review evidence retention, and final release approval.
+- **Next first action:** Obtain maintainer review and merge approval for PR #112.
+- **Evidence:** [PR #111](https://github.com/vitala89/Intentloom/pull/111), merge commit [`c21939e`](https://github.com/vitala89/Intentloom/commit/c21939e), and [Compatibility run 30409627721](https://github.com/vitala89/Intentloom/actions/runs/30409627721).
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [ ] Markdown and lint checks passed when configured
+- [x] Relevant hosted compatibility checks passed
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `PROJECT_STATE.md` updated when applicable
+- [x] `DUTY_WATCH.md` handoff completed
+- [ ] Related roadmap, ADR, changelog, migration, or reference docs updated
+- [x] Failed or unavailable checks recorded
 
 ### 2026-07-29, Phase 5: post-merge state reconciliation
 
