@@ -6,7 +6,7 @@ Historical release audits and roadmap sections retain their original scope, but
 this document is the source of truth for the current status.
 
 Snapshot: 2026-07-29
-Main commit: `c20c245` (PR #117 merged)
+Main commit: `ec869e1` (PR #118 merged)
 Release commit: `a0e0b13` (tagged `v0.5.0-beta.1`)
 Workspace version: `0.5.0-beta.1`
 Git tag: `v0.5.0-beta.1` (pushed)
@@ -49,7 +49,7 @@ listed in the last table row. `latest` intentionally remains the historical
   reports `latest=0.1.0-alpha.3` and `next=0.5.0-beta.1`; published tarball
   shasum is `58b2e27eb66789f57c1e91cec46aea710a6fc241`.
 - GitHub release: [`v0.4.0-beta.1`](https://github.com/vitala89/Intentloom/releases/tag/v0.4.0-beta.1).
-- Current `main`: [PR #112](https://github.com/vitala89/Intentloom/pull/112),
+- Historical release-state baseline: [PR #112](https://github.com/vitala89/Intentloom/pull/112),
   merged as `5d1af7c`; it completes the release-state reconciliation after PR
   #111. The post-merge [Compatibility run](https://github.com/vitala89/Intentloom/actions/runs/30410395631)
   passed all six Ubuntu, macOS, and Windows Node 22/24 jobs. The preceding
@@ -82,6 +82,11 @@ listed in the last table row. `latest` intentionally remains the historical
   all six Ubuntu, macOS, and Windows Node 22/24 jobs. The test timeout is not
   runtime, package, or dependency behavior, and no v1.0 release authorization
   follows from the green matrix.
+- PR [#118](https://github.com/vitala89/Intentloom/pull/118) is merged as
+  `ec869e1`; it carries the final documentation-only reconciliation of the
+  post-merge candidate state. The post-merge [Compatibility run](https://github.com/vitala89/Intentloom/actions/runs/30458387847)
+  passed all six Ubuntu, macOS, and Windows Node 22/24 jobs. No runtime,
+  package, or dependency behavior changed.
 - Supplemental exact-candidate clean-room, explicit-path, and three-scenario
   records are retained under
   [`docs/releases/dogfooding/`](dogfooding/2026-07-29-v1-candidate-clean-room-explicit-path.md);
