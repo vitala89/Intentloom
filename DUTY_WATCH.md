@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **v1.0 Phase 1–4 merged; Phase 5 stable-release gate active** — PR #116 is merged as `46a278c`, and post-merge Compatibility run `30451241803` is green; the fast-uri high alert is closed, and one medium glib alert remains for disposition
+Status: **v1.0 Phase 1–4 merged; Phase 5 stable-release gate active** — PR #116 is merged as `46a278c`, PR #117 is open with green Compatibility run `30452322506`, and one medium glib alert remains for disposition
 
 Active branch: `codex/v1-phase5-post-merge-dogfooding-state`
 
 Current objective: execute Phase 5 of `V1_0_STABLE_COMPATIBILITY_PLAN.md`: assemble the v1.0 readiness audit and obtain maintainer release approval without implying a tag or publication.
 
-Next first action: review the supplemental exact-candidate evidence and record maintainer decisions for support policy, the glib exception, real-project dogfooding acceptance, and the exact release commit.
+Next first action: obtain review/merge disposition for PR #117, then record maintainer decisions for support policy, the glib exception, real-project dogfooding acceptance, and the exact release commit.
 
 ## Watch rules
 
@@ -41,6 +41,32 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-29, Phase 5: documentation PR #117 CI verification
+
+- **Status:** partial
+- **Agent/tool:** Codex with GitHub CLI and repository release records
+- **Branch:** `codex/v1-phase5-post-merge-dogfooding-state`
+- **Commit:** `7e61958` — `docs: record v1 candidate release gate evidence`
+- **Pull request:** draft [PR #117](https://github.com/vitala89/Intentloom/pull/117), open; release/tag/publication not authorized
+- **Completed:** Pushed the validated documentation packet and opened PR #117 against `main`. Pull-request Compatibility run [30452322506](https://github.com/vitala89/Intentloom/actions/runs/30452322506) passed all six Ubuntu, macOS, and Windows Node 22/24 jobs. The push-triggered run `30452291739` was also observed as in progress; the PR-triggered green run is the retained review evidence.
+- **Not completed:** PR #117 is not merged. Maintainer support-policy approval, glib exception or coordinated migration decision, historical real-project dogfooding acceptance, and final release approval remain open.
+- **Validation:** PR #117 run `30452322506` passed typecheck, lint, format, build, and test on all six matrix jobs; only the known Node.js 20 action deprecation annotations were emitted. Local validation and commit `7e61958` are recorded in the preceding entry.
+- **Decisions and assumptions:** Keep PR #117 draft until the maintainer reviews the supplemental evidence and remaining release decisions. Do not infer approval from green CI.
+- **Risks or compatibility impact:** Documentation-only PR; no runtime or dependency changes. Dependabot alert #2 remains open and visible.
+- **Next first action:** Review PR #117, merge only after maintainer disposition, then update the exact approved release commit and approval records without tagging or publishing.
+- **Evidence:** [PR #117](https://github.com/vitala89/Intentloom/pull/117), [PR #117 Compatibility run 30452322506](https://github.com/vitala89/Intentloom/actions/runs/30452322506), and [candidate release-gate packet](docs/releases/V1_0_RELEASE_GATE_PACKET.md).
+
+#### Duty completion checklist
+
+- [x] Formatter passed for the final diff
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant hosted compatibility checks passed
+- [x] `git diff --check` passed for the final diff
+- [x] Final diff reviewed
+- [x] `PROJECT_STATE.md` updated when applicable
+- [x] `DUTY_WATCH.md` handoff updated
+- [x] Related release reference documentation updated
 
 ### 2026-07-29, Phase 5: exact-candidate dogfooding and post-merge gate verification
 
