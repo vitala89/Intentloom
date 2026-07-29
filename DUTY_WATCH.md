@@ -9,7 +9,7 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **v1.0 Phase 1–4 merged; Phase 5 stable-release gate active** — PR #121 is merged as `83cefd3`, its post-merge Compatibility run `30463844868` passed all six jobs, 100 merged branches plus the PR #121 handoff branch were cleaned up, and one medium glib alert remains for disposition
+Status: **v1.0 Phase 1–4 merged; Phase 5 stable-release gate active** — PR #121 is merged as `83cefd3`, its post-merge Compatibility run `30463844868` passed all six jobs, the pre-handoff PR #122 head passed Compatibility run `30464661222`, confirmed dead branches were cleaned up, and one medium glib alert remains for disposition
 
 Active branch: `codex/v1-phase5-post-merge-pr121-state`
 
@@ -41,6 +41,31 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-29, Phase 5: PR #122 final CI and branch inventory cleanup
+
+- **Status:** complete for this watch; the stable-release gate remains open
+- **Agent/tool:** Codex with GitHub CLI, Git, GitHub Actions, and release records
+- **Branch:** `codex/v1-phase5-post-merge-pr121-state`
+- **Base:** `main` / `origin/main` at `83cefd3`; PR #121 merge commit
+- **Pull request:** draft PR [#122](https://github.com/vitala89/Intentloom/pull/122) was open at pre-handoff head `24552d3`; its latest pre-handoff push Compatibility run [30464661222](https://github.com/vitala89/Intentloom/actions/runs/30464661222) passed all six Ubuntu, macOS, and Windows Node 22/24 jobs, and the PR status rollup reported 12 successful Compatibility checks across the push and pull-request workflows. The handoff commit itself will create a new hosted run; no tag, npm publication, or v1.0 release authorization
+- **Completed:** Rechecked the current PR head and completed the hosted Compatibility run. The prior 100 merged-PR branches and the PR #121 handoff branch had already been removed. This watch additionally deleted 10 local stale branches whose GitHub upstreams were gone and whose changes were patch-equivalent to `main` after squash merges: `codex/alpha-gate-evidence`, `codex/beta-1-release-preparation`, `codex/npm-dist-tag-auth-blocker`, `codex/npm-dist-tag-policy`, `codex/platform-foundation-readiness-audit`, `codex/public-readiness-blockers-main`, `codex/windows-packed-test-timeout`, `docs/comprehensive-readme`, `fix/windows-adoption-path-test`, and `release/0.1.0-alpha.3`. No project files were deleted.
+- **Remote branch cleanup:** Deleted GitHub branches `chore/v0.1-release-readiness` and `test/adapters-cross-platform-matrix` after confirming both were fully merged into `main` and no open PR referenced them. Retained `codex/public-readiness-blockers`, `security/intentloomd-lifecycle-design`, and PR #122. Retained local `codex/platform-foundation-phase5`, `codex/public-repository-readiness`, `docs/project-connection-mcp-roadmap`, and `codex/v1-phase5-release-gate-packet` because their tips contain residual commits not proven equivalent to `main`; their remote upstreams are already gone.
+- **Validation:** `gh run view 30464661222` reported completed/success for all six jobs; `gh pr view 122` reported 12 successful Compatibility checks; `git branch -r --merged main` identified only the two deleted remote branches; `git branch -vv` confirmed the retained non-merged branches; `pnpm format:check` and `git diff --check` passed for this documentation update.
+- **Not completed:** Support-policy approval, glib alert #2 disposition or coordinated migration, acceptance or authorized refresh of real-project dogfooding, clean-room/explicit-path evidence sufficiency decision, maintainer merge disposition for PR #122, and final maintainer release approval remain open.
+- **Decisions and assumptions:** A missing remote upstream plus patch-equivalence to `main` is sufficient for the listed local stale-branch cleanup; residual local commits were preserved. A green PR matrix does not imply release approval. Do not create a tag or publish without separate explicit authorization.
+- **Next first action:** Commit/push this handoff, then obtain maintainer merge disposition for PR #122 and record the remaining Phase 5 decisions.
+- **Evidence:** [PR #122](https://github.com/vitala89/Intentloom/pull/122), [latest Compatibility run 30464661222](https://github.com/vitala89/Intentloom/actions/runs/30464661222), [main at 83cefd3](https://github.com/vitala89/Intentloom/commit/83cefd3), and the verified local/remote branch inventories.
+
+#### Duty completion checklist
+
+- [x] Current PR head and hosted checks verified
+- [x] Dead local branches classified and cleaned
+- [x] Fully merged remote branches classified and cleaned
+- [x] Formatter passed for the final diff
+- [x] `git diff --check` passed for the final diff
+- [x] Final diff reviewed
+- [ ] `DUTY_WATCH.md` handoff committed and pushed
 
 ### 2026-07-29, Phase 5: PR #121 merge and post-merge candidate verification
 
