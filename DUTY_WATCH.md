@@ -9,7 +9,7 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **v1.0 Phase 1–4 merged; Phase 5 stable-release gate active** — PR #130 is merged as `3257bdf`, its post-merge Compatibility run `30498583852` passed all six jobs, confirmed merged/stale post-merge branches were cleaned up locally and on GitHub, and one medium glib alert remains for disposition; security-baseline PR #131 is open from head `70edf83`, whose Compatibility run `30500685144` passed all six jobs, pending maintainer merge and first CodeQL run
+Status: **v1.0 Phase 1–4 merged; Phase 5 stable-release gate active** — PR #130 is merged as `3257bdf`, its post-merge Compatibility run `30498583852` passed all six jobs, confirmed merged/stale post-merge branches were cleaned up locally and on GitHub, and one medium glib alert remains for disposition; security-baseline PR #131 is open from head `4a78707`, with CodeQL and both Compatibility runs green, pending maintainer merge and post-merge CodeQL retention
 
 Active branch: `codex/security-dependabot-codeql-baseline`
 
@@ -41,6 +41,29 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-30, Phase 5: PR #131 security checks verified
+
+- **Status:** complete for this watch; PR #131 is review-ready and the stable-release gate remains open
+- **Agent/tool:** Codex with GitHub CLI, GitHub Actions, Git, and security workflow guidance
+- **Branch:** `codex/security-dependabot-codeql-baseline`
+- **Pull request:** PR [#131](https://github.com/vitala89/Intentloom/pull/131) is open against `main` at head `4a78707`.
+- **Completed:** Verified the newly added CodeQL workflow on the pull request. The JavaScript/TypeScript and GitHub Actions analyses both passed. The PR and push Compatibility matrices also passed all six Ubuntu, macOS, and Windows Node 22/24 jobs.
+- **Validation:** CodeQL run [30500982180](https://github.com/vitala89/Intentloom/actions/runs/30500982180) passed both analysis jobs. PR Compatibility run [30500982171](https://github.com/vitala89/Intentloom/actions/runs/30500982171) and push Compatibility run [30500980339](https://github.com/vitala89/Intentloom/actions/runs/30500980339) each passed all six jobs. No dependency or runtime files changed.
+- **Not completed:** Maintainer merge of PR #131, first post-merge CodeQL result on `main`, explicit Dependabot security-update enablement decision, secret-scanning decision, glib alert #2 disposition, support-policy approval, real-project dogfooding acceptance, clean-room/explicit-path evidence sufficiency, and final release approval remain open.
+- **Decisions and assumptions:** Treat PR #131 as ready for maintainer review; the green PR CodeQL run is evidence for the branch, not yet post-merge release evidence. Do not merge, enable external security settings, dismiss alert #2, tag, publish, or announce a release without explicit authorization.
+- **Next first action:** Maintainer reviews and merges PR #131; then verify the first CodeQL run on the resulting `main` commit and record the post-merge Compatibility run before continuing the remaining Phase 5 gates.
+- **Evidence:** [PR #131](https://github.com/vitala89/Intentloom/pull/131), [CodeQL run 30500982180](https://github.com/vitala89/Intentloom/actions/runs/30500982180), [PR Compatibility run 30500982171](https://github.com/vitala89/Intentloom/actions/runs/30500982171), and [push Compatibility run 30500980339](https://github.com/vitala89/Intentloom/actions/runs/30500980339).
+
+#### Duty completion checklist
+
+- [x] PR #131 opened and body verified
+- [x] CodeQL JavaScript/TypeScript analysis passed
+- [x] CodeQL Actions analysis passed
+- [x] PR Compatibility matrix passed 6/6
+- [x] Push Compatibility matrix passed 6/6
+- [ ] PR #131 merged
+- [ ] Post-merge CodeQL and Compatibility results retained
 
 ### 2026-07-30, Phase 5: security baseline review PR
 
