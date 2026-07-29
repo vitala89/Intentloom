@@ -9,7 +9,7 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **v1.0 Phase 1–4 merged; Phase 5 stable-release gate active** — PR #116 is merged as `46a278c`, PR #117 is open with green Compatibility run `30452322506`, and one medium glib alert remains for disposition
+Status: **v1.0 Phase 1–4 merged; Phase 5 stable-release gate active** — PR #116 is merged as `46a278c`, PR #117 is open with green Compatibility run `30453080260`, and one medium glib alert remains for disposition
 
 Active branch: `codex/v1-phase5-post-merge-dogfooding-state`
 
@@ -41,6 +41,32 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-29, Phase 5: Windows timeout remediation and green PR #117 matrix
+
+- **Status:** partial
+- **Agent/tool:** Codex with GitHub Actions logs, local Vitest, and repository release records
+- **Branch:** `codex/v1-phase5-post-merge-dogfooding-state`
+- **Commit:** `c2a3c9d` — `test: extend packed doctor timeout on Windows`
+- **Pull request:** draft [PR #117](https://github.com/vitala89/Intentloom/pull/117), open; release/tag/publication not authorized
+- **Completed:** Extended the packed all-adapter doctor test timeout from the default 5 seconds to 20 seconds, matching existing Windows stability allowances for packed sync/inspect tests. The updated PR Compatibility run [30453080260](https://github.com/vitala89/Intentloom/actions/runs/30453080260) passed all six Ubuntu, macOS, and Windows Node 22/24 jobs.
+- **Validation:** Local full `pnpm test` passed 87 files, 753 tests, 3 skipped; targeted packed-process tests passed 13 with one skip; `pnpm format:check`, `pnpm lint`, `pnpm build`, and `git diff --check` passed. Hosted run `30453080260` passed typecheck, lint, format, build, and test on all six jobs; only Node.js 20 action deprecation annotations remain.
+- **Not completed:** PR #117 is not merged. Maintainer support-policy approval, glib exception or coordinated migration decision, historical real-project dogfooding acceptance, and final release approval remain open.
+- **Decisions and assumptions:** Treat the timeout as a bounded Windows test-harness stabilization, not a product behavior change. Keep PR #117 draft and do not infer release approval from green CI.
+- **Risks or compatibility impact:** One test-only timeout change; no runtime, package, or dependency behavior changed. Dependabot alert #2 remains open and visible.
+- **Next first action:** Review and merge PR #117 after maintainer disposition, then record the support-policy, glib, dogfooding, and exact release-commit decisions without tagging or publishing.
+- **Evidence:** [PR #117](https://github.com/vitala89/Intentloom/pull/117), [green Compatibility run 30453080260](https://github.com/vitala89/Intentloom/actions/runs/30453080260), [previous failed run 30452604175](https://github.com/vitala89/Intentloom/actions/runs/30452604175), and [timeout precedent ecb7100](https://github.com/vitala89/Intentloom/commit/ecb7100).
+
+#### Duty completion checklist
+
+- [x] Formatter passed for the final diff
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant hosted compatibility checks passed
+- [x] `git diff --check` passed for the final diff
+- [x] Final diff reviewed
+- [ ] `PROJECT_STATE.md` updated when applicable
+- [x] `DUTY_WATCH.md` handoff updated
+- [x] Related release reference documentation updated
 
 ### 2026-07-29, Phase 5: Windows Node 22 packed-doctor timeout follow-up
 
