@@ -47,8 +47,8 @@ entry directly below this section.
 - **Status:** partial
 - **Agent/tool:** Codex with GitHub CLI and repository release records
 - **Branch:** `codex/v1-phase5-release-gate-packet`
-- **Commits:** pending
-- **Pull request:** pending; release/tag/publication not authorized
+- **Commits:** `64abf40` — `docs: prepare v1 release gate packet`
+- **Pull request:** [PR #114](https://github.com/vitala89/Intentloom/pull/114); release/tag/publication not authorized
 - **Objective:** Prepare one reviewable release-gate packet on the current merged `main` without converting pending evidence into approval.
 - **Completed:** Confirmed PR #113 merged as `a0443b5`; confirmed post-merge Compatibility run `30411096968` passed all six Ubuntu, macOS, and Windows Node 22/24 jobs; retained Dependency Review run `30403512016`; and recorded the remaining support-policy, dogfooding, glib-exception, clean-room, and final-approval decisions in `docs/releases/V1_0_RELEASE_GATE_PACKET.md`.
 - **Not completed:** No maintainer decisions, release tag, npm publication, or release announcement. Dependabot alert #2 remains open at medium severity.
