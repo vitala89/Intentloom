@@ -50,11 +50,11 @@ entry directly below this section.
 - **Base:** `main` / `origin/main` at `c47eb0f`, merge commit for PR #127
 - **Pull request:** PR [#127](https://github.com/vitala89/Intentloom/pull/127) is merged as `c47eb0f`; no tag, npm publication, or v1.0 release authorization was inferred
 - **Completed:** Verified the merge, fast-forwarded local `main`, and reconciled `PROJECT_STATE.md`, `RELEASE_STATE.md`, `V1_0_READINESS_AUDIT.md`, and `V1_0_RELEASE_GATE_PACKET.md` to the exact post-merge candidate. PR #127 is documentation-only; no runtime, package, or dependency behavior changed.
-- **Validation:** `gh pr view 127` confirmed `MERGED`; `git pull --ff-only origin main` left local `main` aligned with `origin/main`; post-merge Compatibility run [30492745164](https://github.com/vitala89/Intentloom/actions/runs/30492745164) passed all six Ubuntu, macOS, and Windows Node 22/24 jobs, with only the known Node.js 20 action deprecation annotations. Local `pnpm format:check` and `git diff --check` passed for this reconciliation.
+- **Validation:** `gh pr view 127` confirmed `MERGED`; `git pull --ff-only origin main` left local `main` aligned with `origin/main`; post-merge Compatibility run [30492745164](https://github.com/vitala89/Intentloom/actions/runs/30492745164) passed all six Ubuntu, macOS, and Windows Node 22/24 jobs, with only the known Node.js 20 action deprecation annotations. Local `pnpm format:check` and `git diff --check` passed for this reconciliation. Draft PR [#128](https://github.com/vitala89/Intentloom/pull/128) was opened from commit `2468001`; its push run [30493169257](https://github.com/vitala89/Intentloom/actions/runs/30493169257) and PR run [30493190784](https://github.com/vitala89/Intentloom/actions/runs/30493190784) each passed all six jobs.
 - **Not completed:** Support-policy approval, glib alert #2 disposition or coordinated migration, acceptance or authorized refresh of real-project dogfooding, clean-room/explicit-path evidence sufficiency decision for `c47eb0f`, and final maintainer release approval remain open.
 - **Decisions and assumptions:** Treat `c47eb0f` as the exact current stable-gate candidate. Treat PR #127 as documentation-only. Do not infer release approval from the green matrix and do not create a tag or publish without separate explicit authorization.
-- **Next first action:** Obtain and record maintainer decisions for support policy, the glib exception, real-project dogfooding, clean-room evidence, and the exact release commit; no further document-only reconciliation is needed before those decisions are made.
-- **Evidence:** [PR #127](https://github.com/vitala89/Intentloom/pull/127), [merge commit `c47eb0f`](https://github.com/vitala89/Intentloom/commit/c47eb0f), [post-merge Compatibility run 30492745164](https://github.com/vitala89/Intentloom/actions/runs/30492745164), and synchronized release records.
+- **Next first action:** Merge PR #128 after maintainer review, then verify its post-merge Compatibility run. After that, obtain and record maintainer decisions for support policy, the glib exception, real-project dogfooding, clean-room evidence, and the exact release commit; no further document-only reconciliation is needed before those decisions are made.
+- **Evidence:** [PR #127](https://github.com/vitala89/Intentloom/pull/127), [merge commit `c47eb0f`](https://github.com/vitala89/Intentloom/commit/c47eb0f), [post-merge Compatibility run 30492745164](https://github.com/vitala89/Intentloom/actions/runs/30492745164), [PR #128](https://github.com/vitala89/Intentloom/pull/128), and synchronized release records.
 
 #### Duty completion checklist
 
@@ -64,7 +64,7 @@ entry directly below this section.
 - [x] Formatter passed for the final reconciliation
 - [x] `git diff --check` passed for the final reconciliation
 - [x] Final diff reviewed
-- [ ] Handoff committed and pushed
+- [x] Handoff committed and pushed
 
 ### 2026-07-29, Phase 5: PR #126 merge and post-merge candidate verification
 
