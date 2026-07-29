@@ -9,7 +9,7 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **v1.0 Phase 1–4 merged; Phase 5 stable-release gate active** — PR #130 is merged as `3257bdf`, its post-merge Compatibility run `30498583852` passed all six jobs, the confirmed dead feature branch was cleaned up locally and on GitHub, and one medium glib alert remains for disposition
+Status: **v1.0 Phase 1–4 merged; Phase 5 stable-release gate active** — PR #130 is merged as `3257bdf`, its post-merge Compatibility run `30498583852` passed all six jobs, confirmed merged/stale post-merge branches were cleaned up locally and on GitHub, and one medium glib alert remains for disposition
 
 Active branch: `codex/v1-phase5-post-merge-pr130-state`
 
@@ -49,7 +49,7 @@ entry directly below this section.
 - **Branch:** `codex/v1-phase5-post-merge-pr130-state`
 - **Base:** `main` / `origin/main` at `3257bdf`, merge commit for PR #130
 - **Pull request:** PR [#130](https://github.com/vitala89/Intentloom/pull/130) merged with merge commit `3257bdf` from head `9003ae2`; no tag, npm publication, or v1.0 release authorization was inferred
-- **Completed:** Verified the merge, fast-forwarded local `main`, created the next post-merge state branch, and reconciled `PROJECT_STATE.md`, `RELEASE_STATE.md`, `V1_0_READINESS_AUDIT.md`, and `V1_0_RELEASE_GATE_PACKET.md` to the exact post-merge candidate. PR #130 contains documentation reconciliation plus a bounded Windows-aware timeout for an existing CLI schema process test; no product runtime, package, or dependency behavior changed.
+- **Completed:** Verified the merge, fast-forwarded local `main`, created the next post-merge state branch, reconciled `PROJECT_STATE.md`, `RELEASE_STATE.md`, `V1_0_READINESS_AUDIT.md`, and `V1_0_RELEASE_GATE_PACKET.md` to the exact post-merge candidate, and removed confirmed merged/stale post-merge branches for PR #123–#127 locally and on GitHub. PR #130 contains documentation reconciliation plus a bounded Windows-aware timeout for an existing CLI schema process test; no product runtime, package, or dependency behavior changed.
 - **Validation:** `gh pr view 130` confirmed `MERGED`; local `main` fast-forwarded to `3257bdf`; post-merge Compatibility run [30498583852](https://github.com/vitala89/Intentloom/actions/runs/30498583852) passed all six Ubuntu, macOS, and Windows Node 22/24 jobs. The only annotations were the known Node.js 20 action deprecation notices. Local `pnpm format:check` and `git diff --check` passed for this reconciliation.
 - **Not completed:** Support-policy approval, glib alert #2 disposition or coordinated migration, acceptance or authorized refresh of real-project dogfooding, clean-room/explicit-path evidence sufficiency decision for `3257bdf`, and final maintainer release approval remain open.
 - **Decisions and assumptions:** Treat `3257bdf` as the exact current stable-gate candidate. Preserve the historical PR #130 remediation entry below; this entry is the authoritative post-merge state. Do not infer release approval from the green matrix and do not create a tag or publish without separate explicit authorization.
