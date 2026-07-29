@@ -47,17 +47,17 @@ entry directly below this section.
 - **Status:** partial
 - **Agent/tool:** Codex with GitHub CLI and Git — final post-merge release-state verification
 - **Branch:** `codex/v1-phase5-final-state`
-- **Commits:** pending
-- **Pull request:** pending; release/tag/publication not authorized
+- **Commits:** `6c3befa` — `docs: finalize release state after PR 112`
+- **Pull request:** [PR #113](https://github.com/vitala89/Intentloom/pull/113); release/tag/publication not authorized
 - **Objective:** Reconcile the durable project and release records with PR #112's merge into `main`.
 - **Completed:** Confirmed PR #112 merged as `5d1af7c`; synchronized the working branch from `origin/main`; confirmed Compatibility run `30410395631` passed all six Ubuntu, macOS, and Windows Node 22/24 jobs; and prepared the final updates to the project state, release state, readiness audit, and this handoff.
-- **Not completed:** The reconciliation changes still require commit, review, and merge. Maintainer acceptance of dogfooding evidence, support-policy approval, glib exception approval, final release approval, tag, and publication remain open.
+- **Not completed:** PR #113 still requires review and merge. Maintainer acceptance of dogfooding evidence, support-policy approval, glib exception approval, final release approval, tag, and publication remain open.
 - **Files or packages changed:** `PROJECT_STATE.md`, `docs/releases/RELEASE_STATE.md`, `docs/releases/V1_0_READINESS_AUDIT.md`, and `DUTY_WATCH.md`; no runtime, dependency, or release artifact changes.
 - **Validation:** GitHub PR #112 is `MERGED` with merge commit `5d1af7c`; hosted Compatibility run `30410395631` passed all six matrix jobs. `pnpm format:check` and `git diff --check` pass for this reconciliation diff.
 - **Decisions and assumptions:** Treat `5d1af7c` as the current candidate baseline, distinguish local verification on `d191205` from hosted verification on the merged commit, and keep the v1.0 gate open until maintainer decisions are recorded.
 - **Risks or compatibility impact:** Documentation-only state reconciliation; no product behavior or dependency graph changes. GitHub emits existing Node.js 20 action deprecation annotations.
 - **Open issues or blockers:** The remaining gates require maintainer or real-project evidence: explicit acceptance or refresh of dogfooding records, support-policy approval, glib exception approval, dependency-review evidence retention, and final release approval.
-- **Next first action:** Commit the final reconciliation and open the final state PR.
+- **Next first action:** Obtain maintainer review and merge approval for PR #113.
 - **Evidence:** [PR #112](https://github.com/vitala89/Intentloom/pull/112), merge commit [`5d1af7c`](https://github.com/vitala89/Intentloom/commit/5d1af7c), and [Compatibility run 30410395631](https://github.com/vitala89/Intentloom/actions/runs/30410395631).
 
 #### Duty completion checklist
