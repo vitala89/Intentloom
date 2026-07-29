@@ -47,18 +47,18 @@ entry directly below this section.
 - **Status:** partial
 - **Agent/tool:** Codex with local Intentloom CLI
 - **Branch:** `codex/v1-phase5-dogfooding-refresh`
-- **Commits:** pending
-- **Pull request:** pending; release/tag/publication not authorized
+- **Commits:** `997cde3` — `docs: add current self-dogfooding evidence`
+- **Pull request:** [PR #115](https://github.com/vitala89/Intentloom/pull/115); release/tag/publication not authorized
 - **Objective:** Produce current read-only dogfooding evidence from a real project without fabricating access to external or redacted projects.
 - **Completed:** Ran `inspect`, `init --dry-run`, `adopt --plan`, `doctor`, and `sync --dry-run` against the Intentloom repository at current `main` `d3da25d`; captured profile/adapter detection, preview conflicts, ambiguous adoption mappings, missing initialization metadata, and no-mutation behavior in `docs/releases/dogfooding/2026-07-29-intentloom-self-adoption-readonly.md`.
 - **Not completed:** The self-run is `Pass with follow-up`, not stable-release approval. The three required minimal, TypeScript, and sanitized existing-project records still need explicit acceptance or refresh on the approved candidate.
 - **Files or packages changed:** `docs/releases/dogfooding/2026-07-29-intentloom-self-adoption-readonly.md`, `docs/releases/V1_0_RELEASE_GATE_PACKET.md`, `docs/releases/V1_0_READINESS_AUDIT.md`, and `DUTY_WATCH.md`; no runtime or dependency files.
-- **Validation:** `inspect` and `adopt --plan` exited `0`; expected read-only `init --dry-run` exited `3`, `doctor` exited `3`, and uninitialized `sync --dry-run` exited `2`; no target files were changed.
+- **Validation:** `inspect` and `adopt --plan` exited `0`; expected read-only `init --dry-run` exited `3`, `doctor` exited `3`, and uninitialized `sync --dry-run` exited `2`; no target files were changed. PR #115 Compatibility runs `30412348462` and `30412361779` passed all 12 matrix jobs.
 - **Decisions and assumptions:** Treat the repository self-run as supporting existing-project evidence only; do not infer external project evidence or approve adoption from a dry-run.
 - **Risks or compatibility impact:** Documentation-only evidence update. The record exposes no private paths, project contents, credentials, or provider network activity.
 - **Open issues or blockers:** External dogfooding records, support-policy approval, glib exception decision, clean-room evidence, and final release approval remain open.
 - **Next first action:** Review the self-run and refresh or explicitly accept the three required project records on the exact approved commit.
-- **Evidence:** [self-adoption record](docs/releases/dogfooding/2026-07-29-intentloom-self-adoption-readonly.md), [release-gate packet](docs/releases/V1_0_RELEASE_GATE_PACKET.md), and candidate main commit [`d3da25d`](https://github.com/vitala89/Intentloom/commit/d3da25d).
+- **Evidence:** [self-adoption record](docs/releases/dogfooding/2026-07-29-intentloom-self-adoption-readonly.md), [release-gate packet](docs/releases/V1_0_RELEASE_GATE_PACKET.md), [PR #115](https://github.com/vitala89/Intentloom/pull/115), [Compatibility run 30412348462](https://github.com/vitala89/Intentloom/actions/runs/30412348462), [Compatibility run 30412361779](https://github.com/vitala89/Intentloom/actions/runs/30412361779), and candidate main commit [`d3da25d`](https://github.com/vitala89/Intentloom/commit/d3da25d).
 
 #### Duty completion checklist
 
