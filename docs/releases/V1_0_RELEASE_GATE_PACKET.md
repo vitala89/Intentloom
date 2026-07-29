@@ -7,8 +7,8 @@ Date: 2026-07-29.
 
 ## Candidate under review
 
-- Verified `main` commit: `3ee661d`, merged by PR [#115](https://github.com/vitala89/Intentloom/pull/115).
-- Post-merge Compatibility run: [30446567214](https://github.com/vitala89/Intentloom/actions/runs/30446567214), all six Ubuntu, macOS, and Windows Node 22/24 jobs passed.
+- Verified `main` commit: `46a278c`, merged by PR [#116](https://github.com/vitala89/Intentloom/pull/116).
+- Post-merge Compatibility run: [30451241803](https://github.com/vitala89/Intentloom/actions/runs/30451241803), all six Ubuntu, macOS, and Windows Node 22/24 jobs passed.
 - Dependency Review evidence: [run 30403512016](https://github.com/vitala89/Intentloom/actions/runs/30403512016), passed on PR #105.
 - Existing workflow warning: GitHub reports the Node.js 20 action deprecation for the current action versions; this is not a product test failure.
 
@@ -20,17 +20,23 @@ readiness audit can be approved:
 1. Approve or revise [SUPPORT_POLICY_V1.md](SUPPORT_POLICY_V1.md), including
    the supported Node/host boundary and experimental-surface exclusions.
 2. Explicitly accept the existing dogfooding records or refresh them against
-   this candidate. A current self-adoption record is now available at
+   this candidate. Current supplemental candidate records cover minimal,
+   TypeScript, and sanitized existing-project scenarios at
+   [dogfooding/2026-07-29-v1-candidate-minimal.md](dogfooding/2026-07-29-v1-candidate-minimal.md),
+   [dogfooding/2026-07-29-v1-candidate-typescript.md](dogfooding/2026-07-29-v1-candidate-typescript.md),
+   and [dogfooding/2026-07-29-v1-candidate-existing-project.md](dogfooding/2026-07-29-v1-candidate-existing-project.md).
+   A current self-adoption record is also available at
    [2026-07-29-intentloom-self-adoption-readonly.md](dogfooding/2026-07-29-intentloom-self-adoption-readonly.md),
-   but the earlier minimal, TypeScript, and sanitized existing-project records
-   still use development builds and require explicit acceptance or refresh. A
-   fixture or CI result does not replace real-project evidence.
+   but the earlier real-project records still use development builds and require
+   explicit acceptance or an authorized refresh. The supplemental local records
+   do not replace real-project evidence.
 3. Approve or reject the proposed scoped exception for Dependabot alert #2
    in [V1_SECURITY_AND_SUPPLY_CHAIN_AUDIT.md](../security/V1_SECURITY_AND_SUPPLY_CHAIN_AUDIT.md),
    or authorize a coordinated GTK/WebKit/Tauri migration instead. If approved,
    record the owner and the review/expiry date of 2026-10-29.
-4. Confirm clean-room installation and explicit-path dogfooding evidence for
-   the exact approved release commit.
+4. Confirm the retained [clean-room and explicit-path evidence](dogfooding/2026-07-29-v1-candidate-clean-room-explicit-path.md)
+   is sufficient for the exact approved release commit, or authorize a new
+   external-project run.
 5. Approve the readiness audit and the exact release commit. Complete the
    separate publication authorization checklist before any release action.
 

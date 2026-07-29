@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **v1.0 Phase 1–4 merged; Phase 5 stable-release gate active** — PR #115 is merged as `3ee661d`, and the post-merge Compatibility matrix is green; the fast-uri high alert is closed, and one medium glib alert remains for disposition
+Status: **v1.0 Phase 1–4 merged; Phase 5 stable-release gate active** — PR #116 is merged as `46a278c`, and post-merge Compatibility run `30451241803` is green; the fast-uri high alert is closed, and one medium glib alert remains for disposition
 
 Active branch: `codex/v1-phase5-post-merge-dogfooding-state`
 
 Current objective: execute Phase 5 of `V1_0_STABLE_COMPATIBILITY_PLAN.md`: assemble the v1.0 readiness audit and obtain maintainer release approval without implying a tag or publication.
 
-Next first action: provide or explicitly accept the three required project records on the exact approved commit, then record maintainer decisions for support policy and the glib exception.
+Next first action: review the supplemental exact-candidate evidence and record maintainer decisions for support policy, the glib exception, real-project dogfooding acceptance, and the exact release commit.
 
 ## Watch rules
 
@@ -41,6 +41,35 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-29, Phase 5: exact-candidate dogfooding and post-merge gate verification
+
+- **Status:** partial
+- **Agent/tool:** Codex with GitHub CLI, local packaged CLI, Cargo, and repository release records
+- **Branch:** `codex/v1-phase5-post-merge-dogfooding-state`
+- **Commits:** documentation changes pending; PR #116 merge commit is `46a278c`
+- **Pull request:** [PR #116](https://github.com/vitala89/Intentloom/pull/116) merged; no tag, publication, or release authorization
+- **Objective:** Verify the merged PR state, refresh exact-candidate local dogfooding evidence, and narrow the remaining Phase 5 decisions without claiming external results.
+- **Completed:** Confirmed PR #116 is merged and updated local `main` to `46a278c`. Post-merge Compatibility run [30451241803](https://github.com/vitala89/Intentloom/actions/runs/30451241803) passed all six Ubuntu, macOS, and Windows Node 22/24 jobs. Built and packed the CLI, installed the tarball in an isolated runner, and verified `0.5.0-beta.1` plus help output. Recorded supplemental minimal, TypeScript, sanitized existing-project, clean-room, and explicit-path evidence under `docs/releases/dogfooding/`. Re-ran Dependabot alert #2 and `cargo tree --locked --invert glib@0.18.5`; the alert remains open and the GTK/WebKit/Tauri graph still carries `glib 0.18.5`.
+- **Not completed:** No external or withheld project was represented as refreshed. Historical real-project dogfooding records still require maintainer acceptance or an authorized rerun. Support-policy approval, glib exception or coordinated migration decision, and final release approval remain open.
+- **Files or packages changed:** `PROJECT_STATE.md`, `DUTY_WATCH.md`, `docs/releases/RELEASE_STATE.md`, `docs/releases/V1_0_READINESS_AUDIT.md`, `docs/releases/V1_0_RELEASE_GATE_PACKET.md`, `docs/security/V1_SECURITY_AND_SUPPLY_CHAIN_AUDIT.md`, and four candidate dogfooding records; no runtime or dependency files.
+- **Validation:** `pnpm build`, clean-room `npm install --ignore-scripts`, packaged CLI smoke, explicit-path inspect/adopt-plan/doctor/sync dry-run, pre/post SHA-256 inventory comparison, current Dependabot API read, and Cargo dependency-tree assessment passed as recorded. The first clean-room install attempt hit a pre-existing npm cache permission error and was excluded; the isolated-cache retry passed. A temporary zsh harness initially passed command strings as single arguments; the corrected individual-argument rerun passed and left the target hashes identical. Post-merge Compatibility run `30451241803` passed all six jobs; Node.js 20 deprecation annotations remain informational warnings.
+- **Decisions and assumptions:** Treat the three local scenario records as supplemental exact-candidate evidence only. Keep the gate open until a maintainer accepts the support policy, decides the glib disposition, accepts or authorizes refresh of real-project evidence, and approves the exact release commit.
+- **Risks or compatibility impact:** Documentation-only release-control update. The medium transitive glib advisory remains visible and unresolved; no dependency override was attempted.
+- **Open issues or blockers:** Maintainer decisions for `SUPPORT_POLICY_V1.md`, Dependabot alert #2, historical real-project dogfooding acceptance, and final release approval. No v1.0 tag, npm publication, or announcement is authorized.
+- **Next first action:** Review the final documentation diff, commit these release records, and open the necessary documentation PR; then obtain maintainer decisions for the remaining gates.
+- **Evidence:** [PR #116](https://github.com/vitala89/Intentloom/pull/116), [post-merge Compatibility run 30451241803](https://github.com/vitala89/Intentloom/actions/runs/30451241803), [release-gate packet](docs/releases/V1_0_RELEASE_GATE_PACKET.md), [clean-room evidence](docs/releases/dogfooding/2026-07-29-v1-candidate-clean-room-explicit-path.md), and [security audit](docs/security/V1_SECURITY_AND_SUPPLY_CHAIN_AUDIT.md).
+
+#### Duty completion checklist
+
+- [x] Formatter passed for the final diff
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant hosted compatibility checks passed
+- [x] `git diff --check` passed for the final diff
+- [x] Final diff reviewed
+- [x] `PROJECT_STATE.md` updated when applicable
+- [x] `DUTY_WATCH.md` handoff updated
+- [x] Related release reference documentation updated
 
 ### 2026-07-29, Phase 5: post-merge reconciliation after PR #115
 

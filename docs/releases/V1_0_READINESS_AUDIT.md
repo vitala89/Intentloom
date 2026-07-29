@@ -5,42 +5,44 @@ not authorize a tag, npm publication, or release announcement.
 
 Date: 2026-07-29.
 
-Candidate baseline under review: `3ee661d` (`main` and `origin/main` after PR
-#115 merge). The release gate remains open until the decisions and evidence in
+Candidate baseline under review: `46a278c` (`main` and `origin/main` after PR
+#116 merge). The release gate remains open until the decisions and evidence in
 the release-gate packet are reviewed.
 
 ## Decision summary
 
 The Phase 1–4 implementation evidence and the release-candidate Compatibility
-matrix are present in `main`. The v1.0 release gate remains **open** because
-support-policy approval, continuous dependency-audit evidence, final
-dogfooding/release records, and maintainer approval are not yet complete.
+matrix are present in `main`. Supplemental exact-candidate clean-room,
+explicit-path, and three-scenario records are now attached. The v1.0 release
+gate remains **open** because support-policy approval, the glib disposition,
+acceptance or authorized refresh of real-project dogfooding records, and
+maintainer approval are not yet complete.
 
 No v1.0 tag or npm artifact is claimed by this document.
 
 ## Phase evidence
 
-| Phase                             | Evidence                                                                                                                                                                        | Assessment                                                                                                      |
-| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
-| 1 — Stable compatibility contract | [ADR-0043](../decisions/ADR-0043-v1-stable-compatibility-contract-and-deprecation-policy.md), `tests/v1-compatibility-contract.test.ts`                                         | Evidence present; contract approval recorded in ADR                                                             |
-| 2 — Upgrade and protocol path     | [MIGRATION_GUIDE_V1.md](MIGRATION_GUIDE_V1.md), `tests/v1-upgrade-migration-path.test.ts`                                                                                       | Local release-candidate verification passed; clean-room and final release-commit evidence remain required       |
-| 3 — Client-surface readiness      | [CLIENT_SURFACE_EQUIVALENCE.md](../compatibility/CLIENT_SURFACE_EQUIVALENCE.md), `tests/v1-client-surface-equivalence.test.ts`                                                  | Evidence present; no domain duplication found in the documented boundary                                        |
-| 4 — Security and supply chain     | [V1_SECURITY_AND_SUPPLY_CHAIN_AUDIT.md](../security/V1_SECURITY_AND_SUPPLY_CHAIN_AUDIT.md), `tests/v1-security-supply-chain.test.ts`, `.github/workflows/dependency-review.yml` | Control merged in `86a1aee`; high fast-uri alert closed; proposed glib exception is pending maintainer approval |
-| 5 — Stable release gate           | This document, [SUPPORT_POLICY_V1.md](SUPPORT_POLICY_V1.md), release and dogfooding records                                                                                     | Open; maintainer approval pending                                                                               |
+| Phase                             | Evidence                                                                                                                                                                        | Assessment                                                                                                                       |
+| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| 1 — Stable compatibility contract | [ADR-0043](../decisions/ADR-0043-v1-stable-compatibility-contract-and-deprecation-policy.md), `tests/v1-compatibility-contract.test.ts`                                         | Evidence present; contract approval recorded in ADR                                                                              |
+| 2 — Upgrade and protocol path     | [MIGRATION_GUIDE_V1.md](MIGRATION_GUIDE_V1.md), `tests/v1-upgrade-migration-path.test.ts`                                                                                       | Local release-candidate verification and supplemental clean-room evidence passed; final release-commit approval remains required |
+| 3 — Client-surface readiness      | [CLIENT_SURFACE_EQUIVALENCE.md](../compatibility/CLIENT_SURFACE_EQUIVALENCE.md), `tests/v1-client-surface-equivalence.test.ts`                                                  | Evidence present; no domain duplication found in the documented boundary                                                         |
+| 4 — Security and supply chain     | [V1_SECURITY_AND_SUPPLY_CHAIN_AUDIT.md](../security/V1_SECURITY_AND_SUPPLY_CHAIN_AUDIT.md), `tests/v1-security-supply-chain.test.ts`, `.github/workflows/dependency-review.yml` | Control merged in `86a1aee`; high fast-uri alert closed; proposed glib exception is pending maintainer approval                  |
+| 5 — Stable release gate           | This document, [SUPPORT_POLICY_V1.md](SUPPORT_POLICY_V1.md), release and dogfooding records                                                                                     | Open; maintainer approval pending                                                                                                |
 
 ## Stable-release checklist
 
-| Requirement                                                  | Status              | Evidence or remaining action                                                                                                                                                                                                               |
-| ------------------------------------------------------------ | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Public CLI and package compatibility promise                 | PASS                | [COMPATIBILITY_POLICY.md](COMPATIBILITY_POLICY.md), ADR-0043; workspace libraries remain private                                                                                                                                           |
-| Supported Node/host/provider matrix                          | PASS                | [COMPATIBILITY_MATRIX.md](../compatibility/COMPATIBILITY_MATRIX.md); post-merge Compatibility run [30409035485](https://github.com/vitala89/Intentloom/actions/runs/30409035485) passed all six Ubuntu, macOS, and Windows Node 22/24 jobs |
-| Deprecation and support policy                               | PENDING             | Deprecation is defined in ADR-0043; [SUPPORT_POLICY_V1.md](SUPPORT_POLICY_V1.md) needs maintainer approval                                                                                                                                 |
-| Upgrade, migration, and rollback path                        | PASS with recheck   | [MIGRATION_GUIDE_V1.md](MIGRATION_GUIDE_V1.md), migration tests, and `.aif/migration-journal.json` contract; clean-install release verification remains                                                                                    |
-| Daemon/MCP/client compatibility and discovery                | PASS                | Protocol/client tests and the typed v1 method contracts                                                                                                                                                                                    |
-| Desktop/TUI read-only equivalence and cancellation           | PASS with recheck   | [CLIENT_SURFACE_EQUIVALENCE.md](../compatibility/CLIENT_SURFACE_EQUIVALENCE.md), Desktop readiness audit, and `tests/interactive-ui.test.ts`                                                                                               |
-| Threat model, permissions, provenance, and incident response | PENDING             | PR #105 merged with green Dependency Review and closed high alert #1; alert #2 has no safe point update in the current GTK/WebKit graph and requires a coordinated upgrade or approved exception                                           |
-| Dogfooding evidence                                          | PASS with follow-up | A current Intentloom self-adoption record exists under `docs/releases/dogfooding/`; the minimal, TypeScript, and sanitized existing-project records predate v1.0 and must be explicitly accepted or refreshed for the stable candidate     |
-| Final readiness audit and maintainer approval                | OPEN                | Approve this audit only after the remaining evidence is attached to one release commit                                                                                                                                                     |
+| Requirement                                                  | Status              | Evidence or remaining action                                                                                                                                                                                                                            |
+| ------------------------------------------------------------ | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Public CLI and package compatibility promise                 | PASS                | [COMPATIBILITY_POLICY.md](COMPATIBILITY_POLICY.md), ADR-0043; workspace libraries remain private                                                                                                                                                        |
+| Supported Node/host/provider matrix                          | PASS                | [COMPATIBILITY_MATRIX.md](../compatibility/COMPATIBILITY_MATRIX.md); post-merge Compatibility run [30451241803](https://github.com/vitala89/Intentloom/actions/runs/30451241803) passed all six Ubuntu, macOS, and Windows Node 22/24 jobs              |
+| Deprecation and support policy                               | PENDING             | Deprecation is defined in ADR-0043; [SUPPORT_POLICY_V1.md](SUPPORT_POLICY_V1.md) needs maintainer approval                                                                                                                                              |
+| Upgrade, migration, and rollback path                        | PASS with recheck   | [MIGRATION_GUIDE_V1.md](MIGRATION_GUIDE_V1.md), migration tests, `.aif/migration-journal.json` contract, and [candidate clean-room evidence](dogfooding/2026-07-29-v1-candidate-clean-room-explicit-path.md); final release-commit verification remains |
+| Daemon/MCP/client compatibility and discovery                | PASS                | Protocol/client tests and the typed v1 method contracts                                                                                                                                                                                                 |
+| Desktop/TUI read-only equivalence and cancellation           | PASS with recheck   | [CLIENT_SURFACE_EQUIVALENCE.md](../compatibility/CLIENT_SURFACE_EQUIVALENCE.md), Desktop readiness audit, and `tests/interactive-ui.test.ts`                                                                                                            |
+| Threat model, permissions, provenance, and incident response | PENDING             | PR #105 merged with green Dependency Review and closed high alert #1; alert #2 has no safe point update in the current GTK/WebKit graph and requires a coordinated upgrade or approved exception                                                        |
+| Dogfooding evidence                                          | PASS with follow-up | Supplemental exact-candidate records cover minimal, TypeScript, and sanitized existing-project scenarios; the current self-adoption record and historical real-project records still require explicit maintainer acceptance or an authorized refresh    |
+| Final readiness audit and maintainer approval                | OPEN                | Approve this audit only after the remaining evidence is attached to one release commit                                                                                                                                                                  |
 
 ## Release-state facts
 
