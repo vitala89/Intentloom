@@ -47,17 +47,17 @@ entry directly below this section.
 - **Status:** partial
 - **Agent/tool:** Codex with GitHub CLI and Git — post-merge release-state verification
 - **Branch:** `codex/v1-phase5-dogfooding-evidence`
-- **Commits:** pending
-- **Pull request:** pending; release/tag/publication not authorized
+- **Commits:** `a34ddcc` — `docs: reconcile release state after PR 111`
+- **Pull request:** [PR #112](https://github.com/vitala89/Intentloom/pull/112); release/tag/publication not authorized
 - **Objective:** Reconcile the durable project and release records with PR #111's merge into `main`.
 - **Completed:** Confirmed PR #111 merged as `c21939e`; synchronized the working branch from `origin/main`; confirmed Compatibility run `30409627721` passed all six Ubuntu, macOS, and Windows Node 22/24 jobs; and prepared updates to the project state, release state, readiness audit, and this handoff.
-- **Not completed:** The reconciliation changes still require commit, review, and merge. Maintainer acceptance of dogfooding evidence, support-policy approval, glib exception approval, final release approval, tag, and publication remain open.
+- **Not completed:** PR #112 still requires review and merge. Maintainer acceptance of dogfooding evidence, support-policy approval, glib exception approval, final release approval, tag, and publication remain open.
 - **Files or packages changed:** `PROJECT_STATE.md`, `docs/releases/RELEASE_STATE.md`, `docs/releases/V1_0_READINESS_AUDIT.md`, and `DUTY_WATCH.md`; no runtime, dependency, or release artifact changes.
 - **Validation:** GitHub PR #111 is `MERGED` with merge commit `c21939e`; hosted Compatibility run `30409627721` passed all six matrix jobs. `pnpm format:check` and `git diff --check` pass for this reconciliation diff.
 - **Decisions and assumptions:** Treat `c21939e` as the current candidate baseline, distinguish local verification on `d191205` from hosted verification on the merged commit, and keep the v1.0 gate open until maintainer decisions are recorded.
 - **Risks or compatibility impact:** Documentation-only state reconciliation; no product behavior or dependency graph changes. GitHub emits existing Node.js 20 action deprecation annotations.
 - **Open issues or blockers:** The remaining gates require maintainer or real-project evidence: explicit acceptance or refresh of dogfooding records, support-policy approval, glib exception approval, dependency-review evidence retention, and final release approval.
-- **Next first action:** Commit the reconciliation and open a focused post-merge state PR.
+- **Next first action:** Obtain maintainer review and merge approval for PR #112.
 - **Evidence:** [PR #111](https://github.com/vitala89/Intentloom/pull/111), merge commit [`c21939e`](https://github.com/vitala89/Intentloom/commit/c21939e), and [Compatibility run 30409627721](https://github.com/vitala89/Intentloom/actions/runs/30409627721).
 
 #### Duty completion checklist
