@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **v1.0 Phase 1–4 merged; Phase 5 stable-release gate active** — PR #129 is merged as `802da40`, its post-merge Compatibility run `30496928912` passed all six jobs, confirmed dead branches were cleaned up, and one medium glib alert remains for disposition
+Status: **v1.0 Phase 1–4 merged; Phase 5 stable-release gate active** — PR #129 is merged as `802da40`, its post-merge Compatibility run `30496928912` passed all six jobs, PR #130 is blocked by one Windows Node 24 test timeout, confirmed dead branches were cleaned up, and one medium glib alert remains for disposition
 
 Active branch: `codex/v1-phase5-post-merge-pr129-state`
 
 Current objective: execute Phase 5 of `V1_0_STABLE_COMPATIBILITY_PLAN.md`: assemble the v1.0 readiness audit and obtain maintainer release approval without implying a tag or publication.
 
-Next first action: review the updated Phase 5 packet and record maintainer decisions for support policy, the glib exception, real-project dogfooding acceptance, clean-room evidence sufficiency, and the exact release commit; do not tag or publish without separate authorization.
+Next first action: apply and validate the scoped Windows timeout fix for PR #130, then re-run its full Compatibility checks; do not merge until the final-head PR run is green, and do not tag or publish without separate authorization.
 
 ## Watch rules
 
@@ -41,6 +41,29 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-30, Phase 5: PR #130 Windows Node 24 timeout and scoped remediation
+
+- **Status:** incomplete; the stable-release gate remains open and PR #130 is not ready to merge
+- **Agent/tool:** Codex with GitHub CLI, Git, GitHub Actions, and release records
+- **Branch:** `codex/v1-phase5-post-merge-pr129-state`
+- **Base:** `main` / `origin/main` at `802da40`; documentation reconciliation commit `f2c969e` followed by validation-record commit `b1013e0`
+- **Pull request:** Draft PR [#130](https://github.com/vitala89/Intentloom/pull/130) remains open; no tag, npm publication, or v1.0 release authorization was inferred
+- **Completed:** Reconciled the Phase 5 records to the exact post-merge candidate and recorded the first green PR #130 checks. The final-head push run [30497491168](https://github.com/vitala89/Intentloom/actions/runs/30497491168) passed all six jobs.
+- **Validation:** The final-head pull-request run [30497493569](https://github.com/vitala89/Intentloom/actions/runs/30497493569) passed 11 of 12 jobs and failed only job `90729599528` (`windows-latest / Node 24`). The failure is `tests/cli-schema-process.test.ts > built CLI schema validation process cases > doctor never changes files`, which exceeded Vitest's default 5-second timeout; the run reported 85 passed and 1 skipped tests in that file. No source/runtime behavior was implicated.
+- **Remediation:** Bound the affected process test to the existing Windows-aware 15-second CLI-process timeout, renaming the shared constant to `cliProcessTestTimeout` so the timeout policy is explicit for both affected tests. The targeted schema-process test passed locally with 16/16 tests; `pnpm format:check` and `git diff --check` also passed. A new CI run is still required.
+- **Not completed:** Green final-head PR #130 checks, PR #130 merge and post-merge verification, support-policy approval, glib alert #2 disposition or coordinated migration, acceptance or authorized refresh of real-project dogfooding, clean-room/explicit-path evidence sufficiency decision for `802da40`, and final maintainer release approval remain open.
+- **Decisions and assumptions:** Treat `802da40` as the exact current stable-gate candidate. Treat the failure as a bounded Windows test-harness timing issue because the failing test timed out without an assertion failure and the same file already uses a Windows-specific extended timeout for a comparable CLI process case. Do not claim PR #130 is green until the new final-head checks pass.
+- **Next first action:** Commit and push the scoped timeout fix, then inspect both new push and pull-request Compatibility runs before any merge decision.
+- **Evidence:** [PR #130](https://github.com/vitala89/Intentloom/pull/130), [failed PR run 30497493569](https://github.com/vitala89/Intentloom/actions/runs/30497493569), [passed push run 30497491168](https://github.com/vitala89/Intentloom/actions/runs/30497491168), and failing job [90729599528](https://github.com/vitala89/Intentloom/actions/runs/30497493569/job/90729599528).
+
+#### Duty completion checklist
+
+- [x] Failure reproduced from authoritative GitHub Actions logs
+- [x] Root cause recorded without claiming a green PR
+- [x] Scoped remediation locally validated
+- [ ] New final-head Compatibility checks passed
+- [ ] Handoff committed and pushed
 
 ### 2026-07-30, Phase 5: PR #129 merge and post-merge candidate verification
 

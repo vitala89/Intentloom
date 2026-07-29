@@ -16,7 +16,7 @@ import { resolvePackedCliEntry, runPackedCli } from "./helpers/packed-cli.js";
 const repositoryRoot = resolve(".");
 const cli = resolve("packages/cli/dist/intentloom.cjs");
 const windows = process.platform === "win32";
-const structuralValidationTestTimeout = windows ? 15_000 : 5_000;
+const cliProcessTestTimeout = windows ? 15_000 : 5_000;
 const command = (name: string) => (windows ? `${name}.cmd` : name);
 
 function tarEntries(archive: Buffer) {
@@ -135,12 +135,16 @@ describe("built CLI schema validation process cases", () => {
     expect(outcome.stdout).toContain(".aif/manifest.lock.json");
     expect(outcome.stdout).toContain("skills/bad/SKILL.md");
   });
-  it("doctor never changes files", async () => {
-    const root = await project();
-    const before = await snapshot(root);
-    aif(["doctor", "--root", root]);
-    expect(await snapshot(root)).toEqual(before);
-  });
+  it(
+    "doctor never changes files",
+    async () => {
+      const root = await project();
+      const before = await snapshot(root);
+      aif(["doctor", "--root", root]);
+      expect(await snapshot(root)).toEqual(before);
+    },
+    cliProcessTestTimeout,
+  );
   it("doctor separates cross-document semantic errors", async () => {
     const root = await project();
     const path = join(root, ".aif/manifest.lock.json");
@@ -218,7 +222,7 @@ describe("built CLI schema validation process cases", () => {
       await writeFile(join(root, ".aif/config.yaml"), "null", "utf8");
       expect(aif(["sync", "--root", root]).status).toBe(3);
     },
-    structuralValidationTestTimeout,
+    cliProcessTestTimeout,
   );
   it("usage failure remains exit code 2", () => {
     expect(aif(["sync", "--unknown-option"]).status).toBe(2);
