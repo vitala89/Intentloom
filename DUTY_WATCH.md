@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **v1.0 Phase 1–4 merged; Phase 5 stable-release gate active** — PR #113 is merged as `a0443b5`, and the post-merge Compatibility matrix is green; the fast-uri high alert is closed, and one medium glib alert remains for disposition
+Status: **v1.0 Phase 1–4 merged; Phase 5 stable-release gate active** — PR #114 is merged as `d3da25d`, and the post-merge Compatibility matrix is green; the fast-uri high alert is closed, and one medium glib alert remains for disposition
 
-Active branch: `codex/v1-phase5-release-gate-packet`
+Active branch: `codex/v1-phase5-dogfooding-refresh`
 
 Current objective: execute Phase 5 of `V1_0_STABLE_COMPATIBILITY_PLAN.md`: assemble the v1.0 readiness audit and obtain maintainer release approval without implying a tag or publication.
 
-Next first action: review the v1.0 release-gate packet and record maintainer decisions for support policy, dogfooding, and the scoped glib exception.
+Next first action: review the current self-dogfooding evidence and refresh or explicitly accept the three required project records on the exact approved commit.
 
 ## Watch rules
 
@@ -41,6 +41,35 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-29, Phase 5: current self-dogfooding refresh
+
+- **Status:** partial
+- **Agent/tool:** Codex with local Intentloom CLI
+- **Branch:** `codex/v1-phase5-dogfooding-refresh`
+- **Commits:** pending
+- **Pull request:** pending; release/tag/publication not authorized
+- **Objective:** Produce current read-only dogfooding evidence from a real project without fabricating access to external or redacted projects.
+- **Completed:** Ran `inspect`, `init --dry-run`, `adopt --plan`, `doctor`, and `sync --dry-run` against the Intentloom repository at current `main` `d3da25d`; captured profile/adapter detection, preview conflicts, ambiguous adoption mappings, missing initialization metadata, and no-mutation behavior in `docs/releases/dogfooding/2026-07-29-intentloom-self-adoption-readonly.md`.
+- **Not completed:** The self-run is `Pass with follow-up`, not stable-release approval. The three required minimal, TypeScript, and sanitized existing-project records still need explicit acceptance or refresh on the approved candidate.
+- **Files or packages changed:** `docs/releases/dogfooding/2026-07-29-intentloom-self-adoption-readonly.md`, `docs/releases/V1_0_RELEASE_GATE_PACKET.md`, `docs/releases/V1_0_READINESS_AUDIT.md`, and `DUTY_WATCH.md`; no runtime or dependency files.
+- **Validation:** `inspect` and `adopt --plan` exited `0`; expected read-only `init --dry-run` exited `3`, `doctor` exited `3`, and uninitialized `sync --dry-run` exited `2`; no target files were changed.
+- **Decisions and assumptions:** Treat the repository self-run as supporting existing-project evidence only; do not infer external project evidence or approve adoption from a dry-run.
+- **Risks or compatibility impact:** Documentation-only evidence update. The record exposes no private paths, project contents, credentials, or provider network activity.
+- **Open issues or blockers:** External dogfooding records, support-policy approval, glib exception decision, clean-room evidence, and final release approval remain open.
+- **Next first action:** Review the self-run and refresh or explicitly accept the three required project records on the exact approved commit.
+- **Evidence:** [self-adoption record](docs/releases/dogfooding/2026-07-29-intentloom-self-adoption-readonly.md), [release-gate packet](docs/releases/V1_0_RELEASE_GATE_PACKET.md), and candidate main commit [`d3da25d`](https://github.com/vitala89/Intentloom/commit/d3da25d).
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant CLI dogfooding commands completed
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `PROJECT_STATE.md` updated when applicable
+- [x] `DUTY_WATCH.md` handoff updated
+- [x] Related release reference documentation updated
 
 ### 2026-07-29, Phase 5: release-gate packet after PR #113
 
