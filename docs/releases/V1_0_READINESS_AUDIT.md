@@ -5,9 +5,9 @@ not authorize a tag, npm publication, or release announcement.
 
 Date: 2026-07-29.
 
-Candidate baseline under review: `5d1af7c` (`main` and `origin/main` after PR
-#112 merge). The documentation updates in this branch still require review
-before a final release commit is selected.
+Candidate baseline under review: `a0443b5` (`main` and `origin/main` after PR
+#113 merge). The release gate remains open until the decisions and evidence in
+the release-gate packet are reviewed.
 
 ## Decision summary
 
@@ -77,6 +77,10 @@ No v1.0 tag or npm artifact is claimed by this document.
   `5d1af7c`; it completed the release-state reconciliation after PR #111. The
   post-merge Compatibility run [30410395631](https://github.com/vitala89/Intentloom/actions/runs/30410395631)
   passed all six jobs on `main`.
+- PR [#113](https://github.com/vitala89/Intentloom/pull/113) merged as
+  `a0443b5`; it completed the final Phase 5 state reconciliation. The
+  post-merge Compatibility run [30411096968](https://github.com/vitala89/Intentloom/actions/runs/30411096968)
+  passed all six jobs on `main`.
 - Dependabot alert [#2](https://github.com/vitala89/Intentloom/security/dependabot/2)
   remains open at medium severity for `glib@0.18.5` in
   `apps/desktop/src-tauri/Cargo.lock`; GitHub reports `0.20.0` as the first
@@ -129,7 +133,10 @@ Compatibility verification for `5d1af7c` passed in [run 30410395631](https://git
 | `pnpm format:check`                                    | PASS                                                                             |
 | `git diff --check`                                     | PASS                                                                             |
 
-The hosted run completed all six Ubuntu, macOS, and Windows Node 22/24 jobs;
+The hosted run for the candidate baseline `5d1af7c` completed all six Ubuntu,
+macOS, and Windows Node 22/24 jobs; the post-merge run for the current
+documentation baseline `a0443b5` is recorded above and also completed all six
+jobs.
 GitHub emitted only the existing Node.js 20 action deprecation annotations.
 
 The first sandbox attempts were not counted as results: npm DNS resolution was
@@ -139,7 +146,8 @@ evidence does not authorize a tag, npm publication, or release announcement.
 
 ## Required actions before approval
 
-1. Review and approve [SUPPORT_POLICY_V1.md](SUPPORT_POLICY_V1.md).
+1. Review the [v1.0 release-gate packet](V1_0_RELEASE_GATE_PACKET.md) and
+   approve or revise [SUPPORT_POLICY_V1.md](SUPPORT_POLICY_V1.md).
 2. Review and explicitly approve or reject the proposed scoped exception in
    [V1_SECURITY_AND_SUPPLY_CHAIN_AUDIT.md](../security/V1_SECURITY_AND_SUPPLY_CHAIN_AUDIT.md),
    or approve a separate coordinated GTK/WebKit/Tauri-compatible stack
