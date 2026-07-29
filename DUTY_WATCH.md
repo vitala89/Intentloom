@@ -9,7 +9,7 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **v1.0 Phase 1–4 merged; Phase 5 stable-release gate active** — PR #130 is merged as `3257bdf`, its post-merge Compatibility run `30498583852` passed all six jobs, confirmed merged/stale post-merge branches were cleaned up locally and on GitHub, and one medium glib alert remains for disposition; the security-baseline handoff commit `0cfe924` and Compatibility run `30500069495` are green, pending maintainer merge and first CodeQL run
+Status: **v1.0 Phase 1–4 merged; Phase 5 stable-release gate active** — PR #130 is merged as `3257bdf`, its post-merge Compatibility run `30498583852` passed all six jobs, confirmed merged/stale post-merge branches were cleaned up locally and on GitHub, and one medium glib alert remains for disposition; the security-baseline handoff commit `d714ac5` and Compatibility run `30500289252` are green, pending maintainer merge and first CodeQL run
 
 Active branch: `codex/security-dependabot-codeql-baseline`
 
@@ -50,11 +50,11 @@ entry directly below this section.
 - **Base:** `main` / `origin/main` at `3257bdf`, the verified PR #130 merge commit
 - **Objective:** Add a bounded, free repository security baseline without changing product dependencies, enabling hidden automation, dismissing the open glib alert, or implying release approval.
 - **Completed:** Added `.github/dependabot.yml` with weekly npm/pnpm and Cargo checks, bounded to five open update PRs per ecosystem and without auto-merge. Added `.github/workflows/codeql.yml` for JavaScript/TypeScript and GitHub Actions on main pushes, main pull requests, a weekly schedule, and manual dispatch. Confirmed the repository already has Dependency Review and Compatibility workflows. The last successful repository settings read reported Dependabot security updates disabled; Dependabot alerts are active because alert #2 is present. The glib alert remains open and was not dismissed or overridden.
-- **Validation:** Ruby YAML parsing, `pnpm format:check`, and `git diff --check` passed. No dependency or runtime files changed. Compatibility run [30500069495](https://github.com/vitala89/Intentloom/actions/runs/30500069495) for handoff commit `0cfe924` passed all six Ubuntu, macOS, and Windows Node 22/24 jobs. A read-only GitHub API check confirmed the repository is public, Dependabot security updates are disabled, and alert #2 is still open at medium severity for `glib` with patched `0.20.0`; the earlier sandbox connection failure was not treated as a result.
+- **Validation:** Ruby YAML parsing, `pnpm format:check`, and `git diff --check` passed. No dependency or runtime files changed. Compatibility run [30500289252](https://github.com/vitala89/Intentloom/actions/runs/30500289252) for handoff commit `d714ac5` passed all six Ubuntu, macOS, and Windows Node 22/24 jobs. A read-only GitHub API check confirmed the repository is public, Dependabot security updates are disabled, and alert #2 is still open at medium severity for `glib` with patched `0.20.0`; the earlier sandbox connection failure was not treated as a result.
 - **Free-control assessment:** Dependabot alerts/security updates, Dependency Review, CodeQL for a public repository, and secret scanning are GitHub-native options. No Marketplace action is required for this baseline. `zizmor` is a possible later workflow-hardening addition but is third-party/early-development and not needed before the first-party controls are verified. Gitleaks is not added because public-repository secret scanning is the lower-maintenance first choice; scanning would not remove any leaked secret from history.
 - **Not completed:** Merge of this security-baseline branch, first CodeQL run, explicit verification or enablement of Dependabot security updates, glib alert #2 disposition, support-policy approval, real-project dogfooding acceptance, clean-room/explicit-path evidence sufficiency, and final maintainer release approval remain open.
 - **Decisions and assumptions:** Keep CodeQL scope to `javascript-typescript` and `actions`; CodeQL is not being represented as Rust/Cargo scanning. Keep Dependabot on weekly cadence with no auto-merge to control churn. Do not enable secret scanning or change repository settings in this watch without explicit confirmation of that external setting change. Do not create a tag or publish a package.
-- **Next first action:** Have the maintainer review and merge commit `1bde409` if this baseline is accepted; after merge, retain the first CodeQL result and decide explicitly whether to enable Dependabot security-update PRs. Then continue the glib, support-policy, dogfooding, clean-room, and exact-release-commit gates.
+- **Next first action:** Have the maintainer review and merge commit `d714ac5` if this baseline is accepted; after merge, retain the first CodeQL result and decide explicitly whether to enable Dependabot security-update PRs. Then continue the glib, support-policy, dogfooding, clean-room, and exact-release-commit gates.
 - **Evidence:** [GitHub Actions billing](https://docs.github.com/en/billing/concepts/product-billing/github-actions), [Dependabot alerts](https://docs.github.com/en/code-security/concepts/supply-chain-security/dependabot-alerts), [dependabot.yml reference](https://docs.github.com/en/code-security/concepts/supply-chain-security/about-the-dependabot-yml-file), [CodeQL code scanning](https://docs.github.com/en/code-security/concepts/code-scanning/codeql/codeql-code-scanning), [secret scanning scope](https://docs.github.com/en/code-security/reference/secret-security/secret-scanning-scope), and the repository files added in this watch.
 
 #### Duty completion checklist
@@ -64,7 +64,7 @@ entry directly below this section.
 - [x] Formatter and `git diff --check` passed
 - [x] External security settings and alert recheck complete (read-only; no setting changed)
 - [ ] First post-merge CodeQL run retained
-- [x] Handoff committed and pushed as `0cfe924`
+- [x] Handoff committed and pushed as `d714ac5`
 
 ### 2026-07-30, Phase 5: PR #130 merge and post-merge candidate verification
 

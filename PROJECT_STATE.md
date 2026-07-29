@@ -213,8 +213,8 @@ before a new release or implementation milestone is declared complete.
 - The active security-baseline branch adds `.github/dependabot.yml` for the
   root npm/pnpm lockfile and the Desktop Cargo lockfile, plus a CodeQL workflow
   for JavaScript/TypeScript and GitHub Actions. These are repository
-  configurations only; handoff commit `0cfe924` passed Compatibility run
-  `30500069495` across all six Ubuntu, macOS, and Windows Node 22/24 jobs. The
+  configurations only; handoff commit `d714ac5` passed Compatibility run
+  `30500289252` across all six Ubuntu, macOS, and Windows Node 22/24 jobs. The
   first post-merge CodeQL result and Dependabot security-update setting still
   require verification. CodeQL does not cover the Rust dependency graph, so
   alert #2 remains governed by the existing compatibility assessment and
