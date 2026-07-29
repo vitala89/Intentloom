@@ -105,7 +105,7 @@ describe("packed adapter compatibility matrix", () => {
     expect(result.status).toBe(0);
     const entries = await readdir(root, { recursive: true });
     expect(entries.filter((entry) => entry === "AGENTS.md")).toHaveLength(1);
-  });
+  }, 20_000);
 
   it("performs a second all-adapter sync with zero changes", async () => {
     const root = await project("packed-no-op");

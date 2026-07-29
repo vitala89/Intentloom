@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **v1.0 Phase 1–4 merged; Phase 5 stable-release gate active** — PR #118 is merged as `ec869e1`, draft PR #119 has green Compatibility run `30458933209`, and one medium glib alert remains for disposition
+Status: **v1.0 Phase 1–4 merged; Phase 5 stable-release gate active** — PR #119 is merged as `c49bf793`, draft PR #120 has green Compatibility run `30460528948`, and one medium glib alert remains for disposition
 
-Active branch: `codex/v1-phase5-post-merge-pr118-state`
+Active branch: `codex/v1-phase5-windows-node24-packed-timeout`
 
 Current objective: execute Phase 5 of `V1_0_STABLE_COMPATIBILITY_PLAN.md`: assemble the v1.0 readiness audit and obtain maintainer release approval without implying a tag or publication.
 
-Next first action: review/merge PR #119, then record maintainer decisions for support policy, the glib exception, real-project dogfooding acceptance, clean-room evidence sufficiency, and the exact release commit `ec869e1`; do not tag or publish without separate authorization.
+Next first action: review/merge PR #120 and verify its post-merge run, then record maintainer decisions for support policy, the glib exception, real-project dogfooding acceptance, clean-room evidence sufficiency, and the exact release commit; do not tag or publish without separate authorization.
 
 ## Watch rules
 
@@ -41,6 +41,56 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-29, Phase 5: PR #120 Windows Node 24 timeout remediation verification
+
+- **Status:** partial
+- **Agent/tool:** Codex with GitHub Actions, Vitest, Git, and release records
+- **Branch:** `codex/v1-phase5-windows-node24-packed-timeout`
+- **Commit:** `8d14606` — `test: extend packed adapter timeout on Windows`
+- **Pull request:** draft [PR #120](https://github.com/vitala89/Intentloom/pull/120), open; release/tag/publication not authorized
+- **Completed:** Added a bounded 20-second timeout only to the all-adapter generation test that failed on Windows Node 24 in post-merge run `30459836027`. Compatibility run [30460528948](https://github.com/vitala89/Intentloom/actions/runs/30460528948) passed all six Ubuntu, macOS, and Windows Node 22/24 jobs, including Windows Node 24.
+- **Validation:** Targeted and full `pnpm vitest run tests/adapter-packed-process.test.ts` passed locally (13 passed, 1 skipped). Hosted typecheck, lint, format, build, and test passed in all six jobs; only known Node.js 20 action deprecation annotations remain. `pnpm format:check` and `git diff --check` passed.
+- **Not completed:** PR #120 is not merged. The post-merge run for the eventual merge commit is still required. Support-policy approval, glib alert #2 disposition or coordinated migration, historical real-project dogfooding acceptance, clean-room evidence sufficiency, and final release approval remain open.
+- **Decisions and assumptions:** Treat the timeout extension as test-harness stabilization only; no runtime, package, or dependency behavior changed. Do not treat the PR green matrix as stable-release approval.
+- **Risks or compatibility impact:** The timeout is intentionally bounded at 20 seconds; a future hang would still fail. The medium glib alert and workflow deprecation annotations remain unchanged.
+- **Next first action:** Obtain maintainer review/merge disposition for PR #120, then verify the post-merge Compatibility run before updating the exact candidate state.
+- **Evidence:** [PR #120](https://github.com/vitala89/Intentloom/pull/120), [green Compatibility run 30460528948](https://github.com/vitala89/Intentloom/actions/runs/30460528948), [failed predecessor 30459836027](https://github.com/vitala89/Intentloom/actions/runs/30459836027), and [remediation commit 8d14606](https://github.com/vitala89/Intentloom/commit/8d14606).
+
+#### Duty completion checklist
+
+- [x] Formatter passed for the final diff
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant hosted compatibility checks passed
+- [x] `git diff --check` passed for the final diff
+- [x] Final diff reviewed
+- [x] `DUTY_WATCH.md` handoff updated
+- [ ] PR #120 merged and post-merge Compatibility verified
+
+### 2026-07-29, Phase 5: diagnose Windows Node 24 post-merge timeout
+
+- **Status:** partial
+- **Agent/tool:** Codex with GitHub Actions logs, Git history, Vitest, and release records
+- **Branch:** `codex/v1-phase5-windows-node24-packed-timeout`
+- **Base:** `main` / `origin/main` at `c49bf793`, merge commit for PR #119
+- **Pull request:** pending; no tag, npm publication, or v1.0 release authorization
+- **Completed:** Inspected failed post-merge Compatibility run [30459836027](https://github.com/vitala89/Intentloom/actions/runs/30459836027). Five matrix jobs passed; Windows Node 24 failed only at `tests/adapter-packed-process.test.ts:96` because the all-adapter generation test exceeded Vitest's default 5-second timeout. Added a focused 20-second test timeout. The full local packed-process file passed with 13 tests passed and 1 skipped.
+- **Validation:** Targeted and full `pnpm vitest run tests/adapter-packed-process.test.ts` passed locally. The hosted failure is a test-harness timeout, not a reported runtime or package failure; the remediation still needs formatter/diff validation, hosted CI, and review.
+- **Not completed:** The remediation is not committed or hosted yet. Current `main` remains blocked by the failed Windows Node 24 post-merge run. Support-policy approval, glib alert #2 disposition or coordinated migration, dogfooding acceptance, clean-room evidence sufficiency, and final release approval remain open.
+- **Decisions and assumptions:** Treat the timeout extension as a bounded test-only stabilization, following the existing 20-second timeout pattern for adjacent packed Windows tests. Do not treat the green five-job partial matrix as a release gate pass.
+- **Risks or compatibility impact:** Increasing only the test timeout may mask a genuine hang if the test does not complete; hosted rerun is required. The medium glib alert and known Node.js 20 action annotations remain unchanged.
+- **Next first action:** Run local `pnpm format:check` and `git diff --check`, commit/push the focused remediation PR, and observe its full Compatibility matrix before updating the exact candidate state.
+- **Evidence:** [failed post-merge run 30459836027](https://github.com/vitala89/Intentloom/actions/runs/30459836027), [test file](tests/adapter-packed-process.test.ts), and prior timeout precedent [`c2a3c9d`](https://github.com/vitala89/Intentloom/commit/c2a3c9d).
+
+#### Duty completion checklist
+
+- [x] Failing hosted check inspected
+- [x] Targeted local test passed
+- [x] Full affected test file passed locally
+- [ ] Formatter passed for the final remediation diff
+- [ ] `git diff --check` passed for the final remediation diff
+- [ ] Hosted remediation Compatibility check passed
+- [x] `DUTY_WATCH.md` handoff updated
 
 ### 2026-07-29, Phase 5: PR #119 documentation reconciliation Compatibility verification
 
