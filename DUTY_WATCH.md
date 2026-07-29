@@ -9,9 +9,9 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **v1.0 Phase 1–4 merged; Phase 5 stable-release gate active** — PR #128 is merged as `2c7d4a4`, its post-merge Compatibility run `30495322242` passed all six jobs, confirmed dead branches were cleaned up, and one medium glib alert remains for disposition
+Status: **v1.0 Phase 1–4 merged; Phase 5 stable-release gate active** — PR #129 is merged as `802da40`, its post-merge Compatibility run `30496928912` passed all six jobs, confirmed dead branches were cleaned up, and one medium glib alert remains for disposition
 
-Active branch: `codex/v1-phase5-post-merge-pr128-state`
+Active branch: `codex/v1-phase5-post-merge-pr129-state`
 
 Current objective: execute Phase 5 of `V1_0_STABLE_COMPATIBILITY_PLAN.md`: assemble the v1.0 readiness audit and obtain maintainer release approval without implying a tag or publication.
 
@@ -41,6 +41,30 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-30, Phase 5: PR #129 merge and post-merge candidate verification
+
+- **Status:** complete for this watch; the stable-release gate remains open
+- **Agent/tool:** Codex with GitHub CLI, Git, GitHub Actions, and release records
+- **Branch:** `main`
+- **Base:** `main` / `origin/main` at `802da40`, merge commit for PR #129
+- **Pull request:** PR [#129](https://github.com/vitala89/Intentloom/pull/129) is merged as `802da40`; no tag, npm publication, or v1.0 release authorization was inferred
+- **Completed:** Verified the merge, pruned the merged feature branch, fast-forwarded local `main`, and reconciled `PROJECT_STATE.md`, `RELEASE_STATE.md`, `V1_0_READINESS_AUDIT.md`, and `V1_0_RELEASE_GATE_PACKET.md` to the exact post-merge candidate. PR #129 is documentation-only; no runtime, package, or dependency behavior changed.
+- **Validation:** `gh pr view 129` confirmed `MERGED`; `git pull --ff-only origin main` left local `main` aligned with `origin/main`; post-merge Compatibility run [30496928912](https://github.com/vitala89/Intentloom/actions/runs/30496928912) passed all six Ubuntu, macOS, and Windows Node 22/24 jobs, with only the known Node.js 20 action deprecation annotations. Local `pnpm format:check` and `git diff --check` passed for this reconciliation.
+- **Not completed:** Support-policy approval, glib alert #2 disposition or coordinated migration, acceptance or authorized refresh of real-project dogfooding, clean-room/explicit-path evidence sufficiency decision for `802da40`, and final maintainer release approval remain open.
+- **Decisions and assumptions:** Treat `802da40` as the exact current stable-gate candidate. Treat PR #129 as documentation-only. Do not infer release approval from the green matrix and do not create a tag or publish without separate explicit authorization.
+- **Next first action:** Obtain and record maintainer decisions for support policy, the glib exception, real-project dogfooding, clean-room evidence, and the exact release commit; no further document-only reconciliation is needed before those decisions are made.
+- **Evidence:** [PR #129](https://github.com/vitala89/Intentloom/pull/129), [merge commit `802da40`](https://github.com/vitala89/Intentloom/commit/802da40), [post-merge Compatibility run 30496928912](https://github.com/vitala89/Intentloom/actions/runs/30496928912), and synchronized release records.
+
+#### Duty completion checklist
+
+- [x] PR #129 merged
+- [x] Local `main` fast-forwarded to the merge commit
+- [x] Post-merge Compatibility checks passed
+- [x] Formatter passed for the final reconciliation
+- [x] `git diff --check` passed for the final reconciliation
+- [x] Final diff reviewed
+- [ ] Handoff committed and pushed
 
 ### 2026-07-30, Phase 5: PR #128 merge and post-merge candidate verification
 

@@ -81,8 +81,8 @@ before a new release or implementation milestone is declared complete.
 ## Current blockers and unknowns
 
 - Any expansion to bottleneck, performance, causal, actor, repository-reading, persisted, remote, or model-assisted analysis requires a new ADR, specification, and threat review.
-- PR #84 through PR #128 are merged in the local history; current `main` is
-  verified at `2c7d4a4` and tracks `origin/main`.
+- PR #84 through PR #129 are merged in the local history; current `main` is
+  verified at `802da40` and tracks `origin/main`.
 - npm currently reports `latest=0.1.0-alpha.3` and `next=0.5.0-beta.1`.
 - Workspace packages are synchronized to `0.5.0-beta.1`; Git tag
   `v0.5.0-beta.1` is pushed and npm publication is complete.
@@ -197,6 +197,11 @@ before a new release or implementation milestone is declared complete.
   changed.
 - PR #128 is merged as `2c7d4a4`; it reconciles the Phase 5 records after PR
   #127. Its post-merge Compatibility run `30495322242` passed all six Ubuntu,
+  macOS, and Windows Node 22/24 jobs, with only the known Node.js 20 action
+  deprecation annotations. No runtime, package, or dependency behavior
+  changed.
+- PR #129 is merged as `802da40`; it reconciles the Phase 5 records after PR
+  #128. Its post-merge Compatibility run `30496928912` passed all six Ubuntu,
   macOS, and Windows Node 22/24 jobs, with only the known Node.js 20 action
   deprecation annotations. No runtime, package, or dependency behavior
   changed.
