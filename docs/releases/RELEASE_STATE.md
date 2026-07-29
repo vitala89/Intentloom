@@ -6,7 +6,7 @@ Historical release audits and roadmap sections retain their original scope, but
 this document is the source of truth for the current status.
 
 Snapshot: 2026-07-29
-Main commit: `ae63b7a` (PR #110 merged)
+Main commit: `c21939e` (PR #111 merged)
 Release commit: `a0e0b13` (tagged `v0.5.0-beta.1`)
 Workspace version: `0.5.0-beta.1`
 Git tag: `v0.5.0-beta.1` (pushed)
@@ -49,12 +49,13 @@ listed in the last table row. `latest` intentionally remains the historical
   reports `latest=0.1.0-alpha.3` and `next=0.5.0-beta.1`; published tarball
   shasum is `58b2e27eb66789f57c1e91cec46aea710a6fc241`.
 - GitHub release: [`v0.4.0-beta.1`](https://github.com/vitala89/Intentloom/releases/tag/v0.4.0-beta.1).
-- Current `main`: [PR #110](https://github.com/vitala89/Intentloom/pull/110),
-  merged as `ae63b7a`; it contains the release-candidate verification record
-  and the Windows Node 22 process-test timeout correction. The post-merge
-  [Compatibility run](https://github.com/vitala89/Intentloom/actions/runs/30409035485)
+- Current `main`: [PR #111](https://github.com/vitala89/Intentloom/pull/111),
+  merged as `c21939e`; it reconciles the release records after the release
+  candidate and Windows Node 22 correction landed in PR #110. The post-merge
+  [Compatibility run](https://github.com/vitala89/Intentloom/actions/runs/30409627721)
   passed all six Ubuntu, macOS, and Windows Node 22/24 jobs. The preceding
-  dependency-review control is in
+  release-candidate record is in [PR #110](https://github.com/vitala89/Intentloom/pull/110),
+  merged as `ae63b7a`; the dependency-review control is in
   [PR #105](https://github.com/vitala89/Intentloom/pull/105), merged as
   `86a1aee`.
 - The GTK/WebKit dependency assessment is recorded in [PR #107](https://github.com/vitala89/Intentloom/pull/107),
@@ -64,8 +65,9 @@ listed in the last table row. `latest` intentionally remains the historical
   `542633a`; maintainer approval remains pending.
 - Local release-candidate verification was run against the pre-candidate
   baseline `d191205` and is recorded in [PR #110](https://github.com/vitala89/Intentloom/pull/110),
-  merged as `ae63b7a`; the post-merge Compatibility run is green, but no tag
-  or publication is authorized by that evidence.
+  merged as `ae63b7a`; PR #111 then reconciled the records in `main` as
+  `c21939e`. The post-merge Compatibility run is green, but no tag or
+  publication is authorized by that evidence.
 - Release tag: [`v0.5.0-beta.1`](https://github.com/vitala89/Intentloom/releases/tag/v0.5.0-beta.1)
   points to the verified release commit `a0e0b13`.
 - Version source: root `package.json`, synchronized by
