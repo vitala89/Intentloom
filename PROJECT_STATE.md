@@ -218,7 +218,8 @@ before a new release or implementation milestone is declared complete.
   first post-merge CodeQL result and Dependabot security-update setting still
   require verification. CodeQL does not cover the Rust dependency graph, so
   alert #2 remains governed by the existing compatibility assessment and
-  maintainer decision.
+  maintainer decision. Review PR #131 is open from the security-baseline branch;
+  its latest handoff commit `70edf83` passed Compatibility run `30500685144`.
 - Exact-candidate supplemental clean-room, explicit-path, minimal, TypeScript,
   and sanitized existing-project evidence is recorded under
   `docs/releases/dogfooding/`; it does not replace real-project acceptance or

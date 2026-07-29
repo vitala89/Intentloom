@@ -9,7 +9,7 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **v1.0 Phase 1–4 merged; Phase 5 stable-release gate active** — PR #130 is merged as `3257bdf`, its post-merge Compatibility run `30498583852` passed all six jobs, confirmed merged/stale post-merge branches were cleaned up locally and on GitHub, and one medium glib alert remains for disposition; the security-baseline handoff commit `d714ac5` and Compatibility run `30500289252` are green, pending maintainer merge and first CodeQL run
+Status: **v1.0 Phase 1–4 merged; Phase 5 stable-release gate active** — PR #130 is merged as `3257bdf`, its post-merge Compatibility run `30498583852` passed all six jobs, confirmed merged/stale post-merge branches were cleaned up locally and on GitHub, and one medium glib alert remains for disposition; security-baseline PR #131 is open from head `70edf83`, whose Compatibility run `30500685144` passed all six jobs, pending maintainer merge and first CodeQL run
 
 Active branch: `codex/security-dependabot-codeql-baseline`
 
@@ -41,6 +41,29 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-30, Phase 5: security baseline review PR
+
+- **Status:** complete for this watch; PR #131 is open and the stable-release gate remains open
+- **Agent/tool:** Codex with Git, GitHub CLI, GitHub Actions, and security workflow guidance
+- **Branch:** `codex/security-dependabot-codeql-baseline`
+- **Base:** `main` / `origin/main` at `3257bdf`
+- **Pull request:** PR [#131](https://github.com/vitala89/Intentloom/pull/131) is open against `main` with head `70edf83`; no tag, publication, auto-merge, security-setting mutation, or release approval was inferred.
+- **Completed:** Corrected the durable handoff references to the actual latest branch head, verified the PR body after a shell-quoting correction, and opened the necessary ready-for-review PR for the Dependabot and CodeQL baseline. The PR scope remains limited to `.github/dependabot.yml`, `.github/workflows/codeql.yml`, security-audit documentation, `PROJECT_STATE.md`, and `DUTY_WATCH.md`.
+- **Validation:** `pnpm format:check` and `git diff --check` passed before the handoff commit. Compatibility run [30500685144](https://github.com/vitala89/Intentloom/actions/runs/30500685144) for head `70edf83` passed all six Ubuntu, macOS, and Windows Node 22/24 jobs. PR metadata and body were re-read through GitHub CLI and confirmed open against `main`.
+- **Not completed:** Maintainer merge of PR #131, first post-merge CodeQL result, explicit Dependabot security-update enablement decision, secret-scanning decision, glib alert #2 disposition, support-policy approval, real-project dogfooding acceptance, clean-room/explicit-path evidence sufficiency, and final release approval remain open.
+- **Decisions and assumptions:** Keep PR #131 ready for maintainer review; do not merge it, enable automatic security PRs, enable secret scanning, dismiss alert #2, create a tag, or publish without explicit authorization. After merge, verify CodeQL before treating the workflow as release evidence.
+- **Next first action:** Maintainer reviews and merges PR #131 if accepted; then verify the first CodeQL run on the resulting `main` commit and decide explicitly whether to enable Dependabot security-update PRs and secret scanning.
+- **Evidence:** [PR #131](https://github.com/vitala89/Intentloom/pull/131), [head Compatibility run 30500685144](https://github.com/vitala89/Intentloom/actions/runs/30500685144), [Dependabot alert #2](https://github.com/vitala89/Intentloom/security/dependabot/2), and the repository security-baseline files.
+
+#### Duty completion checklist
+
+- [x] Security baseline branch validated
+- [x] Latest handoff commit pushed
+- [x] Compatibility run passed all six jobs
+- [x] PR #131 opened and body verified
+- [ ] PR #131 merged
+- [ ] First post-merge CodeQL run retained
 
 ### 2026-07-30, Phase 5: free dependency monitoring and code-scanning baseline
 
