@@ -7,9 +7,9 @@ Date: 2026-07-29.
 
 ## Candidate under review
 
-- Verified `main` commit: `2c7d4a4`, merged by PR [#128](https://github.com/vitala89/Intentloom/pull/128).
-- Post-merge Compatibility run: [30495322242](https://github.com/vitala89/Intentloom/actions/runs/30495322242), all six Ubuntu, macOS, and Windows Node 22/24 jobs passed.
-- PR #117 added only release-state documentation and a bounded Windows packed-doctor test timeout; PR #118 added only the final documentation reconciliation; PR #120 added only a bounded packed all-adapter test timeout; PR #121, PR #122, PR #123, PR #124, PR #125, PR #126, PR #127, and PR #128 added only documentation and branch-inventory cleanup records. No runtime, package, or dependency behavior changed.
+- Verified `main` commit: `802da40`, merged by PR [#129](https://github.com/vitala89/Intentloom/pull/129).
+- Post-merge Compatibility run: [30496928912](https://github.com/vitala89/Intentloom/actions/runs/30496928912), all six Ubuntu, macOS, and Windows Node 22/24 jobs passed.
+- PR #117 added only release-state documentation and a bounded Windows packed-doctor test timeout; PR #118 added only the final documentation reconciliation; PR #120 added only a bounded packed all-adapter test timeout; PR #121, PR #122, PR #123, PR #124, PR #125, PR #126, PR #127, PR #128, and PR #129 added only documentation and branch-inventory cleanup records. No runtime, package, or dependency behavior changed.
 - Dependency Review evidence: [run 30403512016](https://github.com/vitala89/Intentloom/actions/runs/30403512016), passed on PR #105.
 - Existing workflow warning: GitHub reports the Node.js 20 action deprecation for the current action versions; this is not a product test failure.
 
@@ -37,7 +37,7 @@ readiness audit can be approved:
    record the owner and the review/expiry date of 2026-10-29.
 4. Confirm the retained [clean-room and explicit-path evidence](dogfooding/2026-07-29-v1-candidate-clean-room-explicit-path.md)
    from the runtime-equivalent `46a278c` tree is sufficient for exact approved
-   commit `2c7d4a4`, or authorize a new external-project run.
+   commit `802da40`, or authorize a new external-project run.
 5. Approve the readiness audit and the exact release commit. Complete the
    separate publication authorization checklist before any release action.
 
