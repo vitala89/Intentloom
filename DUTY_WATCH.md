@@ -48,22 +48,22 @@ entry directly below this section.
 - **Agent/tool:** Codex with GitHub CLI, Git, GitHub Actions, and release records
 - **Branch:** `codex/v1-phase5-post-merge-pr121-state`
 - **Base:** `main` / `origin/main` at `83cefd3`, merge commit for PR #121
-- **Pull request:** PR #121 is merged; its post-merge branch was automatically removed by GitHub; no tag, npm publication, or v1.0 release authorization
+- **Pull request:** PR #121 is merged; draft PR [#122](https://github.com/vitala89/Intentloom/pull/122) carries this reconciliation and has green Compatibility checks, but remains open pending maintainer merge disposition; no tag, npm publication, or v1.0 release authorization
 - **Completed:** Fast-forwarded local `main` to `83cefd3` and verified post-merge Compatibility run [30463844868](https://github.com/vitala89/Intentloom/actions/runs/30463844868). All six Ubuntu, macOS, and Windows Node 22/24 jobs passed; only the known Node.js 20 action deprecation annotations remain. Updated the project and release records to the exact current candidate.
 - **Branch cleanup:** Confirmed the PR #121 handoff branch is absent locally and on GitHub after merge. The earlier cleanup preserved `main`, `chore/v0.1-release-readiness`, `security/intentloomd-lifecycle-design`, `test/adapters-cross-platform-matrix`, and the closed-without-merge `codex/public-readiness-blockers`; no project files were deleted.
-- **Validation:** `git fetch origin main`, fast-forwarded `git pull --ff-only origin main`, green post-merge Compatibility run `30463844868`, and clean worktree verification. Documentation formatter and `git diff --check` remain required before commit.
+- **Validation:** `git fetch origin main`, fast-forwarded `git pull --ff-only origin main`, green post-merge Compatibility run `30463844868`, green PR #122 Compatibility run `30464280177` and push run `30464266717`, `pnpm format:check`, `git diff --check`, and clean worktree verification.
 - **Not completed:** Support-policy approval, glib alert #2 disposition or coordinated migration, acceptance or authorized refresh of real-project dogfooding, clean-room/explicit-path evidence sufficiency decision, and final maintainer release approval remain open.
 - **Decisions and assumptions:** Treat `83cefd3` as the exact current candidate. Do not infer release approval from the green matrix or branch cleanup. Do not create a tag or publish without separate explicit authorization.
-- **Next first action:** Run formatter and `git diff --check`, commit/push this reconciliation, then record the remaining Phase 5 maintainer decisions.
-- **Evidence:** [PR #121](https://github.com/vitala89/Intentloom/pull/121), [merge commit 83cefd3](https://github.com/vitala89/Intentloom/commit/83cefd3), and [post-merge Compatibility run 30463844868](https://github.com/vitala89/Intentloom/actions/runs/30463844868).
+- **Next first action:** Obtain maintainer merge disposition for draft PR #122, then record the remaining Phase 5 decisions.
+- **Evidence:** [PR #121](https://github.com/vitala89/Intentloom/pull/121), [merge commit 83cefd3](https://github.com/vitala89/Intentloom/commit/83cefd3), [post-merge Compatibility run 30463844868](https://github.com/vitala89/Intentloom/actions/runs/30463844868), and [PR #122](https://github.com/vitala89/Intentloom/pull/122).
 
 #### Duty completion checklist
 
-- [ ] Formatter passed for the final diff
-- [ ] Markdown and lint checks passed when configured
+- [x] Formatter passed for the final diff
+- [x] Markdown and lint checks passed when configured
 - [x] Relevant hosted compatibility checks passed
-- [ ] `git diff --check` passed for the final diff
-- [ ] Final diff reviewed
+- [x] `git diff --check` passed for the final diff
+- [x] Final diff reviewed
 - [x] `DUTY_WATCH.md` handoff updated
 - [x] PR #121 merged and post-merge Compatibility verified
 
