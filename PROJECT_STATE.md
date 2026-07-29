@@ -81,8 +81,8 @@ before a new release or implementation milestone is declared complete.
 ## Current blockers and unknowns
 
 - Any expansion to bottleneck, performance, causal, actor, repository-reading, persisted, remote, or model-assisted analysis requires a new ADR, specification, and threat review.
-- PR #84 through PR #121 are merged in the local history; current `main` is
-  verified at `83cefd3` and tracks `origin/main`.
+- PR #84 through PR #122 are merged in the local history; current `main` is
+  verified at `96ba437` and tracks `origin/main`.
 - npm currently reports `latest=0.1.0-alpha.3` and `next=0.5.0-beta.1`.
 - Workspace packages are synchronized to `0.5.0-beta.1`; Git tag
   `v0.5.0-beta.1` is pushed and npm publication is complete.
@@ -165,6 +165,11 @@ before a new release or implementation milestone is declared complete.
   Compatibility run `30463844868` passed all six Ubuntu, macOS, and Windows
   Node 22/24 jobs, with only the known Node.js 20 action deprecation
   annotations. No runtime, package, or dependency behavior changed.
+- PR #122 is merged as `96ba437`; it reconciles the Phase 5 records after PR
+  #121 and records the final branch inventory cleanup. Its post-merge
+  Compatibility run `30484088638` passed all six Ubuntu, macOS, and Windows
+  Node 22/24 jobs, with only the known Node.js 20 action deprecation
+  annotations. No runtime, package, or dependency behavior changed.
 - Exact-candidate supplemental clean-room, explicit-path, minimal, TypeScript,
   and sanitized existing-project evidence is recorded under
   `docs/releases/dogfooding/`; it does not replace real-project acceptance or
@@ -193,7 +198,7 @@ before a new release or implementation milestone is declared complete.
   lifecycle, token ownership, canonical project selection, bounded IPC, and a
   Tokio Windows named-pipe source path; remaining work is follow-up hardening,
   not the closed v0.6 packaging gate.
-- The post-merge Compatibility run for `main` at `83cefd3` passed all six
+- The post-merge Compatibility run for `main` at `96ba437` passed all six
   Ubuntu, macOS, and Windows Node 22/24 jobs. The historical `c49bf793`
   Windows Node 24 timeout is remediated by the test-only change in PR #120;
   GitHub still emits a Node.js 20 deprecation annotation for the current
