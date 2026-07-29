@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **v1.0 Phase 1–4 merged; Phase 5 stable-release gate active** — PR #114 is merged as `d3da25d`, and the post-merge Compatibility matrix is green; the fast-uri high alert is closed, and one medium glib alert remains for disposition
+Status: **v1.0 Phase 1–4 merged; Phase 5 stable-release gate active** — PR #115 is merged as `3ee661d`, and the post-merge Compatibility matrix is green; the fast-uri high alert is closed, and one medium glib alert remains for disposition
 
-Active branch: `codex/v1-phase5-dogfooding-refresh`
+Active branch: `codex/v1-phase5-post-merge-dogfooding-state`
 
 Current objective: execute Phase 5 of `V1_0_STABLE_COMPATIBILITY_PLAN.md`: assemble the v1.0 readiness audit and obtain maintainer release approval without implying a tag or publication.
 
-Next first action: review the current self-dogfooding evidence and refresh or explicitly accept the three required project records on the exact approved commit.
+Next first action: provide or explicitly accept the three required project records on the exact approved commit, then record maintainer decisions for support policy and the glib exception.
 
 ## Watch rules
 
@@ -41,6 +41,35 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-29, Phase 5: post-merge reconciliation after PR #115
+
+- **Status:** partial
+- **Agent/tool:** Codex with GitHub CLI and repository release records
+- **Branch:** `codex/v1-phase5-post-merge-dogfooding-state`
+- **Commits:** `b601949` — `docs: reconcile state after dogfooding merge`; `76ff8b2` — `docs: record post-merge reconciliation checks`
+- **Pull request:** [PR #116](https://github.com/vitala89/Intentloom/pull/116) (draft; release/tag/publication not authorized)
+- **Objective:** Reconcile the durable release records with the merged self-dogfooding evidence without converting `Pass with follow-up` into stable approval.
+- **Completed:** Confirmed PR #115 merged as `3ee661d`; confirmed its 12 Compatibility checks passed; and confirmed post-merge Compatibility run `30446567214` passed all six Ubuntu, macOS, and Windows Node 22/24 jobs.
+- **Not completed:** External minimal, TypeScript, and sanitized existing-project records still require refresh or explicit acceptance. Support-policy approval, glib exception decision, clean-room evidence, and final release authorization remain open.
+- **Files or packages changed:** `PROJECT_STATE.md`, `docs/releases/RELEASE_STATE.md`, `docs/releases/V1_0_RELEASE_GATE_PACKET.md`, `docs/releases/V1_0_READINESS_AUDIT.md`, and `DUTY_WATCH.md`; no runtime or dependency files.
+- **Validation:** Hosted post-merge Compatibility run `30446567214` passed all six jobs; PR #115 runs `30412546104` and `30412548271` passed all 12 matrix jobs; PR #116 runs `30448352136` and `30448370870` passed all 12 matrix jobs for the first documentation commit; local `pnpm format:check`, `pnpm lint`, and `git diff --check` passed before both documentation commits. Follow-up CI for `76ff8b2` was not retrievable because the GitHub API returned a DNS connection error during polling.
+- **Decisions and assumptions:** Treat the self-dogfooding record as supporting evidence only; keep the stable gate open until the three required project scenarios and maintainer approvals are recorded.
+- **Risks or compatibility impact:** Documentation-only state reconciliation; the medium transitive glib advisory remains visible and unresolved.
+- **Open issues or blockers:** External dogfooding evidence or explicit acceptance, support-policy approval, glib exception approval, clean-room evidence, and final release approval.
+- **Next first action:** Verify PR #116 status and checks for the latest `76ff8b2`; if it is merged, reconcile `main` and its post-merge Compatibility run, then supply or approve the three required dogfooding scenarios on the exact candidate commit.
+- **Evidence:** [PR #115](https://github.com/vitala89/Intentloom/pull/115), merge commit [`3ee661d`](https://github.com/vitala89/Intentloom/commit/3ee661d), [post-merge Compatibility run 30446567214](https://github.com/vitala89/Intentloom/actions/runs/30446567214), [PR #116](https://github.com/vitala89/Intentloom/pull/116), and [PR #116 Compatibility runs 30448352136](https://github.com/vitala89/Intentloom/actions/runs/30448352136) and [30448370870](https://github.com/vitala89/Intentloom/actions/runs/30448370870).
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant hosted compatibility checks passed
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `PROJECT_STATE.md` updated when applicable
+- [x] `DUTY_WATCH.md` handoff updated
+- [x] Related release reference documentation updated
 
 ### 2026-07-29, Phase 5: current self-dogfooding refresh
 

@@ -5,8 +5,8 @@ not authorize a tag, npm publication, or release announcement.
 
 Date: 2026-07-29.
 
-Candidate baseline under review: `d3da25d` (`main` and `origin/main` after PR
-#114 merge). The release gate remains open until the decisions and evidence in
+Candidate baseline under review: `3ee661d` (`main` and `origin/main` after PR
+#115 merge). The release gate remains open until the decisions and evidence in
 the release-gate packet are reviewed.
 
 ## Decision summary
@@ -85,6 +85,11 @@ No v1.0 tag or npm artifact is claimed by this document.
   `d3da25d`; it added the v1.0 release-gate packet and reconciled the release
   records after PR #113. The post-merge Compatibility run [30411737284](https://github.com/vitala89/Intentloom/actions/runs/30411737284)
   passed all six jobs on `main`.
+- PR [#115](https://github.com/vitala89/Intentloom/pull/115) merged as
+  `3ee661d`; it added current read-only self-dogfooding evidence and recorded
+  the remaining external dogfooding follow-up. The post-merge Compatibility
+  run [30446567214](https://github.com/vitala89/Intentloom/actions/runs/30446567214)
+  passed all six jobs on `main`.
 - Dependabot alert [#2](https://github.com/vitala89/Intentloom/security/dependabot/2)
   remains open at medium severity for `glib@0.18.5` in
   `apps/desktop/src-tauri/Cargo.lock`; GitHub reports `0.20.0` as the first
@@ -139,7 +144,7 @@ Compatibility verification for `5d1af7c` passed in [run 30410395631](https://git
 
 The hosted run for the candidate baseline `5d1af7c` completed all six Ubuntu,
 macOS, and Windows Node 22/24 jobs; the post-merge run for the current
-documentation baseline `d3da25d` is recorded above and also completed all six
+documentation baseline `3ee661d` is recorded above and also completed all six
 jobs.
 GitHub emitted only the existing Node.js 20 action deprecation annotations.
 

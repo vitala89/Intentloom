@@ -7,8 +7,8 @@ Date: 2026-07-29.
 
 ## Candidate under review
 
-- Verified `main` commit: `d3da25d`, merged by PR [#114](https://github.com/vitala89/Intentloom/pull/114).
-- Post-merge Compatibility run: [30411737284](https://github.com/vitala89/Intentloom/actions/runs/30411737284), all six Ubuntu, macOS, and Windows Node 22/24 jobs passed.
+- Verified `main` commit: `3ee661d`, merged by PR [#115](https://github.com/vitala89/Intentloom/pull/115).
+- Post-merge Compatibility run: [30446567214](https://github.com/vitala89/Intentloom/actions/runs/30446567214), all six Ubuntu, macOS, and Windows Node 22/24 jobs passed.
 - Dependency Review evidence: [run 30403512016](https://github.com/vitala89/Intentloom/actions/runs/30403512016), passed on PR #105.
 - Existing workflow warning: GitHub reports the Node.js 20 action deprecation for the current action versions; this is not a product test failure.
 

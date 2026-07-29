@@ -6,7 +6,7 @@ Historical release audits and roadmap sections retain their original scope, but
 this document is the source of truth for the current status.
 
 Snapshot: 2026-07-29
-Main commit: `d3da25d` (PR #114 merged)
+Main commit: `3ee661d` (PR #115 merged)
 Release commit: `a0e0b13` (tagged `v0.5.0-beta.1`)
 Workspace version: `0.5.0-beta.1`
 Git tag: `v0.5.0-beta.1` (pushed)
@@ -66,6 +66,10 @@ listed in the last table row. `latest` intentionally remains the historical
 - PR [#114](https://github.com/vitala89/Intentloom/pull/114) is merged as
   `d3da25d`; it adds the v1.0 release-gate packet and reconciles the release
   records after PR #113. The post-merge [Compatibility run](https://github.com/vitala89/Intentloom/actions/runs/30411737284)
+  passed all six Ubuntu, macOS, and Windows Node 22/24 jobs.
+- PR [#115](https://github.com/vitala89/Intentloom/pull/115) is merged as
+  `3ee661d`; it adds current read-only self-dogfooding evidence and records the
+  remaining external dogfooding follow-up. The post-merge [Compatibility run](https://github.com/vitala89/Intentloom/actions/runs/30446567214)
   passed all six Ubuntu, macOS, and Windows Node 22/24 jobs.
 - The GTK/WebKit dependency assessment is recorded in [PR #107](https://github.com/vitala89/Intentloom/pull/107),
   merged as `88d6f6b`; no dependency or runtime files changed.
