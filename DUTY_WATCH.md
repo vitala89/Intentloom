@@ -42,6 +42,32 @@ entry directly below this section.
 
 ## Watch entries
 
+### 2026-07-29, Phase 5: PR #117 review packet clarification
+
+- **Status:** partial
+- **Agent/tool:** Codex with GitHub PR metadata and repository release records
+- **Branch:** `codex/v1-phase5-post-merge-dogfooding-state`
+- **Commit:** `3d7b50e` — `docs: record current PR 117 verification`
+- **Pull request:** draft [PR #117](https://github.com/vitala89/Intentloom/pull/117), open and mergeable; no review/comments or maintainer gate decisions are present; release/tag/publication not authorized
+- **Completed:** Updated the PR description so the review packet explicitly includes the bounded Windows packed-doctor test timeout, the targeted test result, and hosted Compatibility run `30453380391`. The PR remains documentation plus test-harness scope only; no runtime or dependency behavior changed.
+- **Validation:** Retained the verified Compatibility result [30453380391](https://github.com/vitala89/Intentloom/actions/runs/30453380391) for commit `a676cf4`: all six Ubuntu, macOS, and Windows Node 22/24 jobs passed. No new code validation claim is made for this PR-metadata-only update.
+- **Not completed:** Maintainer support-policy approval, glib alert #2 disposition or coordinated migration, historical real-project dogfooding acceptance, exact release-commit approval, and PR merge remain open.
+- **Decisions and assumptions:** Keep PR #117 draft. The absence of review/comments is recorded as current external state, not interpreted as approval or rejection.
+- **Risks or compatibility impact:** No repository runtime, package, dependency, or generated-adapter changes were made by this clarification.
+- **Next first action:** Obtain maintainer review/merge disposition for PR #117; then record the four remaining gate decisions without tagging or publishing.
+- **Evidence:** [PR #117](https://github.com/vitala89/Intentloom/pull/117), [green Compatibility run 30453380391](https://github.com/vitala89/Intentloom/actions/runs/30453380391), and the exact-candidate [release-gate packet](docs/releases/V1_0_RELEASE_GATE_PACKET.md).
+
+#### Duty completion checklist
+
+- [x] Formatter passed for the final diff
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant hosted compatibility checks remain retained
+- [x] `git diff --check` passed for the final diff
+- [x] Final diff reviewed
+- [x] `PROJECT_STATE.md` updated when applicable
+- [x] `DUTY_WATCH.md` handoff updated
+- [x] Related release reference documentation updated
+
 ### 2026-07-29, Phase 5: current PR #117 Compatibility verification
 
 - **Status:** partial
