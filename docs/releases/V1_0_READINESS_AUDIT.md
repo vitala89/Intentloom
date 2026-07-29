@@ -5,21 +5,22 @@ not authorize a tag, npm publication, or release announcement.
 
 Date: 2026-07-29.
 
-Candidate baseline under review: `d076c037` (`main` and `origin/main` after PR
-#120 merge). The release gate remains open until the decisions and evidence in
+Candidate baseline under review: `83cefd3` (`main` and `origin/main` after PR
+#121 merge). The release gate remains open until the decisions and evidence in
 the release-gate packet are reviewed.
 
 ## Decision summary
 
 The Phase 1–4 implementation evidence and the release-candidate Compatibility
 matrix are present in `main`. PR #117 is merged with only a bounded test timeout
-for slower Windows runners, PR #118 is documentation-only, and PR #120 adds a
-second bounded test-harness timeout; none changes runtime, package, or dependency
-behavior. Supplemental clean-room,
+for slower Windows runners, PR #118 is documentation-only, PR #120 adds a
+second bounded test-harness timeout, and PR #121 is documentation-only; none
+changes runtime, package, or dependency behavior. Supplemental clean-room,
 explicit-path, and three-scenario records remain attached from the pre-merge
-runtime-equivalent candidate tree. The post-merge run for `d076c037` passed all
-six Compatibility jobs after the scoped test-only remediation. The v1.0 release
-gate remains **open** because support-policy
+runtime-equivalent candidate tree. The post-merge run for `83cefd3` passed all
+six Compatibility jobs after the scoped test-only remediation and the final
+documentation reconciliation. The v1.0 release gate remains **open** because
+support-policy
 approval, the glib disposition, acceptance or authorized refresh of
 real-project dogfooding records, and maintainer approval are not yet complete.
 
@@ -122,6 +123,11 @@ No v1.0 tag or npm artifact is claimed by this document.
   [30462153444](https://github.com/vitala89/Intentloom/actions/runs/30462153444)
   passed all six Ubuntu, macOS, and Windows Node 22/24 jobs. The change is
   limited to the packed all-adapter generation test timeout.
+- PR [#121](https://github.com/vitala89/Intentloom/pull/121) merged as
+  `83cefd3`; its post-merge Compatibility run
+  [30463844868](https://github.com/vitala89/Intentloom/actions/runs/30463844868)
+  passed all six Ubuntu, macOS, and Windows Node 22/24 jobs. The change is
+  limited to documentation and merged-branch cleanup records.
 - Dependabot alert [#2](https://github.com/vitala89/Intentloom/security/dependabot/2)
   remains open at medium severity for `glib@0.18.5` in
   `apps/desktop/src-tauri/Cargo.lock`; GitHub reports `0.20.0` as the first
@@ -181,12 +187,12 @@ and the documentation-reconciled candidate `ec869e1` completed all six jobs in
 [run 30458387847](https://github.com/vitala89/Intentloom/actions/runs/30458387847).
 The historical `main` candidate `c49bf793` was blocked by the Windows Node 24
 timeout in [run 30459836027](https://github.com/vitala89/Intentloom/actions/runs/30459836027);
-the current `main` candidate `d076c037` passed post-merge in [run
-30462153444](https://github.com/vitala89/Intentloom/actions/runs/30462153444).
+the current `main` candidate `83cefd3` passed post-merge in [run
+30463844868](https://github.com/vitala89/Intentloom/actions/runs/30463844868).
 The local clean-room records were produced against the pre-merge runtime tree
 `46a278c`; PR #117 and PR #118 made no runtime, package, or dependency changes,
 but a maintainer must still confirm that retained evidence is sufficient for
-the exact approved release commit `d076c037` or authorize a fresh run.
+the exact approved release commit `83cefd3` or authorize a fresh run.
 GitHub emitted only the existing Node.js 20 action deprecation annotations.
 
 The first sandbox attempts were not counted as results: npm DNS resolution was
@@ -205,7 +211,7 @@ evidence does not authorize a tag, npm publication, or release announcement.
 3. Local release-candidate install, build, packed CLI smoke, and full validation
    are recorded above. Confirm that the retained clean-room installation and explicit-path
    evidence from runtime-equivalent tree `46a278c` is sufficient for the exact
-   approved commit `d076c037`, or authorize a fresh run.
+   approved commit `83cefd3`, or authorize a fresh run.
 4. Accept or refresh the existing dogfooding records against the stable
    candidate without including private project data. The current self-adoption
    record is supporting evidence only and does not replace the three required
