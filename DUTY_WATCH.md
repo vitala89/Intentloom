@@ -9,9 +9,9 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **v1.0 Phase 1–4 merged; Phase 5 stable-release gate active** — PR #117 is merged as `c20c245`, PR #118 is open with green Compatibility run `30456754206`, and one medium glib alert remains for disposition
+Status: **v1.0 Phase 1–4 merged; Phase 5 stable-release gate active** — PR #117 is merged as `c20c245`, PR #118 is open at `a94dd71` with green Compatibility run `30457127511`, and one medium glib alert remains for disposition
 
-Active branch: `codex/v1-phase5-post-merge-dogfooding-state`
+Active branch: `codex/v1-phase5-post-merge-pr117-state`
 
 Current objective: execute Phase 5 of `V1_0_STABLE_COMPATIBILITY_PLAN.md`: assemble the v1.0 readiness audit and obtain maintainer release approval without implying a tag or publication.
 
@@ -47,15 +47,15 @@ entry directly below this section.
 - **Status:** partial
 - **Agent/tool:** Codex with GitHub PR metadata, GitHub Actions, and repository release records
 - **Branch:** `codex/v1-phase5-post-merge-pr117-state`
-- **Commit:** `0ba99ce` — `docs: reconcile release state after PR 117 merge`
+- **Commit:** `a94dd71` — `docs: record PR 118 compatibility`
 - **Pull request:** draft [PR #118](https://github.com/vitala89/Intentloom/pull/118), open; release/tag/publication not authorized
-- **Completed:** Opened PR #118 to carry the post-merge synchronization from `main` `c20c245` into the durable project and release records. Compatibility run [30456754206](https://github.com/vitala89/Intentloom/actions/runs/30456754206) passed all six Ubuntu, macOS, and Windows Node 22/24 jobs.
+- **Completed:** Opened PR #118 to carry the post-merge synchronization from `main` `c20c245` into the durable project and release records. The latest PR head is `a94dd71`; Compatibility run [30457127511](https://github.com/vitala89/Intentloom/actions/runs/30457127511) passed all six Ubuntu, macOS, and Windows Node 22/24 jobs.
 - **Validation:** Hosted typecheck, lint, format, build, and test passed in all six jobs; only the known Node.js 20 action deprecation annotations remain. Local `pnpm format:check` and `git diff --check` passed before push. The PR changes only release documentation and project-state records.
 - **Not completed:** PR #118 is not merged. Support-policy approval, glib alert #2 disposition or coordinated migration, historical real-project dogfooding acceptance, confirmation that retained clean-room/explicit-path evidence is sufficient for `c20c245`, and final release approval remain open.
-- **Decisions and assumptions:** Treat `c20c245` as the current candidate and `30456140463` as its post-merge product matrix. Treat `30456754206` as validation of the documentation reconciliation only; do not infer release approval from either green run.
+- **Decisions and assumptions:** Treat `c20c245` as the current candidate and `30456140463` as its post-merge product matrix. Treat `30457127511` as validation of the current documentation reconciliation only; do not infer release approval from either green run.
 - **Risks or compatibility impact:** No runtime, package, dependency, or generated-adapter changes were introduced. The transitive medium glib alert remains visible and unresolved.
 - **Next first action:** Obtain maintainer review/merge disposition for PR #118, then record the support-policy, glib, dogfooding, exact-evidence, and final-approval decisions without tagging or publishing.
-- **Evidence:** [PR #118](https://github.com/vitala89/Intentloom/pull/118), [green Compatibility run 30456754206](https://github.com/vitala89/Intentloom/actions/runs/30456754206), [merged candidate c20c245](https://github.com/vitala89/Intentloom/commit/c20c245), and [release-gate packet](docs/releases/V1_0_RELEASE_GATE_PACKET.md).
+- **Evidence:** [PR #118](https://github.com/vitala89/Intentloom/pull/118), [green Compatibility run 30457127511](https://github.com/vitala89/Intentloom/actions/runs/30457127511), [merged candidate c20c245](https://github.com/vitala89/Intentloom/commit/c20c245), and [release-gate packet](docs/releases/V1_0_RELEASE_GATE_PACKET.md).
 
 #### Duty completion checklist
 
