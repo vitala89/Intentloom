@@ -9,7 +9,7 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **v1.0 Phase 1–4 merged; Phase 5 stable-release gate active** — PR #117 is merged as `c20c245`, PR #118 is open at `a94dd71` with green Compatibility run `30457127511`, and one medium glib alert remains for disposition
+Status: **v1.0 Phase 1–4 merged; Phase 5 stable-release gate active** — PR #117 is merged as `c20c245`, PR #118 remains open, the latest confirmed green Compatibility run is `30457127511` for `a94dd71`, and one medium glib alert remains for disposition
 
 Active branch: `codex/v1-phase5-post-merge-pr117-state`
 
@@ -41,6 +41,33 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-29, Phase 5: latest PR #118 handoff commit pending hosted verification
+
+- **Status:** partial
+- **Agent/tool:** Codex with GitHub Actions, Git, and release records
+- **Branch:** `codex/v1-phase5-post-merge-pr117-state`
+- **Commit:** `cfc0d44` — `docs: record latest PR 118 gate state`
+- **Pull request:** draft [PR #118](https://github.com/vitala89/Intentloom/pull/118), open; release/tag/publication not authorized
+- **Completed:** Recorded the latest PR #118 Compatibility result for head `a94dd71`: run [30457127511](https://github.com/vitala89/Intentloom/actions/runs/30457127511) passed all six Ubuntu, macOS, and Windows Node 22/24 jobs. Pushed the Duty Watch reconciliation as `cfc0d44`.
+- **Validation:** Run `30457127511` completed successfully in all six jobs; only the known Node.js 20 action deprecation annotations remain. The new `cfc0d44` commit is documentation-only and has triggered a fresh hosted check that must be queried before treating the current PR head as green.
+- **Not completed:** PR #118 is not merged. Support-policy approval, glib alert #2 disposition or coordinated migration, historical real-project dogfooding acceptance, confirmation that retained clean-room/explicit-path evidence is sufficient for `c20c245`, and final release approval remain open.
+- **Decisions and assumptions:** Keep `c20c245` as the exact product candidate. Do not infer release approval from the green parent run or from the new documentation-only check until its result is verified.
+- **Risks or compatibility impact:** No runtime, package, dependency, or generated-adapter changes were introduced. The transitive medium glib alert remains visible and unresolved.
+- **Next first action:** Query the fresh Compatibility run for `cfc0d44`; after it is confirmed, obtain maintainer review/merge disposition for PR #118 and record the remaining Phase 5 decisions without tagging or publishing.
+- **Evidence:** [PR #118](https://github.com/vitala89/Intentloom/pull/118), [green parent run 30457127511](https://github.com/vitala89/Intentloom/actions/runs/30457127511), [handoff commit cfc0d44](https://github.com/vitala89/Intentloom/commit/cfc0d44), and [release-gate packet](docs/releases/V1_0_RELEASE_GATE_PACKET.md).
+
+#### Duty completion checklist
+
+- [x] Formatter passed for the final diff
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant prior hosted compatibility checks passed
+- [x] `git diff --check` passed for the final diff
+- [x] Final diff reviewed
+- [ ] Current-head hosted compatibility check verified
+- [x] `PROJECT_STATE.md` updated when applicable
+- [x] `DUTY_WATCH.md` handoff updated
+- [x] Related release reference documentation updated
 
 ### 2026-07-29, Phase 5: post-merge reconciliation PR #118 Compatibility verification
 
