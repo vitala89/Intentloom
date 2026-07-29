@@ -5,8 +5,8 @@ not authorize a tag, npm publication, or release announcement.
 
 Date: 2026-07-29.
 
-Candidate baseline under review: `a0443b5` (`main` and `origin/main` after PR
-#113 merge). The release gate remains open until the decisions and evidence in
+Candidate baseline under review: `d3da25d` (`main` and `origin/main` after PR
+#114 merge). The release gate remains open until the decisions and evidence in
 the release-gate packet are reviewed.
 
 ## Decision summary
@@ -39,7 +39,7 @@ No v1.0 tag or npm artifact is claimed by this document.
 | Daemon/MCP/client compatibility and discovery                | PASS                | Protocol/client tests and the typed v1 method contracts                                                                                                                                                                                    |
 | Desktop/TUI read-only equivalence and cancellation           | PASS with recheck   | [CLIENT_SURFACE_EQUIVALENCE.md](../compatibility/CLIENT_SURFACE_EQUIVALENCE.md), Desktop readiness audit, and `tests/interactive-ui.test.ts`                                                                                               |
 | Threat model, permissions, provenance, and incident response | PENDING             | PR #105 merged with green Dependency Review and closed high alert #1; alert #2 has no safe point update in the current GTK/WebKit graph and requires a coordinated upgrade or approved exception                                           |
-| Dogfooding evidence                                          | PASS with follow-up | Three required scenario records exist under `docs/releases/dogfooding/`; records predate v1.0 and must be explicitly accepted or refreshed for the stable candidate                                                                        |
+| Dogfooding evidence                                          | PASS with follow-up | A current Intentloom self-adoption record exists under `docs/releases/dogfooding/`; the minimal, TypeScript, and sanitized existing-project records predate v1.0 and must be explicitly accepted or refreshed for the stable candidate     |
 | Final readiness audit and maintainer approval                | OPEN                | Approve this audit only after the remaining evidence is attached to one release commit                                                                                                                                                     |
 
 ## Release-state facts
@@ -80,6 +80,10 @@ No v1.0 tag or npm artifact is claimed by this document.
 - PR [#113](https://github.com/vitala89/Intentloom/pull/113) merged as
   `a0443b5`; it completed the final Phase 5 state reconciliation. The
   post-merge Compatibility run [30411096968](https://github.com/vitala89/Intentloom/actions/runs/30411096968)
+  passed all six jobs on `main`.
+- PR [#114](https://github.com/vitala89/Intentloom/pull/114) merged as
+  `d3da25d`; it added the v1.0 release-gate packet and reconciled the release
+  records after PR #113. The post-merge Compatibility run [30411737284](https://github.com/vitala89/Intentloom/actions/runs/30411737284)
   passed all six jobs on `main`.
 - Dependabot alert [#2](https://github.com/vitala89/Intentloom/security/dependabot/2)
   remains open at medium severity for `glib@0.18.5` in
@@ -135,7 +139,7 @@ Compatibility verification for `5d1af7c` passed in [run 30410395631](https://git
 
 The hosted run for the candidate baseline `5d1af7c` completed all six Ubuntu,
 macOS, and Windows Node 22/24 jobs; the post-merge run for the current
-documentation baseline `a0443b5` is recorded above and also completed all six
+documentation baseline `d3da25d` is recorded above and also completed all six
 jobs.
 GitHub emitted only the existing Node.js 20 action deprecation annotations.
 
@@ -157,7 +161,9 @@ evidence does not authorize a tag, npm publication, or release announcement.
    Still run or retain clean-room installation evidence and complete the
    explicit-path dogfooding checks for the exact approved commit.
 4. Accept or refresh the existing dogfooding records against the stable
-   candidate without including private project data.
+   candidate without including private project data. The current self-adoption
+   record is supporting evidence only and does not replace the three required
+   project scenarios.
 5. Complete the applicable [publish authorization checklist](PUBLISH_AUTHORIZATION_CHECKLIST.md)
    and record maintainer approval for the exact release commit.
 6. Only after approval, open the release PR; tag and publish from the verified

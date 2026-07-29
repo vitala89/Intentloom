@@ -7,8 +7,8 @@ Date: 2026-07-29.
 
 ## Candidate under review
 
-- Verified `main` commit: `a0443b5`, merged by PR [#113](https://github.com/vitala89/Intentloom/pull/113).
-- Post-merge Compatibility run: [30411096968](https://github.com/vitala89/Intentloom/actions/runs/30411096968), all six Ubuntu, macOS, and Windows Node 22/24 jobs passed.
+- Verified `main` commit: `d3da25d`, merged by PR [#114](https://github.com/vitala89/Intentloom/pull/114).
+- Post-merge Compatibility run: [30411737284](https://github.com/vitala89/Intentloom/actions/runs/30411737284), all six Ubuntu, macOS, and Windows Node 22/24 jobs passed.
 - Dependency Review evidence: [run 30403512016](https://github.com/vitala89/Intentloom/actions/runs/30403512016), passed on PR #105.
 - Existing workflow warning: GitHub reports the Node.js 20 action deprecation for the current action versions; this is not a product test failure.
 
@@ -20,9 +20,11 @@ readiness audit can be approved:
 1. Approve or revise [SUPPORT_POLICY_V1.md](SUPPORT_POLICY_V1.md), including
    the supported Node/host boundary and experimental-surface exclusions.
 2. Explicitly accept the existing dogfooding records or refresh them against
-   this candidate. Existing records are dated 2026-07-20 and 2026-07-24 and
-   use earlier development builds; a fixture or CI result does not replace
-   real-project evidence.
+   this candidate. A current self-adoption record is now available at
+   [2026-07-29-intentloom-self-adoption-readonly.md](dogfooding/2026-07-29-intentloom-self-adoption-readonly.md),
+   but the earlier minimal, TypeScript, and sanitized existing-project records
+   still use development builds and require explicit acceptance or refresh. A
+   fixture or CI result does not replace real-project evidence.
 3. Approve or reject the proposed scoped exception for Dependabot alert #2
    in [V1_SECURITY_AND_SUPPLY_CHAIN_AUDIT.md](../security/V1_SECURITY_AND_SUPPLY_CHAIN_AUDIT.md),
    or authorize a coordinated GTK/WebKit/Tauri migration instead. If approved,
