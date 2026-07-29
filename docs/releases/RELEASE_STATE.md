@@ -6,7 +6,7 @@ Historical release audits and roadmap sections retain their original scope, but
 this document is the source of truth for the current status.
 
 Snapshot: 2026-07-29
-Main commit: `5d1af7c` (PR #112 merged)
+Main commit: `a0443b5` (PR #113 merged)
 Release commit: `a0e0b13` (tagged `v0.5.0-beta.1`)
 Workspace version: `0.5.0-beta.1`
 Git tag: `v0.5.0-beta.1` (pushed)
@@ -59,6 +59,10 @@ listed in the last table row. `latest` intentionally remains the historical
   `ae63b7a`; the dependency-review control is in
   [PR #105](https://github.com/vitala89/Intentloom/pull/105), merged as
   `86a1aee`.
+- PR [#113](https://github.com/vitala89/Intentloom/pull/113) is merged as
+  `a0443b5`; it completes the final Phase 5 state reconciliation. The
+  post-merge [Compatibility run](https://github.com/vitala89/Intentloom/actions/runs/30411096968)
+  passed all six Ubuntu, macOS, and Windows Node 22/24 jobs.
 - The GTK/WebKit dependency assessment is recorded in [PR #107](https://github.com/vitala89/Intentloom/pull/107),
   merged as `88d6f6b`; no dependency or runtime files changed.
 - The proposed glib exception and release-gate conditions are prepared after

@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **v1.0 Phase 1–4 merged; Phase 5 stable-release gate active** — PR #112 is merged as `5d1af7c`, and the post-merge Compatibility matrix is green; the fast-uri high alert is closed, and one medium glib alert remains for disposition
+Status: **v1.0 Phase 1–4 merged; Phase 5 stable-release gate active** — PR #113 is merged as `a0443b5`, and the post-merge Compatibility matrix is green; the fast-uri high alert is closed, and one medium glib alert remains for disposition
 
-Active branch: `codex/v1-phase5-final-state`
+Active branch: `codex/v1-phase5-release-gate-packet`
 
 Current objective: execute Phase 5 of `V1_0_STABLE_COMPATIBILITY_PLAN.md`: assemble the v1.0 readiness audit and obtain maintainer release approval without implying a tag or publication.
 
-Next first action: obtain maintainer approval for dogfooding acceptance, the support policy, and the scoped glib exception.
+Next first action: review the v1.0 release-gate packet and record maintainer decisions for support policy, dogfooding, and the scoped glib exception.
 
 ## Watch rules
 
@@ -41,6 +41,35 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-29, Phase 5: release-gate packet after PR #113
+
+- **Status:** partial
+- **Agent/tool:** Codex with GitHub CLI and repository release records
+- **Branch:** `codex/v1-phase5-release-gate-packet`
+- **Commits:** `64abf40` — `docs: prepare v1 release gate packet`
+- **Pull request:** [PR #114](https://github.com/vitala89/Intentloom/pull/114); release/tag/publication not authorized
+- **Objective:** Prepare one reviewable release-gate packet on the current merged `main` without converting pending evidence into approval.
+- **Completed:** Confirmed PR #113 merged as `a0443b5`; confirmed post-merge Compatibility run `30411096968` passed all six Ubuntu, macOS, and Windows Node 22/24 jobs; retained Dependency Review run `30403512016`; and recorded the remaining support-policy, dogfooding, glib-exception, clean-room, and final-approval decisions in `docs/releases/V1_0_RELEASE_GATE_PACKET.md`.
+- **Not completed:** No maintainer decisions, release tag, npm publication, or release announcement. Dependabot alert #2 remains open at medium severity.
+- **Files or packages changed:** `PROJECT_STATE.md`, `docs/releases/RELEASE_STATE.md`, `docs/releases/V1_0_READINESS_AUDIT.md`, `docs/releases/V1_0_RELEASE_GATE_PACKET.md`, and `DUTY_WATCH.md`; no runtime or dependency files.
+- **Validation:** Hosted Compatibility run `30411096968` passed all six jobs; Dependency Review run `30403512016` passed; `pnpm format:check`, `pnpm lint`, `git diff --check`, and final documentation review passed.
+- **Decisions and assumptions:** Keep the release gate open; treat old dogfooding records as supporting evidence requiring explicit acceptance or refresh; preserve the proposed time-bounded glib exception as a maintainer decision rather than silently approving it.
+- **Risks or compatibility impact:** Documentation-only release-control update. The known transitive glib advisory remains visible and unresolved.
+- **Open issues or blockers:** Maintainer approval of the support policy, dogfooding disposition, glib exception or coordinated migration, clean-room/explicit-path evidence, and final release authorization.
+- **Next first action:** Review the release-gate packet and record the maintainer decisions on the exact candidate commit.
+- **Evidence:** [PR #113](https://github.com/vitala89/Intentloom/pull/113), merge commit [`a0443b5`](https://github.com/vitala89/Intentloom/commit/a0443b5), [Compatibility run 30411096968](https://github.com/vitala89/Intentloom/actions/runs/30411096968), and [Dependency Review run 30403512016](https://github.com/vitala89/Intentloom/actions/runs/30403512016).
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant hosted compatibility checks passed
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `PROJECT_STATE.md` updated when applicable
+- [x] `DUTY_WATCH.md` handoff updated
+- [x] Related release reference documentation updated
 
 ### 2026-07-29, Phase 5: final state reconciliation after PR #112
 
