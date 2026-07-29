@@ -9,7 +9,7 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **v1.0 Phase 1–4 merged; Phase 5 stable-release gate active** — PR #116 is merged as `46a278c`, PR #117 is open at head `51ce7fd`; the latest confirmed green Compatibility run is `30453380391` for `a676cf4`, and one medium glib alert remains for disposition
+Status: **v1.0 Phase 1–4 merged; Phase 5 stable-release gate active** — PR #116 is merged as `46a278c`, PR #117 is open at head `27b9cb0`; the latest confirmed green Compatibility run is `30453380391` for `a676cf4`, and one medium glib alert remains for disposition
 
 Active branch: `codex/v1-phase5-post-merge-dogfooding-state`
 
@@ -41,6 +41,32 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-29, Phase 5: unchanged maintainer-gate recheck
+
+- **Status:** partial
+- **Agent/tool:** Codex with GitHub PR metadata and workflow-status connector
+- **Branch:** `codex/v1-phase5-post-merge-dogfooding-state`
+- **Commit:** `27b9cb0` — `docs: record PR 117 gate recheck`
+- **Pull request:** draft [PR #117](https://github.com/vitala89/Intentloom/pull/117), open and mergeable at head `27b9cb0`; no review submissions or comments are present; release/tag/publication not authorized
+- **Completed:** Rechecked the current maintainer-dependent Phase 5 state. No new review, comment, merge, support-policy decision, glib disposition, dogfooding acceptance, or release approval appeared.
+- **Validation:** The latest confirmed hosted result remains [Compatibility run 30453380391](https://github.com/vitala89/Intentloom/actions/runs/30453380391) for `a676cf4`, with all six Ubuntu, macOS, and Windows Node 22/24 jobs passed. The available commit-run query returned no workflow result for `27b9cb0`; no status is inferred for that documentation-only head.
+- **Not completed:** PR #117 merge and all maintainer-owned release gates remain open. No new code validation was needed because the repository content did not change during this recheck.
+- **Decisions and assumptions:** Keep the gate open and do not treat the retained green run as a claim about the newer handoff commit.
+- **Risks or compatibility impact:** No runtime, package, dependency, or generated-adapter changes were introduced.
+- **Next first action:** Obtain maintainer review/merge disposition for PR #117; after any head change or merge, re-query complete hosted checks before recording a release decision.
+- **Evidence:** [PR #117](https://github.com/vitala89/Intentloom/pull/117), [retained green run 30453380391](https://github.com/vitala89/Intentloom/actions/runs/30453380391), and the [release-gate packet](docs/releases/V1_0_RELEASE_GATE_PACKET.md).
+
+#### Duty completion checklist
+
+- [x] Formatter passed for the final diff
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant hosted evidence status checked and uncertainty recorded
+- [x] `git diff --check` passed for the final diff
+- [x] Final diff reviewed
+- [x] `PROJECT_STATE.md` updated when applicable
+- [x] `DUTY_WATCH.md` handoff updated
+- [x] Related release reference documentation updated
 
 ### 2026-07-29, Phase 5: maintainer-gate recheck after PR #117 handoff
 
