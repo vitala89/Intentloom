@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **v1.0 Phase 1–4 merged; Phase 5 stable-release gate active** — PR #129 is merged as `802da40`, its post-merge Compatibility run `30496928912` passed all six jobs, PR #130's final-head Compatibility runs passed all 12 jobs, confirmed dead branches were cleaned up, and one medium glib alert remains for disposition
+Status: **v1.0 Phase 1–4 merged; Phase 5 stable-release gate active** — PR #130 is merged as `3257bdf`, its post-merge Compatibility run `30498583852` passed all six jobs, the confirmed dead feature branch was cleaned up locally and on GitHub, and one medium glib alert remains for disposition
 
-Active branch: `codex/v1-phase5-post-merge-pr129-state`
+Active branch: `codex/v1-phase5-post-merge-pr130-state`
 
 Current objective: execute Phase 5 of `V1_0_STABLE_COMPATIBILITY_PLAN.md`: assemble the v1.0 readiness audit and obtain maintainer release approval without implying a tag or publication.
 
-Next first action: have maintainer merge the green PR #130, verify its post-merge Compatibility run against the resulting main commit, and then close the remaining Phase 5 gates; do not tag or publish without separate authorization.
+Next first action: review the synchronized Phase 5 packet and record maintainer decisions for support policy, the glib exception, real-project dogfooding acceptance, clean-room evidence sufficiency, and the exact release commit; do not tag or publish without separate authorization.
 
 ## Watch rules
 
@@ -41,6 +41,29 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-30, Phase 5: PR #130 merge and post-merge candidate verification
+
+- **Status:** complete for this watch; the stable-release gate remains open
+- **Agent/tool:** Codex with GitHub CLI, Git, GitHub Actions, and release records
+- **Branch:** `codex/v1-phase5-post-merge-pr130-state`
+- **Base:** `main` / `origin/main` at `3257bdf`, merge commit for PR #130
+- **Pull request:** PR [#130](https://github.com/vitala89/Intentloom/pull/130) merged with merge commit `3257bdf` from head `9003ae2`; no tag, npm publication, or v1.0 release authorization was inferred
+- **Completed:** Verified the merge, fast-forwarded local `main`, created the next post-merge state branch, and reconciled `PROJECT_STATE.md`, `RELEASE_STATE.md`, `V1_0_READINESS_AUDIT.md`, and `V1_0_RELEASE_GATE_PACKET.md` to the exact post-merge candidate. PR #130 contains documentation reconciliation plus a bounded Windows-aware timeout for an existing CLI schema process test; no product runtime, package, or dependency behavior changed.
+- **Validation:** `gh pr view 130` confirmed `MERGED`; local `main` fast-forwarded to `3257bdf`; post-merge Compatibility run [30498583852](https://github.com/vitala89/Intentloom/actions/runs/30498583852) passed all six Ubuntu, macOS, and Windows Node 22/24 jobs. The only annotations were the known Node.js 20 action deprecation notices. Local `pnpm format:check` and `git diff --check` passed for this reconciliation.
+- **Not completed:** Support-policy approval, glib alert #2 disposition or coordinated migration, acceptance or authorized refresh of real-project dogfooding, clean-room/explicit-path evidence sufficiency decision for `3257bdf`, and final maintainer release approval remain open.
+- **Decisions and assumptions:** Treat `3257bdf` as the exact current stable-gate candidate. Preserve the historical PR #130 remediation entry below; this entry is the authoritative post-merge state. Do not infer release approval from the green matrix and do not create a tag or publish without separate explicit authorization.
+- **Next first action:** Commit and push this post-merge reconciliation, then continue the remaining Phase 5 gates from the exact `3257bdf` candidate.
+- **Evidence:** [PR #130](https://github.com/vitala89/Intentloom/pull/130), [merge commit `3257bdf`](https://github.com/vitala89/Intentloom/commit/3257bdf), and [post-merge Compatibility run 30498583852](https://github.com/vitala89/Intentloom/actions/runs/30498583852).
+
+#### Duty completion checklist
+
+- [x] PR #130 merged
+- [x] Local `main` fast-forwarded to the merge commit
+- [x] Post-merge Compatibility checks passed
+- [x] Release-state documents synchronized
+- [x] Formatter and `git diff --check` passed for this reconciliation
+- [ ] Handoff committed and pushed
 
 ### 2026-07-30, Phase 5: PR #130 Windows Node 24 timeout and scoped remediation
 
