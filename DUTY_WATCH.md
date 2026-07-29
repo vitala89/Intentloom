@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **v1.0 Phase 1–4 merged; Phase 5 stable-release gate active** — PR #117 is merged as `c20c245`, PR #118 remains open, the latest confirmed green Compatibility run is `30457677874` for `c898959`, and one medium glib alert remains for disposition
+Status: **v1.0 Phase 1–4 merged; Phase 5 stable-release gate active** — PR #118 is merged as `ec869e1`, post-merge Compatibility run `30458387847` is green across all six jobs, and one medium glib alert remains for disposition
 
-Active branch: `codex/v1-phase5-post-merge-pr117-state`
+Active branch: `main`
 
 Current objective: execute Phase 5 of `V1_0_STABLE_COMPATIBILITY_PLAN.md`: assemble the v1.0 readiness audit and obtain maintainer release approval without implying a tag or publication.
 
-Next first action: obtain review/merge disposition for PR #118, then record maintainer decisions for support policy, the glib exception, real-project dogfooding acceptance, and the exact release commit `c20c245`; do not tag or publish without separate authorization.
+Next first action: record maintainer decisions for support policy, the glib exception, real-project dogfooding acceptance, clean-room evidence sufficiency, and the exact release commit `ec869e1`; do not tag or publish without separate authorization.
 
 ## Watch rules
 
@@ -41,6 +41,30 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-29, Phase 5: PR #118 merge and post-merge candidate verification
+
+- **Status:** partial
+- **Agent/tool:** Codex with GitHub PR metadata, GitHub Actions, Git, and release records
+- **Branch:** `main`
+- **Base:** `main` / `origin/main` at `ec869e1`, merge commit for PR #118
+- **Pull request:** [PR #118](https://github.com/vitala89/Intentloom/pull/118) merged as `ec869e1`; no tag, npm publication, or v1.0 release authorization was inferred
+- **Completed:** Confirmed PR #118 merged, fast-forwarded local `main` to `origin/main` at `ec869e1`, and verified post-merge Compatibility run [30458387847](https://github.com/vitala89/Intentloom/actions/runs/30458387847). All six Ubuntu, macOS, and Windows Node 22/24 jobs passed. Synchronized `PROJECT_STATE.md`, `RELEASE_STATE.md`, `V1_0_READINESS_AUDIT.md`, and `V1_0_RELEASE_GATE_PACKET.md` with the merged candidate.
+- **Validation:** Hosted run `30458387847` passed typecheck, lint, format, build, and test in all six jobs; only the known Node.js 20 action deprecation annotations remain. PR #118 is documentation-only and introduced no runtime, package, or dependency behavior change. Local formatting and `git diff --check` remain required after the documentation reconciliation.
+- **Not completed:** Support-policy approval, glib alert #2 disposition or coordinated migration, historical real-project dogfooding acceptance, confirmation that retained clean-room/explicit-path evidence is sufficient for `ec869e1`, and final release approval remain open.
+- **Decisions and assumptions:** Treat `ec869e1` as the exact current candidate. Treat the retained clean-room evidence from runtime-equivalent `46a278c` as supplemental pending maintainer confirmation. Do not infer release approval from the green matrix.
+- **Risks or compatibility impact:** The transitive medium glib alert remains visible and unresolved. The workflow emits the known Node.js 20 action deprecation annotation; no product test failure was observed.
+- **Next first action:** Run local formatter and `git diff --check`, commit and push the documentation reconciliation if needed, then obtain and record the remaining maintainer decisions without tagging or publishing.
+- **Evidence:** [PR #118](https://github.com/vitala89/Intentloom/pull/118), merge commit [ec869e1](https://github.com/vitala89/Intentloom/commit/ec869e1), [post-merge run 30458387847](https://github.com/vitala89/Intentloom/actions/runs/30458387847), [readiness audit](docs/releases/V1_0_READINESS_AUDIT.md), and [release-gate packet](docs/releases/V1_0_RELEASE_GATE_PACKET.md).
+
+#### Duty completion checklist
+
+- [x] Relevant hosted compatibility checks passed
+- [x] Formatter passed for the final local documentation diff
+- [x] `git diff --check` passed for the final local documentation diff
+- [x] `PROJECT_STATE.md` updated when applicable
+- [x] `DUTY_WATCH.md` handoff updated
+- [x] Related release reference documentation updated
 
 ### 2026-07-29, Phase 5: PR #118 current-head Compatibility verification
 
