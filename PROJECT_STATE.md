@@ -210,6 +210,13 @@ before a new release or implementation milestone is declared complete.
   post-merge Compatibility run `30498583852` passed all six Ubuntu, macOS, and
   Windows Node 22/24 jobs, with only the known Node.js 20 action deprecation
   annotations. No product runtime, package, or dependency behavior changed.
+- The active security-baseline branch adds `.github/dependabot.yml` for the
+  root npm/pnpm lockfile and the Desktop Cargo lockfile, plus a CodeQL workflow
+  for JavaScript/TypeScript and GitHub Actions. These are repository
+  configurations only; the first post-merge CodeQL result and Dependabot
+  security-update setting still require verification. CodeQL does not cover
+  the Rust dependency graph, so alert #2 remains governed by the existing
+  compatibility assessment and maintainer decision.
 - Exact-candidate supplemental clean-room, explicit-path, minimal, TypeScript,
   and sanitized existing-project evidence is recorded under
   `docs/releases/dogfooding/`; it does not replace real-project acceptance or

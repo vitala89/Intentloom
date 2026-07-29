@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **v1.0 Phase 1–4 merged; Phase 5 stable-release gate active** — PR #130 is merged as `3257bdf`, its post-merge Compatibility run `30498583852` passed all six jobs, confirmed merged/stale post-merge branches were cleaned up locally and on GitHub, and one medium glib alert remains for disposition
+Status: **v1.0 Phase 1–4 merged; Phase 5 stable-release gate active** — PR #130 is merged as `3257bdf`, its post-merge Compatibility run `30498583852` passed all six jobs, confirmed merged/stale post-merge branches were cleaned up locally and on GitHub, and one medium glib alert remains for disposition; the security-baseline branch now carries Dependabot and CodeQL configuration pending merge and first-run verification
 
-Active branch: `codex/v1-phase5-post-merge-pr130-state`
+Active branch: `codex/security-dependabot-codeql-baseline`
 
-Current objective: execute Phase 5 of `V1_0_STABLE_COMPATIBILITY_PLAN.md`: assemble the v1.0 readiness audit and obtain maintainer release approval without implying a tag or publication.
+Current objective: add and verify the free repository security baseline, then continue Phase 5 of `V1_0_STABLE_COMPATIBILITY_PLAN.md` without implying a tag or publication.
 
-Next first action: review the synchronized Phase 5 packet and record maintainer decisions for support policy, the glib exception, real-project dogfooding acceptance, clean-room evidence sufficiency, and the exact release commit; do not tag or publish without separate authorization.
+Next first action: validate the new Dependabot and CodeQL files, inspect the current repository security settings and alert #2, then obtain maintainer merge/enablement approval; after merge, retain the first CodeQL result and continue the support-policy, glib, dogfooding, clean-room, and exact-release-commit gates. Do not tag or publish without separate authorization.
 
 ## Watch rules
 
@@ -41,6 +41,30 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-30, Phase 5: free dependency monitoring and code-scanning baseline
+
+- **Status:** in progress; configuration is prepared locally and the stable-release gate remains open
+- **Agent/tool:** Codex with Git, GitHub CLI, GitHub security documentation, and the CodeQL workflow guidance
+- **Branch:** `codex/security-dependabot-codeql-baseline`
+- **Base:** `main` / `origin/main` at `3257bdf`, the verified PR #130 merge commit
+- **Objective:** Add a bounded, free repository security baseline without changing product dependencies, enabling hidden automation, dismissing the open glib alert, or implying release approval.
+- **Completed:** Added `.github/dependabot.yml` with weekly npm/pnpm and Cargo checks, bounded to five open update PRs per ecosystem and without auto-merge. Added `.github/workflows/codeql.yml` for JavaScript/TypeScript and GitHub Actions on main pushes, main pull requests, a weekly schedule, and manual dispatch. Confirmed the repository already has Dependency Review and Compatibility workflows. The last successful repository settings read reported Dependabot security updates disabled; Dependabot alerts are active because alert #2 is present. The glib alert remains open and was not dismissed or overridden.
+- **Validation:** `pnpm format:check` passed after adding both YAML files; `git diff --check` passed. No dependency or runtime files changed. The first CodeQL result and the post-merge Dependabot security-update setting still require external verification; the preceding `gh` API retry failed to connect and is not treated as a result.
+- **Free-control assessment:** Dependabot alerts/security updates, Dependency Review, CodeQL for a public repository, and secret scanning are GitHub-native options. No Marketplace action is required for this baseline. `zizmor` is a possible later workflow-hardening addition but is third-party/early-development and not needed before the first-party controls are verified. Gitleaks is not added because public-repository secret scanning is the lower-maintenance first choice; scanning would not remove any leaked secret from history.
+- **Not completed:** Merge of this security-baseline branch, first CodeQL run, explicit verification or enablement of Dependabot security updates, glib alert #2 disposition, support-policy approval, real-project dogfooding acceptance, clean-room/explicit-path evidence sufficiency, and final maintainer release approval remain open.
+- **Decisions and assumptions:** Keep CodeQL scope to `javascript-typescript` and `actions`; CodeQL is not being represented as Rust/Cargo scanning. Keep Dependabot on weekly cadence with no auto-merge to control churn. Do not enable secret scanning or change repository settings in this watch without explicit confirmation of that external setting change. Do not create a tag or publish a package.
+- **Next first action:** Run the repository formatter/diff checks again before commit, review the new YAML, retry the read-only GitHub settings/alert query, then commit and push the branch only after local validation. Open a PR only if the maintainer wants the configuration reviewed; after merge, verify CodeQL and Dependabot security-update behavior.
+- **Evidence:** [GitHub Actions billing](https://docs.github.com/en/billing/concepts/product-billing/github-actions), [Dependabot alerts](https://docs.github.com/en/code-security/concepts/supply-chain-security/dependabot-alerts), [dependabot.yml reference](https://docs.github.com/en/code-security/concepts/supply-chain-security/about-the-dependabot-yml-file), [CodeQL code scanning](https://docs.github.com/en/code-security/concepts/code-scanning/codeql/codeql-code-scanning), [secret scanning scope](https://docs.github.com/en/code-security/reference/secret-security/secret-scanning-scope), and the repository files added in this watch.
+
+#### Duty completion checklist
+
+- [x] Dependabot config added for npm/pnpm and Cargo
+- [x] CodeQL workflow added for JavaScript/TypeScript and GitHub Actions
+- [x] Formatter and `git diff --check` passed
+- [ ] External security settings and alert recheck complete
+- [ ] First post-merge CodeQL run retained
+- [ ] Handoff committed and pushed
 
 ### 2026-07-30, Phase 5: PR #130 merge and post-merge candidate verification
 
