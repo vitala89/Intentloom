@@ -42,6 +42,33 @@ entry directly below this section.
 
 ## Watch entries
 
+### 2026-07-29, Phase 5: Windows Node 22 packed-doctor timeout follow-up
+
+- **Status:** partial
+- **Agent/tool:** Codex with GitHub Actions logs, repository history, and local Vitest
+- **Branch:** `codex/v1-phase5-post-merge-dogfooding-state`
+- **Commit:** pending; PR #117 currently contains `52c913e`
+- **Pull request:** draft [PR #117](https://github.com/vitala89/Intentloom/pull/117), release/tag/publication not authorized
+- **Objective:** Diagnose the latest PR Compatibility failure without treating a single runner result as a release decision.
+- **Completed:** Run [30452604175](https://github.com/vitala89/Intentloom/actions/runs/30452604175) had one failure on `windows-latest / Node 22`: `tests/adapter-packed-process.test.ts` timed out `doctors an all-adapter installation` at the default 5-second test timeout; the other five matrix jobs passed. Repository history shows the same Windows packed-process suite already uses extended timeouts for slower sync and inspect cases. Extended the doctor case to the same 20-second budget.
+- **Validation:** Targeted `pnpm vitest run tests/adapter-packed-process.test.ts` passed 13 tests with one Windows-only skip; `pnpm format:check`, `pnpm lint`, `pnpm build`, and `git diff --check` passed. Full-suite rerun and new hosted CI run remain required after the test-only change.
+- **Decisions and assumptions:** Treat the failure as a bounded Windows test-harness timeout, not as proof of a product regression; do not hide the failed run. Keep PR #117 draft until the new head has a green matrix.
+- **Risks or compatibility impact:** Test-only timeout adjustment; no runtime, package, or dependency behavior changed. The glib alert and all maintainer release gates remain open.
+- **Open issues or blockers:** New full validation, hosted Compatibility for the updated head, maintainer support-policy/glib/dogfooding decisions, and final release approval.
+- **Next first action:** Run the full suite, commit the bounded timeout fix and this handoff, push PR #117, and observe the new Windows Node 22 result.
+- **Evidence:** [failed PR run 30452604175](https://github.com/vitala89/Intentloom/actions/runs/30452604175), [prior timeout precedent ecb7100](https://github.com/vitala89/Intentloom/commit/ecb7100), and `tests/adapter-packed-process.test.ts`.
+
+#### Duty completion checklist
+
+- [x] Formatter passed for the final diff
+- [x] Markdown and lint checks passed when configured
+- [ ] Relevant hosted compatibility checks passed for the new head
+- [x] `git diff --check` passed for the final diff
+- [x] Final diff reviewed
+- [ ] `PROJECT_STATE.md` updated when applicable
+- [x] `DUTY_WATCH.md` handoff updated
+- [x] Related release reference documentation updated
+
 ### 2026-07-29, Phase 5: documentation PR #117 CI verification
 
 - **Status:** partial
