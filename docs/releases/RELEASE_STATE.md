@@ -6,7 +6,7 @@ Historical release audits and roadmap sections retain their original scope, but
 this document is the source of truth for the current status.
 
 Snapshot: 2026-07-29
-Main commit: `d076c037` (PR #120 merged)
+Main commit: `83cefd3` (PR #121 merged)
 Release commit: `a0e0b13` (tagged `v0.5.0-beta.1`)
 Workspace version: `0.5.0-beta.1`
 Git tag: `v0.5.0-beta.1` (pushed)
@@ -99,6 +99,12 @@ listed in the last table row. `latest` intentionally remains the historical
   generation test. Its post-merge [Compatibility run](https://github.com/vitala89/Intentloom/actions/runs/30462153444)
   passed all six Ubuntu, macOS, and Windows Node 22/24 jobs. No runtime,
   package, or dependency behavior changed.
+- PR [#121](https://github.com/vitala89/Intentloom/pull/121) is merged as
+  `83cefd3`; it reconciles the Phase 5 records after PR #120 and records
+  cleanup of branches belonging to merged PRs. Its post-merge [Compatibility
+  run](https://github.com/vitala89/Intentloom/actions/runs/30463844868) passed
+  all six Ubuntu, macOS, and Windows Node 22/24 jobs. No runtime, package, or
+  dependency behavior changed.
 - Supplemental exact-candidate clean-room, explicit-path, and three-scenario
   records are retained under
   [`docs/releases/dogfooding/`](dogfooding/2026-07-29-v1-candidate-clean-room-explicit-path.md);
