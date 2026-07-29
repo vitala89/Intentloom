@@ -9,9 +9,9 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **v1.0 Phase 1–4 merged; Phase 5 stable-release gate active** — PR #121 is merged as `83cefd3`, its post-merge Compatibility run `30463844868` passed all six jobs, the verified PR #122 handoff head `06e59a2` passed runs `30465474001` and `30465481131`, confirmed dead branches were cleaned up, and one medium glib alert remains for disposition
+Status: **v1.0 Phase 1–4 merged; Phase 5 stable-release gate active** — PR #122 is merged as `96ba437`, its post-merge Compatibility run `30484088638` passed all six jobs, confirmed dead branches were cleaned up, and one medium glib alert remains for disposition
 
-Active branch: `codex/v1-phase5-post-merge-pr121-state`
+Active branch: `main`
 
 Current objective: execute Phase 5 of `V1_0_STABLE_COMPATIBILITY_PLAN.md`: assemble the v1.0 readiness audit and obtain maintainer release approval without implying a tag or publication.
 
@@ -41,6 +41,55 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-29, Phase 5: PR #123 post-merge reconciliation validation
+
+- **Status:** complete for this watch; the stable-release gate remains open
+- **Agent/tool:** Codex with GitHub CLI, Git, GitHub Actions, and release records
+- **Branch:** `codex/v1-phase5-post-merge-pr122-state`
+- **Base:** `main` / `origin/main` at `96ba437`, merged PR #122 candidate
+- **Pull request:** draft PR [#123](https://github.com/vitala89/Intentloom/pull/123) carries the post-merge reconciliation; its baseline commit `48fe83b` passed push Compatibility run [30484561712](https://github.com/vitala89/Intentloom/actions/runs/30484561712) and PR Compatibility run [30484580630](https://github.com/vitala89/Intentloom/actions/runs/30484580630), six jobs each. No tag, npm publication, or v1.0 release authorization
+- **Completed:** Recorded `96ba437` as the exact post-merge candidate, retained the green post-merge run `30484088638`, synchronized project/release records, and created PR #123 for review. The changes are documentation-only; no runtime, package, or dependency behavior changed.
+- **Validation:** `pnpm format:check`, `git diff --check`, push Compatibility run `30484561712`, and PR Compatibility run `30484580630` passed; only the known Node.js 20 action deprecation annotations remain.
+- **Not completed:** PR #123 merge disposition, support-policy approval, glib alert #2 disposition or coordinated migration, acceptance or authorized refresh of real-project dogfooding, clean-room/explicit-path evidence sufficiency decision, and final maintainer release approval remain open.
+- **Decisions and assumptions:** Keep `96ba437` as the exact stable-gate candidate. PR #123 must be merged before the synchronized records become part of `main`. Do not infer release approval from green CI and do not create a tag or publish without separate explicit authorization.
+- **Next first action:** Obtain maintainer merge disposition for PR #123; after merge, fast-forward local `main`, verify its post-merge Compatibility run, and then record the remaining Phase 5 maintainer decisions.
+- **Evidence:** [PR #123](https://github.com/vitala89/Intentloom/pull/123), [push run 30484561712](https://github.com/vitala89/Intentloom/actions/runs/30484561712), [PR run 30484580630](https://github.com/vitala89/Intentloom/actions/runs/30484580630), and [candidate 96ba437](https://github.com/vitala89/Intentloom/commit/96ba437).
+
+#### Duty completion checklist
+
+- [x] Post-merge candidate records updated
+- [x] Formatter passed for the final diff
+- [x] `git diff --check` passed for the final diff
+- [x] PR #123 push and pull-request Compatibility workflows passed
+- [x] Final diff reviewed
+- [x] `DUTY_WATCH.md` handoff updated
+- [ ] PR #123 merged and post-merge Compatibility verified
+
+### 2026-07-29, Phase 5: PR #122 merge and post-merge candidate verification
+
+- **Status:** complete for this watch; the stable-release gate remains open
+- **Agent/tool:** Codex with GitHub CLI, Git, GitHub Actions, and release records
+- **Branch:** `main`
+- **Base:** `main` / `origin/main` at `96ba437`, merge commit for PR #122
+- **Pull request:** PR [#122](https://github.com/vitala89/Intentloom/pull/122) is merged as `96ba437`; no tag, npm publication, or v1.0 release authorization was inferred
+- **Completed:** Converted PR #122 from draft to ready, merged it with squash, fast-forwarded local `main`, and verified post-merge Compatibility run [30484088638](https://github.com/vitala89/Intentloom/actions/runs/30484088638). All six Ubuntu, macOS, and Windows Node 22/24 jobs passed; only the known Node.js 20 action deprecation annotations remain. The PR #122 head branch was deleted on GitHub after merge.
+- **Release-state reconciliation:** The exact candidate is now `96ba437`. `PROJECT_STATE.md`, `RELEASE_STATE.md`, `V1_0_READINESS_AUDIT.md`, and `V1_0_RELEASE_GATE_PACKET.md` are synchronized to the post-merge candidate and the remaining Phase 5 gates.
+- **Validation:** `gh pr view 122` confirmed merged status and merge commit `96ba437`; `git fetch origin --prune`; `git pull --ff-only origin main`; green post-merge Compatibility run `30484088638`; `pnpm format:check`; and `git diff --check` passed for this documentation update.
+- **Not completed:** Support-policy approval, glib alert #2 disposition or coordinated migration, acceptance or authorized refresh of real-project dogfooding, clean-room/explicit-path evidence sufficiency decision, and final maintainer release approval remain open.
+- **Decisions and assumptions:** Treat `96ba437` as the exact current candidate. Treat PR #122 as documentation-only and branch-inventory reconciliation; no runtime, package, or dependency behavior changed. Do not infer release approval from the green matrix. Do not create a tag or publish without separate explicit authorization.
+- **Next first action:** Review the updated Phase 5 packet and record maintainer decisions for support policy, the glib exception, real-project dogfooding acceptance, clean-room/explicit-path evidence sufficiency, and the exact release commit.
+- **Evidence:** [PR #122](https://github.com/vitala89/Intentloom/pull/122), [merge commit 96ba437](https://github.com/vitala89/Intentloom/commit/96ba437), [post-merge Compatibility run 30484088638](https://github.com/vitala89/Intentloom/actions/runs/30484088638), and the synchronized release records.
+
+#### Duty completion checklist
+
+- [x] PR #122 merged
+- [x] Local `main` fast-forwarded to the merge commit
+- [x] Post-merge Compatibility checks passed
+- [x] Formatter passed for the final diff
+- [x] `git diff --check` passed for the final diff
+- [x] Final diff reviewed
+- [ ] `DUTY_WATCH.md` handoff committed and pushed
 
 ### 2026-07-29, Phase 5: PR #122 final CI and branch inventory cleanup
 
