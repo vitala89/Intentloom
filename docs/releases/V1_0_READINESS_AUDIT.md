@@ -5,18 +5,20 @@ not authorize a tag, npm publication, or release announcement.
 
 Date: 2026-07-29.
 
-Candidate baseline under review: `46a278c` (`main` and `origin/main` after PR
-#116 merge). The release gate remains open until the decisions and evidence in
+Candidate baseline under review: `c20c245` (`main` and `origin/main` after PR
+#117 merge). The release gate remains open until the decisions and evidence in
 the release-gate packet are reviewed.
 
 ## Decision summary
 
 The Phase 1–4 implementation evidence and the release-candidate Compatibility
-matrix are present in `main`. Supplemental exact-candidate clean-room,
-explicit-path, and three-scenario records are now attached. The v1.0 release
-gate remains **open** because support-policy approval, the glib disposition,
-acceptance or authorized refresh of real-project dogfooding records, and
-maintainer approval are not yet complete.
+matrix are present in `main`. PR #117 is now merged; its only behavioral change
+is a bounded test timeout for slower Windows runners, with no runtime, package,
+or dependency behavior change. Supplemental clean-room, explicit-path, and
+three-scenario records remain attached from the pre-merge runtime-equivalent
+candidate tree. The v1.0 release gate remains **open** because support-policy
+approval, the glib disposition, acceptance or authorized refresh of
+real-project dogfooding records, and maintainer approval are not yet complete.
 
 No v1.0 tag or npm artifact is claimed by this document.
 
@@ -35,7 +37,7 @@ No v1.0 tag or npm artifact is claimed by this document.
 | Requirement                                                  | Status              | Evidence or remaining action                                                                                                                                                                                                                            |
 | ------------------------------------------------------------ | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Public CLI and package compatibility promise                 | PASS                | [COMPATIBILITY_POLICY.md](COMPATIBILITY_POLICY.md), ADR-0043; workspace libraries remain private                                                                                                                                                        |
-| Supported Node/host/provider matrix                          | PASS                | [COMPATIBILITY_MATRIX.md](../compatibility/COMPATIBILITY_MATRIX.md); post-merge Compatibility run [30451241803](https://github.com/vitala89/Intentloom/actions/runs/30451241803) passed all six Ubuntu, macOS, and Windows Node 22/24 jobs              |
+| Supported Node/host/provider matrix                          | PASS                | [COMPATIBILITY_MATRIX.md](../compatibility/COMPATIBILITY_MATRIX.md); post-merge Compatibility run [30456140463](https://github.com/vitala89/Intentloom/actions/runs/30456140463) passed all six Ubuntu, macOS, and Windows Node 22/24 jobs              |
 | Deprecation and support policy                               | PENDING             | Deprecation is defined in ADR-0043; [SUPPORT_POLICY_V1.md](SUPPORT_POLICY_V1.md) needs maintainer approval                                                                                                                                              |
 | Upgrade, migration, and rollback path                        | PASS with recheck   | [MIGRATION_GUIDE_V1.md](MIGRATION_GUIDE_V1.md), migration tests, `.aif/migration-journal.json` contract, and [candidate clean-room evidence](dogfooding/2026-07-29-v1-candidate-clean-room-explicit-path.md); final release-commit verification remains |
 | Daemon/MCP/client compatibility and discovery                | PASS                | Protocol/client tests and the typed v1 method contracts                                                                                                                                                                                                 |
@@ -92,6 +94,15 @@ No v1.0 tag or npm artifact is claimed by this document.
   the remaining external dogfooding follow-up. The post-merge Compatibility
   run [30446567214](https://github.com/vitala89/Intentloom/actions/runs/30446567214)
   passed all six jobs on `main`.
+- PR [#116](https://github.com/vitala89/Intentloom/pull/116) merged as
+  `46a278c`; it reconciled the post-merge dogfooding state. The post-merge
+  Compatibility run [30451241803](https://github.com/vitala89/Intentloom/actions/runs/30451241803)
+  passed all six jobs on `main`.
+- PR [#117](https://github.com/vitala89/Intentloom/pull/117) merged as
+  `c20c245`; it reconciled the candidate release state and added the bounded
+  Windows packed-doctor test timeout. The post-merge Compatibility run
+  [30456140463](https://github.com/vitala89/Intentloom/actions/runs/30456140463)
+  passed all six jobs on `main`.
 - Dependabot alert [#2](https://github.com/vitala89/Intentloom/security/dependabot/2)
   remains open at medium severity for `glib@0.18.5` in
   `apps/desktop/src-tauri/Cargo.lock`; GitHub reports `0.20.0` as the first
@@ -145,9 +156,12 @@ Compatibility verification for `5d1af7c` passed in [run 30410395631](https://git
 | `git diff --check`                                     | PASS                                                                             |
 
 The hosted run for the candidate baseline `5d1af7c` completed all six Ubuntu,
-macOS, and Windows Node 22/24 jobs; the post-merge run for the current
-documentation baseline `3ee661d` is recorded above and also completed all six
-jobs.
+macOS, and Windows Node 22/24 jobs. The current post-merge candidate `c20c245`
+also completed all six jobs in [run 30456140463](https://github.com/vitala89/Intentloom/actions/runs/30456140463).
+The local clean-room records were produced against the pre-merge runtime tree
+`46a278c`; PR #117 made no runtime, package, or dependency changes, but a
+maintainer must still confirm that retained evidence is sufficient for the
+exact approved release commit or authorize a fresh run.
 GitHub emitted only the existing Node.js 20 action deprecation annotations.
 
 The first sandbox attempts were not counted as results: npm DNS resolution was
@@ -164,9 +178,10 @@ evidence does not authorize a tag, npm publication, or release announcement.
    or approve a separate coordinated GTK/WebKit/Tauri-compatible stack
    migration instead.
 3. Local release-candidate install, build, packed CLI smoke, and full validation
-   are recorded above, and the merged candidate has a green hosted matrix.
-   Still run or retain clean-room installation evidence and complete the
-   explicit-path dogfooding checks for the exact approved commit.
+   are recorded above, and merged candidate `c20c245` has a green hosted
+   matrix. Confirm that the retained clean-room installation and explicit-path
+   evidence from runtime-equivalent tree `46a278c` is sufficient for the exact
+   approved commit, or authorize a fresh run.
 4. Accept or refresh the existing dogfooding records against the stable
    candidate without including private project data. The current self-adoption
    record is supporting evidence only and does not replace the three required
