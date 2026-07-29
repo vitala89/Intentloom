@@ -47,6 +47,14 @@ or suppress [Dependabot alert #2](https://github.com/vitala89/Intentloom/securit
   an unsound `glib::VariantStrIter` implementation affecting versions
   `>=0.15.0, <0.20.0`; the patched version is `0.20.0`.
 
+The read-only verification on 2026-07-29 still reports Dependabot alert #2 as
+`open` and `medium`, with vulnerable range `>=0.15.0, <0.20.0` and first patched
+version `0.20.0`. `cargo tree --locked --invert glib@0.18.5` confirms the
+current `glib 0.18.5` node is shared by the GTK 0.18.2/WebKitGTK 2.0.2 graph
+through Tauri 2.11.5/Wry 0.55.1. No direct `glib`, `VariantStrIter`, or
+`variant_str` reference was found in Desktop source; lockfile references are
+dependency metadata, not direct source use.
+
 ### Rationale
 
 The repository has no direct `glib`, `VariantStrIter`, or `variant_str` usage

@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **v1.0 Phase 1–4 merged; Phase 5 stable-release gate active** — PR #115 is merged as `3ee661d`, and the post-merge Compatibility matrix is green; the fast-uri high alert is closed, and one medium glib alert remains for disposition
+Status: **v1.0 Phase 1–4 merged; Phase 5 stable-release gate active** — PR #116 is merged as `46a278c`, PR #117 is open at head `27b9cb0`; the latest confirmed green Compatibility run is `30453380391` for `a676cf4`, and one medium glib alert remains for disposition
 
 Active branch: `codex/v1-phase5-post-merge-dogfooding-state`
 
 Current objective: execute Phase 5 of `V1_0_STABLE_COMPATIBILITY_PLAN.md`: assemble the v1.0 readiness audit and obtain maintainer release approval without implying a tag or publication.
 
-Next first action: provide or explicitly accept the three required project records on the exact approved commit, then record maintainer decisions for support policy and the glib exception.
+Next first action: obtain review/merge disposition for PR #117, then record maintainer decisions for support policy, the glib exception, real-project dogfooding acceptance, and the exact release commit.
 
 ## Watch rules
 
@@ -41,6 +41,218 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-29, Phase 5: unchanged maintainer-gate recheck
+
+- **Status:** partial
+- **Agent/tool:** Codex with GitHub PR metadata and workflow-status connector
+- **Branch:** `codex/v1-phase5-post-merge-dogfooding-state`
+- **Commit:** `27b9cb0` — `docs: record PR 117 gate recheck`
+- **Pull request:** draft [PR #117](https://github.com/vitala89/Intentloom/pull/117), open and mergeable at head `27b9cb0`; no review submissions or comments are present; release/tag/publication not authorized
+- **Completed:** Rechecked the current maintainer-dependent Phase 5 state. No new review, comment, merge, support-policy decision, glib disposition, dogfooding acceptance, or release approval appeared.
+- **Validation:** The latest confirmed hosted result remains [Compatibility run 30453380391](https://github.com/vitala89/Intentloom/actions/runs/30453380391) for `a676cf4`, with all six Ubuntu, macOS, and Windows Node 22/24 jobs passed. The available commit-run query returned no workflow result for `27b9cb0`; no status is inferred for that documentation-only head.
+- **Not completed:** PR #117 merge and all maintainer-owned release gates remain open. No new code validation was needed because the repository content did not change during this recheck.
+- **Decisions and assumptions:** Keep the gate open and do not treat the retained green run as a claim about the newer handoff commit.
+- **Risks or compatibility impact:** No runtime, package, dependency, or generated-adapter changes were introduced.
+- **Next first action:** Obtain maintainer review/merge disposition for PR #117; after any head change or merge, re-query complete hosted checks before recording a release decision.
+- **Evidence:** [PR #117](https://github.com/vitala89/Intentloom/pull/117), [retained green run 30453380391](https://github.com/vitala89/Intentloom/actions/runs/30453380391), and the [release-gate packet](docs/releases/V1_0_RELEASE_GATE_PACKET.md).
+
+#### Duty completion checklist
+
+- [x] Formatter passed for the final diff
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant hosted evidence status checked and uncertainty recorded
+- [x] `git diff --check` passed for the final diff
+- [x] Final diff reviewed
+- [x] `PROJECT_STATE.md` updated when applicable
+- [x] `DUTY_WATCH.md` handoff updated
+- [x] Related release reference documentation updated
+
+### 2026-07-29, Phase 5: maintainer-gate recheck after PR #117 handoff
+
+- **Status:** partial
+- **Agent/tool:** Codex with GitHub PR metadata, workflow-status connector, and repository release records
+- **Branch:** `codex/v1-phase5-post-merge-dogfooding-state`
+- **Commit:** `51ce7fd` — `docs: clarify PR 117 review packet`
+- **Pull request:** draft [PR #117](https://github.com/vitala89/Intentloom/pull/117), open and mergeable at head `51ce7fd`; no review submissions or comments are present; release/tag/publication not authorized
+- **Completed:** Rechecked the Phase 5 handoff state. The remaining gates are unchanged: support-policy approval, glib alert #2 disposition or coordinated migration, acceptance or authorized refresh of historical real-project dogfooding, and exact release-commit approval.
+- **Validation:** The latest confirmed hosted result remains [Compatibility run 30453380391](https://github.com/vitala89/Intentloom/actions/runs/30453380391) for `a676cf4`, with all six Ubuntu, macOS, and Windows Node 22/24 jobs passed. The available commit-run query returned no workflow result for `51ce7fd`; no green or failed result is inferred for that newer documentation-only head. Local `git diff --check` passed and the working tree was clean before this handoff update.
+- **Not completed:** No maintainer decision, PR merge, exact release-commit approval, tag, publication, or release announcement is available.
+- **Decisions and assumptions:** Treat `30453380391` as retained evidence for `a676cf4`, not as a claim about the newer `51ce7fd` head. Keep PR #117 draft and preserve the release gate as open.
+- **Risks or compatibility impact:** No new runtime, package, dependency, or generated-adapter change was introduced during this recheck.
+- **Next first action:** Obtain maintainer review/merge disposition for PR #117; if the head changes or is merged, re-query its complete hosted checks before recording any release decision.
+- **Evidence:** [PR #117](https://github.com/vitala89/Intentloom/pull/117), [retained green run 30453380391](https://github.com/vitala89/Intentloom/actions/runs/30453380391), and the [release-gate packet](docs/releases/V1_0_RELEASE_GATE_PACKET.md).
+
+#### Duty completion checklist
+
+- [x] Formatter passed for the final diff
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant hosted evidence status checked and uncertainty recorded
+- [x] `git diff --check` passed for the final diff
+- [x] Final diff reviewed
+- [x] `PROJECT_STATE.md` updated when applicable
+- [x] `DUTY_WATCH.md` handoff updated
+- [x] Related release reference documentation updated
+
+### 2026-07-29, Phase 5: PR #117 review packet clarification
+
+- **Status:** partial
+- **Agent/tool:** Codex with GitHub PR metadata and repository release records
+- **Branch:** `codex/v1-phase5-post-merge-dogfooding-state`
+- **Commit:** `3d7b50e` — `docs: record current PR 117 verification`
+- **Pull request:** draft [PR #117](https://github.com/vitala89/Intentloom/pull/117), open and mergeable; no review/comments or maintainer gate decisions are present; release/tag/publication not authorized
+- **Completed:** Updated the PR description so the review packet explicitly includes the bounded Windows packed-doctor test timeout, the targeted test result, and hosted Compatibility run `30453380391`. The PR remains documentation plus test-harness scope only; no runtime or dependency behavior changed.
+- **Validation:** Retained the verified Compatibility result [30453380391](https://github.com/vitala89/Intentloom/actions/runs/30453380391) for commit `a676cf4`: all six Ubuntu, macOS, and Windows Node 22/24 jobs passed. No new code validation claim is made for this PR-metadata-only update.
+- **Not completed:** Maintainer support-policy approval, glib alert #2 disposition or coordinated migration, historical real-project dogfooding acceptance, exact release-commit approval, and PR merge remain open.
+- **Decisions and assumptions:** Keep PR #117 draft. The absence of review/comments is recorded as current external state, not interpreted as approval or rejection.
+- **Risks or compatibility impact:** No repository runtime, package, dependency, or generated-adapter changes were made by this clarification.
+- **Next first action:** Obtain maintainer review/merge disposition for PR #117; then record the four remaining gate decisions without tagging or publishing.
+- **Evidence:** [PR #117](https://github.com/vitala89/Intentloom/pull/117), [green Compatibility run 30453380391](https://github.com/vitala89/Intentloom/actions/runs/30453380391), and the exact-candidate [release-gate packet](docs/releases/V1_0_RELEASE_GATE_PACKET.md).
+
+#### Duty completion checklist
+
+- [x] Formatter passed for the final diff
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant hosted compatibility checks remain retained
+- [x] `git diff --check` passed for the final diff
+- [x] Final diff reviewed
+- [x] `PROJECT_STATE.md` updated when applicable
+- [x] `DUTY_WATCH.md` handoff updated
+- [x] Related release reference documentation updated
+
+### 2026-07-29, Phase 5: current PR #117 Compatibility verification
+
+- **Status:** partial
+- **Agent/tool:** Codex with GitHub Actions logs, local validation, and repository release records
+- **Branch:** `codex/v1-phase5-post-merge-dogfooding-state`
+- **Commit:** `a676cf4` — `docs: record green PR 117 matrix`
+- **Pull request:** draft [PR #117](https://github.com/vitala89/Intentloom/pull/117), open; release/tag/publication not authorized
+- **Completed:** Rechecked the current PR head after the Windows timeout remediation. Compatibility run [30453380391](https://github.com/vitala89/Intentloom/actions/runs/30453380391) passed all six Ubuntu, macOS, and Windows Node 22/24 jobs, including the previously failing Windows Node 22 packed-doctor test. Only the known Node.js 20 action deprecation annotations remain.
+- **Validation:** The bounded test-only timeout fix is covered by the local targeted and full-suite results recorded above; hosted typecheck, lint, format, build, and test passed in all six matrix jobs.
+- **Not completed:** PR #117 is not merged. Maintainer support-policy approval, glib exception or coordinated migration decision, historical real-project dogfooding acceptance, and final release approval remain open.
+- **Decisions and assumptions:** Treat run `30453380391` as verification of commit `a676cf4`; keep PR #117 draft and do not infer release approval from green CI.
+- **Risks or compatibility impact:** No runtime, package, or dependency behavior changed in this verification. Dependabot alert #2 remains open and visible.
+- **Next first action:** Obtain maintainer review/merge disposition for PR #117, then record the support-policy, glib, dogfooding, and exact release-commit decisions without tagging or publishing.
+- **Evidence:** [PR #117](https://github.com/vitala89/Intentloom/pull/117), [green Compatibility run 30453380391](https://github.com/vitala89/Intentloom/actions/runs/30453380391), and [failed predecessor 30452604175](https://github.com/vitala89/Intentloom/actions/runs/30452604175).
+
+#### Duty completion checklist
+
+- [x] Formatter passed for the final diff
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant hosted compatibility checks passed
+- [x] `git diff --check` passed for the final diff
+- [x] Final diff reviewed
+- [x] `PROJECT_STATE.md` updated when applicable
+- [x] `DUTY_WATCH.md` handoff updated
+- [x] Related release reference documentation updated
+
+### 2026-07-29, Phase 5: Windows timeout remediation and green PR #117 matrix
+
+- **Status:** partial
+- **Agent/tool:** Codex with GitHub Actions logs, local Vitest, and repository release records
+- **Branch:** `codex/v1-phase5-post-merge-dogfooding-state`
+- **Commit:** `c2a3c9d` — `test: extend packed doctor timeout on Windows`
+- **Pull request:** draft [PR #117](https://github.com/vitala89/Intentloom/pull/117), open; release/tag/publication not authorized
+- **Completed:** Extended the packed all-adapter doctor test timeout from the default 5 seconds to 20 seconds, matching existing Windows stability allowances for packed sync/inspect tests. The updated PR Compatibility run [30453080260](https://github.com/vitala89/Intentloom/actions/runs/30453080260) passed all six Ubuntu, macOS, and Windows Node 22/24 jobs.
+- **Validation:** Local full `pnpm test` passed 87 files, 753 tests, 3 skipped; targeted packed-process tests passed 13 with one skip; `pnpm format:check`, `pnpm lint`, `pnpm build`, and `git diff --check` passed. Hosted run `30453080260` passed typecheck, lint, format, build, and test on all six jobs; only Node.js 20 action deprecation annotations remain.
+- **Not completed:** PR #117 is not merged. Maintainer support-policy approval, glib exception or coordinated migration decision, historical real-project dogfooding acceptance, and final release approval remain open.
+- **Decisions and assumptions:** Treat the timeout as a bounded Windows test-harness stabilization, not a product behavior change. Keep PR #117 draft and do not infer release approval from green CI.
+- **Risks or compatibility impact:** One test-only timeout change; no runtime, package, or dependency behavior changed. Dependabot alert #2 remains open and visible.
+- **Next first action:** Review and merge PR #117 after maintainer disposition, then record the support-policy, glib, dogfooding, and exact release-commit decisions without tagging or publishing.
+- **Evidence:** [PR #117](https://github.com/vitala89/Intentloom/pull/117), [green Compatibility run 30453080260](https://github.com/vitala89/Intentloom/actions/runs/30453080260), [previous failed run 30452604175](https://github.com/vitala89/Intentloom/actions/runs/30452604175), and [timeout precedent ecb7100](https://github.com/vitala89/Intentloom/commit/ecb7100).
+
+#### Duty completion checklist
+
+- [x] Formatter passed for the final diff
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant hosted compatibility checks passed
+- [x] `git diff --check` passed for the final diff
+- [x] Final diff reviewed
+- [ ] `PROJECT_STATE.md` updated when applicable
+- [x] `DUTY_WATCH.md` handoff updated
+- [x] Related release reference documentation updated
+
+### 2026-07-29, Phase 5: Windows Node 22 packed-doctor timeout follow-up
+
+- **Status:** partial
+- **Agent/tool:** Codex with GitHub Actions logs, repository history, and local Vitest
+- **Branch:** `codex/v1-phase5-post-merge-dogfooding-state`
+- **Commit:** pending; PR #117 currently contains `52c913e`
+- **Pull request:** draft [PR #117](https://github.com/vitala89/Intentloom/pull/117), release/tag/publication not authorized
+- **Objective:** Diagnose the latest PR Compatibility failure without treating a single runner result as a release decision.
+- **Completed:** Run [30452604175](https://github.com/vitala89/Intentloom/actions/runs/30452604175) had one failure on `windows-latest / Node 22`: `tests/adapter-packed-process.test.ts` timed out `doctors an all-adapter installation` at the default 5-second test timeout; the other five matrix jobs passed. Repository history shows the same Windows packed-process suite already uses extended timeouts for slower sync and inspect cases. Extended the doctor case to the same 20-second budget.
+- **Validation:** Targeted `pnpm vitest run tests/adapter-packed-process.test.ts` passed 13 tests with one Windows-only skip; `pnpm format:check`, `pnpm lint`, `pnpm build`, and `git diff --check` passed. Full-suite rerun and new hosted CI run remain required after the test-only change.
+- **Decisions and assumptions:** Treat the failure as a bounded Windows test-harness timeout, not as proof of a product regression; do not hide the failed run. Keep PR #117 draft until the new head has a green matrix.
+- **Risks or compatibility impact:** Test-only timeout adjustment; no runtime, package, or dependency behavior changed. The glib alert and all maintainer release gates remain open.
+- **Open issues or blockers:** New full validation, hosted Compatibility for the updated head, maintainer support-policy/glib/dogfooding decisions, and final release approval.
+- **Next first action:** Run the full suite, commit the bounded timeout fix and this handoff, push PR #117, and observe the new Windows Node 22 result.
+- **Evidence:** [failed PR run 30452604175](https://github.com/vitala89/Intentloom/actions/runs/30452604175), [prior timeout precedent ecb7100](https://github.com/vitala89/Intentloom/commit/ecb7100), and `tests/adapter-packed-process.test.ts`.
+
+#### Duty completion checklist
+
+- [x] Formatter passed for the final diff
+- [x] Markdown and lint checks passed when configured
+- [ ] Relevant hosted compatibility checks passed for the new head
+- [x] `git diff --check` passed for the final diff
+- [x] Final diff reviewed
+- [ ] `PROJECT_STATE.md` updated when applicable
+- [x] `DUTY_WATCH.md` handoff updated
+- [x] Related release reference documentation updated
+
+### 2026-07-29, Phase 5: documentation PR #117 CI verification
+
+- **Status:** partial
+- **Agent/tool:** Codex with GitHub CLI and repository release records
+- **Branch:** `codex/v1-phase5-post-merge-dogfooding-state`
+- **Commit:** `7e61958` — `docs: record v1 candidate release gate evidence`
+- **Pull request:** draft [PR #117](https://github.com/vitala89/Intentloom/pull/117), open; release/tag/publication not authorized
+- **Completed:** Pushed the validated documentation packet and opened PR #117 against `main`. Pull-request Compatibility run [30452322506](https://github.com/vitala89/Intentloom/actions/runs/30452322506) passed all six Ubuntu, macOS, and Windows Node 22/24 jobs. The push-triggered run `30452291739` was also observed as in progress; the PR-triggered green run is the retained review evidence.
+- **Not completed:** PR #117 is not merged. Maintainer support-policy approval, glib exception or coordinated migration decision, historical real-project dogfooding acceptance, and final release approval remain open.
+- **Validation:** PR #117 run `30452322506` passed typecheck, lint, format, build, and test on all six matrix jobs; only the known Node.js 20 action deprecation annotations were emitted. Local validation and commit `7e61958` are recorded in the preceding entry.
+- **Decisions and assumptions:** Keep PR #117 draft until the maintainer reviews the supplemental evidence and remaining release decisions. Do not infer approval from green CI.
+- **Risks or compatibility impact:** Documentation-only PR; no runtime or dependency changes. Dependabot alert #2 remains open and visible.
+- **Next first action:** Review PR #117, merge only after maintainer disposition, then update the exact approved release commit and approval records without tagging or publishing.
+- **Evidence:** [PR #117](https://github.com/vitala89/Intentloom/pull/117), [PR #117 Compatibility run 30452322506](https://github.com/vitala89/Intentloom/actions/runs/30452322506), and [candidate release-gate packet](docs/releases/V1_0_RELEASE_GATE_PACKET.md).
+
+#### Duty completion checklist
+
+- [x] Formatter passed for the final diff
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant hosted compatibility checks passed
+- [x] `git diff --check` passed for the final diff
+- [x] Final diff reviewed
+- [x] `PROJECT_STATE.md` updated when applicable
+- [x] `DUTY_WATCH.md` handoff updated
+- [x] Related release reference documentation updated
+
+### 2026-07-29, Phase 5: exact-candidate dogfooding and post-merge gate verification
+
+- **Status:** partial
+- **Agent/tool:** Codex with GitHub CLI, local packaged CLI, Cargo, and repository release records
+- **Branch:** `codex/v1-phase5-post-merge-dogfooding-state`
+- **Commits:** documentation changes pending; PR #116 merge commit is `46a278c`
+- **Pull request:** [PR #116](https://github.com/vitala89/Intentloom/pull/116) merged; no tag, publication, or release authorization
+- **Objective:** Verify the merged PR state, refresh exact-candidate local dogfooding evidence, and narrow the remaining Phase 5 decisions without claiming external results.
+- **Completed:** Confirmed PR #116 is merged and updated local `main` to `46a278c`. Post-merge Compatibility run [30451241803](https://github.com/vitala89/Intentloom/actions/runs/30451241803) passed all six Ubuntu, macOS, and Windows Node 22/24 jobs. Built and packed the CLI, installed the tarball in an isolated runner, and verified `0.5.0-beta.1` plus help output. Recorded supplemental minimal, TypeScript, sanitized existing-project, clean-room, and explicit-path evidence under `docs/releases/dogfooding/`. Re-ran Dependabot alert #2 and `cargo tree --locked --invert glib@0.18.5`; the alert remains open and the GTK/WebKit/Tauri graph still carries `glib 0.18.5`.
+- **Not completed:** No external or withheld project was represented as refreshed. Historical real-project dogfooding records still require maintainer acceptance or an authorized rerun. Support-policy approval, glib exception or coordinated migration decision, and final release approval remain open.
+- **Files or packages changed:** `PROJECT_STATE.md`, `DUTY_WATCH.md`, `docs/releases/RELEASE_STATE.md`, `docs/releases/V1_0_READINESS_AUDIT.md`, `docs/releases/V1_0_RELEASE_GATE_PACKET.md`, `docs/security/V1_SECURITY_AND_SUPPLY_CHAIN_AUDIT.md`, and four candidate dogfooding records; no runtime or dependency files.
+- **Validation:** `pnpm build`, clean-room `npm install --ignore-scripts`, packaged CLI smoke, explicit-path inspect/adopt-plan/doctor/sync dry-run, pre/post SHA-256 inventory comparison, current Dependabot API read, and Cargo dependency-tree assessment passed as recorded. The first clean-room install attempt hit a pre-existing npm cache permission error and was excluded; the isolated-cache retry passed. A temporary zsh harness initially passed command strings as single arguments; the corrected individual-argument rerun passed and left the target hashes identical. Post-merge Compatibility run `30451241803` passed all six jobs; Node.js 20 deprecation annotations remain informational warnings.
+- **Decisions and assumptions:** Treat the three local scenario records as supplemental exact-candidate evidence only. Keep the gate open until a maintainer accepts the support policy, decides the glib disposition, accepts or authorizes refresh of real-project evidence, and approves the exact release commit.
+- **Risks or compatibility impact:** Documentation-only release-control update. The medium transitive glib advisory remains visible and unresolved; no dependency override was attempted.
+- **Open issues or blockers:** Maintainer decisions for `SUPPORT_POLICY_V1.md`, Dependabot alert #2, historical real-project dogfooding acceptance, and final release approval. No v1.0 tag, npm publication, or announcement is authorized.
+- **Next first action:** Review the final documentation diff, commit these release records, and open the necessary documentation PR; then obtain maintainer decisions for the remaining gates.
+- **Evidence:** [PR #116](https://github.com/vitala89/Intentloom/pull/116), [post-merge Compatibility run 30451241803](https://github.com/vitala89/Intentloom/actions/runs/30451241803), [release-gate packet](docs/releases/V1_0_RELEASE_GATE_PACKET.md), [clean-room evidence](docs/releases/dogfooding/2026-07-29-v1-candidate-clean-room-explicit-path.md), and [security audit](docs/security/V1_SECURITY_AND_SUPPLY_CHAIN_AUDIT.md).
+
+#### Duty completion checklist
+
+- [x] Formatter passed for the final diff
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant hosted compatibility checks passed
+- [x] `git diff --check` passed for the final diff
+- [x] Final diff reviewed
+- [x] `PROJECT_STATE.md` updated when applicable
+- [x] `DUTY_WATCH.md` handoff updated
+- [x] Related release reference documentation updated
 
 ### 2026-07-29, Phase 5: post-merge reconciliation after PR #115
 

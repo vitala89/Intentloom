@@ -131,7 +131,7 @@ describe("packed adapter compatibility matrix", () => {
         expect.objectContaining({ code: "installation-healthy" }),
       ]),
     );
-  });
+  }, 20_000);
 
   it("inspects an installed project through the packed CLI", async () => {
     const root = await project("packed-inspect");

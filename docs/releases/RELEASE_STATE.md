@@ -6,7 +6,7 @@ Historical release audits and roadmap sections retain their original scope, but
 this document is the source of truth for the current status.
 
 Snapshot: 2026-07-29
-Main commit: `3ee661d` (PR #115 merged)
+Main commit: `46a278c` (PR #116 merged)
 Release commit: `a0e0b13` (tagged `v0.5.0-beta.1`)
 Workspace version: `0.5.0-beta.1`
 Git tag: `v0.5.0-beta.1` (pushed)
@@ -71,6 +71,15 @@ listed in the last table row. `latest` intentionally remains the historical
   `3ee661d`; it adds current read-only self-dogfooding evidence and records the
   remaining external dogfooding follow-up. The post-merge [Compatibility run](https://github.com/vitala89/Intentloom/actions/runs/30446567214)
   passed all six Ubuntu, macOS, and Windows Node 22/24 jobs.
+- PR [#116](https://github.com/vitala89/Intentloom/pull/116) is merged as
+  `46a278c`; it reconciles the post-merge dogfooding state and records the
+  remaining Phase 5 gates. The post-merge [Compatibility run](https://github.com/vitala89/Intentloom/actions/runs/30451241803)
+  passed all six Ubuntu, macOS, and Windows Node 22/24 jobs.
+- Supplemental exact-candidate clean-room, explicit-path, and three-scenario
+  records are retained under
+  [`docs/releases/dogfooding/`](dogfooding/2026-07-29-v1-candidate-clean-room-explicit-path.md);
+  they are not claims of refreshed external-project access or maintainer
+  release approval.
 - The GTK/WebKit dependency assessment is recorded in [PR #107](https://github.com/vitala89/Intentloom/pull/107),
   merged as `88d6f6b`; no dependency or runtime files changed.
 - The proposed glib exception and release-gate conditions are prepared after
