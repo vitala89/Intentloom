@@ -7,8 +7,9 @@ Date: 2026-07-29.
 
 ## Candidate under review
 
-- Verified `main` commit: `46a278c`, merged by PR [#116](https://github.com/vitala89/Intentloom/pull/116).
-- Post-merge Compatibility run: [30451241803](https://github.com/vitala89/Intentloom/actions/runs/30451241803), all six Ubuntu, macOS, and Windows Node 22/24 jobs passed.
+- Verified `main` commit: `c20c245`, merged by PR [#117](https://github.com/vitala89/Intentloom/pull/117).
+- Post-merge Compatibility run: [30456140463](https://github.com/vitala89/Intentloom/actions/runs/30456140463), all six Ubuntu, macOS, and Windows Node 22/24 jobs passed.
+- PR #117 adds only release-state documentation and a bounded Windows packed-doctor test timeout; no runtime, package, or dependency behavior changed.
 - Dependency Review evidence: [run 30403512016](https://github.com/vitala89/Intentloom/actions/runs/30403512016), passed on PR #105.
 - Existing workflow warning: GitHub reports the Node.js 20 action deprecation for the current action versions; this is not a product test failure.
 
@@ -35,8 +36,8 @@ readiness audit can be approved:
    or authorize a coordinated GTK/WebKit/Tauri migration instead. If approved,
    record the owner and the review/expiry date of 2026-10-29.
 4. Confirm the retained [clean-room and explicit-path evidence](dogfooding/2026-07-29-v1-candidate-clean-room-explicit-path.md)
-   is sufficient for the exact approved release commit, or authorize a new
-   external-project run.
+   from the runtime-equivalent `46a278c` tree is sufficient for exact approved
+   commit `c20c245`, or authorize a new external-project run.
 5. Approve the readiness audit and the exact release commit. Complete the
    separate publication authorization checklist before any release action.
 
