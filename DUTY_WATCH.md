@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **v1.0 Phase 1–4 merged; Phase 5 stable-release gate active** — PR #119 is merged as `c49bf793`, draft PR #120 has green Compatibility run `30460528948`, and one medium glib alert remains for disposition
+Status: **v1.0 Phase 1–4 merged; Phase 5 stable-release gate active** — PR #120 is merged as `d076c037`, its post-merge Compatibility run `30462153444` passed all six jobs, 100 merged branches were cleaned up locally and on GitHub, and one medium glib alert remains for disposition
 
-Active branch: `codex/v1-phase5-windows-node24-packed-timeout`
+Active branch: `codex/v1-phase5-post-merge-branch-cleanup`
 
 Current objective: execute Phase 5 of `V1_0_STABLE_COMPATIBILITY_PLAN.md`: assemble the v1.0 readiness audit and obtain maintainer release approval without implying a tag or publication.
 
-Next first action: review/merge PR #120 and verify its post-merge run, then record maintainer decisions for support policy, the glib exception, real-project dogfooding acceptance, clean-room evidence sufficiency, and the exact release commit; do not tag or publish without separate authorization.
+Next first action: review the updated Phase 5 packet and record maintainer decisions for support policy, the glib exception, real-project dogfooding acceptance, clean-room evidence sufficiency, and the exact release commit; do not tag or publish without separate authorization.
 
 ## Watch rules
 
@@ -41,6 +41,31 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-29, Phase 5: PR #120 post-merge verification and merged-branch cleanup
+
+- **Status:** complete for this watch; the stable-release gate remains open
+- **Agent/tool:** Codex with GitHub CLI, Git, GitHub Actions, and release records
+- **Branch:** `codex/v1-phase5-post-merge-branch-cleanup`
+- **Base:** `main` / `origin/main` at `d076c037`, merge commit for PR #120
+- **Pull request:** PR #120 is merged; draft PR [#121](https://github.com/vitala89/Intentloom/pull/121) carries this handoff and has green Compatibility checks, but remains open pending maintainer merge disposition; no tag, npm publication, or v1.0 release authorization
+- **Completed:** Fast-forwarded local `main` to `d076c037` and verified post-merge Compatibility run [30462153444](https://github.com/vitala89/Intentloom/actions/runs/30462153444). All six Ubuntu, macOS, and Windows Node 22/24 jobs passed; only the known Node.js 20 action deprecation annotations remain. Updated `PROJECT_STATE.md`, `RELEASE_STATE.md`, `V1_0_READINESS_AUDIT.md`, and `V1_0_RELEASE_GATE_PACKET.md` to the exact merged candidate.
+- **Branch cleanup:** Deleted 100 branches locally and the same 100 branches on GitHub, each confirmed to belong to a merged PR. Preserved `main`, `chore/v0.1-release-readiness`, `security/intentloomd-lifecycle-design`, `test/adapters-cross-platform-matrix`, and the closed-without-merge `codex/public-readiness-blockers`. Removed 15 stale worktree administrative records whose target directories no longer existed. No project files were deleted.
+- **Validation:** `git fetch origin --prune`, clean worktree verification, green post-merge Compatibility run `30462153444`, green PR #121 Compatibility run `30463035050` and push run `30463011646`, and branch inventory reconciliation. `pnpm format:check` and `git diff --check` passed.
+- **Not completed:** Support-policy approval, glib alert #2 disposition or coordinated migration, acceptance or authorized refresh of real-project dogfooding, clean-room/explicit-path evidence sufficiency decision, and final maintainer release approval remain open.
+- **Decisions and assumptions:** Treat `d076c037` as the exact current candidate. Treat the test timeout as test-harness-only; no runtime, package, or dependency behavior changed. Do not infer release approval from the green matrix or branch cleanup.
+- **Next first action:** Obtain maintainer merge disposition for draft PR #121, then record the remaining Phase 5 decisions. Do not create a tag or publish without separate explicit authorization.
+- **Evidence:** [PR #120](https://github.com/vitala89/Intentloom/pull/120), [post-merge Compatibility run 30462153444](https://github.com/vitala89/Intentloom/actions/runs/30462153444), [PR #121](https://github.com/vitala89/Intentloom/pull/121), [PR #121 Compatibility run 30463035050](https://github.com/vitala89/Intentloom/actions/runs/30463035050), [merge commit d076c037](https://github.com/vitala89/Intentloom/commit/d076c037), and the verified branch inventory.
+
+#### Duty completion checklist
+
+- [x] Formatter passed for the final diff
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant hosted compatibility checks passed
+- [x] `git diff --check` passed for the final diff
+- [x] Final diff reviewed
+- [x] `DUTY_WATCH.md` handoff updated
+- [x] PR #120 merged and post-merge Compatibility verified
 
 ### 2026-07-29, Phase 5: PR #120 Windows Node 24 timeout remediation verification
 
