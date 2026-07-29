@@ -5,8 +5,8 @@ not authorize a tag, npm publication, or release announcement.
 
 Date: 2026-07-29.
 
-Candidate baseline under review: `c47eb0f` (`main` and `origin/main` after PR
-#127 merge). The release gate remains open until the decisions and evidence in
+Candidate baseline under review: `2c7d4a4` (`main` and `origin/main` after PR
+#128 merge). The release gate remains open until the decisions and evidence in
 the release-gate packet are reviewed.
 
 ## Decision summary
@@ -14,11 +14,11 @@ the release-gate packet are reviewed.
 The Phase 1–4 implementation evidence and the release-candidate Compatibility
 matrix are present in `main`. PR #117 is merged with only a bounded test timeout
 for slower Windows runners, PR #118 is documentation-only, PR #120 adds a
-second bounded test-harness timeout, and PR #121, PR #122, PR #123, PR #124, PR #125, PR #126, and PR #127 are
+second bounded test-harness timeout, and PR #121, PR #122, PR #123, PR #124, PR #125, PR #126, PR #127, and PR #128 are
 documentation-only; none changes runtime, package, or dependency behavior.
 Supplemental clean-room,
 explicit-path, and three-scenario records remain attached from the pre-merge
-runtime-equivalent candidate tree. The post-merge run for `c47eb0f` passed all
+runtime-equivalent candidate tree. The post-merge run for `2c7d4a4` passed all
 six Compatibility jobs after the scoped test-only remediation and the final
 documentation reconciliation. The v1.0 release gate remains **open** because
 support-policy
@@ -42,7 +42,7 @@ No v1.0 tag or npm artifact is claimed by this document.
 | Requirement                                                  | Status              | Evidence or remaining action                                                                                                                                                                                                                            |
 | ------------------------------------------------------------ | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Public CLI and package compatibility promise                 | PASS                | [COMPATIBILITY_POLICY.md](COMPATIBILITY_POLICY.md), ADR-0043; workspace libraries remain private                                                                                                                                                        |
-| Supported Node/host/provider matrix                          | PASS                | [COMPATIBILITY_MATRIX.md](../compatibility/COMPATIBILITY_MATRIX.md); post-merge run [30492745164](https://github.com/vitala89/Intentloom/actions/runs/30492745164) for `c47eb0f` passed all six Ubuntu, macOS, and Windows Node 22/24 jobs              |
+| Supported Node/host/provider matrix                          | PASS                | [COMPATIBILITY_MATRIX.md](../compatibility/COMPATIBILITY_MATRIX.md); post-merge run [30495322242](https://github.com/vitala89/Intentloom/actions/runs/30495322242) for `2c7d4a4` passed all six Ubuntu, macOS, and Windows Node 22/24 jobs              |
 | Deprecation and support policy                               | PENDING             | Deprecation is defined in ADR-0043; [SUPPORT_POLICY_V1.md](SUPPORT_POLICY_V1.md) needs maintainer approval                                                                                                                                              |
 | Upgrade, migration, and rollback path                        | PASS with recheck   | [MIGRATION_GUIDE_V1.md](MIGRATION_GUIDE_V1.md), migration tests, `.aif/migration-journal.json` contract, and [candidate clean-room evidence](dogfooding/2026-07-29-v1-candidate-clean-room-explicit-path.md); final release-commit verification remains |
 | Daemon/MCP/client compatibility and discovery                | PASS                | Protocol/client tests and the typed v1 method contracts                                                                                                                                                                                                 |
@@ -197,13 +197,15 @@ the previous `main` candidate `484fcb4` passed post-merge in [run
 the previous `main` candidate `d750acf` passed post-merge in [run
 30489057541](https://github.com/vitala89/Intentloom/actions/runs/30489057541), and
 the previous `main` candidate `9667b88` passed post-merge in [run
-30491209504](https://github.com/vitala89/Intentloom/actions/runs/30491209504), and
-the current `main` candidate `c47eb0f` passed post-merge in [run
-30492745164](https://github.com/vitala89/Intentloom/actions/runs/30492745164).
+30491209504](https://github.com/vitala89/Intentloom/actions/runs/30491209504), the
+previous `main` candidate `c47eb0f` passed post-merge in [run
+30492745164](https://github.com/vitala89/Intentloom/actions/runs/30492745164), and
+the current `main` candidate `2c7d4a4` passed post-merge in [run
+30495322242](https://github.com/vitala89/Intentloom/actions/runs/30495322242).
 The local clean-room records were produced against the pre-merge runtime tree
 `46a278c`; PR #117 and PR #118 made no runtime, package, or dependency changes,
 but a maintainer must still confirm that retained evidence is sufficient for
-the exact approved release commit `c47eb0f` or authorize a fresh run.
+the exact approved release commit `2c7d4a4` or authorize a fresh run.
 GitHub emitted only the existing Node.js 20 action deprecation annotations.
 
 The first sandbox attempts were not counted as results: npm DNS resolution was
@@ -222,7 +224,7 @@ evidence does not authorize a tag, npm publication, or release announcement.
 3. Local release-candidate install, build, packed CLI smoke, and full validation
    are recorded above. Confirm that the retained clean-room installation and explicit-path
    evidence from runtime-equivalent tree `46a278c` is sufficient for the exact
-   approved commit `c47eb0f`, or authorize a fresh run.
+   approved commit `2c7d4a4`, or authorize a fresh run.
 4. Accept or refresh the existing dogfooding records against the stable
    candidate without including private project data. The current self-adoption
    record is supporting evidence only and does not replace the three required
