@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **v1.0 Phase 1–4 merged; Phase 5 stable-release gate active** — PR #119 is merged as `c49bf793`, its post-merge run has one Windows Node 24 packed-process timeout failure, and one medium glib alert remains for disposition
+Status: **v1.0 Phase 1–4 merged; Phase 5 stable-release gate active** — PR #119 is merged as `c49bf793`, draft PR #120 has green Compatibility run `30460528948`, and one medium glib alert remains for disposition
 
 Active branch: `codex/v1-phase5-windows-node24-packed-timeout`
 
 Current objective: execute Phase 5 of `V1_0_STABLE_COMPATIBILITY_PLAN.md`: assemble the v1.0 readiness audit and obtain maintainer release approval without implying a tag or publication.
 
-Next first action: complete and verify the scoped Windows Node 24 timeout remediation, then record maintainer decisions for support policy, the glib exception, real-project dogfooding acceptance, clean-room evidence sufficiency, and the exact release commit; do not tag or publish without separate authorization.
+Next first action: review/merge PR #120 and verify its post-merge run, then record maintainer decisions for support policy, the glib exception, real-project dogfooding acceptance, clean-room evidence sufficiency, and the exact release commit; do not tag or publish without separate authorization.
 
 ## Watch rules
 
@@ -41,6 +41,31 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-29, Phase 5: PR #120 Windows Node 24 timeout remediation verification
+
+- **Status:** partial
+- **Agent/tool:** Codex with GitHub Actions, Vitest, Git, and release records
+- **Branch:** `codex/v1-phase5-windows-node24-packed-timeout`
+- **Commit:** `8d14606` — `test: extend packed adapter timeout on Windows`
+- **Pull request:** draft [PR #120](https://github.com/vitala89/Intentloom/pull/120), open; release/tag/publication not authorized
+- **Completed:** Added a bounded 20-second timeout only to the all-adapter generation test that failed on Windows Node 24 in post-merge run `30459836027`. Compatibility run [30460528948](https://github.com/vitala89/Intentloom/actions/runs/30460528948) passed all six Ubuntu, macOS, and Windows Node 22/24 jobs, including Windows Node 24.
+- **Validation:** Targeted and full `pnpm vitest run tests/adapter-packed-process.test.ts` passed locally (13 passed, 1 skipped). Hosted typecheck, lint, format, build, and test passed in all six jobs; only known Node.js 20 action deprecation annotations remain. `pnpm format:check` and `git diff --check` passed.
+- **Not completed:** PR #120 is not merged. The post-merge run for the eventual merge commit is still required. Support-policy approval, glib alert #2 disposition or coordinated migration, historical real-project dogfooding acceptance, clean-room evidence sufficiency, and final release approval remain open.
+- **Decisions and assumptions:** Treat the timeout extension as test-harness stabilization only; no runtime, package, or dependency behavior changed. Do not treat the PR green matrix as stable-release approval.
+- **Risks or compatibility impact:** The timeout is intentionally bounded at 20 seconds; a future hang would still fail. The medium glib alert and workflow deprecation annotations remain unchanged.
+- **Next first action:** Obtain maintainer review/merge disposition for PR #120, then verify the post-merge Compatibility run before updating the exact candidate state.
+- **Evidence:** [PR #120](https://github.com/vitala89/Intentloom/pull/120), [green Compatibility run 30460528948](https://github.com/vitala89/Intentloom/actions/runs/30460528948), [failed predecessor 30459836027](https://github.com/vitala89/Intentloom/actions/runs/30459836027), and [remediation commit 8d14606](https://github.com/vitala89/Intentloom/commit/8d14606).
+
+#### Duty completion checklist
+
+- [x] Formatter passed for the final diff
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant hosted compatibility checks passed
+- [x] `git diff --check` passed for the final diff
+- [x] Final diff reviewed
+- [x] `DUTY_WATCH.md` handoff updated
+- [ ] PR #120 merged and post-merge Compatibility verified
 
 ### 2026-07-29, Phase 5: diagnose Windows Node 24 post-merge timeout
 
