@@ -5,8 +5,8 @@ not authorize a tag, npm publication, or release announcement.
 
 Date: 2026-07-29.
 
-Candidate baseline under review: `c21939e` (`main` and `origin/main` after PR
-#111 merge). The documentation updates in this branch still require review
+Candidate baseline under review: `5d1af7c` (`main` and `origin/main` after PR
+#112 merge). The documentation updates in this branch still require review
 before a final release commit is selected.
 
 ## Decision summary
@@ -73,6 +73,10 @@ No v1.0 tag or npm artifact is claimed by this document.
   `c21939e`; it reconciled the release records after PR #110. The post-merge
   Compatibility run [30409627721](https://github.com/vitala89/Intentloom/actions/runs/30409627721)
   passed all six jobs on `main`.
+- PR [#112](https://github.com/vitala89/Intentloom/pull/112) merged as
+  `5d1af7c`; it completed the release-state reconciliation after PR #111. The
+  post-merge Compatibility run [30410395631](https://github.com/vitala89/Intentloom/actions/runs/30410395631)
+  passed all six jobs on `main`.
 - Dependabot alert [#2](https://github.com/vitala89/Intentloom/security/dependabot/2)
   remains open at medium severity for `glib@0.18.5` in
   `apps/desktop/src-tauri/Cargo.lock`; GitHub reports `0.20.0` as the first
@@ -111,8 +115,8 @@ and remains pending maintainer approval.
 ## Release-candidate verification
 
 Verified locally against `d191205` on 2026-07-29; the resulting candidate and
-release-state reconciliation are merged in `main` as `c21939e`. Hosted
-Compatibility verification for `c21939e` passed in [run 30409627721](https://github.com/vitala89/Intentloom/actions/runs/30409627721):
+release-state reconciliations are merged in `main` as `5d1af7c`. Hosted
+Compatibility verification for `5d1af7c` passed in [run 30410395631](https://github.com/vitala89/Intentloom/actions/runs/30410395631):
 
 | Check                                                  | Result                                                                           |
 | ------------------------------------------------------ | -------------------------------------------------------------------------------- |
