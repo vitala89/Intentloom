@@ -81,8 +81,8 @@ before a new release or implementation milestone is declared complete.
 ## Current blockers and unknowns
 
 - Any expansion to bottleneck, performance, causal, actor, repository-reading, persisted, remote, or model-assisted analysis requires a new ADR, specification, and threat review.
-- PR #84 through PR #111 are merged in the local history; current `main` is
-  verified at `c21939e` and tracks `origin/main`.
+- PR #84 through PR #112 are merged in the local history; current `main` is
+  verified at `5d1af7c` and tracks `origin/main`.
 - npm currently reports `latest=0.1.0-alpha.3` and `next=0.5.0-beta.1`.
 - Workspace packages are synchronized to `0.5.0-beta.1`; Git tag
   `v0.5.0-beta.1` is pushed and npm publication is complete.
@@ -120,6 +120,9 @@ before a new release or implementation milestone is declared complete.
 - PR #111 is merged as `c21939e`; it reconciles the project and release records
   with PR #110. The post-merge Compatibility run `30409627721` passed all six
   Ubuntu, macOS, and Windows Node 22/24 jobs on that `main` commit.
+- PR #112 is merged as `5d1af7c`; it completes the release-state reconciliation
+  after PR #111. The post-merge Compatibility run `30410395631` passed all six
+  Ubuntu, macOS, and Windows Node 22/24 jobs on that `main` commit.
 - Dependabot alert #2 remains open at medium severity for `glib@0.18.5` in
   `apps/desktop/src-tauri/Cargo.lock`; GitHub reports `0.20.0` as the first
   patched version. A read-only Cargo tree assessment confirms it is shared by
@@ -144,7 +147,7 @@ before a new release or implementation milestone is declared complete.
   lifecycle, token ownership, canonical project selection, bounded IPC, and a
   Tokio Windows named-pipe source path; remaining work is follow-up hardening,
   not the closed v0.6 packaging gate.
-- The post-merge Compatibility run for `main` at `c21939e` passed all six
+- The post-merge Compatibility run for `main` at `5d1af7c` passed all six
   Ubuntu, macOS, and Windows Node 22/24 jobs. GitHub still emits a Node.js 20
   deprecation annotation for the current action versions; this is a workflow
   maintenance warning, not a product or Desktop implementation failure.
