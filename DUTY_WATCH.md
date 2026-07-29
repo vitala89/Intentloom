@@ -9,7 +9,7 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **v1.0 Phase 1–4 merged; Phase 5 stable-release gate active** — PR #116 is merged as `46a278c`, PR #117 is open with green Compatibility run `30453080260`, and one medium glib alert remains for disposition
+Status: **v1.0 Phase 1–4 merged; Phase 5 stable-release gate active** — PR #116 is merged as `46a278c`, PR #117 is open with green Compatibility run `30453380391`, and one medium glib alert remains for disposition
 
 Active branch: `codex/v1-phase5-post-merge-dogfooding-state`
 
@@ -41,6 +41,32 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-29, Phase 5: current PR #117 Compatibility verification
+
+- **Status:** partial
+- **Agent/tool:** Codex with GitHub Actions logs, local validation, and repository release records
+- **Branch:** `codex/v1-phase5-post-merge-dogfooding-state`
+- **Commit:** `a676cf4` — `docs: record green PR 117 matrix`
+- **Pull request:** draft [PR #117](https://github.com/vitala89/Intentloom/pull/117), open; release/tag/publication not authorized
+- **Completed:** Rechecked the current PR head after the Windows timeout remediation. Compatibility run [30453380391](https://github.com/vitala89/Intentloom/actions/runs/30453380391) passed all six Ubuntu, macOS, and Windows Node 22/24 jobs, including the previously failing Windows Node 22 packed-doctor test. Only the known Node.js 20 action deprecation annotations remain.
+- **Validation:** The bounded test-only timeout fix is covered by the local targeted and full-suite results recorded above; hosted typecheck, lint, format, build, and test passed in all six matrix jobs.
+- **Not completed:** PR #117 is not merged. Maintainer support-policy approval, glib exception or coordinated migration decision, historical real-project dogfooding acceptance, and final release approval remain open.
+- **Decisions and assumptions:** Treat run `30453380391` as verification of commit `a676cf4`; keep PR #117 draft and do not infer release approval from green CI.
+- **Risks or compatibility impact:** No runtime, package, or dependency behavior changed in this verification. Dependabot alert #2 remains open and visible.
+- **Next first action:** Obtain maintainer review/merge disposition for PR #117, then record the support-policy, glib, dogfooding, and exact release-commit decisions without tagging or publishing.
+- **Evidence:** [PR #117](https://github.com/vitala89/Intentloom/pull/117), [green Compatibility run 30453380391](https://github.com/vitala89/Intentloom/actions/runs/30453380391), and [failed predecessor 30452604175](https://github.com/vitala89/Intentloom/actions/runs/30452604175).
+
+#### Duty completion checklist
+
+- [x] Formatter passed for the final diff
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant hosted compatibility checks passed
+- [x] `git diff --check` passed for the final diff
+- [x] Final diff reviewed
+- [x] `PROJECT_STATE.md` updated when applicable
+- [x] `DUTY_WATCH.md` handoff updated
+- [x] Related release reference documentation updated
 
 ### 2026-07-29, Phase 5: Windows timeout remediation and green PR #117 matrix
 
