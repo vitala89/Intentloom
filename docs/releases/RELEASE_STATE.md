@@ -6,7 +6,7 @@ Historical release audits and roadmap sections retain their original scope, but
 this document is the source of truth for the current status.
 
 Snapshot: 2026-07-29
-Main commit: `d750acf` (PR #125 merged)
+Main commit: `9667b88` (PR #126 merged)
 Release commit: `a0e0b13` (tagged `v0.5.0-beta.1`)
 Workspace version: `0.5.0-beta.1`
 Git tag: `v0.5.0-beta.1` (pushed)
@@ -123,6 +123,11 @@ listed in the last table row. `latest` intentionally remains the historical
 - PR [#125](https://github.com/vitala89/Intentloom/pull/125) is merged as
   `d750acf`; it reconciles the Phase 5 records after PR #124. Its post-merge
   [Compatibility run](https://github.com/vitala89/Intentloom/actions/runs/30489057541)
+  passed all six Ubuntu, macOS, and Windows Node 22/24 jobs. No runtime,
+  package, or dependency behavior changed.
+- PR [#126](https://github.com/vitala89/Intentloom/pull/126) is merged as
+  `9667b88`; it reconciles the Phase 5 records after PR #125. Its post-merge
+  [Compatibility run](https://github.com/vitala89/Intentloom/actions/runs/30491209504)
   passed all six Ubuntu, macOS, and Windows Node 22/24 jobs. No runtime,
   package, or dependency behavior changed.
 - Supplemental exact-candidate clean-room, explicit-path, and three-scenario
