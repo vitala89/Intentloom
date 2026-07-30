@@ -9,13 +9,28 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **v1.0.0 Release PR active** — Package versions synchronized to `1.0.0` across workspace, `CHANGELOG.md` updated with `1.0.0` release entry, `RELEASE_STATE.md` updated, branch `release/v1.0.0` prepared for release PR and tag `v1.0.0`
+Status: **v1.0.0 tagged in Git, not published to npm** — PR #138 merged as `db61be9`; tag `v1.0.0` (`f9fc326`) pushed to `origin`; post-merge Compatibility (run 30529498050) and CodeQL (run 30529497908) green. npm `latest` is still `0.1.0-alpha.3` and `next` is still `0.5.0-beta.1`. No GitHub release exists for `v1.0.0`.
 
-Active branch: `release/v1.0.0`
+Active branch: `chore/post-v1-doc-and-ci-hardening`
 
-Current objective: merge release PR `release/v1.0.0`, verify `main`, tag `v1.0.0`, and complete npm publication procedures.
+Current objective: correct the release-status records that overstated publication, harden the CI supply chain, and leave the npm publication decision with the maintainer.
 
-Next first action: verify CI completion on PR `release/v1.0.0`, merge PR into `main`, create tag `v1.0.0`, and push tag to origin.
+Next first action: merge the doc-and-CI-hardening PR, then decide on npm trusted publishing before authorizing `intentloom@1.0.0`.
+
+Known open items, in the order they should be handled:
+
+1. `docs/security/V1_SECURITY_AND_SUPPLY_CHAIN_AUDIT.md` now records package
+   provenance as NOT MET. No publish workflow, npm trusted publishing, or
+   `--provenance` flag exists. Configure trusted publishing before the first
+   stable publication so `1.0.0` ships with provenance.
+2. npm publication of `intentloom@1.0.0` under `latest` remains unauthorized.
+   It requires completing `docs/releases/PUBLISH_AUTHORIZATION_CHECKLIST.md` and
+   a separate explicit maintainer authorization.
+3. No GitHub release exists for `v1.0.0` (or for `v0.5.0-beta.1`).
+4. Dependabot alert #2 (`glib@0.18.5`, transitive, medium) carries an approved
+   exception that expires 2026-10-29.
+5. Branch and tag protection rules for `main` and `v*` are not recorded anywhere
+   in the repository; `.github/CODEOWNERS` now exists to support required review.
 
 ## Watch rules
 
@@ -41,6 +56,42 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-30, Release operations: trusted publishing workflow and the v1.0.0 GitHub release
+
+- **Status:** complete for this watch
+- **Agent/tool:** Claude Code (Opus 5) with Git, GitHub CLI, npm, Prettier
+- **Branch:** `chore/release-trusted-publishing`
+- **Base:** `main` / `origin/main` at `c0ea8ce` (PR #139 merge)
+- **Objective:** put the approved publication path in place so the first stable npm release carries provenance, and close the missing GitHub release.
+- **Completed:**
+  - Added `.github/workflows/release.yml`, publishing through npm trusted publishing (OIDC). No npm token is used or referenced. It is dispatch-only, refuses any ref other than `main` or a `v*` tag, runs in the protected `npm-publish` environment, and `dry_run` defaults to `true`. It asserts the npm and Node versions that trusted publishing requires, asserts the dispatched version against `packages/cli/package.json`, fails if the build modifies tracked files, and records the tarball integrity and file list in the run summary and as an artifact.
+  - Verified every precondition npm requires: repository is public, package access is public, `repository.url` matches `vitala89/Intentloom` exactly, and the runner is cloud-hosted. Confirmed from the npm documentation that provenance is generated automatically in this mode, so `--provenance` is deliberately absent.
+  - Created the GitHub release for `v1.0.0`. It states plainly that the version is not on npm and what the registry actually serves.
+  - Rewrote the trusted-publishing section of `PUBLISHING.md` into the concrete configuration, including the exact npmjs.com field values and the two setup steps that can only be done outside this repository.
+  - Filled in `PUBLISH_AUTHORIZATION_CHECKLIST.md` for the `1.0.0` candidate, checking only what is verifiable with evidence and leaving the maintainer-only gates open.
+  - Corrected `CHANGELOG.md`, which claimed under Notes that `1.0.0` was published to npm under `latest`. It is the same false claim already corrected in `RELEASE_STATE.md`, in a document that feeds the public release notes.
+  - Updated the provenance row in `V1_SECURITY_AND_SUPPLY_CHAIN_AUDIT.md` from NOT MET to PARTIAL: the repository side is complete, the npm side is not, and nothing has been published through it yet.
+- **Not completed:** The npm trusted publisher and the `npm-publish` environment reviewer are not configured; both are outside this repository. `intentloom@1.0.0` is not published. No dry run of the release workflow has been executed.
+- **Files or packages changed:** `.github/workflows/release.yml`, `CHANGELOG.md`, `DUTY_WATCH.md`, `PROJECT_STATE.md`, `docs/releases/PUBLISHING.md`, `docs/releases/PUBLISH_AUTHORIZATION_CHECKLIST.md`, `docs/releases/RELEASE_STATE.md`, `docs/security/V1_SECURITY_AND_SUPPLY_CHAIN_AUDIT.md`. No package source changed.
+- **Validation:** `pnpm format:check`, `git diff --check`, and a YAML parse of the new workflow confirming dispatch-only triggers, the `npm-publish` environment, `id-token: write`, and that no token or secret is referenced anywhere in it.
+- **Decisions and assumptions:** The workflow builds the ref it was dispatched on and refuses to build any other, because provenance attests to the run's own ref and commit. Attesting to a commit that was not built would be worse than shipping no provenance. Since the release workflow postdates the `v1.0.0` tag, publishing will run from `main`; this is recorded as safe because `git diff v1.0.0..main` over the packaged paths is empty, so the payload is identical.
+- **Risks or compatibility impact:** None to the shipped package. A rename of `release.yml` breaks publication until the npm trusted publisher is updated, which is why the filename is called out in the workflow header and in `PUBLISHING.md`.
+- **Open issues or blockers:** Configure the npm trusted publisher and the environment reviewer, then run the workflow with `dry_run: true` and record the tarball evidence before authorizing a real publish. Dependabot alert #2 exception expires 2026-10-29.
+- **Next first action:** Configure the trusted publisher on npmjs.com and the `npm-publish` environment, then dispatch **Release** with `dry_run: true`.
+- **Evidence:** GitHub release https://github.com/vitala89/Intentloom/releases/tag/v1.0.0; `npm view intentloom dist-tags` on 2026-07-30 reporting `latest=0.1.0-alpha.3`, `next=0.5.0-beta.1`; npm trusted publishing and provenance documentation.
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [ ] Relevant tests, type checks, builds, or compatibility checks passed (no source changed; the pull request runs the full matrix)
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `PROJECT_STATE.md` updated when applicable
+- [x] `DUTY_WATCH.md` handoff completed
+- [x] Related roadmap, ADR, changelog, migration, or reference docs updated
+- [x] Failed or unavailable checks recorded
 
 ### 2026-07-30, Desktop: import the design system token and component layer
 
@@ -71,6 +122,46 @@ entry directly below this section.
 - [x] Formatter passed
 - [x] Markdown and lint checks passed when configured
 - [x] Relevant tests, type checks, builds, or compatibility checks passed
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `PROJECT_STATE.md` updated when applicable
+- [x] `DUTY_WATCH.md` handoff completed
+- [x] Related roadmap, ADR, changelog, migration, or reference docs updated
+- [x] Failed or unavailable checks recorded
+
+### 2026-07-30, Post-v1.0.0: release-status correction and CI supply-chain hardening
+
+- **Status:** complete for this watch
+- **Agent/tool:** Claude Code (Fable 5 / Opus 5) with Git, GitHub CLI, npm, Prettier
+- **Branch:** `chore/post-v1-doc-and-ci-hardening`
+- **Base:** `main` / `origin/main` at `db61be9` (PR #138 merge)
+- **Commits:** see pull request
+- **Pull request:** see PR opened from this branch
+- **Objective:** correct release-status records that overstated what had shipped, and close the concrete supply-chain gaps found in a post-release security review.
+- **Completed:**
+  - Corrected `docs/releases/RELEASE_STATE.md`, which claimed `intentloom@1.0.0` was published to npm under `latest`. Verified against the registry: `npm view intentloom dist-tags` reports `latest=0.1.0-alpha.3`, `next=0.5.0-beta.1`. The header now records the Git-only status and points at the publication checklist.
+  - Corrected `docs/security/V1_SECURITY_AND_SUPPLY_CHAIN_AUDIT.md`, which recorded Package Provenance as PASS. No publish workflow, npm trusted publishing, or `--provenance` flag exists in the repository, so the row now reads NOT MET (planned).
+  - Updated the same document's `glib@0.18.5` section from "proposed; maintainer approval is pending" to the approved state already recorded in `docs/releases/V1_0_RELEASE_GATE_PACKET.md`.
+  - Updated `SECURITY.md`, which still described the project as alpha software, to the `1.x` support line per `SUPPORT_POLICY_V1.md`, including an explicit note that `1.0.0` is tagged but unpublished.
+  - Pinned every `uses:` reference in all four workflows to a full commit SHA with a version comment, including `dtolnay/rust-toolchain`, which was previously tracking the mutable `stable` branch.
+  - Added a `github-actions` ecosystem block to `.github/dependabot.yml` so the new SHA pins receive update pull requests.
+  - Extended the `dependency-review.yml` path filter to `apps/desktop/src-tauri/Cargo.toml` and `Cargo.lock`, which Dependabot already tracks but dependency review skipped.
+  - Added an integrity check for the `postject@1.0.0-alpha.6` tarball in `desktop-sea-feasibility.yml`; `npm pack` bypasses the lockfile, so nothing verified it before its `api.js` was loaded. The expected `sha512` matches the published npm integrity value and was verified locally.
+  - Added `.github/CODEOWNERS` covering `.github/`, `packages/cli/`, `scripts/`, `SECURITY.md`, `docs/security/`, and `docs/releases/`.
+- **Not completed:** npm trusted publishing and a release workflow with provenance are not configured; no GitHub release exists for `v1.0.0`; branch and tag protection rules are not recorded in the repository.
+- **Files or packages changed:** `SECURITY.md`, `DUTY_WATCH.md`, `docs/releases/RELEASE_STATE.md`, `docs/security/V1_SECURITY_AND_SUPPLY_CHAIN_AUDIT.md`, `.github/CODEOWNERS`, `.github/dependabot.yml`, `.github/workflows/*.yml`. No package source changed.
+- **Validation:** `pnpm format:check`, `git diff --check`. No source code changed, so behavior is unaffected; CI runs the full matrix on the pull request.
+- **Decisions and assumptions:** Action SHAs were resolved through the GitHub API on 2026-07-30 and annotated with the version tag they correspond to. `dtolnay/rust-toolchain` publishes no release tags, so it is pinned to the then-current `master` commit and the comment says so. Publication of `1.0.0` was deliberately left unauthorized.
+- **Risks or compatibility impact:** None to the shipped package. Pinned actions no longer receive silent upstream fixes; Dependabot now supplies them as reviewable pull requests.
+- **Open issues or blockers:** Configure npm trusted publishing and provenance before the first stable publication. Dependabot alert #2 exception expires 2026-10-29.
+- **Next first action:** Merge this pull request, then decide whether to configure trusted publishing before authorizing `intentloom@1.0.0`.
+- **Evidence:** `npm view intentloom dist-tags` on 2026-07-30; post-merge Compatibility run 30529498050 and CodeQL run 30529497908 on `db61be9`.
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [ ] Relevant tests, type checks, builds, or compatibility checks passed (no source changed; the pull request runs the full matrix)
 - [x] `git diff --check` passed
 - [x] Final diff reviewed
 - [x] `PROJECT_STATE.md` updated when applicable

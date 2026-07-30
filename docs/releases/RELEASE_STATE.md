@@ -6,12 +6,32 @@ Historical release audits and roadmap sections retain their original scope, but
 this document is the source of truth for the current status.
 
 Snapshot: 2026-07-30
-Main commit: `3da811e` (PR #137 merged; Phase 5 Release Gate approved)
-Release commit: `v1.0.0` (tagged `v1.0.0`)
+Main commit: `c0ea8ce` (PR #139 merged)
+Release commit: `db61be9` (tagged `v1.0.0` as `f9fc326`)
 Workspace version: `1.0.0`
-Git tag: `v1.0.0`
-Published npm package: `intentloom@1.0.0` under `latest`
-Default npm `latest`: `intentloom@1.0.0`
+Git tag: `v1.0.0` (pushed to `origin`)
+GitHub release: [`v1.0.0`](https://github.com/vitala89/Intentloom/releases/tag/v1.0.0), published 2026-07-30
+Published npm package: none for `1.0.0`; publication is not authorized yet
+Default npm `latest`: `intentloom@0.1.0-alpha.3`
+Default npm `next`: `intentloom@0.5.0-beta.1`
+
+`1.0.0` exists in Git only. Publishing it to npm requires completing
+[`PUBLISH_AUTHORIZATION_CHECKLIST.md`](PUBLISH_AUTHORIZATION_CHECKLIST.md) and a
+separate explicit maintainer authorization. Do not describe `1.0.0` as published
+until `npm view intentloom` reports it.
+
+The publication path is [`.github/workflows/release.yml`](../../.github/workflows/release.yml),
+which uses npm trusted publishing and therefore attaches provenance
+automatically. It is dispatch-only, gated on the protected `npm-publish`
+environment, and defaults to a dry run. Two npm-side and GitHub-side setup steps
+remain before it can publish; they are listed in
+[Publishing](PUBLISHING.md#one-time-setup-performed-by-the-package-owner).
+
+`main` has advanced past the `v1.0.0` tag with documentation and CI changes
+only. `git diff --name-only v1.0.0..main -- packages/ catalog/ profiles/ scripts/build-cli.mjs`
+is empty, so the package payload is identical at both commits. This is recorded
+because provenance attests to the commit the release workflow runs on, and the
+workflow postdates the tag.
 
 `Implemented in main` means the capability is present in the current source
 tree. `Released version` means the first npm release that contains the

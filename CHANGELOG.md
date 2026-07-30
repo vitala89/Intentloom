@@ -26,8 +26,12 @@ are not included in the current npm artifact until a later release.
 
 ### Notes
 
-- Official `v1.0.0` release.
-- Published under npm `latest` dist-tag as package `intentloom@1.0.0`.
+- Official `v1.0.0` release, tagged in Git.
+- Not yet published to npm. `latest` remains `0.1.0-alpha.3` and `next` remains
+  `0.5.0-beta.1` until the publication checklist is completed and a maintainer
+  authorizes the release workflow. See
+  [`RELEASE_STATE.md`](docs/releases/RELEASE_STATE.md) for the authoritative
+  published-artifact status.
 - Verified compatibility across macOS, Linux, and Windows on Node.js 22 and 24.
 
 ## [0.5.0-beta.1] - 2026-07-27

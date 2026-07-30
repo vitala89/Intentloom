@@ -14,15 +14,15 @@ Intentloom is an offline-first, local-first control layer. The platform executes
 
 ## Security Audit Matrix
 
-| Domain                    | Security Invariant                                                                             | Verification Status          | Evidence                                                                                                                    |
-| ------------------------- | ---------------------------------------------------------------------------------------------- | ---------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
-| **Local-First Boundary**  | Zero telemetry, zero external network calls during normal operations                           | ✅ PASS                      | `ADR-0008`, `THREAT_MODEL.md`                                                                                               |
-| **Token Security**        | Session tokens held strictly in native process memory; never logged or stored on disk          | ✅ PASS                      | `packages/daemon/src/index.ts`                                                                                              |
-| **IPC Access Control**    | Authenticated Unix socket / Named Pipe with strict RPC method whitelist                        | ✅ PASS                      | `ADR-0009`, `ADR-0032`                                                                                                      |
-| **Read-Only Invariant**   | Inspection, doctor, diff, timeline, TUI, and MCP leave projects byte-for-byte unchanged        | ✅ PASS                      | `tests/interactive-ui.test.ts`, `tests/v1-client-surface-equivalence.test.ts`                                               |
-| **Dependency Governance** | pnpm lockfile reproducibility, dependency review, and explicit disposition of known advisories | ✅ PASS (approved exception) | `pnpm-lock.yaml`, `package.json`, `.github/workflows/dependency-review.yml`, alert #2 (exception approved until 2026-10-29) |
-| **Package Provenance**    | Signed npm releases and GitHub release provenance                                              | ✅ PASS                      | `docs/releases/PUBLISH_AUTHORIZATION_CHECKLIST.md`                                                                          |
-| **Incident Response**     | Rollback procedure via `.aif/migration-journal.json` and git tags                              | ✅ PASS                      | `docs/releases/MIGRATION_GUIDE_V1.md`                                                                                       |
+| Domain                    | Security Invariant                                                                             | Verification Status                   | Evidence                                                                                                                                                                                                                                                                                                                                                                 |
+| ------------------------- | ---------------------------------------------------------------------------------------------- | ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Local-First Boundary**  | Zero telemetry, zero external network calls during normal operations                           | ✅ PASS                               | `ADR-0008`, `THREAT_MODEL.md`                                                                                                                                                                                                                                                                                                                                            |
+| **Token Security**        | Session tokens held strictly in native process memory; never logged or stored on disk          | ✅ PASS                               | `packages/daemon/src/index.ts`                                                                                                                                                                                                                                                                                                                                           |
+| **IPC Access Control**    | Authenticated Unix socket / Named Pipe with strict RPC method whitelist                        | ✅ PASS                               | `ADR-0009`, `ADR-0032`                                                                                                                                                                                                                                                                                                                                                   |
+| **Read-Only Invariant**   | Inspection, doctor, diff, timeline, TUI, and MCP leave projects byte-for-byte unchanged        | ✅ PASS                               | `tests/interactive-ui.test.ts`, `tests/v1-client-surface-equivalence.test.ts`                                                                                                                                                                                                                                                                                            |
+| **Dependency Governance** | pnpm lockfile reproducibility, dependency review, and explicit disposition of known advisories | ✅ PASS (approved exception)          | `pnpm-lock.yaml`, `package.json`, `.github/workflows/dependency-review.yml`, alert #2 (exception approved until 2026-10-29)                                                                                                                                                                                                                                              |
+| **Package Provenance**    | Signed npm releases and GitHub release provenance                                              | ⚠️ PARTIAL (repository side complete) | `.github/workflows/release.yml` publishes via npm trusted publishing, which attaches provenance automatically. Dispatch-only, protected `npm-publish` environment, no token. The npm-side trusted publisher and the GitHub environment reviewer are not yet configured, and nothing has been published through it, so provenance is not yet demonstrated on an artifact. |
+| **Incident Response**     | Rollback procedure via `.aif/migration-journal.json` and git tags                              | ✅ PASS                               | `docs/releases/MIGRATION_GUIDE_V1.md`                                                                                                                                                                                                                                                                                                                                    |
 
 ## Vulnerability & Continuous Audit Policy
 
@@ -44,10 +44,13 @@ Intentloom is an offline-first, local-first control layer. The platform executes
    result must be retained before treating the control as release evidence.
 5. **Rollback & Recovery**: In the event of a security advisory, maintainers issue immediate patch releases (`1.0.x`) and document mitigation steps in `docs/security/`.
 
-## Proposed exception: transitive `glib@0.18.5`
+## Approved exception: transitive `glib@0.18.5`
 
-Status: proposed; maintainer approval is pending. This section does not close
-or suppress [Dependabot alert #2](https://github.com/vitala89/Intentloom/security/dependabot/2).
+Status: approved by maintainer `vitala89` on 2026-07-30, recorded in
+[`V1_0_RELEASE_GATE_PACKET.md`](../releases/V1_0_RELEASE_GATE_PACKET.md). The
+exception is temporary and expires 2026-10-29. This section does not close or
+suppress [Dependabot alert #2](https://github.com/vitala89/Intentloom/security/dependabot/2),
+which remains open at medium severity.
 
 ### Scope and advisory
 
@@ -86,5 +89,6 @@ more release risk than the current transitive, unused API exposure.
   published.
 - Exception expiry/review date: **2026-10-29**, or immediately before any
   public stable Desktop release, whichever comes first.
-- Proposed owner: Intentloom project maintainer; approval, owner confirmation,
-  and review date must be recorded in the release approval record.
+- Owner: Intentloom project maintainer `vitala89`. Approval, owner confirmation,
+  and review date are recorded in
+  [`V1_0_RELEASE_GATE_PACKET.md`](../releases/V1_0_RELEASE_GATE_PACKET.md).

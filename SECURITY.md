@@ -2,8 +2,15 @@
 
 ## Supported versions
 
-Intentloom is currently alpha software. Security fixes are assessed for the latest
-published alpha and the `main` branch; compatibility and generated output may change.
+Security fixes are assessed for the current `1.x` release line and the `main`
+branch, per [`docs/releases/SUPPORT_POLICY_V1.md`](docs/releases/SUPPORT_POLICY_V1.md).
+Pre-1.0 alpha and beta releases are no longer supported; report issues against a
+supported version where possible.
+
+Note that the `1.0.0` tag exists in this repository but has not been published to
+npm at the time of writing. The current npm `latest` remains `0.1.0-alpha.3`; see
+[`docs/releases/RELEASE_STATE.md`](docs/releases/RELEASE_STATE.md) for the
+authoritative published-artifact status.
 
 ## Reporting a vulnerability
 
