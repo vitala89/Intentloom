@@ -57,6 +57,42 @@ entry directly below this section.
 
 ## Watch entries
 
+### 2026-07-30, Release operations: trusted publishing workflow and the v1.0.0 GitHub release
+
+- **Status:** complete for this watch
+- **Agent/tool:** Claude Code (Opus 5) with Git, GitHub CLI, npm, Prettier
+- **Branch:** `chore/release-trusted-publishing`
+- **Base:** `main` / `origin/main` at `c0ea8ce` (PR #139 merge)
+- **Objective:** put the approved publication path in place so the first stable npm release carries provenance, and close the missing GitHub release.
+- **Completed:**
+  - Added `.github/workflows/release.yml`, publishing through npm trusted publishing (OIDC). No npm token is used or referenced. It is dispatch-only, refuses any ref other than `main` or a `v*` tag, runs in the protected `npm-publish` environment, and `dry_run` defaults to `true`. It asserts the npm and Node versions that trusted publishing requires, asserts the dispatched version against `packages/cli/package.json`, fails if the build modifies tracked files, and records the tarball integrity and file list in the run summary and as an artifact.
+  - Verified every precondition npm requires: repository is public, package access is public, `repository.url` matches `vitala89/Intentloom` exactly, and the runner is cloud-hosted. Confirmed from the npm documentation that provenance is generated automatically in this mode, so `--provenance` is deliberately absent.
+  - Created the GitHub release for `v1.0.0`. It states plainly that the version is not on npm and what the registry actually serves.
+  - Rewrote the trusted-publishing section of `PUBLISHING.md` into the concrete configuration, including the exact npmjs.com field values and the two setup steps that can only be done outside this repository.
+  - Filled in `PUBLISH_AUTHORIZATION_CHECKLIST.md` for the `1.0.0` candidate, checking only what is verifiable with evidence and leaving the maintainer-only gates open.
+  - Corrected `CHANGELOG.md`, which claimed under Notes that `1.0.0` was published to npm under `latest`. It is the same false claim already corrected in `RELEASE_STATE.md`, in a document that feeds the public release notes.
+  - Updated the provenance row in `V1_SECURITY_AND_SUPPLY_CHAIN_AUDIT.md` from NOT MET to PARTIAL: the repository side is complete, the npm side is not, and nothing has been published through it yet.
+- **Not completed:** The npm trusted publisher and the `npm-publish` environment reviewer are not configured; both are outside this repository. `intentloom@1.0.0` is not published. No dry run of the release workflow has been executed.
+- **Files or packages changed:** `.github/workflows/release.yml`, `CHANGELOG.md`, `DUTY_WATCH.md`, `PROJECT_STATE.md`, `docs/releases/PUBLISHING.md`, `docs/releases/PUBLISH_AUTHORIZATION_CHECKLIST.md`, `docs/releases/RELEASE_STATE.md`, `docs/security/V1_SECURITY_AND_SUPPLY_CHAIN_AUDIT.md`. No package source changed.
+- **Validation:** `pnpm format:check`, `git diff --check`, and a YAML parse of the new workflow confirming dispatch-only triggers, the `npm-publish` environment, `id-token: write`, and that no token or secret is referenced anywhere in it.
+- **Decisions and assumptions:** The workflow builds the ref it was dispatched on and refuses to build any other, because provenance attests to the run's own ref and commit. Attesting to a commit that was not built would be worse than shipping no provenance. Since the release workflow postdates the `v1.0.0` tag, publishing will run from `main`; this is recorded as safe because `git diff v1.0.0..main` over the packaged paths is empty, so the payload is identical.
+- **Risks or compatibility impact:** None to the shipped package. A rename of `release.yml` breaks publication until the npm trusted publisher is updated, which is why the filename is called out in the workflow header and in `PUBLISHING.md`.
+- **Open issues or blockers:** Configure the npm trusted publisher and the environment reviewer, then run the workflow with `dry_run: true` and record the tarball evidence before authorizing a real publish. Dependabot alert #2 exception expires 2026-10-29.
+- **Next first action:** Configure the trusted publisher on npmjs.com and the `npm-publish` environment, then dispatch **Release** with `dry_run: true`.
+- **Evidence:** GitHub release https://github.com/vitala89/Intentloom/releases/tag/v1.0.0; `npm view intentloom dist-tags` on 2026-07-30 reporting `latest=0.1.0-alpha.3`, `next=0.5.0-beta.1`; npm trusted publishing and provenance documentation.
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [ ] Relevant tests, type checks, builds, or compatibility checks passed (no source changed; the pull request runs the full matrix)
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `PROJECT_STATE.md` updated when applicable
+- [x] `DUTY_WATCH.md` handoff completed
+- [x] Related roadmap, ADR, changelog, migration, or reference docs updated
+- [x] Failed or unavailable checks recorded
+
 ### 2026-07-30, Post-v1.0.0: release-status correction and CI supply-chain hardening
 
 - **Status:** complete for this watch
