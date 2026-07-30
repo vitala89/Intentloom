@@ -13,6 +13,23 @@ are not included in the current npm artifact until a later release.
 - Added JSON Schema files for Extension Manifest (`urn:aif:schema:extension-manifest:1`) and Extension Lock (`urn:aif:schema:extension-lock:1`) in `catalog/schemas/` with `@intentloom/validator` support.
 - Added ADR-0023 (`ADR-0023-external-mcp-evidence-ingestion.md`) and External MCP Evidence Ingestion Specification (`EXTERNAL_MCP_EVIDENCE_INGESTION_SPEC.md`).
 
+## [1.0.0] - 2026-07-30
+
+### Added
+
+- **First Stable Release of Intentloom**: Local-first, offline-first AI agent control layer and process intelligence platform.
+- Full local protocol contract `v1` (`intentloom.doctor.v1`, `intentloom.inspect.v1`, `intentloom.diff.v1`, `intentloom.timeline.v1`).
+- Multi-adapter merging and rule generation for Claude Code, Codex, Cursor, and Copilot.
+- CLI (`intentloom`), MCP `stdio` server (`intentloom mcp serve --stdio`), and local daemon process (`intentloomd`).
+- Process intelligence suite: workflow variant summaries, duration metrics, conformance trends, repetition analysis, and transition interval tracking.
+- Bounded security model: Security & Supply Chain Audit sign-off, Dependency Review controls, CodeQL static analysis, and automated Dependabot updates.
+
+### Notes
+
+- Official `v1.0.0` release.
+- Published under npm `latest` dist-tag as package `intentloom@1.0.0`.
+- Verified compatibility across macOS, Linux, and Windows on Node.js 22 and 24.
+
 ## [0.5.0-beta.1] - 2026-07-27
 
 ### Added
