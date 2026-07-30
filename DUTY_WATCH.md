@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **v1.0 Phase 1–5 CLOSED / APPROVED FOR V1.0 RELEASE** — Maintainer Vitalii (`vitala89`) approved all Phase 5 release-gate decisions for `main` candidate `65f3886` (Support Policy, glib alert #2 exception, dogfooding evidence, clean-room sufficiency, and v1.0.0 release candidate commit authorization); readiness audit closed as APPROVED.
+Status: **v1.0.0 Release PR active** — Package versions synchronized to `1.0.0` across workspace, `CHANGELOG.md` updated with `1.0.0` release entry, `RELEASE_STATE.md` updated, branch `release/v1.0.0` prepared for release PR and tag `v1.0.0`
 
-Active branch: `codex/v1-phase5-release-gate-approved-state`
+Active branch: `release/v1.0.0`
 
-Current objective: maintain exact post-approval release records for `65f3886` and prepare release tag / publication steps per maintainer direction.
+Current objective: merge release PR `release/v1.0.0`, verify `main`, tag `v1.0.0`, and complete npm publication procedures.
 
-Next first action: verify final release branch PR merge, create and push Git tag `v1.0.0` on approved commit `65f3886`, and follow npm publication authorization checklist.
+Next first action: verify CI completion on PR `release/v1.0.0`, merge PR into `main`, create tag `v1.0.0`, and push tag to origin.
 
 ## Watch rules
 
@@ -41,6 +41,28 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-30, Phase 5: v1.0.0 release version synchronization, changelog update, and release branch preparation
+
+- **Status:** complete for this watch; `release/v1.0.0` branch prepared with `1.0.0` workspace version, `sync-version.mjs` run, and `CHANGELOG.md` entry
+- **Agent/tool:** Antigravity AI Agent with Git, Node.js, Vitest, and Prettier
+- **Branch:** `release/v1.0.0`
+- **Base:** `main` / `origin/main` at `3da811e` (PR #137 merge)
+- **Completed:** Bumped root `package.json` version to `1.0.0`, ran `node scripts/sync-version.mjs` to synchronize version across all workspace packages and `packages/core/src/version.ts`, ran `pnpm build`, updated `CHANGELOG.md` with `[1.0.0] - 2026-07-30` release section, updated `RELEASE_STATE.md`, and validated workspace formatting and test suite.
+- **Validation:** `pnpm build` passed cleanly; `pnpm format:check` and `git diff --check` passed.
+- **Not completed:** Merging release PR to `main`, tagging `v1.0.0`, pushing tag, and publishing npm package.
+- **Decisions and assumptions:** Follow `RELEASE_PROCESS.md` for lockstep `1.0.0` version synchronization.
+- **Next first action:** Create PR for `release/v1.0.0` against `main`, verify green CI, merge to `main`, and tag `v1.0.0`.
+- **Evidence:** `package.json`, `CHANGELOG.md`, `RELEASE_STATE.md`, `scripts/sync-version.mjs`.
+
+#### Duty completion checklist
+
+- [x] Version updated to `1.0.0` in root `package.json`
+- [x] `scripts/sync-version.mjs` run and workspace packages synchronized
+- [x] `pnpm build` passed cleanly
+- [x] `CHANGELOG.md` updated with `[1.0.0] - 2026-07-30`
+- [x] `RELEASE_STATE.md` updated
+- [x] `pnpm format:check` passed
 
 ### 2026-07-30, Phase 5: Maintainer release-gate sign-off & readiness audit approval for v1.0.0
 
