@@ -131,14 +131,46 @@ Desktop surfaces is separate work, done surface by surface.
 ## Follow-up
 
 - The static lockup and stacked SVG masters (`logo-lockup*.svg`,
-  `logo-stacked*.svg`) contain live `<text>` set in Inter. They render with a
-  fallback face wherever Inter is absent, which includes a clean packaged build.
-  Outline the text before these are used anywhere that fixed metrics matter. The
-  `Logo` and `Wordmark` components are unaffected: they are inline SVG and use
-  `useId` for their gradient and mask identifiers, so they neither depend on
-  Inter nor collide when several marks render in one document.
+  `logo-stacked*.svg`) still contain live `<text>`, now set in
+  `Geist, Inter, system-ui, sans-serif`. Inside the application this resolves to
+  the self-hosted Geist, but a standalone file opened anywhere else falls back to
+  whatever is installed. Outline the text before these are used where fixed
+  metrics matter. The `Logo` and `Wordmark` components are unaffected: they draw
+  the wordmark as live DOM text against the same self-hosted token stack.
 - `Combobox` uses `backdrop-filter` and `TextInput` uses `color-mix(in oklab, ...)`,
   both without a fallback. On an engine lacking `color-mix` the focus ring
   disappears entirely, which is an accessibility regression rather than a
   cosmetic one. Both were imported as authored; add fallbacks before either
   component ships in a user-facing surface.
+- The static masters carry hardcoded gradient identifiers, and each light/dark
+  pair shares one: `logo-lockup.svg` and `logo-lockup-dark.svg` both define
+  `lkg`, and `logo-stacked.svg` and `logo-stacked-dark.svg` both define `stg`.
+  Inlining a light and a dark variant into the same document makes the second
+  gradient lose to the first. This only affects the static files; the components
+  derive their gradient identifier from `useId`. Namespace the identifiers if
+  these files are ever inlined rather than referenced.
+
+## Amendment, 2026-07-30: logo redraw
+
+The mark was redrawn in the design project after the initial import and
+re-imported here. The change is substantive, not cosmetic:
+
+- Geometry is now authored on a 1024 grid (`viewBox="240 240 544 544"`) instead
+  of the previous parametric 64-unit peanut rings.
+- The weave is cut into the path data rather than produced with SVG masks. This
+  removes the `ilmA`/`ilmB` mask identifiers that previously collided between
+  `logo-mark.svg` and `logo-mark-mono.svg` when both were inlined into one
+  document. Only the gradient still needs a unique identifier, and `LogoMark`
+  derives that from `useId`.
+- The brand gradient moved from four measured stops to six, running
+  `#4A9AF9` to `#8250F0` in user space.
+- `LogoMark` renders filled paths under a single `<g fill>` instead of stroked
+  rings, so `tone="mono"` inherits `currentColor` through one attribute.
+
+One deviation from the authored source was carried over from the conversion
+rules already recorded above. `Logo` and `Wordmark` defaulted `version` to the
+literal string `v0.6.0-beta.1`. A component that renders a hardcoded version as
+though it were the running one displays a value that is not true, which is the
+same defect corrected in `CopyButton`. The default is removed: the version
+renders only when the caller supplies it, and `showVersion` alone renders
+nothing.

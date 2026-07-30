@@ -2,19 +2,24 @@ export interface WordmarkProps {
   /** Cap size in px. 14 in the title bar, 16 in the sidebar, 32+ on launch. */
   size?: number;
   color?: string;
+  /** Show the version string. Requires `version`; nothing renders without it. */
   showVersion?: boolean;
+  /**
+   * Version to display. There is deliberately no default: a hardcoded fallback
+   * would render a stale version as though it were the running one.
+   */
   version?: string;
 }
 
 /**
- * Intentloom wordmark rendered in type. The provided sources contain no logo file,
- * so this is a plain typographic placeholder - replace it with the real mark when supplied.
+ * Intentloom wordmark rendered in type, for the places that need the name
+ * without the symbol. Use `Logo` when the mark should appear alongside it.
  */
 export function Wordmark({
   size = 16,
   color = "var(--text-primary)",
   showVersion,
-  version = "v0.6.0-beta.1",
+  version,
 }: WordmarkProps) {
   return (
     <span
@@ -34,7 +39,7 @@ export function Wordmark({
       >
         intent<span style={{ color: "var(--action-primary)" }}>loom</span>
       </span>
-      {showVersion ? (
+      {showVersion && version ? (
         <span
           style={{
             font: `400 var(--caption-size)/1 var(--font-mono)`,
