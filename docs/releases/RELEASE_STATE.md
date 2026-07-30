@@ -6,12 +6,19 @@ Historical release audits and roadmap sections retain their original scope, but
 this document is the source of truth for the current status.
 
 Snapshot: 2026-07-30
-Main commit: `3da811e` (PR #137 merged; Phase 5 Release Gate approved)
-Release commit: `v1.0.0` (tagged `v1.0.0`)
+Main commit: `db61be9` (PR #138 merged; v1.0.0 release commit)
+Release commit: `db61be9` (tagged `v1.0.0` as `f9fc326`)
 Workspace version: `1.0.0`
-Git tag: `v1.0.0`
-Published npm package: `intentloom@1.0.0` under `latest`
-Default npm `latest`: `intentloom@1.0.0`
+Git tag: `v1.0.0` (pushed to `origin`)
+GitHub release: not created for `v1.0.0`
+Published npm package: none for `1.0.0`; publication is not authorized yet
+Default npm `latest`: `intentloom@0.1.0-alpha.3`
+Default npm `next`: `intentloom@0.5.0-beta.1`
+
+`1.0.0` exists in Git only. Publishing it to npm requires completing
+[`PUBLISH_AUTHORIZATION_CHECKLIST.md`](PUBLISH_AUTHORIZATION_CHECKLIST.md) and a
+separate explicit maintainer authorization. Do not describe `1.0.0` as published
+until `npm view intentloom` reports it.
 
 `Implemented in main` means the capability is present in the current source
 tree. `Released version` means the first npm release that contains the

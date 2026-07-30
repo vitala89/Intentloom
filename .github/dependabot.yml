@@ -12,6 +12,18 @@ updates:
       - dependencies
       - javascript
 
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "04:15"
+      timezone: Europe/Berlin
+    open-pull-requests-limit: 5
+    labels:
+      - dependencies
+      - github-actions
+
   - package-ecosystem: cargo
     directory: /apps/desktop/src-tauri
     schedule:
