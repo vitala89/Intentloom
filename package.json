@@ -20,7 +20,7 @@
     "yaml": "^2.9.0"
   },
   "devDependencies": {
-    "@types/node": "^26.1.1",
+    "@types/node": "^26.1.2",
     "esbuild": "^0.28.1",
     "prettier": "^3.9.5",
     "typescript": "^7.0.2",
