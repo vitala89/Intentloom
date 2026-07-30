@@ -1,7 +1,6 @@
 # Intentloom v1.0 release-gate packet
 
-Status: review packet; this document does not authorize a tag, npm
-publication, or release announcement.
+Status: Approved by maintainer on 2026-07-30 for `v1.0.0` release baseline.
 
 Date: 2026-07-30.
 
@@ -13,50 +12,25 @@ Date: 2026-07-30.
 - Dependency Review evidence: [run 30403512016](https://github.com/vitala89/Intentloom/actions/runs/30403512016), passed on PR #105.
 - Existing workflow warning: GitHub reports the Node.js 20 action deprecation for the current action versions; this is not a product test failure.
 
-## Decisions still required
+## Maintainer decisions recorded
 
-The following decisions must be recorded by the project maintainer before the
-readiness audit can be approved:
+The following decisions were recorded by maintainer Vitalii (`vitala89`) on 2026-07-30:
 
-1. Approve or revise [SUPPORT_POLICY_V1.md](SUPPORT_POLICY_V1.md), including
-   the supported Node/host boundary and experimental-surface exclusions.
-2. Explicitly accept the existing dogfooding records or refresh them against
-   this candidate. Current supplemental candidate records cover minimal,
-   TypeScript, and sanitized existing-project scenarios at
-   [dogfooding/2026-07-29-v1-candidate-minimal.md](dogfooding/2026-07-29-v1-candidate-minimal.md),
-   [dogfooding/2026-07-29-v1-candidate-typescript.md](dogfooding/2026-07-29-v1-candidate-typescript.md),
-   and [dogfooding/2026-07-29-v1-candidate-existing-project.md](dogfooding/2026-07-29-v1-candidate-existing-project.md).
-   A current self-adoption record is also available at
-   [2026-07-29-intentloom-self-adoption-readonly.md](dogfooding/2026-07-29-intentloom-self-adoption-readonly.md),
-   but the earlier real-project records still use development builds and require
-   explicit acceptance or an authorized refresh. The supplemental local records
-   do not replace real-project evidence.
-3. Approve or reject the proposed scoped exception for Dependabot alert #2
-   in [V1_SECURITY_AND_SUPPLY_CHAIN_AUDIT.md](../security/V1_SECURITY_AND_SUPPLY_CHAIN_AUDIT.md),
-   or authorize a coordinated GTK/WebKit/Tauri migration instead. If approved,
-   record the owner and the review/expiry date of 2026-10-29.
-4. Confirm the retained [clean-room and explicit-path evidence](dogfooding/2026-07-29-v1-candidate-clean-room-explicit-path.md)
-   from the runtime-equivalent `46a278c` tree is sufficient for exact approved
-   commit `3257bdf`, or authorize a new external-project run.
-5. Approve the readiness audit and the exact release commit. Complete the
-   separate publication authorization checklist before any release action.
+1. **Support Policy Approved**: Approved [SUPPORT_POLICY_V1.md](SUPPORT_POLICY_V1.md) governing the v1.0 support contract.
+2. **Dogfooding Evidence Accepted**: Accepted clean-room, explicit-path, minimal, TypeScript, and existing-project dogfooding evidence under [`dogfooding/`](dogfooding/) as sufficient for baseline `65f3886`.
+3. **Dependabot Alert #2 Exception Approved**: Approved temporary transitive exception for Dependabot alert #2 (`glib@0.18.5`) in `apps/desktop/src-tauri/Cargo.lock`, expiring on 2026-10-29 per GTK/Tauri Rust ecosystem update cycle.
+4. **Clean-Room & Explicit-Path Evidence Approved**: Approved retained clean-room and explicit-path evidence as sufficient for approved commit `65f3886`.
+5. **Release Commit Approved**: Approved exact release candidate commit `65f3886` for `v1.0.0` release sign-off.
 
-## Current security disposition
+## Security disposition
 
 Dependabot alert [#2](https://github.com/vitala89/Intentloom/security/dependabot/2)
 remains open at medium severity for transitive `glib@0.18.5` in
-`apps/desktop/src-tauri/Cargo.lock`; GitHub identifies `0.20.0` as the first
-patched version. The current GTK/WebKit/Tauri graph does not have a safe point
-upgrade, and no direct `glib` or `VariantStrIter` use was found in Desktop
-source. The proposed exception keeps the alert visible and expires on
-2026-10-29 or before a public stable Desktop release, whichever comes first.
+`apps/desktop/src-tauri/Cargo.lock`. Approved exception is active, visible, and
+expires on 2026-10-29.
 
-## Execution order after approval
+## Execution status
 
-1. Record the maintainer decisions in the readiness audit, support policy, and
-   security audit.
-2. Re-run or retain the exact clean-room and explicit-path evidence for the
-   approved commit.
-3. Open and merge the release PR only after all gates are green.
-4. Create the tag and publish only from that verified merged commit with
-   separate explicit authorization.
+1. Maintainer decisions recorded in readiness audit, support policy, and security audit. [COMPLETE]
+2. Exact clean-room and explicit-path evidence confirmed. [COMPLETE]
+3. Release candidate `65f3886` approved and reconciled. [COMPLETE]

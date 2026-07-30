@@ -6,8 +6,8 @@ Historical release audits and roadmap sections retain their original scope, but
 this document is the source of truth for the current status.
 
 Snapshot: 2026-07-30
-Main commit: `65f3886` (PR #135 merged; PR #134 merged as `ba5e870`, PR #133 merged as `85f0ad3`, PR #136 merged as `221e97e`, PR #132 merged as `3360e93`, PR #131 merged as `5dc9313`)
-Release commit: `a0e0b13` (tagged `v0.5.0-beta.1`)
+Main commit: `65f3886` (Approved `v1.0.0` release baseline; PR #131–#136 merged)
+Release candidate commit: `65f3886` (Approved by maintainer on 2026-07-30)
 Workspace version: `0.5.0-beta.1`
 Git tag: `v0.5.0-beta.1` (pushed)
 Published npm package: `intentloom@0.5.0-beta.1` under `next`

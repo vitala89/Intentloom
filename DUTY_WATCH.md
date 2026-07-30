@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **v1.0 Phase 1–4 merged; Phase 5 stable-release gate active** — PR #131 through #136 merged into `main` (`65f3886`), post-merge Compatibility run `30527543027` passed all 6/6 jobs, post-merge CodeQL run `30527542998` passed, local `main` fast-forwarded and Phase 5 release records reconciled
+Status: **v1.0 Phase 1–5 CLOSED / APPROVED FOR V1.0 RELEASE** — Maintainer Vitalii (`vitala89`) approved all Phase 5 release-gate decisions for `main` candidate `65f3886` (Support Policy, glib alert #2 exception, dogfooding evidence, clean-room sufficiency, and v1.0.0 release candidate commit authorization); readiness audit closed as APPROVED.
 
-Active branch: `codex/v1-phase5-post-merge-pr135-state`
+Active branch: `codex/v1-phase5-release-gate-approved-state`
 
-Current objective: maintain exact Phase 5 records after PR #131–#136 merges, then obtain maintainer decisions for support policy, glib exception, dogfooding, and release commit approval.
+Current objective: maintain exact post-approval release records for `65f3886` and prepare release tag / publication steps per maintainer direction.
 
-Next first action: review the updated Phase 5 release gate packet (`V1_0_RELEASE_GATE_PACKET.md`) with the maintainer to record decisions for support policy, glib alert #2 exception, real-project dogfooding acceptance, clean-room evidence sufficiency, and the final release commit.
+Next first action: verify final release branch PR merge, create and push Git tag `v1.0.0` on approved commit `65f3886`, and follow npm publication authorization checklist.
 
 ## Watch rules
 
@@ -41,6 +41,27 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-30, Phase 5: Maintainer release-gate sign-off & readiness audit approval for v1.0.0
+
+- **Status:** complete for this watch; v1.0 release gate is CLOSED / APPROVED by maintainer on commit `65f3886`
+- **Agent/tool:** Antigravity AI Agent with Git, GitHub CLI, GitHub Actions, CodeQL, and governance tools
+- **Branch:** `codex/v1-phase5-release-gate-approved-state`
+- **Base:** `main` / `origin/main` at `65f3886` (PR #135 merge)
+- **Completed:** Recorded maintainer sign-off on all 5 Phase 5 release-gate decisions: (1) Approved `SUPPORT_POLICY_V1.md`, (2) Approved temporary transitive exception for Dependabot alert #2 (`glib@0.18.5`) expiring 2026-10-29, (3) Accepted dogfooding evidence under `dogfooding/`, (4) Accepted clean-room & explicit-path evidence as sufficient for baseline `65f3886`, and (5) Approved `65f3886` as the exact `v1.0.0` release commit. Updated `V1_0_READINESS_AUDIT.md` (Status: CLOSED / APPROVED), `V1_0_RELEASE_GATE_PACKET.md`, `SUPPORT_POLICY_V1.md`, `V1_SECURITY_AND_SUPPLY_CHAIN_AUDIT.md`, `RELEASE_STATE.md`, and `DUTY_WATCH.md`.
+- **Validation:** Candidate commit `65f3886` passed post-merge Compatibility run [30527543027](https://github.com/vitala89/Intentloom/actions/runs/30527543027) (6/6 jobs) and CodeQL run [30527542998](https://github.com/vitala89/Intentloom/actions/runs/30527542998). Local `pnpm format:check` and `git diff --check` passed cleanly.
+- **Decisions and assumptions:** Treat commit `65f3886` as the fully approved `v1.0.0` release baseline.
+- **Next first action:** Create and push `v1.0.0` release tag on `65f3886` when instructed, and complete npm publication procedures.
+- **Evidence:** `SUPPORT_POLICY_V1.md`, `V1_0_RELEASE_GATE_PACKET.md`, `V1_0_READINESS_AUDIT.md`, `V1_SECURITY_AND_SUPPLY_CHAIN_AUDIT.md`, `RELEASE_STATE.md`, [Compatibility run 30527543027](https://github.com/vitala89/Intentloom/actions/runs/30527543027), [CodeQL run 30527542998](https://github.com/vitala89/Intentloom/actions/runs/30527542998).
+
+#### Duty completion checklist
+
+- [x] Support policy approved and recorded
+- [x] Dependabot alert #2 exception approved and recorded (expiring 2026-10-29)
+- [x] Dogfooding & clean-room evidence accepted for `65f3886`
+- [x] Readiness audit closed as APPROVED
+- [x] Release gate packet signed off
+- [x] `pnpm format:check` and `git diff --check` passed
 
 ### 2026-07-30, Phase 5: PR #131–#136 merges, post-merge CodeQL/Compatibility runs retention, and state reconciliation
 

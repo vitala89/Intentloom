@@ -14,15 +14,15 @@ Intentloom is an offline-first, local-first control layer. The platform executes
 
 ## Security Audit Matrix
 
-| Domain                    | Security Invariant                                                                             | Verification Status           | Evidence                                                                              |
-| ------------------------- | ---------------------------------------------------------------------------------------------- | ----------------------------- | ------------------------------------------------------------------------------------- |
-| **Local-First Boundary**  | Zero telemetry, zero external network calls during normal operations                           | ✅ PASS                       | `ADR-0008`, `THREAT_MODEL.md`                                                         |
-| **Token Security**        | Session tokens held strictly in native process memory; never logged or stored on disk          | ✅ PASS                       | `packages/daemon/src/index.ts`                                                        |
-| **IPC Access Control**    | Authenticated Unix socket / Named Pipe with strict RPC method whitelist                        | ✅ PASS                       | `ADR-0009`, `ADR-0032`                                                                |
-| **Read-Only Invariant**   | Inspection, doctor, diff, timeline, TUI, and MCP leave projects byte-for-byte unchanged        | ✅ PASS                       | `tests/interactive-ui.test.ts`, `tests/v1-client-surface-equivalence.test.ts`         |
-| **Dependency Governance** | pnpm lockfile reproducibility, dependency review, and explicit disposition of known advisories | ⚠️ PENDING exception approval | `pnpm-lock.yaml`, `package.json`, `.github/workflows/dependency-review.yml`, alert #2 |
-| **Package Provenance**    | Signed npm releases and GitHub release provenance                                              | ✅ PASS                       | `docs/releases/PUBLISH_AUTHORIZATION_CHECKLIST.md`                                    |
-| **Incident Response**     | Rollback procedure via `.aif/migration-journal.json` and git tags                              | ✅ PASS                       | `docs/releases/MIGRATION_GUIDE_V1.md`                                                 |
+| Domain                    | Security Invariant                                                                             | Verification Status          | Evidence                                                                                                                    |
+| ------------------------- | ---------------------------------------------------------------------------------------------- | ---------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| **Local-First Boundary**  | Zero telemetry, zero external network calls during normal operations                           | ✅ PASS                      | `ADR-0008`, `THREAT_MODEL.md`                                                                                               |
+| **Token Security**        | Session tokens held strictly in native process memory; never logged or stored on disk          | ✅ PASS                      | `packages/daemon/src/index.ts`                                                                                              |
+| **IPC Access Control**    | Authenticated Unix socket / Named Pipe with strict RPC method whitelist                        | ✅ PASS                      | `ADR-0009`, `ADR-0032`                                                                                                      |
+| **Read-Only Invariant**   | Inspection, doctor, diff, timeline, TUI, and MCP leave projects byte-for-byte unchanged        | ✅ PASS                      | `tests/interactive-ui.test.ts`, `tests/v1-client-surface-equivalence.test.ts`                                               |
+| **Dependency Governance** | pnpm lockfile reproducibility, dependency review, and explicit disposition of known advisories | ✅ PASS (approved exception) | `pnpm-lock.yaml`, `package.json`, `.github/workflows/dependency-review.yml`, alert #2 (exception approved until 2026-10-29) |
+| **Package Provenance**    | Signed npm releases and GitHub release provenance                                              | ✅ PASS                      | `docs/releases/PUBLISH_AUTHORIZATION_CHECKLIST.md`                                                                          |
+| **Incident Response**     | Rollback procedure via `.aif/migration-journal.json` and git tags                              | ✅ PASS                      | `docs/releases/MIGRATION_GUIDE_V1.md`                                                                                       |
 
 ## Vulnerability & Continuous Audit Policy
 
