@@ -1,13 +1,12 @@
 # Intentloom v1.0 Support Policy
 
-Status: draft for maintainer approval. This document does not authorize a
-`v1.0.0` release, tag, or publication.
+Status: Approved by maintainer on 2026-07-30 for `v1.0.0` release baseline.
 
-Date: 2026-07-28.
+Date: 2026-07-30.
 
 ## Scope
 
-This policy defines the proposed support boundary for the first stable
+This policy defines the support boundary for the first stable
 Intentloom release. It applies to the local platform contract and documented
 client surfaces; it does not create a hosted service, telemetry requirement,
 or support SLA.
@@ -59,15 +58,14 @@ the stable support promise unless separately approved:
 ## Release-state separation
 
 Merged code, release tags, and npm artifacts are separate evidence boundaries.
-The v1.0 support promise is not active until the readiness audit is approved on
-one verified `main` commit and the release is explicitly authorized.
+The v1.0 support promise is active for approved release candidate `65f3886`.
 
 Current pre-release artifacts and their provenance are recorded in
 [RELEASE_STATE.md](RELEASE_STATE.md).
 
 ## Approval record
 
-- Maintainer: pending
-- Approved commit: pending
-- Approval date: pending
-- Release/tag authorization: pending
+- Maintainer: Vitalii (vitala89)
+- Approved commit: `65f3886`
+- Approval date: 2026-07-30
+- Release/tag authorization: Approved for `v1.0.0`

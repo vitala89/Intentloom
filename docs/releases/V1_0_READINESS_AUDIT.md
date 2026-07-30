@@ -1,44 +1,26 @@
 # Intentloom v1.0 Readiness Audit
 
-Status: draft; release gate open. This audit is evidence for review and does
-not authorize a tag, npm publication, or release announcement.
+Status: CLOSED / APPROVED FOR V1.0 RELEASE on `main` commit `65f3886`.
 
 Date: 2026-07-30.
 
-Candidate baseline under review: `3257bdf` (`main` and `origin/main` after PR
-#130 merge). The release gate remains open until the decisions and evidence in
-the release-gate packet are reviewed.
+Approved baseline: `65f3886` (`main` and `origin/main` after PR #131–#136 merges). All Phase 5 release-gate requirements and maintainer decisions are approved.
 
 ## Decision summary
 
 The Phase 1–4 implementation evidence and the release-candidate Compatibility
-matrix are present in `main`. PR #117 is merged with only a bounded test timeout
-for slower Windows runners, PR #118 is documentation-only, PR #120 adds a
-second bounded test-harness timeout, and PR #121, PR #122, PR #123, PR #124, PR #125, PR #126, PR #127, PR #128, and PR #129 are
-documentation-only; none changes runtime, package, or dependency behavior.
-PR #130 adds only the Phase 5 reconciliation and a bounded Windows-aware
-timeout for the existing CLI schema process test; it does not change product
-runtime, package, or dependency behavior.
-Supplemental clean-room,
-explicit-path, and three-scenario records remain attached from the pre-merge
-runtime-equivalent candidate tree. The post-merge run for `3257bdf` passed all
-six Compatibility jobs after the scoped test-only remediation and the final
-documentation reconciliation. The v1.0 release gate remains **open** because
-support-policy
-approval, the glib disposition, acceptance or authorized refresh of
-real-project dogfooding records, and maintainer approval are not yet complete.
-
-No v1.0 tag or npm artifact is claimed by this document.
+matrix are present in `main`. PR #117 through PR #136 added test harness timeouts, security baselines (`.github/dependabot.yml`, `.github/workflows/codeql.yml`), Dependabot updates (`getrandom`, `@types/node`, `vite`, `prettier`), `.prettierignore`, and documentation reconciliations.
+The post-merge run for `65f3886` passed all six Compatibility jobs ([run 30527543027](https://github.com/vitala89/Intentloom/actions/runs/30527543027)) and CodeQL security analysis ([run 30527542998](https://github.com/vitala89/Intentloom/actions/runs/30527542998)). The v1.0 release gate is **APPROVED** following maintainer sign-off on [SUPPORT_POLICY_V1.md](SUPPORT_POLICY_V1.md), Dependabot alert #2 disposition (`glib@0.18.5`), dogfooding evidence, clean-room verification, and exact commit authorization.
 
 ## Phase evidence
 
-| Phase                             | Evidence                                                                                                                                                                        | Assessment                                                                                                                       |
-| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
-| 1 — Stable compatibility contract | [ADR-0043](../decisions/ADR-0043-v1-stable-compatibility-contract-and-deprecation-policy.md), `tests/v1-compatibility-contract.test.ts`                                         | Evidence present; contract approval recorded in ADR                                                                              |
-| 2 — Upgrade and protocol path     | [MIGRATION_GUIDE_V1.md](MIGRATION_GUIDE_V1.md), `tests/v1-upgrade-migration-path.test.ts`                                                                                       | Local release-candidate verification and supplemental clean-room evidence passed; final release-commit approval remains required |
-| 3 — Client-surface readiness      | [CLIENT_SURFACE_EQUIVALENCE.md](../compatibility/CLIENT_SURFACE_EQUIVALENCE.md), `tests/v1-client-surface-equivalence.test.ts`                                                  | Evidence present; no domain duplication found in the documented boundary                                                         |
-| 4 — Security and supply chain     | [V1_SECURITY_AND_SUPPLY_CHAIN_AUDIT.md](../security/V1_SECURITY_AND_SUPPLY_CHAIN_AUDIT.md), `tests/v1-security-supply-chain.test.ts`, `.github/workflows/dependency-review.yml` | Control merged in `86a1aee`; high fast-uri alert closed; proposed glib exception is pending maintainer approval                  |
-| 5 — Stable release gate           | This document, [SUPPORT_POLICY_V1.md](SUPPORT_POLICY_V1.md), release and dogfooding records                                                                                     | Open; maintainer approval pending                                                                                                |
+| Phase                             | Evidence                                                                                                                                                                        | Assessment                                                                         |
+| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| 1 — Stable compatibility contract | [ADR-0043](../decisions/ADR-0043-v1-stable-compatibility-contract-and-deprecation-policy.md), `tests/v1-compatibility-contract.test.ts`                                         | Evidence present; contract approved in ADR                                         |
+| 2 — Upgrade and protocol path     | [MIGRATION_GUIDE_V1.md](MIGRATION_GUIDE_V1.md), `tests/v1-upgrade-migration-path.test.ts`                                                                                       | Approved; verified on `65f3886`                                                    |
+| 3 — Client-surface readiness      | [CLIENT_SURFACE_EQUIVALENCE.md](../compatibility/CLIENT_SURFACE_EQUIVALENCE.md), `tests/v1-client-surface-equivalence.test.ts`                                                  | Approved; verified on `65f3886`                                                    |
+| 4 — Security and supply chain     | [V1_SECURITY_AND_SUPPLY_CHAIN_AUDIT.md](../security/V1_SECURITY_AND_SUPPLY_CHAIN_AUDIT.md), `tests/v1-security-supply-chain.test.ts`, `.github/workflows/dependency-review.yml` | Approved; CodeQL green; Dependabot alert #2 exception active (expiring 2026-10-29) |
+| 5 — Stable release gate           | This document, [SUPPORT_POLICY_V1.md](SUPPORT_POLICY_V1.md), [V1_0_RELEASE_GATE_PACKET.md](V1_0_RELEASE_GATE_PACKET.md)                                                         | CLOSED / APPROVED by maintainer for `v1.0.0` release on commit `65f3886`           |
 
 ## Stable-release checklist
 
