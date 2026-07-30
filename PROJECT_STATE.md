@@ -81,8 +81,8 @@ before a new release or implementation milestone is declared complete.
 ## Current blockers and unknowns
 
 - Any expansion to bottleneck, performance, causal, actor, repository-reading, persisted, remote, or model-assisted analysis requires a new ADR, specification, and threat review.
-- PR #84 through PR #130 are merged in the local history; current `main` is
-  verified at `3257bdf` and tracks `origin/main`.
+- PR #84 through PR #136 are merged in the local history; current `main` is
+  verified at `65f3886` (PR #135 merge; PR #134 merged as `ba5e870`, PR #133 merged as `85f0ad3`, PR #136 merged as `221e97e`, PR #132 merged as `3360e93`, PR #131 merged as `5dc9313`) and tracks `origin/main`.
 - npm currently reports `latest=0.1.0-alpha.3` and `next=0.5.0-beta.1`.
 - Workspace packages are synchronized to `0.5.0-beta.1`; Git tag
   `v0.5.0-beta.1` is pushed and npm publication is complete.
@@ -210,17 +210,16 @@ before a new release or implementation milestone is declared complete.
   post-merge Compatibility run `30498583852` passed all six Ubuntu, macOS, and
   Windows Node 22/24 jobs, with only the known Node.js 20 action deprecation
   annotations. No product runtime, package, or dependency behavior changed.
-- The active security-baseline branch adds `.github/dependabot.yml` for the
-  root npm/pnpm lockfile and the Desktop Cargo lockfile, plus a CodeQL workflow
-  for JavaScript/TypeScript and GitHub Actions. These are repository
-  configurations only; review PR #131 is open from the security-baseline
-  branch. The latest validated security-baseline content passed CodeQL run
-  `30501192759` for both JavaScript/TypeScript and Actions analyses; PR
-  Compatibility run `30501192736` and push Compatibility run `30501190569`
-  each passed all six Ubuntu, macOS, and Windows Node 22/24 jobs. Subsequent
-  handoff commits are documentation-only. CodeQL does not cover the Rust
-  dependency graph, so alert #2 remains governed by the existing compatibility
-  assessment and maintainer decision.
+- PR #131 is merged as `5dc9313`; it adds `.github/dependabot.yml` for the
+  root npm/pnpm lockfile and Desktop Cargo lockfile, plus `.github/workflows/codeql.yml`
+  for JavaScript/TypeScript and GitHub Actions.
+- PR #132 (`getrandom`), PR #133 (`@types/node`), PR #134 (`vite`), and PR #135 (`prettier`)
+  are merged via Dependabot.
+- PR #136 is merged as `221e97e`; it adds `.prettierignore` to exclude generated
+  lockfiles (`pnpm-lock.yaml`, `Cargo.lock`) from Prettier formatting checks, resolving
+  the Dependabot CI lockfile failure.
+- The latest candidate head on `main` (`65f3886`) passed post-merge Compatibility run
+  `30527543027` (6/6 jobs) and CodeQL run `30527542998` (both Actions and JS/TS analyses).
 - Exact-candidate supplemental clean-room, explicit-path, minimal, TypeScript,
   and sanitized existing-project evidence is recorded under
   `docs/releases/dogfooding/`; it does not replace real-project acceptance or
