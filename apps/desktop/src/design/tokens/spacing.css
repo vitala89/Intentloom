@@ -1,0 +1,40 @@
+/* 8px system with 4px fine adjustments. */
+:root {
+  --space-0: 0px;
+  --space-1: 2px;
+  --space-2: 4px;
+  --space-3: 8px;
+  --space-4: 12px;
+  --space-5: 16px;
+  --space-6: 20px;
+  --space-7: 24px;
+  --space-8: 32px;
+  --space-9: 40px;
+  --space-10: 48px;
+  --space-11: 64px;
+
+  /* shell geometry */
+  --shell-titlebar-h: 40px;
+  --shell-statusbar-h: 28px;
+  --shell-sidebar-w: 240px;
+  --shell-sidebar-w-min: 224px;
+  --shell-sidebar-w-max: 256px;
+  --shell-sidebar-collapsed-w: 56px;
+  --shell-inspector-w: 340px;
+  --shell-min-w: 1024px;
+  --shell-min-h: 700px;
+
+  /* density: comfortable (default) / compact */
+  --row-h: 36px;
+  --control-h-sm: 28px;
+  --control-h-md: 32px;
+  --control-h-lg: 40px;
+  --hit-min: 24px;
+}
+
+[data-density="compact"] {
+  --row-h: 28px;
+  --control-h-sm: 24px;
+  --control-h-md: 28px;
+  --control-h-lg: 34px;
+}

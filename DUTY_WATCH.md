@@ -93,6 +93,42 @@ entry directly below this section.
 - [x] Related roadmap, ADR, changelog, migration, or reference docs updated
 - [x] Failed or unavailable checks recorded
 
+### 2026-07-30, Desktop: import the design system token and component layer
+
+- **Status:** complete for this watch
+- **Agent/tool:** Claude Code (Opus 5) with Git, pnpm, Vite, TypeScript, Prettier, Claude Design MCP
+- **Branch:** `feat/desktop-design-system`
+- **Base:** `main` / `origin/main` at `db61be9`
+- **Objective:** import the authored Intentloom Design System into `apps/desktop` without weakening the local-first boundary.
+- **Completed:**
+  - Imported the token layer, six component groups (`brand`, `code`, `core`, `data`, `evidence`, `forms`; 26 components), and the vector logo masters into `apps/desktop/src/design/`. Dependency analysis confirmed the six groups are self-contained, with `react` as their only external module.
+  - Replaced the authored `Icon`, which fetched every glyph from `https://unpkg.com` at runtime. Glyphs are now vendored into a generated `icons/glyphs.ts` and rendered inline. The remote version violated the zero-external-network invariant and would have been blocked by the `default-src 'self'` content security policy, rendering every icon blank without any error surfacing.
+  - Replaced the authored Google Fonts import with self-hosted Geist and JetBrains Mono via `@fontsource-variable`, bundled by Vite as local `woff2` assets, for the same reason.
+  - Converted all 26 components from JavaScript to TypeScript under the repository's strict compiler settings, using the sibling `.d.ts` files as the prop contracts.
+  - Corrected three defects found during conversion: `CopyButton` reported success when the clipboard write was unavailable or rejected, `CopyButton` never cleared its reset timer, and several form components called `useId()` conditionally.
+  - Added `scripts/desktop/generate-design-icons.mjs`, `ADR-0044`, `apps/desktop/src/design/README.md`, and Lucide ISC attribution.
+  - Extended `format:check` to cover `.tsx` and `.css`, which it did not before this change.
+- **Not completed:** No Desktop surface consumes the components yet; `App.tsx` is unchanged. The `layout`, `navigation`, `overlays`, `states`, and `status` groups were not imported.
+- **Files or packages changed:** `apps/desktop/` (new `src/design/` tree, `package.json`, `src/main.tsx`), `scripts/desktop/generate-design-icons.mjs`, `docs/decisions/ADR-0044-desktop-design-system-import.md`, root `package.json`, `.prettierignore`, `pnpm-lock.yaml`. No platform package changed.
+- **Validation:** `pnpm format:check`, `pnpm typecheck`, `pnpm test` (87 files, 753 passed, 3 skipped), `git diff --check`, and a Vite production build. The built output was scanned for remote references: only XML namespace identifiers remain, so the offline guarantee holds.
+- **Decisions and assumptions:** Recorded in ADR-0044. The glyph set is an explicit allowlist rather than the whole Lucide library, so each icon is a reviewed addition.
+- **Risks or compatibility impact:** Three new dependencies in `@intentloom/desktop` (two font packages at runtime, `lucide-static` for development). Unused components are tree-shaken, so the shipped bundle is unchanged until a surface consumes them.
+- **Open issues or blockers:** The static lockup and stacked logo SVGs carry live `<text>` in Inter and need outlining before use where metrics matter. `Combobox` uses `backdrop-filter` and `TextInput` uses `color-mix(in oklab, ...)`, both without a fallback; the latter drops the focus ring entirely on an engine lacking `color-mix`, which is an accessibility regression. Both were imported as authored and are recorded as follow-ups in ADR-0044.
+- **Next first action:** Adopt the components into one Desktop surface, starting with the surface that most needs the evidence and diff vocabulary, and add the two missing CSS fallbacks before that surface ships.
+- **Evidence:** Claude Design project `ed22f0a4-9bf4-4200-8bf1-889f0f9979c1`; Lucide glyphs from `lucide-static@0.544.0` (ISC).
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant tests, type checks, builds, or compatibility checks passed
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `PROJECT_STATE.md` updated when applicable
+- [x] `DUTY_WATCH.md` handoff completed
+- [x] Related roadmap, ADR, changelog, migration, or reference docs updated
+- [x] Failed or unavailable checks recorded
+
 ### 2026-07-30, Post-v1.0.0: release-status correction and CI supply-chain hardening
 
 - **Status:** complete for this watch
