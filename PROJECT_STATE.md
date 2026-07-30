@@ -30,21 +30,28 @@ and readiness auditing (`docs/desktop/V0_6_READINESS_AUDIT.md`). The v1.0
 compatibility phases 1–5 are merged into `main` and the Phase 5 release gate is
 signed off.
 
-`v1.0.0` is tagged in Git and has a
-[GitHub release](https://github.com/vitala89/Intentloom/releases/tag/v1.0.0). It
-has not been published to npm: the registry still reports
-`latest=0.1.0-alpha.3` and `next=0.5.0-beta.1`. Publication requires completing
-[`PUBLISH_AUTHORIZATION_CHECKLIST.md`](docs/releases/PUBLISH_AUTHORIZATION_CHECKLIST.md)
-and a separate explicit maintainer authorization. See
+`v1.0.0` is tagged in Git, has a
+[GitHub release](https://github.com/vitala89/Intentloom/releases/tag/v1.0.0), and
+was published to npm on 2026-07-30 under the `next` dist-tag.
+
+`latest` still resolves to `0.1.0-alpha.3`, so an unqualified
+`npm install intentloom` serves the July 18 alpha rather than the stable
+release. Promoting the tag with `npm dist-tag add intentloom@1.0.0 latest` is the
+main outstanding release action. See
 [`RELEASE_STATE.md`](docs/releases/RELEASE_STATE.md) for the authoritative
 published-artifact status.
 
-The publication path is `.github/workflows/release.yml`, using npm trusted
-publishing so the artifact carries provenance. It is dispatch-only, refuses any
-ref other than `main` or a `v*` tag, runs in the protected `npm-publish`
-environment, and defaults to a dry run. Two setup steps remain outside this
-repository: the trusted publisher on npmjs.com and a required reviewer on the
-GitHub environment.
+The publication path for future releases is `.github/workflows/release.yml`,
+using npm trusted publishing so the artifact carries provenance. It is
+dispatch-only, refuses any ref other than `main` or a `v*` tag, runs in the
+protected `npm-publish` environment, and defaults to a dry run. Two setup steps
+remain outside this repository: the trusted publisher on npmjs.com and a required
+reviewer on the GitHub environment.
+
+`1.0.0` itself was published manually before that workflow existed, so it carries
+no provenance attestation and cannot gain one: npm does not allow a published
+version to be replaced. A local build was verified to reproduce the published
+tarball byte for byte, which establishes reproducibility but not provenance.
 
 The project must avoid premature structural migration. New applications,
 packages, and repository boundaries are introduced only when roadmap triggers

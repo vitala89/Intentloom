@@ -57,6 +57,40 @@ entry directly below this section.
 
 ## Watch entries
 
+### 2026-07-31, Record the actual npm publication of 1.0.0 and reconcile the release records
+
+- **Status:** complete for this watch
+- **Agent/tool:** Claude Code (Opus 5) with Git, GitHub CLI, npm, pnpm, Prettier
+- **Branch:** `docs/record-npm-publication`
+- **Base:** `main` / `origin/main` at `d2a7b49` (PR #140 merge)
+- **Objective:** replace the "not published" records with what the registry actually reports, now that the maintainer has published.
+- **Completed:**
+  - Verified the registry directly. `npm view intentloom dist-tags` reports `latest=0.1.0-alpha.3` and `next=1.0.0`. `intentloom@1.0.0` exists with shasum `434fcb624ddb3706502a29ad96b27aee36df675c`, 70 files, 981107 bytes unpacked.
+  - Verified reproducibility: `pnpm build` followed by `npm pack --dry-run --json` in `packages/cli` produces exactly that shasum, integrity, file count, and unpacked size. The published artifact is the artifact this repository builds.
+  - Recorded that `1.0.0` has **no provenance attestation**. `npm view intentloom@1.0.0` reports no `dist.attestations`, because it was published manually before `.github/workflows/release.yml` existed. npm does not allow a published version to be replaced, so this cannot be corrected retroactively. The security audit row moves from PARTIAL to NOT MET for `1.0.0`, with the mechanism recorded as in place for later releases.
+  - Recorded the dist-tag situation as a defect rather than a neutral fact: `latest` still points at `0.1.0-alpha.3`, so an unqualified `npm install intentloom` serves an alpha from 2026-07-18 while the stable release sits behind `@next`. For a prerelease that arrangement was deliberate; for a stable release it inverts the meaning of both tags.
+  - Updated `RELEASE_STATE.md`, `PROJECT_STATE.md`, `CHANGELOG.md`, `PUBLISH_AUTHORIZATION_CHECKLIST.md`, and `V1_SECURITY_AND_SUPPLY_CHAIN_AUDIT.md` accordingly.
+- **Not completed:** `latest` is not moved. That is a maintainer action against the registry (`npm dist-tag add intentloom@1.0.0 latest`) and is not performed from here.
+- **Files or packages changed:** `CHANGELOG.md`, `DUTY_WATCH.md`, `PROJECT_STATE.md`, `docs/releases/RELEASE_STATE.md`, `docs/releases/PUBLISH_AUTHORIZATION_CHECKLIST.md`, `docs/security/V1_SECURITY_AND_SUPPLY_CHAIN_AUDIT.md`. No source changed.
+- **Validation:** `pnpm format:check`, `git diff --check`, `pnpm build` (used for the reproducibility check).
+- **Decisions and assumptions:** The reproducibility check is recorded explicitly as not a substitute for provenance. It proves the bytes match; it does not establish who built them or where.
+- **Risks or compatibility impact:** None to the artifact. The risk is to users: the default install currently resolves to a pre-1.0 alpha.
+- **Open issues or blockers:** Move `latest` to `1.0.0`. Configure the npm trusted publisher and the `npm-publish` environment reviewer so the next release publishes with provenance. Dependabot alert #2 exception expires 2026-10-29.
+- **Next first action:** Run `npm dist-tag add intentloom@1.0.0 latest`, then confirm with `npm view intentloom dist-tags` and update `RELEASE_STATE.md`.
+- **Evidence:** `npm view intentloom dist-tags` and `npm view intentloom@1.0.0 --json` on 2026-07-31; local `npm pack --dry-run --json` output matching the registry.
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant tests, type checks, builds, or compatibility checks passed
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `PROJECT_STATE.md` updated when applicable
+- [x] `DUTY_WATCH.md` handoff completed
+- [x] Related roadmap, ADR, changelog, migration, or reference docs updated
+- [x] Failed or unavailable checks recorded
+
 ### 2026-07-30, Release operations: trusted publishing workflow and the v1.0.0 GitHub release
 
 - **Status:** complete for this watch

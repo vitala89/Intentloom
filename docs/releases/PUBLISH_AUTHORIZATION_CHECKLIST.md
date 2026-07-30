@@ -13,7 +13,7 @@ publication.
 
 - Package: `intentloom`
 - Version: `1.0.0`
-- Dist-tag requested: `latest`
+- Dist-tag used: `next` (published 2026-07-30). `latest` was not moved.
 - Release commit: `db61be9`, tagged `v1.0.0`
 - Verification date: 2026-07-30
 
@@ -28,9 +28,9 @@ workflow was dispatched on, and the workflow postdates the tag.
 - [ ] npm username is confirmed through the maintainer's approved npm process.
 - [x] Registry is confirmed as `https://registry.npmjs.org/`. The release
       workflow sets it explicitly; no exception is in use.
-- [x] Exact `intentloom` package state is confirmed. On 2026-07-30
-      `npm view intentloom dist-tags` reported `latest=0.1.0-alpha.3` and
-      `next=0.5.0-beta.1`. `1.0.0` is not published.
+- [x] Exact `intentloom` package state is confirmed. On 2026-07-31
+      `npm view intentloom dist-tags` reports `latest=0.1.0-alpha.3` and
+      `next=1.0.0`. `1.0.0` is published under `next`.
 - [ ] Package owner rights are confirmed, or the first-publication state is
       confirmed with its limits documented.
 - [ ] 2FA/trusted-publishing policy is confirmed without copying private
@@ -72,13 +72,14 @@ packages`](https://docs.npmjs.com/cli/v11/commands/npm-access/) (the installed
 ## Release authorization and record
 
 - [ ] Version is approved.
-- [ ] `latest` dist-tag is approved for this stable release. This is the tag an
-      unqualified `npm install intentloom` resolves to, and it currently points
-      at `0.1.0-alpha.3`.
-- [ ] Tarball hash is recorded in the private release record. The release
-      workflow prints the integrity value and file list in its run summary and
-      uploads the pack manifest as an artifact, so a dry run produces this
-      evidence without publishing.
+- [ ] `latest` dist-tag is approved for this stable release. Still open, and
+      now the main outstanding item: `latest` points at `0.1.0-alpha.3`, so the
+      default install serves the July 18 alpha rather than `1.0.0`. Moving it is
+      `npm dist-tag add intentloom@1.0.0 latest`.
+- [x] Tarball hash is recorded. The published `1.0.0` artifact has shasum
+      `434fcb624ddb3706502a29ad96b27aee36df675c` and 70 files, and a local
+      `pnpm build` plus `npm pack` reproduces it exactly, so the published bytes
+      are the bytes this repository builds.
 - [ ] Clean-room npm and pnpm installation is confirmed.
 - [x] Compatibility CI is green for the supported matrix. Run
       [30529498050](https://github.com/vitala89/Intentloom/actions/runs/30529498050)
@@ -99,7 +100,7 @@ packages`](https://docs.npmjs.com/cli/v11/commands/npm-access/) (the installed
       [Publishing](PUBLISHING.md).
 - [ ] A `dry_run` release workflow run has completed green and its tarball
       evidence is recorded.
-- [ ] Real npm publication requires a separate explicit human authorization.
+- [x] Real npm publication was performed by the maintainer on 2026-07-30.
 
 ## Outstanding security disposition
 
@@ -108,10 +109,14 @@ packages`](https://docs.npmjs.com/cli/v11/commands/npm-access/) (the installed
       `.github/workflows/release.yml` and the preconditions are verified in
       [Publishing](PUBLISHING.md#requirements-verified-for-this-repository).
       This item was previously recorded as met when nothing produced provenance.
-- [ ] Provenance is confirmed present on the published artifact after
-      publication.
+- [ ] Provenance is confirmed present on the published artifact. NOT MET for
+      `1.0.0`: it was published manually before the release workflow existed and
+      `npm view intentloom@1.0.0` reports no `dist.attestations`. npm does not
+      allow a published version to be replaced, so this cannot be fixed
+      retroactively; the next published version carries provenance.
 - [x] Dependabot alert #2 (`glib@0.18.5`, transitive, medium) carries an
       approved exception expiring 2026-10-29, recorded in
       [`V1_0_RELEASE_GATE_PACKET.md`](V1_0_RELEASE_GATE_PACKET.md).
 
-Publication is blocked pending the unchecked gates above.
+`1.0.0` is published under `next`. Promoting it to `latest` is blocked pending
+the unchecked gates above.
