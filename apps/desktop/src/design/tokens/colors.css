@@ -1,0 +1,189 @@
+/* Intentloom semantic color. Dark is the default theme; light is an equal peer.
+   Components MUST bind to these semantic names, never to raw hex. */
+
+:root,
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  --canvas: #070b14;
+  --surface: #0d1322;
+  --surface-subtle: #121a2b;
+  --surface-raised: #182135;
+  --surface-overlay: #182135;
+  --surface-nav: #05080f;
+  --scrim: rgba(3, 5, 11, 0.7);
+
+  --border: #232e45;
+  --border-strong: #38445e;
+
+  --text-primary: #f4f7ff;
+  --text-secondary: #b4bed3;
+  --text-tertiary: #8593ac;
+  --text-on-action: #ffffff;
+
+  --action-primary: #6d72f6;
+  --action-primary-hover: #858af8;
+  --action-primary-active: #5a5fe4;
+  --brand-subtle: #191f3e;
+  --brand-subtle-hover: #21284c;
+  --brand-border: #343c76;
+
+  /* Second accent — cyan. The AI / intelligence tone: streaming, reasoning,
+     live evidence, data-viz series 2, and the informational status family.
+     Never a mutation control, never a success signal. */
+  --accent: #4cc9e0;
+  --accent-hover: #6fd8ec;
+  --accent-active: #34b4cc;
+  --accent-subtle: #0a2732;
+  --accent-subtle-hover: #0e3140;
+  --accent-border: #175c6e;
+  --accent-on: #04141a;
+  --focus: #60a5fa;
+
+  --link: #99a0ff;
+  --link-hover: #b9bdff;
+
+  /* Brand gradient — identity surfaces only (logo, launch, marketing). Never a status signal. */
+  --brand-gradient: linear-gradient(
+    215deg,
+    #4e97e6 0%,
+    #3a6fe8 34%,
+    #4a55f4 70%,
+    #5b45fa 100%
+  ); /* @kind color */
+  --brand-gradient-from: #4e97e6;
+  --brand-gradient-to: #5b45fa;
+
+  /* status: healthy / verified */
+  --status-healthy-fg: #4ade80;
+  --status-healthy-border: #1f5a3a;
+  --status-healthy-subtle: #0f2a1e;
+  /* status: running / active */
+  --status-running-fg: #60a5fa;
+  --status-running-border: #1e4272;
+  --status-running-subtle: #0e1f38;
+  /* status: waiting / planned */
+  --status-waiting-fg: #a78bfa;
+  --status-waiting-border: #43307e;
+  --status-waiting-subtle: #1c1636;
+  /* status: degraded / attention */
+  --status-degraded-fg: #fbbf24;
+  --status-degraded-border: #6b4a12;
+  --status-degraded-subtle: #2a1f08;
+  /* status: stopped / unknown / not evaluated */
+  --status-neutral-fg: #8793aa;
+  --status-neutral-border: #27324a;
+  --status-neutral-subtle: #131b2c;
+  /* status: error / blocked */
+  --status-error-fg: #f87171;
+  --status-error-border: #6e2626;
+  --status-error-subtle: #2b1212;
+  /* status: information */
+  --status-info-fg: #4cc9e0;
+  --status-info-border: #175c6e;
+  --status-info-subtle: #0a2732;
+
+  /* diff — never color alone; pair with markers and labels */
+  --diff-add-bg: #0f2a1e;
+  --diff-add-marker: #4ade80;
+  --diff-add-gutter: #12351f;
+  --diff-del-bg: #2b1212;
+  --diff-del-marker: #f87171;
+  --diff-del-gutter: #3a1717;
+  --diff-context-bg: transparent;
+  --diff-line-focus: #191f3e;
+  --diff-gutter-text: #69758c;
+
+  --syntax-key: #a5b4fc;
+  --syntax-string: #7ee2b8;
+  --syntax-number: #fbbf24;
+  --syntax-comment: #69758c;
+  --syntax-punct: #8793aa;
+}
+
+[data-theme="light"] {
+  color-scheme: light;
+
+  --canvas: #f7f8fc;
+  --surface: #ffffff;
+  --surface-subtle: #f0f2f7;
+  --surface-raised: #ffffff;
+  --surface-overlay: #ffffff;
+  --surface-nav: #fbfcfe;
+  --scrim: rgba(16, 20, 38, 0.32);
+
+  --border: #dde2ec;
+  --border-strong: #c3cbd9;
+
+  --text-primary: #101426;
+  --text-secondary: #45516b;
+  --text-tertiary: #69758c;
+  --text-on-action: #ffffff;
+
+  --action-primary: #4f46e5;
+  --action-primary-hover: #4338ca;
+  --action-primary-active: #3730a3;
+  --brand-subtle: #eef2ff;
+  --brand-subtle-hover: #e3e9ff;
+  --brand-border: #c7cffc;
+
+  --accent: #0e7490;
+  --accent-hover: #0b5e75;
+  --accent-active: #094a5d;
+  --accent-subtle: #ecfafe;
+  --accent-subtle-hover: #dbf4fb;
+  --accent-border: #a5dfec;
+  --accent-on: #ffffff;
+  --focus: #2563eb;
+
+  --link: #4338ca;
+  --link-hover: #312e9e;
+
+  --brand-gradient: linear-gradient(
+    215deg,
+    #4e97e6 0%,
+    #3a6fe8 34%,
+    #4a55f4 70%,
+    #5b45fa 100%
+  ); /* @kind color */
+  --brand-gradient-from: #4e97e6;
+  --brand-gradient-to: #5b45fa;
+
+  --status-healthy-fg: #15803d;
+  --status-healthy-border: #a7e3bf;
+  --status-healthy-subtle: #ecfdf3;
+  --status-running-fg: #1d4ed8;
+  --status-running-border: #b6ccf7;
+  --status-running-subtle: #eff4fe;
+  --status-waiting-fg: #6d28d9;
+  --status-waiting-border: #d2c4f7;
+  --status-waiting-subtle: #f5f1fe;
+  --status-degraded-fg: #a15c07;
+  --status-degraded-border: #f0d08a;
+  --status-degraded-subtle: #fef7e6;
+  --status-neutral-fg: #45516b;
+  --status-neutral-border: #c3cbd9;
+  --status-neutral-subtle: #f0f2f7;
+  --status-error-fg: #b42318;
+  --status-error-border: #f3b9b3;
+  --status-error-subtle: #fef0ee;
+  --status-info-fg: #0e7490;
+  --status-info-border: #a5dfec;
+  --status-info-subtle: #ecfafe;
+
+  --diff-add-bg: #ecfdf3;
+  --diff-add-marker: #15803d;
+  --diff-add-gutter: #dcf5e6;
+  --diff-del-bg: #fef0ee;
+  --diff-del-marker: #b42318;
+  --diff-del-gutter: #fbe0dd;
+  --diff-context-bg: transparent;
+  --diff-line-focus: #eef2ff;
+  --diff-gutter-text: #8793aa;
+
+  --syntax-key: #4338ca;
+  --syntax-string: #15803d;
+  --syntax-number: #a15c07;
+  --syntax-comment: #8793aa;
+  --syntax-punct: #69758c;
+}

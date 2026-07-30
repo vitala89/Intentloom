@@ -1,0 +1,8 @@
+/* Geist, self-hosted.
+   The design system was authored against a Google Fonts stylesheet. This
+   application makes no external network calls and ships a `default-src 'self'`
+   content security policy, so the face is bundled from the @fontsource-variable
+   package instead. The woff2 files are resolved and emitted by Vite at build
+   time; nothing is fetched at runtime.
+   Family name registered by this import: "Geist Variable". */
+@import url("@fontsource-variable/geist/index.css");

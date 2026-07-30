@@ -64,6 +64,11 @@ and real consumers justify them.
   public monorepo evolution, controlled agent learning, and portable Duty Watch adoption.
 - Duty Watch governance contracts (Phase 1), proposal CLI `intentloom adopt --plan` (Phase 2), transactional apply & rollback engine `intentloom adopt --apply` (Phase 3), pack update 3-way migration `intentloom update` (Phase 4), conformance & security profiles `intentloom conformance` (Phase 5), provider synchronization `intentloom sync` / `intentloom diff` (Phase 6), Memory & Security Candidates M1–M4, S1–S5, Daemon Protocol Contracts for Second Clients, Read-Only Interactive Surfaces TUI, Agent Workspace Discuss & Inspect Modes, Agent Workspace Plan, Review & Apply Modes, and Neutron Autonomous Subagent Orchestration & Local Workspace Sync Engine are merged into `main`.
 - v1.0 compatibility phases 1–4 are merged into `main`: ADR-0043 and contract tests, the v1 migration/protocol guide and upgrade tests, client-surface equivalence evidence and tests, and the security/supply-chain audit and tests.
+- `apps/desktop` carries an imported design system in `src/design/`: a token
+  layer, six component groups, vendored Lucide glyphs, self-hosted fonts, and the
+  vector logo masters (ADR-0044). It is available to the Desktop surfaces but not
+  yet consumed by them; `App.tsx` is unchanged. Icons and fonts are local, so the
+  zero-external-network invariant still holds and is now also true offline.
 
 These statements must be revalidated against code, tags, CI, and Git history
 before a new release or implementation milestone is declared complete.
