@@ -11,12 +11,18 @@ Current registry evidence is recorded in [`RELEASE_STATE.md`](RELEASE_STATE.md):
 `0.1.0-alpha.3`. The `v0.5.0-beta.1` Git tag is pushed and
 `intentloom@0.5.0-beta.1` is published under `next`.
 
-For every prerelease, an authorized maintainer must confirm ownership of the
-npm name, complete
-[the authorization checklist](PUBLISH_AUTHORIZATION_CHECKLIST.md), use the
-`next` dist-tag, and enable npm provenance only in the approved release
-workflow. The root workspace is private; run the package commands from the
-public CLI package directory:
+For every release, an authorized maintainer must confirm ownership of the npm
+name and complete
+[the authorization checklist](PUBLISH_AUTHORIZATION_CHECKLIST.md). Prereleases
+use the `next` dist-tag. Only a stable release approved through the checklist
+may take `latest`, because `latest` is what an unqualified `npm install`
+resolves to.
+
+Publication runs through
+[the approved release workflow](#trusted-publishing). The manual commands below
+remain documented as the fallback for a maintainer working outside CI, and for
+verifying a candidate locally. The root workspace is private, so package
+commands run from the public CLI package directory:
 
 ```sh
 cd packages/cli
@@ -31,22 +37,74 @@ pull requests.
 
 ## Trusted publishing
 
-The release workflow should use [npm trusted publishing
-(OIDC)](https://docs.npmjs.com/trusted-publishers/) where the npm organization
-and repository workflow have been deliberately configured and reviewed. Bind
-the trust policy to this repository and approved release workflow, use minimal
-permissions, and keep it unavailable to pull-request and ordinary-push
-workflows. Trusted publishing is not configured or implied by this document;
-configuring it requires separate authorization. Do not add, print, or commit
-npm tokens as a substitute for that review.
+The approved automated publication path is
+[`.github/workflows/release.yml`](../../.github/workflows/release.yml), which
+publishes through [npm trusted publishing
+(OIDC)](https://docs.npmjs.com/trusted-publishers/). It uses no npm token: the
+run authenticates with its own short-lived OIDC identity, which npm verifies
+against the trusted publisher configured for the package.
 
-Before enabling it, establish npm package ownership, bind npm to the exact
-GitHub repository and workflow, require a manual trigger or protected release
-environment, and protect the release branch and tags. For eligible public
-packages, npm documents automatic provenance with trusted publishing; verify
-the resulting provenance for the published artifact. These controls must not be
-activated while ownership is unresolved, because a workflow binding cannot prove
-or create authority over an unclaimed name.
+The workflow is dispatch-only. It cannot be triggered by a push or a pull
+request, it refuses any ref other than `main` or a `v*` tag, and it runs in the
+protected `npm-publish` environment so a publish requires an approval. `dry_run`
+defaults to `true`, so the default action of the workflow is to verify, not to
+publish.
+
+### Requirements, verified for this repository
+
+| Requirement                                            | Status                                                  |
+| ------------------------------------------------------ | ------------------------------------------------------- |
+| npm CLI 11.5.1+ and Node 22.14.0+                      | Workflow pins Node 24 and asserts both before building. |
+| `id-token: write` permission                           | Set on the publish job only.                            |
+| Public repository                                      | `vitala89/Intentloom` is public.                        |
+| Public package                                         | `publishConfig.access` is `public`.                     |
+| `repository.url` matches the GitHub repository exactly | `git+https://github.com/vitala89/Intentloom.git`.       |
+| Cloud-hosted runner                                    | `ubuntu-latest`. Self-hosted runners are not supported. |
+
+### One-time setup, performed by the package owner
+
+These steps happen outside this repository and cannot be automated from it.
+
+1. On [npmjs.com](https://www.npmjs.com/package/intentloom), open the package
+   settings and add a trusted publisher for GitHub Actions:
+   - Organization or user: `vitala89`
+   - Repository: `Intentloom`
+   - Workflow filename: `release.yml` (filename only, with the extension, exact
+     case)
+   - Environment name: `npm-publish`
+   - Allowed actions: `npm publish`
+2. In this repository's settings, create the `npm-publish` environment and add
+   a required reviewer. Without a reviewer the environment adds no control.
+3. After the first successful trusted publish, restrict token-based publishing
+   for the package and revoke any standing automation token that could publish
+   it.
+
+npm does not validate a trusted publisher configuration when it is saved. A
+mismatch in the repository name, the workflow filename, or the environment name
+surfaces only as an `ENEEDAUTH` failure at publish time. Renaming
+`release.yml` breaks publication until the trusted publisher is updated to
+match.
+
+### Provenance
+
+npm generates provenance automatically for trusted publishing from a public
+repository publishing a public package, so `release.yml` deliberately does not
+pass `--provenance`. Provenance attests to the ref and commit of the workflow
+run itself. The workflow therefore builds exactly the ref it was dispatched on
+and refuses to build anything else: attesting to a commit that was not the one
+built would be worse than shipping no provenance.
+
+After publishing, confirm the provenance badge on the package page and record
+the result with the release evidence.
+
+### Running a release
+
+1. Dispatch **Release** from the Actions tab with `dry_run` left at `true`.
+   Confirm the tarball contents and integrity in the run summary.
+2. Re-dispatch with `dry_run` set to `false` and approve the `npm-publish`
+   environment.
+3. Record the integrity value, the run URL, and the resulting dist-tags in the
+   release evidence.
 
 ## Failure, rollback, and incident handling
 

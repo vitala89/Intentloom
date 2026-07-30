@@ -1,0 +1,205 @@
+# Publishes the `intentloom` package to npm using trusted publishing (OIDC).
+#
+# This workflow is the ONLY approved automated publication path. It never runs
+# on a push or a pull request: publication requires a deliberate manual dispatch
+# and an approval on the protected `npm-publish` environment.
+#
+# No npm token is used or needed. Authentication happens through the OIDC
+# identity of this workflow run, which npm verifies against the trusted
+# publisher configured for the package. That configuration binds npm to this
+# repository AND to this exact filename, `release.yml`; renaming this file
+# breaks publication until the trusted publisher is updated to match.
+#
+# Provenance is generated automatically by npm for trusted publishing from a
+# public repository publishing a public package. The `--provenance` flag is
+# deliberately absent: npm documents it as unnecessary in this mode.
+#
+# Setup and operating instructions: docs/releases/PUBLISHING.md
+
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Exact version expected in packages/cli/package.json, for example 1.0.0. The run fails if it does not match."
+        required: true
+        type: string
+      dist_tag:
+        description: "npm dist-tag to publish under."
+        required: true
+        default: next
+        type: choice
+        options:
+          - next
+          - latest
+      dry_run:
+        description: "Run every check and a publish dry run without publishing."
+        required: true
+        default: true
+        type: boolean
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    name: Publish intentloom@${{ inputs.version }} to ${{ inputs.dist_tag }}
+    runs-on: ubuntu-latest
+    environment: npm-publish
+    permissions:
+      contents: read
+      # Required for OIDC. This is what authenticates the publish.
+      id-token: write
+    steps:
+      - name: Check out the dispatched ref
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+
+      # Provenance attests to the ref and commit this workflow run was
+      # dispatched on, not to whatever the job happens to check out. Building
+      # anything other than the dispatched ref would make the attestation
+      # describe a commit that was never built, which is worse than shipping no
+      # provenance at all. So the ref is the build, and it is checked here.
+      - name: Refuse to publish from an unapproved ref
+        run: |
+          echo "Dispatched ref: $GITHUB_REF (sha $GITHUB_SHA)"
+          case "$GITHUB_REF" in
+            refs/heads/main|refs/tags/v*) ;;
+            *)
+              echo "::error::Release runs are allowed only from main or a v* tag. Got $GITHUB_REF." >&2
+              exit 1
+              ;;
+          esac
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4.3.0
+        with:
+          version: 10.12.4
+
+      # `cache` is deliberately not set. A release build must come from the
+      # lockfile and this commit, never from a warm cache.
+      - name: Set up Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+
+      - name: Verify the toolchain supports trusted publishing
+        run: |
+          node --version
+          npm --version
+          NPM_VERSION="$(npm --version)" node - <<'NODE'
+          // Trusted publishing requires npm 11.5.1 or later and Node 22.14.0 or
+          // later. Checking here turns a confusing ENEEDAUTH at publish time
+          // into a clear failure before anything is built.
+          const parse = (value) => value.split("-")[0].split(".").map(Number);
+          const lt = (actual, required) => {
+            for (let i = 0; i < required.length; i += 1) {
+              const a = actual[i] ?? 0;
+              if (a > required[i]) return false;
+              if (a < required[i]) return true;
+            }
+            return false;
+          };
+          const npmVersion = process.env.NPM_VERSION.trim();
+          if (lt(parse(npmVersion), [11, 5, 1])) {
+            console.error(`npm ${npmVersion} is too old for trusted publishing; 11.5.1 or later is required.`);
+            console.error("Raise node-version in this workflow, or install a newer npm explicitly.");
+            process.exit(1);
+          }
+          if (lt(parse(process.versions.node), [22, 14, 0])) {
+            console.error(`Node ${process.versions.node} is too old for trusted publishing; 22.14.0 or later is required.`);
+            process.exit(1);
+          }
+          console.log(`npm ${npmVersion} on Node ${process.versions.node} supports trusted publishing.`);
+          NODE
+
+      - name: Install workspace dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Verify the version matches the dispatch input
+        run: |
+          declared="$(node -p "require('./packages/cli/package.json').version")"
+          echo "packages/cli version: $declared"
+          if [ "$declared" != "${{ inputs.version }}" ]; then
+            echo "::error::Version mismatch. packages/cli declares $declared, dispatch asked for ${{ inputs.version }}." >&2
+            exit 1
+          fi
+
+      - name: Build
+        run: pnpm build
+
+      - name: Test
+        run: pnpm test
+
+      - name: Confirm the build left the tree clean
+        run: |
+          # `pnpm build` runs sync-version.mjs. If it rewrote anything, the
+          # committed versions were not synchronized and this release candidate
+          # is not the commit that was reviewed.
+          if ! git diff --quiet; then
+            echo "::error::The build modified tracked files. The release candidate is not reproducible from this commit." >&2
+            git diff --stat >&2
+            exit 1
+          fi
+
+      - name: Inspect the tarball
+        working-directory: packages/cli
+        run: |
+          npm pack --dry-run --json > "$RUNNER_TEMP/pack.json"
+          node -e '
+            const p = require(process.env.RUNNER_TEMP + "/pack.json")[0];
+            console.log("name:        " + p.name);
+            console.log("version:     " + p.version);
+            console.log("integrity:   " + p.integrity);
+            console.log("shasum:      " + p.shasum);
+            console.log("fileCount:   " + p.entryCount);
+            console.log("unpacked:    " + p.unpackedSize);
+            console.log("files:");
+            for (const f of p.files) console.log("  " + f.path);
+          ' | tee "$RUNNER_TEMP/pack-summary.txt"
+
+      - name: Record the tarball in the run summary
+        run: |
+          {
+            echo "## intentloom@${{ inputs.version }}"
+            echo
+            echo "- dist-tag: \`${{ inputs.dist_tag }}\`"
+            echo "- dry run: \`${{ inputs.dry_run }}\`"
+            echo "- ref: \`${{ github.ref }}\`"
+            echo "- commit: \`${{ github.sha }}\`"
+            echo
+            echo '```'
+            cat "$RUNNER_TEMP/pack-summary.txt"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload the pack manifest
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: pack-manifest-${{ inputs.version }}
+          path: ${{ runner.temp }}/pack.json
+          retention-days: 90
+
+      - name: Publish (dry run)
+        working-directory: packages/cli
+        run: npm publish --dry-run --tag "${{ inputs.dist_tag }}" --access public
+
+      - name: Publish
+        if: ${{ inputs.dry_run == false }}
+        working-directory: packages/cli
+        # No NODE_AUTH_TOKEN. Authentication is the OIDC identity of this run,
+        # and provenance is attached automatically.
+        run: npm publish --tag "${{ inputs.dist_tag }}" --access public
+
+      - name: Report what was published
+        if: ${{ inputs.dry_run == false }}
+        run: |
+          {
+            echo
+            echo "Published. Registry now reports:"
+            echo '```'
+            npm view "intentloom@${{ inputs.version }}" dist.integrity dist.shasum || true
+            npm view intentloom dist-tags || true
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
