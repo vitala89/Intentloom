@@ -6,12 +6,12 @@ Historical release audits and roadmap sections retain their original scope, but
 this document is the source of truth for the current status.
 
 Snapshot: 2026-07-30
-Main commit: `65f3886` (Approved `v1.0.0` release baseline; PR #131–#136 merged)
-Release candidate commit: `65f3886` (Approved by maintainer on 2026-07-30)
-Workspace version: `0.5.0-beta.1`
-Git tag: `v0.5.0-beta.1` (pushed)
-Published npm package: `intentloom@0.5.0-beta.1` under `next`
-Default npm `latest`: `intentloom@0.1.0-alpha.3`
+Main commit: `3da811e` (PR #137 merged; Phase 5 Release Gate approved)
+Release commit: `v1.0.0` (tagged `v1.0.0`)
+Workspace version: `1.0.0`
+Git tag: `v1.0.0`
+Published npm package: `intentloom@1.0.0` under `latest`
+Default npm `latest`: `intentloom@1.0.0`
 
 `Implemented in main` means the capability is present in the current source
 tree. `Released version` means the first npm release that contains the
