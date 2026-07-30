@@ -1,0 +1,5 @@
+/* JetBrains Mono, self-hosted.
+   Bundled rather than fetched, for the same reason as Geist: no external network
+   calls, and a packaged desktop build must render identically offline.
+   Family name registered by this import: "JetBrains Mono Variable". */
+@import url("@fontsource-variable/jetbrains-mono/index.css");

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 128" width="200" height="128" role="img" aria-label="Intentloom">
+<defs><linearGradient id="stg" x1="126" y1="8" x2="76" y2="58" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#4E97E6"></stop><stop offset=".34" stop-color="#3A6FE8"></stop><stop offset=".7" stop-color="#4A55F4"></stop><stop offset="1" stop-color="#5B45FA"></stop></linearGradient>
+<mask id="stA"><rect width="200" height="128" fill="#fff"></rect><circle cx="100" cy="27.192" r="3.65" fill="#000"></circle><circle cx="100" cy="36.808" r="3.65" fill="#000"></circle></mask>
+<mask id="stB"><rect width="200" height="128" fill="#fff"></rect><circle cx="95.192" cy="32" r="3.65" fill="#000"></circle><circle cx="104.808" cy="32" r="3.65" fill="#000"></circle></mask></defs>
+<g fill="none" stroke="url(#stg)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+<g mask="url(#stB)"><path transform="translate(100 32) rotate(-45)" d="M13.917,-7.111 A8.2,8.2 0 1,1 13.917,7.111 A27.95,27.95 0 0,1 -13.917,7.111 A8.2,8.2 0 1,1 -13.917,-7.111 A27.95,27.95 0 0,1 13.917,-7.111 Z"></path></g>
+<g mask="url(#stA)"><path transform="translate(100 32) rotate(45)" d="M13.917,-7.111 A8.2,8.2 0 1,1 13.917,7.111 A27.95,27.95 0 0,1 -13.917,7.111 A8.2,8.2 0 1,1 -13.917,-7.111 A27.95,27.95 0 0,1 13.917,-7.111 Z"></path></g></g>
+<text x="100" y="98" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="30" font-weight="600" letter-spacing="-0.6" fill="#101426">Intentloom</text></svg>

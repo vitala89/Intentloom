@@ -1,0 +1,103 @@
+/* Type scale — size / line-height / weight. Tabular numerals for counts and durations. */
+:root {
+  --display-lg-size: 40px;
+  --display-lg-line: 48px;
+  --display-lg-weight: 700;
+  --heading-xl-size: 32px;
+  --heading-xl-line: 40px;
+  --heading-xl-weight: 700;
+  --heading-lg-size: 24px;
+  --heading-lg-line: 32px;
+  --heading-lg-weight: 650;
+  --heading-md-size: 20px;
+  --heading-md-line: 28px;
+  --heading-md-weight: 650;
+  --heading-sm-size: 16px;
+  --heading-sm-line: 24px;
+  --heading-sm-weight: 650;
+  --body-lg-size: 16px;
+  --body-lg-line: 24px;
+  --body-lg-weight: 400;
+  --body-md-size: 14px;
+  --body-md-line: 20px;
+  --body-md-weight: 400;
+  --body-sm-size: 13px;
+  --body-sm-line: 18px;
+  --body-sm-weight: 400;
+  --label-md-size: 13px;
+  --label-md-line: 16px;
+  --label-md-weight: 600;
+  --label-sm-size: 12px;
+  --label-sm-line: 16px;
+  --label-sm-weight: 600;
+  --caption-size: 11px;
+  --caption-line: 16px;
+  --caption-weight: 500;
+  --code-md-size: 13px;
+  --code-md-line: 20px;
+  --code-md-weight: 400;
+  --code-sm-size: 12px;
+  --code-sm-line: 18px;
+  --code-sm-weight: 400;
+}
+
+.il-display-lg {
+  font: var(--display-lg-weight) var(--display-lg-size)/var(--display-lg-line)
+    var(--font-display);
+  letter-spacing: -0.02em;
+}
+.il-heading-xl {
+  font: var(--heading-xl-weight) var(--heading-xl-size)/var(--heading-xl-line)
+    var(--font-display);
+  letter-spacing: -0.018em;
+}
+.il-heading-lg {
+  font: var(--heading-lg-weight) var(--heading-lg-size)/var(--heading-lg-line)
+    var(--font-sans);
+  letter-spacing: -0.014em;
+}
+.il-heading-md {
+  font: var(--heading-md-weight) var(--heading-md-size)/var(--heading-md-line)
+    var(--font-sans);
+  letter-spacing: -0.011em;
+}
+.il-heading-sm {
+  font: var(--heading-sm-weight) var(--heading-sm-size)/var(--heading-sm-line)
+    var(--font-sans);
+  letter-spacing: -0.006em;
+}
+.il-body-lg {
+  font: var(--body-lg-weight) var(--body-lg-size)/var(--body-lg-line)
+    var(--font-sans);
+}
+.il-body-md {
+  font: var(--body-md-weight) var(--body-md-size)/var(--body-md-line)
+    var(--font-sans);
+}
+.il-body-sm {
+  font: var(--body-sm-weight) var(--body-sm-size)/var(--body-sm-line)
+    var(--font-sans);
+}
+.il-label-md {
+  font: var(--label-md-weight) var(--label-md-size)/var(--label-md-line)
+    var(--font-sans);
+}
+.il-label-sm {
+  font: var(--label-sm-weight) var(--label-sm-size)/var(--label-sm-line)
+    var(--font-sans);
+}
+.il-caption {
+  font: var(--caption-weight) var(--caption-size)/var(--caption-line)
+    var(--font-sans);
+}
+.il-code-md {
+  font: var(--code-md-weight) var(--code-md-size)/var(--code-md-line)
+    var(--font-mono);
+}
+.il-code-sm {
+  font: var(--code-sm-weight) var(--code-sm-size)/var(--code-sm-line)
+    var(--font-mono);
+}
+.il-tnum {
+  font-variant-numeric: tabular-nums;
+}

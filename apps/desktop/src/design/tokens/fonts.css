@@ -1,0 +1,23 @@
+/* Intentloom type: Geist (UI + display) and JetBrains Mono (code, paths, hashes, diff).
+   Geist is a modern neo-grotesque with tight, even rhythm and true tabular figures.
+   It replaces Inter as the product face. JetBrains Mono stays: it is still the most
+   legible face for diff, hashes and log output at 12-13px.
+   Both faces are self-hosted: the product makes no external network calls, and the
+   packaged desktop application must render identically with no network at all. */
+@import url("../fonts/geist.css");
+@import url("../fonts/jetbrains-mono.css");
+
+:root {
+  /* The self-hosted variable cuts register under their own family names, so both
+     are listed ahead of the static names the design system was authored against. */
+  --font-sans:
+    "Geist Variable", "Geist", ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", sans-serif;
+  --font-display:
+    "Geist Variable", "Geist", ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", sans-serif;
+  --font-mono:
+    "JetBrains Mono Variable", "JetBrains Mono", ui-monospace, SFMono-Regular,
+    Menlo, Consolas, monospace;
+  --font-feature-tabular: "tnum" 1;
+}

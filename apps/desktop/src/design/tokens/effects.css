@@ -1,0 +1,103 @@
+/* Premium depth layer — glass, hairline, aurora.
+   These are deliberately narrow. Work surfaces stay flat; depth is a signal that
+   something floats above the app, and aurora is identity only. */
+
+:root,
+[data-theme="dark"] {
+  /* Hairline — the 1px top light edge on raised and floating surfaces.
+     This is what reads as "machined" rather than "drawn". */
+  --hairline: rgba(255, 255, 255, 0.07);
+  --hairline-strong: rgba(255, 255, 255, 0.12);
+
+  /* Glass — overlays only: command palette, modal, popover, tooltip, toast,
+     context menu, title bar. Never a card, never a table, never a page background. */
+  --glass-bg: rgba(19, 26, 44, 0.72);
+  --glass-bg-strong: rgba(15, 21, 36, 0.86);
+  --glass-border: rgba(255, 255, 255, 0.09);
+  --glass-blur: 28px; /* @kind other */
+  --glass-saturate: 160%; /* @kind other */
+  --glass-highlight: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.08),
+    rgba(255, 255, 255, 0) 42%
+  ); /* @kind color */
+
+  /* Aurora — identity surfaces only: launch, sign-in, onboarding, empty product
+     shell, marketing, thumbnail. Never behind data, never as a status signal. */
+  --aurora-indigo: rgba(109, 114, 246, 0.28);
+  --aurora-cyan: rgba(76, 201, 224, 0.2);
+  --aurora-violet: rgba(139, 92, 246, 0.22);
+  --aurora:
+    radial-gradient(120% 90% at 12% 4%, var(--aurora-indigo), transparent 58%),
+    radial-gradient(90% 80% at 92% 12%, var(--aurora-cyan), transparent 60%),
+    radial-gradient(
+      100% 110% at 62% 108%,
+      var(--aurora-violet),
+      transparent 62%
+    ),
+    var(--canvas); /* @kind color */
+
+  /* Sheen — a single 1px inner top edge for primary buttons and the active nav pill. */
+  --sheen: inset 0 1px 0 rgba(255, 255, 255, 0.16); /* @kind other */
+}
+
+[data-theme="light"] {
+  --hairline: rgba(255, 255, 255, 0.9);
+  --hairline-strong: rgba(255, 255, 255, 1);
+
+  --glass-bg: rgba(255, 255, 255, 0.76);
+  --glass-bg-strong: rgba(255, 255, 255, 0.9);
+  --glass-border: rgba(16, 20, 38, 0.09);
+  --glass-highlight: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.7),
+    rgba(255, 255, 255, 0) 42%
+  ); /* @kind color */
+
+  --aurora-indigo: rgba(79, 70, 229, 0.14);
+  --aurora-cyan: rgba(14, 165, 190, 0.1);
+  --aurora-violet: rgba(124, 58, 237, 0.11);
+  --aurora:
+    radial-gradient(120% 90% at 12% 4%, var(--aurora-indigo), transparent 58%),
+    radial-gradient(90% 80% at 92% 12%, var(--aurora-cyan), transparent 60%),
+    radial-gradient(
+      100% 110% at 62% 108%,
+      var(--aurora-violet),
+      transparent 62%
+    ),
+    var(--canvas); /* @kind color */
+
+  --sheen: inset 0 1px 0 rgba(255, 255, 255, 0.28); /* @kind other */
+}
+
+/* Ready-made surfaces. Use the class, not a hand-rolled backdrop-filter. */
+.il-glass,
+.il-glass-strong {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  box-shadow:
+    var(--elevation-2),
+    inset 0 1px 0 var(--hairline);
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  -webkit-backdrop-filter: blur(var(--glass-blur))
+    saturate(var(--glass-saturate));
+}
+.il-glass-strong {
+  background: var(--glass-bg-strong);
+  box-shadow:
+    var(--elevation-3),
+    inset 0 1px 0 var(--hairline-strong);
+}
+.il-aurora {
+  background: var(--aurora);
+}
+
+/* Fallback: no backdrop-filter support means opaque, never transparent-and-unreadable. */
+@supports not (
+  (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))
+) {
+  .il-glass,
+  .il-glass-strong {
+    background: var(--surface-overlay);
+  }
+}

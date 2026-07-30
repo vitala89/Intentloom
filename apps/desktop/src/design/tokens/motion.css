@@ -1,0 +1,22 @@
+/* Short and functional. No ambient looping animation in product surfaces. */
+:root {
+  --motion-control: 100ms; /* @kind other */
+  --motion-panel: 160ms; /* @kind other */
+  --motion-modal: 180ms; /* @kind other */
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1); /* @kind other */
+  --ease-exit: cubic-bezier(0.4, 0, 1, 1); /* @kind other */
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --motion-control: 1ms; /* @kind other */
+    --motion-panel: 1ms; /* @kind other */
+    --motion-modal: 1ms; /* @kind other */
+  }
+}
+
+[data-reduced-motion="true"] {
+  --motion-control: 1ms; /* @kind other */
+  --motion-panel: 1ms; /* @kind other */
+  --motion-modal: 1ms; /* @kind other */
+}
