@@ -214,10 +214,11 @@ before a new release or implementation milestone is declared complete.
   root npm/pnpm lockfile and the Desktop Cargo lockfile, plus a CodeQL workflow
   for JavaScript/TypeScript and GitHub Actions. These are repository
   configurations only; review PR #131 is open from the security-baseline
-  branch at head `a2d0386`. Its CodeQL run `30501192759` passed both
-  JavaScript/TypeScript and Actions analyses; PR Compatibility run
-  `30501192736` and push Compatibility run `30501190569` each passed all six
-  Ubuntu, macOS, and Windows Node 22/24 jobs. CodeQL does not cover the Rust
+  branch. The latest validated security-baseline content passed CodeQL run
+  `30501192759` for both JavaScript/TypeScript and Actions analyses; PR
+  Compatibility run `30501192736` and push Compatibility run `30501190569`
+  each passed all six Ubuntu, macOS, and Windows Node 22/24 jobs. Subsequent
+  handoff commits are documentation-only. CodeQL does not cover the Rust
   dependency graph, so alert #2 remains governed by the existing compatibility
   assessment and maintainer decision.
 - Exact-candidate supplemental clean-room, explicit-path, minimal, TypeScript,
