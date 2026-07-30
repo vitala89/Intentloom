@@ -5,26 +5,36 @@ It distinguishes code merged into `main` from artifacts published to npm.
 Historical release audits and roadmap sections retain their original scope, but
 this document is the source of truth for the current status.
 
-Snapshot: 2026-07-30
-Main commit: `c0ea8ce` (PR #139 merged)
+Snapshot: 2026-07-31
+Main commit: `d2a7b49` (PR #140 merged)
 Release commit: `db61be9` (tagged `v1.0.0` as `f9fc326`)
 Workspace version: `1.0.0`
 Git tag: `v1.0.0` (pushed to `origin`)
 GitHub release: [`v1.0.0`](https://github.com/vitala89/Intentloom/releases/tag/v1.0.0), published 2026-07-30
-Published npm package: none for `1.0.0`; publication is not authorized yet
+Published npm package: `intentloom@1.0.0`, published 2026-07-30 under the `next` dist-tag
 Default npm `latest`: `intentloom@0.1.0-alpha.3`
-Default npm `next`: `intentloom@0.5.0-beta.1`
+Default npm `next`: `intentloom@1.0.0`
 
-`1.0.0` exists in Git only. Publishing it to npm requires completing
-[`PUBLISH_AUTHORIZATION_CHECKLIST.md`](PUBLISH_AUTHORIZATION_CHECKLIST.md) and a
-separate explicit maintainer authorization. Do not describe `1.0.0` as published
-until `npm view intentloom` reports it.
+`1.0.0` is published to npm, but **`latest` still resolves to
+`0.1.0-alpha.3`**. An unqualified `npm install intentloom` therefore installs the
+July 18 alpha, not the stable release. Moving the tag is a deliberate maintainer
+action and is not done automatically:
 
-The publication path is [`.github/workflows/release.yml`](../../.github/workflows/release.yml),
-which uses npm trusted publishing and therefore attaches provenance
-automatically. It is dispatch-only, gated on the protected `npm-publish`
-environment, and defaults to a dry run. Two npm-side and GitHub-side setup steps
-remain before it can publish; they are listed in
+```sh
+npm dist-tag add intentloom@1.0.0 latest
+```
+
+Until that runs, describe `1.0.0` as published under `next` only.
+
+The `1.0.0` artifact was published manually before
+[`.github/workflows/release.yml`](../../.github/workflows/release.yml) existed,
+so it carries **no provenance attestation** (`npm view intentloom@1.0.0` reports
+no `dist.attestations`). The workflow is now on `main` and uses npm trusted
+publishing, which attaches provenance automatically, so the next published
+version will carry it. `1.0.0` cannot be given provenance retroactively: npm does
+not allow a published version to be replaced.
+
+Two setup steps remain before the workflow can publish; they are listed in
 [Publishing](PUBLISHING.md#one-time-setup-performed-by-the-package-owner).
 
 `main` has advanced past the `v1.0.0` tag with documentation and CI changes
@@ -55,20 +65,36 @@ non-stable surfaces; it does not mean that the code is absent.
 ## What users receive from npm
 
 ```text
-npm install intentloom@latest  ->  0.1.0-alpha.3
-npm install intentloom@next    ->  0.5.0-beta.1
+npm install intentloom          ->  0.1.0-alpha.3
+npm install intentloom@latest   ->  0.1.0-alpha.3
+npm install intentloom@next     ->  1.0.0
 ```
 
-The `0.5.0-beta.1` npm artifact contains the process-intelligence capabilities
-listed in the last table row. `latest` intentionally remains the historical
-`0.1.0-alpha.3`; prerelease consumers should use `next` explicitly.
+This is not the intended end state. `latest` was left where it was when
+`1.0.0` was published under `next`, so the default install still serves an alpha
+from 2026-07-18 while the stable release sits behind an explicit `@next`. For a
+prerelease that arrangement was deliberate; for a stable release it inverts the
+meaning of both tags. Run `npm dist-tag add intentloom@1.0.0 latest` when the
+maintainer authorizes it, then update this section.
 
 ## Evidence
 
-- npm registry: [`intentloom` package](https://www.npmjs.com/package/intentloom)
-  reports `latest=0.1.0-alpha.3` and `next=0.5.0-beta.1`; published tarball
-  shasum is `58b2e27eb66789f57c1e91cec46aea710a6fc241`.
-- GitHub release: [`v0.4.0-beta.1`](https://github.com/vitala89/Intentloom/releases/tag/v0.4.0-beta.1).
+- npm registry, verified 2026-07-31: [`intentloom` package](https://www.npmjs.com/package/intentloom)
+  reports `latest=0.1.0-alpha.3` and `next=1.0.0`. The `1.0.0` artifact has
+  integrity
+  `sha512-KNT3g/Py0SHyDWxtDHlQTD6cKRBdAtv1oSCp3ZcAEeB7c2djcPXvaCBgHuGC6THZtncw5gpTwCd5xlVgOZPX/g==`,
+  shasum `434fcb624ddb3706502a29ad96b27aee36df675c`, 70 files, 981107 bytes
+  unpacked, and no `dist.attestations`, confirming it was published without
+  provenance. The preceding `0.5.0-beta.1` tarball shasum is
+  `58b2e27eb66789f57c1e91cec46aea710a6fc241`.
+- Artifact reproduced from source on 2026-07-31: `pnpm build` followed by
+  `npm pack --dry-run --json` in `packages/cli` produces shasum
+  `434fcb624ddb3706502a29ad96b27aee36df675c`, 70 files, 981107 bytes unpacked,
+  matching the registry exactly. The published artifact is the artifact this
+  repository builds. This is a reproducibility check, not a substitute for
+  provenance: it proves the bytes match, not who built them or where.
+- GitHub releases: [`v1.0.0`](https://github.com/vitala89/Intentloom/releases/tag/v1.0.0)
+  and [`v0.4.0-beta.1`](https://github.com/vitala89/Intentloom/releases/tag/v0.4.0-beta.1).
 - Historical release-state baseline: [PR #112](https://github.com/vitala89/Intentloom/pull/112),
   merged as `5d1af7c`; it completes the release-state reconciliation after PR
   #111. The post-merge [Compatibility run](https://github.com/vitala89/Intentloom/actions/runs/30410395631)
