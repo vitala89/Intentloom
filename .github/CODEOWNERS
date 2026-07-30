@@ -1,0 +1,24 @@
+# Intentloom code owners
+#
+# Review gate for the surfaces that determine what is built, what is executed in
+# CI, and what is published to npm. Ownership here is a review requirement, not a
+# statement of exclusive authorship.
+
+* @vitala89
+
+# Automation and supply chain: workflow definitions run with repository
+# credentials and produce the published artifacts.
+/.github/ @vitala89
+/.github/workflows/ @vitala89
+/.github/dependabot.yml @vitala89
+
+# The only publishable package. Changes here reach npm consumers directly.
+/packages/cli/ @vitala89
+
+# Build and release tooling.
+/scripts/ @vitala89
+
+# Security policy, threat model, and release-control records.
+/SECURITY.md @vitala89
+/docs/security/ @vitala89
+/docs/releases/ @vitala89

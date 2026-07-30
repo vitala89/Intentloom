@@ -36,13 +36,13 @@ jobs:
             bundle-format: ""
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
 
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4.3.0
         with:
           version: 10.12.4
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: 22
           cache: pnpm
@@ -66,10 +66,10 @@ jobs:
 
       # ── Install Rust (needed for tauri build on all platforms) ─────────────
       - name: Install stable Rust toolchain
-        uses: dtolnay/rust-toolchain@stable
+        uses: dtolnay/rust-toolchain@2c7215f132e9ebf062739d9130488b56d53c060c # master @ 2026-07-30 (stable)
 
       - name: Cache Rust build artifacts
-        uses: Swatinem/rust-cache@v2
+        uses: Swatinem/rust-cache@c19371144df3bb44fab255c43d04cbc2ab54d1c4 # v2.9.1
         with:
           workspaces: apps/desktop/src-tauri -> target
 
@@ -79,6 +79,17 @@ jobs:
         run: |
           mkdir -p "$RUNNER_TEMP/postject"
           npm pack postject@1.0.0-alpha.6 --pack-destination "$RUNNER_TEMP"
+          # npm pack bypasses the lockfile, so the tarball carries no integrity
+          # check of its own. Verify it against the published npm integrity value
+          # for postject@1.0.0-alpha.6 before anything from it is executed.
+          expected="sha512-b9Eb8h2eVqNE8edvKdwqkrY6O7kAwmI8kcnBv1NScolYJbo59XUF0noFq+lxbC1yN20bmC0WBEbDC5H/7ASb0A=="
+          actual="sha512-$(openssl dgst -sha512 -binary "$RUNNER_TEMP/postject-1.0.0-alpha.6.tgz" | openssl base64 -A)"
+          if [ "$actual" != "$expected" ]; then
+            echo "postject tarball integrity mismatch" >&2
+            echo "  expected: $expected" >&2
+            echo "  actual:   $actual" >&2
+            exit 1
+          fi
           (cd "$RUNNER_TEMP" && tar -xzf postject-1.0.0-alpha.6.tgz -C postject)
           echo "POSTJECT_API=$RUNNER_TEMP/postject/package/dist/api.js" >> "$GITHUB_ENV"
 
@@ -144,7 +155,7 @@ jobs:
       # ── Upload SEA result JSON ─────────────────────────────────────────────
       - name: Upload SEA result
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: sea-result-${{ matrix.os }}
           path: ${{ runner.temp }}/sea-result.json
