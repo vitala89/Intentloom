@@ -27,8 +27,16 @@ product milestone (Tauri 2 read-only Desktop application, WCAG 2.x a11y,
 cancellation, Command Palette, Settings & Diagnostics, TUI parity, and
 three-platform SEA sidecar CI verification) has completed implementation, testing,
 and readiness auditing (`docs/desktop/V0_6_READINESS_AUDIT.md`). The v1.0
-compatibility phases 1–4 are now merged into `main`; the active gate is Phase 5,
-the stable-release evidence and approval audit.
+compatibility phases 1–5 are merged into `main` and the Phase 5 release gate is
+signed off.
+
+`v1.0.0` exists as a Git tag only. It has not been published to npm: the
+registry still reports `latest=0.1.0-alpha.3` and `next=0.5.0-beta.1`, and no
+GitHub release exists for the tag. Publication requires completing
+[`PUBLISH_AUTHORIZATION_CHECKLIST.md`](docs/releases/PUBLISH_AUTHORIZATION_CHECKLIST.md)
+and a separate explicit maintainer authorization. See
+[`RELEASE_STATE.md`](docs/releases/RELEASE_STATE.md) for the authoritative
+published-artifact status.
 
 The project must avoid premature structural migration. New applications,
 packages, and repository boundaries are introduced only when roadmap triggers
@@ -81,11 +89,12 @@ before a new release or implementation milestone is declared complete.
 ## Current blockers and unknowns
 
 - Any expansion to bottleneck, performance, causal, actor, repository-reading, persisted, remote, or model-assisted analysis requires a new ADR, specification, and threat review.
-- PR #84 through PR #136 are merged in the local history; current `main` is
-  verified at `65f3886` (PR #135 merge; PR #134 merged as `ba5e870`, PR #133 merged as `85f0ad3`, PR #136 merged as `221e97e`, PR #132 merged as `3360e93`, PR #131 merged as `5dc9313`) and tracks `origin/main`.
+- PR #84 through PR #138 are merged in the local history; current `main` is
+  verified at `db61be9` (PR #138 merge; PR #137 merged as `3da811e`, PR #135 merged as `65f3886`, PR #134 merged as `ba5e870`, PR #133 merged as `85f0ad3`) and tracks `origin/main`.
 - npm currently reports `latest=0.1.0-alpha.3` and `next=0.5.0-beta.1`.
-- Workspace packages are synchronized to `0.5.0-beta.1`; Git tag
-  `v0.5.0-beta.1` is pushed and npm publication is complete.
+- Workspace packages are synchronized to `1.0.0` and Git tag `v1.0.0` is pushed,
+  but `1.0.0` is not published to npm. The last completed npm publication is
+  `v0.5.0-beta.1` under the `next` tag.
 - Published tarball registry shasum is
   `58b2e27eb66789f57c1e91cec46aea710a6fc241`; the current Desktop branch
   restored its locked dependencies and passes the local build and full test
@@ -312,27 +321,38 @@ before a new release or implementation milestone is declared complete.
 
 ## Current milestone
 
-The v0.5 Engineering Process Intelligence increment and v0.6 Desktop
-implementation/readiness gates are complete. The active product direction is
-the `1.0.0` stable compatibility release gate, Phase 5.
+The v0.5 Engineering Process Intelligence increment, the v0.6 Desktop
+implementation/readiness gates, and the `1.0.0` stable compatibility release
+gate (Phase 5) are complete. Their outputs are recorded in the v1.0 readiness
+audit, the stable support policy, the compatibility matrix, the client-surface
+equivalence/security/supply-chain/rollback evidence, the dogfooding records, and
+the maintainer release approval in
+[`V1_0_RELEASE_GATE_PACKET.md`](docs/releases/V1_0_RELEASE_GATE_PACKET.md).
 
-Expected outputs:
+The remaining v1.0 work is release operations, not implementation:
 
-- v1.0 readiness audit and stable support policy;
-- compatibility matrix and verified `v0.5.0-beta.1`/`v0.6.0-beta.1` upgrade evidence;
-- client-surface equivalence, security, supply-chain, and rollback evidence;
-- dogfooding records and maintainer release approval;
-- one verified `main` commit suitable for a future v1.0 tag and publication.
+- configure npm trusted publishing and a release workflow so the first stable
+  publication carries provenance (currently recorded as NOT MET in
+  [`V1_SECURITY_AND_SUPPLY_CHAIN_AUDIT.md`](docs/security/V1_SECURITY_AND_SUPPLY_CHAIN_AUDIT.md));
+- complete the publication authorization checklist and publish
+  `intentloom@1.0.0` under `latest`;
+- create the GitHub release for `v1.0.0`.
 
 ## Next platform milestone
 
-Start the [v1.0 stable release gate](docs/roadmap/V1_0_STABLE_COMPATIBILITY_PLAN.md)
-by inventorying the required Phase 5 evidence and identifying any unsupported
-claims. The Desktop discovery/error and Diff/Timeline slices remain recorded in
+After v1.0 publication, the next implementation direction is the post-v1.0
+capability set already specified but not built:
+
+- live read-only provider connections, per
+  [ADR-0022](docs/decisions/ADR-0022-live-read-only-provider-connections.md);
+- external MCP evidence ingestion, per
+  [ADR-0023](docs/decisions/ADR-0023-external-mcp-evidence-ingestion.md);
+- managed extension lifecycle support for the extension manifest and lock
+  schemas in `@intentloom/validator` and the CLI.
+
+The Desktop discovery/error and Diff/Timeline slices remain recorded in
 [PHASE1_CONTRACTS.md](docs/desktop/PHASE1_CONTRACTS.md), while the packaged
 readiness evidence is recorded in [V0_6_READINESS_AUDIT.md](docs/desktop/V0_6_READINESS_AUDIT.md).
-Do not tag or publish v1.0 until all Phase 5 outputs are reviewed and approved
-on one verified `main` commit.
 
 ## State update rules
 
