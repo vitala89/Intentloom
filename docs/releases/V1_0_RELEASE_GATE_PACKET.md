@@ -7,9 +7,9 @@ Date: 2026-07-30.
 
 ## Candidate under review
 
-- Verified `main` commit: `3257bdf`, merged by PR [#130](https://github.com/vitala89/Intentloom/pull/130).
-- Post-merge Compatibility run: [30498583852](https://github.com/vitala89/Intentloom/actions/runs/30498583852), all six Ubuntu, macOS, and Windows Node 22/24 jobs passed.
-- PR #117 added only release-state documentation and a bounded Windows packed-doctor test timeout; PR #118 added only the final documentation reconciliation; PR #120 added only a bounded packed all-adapter test timeout; PR #121, PR #122, PR #123, PR #124, PR #125, PR #126, PR #127, PR #128, and PR #129 added only documentation and branch-inventory cleanup records; PR #130 added the Phase 5 reconciliation and a bounded Windows-aware timeout for the existing CLI schema process test. No product runtime, package, or dependency behavior changed.
+- Verified `main` commit: `65f3886`, merged by PR [#135](https://github.com/vitala89/Intentloom/pull/135) (PR [#134](https://github.com/vitala89/Intentloom/pull/134) merged as `ba5e870`, PR [#133](https://github.com/vitala89/Intentloom/pull/133) merged as `85f0ad3`, PR [#136](https://github.com/vitala89/Intentloom/pull/136) merged as `221e97e`, PR [#132](https://github.com/vitala89/Intentloom/pull/132) merged as `3360e93`, PR [#131](https://github.com/vitala89/Intentloom/pull/131) merged as `5dc9313`).
+- Post-merge Compatibility run: [30527543027](https://github.com/vitala89/Intentloom/actions/runs/30527543027) for `65f3886`, all six Ubuntu, macOS, and Windows Node 22/24 jobs passed. Post-merge CodeQL run: [30527542998](https://github.com/vitala89/Intentloom/actions/runs/30527542998), passed both Actions and JavaScript/TypeScript analyses.
+- PR #117 through PR #130 carried Phase 5 reconciliations, test harness timeouts, and documentation updates. PR #131 added the free security baseline (`.github/dependabot.yml` and `.github/workflows/codeql.yml`); PR #132, PR #133, PR #134, PR #135 applied Dependabot updates (`getrandom`, `@types/node`, `vite`, `prettier`); PR #136 added `.prettierignore` to exclude generated lockfiles from Prettier checks.
 - Dependency Review evidence: [run 30403512016](https://github.com/vitala89/Intentloom/actions/runs/30403512016), passed on PR #105.
 - Existing workflow warning: GitHub reports the Node.js 20 action deprecation for the current action versions; this is not a product test failure.
 

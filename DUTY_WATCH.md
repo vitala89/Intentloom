@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **v1.0 Phase 1–4 merged; Phase 5 stable-release gate active** — PR #130 is merged as `3257bdf`, its post-merge Compatibility run `30498583852` passed all six jobs, confirmed merged/stale post-merge branches were cleaned up locally and on GitHub, and one medium glib alert remains for disposition; security-baseline PR #131 is open with the validated CodeQL and Compatibility runs green, pending maintainer merge and post-merge CodeQL retention
+Status: **v1.0 Phase 1–4 merged; Phase 5 stable-release gate active** — PR #131 through #136 merged into `main` (`65f3886`), post-merge Compatibility run `30527543027` passed all 6/6 jobs, post-merge CodeQL run `30527542998` passed, local `main` fast-forwarded and Phase 5 release records reconciled
 
-Active branch: `codex/security-dependabot-codeql-baseline`
+Active branch: `codex/v1-phase5-post-merge-pr135-state`
 
-Current objective: add and verify the free repository security baseline, then continue Phase 5 of `V1_0_STABLE_COMPATIBILITY_PLAN.md` without implying a tag or publication.
+Current objective: maintain exact Phase 5 records after PR #131–#136 merges, then obtain maintainer decisions for support policy, glib exception, dogfooding, and release commit approval.
 
-Next first action: validate the new Dependabot and CodeQL files, inspect the current repository security settings and alert #2, then obtain maintainer merge/enablement approval; after merge, retain the first CodeQL result and continue the support-policy, glib, dogfooding, clean-room, and exact-release-commit gates. Do not tag or publish without separate authorization.
+Next first action: review the updated Phase 5 release gate packet (`V1_0_RELEASE_GATE_PACKET.md`) with the maintainer to record decisions for support policy, glib alert #2 exception, real-project dogfooding acceptance, clean-room evidence sufficiency, and the final release commit.
 
 ## Watch rules
 
@@ -41,6 +41,29 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-30, Phase 5: PR #131–#136 merges, post-merge CodeQL/Compatibility runs retention, and state reconciliation
+
+- **Status:** complete for this watch; PR #131–#136 merged into `main` at `65f3886`; post-merge CodeQL & Compatibility runs green; stable-release gate active
+- **Agent/tool:** Antigravity AI Agent with Git, GitHub CLI, GitHub Actions, CodeQL, and Dependabot
+- **Branch:** `codex/v1-phase5-post-merge-pr135-state`
+- **Base:** `main` / `origin/main` at `65f3886` (PR #135 merge)
+- **Pull request:** PR #131, PR #132, PR #133, PR #134, PR #135, PR #136 merged into `main`. No tag, npm publication, or release authorization was inferred.
+- **Completed:** Verified maintainer merges of PR #131 (`5dc9313`), PR #132 (`3360e93`), PR #136 (`221e97e`), PR #133 (`85f0ad3`), PR #134 (`ba5e870`), and PR #135 (`65f3886`). Verified post-merge CodeQL run `30527542998` (both Actions and JS/TS analyses passed) and post-merge Compatibility run `30527543027` (6/6 jobs passed). Reconciled `PROJECT_STATE.md`, `RELEASE_STATE.md`, `V1_0_READINESS_AUDIT.md`, `V1_0_RELEASE_GATE_PACKET.md`, and `DUTY_WATCH.md`. Fast-forwarded local `main`.
+- **Validation:** Post-merge Compatibility run [30527543027](https://github.com/vitala89/Intentloom/actions/runs/30527543027) passed all six Ubuntu, macOS, and Windows Node 22/24 jobs. Post-merge CodeQL run [30527542998](https://github.com/vitala89/Intentloom/actions/runs/30527542998) passed both Actions and JS/TS analyses. Local `pnpm format:check` and `git diff --check` passed.
+- **Not completed:** Maintainer decisions for support policy approval, glib alert #2 disposition, real-project dogfooding acceptance or refresh, clean-room evidence sufficiency decision for current commit `65f3886`, and final maintainer release approval remain open.
+- **Decisions and assumptions:** Treat `65f3886` as the current verified `main` release candidate. Do not create a tag or publish a release without explicit maintainer authorization.
+- **Next first action:** Review the updated Phase 5 packet with the maintainer to obtain formal release decisions.
+- **Evidence:** `main` commit `65f3886`, [Compatibility run 30527543027](https://github.com/vitala89/Intentloom/actions/runs/30527543027), [CodeQL run 30527542998](https://github.com/vitala89/Intentloom/actions/runs/30527542998).
+
+#### Duty completion checklist
+
+- [x] PR #131–#136 verified merged on `main`
+- [x] Post-merge Compatibility run `30527543027` verified green (6/6 jobs)
+- [x] Post-merge CodeQL run `30527542998` verified green
+- [x] Local `main` fast-forwarded to `65f3886`
+- [x] Project state, release readiness audit, and release gate packet updated
+- [x] `pnpm format:check` and `git diff --check` passed
 
 ### 2026-07-30, Phase 5: PR #131 security checks verified
 

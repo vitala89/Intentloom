@@ -5,8 +5,8 @@ not authorize a tag, npm publication, or release announcement.
 
 Date: 2026-07-30.
 
-Candidate baseline under review: `3257bdf` (`main` and `origin/main` after PR
-#130 merge). The release gate remains open until the decisions and evidence in
+Candidate baseline under review: `65f3886` (`main` and `origin/main` after PR
+#135 merge; PR #134 merged as `ba5e870`, PR #133 merged as `85f0ad3`, PR #136 merged as `221e97e`, PR #132 merged as `3360e93`, PR #131 merged as `5dc9313`). The release gate remains open until the decisions and evidence in
 the release-gate packet are reviewed.
 
 ## Decision summary
@@ -16,14 +16,11 @@ matrix are present in `main`. PR #117 is merged with only a bounded test timeout
 for slower Windows runners, PR #118 is documentation-only, PR #120 adds a
 second bounded test-harness timeout, and PR #121, PR #122, PR #123, PR #124, PR #125, PR #126, PR #127, PR #128, and PR #129 are
 documentation-only; none changes runtime, package, or dependency behavior.
-PR #130 adds only the Phase 5 reconciliation and a bounded Windows-aware
-timeout for the existing CLI schema process test; it does not change product
-runtime, package, or dependency behavior.
+PR #130 through PR #136 added the security baseline, Dependabot updates (`getrandom`, `@types/node`, `vite`, `prettier`), and `.prettierignore` lockfile formatting fix.
 Supplemental clean-room,
 explicit-path, and three-scenario records remain attached from the pre-merge
-runtime-equivalent candidate tree. The post-merge run for `3257bdf` passed all
-six Compatibility jobs after the scoped test-only remediation and the final
-documentation reconciliation. The v1.0 release gate remains **open** because
+runtime-equivalent candidate tree. The post-merge run for `65f3886` passed all
+six Compatibility jobs (`30527543027`) and CodeQL analysis (`30527542998`). The v1.0 release gate remains **open** because
 support-policy
 approval, the glib disposition, acceptance or authorized refresh of
 real-project dogfooding records, and maintainer approval are not yet complete.
