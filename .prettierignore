@@ -1,0 +1,6 @@
+# Ignore generated lockfiles and build outputs
+pnpm-lock.yaml
+Cargo.lock
+dist
+node_modules
+artifacts
