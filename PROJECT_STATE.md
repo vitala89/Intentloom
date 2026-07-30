@@ -1,6 +1,6 @@
 # Intentloom Project State
 
-Last verified: 2026-07-29
+Last verified: 2026-07-30
 
 This file records the durable current state of the project. It is not a
 chronological log. Session history and handoff details belong in
@@ -81,8 +81,8 @@ before a new release or implementation milestone is declared complete.
 ## Current blockers and unknowns
 
 - Any expansion to bottleneck, performance, causal, actor, repository-reading, persisted, remote, or model-assisted analysis requires a new ADR, specification, and threat review.
-- PR #84 through PR #129 are merged in the local history; current `main` is
-  verified at `802da40` and tracks `origin/main`.
+- PR #84 through PR #130 are merged in the local history; current `main` is
+  verified at `3257bdf` and tracks `origin/main`.
 - npm currently reports `latest=0.1.0-alpha.3` and `next=0.5.0-beta.1`.
 - Workspace packages are synchronized to `0.5.0-beta.1`; Git tag
   `v0.5.0-beta.1` is pushed and npm publication is complete.
@@ -205,6 +205,22 @@ before a new release or implementation milestone is declared complete.
   macOS, and Windows Node 22/24 jobs, with only the known Node.js 20 action
   deprecation annotations. No runtime, package, or dependency behavior
   changed.
+- PR #130 is merged as `3257bdf`; it carries the Phase 5 reconciliation and a
+  bounded Windows-aware timeout for the existing CLI schema process test. Its
+  post-merge Compatibility run `30498583852` passed all six Ubuntu, macOS, and
+  Windows Node 22/24 jobs, with only the known Node.js 20 action deprecation
+  annotations. No product runtime, package, or dependency behavior changed.
+- The active security-baseline branch adds `.github/dependabot.yml` for the
+  root npm/pnpm lockfile and the Desktop Cargo lockfile, plus a CodeQL workflow
+  for JavaScript/TypeScript and GitHub Actions. These are repository
+  configurations only; review PR #131 is open from the security-baseline
+  branch. The latest validated security-baseline content passed CodeQL run
+  `30501192759` for both JavaScript/TypeScript and Actions analyses; PR
+  Compatibility run `30501192736` and push Compatibility run `30501190569`
+  each passed all six Ubuntu, macOS, and Windows Node 22/24 jobs. Subsequent
+  handoff commits are documentation-only. CodeQL does not cover the Rust
+  dependency graph, so alert #2 remains governed by the existing compatibility
+  assessment and maintainer decision.
 - Exact-candidate supplemental clean-room, explicit-path, minimal, TypeScript,
   and sanitized existing-project evidence is recorded under
   `docs/releases/dogfooding/`; it does not replace real-project acceptance or

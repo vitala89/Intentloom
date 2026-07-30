@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **v1.0 Phase 1–4 merged; Phase 5 stable-release gate active** — PR #129 is merged as `802da40`, its post-merge Compatibility run `30496928912` passed all six jobs, PR #130's final-head Compatibility runs passed all 12 jobs, confirmed dead branches were cleaned up, and one medium glib alert remains for disposition
+Status: **v1.0 Phase 1–4 merged; Phase 5 stable-release gate active** — PR #130 is merged as `3257bdf`, its post-merge Compatibility run `30498583852` passed all six jobs, confirmed merged/stale post-merge branches were cleaned up locally and on GitHub, and one medium glib alert remains for disposition; security-baseline PR #131 is open with the validated CodeQL and Compatibility runs green, pending maintainer merge and post-merge CodeQL retention
 
-Active branch: `codex/v1-phase5-post-merge-pr129-state`
+Active branch: `codex/security-dependabot-codeql-baseline`
 
-Current objective: execute Phase 5 of `V1_0_STABLE_COMPATIBILITY_PLAN.md`: assemble the v1.0 readiness audit and obtain maintainer release approval without implying a tag or publication.
+Current objective: add and verify the free repository security baseline, then continue Phase 5 of `V1_0_STABLE_COMPATIBILITY_PLAN.md` without implying a tag or publication.
 
-Next first action: have maintainer merge the green PR #130, verify its post-merge Compatibility run against the resulting main commit, and then close the remaining Phase 5 gates; do not tag or publish without separate authorization.
+Next first action: validate the new Dependabot and CodeQL files, inspect the current repository security settings and alert #2, then obtain maintainer merge/enablement approval; after merge, retain the first CodeQL result and continue the support-policy, glib, dogfooding, clean-room, and exact-release-commit gates. Do not tag or publish without separate authorization.
 
 ## Watch rules
 
@@ -41,6 +41,99 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-30, Phase 5: PR #131 security checks verified
+
+- **Status:** complete for this watch; PR #131 is review-ready and the stable-release gate remains open
+- **Agent/tool:** Codex with GitHub CLI, GitHub Actions, Git, and security workflow guidance
+- **Branch:** `codex/security-dependabot-codeql-baseline`
+- **Pull request:** PR [#131](https://github.com/vitala89/Intentloom/pull/131) is open against `main` at head `4a78707`.
+- **Completed:** Verified the newly added CodeQL workflow on the pull request. The JavaScript/TypeScript and GitHub Actions analyses both passed. The PR and push Compatibility matrices also passed all six Ubuntu, macOS, and Windows Node 22/24 jobs.
+- **Validation:** CodeQL run [30500982180](https://github.com/vitala89/Intentloom/actions/runs/30500982180) passed both analysis jobs. PR Compatibility run [30500982171](https://github.com/vitala89/Intentloom/actions/runs/30500982171) and push Compatibility run [30500980339](https://github.com/vitala89/Intentloom/actions/runs/30500980339) each passed all six jobs. No dependency or runtime files changed.
+- **Not completed:** Maintainer merge of PR #131, first post-merge CodeQL result on `main`, explicit Dependabot security-update enablement decision, secret-scanning decision, glib alert #2 disposition, support-policy approval, real-project dogfooding acceptance, clean-room/explicit-path evidence sufficiency, and final release approval remain open.
+- **Decisions and assumptions:** Treat PR #131 as ready for maintainer review; the green PR CodeQL run is evidence for the branch, not yet post-merge release evidence. Do not merge, enable external security settings, dismiss alert #2, tag, publish, or announce a release without explicit authorization.
+- **Next first action:** Maintainer reviews and merges PR #131; then verify the first CodeQL run on the resulting `main` commit and record the post-merge Compatibility run before continuing the remaining Phase 5 gates.
+- **Evidence:** [PR #131](https://github.com/vitala89/Intentloom/pull/131), [CodeQL run 30500982180](https://github.com/vitala89/Intentloom/actions/runs/30500982180), [PR Compatibility run 30500982171](https://github.com/vitala89/Intentloom/actions/runs/30500982171), and [push Compatibility run 30500980339](https://github.com/vitala89/Intentloom/actions/runs/30500980339).
+
+#### Duty completion checklist
+
+- [x] PR #131 opened and body verified
+- [x] CodeQL JavaScript/TypeScript analysis passed
+- [x] CodeQL Actions analysis passed
+- [x] PR Compatibility matrix passed 6/6
+- [x] Push Compatibility matrix passed 6/6
+- [ ] PR #131 merged
+- [ ] Post-merge CodeQL and Compatibility results retained
+
+### 2026-07-30, Phase 5: security baseline review PR
+
+- **Status:** complete for this watch; PR #131 is open and the stable-release gate remains open
+- **Agent/tool:** Codex with Git, GitHub CLI, GitHub Actions, and security workflow guidance
+- **Branch:** `codex/security-dependabot-codeql-baseline`
+- **Base:** `main` / `origin/main` at `3257bdf`
+- **Pull request:** PR [#131](https://github.com/vitala89/Intentloom/pull/131) is open against `main` with head `70edf83`; no tag, publication, auto-merge, security-setting mutation, or release approval was inferred.
+- **Completed:** Corrected the durable handoff references to the actual latest branch head, verified the PR body after a shell-quoting correction, and opened the necessary ready-for-review PR for the Dependabot and CodeQL baseline. The PR scope remains limited to `.github/dependabot.yml`, `.github/workflows/codeql.yml`, security-audit documentation, `PROJECT_STATE.md`, and `DUTY_WATCH.md`.
+- **Validation:** `pnpm format:check` and `git diff --check` passed before the handoff commit. Compatibility run [30500685144](https://github.com/vitala89/Intentloom/actions/runs/30500685144) for head `70edf83` passed all six Ubuntu, macOS, and Windows Node 22/24 jobs. PR metadata and body were re-read through GitHub CLI and confirmed open against `main`.
+- **Not completed:** Maintainer merge of PR #131, first post-merge CodeQL result, explicit Dependabot security-update enablement decision, secret-scanning decision, glib alert #2 disposition, support-policy approval, real-project dogfooding acceptance, clean-room/explicit-path evidence sufficiency, and final release approval remain open.
+- **Decisions and assumptions:** Keep PR #131 ready for maintainer review; do not merge it, enable automatic security PRs, enable secret scanning, dismiss alert #2, create a tag, or publish without explicit authorization. After merge, verify CodeQL before treating the workflow as release evidence.
+- **Next first action:** Maintainer reviews and merges PR #131 if accepted; then verify the first CodeQL run on the resulting `main` commit and decide explicitly whether to enable Dependabot security-update PRs and secret scanning.
+- **Evidence:** [PR #131](https://github.com/vitala89/Intentloom/pull/131), [head Compatibility run 30500685144](https://github.com/vitala89/Intentloom/actions/runs/30500685144), [Dependabot alert #2](https://github.com/vitala89/Intentloom/security/dependabot/2), and the repository security-baseline files.
+
+#### Duty completion checklist
+
+- [x] Security baseline branch validated
+- [x] Latest handoff commit pushed
+- [x] Compatibility run passed all six jobs
+- [x] PR #131 opened and body verified
+- [ ] PR #131 merged
+- [ ] First post-merge CodeQL run retained
+
+### 2026-07-30, Phase 5: free dependency monitoring and code-scanning baseline
+
+- **Status:** complete for this watch; configuration is pushed and Compatibility is green, while the stable-release gate remains open
+- **Agent/tool:** Codex with Git, GitHub CLI, GitHub security documentation, and the CodeQL workflow guidance
+- **Branch:** `codex/security-dependabot-codeql-baseline`
+- **Base:** `main` / `origin/main` at `3257bdf`, the verified PR #130 merge commit
+- **Objective:** Add a bounded, free repository security baseline without changing product dependencies, enabling hidden automation, dismissing the open glib alert, or implying release approval.
+- **Completed:** Added `.github/dependabot.yml` with weekly npm/pnpm and Cargo checks, bounded to five open update PRs per ecosystem and without auto-merge. Added `.github/workflows/codeql.yml` for JavaScript/TypeScript and GitHub Actions on main pushes, main pull requests, a weekly schedule, and manual dispatch. Confirmed the repository already has Dependency Review and Compatibility workflows. The last successful repository settings read reported Dependabot security updates disabled; Dependabot alerts are active because alert #2 is present. The glib alert remains open and was not dismissed or overridden.
+- **Validation:** Ruby YAML parsing, `pnpm format:check`, and `git diff --check` passed. No dependency or runtime files changed. Compatibility run [30500289252](https://github.com/vitala89/Intentloom/actions/runs/30500289252) for handoff commit `d714ac5` passed all six Ubuntu, macOS, and Windows Node 22/24 jobs. A read-only GitHub API check confirmed the repository is public, Dependabot security updates are disabled, and alert #2 is still open at medium severity for `glib` with patched `0.20.0`; the earlier sandbox connection failure was not treated as a result.
+- **Free-control assessment:** Dependabot alerts/security updates, Dependency Review, CodeQL for a public repository, and secret scanning are GitHub-native options. No Marketplace action is required for this baseline. `zizmor` is a possible later workflow-hardening addition but is third-party/early-development and not needed before the first-party controls are verified. Gitleaks is not added because public-repository secret scanning is the lower-maintenance first choice; scanning would not remove any leaked secret from history.
+- **Not completed:** Merge of this security-baseline branch, first CodeQL run, explicit verification or enablement of Dependabot security updates, glib alert #2 disposition, support-policy approval, real-project dogfooding acceptance, clean-room/explicit-path evidence sufficiency, and final maintainer release approval remain open.
+- **Decisions and assumptions:** Keep CodeQL scope to `javascript-typescript` and `actions`; CodeQL is not being represented as Rust/Cargo scanning. Keep Dependabot on weekly cadence with no auto-merge to control churn. Do not enable secret scanning or change repository settings in this watch without explicit confirmation of that external setting change. Do not create a tag or publish a package.
+- **Next first action:** Have the maintainer review and merge commit `d714ac5` if this baseline is accepted; after merge, retain the first CodeQL result and decide explicitly whether to enable Dependabot security-update PRs. Then continue the glib, support-policy, dogfooding, clean-room, and exact-release-commit gates.
+- **Evidence:** [GitHub Actions billing](https://docs.github.com/en/billing/concepts/product-billing/github-actions), [Dependabot alerts](https://docs.github.com/en/code-security/concepts/supply-chain-security/dependabot-alerts), [dependabot.yml reference](https://docs.github.com/en/code-security/concepts/supply-chain-security/about-the-dependabot-yml-file), [CodeQL code scanning](https://docs.github.com/en/code-security/concepts/code-scanning/codeql/codeql-code-scanning), [secret scanning scope](https://docs.github.com/en/code-security/reference/secret-security/secret-scanning-scope), and the repository files added in this watch.
+
+#### Duty completion checklist
+
+- [x] Dependabot config added for npm/pnpm and Cargo
+- [x] CodeQL workflow added for JavaScript/TypeScript and GitHub Actions
+- [x] Formatter and `git diff --check` passed
+- [x] External security settings and alert recheck complete (read-only; no setting changed)
+- [ ] First post-merge CodeQL run retained
+- [x] Handoff committed and pushed as `d714ac5`
+
+### 2026-07-30, Phase 5: PR #130 merge and post-merge candidate verification
+
+- **Status:** complete for this watch; the stable-release gate remains open
+- **Agent/tool:** Codex with GitHub CLI, Git, GitHub Actions, and release records
+- **Branch:** `codex/v1-phase5-post-merge-pr130-state`
+- **Base:** `main` / `origin/main` at `3257bdf`, merge commit for PR #130
+- **Pull request:** PR [#130](https://github.com/vitala89/Intentloom/pull/130) merged with merge commit `3257bdf` from head `9003ae2`; no tag, npm publication, or v1.0 release authorization was inferred
+- **Completed:** Verified the merge, fast-forwarded local `main`, created the next post-merge state branch, reconciled `PROJECT_STATE.md`, `RELEASE_STATE.md`, `V1_0_READINESS_AUDIT.md`, and `V1_0_RELEASE_GATE_PACKET.md` to the exact post-merge candidate, and removed confirmed merged/stale post-merge branches for PR #123–#127 locally and on GitHub. PR #130 contains documentation reconciliation plus a bounded Windows-aware timeout for an existing CLI schema process test; no product runtime, package, or dependency behavior changed.
+- **Validation:** `gh pr view 130` confirmed `MERGED`; local `main` fast-forwarded to `3257bdf`; post-merge Compatibility run [30498583852](https://github.com/vitala89/Intentloom/actions/runs/30498583852) passed all six Ubuntu, macOS, and Windows Node 22/24 jobs. The only annotations were the known Node.js 20 action deprecation notices. Local `pnpm format:check` and `git diff --check` passed for this reconciliation.
+- **Not completed:** Support-policy approval, glib alert #2 disposition or coordinated migration, acceptance or authorized refresh of real-project dogfooding, clean-room/explicit-path evidence sufficiency decision for `3257bdf`, and final maintainer release approval remain open.
+- **Decisions and assumptions:** Treat `3257bdf` as the exact current stable-gate candidate. Preserve the historical PR #130 remediation entry below; this entry is the authoritative post-merge state. Do not infer release approval from the green matrix and do not create a tag or publish without separate explicit authorization.
+- **Next first action:** Commit and push this post-merge reconciliation, then continue the remaining Phase 5 gates from the exact `3257bdf` candidate.
+- **Evidence:** [PR #130](https://github.com/vitala89/Intentloom/pull/130), [merge commit `3257bdf`](https://github.com/vitala89/Intentloom/commit/3257bdf), and [post-merge Compatibility run 30498583852](https://github.com/vitala89/Intentloom/actions/runs/30498583852).
+
+#### Duty completion checklist
+
+- [x] PR #130 merged
+- [x] Local `main` fast-forwarded to the merge commit
+- [x] Post-merge Compatibility checks passed
+- [x] Release-state documents synchronized
+- [x] Formatter and `git diff --check` passed for this reconciliation
+- [x] Handoff committed and pushed
 
 ### 2026-07-30, Phase 5: PR #130 Windows Node 24 timeout and scoped remediation
 

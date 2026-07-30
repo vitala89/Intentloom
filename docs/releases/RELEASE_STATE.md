@@ -5,8 +5,8 @@ It distinguishes code merged into `main` from artifacts published to npm.
 Historical release audits and roadmap sections retain their original scope, but
 this document is the source of truth for the current status.
 
-Snapshot: 2026-07-29
-Main commit: `802da40` (PR #129 merged)
+Snapshot: 2026-07-30
+Main commit: `3257bdf` (PR #130 merged)
 Release commit: `a0e0b13` (tagged `v0.5.0-beta.1`)
 Workspace version: `0.5.0-beta.1`
 Git tag: `v0.5.0-beta.1` (pushed)
@@ -145,6 +145,12 @@ listed in the last table row. `latest` intentionally remains the historical
   [Compatibility run](https://github.com/vitala89/Intentloom/actions/runs/30496928912)
   passed all six Ubuntu, macOS, and Windows Node 22/24 jobs. No runtime,
   package, or dependency behavior changed.
+- PR [#130](https://github.com/vitala89/Intentloom/pull/130) is merged as
+  `3257bdf`; it carries the Phase 5 reconciliation and a bounded
+  Windows-aware timeout for the existing CLI schema process test. Its
+  post-merge [Compatibility run](https://github.com/vitala89/Intentloom/actions/runs/30498583852)
+  passed all six Ubuntu, macOS, and Windows Node 22/24 jobs. No product
+  runtime, package, or dependency behavior changed.
 - Supplemental exact-candidate clean-room, explicit-path, and three-scenario
   records are retained under
   [`docs/releases/dogfooding/`](dogfooding/2026-07-29-v1-candidate-clean-room-explicit-path.md);

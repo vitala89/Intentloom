@@ -31,7 +31,18 @@ Intentloom is an offline-first, local-first control layer. The platform executes
    change package manifests or the pnpm lockfile and fails on newly introduced
    high or critical vulnerabilities. This is a change-review control; the
    release candidate still requires a recorded green workflow run.
-3. **Rollback & Recovery**: In the event of a security advisory, maintainers issue immediate patch releases (`1.0.x`) and document mitigation steps in `docs/security/`.
+3. **Continuous dependency monitoring**: The active security-baseline branch
+   adds `.github/dependabot.yml` for the root npm/pnpm lockfile and the Desktop
+   Cargo lockfile. It uses weekly update checks with bounded open PRs; it does
+   not enable auto-merge or change dependencies by itself. Dependabot security
+   updates remain a separate repository setting and must be verified after
+   merge.
+4. **Code scanning**: The active security-baseline branch adds a CodeQL
+   workflow for JavaScript/TypeScript and GitHub Actions. Rust is not included
+   in this workflow; Cargo advisories remain covered by Dependabot, Dependency
+   Review, and explicit compatibility assessment. The first post-merge CodeQL
+   result must be retained before treating the control as release evidence.
+5. **Rollback & Recovery**: In the event of a security advisory, maintainers issue immediate patch releases (`1.0.x`) and document mitigation steps in `docs/security/`.
 
 ## Proposed exception: transitive `glib@0.18.5`
 
