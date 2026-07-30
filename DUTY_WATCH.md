@@ -9,7 +9,7 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **v1.0 Phase 1–4 merged; Phase 5 stable-release gate active** — PR #130 is merged as `3257bdf`, its post-merge Compatibility run `30498583852` passed all six jobs, confirmed merged/stale post-merge branches were cleaned up locally and on GitHub, and one medium glib alert remains for disposition; security-baseline PR #131 is open from head `4a78707`, with CodeQL and both Compatibility runs green, pending maintainer merge and post-merge CodeQL retention
+Status: **v1.0 Phase 1–4 merged; Phase 5 stable-release gate active** — PR #130 is merged as `3257bdf`, its post-merge Compatibility run `30498583852` passed all six jobs, confirmed merged/stale post-merge branches were cleaned up locally and on GitHub, and one medium glib alert remains for disposition; security-baseline PR #131 is open from head `a2d0386`, with CodeQL and both Compatibility runs green, pending maintainer merge and post-merge CodeQL retention
 
 Active branch: `codex/security-dependabot-codeql-baseline`
 
