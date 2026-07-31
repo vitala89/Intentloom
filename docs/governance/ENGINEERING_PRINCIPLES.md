@@ -118,17 +118,29 @@ unnecessary layers. SOLID and Clean Architecture are used to reveal real
 responsibilities and boundaries, while principle 12 continues to prohibit
 premature abstraction.
 
-## 17. Configurable quality, invariant safety
+## 17. Configurable engineering, invariant safety
 
-Intentloom may allow users to choose maintainability profiles, architecture
-principles, code budgets, testing requirements, legacy migration behavior, and
-technology-specific domain packs.
+Intentloom may allow users to choose quality profiles, scoped architecture
+strategies, code budgets, testing requirements, legacy migration behavior,
+technology and domain packs, and engineering-discipline perspectives.
 
-Those choices are layered over the mandatory platform baseline. No quality
-preset or custom policy may disable security, ownership, explicit roots,
-evidence before mutation, human approval, provider neutrality, compatibility,
-truthful reporting, or reversible writes.
+Architecture is composed on explicit axes and scopes rather than selected from
+one flat global list. Different applications, packages, deployables, bounded
+contexts, feature areas, and data domains may use different compatible
+strategies. High-impact topology or data-boundary changes require an explicit
+architecture decision and must never be inferred from folder names or repository
+size alone.
+
+A discipline or role label changes which guidance is emphasized. It never grants
+filesystem, network, secret, deployment, merge, release, or publishing
+capabilities. Capability and approval policies remain explicit and separate.
+
+All configurable choices are layered over the mandatory platform baseline. No
+quality preset, architecture strategy, technology pack, discipline perspective,
+or custom policy may disable security, ownership, explicit roots, evidence before
+mutation, human approval, provider neutrality, compatibility, truthful
+reporting, or reversible writes.
 
 CLI, MCP, Desktop, TUI, daemon, and generated agent guidance must resolve one
 canonical effective policy through shared application and protocol contracts.
-No client may implement a separate standards engine.
+No client may implement a separate standards or architecture engine.
