@@ -1,28 +1,30 @@
+<p align="center">
+  <img src="https://raw.githubusercontent.com/vitala89/Intentloom/main/apps/desktop/src/design/assets/logo-mark.svg" alt="Intentloom" width="96" height="96">
+</p>
+
 # Intentloom
 
-> Beta software: review generated changes before applying them in a project.
-
-`intentloom` provides the `intentloom` command for local, vendor-neutral AI engineering
-workflows. It requires Node.js 22 or newer and runs offline-first: commands do
-not send telemetry or make hidden runtime network requests.
+`intentloom` provides the `intentloom` command for local, vendor-neutral AI
+engineering workflows. It requires Node.js 22 or newer and runs offline-first:
+commands do not send telemetry or make hidden runtime network requests.
 
 ```sh
-npm install --global intentloom@next
+npm install --global intentloom
 intentloom --help
 ```
 
-Prefer `@next` while Intentloom is beta; APIs and generated output may change. To
-pin the current published prerelease, use `npm install --global intentloom@0.4.0-beta.1`.
-The workspace candidate `0.5.0-beta.1` is still being prepared and is not yet
-published.
-The default `latest` tag remains `0.1.0-alpha.3`; see the repository
-[release state](../../docs/releases/RELEASE_STATE.md) for the distinction.
+The current stable release is `1.0.0`, served by both the `latest` and `next`
+dist-tags. Pin it with `npm install --global intentloom@1.0.0`. Compatibility
+and deprecation guarantees are defined by the
+[v1 support policy](https://github.com/vitala89/Intentloom/blob/main/docs/releases/SUPPORT_POLICY_V1.md);
+the published-artifact status is recorded in the
+[release state](https://github.com/vitala89/Intentloom/blob/main/docs/releases/RELEASE_STATE.md).
 
 Start safely in a project:
 
 ```sh
 intentloom init --dry-run
-intentloom adopt --dry-run
+intentloom adopt --plan
 intentloom inspect --json
 intentloom doctor
 intentloom sync --dry-run
@@ -30,12 +32,19 @@ intentloom sync --dry-run
 
 Supported adapters are Claude Code, Codex, Cursor, and GitHub Copilot. Intentloom
 preserves project-owned files and reports conflicts instead of overwriting them.
+Writes are transactional and preceded by a reviewable plan.
 
 `intentloom inspect` is a bounded read-only project summary. It reports detected
 profile, instruction surfaces, and Intentloom metadata readiness without running
 project scripts, invoking Git, installing dependencies, following symbolic links,
 or contacting a network service.
 
+Vendor names describe compatibility only. Intentloom is an independent project
+and is not affiliated with or endorsed by OpenAI, Anthropic, GitHub, Cursor, or
+other vendors.
+
 See the [repository](https://github.com/vitala89/Intentloom),
+[documentation](https://github.com/vitala89/Intentloom/blob/main/docs/README.md),
+[CLI reference](https://github.com/vitala89/Intentloom/blob/main/docs/reference/CLI.md),
 [issue tracker](https://github.com/vitala89/Intentloom/issues), and
 [MIT license](https://github.com/vitala89/Intentloom/blob/main/LICENSE).

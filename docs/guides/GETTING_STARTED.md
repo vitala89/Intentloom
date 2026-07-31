@@ -1,24 +1,24 @@
 # Getting Started
 
-Install the beta CLI with Node.js 22 or newer:
+Install the CLI with Node.js 22 or newer:
 
 ```sh
-npm install --global intentloom@next
+npm install --global intentloom
 intentloom --help
 ```
 
-Prefer `@next` during the beta period because APIs and generated output may change.
-To pin the current published prerelease, use `npm install --global intentloom@0.4.0-beta.1`.
-The workspace candidate `0.5.0-beta.1` is still being prepared and is not yet
-published.
-The default `latest` tag remains `0.1.0-alpha.3`; see the
-[release state](../releases/RELEASE_STATE.md) for the exact npm/main boundary.
+The current stable release is `1.0.0`, served by both the `latest` and `next`
+dist-tags. Pin it with `npm install --global intentloom@1.0.0` when
+reproducibility is required. See the
+[release state](../releases/RELEASE_STATE.md) for the exact npm/main boundary and
+the [v1 support policy](../releases/SUPPORT_POLICY_V1.md) for compatibility
+guarantees.
 
 Use a preview before writing anything:
 
 ```sh
 intentloom init --dry-run
-intentloom adopt --dry-run
+intentloom adopt --plan
 intentloom doctor
 intentloom sync --dry-run
 ```

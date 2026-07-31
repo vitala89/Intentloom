@@ -13,6 +13,19 @@ are not included in the current npm artifact until a later release.
 - Added JSON Schema files for Extension Manifest (`urn:aif:schema:extension-manifest:1`) and Extension Lock (`urn:aif:schema:extension-lock:1`) in `catalog/schemas/` with `@intentloom/validator` support.
 - Added ADR-0023 (`ADR-0023-external-mcp-evidence-ingestion.md`) and External MCP Evidence Ingestion Specification (`EXTERNAL_MCP_EVIDENCE_INGESTION_SPEC.md`).
 
+### Changed
+
+- Rewrote `README.md` for the stable 1.0 state: brand mark in the header, surface
+  and distribution table, full command surface, repository layout, and corrected
+  install instructions.
+- Rewrote the npm-facing `packages/cli/README.md`; it no longer describes the
+  package as beta, no longer points at `@next`, and no longer uses repository-relative
+  links that break on npmjs.com.
+- Reconciled the npm dist-tag records after `latest` was promoted to `1.0.0`:
+  `RELEASE_STATE.md`, `PROJECT_STATE.md`, `SECURITY.md`, `PUBLISHING.md`,
+  `docs/guides/GETTING_STARTED.md`, and `docs/reference/CLI.md` had all stated
+  that `latest` still resolved to `0.1.0-alpha.3`.
+
 ## [1.0.0] - 2026-07-30
 
 ### Added

@@ -7,10 +7,11 @@ branch, per [`docs/releases/SUPPORT_POLICY_V1.md`](docs/releases/SUPPORT_POLICY_
 Pre-1.0 alpha and beta releases are no longer supported; report issues against a
 supported version where possible.
 
-Note that the `1.0.0` tag exists in this repository but has not been published to
-npm at the time of writing. The current npm `latest` remains `0.1.0-alpha.3`; see
+`1.0.0` is tagged in this repository and published to npm under both the
+`latest` and `next` dist-tags; see
 [`docs/releases/RELEASE_STATE.md`](docs/releases/RELEASE_STATE.md) for the
-authoritative published-artifact status.
+authoritative published-artifact status, including the absence of a provenance
+attestation on `1.0.0`.
 
 ## Reporting a vulnerability
 

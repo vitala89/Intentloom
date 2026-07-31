@@ -12,19 +12,15 @@ Workspace version: `1.0.0`
 Git tag: `v1.0.0` (pushed to `origin`)
 GitHub release: [`v1.0.0`](https://github.com/vitala89/Intentloom/releases/tag/v1.0.0), published 2026-07-30
 Published npm package: `intentloom@1.0.0`, published 2026-07-30 under the `next` dist-tag
-Default npm `latest`: `intentloom@0.1.0-alpha.3`
+Default npm `latest`: `intentloom@1.0.0`
 Default npm `next`: `intentloom@1.0.0`
 
-`1.0.0` is published to npm, but **`latest` still resolves to
-`0.1.0-alpha.3`**. An unqualified `npm install intentloom` therefore installs the
-July 18 alpha, not the stable release. Moving the tag is a deliberate maintainer
-action and is not done automatically:
-
-```sh
-npm dist-tag add intentloom@1.0.0 latest
-```
-
-Until that runs, describe `1.0.0` as published under `next` only.
+`latest` was promoted to `1.0.0` with
+`npm dist-tag add intentloom@1.0.0 latest`. Verified against the registry on
+2026-07-31: `npm view intentloom dist-tags` reports
+`{"latest":"1.0.0","next":"1.0.0"}`. An unqualified `npm install intentloom`
+therefore installs the stable release. `1.0.0` may now be described as the
+default published version rather than as a `next`-only artifact.
 
 The `1.0.0` artifact was published manually before
 [`.github/workflows/release.yml`](../../.github/workflows/release.yml) existed,
@@ -65,22 +61,21 @@ non-stable surfaces; it does not mean that the code is absent.
 ## What users receive from npm
 
 ```text
-npm install intentloom          ->  0.1.0-alpha.3
-npm install intentloom@latest   ->  0.1.0-alpha.3
+npm install intentloom          ->  1.0.0
+npm install intentloom@latest   ->  1.0.0
 npm install intentloom@next     ->  1.0.0
 ```
 
-This is not the intended end state. `latest` was left where it was when
-`1.0.0` was published under `next`, so the default install still serves an alpha
-from 2026-07-18 while the stable release sits behind an explicit `@next`. For a
-prerelease that arrangement was deliberate; for a stable release it inverts the
-meaning of both tags. Run `npm dist-tag add intentloom@1.0.0 latest` when the
-maintainer authorizes it, then update this section.
+Both tags now point at the stable release. `next` is expected to move ahead of
+`latest` again at the next prerelease; publishing a prerelease must not move
+`latest`.
 
 ## Evidence
 
-- npm registry, verified 2026-07-31: [`intentloom` package](https://www.npmjs.com/package/intentloom)
-  reports `latest=0.1.0-alpha.3` and `next=1.0.0`. The `1.0.0` artifact has
+- npm registry, re-verified 2026-07-31 after the dist-tag promotion:
+  [`intentloom` package](https://www.npmjs.com/package/intentloom)
+  reports `latest=1.0.0` and `next=1.0.0`. The earlier reading the same day, before
+  promotion, was `latest=0.1.0-alpha.3`. The `1.0.0` artifact has
   integrity
   `sha512-KNT3g/Py0SHyDWxtDHlQTD6cKRBdAtv1oSCp3ZcAEeB7c2djcPXvaCBgHuGC6THZtncw5gpTwCd5xlVgOZPX/g==`,
   shasum `434fcb624ddb3706502a29ad96b27aee36df675c`, 70 files, 981107 bytes
