@@ -15,26 +15,20 @@ Active branch: `docs/readme-and-brand-refresh`
 
 Current objective: bring the public presentation of the repository in line with the released 1.0 state - README, brand mark, GitHub description and topics - and reconcile the documents that still described the package as unpublished beta.
 
-Next first action: review and merge the README and brand-refresh PR, then decide whether to correct the `1.0.0` changelog entry, which describes MCP and daemon surfaces in a way that overstates what npm actually ships.
+Next first action: review and merge the README and brand-refresh PR.
 
 Known open items, in the order they should be handled:
 
-1. The `[1.0.0]` changelog entry lists `intentloom mcp serve --stdio` as a CLI
-   surface. No `mcp` command exists in `packages/cli/src/command.ts`; the MCP
-   server is the private `@intentloom/mcp-server` package with an
-   `intentloom-mcp` binary that is not published. The same entry lists the
-   `intentloomd` daemon without stating that it is not published either. These
-   are release-note claims, so correcting them is a maintainer decision.
-2. `1.0.0` carries no npm provenance attestation and cannot gain one. Configure
+1. `1.0.0` carries no npm provenance attestation and cannot gain one. Configure
    the npm trusted publisher and the `npm-publish` environment reviewer so the
    next release publishes with provenance.
-3. `homepageUrl` on the GitHub repository is empty. The planned public site
-   `intentloom.vitaliikasap.com` is not live and no hosting is configured.
-4. Dependabot alert #2 (`glib@0.18.5`, transitive, medium) carries an approved
+2. `homepageUrl` points at the npm package page as an interim target. Repoint it
+   when `intentloom.vitaliikasap.com` is live; no hosting is configured yet.
+3. Dependabot alert #2 (`glib@0.18.5`, transitive, medium) carries an approved
    exception that expires 2026-10-29.
-5. Branch and tag protection rules for `main` and `v*` are not recorded anywhere
+4. Branch and tag protection rules for `main` and `v*` are not recorded anywhere
    in the repository; `.github/CODEOWNERS` exists to support required review.
-6. Two remote branches remain untriaged: `codex/public-readiness-blockers` and
+5. Two remote branches remain untriaged: `codex/public-readiness-blockers` and
    `security/intentloomd-lifecycle-design`. The backup ref
    `backup/pre-attribution-rewrite` still exists pending explicit deletion.
 
@@ -77,15 +71,16 @@ entry directly below this section.
   - Applied the logo by reference rather than by copy. `README.md` points at `apps/desktop/src/design/assets/logo-mark.svg`, the ADR-0044 master. `logo-mark.svg` is pure path geometry with no `<text>`, so it is unaffected by the outstanding ADR-0044 follow-up about lockup and stacked masters falling back to an unavailable font outside the application.
   - Reconciled the dist-tag claim across `RELEASE_STATE.md`, `PROJECT_STATE.md`, `SECURITY.md`, `docs/releases/PUBLISHING.md`, `docs/guides/GETTING_STARTED.md`, and `docs/reference/CLI.md`. `SECURITY.md` had claimed `1.0.0` was not published to npm at all.
   - Corrected the published-tarball shasum in `PROJECT_STATE.md`, which still recorded the `0.5.0-beta.1` value as current.
-  - Updated the GitHub repository description and replaced the topic list, adding `mcp`, `model-context-protocol`, `monorepo`, and `devtools` and dropping `open-source` to stay within the 20-topic limit.
-- **Not completed:** The `[1.0.0]` changelog entry still claims an `intentloom mcp serve --stdio` CLI surface that does not exist and lists the daemon without noting that neither it nor the MCP server is published. Left for the maintainer because it edits published release notes. `homepageUrl` was left empty rather than pointed at a site that is not live.
-- **Files or packages changed:** `README.md`, `packages/cli/README.md`, `CHANGELOG.md`, `DUTY_WATCH.md`, `PROJECT_STATE.md`, `SECURITY.md`, `docs/releases/RELEASE_STATE.md`, `docs/releases/PUBLISHING.md`, `docs/guides/GETTING_STARTED.md`, `docs/reference/CLI.md`. No source changed. GitHub repository metadata changed outside the tree.
+  - Updated the GitHub repository description and replaced the topic list, adding `mcp`, `model-context-protocol`, `monorepo`, and `devtools` and dropping `open-source` to stay within the 20-topic limit. Set `homepageUrl` to the npm package page as an interim target, since `intentloom.vitaliikasap.com` is not live.
+  - Corrected two false claims in the published `[1.0.0]` release records, on maintainer instruction. Both the changelog entry and the GitHub release body listed the MCP server as `intentloom mcp serve --stdio`; `packages/cli/src/command.ts` has no `mcp` command, and the server is the separate `intentloom-mcp` binary from `@intentloom/mcp-server`, speaking `Content-Length`-framed JSON-RPC over stdio with an optional `--root`. Neither it nor `intentloomd` is published to npm, which the entries also did not say. The GitHub release body additionally still carried a "Not on npm yet" section and a dist-tag table showing `latest=0.1.0-alpha.3` and `next=0.5.0-beta.1`. Corrections are recorded in place with their date and the original wording described; the release scope itself is unchanged.
+- **Not completed:** Nothing deferred from the stated objective.
+- **Files or packages changed:** `README.md`, `packages/cli/README.md`, `CHANGELOG.md`, `DUTY_WATCH.md`, `PROJECT_STATE.md`, `SECURITY.md`, `docs/releases/RELEASE_STATE.md`, `docs/releases/PUBLISHING.md`, `docs/guides/GETTING_STARTED.md`, `docs/reference/CLI.md`. No source changed. GitHub repository description, topics, and homepage, and the `v1.0.0` release body, changed outside the tree.
 - **Validation:** `pnpm vitest run` (87 test files, 753 passed, 3 skipped, 0 failed), `pnpm format:check`, `git diff --check`, and a script resolving all 33 local links and image paths in the new `README.md` against the working tree.
 - **Decisions and assumptions:** The logo is referenced from its ADR-0044 master instead of being copied into a repository-level asset directory, so there is one source and no drift; the tradeoff is that moving `apps/desktop` breaks the README image. The test count in the README is the locally measured one, not a carried-forward figure.
 - **Risks or compatibility impact:** None to the artifact. `packages/cli/README.md` is published content and will only reach npm with the next release.
-- **Open issues or blockers:** The changelog correction above. Trusted publisher and environment reviewer still unconfigured. Two untriaged remote branches and the `backup/pre-attribution-rewrite` ref.
-- **Next first action:** Review and merge this PR, then decide on the `[1.0.0]` changelog correction.
-- **Evidence:** `npm view intentloom dist-tags` on 2026-07-31 reporting `{"latest":"1.0.0","next":"1.0.0"}`; `gh api repos/vitala89/Intentloom/topics` returning the updated 20 topics; local Vitest run output.
+- **Open issues or blockers:** Trusted publisher and environment reviewer still unconfigured. `homepageUrl` needs repointing when the public site exists. Two untriaged remote branches and the `backup/pre-attribution-rewrite` ref.
+- **Next first action:** Review and merge this PR.
+- **Evidence:** `npm view intentloom dist-tags` on 2026-07-31 reporting `{"latest":"1.0.0","next":"1.0.0"}`; `gh api repos/vitala89/Intentloom/topics` returning the updated 20 topics; `gh release view v1.0.0` before and after the body correction; local Vitest run output.
 
 #### Duty completion checklist
 
