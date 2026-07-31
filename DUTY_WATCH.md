@@ -61,6 +61,30 @@ entry directly below this section.
 
 ## Watch entries
 
+### 2026-08-01, Desktop Extension Host API Specification & Types (ADR-0045)
+
+- **Status:** complete for this watch
+- **Agent/tool:** Antigravity AI Agent with TypeScript, Vitest, Prettier
+- **Branch:** `feature/post-v1-enhancements`
+- **Objective:** Design and implement ADR-0045 for the Desktop Extension Host API, declarative contribution types (`theme`, `view`, `command`), and contribution validation.
+- **Completed:**
+  - Created `docs/decisions/ADR-0045-desktop-extension-host-api.md`.
+  - Added `DesktopContributionKind`, `DesktopThemeContribution`, `DesktopViewContribution`, `DesktopCommandContribution`, `DesktopExtensionContribution` to `@intentloom/protocol`.
+  - Added `validateDesktopExtensionContribution` helper to `@intentloom/validator`.
+  - Added unit test suite `tests/desktop-extension-host.test.ts` (5/5 tests passing).
+- **Validation:** Unit tests (5/5 passed), Prettier format check, and `git diff --check` passed cleanly.
+- **Decisions and assumptions:** Strictly preserved zero-network and capability-grant security boundaries.
+- **Next first action:** Commit and push changes to PR #160.
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant tests, type checks, builds, or compatibility checks passed
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `DUTY_WATCH.md` handoff completed
+
 ### 2026-08-01, React & Desktop UI Governance Standards
 
 - **Status:** complete for this watch

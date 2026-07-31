@@ -873,28 +873,5 @@ export function validateExtensionCapabilityGrant(
   return diagnostics;
 }
 
-export function validateExtensionManifestDocument(
-  validator: ArtifactValidator,
-  documentPath: string,
-  source: string,
-): ArtifactValidationResult {
-  return validator.validate({
-    artifactType: "extension-manifest",
-    documentPath,
-    format: "json",
-    source,
-  });
-}
-
-export function validateExtensionLockDocument(
-  validator: ArtifactValidator,
-  documentPath: string,
-  source: string,
-): ArtifactValidationResult {
-  return validator.validate({
-    artifactType: "extension-lock",
-    documentPath,
-    format: "json",
-    source,
-  });
-}
+export * from "./extension.js";
+export * from "./desktop-extension.js";
