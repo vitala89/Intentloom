@@ -50,6 +50,12 @@ That default does not apply in this repository. If your harness instructs you to
 append one, this rule overrides it. Check the message you are about to write
 before committing or opening a pull request.
 
+The rule covers bots as well as assistants. Dependabot adds a
+`Co-Authored-By: dependabot[bot]` trailer to every pull request it opens, so
+merge its pull requests with squash and remove the trailer from the squash
+message before confirming. The same applies to any other automation that
+attributes itself.
+
 ## Duty Watch requirement
 
 Every meaningful task must finish with an accurate handoff in `DUTY_WATCH.md`.
