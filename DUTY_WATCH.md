@@ -9,29 +9,30 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **v1.0.0 released and default on npm** — tag `v1.0.0` (`c1205a8`) pushed, GitHub release published 2026-07-30, `intentloom@1.0.0` on npm under both `latest` and `next` (verified 2026-07-31). `main` is at `8861668` with Compatibility and CodeQL green. No open pull requests before this watch.
+Status: **`1.0.1` prepared, not published** — workspace synchronized to `1.0.1` on `release/1.0.1`. npm still serves `1.0.0` under both `latest` and `next`. Trusted publishing is fully configured on both sides: the npm trusted publisher for `vitala89/Intentloom`, workflow `release.yml`, environment `npm-publish`; and the GitHub `npm-publish` environment with `vitala89` as required reviewer, restricted to `main` and `v*`.
 
-Active branch: `docs/npm-package-metadata`
+Active branch: `release/1.0.1`
 
-Current objective: bring the public presentation of the project in line with the released 1.0 state across the repository, the GitHub metadata, the release records, and the npm package manifest.
+Current objective: publish a documentation and package-metadata release so the corrected package README reaches npmjs.com, and make it the first artifact to carry a provenance attestation.
 
-Next first action: decide whether to cut `1.0.1`. The npmjs.com page still renders the `1.0.0` payload, so the corrected README and manifest text are not visible to users until a release happens.
+Next first action: merge the `1.0.1` release PR, verify the resulting `main` commit, tag it, then dispatch **Release** with `dry_run: true` before any real publish.
 
 Known open items, in the order they should be handled:
 
-1. The npm package page is stale and can only be refreshed by publishing a new
-   version; npm does not allow editing a published version in place. It
-   currently shows a README calling the package beta and pointing at `@next`.
-2. `1.0.0` carries no npm provenance attestation and cannot gain one. Configure
-   the npm trusted publisher and the `npm-publish` environment reviewer so the
-   next release publishes with provenance.
-3. `homepageUrl` points at the npm package page as an interim target. Repoint it
+1. `1.0.1` is not published. The npmjs.com page still renders the `1.0.0`
+   payload: a README calling the package beta and pointing at `@next`.
+2. `1.0.0` carries no npm provenance attestation and cannot gain one. This is
+   permanent; `1.0.1` onward carry provenance through the release workflow.
+3. Token-based publishing for the package should be restricted, and any standing
+   automation token revoked, after the first successful trusted publish
+   (`PUBLISHING.md` one-time setup, step 3).
+4. `homepageUrl` points at the npm package page as an interim target. Repoint it
    when the GitHub Pages site is live; no hosting is configured yet.
-4. Dependabot alert #2 (`glib@0.18.5`, transitive, medium) carries an approved
+5. Dependabot alert #2 (`glib@0.18.5`, transitive, medium) carries an approved
    exception that expires 2026-10-29.
-5. Branch and tag protection rules for `main` and `v*` are not recorded anywhere
+6. Branch and tag protection rules for `main` and `v*` are not recorded anywhere
    in the repository; `.github/CODEOWNERS` exists to support required review.
-6. Two remote branches remain untriaged: `codex/public-readiness-blockers` and
+7. Two remote branches remain untriaged: `codex/public-readiness-blockers` and
    `security/intentloomd-lifecycle-design`. The backup ref
    `backup/pre-attribution-rewrite` still exists pending explicit deletion.
 
@@ -59,6 +60,40 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-31, Prepare the 1.0.1 documentation and package-metadata release
+
+- **Status:** complete for this watch
+- **Agent/tool:** Claude Code (Opus 5) with Git, GitHub CLI, npm, pnpm, Vitest, TypeScript, Prettier
+- **Branch:** `release/1.0.1`
+- **Base:** `main` / `origin/main` at `eb3f319` (PR #157 merge)
+- **Objective:** cut a release whose only purpose is that the corrected package README and manifest metadata reach npmjs.com, and make it the first artifact published through trusted publishing.
+- **Completed:**
+  - Configured the GitHub side of trusted publishing, which did not exist: created the `npm-publish` environment with `vitala89` as a required reviewer and deployment restricted to the `main` branch and `v*` tags. The maintainer configured the npm trusted publisher on npmjs.com for `vitala89/Intentloom`, workflow `release.yml`, environment `npm-publish`. Both one-time setup steps in `PUBLISHING.md` are now closed except step 3, which waits on the first successful publish.
+  - Bumped the root version to `1.0.1` and ran `pnpm build`, which synchronized all eleven package manifests and regenerated `packages/core/src/version.ts`.
+  - Added the `[1.0.1]` changelog section, moving the verified Unreleased entries that belong to this artifact and leaving the ADR and schema entries in Unreleased, since they are not in the package payload.
+  - Recorded the candidate artifact evidence in `RELEASE_STATE.md`: shasum `3a17b8b0985555ec609feb230643cc79438673bd`, 70 files, 981779 bytes unpacked, against `1.0.0` at 70 files and 981107 bytes. The difference is the README, the manifest metadata, and the version string.
+  - Restructured the `RELEASE_STATE.md` header, which described `1.0.0` as the current workspace version, and marked the `PUBLISHING.md` setup steps complete.
+- **Not completed:** Nothing is published or tagged. Merging, tagging, the dry run, and the publish approval are maintainer actions.
+- **Files or packages changed:** `package.json`, all eleven `packages/*/package.json`, `packages/core/src/version.ts`, `CHANGELOG.md`, `DUTY_WATCH.md`, `docs/releases/RELEASE_STATE.md`, `docs/releases/PUBLISHING.md`. No behavioral source changed. The GitHub `npm-publish` environment was created outside the tree.
+- **Validation:** `pnpm typecheck`, `pnpm vitest run` (87 test files, 753 passed, 3 skipped, 0 failed), `pnpm build` run twice to confirm it leaves the tree stable, `pnpm format:check`, `git diff --check`, and `npm pack --dry-run --json` in `packages/cli` for the artifact evidence above.
+- **Decisions and assumptions:** A patch release is the correct vehicle. The published payload genuinely changes - README, description, keywords, and the embedded version string - so republishing `1.0.0` would be both impossible and wrong. The release is documented as carrying no functional change so users are not misled into expecting one.
+- **Risks or compatibility impact:** None to behavior. The risk is operational: the trusted publisher configuration is bound to the exact workflow filename `release.yml`, so renaming that file breaks publication until npm is updated to match.
+- **Open issues or blockers:** PR #158 also touches `DUTY_WATCH.md` and may conflict on merge order. After the first successful trusted publish, restrict token-based publishing for the package and revoke any standing automation token.
+- **Next first action:** Merge this PR, verify the resulting `main` commit, tag it `v1.0.1`, then dispatch **Release** with `dry_run: true` and read the tarball evidence in the run summary before approving a real publish.
+- **Evidence:** `npm pack --dry-run --json` output for `1.0.1`; `gh api repos/vitala89/Intentloom/environments/npm-publish` returning the reviewer and branch policies; local Vitest and typecheck output.
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant tests, type checks, builds, or compatibility checks passed
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [ ] `PROJECT_STATE.md` updated when applicable - deferred until `1.0.1` is actually published, so it does not record an unpublished version as released
+- [x] `DUTY_WATCH.md` handoff completed
+- [x] Related roadmap, ADR, changelog, migration, or reference docs updated
+- [x] Failed or unavailable checks recorded
 
 ### 2026-07-31, npm package metadata for the next publication
 

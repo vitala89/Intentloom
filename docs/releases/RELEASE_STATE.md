@@ -6,38 +6,50 @@ Historical release audits and roadmap sections retain their original scope, but
 this document is the source of truth for the current status.
 
 Snapshot: 2026-07-31
-Main commit: `8fa2c19` (PR #140 merged)
-Release commit: `a148f2f` (tagged `v1.0.0` as `c1205a8`)
-Workspace version: `1.0.0`
-Git tag: `v1.0.0` (pushed to `origin`)
-GitHub release: [`v1.0.0`](https://github.com/vitala89/Intentloom/releases/tag/v1.0.0), published 2026-07-30
-Published npm package: `intentloom@1.0.0`, published 2026-07-30 under the `next` dist-tag
+Workspace version: `1.0.1`
+Candidate release: `1.0.1`, prepared on `release/1.0.1`, not yet published
+Last published npm package: `intentloom@1.0.0`, published 2026-07-30
 Default npm `latest`: `intentloom@1.0.0`
 Default npm `next`: `intentloom@1.0.0`
+Previous release commit: `a148f2f` (tagged `v1.0.0` as `c1205a8`)
+GitHub release: [`v1.0.0`](https://github.com/vitala89/Intentloom/releases/tag/v1.0.0), published 2026-07-30
 
 `latest` was promoted to `1.0.0` with
 `npm dist-tag add intentloom@1.0.0 latest`. Verified against the registry on
 2026-07-31: `npm view intentloom dist-tags` reports
-`{"latest":"1.0.0","next":"1.0.0"}`. An unqualified `npm install intentloom`
-therefore installs the stable release. `1.0.0` may now be described as the
-default published version rather than as a `next`-only artifact.
+`{"latest":"1.0.0","next":"1.0.0"}`, so an unqualified `npm install intentloom`
+installs the stable release.
 
-The `1.0.0` artifact was published manually before
-[`.github/workflows/release.yml`](../../.github/workflows/release.yml) existed,
+## `1.0.1` candidate
+
+`1.0.1` is a documentation and package-metadata release. It changes no runtime,
+CLI surface, schema, adapter, protocol, or dependency behavior. Its purpose is
+that npmjs.com renders `description`, `keywords`, and `README.md` from the
+published tarball and npm does not allow editing a published version in place,
+so the corrected package README could not otherwise reach users.
+
+Local `npm pack --dry-run --json` in `packages/cli` at the candidate commit
+reports shasum `3a17b8b0985555ec609feb230643cc79438673bd`, integrity
+`sha512-IyG2CDm5PU+u36xQocOb9jlFWCmtmqHvlIYv5cSv+2SumX3TtokdKx1kgQnYlCwXHOt8F3d+Y1bFPQje7jjuSA==`,
+70 files, 981779 bytes unpacked. The `1.0.0` artifact was 70 files and 981107
+bytes; the difference is the README, the manifest metadata, and the version
+string.
+
+`1.0.1` will publish through
+[`.github/workflows/release.yml`](../../.github/workflows/release.yml) using npm
+trusted publishing, so it carries a provenance attestation.
+
+## Provenance
+
+The `1.0.0` artifact was published manually before the release workflow existed,
 so it carries **no provenance attestation** (`npm view intentloom@1.0.0` reports
-no `dist.attestations`). The workflow is now on `main` and uses npm trusted
-publishing, which attaches provenance automatically, so the next published
-version will carry it. `1.0.0` cannot be given provenance retroactively: npm does
-not allow a published version to be replaced.
+no `dist.attestations`). It cannot be given one retroactively: npm does not allow
+a published version to be replaced.
 
-Two setup steps remain before the workflow can publish; they are listed in
-[Publishing](PUBLISHING.md#one-time-setup-performed-by-the-package-owner).
-
-`main` has advanced past the `v1.0.0` tag with documentation and CI changes
-only. `git diff --name-only v1.0.0..main -- packages/ catalog/ profiles/ scripts/build-cli.mjs`
-is empty, so the package payload is identical at both commits. This is recorded
-because provenance attests to the commit the release workflow runs on, and the
-workflow postdates the tag.
+Both one-time setup steps are now complete. The npm trusted publisher is
+configured for `vitala89/Intentloom`, workflow `release.yml`, environment
+`npm-publish`. The GitHub `npm-publish` environment exists with `vitala89` as a
+required reviewer and deployment restricted to the `main` branch and `v*` tags.
 
 `Implemented in main` means the capability is present in the current source
 tree. `Released version` means the first npm release that contains the
@@ -66,9 +78,9 @@ npm install intentloom@latest   ->  1.0.0
 npm install intentloom@next     ->  1.0.0
 ```
 
-Both tags now point at the stable release. `next` is expected to move ahead of
-`latest` again at the next prerelease; publishing a prerelease must not move
-`latest`.
+Both tags point at `1.0.0` until `1.0.1` is published. `next` is expected to move
+ahead of `latest` again at the next prerelease; publishing a prerelease must not
+move `latest`.
 
 ## Evidence
 
