@@ -65,7 +65,7 @@ entry directly below this section.
 
 - **Status:** complete for this watch
 - **Agent/tool:** Antigravity AI Agent with Vitest, TypeScript, Prettier
-- **Branch:** `release/1.0.1`
+- **Branch:** `feature/post-v1-enhancements` (PR #160)
 - **Objective:** Audit codebase governance constraints and decompose production modules to ensure all new hand-written code stays strictly below the 250-line target.
 - **Completed:**
   - Decomposed `packages/evidence-provider/src/live.ts` (previously 319 lines) into `live-helpers.ts` (45 lines), `live-github.ts` (114 lines), `live-gitlab.ts` (102 lines), and streamlined `live.ts` (118 lines).
