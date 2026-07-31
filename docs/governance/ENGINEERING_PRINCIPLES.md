@@ -101,3 +101,34 @@ The selected direction is a public monorepo containing the official local
 product surfaces. Future hosted, team, support, or enterprise offerings may
 fund development, but should preserve portability and avoid unnecessary
 lock-in.
+
+## 16. Small, cohesive, testable units
+
+Hand-written modules should remain focused, reviewable, and independently
+testable. File size, function size, complexity, nesting, and dependency direction
+are explicit engineering budgets, not matters left entirely to agent judgment.
+
+Existing oversized modules are reduced through a non-growing ratchet and
+incremental extraction. Their current size is technical debt, not permission for
+new code to repeat the pattern. Detailed budgets, exemptions, tests, and
+exception evidence are defined in `CODE_QUALITY_STANDARDS.md`.
+
+The budgets must not be gamed by compressed formatting, vague helper modules, or
+unnecessary layers. SOLID and Clean Architecture are used to reveal real
+responsibilities and boundaries, while principle 12 continues to prohibit
+premature abstraction.
+
+## 17. Configurable quality, invariant safety
+
+Intentloom may allow users to choose maintainability profiles, architecture
+principles, code budgets, testing requirements, legacy migration behavior, and
+technology-specific domain packs.
+
+Those choices are layered over the mandatory platform baseline. No quality
+preset or custom policy may disable security, ownership, explicit roots,
+evidence before mutation, human approval, provider neutrality, compatibility,
+truthful reporting, or reversible writes.
+
+CLI, MCP, Desktop, TUI, daemon, and generated agent guidance must resolve one
+canonical effective policy through shared application and protocol contracts.
+No client may implement a separate standards engine.
