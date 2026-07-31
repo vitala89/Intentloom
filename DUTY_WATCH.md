@@ -61,6 +61,30 @@ entry directly below this section.
 
 ## Watch entries
 
+### 2026-08-01, VitePress Static Site Setup for GitHub Pages
+
+- **Status:** complete for this watch
+- **Agent/tool:** Antigravity AI Agent with VitePress, TypeScript, Prettier
+- **Branch:** `feature/post-v1-enhancements`
+- **Objective:** Configure VitePress static site generation for Intentloom documentation and GitHub Pages deployment.
+- **Completed:**
+  - Added `vitepress` to root `devDependencies` and added `docs:dev`, `docs:build`, and `docs:preview` scripts to `package.json`.
+  - Configured `docs/.vitepress/config.mts` with site navigation, sidebar structure, clean URLs, and offline assets.
+  - Added `docs/index.md` homepage landing page.
+  - Updated `.github/workflows/docs.yml` to build VitePress (`pnpm docs:build`) and upload `docs/.vitepress/dist` to GitHub Pages.
+- **Validation:** `pnpm docs:build`, `pnpm format:check`, and `git diff --check` passed cleanly.
+- **Decisions and assumptions:** Preserved zero-external-network policy for generated documentation assets.
+- **Next first action:** Commit and push updates to PR #160.
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant tests, type checks, builds, or compatibility checks passed
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `DUTY_WATCH.md` handoff completed
+
 ### 2026-07-31, PR #160 repair push and pre-push verification
 
 - **Status:** complete for this watch; implementation pushed and remote branch verified
