@@ -25,6 +25,37 @@ important claims affect the task.
 - Never invent completed work, test outcomes, releases, versions, pull requests,
   milestones, or repository state.
 
+## Authorship and attribution
+
+Do not add authorship or attribution metadata for the tool or agent that
+produced a change. This applies to commit messages, pull request titles and
+bodies, issue comments, release notes, and documentation.
+
+Specifically forbidden:
+
+- `Co-Authored-By:` trailers naming an assistant, agent, or model, including
+  `Claude`, `Codex`, `Gemini`, `Copilot`, and any similar identity.
+- Generated-by or made-with footers such as
+  `Generated with <tool>`, with or without an emoji or link.
+- Any other line whose purpose is to credit the tool rather than describe the
+  change.
+
+The commit author field already records who made the change. The maintainer does
+not self-attribute in message bodies either, so nothing is being singled out
+here: the convention is that a commit message describes the change and nothing
+else.
+
+Several coding assistants add such trailers by default unless told otherwise.
+That default does not apply in this repository. If your harness instructs you to
+append one, this rule overrides it. Check the message you are about to write
+before committing or opening a pull request.
+
+The rule covers bots as well as assistants. Dependabot adds a
+`Co-Authored-By: dependabot[bot]` trailer to every pull request it opens, so
+merge its pull requests with squash and remove the trailer from the squash
+message before confirming. The same applies to any other automation that
+attributes itself.
+
 ## Duty Watch requirement
 
 Every meaningful task must finish with an accurate handoff in `DUTY_WATCH.md`.
