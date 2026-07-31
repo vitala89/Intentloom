@@ -13,18 +13,43 @@ are not included in the current npm artifact until a later release.
 - Added JSON Schema files for Extension Manifest (`urn:aif:schema:extension-manifest:1`) and Extension Lock (`urn:aif:schema:extension-lock:1`) in `catalog/schemas/` with `@intentloom/validator` support.
 - Added ADR-0023 (`ADR-0023-external-mcp-evidence-ingestion.md`) and External MCP Evidence Ingestion Specification (`EXTERNAL_MCP_EVIDENCE_INGESTION_SPEC.md`).
 
+## [1.0.1] - 2026-07-31
+
+Documentation and package-metadata release. No runtime, CLI surface, schema,
+adapter, protocol, or dependency behavior changes. The `1.0.0` artifact remains
+functionally identical.
+
 ### Changed
 
-- Rewrote `README.md` for the stable 1.0 state: brand mark in the header, surface
-  and distribution table, full command surface, repository layout, and corrected
-  install instructions.
-- Rewrote the npm-facing `packages/cli/README.md`; it no longer describes the
-  package as beta, no longer points at `@next`, and no longer uses repository-relative
-  links that break on npmjs.com.
+- Rewrote the npm-facing `packages/cli/README.md`, which ships inside the
+  published tarball and is what npmjs.com renders. It described the package as
+  beta, directed users to `@next`, pinned `0.4.0-beta.1`, stated that `latest`
+  resolved to `0.1.0-alpha.3`, and used repository-relative links that resolve
+  to nothing on npmjs.com.
+- Rewrote the repository `README.md` for the stable 1.0 state: brand mark in the
+  header, surface and distribution table separating the published CLI from the
+  unpublished daemon, MCP server, TUI, and Desktop client, the full 26-command
+  CLI surface, repository layout, and corrected install instructions.
+- Refreshed the published package `description` and expanded `keywords` from 6
+  to 12 in `packages/cli/package.json`.
 - Reconciled the npm dist-tag records after `latest` was promoted to `1.0.0`:
   `RELEASE_STATE.md`, `PROJECT_STATE.md`, `SECURITY.md`, `PUBLISHING.md`,
   `docs/guides/GETTING_STARTED.md`, and `docs/reference/CLI.md` had all stated
   that `latest` still resolved to `0.1.0-alpha.3`.
+
+### Fixed
+
+- Corrected the `[1.0.0]` changelog entry and the `v1.0.0` GitHub release body,
+  which listed the MCP server as `intentloom mcp serve --stdio`. No `mcp`
+  command exists on the CLI; the server is the separate `intentloom-mcp` binary
+  from `@intentloom/mcp-server`, and neither it nor `intentloomd` is published
+  to npm.
+
+### Notes
+
+- Published through `.github/workflows/release.yml` using npm trusted
+  publishing, so this artifact carries a provenance attestation. `1.0.0` was
+  published manually before that workflow existed and cannot gain one.
 
 ## [1.0.0] - 2026-07-30
 

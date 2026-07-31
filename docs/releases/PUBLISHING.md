@@ -62,7 +62,9 @@ publish.
 
 ### One-time setup, performed by the package owner
 
-These steps happen outside this repository and cannot be automated from it.
+Steps 1 and 2 are complete as of 2026-07-31. Step 3 waits on the first
+successful trusted publish. Step 1 happens outside this repository and cannot be
+automated from it.
 
 1. On [npmjs.com](https://www.npmjs.com/package/intentloom), open the package
    settings and add a trusted publisher for GitHub Actions:
@@ -73,7 +75,9 @@ These steps happen outside this repository and cannot be automated from it.
    - Environment name: `npm-publish`
    - Allowed actions: `npm publish`
 2. In this repository's settings, create the `npm-publish` environment and add
-   a required reviewer. Without a reviewer the environment adds no control.
+   a required reviewer. Without a reviewer the environment adds no control. The
+   environment exists with `vitala89` as the required reviewer and deployment
+   restricted to the `main` branch and `v*` tags.
 3. After the first successful trusted publish, restrict token-based publishing
    for the package and revoke any standing automation token that could publish
    it.
