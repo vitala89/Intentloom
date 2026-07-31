@@ -9,28 +9,34 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **v1.0.0 tagged in Git, not published to npm** — PR #138 merged as `a148f2f`; tag `v1.0.0` (`c1205a8`) pushed to `origin`; post-merge Compatibility (run 30529498050) and CodeQL (run 30529497908) green. npm `latest` is still `0.1.0-alpha.3` and `next` is still `0.5.0-beta.1`. No GitHub release exists for `v1.0.0`.
+Status: **v1.0.0 released and default on npm** — tag `v1.0.0` (`c1205a8`) pushed, GitHub release published 2026-07-30, `intentloom@1.0.0` on npm under both `latest` and `next` (verified 2026-07-31). `main` is at `8861668` with Compatibility and CodeQL green. No open pull requests before this watch.
 
-Active branch: `chore/post-v1-doc-and-ci-hardening`
+Active branch: `docs/readme-and-brand-refresh`
 
-Current objective: correct the release-status records that overstated publication, harden the CI supply chain, and leave the npm publication decision with the maintainer.
+Current objective: bring the public presentation of the repository in line with the released 1.0 state - README, brand mark, GitHub description and topics - and reconcile the documents that still described the package as unpublished beta.
 
-Next first action: merge the doc-and-CI-hardening PR, then decide on npm trusted publishing before authorizing `intentloom@1.0.0`.
+Next first action: review and merge the README and brand-refresh PR, then decide whether to correct the `1.0.0` changelog entry, which describes MCP and daemon surfaces in a way that overstates what npm actually ships.
 
 Known open items, in the order they should be handled:
 
-1. `docs/security/V1_SECURITY_AND_SUPPLY_CHAIN_AUDIT.md` now records package
-   provenance as NOT MET. No publish workflow, npm trusted publishing, or
-   `--provenance` flag exists. Configure trusted publishing before the first
-   stable publication so `1.0.0` ships with provenance.
-2. npm publication of `intentloom@1.0.0` under `latest` remains unauthorized.
-   It requires completing `docs/releases/PUBLISH_AUTHORIZATION_CHECKLIST.md` and
-   a separate explicit maintainer authorization.
-3. No GitHub release exists for `v1.0.0` (or for `v0.5.0-beta.1`).
+1. The `[1.0.0]` changelog entry lists `intentloom mcp serve --stdio` as a CLI
+   surface. No `mcp` command exists in `packages/cli/src/command.ts`; the MCP
+   server is the private `@intentloom/mcp-server` package with an
+   `intentloom-mcp` binary that is not published. The same entry lists the
+   `intentloomd` daemon without stating that it is not published either. These
+   are release-note claims, so correcting them is a maintainer decision.
+2. `1.0.0` carries no npm provenance attestation and cannot gain one. Configure
+   the npm trusted publisher and the `npm-publish` environment reviewer so the
+   next release publishes with provenance.
+3. `homepageUrl` on the GitHub repository is empty. The planned public site
+   `intentloom.vitaliikasap.com` is not live and no hosting is configured.
 4. Dependabot alert #2 (`glib@0.18.5`, transitive, medium) carries an approved
    exception that expires 2026-10-29.
 5. Branch and tag protection rules for `main` and `v*` are not recorded anywhere
-   in the repository; `.github/CODEOWNERS` now exists to support required review.
+   in the repository; `.github/CODEOWNERS` exists to support required review.
+6. Two remote branches remain untriaged: `codex/public-readiness-blockers` and
+   `security/intentloomd-lifecycle-design`. The backup ref
+   `backup/pre-attribution-rewrite` still exists pending explicit deletion.
 
 ## Watch rules
 
@@ -56,6 +62,42 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-31, Public presentation refresh: README, brand mark, GitHub metadata, and dist-tag reconciliation
+
+- **Status:** complete for this watch
+- **Agent/tool:** Claude Code (Opus 5) with Git, GitHub CLI, npm, pnpm, Vitest, Prettier
+- **Branch:** `docs/readme-and-brand-refresh`
+- **Base:** `main` / `origin/main` at `8861668` (PR #153 merge)
+- **Objective:** make the repository's public presentation match the released 1.0 state, and apply the brand mark that ADR-0044 imported.
+- **Completed:**
+  - Verified the registry before writing anything. `npm view intentloom dist-tags` reports `latest=1.0.0` and `next=1.0.0`. This contradicted every release record in the repository, which still stated `latest=0.1.0-alpha.3`; the maintainer had promoted the tag since the last watch.
+  - Rewrote `README.md`. It now leads with the brand mark, states the stable 1.0 status, and adds two sections the old file lacked entirely: a surface/distribution table separating the published CLI from the unpublished daemon, MCP server, TUI, and Desktop client, and a repository-layout section covering all eleven packages, `apps/desktop`, `catalog/`, and `profiles/`. The command table grew from 8 commands to the actual 26 in `packages/cli/src/command.ts`, grouped by lifecycle, inspection, and agent surfaces, with a pointer to the release-state table for which are experimental. The stale adoption example `adopt --dry-run` was replaced with the real `adopt --plan` / `adopt --apply` flow.
+  - Rewrote `packages/cli/README.md`, which ships inside the npm tarball. It described the package as beta, told users to install `@next`, pinned `0.4.0-beta.1`, and linked `../../docs/...` - a repository-relative path that resolves to nothing on npmjs.com. All links are now absolute and the brand mark loads over `raw.githubusercontent.com`.
+  - Applied the logo by reference rather than by copy. `README.md` points at `apps/desktop/src/design/assets/logo-mark.svg`, the ADR-0044 master. `logo-mark.svg` is pure path geometry with no `<text>`, so it is unaffected by the outstanding ADR-0044 follow-up about lockup and stacked masters falling back to an unavailable font outside the application.
+  - Reconciled the dist-tag claim across `RELEASE_STATE.md`, `PROJECT_STATE.md`, `SECURITY.md`, `docs/releases/PUBLISHING.md`, `docs/guides/GETTING_STARTED.md`, and `docs/reference/CLI.md`. `SECURITY.md` had claimed `1.0.0` was not published to npm at all.
+  - Corrected the published-tarball shasum in `PROJECT_STATE.md`, which still recorded the `0.5.0-beta.1` value as current.
+  - Updated the GitHub repository description and replaced the topic list, adding `mcp`, `model-context-protocol`, `monorepo`, and `devtools` and dropping `open-source` to stay within the 20-topic limit.
+- **Not completed:** The `[1.0.0]` changelog entry still claims an `intentloom mcp serve --stdio` CLI surface that does not exist and lists the daemon without noting that neither it nor the MCP server is published. Left for the maintainer because it edits published release notes. `homepageUrl` was left empty rather than pointed at a site that is not live.
+- **Files or packages changed:** `README.md`, `packages/cli/README.md`, `CHANGELOG.md`, `DUTY_WATCH.md`, `PROJECT_STATE.md`, `SECURITY.md`, `docs/releases/RELEASE_STATE.md`, `docs/releases/PUBLISHING.md`, `docs/guides/GETTING_STARTED.md`, `docs/reference/CLI.md`. No source changed. GitHub repository metadata changed outside the tree.
+- **Validation:** `pnpm vitest run` (87 test files, 753 passed, 3 skipped, 0 failed), `pnpm format:check`, `git diff --check`, and a script resolving all 33 local links and image paths in the new `README.md` against the working tree.
+- **Decisions and assumptions:** The logo is referenced from its ADR-0044 master instead of being copied into a repository-level asset directory, so there is one source and no drift; the tradeoff is that moving `apps/desktop` breaks the README image. The test count in the README is the locally measured one, not a carried-forward figure.
+- **Risks or compatibility impact:** None to the artifact. `packages/cli/README.md` is published content and will only reach npm with the next release.
+- **Open issues or blockers:** The changelog correction above. Trusted publisher and environment reviewer still unconfigured. Two untriaged remote branches and the `backup/pre-attribution-rewrite` ref.
+- **Next first action:** Review and merge this PR, then decide on the `[1.0.0]` changelog correction.
+- **Evidence:** `npm view intentloom dist-tags` on 2026-07-31 reporting `{"latest":"1.0.0","next":"1.0.0"}`; `gh api repos/vitala89/Intentloom/topics` returning the updated 20 topics; local Vitest run output.
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant tests, type checks, builds, or compatibility checks passed
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `PROJECT_STATE.md` updated when applicable
+- [x] `DUTY_WATCH.md` handoff completed
+- [x] Related roadmap, ADR, changelog, migration, or reference docs updated
+- [x] Failed or unavailable checks recorded
 
 ### 2026-07-31, Record the actual npm publication of 1.0.0 and reconcile the release records
 

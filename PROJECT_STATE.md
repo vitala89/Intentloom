@@ -34,10 +34,9 @@ signed off.
 [GitHub release](https://github.com/vitala89/Intentloom/releases/tag/v1.0.0), and
 was published to npm on 2026-07-30 under the `next` dist-tag.
 
-`latest` still resolves to `0.1.0-alpha.3`, so an unqualified
-`npm install intentloom` serves the July 18 alpha rather than the stable
-release. Promoting the tag with `npm dist-tag add intentloom@1.0.0 latest` is the
-main outstanding release action. See
+The `latest` dist-tag has since been promoted to `1.0.0`, so an unqualified
+`npm install intentloom` now serves the stable release. Verified against the
+registry on 2026-07-31: `latest=1.0.0` and `next=1.0.0`. See
 [`RELEASE_STATE.md`](docs/releases/RELEASE_STATE.md) for the authoritative
 published-artifact status.
 
@@ -111,12 +110,15 @@ before a new release or implementation milestone is declared complete.
 - Any expansion to bottleneck, performance, causal, actor, repository-reading, persisted, remote, or model-assisted analysis requires a new ADR, specification, and threat review.
 - PR #84 through PR #138 are merged in the local history; current `main` is
   verified at `a148f2f` (PR #138 merge; PR #137 merged as `3f3247f`, PR #135 merged as `46d3a2e`, PR #134 merged as `4bad874`, PR #133 merged as `cd31214`) and tracks `origin/main`.
-- npm currently reports `latest=0.1.0-alpha.3` and `next=0.5.0-beta.1`.
-- Workspace packages are synchronized to `1.0.0` and Git tag `v1.0.0` is pushed,
-  but `1.0.0` is not published to npm. The last completed npm publication is
-  `v0.5.0-beta.1` under the `next` tag.
-- Published tarball registry shasum is
-  `58b2e27eb66789f57c1e91cec46aea710a6fc241`; the current Desktop branch
+- npm reports `latest=1.0.0` and `next=1.0.0`, verified 2026-07-31.
+- Workspace packages are synchronized to `1.0.0`, Git tag `v1.0.0` is pushed, and
+  `1.0.0` is published to npm under both dist-tags. It carries no provenance
+  attestation because it was published manually before the release workflow
+  existed.
+- Published `1.0.0` tarball registry shasum is
+  `434fcb624ddb3706502a29ad96b27aee36df675c`, reproduced byte for byte from
+  source on 2026-07-31; the preceding `0.5.0-beta.1` shasum was
+  `58b2e27eb66789f57c1e91cec46aea710a6fc241`. The current Desktop branch
   restored its locked dependencies and passes the local build and full test
   suite.
 - PR #91 did not land the Desktop/TUI roadmap intent on `main`; PR #95
