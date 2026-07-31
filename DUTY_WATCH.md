@@ -61,6 +61,32 @@ entry directly below this section.
 
 ## Watch entries
 
+### 2026-08-01, Desktop Views Adoption of 5 Design Components
+
+- **Status:** complete for this watch
+- **Agent/tool:** Antigravity AI Agent with React 19, TypeScript, Vite, Prettier
+- **Branch:** `feature/post-v1-enhancements`
+- **Objective:** Adopt `Card`, `Tabs`, `Modal`, `EmptyState`, and `StatusChip` across all Desktop views (`Overview`, `Inspect`, `Doctor`, `Diff Review`, `Timeline`, `Settings`).
+- **Completed:**
+  - Extracted sub-views into `apps/desktop/src/views/` (`OverviewView`, `InspectView`, `DoctorView`, `DiffView`, `TimelineView`, `SettingsView`, `CommandPaletteModal`).
+  - Adopted `Card` for elevation container sections across Overview, Inspect, and Settings.
+  - Adopted `EmptyState` for empty, loading, and disconnected states.
+  - Adopted `StatusChip` for semantic status badges.
+  - Adopted `Modal` for `CommandPaletteModal` overlay.
+  - Reduced `App.tsx` from 2174 lines down to 731 lines.
+- **Validation:** `pnpm --filter ./apps/desktop typecheck`, `pnpm --filter ./apps/desktop build`, `pnpm format:check`, and `git diff --check` passed cleanly.
+- **Decisions and assumptions:** Strictly preserved local-first and zero-network invariants.
+- **Next first action:** Commit and push changes to PR #160.
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant tests, type checks, builds, or compatibility checks passed
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `DUTY_WATCH.md` handoff completed
+
 ### 2026-08-01, Desktop Design System Component Group Integration
 
 - **Status:** complete for this watch
