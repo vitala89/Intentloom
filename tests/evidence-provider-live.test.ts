@@ -127,6 +127,23 @@ describe("Live Provider Connections (ADR-0022)", () => {
     expect(firstCallHeaders?.["PRIVATE-TOKEN"]).toBe("dummy_gitlab_token");
   });
 
+  it("trims custom provider base URL slashes without a backtracking regex", async () => {
+    const mockFetch = vi
+      .fn()
+      .mockResolvedValue(new Response("[]", { status: 200 }));
+
+    await fetchLiveProviderEvidence({
+      provider: "github",
+      projectKey: "vitala89/Intentloom",
+      baseUrl: "https://example.test////",
+      fetchFn: mockFetch as any,
+    });
+
+    expect(mockFetch.mock.calls[0]?.[0]).toBe(
+      "https://example.test/repos/vitala89/Intentloom/pulls?state=all&per_page=50",
+    );
+  });
+
   it("detects rate-limit-exceeded from HTTP 429 response", async () => {
     const mockFetch = vi.fn().mockResolvedValue(
       new Response(JSON.stringify({ message: "Rate limit exceeded" }), {

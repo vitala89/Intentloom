@@ -1,6 +1,7 @@
 import type { ProviderEvidenceResult, ProviderName } from "./index.js";
 import { fetchGitHubLiveEvents } from "./live-github.js";
 import { fetchGitLabLiveEvents } from "./live-gitlab.js";
+import { trimTrailingSlashes } from "./live-helpers.js";
 
 export interface LiveProviderFetchOptions {
   readonly provider: ProviderName;
@@ -70,7 +71,7 @@ export async function fetchLiveProviderEvidence(
   let result;
   if (options.provider === "github") {
     const defaultBase = options.baseUrl ?? "https://api.github.com";
-    const cleanBase = defaultBase.replace(/\/+$/, "");
+    const cleanBase = trimTrailingSlashes(defaultBase);
     const [owner, repo] = options.projectKey.split("/");
     if (!owner || !repo) {
       return {
@@ -93,7 +94,7 @@ export async function fetchLiveProviderEvidence(
     });
   } else {
     const defaultBase = options.baseUrl ?? "https://gitlab.com/api/v4";
-    const cleanBase = defaultBase.replace(/\/+$/, "");
+    const cleanBase = trimTrailingSlashes(defaultBase);
     const encodedKey = encodeURIComponent(options.projectKey);
     result = await fetchGitLabLiveEvents({
       cleanBase,

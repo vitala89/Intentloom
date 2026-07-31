@@ -1,5 +1,11 @@
 import { createHash } from "node:crypto";
 
+export function trimTrailingSlashes(value: string): string {
+  let end = value.length;
+  while (end > 0 && value.charCodeAt(end - 1) === 47) end -= 1;
+  return value.slice(0, end);
+}
+
 export function stringValue(value: unknown, max: number): string | undefined {
   return typeof value === "string" && value.length > 0
     ? value.slice(0, max)
