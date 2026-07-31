@@ -11,8 +11,9 @@ Read, in order:
 2. `PROJECT_STATE.md`
 3. `DUTY_WATCH.md`
 4. `docs/governance/ENGINEERING_PRINCIPLES.md`
-5. `docs/governance/AI_AGENT_WORKFLOW.md`
-6. The relevant specification, ADRs, roadmap documents, package documentation,
+5. `docs/governance/CODE_QUALITY_STANDARDS.md`
+6. `docs/governance/AI_AGENT_WORKFLOW.md`
+7. The relevant specification, ADRs, roadmap documents, package documentation,
    and code for the requested task
 
 Do not begin implementation from the user prompt alone.
@@ -25,6 +26,9 @@ Before changing files, state internally or in the task plan:
 - the last completed duty watch entry;
 - how the task fits the roadmap;
 - which architectural boundaries it may affect;
+- the current size and responsibilities of touched implementation files;
+- planned extraction points for any oversized file;
+- the relevant domain guidance and required tests;
 - which validations and documentation updates will be required.
 
 If repository evidence conflicts with `PROJECT_STATE.md` or `DUTY_WATCH.md`,
@@ -38,6 +42,10 @@ A task is not complete until the agent has:
 - implemented or documented the requested change;
 - run the relevant validation;
 - reviewed the resulting diff;
+- confirmed that new or substantially changed files satisfy the code-quality
+  budgets, or documented an approved exception;
+- avoided growth of existing oversized files, or recorded the required
+  decomposition evidence and follow-up;
 - updated `PROJECT_STATE.md` when the durable current state changed;
 - appended or updated `DUTY_WATCH.md` with the completed work and next handoff;
 - updated roadmap, ADR, migration notes, or changelog when applicable;
