@@ -61,6 +61,30 @@ entry directly below this section.
 
 ## Watch entries
 
+### 2026-08-01, Desktop View Sandbox & Frame Communication Protocol (ADR-0047)
+
+- **Status:** complete for this watch
+- **Agent/tool:** Antigravity AI Agent with TypeScript, Vitest, Prettier
+- **Branch:** `feature/post-v1-enhancements`
+- **Objective:** Design and implement ADR-0047 for sandboxed custom view frames and typed `postMessage` frame communication protocol (`view-sandbox-protocol.ts`).
+- **Completed:**
+  - Created `docs/decisions/ADR-0047-desktop-view-sandbox-protocol.md`.
+  - Added `validateDesktopViewContribution` to `@intentloom/validator`.
+  - Created `apps/desktop/src/views/view-sandbox-protocol.ts` (`isViewSandboxMessage`, `createInitMessage`, and type guards).
+  - Added unit test suite `tests/desktop-view-sandbox.test.ts` (3/3 tests passing).
+- **Validation:** Desktop build, unit tests (3/3 passed), Prettier format check, and `git diff --check` passed cleanly.
+- **Decisions and assumptions:** Strictly enforced `iframe sandbox="allow-scripts"` and host capability grant boundaries.
+- **Next first action:** Commit and push changes to PR #160.
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant tests, type checks, builds, or compatibility checks passed
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `DUTY_WATCH.md` handoff completed
+
 ### 2026-08-01, Desktop Theme Contribution & Design Token Bridge (ADR-0046)
 
 - **Status:** complete for this watch

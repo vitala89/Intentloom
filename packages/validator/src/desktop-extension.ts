@@ -118,3 +118,33 @@ export function validateDesktopThemeContribution(
   }
   return diagnostics;
 }
+
+export function validateDesktopViewContribution(
+  view: unknown,
+): readonly DesktopContributionDiagnostic[] {
+  const diagnostics: DesktopContributionDiagnostic[] = [];
+  if (!view || typeof view !== "object") {
+    diagnostics.push({
+      code: "invalid-view-object",
+      path: "/",
+      message: "view must be a non-null object",
+    });
+    return diagnostics;
+  }
+  const obj = view as Record<string, unknown>;
+  if (typeof obj.id !== "string" || obj.id.trim() === "") {
+    diagnostics.push({
+      code: "invalid-view-id",
+      path: "/id",
+      message: "view id must be a non-empty string",
+    });
+  }
+  if (typeof obj.title !== "string" || obj.title.trim() === "") {
+    diagnostics.push({
+      code: "invalid-view-title",
+      path: "/title",
+      message: "view title must be a non-empty string",
+    });
+  }
+  return diagnostics;
+}
