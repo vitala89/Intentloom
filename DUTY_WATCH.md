@@ -61,6 +61,29 @@ entry directly below this section.
 
 ## Watch entries
 
+### 2026-08-01, React & Desktop UI Governance Standards
+
+- **Status:** complete for this watch
+- **Agent/tool:** Antigravity AI Agent with React 19, TypeScript, Markdown
+- **Branch:** `feature/post-v1-enhancements`
+- **Objective:** Formulate and record formal React 19 + Desktop UI development best practices (`docs/governance/REACT_BEST_PRACTICES.md`) and register in `AGENTS.md`.
+- **Completed:**
+  - Verified available environment skills (`react-composition-patterns`, `react-doctor`, `frontend-blueprint`, `modern-web-guidance`).
+  - Created `docs/governance/REACT_BEST_PRACTICES.md` covering React 19 component composition, local state primitives, WCAG 2.x keyboard accessibility, zero-network CSP invariants, and token mapping rules.
+  - Added `docs/governance/REACT_BEST_PRACTICES.md` to required agent readings in `AGENTS.md`.
+- **Validation:** Prettier format check and `git diff --check` passed cleanly.
+- **Decisions and assumptions:** Aligned with ADR-0044 and repository engineering principles.
+- **Next first action:** Commit and push changes to PR #160.
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant tests, type checks, builds, or compatibility checks passed
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `DUTY_WATCH.md` handoff completed
+
 ### 2026-08-01, Desktop Views Adoption of 5 Design Components
 
 - **Status:** complete for this watch
