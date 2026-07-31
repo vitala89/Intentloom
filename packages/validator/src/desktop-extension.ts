@@ -148,3 +148,44 @@ export function validateDesktopViewContribution(
   }
   return diagnostics;
 }
+
+export function validateDesktopCommandContribution(
+  cmd: unknown,
+): readonly DesktopContributionDiagnostic[] {
+  const diagnostics: DesktopContributionDiagnostic[] = [];
+  if (!cmd || typeof cmd !== "object") {
+    diagnostics.push({
+      code: "invalid-command-object",
+      path: "/",
+      message: "command must be a non-null object",
+    });
+    return diagnostics;
+  }
+  const obj = cmd as Record<string, unknown>;
+  if (typeof obj.id !== "string" || obj.id.trim() === "") {
+    diagnostics.push({
+      code: "invalid-command-id",
+      path: "/id",
+      message: "command id must be a non-empty string",
+    });
+  }
+  if (typeof obj.title !== "string" || obj.title.trim() === "") {
+    diagnostics.push({
+      code: "invalid-command-title",
+      path: "/title",
+      message: "command title must be a non-empty string",
+    });
+  }
+  const validCategories = ["Navigation", "Actions", "Diagnostics"];
+  if (
+    typeof obj.category !== "string" ||
+    !validCategories.includes(obj.category)
+  ) {
+    diagnostics.push({
+      code: "invalid-command-category",
+      path: "/category",
+      message: `command category must be one of: ${validCategories.join(", ")}`,
+    });
+  }
+  return diagnostics;
+}
