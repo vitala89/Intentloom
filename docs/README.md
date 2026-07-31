@@ -42,5 +42,4 @@ Repository governance:
 - [Security policy](../SECURITY.md)
 - [Project roadmap](../ROADMAP.md)
 
-The planned public site will be hosted on GitHub Pages. A future follow-up may
-use VitePress; this repository does not configure hosting or DNS yet.
+The public site is deployed to GitHub Pages via [.github/workflows/docs.yml](../.github/workflows/docs.yml). A future follow-up may add VitePress static site generation.

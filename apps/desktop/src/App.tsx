@@ -1,5 +1,12 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { desktopClient, DesktopBridgeError } from "./desktop-client.js";
+import { Logo } from "./design/components/brand/Logo.js";
+import { Wordmark } from "./design/components/brand/Wordmark.js";
+import { Button } from "./design/components/core/Button.js";
+import { IconButton } from "./design/components/core/IconButton.js";
+import { KeyboardKey } from "./design/components/core/KeyboardKey.js";
+import { EvidenceBadge } from "./design/components/evidence/EvidenceBadge.js";
+import { SearchInput } from "./design/components/forms/SearchInput.js";
 import type {
   DaemonInfoResult,
   DoctorFinding,
@@ -1920,10 +1927,8 @@ export default function App() {
       </a>
       <aside className="sidebar">
         <div className="brand-lockup" aria-label="Intentloom">
-          <span className="brand-mark" aria-hidden="true">
-            ∿
-          </span>
-          <span>intentloom</span>
+          <Logo size={24} />
+          <Wordmark size={16} />
         </div>
 
         <button

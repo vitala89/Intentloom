@@ -61,6 +61,147 @@ entry directly below this section.
 
 ## Watch entries
 
+### 2026-07-31, Code Quality Governance Audit & Modular Decomposition
+
+- **Status:** complete for this watch
+- **Agent/tool:** Antigravity AI Agent with Vitest, TypeScript, Prettier
+- **Branch:** `release/1.0.1`
+- **Objective:** Audit codebase governance constraints and decompose production modules to ensure all new hand-written code stays strictly below the 250-line target.
+- **Completed:**
+  - Decomposed `packages/evidence-provider/src/live.ts` (previously 319 lines) into `live-helpers.ts` (45 lines), `live-github.ts` (114 lines), `live-gitlab.ts` (102 lines), and streamlined `live.ts` (118 lines).
+  - Verified no automated PR, releases, or git branches were created without explicit user request, adhering to `RULE[/Users/eugenekasap/WebstormProjects/Intentloom/AGENTS.md]`.
+- **Validation:** `pnpm build`, `pnpm vitest run tests/evidence-provider-live.test.ts`, `pnpm format:check`, and `git diff --check` passed cleanly.
+- **Decisions and assumptions:** Strictly enforced production line limits (<=250 lines).
+- **Next first action:** Await user directive for opening PRs or proceeding with next roadmap tasks.
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant tests, type checks, builds, or compatibility checks passed
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `DUTY_WATCH.md` handoff completed
+
+### 2026-07-31, GitHub Pages Documentation Setup
+
+- **Status:** complete for this watch
+- **Agent/tool:** Antigravity AI Agent with GitHub Actions, Prettier
+- **Branch:** `release/1.0.1`
+- **Objective:** Configure automated GitHub Pages deployment for Intentloom documentation.
+- **Completed:**
+  - Added `.github/workflows/docs.yml` automated Pages deployment workflow triggered on `main` pushes affecting `docs/**` or `README.md`, or via `workflow_dispatch`.
+  - Applied supply-chain SHA pinning for all GitHub Actions steps (`actions/checkout`, `actions/configure-pages`, `actions/upload-pages-artifact`, `actions/deploy-pages`) and minimal permissions (`contents: read`, `pages: write`, `id-token: write`).
+  - Updated `docs/README.md` to record the active GitHub Pages deployment workflow.
+- **Validation:** `pnpm format:check` and `git diff --check` passed cleanly.
+- **Decisions and assumptions:** Bounded deployment scope to `docs/` tree.
+- **Next first action:** Push changes or open PR for review.
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant tests, type checks, builds, or compatibility checks passed
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `DUTY_WATCH.md` handoff completed
+
+### 2026-07-31, Desktop UI Design System Integration
+
+- **Status:** complete for this watch
+- **Agent/tool:** Antigravity AI Agent with Vite, TypeScript, React 19, Prettier
+- **Branch:** `release/1.0.1`
+- **Objective:** Adopt authored Intentloom Design System components into Desktop App (`apps/desktop`).
+- **Completed:**
+  - Integrated `Logo` and `Wordmark` components into the sidebar header in `apps/desktop/src/App.tsx`.
+  - Added robust focus box-shadow fallback in `apps/desktop/src/design/components/forms/TextInput.tsx` for webview engines lacking `color-mix`.
+  - Confirmed 100% self-hosted zero-external-network invariant (`default-src 'self'`).
+- **Validation:** `pnpm --filter ./apps/desktop typecheck`, `pnpm --filter ./apps/desktop build`, `pnpm format:check`, and `git diff --check` passed cleanly.
+- **Decisions and assumptions:** Followed ADR-0044 and ADR-0042 strictly.
+- **Next first action:** Set up GitHub Pages documentation workflow/VitePress site.
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant tests, type checks, builds, or compatibility checks passed
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `DUTY_WATCH.md` handoff completed
+
+### 2026-07-31, Managed Extension Lifecycle Support
+
+- **Status:** complete for this watch
+- **Agent/tool:** Antigravity AI Agent with Vitest, TypeScript, Prettier
+- **Branch:** `release/1.0.1`
+- **Objective:** Implement capability grant verification and document validation helpers for extension manifests and lockfiles in `@intentloom/validator`.
+- **Completed:**
+  - Added `ExtensionCapabilities` interface and `validateExtensionCapabilityGrant` in `packages/validator/src/index.ts` to verify lockfile granted capabilities against manifest requested capabilities (`filesystem`, `process`, `network`).
+  - Added convenience document validation helpers `validateExtensionManifestDocument` and `validateExtensionLockDocument`.
+  - Added unit test suite in `tests/extension-schema.test.ts` verifying capability grant bounds checking, unrequested access detection, and document validation.
+- **Validation:** `pnpm build`, `pnpm vitest run tests/extension-schema.test.ts`, `pnpm format:check`, and `git diff --check` passed cleanly.
+- **Decisions and assumptions:** Followed MANAGED_EXTENSION_LIFECYCLE_V0_3_SPEC.md and ADR-0021 strictly.
+- **Next first action:** Continue with Desktop UI Design System integration or GitHub Pages documentation setup.
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant tests, type checks, builds, or compatibility checks passed
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `DUTY_WATCH.md` handoff completed
+
+### 2026-07-31, External MCP Evidence Ingestion (ADR-0023)
+
+- **Status:** complete for this watch
+- **Agent/tool:** Antigravity AI Agent with Vitest, TypeScript, Prettier
+- **Branch:** `release/1.0.1`
+- **Objective:** Implement external MCP evidence ingestion in `@intentloom/evidence-provider` per ADR-0023.
+- **Completed:**
+  - Added `ingestExternalMcpEvidence` module (`packages/evidence-provider/src/mcp-ingest.ts`).
+  - Implemented allowlist checking for server name and tool name (`allowedServers`, `allowedTools`), returning `mcp-server-unapproved` or `mcp-tool-unapproved` diagnostics on mismatch.
+  - Enforced untrusted authority tagging (`trust: "untrusted-external"`) and source classification (`source: "external-mcp"`).
+  - Re-exported `ingestExternalMcpEvidence` and `ExternalMcpIngestOptions` in `@intentloom/evidence-provider`.
+  - Added unit test suite `tests/evidence-mcp-ingest.test.ts` with 4 tests.
+- **Validation:** `pnpm build`, `pnpm vitest run tests/evidence-mcp-ingest.test.ts`, `pnpm format:check`, and `git diff --check` passed cleanly.
+- **Decisions and assumptions:** Followed ADR-0023 strictly: untrusted authority classification, strict server/tool allowlist validation, record bounding, non-mutating scope.
+- **Next first action:** Continue with Desktop UI Design System integration or Managed Extension Lifecycle support.
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant tests, type checks, builds, or compatibility checks passed
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `DUTY_WATCH.md` handoff completed
+
+### 2026-07-31, Live Read-Only Provider Connections (ADR-0022)
+
+- **Status:** complete for this watch
+- **Agent/tool:** Antigravity AI Agent with Vitest, TypeScript, Prettier
+- **Branch:** `release/1.0.1`
+- **Objective:** Implement live read-only provider evidence fetching for GitHub and GitLab in `@intentloom/evidence-provider` and CLI per ADR-0022.
+- **Completed:**
+  - Added `fetchLiveProviderEvidence` module (`packages/evidence-provider/src/live.ts`) supporting GitHub and GitLab REST endpoints for pull requests, merge requests, commits, releases, and pipelines/workflow runs.
+  - Implemented header-based rate limiting detection (`x-ratelimit-remaining`, `retry-after`, HTTP 429/403) and sensitive data redaction.
+  - Extended `ProviderEvidenceResult.source` to allow `"provider-live"`.
+  - Added `intentloom evidence fetch` subcommand in `packages/cli/src/command.ts` supporting `--provider`, `--project-key`, `--token`, and environment variable tokens (`GITHUB_TOKEN` / `GITLAB_TOKEN`).
+  - Added unit test suite `tests/evidence-provider-live.test.ts` with 5 mock fetch tests.
+- **Validation:** `pnpm build`, `pnpm vitest run tests/evidence-provider-live.test.ts`, `pnpm format:check`, and `git diff --check` passed cleanly.
+- **Decisions and assumptions:** Followed ADR-0022 strictly: GET-only, environment/token authentication, zero credential persistence, mock-fetch test strategy.
+- **Next first action:** Continue with post-v1.0 roadmap items (External MCP Evidence Ingestion or Desktop UI Design System integration).
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant tests, type checks, builds, or compatibility checks passed
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `DUTY_WATCH.md` handoff completed
+
 ### 2026-07-31, Prepare the 1.0.1 documentation and package-metadata release
 
 - **Status:** complete for this watch
