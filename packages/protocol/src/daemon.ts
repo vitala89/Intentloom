@@ -5,6 +5,18 @@ import type {
   JsonRpcSuccess,
 } from "./jsonrpc.js";
 
+export type ClientErrorCode =
+  | "authentication_failed"
+  | "protocol_incompatible"
+  | "unsupported_capability"
+  | "invalid_root"
+  | "stale_root"
+  | "bounded_validation_failed"
+  | "timed_out"
+  | "cancelled"
+  | "disconnected"
+  | "internal_failure";
+
 export type CapabilityClassification = "read-only" | "mutating";
 
 export interface DaemonCapability {

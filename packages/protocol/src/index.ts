@@ -22,41 +22,30 @@ import {
   type JsonRpcFailure,
 } from "./jsonrpc.js";
 
+import {
+  type ClientErrorCode,
+  type CapabilityClassification,
+  type DaemonCapability,
+  type DaemonLimits,
+  type DaemonCompatibility,
+  type DaemonInfoParams,
+  type DaemonInfoResult,
+  type DaemonInfoRequest,
+  type DaemonInfoResponse,
+} from "./daemon.js";
+
+import {
+  type ProjectDiffParams,
+  type ProjectDiffChange,
+  type ProjectDiffResult,
+  type ProjectDiffRequest,
+  type ProjectDiffResponse,
+} from "./diff.js";
+
 export * from "./jsonrpc.js";
 export * from "./daemon.js";
 export * from "./desktop-extension.js";
-
-export interface ProjectDiffParams {
-  readonly protocolVersion: typeof PROTOCOL_VERSION;
-  readonly root: string;
-  readonly profile: string;
-  readonly adapters: readonly string[];
-}
-export interface ProjectDiffChange {
-  readonly path: string;
-  readonly kind:
-    | "create"
-    | "update"
-    | "conflict"
-    | "modified"
-    | "missing"
-    | "stale"
-    | "security-error";
-  readonly reason: string;
-  readonly content?: string;
-}
-export interface ProjectDiffResult {
-  readonly protocolVersion: typeof PROTOCOL_VERSION;
-  readonly operationVersion: 1;
-  readonly root: string;
-  readonly changes: readonly ProjectDiffChange[];
-  readonly diagnostics: readonly string[];
-}
-export type ProjectDiffRequest = JsonRpcRequest<
-  typeof PROJECT_DIFF_METHOD,
-  ProjectDiffParams
->;
-export type ProjectDiffResponse = JsonRpcSuccess<ProjectDiffResult>;
+export * from "./diff.js";
 
 export const TIMELINE_DEFAULT_LIMIT = 50;
 export const TIMELINE_MAX_LIMIT = 500;
