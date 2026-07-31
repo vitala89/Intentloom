@@ -1,6 +1,6 @@
 # Intentloom Project State
 
-Last verified: 2026-07-30
+Last verified: 2026-07-31
 
 This file records the durable current state of the project. It is not a
 chronological log. Session history and handoff details belong in
@@ -75,19 +75,21 @@ and real consumers justify them.
   vector logo masters (ADR-0044). It is available to the Desktop surfaces but not
   yet consumed by them; `App.tsx` is unchanged. Icons and fonts are local, so the
   zero-external-network invariant still holds and is now also true offline.
+- Commit and quality governance is now versioned in `.githooks/`,
+  `scripts/validate-*.mjs`, and `.github/workflows/governance.yml`. Hooks are
+  explicitly enabled per checkout with `pnpm hooks:install`; CI independently
+  validates commit structure, attribution, whitespace, and production-file
+  budgets.
 
 These statements must be revalidated against code, tags, CI, and Git history
 before a new release or implementation milestone is declared complete.
 
 ## Active focus
 
-1. Execute Phase 5 of `V1_0_STABLE_COMPATIBILITY_PLAN.md`: assemble the v1.0
-   readiness audit, compatibility/support evidence, migration and dogfooding
-   records, and maintainer release approval on one verified `main` commit.
-2. Reconcile remaining v0.6 follow-up hardening (legacy-handler root coverage,
-   application-level cancellation/progress, Workspace RPC coverage, dialog focus
-   trap, and automated axe-core/Playwright checks) without reopening the closed
-   read-only milestone or changing the provider-neutral platform boundary.
+1. Complete PR #160 after reviewing the CodeQL regex repair and Governance
+   policy check reruns on GitHub at pushed head `5afedd2`.
+2. Publish the prepared `1.0.1` documentation and package-metadata release
+   through the approved trusted-publishing workflow.
 3. Keep bottleneck inference, remote ingestion, model-based judgments, and any
    autonomous mutation behind separate approved specifications and threat review.
 
@@ -270,6 +272,12 @@ before a new release or implementation milestone is declared complete.
   local release-candidate verification on `d191205` passed frozen reinstall,
   typecheck, build, full tests, and packed CLI smoke; support-policy approval,
   dogfooding disposition, and final release approval remain open.
+- PR #160 is pushed at head `5afedd2` with the CodeQL repair and governance
+  enforcement changes. The prior head `abed6a1` had two high-severity
+  polynomial-regex alerts in `packages/evidence-provider/src/live.ts`; the
+  repair is `a2b680d`. Hosted CodeQL and Governance reruns remain to be
+  inspected. The three legacy oversized-file growths are documented as exact,
+  expiring exceptions in `docs/governance/quality-exceptions.json`.
 - ADR-0042 is accepted. The macOS arm64 SEA feasibility run and local Tauri
   `.app`/`.dmg` package smoke passed, including embedded sidecar hash and
   catalog-resource verification. The repository history records the

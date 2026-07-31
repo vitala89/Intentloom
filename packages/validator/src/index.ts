@@ -805,3 +805,96 @@ export function validateCanonicalReferences(
       message: "reference does not exist in the supplied canonical catalog",
     }));
 }
+
+export interface ExtensionCapabilities {
+  readonly filesystem?: {
+    readonly read?: readonly string[];
+    readonly write?: readonly string[];
+  };
+  readonly process?: {
+    readonly exec?: readonly string[];
+  };
+  readonly network?: {
+    readonly connect?: readonly string[];
+  };
+}
+
+export function validateExtensionCapabilityGrant(
+  requested: ExtensionCapabilities | undefined,
+  granted: ExtensionCapabilities | undefined,
+): Diagnostic[] {
+  const diagnostics: Diagnostic[] = [];
+  if (!granted) return diagnostics;
+
+  const reqFsRead = requested?.filesystem?.read ?? [];
+  for (const path of granted.filesystem?.read ?? []) {
+    if (!reqFsRead.includes(path)) {
+      diagnostics.push({
+        code: "extension-capability-exceeded",
+        path: `/filesystem/read/${path}`,
+        message: `granted filesystem read capability "${path}" was not declared in extension manifest`,
+      });
+    }
+  }
+
+  const reqFsWrite = requested?.filesystem?.write ?? [];
+  for (const path of granted.filesystem?.write ?? []) {
+    if (!reqFsWrite.includes(path)) {
+      diagnostics.push({
+        code: "extension-capability-exceeded",
+        path: `/filesystem/write/${path}`,
+        message: `granted filesystem write capability "${path}" was not declared in extension manifest`,
+      });
+    }
+  }
+
+  const reqProc = requested?.process?.exec ?? [];
+  for (const cmd of granted.process?.exec ?? []) {
+    if (!reqProc.includes(cmd)) {
+      diagnostics.push({
+        code: "extension-capability-exceeded",
+        path: `/process/exec/${cmd}`,
+        message: `granted process exec capability "${cmd}" was not declared in extension manifest`,
+      });
+    }
+  }
+
+  const reqNet = requested?.network?.connect ?? [];
+  for (const host of granted.network?.connect ?? []) {
+    if (!reqNet.includes(host)) {
+      diagnostics.push({
+        code: "extension-capability-exceeded",
+        path: `/network/connect/${host}`,
+        message: `granted network connect capability "${host}" was not declared in extension manifest`,
+      });
+    }
+  }
+
+  return diagnostics;
+}
+
+export function validateExtensionManifestDocument(
+  validator: ArtifactValidator,
+  documentPath: string,
+  source: string,
+): ArtifactValidationResult {
+  return validator.validate({
+    artifactType: "extension-manifest",
+    documentPath,
+    format: "json",
+    source,
+  });
+}
+
+export function validateExtensionLockDocument(
+  validator: ArtifactValidator,
+  documentPath: string,
+  source: string,
+): ArtifactValidationResult {
+  return validator.validate({
+    artifactType: "extension-lock",
+    documentPath,
+    format: "json",
+    source,
+  });
+}

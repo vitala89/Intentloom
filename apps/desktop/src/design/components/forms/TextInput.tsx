@@ -91,7 +91,7 @@ export function TextInput({
                 : "var(--border-strong)"
           }`,
           boxShadow: focus
-            ? "0 0 0 2px color-mix(in oklab, var(--focus) 30%, transparent)"
+            ? "0 0 0 2px var(--focus-ring, rgba(99, 102, 241, 0.3))"
             : undefined,
           borderRadius: "var(--radius-control)",
           transition: "border-color var(--motion-control) var(--ease-standard)",

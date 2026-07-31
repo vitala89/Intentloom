@@ -24,7 +24,7 @@ export interface ProviderEvidenceEvent {
   readonly sourceId: string;
   readonly provider: ProviderName;
   readonly projectKey: string;
-  readonly trust: "provider-supplied-unverified";
+  readonly trust: "provider-supplied-unverified" | "untrusted-external";
   readonly state?: string;
   readonly commitIds?: readonly string[];
   readonly finding?: "record-untrusted";
@@ -32,14 +32,24 @@ export interface ProviderEvidenceEvent {
 
 export interface ProviderEvidenceResult {
   readonly operationVersion: 1;
-  readonly source: "provider-export";
+  readonly source: "provider-export" | "provider-live" | "external-mcp";
   readonly provider: ProviderName;
   readonly projectKey: string;
-  readonly trust: "provider-supplied-unverified";
+  readonly trust: "provider-supplied-unverified" | "untrusted-external";
   readonly status: "available" | "bounded" | "invalid";
   readonly events: readonly ProviderEvidenceEvent[];
   readonly diagnostics: readonly string[];
 }
+
+export {
+  fetchLiveProviderEvidence,
+  type LiveProviderFetchOptions,
+} from "./live.js";
+
+export {
+  ingestExternalMcpEvidence,
+  type ExternalMcpIngestOptions,
+} from "./mcp-ingest.js";
 
 const eventKinds: readonly [ProviderEventType, string][] = [
   ["pull-request", "pullRequests"],

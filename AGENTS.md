@@ -19,10 +19,17 @@ important claims affect the task.
 - Do not introduce telemetry, hidden network calls, automatic hooks, automatic
   dependency installation, publishing, merging, or releases without explicit
   authorization.
-- Before every commit, run the project formatter, relevant validation, and
-  `git diff --check`. Do not open a pull request with known formatting failures.
+- Before every commit, use the repository's atomic-commit protocol: one
+  independently reviewable logical change, its tests and required documentation
+  together, with unrelated concerns split into separate commits. Run the
+  staged quality checks and `git diff --check`; before pushing, run the full
+  verification command. Do not open a pull request with known failures.
 - Keep changes scoped. Do not create packages, repositories, or abstractions
   without a demonstrated consumer or roadmap trigger.
+- Hooks are opt-in per checkout through `pnpm hooks:install`; never install or
+  change hooks silently. The versioned hooks enforce staged formatting, diff
+  safety, production-file budgets, commit-message structure, and full
+  pre-push verification.
 - Never invent completed work, test outcomes, releases, versions, pull requests,
   milestones, or repository state.
 

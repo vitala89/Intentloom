@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **`1.0.1` prepared, not published** — workspace synchronized to `1.0.1` on `release/1.0.1`. npm still serves `1.0.0` under both `latest` and `next`. Trusted publishing is fully configured on both sides: the npm trusted publisher for `vitala89/Intentloom`, workflow `release.yml`, environment `npm-publish`; and the GitHub `npm-publish` environment with `vitala89` as required reviewer, restricted to `main` and `v*`.
+Status: **PR #160 repair pushed; hosted checks pending** — workspace remains synchronized to `1.0.1`; npm still serves `1.0.0` under both `latest` and `next`. Trusted publishing is fully configured on both sides: the npm trusted publisher for `vitala89/Intentloom`, workflow `release.yml`, environment `npm-publish`; and the GitHub `npm-publish` environment with `vitala89` as required reviewer, restricted to `main` and `v*`.
 
-Active branch: `release/1.0.1`
+Active branch: `feature/post-v1-enhancements`
 
-Current objective: publish a documentation and package-metadata release so the corrected package README reaches npmjs.com, and make it the first artifact to carry a provenance attestation.
+Current objective: inspect the PR #160 CodeQL and Governance reruns on pushed head `5afedd2`, then complete the release handoff.
 
-Next first action: merge the `1.0.1` release PR, verify the resulting `main` commit, tag it, then dispatch **Release** with `dry_run: true` before any real publish.
+Next first action: inspect the new PR #160 check run for head `5afedd2`.
 
 Known open items, in the order they should be handled:
 
@@ -60,6 +60,203 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-31, PR #160 repair push and pre-push verification
+
+- **Status:** complete for this watch; implementation pushed and remote branch verified
+- **Agent/tool:** Codex with Git and repository quality hooks
+- **Branch:** `feature/post-v1-enhancements`
+- **Commits:** `5afedd2` and its three-commit pushed history
+- **Pull request:** [#160](https://github.com/vitala89/Intentloom/pull/160)
+- **Objective:** Push the verified CodeQL repair and governance enforcement changes.
+- **Completed:** Pushed head `5afedd2` to `origin/feature/post-v1-enhancements`; the local pre-push gate completed successfully.
+- **Validation:** TypeScript typecheck, Prettier check, 89 test files with 765 tests passed and 3 skipped, build, and `git diff --check` all passed. Local and remote branch heads match at `5afedd2`.
+- **Open issues or blockers:** GitHub CodeQL and Governance conclusions for PR #160 have not yet been inspected after the push; no GitLab pipeline is configured in this repository.
+- **Next first action:** Inspect the hosted PR #160 check run and record its conclusions.
+- **Evidence:** `git ls-remote origin refs/heads/feature/post-v1-enhancements` returned `5afedd2`.
+
+#### Duty completion checklist
+
+- [x] Pre-push quality gate passed
+- [x] Branch pushed to GitHub
+- [x] Remote SHA verified
+- [ ] Hosted PR checks inspected
+
+### 2026-07-31, PR #160 CodeQL Repair and Governance Enforcement
+
+- **Status:** partial — implementation complete locally; push and remote rerun pending
+- **Agent/tool:** Codex with GitHub API, CodeQL, Vitest, TypeScript, Prettier
+- **Branch:** `feature/post-v1-enhancements`
+- **Commits:** `a2b680d`, `8ebbfb9`
+- **Pull request:** [#160](https://github.com/vitala89/Intentloom/pull/160)
+- **Objective:** Repair the failing CodeQL check and make atomic commits, staged quality, pre-push verification, and CI governance enforceable.
+- **Completed:**
+  - Replaced both polynomial trailing-slash regexes in `live.ts` with a linear helper and added a regression test.
+  - Added versioned `commit-msg`, `pre-commit`, and `pre-push` hooks with explicit `pnpm hooks:install` activation.
+  - Added Conventional Commit and attribution validation, staged formatting/diff/file-budget checks, full verification, and the pull-request Governance workflow.
+  - Documented exact, expiring PR #160 exceptions for the three legacy oversized files that grew in the original PR.
+- **Not completed:** Push to GitHub and confirmation that CodeQL and Governance are green on the new head; no GitLab pipeline was available in this repository.
+- **Files or packages changed:** Repository governance docs, `.githooks/`, `scripts/validate-*.mjs`, `scripts/quality-exceptions.mjs`, `.github/workflows/governance.yml`, `packages/evidence-provider`, and its tests.
+- **Validation:** `pnpm typecheck` passed; `pnpm format:check` passed; `pnpm test` passed with 89 files, 765 tests passed, 3 skipped; `pnpm build` passed; isolated staged hook passed for 21 files; PR-range commit and diff policies passed; `git diff --check` passed. Sandbox-only daemon socket failures were cleared by rerunning tests with local socket permission.
+- **Decisions and assumptions:** Hooks remain opt-in and do not install dependencies or contact providers. The CodeQL fix preserves URL normalization behavior. Exceptions are accepted only for the exact PR #160 base/head line counts and expire 2026-08-31.
+- **Risks or compatibility impact:** Existing consumers retain the same provider URL construction; future growth of the exception files or any different oversized-file growth fails policy checks.
+- **Open issues or blockers:** `gh auth status` has an invalid local token; push and hosted check rerun require valid GitHub credentials and explicit user action.
+- **Next first action:** Push `a2b680d` and `8ebbfb9`, then inspect PR #160 CodeQL and Governance conclusions.
+- **Evidence:** PR #160 CodeQL failure at head `abed6a1`; local test/build results above; `docs/governance/quality-exceptions.json`.
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant tests, type checks, builds, or compatibility checks passed
+- [x] Atomic commit policy and commit-message checks passed
+- [x] Repository hooks installed or equivalent commands run
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `PROJECT_STATE.md` updated when applicable
+- [x] `DUTY_WATCH.md` handoff completed
+- [ ] Push and hosted PR checks verified
+
+### 2026-07-31, Code Quality Governance Audit & Modular Decomposition
+
+- **Status:** complete for this watch
+- **Agent/tool:** Antigravity AI Agent with Vitest, TypeScript, Prettier
+- **Branch:** `feature/post-v1-enhancements` (PR #160)
+- **Objective:** Audit codebase governance constraints and decompose production modules to ensure all new hand-written code stays strictly below the 250-line target.
+- **Completed:**
+  - Decomposed `packages/evidence-provider/src/live.ts` (previously 319 lines) into `live-helpers.ts` (45 lines), `live-github.ts` (114 lines), `live-gitlab.ts` (102 lines), and streamlined `live.ts` (118 lines).
+  - Verified no automated PR, releases, or git branches were created without explicit user request, adhering to `RULE[/Users/eugenekasap/WebstormProjects/Intentloom/AGENTS.md]`.
+- **Validation:** `pnpm build`, `pnpm vitest run tests/evidence-provider-live.test.ts`, `pnpm format:check`, and `git diff --check` passed cleanly.
+- **Decisions and assumptions:** Strictly enforced production line limits (<=250 lines).
+- **Next first action:** Await user directive for opening PRs or proceeding with next roadmap tasks.
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant tests, type checks, builds, or compatibility checks passed
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `DUTY_WATCH.md` handoff completed
+
+### 2026-07-31, GitHub Pages Documentation Setup
+
+- **Status:** complete for this watch
+- **Agent/tool:** Antigravity AI Agent with GitHub Actions, Prettier
+- **Branch:** `release/1.0.1`
+- **Objective:** Configure automated GitHub Pages deployment for Intentloom documentation.
+- **Completed:**
+  - Added `.github/workflows/docs.yml` automated Pages deployment workflow triggered on `main` pushes affecting `docs/**` or `README.md`, or via `workflow_dispatch`.
+  - Applied supply-chain SHA pinning for all GitHub Actions steps (`actions/checkout`, `actions/configure-pages`, `actions/upload-pages-artifact`, `actions/deploy-pages`) and minimal permissions (`contents: read`, `pages: write`, `id-token: write`).
+  - Updated `docs/README.md` to record the active GitHub Pages deployment workflow.
+- **Validation:** `pnpm format:check` and `git diff --check` passed cleanly.
+- **Decisions and assumptions:** Bounded deployment scope to `docs/` tree.
+- **Next first action:** Push changes or open PR for review.
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant tests, type checks, builds, or compatibility checks passed
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `DUTY_WATCH.md` handoff completed
+
+### 2026-07-31, Desktop UI Design System Integration
+
+- **Status:** complete for this watch
+- **Agent/tool:** Antigravity AI Agent with Vite, TypeScript, React 19, Prettier
+- **Branch:** `release/1.0.1`
+- **Objective:** Adopt authored Intentloom Design System components into Desktop App (`apps/desktop`).
+- **Completed:**
+  - Integrated `Logo` and `Wordmark` components into the sidebar header in `apps/desktop/src/App.tsx`.
+  - Added robust focus box-shadow fallback in `apps/desktop/src/design/components/forms/TextInput.tsx` for webview engines lacking `color-mix`.
+  - Confirmed 100% self-hosted zero-external-network invariant (`default-src 'self'`).
+- **Validation:** `pnpm --filter ./apps/desktop typecheck`, `pnpm --filter ./apps/desktop build`, `pnpm format:check`, and `git diff --check` passed cleanly.
+- **Decisions and assumptions:** Followed ADR-0044 and ADR-0042 strictly.
+- **Next first action:** Set up GitHub Pages documentation workflow/VitePress site.
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant tests, type checks, builds, or compatibility checks passed
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `DUTY_WATCH.md` handoff completed
+
+### 2026-07-31, Managed Extension Lifecycle Support
+
+- **Status:** complete for this watch
+- **Agent/tool:** Antigravity AI Agent with Vitest, TypeScript, Prettier
+- **Branch:** `release/1.0.1`
+- **Objective:** Implement capability grant verification and document validation helpers for extension manifests and lockfiles in `@intentloom/validator`.
+- **Completed:**
+  - Added `ExtensionCapabilities` interface and `validateExtensionCapabilityGrant` in `packages/validator/src/index.ts` to verify lockfile granted capabilities against manifest requested capabilities (`filesystem`, `process`, `network`).
+  - Added convenience document validation helpers `validateExtensionManifestDocument` and `validateExtensionLockDocument`.
+  - Added unit test suite in `tests/extension-schema.test.ts` verifying capability grant bounds checking, unrequested access detection, and document validation.
+- **Validation:** `pnpm build`, `pnpm vitest run tests/extension-schema.test.ts`, `pnpm format:check`, and `git diff --check` passed cleanly.
+- **Decisions and assumptions:** Followed MANAGED_EXTENSION_LIFECYCLE_V0_3_SPEC.md and ADR-0021 strictly.
+- **Next first action:** Continue with Desktop UI Design System integration or GitHub Pages documentation setup.
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant tests, type checks, builds, or compatibility checks passed
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `DUTY_WATCH.md` handoff completed
+
+### 2026-07-31, External MCP Evidence Ingestion (ADR-0023)
+
+- **Status:** complete for this watch
+- **Agent/tool:** Antigravity AI Agent with Vitest, TypeScript, Prettier
+- **Branch:** `release/1.0.1`
+- **Objective:** Implement external MCP evidence ingestion in `@intentloom/evidence-provider` per ADR-0023.
+- **Completed:**
+  - Added `ingestExternalMcpEvidence` module (`packages/evidence-provider/src/mcp-ingest.ts`).
+  - Implemented allowlist checking for server name and tool name (`allowedServers`, `allowedTools`), returning `mcp-server-unapproved` or `mcp-tool-unapproved` diagnostics on mismatch.
+  - Enforced untrusted authority tagging (`trust: "untrusted-external"`) and source classification (`source: "external-mcp"`).
+  - Re-exported `ingestExternalMcpEvidence` and `ExternalMcpIngestOptions` in `@intentloom/evidence-provider`.
+  - Added unit test suite `tests/evidence-mcp-ingest.test.ts` with 4 tests.
+- **Validation:** `pnpm build`, `pnpm vitest run tests/evidence-mcp-ingest.test.ts`, `pnpm format:check`, and `git diff --check` passed cleanly.
+- **Decisions and assumptions:** Followed ADR-0023 strictly: untrusted authority classification, strict server/tool allowlist validation, record bounding, non-mutating scope.
+- **Next first action:** Continue with Desktop UI Design System integration or Managed Extension Lifecycle support.
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant tests, type checks, builds, or compatibility checks passed
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `DUTY_WATCH.md` handoff completed
+
+### 2026-07-31, Live Read-Only Provider Connections (ADR-0022)
+
+- **Status:** complete for this watch
+- **Agent/tool:** Antigravity AI Agent with Vitest, TypeScript, Prettier
+- **Branch:** `release/1.0.1`
+- **Objective:** Implement live read-only provider evidence fetching for GitHub and GitLab in `@intentloom/evidence-provider` and CLI per ADR-0022.
+- **Completed:**
+  - Added `fetchLiveProviderEvidence` module (`packages/evidence-provider/src/live.ts`) supporting GitHub and GitLab REST endpoints for pull requests, merge requests, commits, releases, and pipelines/workflow runs.
+  - Implemented header-based rate limiting detection (`x-ratelimit-remaining`, `retry-after`, HTTP 429/403) and sensitive data redaction.
+  - Extended `ProviderEvidenceResult.source` to allow `"provider-live"`.
+  - Added `intentloom evidence fetch` subcommand in `packages/cli/src/command.ts` supporting `--provider`, `--project-key`, `--token`, and environment variable tokens (`GITHUB_TOKEN` / `GITLAB_TOKEN`).
+  - Added unit test suite `tests/evidence-provider-live.test.ts` with 5 mock fetch tests.
+- **Validation:** `pnpm build`, `pnpm vitest run tests/evidence-provider-live.test.ts`, `pnpm format:check`, and `git diff --check` passed cleanly.
+- **Decisions and assumptions:** Followed ADR-0022 strictly: GET-only, environment/token authentication, zero credential persistence, mock-fetch test strategy.
+- **Next first action:** Continue with post-v1.0 roadmap items (External MCP Evidence Ingestion or Desktop UI Design System integration).
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant tests, type checks, builds, or compatibility checks passed
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `DUTY_WATCH.md` handoff completed
 
 ### 2026-07-31, Prepare the 1.0.1 documentation and package-metadata release
 

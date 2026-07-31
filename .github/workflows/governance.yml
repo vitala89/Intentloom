@@ -1,0 +1,28 @@
+name: Governance
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  policy:
+    name: Commit and change policy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository history
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 22
+
+      - name: Validate commit messages and attribution policy
+        run: node scripts/validate-commit-range.mjs --range "${{ github.event.pull_request.base.sha }}..${{ github.event.pull_request.head.sha }}"
+
+      - name: Validate diff whitespace and production file budgets
+        run: node scripts/validate-diff.mjs --base "${{ github.event.pull_request.base.sha }}" --head "${{ github.event.pull_request.head.sha }}"

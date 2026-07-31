@@ -49,6 +49,8 @@ A task is not complete until the agent has:
 - updated `PROJECT_STATE.md` when the durable current state changed;
 - appended or updated `DUTY_WATCH.md` with the completed work and next handoff;
 - updated roadmap, ADR, migration notes, or changelog when applicable;
+- confirmed the atomic-commit protocol and ran the repository hooks or their
+  equivalent commands;
 - created commits and a pull request according to repository workflow.
 
 Never claim completion without evidence. Never invent completed milestones, test

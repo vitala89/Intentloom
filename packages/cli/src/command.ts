@@ -130,6 +130,7 @@ import {
   createReleaseTimeline,
 } from "@intentloom/evidence-git";
 import {
+  fetchLiveProviderEvidence,
   importProviderExport,
   type ProviderEvidenceResult,
   type ProviderName,
@@ -1328,9 +1329,29 @@ export async function runCli(
       const provider = parsed.values.get("--provider");
       const file = parsed.values.get("--file");
       const projectKey = parsed.values.get("--project-key");
+      const token = parsed.values.get("--token");
       if (provider !== "github" && provider !== "gitlab")
         throw new CliUsageError("--provider must be github or gitlab");
-      if (!file || !projectKey)
+      if (!projectKey)
+        throw new CliUsageError(
+          `evidence ${evidenceSubcommand} requires --project-key`,
+        );
+
+      if (evidenceSubcommand === "fetch") {
+        const liveResult = await fetchLiveProviderEvidence({
+          provider: provider as ProviderName,
+          projectKey,
+          ...(token ? { token } : {}),
+        });
+        io.stdout(
+          parsed.flags.has("--json")
+            ? JSON.stringify(liveResult, null, 2)
+            : formatProviderEvidence(liveResult),
+        );
+        return liveResult.status === "invalid" ? 3 : 0;
+      }
+
+      if (!file)
         throw new CliUsageError(
           `evidence ${evidenceSubcommand} requires --file and --project-key`,
         );
