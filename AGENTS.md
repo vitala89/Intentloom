@@ -2,7 +2,8 @@
 
 This file is the default instruction entry for repository agents. Before every
 task, read `AGENT_START_HERE.md`, `PROJECT_STATE.md`, the latest entry in
-`DUTY_WATCH.md`, `docs/governance/ENGINEERING_PRINCIPLES.md`, and
+`DUTY_WATCH.md`, `docs/governance/ENGINEERING_PRINCIPLES.md`,
+`docs/governance/CODE_QUALITY_STANDARDS.md`, and
 `docs/governance/AI_AGENT_WORKFLOW.md`.
 
 Do not begin implementation from the user prompt alone. Verify current state
@@ -24,6 +25,39 @@ important claims affect the task.
   without a demonstrated consumer or roadmap trigger.
 - Never invent completed work, test outcomes, releases, versions, pull requests,
   milestones, or repository state.
+
+## Code quality and decomposition
+
+Before changing implementation code, inspect the affected module boundaries,
+current tests, formatted file size, and expected growth. Follow
+`docs/governance/CODE_QUALITY_STANDARDS.md`.
+
+Mandatory defaults for hand-written code:
+
+- prefer production files at or below 250 lines;
+- begin refactoring review above 300 lines;
+- do not create or substantially expand a production file beyond 400 lines
+  without a documented, approved exception;
+- prefer functions at or below 40 lines and do not exceed 80 lines without an
+  approved exception;
+- do not increase an existing oversized file merely because it already exceeds
+  the limit;
+- when a meaningful change touches an oversized file, extract a cohesive
+  responsibility or record a concrete decomposition follow-up;
+- add or update tests for every behavior change and regression tests for bug
+  fixes when safely expressible;
+- preserve Clean Architecture dependency direction and keep side effects behind
+  narrow typed boundaries;
+- use SOLID, DRY, KISS, YAGNI, and composition as judgment tools, not as a reason
+  to add unused layers or interfaces.
+
+Do not game a line limit by compressing statements, removing useful names, or
+moving unrelated behavior into generic helper modules. Generated, vendored,
+lock, snapshot, schema, and declarative data files follow the documented
+exemption rules.
+
+A pull request that uses an exception must name the rule, measured value, reason,
+scope, owner or responsible area, and expiry or review trigger.
 
 ## Authorship and attribution
 
