@@ -26,7 +26,7 @@ Known open items, in the order they should be handled:
    the npm trusted publisher and the `npm-publish` environment reviewer so the
    next release publishes with provenance.
 3. `homepageUrl` points at the npm package page as an interim target. Repoint it
-   when `intentloom.vitaliikasap.com` is live; no hosting is configured yet.
+   when the GitHub Pages site is live; no hosting is configured yet.
 4. Dependabot alert #2 (`glib@0.18.5`, transitive, medium) carries an approved
    exception that expires 2026-10-29.
 5. Branch and tag protection rules for `main` and `v*` are not recorded anywhere
@@ -105,7 +105,7 @@ entry directly below this section.
   - Applied the logo by reference rather than by copy. `README.md` points at `apps/desktop/src/design/assets/logo-mark.svg`, the ADR-0044 master. `logo-mark.svg` is pure path geometry with no `<text>`, so it is unaffected by the outstanding ADR-0044 follow-up about lockup and stacked masters falling back to an unavailable font outside the application.
   - Reconciled the dist-tag claim across `RELEASE_STATE.md`, `PROJECT_STATE.md`, `SECURITY.md`, `docs/releases/PUBLISHING.md`, `docs/guides/GETTING_STARTED.md`, and `docs/reference/CLI.md`. `SECURITY.md` had claimed `1.0.0` was not published to npm at all.
   - Corrected the published-tarball shasum in `PROJECT_STATE.md`, which still recorded the `0.5.0-beta.1` value as current.
-  - Updated the GitHub repository description and replaced the topic list, adding `mcp`, `model-context-protocol`, `monorepo`, and `devtools` and dropping `open-source` to stay within the 20-topic limit. Set `homepageUrl` to the npm package page as an interim target, since `intentloom.vitaliikasap.com` is not live.
+  - Updated the GitHub repository description and replaced the topic list, adding `mcp`, `model-context-protocol`, `monorepo`, and `devtools` and dropping `open-source` to stay within the 20-topic limit. Set `homepageUrl` to the npm package page as an interim target, since the GitHub Pages site is not live yet.
   - Corrected two false claims in the published `[1.0.0]` release records, on maintainer instruction. Both the changelog entry and the GitHub release body listed the MCP server as `intentloom mcp serve --stdio`; `packages/cli/src/command.ts` has no `mcp` command, and the server is the separate `intentloom-mcp` binary from `@intentloom/mcp-server`, speaking `Content-Length`-framed JSON-RPC over stdio with an optional `--root`. Neither it nor `intentloomd` is published to npm, which the entries also did not say. The GitHub release body additionally still carried a "Not on npm yet" section and a dist-tag table showing `latest=0.1.0-alpha.3` and `next=0.5.0-beta.1`. Corrections are recorded in place with their date and the original wording described; the release scope itself is unchanged.
 - **Not completed:** Nothing deferred from the stated objective.
 - **Files or packages changed:** `README.md`, `packages/cli/README.md`, `CHANGELOG.md`, `DUTY_WATCH.md`, `PROJECT_STATE.md`, `SECURITY.md`, `docs/releases/RELEASE_STATE.md`, `docs/releases/PUBLISHING.md`, `docs/guides/GETTING_STARTED.md`, `docs/reference/CLI.md`. No source changed. GitHub repository description, topics, and homepage, and the `v1.0.0` release body, changed outside the tree.
