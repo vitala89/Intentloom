@@ -9,7 +9,7 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **v1.0.0 tagged in Git, not published to npm** — PR #138 merged as `db61be9`; tag `v1.0.0` (`f9fc326`) pushed to `origin`; post-merge Compatibility (run 30529498050) and CodeQL (run 30529497908) green. npm `latest` is still `0.1.0-alpha.3` and `next` is still `0.5.0-beta.1`. No GitHub release exists for `v1.0.0`.
+Status: **v1.0.0 tagged in Git, not published to npm** — PR #138 merged as `a148f2f`; tag `v1.0.0` (`c1205a8`) pushed to `origin`; post-merge Compatibility (run 30529498050) and CodeQL (run 30529497908) green. npm `latest` is still `0.1.0-alpha.3` and `next` is still `0.5.0-beta.1`. No GitHub release exists for `v1.0.0`.
 
 Active branch: `chore/post-v1-doc-and-ci-hardening`
 
@@ -62,7 +62,7 @@ entry directly below this section.
 - **Status:** complete for this watch
 - **Agent/tool:** Claude Code (Opus 5) with Git, GitHub CLI, npm, pnpm, Prettier
 - **Branch:** `docs/record-npm-publication`
-- **Base:** `main` / `origin/main` at `d2a7b49` (PR #140 merge)
+- **Base:** `main` / `origin/main` at `8fa2c19` (PR #140 merge)
 - **Objective:** replace the "not published" records with what the registry actually reports, now that the maintainer has published.
 - **Completed:**
   - Verified the registry directly. `npm view intentloom dist-tags` reports `latest=0.1.0-alpha.3` and `next=1.0.0`. `intentloom@1.0.0` exists with shasum `434fcb624ddb3706502a29ad96b27aee36df675c`, 70 files, 981107 bytes unpacked.
@@ -96,7 +96,7 @@ entry directly below this section.
 - **Status:** complete for this watch
 - **Agent/tool:** Claude Code (Opus 5) with Git, GitHub CLI, npm, Prettier
 - **Branch:** `chore/release-trusted-publishing`
-- **Base:** `main` / `origin/main` at `c0ea8ce` (PR #139 merge)
+- **Base:** `main` / `origin/main` at `10c9977` (PR #139 merge)
 - **Objective:** put the approved publication path in place so the first stable npm release carries provenance, and close the missing GitHub release.
 - **Completed:**
   - Added `.github/workflows/release.yml`, publishing through npm trusted publishing (OIDC). No npm token is used or referenced. It is dispatch-only, refuses any ref other than `main` or a `v*` tag, runs in the protected `npm-publish` environment, and `dry_run` defaults to `true`. It asserts the npm and Node versions that trusted publishing requires, asserts the dispatched version against `packages/cli/package.json`, fails if the build modifies tracked files, and records the tarball integrity and file list in the run summary and as an artifact.
@@ -132,7 +132,7 @@ entry directly below this section.
 - **Status:** complete for this watch
 - **Agent/tool:** Claude Code (Opus 5) with Git, pnpm, Vite, TypeScript, Prettier, Claude Design MCP
 - **Branch:** `feat/desktop-design-system`
-- **Base:** `main` / `origin/main` at `db61be9`
+- **Base:** `main` / `origin/main` at `a148f2f`
 - **Objective:** import the authored Intentloom Design System into `apps/desktop` without weakening the local-first boundary.
 - **Completed:**
   - Imported the token layer, six component groups (`brand`, `code`, `core`, `data`, `evidence`, `forms`; 26 components), and the vector logo masters into `apps/desktop/src/design/`. Dependency analysis confirmed the six groups are self-contained, with `react` as their only external module.
@@ -168,7 +168,7 @@ entry directly below this section.
 - **Status:** complete for this watch
 - **Agent/tool:** Claude Code (Fable 5 / Opus 5) with Git, GitHub CLI, npm, Prettier
 - **Branch:** `chore/post-v1-doc-and-ci-hardening`
-- **Base:** `main` / `origin/main` at `db61be9` (PR #138 merge)
+- **Base:** `main` / `origin/main` at `a148f2f` (PR #138 merge)
 - **Commits:** see pull request
 - **Pull request:** see PR opened from this branch
 - **Objective:** correct release-status records that overstated what had shipped, and close the concrete supply-chain gaps found in a post-release security review.
@@ -189,7 +189,7 @@ entry directly below this section.
 - **Risks or compatibility impact:** None to the shipped package. Pinned actions no longer receive silent upstream fixes; Dependabot now supplies them as reviewable pull requests.
 - **Open issues or blockers:** Configure npm trusted publishing and provenance before the first stable publication. Dependabot alert #2 exception expires 2026-10-29.
 - **Next first action:** Merge this pull request, then decide whether to configure trusted publishing before authorizing `intentloom@1.0.0`.
-- **Evidence:** `npm view intentloom dist-tags` on 2026-07-30; post-merge Compatibility run 30529498050 and CodeQL run 30529497908 on `db61be9`.
+- **Evidence:** `npm view intentloom dist-tags` on 2026-07-30; post-merge Compatibility run 30529498050 and CodeQL run 30529497908 on `a148f2f`.
 
 #### Duty completion checklist
 
@@ -208,7 +208,7 @@ entry directly below this section.
 - **Status:** complete for this watch; `release/v1.0.0` branch prepared with `1.0.0` workspace version, `sync-version.mjs` run, and `CHANGELOG.md` entry
 - **Agent/tool:** Antigravity AI Agent with Git, Node.js, Vitest, and Prettier
 - **Branch:** `release/v1.0.0`
-- **Base:** `main` / `origin/main` at `3da811e` (PR #137 merge)
+- **Base:** `main` / `origin/main` at `3f3247f` (PR #137 merge)
 - **Completed:** Bumped root `package.json` version to `1.0.0`, ran `node scripts/sync-version.mjs` to synchronize version across all workspace packages and `packages/core/src/version.ts`, ran `pnpm build`, updated `CHANGELOG.md` with `[1.0.0] - 2026-07-30` release section, updated `RELEASE_STATE.md`, and validated workspace formatting and test suite.
 - **Validation:** `pnpm build` passed cleanly; `pnpm format:check` and `git diff --check` passed.
 - **Not completed:** Merging release PR to `main`, tagging `v1.0.0`, pushing tag, and publishing npm package.
@@ -227,45 +227,45 @@ entry directly below this section.
 
 ### 2026-07-30, Phase 5: Maintainer release-gate sign-off & readiness audit approval for v1.0.0
 
-- **Status:** complete for this watch; v1.0 release gate is CLOSED / APPROVED by maintainer on commit `65f3886`
+- **Status:** complete for this watch; v1.0 release gate is CLOSED / APPROVED by maintainer on commit `46d3a2e`
 - **Agent/tool:** Antigravity AI Agent with Git, GitHub CLI, GitHub Actions, CodeQL, and governance tools
 - **Branch:** `codex/v1-phase5-release-gate-approved-state`
-- **Base:** `main` / `origin/main` at `65f3886` (PR #135 merge)
-- **Completed:** Recorded maintainer sign-off on all 5 Phase 5 release-gate decisions: (1) Approved `SUPPORT_POLICY_V1.md`, (2) Approved temporary transitive exception for Dependabot alert #2 (`glib@0.18.5`) expiring 2026-10-29, (3) Accepted dogfooding evidence under `dogfooding/`, (4) Accepted clean-room & explicit-path evidence as sufficient for baseline `65f3886`, and (5) Approved `65f3886` as the exact `v1.0.0` release commit. Updated `V1_0_READINESS_AUDIT.md` (Status: CLOSED / APPROVED), `V1_0_RELEASE_GATE_PACKET.md`, `SUPPORT_POLICY_V1.md`, `V1_SECURITY_AND_SUPPLY_CHAIN_AUDIT.md`, `RELEASE_STATE.md`, and `DUTY_WATCH.md`.
-- **Validation:** Candidate commit `65f3886` passed post-merge Compatibility run [30527543027](https://github.com/vitala89/Intentloom/actions/runs/30527543027) (6/6 jobs) and CodeQL run [30527542998](https://github.com/vitala89/Intentloom/actions/runs/30527542998). Local `pnpm format:check` and `git diff --check` passed cleanly.
-- **Decisions and assumptions:** Treat commit `65f3886` as the fully approved `v1.0.0` release baseline.
-- **Next first action:** Create and push `v1.0.0` release tag on `65f3886` when instructed, and complete npm publication procedures.
+- **Base:** `main` / `origin/main` at `46d3a2e` (PR #135 merge)
+- **Completed:** Recorded maintainer sign-off on all 5 Phase 5 release-gate decisions: (1) Approved `SUPPORT_POLICY_V1.md`, (2) Approved temporary transitive exception for Dependabot alert #2 (`glib@0.18.5`) expiring 2026-10-29, (3) Accepted dogfooding evidence under `dogfooding/`, (4) Accepted clean-room & explicit-path evidence as sufficient for baseline `46d3a2e`, and (5) Approved `46d3a2e` as the exact `v1.0.0` release commit. Updated `V1_0_READINESS_AUDIT.md` (Status: CLOSED / APPROVED), `V1_0_RELEASE_GATE_PACKET.md`, `SUPPORT_POLICY_V1.md`, `V1_SECURITY_AND_SUPPLY_CHAIN_AUDIT.md`, `RELEASE_STATE.md`, and `DUTY_WATCH.md`.
+- **Validation:** Candidate commit `46d3a2e` passed post-merge Compatibility run [30527543027](https://github.com/vitala89/Intentloom/actions/runs/30527543027) (6/6 jobs) and CodeQL run [30527542998](https://github.com/vitala89/Intentloom/actions/runs/30527542998). Local `pnpm format:check` and `git diff --check` passed cleanly.
+- **Decisions and assumptions:** Treat commit `46d3a2e` as the fully approved `v1.0.0` release baseline.
+- **Next first action:** Create and push `v1.0.0` release tag on `46d3a2e` when instructed, and complete npm publication procedures.
 - **Evidence:** `SUPPORT_POLICY_V1.md`, `V1_0_RELEASE_GATE_PACKET.md`, `V1_0_READINESS_AUDIT.md`, `V1_SECURITY_AND_SUPPLY_CHAIN_AUDIT.md`, `RELEASE_STATE.md`, [Compatibility run 30527543027](https://github.com/vitala89/Intentloom/actions/runs/30527543027), [CodeQL run 30527542998](https://github.com/vitala89/Intentloom/actions/runs/30527542998).
 
 #### Duty completion checklist
 
 - [x] Support policy approved and recorded
 - [x] Dependabot alert #2 exception approved and recorded (expiring 2026-10-29)
-- [x] Dogfooding & clean-room evidence accepted for `65f3886`
+- [x] Dogfooding & clean-room evidence accepted for `46d3a2e`
 - [x] Readiness audit closed as APPROVED
 - [x] Release gate packet signed off
 - [x] `pnpm format:check` and `git diff --check` passed
 
 ### 2026-07-30, Phase 5: PR #131–#136 merges, post-merge CodeQL/Compatibility runs retention, and state reconciliation
 
-- **Status:** complete for this watch; PR #131–#136 merged into `main` at `65f3886`; post-merge CodeQL & Compatibility runs green; stable-release gate active
+- **Status:** complete for this watch; PR #131–#136 merged into `main` at `46d3a2e`; post-merge CodeQL & Compatibility runs green; stable-release gate active
 - **Agent/tool:** Antigravity AI Agent with Git, GitHub CLI, GitHub Actions, CodeQL, and Dependabot
 - **Branch:** `codex/v1-phase5-post-merge-pr135-state`
-- **Base:** `main` / `origin/main` at `65f3886` (PR #135 merge)
+- **Base:** `main` / `origin/main` at `46d3a2e` (PR #135 merge)
 - **Pull request:** PR #131, PR #132, PR #133, PR #134, PR #135, PR #136 merged into `main`. No tag, npm publication, or release authorization was inferred.
-- **Completed:** Verified maintainer merges of PR #131 (`5dc9313`), PR #132 (`3360e93`), PR #136 (`221e97e`), PR #133 (`85f0ad3`), PR #134 (`ba5e870`), and PR #135 (`65f3886`). Verified post-merge CodeQL run `30527542998` (both Actions and JS/TS analyses passed) and post-merge Compatibility run `30527543027` (6/6 jobs passed). Reconciled `PROJECT_STATE.md`, `RELEASE_STATE.md`, `V1_0_READINESS_AUDIT.md`, `V1_0_RELEASE_GATE_PACKET.md`, and `DUTY_WATCH.md`. Fast-forwarded local `main`.
+- **Completed:** Verified maintainer merges of PR #131 (`5dc9313`), PR #132 (`7165b5d`), PR #136 (`350ad1e`), PR #133 (`cd31214`), PR #134 (`4bad874`), and PR #135 (`46d3a2e`). Verified post-merge CodeQL run `30527542998` (both Actions and JS/TS analyses passed) and post-merge Compatibility run `30527543027` (6/6 jobs passed). Reconciled `PROJECT_STATE.md`, `RELEASE_STATE.md`, `V1_0_READINESS_AUDIT.md`, `V1_0_RELEASE_GATE_PACKET.md`, and `DUTY_WATCH.md`. Fast-forwarded local `main`.
 - **Validation:** Post-merge Compatibility run [30527543027](https://github.com/vitala89/Intentloom/actions/runs/30527543027) passed all six Ubuntu, macOS, and Windows Node 22/24 jobs. Post-merge CodeQL run [30527542998](https://github.com/vitala89/Intentloom/actions/runs/30527542998) passed both Actions and JS/TS analyses. Local `pnpm format:check` and `git diff --check` passed.
-- **Not completed:** Maintainer decisions for support policy approval, glib alert #2 disposition, real-project dogfooding acceptance or refresh, clean-room evidence sufficiency decision for current commit `65f3886`, and final maintainer release approval remain open.
-- **Decisions and assumptions:** Treat `65f3886` as the current verified `main` release candidate. Do not create a tag or publish a release without explicit maintainer authorization.
+- **Not completed:** Maintainer decisions for support policy approval, glib alert #2 disposition, real-project dogfooding acceptance or refresh, clean-room evidence sufficiency decision for current commit `46d3a2e`, and final maintainer release approval remain open.
+- **Decisions and assumptions:** Treat `46d3a2e` as the current verified `main` release candidate. Do not create a tag or publish a release without explicit maintainer authorization.
 - **Next first action:** Review the updated Phase 5 packet with the maintainer to obtain formal release decisions.
-- **Evidence:** `main` commit `65f3886`, [Compatibility run 30527543027](https://github.com/vitala89/Intentloom/actions/runs/30527543027), [CodeQL run 30527542998](https://github.com/vitala89/Intentloom/actions/runs/30527542998).
+- **Evidence:** `main` commit `46d3a2e`, [Compatibility run 30527543027](https://github.com/vitala89/Intentloom/actions/runs/30527543027), [CodeQL run 30527542998](https://github.com/vitala89/Intentloom/actions/runs/30527542998).
 
 #### Duty completion checklist
 
 - [x] PR #131–#136 verified merged on `main`
 - [x] Post-merge Compatibility run `30527543027` verified green (6/6 jobs)
 - [x] Post-merge CodeQL run `30527542998` verified green
-- [x] Local `main` fast-forwarded to `65f3886`
+- [x] Local `main` fast-forwarded to `46d3a2e`
 - [x] Project state, release readiness audit, and release gate packet updated
 - [x] `pnpm format:check` and `git diff --check` passed
 

@@ -58,7 +58,7 @@ the stable support promise unless separately approved:
 ## Release-state separation
 
 Merged code, release tags, and npm artifacts are separate evidence boundaries.
-The v1.0 support promise is active for approved release candidate `65f3886`.
+The v1.0 support promise is active for approved release candidate `46d3a2e`.
 
 Current pre-release artifacts and their provenance are recorded in
 [RELEASE_STATE.md](RELEASE_STATE.md).
@@ -66,6 +66,6 @@ Current pre-release artifacts and their provenance are recorded in
 ## Approval record
 
 - Maintainer: Vitalii (vitala89)
-- Approved commit: `65f3886`
+- Approved commit: `46d3a2e`
 - Approval date: 2026-07-30
 - Release/tag authorization: Approved for `v1.0.0`

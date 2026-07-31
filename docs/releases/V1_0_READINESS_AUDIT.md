@@ -1,26 +1,26 @@
 # Intentloom v1.0 Readiness Audit
 
-Status: CLOSED / APPROVED FOR V1.0 RELEASE on `main` commit `65f3886`.
+Status: CLOSED / APPROVED FOR V1.0 RELEASE on `main` commit `46d3a2e`.
 
 Date: 2026-07-30.
 
-Approved baseline: `65f3886` (`main` and `origin/main` after PR #131–#136 merges). All Phase 5 release-gate requirements and maintainer decisions are approved.
+Approved baseline: `46d3a2e` (`main` and `origin/main` after PR #131–#136 merges). All Phase 5 release-gate requirements and maintainer decisions are approved.
 
 ## Decision summary
 
 The Phase 1–4 implementation evidence and the release-candidate Compatibility
 matrix are present in `main`. PR #117 through PR #136 added test harness timeouts, security baselines (`.github/dependabot.yml`, `.github/workflows/codeql.yml`), Dependabot updates (`getrandom`, `@types/node`, `vite`, `prettier`), `.prettierignore`, and documentation reconciliations.
-The post-merge run for `65f3886` passed all six Compatibility jobs ([run 30527543027](https://github.com/vitala89/Intentloom/actions/runs/30527543027)) and CodeQL security analysis ([run 30527542998](https://github.com/vitala89/Intentloom/actions/runs/30527542998)). The v1.0 release gate is **APPROVED** following maintainer sign-off on [SUPPORT_POLICY_V1.md](SUPPORT_POLICY_V1.md), Dependabot alert #2 disposition (`glib@0.18.5`), dogfooding evidence, clean-room verification, and exact commit authorization.
+The post-merge run for `46d3a2e` passed all six Compatibility jobs ([run 30527543027](https://github.com/vitala89/Intentloom/actions/runs/30527543027)) and CodeQL security analysis ([run 30527542998](https://github.com/vitala89/Intentloom/actions/runs/30527542998)). The v1.0 release gate is **APPROVED** following maintainer sign-off on [SUPPORT_POLICY_V1.md](SUPPORT_POLICY_V1.md), Dependabot alert #2 disposition (`glib@0.18.5`), dogfooding evidence, clean-room verification, and exact commit authorization.
 
 ## Phase evidence
 
 | Phase                             | Evidence                                                                                                                                                                        | Assessment                                                                         |
 | --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
 | 1 — Stable compatibility contract | [ADR-0043](../decisions/ADR-0043-v1-stable-compatibility-contract-and-deprecation-policy.md), `tests/v1-compatibility-contract.test.ts`                                         | Evidence present; contract approved in ADR                                         |
-| 2 — Upgrade and protocol path     | [MIGRATION_GUIDE_V1.md](MIGRATION_GUIDE_V1.md), `tests/v1-upgrade-migration-path.test.ts`                                                                                       | Approved; verified on `65f3886`                                                    |
-| 3 — Client-surface readiness      | [CLIENT_SURFACE_EQUIVALENCE.md](../compatibility/CLIENT_SURFACE_EQUIVALENCE.md), `tests/v1-client-surface-equivalence.test.ts`                                                  | Approved; verified on `65f3886`                                                    |
+| 2 — Upgrade and protocol path     | [MIGRATION_GUIDE_V1.md](MIGRATION_GUIDE_V1.md), `tests/v1-upgrade-migration-path.test.ts`                                                                                       | Approved; verified on `46d3a2e`                                                    |
+| 3 — Client-surface readiness      | [CLIENT_SURFACE_EQUIVALENCE.md](../compatibility/CLIENT_SURFACE_EQUIVALENCE.md), `tests/v1-client-surface-equivalence.test.ts`                                                  | Approved; verified on `46d3a2e`                                                    |
 | 4 — Security and supply chain     | [V1_SECURITY_AND_SUPPLY_CHAIN_AUDIT.md](../security/V1_SECURITY_AND_SUPPLY_CHAIN_AUDIT.md), `tests/v1-security-supply-chain.test.ts`, `.github/workflows/dependency-review.yml` | Approved; CodeQL green; Dependabot alert #2 exception active (expiring 2026-10-29) |
-| 5 — Stable release gate           | This document, [SUPPORT_POLICY_V1.md](SUPPORT_POLICY_V1.md), [V1_0_RELEASE_GATE_PACKET.md](V1_0_RELEASE_GATE_PACKET.md)                                                         | CLOSED / APPROVED by maintainer for `v1.0.0` release on commit `65f3886`           |
+| 5 — Stable release gate           | This document, [SUPPORT_POLICY_V1.md](SUPPORT_POLICY_V1.md), [V1_0_RELEASE_GATE_PACKET.md](V1_0_RELEASE_GATE_PACKET.md)                                                         | CLOSED / APPROVED by maintainer for `v1.0.0` release on commit `46d3a2e`           |
 
 ## Stable-release checklist
 

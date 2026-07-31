@@ -6,8 +6,8 @@ Historical release audits and roadmap sections retain their original scope, but
 this document is the source of truth for the current status.
 
 Snapshot: 2026-07-31
-Main commit: `d2a7b49` (PR #140 merged)
-Release commit: `db61be9` (tagged `v1.0.0` as `f9fc326`)
+Main commit: `8fa2c19` (PR #140 merged)
+Release commit: `a148f2f` (tagged `v1.0.0` as `c1205a8`)
 Workspace version: `1.0.0`
 Git tag: `v1.0.0` (pushed to `origin`)
 GitHub release: [`v1.0.0`](https://github.com/vitala89/Intentloom/releases/tag/v1.0.0), published 2026-07-30
@@ -199,8 +199,8 @@ maintainer authorizes it, then update this section.
   runtime, package, or dependency behavior changed.
 - PR [#131](https://github.com/vitala89/Intentloom/pull/131) is merged as `5dc9313` (adds `.github/dependabot.yml` and `.github/workflows/codeql.yml`).
 - PR [#132](https://github.com/vitala89/Intentloom/pull/132) (`getrandom`), PR [#133](https://github.com/vitala89/Intentloom/pull/133) (`@types/node`), PR [#134](https://github.com/vitala89/Intentloom/pull/134) (`vite`), and PR [#135](https://github.com/vitala89/Intentloom/pull/135) (`prettier`) are merged via Dependabot.
-- PR [#136](https://github.com/vitala89/Intentloom/pull/136) is merged as `221e97e` (adds `.prettierignore`).
-- The latest `main` candidate `65f3886` passed post-merge [Compatibility run 30527543027](https://github.com/vitala89/Intentloom/actions/runs/30527543027) (6/6 matrix jobs) and post-merge [CodeQL run 30527542998](https://github.com/vitala89/Intentloom/actions/runs/30527542998) (Actions and JS/TS analyses).
+- PR [#136](https://github.com/vitala89/Intentloom/pull/136) is merged as `350ad1e` (adds `.prettierignore`).
+- The latest `main` candidate `46d3a2e` passed post-merge [Compatibility run 30527543027](https://github.com/vitala89/Intentloom/actions/runs/30527543027) (6/6 matrix jobs) and post-merge [CodeQL run 30527542998](https://github.com/vitala89/Intentloom/actions/runs/30527542998) (Actions and JS/TS analyses).
 - Supplemental exact-candidate clean-room, explicit-path, and three-scenario
   records are retained under
   [`docs/releases/dogfooding/`](dogfooding/2026-07-29-v1-candidate-clean-room-explicit-path.md);
