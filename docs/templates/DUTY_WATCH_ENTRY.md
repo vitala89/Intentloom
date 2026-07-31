@@ -24,6 +24,8 @@
 - [ ] Formatter passed
 - [ ] Markdown and lint checks passed when configured
 - [ ] Relevant tests, type checks, builds, or compatibility checks passed
+- [ ] Atomic commit policy and commit-message checks passed
+- [ ] Repository hooks installed or equivalent commands run
 - [ ] `git diff --check` passed
 - [ ] Final diff reviewed
 - [ ] `PROJECT_STATE.md` updated when applicable

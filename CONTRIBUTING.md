@@ -67,12 +67,19 @@ limit, reason, scope, responsible area, and expiry or review trigger.
 
 ## Delivery workflow
 
-1. Create a focused branch for each task.
-2. Open a pull request with its scope, validation, architecture impact,
+1. Install the repository hooks once per checkout with `pnpm hooks:install`.
+2. Create a focused branch for each task.
+3. Keep every commit atomic and independently reviewable. Keep implementation,
+   its tests, and required documentation together; split unrelated features,
+   refactors, formatting-only changes, CI changes, and release metadata.
+4. Use a Conventional Commit subject in the form
+   `<type>(<optional-scope>): <summary>`.
+5. Run `pnpm verify:staged` before committing and `pnpm verify` before pushing.
+6. Open a pull request with its scope, validation, architecture impact,
    decomposition evidence, exceptions, and changelog impact.
-3. Update `CHANGELOG.md` in the same PR when the change is user-visible.
-4. Merge only after required checks and review pass.
-5. Verify the resulting `main` commit before beginning release work.
+7. Update `CHANGELOG.md` in the same PR when the change is user-visible.
+8. Merge only after required checks and review pass.
+9. Verify the resulting `main` commit before beginning release work.
 
 Commit and pull request text must not contain `Co-Authored-By` trailers,
 generated-with footers, or other attribution for an assistant, model, agent,

@@ -1,0 +1,38 @@
+{
+  "version": 1,
+  "exceptions": [
+    {
+      "path": "apps/desktop/src/App.tsx",
+      "rule": "existing-oversized-growth",
+      "baseLines": 2241,
+      "headLines": 2246,
+      "reason": "PR #160 integrates the authored brand components in the existing Desktop shell; extracting the shell is deferred to the next Desktop surface change.",
+      "owner": "Desktop maintainers",
+      "scope": "PR #160",
+      "reviewTrigger": "Extract the Desktop shell before the next behavior change touching App.tsx.",
+      "expires": "2026-08-31"
+    },
+    {
+      "path": "packages/cli/src/command.ts",
+      "rule": "existing-oversized-growth",
+      "baseLines": 3467,
+      "headLines": 3488,
+      "reason": "PR #160 adds the evidence fetch command beside the existing CLI router; extract the evidence command family before the next CLI feature.",
+      "owner": "CLI maintainers",
+      "scope": "PR #160",
+      "reviewTrigger": "Extract the evidence command family before the next behavior change touching command.ts.",
+      "expires": "2026-08-31"
+    },
+    {
+      "path": "packages/validator/src/index.ts",
+      "rule": "existing-oversized-growth",
+      "baseLines": 807,
+      "headLines": 900,
+      "reason": "PR #160 adds extension capability and document validators to the existing public validator barrel; extract the extension validator boundary before the next validator feature.",
+      "owner": "Validator maintainers",
+      "scope": "PR #160",
+      "reviewTrigger": "Extract extension validation from index.ts before the next behavior change touching this file.",
+      "expires": "2026-08-31"
+    }
+  ]
+}

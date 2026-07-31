@@ -128,7 +128,39 @@ hidden by opening a pull request. If a check cannot be completed, record the
 limitation and mark the watch `partial` or `blocked` when it prevents truthful
 completion.
 
-## 8. Commit and open the pull request
+## 8. Commit discipline and pull request
+
+Every commit must be an atomic, independently reviewable logical change.
+Atomic does not mean one file: implementation, its regression or behavior tests,
+and documentation required to keep the contract true belong together. Unrelated
+features, refactors, formatting sweeps, CI changes, release metadata, and
+roadmap updates belong in separate commits unless one is required for the same
+behavior to work.
+
+Commit subjects use:
+
+```text
+<type>(<optional-scope>): <imperative summary>
+```
+
+Supported types are `feat`, `fix`, `docs`, `chore`, `refactor`, `test`, `build`,
+`ci`, `perf`, `revert`, `release`, and `security`. Breaking changes use `!`.
+Commit bodies explain intent, compatibility, risks, or follow-up only when the
+subject is not sufficient. Agent, model, tool, and bot attribution is forbidden.
+
+Install the repository hooks once per checkout with `pnpm hooks:install`.
+`commit-msg` validates the subject and attribution policy; `pre-commit` checks
+staged formatting, whitespace, and production-file budgets; `pre-push` runs the
+full `pnpm verify` suite. The same commit and diff policy is checked in the
+`Governance` pull-request workflow, so hooks are a fast local guard rather than
+the only enforcement point.
+
+Before committing or pushing, the agent must inspect the staged diff, run the
+relevant checks, and record failures or unavailable checks in Duty Watch. A
+pull request may contain a short series of atomic commits, but no commit may
+mix independent concerns merely because they are being reviewed together.
+
+## 9. Commit and open the pull request
 
 The pull request must describe:
 
@@ -149,7 +181,7 @@ for an assistant, model, agent, tool, or bot.
 Do not mark the watch complete merely because files were edited. Completion
 requires a reviewable repository state and truthful handoff.
 
-## 9. Relieve the watch
+## 10. Relieve the watch
 
 The final Duty Watch entry must contain:
 
