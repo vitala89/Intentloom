@@ -8,7 +8,7 @@ The historical `v0.1.0-alpha.1` AIF tag remains unchanged.
 
 - Product: Intentloom
 - npm package and CLI: `intentloom`
-- Documentation proposal: `intentloom.vitaliikasap.com`
+- Documentation proposal: GitHub Pages
 - GitHub description proposal: Vendor-neutral framework for defining,
   validating, and synchronizing engineering intent across Claude Code, Codex,
   Cursor, and GitHub Copilot.

@@ -42,6 +42,5 @@ Repository governance:
 - [Security policy](../SECURITY.md)
 - [Project roadmap](../ROADMAP.md)
 
-The planned public site is `intentloom.vitaliikasap.com`. A future follow-up may
-use VitePress with GitHub Pages or Cloudflare Pages; this repository does not
-configure hosting or DNS.
+The planned public site will be hosted on GitHub Pages. A future follow-up may
+use VitePress; this repository does not configure hosting or DNS yet.
