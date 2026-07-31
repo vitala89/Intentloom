@@ -61,6 +61,30 @@ entry directly below this section.
 
 ## Watch entries
 
+### 2026-08-01, Desktop Theme Contribution & Design Token Bridge (ADR-0046)
+
+- **Status:** complete for this watch
+- **Agent/tool:** Antigravity AI Agent with TypeScript, Vitest, Prettier
+- **Branch:** `feature/post-v1-enhancements`
+- **Objective:** Design and implement ADR-0046 for declarative desktop theme contributions and the runtime design token bridge (`applyDesktopTheme`).
+- **Completed:**
+  - Created `docs/decisions/ADR-0046-desktop-theme-contribution-bridge.md`.
+  - Added `validateDesktopThemeContribution` and `ALLOWED_THEME_TOKEN_NAMES` to `@intentloom/validator`.
+  - Created `apps/desktop/src/design/theme-bridge.ts` (`applyDesktopTheme` runtime token injector and cleanup return callback).
+  - Added unit test suite `tests/desktop-theme-bridge.test.ts` (3/3 tests passing).
+- **Validation:** Desktop build, unit tests (3/3 passed), Prettier format check, and `git diff --check` passed cleanly.
+- **Decisions and assumptions:** Strictly preserved local-first and zero-network security invariants.
+- **Next first action:** Commit and push changes to PR #160.
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant tests, type checks, builds, or compatibility checks passed
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `DUTY_WATCH.md` handoff completed
+
 ### 2026-08-01, Desktop Extension Host API Specification & Types (ADR-0045)
 
 - **Status:** complete for this watch
