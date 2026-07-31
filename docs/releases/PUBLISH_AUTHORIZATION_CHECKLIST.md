@@ -14,7 +14,7 @@ publication.
 - Package: `intentloom`
 - Version: `1.0.0`
 - Dist-tag used: `next` (published 2026-07-30). `latest` was not moved.
-- Release commit: `db61be9`, tagged `v1.0.0`
+- Release commit: `a148f2f`, tagged `v1.0.0`
 - Verification date: 2026-07-30
 
 `main` has advanced past the tag with documentation and CI changes only.
@@ -94,7 +94,7 @@ packages`](https://docs.npmjs.com/cli/v11/commands/npm-access/) (the installed
       entry.
 - [ ] Changelog is approved.
 - [x] Release tag exists. `v1.0.0` is pushed to `origin` and points at
-      `db61be9`.
+      `a148f2f`.
 - [x] A GitHub release exists for `v1.0.0`.
 - [ ] Complete the publication safety and incident steps in
       [Publishing](PUBLISHING.md).

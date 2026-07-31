@@ -110,7 +110,7 @@ before a new release or implementation milestone is declared complete.
 
 - Any expansion to bottleneck, performance, causal, actor, repository-reading, persisted, remote, or model-assisted analysis requires a new ADR, specification, and threat review.
 - PR #84 through PR #138 are merged in the local history; current `main` is
-  verified at `db61be9` (PR #138 merge; PR #137 merged as `3da811e`, PR #135 merged as `65f3886`, PR #134 merged as `ba5e870`, PR #133 merged as `85f0ad3`) and tracks `origin/main`.
+  verified at `a148f2f` (PR #138 merge; PR #137 merged as `3f3247f`, PR #135 merged as `46d3a2e`, PR #134 merged as `4bad874`, PR #133 merged as `cd31214`) and tracks `origin/main`.
 - npm currently reports `latest=0.1.0-alpha.3` and `next=0.5.0-beta.1`.
 - Workspace packages are synchronized to `1.0.0` and Git tag `v1.0.0` is pushed,
   but `1.0.0` is not published to npm. The last completed npm publication is
@@ -244,10 +244,10 @@ before a new release or implementation milestone is declared complete.
   for JavaScript/TypeScript and GitHub Actions.
 - PR #132 (`getrandom`), PR #133 (`@types/node`), PR #134 (`vite`), and PR #135 (`prettier`)
   are merged via Dependabot.
-- PR #136 is merged as `221e97e`; it adds `.prettierignore` to exclude generated
+- PR #136 is merged as `350ad1e`; it adds `.prettierignore` to exclude generated
   lockfiles (`pnpm-lock.yaml`, `Cargo.lock`) from Prettier formatting checks, resolving
   the Dependabot CI lockfile failure.
-- The latest candidate head on `main` (`65f3886`) passed post-merge Compatibility run
+- The latest candidate head on `main` (`46d3a2e`) passed post-merge Compatibility run
   `30527543027` (6/6 jobs) and CodeQL run `30527542998` (both Actions and JS/TS analyses).
 - Exact-candidate supplemental clean-room, explicit-path, minimal, TypeScript,
   and sanitized existing-project evidence is recorded under
