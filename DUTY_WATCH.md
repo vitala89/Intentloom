@@ -11,24 +11,27 @@ in a condition that the next watch can safely understand and continue.
 
 Status: **v1.0.0 released and default on npm** — tag `v1.0.0` (`c1205a8`) pushed, GitHub release published 2026-07-30, `intentloom@1.0.0` on npm under both `latest` and `next` (verified 2026-07-31). `main` is at `8861668` with Compatibility and CodeQL green. No open pull requests before this watch.
 
-Active branch: `docs/readme-and-brand-refresh`
+Active branch: `docs/npm-package-metadata`
 
-Current objective: bring the public presentation of the repository in line with the released 1.0 state - README, brand mark, GitHub description and topics - and reconcile the documents that still described the package as unpublished beta.
+Current objective: bring the public presentation of the project in line with the released 1.0 state across the repository, the GitHub metadata, the release records, and the npm package manifest.
 
-Next first action: review and merge the README and brand-refresh PR.
+Next first action: decide whether to cut `1.0.1`. The npmjs.com page still renders the `1.0.0` payload, so the corrected README and manifest text are not visible to users until a release happens.
 
 Known open items, in the order they should be handled:
 
-1. `1.0.0` carries no npm provenance attestation and cannot gain one. Configure
+1. The npm package page is stale and can only be refreshed by publishing a new
+   version; npm does not allow editing a published version in place. It
+   currently shows a README calling the package beta and pointing at `@next`.
+2. `1.0.0` carries no npm provenance attestation and cannot gain one. Configure
    the npm trusted publisher and the `npm-publish` environment reviewer so the
    next release publishes with provenance.
-2. `homepageUrl` points at the npm package page as an interim target. Repoint it
+3. `homepageUrl` points at the npm package page as an interim target. Repoint it
    when `intentloom.vitaliikasap.com` is live; no hosting is configured yet.
-3. Dependabot alert #2 (`glib@0.18.5`, transitive, medium) carries an approved
+4. Dependabot alert #2 (`glib@0.18.5`, transitive, medium) carries an approved
    exception that expires 2026-10-29.
-4. Branch and tag protection rules for `main` and `v*` are not recorded anywhere
+5. Branch and tag protection rules for `main` and `v*` are not recorded anywhere
    in the repository; `.github/CODEOWNERS` exists to support required review.
-5. Two remote branches remain untriaged: `codex/public-readiness-blockers` and
+6. Two remote branches remain untriaged: `codex/public-readiness-blockers` and
    `security/intentloomd-lifecycle-design`. The backup ref
    `backup/pre-attribution-rewrite` still exists pending explicit deletion.
 
@@ -56,6 +59,37 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-31, npm package metadata for the next publication
+
+- **Status:** complete for this watch
+- **Agent/tool:** Claude Code (Opus 5) with Git, GitHub CLI, npm, pnpm, Prettier
+- **Branch:** `docs/npm-package-metadata`
+- **Base:** `main` / `origin/main` at `7bf6005` (PR #156 merge)
+- **Objective:** bring the npm-facing package metadata in line with the stable 1.0 presentation.
+- **Completed:**
+  - Rewrote `description` in `packages/cli/package.json` to match the GitHub repository description, at 146 characters so it is not truncated in npm search results.
+  - Expanded `keywords` from 6 to 12, adding the adapter names users actually search for (`claude-code`, `codex`, `cursor`, `github-copilot`), plus `mcp` and `coding-agents`.
+- **Not completed:** Nothing reaches npmjs.com from this change. The npm package page renders `description`, `keywords`, and `README.md` from the published tarball, and npm provides no way to edit a published version in place. The page therefore still shows the `1.0.0` payload: a README that calls the package beta, directs users to `@next`, pins `0.4.0-beta.1`, states that `latest` is `0.1.0-alpha.3`, and links `../../docs/...`, which resolves to nothing on npmjs.com. Making the corrected text visible requires publishing a new version, which is a maintainer authorization and was not performed.
+- **Files or packages changed:** `packages/cli/package.json`, `DUTY_WATCH.md`. No source changed.
+- **Validation:** `pnpm build` (clean, no tracked files modified by the build), `pnpm format:check`, `git diff --check`. Registry state read with `npm view intentloom@1.0.0 description keywords` and by comparing `git show v1.0.0:packages/cli/README.md` against the current file.
+- **Decisions and assumptions:** The version was not bumped here. Choosing the next version number and authorizing publication are maintainer decisions under `docs/releases/PUBLISH_AUTHORIZATION_CHECKLIST.md`.
+- **Risks or compatibility impact:** None. Metadata only; no runtime, dependency, or packaged-payload behavior changes beyond the two manifest fields.
+- **Open issues or blockers:** The npm package page stays stale until a release. Publishing through `.github/workflows/release.yml` also needs the npm trusted publisher and the `npm-publish` environment reviewer configured, both outside this repository.
+- **Next first action:** Decide whether to cut `1.0.1` to refresh the npm page. If yes, configure the trusted publisher first so the release carries provenance, then dispatch **Release** with `dry_run: true`.
+- **Evidence:** `npm view intentloom@1.0.0 description keywords` returning the pre-1.0 wording and the 6-keyword list; `git show v1.0.0:packages/cli/README.md` showing the beta README currently rendered on npmjs.com.
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant tests, type checks, builds, or compatibility checks passed
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [ ] `PROJECT_STATE.md` updated when applicable - not applicable, no durable state changed
+- [x] `DUTY_WATCH.md` handoff completed
+- [x] Related roadmap, ADR, changelog, migration, or reference docs updated
+- [x] Failed or unavailable checks recorded
 
 ### 2026-07-31, Public presentation refresh: README, brand mark, GitHub metadata, and dist-tag reconciliation
 

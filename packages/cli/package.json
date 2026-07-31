@@ -1,7 +1,7 @@
 {
   "name": "intentloom",
   "version": "1.0.0",
-  "description": "Intentloom is a vendor-neutral framework for defining, validating, and synchronizing engineering intent across AI coding tools.",
+  "description": "Vendor-neutral CLI that defines, validates, and synchronizes engineering intent across AI coding tools. Local, offline-first, and non-destructive.",
   "license": "MIT",
   "private": false,
   "repository": {
@@ -15,10 +15,16 @@
   "keywords": [
     "agentic-engineering",
     "ai-assisted-development",
+    "ai-coding-tools",
+    "coding-agents",
+    "claude-code",
+    "codex",
+    "cursor",
+    "github-copilot",
+    "mcp",
     "developer-tools",
-    "intentloom",
     "engineering-intent",
-    "ai-coding-tools"
+    "intentloom"
   ],
   "engines": {
     "node": ">=22"
