@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **`1.0.1` prepared, not published** — workspace synchronized to `1.0.1` on `release/1.0.1`. npm still serves `1.0.0` under both `latest` and `next`. Trusted publishing is fully configured on both sides: the npm trusted publisher for `vitala89/Intentloom`, workflow `release.yml`, environment `npm-publish`; and the GitHub `npm-publish` environment with `vitala89` as required reviewer, restricted to `main` and `v*`.
+Status: **PR #160 repair prepared locally, not pushed** — workspace remains synchronized to `1.0.1`; npm still serves `1.0.0` under both `latest` and `next`. Trusted publishing is fully configured on both sides: the npm trusted publisher for `vitala89/Intentloom`, workflow `release.yml`, environment `npm-publish`; and the GitHub `npm-publish` environment with `vitala89` as required reviewer, restricted to `main` and `v*`.
 
-Active branch: `release/1.0.1`
+Active branch: `feature/post-v1-enhancements`
 
-Current objective: publish a documentation and package-metadata release so the corrected package README reaches npmjs.com, and make it the first artifact to carry a provenance attestation.
+Current objective: push the two atomic implementation commits, let PR #160 rerun CodeQL and Governance, then complete the release handoff.
 
-Next first action: merge the `1.0.1` release PR, verify the resulting `main` commit, tag it, then dispatch **Release** with `dry_run: true` before any real publish.
+Next first action: push `a2b680d` and `8ebbfb9` to `feature/post-v1-enhancements`, then inspect the new PR #160 check run.
 
 Known open items, in the order they should be handled:
 
@@ -60,6 +60,41 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-31, PR #160 CodeQL Repair and Governance Enforcement
+
+- **Status:** partial — implementation complete locally; push and remote rerun pending
+- **Agent/tool:** Codex with GitHub API, CodeQL, Vitest, TypeScript, Prettier
+- **Branch:** `feature/post-v1-enhancements`
+- **Commits:** `a2b680d`, `8ebbfb9`
+- **Pull request:** [#160](https://github.com/vitala89/Intentloom/pull/160)
+- **Objective:** Repair the failing CodeQL check and make atomic commits, staged quality, pre-push verification, and CI governance enforceable.
+- **Completed:**
+  - Replaced both polynomial trailing-slash regexes in `live.ts` with a linear helper and added a regression test.
+  - Added versioned `commit-msg`, `pre-commit`, and `pre-push` hooks with explicit `pnpm hooks:install` activation.
+  - Added Conventional Commit and attribution validation, staged formatting/diff/file-budget checks, full verification, and the pull-request Governance workflow.
+  - Documented exact, expiring PR #160 exceptions for the three legacy oversized files that grew in the original PR.
+- **Not completed:** Push to GitHub and confirmation that CodeQL and Governance are green on the new head; no GitLab pipeline was available in this repository.
+- **Files or packages changed:** Repository governance docs, `.githooks/`, `scripts/validate-*.mjs`, `scripts/quality-exceptions.mjs`, `.github/workflows/governance.yml`, `packages/evidence-provider`, and its tests.
+- **Validation:** `pnpm typecheck` passed; `pnpm format:check` passed; `pnpm test` passed with 89 files, 765 tests passed, 3 skipped; `pnpm build` passed; isolated staged hook passed for 21 files; PR-range commit and diff policies passed; `git diff --check` passed. Sandbox-only daemon socket failures were cleared by rerunning tests with local socket permission.
+- **Decisions and assumptions:** Hooks remain opt-in and do not install dependencies or contact providers. The CodeQL fix preserves URL normalization behavior. Exceptions are accepted only for the exact PR #160 base/head line counts and expire 2026-08-31.
+- **Risks or compatibility impact:** Existing consumers retain the same provider URL construction; future growth of the exception files or any different oversized-file growth fails policy checks.
+- **Open issues or blockers:** `gh auth status` has an invalid local token; push and hosted check rerun require valid GitHub credentials and explicit user action.
+- **Next first action:** Push `a2b680d` and `8ebbfb9`, then inspect PR #160 CodeQL and Governance conclusions.
+- **Evidence:** PR #160 CodeQL failure at head `abed6a1`; local test/build results above; `docs/governance/quality-exceptions.json`.
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant tests, type checks, builds, or compatibility checks passed
+- [x] Atomic commit policy and commit-message checks passed
+- [x] Repository hooks installed or equivalent commands run
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `PROJECT_STATE.md` updated when applicable
+- [x] `DUTY_WATCH.md` handoff completed
+- [ ] Push and hosted PR checks verified
 
 ### 2026-07-31, Code Quality Governance Audit & Modular Decomposition
 
