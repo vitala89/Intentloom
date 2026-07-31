@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **PR #160 repair prepared locally, not pushed** — workspace remains synchronized to `1.0.1`; npm still serves `1.0.0` under both `latest` and `next`. Trusted publishing is fully configured on both sides: the npm trusted publisher for `vitala89/Intentloom`, workflow `release.yml`, environment `npm-publish`; and the GitHub `npm-publish` environment with `vitala89` as required reviewer, restricted to `main` and `v*`.
+Status: **PR #160 repair pushed; hosted checks pending** — workspace remains synchronized to `1.0.1`; npm still serves `1.0.0` under both `latest` and `next`. Trusted publishing is fully configured on both sides: the npm trusted publisher for `vitala89/Intentloom`, workflow `release.yml`, environment `npm-publish`; and the GitHub `npm-publish` environment with `vitala89` as required reviewer, restricted to `main` and `v*`.
 
 Active branch: `feature/post-v1-enhancements`
 
-Current objective: push the two atomic implementation commits, let PR #160 rerun CodeQL and Governance, then complete the release handoff.
+Current objective: inspect the PR #160 CodeQL and Governance reruns on pushed head `5afedd2`, then complete the release handoff.
 
-Next first action: push `a2b680d` and `8ebbfb9` to `feature/post-v1-enhancements`, then inspect the new PR #160 check run.
+Next first action: inspect the new PR #160 check run for head `5afedd2`.
 
 Known open items, in the order they should be handled:
 
@@ -60,6 +60,27 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-07-31, PR #160 repair push and pre-push verification
+
+- **Status:** complete for this watch; implementation pushed and remote branch verified
+- **Agent/tool:** Codex with Git and repository quality hooks
+- **Branch:** `feature/post-v1-enhancements`
+- **Commits:** `5afedd2` and its three-commit pushed history
+- **Pull request:** [#160](https://github.com/vitala89/Intentloom/pull/160)
+- **Objective:** Push the verified CodeQL repair and governance enforcement changes.
+- **Completed:** Pushed head `5afedd2` to `origin/feature/post-v1-enhancements`; the local pre-push gate completed successfully.
+- **Validation:** TypeScript typecheck, Prettier check, 89 test files with 765 tests passed and 3 skipped, build, and `git diff --check` all passed. Local and remote branch heads match at `5afedd2`.
+- **Open issues or blockers:** GitHub CodeQL and Governance conclusions for PR #160 have not yet been inspected after the push; no GitLab pipeline is configured in this repository.
+- **Next first action:** Inspect the hosted PR #160 check run and record its conclusions.
+- **Evidence:** `git ls-remote origin refs/heads/feature/post-v1-enhancements` returned `5afedd2`.
+
+#### Duty completion checklist
+
+- [x] Pre-push quality gate passed
+- [x] Branch pushed to GitHub
+- [x] Remote SHA verified
+- [ ] Hosted PR checks inspected
 
 ### 2026-07-31, PR #160 CodeQL Repair and Governance Enforcement
 

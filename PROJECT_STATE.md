@@ -86,8 +86,8 @@ before a new release or implementation milestone is declared complete.
 
 ## Active focus
 
-1. Complete PR #160 after the local CodeQL regex repair and Governance policy
-   check are rerun on GitHub.
+1. Complete PR #160 after reviewing the CodeQL regex repair and Governance
+   policy check reruns on GitHub at pushed head `5afedd2`.
 2. Publish the prepared `1.0.1` documentation and package-metadata release
    through the approved trusted-publishing workflow.
 3. Keep bottleneck inference, remote ingestion, model-based judgments, and any
@@ -272,11 +272,12 @@ before a new release or implementation milestone is declared complete.
   local release-candidate verification on `d191205` passed frozen reinstall,
   typecheck, build, full tests, and packed CLI smoke; support-policy approval,
   dogfooding disposition, and final release approval remain open.
-- PR #160 at head `abed6a1` had a failing CodeQL check with two high-severity
+- PR #160 is pushed at head `5afedd2` with the CodeQL repair and governance
+  enforcement changes. The prior head `abed6a1` had two high-severity
   polynomial-regex alerts in `packages/evidence-provider/src/live.ts`; the
-  local repair is `a2b680d`, with the GitHub rerun pending push. Its three
-  legacy oversized-file growths are documented as exact, expiring exceptions
-  in `docs/governance/quality-exceptions.json`.
+  repair is `a2b680d`. Hosted CodeQL and Governance reruns remain to be
+  inspected. The three legacy oversized-file growths are documented as exact,
+  expiring exceptions in `docs/governance/quality-exceptions.json`.
 - ADR-0042 is accepted. The macOS arm64 SEA feasibility run and local Tauri
   `.app`/`.dmg` package smoke passed, including embedded sidecar hash and
   catalog-resource verification. The repository history records the
