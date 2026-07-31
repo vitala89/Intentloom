@@ -33,24 +33,29 @@ are not included in the current npm artifact until a later release.
 - **First Stable Release of Intentloom**: Local-first, offline-first AI agent control layer and process intelligence platform.
 - Full local protocol contract `v1` (`intentloom.doctor.v1`, `intentloom.inspect.v1`, `intentloom.diff.v1`, `intentloom.timeline.v1`).
 - Multi-adapter merging and rule generation for Claude Code, Codex, Cursor, and Copilot.
-- CLI (`intentloom`), MCP `stdio` server (`intentloom mcp serve --stdio`), and local daemon process (`intentloomd`).
+- CLI (`intentloom`), published to npm. MCP `stdio` server (`intentloom-mcp`) and local daemon process (`intentloomd`), both built from source in this repository and not published as npm artifacts.
 - Process intelligence suite: workflow variant summaries, duration metrics, conformance trends, repetition analysis, and transition interval tracking.
 - Bounded security model: Security & Supply Chain Audit sign-off, Dependency Review controls, CodeQL static analysis, and automated Dependabot updates.
 
 ### Notes
 
 - Official `v1.0.0` release, tagged in Git and published to npm on 2026-07-30
-  under the `next` dist-tag.
-- `latest` still resolves to `0.1.0-alpha.3`, so an unqualified
-  `npm install intentloom` does not yet install this release. Use
-  `npm install intentloom@next` until the tag is moved. See
-  [`RELEASE_STATE.md`](docs/releases/RELEASE_STATE.md) for the authoritative
-  published-artifact status.
+  under the `next` dist-tag. The `latest` dist-tag was promoted to `1.0.0` on
+  2026-07-31, so an unqualified `npm install intentloom` now installs this
+  release. See [`RELEASE_STATE.md`](docs/releases/RELEASE_STATE.md) for the
+  authoritative published-artifact status.
 - This artifact was published before the trusted-publishing release workflow
   existed and therefore carries no provenance attestation. Subsequent releases
   publish through `.github/workflows/release.yml`, which attaches provenance
   automatically.
 - Verified compatibility across macOS, Linux, and Windows on Node.js 22 and 24.
+- Corrected 2026-07-31: this entry originally listed the MCP server as
+  `intentloom mcp serve --stdio`. No `mcp` command exists on the CLI. The MCP
+  server is the separate `intentloom-mcp` binary built from
+  `@intentloom/mcp-server`, which speaks `Content-Length`-framed JSON-RPC over
+  stdio and takes an optional `--root`. Neither it nor `intentloomd` is
+  published to npm. The dist-tag note was updated at the same time after
+  `latest` was promoted. The release scope itself is unchanged.
 
 ## [0.5.0-beta.1] - 2026-07-27
 
