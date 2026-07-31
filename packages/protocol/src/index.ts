@@ -1,56 +1,30 @@
+import {
+  PROTOCOL_VERSION,
+  DAEMON_INFO_METHOD,
+  DOCTOR_METHOD,
+  INSPECT_METHOD,
+  PROJECT_DIFF_METHOD,
+  PROJECT_TIMELINE_METHOD,
+  SECURITY_AUDIT_METHOD,
+  MEMORY_SEARCH_METHOD,
+  MEMORY_EVALUATIONS_LIST_METHOD,
+  ENGINEERING_CONFORMANCE_METHOD,
+  WORKFLOW_VARIANT_SUMMARY_METHOD,
+  WORKFLOW_DURATION_SUMMARY_METHOD,
+  CONFORMANCE_TREND_SUMMARY_METHOD,
+  WORKFLOW_REPETITION_SUMMARY_METHOD,
+  WORKFLOW_TRANSITION_INTERVALS_METHOD,
+  SESSION_GET_METHOD,
+  type RequestId,
+  type JsonObject,
+  type JsonRpcRequest,
+  type JsonRpcSuccess,
+  type JsonRpcFailure,
+} from "./jsonrpc.js";
+
 export * from "./jsonrpc.js";
+export * from "./daemon.js";
 export * from "./desktop-extension.js";
-
-export type ClientErrorCode =
-  | "authentication_failed"
-  | "protocol_incompatible"
-  | "unsupported_capability"
-  | "invalid_root"
-  | "stale_root"
-  | "bounded_validation_failed"
-  | "timed_out"
-  | "cancelled"
-  | "disconnected"
-  | "internal_failure";
-
-export type CapabilityClassification = "read-only" | "mutating";
-
-export interface DaemonCapability {
-  readonly method: string;
-  readonly operation: string;
-  readonly classification: CapabilityClassification;
-}
-
-export interface DaemonLimits {
-  readonly maxMessageBytes: number;
-  readonly maxResponseBytes: number;
-  readonly maxConnections: number;
-  readonly requestTimeoutMs: number;
-}
-
-export interface DaemonCompatibility {
-  readonly status: "compatible" | "incompatible";
-  readonly clientProtocolVersion: number;
-  readonly daemonProtocolVersion: typeof PROTOCOL_VERSION;
-  readonly reason?: string;
-}
-
-export interface DaemonInfoParams {
-  readonly protocolVersion: typeof PROTOCOL_VERSION;
-  readonly clientProtocolVersion: number;
-}
-export interface DaemonInfoResult {
-  readonly protocolVersion: typeof PROTOCOL_VERSION;
-  readonly daemonVersion: string;
-  readonly capabilities: readonly DaemonCapability[];
-  readonly limits: DaemonLimits;
-  readonly compatibility: DaemonCompatibility;
-}
-export type DaemonInfoRequest = JsonRpcRequest<
-  typeof DAEMON_INFO_METHOD,
-  DaemonInfoParams
->;
-export type DaemonInfoResponse = JsonRpcSuccess<DaemonInfoResult>;
 
 export interface ProjectDiffParams {
   readonly protocolVersion: typeof PROTOCOL_VERSION;

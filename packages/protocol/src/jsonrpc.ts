@@ -1,4 +1,27 @@
 export const PROTOCOL_VERSION = 1 as const;
+export const DAEMON_INFO_METHOD = "intentloom.daemon.info.v1" as const;
+export const DOCTOR_METHOD = "intentloom.project.doctor.v1" as const;
+export const INSPECT_METHOD = "intentloom.project.inspect.v1" as const;
+export const PROJECT_DIFF_METHOD = "intentloom.project.diff.v1" as const;
+export const PROJECT_TIMELINE_METHOD =
+  "intentloom.project.timeline.v1" as const;
+export const SECURITY_AUDIT_METHOD = "intentloom.security.audit.v1" as const;
+export const MEMORY_SEARCH_METHOD = "intentloom.memory.search.v1" as const;
+export const MEMORY_EVALUATIONS_LIST_METHOD =
+  "intentloom.memory.evaluations.list.v1" as const;
+export const ENGINEERING_CONFORMANCE_METHOD =
+  "intentloom.engineering.conformance.v1" as const;
+export const WORKFLOW_VARIANT_SUMMARY_METHOD =
+  "intentloom.workflow.variants.summary.v1" as const;
+export const WORKFLOW_DURATION_SUMMARY_METHOD =
+  "intentloom.workflow.durations.summary.v1" as const;
+export const CONFORMANCE_TREND_SUMMARY_METHOD =
+  "intentloom.conformance.trend.summary.v1" as const;
+export const WORKFLOW_REPETITION_SUMMARY_METHOD =
+  "intentloom.workflow.repetitions.summary.v1" as const;
+export const WORKFLOW_TRANSITION_INTERVALS_METHOD =
+  "intentloom.workflow.transitions.intervals.v1" as const;
+export const SESSION_GET_METHOD = "intentloom.session.get.v1" as const;
 
 export type JsonPrimitive = boolean | null | number | string;
 export type JsonValue = JsonPrimitive | JsonObject | readonly JsonValue[];
