@@ -61,6 +61,29 @@ entry directly below this section.
 
 ## Watch entries
 
+### 2026-08-01, Desktop Design System Component Group Integration
+
+- **Status:** complete for this watch
+- **Agent/tool:** Antigravity AI Agent with React 19, TypeScript, Vite, Prettier
+- **Branch:** `feature/post-v1-enhancements`
+- **Objective:** Integrate 5 authored Design System components (`Card`, `Tabs`, `Modal`, `EmptyState`, `StatusChip`) from design agent into `apps/desktop`.
+- **Completed:**
+  - Added new Lucide glyph allowlist entries (`circle`, `circle-check`, `circle-x`, `info`, `inbox`, `triangle-alert`) to `scripts/desktop/generate-design-icons.mjs` and regenerated `apps/desktop/src/design/icons/glyphs.ts`.
+  - Added `layout/Card.tsx`, `navigation/Tabs.tsx`, `overlays/Modal.tsx`, `states/EmptyState.tsx`, and `status/StatusChip.tsx`.
+  - Integrated `StatusChip` helper delegator into `apps/desktop/src/App.tsx`.
+- **Validation:** `node scripts/desktop/generate-design-icons.mjs`, `pnpm --filter ./apps/desktop typecheck`, `pnpm --filter ./apps/desktop build`, `pnpm format:check`, and `git diff --check` passed cleanly.
+- **Decisions and assumptions:** Strictly followed design token mapping and zero-external-network invariants.
+- **Next first action:** Push changes to PR #160.
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant tests, type checks, builds, or compatibility checks passed
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `DUTY_WATCH.md` handoff completed
+
 ### 2026-08-01, VitePress Static Site Setup for GitHub Pages
 
 - **Status:** complete for this watch

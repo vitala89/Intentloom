@@ -7,6 +7,11 @@ import { IconButton } from "./design/components/core/IconButton.js";
 import { KeyboardKey } from "./design/components/core/KeyboardKey.js";
 import { EvidenceBadge } from "./design/components/evidence/EvidenceBadge.js";
 import { SearchInput } from "./design/components/forms/SearchInput.js";
+import { StatusChip } from "./design/components/status/StatusChip.js";
+import { Card } from "./design/components/layout/Card.js";
+import { Tabs } from "./design/components/navigation/Tabs.js";
+import { Modal } from "./design/components/overlays/Modal.js";
+import { EmptyState } from "./design/components/states/EmptyState.js";
 import type {
   DaemonInfoResult,
   DoctorFinding,
@@ -39,100 +44,22 @@ const views: Array<{ label: View; icon: string }> = [
   { label: "Timeline", icon: "◷" },
 ];
 
-function StatusChip({ children }: { children: string }) {
-  return <span className="status-chip">{children}</span>;
+function StatusChipHelper({ children }: { children: string }) {
+  const tone =
+    children.includes("Connected") ||
+    children.includes("ready") ||
+    children.includes("available")
+      ? "success"
+      : children.includes("Disconnected") ||
+          children.includes("Error") ||
+          children.includes("failed") ||
+          children.includes("stale")
+        ? "error"
+        : "neutral";
+  return <StatusChip tone={tone} label={children} size="sm" />;
 }
 
-function ConfirmRootChange({
-  currentRoot,
-  loadedViews,
-  onConfirm,
-  onCancel,
-  triggerRef,
-}: {
-  currentRoot: string;
-  loadedViews: readonly string[];
-  onConfirm: () => void;
-  onCancel: () => void;
-  triggerRef: React.RefObject<HTMLButtonElement | null>;
-}) {
-  // Close on Escape key
-  useEffect(() => {
-    function handleKeyDown(e: KeyboardEvent) {
-      if (e.key === "Escape") {
-        e.preventDefault();
-        onCancel();
-      }
-    }
-    document.addEventListener("keydown", handleKeyDown);
-    return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [onCancel]);
-
-  // Return focus to trigger on unmount
-  useEffect(() => {
-    return () => {
-      triggerRef.current?.focus();
-    };
-  }, [triggerRef]);
-
-  return (
-    <div
-      className="confirm-overlay"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="confirm-title"
-      aria-describedby="confirm-desc"
-    >
-      <div className="confirm-panel">
-        <div className="confirm-header">
-          <span className="confirm-icon" aria-hidden="true">
-            ⚠
-          </span>
-          <div>
-            <h2 id="confirm-title" className="confirm-title">
-              Change project root?
-            </h2>
-            <p id="confirm-desc" className="confirm-desc">
-              Switching the root will clear all loaded read-only data for the
-              current project.
-            </p>
-          </div>
-        </div>
-
-        <div className="confirm-current">
-          <span className="eyebrow">Current root</span>
-          <code className="confirm-root-path">{currentRoot}</code>
-        </div>
-
-        {loadedViews.length > 0 ? (
-          <div className="confirm-loaded">
-            <span className="eyebrow">Data that will be cleared</span>
-            <ul className="confirm-view-list">
-              {loadedViews.map((v) => (
-                <li key={v}>{v}</li>
-              ))}
-            </ul>
-          </div>
-        ) : null}
-
-        <div className="confirm-actions">
-          <button
-            className="primary-button"
-            onClick={onConfirm}
-            type="button"
-            // eslint-disable-next-line jsx-a11y/no-autofocus
-            autoFocus
-          >
-            Change project
-          </button>
-          <button className="secondary-button" onClick={onCancel} type="button">
-            Keep current
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-}
+import { ConfirmRootChange } from "./ConfirmRootChange.js";
 
 function inspectStatusForError(error: unknown): InspectStatus {
   if (!(error instanceof DesktopBridgeError)) return "error";
@@ -177,7 +104,7 @@ function InspectView({
               <span className="eyebrow">Validated project identity</span>
               <h2 id="inspect-title">Inspect</h2>
             </div>
-            <StatusChip>Read-only</StatusChip>
+            <StatusChipHelper>Read-only</StatusChipHelper>
           </div>
           <div className="inspect-identity">
             <span className="signal-icon blue">⌘</span>
@@ -424,9 +351,9 @@ function DoctorView({
           <span className="eyebrow">Validated diagnostics</span>
           <h2 id="doctor-title">Doctor</h2>
         </div>
-        <StatusChip>
+        <StatusChipHelper>
           {result.exitCode === 0 ? "No blocking findings" : "Findings present"}
-        </StatusChip>
+        </StatusChipHelper>
       </div>
 
       <div className="doctor-summary" aria-label="Doctor summary">
@@ -710,7 +637,7 @@ function DiffView({
           <span className="eyebrow">Validated change preview</span>
           <h2 id="diff-title">Diff Review</h2>
         </div>
-        <StatusChip>Review-only</StatusChip>
+        <StatusChipHelper>Review-only</StatusChipHelper>
       </div>
 
       <div className="diff-summary" aria-label="Diff summary">
@@ -993,7 +920,7 @@ function TimelineView({
           <span className="eyebrow">Read-only evidence timeline</span>
           <h2 id="timeline-title">Timeline</h2>
         </div>
-        <StatusChip>Read-only</StatusChip>
+        <StatusChipHelper>Read-only</StatusChipHelper>
       </div>
 
       <dl className="timeline-meta" aria-label="Timeline metadata">
@@ -1217,7 +1144,7 @@ function SettingsView({
           <span className="eyebrow">Desktop Configuration & Status</span>
           <h2 id="settings-title">Settings & Diagnostics</h2>
         </div>
-        <StatusChip>Read-only Scope</StatusChip>
+        <StatusChipHelper>Read-only Scope</StatusChipHelper>
       </div>
 
       <div className="settings-grid">
@@ -2104,7 +2031,7 @@ export default function App() {
                 />
               ) : null}
               <div className="connection-row">
-                <StatusChip>{connection}</StatusChip>
+                <StatusChipHelper>{connection}</StatusChipHelper>
                 <span className="connection-detail">
                   Read-only scope ·{" "}
                   {root ? "Project root selected" : "Awaiting project root"}
@@ -2157,7 +2084,7 @@ export default function App() {
                   <span className="eyebrow">Read-only signal</span>
                   <h3>Project health</h3>
                 </div>
-                <StatusChip>
+                <StatusChipHelper>
                   {evaluated
                     ? doctor?.exitCode === 0
                       ? "Ready"
@@ -2165,7 +2092,7 @@ export default function App() {
                     : root
                       ? "Not evaluated"
                       : "Awaiting root"}
-                </StatusChip>
+                </StatusChipHelper>
               </div>
 
               <section
