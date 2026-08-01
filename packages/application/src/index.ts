@@ -7431,3 +7431,4 @@ export * from "./inception-scaffold-planner.js";
 export * from "./inception-scaffold-apply.js";
 export * from "./inception-actions.js";
 export * from "./inception-flow.js";
+export * from "./inception-templates.js";

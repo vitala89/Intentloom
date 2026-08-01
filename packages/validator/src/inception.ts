@@ -19,6 +19,7 @@ import type {
   DependencyInstallPlan,
   GitInitPlan,
   PackageManagerKind,
+  TemplateManifest,
 } from "@intentloom/protocol";
 
 function isObj(v: unknown): v is Record<string, unknown> {
@@ -362,5 +363,57 @@ export function validateInceptionFlowState(v: unknown): {
     ...(result ? { result } : {}),
     isComplete: v.isComplete,
     updatedAt,
+  };
+}
+
+export function validateTemplateManifest(v: unknown): TemplateManifest {
+  if (!isObj(v)) throw new Error("Invalid template manifest: expected object");
+  const id = assertStr(v.id, "manifest.id");
+  const name = assertStr(v.name, "manifest.name");
+  const version = assertStr(v.version, "manifest.version");
+  const description = assertStr(v.description, "manifest.description");
+  const license = assertStr(v.license, "manifest.license");
+  const author = assertStr(v.author, "manifest.author");
+  const minIntentloomVersion = assertStr(
+    v.minIntentloomVersion,
+    "manifest.minIntentloomVersion",
+  );
+  const capabilities = assertArr(
+    v.capabilities,
+    "manifest.capabilities",
+  ) as readonly string[];
+  const integrityHash = assertStr(v.integrityHash, "manifest.integrityHash");
+  const filesArray = assertArr(v.files, "manifest.files");
+
+  const files = filesArray.map((fileObj) => {
+    if (!isObj(fileObj))
+      throw new Error("Invalid template file plan: expected object");
+    const path = assertStr(fileObj.path, "file.path");
+    if (!["create", "modify", "skip"].includes(fileObj.action as string)) {
+      throw new Error(`Invalid file.action '${String(fileObj.action)}'`);
+    }
+    const content = typeof fileObj.content === "string" ? fileObj.content : "";
+    if (typeof fileObj.isManaged !== "boolean") {
+      throw new Error("Invalid file.isManaged: expected boolean");
+    }
+    return {
+      path,
+      action: fileObj.action as ScaffoldFileAction,
+      content,
+      isManaged: fileObj.isManaged,
+    };
+  });
+
+  return {
+    id,
+    name,
+    version,
+    description,
+    license,
+    author,
+    minIntentloomVersion,
+    capabilities,
+    integrityHash,
+    files,
   };
 }

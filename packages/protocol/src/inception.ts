@@ -173,3 +173,20 @@ export interface InceptionFlowState {
   readonly isComplete: boolean;
   readonly updatedAt: number;
 }
+
+export interface TemplateManifest {
+  readonly id: string;
+  readonly name: string;
+  readonly version: string;
+  readonly description: string;
+  readonly license: string;
+  readonly author: string;
+  readonly minIntentloomVersion: string;
+  readonly capabilities: readonly string[];
+  readonly integrityHash: string;
+  readonly files: readonly ScaffoldFilePlan[];
+}
+
+export interface StarterTemplateRegistry {
+  readonly templates: readonly TemplateManifest[];
+}
