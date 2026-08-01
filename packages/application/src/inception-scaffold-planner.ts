@@ -214,10 +214,8 @@ export function prepareProjectScaffoldPlan(
   }
 
   const rawName = validated.name.replace(/^Blueprint for /i, "");
-  const pkgName = rawName
-    .toLowerCase()
-    .replace(/[^a-z0-9-_]/gu, "-")
-    .replace(/^-+|-+$/g, "");
+  const sanitized = rawName.toLowerCase().replace(/[^a-z0-9-_]/gu, "-");
+  const pkgName = sanitized.replace(/^-+/, "").replace(/-+$/, "");
   const now = Date.now();
   const isWorkspace = validated.topology === "pnpm-workspace";
   const hasNx = validated.recommendedPacks.includes("nx-monorepo");
