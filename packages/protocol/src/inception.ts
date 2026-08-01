@@ -102,3 +102,22 @@ export interface BlueprintApproval {
   readonly expiry: number;
   readonly status: BlueprintApprovalStatus;
 }
+
+export type ScaffoldFileAction = "create" | "modify" | "skip";
+
+export interface ScaffoldFilePlan {
+  readonly path: string;
+  readonly action: ScaffoldFileAction;
+  readonly content: string;
+  readonly isManaged: boolean;
+}
+
+export interface ScaffoldPlan {
+  readonly planId: string;
+  readonly root: string;
+  readonly blueprintDigest: string;
+  readonly files: readonly ScaffoldFilePlan[];
+  readonly dependencies: readonly string[];
+  readonly scripts: Record<string, string>;
+  readonly createdAt: number;
+}

@@ -7427,3 +7427,4 @@ export * from "./inception.js";
 export * from "./inception-discovery.js";
 export * from "./inception-blueprint.js";
 export * from "./inception-approval.js";
+export * from "./inception-scaffold-planner.js";
