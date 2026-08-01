@@ -6,6 +6,7 @@ import {
   type ValidateFunction,
 } from "ajv/dist/2020.js";
 import { parseDocument } from "yaml";
+import { findMarkdownLinkTargets } from "./markdown-links.js";
 import {
   checksum,
   normalizeOutputPath,
@@ -605,14 +606,17 @@ export async function createArtifactValidator(
               ),
             );
         }
-        const references = [
-          ...body.matchAll(/\]\(([^)\s]+)(?:\s+[^)]*)?\)/gu),
-          ...body.matchAll(
-            /(?:^|\s)((?:references|scripts|assets|\.\.?\/)\/??[^\s)]+)/gmu,
+        const references: string[] = [
+          ...findMarkdownLinkTargets(body),
+          ...Array.from(
+            body.matchAll(
+              /(?:^|\s)((?:references|scripts|assets|\.\.?\/)\/??[^\s)]+)/gmu,
+            ),
+            (match) => match[1]!,
           ),
         ];
-        for (const reference of references) {
-          const rawPath = reference[1]!.replace(/^<|>$/gu, "");
+        for (const rawTarget of references) {
+          const rawPath = rawTarget.replace(/^<|>$/gu, "");
           if (/^(?:https?|mailto):/iu.test(rawPath) || rawPath.startsWith("#"))
             continue;
           let path = rawPath;

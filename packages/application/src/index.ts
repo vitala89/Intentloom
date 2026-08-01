@@ -11,6 +11,7 @@ import {
   writeFile,
 } from "node:fs/promises";
 import { createHash } from "node:crypto";
+import { extractMarkdownSection } from "./skill-markdown.js";
 import { dirname, relative, resolve, sep } from "node:path";
 import {
   adapterVersion,
@@ -4041,9 +4042,9 @@ export function parseSkillProgressive(
   };
 
   const inputs: { name: string; description: string; required: boolean }[] = [];
-  const inputsMatch = /## Inputs\r?\n([\s\S]*?)(?=\r?\n## |$)/u.exec(body);
-  if (inputsMatch?.[1]) {
-    const lines = inputsMatch[1]
+  const inputsSection = extractMarkdownSection(body, "Inputs");
+  if (inputsSection) {
+    const lines = inputsSection
       .split("\n")
       .map((l) => l.trim())
       .filter((l) => l.startsWith("-"));
@@ -4058,11 +4059,9 @@ export function parseSkillProgressive(
   }
 
   const outputs: { name: string; description: string }[] = [];
-  const outputsMatch = /## Exact outputs\r?\n([\s\S]*?)(?=\r?\n## |$)/u.exec(
-    body,
-  );
-  if (outputsMatch?.[1]) {
-    const lines = outputsMatch[1]
+  const outputsSection = extractMarkdownSection(body, "Exact outputs");
+  if (outputsSection) {
+    const lines = outputsSection
       .split("\n")
       .map((l) => l.trim())
       .filter((l) => l.length > 0);
@@ -4075,9 +4074,9 @@ export function parseSkillProgressive(
   }
 
   const triggers: string[] = [];
-  const triggerMatch = /## Trigger\r?\n([\s\S]*?)(?=\r?\n## |$)/u.exec(body);
-  if (triggerMatch?.[1]) {
-    triggers.push(triggerMatch[1].trim());
+  const triggerSection = extractMarkdownSection(body, "Trigger");
+  if (triggerSection) {
+    triggers.push(triggerSection.trim());
   }
 
   const contract: SkillExecutionContract = {
