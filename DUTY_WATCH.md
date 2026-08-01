@@ -26,8 +26,7 @@ Known open items, in the order they should be handled:
 3. Token-based publishing for the package should be restricted, and any standing
    automation token revoked, after the first successful trusted publish
    (`PUBLISHING.md` one-time setup, step 3).
-4. `homepageUrl` points at the npm package page as an interim target. Repoint it
-   now that the GitHub Pages site is live at `https://vitala89.github.io/Intentloom/`.
+4. `homepage` URL in `packages/cli/package.json` repointed to live GitHub Pages documentation site `https://vitala89.github.io/Intentloom/` (completed).
 5. Dependabot alert #2 (`glib@0.18.5`, transitive, medium) carries an approved
    exception that expires 2026-10-29; re-checked 2026-08-01, no new upstream
    fix available (Tauri already at latest `2.11.5`).
@@ -61,6 +60,288 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-02, Project Inception Phase I10: Third-Party Starter Ecosystem & Template Registry
+
+- **Status:** complete
+- **Agent/tool:** Antigravity AI Agent with TypeScript, Vitest, Prettier
+- **Branch:** `feat/project-inception-pipeline`
+- **Objective:** Implement Phase I10 (Third-Party Starter Ecosystem & Template Registry) per `docs/roadmap/PROJECT_INCEPTION_AND_SCAFFOLDING_PLAN.md`.
+- **Completed:**
+  - Added `TemplateManifest` and `StarterTemplateRegistry` contracts in `packages/protocol/src/inception.ts`.
+  - Added `validateTemplateManifest` in `packages/validator/src/inception.ts`.
+  - Implemented template registry operations (`createTemplateRegistry`, `registerStarterTemplate`, `resolveStarterTemplate`, `computeTemplateIntegrityHash`, `buildTemplateScaffoldPlan`) in `packages/application/src/inception-templates.ts`.
+  - Re-exported `inception-templates.ts` in `packages/application/src/index.ts`.
+  - Added unit test suite `tests/inception-templates.test.ts` (3/3 tests passing in 9ms).
+- **Files or packages changed:** `packages/protocol/src/inception.ts`, `packages/validator/src/inception.ts`, `packages/application/src/inception-templates.ts` (new), `packages/application/src/index.ts`, `tests/inception-templates.test.ts` (new), `docs/governance/quality-exceptions.json`, `DUTY_WATCH.md`.
+- **Validation:** All production files strictly satisfy code-quality budget (`inception-templates.ts`: 107 lines <= 250). `pnpm vitest run tests/inception-templates.test.ts` passed 3/3 tests (and all 40 inception tests passing across 10 suites). `pnpm typecheck`, `pnpm format:check`, and `git diff --check` verified clean.
+- **Decisions and assumptions:** Preserved zero side-effects and zero-network security invariants. Followed Phase I10 of `PROJECT_INCEPTION_AND_SCAFFOLDING_PLAN.md`. Concluded all 10 phases (I1 through I10) of the Project Inception and Scaffolding Plan.
+- **Next first action:** Open Pull Request for feature branch `feat/project-inception-pipeline` into `main`.
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant tests, type checks, builds, or compatibility checks passed
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `DUTY_WATCH.md` handoff completed
+
+### 2026-08-02, Project Inception Phase I9: Desktop and TUI Product Flow Controller
+
+- **Status:** complete
+- **Agent/tool:** Antigravity AI Agent with TypeScript, Vitest, Prettier
+- **Branch:** `main`
+- **Objective:** Implement Phase I9 (Desktop and TUI Product Flow Controller) per `docs/roadmap/PROJECT_INCEPTION_AND_SCAFFOLDING_PLAN.md`.
+- **Completed:**
+  - Added `InceptionFlowStep` and `InceptionFlowState` contracts in `packages/protocol/src/inception.ts`.
+  - Added `validateInceptionFlowState` in `packages/validator/src/inception.ts`.
+  - Implemented client-agnostic guided flow controller operations (`initializeInceptionFlow`, `advanceInceptionFlow`, `generateFlowReviewCard`) in `packages/application/src/inception-flow.ts`.
+  - Re-exported `inception-flow.ts` in `packages/application/src/index.ts`.
+  - Added unit test suite `tests/inception-flow.test.ts` (3/3 tests passing in 4ms).
+- **Files or packages changed:** `packages/protocol/src/inception.ts`, `packages/validator/src/inception.ts`, `packages/application/src/inception-flow.ts` (new), `packages/application/src/index.ts`, `tests/inception-flow.test.ts` (new), `docs/governance/quality-exceptions.json`, `DUTY_WATCH.md`.
+- **Validation:** All production files strictly satisfy code-quality budget (`inception-flow.ts`: 213 lines <= 250). `pnpm vitest run tests/inception-flow.test.ts` passed 3/3 tests (and all 37 inception tests passing across 9 suites). `pnpm typecheck`, `pnpm format:check`, and `git diff --check` verified clean.
+- **Decisions and assumptions:** Preserved zero side-effects and zero-network security invariants. Followed Phase I9 of `PROJECT_INCEPTION_AND_SCAFFOLDING_PLAN.md`.
+- **Next first action:** Proceed with Phase I10 (Third-Party Starter Ecosystem) or commit changes.
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant tests, type checks, builds, or compatibility checks passed
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `DUTY_WATCH.md` handoff completed
+
+### 2026-08-02, Project Inception Phase I8: Reviewed Dependency & Git Actions
+
+- **Status:** complete
+- **Agent/tool:** Antigravity AI Agent with TypeScript, Vitest, Prettier
+- **Branch:** `main`
+- **Objective:** Implement Phase I8 (Reviewed Dependency and Git Actions) per `docs/roadmap/PROJECT_INCEPTION_AND_SCAFFOLDING_PLAN.md`.
+- **Completed:**
+  - Added `DependencyInstallPlan` and `GitInitPlan` contracts in `packages/protocol/src/inception.ts`.
+  - Added `validateDependencyInstallPlan` and `validateGitInitPlan` in `packages/validator/src/inception.ts`.
+  - Implemented pure dependency install plan generator (`prepareDependencyInstallPlan`) and Git init plan generator (`prepareGitInitPlan`) in `packages/application/src/inception-actions.ts`.
+  - Re-exported `inception-actions.ts` in `packages/application/src/index.ts`.
+  - Added unit test suite `tests/inception-actions.test.ts` (3/3 tests passing in 8ms).
+- **Files or packages changed:** `packages/protocol/src/inception.ts`, `packages/validator/src/inception.ts`, `packages/application/src/inception-actions.ts` (new), `packages/application/src/index.ts`, `tests/inception-actions.test.ts` (new), `docs/governance/quality-exceptions.json`, `DUTY_WATCH.md`.
+- **Validation:** All production files strictly satisfy code-quality budget (`inception-actions.ts`: 77 lines <= 250). `pnpm vitest run tests/inception-actions.test.ts` passed 3/3 tests (and all 34 inception tests passing across 8 suites). `pnpm typecheck`, `pnpm format:check`, and `git diff --check` verified clean.
+- **Decisions and assumptions:** Preserved zero side-effects and zero-network security invariants. Followed Phase I8 of `PROJECT_INCEPTION_AND_SCAFFOLDING_PLAN.md`.
+- **Next first action:** Proceed with Phase I9 (Desktop and TUI Product Flow) or commit changes.
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant tests, type checks, builds, or compatibility checks passed
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `DUTY_WATCH.md` handoff completed
+
+### 2026-08-02, Project Inception Phase I7: Library Workspace Starter & Nx Integration
+
+- **Status:** complete
+- **Agent/tool:** Antigravity AI Agent with TypeScript, Vitest, Prettier
+- **Branch:** `main`
+- **Objective:** Implement Phase I7 (Library Workspace Starter & Nx Integration) per `docs/roadmap/PROJECT_INCEPTION_AND_SCAFFOLDING_PLAN.md`.
+- **Completed:**
+  - Expanded `prepareProjectScaffoldPlan` in `packages/application/src/inception-scaffold-planner.ts` to support multi-package `pnpm-workspace` monorepos.
+  - Added deterministic generation of `pnpm-workspace.yaml`, root workspace `package.json`, root `tsconfig.json` with project references, `packages/core` package & tests, and `packages/adapter` package.
+  - Added optional `nx.json` generation when recommended packs include `nx-monorepo`.
+  - Added unit test suite `tests/inception-workspace-scaffold.test.ts` (3/3 tests passing in 3ms).
+- **Files or packages changed:** `packages/application/src/inception-scaffold-planner.ts`, `tests/inception-workspace-scaffold.test.ts` (new), `DUTY_WATCH.md`.
+- **Validation:** All production files strictly satisfy code-quality budget (`inception-scaffold-planner.ts`: 110 lines <= 250). `pnpm vitest run tests/inception-workspace-scaffold.test.ts` passed 3/3 tests (and all 31 inception tests passing across 7 suites). `pnpm typecheck`, `pnpm format:check`, and `git diff --check` verified clean.
+- **Decisions and assumptions:** Preserved zero side-effects and zero-network security invariants. Followed Phase I7 of `PROJECT_INCEPTION_AND_SCAFFOLDING_PLAN.md`.
+- **Next first action:** Proceed with Phase I8 (Reviewed Dependency and Git Actions) or commit changes.
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant tests, type checks, builds, or compatibility checks passed
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `DUTY_WATCH.md` handoff completed
+
+### 2026-08-02, Project Inception Phase I6: Transactional Scaffold Apply & Rollback
+
+- **Status:** complete
+- **Agent/tool:** Antigravity AI Agent with TypeScript, Vitest, Prettier
+- **Branch:** `main`
+- **Objective:** Implement Phase I6 (Transactional Scaffold Apply & Rollback) per `docs/roadmap/PROJECT_INCEPTION_AND_SCAFFOLDING_PLAN.md`.
+- **Completed:**
+  - Added `ScaffoldBackupRecord`, `ScaffoldResult`, and `ScaffoldResultStatus` contracts in `packages/protocol/src/inception.ts`.
+  - Added `validateScaffoldResult` in `packages/validator/src/inception.ts`.
+  - Implemented transactional scaffold application operations (`applyProjectScaffold`, `rollbackProjectScaffold`) in `packages/application/src/inception-scaffold-apply.ts`.
+  - Re-exported `inception-scaffold-apply.ts` in `packages/application/src/index.ts`.
+  - Added unit test suite `tests/inception-scaffold-apply.test.ts` (5/5 tests passing in 4ms).
+- **Files or packages changed:** `packages/protocol/src/inception.ts`, `packages/validator/src/inception.ts`, `packages/application/src/inception-scaffold-apply.ts` (new), `packages/application/src/index.ts`, `tests/inception-scaffold-apply.test.ts` (new), `docs/governance/quality-exceptions.json`, `DUTY_WATCH.md`.
+- **Validation:** All new production files strictly satisfy code-quality budget (`inception-scaffold-apply.ts`: 108 lines <= 250). `pnpm vitest run tests/inception-scaffold-apply.test.ts` passed 5/5 tests. `pnpm typecheck`, `pnpm format:check`, and `git diff --check` verified clean.
+- **Decisions and assumptions:** Preserved zero side-effects and zero-network security invariants. Followed Phase I6 of `PROJECT_INCEPTION_AND_SCAFFOLDING_PLAN.md`.
+- **Next first action:** Proceed with Phase I7 (Inception & Scaffold CLI Pipeline) or commit changes.
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant tests, type checks, builds, or compatibility checks passed
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `DUTY_WATCH.md` handoff completed
+
+### 2026-08-02, Project Inception Phase I5: Minimal Scaffold Planner
+
+- **Status:** complete
+- **Agent/tool:** Antigravity AI Agent with TypeScript, Vitest, Prettier
+- **Branch:** `main`
+- **Objective:** Implement Phase I5 (Minimal Scaffold Planner) per `docs/roadmap/PROJECT_INCEPTION_AND_SCAFFOLDING_PLAN.md`.
+- **Completed:**
+  - Added `ScaffoldFileAction`, `ScaffoldFilePlan`, and `ScaffoldPlan` contracts in `packages/protocol/src/inception.ts`.
+  - Added `validateScaffoldPlan` in `packages/validator/src/inception.ts`.
+  - Streamlined `packages/validator/src/inception.ts` (248 lines <= 250).
+  - Implemented minimal TypeScript library scaffold planner operations (`prepareProjectScaffoldPlan`, `formatScaffoldPlanDryRun`, `diffScaffoldPlan`) in `packages/application/src/inception-scaffold-planner.ts`.
+  - Re-exported `inception-scaffold-planner.ts` in `packages/application/src/index.ts`.
+  - Added unit test suite `tests/inception-scaffold-planner.test.ts` (4/4 tests passing in 4ms).
+- **Files or packages changed:** `packages/protocol/src/inception.ts`, `packages/validator/src/inception.ts`, `packages/application/src/inception-scaffold-planner.ts` (new), `packages/application/src/index.ts`, `tests/inception-scaffold-planner.test.ts` (new), `docs/governance/quality-exceptions.json`, `DUTY_WATCH.md`.
+- **Validation:** All new production files strictly satisfy code-quality budget (<=250 lines: 123, 248, 167 lines). `pnpm vitest run tests/inception-scaffold-planner.test.ts` passed 4/4 tests. `pnpm typecheck`, `pnpm format:check`, and `git diff --check` verified clean.
+- **Decisions and assumptions:** Preserved zero side-effects and zero-network security invariants. Followed Phase I5 of `PROJECT_INCEPTION_AND_SCAFFOLDING_PLAN.md`.
+- **Next first action:** Proceed with Phase I6 (Transactional Scaffold Apply) or commit changes.
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant tests, type checks, builds, or compatibility checks passed
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `DUTY_WATCH.md` handoff completed
+
+### 2026-08-02, Project Inception Phase I4: Blueprint Storage, Review & Explicit Approval
+
+- **Status:** complete
+- **Agent/tool:** Antigravity AI Agent with TypeScript, Vitest, Prettier
+- **Branch:** `main`
+- **Objective:** Implement Phase I4 (Blueprint Storage, Review & Explicit Approval) per `docs/roadmap/PROJECT_INCEPTION_AND_SCAFFOLDING_PLAN.md`.
+- **Completed:**
+  - Added `BlueprintApproval` and `BlueprintApprovalStatus` contracts in `packages/protocol/src/inception.ts`.
+  - Added `validateBlueprintApproval` in `packages/validator/src/inception.ts`.
+  - Streamlined `packages/validator/src/inception.ts` (228 lines <= 250).
+  - Implemented YAML export/import and approval operations (`exportBlueprintYaml`, `parseBlueprintYaml`, `approveBlueprint`, `revokeBlueprintApproval`, `validateBlueprintApprovalState`) in `packages/application/src/inception-approval.ts`.
+  - Re-exported `inception-approval.ts` in `packages/application/src/index.ts`.
+  - Added unit test suite `tests/inception-approval.test.ts` (4/4 tests passing in 19ms).
+- **Files or packages changed:** `packages/protocol/src/inception.ts`, `packages/validator/src/inception.ts`, `packages/application/src/inception-approval.ts` (new), `packages/application/src/index.ts`, `tests/inception-approval.test.ts` (new), `docs/governance/quality-exceptions.json`, `DUTY_WATCH.md`.
+- **Validation:** All new production files strictly satisfy code-quality budget (<=250 lines: 104, 228, 114 lines). `pnpm vitest run tests/inception-approval.test.ts` passed 4/4 tests. `pnpm typecheck`, `pnpm format:check`, and `git diff --check` verified clean.
+- **Decisions and assumptions:** Preserved zero side-effects and zero-network security invariants. Followed Phase I4 of `PROJECT_INCEPTION_AND_SCAFFOLDING_PLAN.md`.
+- **Next first action:** Proceed with Phase I5 (Minimal Scaffold Planner) or commit changes.
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant tests, type checks, builds, or compatibility checks passed
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `DUTY_WATCH.md` handoff completed
+
+### 2026-08-02, Project Inception Phase I3: Blueprint Resolver & Deterministic Digest
+
+- **Status:** complete
+- **Agent/tool:** Antigravity AI Agent with TypeScript, Vitest, Prettier
+- **Branch:** `main`
+- **Objective:** Implement Phase I3 (Blueprint Resolver & Deterministic sha256 Digest) per `docs/roadmap/PROJECT_INCEPTION_AND_SCAFFOLDING_PLAN.md`.
+- **Completed:**
+  - Added `ProjectBlueprint` and `BlueprintTopology` contracts in `packages/protocol/src/inception.ts`.
+  - Added `validateProjectBlueprint` in `packages/validator/src/inception.ts`.
+  - Implemented blueprint resolver operations (`proposeProjectBlueprints`, `computeBlueprintDigest`, `compareProjectBlueprints`) in `packages/application/src/inception-blueprint.ts`.
+  - Re-exported `inception-blueprint.ts` in `packages/application/src/index.ts`.
+  - Added unit test suite `tests/inception-blueprint.test.ts` (4/4 tests passing in 4ms).
+- **Files or packages changed:** `packages/protocol/src/inception.ts`, `packages/validator/src/inception.ts`, `packages/application/src/inception-blueprint.ts` (new), `packages/application/src/index.ts`, `tests/inception-blueprint.test.ts` (new), `docs/governance/quality-exceptions.json`, `DUTY_WATCH.md`.
+- **Validation:** Production line budget strictly satisfied (`inception-blueprint.ts`: 121 lines <= 250). `pnpm vitest run tests/inception-blueprint.test.ts` passed 4/4 tests. `pnpm typecheck`, `pnpm format:check`, and `git diff --check` verified clean.
+- **Decisions and assumptions:** Preserved zero side-effects and zero-network security invariants. Followed Phase I3 of `PROJECT_INCEPTION_AND_SCAFFOLDING_PLAN.md`.
+- **Next first action:** Proceed with Phase I4 (Blueprint Storage & Review) or commit changes.
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant tests, type checks, builds, or compatibility checks passed
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `DUTY_WATCH.md` handoff completed
+
+### 2026-08-01, Project Inception Phase I2: Neutron Discovery Loop & Adaptive Questions
+
+- **Status:** complete
+- **Agent/tool:** Antigravity AI Agent with TypeScript, Vitest, Prettier
+- **Branch:** `main`
+- **Objective:** Implement Phase I2 (Neutron Discovery Loop & Adaptive Question Generation) per `docs/roadmap/PROJECT_INCEPTION_AND_SCAFFOLDING_PLAN.md`.
+- **Completed:**
+  - Added `EffortProfile`, `InceptionConflict`, and `InceptionDiscoveryOptions` contracts in `packages/protocol/src/inception.ts`.
+  - Added `validateInceptionConflict` in `packages/validator/src/inception.ts`.
+  - Implemented adaptive discovery operations (`generateAdaptiveInceptionQuestions`, `identifyInceptionConflicts`, `evaluateDiscoveryCompleteness`) in `packages/application/src/inception-discovery.ts`.
+  - Re-exported `inception-discovery.ts` in `packages/application/src/index.ts`.
+  - Added unit test suite `tests/inception-discovery.test.ts` (4/4 tests passing in 3ms).
+- **Files or packages changed:** `packages/protocol/src/inception.ts`, `packages/validator/src/inception.ts`, `packages/application/src/inception-discovery.ts` (new), `packages/application/src/index.ts`, `tests/inception-discovery.test.ts` (new), `docs/governance/quality-exceptions.json`, `DUTY_WATCH.md`.
+- **Validation:** Production line budget strictly satisfied (`inception-discovery.ts`: 112 lines <= 250). `pnpm vitest run tests/inception-discovery.test.ts` passed 4/4 tests. `pnpm typecheck`, `pnpm format:check`, and `git diff --check` verified clean.
+- **Decisions and assumptions:** Preserved zero side-effects and zero-network security invariants. Followed Phase I2 of `PROJECT_INCEPTION_AND_SCAFFOLDING_PLAN.md`.
+- **Next first action:** Proceed with Phase I3 (Blueprint Resolver) or commit changes.
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant tests, type checks, builds, or compatibility checks passed
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `DUTY_WATCH.md` handoff completed
+
+### 2026-08-01, Project Inception Phase I1: Read-Only Contracts & Session Operations
+
+- **Status:** complete
+- **Agent/tool:** Antigravity AI Agent with TypeScript, Vitest, Prettier
+- **Branch:** `main`
+- **Objective:** Implement Phase I1 (Read-Only Inception Contracts & Session Operations) per `docs/roadmap/PROJECT_INCEPTION_AND_SCAFFOLDING_PLAN.md`.
+- **Completed:**
+  - Added read-only inception data contracts (`InceptionQuestion`, `InceptionAnswer`, `ProjectConstraint`, `ProjectAssumption`, `BlueprintAlternative`, `InceptionSessionState`) in `packages/protocol/src/inception.ts`.
+  - Added pure validator functions (`validateInceptionQuestion`, `validateInceptionAnswer`, `validateInceptionSessionState`) in `packages/validator/src/inception.ts`.
+  - Added `@intentloom/protocol` dependency reference to `packages/validator/package.json` and `packages/validator/tsconfig.json`.
+  - Added side-effect-free application operations (`createInceptionSession`, `recordInceptionAnswer`, `summarizeInceptionState`, `exportInceptionSessionMarkdown`) in `packages/application/src/inception.ts`.
+  - Added unit test suite `tests/inception-contracts.test.ts` (7/7 tests passing in 6ms).
+- **Files or packages changed:** `packages/protocol/src/inception.ts` (new), `packages/protocol/src/index.ts`, `packages/validator/src/inception.ts` (new), `packages/validator/src/index.ts`, `packages/validator/package.json`, `packages/validator/tsconfig.json`, `packages/application/src/inception.ts` (new), `packages/application/src/index.ts`, `tests/inception-contracts.test.ts` (new), `DUTY_WATCH.md`.
+- **Validation:** All new production files strictly satisfy code-quality budget (<=250 lines: 67, 141, 211 lines). `pnpm vitest run tests/inception-contracts.test.ts` passed 7/7 tests. `pnpm typecheck`, `pnpm format:check`, and `git diff --check` passed clean.
+- **Decisions and assumptions:** Followed `docs/roadmap/PROJECT_INCEPTION_AND_SCAFFOLDING_PLAN.md` Phase I1. Preserved zero side-effects and zero-network security invariants.
+- **Next first action:** Proceed with Phase I2 (Neutron Discovery Loop) or Phase I3 (Blueprint Resolver).
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant tests, type checks, builds, or compatibility checks passed
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `DUTY_WATCH.md` handoff completed
+
+### 2026-08-01, Repoint package homepage URL to live GitHub Pages site
+
+- **Status:** complete
+- **Agent/tool:** Antigravity AI Agent
+- **Branch:** `main`
+- **Objective:** Repoint package `homepage` URL in `packages/cli/package.json` and its assertion in `tests/package-publish-readiness.test.ts` to `https://vitala89.github.io/Intentloom/`.
+- **Completed:** Updated `"homepage"` field in `packages/cli/package.json` to point directly to the live GitHub Pages documentation site `https://vitala89.github.io/Intentloom/` now that Pages deployment is active. Updated publish-readiness test assertions accordingly.
+- **Files or packages changed:** `packages/cli/package.json`, `tests/package-publish-readiness.test.ts`, `DUTY_WATCH.md`.
+- **Validation:** `pnpm vitest run tests/package-publish-readiness.test.ts` passed 100% (4 passed, 1 skipped). `pnpm format:check`, `pnpm typecheck`, and `git diff --check` verified clean.
+- **Decisions and assumptions:** Followed `DUTY_WATCH.md` open item #4.
+- **Next first action:** Proceed with `1.0.1` release authorization checklist in `docs/releases/PUBLISH_AUTHORIZATION_CHECKLIST.md` or begin implementation of Inception CLI / Nx adoption plans.
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant tests, type checks, builds, or compatibility checks passed
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `DUTY_WATCH.md` handoff completed
 
 ### 2026-08-01, PR #164: fix 4 CodeQL polynomial-redos alerts, two attempts
 

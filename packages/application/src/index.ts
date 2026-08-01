@@ -7422,3 +7422,13 @@ export async function syncLocalWorkspaceState(
     syncedAt: new Date().toISOString(),
   };
 }
+
+export * from "./inception.js";
+export * from "./inception-discovery.js";
+export * from "./inception-blueprint.js";
+export * from "./inception-approval.js";
+export * from "./inception-scaffold-planner.js";
+export * from "./inception-scaffold-apply.js";
+export * from "./inception-actions.js";
+export * from "./inception-flow.js";
+export * from "./inception-templates.js";

@@ -166,6 +166,9 @@ importers:
       '@intentloom/core':
         specifier: workspace:*
         version: link:../core
+      '@intentloom/protocol':
+        specifier: workspace:*
+        version: link:../protocol
       ajv:
         specifier: ^8.20.0
         version: 8.20.0

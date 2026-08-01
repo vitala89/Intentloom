@@ -879,3 +879,4 @@ export function validateExtensionCapabilityGrant(
 
 export * from "./extension.js";
 export * from "./desktop-extension.js";
+export * from "./inception.js";
