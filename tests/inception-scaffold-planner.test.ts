@@ -43,6 +43,24 @@ describe("Project Inception Minimal Scaffold Planner (Phase I5)", () => {
     expect(plan.dependencies).toEqual(["typescript", "vitest"]);
   });
 
+  it("sanitizes package names deterministically across Unicode and punctuation", () => {
+    const session = createInceptionSession({
+      root: "/tmp/sanitization-test",
+      idea: "Fancy_tool-name / 2.0 🚀",
+    });
+
+    const blueprint = proposeProjectBlueprints(session).recommended;
+    const plan = prepareProjectScaffoldPlan(
+      blueprint,
+      "/tmp/sanitization-test",
+    );
+    const pkgFile = plan.files.find((f) => f.path === "package.json");
+
+    expect(JSON.parse(pkgFile!.content)).toMatchObject({
+      name: "fancy_tool-name---2-0",
+    });
+  });
+
   it("formats human-readable dry-run output without side effects", () => {
     const session = createInceptionSession({
       root: "/tmp/dryrun-test",

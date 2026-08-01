@@ -214,7 +214,16 @@ export function prepareProjectScaffoldPlan(
   }
 
   const rawName = validated.name.replace(/^Blueprint for /i, "");
-  const sanitized = rawName.toLowerCase().replace(/[^a-z0-9-_]/gu, "-");
+  const sanitized = Array.from(rawName.toLowerCase())
+    .map((ch) =>
+      (ch >= "a" && ch <= "z") ||
+      (ch >= "0" && ch <= "9") ||
+      ch === "-" ||
+      ch === "_"
+        ? ch
+        : "-",
+    )
+    .join("");
   const pkgName = sanitized.replace(/^-+/, "").replace(/-+$/, "");
   const now = Date.now();
   const isWorkspace = validated.topology === "pnpm-workspace";
