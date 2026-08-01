@@ -44,6 +44,17 @@
       "scope": "select_project_root deadlock fix",
       "reviewTrigger": "Extract the Tauri command handlers from main.rs into a commands module before the next behavior change touching this file.",
       "expires": "2026-09-15"
+    },
+    {
+      "path": "packages/validator/src/index.ts",
+      "rule": "existing-oversized-growth",
+      "baseLines": 877,
+      "headLines": 881,
+      "reason": "Fixes CodeQL alert #1 (js/polynomial-redos). A first attempt narrowed the reference regex's ambiguous \\s+ to \\s, but CodeQL still flagged it: the real driver is the unbounded [^)\\s]+ backtracking fully on unterminated input, repeated at every subsequent `](` occurrence during the global scan. Replaced the regex with findMarkdownLinkTargets, a manual forward-scanning helper in a new markdown-links.ts module, imported here. Extracting extension validation from this file (per the still-open PR #160 exception above) remains the real decomposition follow-up.",
+      "owner": "Validator maintainers",
+      "scope": "CodeQL alert #1 polynomial-redos fix",
+      "reviewTrigger": "Extract extension validation from index.ts before the next behavior change touching this file.",
+      "expires": "2026-09-15"
     }
   ]
 }

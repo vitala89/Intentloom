@@ -76,6 +76,29 @@ describe("Agent Skill schema and Intentloom policy", () => {
         `${body}\nSee [outside](file:///etc/passwd).\n`,
       ).semanticErrors.map((error) => error.code),
     ).toContain("skill-reference-escape"));
+  it("rejects an external reference escape with a multi-space link title", () =>
+    expect(
+      skill(
+        "name: aif-example\ndescription: Example",
+        `${body}\nSee [outside](../outside.md   "escape title").\n`,
+      ).semanticErrors.map((error) => error.code),
+    ).toContain("skill-reference-escape"));
+  it("stays linear time on the exact CodeQL js/polynomial-redos attack shape", () => {
+    // CodeQL's reported attacker string: '](' followed by many repetitions
+    // of '](!' with no closing paren, which used to force the regex-based
+    // scanner into quadratic backtracking (unbounded target-char class
+    // failing to close, retried at every subsequent `](` occurrence).
+    const pathological = `${body}\n](${"](!".repeat(50_000)}`;
+    const start = performance.now();
+    skill("name: aif-example\ndescription: Example", pathological);
+    expect(performance.now() - start).toBeLessThan(1_000);
+  });
+  it("stays linear time scanning references in a large body", () => {
+    const pathological = `${body}\n[x](${" ".repeat(100_000)}`;
+    const start = performance.now();
+    skill("name: aif-example\ndescription: Example", pathological);
+    expect(performance.now() - start).toBeLessThan(1_000);
+  });
   it("keeps portable Agent Skills independent of Intentloom catalog policy", () =>
     expect(
       validator.validate({
