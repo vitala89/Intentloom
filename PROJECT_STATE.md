@@ -107,13 +107,13 @@ before a new release or implementation milestone is declared complete.
 ## Active focus
 
 1. PR #160 merged into `main` on 2026-07-31 (head `5afedd2`, all hosted checks
-   green). Open and land a new pull request for the 18 commits on
-   `feature/post-v1-enhancements` past that merge point: ADR-0044 through
-   ADR-0050 (Desktop design system import, Extension Host API, Theme
-   Contribution Bridge, View Sandbox Protocol, Command Contribution Registry,
-   Provider UI/Settings, Renderer/Panel Placement) and the VitePress GitHub
-   Pages site scaffold. `pnpm verify` passed clean on this branch at `0578d6a`
-   on 2026-08-01.
+   green). PR #161 is open for the remaining commits on
+   `feature/post-v1-enhancements`: ADR-0044 through ADR-0050 (Desktop design
+   system import, Extension Host API, Theme Contribution Bridge, View Sandbox
+   Protocol, Command Contribution Registry, Provider UI/Settings,
+   Renderer/Panel Placement), the VitePress GitHub Pages site scaffold, and
+   the Desktop project-selection deadlock fix. `pnpm verify` passed clean on
+   this branch on 2026-08-01.
 2. Publish the prepared `1.0.1` documentation and package-metadata release
    through the approved trusted-publishing workflow.
 3. Keep bottleneck inference, remote ingestion, model-based judgments, and any
