@@ -29,6 +29,8 @@ Product and platform directions:
 - [AI Model Routing and Effort Profiles](concepts/AI_MODEL_ROUTING_AND_EFFORT_PROFILES.md)
 - [Nx Incremental Adoption Plan](roadmap/NX_INCREMENTAL_ADOPTION_PLAN.md)
 - [Project Inception, Model, and Nx Principles](governance/PROJECT_INCEPTION_MODEL_AND_NX_PRINCIPLES.md)
+- [Agent Session History and Memory Experience](concepts/AGENT_SESSION_HISTORY_AND_MEMORY_EXPERIENCE.md)
+- [Agent Session History and Memory Implementation Plan](roadmap/AGENT_SESSION_HISTORY_AND_MEMORY_IMPLEMENTATION_PLAN.md)
 - [Enterprise Team Coordination and Approval Graph](concepts/ENTERPRISE_TEAM_COORDINATION_AND_APPROVAL_GRAPH.md)
 - [Enterprise Team Workflow and Notifications Plan](roadmap/ENTERPRISE_TEAM_WORKFLOW_AND_NOTIFICATIONS_PLAN.md)
 - [Enterprise Coordination Principles](governance/ENTERPRISE_COORDINATION_PRINCIPLES.md)
