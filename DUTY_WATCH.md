@@ -13,9 +13,9 @@ Status: **PR #160 merged; 18 unmerged commits on `feature/post-v1-enhancements` 
 
 Active branch: `feature/post-v1-enhancements` (18 commits ahead of `main`, 0 behind)
 
-Current objective: open a new pull request for `feature/post-v1-enhancements` against `main` covering the ADR-0044 through ADR-0050 Desktop Extension Ecosystem work, and observe hosted CI.
+Current objective: observe hosted CI on PR #161 (`feature/post-v1-enhancements` -> `main`, head `67b6193`) and merge once green.
 
-Next first action: `gh pr create` for `feature/post-v1-enhancements`, then monitor the Compatibility, CodeQL, Governance, and Desktop SEA Feasibility checks.
+Next first action: check PR #161 status checks (Compatibility, CodeQL, Dependency Review, Desktop SEA Feasibility, Governance).
 
 Known open items, in the order they should be handled:
 
