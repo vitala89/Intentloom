@@ -55,6 +55,39 @@
       "scope": "CodeQL alert #1 polynomial-redos fix",
       "reviewTrigger": "Extract extension validation from index.ts before the next behavior change touching this file.",
       "expires": "2026-09-15"
+    },
+    {
+      "path": "packages/protocol/src/index.ts",
+      "rule": "existing-oversized-growth",
+      "baseLines": 4433,
+      "headLines": 4434,
+      "reason": "Phase I1 Inception contracts re-export added to protocol barrel file.",
+      "owner": "Protocol maintainers",
+      "scope": "Project Inception Phase I1",
+      "reviewTrigger": "Decompose protocol index barrel into domain sub-barrels before next feature.",
+      "expires": "2026-09-15"
+    },
+    {
+      "path": "packages/validator/src/index.ts",
+      "rule": "existing-oversized-growth",
+      "baseLines": 881,
+      "headLines": 882,
+      "reason": "Phase I1 Inception validator re-export added to validator barrel file.",
+      "owner": "Validator maintainers",
+      "scope": "Project Inception Phase I1",
+      "reviewTrigger": "Decompose validator index barrel into domain sub-barrels before next feature.",
+      "expires": "2026-09-15"
+    },
+    {
+      "path": "packages/application/src/index.ts",
+      "rule": "existing-oversized-growth",
+      "baseLines": 7424,
+      "headLines": 7426,
+      "reason": "Phase I1 Inception application re-export added to application barrel file.",
+      "owner": "Application maintainers",
+      "scope": "Project Inception Phase I1",
+      "reviewTrigger": "Decompose application index barrel into domain sub-barrels before next feature.",
+      "expires": "2026-09-15"
     }
   ]
 }

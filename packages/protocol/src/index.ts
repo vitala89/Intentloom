@@ -46,6 +46,7 @@ export * from "./jsonrpc.js";
 export * from "./daemon.js";
 export * from "./desktop-extension.js";
 export * from "./diff.js";
+export * from "./inception.js";
 
 export const TIMELINE_DEFAULT_LIMIT = 50;
 export const TIMELINE_MAX_LIMIT = 500;
