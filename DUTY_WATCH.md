@@ -13,9 +13,9 @@ Status: **PR #160 merged; 18 unmerged commits on `feature/post-v1-enhancements` 
 
 Active branch: `feature/post-v1-enhancements` (18 commits ahead of `main`, 0 behind)
 
-Current objective: observe hosted CI on PR #161 (`feature/post-v1-enhancements` -> `main`, head `67b6193`) and merge once green.
+Current objective: land the Desktop project-selection deadlock fix and the GitHub Pages enablement on top of PR #161, then observe hosted CI and merge once green.
 
-Next first action: check PR #161 status checks (Compatibility, CodeQL, Dependency Review, Desktop SEA Feasibility, Governance).
+Next first action: push the `main.rs` deadlock fix and quality-exception update onto `feature/post-v1-enhancements`, confirm the re-run of the Documentation workflow deploys, then check PR #161 status checks (Compatibility, CodeQL, Dependency Review, Desktop SEA Feasibility, Governance).
 
 Known open items, in the order they should be handled:
 
@@ -60,6 +60,28 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-01, Fix Desktop project-selection freeze and enable GitHub Pages
+
+- **Status:** complete
+- **Agent/tool:** Claude Code
+- **Branch:** `feature/post-v1-enhancements`
+- **Commits:** `apps/desktop/src-tauri/src/main.rs`, `docs/governance/quality-exceptions.json`
+- **Pull request:** none yet (part of the next commit on PR #161)
+- **Objective:** Fix a reported bug where selecting a project in the Desktop app hangs indefinitely (mouse busy cursor, requires a force quit), and fix the GitHub Pages "Documentation" workflow failing on `main`.
+- **Completed:**
+  - Root-caused the freeze: all six `#[tauri::command]` handlers in `main.rs` were plain (non-`async`) functions, which Tauri v2 dispatches on the main UI event-loop thread. `select_project_root` calls `tauri_plugin_dialog`'s `blocking_pick_folder()`, which itself needs to pump the main thread's event loop to show and close the native folder picker — calling it from the main thread while that same thread is blocked inside the command handler is a deadlock, not a slow operation. The other five commands blocked the main thread for the duration of daemon process spawn / socket I/O for the same underlying reason, without deadlocking.
+  - Fix: added a `run_blocking` helper that runs a command's body via `tauri::async_runtime::spawn_blocking`, and converted all six commands (`get_daemon_info`, `select_project_root`, `inspect_project`, `run_doctor`, `preview_project_diff`, `load_project_timeline`) to `async fn` that delegate to it. Command bodies and return types are unchanged. Verified with `cargo check`, `cargo fmt --check`, and `cargo test` (0 existing Rust unit tests, none broken) in `apps/desktop/src-tauri`.
+  - Recorded a scoped, expiring quality exception in `docs/governance/quality-exceptions.json` for the resulting growth of `main.rs` (635 -> 675 lines, already over the 400-line hard cap before this fix); the review trigger is to extract the command handlers into a dedicated module before the next behavior change to this file.
+  - Root-caused the GitHub Pages failure: `gh api repos/vitala89/Intentloom/pages` returned 404 — Pages was never enabled for this repository, so `actions/configure-pages` (called with `enablement: false`) failed with "Get Pages site failed... Not Found" on every run of the `Documentation` workflow, including the run on `main` at `3713b15`. Enabled Pages via `gh api -X POST repos/vitala89/Intentloom/pages -f build_type=workflow` (source: GitHub Actions, branch `main`) and re-ran the failed run (`30666323932`).
+- **Not completed:** Did not extract `main.rs`'s command handlers into a submodule (deferred per the recorded exception). Did not add a Rust integration test for the async command dispatch because the crate has no existing Tauri command test harness; manual verification is `cargo check` plus the reasoning above, not an executed regression test — the next agent should add one if a suitable harness is set up.
+- **Files or packages changed:** `apps/desktop/src-tauri/src/main.rs`, `docs/governance/quality-exceptions.json`, `DUTY_WATCH.md`, `PROJECT_STATE.md`.
+- **Validation:** `cargo check`, `cargo fmt --check`, `cargo test` in `apps/desktop/src-tauri` all passed. GitHub Pages: confirmed via `gh api repos/vitala89/Intentloom/pages` that the site is now provisioned (`build_type: workflow`, `html_url: https://vitala89.github.io/Intentloom/`); re-ran the previously failed Documentation run to confirm the deploy step now proceeds past the `configure-pages` step.
+- **Decisions and assumptions:** Chose `spawn_blocking` over rewriting the daemon I/O as truly async, since the daemon protocol client is synchronous throughout and a full async rewrite is out of scope for this fix. This is the standard Tauri-recommended pattern for blocking command bodies.
+- **Risks or compatibility impact:** None to the JSON-RPC protocol or daemon behavior; commands return identical `Result<Value, BridgeError>` shapes. The Rust build target moved from purely synchronous command dispatch to `tauri::async_runtime` task spawning, which was already a dependency of the `tauri` crate.
+- **Open issues or blockers:** Extraction of `main.rs`'s command handlers remains open per the new quality exception (expires 2026-09-15).
+- **Next first action:** Confirm the re-run of the Documentation workflow (`30666323932` or its successor) completes and the site is reachable at `https://vitala89.github.io/Intentloom/`; then continue observing PR #161 CI.
+- **Evidence:** `cargo check`/`cargo fmt --check`/`cargo test` local runs; `gh api repos/vitala89/Intentloom/pages` before (404) and after (200, `build_type: workflow`) enabling Pages; `gh run view 30666323932 --log-failed` showing the exact "Get Pages site failed... Not Found" root cause.
 
 ### 2026-08-01, Desktop Renderer Contribution & Extension Panel Placement (ADR-0050)
 

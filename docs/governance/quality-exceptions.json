@@ -33,6 +33,17 @@
       "scope": "PR #160",
       "reviewTrigger": "Extract extension validation from index.ts before the next behavior change touching this file.",
       "expires": "2026-08-31"
+    },
+    {
+      "path": "apps/desktop/src-tauri/src/main.rs",
+      "rule": "existing-oversized-growth",
+      "baseLines": 635,
+      "headLines": 675,
+      "reason": "Fixes a main-thread deadlock: all six Tauri commands ran synchronously on the UI event-loop thread, and select_project_root's native folder dialog needs that same thread's event loop to complete, so choosing a project froze the whole window. Converting each command to async and dispatching its blocking body through a shared run_blocking helper is the minimal fix; extracting the command handlers into a dedicated module is deferred to the next Desktop native-bridge change.",
+      "owner": "Desktop maintainers",
+      "scope": "select_project_root deadlock fix",
+      "reviewTrigger": "Extract the Tauri command handlers from main.rs into a commands module before the next behavior change touching this file.",
+      "expires": "2026-09-15"
     }
   ]
 }

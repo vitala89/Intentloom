@@ -94,6 +94,16 @@ and real consumers justify them.
 These statements must be revalidated against code, tags, CI, and Git history
 before a new release or implementation milestone is declared complete.
 
+## Recently fixed
+
+- Selecting a project in the Desktop app deadlocked the whole window (main
+  event-loop thread blocked on a native dialog call that itself needed that
+  thread's event loop). Fixed by dispatching all six Tauri commands through
+  `tauri::async_runtime::spawn_blocking`; see `DUTY_WATCH.md`, 2026-08-01.
+- The GitHub Pages "Documentation" workflow failed on every run because Pages
+  was never enabled for the repository. Enabled it via the GitHub API with
+  `build_type: workflow`; see `DUTY_WATCH.md`, 2026-08-01.
+
 ## Active focus
 
 1. PR #160 merged into `main` on 2026-07-31 (head `5afedd2`, all hosted checks
