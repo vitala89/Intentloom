@@ -154,3 +154,22 @@ export interface GitInitPlan {
   readonly commitMessage: string;
   readonly commands: readonly string[];
 }
+
+export type InceptionFlowStep =
+  | "discovery"
+  | "blueprinting"
+  | "review"
+  | "scaffold-planned"
+  | "scaffold-applied"
+  | "cancelled";
+
+export interface InceptionFlowState {
+  readonly session: InceptionSessionState;
+  readonly currentStep: InceptionFlowStep;
+  readonly blueprint?: ProjectBlueprint;
+  readonly approval?: BlueprintApproval;
+  readonly plan?: ScaffoldPlan;
+  readonly result?: ScaffoldResult;
+  readonly isComplete: boolean;
+  readonly updatedAt: number;
+}

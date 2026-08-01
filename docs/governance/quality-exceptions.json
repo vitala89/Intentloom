@@ -81,11 +81,11 @@
     {
       "path": "packages/application/src/index.ts",
       "rule": "existing-oversized-growth",
-      "baseLines": 7431,
-      "headLines": 7432,
-      "reason": "Phase I8 Inception actions application re-export added to application barrel file.",
+      "baseLines": 7432,
+      "headLines": 7433,
+      "reason": "Phase I9 Inception flow application re-export added to application barrel file.",
       "owner": "Application maintainers",
-      "scope": "Project Inception Phase I8",
+      "scope": "Project Inception Phase I9",
       "reviewTrigger": "Decompose application index barrel into domain sub-barrels before next feature.",
       "expires": "2026-09-15"
     }

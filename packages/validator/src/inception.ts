@@ -306,3 +306,61 @@ export function validateGitInitPlan(v: unknown): GitInitPlan {
     commands: assertArr(v.commands, "gitPlan.commands") as readonly string[],
   };
 }
+
+const FLOW_STEPS: readonly string[] = [
+  "discovery",
+  "blueprinting",
+  "review",
+  "scaffold-planned",
+  "scaffold-applied",
+  "cancelled",
+];
+
+export function validateInceptionFlowState(v: unknown): {
+  readonly session: InceptionSessionState;
+  readonly currentStep:
+    | "discovery"
+    | "blueprinting"
+    | "review"
+    | "scaffold-planned"
+    | "scaffold-applied"
+    | "cancelled";
+  readonly blueprint?: ProjectBlueprint;
+  readonly approval?: BlueprintApproval;
+  readonly plan?: ScaffoldPlan;
+  readonly result?: ScaffoldResult;
+  readonly isComplete: boolean;
+  readonly updatedAt: number;
+} {
+  if (!isObj(v))
+    throw new Error("Invalid inception flow state: expected object");
+  const session = validateInceptionSessionState(v.session);
+  if (!FLOW_STEPS.includes(v.currentStep as string)) {
+    throw new Error(`Invalid flow.currentStep '${String(v.currentStep)}'`);
+  }
+
+  const blueprint = v.blueprint
+    ? validateProjectBlueprint(v.blueprint)
+    : undefined;
+  const approval = v.approval
+    ? validateBlueprintApproval(v.approval)
+    : undefined;
+  const plan = v.plan ? validateScaffoldPlan(v.plan) : undefined;
+  const result = v.result ? validateScaffoldResult(v.result) : undefined;
+
+  if (typeof v.isComplete !== "boolean") {
+    throw new Error("Invalid flow.isComplete: expected boolean");
+  }
+  const updatedAt = assertNum(v.updatedAt, "flow.updatedAt");
+
+  return {
+    session,
+    currentStep: v.currentStep as any,
+    ...(blueprint ? { blueprint } : {}),
+    ...(approval ? { approval } : {}),
+    ...(plan ? { plan } : {}),
+    ...(result ? { result } : {}),
+    isComplete: v.isComplete,
+    updatedAt,
+  };
+}
