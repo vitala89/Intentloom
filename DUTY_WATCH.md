@@ -9,7 +9,7 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **PR #161-#164 all merged into `main`; Desktop deadlock fixed; GitHub Pages live; 4/5 Dependabot alerts and all 4 CodeQL alerts closed** — PR #160 (`5afedd2`), PR #161 (`e71a239`, Desktop Extension Ecosystem ADR-0044-0050 plus the VitePress scaffold and Desktop project-selection deadlock fix), PR #162 (`101026d`, stranded docs.yml action-pin fix), PR #163 (`32b22bc`, dependency vulnerability fix), and PR #164 (`72f0d71`, CodeQL polynomial-redos fix) are all merged into `main`, in that order. GitHub Pages is enabled and serving the built VitePress site at `https://vitala89.github.io/Intentloom/` (verified HTTP 200 with real content). `gh api repos/vitala89/Intentloom/dependabot/alerts` shows only alert #2 (`glib`, tracked exception, expires 2026-10-29) still open; `gh api repos/vitala89/Intentloom/code-scanning/alerts` shows zero open alerts. npm still serves `1.0.1`/`1.0.0` state as previously recorded; unchanged this watch. See the two entries below (PR #163, PR #164) for what each fix actually did.
+Status: **PR #161-#167 all merged into `main`; Desktop deadlock fixed; GitHub Pages live; 4/5 Dependabot alerts and all CodeQL alerts closed** — PR #160 (`5afedd2`), PR #161 (`e71a239`, Desktop Extension Ecosystem ADR-0044-0050 plus the VitePress scaffold and Desktop project-selection deadlock fix), PR #162 (`101026d`, stranded docs.yml action-pin fix), PR #163 (`32b22bc`, dependency vulnerability fix), PR #164 (`72f0d71`, CodeQL polynomial-redos fix), and PR #167 (`cc2bf3c`, Project Inception I1-I10 pipeline plus deterministic package-name sanitization) are merged into `main`. GitHub Pages is enabled and serving the built VitePress site at `https://vitala89.github.io/Intentloom/` (verified HTTP 200 with real content). PR #167's 19 checks passed, including CodeQL and the Ubuntu/macOS/Windows Node 22/24 matrix. `gh api repos/vitala89/Intentloom/dependabot/alerts` shows only alert #2 (`glib`, tracked exception, expires 2026-10-29) still open; `gh api repos/vitala89/Intentloom/code-scanning/alerts` shows zero open alerts. npm still serves `1.0.1`/`1.0.0` state as previously recorded; unchanged this watch. See the entries below (PR #163, PR #164, and PR #167) for what each fix actually did.
 
 Active branch: `main`
 
@@ -60,6 +60,23 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-02, Project Inception package-name CodeQL hardening (PR #167)
+
+- **Status:** complete
+- **Branch:** `feat/project-inception-pipeline` → `main`
+- **Pull request:** #167, squash-merged as `cc2bf3c`
+- **Objective:** Remove the remaining polynomial-regex CodeQL alert from Project Inception package-name sanitization without changing the scaffold contract.
+- **Completed:**
+  - Replaced regex-based character sanitization with a linear `Array.from`/mapping pass that preserves lowercase ASCII letters, digits, hyphens, and underscores.
+  - Replaced regex prefix removal and hyphen trimming with deterministic string operations and bounded index scans in `packages/application/src/inception-package-name.ts`.
+  - Added regression coverage for Unicode and punctuation in `tests/inception-scaffold-planner.test.ts`.
+- **Files or packages changed:** `packages/application/src/inception-scaffold-planner.ts`, `packages/application/src/inception-package-name.ts`, and `tests/inception-scaffold-planner.test.ts`.
+- **Commits:** `0356236 security: use deterministic non-regex sanitization for package name.` and `19fb472 security: eliminate regex from package name trimming.`
+- **Validation:** `pnpm vitest run tests/inception-*.test.ts` passed 41/41; `pnpm typecheck` passed; `pnpm format:check` passed; `pnpm verify` passed with 851 tests and 3 skipped; PR #167 checks passed 19/19, including CodeQL run `91431604956` and all Node 22/24 Ubuntu, macOS, and Windows jobs; `git diff --check` passed.
+- **Code-quality:** The planner is 284 lines after extracting the package-name responsibility; the extracted helper is 30 lines. Keep the next planner behavior change focused on a further cohesive extraction before growing the planner again.
+- **Decisions and assumptions:** Package-name behavior remains provider-neutral and side-effect free. Git fsmonitor IPC errors were isolated to the local environment and avoided with a process-local `core.fsmonitor=false` override; no repository or user Git configuration was changed.
+- **Next first action:** Continue with the active `1.0.1` trusted-publishing checklist in `docs/releases/PUBLISH_AUTHORIZATION_CHECKLIST.md`.
 
 ### 2026-08-02, Project Inception Phase I10: Third-Party Starter Ecosystem & Template Registry
 
