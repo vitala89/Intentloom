@@ -139,3 +139,18 @@ export interface ScaffoldResult {
   readonly error?: string;
   readonly appliedAt: number;
 }
+
+export type PackageManagerKind = "pnpm" | "npm" | "yarn";
+
+export interface DependencyInstallPlan {
+  readonly packageManager: PackageManagerKind;
+  readonly dependencies: readonly string[];
+  readonly command: string;
+}
+
+export interface GitInitPlan {
+  readonly root: string;
+  readonly gitignoreEntries: readonly string[];
+  readonly commitMessage: string;
+  readonly commands: readonly string[];
+}

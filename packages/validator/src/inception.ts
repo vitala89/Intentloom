@@ -16,6 +16,9 @@ import type {
   ScaffoldFileAction,
   ScaffoldResult,
   ScaffoldResultStatus,
+  DependencyInstallPlan,
+  GitInitPlan,
+  PackageManagerKind,
 } from "@intentloom/protocol";
 
 function isObj(v: unknown): v is Record<string, unknown> {
@@ -74,6 +77,7 @@ const RESS: readonly ScaffoldResultStatus[] = [
   "rolled-back",
   "failed",
 ];
+const PKG_MANAGERS: readonly PackageManagerKind[] = ["pnpm", "npm", "yarn"];
 
 export function validateInceptionQuestion(v: unknown): InceptionQuestion {
   if (!isObj(v)) throw new Error("Invalid inception question: expected object");
@@ -270,5 +274,35 @@ export function validateScaffoldResult(v: unknown): ScaffoldResult {
     backups,
     ...(err ? { error: err } : {}),
     appliedAt: assertNum(v.appliedAt, "result.appliedAt"),
+  };
+}
+
+export function validateDependencyInstallPlan(
+  v: unknown,
+): DependencyInstallPlan {
+  if (!isObj(v))
+    throw new Error("Invalid dependency install plan: expected object");
+  if (!PKG_MANAGERS.includes(v.packageManager as PackageManagerKind))
+    throw new Error(`Invalid packageManager '${String(v.packageManager)}'`);
+  return {
+    packageManager: v.packageManager as PackageManagerKind,
+    dependencies: assertArr(
+      v.dependencies,
+      "installPlan.dependencies",
+    ) as readonly string[],
+    command: assertStr(v.command, "installPlan.command"),
+  };
+}
+
+export function validateGitInitPlan(v: unknown): GitInitPlan {
+  if (!isObj(v)) throw new Error("Invalid git init plan: expected object");
+  return {
+    root: assertStr(v.root, "gitPlan.root"),
+    gitignoreEntries: assertArr(
+      v.gitignoreEntries,
+      "gitPlan.gitignoreEntries",
+    ) as readonly string[],
+    commitMessage: assertStr(v.commitMessage, "gitPlan.commitMessage"),
+    commands: assertArr(v.commands, "gitPlan.commands") as readonly string[],
   };
 }
