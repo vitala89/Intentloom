@@ -81,11 +81,11 @@
     {
       "path": "packages/application/src/index.ts",
       "rule": "existing-oversized-growth",
-      "baseLines": 7424,
-      "headLines": 7426,
-      "reason": "Phase I1 Inception application re-export added to application barrel file.",
+      "baseLines": 7426,
+      "headLines": 7427,
+      "reason": "Phase I2 Inception discovery application re-export added to application barrel file.",
       "owner": "Application maintainers",
-      "scope": "Project Inception Phase I1",
+      "scope": "Project Inception Phase I2",
       "reviewTrigger": "Decompose application index barrel into domain sub-barrels before next feature.",
       "expires": "2026-09-15"
     }

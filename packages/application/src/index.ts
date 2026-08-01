@@ -7424,3 +7424,4 @@ export async function syncLocalWorkspaceState(
 }
 
 export * from "./inception.js";
+export * from "./inception-discovery.js";

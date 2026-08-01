@@ -148,3 +148,23 @@ export function validateInceptionSessionState(
     updatedAt,
   };
 }
+
+export function validateInceptionConflict(value: unknown): {
+  readonly questionId: string;
+  readonly conflict: string;
+  readonly severity: "error" | "warning";
+} {
+  if (!isObject(value)) {
+    throw new Error("Invalid inception conflict: expected object");
+  }
+  const questionId = assertString(value.questionId, "conflict.questionId");
+  const conflict = assertString(value.conflict, "conflict.conflict");
+  if (value.severity !== "error" && value.severity !== "warning") {
+    throw new Error("Invalid conflict.severity: expected 'error' or 'warning'");
+  }
+  return {
+    questionId,
+    conflict,
+    severity: value.severity,
+  };
+}

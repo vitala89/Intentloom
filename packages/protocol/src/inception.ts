@@ -59,3 +59,16 @@ export interface InceptionSessionState {
   readonly createdAt: number;
   readonly updatedAt: number;
 }
+
+export type EffortProfile = "low" | "medium" | "high";
+
+export interface InceptionConflict {
+  readonly questionId: string;
+  readonly conflict: string;
+  readonly severity: "error" | "warning";
+}
+
+export interface InceptionDiscoveryOptions {
+  readonly effort?: EffortProfile;
+  readonly modelProfile?: string;
+}
