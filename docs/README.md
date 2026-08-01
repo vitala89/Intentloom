@@ -47,4 +47,4 @@ Repository governance:
 - [Security policy](../SECURITY.md)
 - [Project roadmap](../ROADMAP.md)
 
-The public site is deployed to GitHub Pages via [.github/workflows/docs.yml](../.github/workflows/docs.yml). A future follow-up may add VitePress static site generation.
+The public documentation site is built with VitePress and deployed to GitHub Pages through [.github/workflows/docs.yml](../.github/workflows/docs.yml).
