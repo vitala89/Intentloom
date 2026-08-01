@@ -8,6 +8,10 @@ import type {
   ProjectConstraint,
   ProjectAssumption,
   BlueprintAlternative,
+  ProjectBlueprint,
+  BlueprintApproval,
+  BlueprintApprovalStatus,
+  BlueprintTopology,
 } from "@intentloom/protocol";
 
 function isObject(value: unknown): value is Record<string, unknown> {
@@ -38,32 +42,40 @@ const CATEGORIES: readonly InceptionCategory[] = [
   "tooling",
   "security",
 ];
-
 const CONFIDENCES: readonly AnswerConfidence[] = [
   "confirmed",
   "assumed",
   "preference",
 ];
-
 const STATUSES: readonly InceptionSessionStatus[] = [
   "discovering",
   "blueprinting",
   "approved",
   "cancelled",
 ];
+const TOPOLOGIES: readonly BlueprintTopology[] = [
+  "single-package",
+  "pnpm-workspace",
+  "cli-tool",
+  "web-product",
+  "desktop-product",
+];
+const APPROVAL_STATUSES: readonly BlueprintApprovalStatus[] = [
+  "approved",
+  "revoked",
+  "expired",
+];
 
 export function validateInceptionQuestion(value: unknown): InceptionQuestion {
-  if (!isObject(value)) {
+  if (!isObject(value))
     throw new Error("Invalid inception question: expected object");
-  }
   const id = assertString(value.id, "question.id");
   const prompt = assertString(value.prompt, "question.prompt");
   if (!CATEGORIES.includes(value.category as InceptionCategory)) {
     throw new Error(`Invalid question category '${String(value.category)}'`);
   }
-  if (typeof value.required !== "boolean") {
+  if (typeof value.required !== "boolean")
     throw new Error("Invalid question.required: expected boolean");
-  }
   let options: readonly string[] | undefined;
   if (value.options !== undefined) {
     if (
@@ -84,9 +96,8 @@ export function validateInceptionQuestion(value: unknown): InceptionQuestion {
 }
 
 export function validateInceptionAnswer(value: unknown): InceptionAnswer {
-  if (!isObject(value)) {
+  if (!isObject(value))
     throw new Error("Invalid inception answer: expected object");
-  }
   const questionId = assertString(value.questionId, "answer.questionId");
   const val = typeof value.value === "string" ? value.value : "";
   if (!CONFIDENCES.includes(value.confidence as AnswerConfidence)) {
@@ -104,48 +115,37 @@ export function validateInceptionAnswer(value: unknown): InceptionAnswer {
 export function validateInceptionSessionState(
   value: unknown,
 ): InceptionSessionState {
-  if (!isObject(value)) {
+  if (!isObject(value))
     throw new Error("Invalid inception session state: expected object");
-  }
   const id = assertString(value.id, "session.id");
   const root = assertString(value.root, "session.root");
   const idea = assertString(value.idea, "session.idea");
   if (!STATUSES.includes(value.status as InceptionSessionStatus)) {
     throw new Error(`Invalid session status '${String(value.status)}'`);
   }
-  if (!Array.isArray(value.questions)) {
+  if (!Array.isArray(value.questions))
     throw new Error("Invalid session.questions: expected array");
-  }
-  if (!Array.isArray(value.answers)) {
+  if (!Array.isArray(value.answers))
     throw new Error("Invalid session.answers: expected array");
-  }
-  if (!Array.isArray(value.constraints)) {
+  if (!Array.isArray(value.constraints))
     throw new Error("Invalid session.constraints: expected array");
-  }
-  if (!Array.isArray(value.assumptions)) {
+  if (!Array.isArray(value.assumptions))
     throw new Error("Invalid session.assumptions: expected array");
-  }
-  if (!Array.isArray(value.alternatives)) {
+  if (!Array.isArray(value.alternatives))
     throw new Error("Invalid session.alternatives: expected array");
-  }
-
-  const questions = value.questions.map(validateInceptionQuestion);
-  const answers = value.answers.map(validateInceptionAnswer);
-  const createdAt = assertNumber(value.createdAt, "session.createdAt");
-  const updatedAt = assertNumber(value.updatedAt, "session.updatedAt");
 
   return {
     id,
     root,
     idea,
     status: value.status as InceptionSessionStatus,
-    questions,
-    answers,
+    questions: value.questions.map(validateInceptionQuestion),
+    answers: value.answers.map(validateInceptionAnswer),
     constraints: value.constraints as readonly ProjectConstraint[],
     assumptions: value.assumptions as readonly ProjectAssumption[],
     alternatives: value.alternatives as readonly BlueprintAlternative[],
-    createdAt,
-    updatedAt,
+    createdAt: assertNumber(value.createdAt, "session.createdAt"),
+    updatedAt: assertNumber(value.updatedAt, "session.updatedAt"),
   };
 }
 
@@ -154,51 +154,21 @@ export function validateInceptionConflict(value: unknown): {
   readonly conflict: string;
   readonly severity: "error" | "warning";
 } {
-  if (!isObject(value)) {
+  if (!isObject(value))
     throw new Error("Invalid inception conflict: expected object");
-  }
   const questionId = assertString(value.questionId, "conflict.questionId");
   const conflict = assertString(value.conflict, "conflict.conflict");
-  if (value.severity !== "error" && value.severity !== "warning") {
+  if (value.severity !== "error" && value.severity !== "warning")
     throw new Error("Invalid conflict.severity: expected 'error' or 'warning'");
-  }
-  return {
-    questionId,
-    conflict,
-    severity: value.severity,
-  };
+  return { questionId, conflict, severity: value.severity };
 }
 
-const TOPOLOGIES: readonly string[] = [
-  "single-package",
-  "pnpm-workspace",
-  "cli-tool",
-  "web-product",
-  "desktop-product",
-];
-
-export function validateProjectBlueprint(value: unknown): {
-  readonly id: string;
-  readonly name: string;
-  readonly topology:
-    | "single-package"
-    | "pnpm-workspace"
-    | "cli-tool"
-    | "web-product"
-    | "desktop-product";
-  readonly recommendedPacks: readonly string[];
-  readonly qualityProfile: string;
-  readonly frameworkNeutral: boolean;
-  readonly digest: string;
-  readonly alternatives: readonly BlueprintAlternative[];
-  readonly createdAt: number;
-} {
-  if (!isObject(value)) {
+export function validateProjectBlueprint(value: unknown): ProjectBlueprint {
+  if (!isObject(value))
     throw new Error("Invalid project blueprint: expected object");
-  }
   const id = assertString(value.id, "blueprint.id");
   const name = assertString(value.name, "blueprint.name");
-  if (!TOPOLOGIES.includes(value.topology as string)) {
+  if (!TOPOLOGIES.includes(value.topology as BlueprintTopology)) {
     throw new Error(`Invalid blueprint topology '${String(value.topology)}'`);
   }
   if (
@@ -213,24 +183,46 @@ export function validateProjectBlueprint(value: unknown): {
     value.qualityProfile,
     "blueprint.qualityProfile",
   );
-  if (typeof value.frameworkNeutral !== "boolean") {
+  if (typeof value.frameworkNeutral !== "boolean")
     throw new Error("Invalid blueprint.frameworkNeutral: expected boolean");
-  }
   const digest = assertString(value.digest, "blueprint.digest");
-  if (!Array.isArray(value.alternatives)) {
+  if (!Array.isArray(value.alternatives))
     throw new Error("Invalid blueprint.alternatives: expected array");
-  }
-  const createdAt = assertNumber(value.createdAt, "blueprint.createdAt");
 
   return {
     id,
     name,
-    topology: value.topology as any,
+    topology: value.topology as BlueprintTopology,
     recommendedPacks: value.recommendedPacks,
     qualityProfile,
     frameworkNeutral: value.frameworkNeutral,
     digest,
     alternatives: value.alternatives as readonly BlueprintAlternative[],
-    createdAt,
+    createdAt: assertNumber(value.createdAt, "blueprint.createdAt"),
+  };
+}
+
+export function validateBlueprintApproval(value: unknown): BlueprintApproval {
+  if (!isObject(value))
+    throw new Error("Invalid blueprint approval: expected object");
+  const blueprintId = assertString(value.blueprintId, "approval.blueprintId");
+  const blueprintDigest = assertString(
+    value.blueprintDigest,
+    "approval.blueprintDigest",
+  );
+  const approver = assertString(value.approver, "approval.approver");
+  const approvedAt = assertNumber(value.approvedAt, "approval.approvedAt");
+  const expiry = assertNumber(value.expiry, "approval.expiry");
+  if (!APPROVAL_STATUSES.includes(value.status as BlueprintApprovalStatus)) {
+    throw new Error(`Invalid approval.status '${String(value.status)}'`);
+  }
+
+  return {
+    blueprintId,
+    blueprintDigest,
+    approver,
+    approvedAt,
+    expiry,
+    status: value.status as BlueprintApprovalStatus,
   };
 }

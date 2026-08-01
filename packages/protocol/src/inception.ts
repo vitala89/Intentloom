@@ -91,3 +91,14 @@ export interface ProjectBlueprint {
   readonly alternatives: readonly BlueprintAlternative[];
   readonly createdAt: number;
 }
+
+export type BlueprintApprovalStatus = "approved" | "revoked" | "expired";
+
+export interface BlueprintApproval {
+  readonly blueprintId: string;
+  readonly blueprintDigest: string;
+  readonly approver: string;
+  readonly approvedAt: number;
+  readonly expiry: number;
+  readonly status: BlueprintApprovalStatus;
+}
