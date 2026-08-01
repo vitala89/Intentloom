@@ -24,6 +24,13 @@ Product and platform directions:
 - [Engineering Process Intelligence](concepts/ENGINEERING_PROCESS_INTELLIGENCE.md)
 - [Project Guardian and Canonical Workspace](concepts/PROJECT_GUARDIAN_AND_CANONICAL_WORKSPACE.md)
 - [Project Bootstrap, Guardian, and Interactive CLI Plan](roadmap/PROJECT_BOOTSTRAP_GUARDIAN_AND_INTERACTIVE_CLI_PLAN.md)
+- [Project Inception and Blueprints](concepts/PROJECT_INCEPTION_AND_BLUEPRINTS.md)
+- [Project Inception and Scaffolding Plan](roadmap/PROJECT_INCEPTION_AND_SCAFFOLDING_PLAN.md)
+- [AI Model Routing and Effort Profiles](concepts/AI_MODEL_ROUTING_AND_EFFORT_PROFILES.md)
+- [Nx Incremental Adoption Plan](roadmap/NX_INCREMENTAL_ADOPTION_PLAN.md)
+- [Project Inception, Model, and Nx Principles](governance/PROJECT_INCEPTION_MODEL_AND_NX_PRINCIPLES.md)
+- [Agent Session History and Memory Experience](concepts/AGENT_SESSION_HISTORY_AND_MEMORY_EXPERIENCE.md)
+- [Agent Session History and Memory Implementation Plan](roadmap/AGENT_SESSION_HISTORY_AND_MEMORY_IMPLEMENTATION_PLAN.md)
 - [Enterprise Team Coordination and Approval Graph](concepts/ENTERPRISE_TEAM_COORDINATION_AND_APPROVAL_GRAPH.md)
 - [Enterprise Team Workflow and Notifications Plan](roadmap/ENTERPRISE_TEAM_WORKFLOW_AND_NOTIFICATIONS_PLAN.md)
 - [Enterprise Coordination Principles](governance/ENTERPRISE_COORDINATION_PRINCIPLES.md)
@@ -42,4 +49,4 @@ Repository governance:
 - [Security policy](../SECURITY.md)
 - [Project roadmap](../ROADMAP.md)
 
-The public site is deployed to GitHub Pages via [.github/workflows/docs.yml](../.github/workflows/docs.yml). A future follow-up may add VitePress static site generation.
+The public documentation site is built with VitePress and deployed to GitHub Pages through [.github/workflows/docs.yml](../.github/workflows/docs.yml).
