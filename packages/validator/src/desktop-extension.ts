@@ -219,3 +219,71 @@ export function validateDesktopSettingsContribution(
   }
   return diagnostics;
 }
+
+export function validateDesktopPanelContribution(
+  panel: unknown,
+): readonly DesktopContributionDiagnostic[] {
+  const diagnostics: DesktopContributionDiagnostic[] = [];
+  if (!panel || typeof panel !== "object") {
+    diagnostics.push({
+      code: "invalid-panel-object",
+      path: "/",
+      message: "panel must be a non-null object",
+    });
+    return diagnostics;
+  }
+  const obj = panel as Record<string, unknown>;
+  if (typeof obj.id !== "string" || obj.id.trim() === "") {
+    diagnostics.push({
+      code: "invalid-panel-id",
+      path: "/id",
+      message: "panel id must be a non-empty string",
+    });
+  }
+  if (typeof obj.title !== "string" || obj.title.trim() === "") {
+    diagnostics.push({
+      code: "invalid-panel-title",
+      path: "/title",
+      message: "panel title must be a non-empty string",
+    });
+  }
+  const validRegions = ["sidebar-bottom", "inspector", "dock"];
+  if (typeof obj.region !== "string" || !validRegions.includes(obj.region)) {
+    diagnostics.push({
+      code: "invalid-panel-region",
+      path: "/region",
+      message: `panel region must be one of: ${validRegions.join(", ")}`,
+    });
+  }
+  return diagnostics;
+}
+
+export function validateDesktopRendererContribution(
+  renderer: unknown,
+): readonly DesktopContributionDiagnostic[] {
+  const diagnostics: DesktopContributionDiagnostic[] = [];
+  if (!renderer || typeof renderer !== "object") {
+    diagnostics.push({
+      code: "invalid-renderer-object",
+      path: "/",
+      message: "renderer must be a non-null object",
+    });
+    return diagnostics;
+  }
+  const obj = renderer as Record<string, unknown>;
+  if (typeof obj.id !== "string" || obj.id.trim() === "") {
+    diagnostics.push({
+      code: "invalid-renderer-id",
+      path: "/id",
+      message: "renderer id must be a non-empty string",
+    });
+  }
+  if (typeof obj.resourceType !== "string" || obj.resourceType.trim() === "") {
+    diagnostics.push({
+      code: "invalid-renderer-resource-type",
+      path: "/resourceType",
+      message: "renderer resourceType must be a non-empty string",
+    });
+  }
+  return diagnostics;
+}

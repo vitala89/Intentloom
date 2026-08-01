@@ -61,6 +61,30 @@ entry directly below this section.
 
 ## Watch entries
 
+### 2026-08-01, Desktop Renderer Contribution & Extension Panel Placement (ADR-0050)
+
+- **Status:** complete for this watch
+- **Agent/tool:** Antigravity AI Agent with TypeScript, Vitest, Prettier
+- **Branch:** `feature/post-v1-enhancements`
+- **Objective:** Design and implement ADR-0050 for extension side panel placement and custom evidence resource renderers.
+- **Completed:**
+  - Created `docs/decisions/ADR-0050-desktop-renderer-panel-placement.md`.
+  - Added `validateDesktopPanelContribution` and `validateDesktopRendererContribution` to `@intentloom/validator`.
+  - Created `apps/desktop/src/views/panel-registry.ts` (`DesktopPanelRegistry`, `globalPanelRegistry`, and region filtering).
+  - Added unit test suite `tests/desktop-panel-renderer.test.ts` (4/4 tests passing).
+- **Validation:** Desktop build, unit tests (4/4 passed), Prettier format check, and `git diff --check` passed cleanly.
+- **Decisions and assumptions:** Strictly enforced layout region bounds (`"sidebar-bottom"`, `"inspector"`, `"dock"`) and isolated resource rendering.
+- **Next first action:** Commit and push changes to PR #160.
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant tests, type checks, builds, or compatibility checks passed
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `DUTY_WATCH.md` handoff completed
+
 ### 2026-08-01, Desktop Provider UI & Extension Settings Integration (ADR-0049)
 
 - **Status:** complete for this watch
