@@ -30,7 +30,10 @@ const GLYPHS = [
   "chevron-right",
   "chevrons-down-up",
   "chevrons-up-down",
+  "circle",
+  "circle-check",
   "circle-dashed",
+  "circle-x",
   "clock-alert",
   "copy",
   "file",
@@ -38,6 +41,8 @@ const GLYPHS = [
   "git-commit-horizontal",
   "git-fork",
   "hash",
+  "inbox",
+  "info",
   "loader",
   "minus",
   "scan-search",
@@ -45,6 +50,7 @@ const GLYPHS = [
   "shield-check",
   "slash",
   "sparkle",
+  "triangle-alert",
   "user",
   "x",
 ];
@@ -92,8 +98,14 @@ function extractBody(svg, name) {
   if (!body) {
     throw new Error(`${name}: no drawing elements found`);
   }
-  if (body.includes("<script") || /\son\w+=/i.test(body) || body.includes("http")) {
-    throw new Error(`${name}: unexpected script, event handler, or URL in glyph`);
+  if (
+    body.includes("<script") ||
+    /\son\w+=/i.test(body) ||
+    body.includes("http")
+  ) {
+    throw new Error(
+      `${name}: unexpected script, event handler, or URL in glyph`,
+    );
   }
   return body;
 }
@@ -116,7 +128,9 @@ async function main() {
     "// <svg> wrapper. The Icon component supplies size, stroke, and colour.",
     "",
     "export const GLYPHS = {",
-    ...entries.map(([name, body]) => `  ${JSON.stringify(name)}: ${JSON.stringify(body)},`),
+    ...entries.map(
+      ([name, body]) => `  ${JSON.stringify(name)}: ${JSON.stringify(body)},`,
+    ),
     "} as const;",
     "",
     "export type GlyphName = keyof typeof GLYPHS;",
@@ -129,7 +143,9 @@ async function main() {
 
   await mkdir(path.dirname(outFile), { recursive: true });
   await writeFile(outFile, lines.join("\n"), "utf8");
-  process.stdout.write(`Wrote ${entries.length} glyphs from lucide-static@${version} to ${path.relative(repoRoot, outFile)}\n`);
+  process.stdout.write(
+    `Wrote ${entries.length} glyphs from lucide-static@${version} to ${path.relative(repoRoot, outFile)}\n`,
+  );
 }
 
 await main();

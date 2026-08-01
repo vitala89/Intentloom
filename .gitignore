@@ -16,3 +16,5 @@ apps/*/src-tauri/resources/
 docs/plans/
 docs/architecture/CURRENT_SYSTEM_INVENTORY.md
 graphify-out/
+docs/.vitepress/dist/
+docs/.vitepress/cache/

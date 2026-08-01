@@ -3,7 +3,8 @@
 This file is the default instruction entry for repository agents. Before every
 task, read `AGENT_START_HERE.md`, `PROJECT_STATE.md`, the latest entry in
 `DUTY_WATCH.md`, `docs/governance/ENGINEERING_PRINCIPLES.md`,
-`docs/governance/CODE_QUALITY_STANDARDS.md`, and
+`docs/governance/CODE_QUALITY_STANDARDS.md`,
+`docs/governance/REACT_BEST_PRACTICES.md`, and
 `docs/governance/AI_AGENT_WORKFLOW.md`.
 
 Do not begin implementation from the user prompt alone. Verify current state

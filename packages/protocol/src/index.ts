@@ -1,141 +1,51 @@
-export const PROTOCOL_VERSION = 1 as const;
-export const DAEMON_INFO_METHOD = "intentloom.daemon.info.v1" as const;
-export const DOCTOR_METHOD = "intentloom.project.doctor.v1" as const;
-export const INSPECT_METHOD = "intentloom.project.inspect.v1" as const;
-export const PROJECT_DIFF_METHOD = "intentloom.project.diff.v1" as const;
-export const PROJECT_TIMELINE_METHOD =
-  "intentloom.project.timeline.v1" as const;
-export const SECURITY_AUDIT_METHOD = "intentloom.security.audit.v1" as const;
-export const MEMORY_SEARCH_METHOD = "intentloom.memory.search.v1" as const;
-export const MEMORY_EVALUATIONS_LIST_METHOD =
-  "intentloom.memory.evaluations.list.v1" as const;
-export const ENGINEERING_CONFORMANCE_METHOD =
-  "intentloom.engineering.conformance.v1" as const;
-export const WORKFLOW_VARIANT_SUMMARY_METHOD =
-  "intentloom.workflow.variants.summary.v1" as const;
-export const WORKFLOW_DURATION_SUMMARY_METHOD =
-  "intentloom.workflow.durations.summary.v1" as const;
-export const CONFORMANCE_TREND_SUMMARY_METHOD =
-  "intentloom.conformance.trend.summary.v1" as const;
-export const WORKFLOW_REPETITION_SUMMARY_METHOD =
-  "intentloom.workflow.repetitions.summary.v1" as const;
-export const WORKFLOW_TRANSITION_INTERVALS_METHOD =
-  "intentloom.workflow.transitions.intervals.v1" as const;
-export const SESSION_GET_METHOD = "intentloom.session.get.v1" as const;
+import {
+  PROTOCOL_VERSION,
+  DAEMON_INFO_METHOD,
+  DOCTOR_METHOD,
+  INSPECT_METHOD,
+  PROJECT_DIFF_METHOD,
+  PROJECT_TIMELINE_METHOD,
+  SECURITY_AUDIT_METHOD,
+  MEMORY_SEARCH_METHOD,
+  MEMORY_EVALUATIONS_LIST_METHOD,
+  ENGINEERING_CONFORMANCE_METHOD,
+  WORKFLOW_VARIANT_SUMMARY_METHOD,
+  WORKFLOW_DURATION_SUMMARY_METHOD,
+  CONFORMANCE_TREND_SUMMARY_METHOD,
+  WORKFLOW_REPETITION_SUMMARY_METHOD,
+  WORKFLOW_TRANSITION_INTERVALS_METHOD,
+  SESSION_GET_METHOD,
+  type RequestId,
+  type JsonObject,
+  type JsonRpcRequest,
+  type JsonRpcSuccess,
+  type JsonRpcFailure,
+} from "./jsonrpc.js";
 
-export type JsonPrimitive = boolean | null | number | string;
-export type JsonValue = JsonPrimitive | JsonObject | readonly JsonValue[];
-export interface JsonObject {
-  readonly [key: string]: JsonValue;
-}
+import {
+  type ClientErrorCode,
+  type CapabilityClassification,
+  type DaemonCapability,
+  type DaemonLimits,
+  type DaemonCompatibility,
+  type DaemonInfoParams,
+  type DaemonInfoResult,
+  type DaemonInfoRequest,
+  type DaemonInfoResponse,
+} from "./daemon.js";
 
-export type RequestId = number | string;
-export interface JsonRpcRequest<
-  Method extends string = string,
-  Params extends object = JsonObject,
-> {
-  readonly jsonrpc: "2.0";
-  readonly id: RequestId;
-  readonly method: Method;
-  readonly params: Params;
-}
-export interface JsonRpcSuccess<Result extends object = JsonObject> {
-  readonly jsonrpc: "2.0";
-  readonly id: RequestId;
-  readonly result: Result;
-}
-export interface JsonRpcFailure {
-  readonly jsonrpc: "2.0";
-  readonly id: RequestId | null;
-  readonly error: {
-    readonly code: -32600 | -32601 | -32602;
-    readonly message: string;
-    readonly data?: JsonObject;
-  };
-}
+import {
+  type ProjectDiffParams,
+  type ProjectDiffChange,
+  type ProjectDiffResult,
+  type ProjectDiffRequest,
+  type ProjectDiffResponse,
+} from "./diff.js";
 
-export type ClientErrorCode =
-  | "authentication_failed"
-  | "protocol_incompatible"
-  | "unsupported_capability"
-  | "invalid_root"
-  | "stale_root"
-  | "bounded_validation_failed"
-  | "timed_out"
-  | "cancelled"
-  | "disconnected"
-  | "internal_failure";
-
-export type CapabilityClassification = "read-only" | "mutating";
-
-export interface DaemonCapability {
-  readonly method: string;
-  readonly operation: string;
-  readonly classification: CapabilityClassification;
-}
-
-export interface DaemonLimits {
-  readonly maxMessageBytes: number;
-  readonly maxResponseBytes: number;
-  readonly maxConnections: number;
-  readonly requestTimeoutMs: number;
-}
-
-export interface DaemonCompatibility {
-  readonly status: "compatible" | "incompatible";
-  readonly clientProtocolVersion: number;
-  readonly daemonProtocolVersion: typeof PROTOCOL_VERSION;
-  readonly reason?: string;
-}
-
-export interface DaemonInfoParams {
-  readonly protocolVersion: typeof PROTOCOL_VERSION;
-  readonly clientProtocolVersion: number;
-}
-export interface DaemonInfoResult {
-  readonly protocolVersion: typeof PROTOCOL_VERSION;
-  readonly daemonVersion: string;
-  readonly capabilities: readonly DaemonCapability[];
-  readonly limits: DaemonLimits;
-  readonly compatibility: DaemonCompatibility;
-}
-export type DaemonInfoRequest = JsonRpcRequest<
-  typeof DAEMON_INFO_METHOD,
-  DaemonInfoParams
->;
-export type DaemonInfoResponse = JsonRpcSuccess<DaemonInfoResult>;
-
-export interface ProjectDiffParams {
-  readonly protocolVersion: typeof PROTOCOL_VERSION;
-  readonly root: string;
-  readonly profile: string;
-  readonly adapters: readonly string[];
-}
-export interface ProjectDiffChange {
-  readonly path: string;
-  readonly kind:
-    | "create"
-    | "update"
-    | "conflict"
-    | "modified"
-    | "missing"
-    | "stale"
-    | "security-error";
-  readonly reason: string;
-  readonly content?: string;
-}
-export interface ProjectDiffResult {
-  readonly protocolVersion: typeof PROTOCOL_VERSION;
-  readonly operationVersion: 1;
-  readonly root: string;
-  readonly changes: readonly ProjectDiffChange[];
-  readonly diagnostics: readonly string[];
-}
-export type ProjectDiffRequest = JsonRpcRequest<
-  typeof PROJECT_DIFF_METHOD,
-  ProjectDiffParams
->;
-export type ProjectDiffResponse = JsonRpcSuccess<ProjectDiffResult>;
+export * from "./jsonrpc.js";
+export * from "./daemon.js";
+export * from "./desktop-extension.js";
+export * from "./diff.js";
 
 export const TIMELINE_DEFAULT_LIMIT = 50;
 export const TIMELINE_MAX_LIMIT = 500;

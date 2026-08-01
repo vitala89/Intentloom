@@ -513,102 +513,142 @@ fn map_daemon_error(error: &Value) -> BridgeError {
     BridgeError::new(known_code, message)
 }
 
+/// Runs a blocking closure on the Tauri blocking thread pool and unwraps the
+/// join result. Tauri v2 dispatches non-async `#[tauri::command]` handlers on
+/// the main event-loop thread; this app's commands spawn child processes,
+/// block on daemon socket I/O, and (for `select_project_root`) show a native
+/// dialog that itself needs to pump the main thread's event loop. Running any
+/// of that inline on the main thread freezes the whole window; the dialog
+/// case deadlocks outright because it waits on an event loop it is blocking.
+async fn run_blocking<F, T>(work: F) -> Result<T, BridgeError>
+where
+    F: FnOnce() -> Result<T, BridgeError> + Send + 'static,
+    T: Send + 'static,
+{
+    tauri::async_runtime::spawn_blocking(work)
+        .await
+        .map_err(|error| BridgeError::new("internal_failure", error.to_string()))?
+}
+
 #[tauri::command]
-fn get_daemon_info(
+async fn get_daemon_info(
     app: AppHandle,
     state: State<'_, DaemonRuntime>,
     request: Value,
 ) -> Result<Value, BridgeError> {
-    request_method(&request, "intentloom.daemon.info.v1")?;
-    state
-        .ensure_daemon(&app, &request)
-        .map(|(_, response)| response)
+    let state = state.inner().clone();
+    run_blocking(move || {
+        request_method(&request, "intentloom.daemon.info.v1")?;
+        state
+            .ensure_daemon(&app, &request)
+            .map(|(_, response)| response)
+    })
+    .await
 }
 
 #[tauri::command]
-fn select_project_root(app: AppHandle) -> Result<Option<String>, BridgeError> {
-    let selected = app
-        .dialog()
-        .file()
-        .set_title("Select a local Intentloom project")
-        .blocking_pick_folder();
-    selected
-        .map(|path| {
-            let path = path
-                .into_path()
-                .map_err(|error| BridgeError::new("invalid_root", error.to_string()))?;
-            canonical_project_root(&path.to_string_lossy())
-        })
-        .transpose()
+async fn select_project_root(app: AppHandle) -> Result<Option<String>, BridgeError> {
+    run_blocking(move || {
+        let selected = app
+            .dialog()
+            .file()
+            .set_title("Select a local Intentloom project")
+            .blocking_pick_folder();
+        selected
+            .map(|path| {
+                let path = path
+                    .into_path()
+                    .map_err(|error| BridgeError::new("invalid_root", error.to_string()))?;
+                canonical_project_root(&path.to_string_lossy())
+            })
+            .transpose()
+    })
+    .await
 }
 
 #[tauri::command]
-fn inspect_project(
+async fn inspect_project(
     app: AppHandle,
     state: State<'_, DaemonRuntime>,
     root: String,
     request: Value,
 ) -> Result<Value, BridgeError> {
-    request_method(&request, "intentloom.project.inspect.v1")?;
-    let root = canonical_project_root(&root)?;
-    let request = json!({
-        "jsonrpc": "2.0",
-        "id": "desktop-inspect",
-        "method": "intentloom.project.inspect.v1",
-        "params": { "protocolVersion": PROTOCOL_VERSION, "root": root }
-    });
-    state
-        .ensure_daemon(&app, &request)
-        .map(|(_, response)| response)
+    let state = state.inner().clone();
+    run_blocking(move || {
+        request_method(&request, "intentloom.project.inspect.v1")?;
+        let root = canonical_project_root(&root)?;
+        let request = json!({
+            "jsonrpc": "2.0",
+            "id": "desktop-inspect",
+            "method": "intentloom.project.inspect.v1",
+            "params": { "protocolVersion": PROTOCOL_VERSION, "root": root }
+        });
+        state
+            .ensure_daemon(&app, &request)
+            .map(|(_, response)| response)
+    })
+    .await
 }
 
 #[tauri::command]
-fn run_doctor(
+async fn run_doctor(
     app: AppHandle,
     state: State<'_, DaemonRuntime>,
     root: String,
     request: Value,
 ) -> Result<Value, BridgeError> {
-    request_method(&request, "intentloom.project.doctor.v1")?;
-    let root = canonical_project_root(&root)?;
-    let request = json!({
-        "jsonrpc": "2.0",
-        "id": "desktop-doctor",
-        "method": "intentloom.project.doctor.v1",
-        "params": {
-            "protocolVersion": PROTOCOL_VERSION,
-            "root": root,
-            "profile": "generic",
-            "adapters": []
-        }
-    });
-    state
-        .ensure_daemon(&app, &request)
-        .map(|(_, response)| response)
+    let state = state.inner().clone();
+    run_blocking(move || {
+        request_method(&request, "intentloom.project.doctor.v1")?;
+        let root = canonical_project_root(&root)?;
+        let request = json!({
+            "jsonrpc": "2.0",
+            "id": "desktop-doctor",
+            "method": "intentloom.project.doctor.v1",
+            "params": {
+                "protocolVersion": PROTOCOL_VERSION,
+                "root": root,
+                "profile": "generic",
+                "adapters": []
+            }
+        });
+        state
+            .ensure_daemon(&app, &request)
+            .map(|(_, response)| response)
+    })
+    .await
 }
 
 #[tauri::command]
-fn preview_project_diff(
+async fn preview_project_diff(
     app: AppHandle,
     state: State<'_, DaemonRuntime>,
     request: Value,
 ) -> Result<Value, BridgeError> {
-    request_method(&request, "intentloom.project.diff.v1")?;
-    state
-        .ensure_daemon(&app, &request)
-        .map(|(_, response)| response)
+    let state = state.inner().clone();
+    run_blocking(move || {
+        request_method(&request, "intentloom.project.diff.v1")?;
+        state
+            .ensure_daemon(&app, &request)
+            .map(|(_, response)| response)
+    })
+    .await
 }
 
 #[tauri::command]
-fn load_project_timeline(
+async fn load_project_timeline(
     app: AppHandle,
     state: State<'_, DaemonRuntime>,
     request: Value,
 ) -> Result<Value, BridgeError> {
-    request_method(&request, "intentloom.project.timeline.v1")?;
-    state
-        .ensure_daemon(&app, &request)
-        .map(|(_, response)| response)
+    let state = state.inner().clone();
+    run_blocking(move || {
+        request_method(&request, "intentloom.project.timeline.v1")?;
+        state
+            .ensure_daemon(&app, &request)
+            .map(|(_, response)| response)
+    })
+    .await
 }
 
 fn main() {
