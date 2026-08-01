@@ -81,7 +81,7 @@
     {
       "path": "packages/application/src/index.ts",
       "rule": "existing-oversized-growth",
-      "baseLines": 7433,
+      "baseLines": 7424,
       "headLines": 7434,
       "reason": "Phase I10 Inception templates application re-export added to application barrel file.",
       "owner": "Application maintainers",
