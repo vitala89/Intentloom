@@ -168,3 +168,69 @@ export function validateInceptionConflict(value: unknown): {
     severity: value.severity,
   };
 }
+
+const TOPOLOGIES: readonly string[] = [
+  "single-package",
+  "pnpm-workspace",
+  "cli-tool",
+  "web-product",
+  "desktop-product",
+];
+
+export function validateProjectBlueprint(value: unknown): {
+  readonly id: string;
+  readonly name: string;
+  readonly topology:
+    | "single-package"
+    | "pnpm-workspace"
+    | "cli-tool"
+    | "web-product"
+    | "desktop-product";
+  readonly recommendedPacks: readonly string[];
+  readonly qualityProfile: string;
+  readonly frameworkNeutral: boolean;
+  readonly digest: string;
+  readonly alternatives: readonly BlueprintAlternative[];
+  readonly createdAt: number;
+} {
+  if (!isObject(value)) {
+    throw new Error("Invalid project blueprint: expected object");
+  }
+  const id = assertString(value.id, "blueprint.id");
+  const name = assertString(value.name, "blueprint.name");
+  if (!TOPOLOGIES.includes(value.topology as string)) {
+    throw new Error(`Invalid blueprint topology '${String(value.topology)}'`);
+  }
+  if (
+    !Array.isArray(value.recommendedPacks) ||
+    !value.recommendedPacks.every((p) => typeof p === "string")
+  ) {
+    throw new Error(
+      "Invalid blueprint.recommendedPacks: expected array of strings",
+    );
+  }
+  const qualityProfile = assertString(
+    value.qualityProfile,
+    "blueprint.qualityProfile",
+  );
+  if (typeof value.frameworkNeutral !== "boolean") {
+    throw new Error("Invalid blueprint.frameworkNeutral: expected boolean");
+  }
+  const digest = assertString(value.digest, "blueprint.digest");
+  if (!Array.isArray(value.alternatives)) {
+    throw new Error("Invalid blueprint.alternatives: expected array");
+  }
+  const createdAt = assertNumber(value.createdAt, "blueprint.createdAt");
+
+  return {
+    id,
+    name,
+    topology: value.topology as any,
+    recommendedPacks: value.recommendedPacks,
+    qualityProfile,
+    frameworkNeutral: value.frameworkNeutral,
+    digest,
+    alternatives: value.alternatives as readonly BlueprintAlternative[],
+    createdAt,
+  };
+}

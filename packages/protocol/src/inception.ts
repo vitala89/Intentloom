@@ -72,3 +72,22 @@ export interface InceptionDiscoveryOptions {
   readonly effort?: EffortProfile;
   readonly modelProfile?: string;
 }
+
+export type BlueprintTopology =
+  | "single-package"
+  | "pnpm-workspace"
+  | "cli-tool"
+  | "web-product"
+  | "desktop-product";
+
+export interface ProjectBlueprint {
+  readonly id: string;
+  readonly name: string;
+  readonly topology: BlueprintTopology;
+  readonly recommendedPacks: readonly string[];
+  readonly qualityProfile: string;
+  readonly frameworkNeutral: boolean;
+  readonly digest: string;
+  readonly alternatives: readonly BlueprintAlternative[];
+  readonly createdAt: number;
+}
