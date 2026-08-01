@@ -14,41 +14,23 @@ export interface ScaffoldPlanDiffResult {
   readonly collisions: readonly string[];
 }
 
-export function prepareProjectScaffoldPlan(
-  blueprint: ProjectBlueprint,
-  root: string,
-): ScaffoldPlan {
-  const validatedBlueprint = validateProjectBlueprint(blueprint);
-  if (typeof root !== "string" || root.trim().length === 0) {
-    throw new Error(
-      "prepareProjectScaffoldPlan requires a non-empty root path",
-    );
-  }
-
-  const rawName = validatedBlueprint.name.replace(/^Blueprint for /i, "");
-  const pkgName = rawName
-    .toLowerCase()
-    .replace(/[^a-z0-9-_]/gu, "-")
-    .replace(/^-+|-+$/g, "");
-  const now = Date.now();
-
-  const packageJsonContent = JSON.stringify(
+function buildSinglePkgFiles(
+  pkgName: string,
+  name: string,
+): ScaffoldFilePlan[] {
+  const pkgJson = JSON.stringify(
     {
       name: pkgName,
       version: "0.1.0-alpha.1",
       type: "module",
       main: "./dist/index.js",
       types: "./dist/index.d.ts",
-      scripts: {
-        build: "tsc",
-        test: "vitest run",
-      },
+      scripts: { build: "tsc", test: "vitest run" },
     },
     null,
     2,
   );
-
-  const tsconfigContent = JSON.stringify(
+  const tsConfig = JSON.stringify(
     {
       compilerOptions: {
         target: "ES2022",
@@ -63,64 +45,208 @@ export function prepareProjectScaffoldPlan(
     null,
     2,
   );
-
-  const srcIndexContent = `export function hello(): string {\n  return "Hello from ${validatedBlueprint.name}!";\n}\n`;
-  const testIndexContent = `import { describe, expect, it } from "vitest";\nimport { hello } from "../src/index.js";\n\ndescribe("${pkgName}", () => {\n  it("returns greeting", () => {\n    expect(hello()).toContain("Hello");\n  });\n});\n`;
-  const readmeContent = `# ${validatedBlueprint.name}\n\n${validatedBlueprint.name} — minimal TypeScript library scaffolded by Intentloom.\n`;
-
-  const files: ScaffoldFilePlan[] = [
+  return [
     {
       path: "package.json",
       action: "create",
-      content: packageJsonContent,
+      content: pkgJson,
       isManaged: true,
     },
     {
       path: "tsconfig.json",
       action: "create",
-      content: tsconfigContent,
+      content: tsConfig,
       isManaged: true,
     },
     {
       path: "src/index.ts",
       action: "create",
-      content: srcIndexContent,
+      content: `export function hello(): string {\n  return "Hello from ${name}!";\n}\n`,
       isManaged: false,
     },
     {
       path: "tests/index.test.ts",
       action: "create",
-      content: testIndexContent,
+      content: `import { describe, expect, it } from "vitest";\nimport { hello } from "../src/index.js";\n\ndescribe("${pkgName}", () => {\n  it("returns greeting", () => {\n    expect(hello()).toContain("Hello");\n  });\n});\n`,
       isManaged: false,
     },
     {
       path: "README.md",
       action: "create",
-      content: readmeContent,
+      content: `# ${name}\n\n${name} — minimal TypeScript library scaffolded by Intentloom.\n`,
+      isManaged: false,
+    },
+  ];
+}
+
+function buildWorkspaceFiles(
+  pkgName: string,
+  name: string,
+  hasNx: boolean,
+): ScaffoldFilePlan[] {
+  const pnpmWorkspace = 'packages:\n  - "packages/*"\n';
+  const rootPkg = JSON.stringify(
+    {
+      name: `${pkgName}-workspace`,
+      private: true,
+      type: "module",
+      scripts: { build: "pnpm -r build", test: "pnpm -r test" },
+    },
+    null,
+    2,
+  );
+  const rootTsConfig = JSON.stringify(
+    {
+      files: [],
+      references: [{ path: "packages/core" }, { path: "packages/adapter" }],
+    },
+    null,
+    2,
+  );
+  const corePkg = JSON.stringify(
+    {
+      name: `@${pkgName}/core`,
+      version: "0.1.0",
+      type: "module",
+      main: "./dist/index.js",
+    },
+    null,
+    2,
+  );
+  const adapterPkg = JSON.stringify(
+    {
+      name: `@${pkgName}/adapter`,
+      version: "0.1.0",
+      type: "module",
+      main: "./dist/index.js",
+    },
+    null,
+    2,
+  );
+
+  const files: ScaffoldFilePlan[] = [
+    {
+      path: "pnpm-workspace.yaml",
+      action: "create",
+      content: pnpmWorkspace,
+      isManaged: true,
+    },
+    {
+      path: "package.json",
+      action: "create",
+      content: rootPkg,
+      isManaged: true,
+    },
+    {
+      path: "tsconfig.json",
+      action: "create",
+      content: rootTsConfig,
+      isManaged: true,
+    },
+    {
+      path: "packages/core/package.json",
+      action: "create",
+      content: corePkg,
+      isManaged: true,
+    },
+    {
+      path: "packages/core/src/index.ts",
+      action: "create",
+      content: 'export function core(): string {\n  return "core";\n}\n',
+      isManaged: false,
+    },
+    {
+      path: "packages/core/tests/index.test.ts",
+      action: "create",
+      content:
+        'import { describe, expect, it } from "vitest";\nimport { core } from "../src/index.js";\n\ndescribe("core", () => {\n  it("returns core", () => {\n    expect(core()).toBe("core");\n  });\n});\n',
+      isManaged: false,
+    },
+    {
+      path: "packages/adapter/package.json",
+      action: "create",
+      content: adapterPkg,
+      isManaged: true,
+    },
+    {
+      path: "packages/adapter/src/index.ts",
+      action: "create",
+      content: 'export function adapter(): string {\n  return "adapter";\n}\n',
+      isManaged: false,
+    },
+    {
+      path: "README.md",
+      action: "create",
+      content: `# ${name} Workspace\n\npnpm monorepo workspace for ${name}.\n`,
       isManaged: false,
     },
   ];
 
-  const plan: ScaffoldPlan = {
+  if (hasNx) {
+    const nxJson = JSON.stringify(
+      {
+        $schema: "./node_modules/nx/schemas/nx-schema.json",
+        targetDefaults: { build: { cache: true } },
+      },
+      null,
+      2,
+    );
+    files.push({
+      path: "nx.json",
+      action: "create",
+      content: nxJson,
+      isManaged: true,
+    });
+  }
+
+  return files;
+}
+
+export function prepareProjectScaffoldPlan(
+  blueprint: ProjectBlueprint,
+  root: string,
+): ScaffoldPlan {
+  const validated = validateProjectBlueprint(blueprint);
+  if (typeof root !== "string" || root.trim().length === 0) {
+    throw new Error(
+      "prepareProjectScaffoldPlan requires a non-empty root path",
+    );
+  }
+
+  const rawName = validated.name.replace(/^Blueprint for /i, "");
+  const pkgName = rawName
+    .toLowerCase()
+    .replace(/[^a-z0-9-_]/gu, "-")
+    .replace(/^-+|-+$/g, "");
+  const now = Date.now();
+  const isWorkspace = validated.topology === "pnpm-workspace";
+  const hasNx = validated.recommendedPacks.includes("nx-monorepo");
+
+  const files = isWorkspace
+    ? buildWorkspaceFiles(pkgName, validated.name, hasNx)
+    : buildSinglePkgFiles(pkgName, validated.name);
+  const dependencies = isWorkspace
+    ? hasNx
+      ? ["nx", "typescript", "vitest"]
+      : ["typescript", "vitest"]
+    : ["typescript", "vitest"];
+
+  return validateScaffoldPlan({
     planId: `scaffold_${now}`,
     root,
-    blueprintDigest: validatedBlueprint.digest,
+    blueprintDigest: validated.digest,
     files,
-    dependencies: ["typescript", "vitest"],
-    scripts: {
-      build: "tsc",
-      test: "vitest run",
-    },
+    dependencies,
+    scripts: isWorkspace
+      ? { build: "pnpm -r build", test: "pnpm -r test" }
+      : { build: "tsc", test: "vitest run" },
     createdAt: now,
-  };
-
-  return validateScaffoldPlan(plan);
+  });
 }
 
 export function formatScaffoldPlanDryRun(plan: ScaffoldPlan): string {
   const validated = validateScaffoldPlan(plan);
   const lines: string[] = [];
-
   lines.push(`Scaffold Dry-Run Plan: ${validated.planId}`);
   lines.push(`Target Root: ${validated.root}`);
   lines.push(`Blueprint Digest: ${validated.blueprintDigest}`);
@@ -134,7 +260,6 @@ export function formatScaffoldPlanDryRun(plan: ScaffoldPlan): string {
   lines.push("");
   lines.push(`Proposed Dependencies: ${validated.dependencies.join(", ")}`);
   lines.push("(Note: No dependencies will be installed automatically)");
-
   return lines.join("\n");
 }
 
@@ -144,7 +269,6 @@ export function diffScaffoldPlan(
 ): ScaffoldPlanDiffResult {
   const validated = validateScaffoldPlan(plan);
   const existingSet = new Set(existingPaths);
-
   const created: string[] = [];
   const skipped: string[] = [];
   const collisions: string[] = [];
@@ -159,9 +283,5 @@ export function diffScaffoldPlan(
     }
   }
 
-  return {
-    created,
-    skipped,
-    collisions,
-  };
+  return { created, skipped, collisions };
 }
