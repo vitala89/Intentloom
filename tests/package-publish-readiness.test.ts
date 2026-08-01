@@ -191,7 +191,7 @@ describe("public package publishing readiness", () => {
         type: "git",
         url: "git+https://github.com/vitala89/Intentloom.git",
       },
-      homepage: "https://github.com/vitala89/Intentloom#readme",
+      homepage: "https://vitala89.github.io/Intentloom/",
       bugs: { url: "https://github.com/vitala89/Intentloom/issues" },
       engines: { node: ">=22" },
       bin: { intentloom: "dist/intentloom.cjs" },

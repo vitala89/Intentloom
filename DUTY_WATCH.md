@@ -26,8 +26,7 @@ Known open items, in the order they should be handled:
 3. Token-based publishing for the package should be restricted, and any standing
    automation token revoked, after the first successful trusted publish
    (`PUBLISHING.md` one-time setup, step 3).
-4. `homepageUrl` points at the npm package page as an interim target. Repoint it
-   now that the GitHub Pages site is live at `https://vitala89.github.io/Intentloom/`.
+4. `homepage` URL in `packages/cli/package.json` repointed to live GitHub Pages documentation site `https://vitala89.github.io/Intentloom/` (completed).
 5. Dependabot alert #2 (`glib@0.18.5`, transitive, medium) carries an approved
    exception that expires 2026-10-29; re-checked 2026-08-01, no new upstream
    fix available (Tauri already at latest `2.11.5`).
@@ -61,6 +60,27 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-01, Repoint package homepage URL to live GitHub Pages site
+
+- **Status:** complete
+- **Agent/tool:** Antigravity AI Agent
+- **Branch:** `main`
+- **Objective:** Repoint package `homepage` URL in `packages/cli/package.json` and its assertion in `tests/package-publish-readiness.test.ts` to `https://vitala89.github.io/Intentloom/`.
+- **Completed:** Updated `"homepage"` field in `packages/cli/package.json` to point directly to the live GitHub Pages documentation site `https://vitala89.github.io/Intentloom/` now that Pages deployment is active. Updated publish-readiness test assertions accordingly.
+- **Files or packages changed:** `packages/cli/package.json`, `tests/package-publish-readiness.test.ts`, `DUTY_WATCH.md`.
+- **Validation:** `pnpm vitest run tests/package-publish-readiness.test.ts` passed 100% (4 passed, 1 skipped). `pnpm format:check`, `pnpm typecheck`, and `git diff --check` verified clean.
+- **Decisions and assumptions:** Followed `DUTY_WATCH.md` open item #4.
+- **Next first action:** Proceed with `1.0.1` release authorization checklist in `docs/releases/PUBLISH_AUTHORIZATION_CHECKLIST.md` or begin implementation of Inception CLI / Nx adoption plans.
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant tests, type checks, builds, or compatibility checks passed
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `DUTY_WATCH.md` handoff completed
 
 ### 2026-08-01, PR #164: fix 4 CodeQL polynomial-redos alerts, two attempts
 
