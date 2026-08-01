@@ -72,9 +72,19 @@ and real consumers justify them.
 - v1.0 compatibility phases 1–4 are merged into `main`: ADR-0043 and contract tests, the v1 migration/protocol guide and upgrade tests, client-surface equivalence evidence and tests, and the security/supply-chain audit and tests.
 - `apps/desktop` carries an imported design system in `src/design/`: a token
   layer, six component groups, vendored Lucide glyphs, self-hosted fonts, and the
-  vector logo masters (ADR-0044). It is available to the Desktop surfaces but not
-  yet consumed by them; `App.tsx` is unchanged. Icons and fonts are local, so the
-  zero-external-network invariant still holds and is now also true offline.
+  vector logo masters (ADR-0044). Five design components (`Card`, `Tabs`,
+  `Modal`, `EmptyState`, `StatusChip`) are now integrated across all seven
+  Desktop view modules. Icons and fonts are local, so the zero-external-network
+  invariant still holds and is now also true offline.
+- The Desktop Extension Ecosystem roadmap's D2 through D5 declarative and
+  sandboxed contribution surfaces are implemented on `feature/post-v1-enhancements`
+  (not yet merged to `main`): Extension Host API and contribution types
+  (ADR-0045), theme contribution and design-token bridge (ADR-0046), view
+  sandbox and frame protocol (ADR-0047), command palette contribution and
+  action registry (ADR-0048), provider UI and extension settings integration
+  (ADR-0049), and renderer contribution and panel placement (ADR-0050). No
+  arbitrary third-party code execution or project mutation is enabled by this
+  work; each ADR documents its trust-level boundary.
 - Commit and quality governance is now versioned in `.githooks/`,
   `scripts/validate-*.mjs`, and `.github/workflows/governance.yml`. Hooks are
   explicitly enabled per checkout with `pnpm hooks:install`; CI independently
@@ -86,8 +96,14 @@ before a new release or implementation milestone is declared complete.
 
 ## Active focus
 
-1. Complete PR #160 after reviewing the CodeQL regex repair and Governance
-   policy check reruns on GitHub at pushed head `5afedd2`.
+1. PR #160 merged into `main` on 2026-07-31 (head `5afedd2`, all hosted checks
+   green). Open and land a new pull request for the 18 commits on
+   `feature/post-v1-enhancements` past that merge point: ADR-0044 through
+   ADR-0050 (Desktop design system import, Extension Host API, Theme
+   Contribution Bridge, View Sandbox Protocol, Command Contribution Registry,
+   Provider UI/Settings, Renderer/Panel Placement) and the VitePress GitHub
+   Pages site scaffold. `pnpm verify` passed clean on this branch at `0578d6a`
+   on 2026-08-01.
 2. Publish the prepared `1.0.1` documentation and package-metadata release
    through the approved trusted-publishing workflow.
 3. Keep bottleneck inference, remote ingestion, model-based judgments, and any

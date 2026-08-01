@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **PR #160 repair pushed; hosted checks pending** — workspace remains synchronized to `1.0.1`; npm still serves `1.0.0` under both `latest` and `next`. Trusted publishing is fully configured on both sides: the npm trusted publisher for `vitala89/Intentloom`, workflow `release.yml`, environment `npm-publish`; and the GitHub `npm-publish` environment with `vitala89` as required reviewer, restricted to `main` and `v*`.
+Status: **PR #160 merged; 18 unmerged commits on `feature/post-v1-enhancements` need a new PR** — PR #160 (head `5afedd2`) merged into `main` on 2026-07-31 with all hosted checks green (CodeQL, Compatibility, Dependency Review, Desktop SEA Feasibility, Governance). The branch continued past that merge point with ADR-0044 through ADR-0050 (Desktop design system import, Extension Host API, Theme Contribution Bridge, View Sandbox Protocol, Command Contribution Registry, Provider UI/Settings, Renderer/Panel Placement) plus the VitePress GitHub Pages site scaffold. `main` does not yet contain this work. `pnpm verify` (typecheck, format, 95 suites / 786 tests / 3 skipped, build, `git diff --check`) passed clean on `feature/post-v1-enhancements` at `0578d6a` on 2026-08-01. npm still serves `1.0.1`/`1.0.0` state as previously recorded; unchanged this watch.
 
-Active branch: `feature/post-v1-enhancements`
+Active branch: `feature/post-v1-enhancements` (18 commits ahead of `main`, 0 behind)
 
-Current objective: inspect the PR #160 CodeQL and Governance reruns on pushed head `5afedd2`, then complete the release handoff.
+Current objective: open a new pull request for `feature/post-v1-enhancements` against `main` covering the ADR-0044 through ADR-0050 Desktop Extension Ecosystem work, and observe hosted CI.
 
-Next first action: inspect the new PR #160 check run for head `5afedd2`.
+Next first action: `gh pr create` for `feature/post-v1-enhancements`, then monitor the Compatibility, CodeQL, Governance, and Desktop SEA Feasibility checks.
 
 Known open items, in the order they should be handled:
 
