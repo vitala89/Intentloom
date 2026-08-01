@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **PR #161 open; resolving squash-merge conflicts against `main`** — PR #160 (head `5afedd2`) merged into `main` on 2026-07-31 with all hosted checks green (CodeQL, Compatibility, Dependency Review, Desktop SEA Feasibility, Governance) via a squash merge as `3713b15`. PR #161 carries the branch's subsequent commits: ADR-0044 through ADR-0050 (Desktop design system import, Extension Host API, Theme Contribution Bridge, View Sandbox Protocol, Command Contribution Registry, Provider UI/Settings, Renderer/Panel Placement), the VitePress GitHub Pages site scaffold, and the Desktop project-selection deadlock fix. Because `main` holds PR #160 as one squashed commit while this branch retains its pre-squash history, GitHub reported false content conflicts (both sides touch the same files with equivalent-or-superseded content, not real divergence) on `.github/workflows/docs.yml`, `DUTY_WATCH.md`, `PROJECT_STATE.md`, `apps/desktop/src/App.tsx`, `docs/governance/quality-exceptions.json`, and `packages/validator/src/index.ts`. Resolved by merging `origin/main` into `feature/post-v1-enhancements` and taking this branch's version in every hunk, since each is a strict superset of `main`'s (the one substantive check: `packages/validator/src/index.ts`'s inline `validateExtensionManifestDocument`/`validateExtensionLockDocument` from `main` are already present, unchanged, in this branch's extracted `extension.ts` and re-exported via `export * from "./extension.js"`). `.github/workflows/docs.yml` also had a real independent add/add conflict — kept this branch's version, which runs `pnpm docs:build` before uploading `docs/.vitepress/dist`; `main`'s version uploaded the raw `docs/` markdown source directly, which does not render as a static site. `pnpm verify` passed clean on `feature/post-v1-enhancements` before this merge. npm still serves `1.0.1`/`1.0.0` state as previously recorded; unchanged this watch.
+Status: **PR #161-#164 all merged into `main`; Desktop deadlock fixed; GitHub Pages live; 4/5 Dependabot alerts and all 4 CodeQL alerts closed** — PR #160 (`5afedd2`), PR #161 (`e71a239`, Desktop Extension Ecosystem ADR-0044-0050 plus the VitePress scaffold and Desktop project-selection deadlock fix), PR #162 (`101026d`, stranded docs.yml action-pin fix), PR #163 (`32b22bc`, dependency vulnerability fix), and PR #164 (`72f0d71`, CodeQL polynomial-redos fix) are all merged into `main`, in that order. GitHub Pages is enabled and serving the built VitePress site at `https://vitala89.github.io/Intentloom/` (verified HTTP 200 with real content). `gh api repos/vitala89/Intentloom/dependabot/alerts` shows only alert #2 (`glib`, tracked exception, expires 2026-10-29) still open; `gh api repos/vitala89/Intentloom/code-scanning/alerts` shows zero open alerts. npm still serves `1.0.1`/`1.0.0` state as previously recorded; unchanged this watch. See the two entries below (PR #163, PR #164) for what each fix actually did.
 
-Active branch: `feature/post-v1-enhancements`
+Active branch: `main`
 
-Current objective: finish resolving the merge-commit conflicts, verify, commit the merge, push, and confirm PR #161's hosted CI (Compatibility, CodeQL, Dependency Review, Desktop SEA Feasibility, Governance) is green.
+Current objective: publish the prepared `1.0.1` documentation and package-metadata release through the approved trusted-publishing workflow.
 
-Next first action: after the merge commit lands, watch PR #161's checks and report the result before merging.
+Next first action: follow `docs/releases/PUBLISH_AUTHORIZATION_CHECKLIST.md` for the `1.0.1` publish.
 
 Known open items, in the order they should be handled:
 
@@ -27,9 +27,10 @@ Known open items, in the order they should be handled:
    automation token revoked, after the first successful trusted publish
    (`PUBLISHING.md` one-time setup, step 3).
 4. `homepageUrl` points at the npm package page as an interim target. Repoint it
-   when the GitHub Pages site is live; no hosting is configured yet.
+   now that the GitHub Pages site is live at `https://vitala89.github.io/Intentloom/`.
 5. Dependabot alert #2 (`glib@0.18.5`, transitive, medium) carries an approved
-   exception that expires 2026-10-29.
+   exception that expires 2026-10-29; re-checked 2026-08-01, no new upstream
+   fix available (Tauri already at latest `2.11.5`).
 6. Branch and tag protection rules for `main` and `v*` are not recorded anywhere
    in the repository; `.github/CODEOWNERS` exists to support required review.
 7. Two remote branches remain untriaged: `codex/public-readiness-blockers` and
@@ -60,6 +61,44 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-01, PR #164: fix 4 CodeQL polynomial-redos alerts, two attempts
+
+- **Status:** complete
+- **Agent/tool:** Claude Code
+- **Branch:** `fix/codeql-polynomial-redos-skill-parsing`
+- **Commits:** `f032612` (squashed)
+- **Pull request:** [#164](https://github.com/vitala89/Intentloom/pull/164), merged as `72f0d71` by maintainer `vitala89`
+- **Objective:** Fix 4 open CodeQL `js/polynomial-redos` (high severity) alerts: 3 in `packages/application/src/index.ts` (`parseSkillProgressive`'s Inputs/Exact-outputs/Trigger section extraction) and 1 in `packages/validator/src/index.ts` (markdown-link reference scanning).
+- **Completed:**
+  - `parseSkillProgressive` used `/## header\r?\n([\s\S]*?)(?=\r?\n## |$)/u` per section. The lazy `[\s\S]*?` re-tests the `(?=\r?\n## |$)` lookahead at every position, and `\r?` can match at the same position the lookahead's own `\n` occupies, degrading to quadratic backtracking on inputs with many newlines and no matching next header. Replaced with `extractMarkdownSection` (new `packages/application/src/skill-markdown.ts`): find the header substring, then find the next `\n## ` or end of string — no backtracking.
+  - The validator's link regex, `/\]\(([^)\s]+)(?:\s+[^)]*)?\)/gu`, took two attempts. First attempt narrowed `\s+` to `\s`, assuming ambiguous adjacent quantifiers were the cause; CodeQL still flagged the pushed PR. The actual driver is the unbounded `[^)\s]+` backtracking fully whenever no closing paren exists, repeated at every subsequent `](` occurrence during the global scan. Rewrote it as `findMarkdownLinkTargets` (new `packages/validator/src/markdown-links.ts`), a manual forward scanner — whose _first_ version had the identical trap (resuming just past a failed `](` still re-scans to the end of the string every time, confirmed by an isolated timing test: ~38 seconds on a 150KB pathological input before the real fix). Corrected by recognizing that failing to find `)` anywhere in the remaining string proves no `](` at or after that point can ever complete a match either, so that failure now ends the whole scan instead of restarting nearby.
+  - Recorded a scoped, expiring quality exception for the resulting growth of the already-oversized `packages/validator/src/index.ts` (877 -> 881 lines).
+  - Added `tests/skill-progressive-parse.test.ts` and `tests/markdown-link-targets.test.ts` (equivalence table against both replaced regexes on well-formed input, plus pathological-input timing tests including CodeQL's exact reported attack shape), and extended `tests/skill-schema.test.ts`.
+- **Files or packages changed:** `packages/application/src/index.ts`, `packages/application/src/skill-markdown.ts` (new), `packages/validator/src/index.ts`, `packages/validator/src/markdown-links.ts` (new), `docs/governance/quality-exceptions.json`, `tests/skill-progressive-parse.test.ts` (new), `tests/markdown-link-targets.test.ts` (new), `tests/skill-schema.test.ts`.
+- **Validation:** `pnpm verify` (typecheck, format, 97 suites / 810 tests / 3 skipped, build, `git diff --check`) passed clean. `gh api repos/vitala89/Intentloom/code-scanning/alerts --jq '.[] | select(.state=="open")'` returned empty after merge.
+- **Decisions and assumptions:** Do not trust a ReDoS fix from static reasoning alone — write an isolated timing test against a pathological input matching the tool's reported attack shape before considering the fix done. The first validator fix looked plausible and passed all existing tests (none of which exercised an unterminated pathological input) but was still quadratic; only an explicit timing test caught it.
+- **Risks or compatibility impact:** None; both replacements are behavior-preserving per the equivalence test tables.
+- **Open issues or blockers:** None.
+- **Next first action:** None specific to this fix; see the top-level current objective.
+- **Evidence:** GitHub Actions run showing the "1 new alert" annotation on the first push to PR #164; isolated `tests/_scratch-markdown-links.test.ts` timing run (~38s, deleted before the final commit); `gh api repos/vitala89/Intentloom/code-scanning/alerts` before and after merge.
+
+### 2026-08-01, PR #163: fix 4 of 5 Dependabot alerts via pnpm override
+
+- **Status:** complete
+- **Agent/tool:** Claude Code
+- **Branch:** `fix/vitepress-transitive-vite-esbuild`
+- **Commits:** `9c348ee` (cherry-picked from `feature/post-v1-enhancements`)
+- **Pull request:** [#163](https://github.com/vitala89/Intentloom/pull/163), merged as `32b22bc` by maintainer `vitala89`
+- **Objective:** Fix 4 open Dependabot alerts (#3, #4, #5, #6), all rooted in `vitepress@1.6.4` hard-pinning `vite: ^5.4.14` (a direct, not peer, dependency), which pnpm resolved to the vulnerable `5.4.21` bundling a vulnerable `esbuild@0.21.5`.
+- **Completed:** No patched vite exists on the 5.x line (patches only shipped for 6.4.2/6.4.3+), and vitepress's only newer line is the unstable `2.0.0-alpha.18`. Rather than write another documented risk-acceptance exception (as already exists for the unrelated `glib` alert), added a `pnpm.overrides` entry (`"vitepress>vite": ">=6.4.3"`) forcing vitepress's nested vite resolution up to the same patched `8.1.5` the workspace's own Vite build already uses. This resolves to `vite@8.1.5` / `esbuild@0.28.1` everywhere in the lockfile and drops the vulnerable `launch-editor` dependency entirely. `pnpm docs:build` still produces a complete, correct 180-page site, though vitepress's Rollup-era plugin hooks emit non-fatal warnings under Vite 8's Rolldown-based bundler (a real but currently-harmless mismatch — vitepress does not test this combination).
+- **Files or packages changed:** `package.json`, `pnpm-lock.yaml`.
+- **Validation:** `pnpm verify` passed clean; `pnpm docs:build` completed (180 HTML files, valid `index.html`). `gh api repos/vitala89/Intentloom/dependabot/alerts --jq '.[] | select(.state=="open") | .number'` returned only `2` (the existing, separately-tracked `glib` exception) after merge.
+- **Decisions and assumptions:** Chose a real dependency-resolution fix over another documented exception, since one was achievable without breaking the build. Flagged the Rolldown-compatibility-warning residual risk rather than treating "the build still completes" as proof there is no risk at all.
+- **Risks or compatibility impact:** Re-evaluate when vitepress ships a stable release on a patched vite major, or if a future patch bump turns the current warnings into hard failures.
+- **Open issues or blockers:** None.
+- **Next first action:** None specific to this fix.
+- **Evidence:** `gh api /advisories/GHSA-fx2h-pf6j-xcff` (and the other 3 GHSA IDs); `npm view vitepress@1.6.4 dependencies` (`vite: ^5.4.14`); `npm view vitepress dist-tags` (`latest: 1.6.4`, `next: 2.0.0-alpha.18`); `gh api repos/vitala89/Intentloom/dependabot/alerts` before and after merge.
 
 ### 2026-08-01, Fix invalid pnpm/action-setup pin in docs.yml
 

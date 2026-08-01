@@ -99,24 +99,31 @@ before a new release or implementation milestone is declared complete.
 - Selecting a project in the Desktop app deadlocked the whole window (main
   event-loop thread blocked on a native dialog call that itself needed that
   thread's event loop). Fixed by dispatching all six Tauri commands through
-  `tauri::async_runtime::spawn_blocking`; see `DUTY_WATCH.md`, 2026-08-01.
-- The GitHub Pages "Documentation" workflow failed on every run because Pages
-  was never enabled for the repository. Enabled it via the GitHub API with
-  `build_type: workflow`; see `DUTY_WATCH.md`, 2026-08-01.
+  `tauri::async_runtime::spawn_blocking`; merged in PR #161 (`e71a239`).
+- The GitHub Pages "Documentation" workflow failed because Pages was never
+  enabled for the repository, and once enabled, failed again on an invalid
+  `pnpm/action-setup` pin (PR #162, `101026d`). Both are fixed;
+  `https://vitala89.github.io/Intentloom/` serves the built VitePress site
+  (verified 2026-08-01, HTTP 200).
+- 4 of 5 open Dependabot alerts (vite/esbuild/launch-editor, all transitively
+  pulled in by vitepress) are fixed for real via a `pnpm.overrides` entry
+  forcing the patched `vite@8.1.5`/`esbuild@0.28.1` already used elsewhere in
+  the workspace, rather than another documented exception (PR #163,
+  `32b22bc`). Alert #2 (`glib`, Rust/Tauri) remains under its existing
+  approved exception, expiring 2026-10-29; no new upstream fix is available.
+- All 4 open CodeQL `js/polynomial-redos` alerts are fixed: 3 in
+  `parseSkillProgressive`'s markdown section extraction, 1 in the validator's
+  markdown-link reference scanner, both replaced with linear-time manual
+  scanners (`extractMarkdownSection`, `findMarkdownLinkTargets`) instead of
+  the lookahead/unbounded-backtracking regexes CodeQL flagged (PR #164,
+  `72f0d71`). The validator fix took two attempts; see `DUTY_WATCH.md`,
+  2026-08-01, for why the first one still wasn't linear.
 
 ## Active focus
 
-1. PR #160 merged into `main` on 2026-07-31 (head `5afedd2`, all hosted checks
-   green). PR #161 is open for the remaining commits on
-   `feature/post-v1-enhancements`: ADR-0044 through ADR-0050 (Desktop design
-   system import, Extension Host API, Theme Contribution Bridge, View Sandbox
-   Protocol, Command Contribution Registry, Provider UI/Settings,
-   Renderer/Panel Placement), the VitePress GitHub Pages site scaffold, and
-   the Desktop project-selection deadlock fix. `pnpm verify` passed clean on
-   this branch on 2026-08-01.
-2. Publish the prepared `1.0.1` documentation and package-metadata release
+1. Publish the prepared `1.0.1` documentation and package-metadata release
    through the approved trusted-publishing workflow.
-3. Keep bottleneck inference, remote ingestion, model-based judgments, and any
+2. Keep bottleneck inference, remote ingestion, model-based judgments, and any
    autonomous mutation behind separate approved specifications and threat review.
 
 ## Architectural invariants
