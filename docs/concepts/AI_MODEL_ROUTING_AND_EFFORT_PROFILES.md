@@ -12,79 +12,44 @@ command, pricing guarantee, or public configuration schema by itself.
 
 Intentloom should let a user choose:
 
-- which AI provider and model should be used;
-- how much reasoning effort should be allocated;
-- which workflow mode is active;
-- what cost, context, output, latency, and tool budgets apply;
-- whether routing is manual or policy-assisted;
-- whether a fallback is allowed.
+- an AI provider and exact model;
+- a reasoning-effort profile;
+- an Agent Workspace mode;
+- context, output, tool, time, retry, subagent, and cost budgets;
+- manual, profile-based, or policy-assisted routing;
+- an explicit fallback policy.
 
-These concerns must remain separate. Selecting a more capable model or a higher
-effort level must never increase filesystem, network, secret, deployment, merge,
-release, or publication permissions.
+These concerns remain separate. A stronger model or higher effort never grants
+additional filesystem, network, secret, merge, release, deployment, or
+publication authority.
 
 ## Core separation
 
 ```text
-provider + model
-        ≠
+provider and model
+        !=
 effort profile
-        ≠
-workflow mode
-        ≠
+        !=
+workspace mode
+        !=
 capability grant
-        ≠
-financial and execution budget
-        ≠
-mutation approval
+        !=
+execution budget
+        !=
+human approval
 ```
 
-### Model
+### Provider and model
 
-The exact provider model identifier, for example a hosted model, an enterprise
-gateway model, or an approved local model.
+The exact hosted, enterprise-gateway, or approved local model used for the
+request. Reproducible records should preserve the provider identifier, exact
+model identifier or snapshot where available, adapter version, endpoint or local
+runtime identity, and configuration digest.
 
 ### Effort
 
-A provider-neutral request for how much reasoning depth and verification budget
-Neutron should attempt for the current turn or task.
-
-### Mode
-
-The Intentloom workflow boundary:
-
-- `discuss`;
-- `inspect`;
-- `plan`;
-- `review`;
-- `apply` only through an approved prepared plan.
-
-### Capability grant
-
-The exact typed tools, project root, paths, network targets, provider actions,
-and mutation operations allowed for the session.
-
-### Execution budget
-
-Limits such as:
-
-- maximum context tokens;
-- maximum output tokens;
-- maximum reasoning or provider budget where exposed;
-- maximum tool calls;
-- maximum wall-clock duration;
-- maximum estimated or actual cost;
-- maximum subagent count and concurrency;
-- maximum retries.
-
-### Approval
-
-A human decision that authorizes one exact prepared plan after revalidation.
-Neither a model choice nor an effort level is approval.
-
-## Canonical effort vocabulary
-
-The first portable Intentloom contract should support:
+A provider-neutral request for reasoning depth and verification budget. The
+portable values are:
 
 ```text
 auto
@@ -93,161 +58,120 @@ medium
 high
 ```
 
-Provider adapters may support additional native values, but those values must
-remain provider-specific expert configuration until a portable meaning is
-proven.
+Provider-specific values may exist behind expert configuration, but they are not
+portable until a documented and tested mapping exists.
 
-### `low`
+### Workspace mode
 
-Intended for:
+The bounded Intentloom workflow state:
 
-- simple explanations;
-- quick repository questions;
-- small deterministic lookups;
-- narrow formatting or summarization tasks;
-- low-risk planning with few alternatives.
+- `discuss`;
+- `inspect`;
+- `plan`;
+- `review`;
+- `apply`, only through an approved prepared plan.
+
+### Capability grant
+
+The exact project root, paths, typed tools, provider actions, network targets,
+and mutation operations available to the session.
+
+### Execution budget
+
+Limits may include:
+
+- maximum context and output tokens;
+- provider reasoning or thinking budget where available;
+- maximum tool calls and subagents;
+- maximum wall-clock duration and retries;
+- maximum estimated or actual cost.
+
+### Approval
+
+A human authorization for one exact prepared plan after current-state
+revalidation. Model choice and effort are never approval.
+
+## Effort semantics
+
+### Low
+
+Suitable for simple explanations, narrow lookups, short summaries, and small
+low-risk planning tasks.
 
 Expected behavior:
 
-- concise context selection;
-- smaller reasoning and output budget;
+- smaller context and output budgets;
 - fewer optional alternatives;
 - minimal delegation;
-- required safety and validation remain unchanged.
+- unchanged safety, permission, and validation rules.
 
-### `medium`
+### Medium
 
-The default balanced profile for:
-
-- normal feature planning;
-- architecture-sensitive code review;
-- project inspection;
-- debugging with several plausible causes;
-- standard Project Inception discovery.
+The balanced default for normal feature planning, project inspection, debugging,
+architecture-sensitive review, and standard Project Inception discovery.
 
 Expected behavior:
 
 - balanced context and reasoning;
 - explicit assumptions and trade-offs;
-- normal verification depth;
-- bounded use of typed tools and subagents.
+- proportionate evidence inspection;
+- bounded tool and subagent use.
 
-### `high`
+### High
 
-Intended for:
-
-- complex architecture decisions;
-- broad migrations;
-- security-sensitive review;
-- public API and compatibility work;
-- multi-package release planning;
-- difficult incident analysis;
-- final Project Inception blueprint comparison.
+Suitable for broad migrations, public API changes, security-sensitive review,
+complex architecture decisions, difficult incidents, multi-package releases,
+and final Project Inception blueprint comparison.
 
 Expected behavior:
 
-- larger reasoning and verification budget;
-- more alternative comparison;
-- deeper evidence inspection;
-- stronger contradiction and risk checks;
-- expanded test, rollback, and compatibility analysis;
+- larger reasoning and verification budgets;
+- deeper alternative, contradiction, risk, test, rollback, and compatibility
+  analysis;
 - potentially higher latency and cost.
 
-`high` is not a quality guarantee and does not grant additional authority.
+`high` is not a quality guarantee and does not widen authority.
 
-### `auto`
+### Auto
 
-Neutron proposes an effort level from deterministic task metadata and visible
-policy, for example:
+Neutron proposes an effort level from visible task metadata and policy, such as:
 
-- task type;
-- affected scopes;
+- task type and requested output;
+- affected packages, deployables, or architecture scopes;
 - security and compatibility sensitivity;
-- number of packages or deployables;
-- uncertainty;
-- requested output;
+- uncertainty and conflicting evidence;
 - user and organization budget policy.
 
-The resolved effort, reasons, budget, and provider mapping must be shown before
-or at execution. `auto` must not silently change providers or exceed an approved
-financial limit.
+The resolved effort, reasons, budget, and provider mapping remain visible.
+`auto` cannot silently change providers or exceed an approved financial limit.
 
 ## Provider capability negotiation
 
-Provider APIs expose different controls. Some expose a direct reasoning-effort
-parameter, some expose thinking or token budgets, some distinguish model tiers,
-and some expose no portable equivalent.
+Provider APIs expose different controls. An adapter must publish a versioned
+capability record that includes, where known:
 
-Each model adapter should declare a versioned capability record such as:
+- provider, model, and adapter identity;
+- streaming and structured tool-call support;
+- context and output limits;
+- native effort values or budget controls;
+- vision and other required input capabilities;
+- network and data-handling behavior.
 
-```json
-{
-  "providerId": "provider:example",
-  "modelId": "model:example/engineer",
-  "supports": {
-    "streaming": true,
-    "structuredToolCalls": true,
-    "vision": false,
-    "nativeEffortValues": ["low", "medium", "high"],
-    "contextWindow": 200000,
-    "maxOutputTokens": 16000
-  }
-}
-```
+A canonical effort may resolve as:
 
-The exact schema requires an ADR and compatibility review.
+- `exact`, when the provider directly supports the requested value;
+- `bounded-map`, when a reviewed native budget range is used;
+- `model-profile-map`, when a reviewed provider model profile is selected;
+- `unsupported`, when the provider cannot honor the request;
+- `requires-user-choice`, when materially different mappings exist.
 
-### Mapping rules
+Unsupported effort must fail, request a user choice, use an explicitly approved
+mapping, or continue with a clearly reported provider default according to
+policy. Silent downgrade is prohibited.
 
-An adapter may map a canonical Intentloom effort to a native provider control
-only when the mapping is documented and tested.
+## Model profiles
 
-Possible outcomes:
-
-- `exact`: the provider directly supports the requested value;
-- `bounded-map`: the adapter uses a documented provider budget range;
-- `model-profile-map`: the effort resolves to a reviewed provider model profile;
-- `unsupported`: the provider cannot honor the request;
-- `requires-user-choice`: more than one materially different mapping exists.
-
-Intentloom must not silently claim that an unsupported provider setting was
-honored.
-
-### Unsupported effort
-
-Policy choices may be:
-
-1. fail closed;
-2. ask the user to choose a supported effort;
-3. use an explicitly configured fallback mapping;
-4. continue with provider default while clearly reporting that the requested
-   effort was not enforceable.
-
-The project or organization policy selects the behavior. Silent downgrade is not
-allowed.
-
-## Model selection
-
-### Exact identifiers
-
-Reproducible sessions should record:
-
-- provider identifier;
-- exact model identifier and version or snapshot when available;
-- adapter version;
-- endpoint or gateway identity;
-- local runtime version when applicable;
-- effort request and resolved native value;
-- context, output, tool, time, retry, and cost budgets;
-- network and data-handling mode;
-- configuration digest.
-
-Mutable aliases such as `latest` may be displayed for discovery but should not be
-persisted as the only reproducibility evidence.
-
-### Model aliases
-
-Users and organizations may define stable local aliases:
+Users and organizations may define stable aliases such as:
 
 ```text
 fast
@@ -258,18 +182,15 @@ security-review
 architecture-review
 ```
 
-An alias resolves to:
+A profile resolves to:
 
-- provider;
-- model;
+- provider and exact model;
 - default effort;
 - execution budgets;
 - required model capabilities;
-- allowed modes;
-- data-handling policy;
-- optional fallback chain.
-
-Aliases are configuration, not model names owned by Intentloom.
+- allowed workspace modes;
+- network and data-handling policy;
+- optional ordered fallback chain.
 
 Example candidate configuration:
 
@@ -281,7 +202,7 @@ modelProfiles:
     effort: medium
     limits:
       maxToolCalls: 24
-      maxCostUsd: 2.00
+      maxCostUsd: 2.0
   local-private:
     provider: local
     model: exact-local-model-id
@@ -289,48 +210,32 @@ modelProfiles:
     network: disabled
 ```
 
-Credentials must never be stored in this project configuration.
+Credentials never belong in project configuration.
 
 ## Configuration hierarchy
 
-Candidate precedence from broadest to narrowest:
+Candidate precedence is:
 
 ```text
 built-in safe defaults
-→ organization policy
-→ user-local provider configuration
-→ project policy
-→ task or session selection
-→ explicit one-turn override
+-> organization policy
+-> user-local provider configuration
+-> project policy
+-> task or session selection
+-> explicit one-turn override
 ```
 
-Narrower configuration may reduce capabilities and budgets. It must not bypass
-organization restrictions, provider data-handling policy, or project mutation
+Narrower configuration may reduce budgets and capabilities. It cannot bypass
+organization restrictions, provider data policy, project isolation, or mutation
 approval.
 
-### Project-visible configuration
+Project-visible configuration may contain approved providers, model profiles,
+required capabilities, default effort by task class, maximum budgets, fallback
+policy, network restrictions, and audit requirements.
 
-A project may store:
-
-- allowed provider identifiers;
-- approved model aliases;
-- minimum required model capabilities;
-- default effort by task class;
-- maximum budgets;
-- fallback policy;
-- local-only or network restrictions;
-- required audit and retention settings.
-
-### User-local configuration
-
-User-local or operating-system protected storage should contain:
-
-- API credentials;
-- gateway endpoints requiring authentication;
-- private local-model paths;
-- user-specific cost limits;
-- provider account configuration;
-- encrypted connection metadata.
+User-local protected storage contains API credentials, authenticated gateway
+endpoints, private local-model paths, account configuration, and user-specific
+cost limits.
 
 Secrets must not be written to `.aif/`, Git, prompts, generated instructions,
 logs, manifests, source maps, evidence exports, or session exports.
@@ -339,10 +244,10 @@ logs, manifests, source maps, evidence exports, or session exports.
 
 ### Manual
 
-The user selects the exact model and effort.
+The user selects an exact model and effort.
 
 ```bash
-loom --model provider/model --effort high
+loom --model PROVIDER/MODEL --effort high
 ```
 
 ### Profile
@@ -355,60 +260,46 @@ loom --model-profile balanced
 
 ### Policy-assisted
 
-Intentloom filters available models by required capabilities, data policy,
-budget, and task type, then proposes a choice for confirmation.
+Intentloom filters available models by capabilities, data policy, task type, and
+budget, then proposes a choice for confirmation.
 
 ### Automatic
 
-A later mode may resolve a model from an explicit allowlist. Automatic routing
-must report:
+A later mode may resolve a model from an explicit allowlist. It must show the
+candidates considered, rejection reasons, final model, data handling, effort,
+budgets, and fallback behavior.
 
-- candidates considered;
-- candidates rejected and reasons;
-- selected provider and model;
-- expected data handling;
-- resolved effort and budgets;
-- fallback behavior.
-
-Automatic routing must not use an unapproved provider, endpoint, model, or
-network path.
+Automatic routing cannot use an unapproved provider, endpoint, model, or network
+path.
 
 ## Fallback policy
 
 Fallback is disabled by default for sensitive or reproducible workflows.
 
-An enabled fallback chain must be explicit, ordered, and capability-checked:
+An enabled chain is explicit, ordered, and capability-checked:
 
 ```text
 primary exact model
-→ approved equivalent hosted model
-→ approved local model
-→ fail
+-> approved equivalent hosted model
+-> approved local model
+-> fail
 ```
 
-Intentloom must not silently switch providers because of rate limits, cost,
+Intentloom does not silently switch providers because of rate limits, cost,
 timeouts, or model unavailability.
 
-When fallback occurs, the final result must record:
-
-- original selection;
-- failure category;
-- fallback selected;
-- capability and effort differences;
-- data-handling changes;
-- whether the task was restarted or continued;
-- any result comparability limitations.
-
-A fallback that changes network or data-handling boundaries requires renewed
+A fallback record includes the original selection, failure category, selected
+fallback, capability and effort differences, data-handling changes, and whether
+the task restarted. A changed network or data boundary requires renewed
 approval.
 
-## Candidate CLI commands
+## Candidate commands
 
 ### Discovery and configuration
 
 ```bash
 loom models list
-loom models list --provider openai
+loom models list --provider PROVIDER
 loom models inspect PROVIDER/MODEL
 loom models capabilities PROVIDER/MODEL
 loom models profiles
@@ -418,10 +309,10 @@ loom models profile remove balanced
 loom models test PROVIDER/MODEL
 ```
 
-`models test` may make a network request and incur cost. It must preview the
-endpoint, model, requested capabilities, and estimated limits before execution.
+`models test` may use the network and incur cost. It previews the endpoint,
+model, requested capabilities, and limits before execution.
 
-### Session selection
+### Session and task selection
 
 ```bash
 loom --model PROVIDER/MODEL --effort low
@@ -429,28 +320,18 @@ loom --model PROVIDER/MODEL --effort medium
 loom --model PROVIDER/MODEL --effort high
 loom --model-profile balanced
 loom --effort auto
-```
-
-### Project Inception
-
-```bash
 loom new --model-profile balanced --effort medium
 loom inception resume SESSION_ID --effort high
 loom blueprint compare OPTION_A OPTION_B --effort high
-```
-
-### Task-specific override
-
-```bash
 loom plan --effort high
 loom review --model-profile security-review
 loom inspect --model-profile local-private
 ```
 
-Commands that are fully deterministic, such as schema validation or ownership
-checks, should not require a model merely because a model is configured.
+Deterministic validation, ownership, conformance, and schema operations do not
+require a model merely because one is configured.
 
-## Candidate interactive commands
+### Interactive controls
 
 ```text
 /model
@@ -467,150 +348,83 @@ checks, should not require a model merely because a model is configured.
 /session
 ```
 
-The interactive status area should display at least:
-
-```text
-Provider: explicit provider
-Model: exact model id
-Effort: high
-Mode: plan
-Network: enabled for provider endpoint only
-Data handling: provider policy name
-Tools: read-only
-Estimated budget: visible
-```
+The status surface displays provider, exact model, effort, workspace mode,
+network state, data-handling policy, tool capabilities, fallback state, and
+estimated budget.
 
 ## Desktop experience
 
-Candidate controls:
+Candidate controls include:
 
-- provider selector;
-- exact model selector;
-- model-profile selector;
-- effort segmented control: Auto, Low, Medium, High;
-- mode indicator;
-- network and data-handling indicator;
-- context, output, tool, time, and cost limits;
-- fallback state;
-- capability compatibility findings;
+- provider, exact model, and profile selectors;
+- an Auto, Low, Medium, High effort selector;
+- workspace mode and capability indicators;
+- network and data-handling indicators;
+- context, output, tool, time, retry, subagent, and cost limits;
+- fallback and compatibility findings;
 - session usage and provenance.
 
 The UI must not present effort as a permission level.
 
-## Task-aware defaults
-
-Candidate defaults may include:
-
-| Task | Default effort |
-| --- | --- |
-| simple explanation | low |
-| bounded inspect summary | low or medium |
-| normal feature plan | medium |
-| Project Inception discovery | medium |
-| blueprint alternative comparison | high |
-| public API migration | high |
-| security-sensitive review | high |
-| deterministic validation | no model required |
-
-Organization or user policy may override these within allowed bounds.
-
 ## Budget and cost transparency
 
-Before a model request, Intentloom should know or declare when possible:
+Before execution, Intentloom should show when available:
 
-- provider pricing source and freshness;
-- estimated input size;
-- configured maximum output;
-- configured reasoning or thinking budget;
-- maximum tool calls;
-- maximum subagents;
-- maximum task duration;
+- pricing source and freshness;
+- estimated input size and maximum output;
+- reasoning or thinking budget;
+- maximum tool calls, subagents, duration, and retries;
 - maximum cost;
-- whether prompt caching or batch behavior is used;
-- whether pricing cannot be estimated reliably.
+- prompt-cache or batch behavior;
+- whether reliable estimation is unavailable.
 
-Cost estimates are estimates, not guarantees. Actual usage should be recorded
-when the provider returns trustworthy usage metadata.
+Actual usage is recorded only when the provider returns trustworthy metadata.
 
 ## Enterprise policy
 
-Organizations may define:
+Organizations may define approved providers, gateways, model snapshots, data
+classes, routing restrictions, effort and cost ceilings, local-only scopes,
+retention rules, audit requirements, network approvals, and fallback policy.
 
-- approved providers and gateways;
-- approved model snapshots;
-- prohibited data classes;
-- project and repository routing restrictions;
-- maximum effort and budgets by task class;
-- local-model-only scopes;
-- retention and audit requirements;
-- required human approval for network use;
-- disabled fallback across providers;
-- incident and security-review model profiles.
-
-A human title or discipline does not grant access to a provider or model.
+A title, discipline, or role does not itself grant provider access.
 
 ## Local models
 
-Local model adapters must declare:
+A local adapter declares model source, license, artifact digest, runtime version,
+hardware needs, limits, tool support, effort mapping, network behavior, update
+policy, and rollback behavior.
 
-- model source and license;
-- exact artifact digest;
-- runtime and version;
-- hardware requirements;
-- context and output limits;
-- tool-call support;
-- effort-mapping support;
-- local network behavior;
-- update and rollback policy.
-
-Intentloom must not silently download model weights or runtimes. Installation and
-updates use the managed extension and explicit approval boundaries.
+Intentloom never silently downloads model weights or runtimes. Installation and
+updates use managed-extension and explicit-approval boundaries.
 
 ## NeutronBench relationship
 
-NeutronBench should evaluate model and effort combinations separately.
+NeutronBench evaluates model and effort combinations independently. A benchmark
+record includes exact model and provider identity, canonical and native effort,
+runtime and adapter versions, all budgets, result quality, safety and policy
+adherence, latency, usage, and degraded mappings.
 
-A benchmark record should include:
-
-- exact provider and model;
-- canonical and resolved native effort;
-- runtime and adapter versions;
-- context, output, tool, time, retry, subagent, and cost budgets;
-- task result quality;
-- policy and safety adherence;
-- latency and usage;
-- unsupported or degraded mappings.
-
-A `high` result should be compared against `medium` and `low` on the same task to
-show whether additional cost and latency produce measurable benefit.
+The same task should compare `low`, `medium`, and `high` to determine whether
+additional cost and latency create measurable benefit.
 
 ## Success criteria
 
 The first useful increment proves that:
 
-- at least one provider adapter exposes exact model identity and capability
-  discovery;
+- one provider adapter exposes exact model identity and capabilities;
 - users can select a model and `low`, `medium`, or `high` effort;
 - unsupported mappings fail or degrade visibly according to policy;
 - model, effort, mode, capability, budget, and approval remain separate;
 - provider credentials remain outside project metadata;
-- network, model, effort, usage, and fallback state are visible;
-- CLI, Desktop, TUI, daemon, MCP, and Neutron consume one typed configuration;
-- a higher effort never widens authority;
+- network, usage, and fallback state are visible;
+- every client consumes one typed configuration;
+- higher effort never widens authority;
 - deterministic operations remain usable without a model.
 
 ## Non-goals
 
-This direction does not imply:
-
-- identical behavior across different provider models;
-- a universal quality score for models;
-- a guarantee that `high` is always better;
-- silent provider fallback;
-- mandatory cloud inference;
-- storing API keys in a project;
-- automatic purchase or subscription management;
-- autonomous budget increases;
-- model output as approval;
-- model selection as a substitute for deterministic validation;
-- hardcoding mutable provider model catalogs into the Intentloom core.
+This direction does not promise identical provider behavior, a universal model
+quality score, a guarantee that `high` is always better, silent fallback,
+mandatory cloud inference, project-stored API keys, automatic purchases,
+autonomous budget increases, model output as approval, or hardcoded mutable
+provider catalogs in Intentloom Core.
