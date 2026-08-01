@@ -7,6 +7,7 @@ import {
   validateProjectBlueprint,
   validateScaffoldPlan,
 } from "@intentloom/validator";
+import { sanitizeInceptionPackageName } from "./inception-package-name.js";
 
 export interface ScaffoldPlanDiffResult {
   readonly created: readonly string[];
@@ -213,18 +214,7 @@ export function prepareProjectScaffoldPlan(
     );
   }
 
-  const rawName = validated.name.replace(/^Blueprint for /i, "");
-  const sanitized = Array.from(rawName.toLowerCase())
-    .map((ch) =>
-      (ch >= "a" && ch <= "z") ||
-      (ch >= "0" && ch <= "9") ||
-      ch === "-" ||
-      ch === "_"
-        ? ch
-        : "-",
-    )
-    .join("");
-  const pkgName = sanitized.replace(/^-+/, "").replace(/-+$/, "");
+  const pkgName = sanitizeInceptionPackageName(validated.name);
   const now = Date.now();
   const isWorkspace = validated.topology === "pnpm-workspace";
   const hasNx = validated.recommendedPacks.includes("nx-monorepo");
