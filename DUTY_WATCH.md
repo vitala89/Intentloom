@@ -61,6 +61,21 @@ entry directly below this section.
 
 ## Watch entries
 
+### 2026-08-01, Fix invalid pnpm/action-setup pin in docs.yml
+
+- **Status:** complete
+- **Agent/tool:** Claude Code
+- **Branch:** `feature/post-v1-enhancements`
+- **Objective:** Fix the Documentation workflow failing immediately at "Prepare all required actions" with `Error: Unable to resolve action pnpm/action-setup@fe40b387e765c1926fb966f91d091e6b36a188f6, unable to find version ... github page`.
+- **Completed:** The `pnpm/action-setup` and `actions/setup-node` steps added when writing the VitePress-build `docs.yml` were pinned to a non-existent commit SHA (invented, not verified against the action's repository). Replaced both with the exact pinned SHAs and pnpm version (`10.12.4`) already verified working in `compatibility.yml`, and reordered pnpm setup before Node setup to match that file's pattern (`cache: pnpm` on the Node step depends on pnpm already being on `PATH`).
+- **Files or packages changed:** `.github/workflows/docs.yml`.
+- **Validation:** `npx prettier --check .github/workflows/docs.yml` passed. Spot-checked the three remaining pinned action SHAs in the file (`configure-pages`, `upload-pages-artifact`, `deploy-pages`) via `gh api search/commits?q=hash:<sha>`, all resolve; those three had already executed successfully in the prior (pre-VitePress) run of this workflow.
+- **Decisions and assumptions:** Should have verified every pinned SHA against the upstream repository before committing rather than trusting a plausible-looking hash; this was a real process gap in the earlier "Fix Desktop project-selection freeze and enable GitHub Pages" watch entry.
+- **Risks or compatibility impact:** None; action pins only.
+- **Open issues or blockers:** None.
+- **Next first action:** Confirm the Documentation workflow runs to completion on `main` after PR #161 merges, and that `https://vitala89.github.io/Intentloom/` serves the built site.
+- **Evidence:** GitHub Actions run log showing `Error: Unable to resolve action pnpm/action-setup@fe40b387e765c1926fb966f91d091e6b36a188f6`; `gh api search/commits?q=hash:<sha>` for the reused SHAs.
+
 ### 2026-08-01, Allow-list transitive vite Dependency Review finding on PR #161
 
 - **Status:** complete
