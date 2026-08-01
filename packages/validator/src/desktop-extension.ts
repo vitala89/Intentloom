@@ -189,3 +189,33 @@ export function validateDesktopCommandContribution(
   }
   return diagnostics;
 }
+
+export function validateDesktopSettingsContribution(
+  settings: unknown,
+): readonly DesktopContributionDiagnostic[] {
+  const diagnostics: DesktopContributionDiagnostic[] = [];
+  if (!settings || typeof settings !== "object") {
+    diagnostics.push({
+      code: "invalid-settings-object",
+      path: "/",
+      message: "settings must be a non-null object",
+    });
+    return diagnostics;
+  }
+  const obj = settings as Record<string, unknown>;
+  if (typeof obj.id !== "string" || obj.id.trim() === "") {
+    diagnostics.push({
+      code: "invalid-settings-id",
+      path: "/id",
+      message: "settings id must be a non-empty string",
+    });
+  }
+  if (typeof obj.title !== "string" || obj.title.trim() === "") {
+    diagnostics.push({
+      code: "invalid-settings-title",
+      path: "/title",
+      message: "settings title must be a non-empty string",
+    });
+  }
+  return diagnostics;
+}

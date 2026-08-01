@@ -61,6 +61,30 @@ entry directly below this section.
 
 ## Watch entries
 
+### 2026-08-01, Desktop Provider UI & Extension Settings Integration (ADR-0049)
+
+- **Status:** complete for this watch
+- **Agent/tool:** Antigravity AI Agent with TypeScript, Vitest, Prettier
+- **Branch:** `feature/post-v1-enhancements`
+- **Objective:** Design and implement ADR-0049 for extension settings contributions and runtime namespaced settings store (`ExtensionSettingsStore`).
+- **Completed:**
+  - Created `docs/decisions/ADR-0049-desktop-provider-ui-settings.md`.
+  - Added `validateDesktopSettingsContribution` to `@intentloom/validator`.
+  - Created `apps/desktop/src/views/extension-settings.ts` (`ExtensionSettingsStore`, `globalExtensionSettingsStore`, and type safety).
+  - Added unit test suite `tests/desktop-extension-settings.test.ts` (3/3 tests passing).
+- **Validation:** Desktop build, unit tests (3/3 passed), Prettier format check, and `git diff --check` passed cleanly.
+- **Decisions and assumptions:** Strictly enforced settings key namespacing (`extension:<id>:<key>`) and isolated sensitive system credentials.
+- **Next first action:** Commit and push changes to PR #160.
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant tests, type checks, builds, or compatibility checks passed
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `DUTY_WATCH.md` handoff completed
+
 ### 2026-08-01, Desktop Command Palette Contribution & Action Registry (ADR-0048)
 
 - **Status:** complete for this watch
