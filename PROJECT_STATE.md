@@ -1,6 +1,6 @@
 # Intentloom Project State
 
-Last verified: 2026-07-31
+Last verified: 2026-08-02
 
 This file records the durable current state of the project. It is not a
 chronological log. Session history and handoff details belong in
@@ -118,6 +118,11 @@ before a new release or implementation milestone is declared complete.
   the lookahead/unbounded-backtracking regexes CodeQL flagged (PR #164,
   `72f0d71`). The validator fix took two attempts; see `DUTY_WATCH.md`,
   2026-08-01, for why the first one still wasn't linear.
+- Project Inception phases I1-I10 are merged through PR #167 (`cc2bf3c`). The
+  package-name sanitizer now uses deterministic character mapping and manual
+  prefix/hyphen trimming, with no regex-based processing of the blueprint name.
+  PR #167's CodeQL, dependency, governance, and cross-platform compatibility
+  checks passed.
 
 ## Active focus
 
