@@ -99,24 +99,33 @@ before a new release or implementation milestone is declared complete.
 - Selecting a project in the Desktop app deadlocked the whole window (main
   event-loop thread blocked on a native dialog call that itself needed that
   thread's event loop). Fixed by dispatching all six Tauri commands through
-  `tauri::async_runtime::spawn_blocking`; see `DUTY_WATCH.md`, 2026-08-01.
-- The GitHub Pages "Documentation" workflow failed on every run because Pages
-  was never enabled for the repository. Enabled it via the GitHub API with
-  `build_type: workflow`; see `DUTY_WATCH.md`, 2026-08-01.
+  `tauri::async_runtime::spawn_blocking`; merged in PR #161 (`e71a239`).
+- The GitHub Pages "Documentation" workflow failed because Pages was never
+  enabled for the repository, and once enabled, failed again on an invalid
+  `pnpm/action-setup` pin. Both are fixed: Pages is enabled
+  (`build_type: workflow`), and PR #162 (`101026d`) corrected the action pin.
+  `https://vitala89.github.io/Intentloom/` now serves the built VitePress
+  site (verified 2026-08-01, HTTP 200).
+- Four Dependabot alerts newly surfaced from the VitePress/vite/esbuild
+  dependency chain remain open and unactioned (Windows-dev-server-only,
+  not reachable via this repository's CI or scripts); see `DUTY_WATCH.md`,
+  2026-08-01, for detail and the pending exception decision.
 
 ## Active focus
 
-1. PR #160 merged into `main` on 2026-07-31 (head `5afedd2`, all hosted checks
-   green). PR #161 is open for the remaining commits on
-   `feature/post-v1-enhancements`: ADR-0044 through ADR-0050 (Desktop design
-   system import, Extension Host API, Theme Contribution Bridge, View Sandbox
-   Protocol, Command Contribution Registry, Provider UI/Settings,
-   Renderer/Panel Placement), the VitePress GitHub Pages site scaffold, and
-   the Desktop project-selection deadlock fix. `pnpm verify` passed clean on
-   this branch on 2026-08-01.
-2. Publish the prepared `1.0.1` documentation and package-metadata release
+1. PR #160 (`5afedd2`) and PR #161 (`e71a239`) are merged into `main`: ADR-0044
+   through ADR-0050 (Desktop design system import, Extension Host API, Theme
+   Contribution Bridge, View Sandbox Protocol, Command Contribution Registry,
+   Provider UI/Settings, Renderer/Panel Placement), the VitePress GitHub Pages
+   site scaffold, and the Desktop project-selection deadlock fix. PR #162
+   (`101026d`) landed a stranded docs.yml action-pin fix. GitHub Pages is
+   enabled and serving the built site.
+2. Decide whether to except the four new VitePress/vite/esbuild Dependabot
+   alerts (Windows-dev-server-only; see `DUTY_WATCH.md`, 2026-08-01) or track
+   a vitepress major upgrade once one stabilizes past `2.0.0-alpha`.
+3. Publish the prepared `1.0.1` documentation and package-metadata release
    through the approved trusted-publishing workflow.
-3. Keep bottleneck inference, remote ingestion, model-based judgments, and any
+4. Keep bottleneck inference, remote ingestion, model-based judgments, and any
    autonomous mutation behind separate approved specifications and threat review.
 
 ## Architectural invariants

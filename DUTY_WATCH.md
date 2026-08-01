@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **PR #161 open; resolving squash-merge conflicts against `main`** — PR #160 (head `5afedd2`) merged into `main` on 2026-07-31 with all hosted checks green (CodeQL, Compatibility, Dependency Review, Desktop SEA Feasibility, Governance) via a squash merge as `3713b15`. PR #161 carries the branch's subsequent commits: ADR-0044 through ADR-0050 (Desktop design system import, Extension Host API, Theme Contribution Bridge, View Sandbox Protocol, Command Contribution Registry, Provider UI/Settings, Renderer/Panel Placement), the VitePress GitHub Pages site scaffold, and the Desktop project-selection deadlock fix. Because `main` holds PR #160 as one squashed commit while this branch retains its pre-squash history, GitHub reported false content conflicts (both sides touch the same files with equivalent-or-superseded content, not real divergence) on `.github/workflows/docs.yml`, `DUTY_WATCH.md`, `PROJECT_STATE.md`, `apps/desktop/src/App.tsx`, `docs/governance/quality-exceptions.json`, and `packages/validator/src/index.ts`. Resolved by merging `origin/main` into `feature/post-v1-enhancements` and taking this branch's version in every hunk, since each is a strict superset of `main`'s (the one substantive check: `packages/validator/src/index.ts`'s inline `validateExtensionManifestDocument`/`validateExtensionLockDocument` from `main` are already present, unchanged, in this branch's extracted `extension.ts` and re-exported via `export * from "./extension.js"`). `.github/workflows/docs.yml` also had a real independent add/add conflict — kept this branch's version, which runs `pnpm docs:build` before uploading `docs/.vitepress/dist`; `main`'s version uploaded the raw `docs/` markdown source directly, which does not render as a static site. `pnpm verify` passed clean on `feature/post-v1-enhancements` before this merge. npm still serves `1.0.1`/`1.0.0` state as previously recorded; unchanged this watch.
+Status: **PR #161 and #162 merged; Desktop deadlock fixed; GitHub Pages live** — PR #160 (`5afedd2`), PR #161 (`e71a239`), and PR #162 (`101026d`) are all merged into `main`. The Desktop project-selection deadlock is fixed (all six Tauri commands now dispatch through `tauri::async_runtime::spawn_blocking`). GitHub Pages is enabled and serving the built VitePress site: `https://vitala89.github.io/Intentloom/` verified returning HTTP 200 with real content on 2026-08-01. Four new Dependabot alerts from the VitePress/vite/esbuild chain are open and unactioned (Windows-dev-server-only; see the entry below). npm still serves `1.0.1`/`1.0.0` state as previously recorded; unchanged this watch.
 
-Active branch: `feature/post-v1-enhancements`
+Active branch: `feature/post-v1-enhancements` (superseded by merged `main`; still has unmerged Duty Watch/PROJECT_STATE bookkeeping commits pending its own next sync)
 
-Current objective: finish resolving the merge-commit conflicts, verify, commit the merge, push, and confirm PR #161's hosted CI (Compatibility, CodeQL, Dependency Review, Desktop SEA Feasibility, Governance) is green.
+Current objective: decide on the four new VitePress-chain Dependabot alerts, then resume the `1.0.1` publication work.
 
-Next first action: after the merge commit lands, watch PR #161's checks and report the result before merging.
+Next first action: review `gh api repos/vitala89/Intentloom/dependabot/alerts` and either except or remediate the four open VitePress/vite/esbuild alerts.
 
 Known open items, in the order they should be handled:
 
@@ -60,6 +60,24 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-01, PR #161/#162 landed; Desktop freeze fixed and GitHub Pages live
+
+- **Status:** complete
+- **Agent/tool:** Claude Code
+- **Branch:** `feature/post-v1-enhancements` (PR #161), `fix/docs-workflow-action-pin` (PR #162, merged by the maintainer)
+- **Objective:** Close out the Desktop project-selection deadlock fix and GitHub Pages 404 fix reported by the maintainer.
+- **Completed:**
+  - PR #161 squash-merged into `main` as `e71a239`, carrying ADR-0044 through ADR-0050, the VitePress scaffold, the Desktop deadlock fix, and the Dependency Review allow-list. It merged at head `73f9caf` — one commit before the docs.yml pnpm/action-setup pin fix landed on the branch, because a scheduled background check merged it as soon as its own status snapshot went green, racing a still-in-flight push. `main`'s Documentation workflow consequently failed once more (`Error: Unable to resolve action pnpm/action-setup@...`).
+  - Opened PR #162 from a fresh branch off `main`, cherry-picking the two stranded commits (action-pin fix, its Duty Watch record). The maintainer merged it directly as `101026d` once all checks passed.
+  - Verified: the Documentation workflow run on `101026d` succeeded, and `curl -s -o /dev/null -w '%{http_code}' https://vitala89.github.io/Intentloom/` returns `200` with real VitePress-rendered HTML (`<meta name="generator" content="VitePress v1.6.4">`).
+  - Deleted the merged `fix/docs-workflow-action-pin` branch, remote and local.
+- **Not completed:** Did not address four newly visible Dependabot alerts introduced by the VitePress dependency chain (`vite` `server.fs.deny` bypass — the same GHSA allow-listed for the Dependency Review PR gate, plus a `vite` path-traversal alert, an `esbuild` dev-server alert, and a `launch-editor` NTLMv2 alert), all Windows-dev-server-only and not reachable through this repository's CI or build scripts. Recorded here rather than actioned; a maintainer decision on whether to formally except them (as already done for the tracked `glib` alert) is a separate task.
+- **Decisions and assumptions:** Never rely on a scheduled background check to merge a PR while a related fix might still be in flight on the same branch — merge synchronously once checks are confirmed green in the same turn, as done for PR #162.
+- **Risks or compatibility impact:** None beyond the still-open Dependabot alerts noted above.
+- **Open issues or blockers:** Four new Dependabot alerts from the VitePress/vite/esbuild chain remain open, unactioned pending a maintainer decision on exception scope; existing `glib@0.18.5` exception (expires 2026-10-29) is unaffected.
+- **Next first action:** Decide whether to formally except the new VitePress-chain Dependabot alerts (matching the existing `glib` exception pattern) or to track a vitepress major upgrade once it stabilizes past `2.0.0-alpha`.
+- **Evidence:** `gh pr view 161/162 --json mergedAt,mergeCommit,mergedBy`; `gh run list --workflow=Documentation`; `curl -s -o /tmp/page.html -w "HTTP %{http_code}" https://vitala89.github.io/Intentloom/` (200); `gh api repos/vitala89/Intentloom/dependabot/alerts`.
 
 ### 2026-08-01, Fix invalid pnpm/action-setup pin in docs.yml
 
