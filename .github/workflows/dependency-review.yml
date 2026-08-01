@@ -25,3 +25,13 @@ jobs:
         uses: actions/dependency-review-action@2031cfc080254a8a887f58cffee85186f0e49e48 # v4.9.0
         with:
           fail-on-severity: high
+          # GHSA-fx2h-pf6j-xcff (CVE-2026-53571): vite server.fs.deny bypass via
+          # Windows NTFS alternate data streams, transitively pulled in by
+          # vitepress@1.6.4 (which hard-pins vite ^5.4.14; no patched 5.x
+          # release exists, and vitepress has no stable release on a patched
+          # vite major). Only reachable through `vite dev`/`vitepress dev`
+          # exposed to the network with --host on Windows; this repository
+          # never runs the dev server in CI or build scripts, only
+          # `vitepress build`. Re-evaluate when vitepress ships a stable
+          # release depending on a patched vite major.
+          allow-ghsas: GHSA-fx2h-pf6j-xcff

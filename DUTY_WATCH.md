@@ -61,6 +61,21 @@ entry directly below this section.
 
 ## Watch entries
 
+### 2026-08-01, Allow-list transitive vite Dependency Review finding on PR #161
+
+- **Status:** complete
+- **Agent/tool:** Claude Code
+- **Branch:** `feature/post-v1-enhancements`
+- **Objective:** Unblock PR #161's Dependency Review check, which failed with a high-severity finding on `vite@5.4.21` (GHSA-fx2h-pf6j-xcff / CVE-2026-53571, `server.fs.deny` bypass via Windows NTFS alternate data streams) pulled in transitively by the new `vitepress@1.6.4` dependency (part of the VitePress GitHub Pages scaffold in this PR).
+- **Completed:** Confirmed `vitepress@1.6.4` hard-pins `vite: ^5.4.14` (a direct dependency, not a peer), so pnpm always resolves the latest 5.x, `5.4.21`. The advisory's listed vulnerable range (`<= 6.4.2`, first patched `6.4.3`) numerically includes all `5.x`, so `5.4.21` is flagged even though the advisory only names vite majors 6/7/8. No patched `5.x` release exists, and `vitepress`'s only newer line is `2.0.0-alpha.18` (unstable, not usable here), so bumping vite directly would require overriding it to a major vitepress does not declare support for. The vulnerability is exploitable only through `vite dev`/`vitepress dev` exposed to the network with `--host` on Windows; this repository's CI and `docs:build` script only run `vitepress build`, never the dev server. Added `allow-ghsas: GHSA-fx2h-pf6j-xcff` to `.github/workflows/dependency-review.yml` with an inline comment recording this reasoning and a re-evaluation trigger (a stable vitepress release on a patched vite major).
+- **Files or packages changed:** `.github/workflows/dependency-review.yml`.
+- **Validation:** `npx prettier --check .github/workflows/dependency-review.yml` passed. Re-ran PR #161's Dependency Review check after pushing.
+- **Decisions and assumptions:** Chose an allow-list over forcing a `pnpm.overrides` vite major bump, since the latter risks breaking `vitepress build` on an unsupported vite major for a vulnerability class (network-exposed Windows dev server) this repository never triggers.
+- **Risks or compatibility impact:** None to the built site or CI; the allow-list is scoped to this exact GHSA ID, not a blanket severity downgrade.
+- **Open issues or blockers:** Re-evaluate the allow-list once vitepress ships a stable release on a patched vite major.
+- **Next first action:** Confirm PR #161's Dependency Review check passes on the next run.
+- **Evidence:** `gh api /advisories/GHSA-fx2h-pf6j-xcff` (vulnerable ranges `<=6.4.2`, `<=7.3.4`, `>=8.0.0 <=8.0.15`; no 5.x entry); `npm view vitepress@1.6.4 dependencies` (`vite: ^5.4.14`); `npm view vitepress dist-tags` (`latest: 1.6.4`, `next: 2.0.0-alpha.18`).
+
 ### 2026-08-01, Fix Desktop project-selection freeze and enable GitHub Pages
 
 - **Status:** complete
