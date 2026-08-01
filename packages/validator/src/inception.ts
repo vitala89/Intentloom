@@ -14,74 +14,78 @@ import type {
   BlueprintTopology,
   ScaffoldPlan,
   ScaffoldFileAction,
+  ScaffoldResult,
+  ScaffoldResultStatus,
 } from "@intentloom/protocol";
 
-function isObject(v: unknown): v is Record<string, unknown> {
+function isObj(v: unknown): v is Record<string, unknown> {
   return typeof v === "object" && v !== null && !Array.isArray(v);
 }
-function assertString(v: unknown, f: string): string {
-  if (typeof v !== "string" || !v.trim()) {
+function assertStr(v: unknown, f: string): string {
+  if (typeof v !== "string" || !v.trim())
     throw new Error(
       `Invalid inception field '${f}': expected non-empty string`,
     );
-  }
   return v;
 }
-function assertNumber(v: unknown, f: string): number {
-  if (typeof v !== "number" || !Number.isFinite(v) || v < 0) {
+function assertNum(v: unknown, f: string): number {
+  if (typeof v !== "number" || !Number.isFinite(v) || v < 0)
     throw new Error(
       `Invalid inception field '${f}': expected non-negative number`,
     );
-  }
   return v;
 }
-function assertArray(v: unknown, f: string): unknown[] {
+function assertArr(v: unknown, f: string): unknown[] {
   if (!Array.isArray(v)) throw new Error(`Invalid ${f}: expected array`);
   return v;
 }
 
-const CATEGORIES: readonly InceptionCategory[] = [
+const CATS: readonly InceptionCategory[] = [
   "product",
   "architecture",
   "tooling",
   "security",
 ];
-const CONFIDENCES: readonly AnswerConfidence[] = [
+const CONFS: readonly AnswerConfidence[] = [
   "confirmed",
   "assumed",
   "preference",
 ];
-const STATUSES: readonly InceptionSessionStatus[] = [
+const STATS: readonly InceptionSessionStatus[] = [
   "discovering",
   "blueprinting",
   "approved",
   "cancelled",
 ];
-const TOPOLOGIES: readonly BlueprintTopology[] = [
+const TOPS: readonly BlueprintTopology[] = [
   "single-package",
   "pnpm-workspace",
   "cli-tool",
   "web-product",
   "desktop-product",
 ];
-const APPROVAL_STATUSES: readonly BlueprintApprovalStatus[] = [
+const APPS: readonly BlueprintApprovalStatus[] = [
   "approved",
   "revoked",
   "expired",
 ];
+const RESS: readonly ScaffoldResultStatus[] = [
+  "applied",
+  "rolled-back",
+  "failed",
+];
 
 export function validateInceptionQuestion(v: unknown): InceptionQuestion {
-  if (!isObject(v))
-    throw new Error("Invalid inception question: expected object");
-  const id = assertString(v.id, "question.id");
-  const prompt = assertString(v.prompt, "question.prompt");
-  if (!CATEGORIES.includes(v.category as InceptionCategory))
+  if (!isObj(v)) throw new Error("Invalid inception question: expected object");
+  const id = assertStr(v.id, "question.id");
+  const prompt = assertStr(v.prompt, "question.prompt");
+  if (!CATS.includes(v.category as InceptionCategory))
     throw new Error(`Invalid question category '${String(v.category)}'`);
   if (typeof v.required !== "boolean")
     throw new Error("Invalid question.required: expected boolean");
   let options: readonly string[] | undefined;
   if (v.options !== undefined) {
-    const opts = assertArray(v.options, "question.options");
+    const opts = assertArr(v.options, "question.options");
     if (!opts.every((opt) => typeof opt === "string"))
       throw new Error("Invalid question.options: expected array of strings");
     options = opts as readonly string[];
@@ -96,55 +100,54 @@ export function validateInceptionQuestion(v: unknown): InceptionQuestion {
 }
 
 export function validateInceptionAnswer(v: unknown): InceptionAnswer {
-  if (!isObject(v))
-    throw new Error("Invalid inception answer: expected object");
-  const questionId = assertString(v.questionId, "answer.questionId");
+  if (!isObj(v)) throw new Error("Invalid inception answer: expected object");
+  const questionId = assertStr(v.questionId, "answer.questionId");
   const val = typeof v.value === "string" ? v.value : "";
-  if (!CONFIDENCES.includes(v.confidence as AnswerConfidence))
+  if (!CONFS.includes(v.confidence as AnswerConfidence))
     throw new Error(`Invalid answer confidence '${String(v.confidence)}'`);
   return {
     questionId,
     value: val,
     confidence: v.confidence as AnswerConfidence,
-    timestamp: assertNumber(v.timestamp, "answer.timestamp"),
+    timestamp: assertNum(v.timestamp, "answer.timestamp"),
   };
 }
 
 export function validateInceptionSessionState(
   v: unknown,
 ): InceptionSessionState {
-  if (!isObject(v))
+  if (!isObj(v))
     throw new Error("Invalid inception session state: expected object");
-  const id = assertString(v.id, "session.id");
-  const root = assertString(v.root, "session.root");
-  const idea = assertString(v.idea, "session.idea");
-  if (!STATUSES.includes(v.status as InceptionSessionStatus))
+  const id = assertStr(v.id, "session.id");
+  const root = assertStr(v.root, "session.root");
+  const idea = assertStr(v.idea, "session.idea");
+  if (!STATS.includes(v.status as InceptionSessionStatus))
     throw new Error(`Invalid session status '${String(v.status)}'`);
   return {
     id,
     root,
     idea,
     status: v.status as InceptionSessionStatus,
-    questions: assertArray(v.questions, "session.questions").map(
+    questions: assertArr(v.questions, "session.questions").map(
       validateInceptionQuestion,
     ),
-    answers: assertArray(v.answers, "session.answers").map(
+    answers: assertArr(v.answers, "session.answers").map(
       validateInceptionAnswer,
     ),
-    constraints: assertArray(
+    constraints: assertArr(
       v.constraints,
       "session.constraints",
     ) as readonly ProjectConstraint[],
-    assumptions: assertArray(
+    assumptions: assertArr(
       v.assumptions,
       "session.assumptions",
     ) as readonly ProjectAssumption[],
-    alternatives: assertArray(
+    alternatives: assertArr(
       v.alternatives,
       "session.alternatives",
     ) as readonly BlueprintAlternative[],
-    createdAt: assertNumber(v.createdAt, "session.createdAt"),
-    updatedAt: assertNumber(v.updatedAt, "session.updatedAt"),
+    createdAt: assertNum(v.createdAt, "session.createdAt"),
+    updatedAt: assertNum(v.updatedAt, "session.updatedAt"),
   };
 }
 
@@ -153,23 +156,21 @@ export function validateInceptionConflict(v: unknown): {
   readonly conflict: string;
   readonly severity: "error" | "warning";
 } {
-  if (!isObject(v))
-    throw new Error("Invalid inception conflict: expected object");
+  if (!isObj(v)) throw new Error("Invalid inception conflict: expected object");
   if (v.severity !== "error" && v.severity !== "warning")
     throw new Error("Invalid conflict.severity: expected 'error' or 'warning'");
   return {
-    questionId: assertString(v.questionId, "conflict.questionId"),
-    conflict: assertString(v.conflict, "conflict.conflict"),
+    questionId: assertStr(v.questionId, "conflict.questionId"),
+    conflict: assertStr(v.conflict, "conflict.conflict"),
     severity: v.severity,
   };
 }
 
 export function validateProjectBlueprint(v: unknown): ProjectBlueprint {
-  if (!isObject(v))
-    throw new Error("Invalid project blueprint: expected object");
-  if (!TOPOLOGIES.includes(v.topology as BlueprintTopology))
+  if (!isObj(v)) throw new Error("Invalid project blueprint: expected object");
+  if (!TOPS.includes(v.topology as BlueprintTopology))
     throw new Error(`Invalid blueprint topology '${String(v.topology)}'`);
-  const recommendedPacks = assertArray(
+  const recommendedPacks = assertArr(
     v.recommendedPacks,
     "blueprint.recommendedPacks",
   );
@@ -180,69 +181,94 @@ export function validateProjectBlueprint(v: unknown): ProjectBlueprint {
   if (typeof v.frameworkNeutral !== "boolean")
     throw new Error("Invalid blueprint.frameworkNeutral: expected boolean");
   return {
-    id: assertString(v.id, "blueprint.id"),
-    name: assertString(v.name, "blueprint.name"),
+    id: assertStr(v.id, "blueprint.id"),
+    name: assertStr(v.name, "blueprint.name"),
     topology: v.topology as BlueprintTopology,
     recommendedPacks: recommendedPacks as readonly string[],
-    qualityProfile: assertString(v.qualityProfile, "blueprint.qualityProfile"),
+    qualityProfile: assertStr(v.qualityProfile, "blueprint.qualityProfile"),
     frameworkNeutral: v.frameworkNeutral,
-    digest: assertString(v.digest, "blueprint.digest"),
-    alternatives: assertArray(
+    digest: assertStr(v.digest, "blueprint.digest"),
+    alternatives: assertArr(
       v.alternatives,
       "blueprint.alternatives",
     ) as readonly BlueprintAlternative[],
-    createdAt: assertNumber(v.createdAt, "blueprint.createdAt"),
+    createdAt: assertNum(v.createdAt, "blueprint.createdAt"),
   };
 }
 
 export function validateBlueprintApproval(v: unknown): BlueprintApproval {
-  if (!isObject(v))
-    throw new Error("Invalid blueprint approval: expected object");
-  if (!APPROVAL_STATUSES.includes(v.status as BlueprintApprovalStatus))
+  if (!isObj(v)) throw new Error("Invalid blueprint approval: expected object");
+  if (!APPS.includes(v.status as BlueprintApprovalStatus))
     throw new Error(`Invalid approval.status '${String(v.status)}'`);
   return {
-    blueprintId: assertString(v.blueprintId, "approval.blueprintId"),
-    blueprintDigest: assertString(
-      v.blueprintDigest,
-      "approval.blueprintDigest",
-    ),
-    approver: assertString(v.approver, "approval.approver"),
-    approvedAt: assertNumber(v.approvedAt, "approval.approvedAt"),
-    expiry: assertNumber(v.expiry, "approval.expiry"),
+    blueprintId: assertStr(v.blueprintId, "approval.blueprintId"),
+    blueprintDigest: assertStr(v.blueprintDigest, "approval.blueprintDigest"),
+    approver: assertStr(v.approver, "approval.approver"),
+    approvedAt: assertNum(v.approvedAt, "approval.approvedAt"),
+    expiry: assertNum(v.expiry, "approval.expiry"),
     status: v.status as BlueprintApprovalStatus,
   };
 }
 
 export function validateScaffoldPlan(v: unknown): ScaffoldPlan {
-  if (!isObject(v)) throw new Error("Invalid scaffold plan: expected object");
-  if (!isObject(v.scripts))
+  if (!isObj(v)) throw new Error("Invalid scaffold plan: expected object");
+  if (!isObj(v.scripts))
     throw new Error("Invalid plan.scripts: expected object");
-
-  const files = assertArray(v.files, "plan.files").map((fileObj) => {
-    if (!isObject(fileObj))
+  const files = assertArr(v.files, "plan.files").map((fileObj) => {
+    if (!isObj(fileObj))
       throw new Error("Invalid scaffold file plan: expected object");
     if (!["create", "modify", "skip"].includes(fileObj.action as string))
       throw new Error(`Invalid file.action '${String(fileObj.action)}'`);
     if (typeof fileObj.isManaged !== "boolean")
       throw new Error("Invalid file.isManaged: expected boolean");
     return {
-      path: assertString(fileObj.path, "file.path"),
+      path: assertStr(fileObj.path, "file.path"),
       action: fileObj.action as ScaffoldFileAction,
       content: typeof fileObj.content === "string" ? fileObj.content : "",
       isManaged: fileObj.isManaged,
     };
   });
-
   return {
-    planId: assertString(v.planId, "plan.planId"),
-    root: assertString(v.root, "plan.root"),
-    blueprintDigest: assertString(v.blueprintDigest, "plan.blueprintDigest"),
+    planId: assertStr(v.planId, "plan.planId"),
+    root: assertStr(v.root, "plan.root"),
+    blueprintDigest: assertStr(v.blueprintDigest, "plan.blueprintDigest"),
     files,
-    dependencies: assertArray(
+    dependencies: assertArr(
       v.dependencies,
       "plan.dependencies",
     ) as readonly string[],
     scripts: v.scripts as Record<string, string>,
-    createdAt: assertNumber(v.createdAt, "plan.createdAt"),
+    createdAt: assertNum(v.createdAt, "plan.createdAt"),
+  };
+}
+
+export function validateScaffoldResult(v: unknown): ScaffoldResult {
+  if (!isObj(v)) throw new Error("Invalid scaffold result: expected object");
+  if (!RESS.includes(v.status as ScaffoldResultStatus))
+    throw new Error(`Invalid result.status '${String(v.status)}'`);
+  const backups = assertArr(v.backups, "result.backups").map((b) => {
+    if (!isObj(b)) throw new Error("Invalid backup record: expected object");
+    if (typeof b.created !== "boolean")
+      throw new Error("Invalid backup.created: expected boolean");
+    return {
+      path: assertStr(b.path, "backup.path"),
+      originalContent:
+        typeof b.originalContent === "string" ? b.originalContent : null,
+      created: b.created,
+    };
+  });
+  const err =
+    v.error !== undefined ? assertStr(v.error, "result.error") : undefined;
+  return {
+    planId: assertStr(v.planId, "result.planId"),
+    root: assertStr(v.root, "result.root"),
+    status: v.status as ScaffoldResultStatus,
+    writtenFiles: assertArr(
+      v.writtenFiles,
+      "result.writtenFiles",
+    ) as readonly string[],
+    backups,
+    ...(err ? { error: err } : {}),
+    appliedAt: assertNum(v.appliedAt, "result.appliedAt"),
   };
 }

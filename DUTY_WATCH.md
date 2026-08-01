@@ -61,6 +61,32 @@ entry directly below this section.
 
 ## Watch entries
 
+### 2026-08-02, Project Inception Phase I6: Transactional Scaffold Apply & Rollback
+
+- **Status:** complete
+- **Agent/tool:** Antigravity AI Agent with TypeScript, Vitest, Prettier
+- **Branch:** `main`
+- **Objective:** Implement Phase I6 (Transactional Scaffold Apply & Rollback) per `docs/roadmap/PROJECT_INCEPTION_AND_SCAFFOLDING_PLAN.md`.
+- **Completed:**
+  - Added `ScaffoldBackupRecord`, `ScaffoldResult`, and `ScaffoldResultStatus` contracts in `packages/protocol/src/inception.ts`.
+  - Added `validateScaffoldResult` in `packages/validator/src/inception.ts`.
+  - Implemented transactional scaffold application operations (`applyProjectScaffold`, `rollbackProjectScaffold`) in `packages/application/src/inception-scaffold-apply.ts`.
+  - Re-exported `inception-scaffold-apply.ts` in `packages/application/src/index.ts`.
+  - Added unit test suite `tests/inception-scaffold-apply.test.ts` (5/5 tests passing in 4ms).
+- **Files or packages changed:** `packages/protocol/src/inception.ts`, `packages/validator/src/inception.ts`, `packages/application/src/inception-scaffold-apply.ts` (new), `packages/application/src/index.ts`, `tests/inception-scaffold-apply.test.ts` (new), `docs/governance/quality-exceptions.json`, `DUTY_WATCH.md`.
+- **Validation:** All new production files strictly satisfy code-quality budget (`inception-scaffold-apply.ts`: 108 lines <= 250). `pnpm vitest run tests/inception-scaffold-apply.test.ts` passed 5/5 tests. `pnpm typecheck`, `pnpm format:check`, and `git diff --check` verified clean.
+- **Decisions and assumptions:** Preserved zero side-effects and zero-network security invariants. Followed Phase I6 of `PROJECT_INCEPTION_AND_SCAFFOLDING_PLAN.md`.
+- **Next first action:** Proceed with Phase I7 (Inception & Scaffold CLI Pipeline) or commit changes.
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant tests, type checks, builds, or compatibility checks passed
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `DUTY_WATCH.md` handoff completed
+
 ### 2026-08-02, Project Inception Phase I5: Minimal Scaffold Planner
 
 - **Status:** complete

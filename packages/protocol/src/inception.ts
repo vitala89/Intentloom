@@ -121,3 +121,21 @@ export interface ScaffoldPlan {
   readonly scripts: Record<string, string>;
   readonly createdAt: number;
 }
+
+export interface ScaffoldBackupRecord {
+  readonly path: string;
+  readonly originalContent: string | null;
+  readonly created: boolean;
+}
+
+export type ScaffoldResultStatus = "applied" | "rolled-back" | "failed";
+
+export interface ScaffoldResult {
+  readonly planId: string;
+  readonly root: string;
+  readonly status: ScaffoldResultStatus;
+  readonly writtenFiles: readonly string[];
+  readonly backups: readonly ScaffoldBackupRecord[];
+  readonly error?: string;
+  readonly appliedAt: number;
+}
