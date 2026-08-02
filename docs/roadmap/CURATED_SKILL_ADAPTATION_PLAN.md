@@ -93,6 +93,8 @@ Scope:
   and a mature existing project;
 - measure routing usefulness, false triggers, missed triggers, interview length,
   context cost, and task outcomes;
+- express the three dogfooding cases as candidate `HarnessScenario` fixtures and
+  retain scenario, adapter, policy, and scorer provenance;
 - verify Claude, Codex, Cursor, and Copilot discovery behavior;
 - document provider differences for user-only versus model-invoked skills;
 - evaluate whether generated root guidance needs a versioned routing summary.
@@ -104,10 +106,13 @@ Exit gate:
 - project-owned guidance wins in conflict fixtures;
 - no provider requires a hidden hook or user-level configuration change;
 - false-positive discovery and router overhead are measured, not assumed.
+- evidence can be replayed by the deterministic harness runner after Phase H2
+  without changing the canonical skill behavior.
 
 ## Phase C5: Structured routing contract
 
-Status: planned; requires demonstrated demand from C4.
+Status: planned; requires demonstrated demand from C4 and accepted harness H1
+protocol boundaries.
 
 Scope:
 
@@ -123,10 +128,13 @@ Exit gate:
 - model interpretation is labeled and cannot alter deterministic permissions;
 - route selection can be inspected, exported, and deleted;
 - no client becomes an independent routing authority.
+- routing evidence can be scored by H2 without model output changing
+  deterministic permissions.
 
 ## Phase C6: Managed external skill import
 
-Status: planned; separate implementation and threat review required.
+Status: planned; separate implementation and threat review plus relevant H2/H7
+harness evidence required.
 
 Scope:
 
@@ -148,6 +156,8 @@ Exit gate:
 - instruction-only and executable extensions use distinct risk gates;
 - rejection and removal preserve project-owned files;
 - previous active versions remain recoverable.
+- required security scenarios pass for the exact proposed source, digest,
+  capabilities, and policy before activation.
 
 ## Phase C7: Optional provider plugin bridges
 
@@ -196,4 +206,5 @@ Each curated or imported skill should be evaluated against:
 
 Run Phase C4 dogfooding with the generated four-skill addition in the minimal
 and TypeScript fixtures, then record false-trigger and interaction-cost evidence
-before proposing a structured routing protocol.
+as candidate harness scenarios before proposing a structured routing protocol.
+The active read-only evidence hardening gate still completes first.
