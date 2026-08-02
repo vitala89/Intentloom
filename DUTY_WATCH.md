@@ -69,6 +69,19 @@ entry directly below this section.
 
 ## Watch entries
 
+### 2026-08-03, cross-surface cache and revocation contracts
+
+- **Status:** complete for implementation and validation.
+- **Branch:** `test/cache-revocation-cross-surface`
+- **Commit:** pending
+- **Pull request:** pending
+- **Objective:** Add cross-surface contract tests proving local credential revocation precedence and cache retention/TTL expiry/scoped purge across CLI, MCP, and Provider API boundaries.
+- **Completed:** Added `tests/evidence-cache-revocation-cross-surface.test.ts` covering explicit-token credential revocation precedence, header clearing, 15-minute cache TTL retention, cache purge by provider/project scope, and CLI/MCP release analysis structured result equivalence.
+- **Not completed:** Pull request creation and remaining read-only evidence gate items.
+- **Files or packages changed:** `tests/evidence-cache-revocation-cross-surface.test.ts` and `DUTY_WATCH.md`.
+- **Validation:** 50/50 evidence/CLI/MCP tests pass; `pnpm format:check`, `pnpm typecheck`, `git diff --check` pass.
+- **Next first action:** Commit changes on `test/cache-revocation-cross-surface`, push, and open pull request when authorized.
+
 ### 2026-08-02, provider surface pagination hardening
 
 - **Status:** complete for implementation and validation; PR #189 is open,
