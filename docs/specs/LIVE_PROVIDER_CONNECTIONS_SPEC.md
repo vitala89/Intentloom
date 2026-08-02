@@ -61,7 +61,8 @@ _All POST, PUT, PATCH, DELETE operations are strictly prohibited._
      responses must not become reusable cache entries.
    - The current library boundary exposes an injectable cache store and
      provider/project-scoped purge operation. The CLI `clean --cache` adapter
-     remains a separate interface increment.
+     exposes complete-cache, provider, and provider/project scopes over that
+     same operation.
 
 ---
 
@@ -83,7 +84,7 @@ are returned. Raw provider payloads are not retained by this slice.
 
 ## 6. Revocation & Cache Purging
 
-1. Running `intentloom clean --cache` removes `.aif/cache/providers/` without touching project code.
+1. Running `intentloom clean --cache` removes `.aif/cache/providers/` without touching project code. `--provider` and `--project-key` narrow the purge scope; a project key requires a provider.
 2. Unsetting token environment variables immediately revokes live API access.
 
 The current cache implementation supports the same deletion contract through

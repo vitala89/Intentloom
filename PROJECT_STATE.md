@@ -76,7 +76,9 @@ and real consumers justify them.
 - The bounded provider-evidence cache increment is merged into `main` through
   PR #177 (`112b4a4`). It persists only normalized redacted `available` results,
   enforces a maximum 15-minute TTL, and exposes provider/project-scoped purge;
-  the CLI adapter and credential revocation remain separate read-only work.
+  the `intentloom clean --cache` CLI adapter is implemented in the current
+  read-only hardening increment, while credential revocation remains separate
+  follow-up work.
 - `apps/desktop` carries an imported design system in `src/design/`: a token
   layer, six component groups, vendored Lucide glyphs, self-hosted fonts, and the
   vector logo masters (ADR-0044). Five design components (`Card`, `Tabs`,

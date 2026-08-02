@@ -9,13 +9,18 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **PR #179 merged; curated skill routing integrated** — Intentloom now carries provider-neutral task routing, feature discovery, verification, and external-extension review skills. The implementation adapts selected methods from pinned Superpowers and Matt Pocock source revisions without installing their plugin runtimes, hooks, telemetry, or automatic dependencies. The active read-only provider-evidence hardening gate remains unchanged.
+Status: **CLI clean-cache increment complete locally** — the provider evidence
+cache now has a read-only CLI adapter with full verification. The active
+hardening gate remains unchanged, and credential revocation is still a separate
+follow-up.
 
-Active branch: `main`
+Active branch: `codex/clean-cache-adapter`
 
-Current objective: preserve the integrated curated skill-routing slice while continuing the read-only provider-evidence hardening gate.
+Current objective: complete and publish the `intentloom clean --cache` adapter
+without touching project-owned files or credential behavior.
 
-Next first action: design the CLI `intentloom clean --cache` adapter, then keep credential revocation and project mutation out of scope.
+Next first action: publish the reviewed increment, then design credential
+revocation as a separate read-only task.
 
 Known open items, in the order they should be handled:
 
@@ -61,6 +66,33 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-02, read-only CLI provider-cache cleanup
+
+- **Status:** complete locally; publication pending.
+- **Branch:** `codex/clean-cache-adapter`
+- **Objective:** Expose the existing provider-cache purge operation through a
+  safe, explicit `intentloom clean --cache` CLI command.
+- **Completed:** Added a dedicated `clean-cache` module and CLI parsing for
+  complete-cache, provider, and provider/project scopes. The command uses the
+  existing cache purge operation, defaults to `.aif/cache/providers/` under the
+  explicit project root, performs no metadata validation or network access, and
+  reports only a relative cache path and scope. Added four public-behavior CLI
+  tests covering full purge, provider scope, project scope, and invalid scope.
+  Updated CLI reference, live-provider specification, roadmap, project state,
+  changelog, and this handoff.
+- **Not completed:** Atomic commit, push, and pull request. Credential
+  revocation and all mutation behavior remain out of scope.
+- **Files or packages changed:** `packages/cli/src/clean-cache.ts`, the CLI
+  command parser, `tests/cli-clean-cache.test.ts`, and read-only cache
+  documentation.
+- **Validation:** Focused cache/CLI tests pass 6/6; full test suite passes 870
+  tests with 3 skipped; typecheck, formatting, production build, and
+  `git diff --check` pass.
+- **Decomposition:** The existing oversized CLI command file receives only
+  parsing/dispatch glue; purge behavior lives behind the new dedicated module.
+- **Next first action:** Stage the reviewed files, run staged governance, then
+  commit and publish this branch.
 
 ### 2026-08-02, curated skill routing integrated
 

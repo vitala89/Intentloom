@@ -132,9 +132,20 @@ import {
 import {
   fetchLiveProviderEvidence,
   importProviderExport,
+  type ProviderCacheStore,
   type ProviderEvidenceResult,
   type ProviderName,
 } from "@intentloom/evidence-provider";
+import { cleanProviderCache } from "./clean-cache.js";
+import {
+  formatAdoptionProposal,
+  formatCleanCacheHuman,
+  formatDoctor,
+  formatInspection,
+  formatPlan,
+  formatProviderEvidence,
+  formatReleaseAnalysis,
+} from "./formatters.js";
 import {
   analyzeReleaseEvidence,
   evaluateEngineeringConformance,
@@ -173,6 +184,7 @@ export interface CliIo {
 export interface CliDependencies {
   readonly catalogRoot: string;
   readonly fileSystem?: FileSystem;
+  readonly providerCacheStore?: ProviderCacheStore;
   readonly transactionOptions?: TransactionOptions;
 }
 
@@ -218,6 +230,7 @@ interface ProjectConfiguration {
 }
 
 const commands = new Set([
+  "clean",
   "init",
   "adopt",
   "update",
@@ -246,6 +259,7 @@ const commands = new Set([
   "neutron",
 ]);
 const projectPathCommands = new Set([
+  "clean",
   "adopt",
   "update",
   "diff",
@@ -258,6 +272,7 @@ const projectPathCommands = new Set([
   "neutron",
 ]);
 const booleanFlags = new Set([
+  "--cache",
   "--dry-run",
   "--force",
   "--json",
@@ -322,6 +337,7 @@ const mappingValueFlags = new Set([
 ]);
 const adapters = new Set<AdapterName>(["claude", "codex", "cursor", "copilot"]);
 const usage = [
+  "Usage: intentloom clean --cache [PROJECT_PATH|--root PATH] [--provider github|gitlab] [--project-key KEY] [--json]",
   "Usage: intentloom <init|plan> [--root PATH] [--dry-run]",
   "       intentloom adopt <--plan|--apply PLAN_FILE> [PROJECT_PATH|--root PATH] [--json] [--output PATH] [--strict] [--dry-run]",
   "       intentloom update <--plan|--apply PLAN_FILE> [PROJECT_PATH|--root PATH] [--json] [--output PATH] [--strict] [--dry-run]",
@@ -525,34 +541,27 @@ function parseArguments(args: readonly string[]): ParsedArguments {
     );
   if (daemonEndpoint && command !== "doctor")
     throw new CliUsageError("daemon mode is only valid with doctor");
+  if (command === "clean") {
+    if (!flags.has("--cache"))
+      throw new CliUsageError("clean requires --cache");
+    const unexpectedFlag = [...flags].find(
+      (flag) => !["--cache", "--json"].includes(flag),
+    );
+    if (unexpectedFlag)
+      throw new CliUsageError(`clean does not support ${unexpectedFlag}`);
+    const unexpectedValue = [...values.keys()].find(
+      (flag) => !["--root", "--provider", "--project-key"].includes(flag),
+    );
+    if (unexpectedValue)
+      throw new CliUsageError(`clean does not support ${unexpectedValue}`);
+    if (values.has("--project-key") && !values.has("--provider"))
+      throw new CliUsageError("clean --project-key requires --provider");
+    if (values.has("--project-key") && !values.get("--project-key"))
+      throw new CliUsageError("clean --project-key cannot be empty");
+  } else if (flags.has("--cache")) {
+    throw new CliUsageError("--cache is only valid with clean");
+  }
   return { command, flags, values, mappingValues };
-}
-
-function formatProviderEvidence(result: ProviderEvidenceResult): string {
-  return [
-    `Provider: ${result.provider}`,
-    `Project: ${result.projectKey}`,
-    `Status: ${result.status}`,
-    `Events: ${result.events.length}`,
-    ...(result.diagnostics.length > 0
-      ? [`Diagnostics: ${result.diagnostics.join(", ")}`]
-      : []),
-  ].join("\n");
-}
-
-function formatReleaseAnalysis(
-  report: ReturnType<typeof analyzeReleaseEvidence>,
-): string {
-  return [
-    `Case: ${report.caseId}`,
-    `Project: ${report.projectKey}`,
-    `Quality: ${report.quality}`,
-    `Findings: ${report.findings.length}`,
-    ...report.findings.map(
-      (finding) =>
-        `${finding.status.padEnd(10)} ${finding.code}${finding.sourceIds.length > 0 ? ` (${finding.sourceIds.join(", ")})` : ""}`,
-    ),
-  ].join("\n");
 }
 
 function parseMappings(values: readonly string[]): ProjectMapping[] {
@@ -778,41 +787,6 @@ export function formatJsonOutcome(outcome: CliSyncOutcome): string {
   return JSON.stringify(outcome, null, 2);
 }
 
-function formatPlan(result: Plan): string {
-  return [...result.changes]
-    .sort((left, right) => left.path.localeCompare(right.path))
-    .map(
-      (change) => `${change.kind.padEnd(8)} ${change.path} — ${change.reason}`,
-    )
-    .join("\n");
-}
-
-function formatAdoptionProposal(result: AdoptionProposal): string {
-  const lines = [
-    `Detected profile: ${result.profileDetection.selectedProfile}`,
-    `Application status: ${result.applicationStatus}`,
-    ...result.items.map(
-      (item) =>
-        `${item.action.padEnd(36)} ${item.path} — ${item.reason} Next: ${item.safeNextAction}`,
-    ),
-  ];
-  if (result.transactionOutcome?.status === "failed") {
-    lines.push(
-      `Transaction failed during: ${result.transactionOutcome.failedStage ?? "unknown"}`,
-      `Error: ${result.transactionOutcome.errorCode ?? "transaction-failed"}`,
-      `Rollback: ${result.transactionOutcome.rollbackCompleted ? "completed" : "incomplete"}`,
-    );
-    if (!result.transactionOutcome.rollbackCompleted)
-      lines.push(
-        "Manual inspection is required.",
-        ...result.transactionOutcome.rollbackFailures.map(
-          (path) => `- ${path}`,
-        ),
-      );
-  }
-  return lines.join("\n");
-}
-
 function formatGovernanceAdoptionPlan(plan: AdoptionPlan): string {
   const lines: string[] = [
     `Adoption Plan: ${plan.packId} (v${plan.packVersion})`,
@@ -851,34 +825,6 @@ function formatGovernanceAdoptionPlan(plan: AdoptionPlan): string {
     }
   }
   return lines.join("\n");
-}
-
-function formatDoctor(result: DoctorPlan): string {
-  return result.findings
-    .map(
-      (finding) =>
-        `${finding.severity.padEnd(7)} ${finding.code} ${finding.path} — ${finding.message}${
-          finding.remediation.length > 0
-            ? ` Remediation: ${finding.remediation.join(" ")}`
-            : ""
-        }`,
-    )
-    .join("\n");
-}
-
-function formatInspection(
-  result: Awaited<ReturnType<typeof inspectProject>>,
-): string {
-  return [
-    `Profile: ${result.profileDetection.selectedProfile}`,
-    `Readiness: ${result.readiness}`,
-    `Detected adapters: ${result.detectedAdapters.join(", ") || "none"}`,
-    `Instruction files: ${result.instructionPaths.join(", ") || "none"}`,
-    ...result.findings.map(
-      (finding) =>
-        `${finding.severity.padEnd(7)} ${finding.code} ${finding.path} — ${finding.message}`,
-    ),
-  ].join("\n");
 }
 
 function formatTimeline(
@@ -1305,6 +1251,31 @@ export async function runCli(
     const parsed = parseArguments(args);
     const fileSystem = dependencies.fileSystem ?? nodeFileSystem;
     const root = parsed.values.get("--root") ?? cwd();
+    if (parsed.command === "clean") {
+      const providerValue = parsed.values.get("--provider");
+      if (
+        providerValue !== undefined &&
+        providerValue !== "github" &&
+        providerValue !== "gitlab"
+      )
+        throw new CliUsageError("clean --provider must be github or gitlab");
+      const result = await cleanProviderCache({
+        projectRoot: root,
+        ...(providerValue ? { provider: providerValue } : {}),
+        ...(parsed.values.has("--project-key")
+          ? { projectKey: parsed.values.get("--project-key")! }
+          : {}),
+        ...(dependencies.providerCacheStore
+          ? { store: dependencies.providerCacheStore }
+          : {}),
+      });
+      io.stdout(
+        parsed.flags.has("--json")
+          ? JSON.stringify(result, null, 2)
+          : formatCleanCacheHuman(result),
+      );
+      return 0;
+    }
     const profileRoot = resolve(dependencies.catalogRoot, "../profiles");
     const knownProfiles = (await readdir(profileRoot))
       .filter((entry) => entry.endsWith(".json"))
