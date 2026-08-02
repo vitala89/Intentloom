@@ -71,16 +71,16 @@ entry directly below this section.
 
 ### 2026-08-03, cross-surface cache and revocation contracts
 
-- **Status:** complete for implementation and validation.
+- **Status:** complete for implementation and validation; PR #190 is open, mergeable, and all CI checks are running.
 - **Branch:** `test/cache-revocation-cross-surface`
-- **Commit:** pending
-- **Pull request:** pending
+- **Commit:** `e851e8b` (`test: add cross-surface cache and revocation contracts`)
+- **Pull request:** [#190](https://github.com/vitala89/Intentloom/pull/190)
 - **Objective:** Add cross-surface contract tests proving local credential revocation precedence and cache retention/TTL expiry/scoped purge across CLI, MCP, and Provider API boundaries.
 - **Completed:** Added `tests/evidence-cache-revocation-cross-surface.test.ts` covering explicit-token credential revocation precedence, header clearing, 15-minute cache TTL retention, cache purge by provider/project scope, and CLI/MCP release analysis structured result equivalence.
-- **Not completed:** Pull request creation and remaining read-only evidence gate items.
+- **Not completed:** Merge authorization and remaining read-only evidence gate items.
 - **Files or packages changed:** `tests/evidence-cache-revocation-cross-surface.test.ts` and `DUTY_WATCH.md`.
-- **Validation:** 50/50 evidence/CLI/MCP tests pass; `pnpm format:check`, `pnpm typecheck`, `git diff --check` pass.
-- **Next first action:** Commit changes on `test/cache-revocation-cross-surface`, push, and open pull request when authorized.
+- **Validation:** `pnpm verify` pre-push gate passed (116 test files, 888 passed); `pnpm format:check`, `pnpm typecheck`, `git diff --check` pass.
+- **Next first action:** Review PR #190, merge when authorized, then proceed to the next read-only evidence gate item on a new compliant branch.
 
 ### 2026-08-02, provider surface pagination hardening
 
