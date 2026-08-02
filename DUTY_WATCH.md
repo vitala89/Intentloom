@@ -9,18 +9,21 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Credential-revocation contract merged** — PR #183 was conflict-
-resolved, fully verified, and squash-merged into `main` as commit `8ec887d`.
-The active read-only provider-evidence hardening gate remains unchanged, and
-remote token deletion/rotation remains outside Intentloom.
+Status: **Adversarial evidence and surface-equivalence increment verified**
+— deterministic external-MCP fixtures and the first CLI/MCP structured-result
+contract test are complete on the active branch. Local verification and the
+full PR #186 CI matrix pass; the earlier Windows Node 24 timeout was transient
+and passed on rerun. The read-only hardening gate remains unchanged; no
+external evidence grants authority or mutation.
 
-Active branch: `codex/post-merge-handoff-183`
+Active branch: `codex/adversarial-evidence-equivalence`
 
-Current objective: continue the read-only evidence hardening gate with
-adversarial payload/provenance and CLI/application-equivalence coverage.
+Current objective: prove that adversarial external-MCP payload fields cannot
+cross the normalized provenance boundary and that CLI/MCP analysis results stay
+structurally equivalent.
 
-Next first action: design deterministic adversarial payload/provenance fixtures
-and the first CLI/application-equivalence contract tests.
+Next first action: review and merge PR #186 when explicitly authorized, then
+expand the adversarial corpus without adding runtime authority or mutation.
 
 Known open items, in the order they should be handled:
 
@@ -66,6 +69,35 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-02, adversarial evidence fixtures and CLI/MCP equivalence
+
+- **Status:** complete for implementation and validation; PR #186 is open,
+  mergeable, and all required CI checks pass after the Windows Node 24 rerun.
+- **Branch:** `codex/adversarial-evidence-equivalence`
+- **Objective:** Add deterministic adversarial external-MCP payload coverage and
+  the first CLI/MCP structured-result equivalence contract.
+- **Completed:** Added a fixture containing token-like values, private identity,
+  a mismatched project key, mutation-looking fields, and prompt-injection text.
+  Added assertions that normalized results retain only the explicit project
+  scope, untrusted provenance, bounded fields, and deterministic ordering. Added
+  a contract test proving the CLI `evidence analyze --json` result equals the
+  MCP `intentloom_release_analysis` structured result for the same export and
+  project root.
+- **Not completed:** The broader hardening gate still needs additional
+  redaction, provenance, pagination/rate-limit, and application-surface corpus
+  coverage. No runtime authority or mutation capability was added.
+- **Files or packages changed:** `tests/fixtures/evidence/external-mcp-adversarial.json`,
+  `tests/evidence-mcp-ingest.test.ts`, and
+  `tests/cli-mcp-evidence-equivalence.test.ts`.
+- **Validation:** Focused tests pass 7/7; full `pnpm verify` passes with 112
+  test files, 876 passed, and 3 skipped; staged governance and `git diff
+--check` pass; PR #186 CI passes on Ubuntu, macOS, and Windows with Node 22
+  and 24, plus CodeQL and governance. The prior Windows Node 24 timeout did
+  not reproduce on rerun.
+- **Next first action:** Review and merge PR #186 when explicitly authorized,
+  then add the next bounded redaction, provenance, pagination/rate-limit, and
+  application-surface fixtures.
 
 ### 2026-08-02, merge conflict resolution for credential revocation
 
