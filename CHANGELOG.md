@@ -15,8 +15,10 @@ are not included in the current npm artifact until a later release.
 
 ## [1.0.2] - 2026-08-02
 
-Documentation and package-metadata release. No runtime, CLI surface, schema,
-adapter, protocol, or dependency behavior changes.
+Documentation and package-metadata release. The published CLI also includes
+the post-v1 read-only evidence implementation merged before this release; no
+mutating provider, MCP, extension-installation, or dependency behavior was
+introduced.
 
 ### Changed
 
@@ -26,6 +28,8 @@ adapter, protocol, or dependency behavior changes.
   vendor-neutral framework and CLI.
 - Bumped the published CLI package metadata to `1.0.2` for the corrected npm
   README and metadata to reach npmjs.com.
+- Included the bounded live-provider and external-MCP evidence boundaries from
+  PR #160; their hardening gate remains active in the roadmap.
 
 ## [1.0.1] - 2026-07-31
 

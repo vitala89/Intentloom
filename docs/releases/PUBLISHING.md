@@ -8,7 +8,7 @@ package-readiness work.
 
 Current registry evidence is recorded in [`RELEASE_STATE.md`](RELEASE_STATE.md):
 `intentloom@1.0.2` is published under `latest`, while `next` remains at
-`1.0.0`. The `v1.0.0` Git tag is pushed and has a GitHub release.
+`1.0.0`. GitHub releases `v1.0.0` and `v1.0.2` are published.
 
 For every release, an authorized maintainer must confirm ownership of the npm
 name and complete
@@ -63,9 +63,11 @@ publish.
 ### One-time setup, performed by the package owner
 
 Steps 1 and 2 are complete as of 2026-07-31. The first trusted publish
-completed successfully on 2026-08-02. Step 3 remains a package-owner hardening
-follow-up; step 1 happens outside this repository and cannot be automated from
-it.
+completed successfully on 2026-08-02. Step 3 is still a package-owner action;
+the npm account setting cannot be changed from this repository. The repository
+side is hardened: the workflow contains no npm secret, the protected
+`npm-publish` environment has no secrets or variables, and the workflow fails
+if `NODE_AUTH_TOKEN` or `NPM_TOKEN` is present.
 
 1. On [npmjs.com](https://www.npmjs.com/package/intentloom), open the package
    settings and add a trusted publisher for GitHub Actions:
@@ -79,9 +81,15 @@ it.
    a required reviewer. Without a reviewer the environment adds no control. The
    environment exists with `vitala89` as the required reviewer and deployment
    restricted to the `main` branch and `v*` tags.
-3. After the first successful trusted publish, restrict token-based publishing
-   for the package and revoke any standing automation token that could publish
-   it.
+3. After the first successful trusted publish, open the package settings and
+   select **Require two-factor authentication and disallow tokens**. Then list
+   active npm tokens and revoke only the standing automation/publish token that
+   is confirmed to be obsolete. This is an npm account action and requires an
+   authenticated package-owner session; do not revoke an unidentified token.
+
+The current execution environment is not authenticated to npm (`npm whoami`
+returns HTTP 401 and the npm package page opens signed out), so the package-level
+policy and token inventory remain unverified and were not changed here.
 
 npm does not validate a trusted publisher configuration when it is saved. A
 mismatch in the repository name, the workflow filename, or the environment name

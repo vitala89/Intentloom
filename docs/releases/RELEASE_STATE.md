@@ -11,8 +11,8 @@ Candidate release: `1.0.2`, published through trusted workflow run [`30724962105
 Last published npm package: `intentloom@1.0.2`, verified in the registry on 2026-08-02
 Default npm `latest`: `intentloom@1.0.2`
 Default npm `next`: `intentloom@1.0.0`
-Release commit: `8de92ea`
-GitHub release: [`v1.0.0`](https://github.com/vitala89/Intentloom/releases/tag/v1.0.0), published 2026-07-30
+Release commit: `192fd05`
+GitHub release: [`v1.0.2`](https://github.com/vitala89/Intentloom/releases/tag/v1.0.2), published 2026-08-02
 
 Verified against the registry on 2026-08-02: `npm view intentloom` reports
 `1.0.2`, with `latest=1.0.2` and `next=1.0.0`. The GitHub repository
@@ -20,11 +20,13 @@ description and homepage both point users to the GitHub Pages documentation.
 
 ## `1.0.2` published package
 
-`1.0.2` is a documentation and package-metadata release. It changes no runtime,
-CLI surface, schema, adapter, protocol, or dependency behavior. Its purpose is
-to make the GitHub Pages site the canonical documentation destination and to
-ship the corrected npm description and README, which npm renders from the
-published tarball and does not allow editing in place.
+`1.0.2` is a documentation and package-metadata release built from the current
+main source. It also contains the bounded read-only provider/MCP evidence slice
+merged in PR #160; it introduces no mutating provider, MCP, extension-installation,
+or dependency behavior. Its metadata purpose is to make the GitHub Pages site
+the canonical documentation destination and to ship the corrected npm
+description and README, which npm renders from the published tarball and does
+not allow editing in place.
 
 The trusted workflow completed its dry-run and real publish after the protected
 `npm-publish` environment approval. The registry reports shasum
@@ -36,7 +38,9 @@ attestation endpoint:
 
 The published package metadata is the corrected vendor-neutral local framework
 and CLI description, homepage `https://vitala89.github.io/Intentloom/`, and
-README links to the Pages documentation.
+README links to the Pages documentation. The source commit also contains the
+post-v1 read-only provider/evidence implementation merged by PR #160; the
+remaining hardening gate is recorded in the roadmap below.
 
 ## Provenance
 
@@ -60,19 +64,21 @@ tree. `Released version` means the first npm release that contains the
 capability. `Experimental` identifies optional, incomplete, or explicitly
 non-stable surfaces; it does not mean that the code is absent.
 
-| Capability                                                                                                     | Implemented in main | Released version | CLI available   | Daemon available                              | MCP available                     | Experimental            |
-| -------------------------------------------------------------------------------------------------------------- | ------------------- | ---------------- | --------------- | --------------------------------------------- | --------------------------------- | ----------------------- |
-| Canonical catalog, profiles, adapters, init/adopt/plan/diff/sync/doctor                                        | Yes                 | `0.1.0-beta.1`   | Yes             | Partial (authenticated doctor)                | No                                | No                      |
-| Project inspection, local Git timeline, provider export, release analysis                                      | Yes                 | `0.2.0-beta.1`   | Yes             | Partial (inspection/protocol consumers)       | Yes (inspection/release analysis) | No                      |
-| Engineering conformance and managed-extension schemas/governance                                               | Yes                 | `0.3.0-beta.1`   | Yes             | Yes (conformance)                             | Yes (conformance)                 | No                      |
-| Structured task/session summaries, skill lifecycle/evaluation, checkpoints, profiles, delegation               | Yes                 | `0.4.0-beta.1`   | Yes             | Partial (memory/session reads)                | No                                | No                      |
-| Optional semantic ranking                                                                                      | Yes                 | `0.4.0-beta.1`   | Yes             | No                                            | No                                | Yes (optional provider) |
-| Persistent memory and security candidates M1–M4/S1–S5                                                          | Yes                 | `0.4.0-beta.1`   | Yes             | Partial (memory/security/session reads)       | No                                | No                      |
-| Read-only UI state and Agent Workspace discuss/inspect/plan/review/apply modes                                 | Yes                 | `0.4.0-beta.1`   | Yes             | Partial (shared application/daemon contracts) | No                                | Yes (surface maturity)  |
-| Neutron local workspace sync and autonomous-subagent orchestration engine                                      | Yes                 | `0.4.0-beta.1`   | Yes (`neutron`) | No                                            | No                                | Yes (runtime direction) |
-| Workflow variants, observed durations, conformance trends, repetition, transition intervals                    | Yes                 | `0.5.0-beta.1`   | No              | Yes                                           | No                                | No                      |
-| Live provider connections, external MCP evidence ingestion, managed extension installation, HTTP MCP transport | No                  | —                | No              | No                                            | No                                | Yes (future candidates) |
-| Full desktop application, model training, autonomous mutation, hosted services                                 | No                  | —                | No              | No                                            | No                                | Yes (future candidates) |
+| Capability                                                                                       | Implemented in main | Released version | CLI available   | Daemon available                              | MCP available                     | Experimental              |
+| ------------------------------------------------------------------------------------------------ | ------------------- | ---------------- | --------------- | --------------------------------------------- | --------------------------------- | ------------------------- |
+| Canonical catalog, profiles, adapters, init/adopt/plan/diff/sync/doctor                          | Yes                 | `0.1.0-beta.1`   | Yes             | Partial (authenticated doctor)                | No                                | No                        |
+| Project inspection, local Git timeline, provider export, release analysis                        | Yes                 | `0.2.0-beta.1`   | Yes             | Partial (inspection/protocol consumers)       | Yes (inspection/release analysis) | No                        |
+| Engineering conformance and managed-extension schemas/governance                                 | Yes                 | `0.3.0-beta.1`   | Yes             | Yes (conformance)                             | Yes (conformance)                 | No                        |
+| Structured task/session summaries, skill lifecycle/evaluation, checkpoints, profiles, delegation | Yes                 | `0.4.0-beta.1`   | Yes             | Partial (memory/session reads)                | No                                | No                        |
+| Optional semantic ranking                                                                        | Yes                 | `0.4.0-beta.1`   | Yes             | No                                            | No                                | Yes (optional provider)   |
+| Persistent memory and security candidates M1–M4/S1–S5                                            | Yes                 | `0.4.0-beta.1`   | Yes             | Partial (memory/security/session reads)       | No                                | No                        |
+| Read-only UI state and Agent Workspace discuss/inspect/plan/review/apply modes                   | Yes                 | `0.4.0-beta.1`   | Yes             | Partial (shared application/daemon contracts) | No                                | Yes (surface maturity)    |
+| Neutron local workspace sync and autonomous-subagent orchestration engine                        | Yes                 | `0.4.0-beta.1`   | Yes (`neutron`) | No                                            | No                                | Yes (runtime direction)   |
+| Workflow variants, observed durations, conformance trends, repetition, transition intervals      | Yes                 | `0.5.0-beta.1`   | No              | Yes                                           | No                                | No                        |
+| Live read-only provider connections and external MCP evidence ingestion                          | Yes                 | `1.0.2`          | Partial         | Partial (provider evidence)                   | Partial (ingestion boundary)      | Yes (hardening gate)      |
+| Managed extension schemas and capability validation                                              | Yes                 | `1.0.2`          | Partial         | No                                            | No                                | Yes (lifecycle follow-up) |
+| Managed extension installation/update and HTTP MCP transport                                     | No                  | —                | No              | No                                            | No                                | Yes (future candidates)   |
+| Full desktop application, model training, autonomous mutation, hosted services                   | No                  | —                | No              | No                                            | No                                | Yes (future candidates)   |
 
 ## What users receive from npm
 
@@ -112,8 +118,9 @@ prerelease must not move `latest`.
   matching the registry exactly. The published artifact is the artifact this
   repository builds. This is a reproducibility check, not a substitute for
   provenance: it proves the bytes match, not who built them or where.
-- GitHub releases: [`v1.0.0`](https://github.com/vitala89/Intentloom/releases/tag/v1.0.0)
-  and [`v0.4.0-beta.1`](https://github.com/vitala89/Intentloom/releases/tag/v0.4.0-beta.1).
+- GitHub releases: [`v1.0.2`](https://github.com/vitala89/Intentloom/releases/tag/v1.0.2),
+  [`v1.0.0`](https://github.com/vitala89/Intentloom/releases/tag/v1.0.0), and
+  [`v0.4.0-beta.1`](https://github.com/vitala89/Intentloom/releases/tag/v0.4.0-beta.1).
 - Historical release-state baseline: [PR #112](https://github.com/vitala89/Intentloom/pull/112),
   merged as `5d1af7c`; it completes the release-state reconciliation after PR
   #111. The post-merge [Compatibility run](https://github.com/vitala89/Intentloom/actions/runs/30410395631)
