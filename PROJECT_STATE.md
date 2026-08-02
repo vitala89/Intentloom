@@ -105,6 +105,11 @@ and real consumers justify them.
   explicitly enabled per checkout with `pnpm hooks:install`; CI independently
   validates commit structure, attribution, whitespace, and production-file
   budgets.
+- Branch governance now requires new dedicated branches to use a change-type
+  prefix such as `feat/`, `fix/`, `refactor/`, or `docs/`, with a short
+  kebab-case description; actor, tool, model, and harness prefixes such as
+  `codex/` are prohibited for new branches. Existing historical refs are not
+  renamed by this documentation rule.
 - The canonical catalog now includes project-aware task routing, focused feature
   discovery, fresh completion verification, and external-skill/plugin review.
   ADR-0051 keeps these as first-party provider-neutral procedures informed by

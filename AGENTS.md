@@ -31,6 +31,12 @@ important claims affect the task.
   change hooks silently. The versioned hooks enforce staged formatting, diff
   safety, production-file budgets, commit-message structure, and full
   pre-push verification.
+- Name dedicated branches after the change they contain, using the repository
+  change type as the prefix: `<type>/<short-kebab-description>`. Allowed types
+  are `feat`, `fix`, `refactor`, `docs`, `test`, `chore`, `build`, `ci`, `perf`,
+  `security`, `release`, and `revert`; use `main` and `v*` only for their
+  reserved protected refs. Do not create branches with actor, tool, model, or
+  harness prefixes such as `codex/`, `claude/`, `agent/`, or `bot/`.
 - Never invent completed work, test outcomes, releases, versions, pull requests,
   milestones, or repository state.
 

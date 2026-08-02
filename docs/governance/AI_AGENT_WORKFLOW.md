@@ -49,6 +49,12 @@ module decomposition until after adding behavior to an already oversized file.
 ## 4. Perform the work
 
 - Work in a dedicated branch.
+- Name the branch after the change, not the agent or tool, using
+  `<type>/<short-kebab-description>`. Use a change-type prefix such as
+  `feat/`, `fix/`, `refactor/`, `docs/`, `test/`, `chore/`, `build/`, `ci/`,
+  `perf/`, `security/`, `release/`, or `revert/`. Never use actor, model,
+  harness, or assistant prefixes such as `codex/`, `claude/`, `agent/`, or
+  `bot/`; `main` and `v*` are reserved protected refs.
 - Preserve platform boundaries and public contracts.
 - Keep changes reviewable and reversible.
 - Add or update tests with behavior changes.

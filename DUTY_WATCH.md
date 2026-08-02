@@ -9,21 +9,18 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Adversarial evidence and surface-equivalence increment verified**
-— deterministic external-MCP fixtures and the first CLI/MCP structured-result
-contract test are complete on the active branch. Local verification and the
-full PR #186 CI matrix pass; the earlier Windows Node 24 timeout was transient
-and passed on rerun. The read-only hardening gate remains unchanged; no
-external evidence grants authority or mutation.
+Status: **Branch naming convention documented** — repository guidance now
+requires change-type branch prefixes and prohibits actor/tool prefixes for new
+branches. Existing historical refs are not renamed by this documentation-only
+change.
 
-Active branch: `codex/adversarial-evidence-equivalence`
+Active branch: `docs/branch-naming-convention`
 
-Current objective: prove that adversarial external-MCP payload fields cannot
-cross the normalized provenance boundary and that CLI/MCP analysis results stay
-structurally equivalent.
+Current objective: make branch intent visible from the branch name while
+keeping branch naming independent from agent or tool identity.
 
-Next first action: review and merge PR #186 when explicitly authorized, then
-expand the adversarial corpus without adding runtime authority or mutation.
+Next first action: review and merge the focused docs PR when explicitly
+authorized, then apply the convention to every newly created branch.
 
 Known open items, in the order they should be handled:
 
@@ -72,9 +69,11 @@ entry directly below this section.
 
 ### 2026-08-02, adversarial evidence fixtures and CLI/MCP equivalence
 
-- **Status:** complete for implementation and validation; PR #186 is open,
-  mergeable, and all required CI checks pass after the Windows Node 24 rerun.
-- **Branch:** `codex/adversarial-evidence-equivalence`
+- **Status:** complete; PR #186 squash-merged into `main` after all required CI
+  checks passed.
+- **Branch:** `codex/adversarial-evidence-equivalence` → `main`
+- **Pull request:** [#186](https://github.com/vitala89/Intentloom/pull/186)
+- **Merge commit:** `4240c4836141c4b90e235e21c6f6cdaa92b96d7d`
 - **Objective:** Add deterministic adversarial external-MCP payload coverage and
   the first CLI/MCP structured-result equivalence contract.
 - **Completed:** Added a fixture containing token-like values, private identity,
@@ -95,9 +94,31 @@ entry directly below this section.
 --check` pass; PR #186 CI passes on Ubuntu, macOS, and Windows with Node 22
   and 24, plus CodeQL and governance. The prior Windows Node 24 timeout did
   not reproduce on rerun.
-- **Next first action:** Review and merge PR #186 when explicitly authorized,
-  then add the next bounded redaction, provenance, pagination/rate-limit, and
-  application-surface fixtures.
+- **Next first action:** Add the next bounded redaction, provenance,
+  pagination/rate-limit, and application-surface fixtures.
+
+### 2026-08-02, change-type branch naming convention
+
+- **Status:** complete; documentation, staged governance, and full verification
+  pass on the compliant branch.
+- **Branch:** `docs/branch-naming-convention`
+- **Objective:** Require branches to use a change-type prefix and prohibit
+  actor/tool/model prefixes such as `codex/` for newly created branches.
+- **Completed:** Added the `<type>/<short-kebab-description>` convention to
+  `AGENTS.md` and `docs/governance/AI_AGENT_WORKFLOW.md`, with examples and the
+  reserved `main`/`v*` refs called out. Existing historical branches remain
+  unchanged. Updated the durable project state and Unreleased changelog.
+- **Not completed:** Review and merge of the documentation PR.
+- **Files or packages changed:** `AGENTS.md`, `docs/governance/AI_AGENT_WORKFLOW.md`,
+  `PROJECT_STATE.md`, `CHANGELOG.md`, and `DUTY_WATCH.md`.
+- **Validation:** Staged governance and `git diff --check` pass. Full
+  `pnpm verify` passes with elevated local IPC permissions: 111 test files,
+  874 passed, and 3 skipped; typecheck, formatting, build, and diff checks
+  pass. The unprivileged run was blocked by sandbox `EPERM` on daemon Unix
+  sockets and was not treated as a product failure.
+- **Next first action:** Review and merge the focused documentation PR when
+  explicitly authorized, then apply the convention to every newly created
+  branch.
 
 ### 2026-08-02, merge conflict resolution for credential revocation
 
