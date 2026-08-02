@@ -307,9 +307,9 @@ redaction, revocation, adversarial payloads, provenance, and CLI/application
 result equivalence. No token, endpoint reachability, external evidence, or model
 output may authorize a write, release, merge, publish, or deployment.
 
-Current increment: bound live GitHub/GitLab pagination and surface deterministic
-rate-limit diagnostics before proceeding to cache, redaction, and revocation
-hardening.
+Current increment: apply one bounded deterministic redaction policy across
+provider export, live-provider, and external-MCP normalization before proceeding
+to cache retention/deletion and revocation hardening.
 
 ## Later candidate — Safe MCP and agent mutation
 

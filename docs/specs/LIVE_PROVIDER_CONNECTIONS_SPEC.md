@@ -67,7 +67,12 @@ Before writing fetched API responses to timeline evidence or disk cache:
 1. Strip all authentication header traces.
 2. Hash user email addresses into pseudo-IDs (`usr_<sha256_prefix>`).
 3. Replace private repository clone URLs with canonical `git+https://` formats.
-4. Remove authorization tokens embedded in issue comments or commit messages using regex matching (`ghp_[A-Za-z0-9]{36}`, `glpat-[A-Za-z0-9\-_]{20}`).
+4. Remove authorization tokens embedded in issue comments or commit messages using a bounded deterministic scanner for known provider token prefixes (`ghp_`, `github_pat_`, `glpat-`); do not persist the raw token or payload.
+
+The normalization boundary uses the same deterministic scanner for provider
+export, live-provider, and external-MCP evidence. Email identities become
+stable vendor-neutral `usr_<sha256-prefix>` pseudonyms before normalized fields
+are returned. Raw provider payloads are not retained by this slice.
 
 ---
 

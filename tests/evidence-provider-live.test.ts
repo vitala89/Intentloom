@@ -127,6 +127,38 @@ describe("Live Provider Connections (ADR-0022)", () => {
     expect(firstCallHeaders?.["PRIVATE-TOKEN"]).toBe("dummy_gitlab_token");
   });
 
+  it("redacts identities and provider tokens from live evidence", async () => {
+    const token = `glpat-${"d".repeat(20)}`;
+    const mockFetch = vi.fn().mockImplementation(async (url: string) => {
+      if (url.includes("/pulls")) {
+        return new Response(
+          JSON.stringify([
+            {
+              id: "reviewer@example.com",
+              state: `seen ${token}`,
+              sha: token,
+            },
+          ]),
+          { status: 200 },
+        );
+      }
+      return new Response(JSON.stringify([]), { status: 200 });
+    });
+
+    const result = await fetchLiveProviderEvidence({
+      provider: "github",
+      projectKey: "vitala89/Intentloom",
+      fetchFn: mockFetch as any,
+    });
+
+    const event = result.events[0];
+    expect(event?.sourceId).toMatch(/^usr_[a-f0-9]{12}$/);
+    expect(event?.state).toBe("seen [REDACTED_TOKEN]");
+    expect(event?.commitIds).toEqual(["[REDACTED_TOKEN]", event?.sourceId]);
+    expect(JSON.stringify(result)).not.toContain(token);
+    expect(JSON.stringify(result)).not.toContain("reviewer@example.com");
+  });
+
   it("follows GitLab X-Next-Page pagination within the bounded fetch", async () => {
     const mockFetch = vi.fn().mockImplementation(async (url: string) => {
       if (url.includes("/merge_requests")) {

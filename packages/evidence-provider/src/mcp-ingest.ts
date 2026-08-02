@@ -4,6 +4,7 @@ import type {
   ProviderEvidenceResult,
   ProviderEventType,
 } from "./index.js";
+import { redactProviderString } from "./redaction.js";
 
 export interface ExternalMcpIngestOptions {
   readonly serverName: string;
@@ -20,7 +21,7 @@ export interface ExternalMcpIngestOptions {
 
 function stringValue(value: unknown, max: number): string | undefined {
   return typeof value === "string" && value.length > 0
-    ? value.slice(0, max)
+    ? redactProviderString(value, max)
     : undefined;
 }
 

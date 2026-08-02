@@ -16,6 +16,7 @@ are not included in the current npm artifact until a later release.
 ### Changed
 
 - Bounded live GitHub/GitLab evidence pagination and added deterministic rate-limit diagnostics without introducing mutation or provider-specific authority.
+- Redacted provider tokens and email identities from normalized export, live, and external-MCP evidence using bounded deterministic scanning.
 
 ## [1.0.2] - 2026-08-02
 
