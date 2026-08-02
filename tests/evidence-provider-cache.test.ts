@@ -99,6 +99,6 @@ describe("bounded provider evidence cache", () => {
     });
 
     expect(store.files.size).toBe(1);
-    expect([...store.files.keys()][0]).toContain("/gitlab/");
+    expect([...store.files.keys()][0]).toContain(`${sep}gitlab${sep}`);
   });
 });
