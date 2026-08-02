@@ -9,18 +9,19 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **CLI clean-cache increment published** — the provider evidence cache
-now has a read-only CLI adapter with full local verification; PR #182 is open
-for required remote checks. The active hardening gate remains unchanged, and
-credential revocation is still a separate follow-up.
+Status: **CLI clean-cache increment verified remotely** — the provider evidence
+cache now has a read-only CLI adapter with full local verification and all six
+PR #182 compatibility checks passed. The PR remains open pending merge; the
+active hardening gate is unchanged, and credential revocation is still a
+separate follow-up.
 
 Active branch: `codex/clean-cache-adapter`
 
 Current objective: complete and publish the `intentloom clean --cache` adapter
 without touching project-owned files or credential behavior.
 
-Next first action: monitor PR #182 to merge, then design credential revocation
-as a separate read-only task.
+Next first action: merge PR #182 when authorized, then implement the separate
+read-only credential-revocation contract.
 
 Known open items, in the order they should be handled:
 
@@ -69,7 +70,7 @@ entry directly below this section.
 
 ### 2026-08-02, read-only CLI provider-cache cleanup
 
-- **Status:** complete; PR #182 open and remote checks pending.
+- **Status:** complete; PR #182 open with all six compatibility checks passed.
 - **Branch:** `codex/clean-cache-adapter`
 - **Objective:** Expose the existing provider-cache purge operation through a
   safe, explicit `intentloom clean --cache` CLI command.
@@ -81,18 +82,19 @@ entry directly below this section.
   tests covering full purge, provider scope, project scope, and invalid scope.
   Updated CLI reference, live-provider specification, roadmap, project state,
   changelog, and this handoff.
-- **Not completed:** Remote CI/required review and merge. Credential revocation
-  and all mutation behavior remain out of scope.
+- **Not completed:** Required review and merge. Credential revocation and all
+  mutation behavior remain out of scope.
 - **Files or packages changed:** `packages/cli/src/clean-cache.ts`, the CLI
   command parser, `tests/cli-clean-cache.test.ts`, and read-only cache
   documentation.
 - **Validation:** Focused cache/CLI tests pass 6/6; full test suite passes 870
   tests with 3 skipped; typecheck, formatting, production build, and
-  `git diff --check` pass.
+  `git diff --check` pass. PR #182 compatibility checks pass on Ubuntu, macOS,
+  and Windows with Node 22/24.
 - **Decomposition:** The existing oversized CLI command file receives only
   parsing/dispatch glue; purge behavior lives behind the new dedicated module.
-- **Next first action:** Monitor PR #182, then continue with the separate
-  credential-revocation design after merge.
+- **Next first action:** Merge PR #182 when authorized, then continue with the
+  separate credential-revocation contract.
 
 ### 2026-08-02, curated skill routing integrated
 
