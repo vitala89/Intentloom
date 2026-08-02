@@ -14,9 +14,9 @@
 </p>
 
 <p align="center">
-  <a href="docs/README.md">Documentation</a> ·
-  <a href="docs/guides/GETTING_STARTED.md">Getting started</a> ·
-  <a href="docs/reference/CLI.md">CLI reference</a> ·
+  <a href="https://vitala89.github.io/Intentloom/">Documentation</a> ·
+  <a href="https://vitala89.github.io/Intentloom/guides/GETTING_STARTED">Getting started</a> ·
+  <a href="https://vitala89.github.io/Intentloom/reference/CLI">CLI reference</a> ·
   <a href="ROADMAP.md">Roadmap</a> ·
   <a href="SECURITY.md">Security</a> ·
   <a href="https://www.npmjs.com/package/intentloom">npm</a>
@@ -29,7 +29,7 @@ validating, and synchronizing engineering intent across AI-assisted development
 workflows. It turns a canonical catalog of policies, workflows, templates,
 schemas, and skills into deterministic, reviewable tool-specific guidance.
 
-**Status:** stable · **Current release:** `1.0.0` (npm `latest` and `next`) · **Node.js:** `>=22`
+**Status:** stable · **Current release:** `1.0.2` (npm `latest`) · **Node.js:** `>=22`
 
 Intentloom is local and offline-first. It does not send telemetry and does not
 make hidden runtime network requests. See the
@@ -109,7 +109,7 @@ pnpm add --save-dev intentloom
 Pin the release for reproducible installs:
 
 ```bash
-npm install --save-dev intentloom@1.0.0
+npm install --save-dev intentloom@1.0.2
 ```
 
 Inspect the CLI without installing it:
@@ -123,8 +123,7 @@ The public package and CLI are both named `intentloom`. The private
 
 `1.0.0` was published manually before the trusted-publishing release workflow
 existed, so it carries no npm provenance attestation and cannot gain one
-retroactively. A local build reproduces the published tarball byte for byte;
-that establishes reproducibility, not provenance. Later releases publish through
+retroactively. Releases from `1.0.1` onward publish through
 [`release.yml`](.github/workflows/release.yml) and carry provenance.
 
 ## Quick start

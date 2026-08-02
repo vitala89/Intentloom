@@ -1,7 +1,7 @@
 {
   "name": "intentloom",
-  "version": "1.0.1",
-  "description": "Vendor-neutral CLI that defines, validates, and synchronizes engineering intent across AI coding tools. Local, offline-first, and non-destructive.",
+  "version": "1.0.2",
+  "description": "Vendor-neutral local framework and CLI for defining, validating, and synchronizing engineering intent across AI coding tools. Offline-first and non-destructive.",
   "license": "MIT",
   "private": false,
   "repository": {
