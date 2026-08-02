@@ -409,6 +409,11 @@ pagination, rate-limit, redaction, cache retention/deletion, revocation,
 adversarial-payload, provenance, and CLI/application-equivalence gaps before
 any mutating MCP or agent capability is activated.
 
+The current implementation increment adds bounded GitHub/GitLab pagination and
+deterministic rate-limit diagnostics to the live provider boundary. Its focused
+regression suite is green; the remaining hardening areas stay explicitly
+unimplemented until their own reviewed increments.
+
 ## Next platform milestone
 
 The next approved platform milestone is the read-only evidence hardening gate,

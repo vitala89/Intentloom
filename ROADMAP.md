@@ -307,6 +307,10 @@ redaction, revocation, adversarial payloads, provenance, and CLI/application
 result equivalence. No token, endpoint reachability, external evidence, or model
 output may authorize a write, release, merge, publish, or deployment.
 
+Current increment: bound live GitHub/GitLab pagination and surface deterministic
+rate-limit diagnostics before proceeding to cache, redaction, and revocation
+hardening.
+
 ## Later candidate — Safe MCP and agent mutation
 
 Mutating MCP tools and agent operations may be considered only after read-only operations, conformance, and the reviewed plan protocol are stable.

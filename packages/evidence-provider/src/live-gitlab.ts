@@ -1,5 +1,16 @@
 import type { ProviderEvidenceEvent } from "./index.js";
-import { commitIds, sourceId, stringValue, timestamp } from "./live-helpers.js";
+import {
+  commitIds,
+  gitlabNextUrl,
+  MAX_PROVIDER_PAGES,
+  sourceId,
+  stringValue,
+  timestamp,
+} from "./live-helpers.js";
+import {
+  fetchProviderPages,
+  type ProviderPageFetchResult,
+} from "./live-pages.js";
 import type { ProviderFetchResult } from "./live-github.js";
 
 export interface GitLabFetchParams {
@@ -13,86 +24,76 @@ export interface GitLabFetchParams {
   readonly maxStringLength: number;
 }
 
+function gitlabEvent(
+  params: GitLabFetchParams,
+  eventType: ProviderEvidenceEvent["eventType"],
+  record: Record<string, unknown>,
+  index: number,
+): ProviderEvidenceEvent {
+  const id = sourceId(record, index, params.maxStringLength);
+  const state = stringValue(
+    record.state ?? record.status,
+    params.maxStringLength,
+  );
+  const commits = commitIds(record, params.maxStringLength);
+  return {
+    id: `provider:gitlab:${eventType}:${id}`,
+    eventType,
+    timestamp: timestamp(
+      record.created_at ?? record.released_at ?? record.updated_at,
+    ),
+    sourceId: id,
+    provider: "gitlab",
+    projectKey: params.projectKey,
+    trust: params.trust,
+    ...(state ? { state } : {}),
+    ...(commits.length > 0 ? { commitIds: commits } : {}),
+    finding: "record-untrusted",
+  };
+}
+
 export async function fetchGitLabLiveEvents(
   params: GitLabFetchParams,
 ): Promise<ProviderFetchResult> {
   const events: ProviderEvidenceEvent[] = [];
   const diagnostics: string[] = [];
   let bounded = false;
-
+  let pagesUsed = 0;
+  let halted = false;
   const endpoints = [
-    {
-      type: "pull-request" as const,
-      path: `/projects/${params.encodedKey}/merge_requests?per_page=50`,
-    },
-    {
-      type: "commit-provenance" as const,
-      path: `/projects/${params.encodedKey}/repository/commits?per_page=50`,
-    },
-    {
-      type: "release" as const,
-      path: `/projects/${params.encodedKey}/releases?per_page=50`,
-    },
-    {
-      type: "pipeline" as const,
-      path: `/projects/${params.encodedKey}/pipelines?per_page=50`,
-    },
-  ];
+    [
+      "pull-request",
+      `/projects/${params.encodedKey}/merge_requests?per_page=50`,
+    ],
+    [
+      "commit-provenance",
+      `/projects/${params.encodedKey}/repository/commits?per_page=50`,
+    ],
+    ["release", `/projects/${params.encodedKey}/releases?per_page=50`],
+    ["pipeline", `/projects/${params.encodedKey}/pipelines?per_page=50`],
+  ] as const;
 
-  for (const ep of endpoints) {
-    if (events.length >= params.maxRecords) {
+  for (const [eventType, path] of endpoints) {
+    if (events.length >= params.maxRecords || halted) {
       bounded = true;
       break;
     }
-    try {
-      const response = await params.customFetch(
-        `${params.cleanBase}${ep.path}`,
-        { headers: params.headers },
-      );
-      if (response.status === 429 || response.status === 403) {
-        diagnostics.push("rate-limit-exceeded");
-        bounded = true;
-        break;
-      }
-      if (!response.ok) {
-        diagnostics.push(`http-error-${ep.type}-${response.status}`);
-        continue;
-      }
-      const data: unknown = await response.json();
-      const records = Array.isArray(data) ? data : [];
-
-      for (let idx = 0; idx < records.length; idx += 1) {
-        if (events.length >= params.maxRecords) {
-          bounded = true;
-          break;
-        }
-        const item = records[idx];
-        if (!item || typeof item !== "object" || Array.isArray(item)) continue;
-        const rec = item as Record<string, unknown>;
-        const id = sourceId(rec, idx, params.maxStringLength);
-        const state = stringValue(
-          rec.state ?? rec.status,
-          params.maxStringLength,
-        );
-        const commits = commitIds(rec, params.maxStringLength);
-        events.push({
-          id: `provider:gitlab:${ep.type}:${id}`,
-          eventType: ep.type,
-          timestamp: timestamp(
-            rec.created_at ?? rec.released_at ?? rec.updated_at,
-          ),
-          sourceId: id,
-          provider: "gitlab",
-          projectKey: params.projectKey,
-          trust: params.trust,
-          ...(state ? { state } : {}),
-          ...(commits.length > 0 ? { commitIds: commits } : {}),
-          finding: "record-untrusted",
-        });
-      }
-    } catch {
-      diagnostics.push(`fetch-failed-${ep.type}`);
-    }
+    const result: ProviderPageFetchResult = await fetchProviderPages({
+      initialUrl: `${params.cleanBase}${path}`,
+      headers: params.headers,
+      customFetch: params.customFetch,
+      maxPages: MAX_PROVIDER_PAGES - pagesUsed,
+      maxRecords: params.maxRecords - events.length,
+      fetchFailureDiagnostic: eventType,
+      nextUrl: (currentUrl, response) => gitlabNextUrl(currentUrl, response),
+      recordsFromData: (data) => (Array.isArray(data) ? data : []),
+      toEvent: (record, index) => gitlabEvent(params, eventType, record, index),
+    });
+    events.push(...result.events);
+    diagnostics.push(...result.diagnostics);
+    pagesUsed += result.pagesUsed;
+    bounded ||= result.bounded;
+    halted = result.halted;
   }
 
   return { events, diagnostics, bounded };
