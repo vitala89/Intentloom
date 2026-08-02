@@ -47,7 +47,7 @@ export * from "./daemon.js";
 export * from "./desktop-extension.js";
 export * from "./diff.js";
 export * from "./inception.js";
-
+export * from "./harness.js";
 export const TIMELINE_DEFAULT_LIMIT = 50;
 export const TIMELINE_MAX_LIMIT = 500;
 export const TIMELINE_DEFAULT_TIMEOUT_MS = 5_000;

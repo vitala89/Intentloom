@@ -9,20 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Provider surface pagination hardening verified** — PR #189 is open,
-mergeable, and CI-green; PR #188 is merged. The current slice closes the CLI
-`evidence fetch` parser gap and adds endpoint-wide pagination/rate-limit and
-CLI/provider equivalence contracts.
+Status: **Read-only evidence hardening gate completed** — PR #186, PR #188, PR #189, and PR #190 are merged into `main`. Cross-surface contracts for pagination, rate-limits, redaction, 15-minute TTL cache retention/purge, local credential revocation, and CLI/MCP structured equivalence are verified.
 
-Active branch: `test/provider-surface-pagination`
+Active branch: `main`
 
-Current objective: prove that every GitHub/GitLab live endpoint group obeys the
-shared pagination and rate-limit boundary, and that CLI JSON fetch output equals
-the direct provider contract.
+Current objective: Transition to Phase H1 of the Agentic Evaluation and Execution Harness (ADR-0052) — design versioned protocol contracts and schemas for scenarios, scorecards, verdicts, and execution capabilities.
 
-Next first action: review PR #189, merge only when authorized, then continue
-the read-only evidence gate with cache retention/deletion and revocation
-cross-surface contracts.
+Next first action: Prepare implementation plan for Phase H1 schemas in `packages/protocol/src/harness.ts` and `packages/validator/src/harness.ts`.
 
 Known open items, in the order they should be handled:
 
@@ -68,6 +61,19 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-03, agentic harness versioned protocol contracts (Phase H1)
+
+- **Status:** complete for implementation and validation.
+- **Branch:** `feat/harness-protocol-contracts`
+- **Commit:** pending
+- **Pull request:** pending
+- **Objective:** Implement Phase H1 versioned protocol contracts, schemas, and validators for the Agentic Evaluation and Execution Harness (ADR-0052).
+- **Completed:** Added `packages/protocol/src/harness.ts` and `packages/validator/src/harness.ts` defining canonical schemas and validators for scenario evaluation, execution requests, manifests, scorecards, comparisons, and capability declarations. Re-exported in `packages/protocol` and `packages/validator`. Added 9 contract tests in `tests/harness-protocol.test.ts`.
+- **Not completed:** Pull request creation and Phase H2 deterministic runner implementation.
+- **Files or packages changed:** `packages/protocol/src/harness.ts`, `packages/protocol/src/index.ts`, `packages/validator/src/harness.ts`, `packages/validator/src/index.ts`, `tests/harness-protocol.test.ts`, `DUTY_WATCH.md`.
+- **Validation:** `pnpm vitest run tests/harness-protocol.test.ts` passed (9/9 passed); `pnpm format:check`, `pnpm typecheck`, `git diff --check` pass.
+- **Next first action:** Commit changes on `feat/harness-protocol-contracts`, push branch, and open pull request when authorized.
 
 ### 2026-08-03, cross-surface cache and revocation contracts
 

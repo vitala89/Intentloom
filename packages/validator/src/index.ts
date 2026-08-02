@@ -876,7 +876,7 @@ export function validateExtensionCapabilityGrant(
 
   return diagnostics;
 }
-
 export * from "./extension.js";
 export * from "./desktop-extension.js";
+export * from "./harness.js";
 export * from "./inception.js";
