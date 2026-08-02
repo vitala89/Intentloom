@@ -9,20 +9,18 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Credential-revocation contract published** — PR #183 for the
-read-only clean-cache adapter has all six compatibility checks passed and is
-awaiting merge. This branch adds invocation-scoped provider credential
-resolution and local-revocation semantics without remote token mutation. PR
-#183 is open for remote checks; the active read-only provider-evidence hardening
-gate remains unchanged.
+Status: **Credential-revocation contract merged** — PR #183 was conflict-
+resolved, fully verified, and squash-merged into `main` as commit `8ec887d`.
+The active read-only provider-evidence hardening gate remains unchanged, and
+remote token deletion/rotation remains outside Intentloom.
 
-Active branch: `codex/credential-revocation-contract`
+Active branch: `codex/post-merge-handoff-183`
 
-Current objective: make credential-source precedence and post-clearing behavior
-deterministic while keeping remote provider token deletion outside Intentloom.
+Current objective: continue the read-only evidence hardening gate with
+adversarial payload/provenance and CLI/application-equivalence coverage.
 
-Next first action: monitor PR #183, then continue with adversarial
-payload/provenance and CLI/application equivalence coverage.
+Next first action: design deterministic adversarial payload/provenance fixtures
+and the first CLI/application-equivalence contract tests.
 
 Known open items, in the order they should be handled:
 
@@ -68,6 +66,28 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-02, merge conflict resolution for credential revocation
+
+- **Status:** complete; PR #183 squash-merged into `main`.
+- **Branch:** `codex/credential-revocation-contract` → `main`
+- **Pull request:** [#183](https://github.com/vitala89/Intentloom/pull/183)
+- **Merge commit:** `8ec887ddb80beb9c6acf7ffe7aa6f04141b68a58`
+- **Objective:** Reconcile the credential-revocation branch with the clean-cache
+  and handoff documentation already merged into `main`.
+- **Completed:** Resolved documentation conflicts in `DUTY_WATCH.md`,
+  `PROJECT_STATE.md`, `ROADMAP.md`, and the live-provider specification while
+  preserving the local credential boundary and PR #182's merged cache contract.
+  Pushed the merge resolution and squash-merged only after CodeQL, governance,
+  and Ubuntu/macOS/Windows Node 22/24 checks passed.
+- **Validation:** Local staged governance and full `pnpm verify` passed; the
+  suite reported 111 test files, 874 passed, and 3 skipped. Both duplicate CI
+  compatibility runs completed successfully.
+- **Not completed:** Remote provider token deletion/rotation remains out of
+  scope. Adversarial payload/provenance and CLI/application-equivalence
+  coverage are the next hardening increment.
+- **Next first action:** Add deterministic fixtures and contract tests for the
+  next read-only hardening boundaries.
 
 ### 2026-08-02, provider credential revocation contract
 
