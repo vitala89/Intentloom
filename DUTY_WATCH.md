@@ -9,18 +9,19 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Live-provider adversarial corpus increment in progress** — the next
-read-only hardening slice adds deterministic GitHub/GitLab payload fixtures and
-contract tests without expanding runtime authority or network behavior.
+Status: **Live-provider adversarial corpus increment verified** — PR #188 is
+open, mergeable, and CI-green; the slice adds deterministic GitHub/GitLab
+payload fixtures and contract tests without expanding runtime authority or
+network behavior.
 
 Active branch: `test/adversarial-evidence-corpus`
 
-Current objective: prove live-provider normalization preserves explicit project
-scope, unverified provenance, bounded redaction, and deterministic output even
-when provider payloads or rate-limit bodies contain adversarial fields.
+Current objective: review and merge PR #188 when authorized, then extend the
+same read-only hardening coverage to application-surface equivalence,
+pagination, and rate-limit edge cases.
 
-Next first action: run staged and full verification, update the hardening
-handoff, and open a focused test/fixture PR.
+Next first action: review PR #188, then start the broader application-surface
+equivalence and pagination corpus on a compliant `test/` or `security/` branch.
 
 Known open items, in the order they should be handled:
 
@@ -69,8 +70,8 @@ entry directly below this section.
 
 ### 2026-08-02, live-provider adversarial corpus
 
-- **Status:** in progress; focused tests pass, repository verification and PR
-  remain.
+- **Status:** complete for implementation and validation; PR #188 is open,
+  mergeable, and all reported CI checks pass.
 - **Branch:** `test/adversarial-evidence-corpus`
 - **Objective:** Extend the read-only hardening gate from external-MCP payloads
   to live GitHub/GitLab responses and adversarial rate-limit bodies.
@@ -79,15 +80,16 @@ entry directly below this section.
   text, and prompt-injection text. Added tests for fixed provider provenance,
   explicit project scope, redaction, deterministic ordering under record
   reordering, and non-retention of rate-limit response bodies.
-- **Not completed:** Staged/full verification, review PR, and broader
-  application-surface equivalence coverage.
+- **Not completed:** Merge authorization and broader application-surface
+  equivalence coverage.
 - **Files or packages changed:**
   `tests/fixtures/evidence/live-provider-adversarial.json` and
   `tests/evidence-provider-adversarial-live.test.ts`.
-- **Validation:** Focused provider/MCP tests pass 21/21. Full verification is
-  still required.
-- **Next first action:** Run staged quality checks and full `pnpm verify`, then
-  update this handoff and open the focused PR.
+- **Validation:** Focused provider/MCP tests pass 21/21; staged governance
+  passes; full `pnpm verify` passes with 113 test files, 879 passed, 3 skipped;
+  PR #188 compatibility, CodeQL, and governance checks pass.
+- **Next first action:** Review PR #188, merge only when authorized, then add
+  application-surface equivalence and pagination/rate-limit fixtures.
 
 ### 2026-08-02, adversarial evidence fixtures and CLI/MCP equivalence
 
