@@ -9,19 +9,19 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Agentic harness source ledger simplified; PR #181 open** — ADR-0052 now
-defines a provider-neutral evaluation and execution control plane, its
-deterministic authority boundary, phased H0-H9 delivery, threat-model additions,
-and a concise pinned reference ledger. No runtime, dependency, sandbox, provider, or
-mutation capability was added. The active read-only provider-evidence hardening
-gate remains unchanged.
+Status: **CLI clean-cache increment verified remotely** — the provider evidence
+cache now has a read-only CLI adapter with full local verification and all six
+PR #182 compatibility checks passed. The PR remains open pending merge; the
+active hardening gate is unchanged, and credential revocation is still a
+separate follow-up.
 
-Active branch: `codex/agentic-harness-roadmap`
+Active branch: `codex/clean-cache-adapter`
 
-Current objective: review PR #181 while continuing the read-only provider-evidence
-hardening gate.
+Current objective: complete and publish the `intentloom clean --cache` adapter
+without touching project-owned files or credential behavior.
 
-Next first action: design the CLI `intentloom clean --cache` adapter, then keep credential revocation and project mutation out of scope.
+Next first action: merge PR #182 when authorized, then implement the separate
+read-only credential-revocation contract.
 
 Known open items, in the order they should be handled:
 
@@ -67,6 +67,34 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-02, read-only CLI provider-cache cleanup
+
+- **Status:** complete; PR #182 open with all six compatibility checks passed.
+- **Branch:** `codex/clean-cache-adapter`
+- **Objective:** Expose the existing provider-cache purge operation through a
+  safe, explicit `intentloom clean --cache` CLI command.
+- **Completed:** Added a dedicated `clean-cache` module and CLI parsing for
+  complete-cache, provider, and provider/project scopes. The command uses the
+  existing cache purge operation, defaults to `.aif/cache/providers/` under the
+  explicit project root, performs no metadata validation or network access, and
+  reports only a relative cache path and scope. Added four public-behavior CLI
+  tests covering full purge, provider scope, project scope, and invalid scope.
+  Updated CLI reference, live-provider specification, roadmap, project state,
+  changelog, and this handoff.
+- **Not completed:** Required review and merge. Credential revocation and all
+  mutation behavior remain out of scope.
+- **Files or packages changed:** `packages/cli/src/clean-cache.ts`, the CLI
+  command parser, `tests/cli-clean-cache.test.ts`, and read-only cache
+  documentation.
+- **Validation:** Focused cache/CLI tests pass 6/6; full test suite passes 870
+  tests with 3 skipped; typecheck, formatting, production build, and
+  `git diff --check` pass. PR #182 compatibility checks pass on Ubuntu, macOS,
+  and Windows with Node 22/24.
+- **Decomposition:** The existing oversized CLI command file receives only
+  parsing/dispatch glue; purge behavior lives behind the new dedicated module.
+- **Next first action:** Merge PR #182 when authorized, then continue with the
+  separate credential-revocation contract.
 
 ### 2026-08-02, simplify agentic harness source ledger
 
