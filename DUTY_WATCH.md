@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Read-only evidence hardening gate completed** — PR #186, PR #188, PR #189, and PR #190 are merged into `main`. Cross-surface contracts for pagination, rate-limits, redaction, 15-minute TTL cache retention/purge, local credential revocation, and CLI/MCP structured equivalence are verified.
+Status: **Phase H1 Harness Protocol Contracts merged** — PR #191 is merged into `main`. Versioned schemas, capability declarations, scorecards, comparisons, and validators for the Agentic Evaluation and Execution Harness (ADR-0052) are active.
 
 Active branch: `main`
 
-Current objective: Transition to Phase H1 of the Agentic Evaluation and Execution Harness (ADR-0052) — design versioned protocol contracts and schemas for scenarios, scorecards, verdicts, and execution capabilities.
+Current objective: Phase H2 — Implement deterministic scenario runner, fake agent/executor adapters, and baseline vs protected scorecard comparison engine.
 
-Next first action: Prepare implementation plan for Phase H1 schemas in `packages/protocol/src/harness.ts` and `packages/validator/src/harness.ts`.
+Next first action: Prepare implementation plan for Phase H2 deterministic runner in `packages/application/src/harness-runner.ts` and `packages/application/src/harness-comparison.ts`.
 
 Known open items, in the order they should be handled:
 
@@ -61,6 +61,19 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-03, deterministic harness runner and comparison engine (Phase H2)
+
+- **Status:** complete for implementation and validation.
+- **Branch:** `feat/harness-runner-engine`
+- **Commit:** pending
+- **Pull request:** pending
+- **Objective:** Implement Phase H2 deterministic scenario runner, fake agent & executor adapters, preflight/postflight capability gates, and scorecard comparison engine (ADR-0052).
+- **Completed:** Added `packages/application/src/harness-runner.ts` and `packages/application/src/harness-comparison.ts` implementing `executeHarnessScenario` and `compareHarnessScorecards`. Re-exported in `packages/application/src/index.ts` without increasing line count. Added 6 unit tests in `tests/harness-runner.test.ts`.
+- **Not completed:** Pull request creation and Phase H3 execution isolation adapters implementation.
+- **Files or packages changed:** `packages/application/src/harness-runner.ts`, `packages/application/src/harness-comparison.ts`, `packages/application/src/index.ts`, `tests/harness-runner.test.ts`, `DUTY_WATCH.md`.
+- **Validation:** 15/15 harness tests pass (9 protocol + 6 runner); `pnpm format:check`, `pnpm typecheck`, `git diff --check` pass.
+- **Next first action:** Commit changes on `feat/harness-runner-engine`, push branch, and open pull request when authorized.
 
 ### 2026-08-03, agentic harness versioned protocol contracts (Phase H1)
 
