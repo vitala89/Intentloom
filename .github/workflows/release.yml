@@ -114,6 +114,14 @@ jobs:
           console.log(`npm ${npmVersion} on Node ${process.versions.node} supports trusted publishing.`);
           NODE
 
+      - name: Refuse token-based npm authentication
+        run: |
+          if [ -n "${NODE_AUTH_TOKEN:-}" ] || [ -n "${NPM_TOKEN:-}" ]; then
+            echo "::error::Token-based npm authentication is forbidden in the trusted-publishing workflow." >&2
+            exit 1
+          fi
+          echo "No npm authentication token is present; publication must use the workflow OIDC identity."
+
       - name: Install workspace dependencies
         run: pnpm install --frozen-lockfile
 

@@ -9,26 +9,28 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **PR #169 merged; GitHub Pages and npm metadata refreshed; intentloom@1.0.2 published with provenance; 4/5 Dependabot alerts and all CodeQL alerts closed** — PR #169 (`8de92ea`, GitHub Pages canonical documentation, project metadata refresh, and release-state reconciliation) is merged into `main`. GitHub Pages is enabled and serving the built VitePress site at `https://vitala89.github.io/Intentloom/` (verified HTTP 200 with real content and key routes). GitHub repository `description` and `homepage` point to the Pages site. npm `intentloom@1.0.2` is published under `latest`; `next` remains `1.0.0`; the registry reports SLSA v1 provenance, shasum `4a52f359ed6ffda5a80a73af657923285bcdc910`, and the corrected Pages-linked README. The publish workflow run [`30724962105`](https://github.com/vitala89/Intentloom/actions/runs/30724962105) passed its dry-run and real publish path after protected-environment approval. `gh api repos/vitala89/Intentloom/dependabot/alerts` shows only alert #2 (`glib`, tracked exception, expires 2026-10-29) still open; `gh api repos/vitala89/Intentloom/code-scanning/alerts` shows zero open alerts. See the entries below (PR #163, PR #164, PR #167, and PR #169) for what each fix actually did.
+Status: **v1.0.2 release verified; npm workflow token guard added; glib disposition rechecked; read-only evidence hardening activated** — GitHub Pages and npm metadata are current, `intentloom@1.0.2` is published under `latest` with SLSA v1 provenance, and GitHub Release `v1.0.2` points at `main` commit `192fd05`. The repository-side release path has no secrets or variables in `npm-publish` and now rejects `NODE_AUTH_TOKEN`/`NPM_TOKEN`; the npm package-level disallow-tokens setting still needs an authenticated package-owner session. Dependabot alert #2 (`glib@0.18.5`) remains the only open alert under the exception expiring 2026-10-29; Cargo confirms a direct `glib@0.20.0` update is incompatible with the current GTK 0.18/Tauri 2.11.5 stack. PR #160 (`3713b15`) already merged the first live-provider/MCP evidence implementation slice; the next roadmap gate is read-only hardening.
 
-Active branch: `main`
+Active branch: `codex/npm-glib-roadmap-v102`
 
-Current objective: continue the roadmap after the completed `1.0.2` public metadata and documentation release.
+Current objective: preserve token-free trusted publishing, record the bounded glib disposition, and activate the read-only evidence hardening milestone.
 
-Next first action: select the next approved roadmap milestone; no public metadata or npm publication action remains for `1.0.2`.
+Next first action: implement deterministic pagination/rate-limit/cache/redaction/revocation hardening for the existing provider and external-MCP boundaries.
 
 Known open items, in the order they should be handled:
 
-1. Token-based publishing for the package should be restricted, and any standing
-   automation token revoked, now that the first trusted publish succeeded
-   (`PUBLISHING.md` one-time setup, step 3).
+1. Package-level token-based publishing remains an npm-owner action: select
+   **Require two-factor authentication and disallow tokens** in npm settings,
+   then revoke only an identified obsolete automation token. The local npm CLI
+   and browser session are unauthenticated, so no token was revoked blindly.
 2. `1.0.0` carries no npm provenance attestation and cannot gain one. This is
    permanent; `1.0.2` carries provenance through the release workflow.
 3. `homepage` URL in `packages/cli/package.json` and the published npm metadata
    point to live GitHub Pages documentation site `https://vitala89.github.io/Intentloom/` (completed).
 4. Dependabot alert #2 (`glib@0.18.5`, transitive, medium) carries an approved
-   exception that expires 2026-10-29; re-checked 2026-08-01, no new upstream
-   fix available (Tauri already at latest `2.11.5`).
+   exception that expires 2026-10-29. Rechecked 2026-08-02: the advisory is
+   GHSA-wrw7-89jp-8q8g, Cargo rejects `glib@0.20.0` under `gtk@0.18.2`, and
+   crates.io still reports Tauri `2.11.5` as current.
 5. Branch and tag protection rules for `main` and `v*` are not recorded anywhere
    in the repository; `.github/CODEOWNERS` exists to support required review.
 6. Two remote branches remain untriaged: `codex/public-readiness-blockers` and
@@ -59,6 +61,17 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-02, npm token hardening, glib assessment, and roadmap transition
+
+- **Status:** in progress pending PR review; npm account-level hardening remains blocked on authenticated package-owner access.
+- **Branch:** `codex/npm-glib-roadmap-v102`
+- **Objective:** Restrict token-based npm publishing, re-evaluate the remaining glib alert, verify/update GitHub Release `v1.0.2`, and move the roadmap to its next approved gate.
+- **Completed:** Created GitHub Release [`v1.0.2`](https://github.com/vitala89/Intentloom/releases/tag/v1.0.2) at `main` commit `192fd05`. Added a release-workflow guard rejecting `NODE_AUTH_TOKEN` and `NPM_TOKEN`; confirmed the protected `npm-publish` environment has no secrets or variables. Confirmed `glib@0.18.5` is transitive through `gtk@0.18.2`/`webkit2gtk@2.0.2`/Tauri `2.11.5`, and Cargo rejects a direct `glib@0.20.0` update because `gtk@0.18.2` requires `glib ^0.18`. Reconciled the roadmap with PR #160 (`3713b15`), which already contains the first provider/MCP evidence implementation slice, and activated the read-only hardening gate.
+- **Not completed:** npm package-level **Require two-factor authentication and disallow tokens** setting and token inventory could not be changed or verified because both `npm whoami` and npmjs.com were unauthenticated. No unidentified token was revoked.
+- **Validation:** GitHub Dependabot advisory API, `cargo tree --target all -i glib`, Cargo dry-run update, `cargo search/info`, GitHub release inspection, and workflow/environment metadata inspection passed. Full code validation is required before PR submission.
+- **Decision:** Do not override `glib` to `0.20.0` without a coordinated Tauri/GTK stack migration. Keep the expiring exception visible and revisit when upstream provides a compatible stack.
+- **Next first action:** Implement deterministic read-only evidence hardening and obtain authenticated npm owner access for the package policy step.
 
 ### 2026-08-02, GitHub Pages and npm metadata refresh (PR #169, release 1.0.2)
 

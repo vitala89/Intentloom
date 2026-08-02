@@ -42,12 +42,13 @@ published-artifact status.
 
 The publication path for future releases is `.github/workflows/release.yml`,
 using npm trusted publishing so the artifact carries provenance. The `1.0.2`
-publish completed successfully through this path. It is
-dispatch-only, refuses any ref other than `main` or a `v*` tag, runs in the
-protected `npm-publish` environment, and defaults to a dry run. The trusted
-publisher and required environment reviewer are configured; after the first
-successful trusted publish, token-based publishing should be restricted and any
-standing automation token revoked.
+publish completed successfully through this path. It is dispatch-only, refuses
+any ref other than `main` or a `v*` tag, runs in the protected `npm-publish`
+environment, defaults to a dry run, and now fails if an npm auth token is
+present. The trusted publisher and required environment reviewer are
+configured; the environment currently has no secrets or variables. The npm
+package-level **disallow tokens** setting still requires an authenticated
+package-owner action and is not verified in this environment.
 
 `1.0.0` itself was published manually before that workflow existed, so it carries
 no provenance attestation and cannot gain one: npm does not allow a published
@@ -112,7 +113,11 @@ before a new release or implementation milestone is declared complete.
   forcing the patched `vite@8.1.5`/`esbuild@0.28.1` already used elsewhere in
   the workspace, rather than another documented exception (PR #163,
   `32b22bc`). Alert #2 (`glib`, Rust/Tauri) remains under its existing
-  approved exception, expiring 2026-10-29; no new upstream fix is available.
+  approved exception, expiring 2026-10-29. Alert #2 is GHSA-wrw7-89jp-8q8g:
+  `glib::VariantStrIter` unsoundness. Cargo confirms that `glib 0.20.0` cannot
+  satisfy the current `gtk 0.18.2` constraint used by Tauri 2.11.5, so no
+  safe point update is available; no direct `glib` or `VariantStrIter` use
+  exists in the Desktop source.
 - All 4 open CodeQL `js/polynomial-redos` alerts are fixed: 3 in
   `parseSkillProgressive`'s markdown section extraction, 1 in the validator's
   markdown-link reference scanner, both replaced with linear-time manual
@@ -392,33 +397,26 @@ before a new release or implementation milestone is declared complete.
 ## Current milestone
 
 The v0.5 Engineering Process Intelligence increment, the v0.6 Desktop
-implementation/readiness gates, and the `1.0.0` stable compatibility release
-gate (Phase 5) are complete. Their outputs are recorded in the v1.0 readiness
-audit, the stable support policy, the compatibility matrix, the client-surface
-equivalence/security/supply-chain/rollback evidence, the dogfooding records, and
-the maintainer release approval in
-[`V1_0_RELEASE_GATE_PACKET.md`](docs/releases/V1_0_RELEASE_GATE_PACKET.md).
+implementation/readiness gates, the `1.0.0` stable compatibility release, and
+the `1.0.2` Pages/npm metadata release are complete. GitHub release `v1.0.2`
+now points at `main` commit `192fd05`. The post-v1 read-only evidence slice is
+also merged through PR #160 (`3713b15`): live GitHub/GitLab reads, external MCP
+evidence normalization, and managed-extension capability validation exist in
+the source and are included in the published CLI baseline.
 
-The remaining v1.0 work is release operations, not implementation:
-
-- configure npm trusted publishing and a release workflow so the first stable
-  publication carries provenance (currently recorded as NOT MET in
-  [`V1_SECURITY_AND_SUPPLY_CHAIN_AUDIT.md`](docs/security/V1_SECURITY_AND_SUPPLY_CHAIN_AUDIT.md));
-- complete the publication authorization checklist and publish
-  `intentloom@1.0.0` under `latest`;
-- create the GitHub release for `v1.0.0`.
+The active milestone is the read-only evidence hardening gate. It must close
+pagination, rate-limit, redaction, cache retention/deletion, revocation,
+adversarial-payload, provenance, and CLI/application-equivalence gaps before
+any mutating MCP or agent capability is activated.
 
 ## Next platform milestone
 
-After v1.0 publication, the next implementation direction is the post-v1.0
-capability set already specified but not built:
-
-- live read-only provider connections, per
-  [ADR-0022](docs/decisions/ADR-0022-live-read-only-provider-connections.md);
-- external MCP evidence ingestion, per
-  [ADR-0023](docs/decisions/ADR-0023-external-mcp-evidence-ingestion.md);
-- managed extension lifecycle support for the extension manifest and lock
-  schemas in `@intentloom/validator` and the CLI.
+The next approved platform milestone is the read-only evidence hardening gate,
+not mutation. It extends the implementation slices governed by
+[ADR-0022](docs/decisions/ADR-0022-live-read-only-provider-connections.md) and
+[ADR-0023](docs/decisions/ADR-0023-external-mcp-evidence-ingestion.md). The
+managed extension work remains validation-only until its reviewed lifecycle
+and installation boundaries are separately completed.
 
 The Desktop discovery/error and Diff/Timeline slices remain recorded in
 [PHASE1_CONTRACTS.md](docs/desktop/PHASE1_CONTRACTS.md), while the packaged
