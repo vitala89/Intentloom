@@ -73,6 +73,10 @@ and real consumers justify them.
   public monorepo evolution, controlled agent learning, and portable Duty Watch adoption.
 - Duty Watch governance contracts (Phase 1), proposal CLI `intentloom adopt --plan` (Phase 2), transactional apply & rollback engine `intentloom adopt --apply` (Phase 3), pack update 3-way migration `intentloom update` (Phase 4), conformance & security profiles `intentloom conformance` (Phase 5), provider synchronization `intentloom sync` / `intentloom diff` (Phase 6), Memory & Security Candidates M1–M4, S1–S5, Daemon Protocol Contracts for Second Clients, Read-Only Interactive Surfaces TUI, Agent Workspace Discuss & Inspect Modes, Agent Workspace Plan, Review & Apply Modes, and Neutron Autonomous Subagent Orchestration & Local Workspace Sync Engine are merged into `main`.
 - v1.0 compatibility phases 1–4 are merged into `main`: ADR-0043 and contract tests, the v1 migration/protocol guide and upgrade tests, client-surface equivalence evidence and tests, and the security/supply-chain audit and tests.
+- The bounded provider-evidence cache increment is merged into `main` through
+  PR #177 (`112b4a4`). It persists only normalized redacted `available` results,
+  enforces a maximum 15-minute TTL, and exposes provider/project-scoped purge;
+  the CLI adapter and credential revocation remain separate read-only work.
 - `apps/desktop` carries an imported design system in `src/design/`: a token
   layer, six component groups, vendored Lucide glyphs, self-hosted fonts, and the
   vector logo masters (ADR-0044). Five design components (`Card`, `Tabs`,
@@ -130,6 +134,11 @@ before a new release or implementation milestone is declared complete.
   prefix/hyphen trimming, with no regex-based processing of the blueprint name.
   PR #167's CodeQL, dependency, governance, and cross-platform compatibility
   checks passed.
+- Provider evidence cache retention/deletion hardening is merged through PR
+  #177 (`112b4a4`). Cache records are versioned, redacted-only, bounded to a
+  15-minute maximum TTL, and purgeable by provider/project without mutating
+  project-owned files. The final PR checks passed across CodeQL, policy, and
+  Ubuntu/macOS/Windows Node 22/24 matrices.
 
 ## Active focus
 
@@ -155,7 +164,7 @@ before a new release or implementation milestone is declared complete.
 ## Current blockers and unknowns
 
 - Any expansion to bottleneck, performance, causal, actor, repository-reading, persisted, remote, or model-assisted analysis requires a new ADR, specification, and threat review.
-- Current `main` is verified at `26ad22d` (PR #175 squash merge) and tracks
+- Current `main` is verified at `112b4a4` (PR #177 squash merge) and tracks
   `origin/main`.
 - npm reports `latest=1.0.2` and `next=1.0.0`, verified 2026-08-02.
 - Workspace packages are synchronized to `1.0.2`; Git tag `v1.0.2` and GitHub

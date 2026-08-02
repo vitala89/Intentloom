@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **partial; bounded provider cache implementation in progress** — GitHub Pages and npm metadata are current, `intentloom@1.0.2` is published under `latest` with SLSA v1 provenance, and GitHub Release `v1.0.2` points at `main` commit `192fd05`. PR #171 squash-merged the repository-side token guard and state reconciliation as `99dc9f6`; the protected `npm-publish` environment has no secrets or variables, and the workflow rejects `NODE_AUTH_TOKEN`/`NPM_TOKEN`. The npm package-level disallow-tokens setting still needs an authenticated package-owner session. Dependabot alert #2 (`glib@0.18.5`) remains the only open alert under the exception expiring 2026-10-29; Cargo confirms a direct `glib@0.20.0` update is incompatible with the current GTK 0.18/Tauri 2.11.5 stack. PR #160 (`3713b15`) merged the first live-provider/MCP evidence implementation slice, PR #173 (`341984a`) merged bounded pagination/rate-limit handling, and PR #175 (`26ad22d`) merged deterministic identity/token redaction. The current branch adds the next bounded cache retention/deletion slice; its PR and post-merge reconciliation remain pending.
+Status: **PR #177 merged; bounded provider cache hardening complete** — GitHub Pages and npm metadata are current, `intentloom@1.0.2` is published under `latest` with SLSA v1 provenance, and GitHub Release `v1.0.2` points at `main` commit `192fd05`. PR #171 squash-merged the repository-side token guard and state reconciliation as `99dc9f6`; the protected `npm-publish` environment has no secrets or variables, and the workflow rejects `NODE_AUTH_TOKEN`/`NPM_TOKEN`. The npm package-level disallow-tokens setting still needs an authenticated package-owner session. Dependabot alert #2 (`glib@0.18.5`) remains the only open alert under the exception expiring 2026-10-29; Cargo confirms a direct `glib@0.20.0` update is incompatible with the current GTK 0.18/Tauri 2.11.5 stack. PR #160 (`3713b15`) merged the first live-provider/MCP evidence implementation slice, PR #173 (`341984a`) merged bounded pagination/rate-limit handling, PR #175 (`26ad22d`) merged deterministic identity/token redaction, and PR #177 (`112b4a4`) merged bounded redacted cache retention/deletion.
 
-Active branch: `codex/provider-cache-hardening`
+Active branch: `codex/provider-cache-handoff`
 
-Current objective: persist only redacted, complete provider evidence for a bounded TTL and provide scoped cache purge without introducing mutation.
+Current objective: reconcile the merged provider cache state in project records and leave the next read-only milestone executable.
 
-Next first action: run the full verification command, commit the cache increment, and open its PR; keep the CLI adapter and credential revocation as later increments.
+Next first action: design the CLI `intentloom clean --cache` adapter, then add credential revocation behavior without touching project-owned files.
 
 Known open items, in the order they should be handled:
 
@@ -72,6 +72,40 @@ entry directly below this section.
 - **Validation:** Focused provider/export/MCP tests pass 19/19; full `pnpm verify` passes with 858 tests and 3 skipped; `pnpm typecheck`, `pnpm format:check`, and `git diff --check` pass. PR #175 checks pass, including CodeQL Analyze, policy, and Ubuntu/macOS/Windows Node 22/24 matrices.
 - **Not completed:** Cache retention/deletion, revocation, adversarial project-isolation fixtures, provenance, and CLI/application equivalence remain later increments. npm package-level token restriction remains an authenticated package-owner action.
 - **Next first action:** Design the next bounded cache retention/deletion increment and keep mutation explicitly out of scope.
+
+### 2026-08-02, bounded provider evidence cache retention
+
+- **Status:** complete.
+- **Branch:** `codex/provider-cache-hardening`
+- **Pull request:** #177, squash-merged as `112b4a4`.
+- **Objective:** Persist only redacted, complete live-provider evidence for a
+  bounded TTL and provide scoped cache purge without introducing mutation.
+- **Completed:** Added a provider-qualified, versioned cache record with a hard
+  maximum 15-minute TTL, cache-hit diagnostics, complete-result-only writes,
+  invalid/expired-record eviction, and provider/project-scoped purge. Added
+  portable regression coverage for TTL expiry, project isolation, and proof
+  that raw provider token/email values do not enter persisted cache content.
+- **Not completed:** The CLI `intentloom clean --cache` adapter, credential
+  revocation behavior, and broader adversarial provenance fixtures remain later
+  read-only hardening increments.
+- **Files or packages changed:** `packages/evidence-provider/src/cache.ts`,
+  `packages/evidence-provider/src/live.ts`,
+  `packages/evidence-provider/src/index.ts`,
+  `tests/evidence-provider-cache.test.ts`,
+  `tests/evidence-provider-live.test.ts`, `CHANGELOG.md`, `ROADMAP.md`,
+  `docs/specs/LIVE_PROVIDER_CONNECTIONS_SPEC.md`.
+- **Validation:** Local `pnpm verify` and pre-push verification passed with
+  108 test files, 860 passed, and 3 skipped; typecheck, format, build, and
+  `git diff --check` passed. PR #177 checks passed for CodeQL, commit/change
+  policy, and all Ubuntu/macOS/Windows Node 22/24 jobs. Two Windows path
+  assertion failures were corrected with `path.sep` before the final green
+  run.
+- **Decisions and assumptions:** Cache values contain normalized redacted
+  results only. The library purge API is the first increment; CLI wiring stays
+  separate because no existing `clean` command boundary is available without
+  expanding the oversized CLI parser.
+- **Next first action:** Design the CLI `intentloom clean --cache` adapter and
+  keep credential revocation and project mutation out of scope.
 
 ### 2026-08-02, bounded provider evidence cache (in progress)
 

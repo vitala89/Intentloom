@@ -307,10 +307,10 @@ redaction, revocation, adversarial payloads, provenance, and CLI/application
 result equivalence. No token, endpoint reachability, external evidence, or model
 output may authorize a write, release, merge, publish, or deployment.
 
-Current increment: add bounded local provider-evidence cache retention and
-provider/project-scoped deletion over already-redacted results. The future CLI
-`intentloom clean --cache` adapter and credential revocation behavior remain
-separate read-only hardening increments.
+Current increment complete: PR #177 adds bounded local provider-evidence cache
+retention and provider/project-scoped deletion over already-redacted results.
+The next read-only hardening increment is the CLI `intentloom clean --cache`
+adapter, followed by credential revocation behavior.
 
 ## Later candidate — Safe MCP and agent mutation
 
