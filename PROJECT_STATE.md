@@ -83,9 +83,11 @@ and real consumers justify them.
   provider token deletion and rotation remain out of scope.
 - The merged read-only hardening increment adds deterministic adversarial
   external-MCP payload coverage and a CLI/MCP structured-result equivalence
-  contract for release analysis. The follow-up live-provider adversarial corpus
-  is test-and-fixture only: no new provider, network, authority, or mutation
-  capability is introduced.
+  contract for release analysis. PR #188 adds the live-provider adversarial
+  corpus as test-and-fixture coverage only. The current follow-up closes the
+  existing CLI `evidence fetch` parser gap and verifies endpoint-wide pagination,
+  rate-limit halting, and CLI/provider JSON equivalence without adding provider,
+  network, authority, or mutation capability.
 - `apps/desktop` carries an imported design system in `src/design/`: a token
   layer, six component groups, vendored Lucide glyphs, self-hosted fonts, and the
   vector logo masters (ADR-0044). Five design components (`Card`, `Tabs`,
