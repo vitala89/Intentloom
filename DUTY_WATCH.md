@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Phase H1 Harness Protocol Contracts merged** — PR #191 is merged into `main`. Versioned schemas, capability declarations, scorecards, comparisons, and validators for the Agentic Evaluation and Execution Harness (ADR-0052) are active.
+Status: **Phase H2 Deterministic Runner & Comparison Engine merged** — PR #192 is merged into `main`. Pure scenario runner, capability constraint checks, duration/cancellation bounds, and scorecard comparison engine (ADR-0052) are active.
 
 Active branch: `main`
 
-Current objective: Phase H2 — Implement deterministic scenario runner, fake agent/executor adapters, and baseline vs protected scorecard comparison engine.
+Current objective: Phase H3 — Implement execution isolation adapters and sandbox abstractions for isolated harness scenario execution.
 
-Next first action: Prepare implementation plan for Phase H2 deterministic runner in `packages/application/src/harness-runner.ts` and `packages/application/src/harness-comparison.ts`.
+Next first action: Prepare implementation plan for Phase H3 isolation adapters in `packages/application/src/harness-sandbox.ts`.
 
 Known open items, in the order they should be handled:
 
