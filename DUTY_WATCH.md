@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **PR #171 merged; v1.0.2 release verified; npm workflow token guard active; glib disposition rechecked; provider pagination/rate-limit hardening in progress** — GitHub Pages and npm metadata are current, `intentloom@1.0.2` is published under `latest` with SLSA v1 provenance, and GitHub Release `v1.0.2` points at `main` commit `192fd05`. PR #171 squash-merged the repository-side token guard and state reconciliation as `99dc9f6`; the protected `npm-publish` environment has no secrets or variables, and the workflow rejects `NODE_AUTH_TOKEN`/`NPM_TOKEN`. The npm package-level disallow-tokens setting still needs an authenticated package-owner session. Dependabot alert #2 (`glib@0.18.5`) remains the only open alert under the exception expiring 2026-10-29; Cargo confirms a direct `glib@0.20.0` update is incompatible with the current GTK 0.18/Tauri 2.11.5 stack. PR #160 (`3713b15`) already merged the first live-provider/MCP evidence implementation slice; the first bounded hardening increment is implemented locally and awaits PR validation.
+Status: **PR #173 merged; v1.0.2 release verified; npm workflow token guard active; glib disposition rechecked; bounded provider pagination/rate-limit hardening complete** — GitHub Pages and npm metadata are current, `intentloom@1.0.2` is published under `latest` with SLSA v1 provenance, and GitHub Release `v1.0.2` points at `main` commit `192fd05`. PR #171 squash-merged the repository-side token guard and state reconciliation as `99dc9f6`; the protected `npm-publish` environment has no secrets or variables, and the workflow rejects `NODE_AUTH_TOKEN`/`NPM_TOKEN`. The npm package-level disallow-tokens setting still needs an authenticated package-owner session. Dependabot alert #2 (`glib@0.18.5`) remains the only open alert under the exception expiring 2026-10-29; Cargo confirms a direct `glib@0.20.0` update is incompatible with the current GTK 0.18/Tauri 2.11.5 stack. PR #160 (`3713b15`) merged the first live-provider/MCP evidence implementation slice, and PR #173 (`341984a`) merged the first bounded hardening increment.
 
 Active branch: `codex/provider-pagination-hardening`
 
-Current objective: preserve token-free trusted publishing, record the bounded glib disposition, and close the first read-only evidence hardening increment without introducing mutation.
+Current objective: preserve token-free trusted publishing, record the bounded glib disposition, and continue the read-only evidence hardening gate without introducing mutation.
 
-Next first action: run full verification and review the bounded provider pagination/rate-limit PR; then continue with cache retention/deletion and redaction/revocation hardening.
+Next first action: design the next bounded increment for cache retention/deletion and secret/identity redaction, preserving the read-only boundary.
 
 Known open items, in the order they should be handled:
 
@@ -64,13 +64,14 @@ entry directly below this section.
 
 ### 2026-08-02, bounded live-provider pagination and rate-limit handling
 
-- **Status:** in progress; implementation and focused validation are complete, with full verification and PR review pending.
+- **Status:** complete.
 - **Branch:** `codex/provider-pagination-hardening`
+- **Pull request:** #173, squash-merged as `341984a`
 - **Objective:** Add deterministic read-only hardening for live GitHub/GitLab evidence collection while preserving provider isolation and the no-mutation boundary.
 - **Completed:** Added a shared bounded page fetcher, GitHub `Link` pagination, GitLab `X-Next-Page` pagination, a global ten-page cap, and rate-limit detection for 429/403 responses, `Retry-After`, and remaining quota below ten. Added regression coverage for pagination, page caps, rate limits, and diagnostic precedence; rate-limited and page-capped runs no longer claim the record limit was reached.
-- **Validation:** Focused provider/MCP tests pass 16/16; `pnpm typecheck`, `pnpm format:check`, and `git diff --check` pass. Full `pnpm verify` and remote PR checks remain pending.
+- **Validation:** Focused provider/MCP tests pass 16/16; full `pnpm verify` passes with 855 tests and 3 skipped; `pnpm typecheck`, `pnpm format:check`, and `git diff --check` pass. PR #173 checks pass, including CodeQL Analyze, policy, and Ubuntu/macOS/Windows Node 22/24 matrices.
 - **Not completed:** Cache retention/deletion, secret and identity redaction, revocation, adversarial payload fixtures, provenance, and CLI/application equivalence remain later increments of the active hardening gate. npm package-level token restriction remains an authenticated package-owner action.
-- **Next first action:** Run the full verification command, publish the PR, and verify all required checks before merge.
+- **Next first action:** Design the next bounded cache/redaction increment and keep mutation explicitly out of scope.
 
 ### 2026-08-02, npm token hardening, glib assessment, and roadmap transition
 
