@@ -9,9 +9,10 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Provider surface pagination hardening in progress** — PR #188 is
-merged; the current slice closes the CLI `evidence fetch` parser gap and adds
-endpoint-wide pagination/rate-limit and CLI/provider equivalence contracts.
+Status: **Provider surface pagination hardening verified** — PR #189 is open,
+mergeable, and CI-green; PR #188 is merged. The current slice closes the CLI
+`evidence fetch` parser gap and adds endpoint-wide pagination/rate-limit and
+CLI/provider equivalence contracts.
 
 Active branch: `test/provider-surface-pagination`
 
@@ -19,8 +20,9 @@ Current objective: prove that every GitHub/GitLab live endpoint group obeys the
 shared pagination and rate-limit boundary, and that CLI JSON fetch output equals
 the direct provider contract.
 
-Next first action: run staged and full verification, then open the focused PR
-for review.
+Next first action: review PR #189, merge only when authorized, then continue
+the read-only evidence gate with cache retention/deletion and revocation
+cross-surface contracts.
 
 Known open items, in the order they should be handled:
 
@@ -69,9 +71,11 @@ entry directly below this section.
 
 ### 2026-08-02, provider surface pagination hardening
 
-- **Status:** in progress; implementation and focused tests pass, repository
-  verification and PR remain.
+- **Status:** complete for implementation and validation; PR #189 is open,
+  mergeable, and all reported CI checks pass.
 - **Branch:** `test/provider-surface-pagination`
+- **Commit:** `d61f1ac` (`test: harden provider surface contracts`)
+- **Pull request:** [#189](https://github.com/vitala89/Intentloom/pull/189)
 - **Objective:** Close the existing CLI `evidence fetch` parser gap and add
   read-only contracts for all GitHub/GitLab endpoint groups, bounded pagination,
   rate-limit halting, and CLI/provider JSON equivalence.
@@ -80,15 +84,19 @@ entry directly below this section.
   endpoint groups for both providers, paginated rate-limit halting without
   retaining response bodies, and CLI JSON output equivalence with the direct
   provider operation.
-- **Not completed:** Staged/full verification, PR review, and merge.
+- **Not completed:** Merge authorization and the remaining cache/revocation
+  cross-surface hardening gate.
 - **Files or packages changed:** `packages/cli/src/command.ts`,
   `tests/evidence-provider-pagination-contract.test.ts`,
   `tests/cli-evidence-live-surface.test.ts`, and the project state, roadmap,
   changelog, and Duty Watch records.
-- **Validation:** Focused provider, CLI, MCP, and adversarial tests pass 23/23.
-  Full verification is still required.
-- **Next first action:** Run staged quality checks and full `pnpm verify`, then
-  update this handoff and open the focused PR.
+- **Validation:** Focused provider, CLI, MCP, and adversarial tests pass 23/23;
+  staged governance passes; full verification passes with 115 test files, 885
+  passed, 3 skipped; typecheck, formatting, build, diff checks, pre-push, and
+  PR #189 compatibility, CodeQL, and governance checks pass.
+- **Next first action:** Review PR #189, merge only when authorized, then add
+  cache retention/deletion and credential-revocation contracts across the
+  remaining read-only surfaces.
 
 ### 2026-08-02, live-provider adversarial corpus
 
