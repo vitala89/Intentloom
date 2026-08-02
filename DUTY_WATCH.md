@@ -64,16 +64,16 @@ entry directly below this section.
 
 ### 2026-08-03, deterministic harness runner and comparison engine (Phase H2)
 
-- **Status:** complete for implementation and validation.
+- **Status:** complete for implementation and validation; PR #192 is open, mergeable, and CI checks pass.
 - **Branch:** `feat/harness-runner-engine`
-- **Commit:** pending
-- **Pull request:** pending
+- **Commit:** `a4d060d` (`feat(harness): add deterministic scenario runner and comparison engine`)
+- **Pull request:** [#192](https://github.com/vitala89/Intentloom/pull/192)
 - **Objective:** Implement Phase H2 deterministic scenario runner, fake agent & executor adapters, preflight/postflight capability gates, and scorecard comparison engine (ADR-0052).
 - **Completed:** Added `packages/application/src/harness-runner.ts` and `packages/application/src/harness-comparison.ts` implementing `executeHarnessScenario` and `compareHarnessScorecards`. Re-exported in `packages/application/src/index.ts` without increasing line count. Added 6 unit tests in `tests/harness-runner.test.ts`.
-- **Not completed:** Pull request creation and Phase H3 execution isolation adapters implementation.
+- **Not completed:** Merge authorization and Phase H3 execution isolation adapters implementation.
 - **Files or packages changed:** `packages/application/src/harness-runner.ts`, `packages/application/src/harness-comparison.ts`, `packages/application/src/index.ts`, `tests/harness-runner.test.ts`, `DUTY_WATCH.md`.
-- **Validation:** 15/15 harness tests pass (9 protocol + 6 runner); `pnpm format:check`, `pnpm typecheck`, `git diff --check` pass.
-- **Next first action:** Commit changes on `feat/harness-runner-engine`, push branch, and open pull request when authorized.
+- **Validation:** `pnpm verify` pre-push gate passed (118 test files, 903 passed); `pnpm format:check`, `pnpm typecheck`, `git diff --check` pass.
+- **Next first action:** Review PR #192, merge when authorized, then proceed to Phase H3 (Execution isolation adapters).
 
 ### 2026-08-03, agentic harness versioned protocol contracts (Phase H1)
 
