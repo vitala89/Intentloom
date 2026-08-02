@@ -34,13 +34,15 @@ signed off.
 [GitHub release](https://github.com/vitala89/Intentloom/releases/tag/v1.0.0), and
 was published to npm on 2026-07-30 under the `next` dist-tag.
 
-The registry now serves `1.0.1` as the stable release under `latest`, while
-`next` remains at `1.0.0`. Verified against the registry on 2026-08-02. See
+The registry now serves `1.0.2` as the stable release under `latest`, while
+`next` remains at `1.0.0`. Verified against the registry on 2026-08-02 after
+trusted publication. See
 [`RELEASE_STATE.md`](docs/releases/RELEASE_STATE.md) for the authoritative
 published-artifact status.
 
 The publication path for future releases is `.github/workflows/release.yml`,
-using npm trusted publishing so the artifact carries provenance. It is
+using npm trusted publishing so the artifact carries provenance. The `1.0.2`
+publish completed successfully through this path. It is
 dispatch-only, refuses any ref other than `main` or a `v*` tag, runs in the
 protected `npm-publish` environment, and defaults to a dry run. The trusted
 publisher and required environment reviewer are configured; after the first
@@ -126,9 +128,8 @@ before a new release or implementation milestone is declared complete.
 
 ## Active focus
 
-1. Publish the prepared `1.0.2` documentation and package-metadata release
-   through the approved trusted-publishing workflow, with GitHub Pages as the
-   canonical public documentation destination.
+1. Keep GitHub Pages as the canonical public documentation destination and
+   continue the roadmap after the completed `1.0.2` metadata release.
 2. Keep bottleneck inference, remote ingestion, model-based judgments, and any
    autonomous mutation behind separate approved specifications and threat review.
 

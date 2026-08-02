@@ -1,13 +1,13 @@
 # Publishing Intentloom
 
-The public beta package is `intentloom`; the command is `intentloom`. The package is
+The public package is `intentloom`; the command is `intentloom`. The package is
 unscoped and public. No fallback name is authorized: any scoped fallback must
 be a scope demonstrably controlled by the authenticated release account. Do
 not publish, tag, reserve a name, or change a version as part of
 package-readiness work.
 
 Current registry evidence is recorded in [`RELEASE_STATE.md`](RELEASE_STATE.md):
-`intentloom@1.0.1` is published under `latest`, while `next` remains at
+`intentloom@1.0.2` is published under `latest`, while `next` remains at
 `1.0.0`. The `v1.0.0` Git tag is pushed and has a GitHub release.
 
 For every release, an authorized maintainer must confirm ownership of the npm
@@ -62,9 +62,10 @@ publish.
 
 ### One-time setup, performed by the package owner
 
-Steps 1 and 2 are complete as of 2026-07-31. Step 3 waits on the first
-successful trusted publish. Step 1 happens outside this repository and cannot be
-automated from it.
+Steps 1 and 2 are complete as of 2026-07-31. The first trusted publish
+completed successfully on 2026-08-02. Step 3 remains a package-owner hardening
+follow-up; step 1 happens outside this repository and cannot be automated from
+it.
 
 1. On [npmjs.com](https://www.npmjs.com/package/intentloom), open the package
    settings and add a trusted publisher for GitHub Actions:

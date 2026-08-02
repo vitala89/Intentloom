@@ -9,7 +9,24 @@ A checked box means the item was verified and the evidence is recorded, either
 in this file or in the private release record. An unchecked box blocks
 publication.
 
-## Candidate under review
+## Current published release
+
+- Package: `intentloom`
+- Version: `1.0.2`
+- Dist-tag used: `latest`; `next` remains at `1.0.0`.
+- Release commit: `8de92ea` on `main`
+- Verification date: 2026-08-02
+- Publication workflow: [`30724962105`](https://github.com/vitala89/Intentloom/actions/runs/30724962105)
+- Dry-run workflow: [`30724860360`](https://github.com/vitala89/Intentloom/actions/runs/30724860360)
+- Registry evidence: shasum `4a52f359ed6ffda5a80a73af657923285bcdc910`,
+  SLSA v1 provenance, and homepage
+  `https://vitala89.github.io/Intentloom/`.
+
+The current release passed the trusted-publishing workflow's build, test,
+clean-tree, pack, dry-run, and real publish steps after the protected
+`npm-publish` environment approval. The published README points to GitHub Pages.
+
+## Historical v1.0.0 release record
 
 - Package: `intentloom`
 - Version: `1.0.0`
