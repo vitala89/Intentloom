@@ -24,7 +24,12 @@ Intentloom adopts a live read-only provider connection model with strict securit
 3. **Project & Repository Scope Isolation**: Provider queries must be bound to an explicit repository target (`owner/repo` or `group/project`). Evidence collected from different targets must not be mixed.
 4. **Secret & Identity Redaction**: Personal details, emails, access tokens, and private URLs must be redacted into vendor-neutral pseudonyms before inclusion in evidence timelines.
 5. **Rate-Limiting & Caching**: Live queries must observe provider rate-limit headers (`X-RateLimit-Remaining`, `Retry-After`) and use local TTL-based evidence caching.
-6. **Instant Revocation & Zero Retention Policy**: Revoking credentials or clearing local cache immediately purges cached provider data without modifying project-owned files.
+6. **Local Revocation & Zero Retention Policy**: Credential resolution is
+   invocation-scoped and reads only an explicit token or the recognized
+   environment aliases. Clearing those inputs prevents authorization on the
+   next invocation; `purgeProviderCache` removes retained evidence without
+   modifying project-owned files. Intentloom never performs remote token
+   deletion or rotation from the read-only provider boundary.
 
 ## Consequences
 

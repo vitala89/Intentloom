@@ -9,18 +9,20 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **CLI clean-cache increment merged** — PR #182 was conflict-resolved,
-fully verified, and squash-merged into `main` as commit `1904908`. The active
-hardening gate is unchanged, and credential revocation is still a separate
-follow-up.
+Status: **Credential-revocation contract published** — PR #183 for the
+read-only clean-cache adapter has all six compatibility checks passed and is
+awaiting merge. This branch adds invocation-scoped provider credential
+resolution and local-revocation semantics without remote token mutation. PR
+#183 is open for remote checks; the active read-only provider-evidence hardening
+gate remains unchanged.
 
-Active branch: `codex/post-merge-handoff-182`
+Active branch: `codex/credential-revocation-contract`
 
-Current objective: continue the read-only evidence hardening gate without
-touching project-owned files or credential behavior.
+Current objective: make credential-source precedence and post-clearing behavior
+deterministic while keeping remote provider token deletion outside Intentloom.
 
-Next first action: monitor PR #183, then implement the separate read-only
-credential-revocation contract and adversarial payload/provenance coverage.
+Next first action: monitor PR #183, then continue with adversarial
+payload/provenance and CLI/application equivalence coverage.
 
 Known open items, in the order they should be handled:
 
@@ -66,6 +68,32 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-02, provider credential revocation contract
+
+- **Status:** complete; PR #183 open and remote checks pending.
+- **Branch:** `codex/credential-revocation-contract`
+- **Pull request:** [#183](https://github.com/vitala89/Intentloom/pull/183)
+- **Objective:** Define and implement safe local credential revocation semantics
+  without calling provider token-delete or token-rotation endpoints.
+- **Completed:** Added a provider credential resolver with explicit-token
+  precedence, GitHub/GitLab environment aliases, invocation-scoped reads, and a
+  deterministic no-credential result after environment clearing. Added live
+  provider regression coverage and updated the live-provider specification,
+  ADR-0022, roadmap, project state, and changelog.
+- **Not completed:** Remote CI, review, and merge. Remote credential
+  deletion/rotation, environment mutation in a parent shell, and project
+  mutation remain out of scope.
+- **Files or packages changed:** `packages/evidence-provider/src/credentials.ts`,
+  `packages/evidence-provider/src/live.ts`, package exports, provider tests, and
+  read-only hardening documentation.
+- **Validation:** Focused live-provider and credential-resolution tests pass
+  15/15; full suite passes 870 tests with 3 skipped; typecheck, formatting,
+  production build, and staged governance pass.
+- **Decomposition:** Credential source precedence is isolated from live HTTP
+  orchestration behind a small typed module; no oversized production file grew.
+- **Next first action:** Monitor PR #183, then continue with the remaining
+  hardening evidence after merge.
 
 ### 2026-08-02, merge conflict resolution for read-only CLI cache cleanup
 

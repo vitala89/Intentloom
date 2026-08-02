@@ -1,7 +1,7 @@
 # Live Read-Only Provider Connections Specification
 
 - **Status**: Draft / Candidate
-- **Version**: 0.4.0-candidate
+- **Version**: 0.5.0-candidate
 - **Governing ADR**: [ADR-0022](../decisions/ADR-0022-live-read-only-provider-connections.md)
 
 ---
@@ -20,6 +20,11 @@ This specification defines the protocol, security boundaries, rate-limiting, red
 2. **Credential Rules**:
    - Tokens MUST NOT be written to `.aif/config.yaml`, evidence logs, or disk caches.
    - Tokens MUST be passed in-memory to HTTP request headers (`Authorization: Bearer <token>` or `PRIVATE-TOKEN: <token>`).
+   - An explicit runtime token takes precedence over environment variables. When
+     no explicit token is supplied, the first non-empty provider variable in the
+     listed order is read at the start of each fetch operation.
+   - Credential values MUST NOT be snapshotted across fetch operations or
+     included in result diagnostics.
 
 ---
 
@@ -85,10 +90,19 @@ are returned. Raw provider payloads are not retained by this slice.
 ## 6. Revocation & Cache Purging
 
 1. Running `intentloom clean --cache` removes `.aif/cache/providers/` without touching project code. `--provider` and `--project-key` narrow the purge scope; a project key requires a provider.
-2. Unsetting token environment variables immediately revokes live API access.
+2. Local credential revocation means that the caller stops supplying the
+   explicit token and unsets all recognized provider environment variables
+   before the next fetch operation. The resolver reads the environment anew on
+   every operation, so clearing those variables prevents subsequent authorized
+   requests.
+3. Intentloom MUST NOT call provider token-delete or token-rotation endpoints.
+   Remote revocation remains an authenticated provider-owner action outside the
+   read-only connection boundary. Intentloom also MUST NOT claim that changing
+   a child CLI process environment changes the parent shell.
 
 The current cache implementation supports the same deletion contract through
 `purgeProviderCache`: callers may remove one project, one provider, or the
 entire configured cache root. Cache records are versioned and rejected when
 their provider/project identity, source, or retention timestamps do not match
-the requested entry.
+the requested entry. Cache purging is independent of credential resolution, so
+callers can clear retained evidence even when no credential is configured.

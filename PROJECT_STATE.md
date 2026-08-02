@@ -77,7 +77,10 @@ and real consumers justify them.
   PR #177 (`112b4a4`). It persists only normalized redacted `available` results,
   enforces a maximum 15-minute TTL, and exposes provider/project-scoped purge;
   the `intentloom clean --cache` CLI adapter is merged through PR #182
-  (`1904908`), while credential revocation remains separate follow-up work.
+  (`1904908`), and credential resolution now
+  supports explicit invocation tokens and the documented GitHub/GitLab
+  environment aliases. Cleared inputs are treated as locally revoked; remote
+  provider token deletion and rotation remain out of scope.
 - `apps/desktop` carries an imported design system in `src/design/`: a token
   layer, six component groups, vendored Lucide glyphs, self-hosted fonts, and the
   vector logo masters (ADR-0044). Five design components (`Card`, `Tabs`,
@@ -449,8 +452,10 @@ reviewed increments.
 The next redaction increment is merged through PR #175 as `26ad22d`. It applies
 a shared bounded deterministic scanner to provider export, live-provider, and
 external-MCP normalized fields, removing known provider token forms and
-pseudonymizing email identities. Raw provider payload retention, cache deletion,
-and revocation remain separate follow-ups.
+pseudonymizing email identities. Raw provider payload retention and cache
+deletion are covered by later read-only increments; credential resolution now
+has deterministic local-revocation semantics, while remote token deletion and
+rotation remain out of scope.
 
 ## Next platform milestone
 
