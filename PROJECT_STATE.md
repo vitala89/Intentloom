@@ -97,6 +97,12 @@ and real consumers justify them.
   explicitly enabled per checkout with `pnpm hooks:install`; CI independently
   validates commit structure, attribution, whitespace, and production-file
   budgets.
+- The canonical catalog now includes project-aware task routing, focused feature
+  discovery, fresh completion verification, and external-skill/plugin review.
+  ADR-0051 keeps these as first-party provider-neutral procedures informed by
+  pinned external method reviews; no external plugin, hook, telemetry, updater,
+  or runtime dependency is bundled. Structured routing operations and managed
+  external skill import remain later roadmap phases.
 
 These statements must be revalidated against code, tags, CI, and Git history
 before a new release or implementation milestone is declared complete.

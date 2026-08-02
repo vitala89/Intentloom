@@ -1,29 +1,41 @@
 ---
 name: aif-debugger
-description: Diagnose a reproducible failure without speculative fixes.
+description: Diagnose an observed defect or performance regression through a reproducible feedback loop, ranked hypotheses, and regression evidence. Use when behavior is broken, failing, inconsistent, or unexpectedly slow.
 ---
 
 # aif-debugger
 
 ## Trigger
 
-Use only when the request matches this skill's stated purpose and has reproduction, observed output, and expected behavior. Do not trigger for an unobserved concern.
+Use when an observed failure and expected behavior are known or can be made
+explicit. Do not trigger for a hypothetical concern with no observable signal.
 
 ## Inputs
 
-- reproduction, observed output, and expected behavior
+- observed output, expected behavior, and available reproduction evidence
 - Any explicitly relevant canonical policy or workflow.
 
 ## Procedure
 
-1. Read only the smallest relevant canonical sources.
-2. Perform the bounded task directly; do not spawn subagents for this bounded work.
-3. Keep stack-specific assumptions out of the result.
+1. Read the relevant project context, specifications, ADRs, and recent evidence.
+2. Build the tightest safe pass/fail loop that exercises the reported symptom.
+   If no valid loop is possible, state the missing artifact or access instead of
+   guessing.
+3. Reproduce and minimize the failure. For a hard bug, rank three to five
+   falsifiable hypotheses before instrumenting one variable at a time.
+4. Identify the root cause with evidence. Modify code only when the user asked
+   for a fix; otherwise return the diagnosis and safe next action.
+5. For an authorized fix, add a regression test at the real behavior seam,
+   verify red then green when safely expressible, and re-run the original loop.
+6. Remove temporary instrumentation and record residual risk.
 
 ## Exact outputs
 
-Return root-cause hypothesis, evidence, and safe next action.
+Return reproduction, minimized case, tested hypotheses, root cause, evidence,
+regression status, residual risk, and safe next action.
 
 ## Stop conditions
 
-Stop when the output is complete, a required input is absent, or a decision outside the request is needed. State the blocker rather than guessing.
+Stop when the diagnosis or authorized fix is verified, when no honest feedback
+loop can be built, or when a decision outside the request is needed. State the
+blocker rather than guessing.
