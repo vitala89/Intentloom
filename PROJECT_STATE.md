@@ -81,6 +81,10 @@ and real consumers justify them.
   supports explicit invocation tokens and the documented GitHub/GitLab
   environment aliases. Cleared inputs are treated as locally revoked; remote
   provider token deletion and rotation remain out of scope.
+- The current read-only hardening increment adds deterministic adversarial
+  external-MCP payload coverage and a CLI/MCP structured-result equivalence
+  contract for release analysis. It remains test-and-fixture only: no new
+  provider, network, authority, or mutation capability is introduced.
 - `apps/desktop` carries an imported design system in `src/design/`: a token
   layer, six component groups, vendored Lucide glyphs, self-hosted fonts, and the
   vector logo masters (ADR-0044). Five design components (`Card`, `Tabs`,
