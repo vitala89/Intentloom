@@ -109,6 +109,7 @@ export async function fetchLiveProviderEvidence(
   }
 
   const { events, diagnostics, bounded } = result;
+  const reachedRecordLimit = bounded && events.length >= maxRecords;
 
   events.sort(
     (left, right) =>
@@ -121,7 +122,7 @@ export async function fetchLiveProviderEvidence(
     ...base,
     status: bounded ? "bounded" : "available",
     events,
-    diagnostics: bounded
+    diagnostics: reachedRecordLimit
       ? [...diagnostics, "record-limit-reached"]
       : diagnostics,
   };

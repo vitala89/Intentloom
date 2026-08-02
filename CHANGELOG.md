@@ -13,6 +13,10 @@ are not included in the current npm artifact until a later release.
 - Added JSON Schema files for Extension Manifest (`urn:aif:schema:extension-manifest:1`) and Extension Lock (`urn:aif:schema:extension-lock:1`) in `catalog/schemas/` with `@intentloom/validator` support.
 - Added ADR-0023 (`ADR-0023-external-mcp-evidence-ingestion.md`) and External MCP Evidence Ingestion Specification (`EXTERNAL_MCP_EVIDENCE_INGESTION_SPEC.md`).
 
+### Changed
+
+- Bounded live GitHub/GitLab evidence pagination and added deterministic rate-limit diagnostics without introducing mutation or provider-specific authority.
+
 ## [1.0.2] - 2026-08-02
 
 Documentation and package-metadata release. The published CLI also includes

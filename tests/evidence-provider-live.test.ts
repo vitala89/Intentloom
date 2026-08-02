@@ -127,6 +127,43 @@ describe("Live Provider Connections (ADR-0022)", () => {
     expect(firstCallHeaders?.["PRIVATE-TOKEN"]).toBe("dummy_gitlab_token");
   });
 
+  it("follows GitLab X-Next-Page pagination within the bounded fetch", async () => {
+    const mockFetch = vi.fn().mockImplementation(async (url: string) => {
+      if (url.includes("/merge_requests")) {
+        const pageTwo = url.includes("page=2");
+        return new Response(
+          JSON.stringify([
+            {
+              iid: pageTwo ? 2 : 1,
+              state: "merged",
+              created_at: pageTwo
+                ? "2026-07-31T14:01:00Z"
+                : "2026-07-31T14:00:00Z",
+            },
+          ]),
+          {
+            status: 200,
+            headers: pageTwo ? {} : { "x-next-page": "2" },
+          },
+        );
+      }
+      return new Response(JSON.stringify([]), { status: 200 });
+    });
+
+    const result = await fetchLiveProviderEvidence({
+      provider: "gitlab",
+      projectKey: "group/my-project",
+      baseUrl: "https://gitlab.example/api/v4",
+      fetchFn: mockFetch as any,
+    });
+
+    expect(result.status).toBe("available");
+    expect(result.events).toHaveLength(2);
+    expect(mockFetch.mock.calls.map(([url]) => url)).toContain(
+      "https://gitlab.example/api/v4/projects/group%2Fmy-project/merge_requests?per_page=50&page=2",
+    );
+  });
+
   it("trims custom provider base URL slashes without a backtracking regex", async () => {
     const mockFetch = vi
       .fn()
@@ -160,5 +197,92 @@ describe("Live Provider Connections (ADR-0022)", () => {
 
     expect(result.status).toBe("bounded");
     expect(result.diagnostics).toContain("rate-limit-exceeded");
+  });
+
+  it("follows GitHub Link pagination within the bounded fetch", async () => {
+    const mockFetch = vi.fn().mockImplementation(async (url: string) => {
+      if (url.includes("/pulls")) {
+        const pageTwo = url.includes("page=2");
+        return new Response(
+          JSON.stringify([
+            {
+              id: pageTwo ? 102 : 101,
+              state: "open",
+              created_at: pageTwo
+                ? "2026-07-31T12:01:00Z"
+                : "2026-07-31T12:00:00Z",
+            },
+          ]),
+          {
+            status: 200,
+            headers: pageTwo
+              ? { "content-type": "application/json" }
+              : {
+                  "content-type": "application/json",
+                  link: '<https://example.test/repos/vitala89/Intentloom/pulls?state=all&per_page=50&page=2>; rel="next"',
+                },
+          },
+        );
+      }
+      return new Response(JSON.stringify([]), { status: 200 });
+    });
+
+    const result = await fetchLiveProviderEvidence({
+      provider: "github",
+      projectKey: "vitala89/Intentloom",
+      baseUrl: "https://example.test",
+      fetchFn: mockFetch as any,
+    });
+
+    expect(result.status).toBe("available");
+    expect(result.events).toHaveLength(2);
+    expect(mockFetch.mock.calls.map(([url]) => url)).toContain(
+      "https://example.test/repos/vitala89/Intentloom/pulls?state=all&per_page=50&page=2",
+    );
+  });
+
+  it("suspends GitHub fetching when the remaining quota is below ten", async () => {
+    const mockFetch = vi.fn().mockResolvedValue(
+      new Response(JSON.stringify([]), {
+        status: 200,
+        headers: { "x-ratelimit-remaining": "9" },
+      }),
+    );
+
+    const result = await fetchLiveProviderEvidence({
+      provider: "github",
+      projectKey: "vitala89/Intentloom",
+      fetchFn: mockFetch as any,
+    });
+
+    expect(result.status).toBe("bounded");
+    expect(result.diagnostics).toContain("E_PROVIDER_RATE_LIMITED");
+    expect(result.diagnostics).not.toContain("record-limit-reached");
+    expect(mockFetch).toHaveBeenCalledTimes(1);
+  });
+
+  it("caps total GitHub pagination at ten pages", async () => {
+    const mockFetch = vi.fn().mockImplementation(async (url: string) => {
+      const page = Number(new URL(url).searchParams.get("page") ?? "1");
+      return new Response(JSON.stringify([{ id: page }]), {
+        status: 200,
+        headers: {
+          link: `<https://example.test/repos/vitala89/Intentloom/pulls?state=all&per_page=50&page=${page + 1}>; rel="next"`,
+        },
+      });
+    });
+
+    const result = await fetchLiveProviderEvidence({
+      provider: "github",
+      projectKey: "vitala89/Intentloom",
+      baseUrl: "https://example.test",
+      maxRecords: 500,
+      fetchFn: mockFetch as any,
+    });
+
+    expect(result.status).toBe("bounded");
+    expect(result.diagnostics).toContain("page-limit-reached");
+    expect(result.events).toHaveLength(10);
+    expect(mockFetch).toHaveBeenCalledTimes(10);
   });
 });
