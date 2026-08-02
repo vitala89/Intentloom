@@ -12,12 +12,18 @@ are not included in the current npm artifact until a later release.
 - Added ADR-0022 (`ADR-0022-live-read-only-provider-connections.md`) and Live Read-Only Provider Connections Specification (`LIVE_PROVIDER_CONNECTIONS_SPEC.md`).
 - Added JSON Schema files for Extension Manifest (`urn:aif:schema:extension-manifest:1`) and Extension Lock (`urn:aif:schema:extension-lock:1`) in `catalog/schemas/` with `@intentloom/validator` support.
 - Added ADR-0023 (`ADR-0023-external-mcp-evidence-ingestion.md`) and External MCP Evidence Ingestion Specification (`EXTERNAL_MCP_EVIDENCE_INGESTION_SPEC.md`).
+- Added first-party `aif-task-router`, `aif-feature-discovery`,
+  `aif-verification-gate`, and `aif-extension-review` skills, plus ADR-0051 and
+  the curated skill-routing specification and roadmap.
 
 ### Changed
 
 - Bounded live GitHub/GitLab evidence pagination and added deterministic rate-limit diagnostics without introducing mutation or provider-specific authority.
 - Redacted provider tokens and email identities from normalized export, live, and external-MCP evidence using bounded deterministic scanning.
 - Added a bounded local provider-evidence cache with a maximum 15-minute TTL, redacted-only persistence, and provider/project-scoped purge operations.
+- Refined canonical debugging, testing, planning-review, code-review,
+  idea-to-feature, and bug-fix procedures with project-first routing,
+  proportionate discovery, and fresh verification gates.
 
 ## [1.0.2] - 2026-08-02
 

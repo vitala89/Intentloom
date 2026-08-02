@@ -22,6 +22,11 @@ Every text derivative contains the framework version, adapter output version,
 canonical-source provenance, and a content checksum. Frontmatter stays at byte
 zero where a provider requires it.
 
+The canonical catalog includes task routing, feature discovery, verification,
+and external-extension review skills. They are generated like every other
+first-party skill; Intentloom does not install the external projects whose
+methods informed them. See [Curated Engineering Skills](CURATED_SKILLS.md).
+
 ## Shared destinations
 
 Multi-adapter generation sorts and deduplicates adapter selections. Identical

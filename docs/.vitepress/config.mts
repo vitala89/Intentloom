@@ -22,6 +22,7 @@ export default defineConfig({
         text: "Getting Started",
         items: [
           { text: "Overview", link: "/README" },
+          { text: "Curated Skills", link: "/guides/CURATED_SKILLS" },
           { text: "Architecture Overview", link: "/architecture/ARCHITECTURE" },
           {
             text: "System Boundaries",
@@ -40,6 +41,10 @@ export default defineConfig({
           {
             text: "Managed Extension Lifecycle v0.3",
             link: "/specs/MANAGED_EXTENSION_LIFECYCLE_V0_3_SPEC",
+          },
+          {
+            text: "Curated Skill Routing",
+            link: "/specs/CURATED_SKILL_ROUTING_SPEC",
           },
         ],
       },

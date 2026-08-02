@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **PR #177 merged; bounded provider cache hardening complete** — GitHub Pages and npm metadata are current, `intentloom@1.0.2` is published under `latest` with SLSA v1 provenance, and GitHub Release `v1.0.2` points at `main` commit `192fd05`. PR #171 squash-merged the repository-side token guard and state reconciliation as `99dc9f6`; the protected `npm-publish` environment has no secrets or variables, and the workflow rejects `NODE_AUTH_TOKEN`/`NPM_TOKEN`. The npm package-level disallow-tokens setting still needs an authenticated package-owner session. Dependabot alert #2 (`glib@0.18.5`) remains the only open alert under the exception expiring 2026-10-29; Cargo confirms a direct `glib@0.20.0` update is incompatible with the current GTK 0.18/Tauri 2.11.5 stack. PR #160 (`3713b15`) merged the first live-provider/MCP evidence implementation slice, PR #173 (`341984a`) merged bounded pagination/rate-limit handling, PR #175 (`26ad22d`) merged deterministic identity/token redaction, and PR #177 (`112b4a4`) merged bounded redacted cache retention/deletion.
+Status: **curated skill routing complete locally; review and integration pending** — Intentloom now carries provider-neutral task routing, feature discovery, verification, and external-extension review skills. The implementation adapts selected methods from pinned Superpowers and Matt Pocock source revisions without installing their plugin runtimes, hooks, telemetry, or automatic dependencies. The active read-only provider-evidence hardening gate remains unchanged.
 
-Active branch: `codex/provider-cache-handoff`
+Active branch: `codex/curated-skill-routing`
 
-Current objective: reconcile the merged provider cache state in project records and leave the next read-only milestone executable.
+Current objective: integrate the curated skill-routing slice while preserving the canonical catalog, provider-neutral adapters, and non-destructive adoption boundary.
 
-Next first action: design the CLI `intentloom clean --cache` adapter, then add credential revocation behavior without touching project-owned files.
+Next first action: review the local commit, then push and open a pull request when authorized; after integration, resume the CLI `intentloom clean --cache` design milestone.
 
 Known open items, in the order they should be handled:
 
@@ -61,6 +61,42 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-02, curated skill routing and external-method adaptation
+
+- **Status:** complete locally; remote pull request not opened.
+- **Branch:** `codex/curated-skill-routing`
+- **Objective:** Adapt useful planning, discovery, debugging, review, testing,
+  and verification methods for Intentloom development and downstream adopted
+  projects without importing an uncontrolled external plugin runtime.
+- **Completed:** Added canonical `aif-task-router`, `aif-feature-discovery`,
+  `aif-verification-gate`, and `aif-extension-review` skills; strengthened the
+  debugger, testing, planning-review, and code-review skills; and refined the
+  idea-to-feature and bug-fix workflows. Added a routing policy, ADR, normative
+  specification, implementation roadmap, source/provenance ledger, user guide,
+  and adapter-focused regression coverage. The root repository now explicitly
+  routes non-trivial tasks through the same canonical catalog that adapters
+  generate for Claude, Codex, Cursor, and Copilot projects.
+- **Decisions and assumptions:** Superpowers commit
+  `44c9b2d6e889982ac18c27d05a19fefe335194e1` and Matt Pocock skills commit
+  `2ab958093e83e0ec752e6c1c5932da465bf23e0c` were reviewed as MIT-licensed
+  method sources. Their mandatory invocation rules, automatic hooks, remote
+  visual assets, unpinned installers, broad subagent requirements, and
+  auto-commit behavior were not adopted. External extension installation
+  remains an explicit, reviewed action.
+- **Validation:** Focused catalog/schema/progressive-parse/adapter tests pass
+  72/72. Full `pnpm verify` passes with 109 test files, 866 passed, and 3
+  skipped; typecheck, formatting, build, and `git diff --check` pass. The first
+  sandboxed full run exposed one wrapped non-trigger phrase and Unix-socket
+  sandbox denial; the phrase was corrected and the final run used the required
+  local IPC permission.
+- **Not completed:** Structured machine-readable route output, managed external
+  skill import/update, optional provider bridge packages, and automatic
+  self-adoption are later roadmap phases. No external plugins, hooks,
+  dependencies, telemetry, network calls, or project-owned files were
+  installed or changed automatically.
+- **Next first action:** Review the atomic local commit, then push and open a
+  pull request when authorized.
 
 ### 2026-08-02, provider identity and token redaction
 
