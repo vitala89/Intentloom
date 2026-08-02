@@ -1,4 +1,9 @@
 import type { ProviderEvidenceResult, ProviderName } from "./index.js";
+import {
+  readCachedProviderResult,
+  type ProviderCacheOptions,
+  writeCachedProviderResult,
+} from "./cache.js";
 import { fetchGitHubLiveEvents } from "./live-github.js";
 import { fetchGitLabLiveEvents } from "./live-gitlab.js";
 import { trimTrailingSlashes } from "./live-helpers.js";
@@ -9,6 +14,7 @@ export interface LiveProviderFetchOptions {
   readonly token?: string | undefined;
   readonly baseUrl?: string | undefined;
   readonly fetchFn?: typeof fetch | undefined;
+  readonly cache?: ProviderCacheOptions | undefined;
   readonly maxRecords?: number | undefined;
   readonly maxStringLength?: number | undefined;
 }
@@ -51,6 +57,28 @@ export async function fetchLiveProviderEvidence(
     };
   }
 
+  if (options.provider === "github") {
+    const [owner, repo] = options.projectKey.split("/");
+    if (!owner || !repo) {
+      return {
+        ...base,
+        status: "invalid",
+        events: [],
+        diagnostics: ["invalid-project-key-format"],
+      };
+    }
+  }
+
+  if (options.cache) {
+    const cached = await readCachedProviderResult(
+      options.provider,
+      base.projectKey,
+      options.cache,
+    );
+    if (cached)
+      return { ...cached, diagnostics: [...cached.diagnostics, "cache-hit"] };
+  }
+
   const token =
     options.token ??
     (options.provider === "github"
@@ -72,15 +100,7 @@ export async function fetchLiveProviderEvidence(
   if (options.provider === "github") {
     const defaultBase = options.baseUrl ?? "https://api.github.com";
     const cleanBase = trimTrailingSlashes(defaultBase);
-    const [owner, repo] = options.projectKey.split("/");
-    if (!owner || !repo) {
-      return {
-        ...base,
-        status: "invalid",
-        events: [],
-        diagnostics: ["invalid-project-key-format"],
-      };
-    }
+    const [owner, repo] = options.projectKey.split("/") as [string, string];
     result = await fetchGitHubLiveEvents({
       cleanBase,
       owner,
@@ -118,7 +138,7 @@ export async function fetchLiveProviderEvidence(
       left.id.localeCompare(right.id),
   );
 
-  return {
+  const response: ProviderEvidenceResult = {
     ...base,
     status: bounded ? "bounded" : "available",
     events,
@@ -126,4 +146,15 @@ export async function fetchLiveProviderEvidence(
       ? [...diagnostics, "record-limit-reached"]
       : diagnostics,
   };
+  if (options.cache && response.status === "available") {
+    try {
+      await writeCachedProviderResult(response, options.cache);
+    } catch {
+      return {
+        ...response,
+        diagnostics: [...response.diagnostics, "cache-write-failed"],
+      };
+    }
+  }
+  return response;
 }

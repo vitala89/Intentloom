@@ -57,6 +57,11 @@ _All POST, PUT, PATCH, DELETE operations are strictly prohibited._
 3. **Local Cache**:
    - Cache fetched JSON objects in `.aif/cache/providers/{provider}/{owner_repo_hash}/` with a 15-minute TTL.
    - Cached files must contain redacted data only.
+   - Cache only complete `available` normalized results; bounded or rate-limited
+     responses must not become reusable cache entries.
+   - The current library boundary exposes an injectable cache store and
+     provider/project-scoped purge operation. The CLI `clean --cache` adapter
+     remains a separate interface increment.
 
 ---
 
@@ -80,3 +85,9 @@ are returned. Raw provider payloads are not retained by this slice.
 
 1. Running `intentloom clean --cache` removes `.aif/cache/providers/` without touching project code.
 2. Unsetting token environment variables immediately revokes live API access.
+
+The current cache implementation supports the same deletion contract through
+`purgeProviderCache`: callers may remove one project, one provider, or the
+entire configured cache root. Cache records are versioned and rejected when
+their provider/project identity, source, or retention timestamps do not match
+the requested entry.
