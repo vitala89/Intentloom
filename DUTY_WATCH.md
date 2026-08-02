@@ -9,18 +9,19 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Branch naming convention documented** — repository guidance now
-requires change-type branch prefixes and prohibits actor/tool prefixes for new
-branches. Existing historical refs are not renamed by this documentation-only
-change.
+Status: **Live-provider adversarial corpus increment verified** — PR #188 is
+open, mergeable, and CI-green; the slice adds deterministic GitHub/GitLab
+payload fixtures and contract tests without expanding runtime authority or
+network behavior.
 
-Active branch: `docs/branch-naming-convention`
+Active branch: `test/adversarial-evidence-corpus`
 
-Current objective: make branch intent visible from the branch name while
-keeping branch naming independent from agent or tool identity.
+Current objective: review and merge PR #188 when authorized, then extend the
+same read-only hardening coverage to application-surface equivalence,
+pagination, and rate-limit edge cases.
 
-Next first action: review and merge the focused docs PR when explicitly
-authorized, then apply the convention to every newly created branch.
+Next first action: review PR #188, then start the broader application-surface
+equivalence and pagination corpus on a compliant `test/` or `security/` branch.
 
 Known open items, in the order they should be handled:
 
@@ -67,6 +68,29 @@ entry directly below this section.
 
 ## Watch entries
 
+### 2026-08-02, live-provider adversarial corpus
+
+- **Status:** complete for implementation and validation; PR #188 is open,
+  mergeable, and all reported CI checks pass.
+- **Branch:** `test/adversarial-evidence-corpus`
+- **Objective:** Extend the read-only hardening gate from external-MCP payloads
+  to live GitHub/GitLab responses and adversarial rate-limit bodies.
+- **Completed:** Added a shared fixture for GitHub and GitLab records containing
+  token-like values, private identity, a mismatched project key, mutation-looking
+  text, and prompt-injection text. Added tests for fixed provider provenance,
+  explicit project scope, redaction, deterministic ordering under record
+  reordering, and non-retention of rate-limit response bodies.
+- **Not completed:** Merge authorization and broader application-surface
+  equivalence coverage.
+- **Files or packages changed:**
+  `tests/fixtures/evidence/live-provider-adversarial.json` and
+  `tests/evidence-provider-adversarial-live.test.ts`.
+- **Validation:** Focused provider/MCP tests pass 21/21; staged governance
+  passes; full `pnpm verify` passes with 113 test files, 879 passed, 3 skipped;
+  PR #188 compatibility, CodeQL, and governance checks pass.
+- **Next first action:** Review PR #188, merge only when authorized, then add
+  application-surface equivalence and pagination/rate-limit fixtures.
+
 ### 2026-08-02, adversarial evidence fixtures and CLI/MCP equivalence
 
 - **Status:** complete; PR #186 squash-merged into `main` after all required CI
@@ -99,16 +123,18 @@ entry directly below this section.
 
 ### 2026-08-02, change-type branch naming convention
 
-- **Status:** complete; documentation, staged governance, and full verification
-  pass on the compliant branch.
-- **Branch:** `docs/branch-naming-convention`
+- **Status:** complete; PR #187 squash-merged into `main`.
+- **Branch:** `docs/branch-naming-convention` → `main`
+- **Pull request:** [#187](https://github.com/vitala89/Intentloom/pull/187)
+- **Merge commit:** `3ea40809bd46caac8a8d4bb0713034d6fd1b34fe`
 - **Objective:** Require branches to use a change-type prefix and prohibit
   actor/tool/model prefixes such as `codex/` for newly created branches.
 - **Completed:** Added the `<type>/<short-kebab-description>` convention to
   `AGENTS.md` and `docs/governance/AI_AGENT_WORKFLOW.md`, with examples and the
   reserved `main`/`v*` refs called out. Existing historical branches remain
   unchanged. Updated the durable project state and Unreleased changelog.
-- **Not completed:** Review and merge of the documentation PR.
+- **Not completed:** Nothing within the documentation scope; historical refs
+  remain unchanged by design.
 - **Files or packages changed:** `AGENTS.md`, `docs/governance/AI_AGENT_WORKFLOW.md`,
   `PROJECT_STATE.md`, `CHANGELOG.md`, and `DUTY_WATCH.md`.
 - **Validation:** Staged governance and `git diff --check` pass. Full
@@ -116,9 +142,8 @@ entry directly below this section.
   874 passed, and 3 skipped; typecheck, formatting, build, and diff checks
   pass. The unprivileged run was blocked by sandbox `EPERM` on daemon Unix
   sockets and was not treated as a product failure.
-- **Next first action:** Review and merge the focused documentation PR when
-  explicitly authorized, then apply the convention to every newly created
-  branch.
+- **Next first action:** Use the change-type convention for all newly created
+  branches.
 
 ### 2026-08-02, merge conflict resolution for credential revocation
 
