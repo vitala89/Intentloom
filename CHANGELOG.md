@@ -24,6 +24,9 @@ are not included in the current npm artifact until a later release.
 - Added ADR-0052, the Agentic Evaluation and Execution Harness specification,
   phased development plan, threat-model boundary, and pinned reference-source
   ledger. This documents future work without adding a runtime or sandbox.
+- Added change-type branch naming guidance for agents and contributors;
+  new branches use prefixes such as `feat/`, `fix/`, `refactor/`, or `docs/`
+  instead of actor or tool prefixes such as `codex/`.
 
 ### Changed
 
