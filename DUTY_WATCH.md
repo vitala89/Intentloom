@@ -9,19 +9,18 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **CLI clean-cache increment verified remotely** — the provider evidence
-cache now has a read-only CLI adapter with full local verification and all six
-PR #182 compatibility checks passed. The PR remains open pending merge; the
-active hardening gate is unchanged, and credential revocation is still a
-separate follow-up.
+Status: **CLI clean-cache increment merged** — PR #182 was conflict-resolved,
+fully verified, and squash-merged into `main` as commit `1904908`. The active
+hardening gate is unchanged, and credential revocation is still a separate
+follow-up.
 
-Active branch: `codex/clean-cache-adapter`
+Active branch: `codex/post-merge-handoff-182`
 
-Current objective: complete and publish the `intentloom clean --cache` adapter
-without touching project-owned files or credential behavior.
+Current objective: continue the read-only evidence hardening gate without
+touching project-owned files or credential behavior.
 
-Next first action: merge PR #182 when authorized, then implement the separate
-read-only credential-revocation contract.
+Next first action: monitor PR #183, then implement the separate read-only
+credential-revocation contract and adversarial payload/provenance coverage.
 
 Known open items, in the order they should be handled:
 
@@ -67,6 +66,29 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-02, merge conflict resolution for read-only CLI cache cleanup
+
+- **Status:** complete; PR #182 squash-merged into `main`.
+- **Branch:** `codex/clean-cache-adapter` → `main`
+- **Pull request:** [#182](https://github.com/vitala89/Intentloom/pull/182)
+- **Merge commit:** `19049089c86222b009ed4ee2f42ed7a3130ea765`
+- **Objective:** Reconcile PR #182 with the harness documentation already
+  merged by PR #181, then merge the clean-cache adapter without bypassing
+  required checks.
+- **Completed:** Resolved the sole `DUTY_WATCH.md` conflict while preserving
+  both the current cache-cleanup handoff and the historical harness source
+  ledger. Pushed the merge commit, reran the previously queued Windows Node 24
+  compatibility job, and squash-merged after all CodeQL, governance, and
+  Ubuntu/macOS/Windows Node 22/24 checks passed.
+- **Validation:** Local `pnpm verify`, staged governance, and `git diff --check`
+  passed; the full suite reported 110 test files, 870 passed, and 3
+  skipped. PR #182's required checks are green on all supported CI matrix
+  entries.
+- **Not completed:** Credential revocation, adversarial payload/provenance
+  hardening, and the separate PR #183 remain outside this increment.
+- **Next first action:** Continue the read-only evidence hardening gate from
+  `main`, starting with PR #183 review and the credential-revocation contract.
 
 ### 2026-08-02, read-only CLI provider-cache cleanup
 

@@ -331,9 +331,10 @@ output may authorize a write, release, merge, publish, or deployment.
 
 Current increments complete: PR #177 adds bounded local provider-evidence cache
 retention and provider/project-scoped deletion over already-redacted results;
-the `intentloom clean --cache` CLI adapter now exposes complete-cache,
-provider-scoped, and provider/project-scoped deletion without touching project
-files. The next read-only hardening increment is credential revocation behavior.
+PR #182 (`1904908`) adds the `intentloom clean --cache` CLI adapter with
+complete-cache, provider-scoped, and provider/project-scoped deletion without
+touching project files. The next read-only hardening increment is credential
+revocation behavior.
 
 ## Planned milestone — Agentic evaluation and execution harness
 
