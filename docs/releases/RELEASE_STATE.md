@@ -7,19 +7,18 @@ this document is the source of truth for the current status.
 
 Snapshot: 2026-08-02
 Workspace version: `1.0.2`
-Candidate release: `1.0.2`, prepared on `codex/update-public-metadata`, pending trusted publication
-Last published npm package: `intentloom@1.0.1`, verified in the registry on 2026-08-02
-Default npm `latest`: `intentloom@1.0.1`
+Candidate release: `1.0.2`, published through trusted workflow run [`30724962105`](https://github.com/vitala89/Intentloom/actions/runs/30724962105)
+Last published npm package: `intentloom@1.0.2`, verified in the registry on 2026-08-02
+Default npm `latest`: `intentloom@1.0.2`
 Default npm `next`: `intentloom@1.0.0`
-Previous release commit: `a148f2f` (tagged `v1.0.0` as `c1205a8`)
+Release commit: `8de92ea`
 GitHub release: [`v1.0.0`](https://github.com/vitala89/Intentloom/releases/tag/v1.0.0), published 2026-07-30
 
 Verified against the registry on 2026-08-02: `npm view intentloom` reports
-`1.0.1`, with `latest=1.0.1` and `next=1.0.0`. The `1.0.2` candidate will
-promote `latest` through the protected trusted-publishing workflow after its
-source metadata PR is merged.
+`1.0.2`, with `latest=1.0.2` and `next=1.0.0`. The GitHub repository
+description and homepage both point users to the GitHub Pages documentation.
 
-## `1.0.2` candidate
+## `1.0.2` published package
 
 `1.0.2` is a documentation and package-metadata release. It changes no runtime,
 CLI surface, schema, adapter, protocol, or dependency behavior. Its purpose is
@@ -27,16 +26,17 @@ to make the GitHub Pages site the canonical documentation destination and to
 ship the corrected npm description and README, which npm renders from the
 published tarball and does not allow editing in place.
 
-The candidate artifact must be checked with `npm pack --dry-run --json` and
-compared with the published registry metadata before the trusted publish is
-approved. Its shasum, integrity, file count, workflow run, and provenance are
-intentionally not claimed until that check completes.
+The trusted workflow completed its dry-run and real publish after the protected
+`npm-publish` environment approval. The registry reports shasum
+`4a52f359ed6ffda5a80a73af657923285bcdc910`, integrity
+`sha512-kga//huBL0XXTXB5m4mU6urXsetB/z3OEvyRjQHHPncsh/pD7EM1he6xQQ7HHib6KnEea9TSekew7pT2hxFvDA==`,
+and 70 files. The artifact carries npm provenance through the SLSA v1
+attestation endpoint:
+<https://registry.npmjs.org/-/npm/v1/attestations/intentloom@1.0.2>.
 
-`1.0.2` will publish through
-[`.github/workflows/release.yml`](../../.github/workflows/release.yml) using npm
-trusted publishing and the `latest` dist-tag. The post-publication integrity,
-workflow run, provenance, and registry state must be recorded here before this
-snapshot is considered complete.
+The published package metadata is the corrected vendor-neutral local framework
+and CLI description, homepage `https://vitala89.github.io/Intentloom/`, and
+README links to the Pages documentation.
 
 ## Provenance
 
@@ -44,6 +44,11 @@ The `1.0.0` artifact was published manually before the release workflow existed,
 so it carries **no provenance attestation** (`npm view intentloom@1.0.0` reports
 no `dist.attestations`). It cannot be given one retroactively: npm does not allow
 a published version to be replaced.
+
+`1.0.2` was published through the configured npm trusted publisher and carries
+the registry's SLSA v1 provenance attestation. The workflow run was dispatched
+from `main` at commit `8de92ea` and passed its build, test, clean-tree, pack,
+and publish steps.
 
 Both one-time setup steps are now complete. The npm trusted publisher is
 configured for `vitala89/Intentloom`, workflow `release.yml`, environment
@@ -72,16 +77,24 @@ non-stable surfaces; it does not mean that the code is absent.
 ## What users receive from npm
 
 ```text
-npm install intentloom          ->  1.0.1
-npm install intentloom@latest   ->  1.0.1
+npm install intentloom          ->  1.0.2
+npm install intentloom@latest   ->  1.0.2
 npm install intentloom@next     ->  1.0.0
 ```
 
-The `latest` tag points at `1.0.1`, while `next` remains at `1.0.0`. `next` is
+The `latest` tag points at `1.0.2`, while `next` remains at `1.0.0`. `next` is
 expected to move ahead of `latest` again at the next prerelease; publishing a
 prerelease must not move `latest`.
 
 ## Evidence
+
+- Current npm registry evidence, verified 2026-08-02 after the trusted publish:
+  [`intentloom@1.0.2`](https://www.npmjs.com/package/intentloom/v/1.0.2)
+  reports `latest=1.0.2`, `next=1.0.0`, homepage
+  `https://vitala89.github.io/Intentloom/`, shasum
+  `4a52f359ed6ffda5a80a73af657923285bcdc910`, the integrity recorded above,
+  and a SLSA v1 provenance attestation. The published README renders the Pages
+  documentation links.
 
 - Historical npm registry evidence, re-verified 2026-07-31 after the dist-tag promotion:
   [`intentloom` package](https://www.npmjs.com/package/intentloom)

@@ -9,30 +9,29 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **PR #161-#167 all merged into `main`; Desktop deadlock fixed; GitHub Pages live; 4/5 Dependabot alerts and all CodeQL alerts closed** — PR #160 (`5afedd2`), PR #161 (`e71a239`, Desktop Extension Ecosystem ADR-0044-0050 plus the VitePress scaffold and Desktop project-selection deadlock fix), PR #162 (`101026d`, stranded docs.yml action-pin fix), PR #163 (`32b22bc`, dependency vulnerability fix), PR #164 (`72f0d71`, CodeQL polynomial-redos fix), and PR #167 (`cc2bf3c`, Project Inception I1-I10 pipeline plus deterministic package-name sanitization) are merged into `main`. GitHub Pages is enabled and serving the built VitePress site at `https://vitala89.github.io/Intentloom/` (verified HTTP 200 with real content). PR #167's 19 checks passed, including CodeQL and the Ubuntu/macOS/Windows Node 22/24 matrix. `gh api repos/vitala89/Intentloom/dependabot/alerts` shows only alert #2 (`glib`, tracked exception, expires 2026-10-29) still open; `gh api repos/vitala89/Intentloom/code-scanning/alerts` shows zero open alerts. npm still serves `1.0.1`/`1.0.0` state as previously recorded; unchanged this watch. See the entries below (PR #163, PR #164, and PR #167) for what each fix actually did.
+Status: **PR #169 merged; GitHub Pages and npm metadata refreshed; intentloom@1.0.2 published with provenance; 4/5 Dependabot alerts and all CodeQL alerts closed** — PR #169 (`8de92ea`, GitHub Pages canonical documentation, project metadata refresh, and release-state reconciliation) is merged into `main`. GitHub Pages is enabled and serving the built VitePress site at `https://vitala89.github.io/Intentloom/` (verified HTTP 200 with real content and key routes). GitHub repository `description` and `homepage` point to the Pages site. npm `intentloom@1.0.2` is published under `latest`; `next` remains `1.0.0`; the registry reports SLSA v1 provenance, shasum `4a52f359ed6ffda5a80a73af657923285bcdc910`, and the corrected Pages-linked README. The publish workflow run [`30724962105`](https://github.com/vitala89/Intentloom/actions/runs/30724962105) passed its dry-run and real publish path after protected-environment approval. `gh api repos/vitala89/Intentloom/dependabot/alerts` shows only alert #2 (`glib`, tracked exception, expires 2026-10-29) still open; `gh api repos/vitala89/Intentloom/code-scanning/alerts` shows zero open alerts. See the entries below (PR #163, PR #164, PR #167, and PR #169) for what each fix actually did.
 
 Active branch: `main`
 
-Current objective: publish the prepared `1.0.1` documentation and package-metadata release through the approved trusted-publishing workflow.
+Current objective: continue the roadmap after the completed `1.0.2` public metadata and documentation release.
 
-Next first action: follow `docs/releases/PUBLISH_AUTHORIZATION_CHECKLIST.md` for the `1.0.1` publish.
+Next first action: select the next approved roadmap milestone; no public metadata or npm publication action remains for `1.0.2`.
 
 Known open items, in the order they should be handled:
 
-1. `1.0.1` is not published. The npmjs.com page still renders the `1.0.0`
-   payload: a README calling the package beta and pointing at `@next`.
-2. `1.0.0` carries no npm provenance attestation and cannot gain one. This is
-   permanent; `1.0.1` onward carry provenance through the release workflow.
-3. Token-based publishing for the package should be restricted, and any standing
-   automation token revoked, after the first successful trusted publish
+1. Token-based publishing for the package should be restricted, and any standing
+   automation token revoked, now that the first trusted publish succeeded
    (`PUBLISHING.md` one-time setup, step 3).
-4. `homepage` URL in `packages/cli/package.json` repointed to live GitHub Pages documentation site `https://vitala89.github.io/Intentloom/` (completed).
-5. Dependabot alert #2 (`glib@0.18.5`, transitive, medium) carries an approved
+2. `1.0.0` carries no npm provenance attestation and cannot gain one. This is
+   permanent; `1.0.2` carries provenance through the release workflow.
+3. `homepage` URL in `packages/cli/package.json` and the published npm metadata
+   point to live GitHub Pages documentation site `https://vitala89.github.io/Intentloom/` (completed).
+4. Dependabot alert #2 (`glib@0.18.5`, transitive, medium) carries an approved
    exception that expires 2026-10-29; re-checked 2026-08-01, no new upstream
    fix available (Tauri already at latest `2.11.5`).
-6. Branch and tag protection rules for `main` and `v*` are not recorded anywhere
+5. Branch and tag protection rules for `main` and `v*` are not recorded anywhere
    in the repository; `.github/CODEOWNERS` exists to support required review.
-7. Two remote branches remain untriaged: `codex/public-readiness-blockers` and
+6. Two remote branches remain untriaged: `codex/public-readiness-blockers` and
    `security/intentloomd-lifecycle-design`. The backup ref
    `backup/pre-attribution-rewrite` still exists pending explicit deletion.
 
@@ -60,6 +59,22 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-02, GitHub Pages and npm metadata refresh (PR #169, release 1.0.2)
+
+- **Status:** complete
+- **Branch:** `codex/update-public-metadata` → `main`
+- **Pull request:** #169, squash-merged as `8de92ea`
+- **Objective:** Make the GitHub Pages site the canonical public documentation destination and refresh the GitHub/npm project metadata.
+- **Completed:**
+  - Updated the GitHub repository description and homepage to the Pages site `https://vitala89.github.io/Intentloom/`.
+  - Updated repository and npm-facing READMEs so documentation, release-state, support-policy, and CLI-reference links resolve on Pages.
+  - Published `intentloom@1.0.2` under npm `latest` through the protected trusted-publishing workflow; `next` remains `1.0.0`.
+  - Reconciled `PROJECT_STATE.md`, `RELEASE_STATE.md`, `PUBLISHING.md`, `CHANGELOG.md`, and this handoff with the actual registry and workflow evidence.
+- **Evidence:** Release dry-run [`30724860360`](https://github.com/vitala89/Intentloom/actions/runs/30724860360) and publish [`30724962105`](https://github.com/vitala89/Intentloom/actions/runs/30724962105) passed. npm reports shasum `4a52f359ed6ffda5a80a73af657923285bcdc910`, SLSA v1 provenance, and the Pages-linked README. Pages root and key documentation routes returned HTTP 200.
+- **Validation:** `pnpm typecheck`, `pnpm format:check`, inception tests 41/41, full `pnpm verify` 851 passed and 3 skipped; PR #169 checks passed, including CodeQL and the Ubuntu/macOS/Windows Node 22/24 matrix.
+- **Decisions and assumptions:** npm versions are immutable, so the corrected description and README were shipped as the next patch release `1.0.2`. The remaining token-restriction step is a package-owner hardening follow-up after the first successful trusted publish.
+- **Next first action:** Select the next approved roadmap milestone.
 
 ### 2026-08-02, Project Inception package-name CodeQL hardening (PR #167)
 
