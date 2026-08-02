@@ -12,7 +12,7 @@ in a condition that the next watch can safely understand and continue.
 Status: **Agentic harness architecture documented locally** — ADR-0052 now
 defines a provider-neutral evaluation and execution control plane, its
 deterministic authority boundary, phased H0-H9 delivery, threat-model additions,
-and pinned reference sources. No runtime, dependency, sandbox, provider, or
+and a concise pinned reference ledger. No runtime, dependency, sandbox, provider, or
 mutation capability was added. The active read-only provider-evidence hardening
 gate remains unchanged.
 
@@ -67,6 +67,27 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-02, simplify agentic harness source ledger
+
+- **Status:** complete locally; push and pull request pending.
+- **Branch:** `codex/agentic-harness-roadmap`
+- **Objective:** Keep provenance for the harness architecture while reducing
+  maintenance overhead and avoiding the impression that every orchestration
+  framework is a supported dependency.
+- **Completed:** Reduced `AGENTIC_HARNESS_SOURCES.md` to five pinned core
+  harness/security references and a short, unpinned comparison list for
+  LangGraph, AutoGen, Semantic Kernel, and LlamaIndex Workflows. Preserved the
+  reference-only, license-review, and no-automatic-adoption boundaries.
+- **Not completed:** GitHub push and PR creation are pending valid GitHub
+  authentication. No runtime or dependency behavior changed.
+- **Files or packages changed:** `docs/reference/AGENTIC_HARNESS_SOURCES.md`
+  and this handoff record.
+- **Validation:** Pending after the documentation edit; run formatting, docs
+  build, full verification, staged governance, and `git diff --check` before
+  publication.
+- **Next first action:** Run the documentation and repository quality gates,
+  commit, push the branch, and open the draft PR.
 
 ### 2026-08-02, agentic harness architecture and development plan
 
