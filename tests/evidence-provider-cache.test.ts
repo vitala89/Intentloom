@@ -1,3 +1,4 @@
+import { sep } from "node:path";
 import { describe, expect, it, vi } from "vitest";
 import {
   fetchLiveProviderEvidence,
@@ -20,7 +21,8 @@ class MemoryProviderCacheStore implements ProviderCacheStore {
 
   async remove(path: string): Promise<void> {
     for (const key of this.files.keys()) {
-      if (key === path || key.startsWith(`${path}/`)) this.files.delete(key);
+      if (key === path || key.startsWith(`${path}${sep}`))
+        this.files.delete(key);
     }
   }
 }
