@@ -1,8 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import {
-  fetchLiveProviderEvidence,
-  type LiveProviderFetchOptions,
-} from "../packages/evidence-provider/src/index.js";
+import { fetchLiveProviderEvidence } from "../packages/evidence-provider/src/index.js";
 
 describe("Live Provider Connections (ADR-0022)", () => {
   it("returns invalid status for invalid provider or empty projectKey", async () => {

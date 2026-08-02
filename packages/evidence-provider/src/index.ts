@@ -48,6 +48,17 @@ export {
 } from "./live.js";
 
 export {
+  nodeProviderCacheStore,
+  purgeProviderCache,
+  PROVIDER_CACHE_TTL_MS,
+  readCachedProviderResult,
+  writeCachedProviderResult,
+  type ProviderCacheOptions,
+  type ProviderCachePurgeOptions,
+  type ProviderCacheStore,
+} from "./cache.js";
+
+export {
   ingestExternalMcpEvidence,
   type ExternalMcpIngestOptions,
 } from "./mcp-ingest.js";
