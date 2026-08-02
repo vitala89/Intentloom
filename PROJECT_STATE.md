@@ -76,7 +76,8 @@ and real consumers justify them.
 - The bounded provider-evidence cache increment is merged into `main` through
   PR #177 (`112b4a4`). It persists only normalized redacted `available` results,
   enforces a maximum 15-minute TTL, and exposes provider/project-scoped purge;
-  the CLI adapter is published in PR #182, and credential resolution now
+  the `intentloom clean --cache` CLI adapter is merged through PR #182
+  (`1904908`), and credential resolution now
   supports explicit invocation tokens and the documented GitHub/GitLab
   environment aliases. Cleared inputs are treated as locally revoked; remote
   provider token deletion and rotation remain out of scope.

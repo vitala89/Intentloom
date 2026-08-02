@@ -45,6 +45,20 @@ shared files are emitted once, and non-identical destination collisions stop
 before writes. `--profile` controls documented path-scoped Cursor and Copilot
 derivatives.
 
+## Provider cache cleanup
+
+`intentloom clean --cache [PROJECT_PATH|--root PATH] [--provider github|gitlab]
+[--project-key KEY] [--json]` removes only the local provider evidence cache at
+`.aif/cache/providers/`. With no provider or project key it purges the complete
+provider cache. `--provider` purges one provider, and `--provider` together with
+`--project-key` purges one provider/project scope. A project key without a
+provider is rejected with exit code `2`.
+
+The command does not read project metadata, use credentials, call the network,
+invoke subprocesses, or modify project-owned files. A missing cache is a
+successful no-op. Human and JSON output report the same relative cache path and
+scope; absolute paths and cache contents are never emitted.
+
 ## Provider evidence import
 
 `intentloom evidence import --provider github|gitlab --file EXPORT.json

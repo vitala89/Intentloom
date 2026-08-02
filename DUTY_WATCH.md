@@ -95,6 +95,57 @@ entry directly below this section.
 - **Next first action:** Monitor PR #183, then continue with the remaining
   hardening evidence after merge.
 
+### 2026-08-02, merge conflict resolution for read-only CLI cache cleanup
+
+- **Status:** complete; PR #182 squash-merged into `main`.
+- **Branch:** `codex/clean-cache-adapter` → `main`
+- **Pull request:** [#182](https://github.com/vitala89/Intentloom/pull/182)
+- **Merge commit:** `19049089c86222b009ed4ee2f42ed7a3130ea765`
+- **Objective:** Reconcile PR #182 with the harness documentation already
+  merged by PR #181, then merge the clean-cache adapter without bypassing
+  required checks.
+- **Completed:** Resolved the sole `DUTY_WATCH.md` conflict while preserving
+  both the current cache-cleanup handoff and the historical harness source
+  ledger. Pushed the merge commit, reran the previously queued Windows Node 24
+  compatibility job, and squash-merged after all CodeQL, governance, and
+  Ubuntu/macOS/Windows Node 22/24 checks passed.
+- **Validation:** Local `pnpm verify`, staged governance, and `git diff --check`
+  passed; the full suite reported 110 test files, 870 passed, and 3
+  skipped. PR #182's required checks are green on all supported CI matrix
+  entries.
+- **Not completed:** Credential revocation, adversarial payload/provenance
+  hardening, and the separate PR #183 remain outside this increment.
+- **Next first action:** Continue the read-only evidence hardening gate from
+  `main`, starting with PR #183 review and the credential-revocation contract.
+
+### 2026-08-02, read-only CLI provider-cache cleanup
+
+- **Status:** complete; PR #182 open with all six compatibility checks passed.
+- **Branch:** `codex/clean-cache-adapter`
+- **Objective:** Expose the existing provider-cache purge operation through a
+  safe, explicit `intentloom clean --cache` CLI command.
+- **Completed:** Added a dedicated `clean-cache` module and CLI parsing for
+  complete-cache, provider, and provider/project scopes. The command uses the
+  existing cache purge operation, defaults to `.aif/cache/providers/` under the
+  explicit project root, performs no metadata validation or network access, and
+  reports only a relative cache path and scope. Added four public-behavior CLI
+  tests covering full purge, provider scope, project scope, and invalid scope.
+  Updated CLI reference, live-provider specification, roadmap, project state,
+  changelog, and this handoff.
+- **Not completed:** Required review and merge. Credential revocation and all
+  mutation behavior remain out of scope.
+- **Files or packages changed:** `packages/cli/src/clean-cache.ts`, the CLI
+  command parser, `tests/cli-clean-cache.test.ts`, and read-only cache
+  documentation.
+- **Validation:** Focused cache/CLI tests pass 6/6; full test suite passes 870
+  tests with 3 skipped; typecheck, formatting, production build, and
+  `git diff --check` pass. PR #182 compatibility checks pass on Ubuntu, macOS,
+  and Windows with Node 22/24.
+- **Decomposition:** The existing oversized CLI command file receives only
+  parsing/dispatch glue; purge behavior lives behind the new dedicated module.
+- **Next first action:** Merge PR #182 when authorized, then continue with the
+  separate credential-revocation contract.
+
 ### 2026-08-02, simplify agentic harness source ledger
 
 - **Status:** complete; PR #181 open as draft.

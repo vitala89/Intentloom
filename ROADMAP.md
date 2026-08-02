@@ -331,7 +331,7 @@ output may authorize a write, release, merge, publish, or deployment.
 
 Current increment complete: PR #177 adds bounded local provider-evidence cache
 retention and provider/project-scoped deletion over already-redacted results;
-the CLI `intentloom clean --cache` adapter is published in PR #182. The
+PR #182 (`1904908`) adds the CLI `intentloom clean --cache` adapter. The
 credential-revocation increment defines invocation-scoped credential resolution
 across explicit tokens and supported environment aliases, deterministic behavior
 after environment clearing, and the explicit boundary that remote token
