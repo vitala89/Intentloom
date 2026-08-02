@@ -64,16 +64,16 @@ entry directly below this section.
 
 ### 2026-08-03, agentic harness versioned protocol contracts (Phase H1)
 
-- **Status:** complete for implementation and validation.
+- **Status:** complete for implementation and validation; PR #191 is open, mergeable, and CI checks pass.
 - **Branch:** `feat/harness-protocol-contracts`
-- **Commit:** pending
-- **Pull request:** pending
+- **Commit:** `07bbe6d` (`feat(harness): add versioned protocol contracts and validators`)
+- **Pull request:** [#191](https://github.com/vitala89/Intentloom/pull/191)
 - **Objective:** Implement Phase H1 versioned protocol contracts, schemas, and validators for the Agentic Evaluation and Execution Harness (ADR-0052).
 - **Completed:** Added `packages/protocol/src/harness.ts` and `packages/validator/src/harness.ts` defining canonical schemas and validators for scenario evaluation, execution requests, manifests, scorecards, comparisons, and capability declarations. Re-exported in `packages/protocol` and `packages/validator`. Added 9 contract tests in `tests/harness-protocol.test.ts`.
-- **Not completed:** Pull request creation and Phase H2 deterministic runner implementation.
+- **Not completed:** Merge authorization and Phase H2 deterministic runner implementation.
 - **Files or packages changed:** `packages/protocol/src/harness.ts`, `packages/protocol/src/index.ts`, `packages/validator/src/harness.ts`, `packages/validator/src/index.ts`, `tests/harness-protocol.test.ts`, `DUTY_WATCH.md`.
-- **Validation:** `pnpm vitest run tests/harness-protocol.test.ts` passed (9/9 passed); `pnpm format:check`, `pnpm typecheck`, `git diff --check` pass.
-- **Next first action:** Commit changes on `feat/harness-protocol-contracts`, push branch, and open pull request when authorized.
+- **Validation:** `pnpm verify` pre-push gate passed (117 test files, 897 passed); `pnpm format:check`, `pnpm typecheck`, `git diff --check` pass.
+- **Next first action:** Review PR #191, merge when authorized, then proceed to Phase H2 (Deterministic runner and baseline comparison).
 
 ### 2026-08-03, cross-surface cache and revocation contracts
 
