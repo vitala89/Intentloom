@@ -155,7 +155,7 @@ before a new release or implementation milestone is declared complete.
 ## Current blockers and unknowns
 
 - Any expansion to bottleneck, performance, causal, actor, repository-reading, persisted, remote, or model-assisted analysis requires a new ADR, specification, and threat review.
-- Current `main` is verified at `99dc9f6` (PR #171 squash merge) and tracks
+- Current `main` is verified at `26ad22d` (PR #175 squash merge) and tracks
   `origin/main`.
 - npm reports `latest=1.0.2` and `next=1.0.0`, verified 2026-08-02.
 - Workspace packages are synchronized to `1.0.2`; Git tag `v1.0.2` and GitHub
@@ -415,10 +415,11 @@ live provider boundary. Its focused and full regression suites are green; the
 remaining hardening areas stay explicitly unimplemented until their own
 reviewed increments.
 
-The next redaction increment applies a shared bounded deterministic scanner to
-provider export, live-provider, and external-MCP normalized fields. It removes
-known provider token forms and pseudonymizes email identities; raw provider
-payload retention, cache deletion, and revocation remain separate follow-ups.
+The next redaction increment is merged through PR #175 as `26ad22d`. It applies
+a shared bounded deterministic scanner to provider export, live-provider, and
+external-MCP normalized fields, removing known provider token forms and
+pseudonymizing email identities. Raw provider payload retention, cache deletion,
+and revocation remain separate follow-ups.
 
 ## Next platform milestone
 
