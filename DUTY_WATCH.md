@@ -9,7 +9,7 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Agentic harness architecture documented locally** — ADR-0052 now
+Status: **Agentic harness source ledger simplified; PR #181 open** — ADR-0052 now
 defines a provider-neutral evaluation and execution control plane, its
 deterministic authority boundary, phased H0-H9 delivery, threat-model additions,
 and a concise pinned reference ledger. No runtime, dependency, sandbox, provider, or
@@ -18,8 +18,8 @@ gate remains unchanged.
 
 Active branch: `codex/agentic-harness-roadmap`
 
-Current objective: review and publish the harness documentation increment while
-continuing the read-only provider-evidence hardening gate.
+Current objective: review PR #181 while continuing the read-only provider-evidence
+hardening gate.
 
 Next first action: design the CLI `intentloom clean --cache` adapter, then keep credential revocation and project mutation out of scope.
 
@@ -70,8 +70,10 @@ entry directly below this section.
 
 ### 2026-08-02, simplify agentic harness source ledger
 
-- **Status:** complete locally; push and pull request pending.
-- **Branch:** `codex/agentic-harness-roadmap`
+- **Status:** complete; PR #181 open as draft.
+- **Branch:** `codex/agentic-harness-roadmap` → `origin/codex/agentic-harness-roadmap`
+- **Commits:** `c9831ea` (ledger simplification), plus `25dec74` (architecture baseline)
+- **Pull request:** [#181](https://github.com/vitala89/Intentloom/pull/181)
 - **Objective:** Keep provenance for the harness architecture while reducing
   maintenance overhead and avoiding the impression that every orchestration
   framework is a supported dependency.
@@ -79,15 +81,18 @@ entry directly below this section.
   harness/security references and a short, unpinned comparison list for
   LangGraph, AutoGen, Semantic Kernel, and LlamaIndex Workflows. Preserved the
   reference-only, license-review, and no-automatic-adoption boundaries.
-- **Not completed:** GitHub push and PR creation are pending valid GitHub
-  authentication. No runtime or dependency behavior changed.
+- **Not completed:** CI checks are still running; the PR remains draft pending
+  review. No runtime or dependency behavior changed.
 - **Files or packages changed:** `docs/reference/AGENTIC_HARNESS_SOURCES.md`
   and this handoff record.
-- **Validation:** Pending after the documentation edit; run formatting, docs
-  build, full verification, staged governance, and `git diff --check` before
-  publication.
-- **Next first action:** Run the documentation and repository quality gates,
-  commit, push the branch, and open the draft PR.
+- **Validation:** `pnpm docs:build`, `pnpm verify`, `pnpm verify:staged`, and
+  `git diff --check` pass. The first sandboxed verify attempt was blocked by
+  local Unix-socket permissions; daemon tests and the full verify passed with
+  the required local IPC permission. VitePress retains existing non-fatal
+  Rollup/Rolldown warnings.
+- **Next first action:** Review PR #181 CI and feedback, then keep the active
+  `intentloom clean --cache` and credential-revocation work ahead of harness
+  runtime implementation.
 
 ### 2026-08-02, agentic harness architecture and development plan
 
