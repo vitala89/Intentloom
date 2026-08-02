@@ -155,13 +155,13 @@ before a new release or implementation milestone is declared complete.
 ## Current blockers and unknowns
 
 - Any expansion to bottleneck, performance, causal, actor, repository-reading, persisted, remote, or model-assisted analysis requires a new ADR, specification, and threat review.
-- PR #84 through PR #138 are merged in the local history; current `main` is
-  verified at `a148f2f` (PR #138 merge; PR #137 merged as `3f3247f`, PR #135 merged as `46d3a2e`, PR #134 merged as `4bad874`, PR #133 merged as `cd31214`) and tracks `origin/main`.
-- npm reports `latest=1.0.0` and `next=1.0.0`, verified 2026-07-31.
-- Workspace packages are synchronized to `1.0.0`, Git tag `v1.0.0` is pushed, and
-  `1.0.0` is published to npm under both dist-tags. It carries no provenance
-  attestation because it was published manually before the release workflow
-  existed.
+- Current `main` is verified at `99dc9f6` (PR #171 squash merge) and tracks
+  `origin/main`.
+- npm reports `latest=1.0.2` and `next=1.0.0`, verified 2026-08-02.
+- Workspace packages are synchronized to `1.0.2`; Git tag `v1.0.2` and GitHub
+  Release `v1.0.2` point at the verified `192fd05` release commit. The stable
+  `1.0.2` artifact carries trusted-publishing provenance; historical `1.0.0`
+  carries none because it was published manually before the release workflow.
 - Published `1.0.0` tarball registry shasum is
   `434fcb624ddb3706502a29ad96b27aee36df675c`, reproduced byte for byte from
   source on 2026-07-31; the preceding `0.5.0-beta.1` shasum was

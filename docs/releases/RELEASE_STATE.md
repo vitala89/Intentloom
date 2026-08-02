@@ -7,7 +7,7 @@ this document is the source of truth for the current status.
 
 Snapshot: 2026-08-02
 Workspace version: `1.0.2`
-Candidate release: `1.0.2`, published through trusted workflow run [`30724962105`](https://github.com/vitala89/Intentloom/actions/runs/30724962105)
+Release: `1.0.2`, published through trusted workflow run [`30724962105`](https://github.com/vitala89/Intentloom/actions/runs/30724962105)
 Last published npm package: `intentloom@1.0.2`, verified in the registry on 2026-08-02
 Default npm `latest`: `intentloom@1.0.2`
 Default npm `next`: `intentloom@1.0.0`
