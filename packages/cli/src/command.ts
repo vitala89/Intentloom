@@ -342,8 +342,7 @@ const usage = [
   "       intentloom adopt <--plan|--apply PLAN_FILE> [PROJECT_PATH|--root PATH] [--json] [--output PATH] [--strict] [--dry-run]",
   "       intentloom update <--plan|--apply PLAN_FILE> [PROJECT_PATH|--root PATH] [--json] [--output PATH] [--strict] [--dry-run]",
   "       intentloom <adopt|update|diff|sync|doctor|inspect|timeline|conformance|summary|skill|proposal|evaluate|memory|checkpoint|rank|profile|delegate|context|session|security|ui|workspace|neutron> [PROJECT_PATH|--root PATH] [--dry-run]",
-  "       intentloom evidence import --provider github|gitlab --file PATH --project-key KEY [--json]",
-  "       intentloom evidence analyze --provider github|gitlab --file PATH --project-key KEY [--root PATH] [--case-id ID] [--json]",
+  "       intentloom evidence <fetch|import|analyze> --provider github|gitlab --project-key KEY [--file PATH] [--root PATH] [--case-id ID] [--token TOKEN] [--json]",
   "       intentloom conformance [PROJECT_PATH|--root PATH] [--policy PATH] [--timeline PATH] [--case-id ID] [--case-type TYPE] [--json]",
   "       intentloom summary <list|get|record> [PROJECT_PATH|--root PATH] [--id ID] [--trust-class CLASS] [--retention-state STATE] [--json]",
   "       intentloom skill discover [--level catalog|contract|procedure] [--pack PACK] [--role ROLE] [--query QUERY] [--max-budget NUM] [--root PATH] [--json]",
@@ -368,10 +367,11 @@ const usage = [
 function parseArguments(args: readonly string[]): ParsedArguments {
   const command = args[0] ?? "";
   if (!commands.has(command)) throw new CliUsageError(usage);
-  if (command === "evidence" && args[1] !== "import" && args[1] !== "analyze")
-    throw new CliUsageError(
-      "evidence requires the import or analyze subcommand",
-    );
+  if (
+    command === "evidence" &&
+    !["fetch", "import", "analyze"].includes(args[1] ?? "")
+  )
+    throw new CliUsageError("evidence requires fetch, import, or analyze");
   if (
     command === "summary" &&
     !["list", "get", "record"].includes(args[1] ?? "")

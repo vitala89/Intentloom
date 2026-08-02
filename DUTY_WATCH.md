@@ -9,19 +9,18 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Live-provider adversarial corpus increment verified** — PR #188 is
-open, mergeable, and CI-green; the slice adds deterministic GitHub/GitLab
-payload fixtures and contract tests without expanding runtime authority or
-network behavior.
+Status: **Provider surface pagination hardening in progress** — PR #188 is
+merged; the current slice closes the CLI `evidence fetch` parser gap and adds
+endpoint-wide pagination/rate-limit and CLI/provider equivalence contracts.
 
-Active branch: `test/adversarial-evidence-corpus`
+Active branch: `test/provider-surface-pagination`
 
-Current objective: review and merge PR #188 when authorized, then extend the
-same read-only hardening coverage to application-surface equivalence,
-pagination, and rate-limit edge cases.
+Current objective: prove that every GitHub/GitLab live endpoint group obeys the
+shared pagination and rate-limit boundary, and that CLI JSON fetch output equals
+the direct provider contract.
 
-Next first action: review PR #188, then start the broader application-surface
-equivalence and pagination corpus on a compliant `test/` or `security/` branch.
+Next first action: run staged and full verification, then open the focused PR
+for review.
 
 Known open items, in the order they should be handled:
 
@@ -68,11 +67,36 @@ entry directly below this section.
 
 ## Watch entries
 
+### 2026-08-02, provider surface pagination hardening
+
+- **Status:** in progress; implementation and focused tests pass, repository
+  verification and PR remain.
+- **Branch:** `test/provider-surface-pagination`
+- **Objective:** Close the existing CLI `evidence fetch` parser gap and add
+  read-only contracts for all GitHub/GitLab endpoint groups, bounded pagination,
+  rate-limit halting, and CLI/provider JSON equivalence.
+- **Completed:** Enabled the already-implemented CLI fetch branch in argument
+  parsing and usage output. Added deterministic contract tests covering all
+  endpoint groups for both providers, paginated rate-limit halting without
+  retaining response bodies, and CLI JSON output equivalence with the direct
+  provider operation.
+- **Not completed:** Staged/full verification, PR review, and merge.
+- **Files or packages changed:** `packages/cli/src/command.ts`,
+  `tests/evidence-provider-pagination-contract.test.ts`,
+  `tests/cli-evidence-live-surface.test.ts`, and the project state, roadmap,
+  changelog, and Duty Watch records.
+- **Validation:** Focused provider, CLI, MCP, and adversarial tests pass 23/23.
+  Full verification is still required.
+- **Next first action:** Run staged quality checks and full `pnpm verify`, then
+  update this handoff and open the focused PR.
+
 ### 2026-08-02, live-provider adversarial corpus
 
-- **Status:** complete for implementation and validation; PR #188 is open,
-  mergeable, and all reported CI checks pass.
+- **Status:** complete; PR #188 squash-merged into `main` after all required CI
+  checks passed.
 - **Branch:** `test/adversarial-evidence-corpus`
+- **Pull request:** [#188](https://github.com/vitala89/Intentloom/pull/188)
+- **Merge commit:** `67e6be56615fb190e8c9faf1fd3449cafa21476c`
 - **Objective:** Extend the read-only hardening gate from external-MCP payloads
   to live GitHub/GitLab responses and adversarial rate-limit bodies.
 - **Completed:** Added a shared fixture for GitHub and GitLab records containing
@@ -80,16 +104,16 @@ entry directly below this section.
   text, and prompt-injection text. Added tests for fixed provider provenance,
   explicit project scope, redaction, deterministic ordering under record
   reordering, and non-retention of rate-limit response bodies.
-- **Not completed:** Merge authorization and broader application-surface
-  equivalence coverage.
+- **Not completed:** Broader application-surface equivalence and endpoint-wide
+  pagination/rate-limit coverage.
 - **Files or packages changed:**
   `tests/fixtures/evidence/live-provider-adversarial.json` and
   `tests/evidence-provider-adversarial-live.test.ts`.
 - **Validation:** Focused provider/MCP tests pass 21/21; staged governance
   passes; full `pnpm verify` passes with 113 test files, 879 passed, 3 skipped;
   PR #188 compatibility, CodeQL, and governance checks pass.
-- **Next first action:** Review PR #188, merge only when authorized, then add
-  application-surface equivalence and pagination/rate-limit fixtures.
+- **Next first action:** Add the endpoint-wide pagination/rate-limit and
+  CLI/provider equivalence contracts on a compliant branch.
 
 ### 2026-08-02, adversarial evidence fixtures and CLI/MCP equivalence
 

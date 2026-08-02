@@ -337,10 +337,11 @@ across explicit tokens and supported environment aliases, deterministic behavior
 after environment clearing, and the explicit boundary that remote token
 deletion/rotation is not an Intentloom operation. The merged hardening increment
 adds deterministic adversarial external-MCP payload fixtures and the first
-CLI/MCP structured-result equivalence contract for release analysis. The active
-follow-up adds adversarial live-provider corpus coverage for redaction,
-provenance, deterministic ordering, and rate-limit body isolation; the broader
-exit gate remains open.
+CLI/MCP structured-result equivalence contract for release analysis. PR #188
+adds the live-provider corpus for redaction, provenance, deterministic
+ordering, and rate-limit body isolation. The active follow-up closes the CLI
+`evidence fetch` parser gap and adds endpoint-wide pagination/rate-limit plus
+CLI/provider JSON-equivalence contracts; the broader exit gate remains open.
 
 ## Planned milestone — Agentic evaluation and execution harness
 
