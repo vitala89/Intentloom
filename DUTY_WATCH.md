@@ -9,13 +9,12 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Adversarial evidence and surface-equivalence increment verified
-locally; CI rerun pending** — deterministic external-MCP fixtures and the first
-CLI/MCP structured-result contract test are complete on the active branch. The
-local gate passes; PR #186 has one unrelated Windows Node 24 timeout in the
-pre-existing CLI schema-process suite while all other checks pass. The
-read-only hardening gate remains unchanged; no external evidence grants
-authority or mutation.
+Status: **Adversarial evidence and surface-equivalence increment verified**
+— deterministic external-MCP fixtures and the first CLI/MCP structured-result
+contract test are complete on the active branch. Local verification and the
+full PR #186 CI matrix pass; the earlier Windows Node 24 timeout was transient
+and passed on rerun. The read-only hardening gate remains unchanged; no
+external evidence grants authority or mutation.
 
 Active branch: `codex/adversarial-evidence-equivalence`
 
@@ -23,8 +22,8 @@ Current objective: prove that adversarial external-MCP payload fields cannot
 cross the normalized provenance boundary and that CLI/MCP analysis results stay
 structurally equivalent.
 
-Next first action: rerun the failed Windows Node 24 job when authorized; if it
-repeats, isolate the pre-existing timeout before reviewing and merging PR #186.
+Next first action: review and merge PR #186 when explicitly authorized, then
+expand the adversarial corpus without adding runtime authority or mutation.
 
 Known open items, in the order they should be handled:
 
@@ -73,8 +72,8 @@ entry directly below this section.
 
 ### 2026-08-02, adversarial evidence fixtures and CLI/MCP equivalence
 
-- **Status:** implementation complete; PR #186 is open and mergeable, with one
-  unrelated Windows Node 24 timeout pending rerun.
+- **Status:** complete for implementation and validation; PR #186 is open,
+  mergeable, and all required CI checks pass after the Windows Node 24 rerun.
 - **Branch:** `codex/adversarial-evidence-equivalence`
 - **Objective:** Add deterministic adversarial external-MCP payload coverage and
   the first CLI/MCP structured-result equivalence contract.
@@ -94,13 +93,11 @@ entry directly below this section.
 - **Validation:** Focused tests pass 7/7; full `pnpm verify` passes with 112
   test files, 876 passed, and 3 skipped; staged governance and `git diff
 --check` pass; PR #186 CI passes on Ubuntu, macOS, and Windows with Node 22
-  and 24, plus CodeQL and governance, except for the Windows Node 24 run where
-  the pre-existing `sync rejects malformed config` test timed out at 5000 ms.
-  The same test passes locally on Node 22 in 1.1 s.
-- **Next first action:** Rerun the failed Windows Node 24 job when explicitly
-  authorized; if green, review and merge PR #186, then add the next bounded
-  redaction, provenance, pagination/rate-limit, and application-surface
-  fixtures.
+  and 24, plus CodeQL and governance. The prior Windows Node 24 timeout did
+  not reproduce on rerun.
+- **Next first action:** Review and merge PR #186 when explicitly authorized,
+  then add the next bounded redaction, provenance, pagination/rate-limit, and
+  application-surface fixtures.
 
 ### 2026-08-02, merge conflict resolution for credential revocation
 
