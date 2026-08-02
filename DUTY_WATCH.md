@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **curated skill routing complete locally; review and integration pending** — Intentloom now carries provider-neutral task routing, feature discovery, verification, and external-extension review skills. The implementation adapts selected methods from pinned Superpowers and Matt Pocock source revisions without installing their plugin runtimes, hooks, telemetry, or automatic dependencies. The active read-only provider-evidence hardening gate remains unchanged.
+Status: **PR #179 merged; curated skill routing integrated** — Intentloom now carries provider-neutral task routing, feature discovery, verification, and external-extension review skills. The implementation adapts selected methods from pinned Superpowers and Matt Pocock source revisions without installing their plugin runtimes, hooks, telemetry, or automatic dependencies. The active read-only provider-evidence hardening gate remains unchanged.
 
-Active branch: `codex/curated-skill-routing`
+Active branch: `main`
 
-Current objective: integrate the curated skill-routing slice while preserving the canonical catalog, provider-neutral adapters, and non-destructive adoption boundary.
+Current objective: preserve the integrated curated skill-routing slice while continuing the read-only provider-evidence hardening gate.
 
-Next first action: review the local commit, then push and open a pull request when authorized; after integration, resume the CLI `intentloom clean --cache` design milestone.
+Next first action: design the CLI `intentloom clean --cache` adapter, then keep credential revocation and project mutation out of scope.
 
 Known open items, in the order they should be handled:
 
@@ -61,6 +61,23 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-02, curated skill routing integrated
+
+- **Status:** complete.
+- **Branch:** `codex/curated-skill-routing` → `main`
+- **Pull request:** #179, squash-merged as `7956e5e`
+- **Objective:** Publish and integrate the provider-neutral curated skill-routing
+  slice for Intentloom development and downstream project adoption.
+- **Completed:** Pushed commit `077d9f7`, opened PR #179, passed all six required
+  checks (Governance, CodeQL, and Compatibility across Ubuntu, macOS, and
+  Windows on Node 22/24), and squash-merged the 25-file implementation into
+  `main`.
+- **Validation:** Local `pnpm verify` passed with 109 test files, 866 passed,
+  and 3 skipped; GitHub required checks passed; local `main` is fast-forwarded
+  to merge commit `7956e5e` and the worktree is clean.
+- **Next first action:** Design the CLI `intentloom clean --cache` adapter and
+  keep credential revocation and project mutation out of scope.
 
 ### 2026-08-02, curated skill routing and external-method adaptation
 
