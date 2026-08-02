@@ -9,20 +9,20 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Credential-revocation contract complete locally** — PR #182 for the
+Status: **Credential-revocation contract published** — PR #183 for the
 read-only clean-cache adapter has all six compatibility checks passed and is
 awaiting merge. This branch adds invocation-scoped provider credential
-resolution and local-revocation semantics without remote token mutation. The
-active read-only provider-evidence hardening gate remains unchanged.
+resolution and local-revocation semantics without remote token mutation. PR
+#183 is open for remote checks; the active read-only provider-evidence hardening
+gate remains unchanged.
 
 Active branch: `codex/credential-revocation-contract`
 
 Current objective: make credential-source precedence and post-clearing behavior
 deterministic while keeping remote provider token deletion outside Intentloom.
 
-Next first action: run the full hardening gates, publish this contract, then
-continue with adversarial payload/provenance and CLI/application equivalence
-coverage.
+Next first action: monitor PR #183, then continue with adversarial
+payload/provenance and CLI/application equivalence coverage.
 
 Known open items, in the order they should be handled:
 
@@ -71,8 +71,9 @@ entry directly below this section.
 
 ### 2026-08-02, provider credential revocation contract
 
-- **Status:** complete locally; publication pending on a separate branch.
+- **Status:** complete; PR #183 open and remote checks pending.
 - **Branch:** `codex/credential-revocation-contract`
+- **Pull request:** [#183](https://github.com/vitala89/Intentloom/pull/183)
 - **Objective:** Define and implement safe local credential revocation semantics
   without calling provider token-delete or token-rotation endpoints.
 - **Completed:** Added a provider credential resolver with explicit-token
@@ -80,7 +81,7 @@ entry directly below this section.
   deterministic no-credential result after environment clearing. Added live
   provider regression coverage and updated the live-provider specification,
   ADR-0022, roadmap, project state, and changelog.
-- **Not completed:** Atomic commit, push, and pull request. Remote credential
+- **Not completed:** Remote CI, review, and merge. Remote credential
   deletion/rotation, environment mutation in a parent shell, and project
   mutation remain out of scope.
 - **Files or packages changed:** `packages/evidence-provider/src/credentials.ts`,
@@ -91,8 +92,8 @@ entry directly below this section.
   production build, and staged governance pass.
 - **Decomposition:** Credential source precedence is isolated from live HTTP
   orchestration behind a small typed module; no oversized production file grew.
-- **Next first action:** Review the staged diff, commit, and publish the
-  separate contract.
+- **Next first action:** Monitor PR #183, then continue with the remaining
+  hardening evidence after merge.
 
 ### 2026-08-02, simplify agentic harness source ledger
 
