@@ -415,6 +415,11 @@ live provider boundary. Its focused and full regression suites are green; the
 remaining hardening areas stay explicitly unimplemented until their own
 reviewed increments.
 
+The next redaction increment applies a shared bounded deterministic scanner to
+provider export, live-provider, and external-MCP normalized fields. It removes
+known provider token forms and pseudonymizes email identities; raw provider
+payload retention, cache deletion, and revocation remain separate follow-ups.
+
 ## Next platform milestone
 
 The next approved platform milestone is the read-only evidence hardening gate,

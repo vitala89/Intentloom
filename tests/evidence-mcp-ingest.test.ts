@@ -80,4 +80,28 @@ describe("External MCP Evidence Ingestion (ADR-0023)", () => {
     expect(result.events.length).toBe(5);
     expect(result.diagnostics).toContain("record-limit-reached");
   });
+
+  it("redacts identities and provider tokens before exposing external evidence", () => {
+    const token = `ghp_${"c".repeat(36)}`;
+    const result = ingestExternalMcpEvidence({
+      serverName: "github-mcp",
+      toolName: "get_issue_timeline",
+      projectKey: "vitala89/Intentloom",
+      allowlist: defaultAllowlist,
+      payload: [
+        {
+          id: "reviewer@example.com",
+          state: `seen ${token}`,
+          commitId: token,
+        },
+      ],
+    });
+
+    const event = result.events[0];
+    expect(event?.sourceId).toMatch(/^usr_[a-f0-9]{12}$/);
+    expect(event?.state).toBe("seen [REDACTED_TOKEN]");
+    expect(event?.commitIds).toEqual(["[REDACTED_TOKEN]", event?.sourceId]);
+    expect(JSON.stringify(result)).not.toContain(token);
+    expect(JSON.stringify(result)).not.toContain("reviewer@example.com");
+  });
 });

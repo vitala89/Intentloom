@@ -51,4 +51,30 @@ describe("provider export evidence", () => {
       }).status,
     ).toBe("invalid");
   });
+
+  it("redacts emails and provider tokens from normalized evidence", () => {
+    const githubToken = `ghp_${"a".repeat(36)}`;
+    const gitlabToken = `glpat-${"b".repeat(20)}`;
+    const result = importProviderExport({
+      provider: "github",
+      projectKey: "org/repo",
+      payload: {
+        reviews: [
+          {
+            id: "alice@example.com",
+            status: `token ${githubToken}`,
+            commitId: gitlabToken,
+          },
+        ],
+      },
+    });
+
+    const event = result.events[0];
+    expect(event?.sourceId).toMatch(/^usr_[a-f0-9]{12}$/);
+    expect(event?.state).toBe("token [REDACTED_TOKEN]");
+    expect(event?.commitIds).toEqual(["[REDACTED_TOKEN]"]);
+    expect(JSON.stringify(result)).not.toContain(githubToken);
+    expect(JSON.stringify(result)).not.toContain(gitlabToken);
+    expect(JSON.stringify(result)).not.toContain("alice@example.com");
+  });
 });

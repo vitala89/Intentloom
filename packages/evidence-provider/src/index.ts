@@ -1,4 +1,5 @@
 import { createHash } from "node:crypto";
+import { redactProviderString } from "./redaction.js";
 
 export type ProviderName = "github" | "gitlab";
 export type ProviderEventType =
@@ -62,7 +63,7 @@ const eventKinds: readonly [ProviderEventType, string][] = [
 
 function stringValue(value: unknown, max: number): string | undefined {
   return typeof value === "string" && value.length > 0
-    ? value.slice(0, max)
+    ? redactProviderString(value, max)
     : undefined;
 }
 

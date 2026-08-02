@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **PR #173 merged; v1.0.2 release verified; npm workflow token guard active; glib disposition rechecked; bounded provider pagination/rate-limit hardening complete** — GitHub Pages and npm metadata are current, `intentloom@1.0.2` is published under `latest` with SLSA v1 provenance, and GitHub Release `v1.0.2` points at `main` commit `192fd05`. PR #171 squash-merged the repository-side token guard and state reconciliation as `99dc9f6`; the protected `npm-publish` environment has no secrets or variables, and the workflow rejects `NODE_AUTH_TOKEN`/`NPM_TOKEN`. The npm package-level disallow-tokens setting still needs an authenticated package-owner session. Dependabot alert #2 (`glib@0.18.5`) remains the only open alert under the exception expiring 2026-10-29; Cargo confirms a direct `glib@0.20.0` update is incompatible with the current GTK 0.18/Tauri 2.11.5 stack. PR #160 (`3713b15`) merged the first live-provider/MCP evidence implementation slice, and PR #173 (`341984a`) merged the first bounded hardening increment.
+Status: **PR #173 merged; v1.0.2 release verified; npm workflow token guard active; glib disposition rechecked; provider identity/token redaction in progress** — GitHub Pages and npm metadata are current, `intentloom@1.0.2` is published under `latest` with SLSA v1 provenance, and GitHub Release `v1.0.2` points at `main` commit `192fd05`. PR #171 squash-merged the repository-side token guard and state reconciliation as `99dc9f6`; the protected `npm-publish` environment has no secrets or variables, and the workflow rejects `NODE_AUTH_TOKEN`/`NPM_TOKEN`. The npm package-level disallow-tokens setting still needs an authenticated package-owner session. Dependabot alert #2 (`glib@0.18.5`) remains the only open alert under the exception expiring 2026-10-29; Cargo confirms a direct `glib@0.20.0` update is incompatible with the current GTK 0.18/Tauri 2.11.5 stack. PR #160 (`3713b15`) merged the first live-provider/MCP evidence implementation slice, and PR #173 (`341984a`) merged bounded pagination/rate-limit handling. The redaction increment is implemented locally and awaits PR validation.
 
-Active branch: `codex/provider-pagination-hardening`
+Active branch: `codex/provider-redaction-hardening`
 
-Current objective: preserve token-free trusted publishing, record the bounded glib disposition, and continue the read-only evidence hardening gate without introducing mutation.
+Current objective: preserve token-free trusted publishing, record the bounded glib disposition, and harden provider identity/token redaction without introducing mutation.
 
-Next first action: design the next bounded increment for cache retention/deletion and secret/identity redaction, preserving the read-only boundary.
+Next first action: run full verification and review the provider redaction PR; then continue with cache retention/deletion and revocation hardening.
 
 Known open items, in the order they should be handled:
 
@@ -61,6 +61,16 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-02, provider identity and token redaction
+
+- **Status:** in progress; implementation and focused validation are complete, with full verification and PR review pending.
+- **Branch:** `codex/provider-redaction-hardening`
+- **Objective:** Apply one bounded deterministic redaction boundary to provider export, live-provider, and external-MCP normalized evidence.
+- **Completed:** Added a shared scanner that converts email identities to stable `usr_<sha256-prefix>` pseudonyms and known GitHub/GitLab token forms to `[REDACTED_TOKEN]`. Connected it to export, live, and external-MCP normalization without persisting raw payloads or changing the read-only authority boundary.
+- **Validation:** Focused provider/export/MCP tests pass 19/19; `pnpm typecheck` and `pnpm format:check` pass. Full `pnpm verify` and remote PR checks remain pending.
+- **Not completed:** Cache retention/deletion, revocation, adversarial project-isolation fixtures, provenance, and CLI/application equivalence remain later increments. npm package-level token restriction remains an authenticated package-owner action.
+- **Next first action:** Run full verification, publish the PR, and verify all required checks before merge.
 
 ### 2026-08-02, bounded live-provider pagination and rate-limit handling
 
