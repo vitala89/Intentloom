@@ -9,6 +9,10 @@ are not included in the current npm artifact until a later release.
 
 ### Added
 
+- Added read-only provider credential resolution for explicit invocation tokens
+  and the documented GitHub/GitLab environment aliases, with deterministic
+  no-credential behavior after environment clearing; remote token deletion and
+  rotation remain outside the Intentloom boundary.
 - Added ADR-0022 (`ADR-0022-live-read-only-provider-connections.md`) and Live Read-Only Provider Connections Specification (`LIVE_PROVIDER_CONNECTIONS_SPEC.md`).
 - Added JSON Schema files for Extension Manifest (`urn:aif:schema:extension-manifest:1`) and Extension Lock (`urn:aif:schema:extension-lock:1`) in `catalog/schemas/` with `@intentloom/validator` support.
 - Added ADR-0023 (`ADR-0023-external-mcp-evidence-ingestion.md`) and External MCP Evidence Ingestion Specification (`EXTERNAL_MCP_EVIDENCE_INGESTION_SPEC.md`).

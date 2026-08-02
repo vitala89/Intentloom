@@ -330,9 +330,12 @@ result equivalence. No token, endpoint reachability, external evidence, or model
 output may authorize a write, release, merge, publish, or deployment.
 
 Current increment complete: PR #177 adds bounded local provider-evidence cache
-retention and provider/project-scoped deletion over already-redacted results.
-The next read-only hardening increment is the CLI `intentloom clean --cache`
-adapter, followed by credential revocation behavior.
+retention and provider/project-scoped deletion over already-redacted results;
+the CLI `intentloom clean --cache` adapter is published in PR #182. The
+credential-revocation increment defines invocation-scoped credential resolution
+across explicit tokens and supported environment aliases, deterministic behavior
+after environment clearing, and the explicit boundary that remote token
+deletion/rotation is not an Intentloom operation.
 
 ## Planned milestone — Agentic evaluation and execution harness
 

@@ -48,6 +48,13 @@ export {
 } from "./live.js";
 
 export {
+  PROVIDER_CREDENTIAL_ENV_NAMES,
+  resolveProviderCredential,
+  type ProviderCredentialResolution,
+  type ProviderCredentialSource,
+} from "./credentials.js";
+
+export {
   nodeProviderCacheStore,
   purgeProviderCache,
   PROVIDER_CACHE_TTL_MS,

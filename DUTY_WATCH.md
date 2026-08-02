@@ -9,19 +9,20 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Agentic harness source ledger simplified; PR #181 open** — ADR-0052 now
-defines a provider-neutral evaluation and execution control plane, its
-deterministic authority boundary, phased H0-H9 delivery, threat-model additions,
-and a concise pinned reference ledger. No runtime, dependency, sandbox, provider, or
-mutation capability was added. The active read-only provider-evidence hardening
-gate remains unchanged.
+Status: **Credential-revocation contract complete locally** — PR #182 for the
+read-only clean-cache adapter has all six compatibility checks passed and is
+awaiting merge. This branch adds invocation-scoped provider credential
+resolution and local-revocation semantics without remote token mutation. The
+active read-only provider-evidence hardening gate remains unchanged.
 
-Active branch: `codex/agentic-harness-roadmap`
+Active branch: `codex/credential-revocation-contract`
 
-Current objective: review PR #181 while continuing the read-only provider-evidence
-hardening gate.
+Current objective: make credential-source precedence and post-clearing behavior
+deterministic while keeping remote provider token deletion outside Intentloom.
 
-Next first action: design the CLI `intentloom clean --cache` adapter, then keep credential revocation and project mutation out of scope.
+Next first action: run the full hardening gates, publish this contract, then
+continue with adversarial payload/provenance and CLI/application equivalence
+coverage.
 
 Known open items, in the order they should be handled:
 
@@ -67,6 +68,31 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-02, provider credential revocation contract
+
+- **Status:** complete locally; publication pending on a separate branch.
+- **Branch:** `codex/credential-revocation-contract`
+- **Objective:** Define and implement safe local credential revocation semantics
+  without calling provider token-delete or token-rotation endpoints.
+- **Completed:** Added a provider credential resolver with explicit-token
+  precedence, GitHub/GitLab environment aliases, invocation-scoped reads, and a
+  deterministic no-credential result after environment clearing. Added live
+  provider regression coverage and updated the live-provider specification,
+  ADR-0022, roadmap, project state, and changelog.
+- **Not completed:** Atomic commit, push, and pull request. Remote credential
+  deletion/rotation, environment mutation in a parent shell, and project
+  mutation remain out of scope.
+- **Files or packages changed:** `packages/evidence-provider/src/credentials.ts`,
+  `packages/evidence-provider/src/live.ts`, package exports, provider tests, and
+  read-only hardening documentation.
+- **Validation:** Focused live-provider and credential-resolution tests pass
+  15/15; full suite passes 870 tests with 3 skipped; typecheck, formatting,
+  production build, and staged governance pass.
+- **Decomposition:** Credential source precedence is isolated from live HTTP
+  orchestration behind a small typed module; no oversized production file grew.
+- **Next first action:** Review the staged diff, commit, and publish the
+  separate contract.
 
 ### 2026-08-02, simplify agentic harness source ledger
 

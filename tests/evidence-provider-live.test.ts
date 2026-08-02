@@ -95,6 +95,41 @@ describe("Live Provider Connections (ADR-0022)", () => {
     );
   });
 
+  it("stops using an environment credential after it is unset", async () => {
+    const originalGithubToken = process.env.GITHUB_TOKEN;
+    const originalGhToken = process.env.GH_TOKEN;
+    const mockFetch = vi
+      .fn()
+      .mockResolvedValue(new Response(JSON.stringify([]), { status: 200 }));
+    try {
+      delete process.env.GITHUB_TOKEN;
+      process.env.GH_TOKEN = "alias_github_token";
+      await fetchLiveProviderEvidence({
+        provider: "github",
+        projectKey: "vitala89/Intentloom",
+        fetchFn: mockFetch as any,
+      });
+      expect(mockFetch.mock.calls[0]?.[1]?.headers).toMatchObject({
+        Authorization: "Bearer alias_github_token",
+      });
+
+      delete process.env.GH_TOKEN;
+      await fetchLiveProviderEvidence({
+        provider: "github",
+        projectKey: "vitala89/Intentloom",
+        fetchFn: mockFetch as any,
+      });
+      expect(mockFetch.mock.calls[4]?.[1]?.headers).not.toHaveProperty(
+        "Authorization",
+      );
+    } finally {
+      if (originalGithubToken === undefined) delete process.env.GITHUB_TOKEN;
+      else process.env.GITHUB_TOKEN = originalGithubToken;
+      if (originalGhToken === undefined) delete process.env.GH_TOKEN;
+      else process.env.GH_TOKEN = originalGhToken;
+    }
+  });
+
   it("fetches GitLab live evidence using PRIVATE-TOKEN header", async () => {
     const mockFetch = vi.fn().mockImplementation(async (url: string) => {
       if (url.includes("/merge_requests")) {

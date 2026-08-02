@@ -7,6 +7,7 @@ import {
 import { fetchGitHubLiveEvents } from "./live-github.js";
 import { fetchGitLabLiveEvents } from "./live-gitlab.js";
 import { trimTrailingSlashes } from "./live-helpers.js";
+import { resolveProviderCredential } from "./credentials.js";
 
 export interface LiveProviderFetchOptions {
   readonly provider: ProviderName;
@@ -79,11 +80,10 @@ export async function fetchLiveProviderEvidence(
       return { ...cached, diagnostics: [...cached.diagnostics, "cache-hit"] };
   }
 
-  const token =
-    options.token ??
-    (options.provider === "github"
-      ? process.env.GITHUB_TOKEN
-      : process.env.GITLAB_TOKEN);
+  const token = resolveProviderCredential(
+    options.provider,
+    options.token,
+  ).token;
 
   const headers: Record<string, string> = {
     Accept: "application/json",
