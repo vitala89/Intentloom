@@ -335,9 +335,11 @@ PR #182 (`1904908`) adds the CLI `intentloom clean --cache` adapter. The
 credential-revocation increment defines invocation-scoped credential resolution
 across explicit tokens and supported environment aliases, deterministic behavior
 after environment clearing, and the explicit boundary that remote token
-deletion/rotation is not an Intentloom operation. The current hardening increment
+deletion/rotation is not an Intentloom operation. The merged hardening increment
 adds deterministic adversarial external-MCP payload fixtures and the first
-CLI/MCP structured-result equivalence contract for release analysis; the broader
+CLI/MCP structured-result equivalence contract for release analysis. The active
+follow-up adds adversarial live-provider corpus coverage for redaction,
+provenance, deterministic ordering, and rate-limit body isolation; the broader
 exit gate remains open.
 
 ## Planned milestone — Agentic evaluation and execution harness
