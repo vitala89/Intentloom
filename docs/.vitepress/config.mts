@@ -46,6 +46,10 @@ export default defineConfig({
             text: "Curated Skill Routing",
             link: "/specs/CURATED_SKILL_ROUTING_SPEC",
           },
+          {
+            text: "Agentic Harness",
+            link: "/specs/AGENTIC_HARNESS_SPEC",
+          },
         ],
       },
       {
@@ -66,6 +70,14 @@ export default defineConfig({
           {
             text: "Memory & Security Roadmap",
             link: "/roadmap/MEMORY_AND_SECURITY_ROADMAP",
+          },
+          {
+            text: "Agentic Harness Plan",
+            link: "/roadmap/AGENTIC_HARNESS_PLAN",
+          },
+          {
+            text: "Agentic Harness Sources",
+            link: "/reference/AGENTIC_HARNESS_SOURCES",
           },
         ],
       },

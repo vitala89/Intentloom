@@ -15,6 +15,9 @@ are not included in the current npm artifact until a later release.
 - Added first-party `aif-task-router`, `aif-feature-discovery`,
   `aif-verification-gate`, and `aif-extension-review` skills, plus ADR-0051 and
   the curated skill-routing specification and roadmap.
+- Added ADR-0052, the Agentic Evaluation and Execution Harness specification,
+  phased development plan, threat-model boundary, and pinned reference-source
+  ledger. This documents future work without adding a runtime or sandbox.
 
 ### Changed
 

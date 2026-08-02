@@ -9,11 +9,17 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **PR #179 merged; curated skill routing integrated** — Intentloom now carries provider-neutral task routing, feature discovery, verification, and external-extension review skills. The implementation adapts selected methods from pinned Superpowers and Matt Pocock source revisions without installing their plugin runtimes, hooks, telemetry, or automatic dependencies. The active read-only provider-evidence hardening gate remains unchanged.
+Status: **Agentic harness source ledger simplified; PR #181 open** — ADR-0052 now
+defines a provider-neutral evaluation and execution control plane, its
+deterministic authority boundary, phased H0-H9 delivery, threat-model additions,
+and a concise pinned reference ledger. No runtime, dependency, sandbox, provider, or
+mutation capability was added. The active read-only provider-evidence hardening
+gate remains unchanged.
 
-Active branch: `main`
+Active branch: `codex/agentic-harness-roadmap`
 
-Current objective: preserve the integrated curated skill-routing slice while continuing the read-only provider-evidence hardening gate.
+Current objective: review PR #181 while continuing the read-only provider-evidence
+hardening gate.
 
 Next first action: design the CLI `intentloom clean --cache` adapter, then keep credential revocation and project mutation out of scope.
 
@@ -61,6 +67,71 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-02, simplify agentic harness source ledger
+
+- **Status:** complete; PR #181 open as draft.
+- **Branch:** `codex/agentic-harness-roadmap` → `origin/codex/agentic-harness-roadmap`
+- **Commits:** `c9831ea` (ledger simplification), plus `25dec74` (architecture baseline)
+- **Pull request:** [#181](https://github.com/vitala89/Intentloom/pull/181)
+- **Objective:** Keep provenance for the harness architecture while reducing
+  maintenance overhead and avoiding the impression that every orchestration
+  framework is a supported dependency.
+- **Completed:** Reduced `AGENTIC_HARNESS_SOURCES.md` to five pinned core
+  harness/security references and a short, unpinned comparison list for
+  LangGraph, AutoGen, Semantic Kernel, and LlamaIndex Workflows. Preserved the
+  reference-only, license-review, and no-automatic-adoption boundaries.
+- **Not completed:** CI checks are still running; the PR remains draft pending
+  review. No runtime or dependency behavior changed.
+- **Files or packages changed:** `docs/reference/AGENTIC_HARNESS_SOURCES.md`
+  and this handoff record.
+- **Validation:** `pnpm docs:build`, `pnpm verify`, `pnpm verify:staged`, and
+  `git diff --check` pass. The first sandboxed verify attempt was blocked by
+  local Unix-socket permissions; daemon tests and the full verify passed with
+  the required local IPC permission. VitePress retains existing non-fatal
+  Rollup/Rolldown warnings.
+- **Next first action:** Review PR #181 CI and feedback, then keep the active
+  `intentloom clean --cache` and credential-revocation work ahead of harness
+  runtime implementation.
+
+### 2026-08-02, agentic harness architecture and development plan
+
+- **Status:** complete locally; remote pull request not opened.
+- **Branch:** `codex/agentic-harness-roadmap`
+- **Objective:** Incorporate a provider-neutral agentic evaluation, security,
+  and execution harness into Intentloom's architecture, documentation, and
+  development roadmap without overstating current implementation.
+- **Completed:** Added ADR-0052, a normative harness specification, phases H0-H9
+  development plan, and a source ledger pinned to nine reviewed repository
+  revisions. Extended the project roadmap, curated-skill C4-C6 gates, threat
+  model, documentation navigation, changelog, and durable project state. The
+  design separates the control plane from agent/model, executor, and storage
+  adapters; deterministic gates remain authoritative over advisory model
+  scoring. Current application policy evaluation remains explicitly distinct
+  from OS/container isolation.
+- **Not completed:** No harness schemas, runner, executor, SQLite store, event
+  journal, replay, model adapter, voting runtime, command, dependency, or
+  sandbox was implemented. H1-H9 remain planned. No push or pull request was
+  performed.
+- **Files or packages changed:** Documentation and VitePress navigation only;
+  no production package or generated adapter changed.
+- **Validation:** `pnpm docs:build`, `pnpm format:check`, full `pnpm verify`, and
+  `git diff --check` pass. VitePress retains its existing non-fatal
+  Rollup/Rolldown and deprecated-transform warnings and completes successfully.
+- **Decisions and assumptions:** External projects are design references, not
+  canonical dependencies. Curated-skill C4 dogfooding supplies initial scenario
+  candidates after the active read-only hardening gate. Managed skill activation
+  and broader mutation require later deterministic and adversarial harness
+  evidence.
+- **Risks or compatibility impact:** Documentation-only and additive. Future
+  isolated execution and provider adapters introduce security, CI-cost, and
+  maintenance risks that remain behind their own ADR/specification gates.
+- **Next first action:** Finish the CLI `intentloom clean --cache` adapter and
+  credential-revocation hardening, then design C4 dogfooding fixtures as H1
+  protocol scenario candidates.
+- **Evidence:** ADR-0052, `AGENTIC_HARNESS_SPEC.md`,
+  `AGENTIC_HARNESS_PLAN.md`, `AGENTIC_HARNESS_SOURCES.md`, and the passing
+  validation commands above.
 
 ### 2026-08-02, curated skill routing integrated
 

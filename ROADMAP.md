@@ -6,19 +6,20 @@ The milestones below are compatibility and evidence gates, not promised dates.
 Intentloom remains alpha until the generated configuration, schemas, and
 adoption workflow have been exercised in multiple real projects.
 
-| Milestone                      | Focus                                                                     | Exit gate                                                                                                                             | Gate status                                                                                   |
-| ------------------------------ | ------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
-| `0.1.0-alpha.4`                | Documentation consistency and release hygiene                             | Architecture, release, versioning, and public-status documents agree with the repository and verified release evidence                | Historical gate; included in `0.1.0-beta.1`                                                   |
-| `0.1.0-alpha.5`                | Fixture depth and adapter compatibility                                   | Expanded snapshot and packed-CLI coverage across supported adapters and representative project fixtures                               | Historical gate; included in `0.1.0-beta.1`                                                   |
-| `0.1.0-beta.1`                 | Compatibility-freeze candidate                                            | Explicit API/schema/output compatibility statement, migration policy, and successful dogfooding evidence                              | Released 2026-07-23 as Git tag `v0.1.0-beta.1` and npm `intentloom@0.1.0-beta.1` under `next` |
-| `0.2.0-beta.1`                 | Connected project, evidence, MCP & conformance                            | Read-only inspection, local Git timeline, provider imports, release analysis, stdio MCP server, and release conformance               | Released 2026-07-24 as npm `intentloom@0.2.0-beta.1` under `next`                             |
-| `0.3.0-beta.1`                 | Engineering conformance and extension governance                          | Engineering Conformance Engine and managed-extension schemas/governance                                                               | Released 2026-07-24 as npm `intentloom@0.3.0-beta.1` under `next`                             |
-| `0.4.0-beta.1`                 | Controlled learning, memory/security, workspace, and Neutron foundations  | Candidates L1–L8, M1–M4, S1–S5, workspace modes, and local Neutron foundations                                                        | Released 2026-07-25 as Git tag `v0.4.0-beta.1` and npm `intentloom@0.4.0-beta.1` under `next` |
-| `v0.5.0-beta.1`                | Engineering Process Intelligence increment                                | Workflow variants, durations, conformance trends, repetition, and transition intervals                                                | Released 2026-07-27 as Git tag `v0.5.0-beta.1` and npm `intentloom@0.5.0-beta.1` under `next` |
-| `v0.6.0-beta.1`                | Desktop vertical slice and TUI parity                                     | Packaged Tauri 2 read-only project flow over daemon contracts, followed by TUI parity and cross-platform evidence                     | Implementation and readiness audit complete; release/tag authorization remains explicit       |
-| `1.0.0`                        | Stable compatibility contract                                             | Stable release criteria, documented support policy, verified upgrade path, and maintained compatibility commitments                   | Released 2026-07-30 as Git tag `v1.0.0`; patch release `v1.0.2` published 2026-08-02          |
-| `post-v1.0 read-only evidence` | Live provider, external MCP, and extension capability boundaries          | Provider isolation, explicit credentials/allowlists, untrusted evidence, and capability validation are implemented; hardening remains | Implementation slice merged in PR #160 (`3713b15`); hardening gate active                     |
-| `post-v1.0 curated skills`     | Project-aware routing, discovery, verification, and external-skill review | First-party skills are provider-neutral and generated safely; structured routing and managed import require later evidence gates      | Initial catalog slice implemented; adapter dogfooding and managed import remain planned       |
+| Milestone                      | Focus                                                                     | Exit gate                                                                                                                             | Gate status                                                                                     |
+| ------------------------------ | ------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| `0.1.0-alpha.4`                | Documentation consistency and release hygiene                             | Architecture, release, versioning, and public-status documents agree with the repository and verified release evidence                | Historical gate; included in `0.1.0-beta.1`                                                     |
+| `0.1.0-alpha.5`                | Fixture depth and adapter compatibility                                   | Expanded snapshot and packed-CLI coverage across supported adapters and representative project fixtures                               | Historical gate; included in `0.1.0-beta.1`                                                     |
+| `0.1.0-beta.1`                 | Compatibility-freeze candidate                                            | Explicit API/schema/output compatibility statement, migration policy, and successful dogfooding evidence                              | Released 2026-07-23 as Git tag `v0.1.0-beta.1` and npm `intentloom@0.1.0-beta.1` under `next`   |
+| `0.2.0-beta.1`                 | Connected project, evidence, MCP & conformance                            | Read-only inspection, local Git timeline, provider imports, release analysis, stdio MCP server, and release conformance               | Released 2026-07-24 as npm `intentloom@0.2.0-beta.1` under `next`                               |
+| `0.3.0-beta.1`                 | Engineering conformance and extension governance                          | Engineering Conformance Engine and managed-extension schemas/governance                                                               | Released 2026-07-24 as npm `intentloom@0.3.0-beta.1` under `next`                               |
+| `0.4.0-beta.1`                 | Controlled learning, memory/security, workspace, and Neutron foundations  | Candidates L1–L8, M1–M4, S1–S5, workspace modes, and local Neutron foundations                                                        | Released 2026-07-25 as Git tag `v0.4.0-beta.1` and npm `intentloom@0.4.0-beta.1` under `next`   |
+| `v0.5.0-beta.1`                | Engineering Process Intelligence increment                                | Workflow variants, durations, conformance trends, repetition, and transition intervals                                                | Released 2026-07-27 as Git tag `v0.5.0-beta.1` and npm `intentloom@0.5.0-beta.1` under `next`   |
+| `v0.6.0-beta.1`                | Desktop vertical slice and TUI parity                                     | Packaged Tauri 2 read-only project flow over daemon contracts, followed by TUI parity and cross-platform evidence                     | Implementation and readiness audit complete; release/tag authorization remains explicit         |
+| `1.0.0`                        | Stable compatibility contract                                             | Stable release criteria, documented support policy, verified upgrade path, and maintained compatibility commitments                   | Released 2026-07-30 as Git tag `v1.0.0`; patch release `v1.0.2` published 2026-08-02            |
+| `post-v1.0 read-only evidence` | Live provider, external MCP, and extension capability boundaries          | Provider isolation, explicit credentials/allowlists, untrusted evidence, and capability validation are implemented; hardening remains | Implementation slice merged in PR #160 (`3713b15`); hardening gate active                       |
+| `post-v1.0 curated skills`     | Project-aware routing, discovery, verification, and external-skill review | First-party skills are provider-neutral and generated safely; structured routing and managed import require later evidence gates      | Initial catalog slice implemented; adapter dogfooding and managed import remain planned         |
+| `post-v1.0 agentic harness`    | Reproducible agent evaluation, isolated execution, scoring, and replay    | Versioned scenarios, deterministic gates, executor conformance, durable traces, and adversarial corpus pass before mutation expansion | Architecture, specification, threat boundary, and phased plan accepted; runtime not implemented |
 
 Before the first beta, Intentloom needed at least three real dogfooding scenarios: a
 minimal project, a TypeScript project, and a sanitized existing-project example
@@ -62,6 +63,8 @@ The sequencing rules are:
   product hardening over the same presentation contracts;
 - provider-neutral agent runtime before custom model training;
 - benchmark evidence before fine-tuning or reinforcement learning;
+- deterministic harness contracts before model voting or isolated mutation;
+- local read-only execution before container, remote, or provider-backed runs;
 - prepare, preview, approve, and revalidate before any agent- or MCP-triggered mutation;
 - no generic shell, arbitrary file access, hidden network access, mandatory telemetry, or implicit training-data collection.
 
@@ -72,6 +75,16 @@ and the [implementation plan](docs/roadmap/CURATED_SKILL_ADAPTATION_PLAN.md).
 Its initial catalog work is additive and does not displace the active read-only
 evidence hardening gate. Structured routing operations, managed external skill
 import, and optional provider-plugin bridges remain later reviewed phases.
+
+The evaluation and execution direction is documented in
+[ADR-0052](docs/decisions/ADR-0052-agentic-evaluation-and-execution-harness.md),
+the [Agentic Harness Specification](docs/specs/AGENTIC_HARNESS_SPEC.md), the
+[development plan](docs/roadmap/AGENTIC_HARNESS_PLAN.md), and the
+[reference-source ledger](docs/reference/AGENTIC_HARNESS_SOURCES.md). It is a
+planned post-hardening control plane, not an implemented runtime or sandbox.
+Initial scenarios will reuse curated-skill C4 dogfooding evidence, and later
+harness gates must precede managed external skill activation and broader
+mutating MCP or agent capabilities.
 
 The connected-project direction is documented in [Project Connection, Evidence, and MCP](docs/concepts/PROJECT_CONNECTION_EVIDENCE_AND_MCP.md). Interactive and agent surfaces are documented in [Interactive Surfaces and Agent Workspace](docs/concepts/INTERACTIVE_SURFACES_AND_AGENT_WORKSPACE.md). The model direction is documented in [Neutron Model Strategy](docs/concepts/NEUTRON_MODEL_STRATEGY.md).
 
@@ -320,6 +333,32 @@ Current increment complete: PR #177 adds bounded local provider-evidence cache
 retention and provider/project-scoped deletion over already-redacted results.
 The next read-only hardening increment is the CLI `intentloom clean --cache`
 adapter, followed by credential revocation behavior.
+
+## Planned milestone — Agentic evaluation and execution harness
+
+After the read-only evidence hardening gate, Intentloom will turn curated-skill
+dogfooding and security invariants into versioned scenarios executed through a
+provider-neutral harness. Delivery starts with protocol contracts and a
+deterministic fake-adapter runner. Process isolation, durable state, model
+adapters, adversarial roles, and product surfaces follow only through their own
+evidence gates.
+
+Required boundary:
+
+```text
+scenario + policy + budgets
+→ deterministic preflight
+→ capability negotiation
+→ bounded executor and agent adapters
+→ redacted events and artifacts
+→ deterministic scoring
+→ optional advisory/adversarial scoring
+→ verdict, comparison, retention, or purge
+```
+
+The current application-level sandbox evaluator remains a proposal policy gate;
+it is not relabeled as OS or container isolation. The harness does not authorize
+mutation, install a third-party runtime, or change the active next increment.
 
 ## Later candidate — Safe MCP and agent mutation
 

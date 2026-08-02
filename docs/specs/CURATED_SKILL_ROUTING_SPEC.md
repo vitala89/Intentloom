@@ -14,7 +14,8 @@ skills to both the Intentloom repository and adopted user projects.
 This specification is governed by
 [ADR-0051](../decisions/ADR-0051-curated-skill-routing-and-external-method-adaptation.md),
 [ADR-0002](../decisions/ADR-0002-agent-skills-as-portable-workflow-format.md),
-and [ADR-0021](../decisions/ADR-0021-managed-extension-lifecycle-and-manifest.md).
+[ADR-0021](../decisions/ADR-0021-managed-extension-lifecycle-and-manifest.md),
+and the planned [Agentic Harness Specification](AGENTIC_HARNESS_SPEC.md).
 
 ## Goals
 
@@ -104,6 +105,11 @@ reviewable brief.
 
 Each skill remains concise, has explicit trigger and non-trigger conditions,
 declares inputs and exact outputs, and defines stop conditions.
+
+Phase C4 dogfooding cases should become versioned harness scenarios after the
+harness protocol is accepted. Deterministic trigger, capability, approval, and
+verification checks remain authoritative; model graders may add advisory
+evidence but cannot turn a failed gate into a pass.
 
 ## External method adaptation
 

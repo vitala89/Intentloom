@@ -103,6 +103,13 @@ and real consumers justify them.
   pinned external method reviews; no external plugin, hook, telemetry, updater,
   or runtime dependency is bundled. Structured routing operations and managed
   external skill import remain later roadmap phases.
+- ADR-0052 accepts a first-party provider-neutral Agentic Evaluation and
+  Execution Harness architecture and phased plan. The current baseline has
+  deterministic policy gates, audit scoring, checkpoints, and typed operations,
+  but it does not have a unified scenario runner, OS/container executor,
+  replayable event journal, baseline/protected comparison, or independent
+  model-backed critic/judge runtime. No third-party harness dependency or new
+  execution capability is included by the documentation decision.
 
 These statements must be revalidated against code, tags, CI, and Git history
 before a new release or implementation milestone is declared complete.
@@ -423,6 +430,14 @@ The active milestone is the read-only evidence hardening gate. It must close
 pagination, rate-limit, redaction, cache retention/deletion, revocation,
 adversarial-payload, provenance, and CLI/application-equivalence gaps before
 any mutating MCP or agent capability is activated.
+
+The next planned control-plane milestone after that gate is the Agentic
+Evaluation and Execution Harness described by ADR-0052. Its H0 decision,
+specification, source provenance, threat boundary, and phased roadmap are
+accepted; phases H1-H9 remain unimplemented. Curated-skill C4 dogfooding will
+provide initial scenario candidates, while managed external skill activation
+and broader mutation remain gated on later deterministic and adversarial
+harness evidence.
 
 The current implementation increment, merged through PR #173 as `341984a`, adds
 bounded GitHub/GitLab pagination and deterministic rate-limit diagnostics to the
