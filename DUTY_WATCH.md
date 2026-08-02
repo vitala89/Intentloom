@@ -9,18 +9,18 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **CLI clean-cache increment complete locally** — the provider evidence
-cache now has a read-only CLI adapter with full verification. The active
-hardening gate remains unchanged, and credential revocation is still a separate
-follow-up.
+Status: **CLI clean-cache increment published** — the provider evidence cache
+now has a read-only CLI adapter with full local verification; PR #182 is open
+for required remote checks. The active hardening gate remains unchanged, and
+credential revocation is still a separate follow-up.
 
 Active branch: `codex/clean-cache-adapter`
 
 Current objective: complete and publish the `intentloom clean --cache` adapter
 without touching project-owned files or credential behavior.
 
-Next first action: publish the reviewed increment, then design credential
-revocation as a separate read-only task.
+Next first action: monitor PR #182 to merge, then design credential revocation
+as a separate read-only task.
 
 Known open items, in the order they should be handled:
 
@@ -69,7 +69,7 @@ entry directly below this section.
 
 ### 2026-08-02, read-only CLI provider-cache cleanup
 
-- **Status:** complete locally; publication pending.
+- **Status:** complete; PR #182 open and remote checks pending.
 - **Branch:** `codex/clean-cache-adapter`
 - **Objective:** Expose the existing provider-cache purge operation through a
   safe, explicit `intentloom clean --cache` CLI command.
@@ -81,8 +81,8 @@ entry directly below this section.
   tests covering full purge, provider scope, project scope, and invalid scope.
   Updated CLI reference, live-provider specification, roadmap, project state,
   changelog, and this handoff.
-- **Not completed:** Atomic commit, push, and pull request. Credential
-  revocation and all mutation behavior remain out of scope.
+- **Not completed:** Remote CI/required review and merge. Credential revocation
+  and all mutation behavior remain out of scope.
 - **Files or packages changed:** `packages/cli/src/clean-cache.ts`, the CLI
   command parser, `tests/cli-clean-cache.test.ts`, and read-only cache
   documentation.
@@ -91,8 +91,8 @@ entry directly below this section.
   `git diff --check` pass.
 - **Decomposition:** The existing oversized CLI command file receives only
   parsing/dispatch glue; purge behavior lives behind the new dedicated module.
-- **Next first action:** Stage the reviewed files, run staged governance, then
-  commit and publish this branch.
+- **Next first action:** Monitor PR #182, then continue with the separate
+  credential-revocation design after merge.
 
 ### 2026-08-02, curated skill routing integrated
 
