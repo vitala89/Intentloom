@@ -8,17 +8,19 @@
 engineering workflows. It requires Node.js 22 or newer and runs offline-first:
 commands do not send telemetry or make hidden runtime network requests.
 
+Read the [Intentloom documentation](https://vitala89.github.io/Intentloom/).
+
 ```sh
 npm install --global intentloom
 intentloom --help
 ```
 
-The current stable release is `1.0.0`, served by both the `latest` and `next`
-dist-tags. Pin it with `npm install --global intentloom@1.0.0`. Compatibility
+The current stable release is `1.0.2`, served by the `latest` dist-tag. Pin it
+with `npm install --global intentloom@1.0.2`. Compatibility
 and deprecation guarantees are defined by the
-[v1 support policy](https://github.com/vitala89/Intentloom/blob/main/docs/releases/SUPPORT_POLICY_V1.md);
+[v1 support policy](https://vitala89.github.io/Intentloom/releases/SUPPORT_POLICY_V1);
 the published-artifact status is recorded in the
-[release state](https://github.com/vitala89/Intentloom/blob/main/docs/releases/RELEASE_STATE.md).
+[release state](https://vitala89.github.io/Intentloom/releases/RELEASE_STATE).
 
 Start safely in a project:
 
@@ -44,7 +46,7 @@ and is not affiliated with or endorsed by OpenAI, Anthropic, GitHub, Cursor, or
 other vendors.
 
 See the [repository](https://github.com/vitala89/Intentloom),
-[documentation](https://github.com/vitala89/Intentloom/blob/main/docs/README.md),
-[CLI reference](https://github.com/vitala89/Intentloom/blob/main/docs/reference/CLI.md),
+[documentation](https://vitala89.github.io/Intentloom/),
+[CLI reference](https://vitala89.github.io/Intentloom/reference/CLI),
 [issue tracker](https://github.com/vitala89/Intentloom/issues), and
 [MIT license](https://github.com/vitala89/Intentloom/blob/main/LICENSE).

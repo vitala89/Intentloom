@@ -7,8 +7,8 @@ not publish, tag, reserve a name, or change a version as part of
 package-readiness work.
 
 Current registry evidence is recorded in [`RELEASE_STATE.md`](RELEASE_STATE.md):
-`intentloom@1.0.0` is published and holds both the `latest` and `next`
-dist-tags. The `v1.0.0` Git tag is pushed and has a GitHub release.
+`intentloom@1.0.1` is published under `latest`, while `next` remains at
+`1.0.0`. The `v1.0.0` Git tag is pushed and has a GitHub release.
 
 For every release, an authorized maintainer must confirm ownership of the npm
 name and complete

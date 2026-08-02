@@ -5,39 +5,38 @@ It distinguishes code merged into `main` from artifacts published to npm.
 Historical release audits and roadmap sections retain their original scope, but
 this document is the source of truth for the current status.
 
-Snapshot: 2026-07-31
-Workspace version: `1.0.1`
-Candidate release: `1.0.1`, prepared on `release/1.0.1`, not yet published
-Last published npm package: `intentloom@1.0.0`, published 2026-07-30
-Default npm `latest`: `intentloom@1.0.0`
+Snapshot: 2026-08-02
+Workspace version: `1.0.2`
+Candidate release: `1.0.2`, prepared on `codex/update-public-metadata`, pending trusted publication
+Last published npm package: `intentloom@1.0.1`, verified in the registry on 2026-08-02
+Default npm `latest`: `intentloom@1.0.1`
 Default npm `next`: `intentloom@1.0.0`
 Previous release commit: `a148f2f` (tagged `v1.0.0` as `c1205a8`)
 GitHub release: [`v1.0.0`](https://github.com/vitala89/Intentloom/releases/tag/v1.0.0), published 2026-07-30
 
-`latest` was promoted to `1.0.0` with
-`npm dist-tag add intentloom@1.0.0 latest`. Verified against the registry on
-2026-07-31: `npm view intentloom dist-tags` reports
-`{"latest":"1.0.0","next":"1.0.0"}`, so an unqualified `npm install intentloom`
-installs the stable release.
+Verified against the registry on 2026-08-02: `npm view intentloom` reports
+`1.0.1`, with `latest=1.0.1` and `next=1.0.0`. The `1.0.2` candidate will
+promote `latest` through the protected trusted-publishing workflow after its
+source metadata PR is merged.
 
-## `1.0.1` candidate
+## `1.0.2` candidate
 
-`1.0.1` is a documentation and package-metadata release. It changes no runtime,
+`1.0.2` is a documentation and package-metadata release. It changes no runtime,
 CLI surface, schema, adapter, protocol, or dependency behavior. Its purpose is
-that npmjs.com renders `description`, `keywords`, and `README.md` from the
-published tarball and npm does not allow editing a published version in place,
-so the corrected package README could not otherwise reach users.
+to make the GitHub Pages site the canonical documentation destination and to
+ship the corrected npm description and README, which npm renders from the
+published tarball and does not allow editing in place.
 
-Local `npm pack --dry-run --json` in `packages/cli` at the candidate commit
-reports shasum `3a17b8b0985555ec609feb230643cc79438673bd`, integrity
-`sha512-IyG2CDm5PU+u36xQocOb9jlFWCmtmqHvlIYv5cSv+2SumX3TtokdKx1kgQnYlCwXHOt8F3d+Y1bFPQje7jjuSA==`,
-70 files, 981779 bytes unpacked. The `1.0.0` artifact was 70 files and 981107
-bytes; the difference is the README, the manifest metadata, and the version
-string.
+The candidate artifact must be checked with `npm pack --dry-run --json` and
+compared with the published registry metadata before the trusted publish is
+approved. Its shasum, integrity, file count, workflow run, and provenance are
+intentionally not claimed until that check completes.
 
-`1.0.1` will publish through
+`1.0.2` will publish through
 [`.github/workflows/release.yml`](../../.github/workflows/release.yml) using npm
-trusted publishing, so it carries a provenance attestation.
+trusted publishing and the `latest` dist-tag. The post-publication integrity,
+workflow run, provenance, and registry state must be recorded here before this
+snapshot is considered complete.
 
 ## Provenance
 
@@ -73,18 +72,18 @@ non-stable surfaces; it does not mean that the code is absent.
 ## What users receive from npm
 
 ```text
-npm install intentloom          ->  1.0.0
-npm install intentloom@latest   ->  1.0.0
+npm install intentloom          ->  1.0.1
+npm install intentloom@latest   ->  1.0.1
 npm install intentloom@next     ->  1.0.0
 ```
 
-Both tags point at `1.0.0` until `1.0.1` is published. `next` is expected to move
-ahead of `latest` again at the next prerelease; publishing a prerelease must not
-move `latest`.
+The `latest` tag points at `1.0.1`, while `next` remains at `1.0.0`. `next` is
+expected to move ahead of `latest` again at the next prerelease; publishing a
+prerelease must not move `latest`.
 
 ## Evidence
 
-- npm registry, re-verified 2026-07-31 after the dist-tag promotion:
+- Historical npm registry evidence, re-verified 2026-07-31 after the dist-tag promotion:
   [`intentloom` package](https://www.npmjs.com/package/intentloom)
   reports `latest=1.0.0` and `next=1.0.0`. The earlier reading the same day, before
   promotion, was `latest=0.1.0-alpha.3`. The `1.0.0` artifact has

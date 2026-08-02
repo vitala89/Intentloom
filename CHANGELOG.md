@@ -13,6 +13,20 @@ are not included in the current npm artifact until a later release.
 - Added JSON Schema files for Extension Manifest (`urn:aif:schema:extension-manifest:1`) and Extension Lock (`urn:aif:schema:extension-lock:1`) in `catalog/schemas/` with `@intentloom/validator` support.
 - Added ADR-0023 (`ADR-0023-external-mcp-evidence-ingestion.md`) and External MCP Evidence Ingestion Specification (`EXTERNAL_MCP_EVIDENCE_INGESTION_SPEC.md`).
 
+## [1.0.2] - 2026-08-02
+
+Documentation and package-metadata release. No runtime, CLI surface, schema,
+adapter, protocol, or dependency behavior changes.
+
+### Changed
+
+- Made the GitHub Pages site the canonical public documentation destination in
+  the repository and npm-facing READMEs.
+- Updated the GitHub and npm project description to describe the local,
+  vendor-neutral framework and CLI.
+- Bumped the published CLI package metadata to `1.0.2` for the corrected npm
+  README and metadata to reach npmjs.com.
+
 ## [1.0.1] - 2026-07-31
 
 Documentation and package-metadata release. No runtime, CLI surface, schema,
