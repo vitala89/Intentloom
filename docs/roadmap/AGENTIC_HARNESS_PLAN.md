@@ -178,7 +178,8 @@ Exit gate:
 
 ## Phase H7: Security and product scenario corpus
 
-Status: planned; begins with H2 and expands through H6.
+Status: bounded seed implemented on `feat/harness-scenario-corpus`; expansion
+and certification remain planned.
 
 Scope:
 
@@ -188,6 +189,11 @@ Scope:
 - add baseline/protected comparisons for each security control;
 - record coverage, unsupported cases, and platform limitations;
 - keep synthetic benchmarks distinct from production certification.
+
+The initial seed is executable through the existing deterministic runner. It
+validates case identity, safe fixture references, expected terminal statuses,
+and diagnostic expectations while keeping raw execution events out of the
+corpus evaluation result. It is not a public command or provider benchmark.
 
 Exit gate:
 
@@ -269,7 +275,6 @@ and explicit approval design.
 
 ## Next first action
 
-Prepare the bounded Phase H7 scenario-corpus plan, starting with deterministic
-positive, negative, and adversarial cases for skill routing, MCP evidence,
-capability confusion, and false consensus. Keep role execution separate until a
-real provider consumer and adapter-specific decision are approved.
+Define the smallest read-only H8 `inspect`/`replay` consumer and its CLI/MCP
+parity boundary. Keep public command exposure, provider execution, and mutation
+separate until their own consumer and approval gates are satisfied.

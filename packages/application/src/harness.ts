@@ -6,3 +6,4 @@ export * from "./harness-agent.js";
 export * from "./harness-agent-fake.js";
 export * from "./harness-agent-result.js";
 export * from "./harness-voting.js";
+export * from "./harness-scenarios.js";

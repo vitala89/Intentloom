@@ -9,6 +9,12 @@ are not included in the current npm artifact until a later release.
 
 ### Added
 
+- Added a bounded provider-neutral H7 harness scenario corpus seed with
+  versioned positive, negative, regression, and adversarial cases for skill
+  routing, external MCP, provider evidence, capability negotiation, approvals,
+  memory, paths, and voting. Added fail-closed corpus validation and a pure
+  scorecard evaluator; no model execution, public command, network access, or
+  mutation authority is included.
 - Added bounded provider-neutral harness voting contracts and deterministic
   aggregation for risk-triggered generator, critic, and judge reviews, including
   quorum, role coverage, independent-context, abstention, disagreement,

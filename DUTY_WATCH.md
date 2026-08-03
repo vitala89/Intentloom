@@ -9,17 +9,17 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Phase H6 bounded deterministic voting core implemented** — risk
-triggering, versioned review/policy/result contracts, fail-closed aggregation,
-and adversarial evidence outcomes are implemented without model execution.
+Status: **Phase H7 bounded scenario-corpus seed implemented** — versioned
+positive, negative, regression, and adversarial cases now exercise the existing
+deterministic harness without model execution, network access, or mutation.
 
-Active branch: `feat/harness-deterministic-voting`
+Active branch: `feat/harness-scenario-corpus`
 
-Current objective: Phase H7 — security and product scenario corpus.
+Current objective: Prepare the H8 product-surface plan while retaining H7 corpus
+coverage as a reviewed protocol fixture.
 
-Next first action: Prepare the bounded Phase H7 scenario-corpus plan, beginning
-with deterministic skill-routing, MCP evidence, capability-confusion, and
-false-consensus cases.
+Next first action: Define the smallest read-only `harness inspect`/`replay`
+consumer for the H8 parity gate; do not add public commands or mutation yet.
 
 Known open items, in the order they should be handled:
 
@@ -65,6 +65,40 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-03, bounded security scenario corpus seed (Phase H7)
+
+- **Status:** complete for implementation and local validation; branch
+  `feat/harness-scenario-corpus` prepared for review.
+- **Branch:** `feat/harness-scenario-corpus`
+- **Objective:** Add a provider-neutral, deterministic H7 scenario corpus that
+  exercises the existing harness contracts without model, network, or mutation
+  authority.
+- **Completed:** Added versioned corpus and case contracts, fail-closed
+  validation for category/target/risk/status fields, duplicate identifiers, and
+  unsafe fixture references. Added a pure scorecard evaluator that compares
+  expected status and diagnostics while deliberately omitting raw execution
+  events. The seed covers skill routing, external MCP, provider evidence,
+  capability negotiation, approvals, memory, paths, and voting across positive,
+  negative, regression, and adversarial cases.
+- **Not completed:** Public harness commands, provider-backed execution, full
+  baseline/protected certification matrices, and mutation remain deferred to
+  later H8/H9 decisions.
+- **Files or packages changed:** `packages/protocol/src/harness-scenarios.ts`,
+  `packages/validator/src/harness-scenarios.ts`,
+  `packages/application/src/harness-scenarios.ts`, harness facade exports,
+  `tests/harness-scenarios.test.ts`, and the harness specification, roadmap,
+  project state, changelog, and Duty Watch records.
+- **Validation:** Focused corpus plus harness tests pass. Full `pnpm verify`
+  passes with 123 test files, 938 passed, and 3 skipped; typecheck, formatting,
+  build, and `git diff --check` pass. The initial sandboxed daemon run remains
+  limited by local Unix-socket `EPERM`; the authoritative verification used the
+  permitted local IPC environment. Staged governance passes for all 13 changed
+  files.
+- **Code budgets:** New production modules are 38, 127, and 54 formatted lines;
+  no oversized entrypoint is expanded and no exception is required.
+- **Next first action:** Define the smallest read-only H8 inspect/replay
+  consumer and its CLI/MCP parity boundary; keep public commands deferred.
 
 ### 2026-08-03, deterministic adversarial voting core (Phase H6)
 
