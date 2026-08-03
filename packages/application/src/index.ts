@@ -176,7 +176,6 @@ import {
   validateNeutronSubagentTaskRecord,
 } from "@intentloom/protocol";
 export { INTENTLOOM_VERSION } from "@intentloom/core";
-
 export function evaluateProjectEngineeringConformance(options: {
   readonly root: string;
   readonly timeline: GenericTimeline;
@@ -7432,3 +7431,4 @@ export * from "./inception-templates.js";
 export * from "./harness-runner.js";
 export * from "./harness-comparison.js";
 export * from "./harness-sandbox.js";
+export * from "./harness-state.js";
