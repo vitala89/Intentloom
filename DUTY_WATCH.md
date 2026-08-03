@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Phase H3 Execution Isolation Adapters implemented** — `HarnessIsolationAdapter`, `createLocalReadonlySandbox`, `createContainerSandbox`, `createFakeSandbox`, and `negotiateExecutorCapabilities` implemented in `packages/application/src/harness-sandbox.ts` (ADR-0052).
+Status: **Phase H4 Durable State, Tracing, Resume & Replay implemented** — `HarnessStateStore`, `createInMemoryHarnessStateStore`, `resumeHarnessExecution`, and `replayHarnessEvents` implemented in `packages/application/src/harness-state.ts` (ADR-0052).
 
-Active branch: `feat/harness-isolation-adapters`
+Active branch: `feat/harness-durable-state`
 
-Current objective: Phase H4 — Durable state, tracing, resume, and replay.
+Current objective: Phase H5 — Agent and model adapters.
 
-Next first action: Prepare implementation plan for Phase H4 durable state and tracing engine.
+Next first action: Prepare implementation plan for Phase H5 capability negotiation and agent adapters.
 
 Known open items, in the order they should be handled:
 
@@ -61,6 +61,16 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-03, durable state, tracing, resume, and replay (Phase H4)
+
+- **Status:** complete for implementation and validation; branch `feat/harness-durable-state` prepared for PR.
+- **Branch:** `feat/harness-durable-state`
+- **Objective:** Implement Phase H4 durable state, append-only event journal, content-addressed artifact indexing, checkpoint resume, and deterministic replay (ADR-0052).
+- **Completed:** Added `packages/application/src/harness-state.ts` implementing `HarnessStateStore`, `createInMemoryHarnessStateStore`, `resumeHarnessExecution`, and `replayHarnessEvents`. Re-exported symbols in `packages/application/src/index.ts`. Added 6 unit tests in `tests/harness-state.test.ts`.
+- **Not completed:** Phase H5 agent and model adapters implementation.
+- **Files or packages changed:** `packages/application/src/harness-state.ts`, `packages/application/src/index.ts`, `tests/harness-state.test.ts`, `DUTY_WATCH.md`.
+- **Validation:** `pnpm verify` pre-push gate passed (120 test files, 917 passed); `pnpm format:check`, `pnpm typecheck`, `git diff --check` pass.
 
 ### 2026-08-03, execution isolation adapters (Phase H3)
 
