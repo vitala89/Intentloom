@@ -28,6 +28,8 @@ Start safely in a project:
 intentloom init --dry-run
 intentloom adopt --plan
 intentloom inspect --json
+intentloom harness inspect --file scorecard.json --json
+intentloom harness replay --file scorecard.json --mode strict --json
 intentloom doctor
 intentloom sync --dry-run
 ```
@@ -40,6 +42,12 @@ Writes are transactional and preceded by a reviewable plan.
 profile, instruction surfaces, and Intentloom metadata readiness without running
 project scripts, invoking Git, installing dependencies, following symbolic links,
 or contacting a network service.
+
+The read-only harness commands accept one explicitly supplied JSON scorecard.
+`harness inspect` returns the canonical summary view; `harness replay` returns a
+deterministic event summary in `simulate` mode by default or `strict` mode when
+requested. Both commands keep scorecard files within the selected `--root`, do
+not expose raw event or artifact contents, and never repeat external effects.
 
 Vendor names describe compatibility only. Intentloom is an independent project
 and is not affiliated with or endorsed by OpenAI, Anthropic, GitHub, Cursor, or

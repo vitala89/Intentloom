@@ -14,8 +14,9 @@ The bounded H7 increment adds a versioned synthetic scenario-corpus seed and a
 pure scorecard evaluator covering security/product targets without executing a
 model, provider, network request, or mutation. The first bounded H8 slice adds
 canonical read-only inspect/replay application operations over existing
-scorecards; public commands, transport endpoints, provider adapters,
-model-backed roles, and certification matrices remain unimplemented.
+scorecards and the CLI consumer `intentloom harness inspect|replay`;
+transport endpoints, provider adapters, model-backed roles, and certification
+matrices remain unimplemented.
 
 ## Purpose
 
@@ -224,10 +225,10 @@ intentloom harness replay
 ```
 
 Command names are provisional until the protocol and CLI design gates are
-accepted. The canonical application now has read-only inspect/replay summaries,
-but no command or transport surface is wired yet. MCP and UI surfaces begin
-read-only and must expose the same application results. No generic
-command-execution MCP tool is introduced.
+accepted. The canonical application and CLI now have read-only inspect/replay
+summaries; the CLI accepts an explicitly supplied scorecard file and exposes no
+execution authority. MCP and UI surfaces begin read-only and must expose the
+same application results. No generic command-execution MCP tool is introduced.
 
 ## Exit criteria for runtime activation
 

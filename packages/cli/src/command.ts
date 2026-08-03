@@ -137,6 +137,8 @@ import {
   type ProviderName,
 } from "@intentloom/evidence-provider";
 import { cleanProviderCache } from "./clean-cache.js";
+import { runHarnessCommand } from "./harness-command.js";
+import { usage } from "./usage.js";
 import {
   formatAdoptionProposal,
   formatCleanCacheHuman,
@@ -336,33 +338,6 @@ const mappingValueFlags = new Set([
   "--documentation-mapping",
 ]);
 const adapters = new Set<AdapterName>(["claude", "codex", "cursor", "copilot"]);
-const usage = [
-  "Usage: intentloom clean --cache [PROJECT_PATH|--root PATH] [--provider github|gitlab] [--project-key KEY] [--json]",
-  "Usage: intentloom <init|plan> [--root PATH] [--dry-run]",
-  "       intentloom adopt <--plan|--apply PLAN_FILE> [PROJECT_PATH|--root PATH] [--json] [--output PATH] [--strict] [--dry-run]",
-  "       intentloom update <--plan|--apply PLAN_FILE> [PROJECT_PATH|--root PATH] [--json] [--output PATH] [--strict] [--dry-run]",
-  "       intentloom <adopt|update|diff|sync|doctor|inspect|timeline|conformance|summary|skill|proposal|evaluate|memory|checkpoint|rank|profile|delegate|context|session|security|ui|workspace|neutron> [PROJECT_PATH|--root PATH] [--dry-run]",
-  "       intentloom evidence <fetch|import|analyze> --provider github|gitlab --project-key KEY [--file PATH] [--root PATH] [--case-id ID] [--token TOKEN] [--json]",
-  "       intentloom conformance [PROJECT_PATH|--root PATH] [--policy PATH] [--timeline PATH] [--case-id ID] [--case-type TYPE] [--json]",
-  "       intentloom summary <list|get|record> [PROJECT_PATH|--root PATH] [--id ID] [--trust-class CLASS] [--retention-state STATE] [--json]",
-  "       intentloom skill discover [--level catalog|contract|procedure] [--pack PACK] [--role ROLE] [--query QUERY] [--max-budget NUM] [--root PATH] [--json]",
-  "       intentloom proposal <list|get|create|approve|plan|apply> [PROJECT_PATH|--root PATH] [--id ID] [--action ACTION] [--plan-file PATH] [--evidence EVIDENCE] [--json]",
-  "       intentloom evaluate <run|list> [PROJECT_PATH|--root PATH] [--proposal-id ID] [--skill-id ID] [--json]",
-  "       intentloom memory <inspect|summary|propose|review|list|accept|forget|export|import|search|render|index> [PROJECT_PATH|--root PATH] [--json]",
-  "       intentloom checkpoint <create|pause|cancel|redirect|resume|list|delete> [PROJECT_PATH|--root PATH] [--id ID] [--task-id ID] [--new-intent INTENT] [--json]",
-  "       intentloom rank [QUERY|config] [--provider PROVIDER] [--enable|--disable] [--root PATH] [--json]",
-  "       intentloom profile <create|get|list> [--name NAME] [--root PATH] [--json]",
-  "       intentloom delegate --profile NAME --role ROLE --task-id ID [--root PATH] [--json]",
-  "       intentloom context <get> [--query QUERY] [--max-tokens NUM] [--max-items NUM] [--root PATH] [--json]",
-  "       intentloom session <start|close|list|get|delete|export> [--id ID] [--task TASK] [--state STATE] [--root PATH] [--json]",
-  "       intentloom security <import|inspect|coverage|dismiss|accept-risk|list|scan|baseline|policy|sandbox|audit|verify> [--file PATH] [--id ID] [--reason REASON] [--approved-by USER] [--severity SEVERITY] [--state STATE] [--category CATEGORY] [--root PATH] [--json]",
-  "       intentloom ui [PROJECT_PATH|--root PATH] [--json]",
-  "       intentloom workspace <start|get|list|append|promote|review|apply> [--mode MODE] [--conversation-id ID] [--proposal-id ID] [--plan-file PATH] [--approved-by USER] [--content TEXT] [--root PATH] [--json]",
-  "       intentloom neutron subagent <spawn|get|list> [--role ROLE] [--task-id ID] [--input TEXT] [--root PATH] [--json]",
-  "       intentloom neutron sync [PROJECT_PATH|--root PATH] [--json]",
-  "       adoption mappings use --project-owned-mapping SOURCE=DESTINATION",
-  "       or --documentation-mapping SOURCE=DESTINATION",
-].join("\n");
 
 function parseArguments(args: readonly string[]): ParsedArguments {
   const command = args[0] ?? "";
@@ -1248,6 +1223,13 @@ export async function runCli(
     return 0;
   }
   try {
+    if (args[0] === "harness") {
+      return await runHarnessCommand(
+        args,
+        { fileSystem: dependencies.fileSystem ?? nodeFileSystem },
+        io,
+      );
+    }
     const parsed = parseArguments(args);
     const fileSystem = dependencies.fileSystem ?? nodeFileSystem;
     const root = parsed.values.get("--root") ?? cwd();

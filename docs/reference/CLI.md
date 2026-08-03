@@ -2,8 +2,8 @@
 
 Install the CLI with `npm install --global intentloom`. The public package
 supports the `intentloom` binary only; programmatic imports and deep imports are not
-part of the public CLI contract. The current stable release is `1.0.0`, served by
-both `latest` and `next`; pin it with `intentloom@1.0.0` when reproducibility is
+part of the public CLI contract. The current stable release is `1.0.2`, served
+by the `latest` dist-tag; pin it with `intentloom@1.0.2` when reproducibility is
 required.
 
 See the [release state](../releases/RELEASE_STATE.md) for capability availability
@@ -30,6 +30,23 @@ dependencies, access the network, read file contents other than bounded profile
 evidence, traverse ignored build/dependency trees, follow symbolic links, or
 write project files. Secret-like paths are excluded from the result. A symbolic
 link used as the requested root is rejected with exit code `3`.
+
+## Harness inspect and replay
+
+`intentloom harness inspect --file SCORECARD.json [--root PATH] [--json]`
+loads one explicitly supplied JSON scorecard and renders the canonical
+read-only inspection view. It exposes scenario/request identity, terminal
+status, score and assertion counts, bounded event/artifact counts, diagnostics,
+and whether replay is available; event payloads and artifact contents are not
+returned.
+
+`intentloom harness replay --file SCORECARD.json [--root PATH] [--mode simulate|strict] [--json]`
+uses the same validated scorecard and deterministic replay operation. The
+default mode is `simulate`; `strict` also treats recorded errors as failed
+steps. Replay never repeats external effects. Both commands resolve `--file`
+within the supplied root, perform no writes, process execution, network access,
+or provider calls, and return exit code `3` for unreadable or invalid
+scorecards.
 
 ## Timeline
 

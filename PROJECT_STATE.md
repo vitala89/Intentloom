@@ -123,27 +123,14 @@ and real consumers justify them.
   Execution Harness architecture and phased plan. Phases H1-H4 are merged into
   `main`: versioned protocol contracts, deterministic scenario execution and
   comparison, isolation adapters, and provider-neutral state/resume/replay
-  contracts. The bounded H5 increment on `feat/harness-agent-adapters` adds
-  versioned agent capabilities and requests/results, fail-closed negotiation,
-  normalized structured output/tool calls/usage/errors, explicit offline versus
-  remote data-policy declarations, and an offline fake adapter. Real provider,
-  local-model, and CLI-agent adapters remain deferred pending an approved real
-  consumer and adapter-specific credential/network/retention review; no model
-  execution or public harness command exists yet. The bounded H6 increment on
-  `feat/harness-deterministic-voting` adds risk-triggered deterministic review
-  contracts and aggregation with explicit quorum, role coverage, independent
-  context, abstention, disagreement, false-consensus, and usage-budget outcomes.
-  The bounded H7 increment on `feat/harness-scenario-corpus` adds a versioned
-  synthetic scenario corpus seed and pure scorecard evaluator covering skill
-  routing, external MCP, provider evidence, capability negotiation, approvals,
-  memory, paths, and voting across positive, negative, regression, and
-  adversarial cases. Public harness commands, provider execution,
-  certification claims, and mutation remain deferred.
-  The bounded H8 increment on `feat/harness-inspect-replay` adds canonical
-  read-only inspect/replay application operations over existing scorecards.
-  They validate at the application boundary, return stable summaries, and do
-  not expose raw event payloads or repeat effects; CLI, daemon, MCP, TUI,
-  Desktop, and Neutron consumers remain deferred.
+  contracts. H5-H8 are now also merged into `main`: provider-neutral agent
+  capability and result contracts, deterministic voting, the synthetic scenario
+  corpus, and canonical read-only inspect/replay views. The bounded CLI
+  consumer on `feat/harness-cli-inspect-replay` adds file-based
+  `intentloom harness inspect` and `intentloom harness replay` commands that
+  validate scorecards, constrain inputs to an explicit root, omit raw payloads,
+  and never repeat effects. Real provider/model/CLI-agent adapters, daemon/MCP/
+  UI consumers, certification claims, and mutation remain deferred.
 
 These statements must be revalidated against code, tags, CI, and Git history
 before a new release or implementation milestone is declared complete.
@@ -211,8 +198,8 @@ before a new release or implementation milestone is declared complete.
 ## Current blockers and unknowns
 
 - Any expansion to bottleneck, performance, causal, actor, repository-reading, persisted, remote, or model-assisted analysis requires a new ADR, specification, and threat review.
-- Current `main` is verified at `6df37eb` (Phase H4 durable state, tracing,
-  resume, and replay) and tracks `origin/main`.
+- Current `main` is verified at `bdcc33d` (H8 canonical inspect/replay
+  operations) and tracks `origin/main`.
 - npm reports `latest=1.0.2` and `next=1.0.0`, verified 2026-08-02.
 - Workspace packages are synchronized to `1.0.2`; Git tag `v1.0.2` and GitHub
   Release `v1.0.2` point at the verified `192fd05` release commit. The stable
@@ -468,10 +455,11 @@ any mutating MCP or agent capability is activated.
 The next planned control-plane milestone after that gate is the Agentic
 Evaluation and Execution Harness described by ADR-0052. Its H0 decision,
 specification, source provenance, threat boundary, and phased roadmap are
-accepted; phases H1-H9 remain unimplemented. Curated-skill C4 dogfooding will
-provide initial scenario candidates, while managed external skill activation
-and broader mutation remain gated on later deterministic and adversarial
-harness evidence.
+accepted; H1-H8 implementation slices are complete, with H9 adoption and
+production hardening remaining. Curated-skill C4 dogfooding will provide
+initial scenario candidates, while managed external skill activation and
+broader mutation remain gated on later deterministic and adversarial harness
+evidence.
 
 The current implementation increment, merged through PR #173 as `341984a`, adds
 bounded GitHub/GitLab pagination and deterministic rate-limit diagnostics to the
