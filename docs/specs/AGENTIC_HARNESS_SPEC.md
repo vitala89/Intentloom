@@ -12,9 +12,10 @@ fake adapter. The bounded H6 increment adds risk-triggered deterministic voting
 contracts and aggregation for advisory generator, critic, and judge reviews.
 The bounded H7 increment adds a versioned synthetic scenario-corpus seed and a
 pure scorecard evaluator covering security/product targets without executing a
-model, provider, network request, or mutation. Real provider adapters,
-model-backed roles, public harness commands, and certification matrices remain
-unimplemented.
+model, provider, network request, or mutation. The first bounded H8 slice adds
+canonical read-only inspect/replay application operations over existing
+scorecards; public commands, transport endpoints, provider adapters,
+model-backed roles, and certification matrices remain unimplemented.
 
 ## Purpose
 
@@ -223,8 +224,10 @@ intentloom harness replay
 ```
 
 Command names are provisional until the protocol and CLI design gates are
-accepted. MCP and UI surfaces begin read-only and expose the same application
-results. No generic command-execution MCP tool is introduced.
+accepted. The canonical application now has read-only inspect/replay summaries,
+but no command or transport surface is wired yet. MCP and UI surfaces begin
+read-only and must expose the same application results. No generic
+command-execution MCP tool is introduced.
 
 ## Exit criteria for runtime activation
 
