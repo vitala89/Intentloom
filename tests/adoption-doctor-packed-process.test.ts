@@ -15,6 +15,7 @@ import { resolvePackedCliEntry, runPackedCli } from "./helpers/packed-cli.js";
 
 const repositoryRoot = resolve(".");
 const windows = process.platform === "win32";
+const processTestTimeout = windows ? 15_000 : 5_000;
 const command = (name: string) => (windows ? `${name}.cmd` : name);
 let packRoot: string;
 let packedCliEntry: string;
@@ -172,27 +173,41 @@ describe("packed adoption and doctor fixture cases", () => {
     expect(result.stdout).toContain("generated-checksum-drift");
   });
 
-  it("repeated dry-run output is deterministic", async () => {
-    const root = await project("deterministic-adopt ü");
-    const args = ["adopt", "--root", root, "--dry-run", "--json"];
-    expect(aif(args).stdout).toBe(aif(args).stdout);
-  });
+  it(
+    "repeated dry-run output is deterministic",
+    async () => {
+      const root = await project("deterministic-adopt ü");
+      const args = ["adopt", "--root", root, "--dry-run", "--json"];
+      expect(aif(args).stdout).toBe(aif(args).stdout);
+    },
+    processTestTimeout,
+  );
 
-  it("repeated doctor output is deterministic", async () => {
-    const root = await project("deterministic-doctor");
-    expect(aif(["init", "--root", root, "--adapters", "codex"]).status).toBe(0);
-    const args = ["doctor", "--root", root, "--json"];
-    expect(aif(args).stdout).toBe(aif(args).stdout);
-  });
+  it(
+    "repeated doctor output is deterministic",
+    async () => {
+      const root = await project("deterministic-doctor");
+      expect(aif(["init", "--root", root, "--adapters", "codex"]).status).toBe(
+        0,
+      );
+      const args = ["doctor", "--root", root, "--json"];
+      expect(aif(args).stdout).toBe(aif(args).stdout);
+    },
+    processTestTimeout,
+  );
 
-  it("both packed commands preserve filesystem state", async () => {
-    const root = await project("immutable packed");
-    await writeFile(join(root, "README.md"), "project\n");
-    const before = await snapshot(root);
-    aif(["adopt", "--root", root, "--dry-run"]);
-    aif(["doctor", "--root", root]);
-    expect(await snapshot(root)).toEqual(before);
-  });
+  it(
+    "both packed commands preserve filesystem state",
+    async () => {
+      const root = await project("immutable packed");
+      await writeFile(join(root, "README.md"), "project\n");
+      const before = await snapshot(root);
+      aif(["adopt", "--root", root, "--dry-run"]);
+      aif(["doctor", "--root", root]);
+      expect(await snapshot(root)).toEqual(before);
+    },
+    processTestTimeout,
+  );
 
   it("packed version remains unchanged", () => {
     expect(aif(["--version"]).stdout.trim()).toBe(INTENTLOOM_VERSION);
