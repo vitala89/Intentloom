@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Phase H2 Deterministic Runner & Comparison Engine merged** — PR #192 is merged into `main`. Pure scenario runner, capability constraint checks, duration/cancellation bounds, and scorecard comparison engine (ADR-0052) are active.
+Status: **Phase H3 Execution Isolation Adapters implemented** — `HarnessIsolationAdapter`, `createLocalReadonlySandbox`, `createContainerSandbox`, `createFakeSandbox`, and `negotiateExecutorCapabilities` implemented in `packages/application/src/harness-sandbox.ts` (ADR-0052).
 
-Active branch: `main`
+Active branch: `feat/harness-isolation-adapters`
 
-Current objective: Phase H3 — Implement execution isolation adapters and sandbox abstractions for isolated harness scenario execution.
+Current objective: Phase H4 — Durable state, tracing, resume, and replay.
 
-Next first action: Prepare implementation plan for Phase H3 isolation adapters in `packages/application/src/harness-sandbox.ts`.
+Next first action: Prepare implementation plan for Phase H4 durable state and tracing engine.
 
 Known open items, in the order they should be handled:
 
@@ -61,6 +61,16 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-03, execution isolation adapters (Phase H3)
+
+- **Status:** complete for implementation and validation; branch `feat/harness-isolation-adapters` prepared for PR.
+- **Branch:** `feat/harness-isolation-adapters`
+- **Objective:** Implement Phase H3 execution isolation adapters, capability negotiation, and sandbox abstractions (`local-readonly`, `container`, `fake`) for isolated scenario execution (ADR-0052).
+- **Completed:** Added `packages/application/src/harness-sandbox.ts` implementing `HarnessIsolationAdapter`, `createLocalReadonlySandbox`, `createContainerSandbox`, `createFakeSandbox`, and `negotiateExecutorCapabilities`. Re-exported symbols in `packages/application/src/index.ts`. Added 8 unit tests in `tests/harness-sandbox.test.ts`.
+- **Not completed:** Phase H4 durable state and tracing engine implementation.
+- **Files or packages changed:** `packages/application/src/harness-sandbox.ts`, `packages/application/src/index.ts`, `tests/harness-sandbox.test.ts`, `DUTY_WATCH.md`.
+- **Validation:** `pnpm verify` pre-push gate passed (119 test files, 911 passed); `pnpm format:check`, `pnpm typecheck`, `git diff --check` pass.
 
 ### 2026-08-03, deterministic harness runner and comparison engine (Phase H2)
 
