@@ -29,19 +29,12 @@ jobs:
           docs/concepts/FOUNDATION_WORKSHOP_AND_EVOLUTIONARY_ARCHITECTURE.md
           docs/governance/FOUNDATION_FIRST_DEVELOPMENT_PRINCIPLES.md
           docs/roadmap/FOUNDATION_WORKSHOP_IMPLEMENTATION_PLAN.md
-      - name: Print formatted documents
-        run: |
-          node <<'NODE'
-          const { readFileSync } = require('node:fs');
-          const files = [
-            'docs/concepts/FOUNDATION_WORKSHOP_AND_EVOLUTIONARY_ARCHITECTURE.md',
-            'docs/governance/FOUNDATION_FIRST_DEVELOPMENT_PRINCIPLES.md',
-            'docs/roadmap/FOUNDATION_WORKSHOP_IMPLEMENTATION_PLAN.md',
-          ];
-          for (const file of files) {
-            const encoded = Buffer.from(readFileSync(file, 'utf8')).toString('base64');
-            console.log(`BEGIN_FORMATTED_FILE ${file}`);
-            console.log(encoded);
-            console.log(`END_FORMATTED_FILE ${file}`);
-          }
-          NODE
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: formatted-foundation-docs
+          path: |
+            docs/concepts/FOUNDATION_WORKSHOP_AND_EVOLUTIONARY_ARCHITECTURE.md
+            docs/governance/FOUNDATION_FIRST_DEVELOPMENT_PRINCIPLES.md
+            docs/roadmap/FOUNDATION_WORKSHOP_IMPLEMENTATION_PLAN.md
+          if-no-files-found: error
+          retention-days: 1
