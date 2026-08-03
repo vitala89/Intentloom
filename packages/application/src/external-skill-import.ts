@@ -28,11 +28,20 @@ export function normalizeExternalSkill(
     );
   }
 
-  const normalizedName = validatedRequest.skillName
+  const rawNormalized = validatedRequest.skillName
     .toLowerCase()
     .trim()
-    .replace(/[^a-z0-9-]+/g, "-")
-    .replace(/^-+|-+$/g, "");
+    .replace(/[^a-z0-9]+/g, "-");
+
+  let start = 0;
+  while (start < rawNormalized.length && rawNormalized[start] === "-") {
+    start++;
+  }
+  let end = rawNormalized.length;
+  while (end > start && rawNormalized[end - 1] === "-") {
+    end--;
+  }
+  const normalizedName = rawNormalized.slice(start, end);
 
   const content = validatedRequest.content;
   const diagnostics: string[] = [];
