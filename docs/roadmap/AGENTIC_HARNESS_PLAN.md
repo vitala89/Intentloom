@@ -7,8 +7,9 @@ provider-neutral capability negotiation, normalized adapter results, and an
 offline fake consumer. Real network, local-model, and CLI-agent integrations
 remain conditional on an approved consumer and adapter-specific review. The
 bounded H6 deterministic voting core and H7 scenario corpus are implemented.
-The first H8 canonical read-only inspect/replay operation is implemented; CLI,
-daemon, MCP, TUI, Desktop, and Neutron consumers remain planned.
+The first H8 canonical read-only inspect/replay operation and its bounded CLI
+consumer are implemented; daemon, MCP, TUI, Desktop, and Neutron consumers
+remain planned.
 
 ## Outcome
 
@@ -206,8 +207,9 @@ Exit gate:
 
 ## Phase H8: Product surfaces and parity
 
-Status: bounded canonical operation complete on `feat/harness-inspect-replay`;
-product-surface consumers and parity remain planned.
+Status: bounded canonical operation and read-only CLI consumer complete on
+`feat/harness-cli-inspect-replay`; transport and product-surface parity remain
+planned.
 
 Scope:
 
@@ -218,10 +220,12 @@ Scope:
 - add structured output, documentation, accessibility, and equivalence tests.
 
 The bounded H8 slice adds `inspectHarnessScorecard` and
-`replayHarnessScorecard` to the canonical application facade. Both validate the
-existing scorecard contract, return stable read-only summaries, and never expose
-raw event payloads or repeat effects. No public command or transport endpoint is
-added by this slice.
+`replayHarnessScorecard` to the canonical application facade, plus
+`intentloom harness inspect` and `intentloom harness replay` as a file-based
+read-only CLI consumer. All paths are constrained to the supplied root, both
+commands validate scorecards before rendering, and neither exposes raw event
+payloads or repeats effects. No daemon, MCP, TUI, Desktop, or Neutron endpoint
+is added by this slice.
 
 Exit gate:
 
@@ -284,6 +288,6 @@ and explicit approval design.
 
 ## Next first action
 
-Define the smallest read-only H8 `inspect`/`replay` consumer and its CLI/MCP
-parity boundary. Keep public command exposure, provider execution, and mutation
+Define the smallest read-only MCP parity consumer for the canonical H8
+inspect/replay views. Keep transport exposure, provider execution, and mutation
 separate until their own consumer and approval gates are satisfied.

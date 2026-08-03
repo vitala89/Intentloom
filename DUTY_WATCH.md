@@ -9,18 +9,18 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Phase H8 bounded canonical inspect/replay operation implemented** —
-read-only scorecard summaries now exercise the existing H4 replay contract
-without public commands, network access, or mutation.
+Status: **Phase H8 bounded read-only CLI consumer implemented** —
+`intentloom harness inspect` and `intentloom harness replay` load validated
+scorecards within an explicit root and reuse the canonical application views
+without execution, network access, or mutation.
 
-Active branch: `feat/harness-inspect-replay`
+Active branch: `feat/harness-cli-inspect-replay`
 
-Current objective: Prepare CLI/MCP parity consumers for the canonical
-inspect/replay operations while retaining product-surface read-only boundaries.
+Current objective: Prepare the read-only CLI consumer for review, then define
+the smallest MCP parity consumer for the canonical inspect/replay operations.
 
-Next first action: Design the smallest CLI adapter for `harness inspect` and
-`harness replay`; keep command dispatch decomposition separate from this
-canonical operation commit.
+Next first action: Run the full verification gate, commit the CLI slice
+atomically, and open its pull request; do not add transport or mutation.
 
 Known open items, in the order they should be handled:
 
@@ -66,6 +66,59 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-03, bounded H8 read-only harness CLI consumer
+
+- **Status:** complete for implementation, local validation, and atomic commit;
+  branch `feat/harness-cli-inspect-replay` is ready for push and review.
+- **Branch:** `feat/harness-cli-inspect-replay`
+- **Objective:** Expose the canonical H8 inspect/replay application views through
+  the smallest file-based, read-only CLI consumer.
+- **Completed:** Added `intentloom harness inspect --file SCORECARD.json` and
+  `intentloom harness replay --file SCORECARD.json [--mode simulate|strict]`.
+  Both commands constrain scorecard input to `--root`, validate through the
+  application operations, support deterministic JSON and human output, omit raw
+  event/artifact payloads, and never repeat effects. Extracted the CLI usage
+  catalog from the oversized command entrypoint so its formatted size does not
+  grow.
+- **Not completed:** MCP, daemon, TUI, Desktop, Neutron, provider/model
+  execution, `harness run/compare/score`, and mutation remain deferred.
+- **Files or packages changed:** `packages/cli/src/harness-command.ts`,
+  `packages/cli/src/usage.ts`, the thin CLI dispatch, focused CLI tests,
+  harness specification/roadmap, CLI reference/readme, changelog,
+  `PROJECT_STATE.md`, and this handoff.
+- **Validation:** Focused harness CLI tests pass 5/5; full `pnpm verify` passes
+  with 125 test files, 946 passed, and 3 skipped. Typecheck, formatting, build,
+  `git diff --check`, and staged quality checks pass. No code-quality exception
+  is required; the existing oversized command entrypoint does not grow.
+- **Decisions and assumptions:** The scorecard is supplied as JSON via
+  `--file`; paths are resolved within `--root`; invalid scorecards return exit
+  `3`, while syntax/path errors return exit `2`. JSON and human output are
+  projections of the same canonical view.
+- **Risks or compatibility impact:** The command is additive and local-only;
+  it introduces no network, subprocess, provider, credential, or mutation
+  capability. The public package artifact will include it only after a later
+  release.
+- **Open issues or blockers:** The CLI consumer is not yet pushed or merged;
+  hosted CI and review remain pending.
+- **Next first action:** Push the branch, open the PR, and then design the
+  smallest read-only MCP parity consumer.
+- **Evidence:** `tests/cli-harness.test.ts`, `docs/reference/CLI.md`, and
+  `docs/specs/AGENTIC_HARNESS_SPEC.md`.
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant tests, type checks, builds, or compatibility checks passed
+- [x] Atomic commit policy and commit-message checks passed
+- [x] Repository hooks installed or equivalent commands run
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `PROJECT_STATE.md` updated when applicable
+- [x] `DUTY_WATCH.md` handoff completed
+- [x] Related roadmap, ADR, changelog, migration, or reference docs updated
+- [x] Failed or unavailable checks recorded
 
 ### 2026-08-03, canonical read-only harness inspect/replay operations (Phase H8)
 
