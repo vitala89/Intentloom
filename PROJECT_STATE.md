@@ -1,6 +1,6 @@
 # Intentloom Project State
 
-Last verified: 2026-08-02
+Last verified: 2026-08-03
 
 This file records the durable current state of the project. It is not a
 chronological log. Session history and handoff details belong in
@@ -120,12 +120,16 @@ and real consumers justify them.
   or runtime dependency is bundled. Structured routing operations and managed
   external skill import remain later roadmap phases.
 - ADR-0052 accepts a first-party provider-neutral Agentic Evaluation and
-  Execution Harness architecture and phased plan. The current baseline has
-  deterministic policy gates, audit scoring, checkpoints, and typed operations,
-  but it does not have a unified scenario runner, OS/container executor,
-  replayable event journal, baseline/protected comparison, or independent
-  model-backed critic/judge runtime. No third-party harness dependency or new
-  execution capability is included by the documentation decision.
+  Execution Harness architecture and phased plan. Phases H1-H4 are merged into
+  `main`: versioned protocol contracts, deterministic scenario execution and
+  comparison, isolation adapters, and provider-neutral state/resume/replay
+  contracts. The bounded H5 increment on `feat/harness-agent-adapters` adds
+  versioned agent capabilities and requests/results, fail-closed negotiation,
+  normalized structured output/tool calls/usage/errors, explicit offline versus
+  remote data-policy declarations, and an offline fake adapter. Real provider,
+  local-model, and CLI-agent adapters remain deferred pending an approved real
+  consumer and adapter-specific credential/network/retention review; no model
+  voting or public harness command exists yet.
 
 These statements must be revalidated against code, tags, CI, and Git history
 before a new release or implementation milestone is declared complete.
@@ -193,8 +197,8 @@ before a new release or implementation milestone is declared complete.
 ## Current blockers and unknowns
 
 - Any expansion to bottleneck, performance, causal, actor, repository-reading, persisted, remote, or model-assisted analysis requires a new ADR, specification, and threat review.
-- Current `main` is verified at `112b4a4` (PR #177 squash merge) and tracks
-  `origin/main`.
+- Current `main` is verified at `6df37eb` (Phase H4 durable state, tracing,
+  resume, and replay) and tracks `origin/main`.
 - npm reports `latest=1.0.2` and `next=1.0.0`, verified 2026-08-02.
 - Workspace packages are synchronized to `1.0.2`; Git tag `v1.0.2` and GitHub
   Release `v1.0.2` point at the verified `192fd05` release commit. The stable

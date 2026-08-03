@@ -219,3 +219,5 @@ export function validateHarnessComparison(value: unknown): HarnessComparison {
     ...(typeof value.notes === "string" ? { notes: value.notes } : {}),
   };
 }
+
+export * from "./harness-agent.js";

@@ -102,3 +102,5 @@ export interface HarnessComparison {
   readonly regressionDetected: boolean;
   readonly notes?: string;
 }
+
+export * from "./harness-agent.js";

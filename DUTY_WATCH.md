@@ -9,13 +9,16 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Phase H4 Durable State, Tracing, Resume & Replay implemented** — `HarnessStateStore`, `createInMemoryHarnessStateStore`, `resumeHarnessExecution`, and `replayHarnessEvents` implemented in `packages/application/src/harness-state.ts` (ADR-0052).
+Status: **Phase H5 provider-neutral agent adapter core implemented** — versioned
+capabilities and request/result contracts, fail-closed negotiation, normalized
+results, explicit data policy, and the offline fake adapter are implemented.
 
-Active branch: `feat/harness-durable-state`
+Active branch: `feat/harness-agent-adapters`
 
-Current objective: Phase H5 — Agent and model adapters.
+Current objective: Phase H6 — adversarial validation and deterministic voting.
 
-Next first action: Prepare implementation plan for Phase H5 capability negotiation and agent adapters.
+Next first action: Prepare the bounded Phase H6 plan for risk-triggered
+generator, critic, and judge roles plus deterministic aggregation.
 
 Known open items, in the order they should be handled:
 
@@ -61,6 +64,42 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-03, provider-neutral agent adapter core (Phase H5)
+
+- **Status:** complete for implementation and local validation; branch
+  `feat/harness-agent-adapters` prepared for review.
+- **Branch:** `feat/harness-agent-adapters`
+- **Objective:** Implement the bounded H5 provider-neutral agent/model adapter
+  core without adding a provider SDK, credential, or network integration.
+- **Completed:** Added versioned agent capabilities and request/result contracts,
+  validators, fail-closed capability and token-limit negotiation, normalized
+  structured output/tool calls/usage/cancellation/errors, explicit offline and
+  remote data-policy declarations, and a deterministic offline fake adapter.
+  Undeclared or malformed tool calls fail closed; raw adapter errors and unknown
+  transport fields do not enter results.
+- **Not completed:** Real OpenAI-compatible, Anthropic, local-model, or CLI-agent
+  adapters; model-backed critic/judge roles; public harness commands. These
+  require an approved real consumer and adapter-specific review.
+- **Files or packages changed:** `packages/protocol/src/harness-agent.ts`,
+  `packages/validator/src/harness-agent.ts`, the three focused
+  `packages/application/src/harness-agent*.ts` modules, the small application
+  harness facade, package entry exports, `tests/harness-agent.test.ts`, the
+  harness specification and roadmap, `PROJECT_STATE.md`, `CHANGELOG.md`, and
+  `DUTY_WATCH.md`.
+- **Validation:** focused H5 tests pass 8/8; all focused harness tests pass
+  37/37. Full `pnpm verify` passes with 121 test files, 925 passed, and 3
+  skipped after allowing temporary local Unix sockets for daemon tests;
+  typecheck, formatting, build, and `git diff --check` pass. The initial
+  sandboxed run failed only because local IPC socket creation returned `EPERM`.
+  Staged governance passes for all 16 changed files.
+- **Code budgets:** new production modules are each below 250 formatted lines;
+  the harness facade consolidates exports so the oversized application
+  entrypoint shrinks, while the oversized protocol and validator entrypoints do
+  not grow. The first staged check caught entrypoint growth before this facade
+  correction; the corrected staged check passes.
+- **Next first action:** Review and merge this branch when authorized, then
+  prepare the bounded Phase H6 deterministic voting plan.
 
 ### 2026-08-03, durable state, tracing, resume, and replay (Phase H4)
 
