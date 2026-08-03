@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - docs/foundation-workshop-evolutionary-architecture
+  pull_request:
+    branches:
+      - main
 
 permissions:
   contents: read
