@@ -4,11 +4,8 @@ import { stat, realpath, writeFile } from "node:fs/promises";
 import { createHash } from "node:crypto";
 import { extractMarkdownSection } from "./skill-markdown.js";
 import { dirname, relative, resolve, sep } from "node:path";
-import {
-  adapterVersion,
-  generateAdapters,
-  getAdapterContract,
-} from "@intentloom/adapters";
+import { adapterVersion, generateAdapters } from "@intentloom/adapters";
+import { getAdapterContract } from "@intentloom/adapters";
 import {
   evaluateEngineeringConformance,
   summarizeWorkflowVariants,
@@ -280,6 +277,7 @@ export type {
   NeutronSubagentTaskRecord,
 };
 export * from "./task-routing.js";
+export * from "./external-skill-import.js";
 export {
   validateNeutronSubagentTaskRecord,
   validateWorkspaceConversationRecord,

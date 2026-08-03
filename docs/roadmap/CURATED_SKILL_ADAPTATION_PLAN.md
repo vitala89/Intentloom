@@ -132,8 +132,7 @@ Exit gate:
 
 ## Phase C6: Managed external skill import
 
-Status: planned; separate implementation and threat review plus relevant H2/H7
-harness evidence required.
+Status: complete for normalization and safety proposal contract.
 
 Scope:
 

@@ -22,17 +22,11 @@ import {
   type JsonRpcFailure,
 } from "./jsonrpc.js";
 
-import {
-  type ClientErrorCode,
-  type CapabilityClassification,
-  type DaemonCapability,
-  type DaemonLimits,
-  type DaemonCompatibility,
-  type DaemonInfoParams,
-  type DaemonInfoResult,
-  type DaemonInfoRequest,
-  type DaemonInfoResponse,
-} from "./daemon.js";
+import type { ClientErrorCode, CapabilityClassification } from "./daemon.js";
+import type { DaemonCapability, DaemonLimits } from "./daemon.js";
+import type { DaemonCompatibility, DaemonInfoParams } from "./daemon.js";
+import type { DaemonInfoResult, DaemonInfoRequest } from "./daemon.js";
+import type { DaemonInfoResponse } from "./daemon.js";
 
 import type {
   ProjectDiffParams,
@@ -48,6 +42,7 @@ export * from "./diff.js";
 export * from "./inception.js";
 export * from "./harness.js";
 export * from "./task-routing.js";
+export * from "./external-skill-import.js";
 export const TIMELINE_DEFAULT_LIMIT = 50;
 export const TIMELINE_MAX_LIMIT = 500;
 export const TIMELINE_DEFAULT_TIMEOUT_MS = 5_000;

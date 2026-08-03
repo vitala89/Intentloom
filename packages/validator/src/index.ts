@@ -11,9 +11,8 @@ import {
   checksum,
   normalizeOutputPath,
   parseAifConfig,
-  parseSkill,
-  type GeneratedFile,
 } from "@intentloom/core";
+import { parseSkill, type GeneratedFile } from "@intentloom/core";
 
 export type ArtifactType =
   | "aif-config"
@@ -877,3 +876,4 @@ export * from "./desktop-extension.js";
 export * from "./harness.js";
 export * from "./inception.js";
 export * from "./task-routing.js";
+export * from "./external-skill-import.js";

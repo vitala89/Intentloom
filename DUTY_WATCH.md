@@ -9,16 +9,16 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Phase C5 versioned TaskRouteDecision protocol contract & application operation implemented** —
-versioned `TaskRouteDecision` protocol schema and validators in `packages/protocol` and `packages/validator`
-alongside canonical `routeTaskRequest` application operation in `packages/application` provide deterministic,
-provider-neutral task classification for all Intentloom surfaces.
+Status: **Phase C6 managed external skill import contract implemented** —
+normative protocol schemas and validators in `packages/protocol` and `packages/validator`
+alongside canonical `normalizeExternalSkill` and `proposeExternalSkillImport` application operations in `packages/application`
+provide SHA256 checksumming, risk level assessment, and inactive proposal creation for external skill artifacts.
 
-Active branch: `feat/structured-task-routing`
+Active branch: `feat/external-skill-import-contract`
 
-Current objective: Prepare Phase C5 structured task routing contract for review and pull request.
+Current objective: Prepare Phase C6 managed external skill import contract for review and pull request.
 
-Next first action: Push `feat/structured-task-routing` branch and open pull request for review.
+Next first action: Push `feat/external-skill-import-contract` branch and open pull request for review.
 
 Known open items, in the order they should be handled:
 
@@ -64,6 +64,38 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-04, Phase C6 managed external skill import contract
+
+- **Status:** complete for implementation, local validation, and atomic commit;
+  branch `feat/external-skill-import-contract` is ready for PR.
+- **Branch:** `feat/external-skill-import-contract`
+- **Objective:** Define the normative protocol schema, input/output validators, and canonical `normalizeExternalSkill` / `proposeExternalSkillImport` application operations.
+- **Completed:** Created `packages/protocol/src/external-skill-import.ts` (33 lines), `packages/validator/src/external-skill-import.ts` (165 lines), `packages/application/src/external-skill-import.ts` (126 lines), and `tests/external-skill-import.test.ts` (150 lines). Re-exported in package entrypoints.
+- **Not completed:** Direct execution or unapproved activation of external skills remains forbidden.
+- **Files or packages changed:** `packages/protocol/src/external-skill-import.ts`, `packages/protocol/src/index.ts`,
+  `packages/validator/src/external-skill-import.ts`, `packages/validator/src/index.ts`,
+  `packages/application/src/external-skill-import.ts`, `packages/application/src/index.ts`,
+  `tests/external-skill-import.test.ts`, `docs/roadmap/CURATED_SKILL_ADAPTATION_PLAN.md`,
+  `CHANGELOG.md`, and `DUTY_WATCH.md`.
+- **Validation:** Focused import tests pass 5/5; `pnpm verify` pre-push gate passes.
+- **Decisions and assumptions:** SHA256 checksum mismatch throws error; prompt injection or unsafe shell patterns assign critical risk level; inactive proposals require explicit activation approval.
+- **Risks or compatibility impact:** Additive protocol and application contract; no breaking changes.
+- **Next first action:** Push branch `feat/external-skill-import-contract` and open pull request for review.
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant tests, type checks, builds, or compatibility checks passed
+- [x] Atomic commit policy and commit-message checks passed
+- [x] Repository hooks installed or equivalent commands run
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `PROJECT_STATE.md` updated when applicable
+- [x] `DUTY_WATCH.md` handoff completed
+- [x] Related roadmap, ADR, changelog, migration, or reference docs updated
+- [x] Failed or unavailable checks recorded
 
 ### 2026-08-04, Phase C5 versioned TaskRouteDecision protocol contract & application operation
 

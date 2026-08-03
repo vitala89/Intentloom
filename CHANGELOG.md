@@ -9,6 +9,9 @@ are not included in the current npm artifact until a later release.
 
 ### Added
 
+- Added managed external skill import normalization and safety proposal contract
+  (`normalizeExternalSkill`, `proposeExternalSkillImport`) in `packages/protocol`, `packages/validator`,
+  and `packages/application` with SHA256 checksumming, risk assessment, and inactive proposal creation.
 - Added versioned `TaskRouteDecision` protocol schema and input/output validators in
   `packages/protocol` and `packages/validator` alongside canonical `routeTaskRequest`
   application operation in `packages/application` for provider-neutral task routing.
