@@ -1,10 +1,7 @@
 import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
-import {
-  Ajv2020,
-  type ErrorObject,
-  type ValidateFunction,
-} from "ajv/dist/2020.js";
+import { Ajv2020, type ErrorObject } from "ajv/dist/2020.js";
+import { type ValidateFunction } from "ajv/dist/2020.js";
 import { parseDocument } from "yaml";
 import { findMarkdownLinkTargets } from "./markdown-links.js";
 import {
@@ -877,3 +874,4 @@ export * from "./harness.js";
 export * from "./inception.js";
 export * from "./task-routing.js";
 export * from "./external-skill-import.js";
+export * from "./harness-adoption-gate.js";

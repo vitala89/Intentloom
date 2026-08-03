@@ -9,6 +9,9 @@ are not included in the current npm artifact until a later release.
 
 ### Added
 
+- Added Agentic Harness adoption gate and fail-closed mutation enforcement contract
+  (`evaluateHarnessAdoptionGate`) in `packages/protocol`, `packages/validator`, and `packages/application`
+  verifying passing, non-stale scorecards and required governance approvals.
 - Added managed external skill import normalization and safety proposal contract
   (`normalizeExternalSkill`, `proposeExternalSkillImport`) in `packages/protocol`, `packages/validator`,
   and `packages/application` with SHA256 checksumming, risk assessment, and inactive proposal creation.

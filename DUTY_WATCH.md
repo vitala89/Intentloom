@@ -9,16 +9,16 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Phase C6 managed external skill import contract implemented** —
+Status: **Phase H9 Agentic Harness adoption gate & fail-closed mutation enforcement implemented** —
 normative protocol schemas and validators in `packages/protocol` and `packages/validator`
-alongside canonical `normalizeExternalSkill` and `proposeExternalSkillImport` application operations in `packages/application`
-provide SHA256 checksumming, risk level assessment, and inactive proposal creation for external skill artifacts.
+alongside canonical `evaluateHarnessAdoptionGate` application operation in `packages/application`
+provide mandatory scorecard verification, freshness checks, and approval enforcement before external skill activation or agent mutation.
 
-Active branch: `feat/external-skill-import-contract`
+Active branch: `feat/harness-adoption-gate`
 
-Current objective: Prepare Phase C6 managed external skill import contract for review and pull request.
+Current objective: Prepare Phase H9 Agentic Harness adoption gate contract for review and pull request.
 
-Next first action: Push `feat/external-skill-import-contract` branch and open pull request for review.
+Next first action: Push `feat/harness-adoption-gate` branch and open pull request for review.
 
 Known open items, in the order they should be handled:
 
@@ -64,6 +64,38 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-04, Phase H9 Agentic Harness adoption gate contract & fail-closed mutation enforcement
+
+- **Status:** complete for implementation, local validation, and atomic commit;
+  branch `feat/harness-adoption-gate` is ready for PR.
+- **Branch:** `feat/harness-adoption-gate`
+- **Objective:** Define the normative protocol schema, input/output validators, and canonical `evaluateHarnessAdoptionGate` application operation for mandatory harness scorecard verification before activation or mutation.
+- **Completed:** Created `packages/protocol/src/harness-adoption-gate.ts` (25 lines), `packages/validator/src/harness-adoption-gate.ts` (128 lines), `packages/application/src/harness-adoption-gate.ts` (64 lines), and `tests/harness-adoption-gate.test.ts` (162 lines). Re-exported in package entrypoints.
+- **Not completed:** Live automated trigger of external skill activation remains gated behind passing scorecards and human approval.
+- **Files or packages changed:** `packages/protocol/src/harness-adoption-gate.ts`, `packages/protocol/src/index.ts`,
+  `packages/validator/src/harness-adoption-gate.ts`, `packages/validator/src/index.ts`,
+  `packages/application/src/harness-adoption-gate.ts`, `packages/application/src/index.ts`,
+  `tests/harness-adoption-gate.test.ts`, `docs/specs/AGENTIC_HARNESS_SPEC.md`, `docs/roadmap/AGENTIC_HARNESS_PLAN.md`,
+  `CHANGELOG.md`, and `DUTY_WATCH.md`.
+- **Validation:** Focused adoption gate tests pass 6/6; `pnpm verify` pre-push gate passes.
+- **Decisions and assumptions:** Gate fails closed (`passed: false`) if any required scorecard is missing, failed, or exceeds max age, or if required approvals are missing.
+- **Risks or compatibility impact:** Additive protocol and application contract; no breaking changes.
+- **Next first action:** Push branch `feat/harness-adoption-gate` and open pull request for review.
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant tests, type checks, builds, or compatibility checks passed
+- [x] Atomic commit policy and commit-message checks passed
+- [x] Repository hooks installed or equivalent commands run
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `PROJECT_STATE.md` updated when applicable
+- [x] `DUTY_WATCH.md` handoff completed
+- [x] Related roadmap, ADR, changelog, migration, or reference docs updated
+- [x] Failed or unavailable checks recorded
 
 ### 2026-08-04, Phase C6 managed external skill import contract
 

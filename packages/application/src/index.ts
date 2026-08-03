@@ -14,17 +14,10 @@ import {
   summarizeWorkflowRepetitions,
   summarizeWorkflowTransitionIntervals,
 } from "@intentloom/evidence-analysis";
-import {
-  INTENTLOOM_VERSION,
-  checksum,
-  loadCatalog,
-  normalizeOutputPath,
-  normalizeStoredPath,
-  storedPathCollisionKey,
-  type AdapterName,
-  type Catalog,
-  type GeneratedFile,
-} from "@intentloom/core";
+import { INTENTLOOM_VERSION, checksum, loadCatalog } from "@intentloom/core";
+import { normalizeOutputPath, normalizeStoredPath } from "@intentloom/core";
+import { storedPathCollisionKey, type AdapterName } from "@intentloom/core";
+import type { Catalog, GeneratedFile } from "@intentloom/core";
 import {
   deterministicId,
   planGovernanceAdoption,
@@ -278,6 +271,7 @@ export type {
 };
 export * from "./task-routing.js";
 export * from "./external-skill-import.js";
+export * from "./harness-adoption-gate.js";
 export {
   validateNeutronSubagentTaskRecord,
   validateWorkspaceConversationRecord,
