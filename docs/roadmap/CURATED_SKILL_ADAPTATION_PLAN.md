@@ -85,7 +85,7 @@ Exit gate:
 
 ## Phase C4: Adapter and adoption evidence
 
-Status: planned.
+Status: complete for deterministic scenario fixtures and corpus seed.
 
 Scope:
 
@@ -111,8 +111,7 @@ Exit gate:
 
 ## Phase C5: Structured routing contract
 
-Status: planned; requires demonstrated demand from C4 and accepted harness H1
-protocol boundaries.
+Status: complete for versioned TaskRouteDecision protocol contract and application operation.
 
 Scope:
 
@@ -133,8 +132,7 @@ Exit gate:
 
 ## Phase C6: Managed external skill import
 
-Status: planned; separate implementation and threat review plus relevant H2/H7
-harness evidence required.
+Status: complete for normalization and safety proposal contract.
 
 Scope:
 

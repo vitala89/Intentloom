@@ -9,18 +9,16 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Phase H8 bounded read-only CLI consumer implemented** —
-`intentloom harness inspect` and `intentloom harness replay` load validated
-scorecards within an explicit root and reuse the canonical application views
-without execution, network access, or mutation.
+Status: **Phase H9 Agentic Harness adoption gate & fail-closed mutation enforcement implemented** —
+normative protocol schemas and validators in `packages/protocol` and `packages/validator`
+alongside canonical `evaluateHarnessAdoptionGate` application operation in `packages/application`
+provide mandatory scorecard verification, freshness checks, and approval enforcement before external skill activation or agent mutation.
 
-Active branch: `feat/harness-cli-inspect-replay`
+Active branch: `feat/harness-adoption-gate`
 
-Current objective: Prepare the read-only CLI consumer for review, then define
-the smallest MCP parity consumer for the canonical inspect/replay operations.
+Current objective: Prepare Phase H9 Agentic Harness adoption gate contract for review and pull request.
 
-Next first action: Run the full verification gate, commit the CLI slice
-atomically, and open its pull request; do not add transport or mutation.
+Next first action: Push `feat/harness-adoption-gate` branch and open pull request for review.
 
 Known open items, in the order they should be handled:
 
@@ -66,6 +64,168 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-04, Phase H9 Agentic Harness adoption gate contract & fail-closed mutation enforcement
+
+- **Status:** complete for implementation, local validation, and atomic commit;
+  branch `feat/harness-adoption-gate` is ready for PR.
+- **Branch:** `feat/harness-adoption-gate`
+- **Objective:** Define the normative protocol schema, input/output validators, and canonical `evaluateHarnessAdoptionGate` application operation for mandatory harness scorecard verification before activation or mutation.
+- **Completed:** Created `packages/protocol/src/harness-adoption-gate.ts` (25 lines), `packages/validator/src/harness-adoption-gate.ts` (128 lines), `packages/application/src/harness-adoption-gate.ts` (64 lines), and `tests/harness-adoption-gate.test.ts` (162 lines). Re-exported in package entrypoints.
+- **Not completed:** Live automated trigger of external skill activation remains gated behind passing scorecards and human approval.
+- **Files or packages changed:** `packages/protocol/src/harness-adoption-gate.ts`, `packages/protocol/src/index.ts`,
+  `packages/validator/src/harness-adoption-gate.ts`, `packages/validator/src/index.ts`,
+  `packages/application/src/harness-adoption-gate.ts`, `packages/application/src/index.ts`,
+  `tests/harness-adoption-gate.test.ts`, `docs/specs/AGENTIC_HARNESS_SPEC.md`, `docs/roadmap/AGENTIC_HARNESS_PLAN.md`,
+  `CHANGELOG.md`, and `DUTY_WATCH.md`.
+- **Validation:** Focused adoption gate tests pass 6/6; `pnpm verify` pre-push gate passes.
+- **Decisions and assumptions:** Gate fails closed (`passed: false`) if any required scorecard is missing, failed, or exceeds max age, or if required approvals are missing.
+- **Risks or compatibility impact:** Additive protocol and application contract; no breaking changes.
+- **Next first action:** Push branch `feat/harness-adoption-gate` and open pull request for review.
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant tests, type checks, builds, or compatibility checks passed
+- [x] Atomic commit policy and commit-message checks passed
+- [x] Repository hooks installed or equivalent commands run
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `PROJECT_STATE.md` updated when applicable
+- [x] `DUTY_WATCH.md` handoff completed
+- [x] Related roadmap, ADR, changelog, migration, or reference docs updated
+- [x] Failed or unavailable checks recorded
+
+### 2026-08-04, Phase C6 managed external skill import contract
+
+- **Status:** complete for implementation, local validation, and atomic commit;
+  branch `feat/external-skill-import-contract` is ready for PR.
+- **Branch:** `feat/external-skill-import-contract`
+- **Objective:** Define the normative protocol schema, input/output validators, and canonical `normalizeExternalSkill` / `proposeExternalSkillImport` application operations.
+- **Completed:** Created `packages/protocol/src/external-skill-import.ts` (33 lines), `packages/validator/src/external-skill-import.ts` (165 lines), `packages/application/src/external-skill-import.ts` (126 lines), and `tests/external-skill-import.test.ts` (150 lines). Re-exported in package entrypoints.
+- **Not completed:** Direct execution or unapproved activation of external skills remains forbidden.
+- **Files or packages changed:** `packages/protocol/src/external-skill-import.ts`, `packages/protocol/src/index.ts`,
+  `packages/validator/src/external-skill-import.ts`, `packages/validator/src/index.ts`,
+  `packages/application/src/external-skill-import.ts`, `packages/application/src/index.ts`,
+  `tests/external-skill-import.test.ts`, `docs/roadmap/CURATED_SKILL_ADAPTATION_PLAN.md`,
+  `CHANGELOG.md`, and `DUTY_WATCH.md`.
+- **Validation:** Focused import tests pass 5/5; `pnpm verify` pre-push gate passes.
+- **Decisions and assumptions:** SHA256 checksum mismatch throws error; prompt injection or unsafe shell patterns assign critical risk level; inactive proposals require explicit activation approval.
+- **Risks or compatibility impact:** Additive protocol and application contract; no breaking changes.
+- **Next first action:** Push branch `feat/external-skill-import-contract` and open pull request for review.
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant tests, type checks, builds, or compatibility checks passed
+- [x] Atomic commit policy and commit-message checks passed
+- [x] Repository hooks installed or equivalent commands run
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `PROJECT_STATE.md` updated when applicable
+- [x] `DUTY_WATCH.md` handoff completed
+- [x] Related roadmap, ADR, changelog, migration, or reference docs updated
+- [x] Failed or unavailable checks recorded
+
+### 2026-08-04, Phase C5 versioned TaskRouteDecision protocol contract & application operation
+
+- **Status:** complete for implementation, local validation, and atomic commit;
+  branch `feat/structured-task-routing` is ready for PR.
+- **Branch:** `feat/structured-task-routing`
+- **Objective:** Define the normative versioned `TaskRouteDecision` protocol schema, input/output validators, and canonical `routeTaskRequest` application operation.
+- **Completed:** Created `packages/protocol/src/task-routing.ts` (32 lines), `packages/validator/src/task-routing.ts` (124 lines), `packages/application/src/task-routing.ts` (131 lines), and `tests/task-routing.test.ts` (140 lines). Re-exported in package entrypoints.
+- **Not completed:** Managed external skill import runtime (C6-C7) remains planned.
+- **Files or packages changed:** `packages/protocol/src/task-routing.ts`, `packages/protocol/src/index.ts`,
+  `packages/validator/src/task-routing.ts`, `packages/validator/src/index.ts`,
+  `packages/application/src/task-routing.ts`, `packages/application/src/index.ts`,
+  `tests/task-routing.test.ts`, `docs/specs/CURATED_SKILL_ROUTING_SPEC.md`,
+  `docs/roadmap/CURATED_SKILL_ADAPTATION_PLAN.md`, `CHANGELOG.md`, and `DUTY_WATCH.md`.
+- **Validation:** Focused task routing tests pass 10/10; `pnpm verify` pre-push gate passes.
+- **Decisions and assumptions:** Routing heuristics match task intent deterministically across `review`, `adopt`, `discover`, `plan`, `diagnose`, `implement`, and `direct` kinds.
+- **Risks or compatibility impact:** Additive protocol and application contract; no breaking changes.
+- **Next first action:** Push branch `feat/structured-task-routing` and open pull request for review.
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant tests, type checks, builds, or compatibility checks passed
+- [x] Atomic commit policy and commit-message checks passed
+- [x] Repository hooks installed or equivalent commands run
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `PROJECT_STATE.md` updated when applicable
+- [x] `DUTY_WATCH.md` handoff completed
+- [x] Related roadmap, ADR, changelog, migration, or reference docs updated
+- [x] Failed or unavailable checks recorded
+
+### 2026-08-04, C4 curated skill dogfooding scenario fixtures
+
+- **Status:** complete for implementation, local validation, and atomic commit;
+  branch `feat/curated-skill-harness-fixtures` is ready for PR.
+- **Branch:** `feat/curated-skill-harness-fixtures`
+- **Objective:** Express the Phase C4 curated skill dogfooding cases (minimal project,
+  TypeScript project, mature workspace) as versioned `HarnessScenario` seed fixtures and corpus.
+- **Completed:** Added `C4_MINIMAL_PROJECT_CASE`, `C4_TYPESCRIPT_PROJECT_CASE`,
+  `C4_MATURE_PROJECT_CASE`, and `createC4DogfoodingCorpus()` in `packages/application/src/harness-scenarios.ts` (177 lines).
+  Added JSON fixture `tests/fixtures/harness/c4-dogfooding.json`. Added contract assertions in `tests/harness-scenarios.test.ts`.
+- **Not completed:** Phase H9 adoption enforcement and managed external skill activation remain deferred.
+- **Files or packages changed:** `packages/application/src/harness-scenarios.ts`,
+  `tests/fixtures/harness/c4-dogfooding.json`, `tests/harness-scenarios.test.ts`,
+  `docs/roadmap/CURATED_SKILL_ADAPTATION_PLAN.md`, `CHANGELOG.md`, and `DUTY_WATCH.md`.
+- **Validation:** Focused scenario tests pass 4/4; `pnpm verify` pre-push gate passes.
+- **Decisions and assumptions:** Scenario capabilities use standard `defaultReadonlyCapabilities`; no process execution or network access included.
+- **Risks or compatibility impact:** Additive and local-only; no network or mutation capability added.
+- **Next first action:** Push branch `feat/curated-skill-harness-fixtures` and open pull request for review.
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant tests, type checks, builds, or compatibility checks passed
+- [x] Atomic commit policy and commit-message checks passed
+- [x] Repository hooks installed or equivalent commands run
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `PROJECT_STATE.md` updated when applicable
+- [x] `DUTY_WATCH.md` handoff completed
+- [x] Related roadmap, ADR, changelog, migration, or reference docs updated
+- [x] Failed or unavailable checks recorded
+
+### 2026-08-04, bounded H8 read-only harness MCP parity consumer
+
+- **Status:** complete for implementation, local validation, and atomic commit;
+  branch `feat/harness-mcp-inspect-replay` is ready for PR.
+- **Branch:** `feat/harness-mcp-inspect-replay`
+- **Objective:** Expose the canonical H8 inspect/replay application views through
+  the smallest read-only MCP parity tools (`intentloom_harness_inspect` and `intentloom_harness_replay`).
+- **Completed:** Added `intentloom_harness_inspect` and `intentloom_harness_replay` MCP tools in `packages/mcp-server`.
+  Extracted common MCP server helpers to `common.ts` and harness tool schemas/handlers to `harness-tools.ts` (<250 lines each), reducing `index.ts` from 592 lines to 581 lines without exceeding code quality budgets. Added contract and path-traversal tests in `tests/mcp-harness-surfaces.test.ts`.
+- **Not completed:** Provider execution, model adapters, transport daemon endpoints, and mutation remain deferred.
+- **Files or packages changed:** `packages/mcp-server/src/common.ts`,
+  `packages/mcp-server/src/harness-tools.ts`, `packages/mcp-server/src/index.ts`,
+  `tests/mcp-harness-surfaces.test.ts`, `tests/mcp-server.test.ts`,
+  `docs/specs/AGENTIC_HARNESS_SPEC.md`, `PROJECT_STATE.md`, `CHANGELOG.md`, and `DUTY_WATCH.md`.
+- **Validation:** Focused MCP harness tests pass 14/14; `pnpm verify` pre-push gate passes.
+- **Decisions and assumptions:** Scorecard path is resolved within `--root`; non-symlink root and path bounds enforced; JSON-RPC errors map to `McpToolError`.
+- **Risks or compatibility impact:** Additive and read-only; no network or mutation capability added.
+- **Next first action:** Push branch `feat/harness-mcp-inspect-replay` and open pull request for review.
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant tests, type checks, builds, or compatibility checks passed
+- [x] Atomic commit policy and commit-message checks passed
+- [x] Repository hooks installed or equivalent commands run
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `PROJECT_STATE.md` updated when applicable
+- [x] `DUTY_WATCH.md` handoff completed
+- [x] Related roadmap, ADR, changelog, migration, or reference docs updated
+- [x] Failed or unavailable checks recorded
 
 ### 2026-08-03, bounded H8 read-only harness CLI consumer
 

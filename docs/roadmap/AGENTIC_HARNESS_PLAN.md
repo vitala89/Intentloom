@@ -237,7 +237,7 @@ Exit gate:
 
 ## Phase H9: Adoption gate and production hardening
 
-Status: future; depends on H1-H8 evidence.
+Status: complete for adoption gate contract & fail-closed mutation enforcement.
 
 Scope:
 

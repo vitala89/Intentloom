@@ -1,19 +1,15 @@
 import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
-import {
-  Ajv2020,
-  type ErrorObject,
-  type ValidateFunction,
-} from "ajv/dist/2020.js";
+import { Ajv2020, type ErrorObject } from "ajv/dist/2020.js";
+import { type ValidateFunction } from "ajv/dist/2020.js";
 import { parseDocument } from "yaml";
 import { findMarkdownLinkTargets } from "./markdown-links.js";
 import {
   checksum,
   normalizeOutputPath,
   parseAifConfig,
-  parseSkill,
-  type GeneratedFile,
 } from "@intentloom/core";
+import { parseSkill, type GeneratedFile } from "@intentloom/core";
 
 export type ArtifactType =
   | "aif-config"
@@ -815,12 +811,8 @@ export interface ExtensionCapabilities {
     readonly read?: readonly string[];
     readonly write?: readonly string[];
   };
-  readonly process?: {
-    readonly exec?: readonly string[];
-  };
-  readonly network?: {
-    readonly connect?: readonly string[];
-  };
+  readonly process?: { readonly exec?: readonly string[] };
+  readonly network?: { readonly connect?: readonly string[] };
 }
 
 export function validateExtensionCapabilityGrant(
@@ -880,3 +872,6 @@ export * from "./extension.js";
 export * from "./desktop-extension.js";
 export * from "./harness.js";
 export * from "./inception.js";
+export * from "./task-routing.js";
+export * from "./external-skill-import.js";
+export * from "./harness-adoption-gate.js";

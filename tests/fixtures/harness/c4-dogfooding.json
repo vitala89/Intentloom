@@ -1,0 +1,100 @@
+{
+  "schemaVersion": 1,
+  "corpusId": "corpus:c4-dogfooding-seed",
+  "version": "1.0.0",
+  "cases": [
+    {
+      "schemaVersion": 1,
+      "caseId": "case:c4-minimal-project",
+      "title": "Curated skill routing for minimal single-file project",
+      "category": "positive",
+      "target": "skill-routing",
+      "riskLevel": "low",
+      "fixtureRef": "fixtures/harness/c4-dogfooding.json#minimal",
+      "expectedStatus": "passed",
+      "scenario": {
+        "schemaVersion": 1,
+        "scenarioId": "scenario:c4-minimal",
+        "title": "Minimal Project Skill Routing",
+        "description": "Evaluates task router classification and discovery on a minimal project without false triggers.",
+        "steps": [
+          {
+            "id": "step-1",
+            "name": "route-minimal",
+            "action": "route-skill"
+          }
+        ],
+        "requiredCapabilities": {
+          "readonlyFs": true,
+          "writeFs": false,
+          "processExecution": false,
+          "networkAccess": false,
+          "maxDurationMs": 10000,
+          "maxMemoryMb": 256
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "caseId": "case:c4-typescript-project",
+      "title": "Curated skill routing for multi-file TypeScript project",
+      "category": "positive",
+      "target": "skill-routing",
+      "riskLevel": "medium",
+      "fixtureRef": "fixtures/harness/c4-dogfooding.json#typescript",
+      "expectedStatus": "passed",
+      "scenario": {
+        "schemaVersion": 1,
+        "scenarioId": "scenario:c4-typescript",
+        "title": "TypeScript Project Skill Routing",
+        "description": "Evaluates task router classification and adapter generation across TypeScript project boundaries.",
+        "steps": [
+          {
+            "id": "step-1",
+            "name": "route-typescript",
+            "action": "route-skill"
+          }
+        ],
+        "requiredCapabilities": {
+          "readonlyFs": true,
+          "writeFs": false,
+          "processExecution": false,
+          "networkAccess": false,
+          "maxDurationMs": 10000,
+          "maxMemoryMb": 256
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "caseId": "case:c4-mature-project",
+      "title": "Project-owned policy precedence in mature multi-package project",
+      "category": "positive",
+      "target": "skill-routing",
+      "riskLevel": "high",
+      "fixtureRef": "fixtures/harness/c4-dogfooding.json#mature",
+      "expectedStatus": "passed",
+      "scenario": {
+        "schemaVersion": 1,
+        "scenarioId": "scenario:c4-mature",
+        "title": "Mature Workspace Policy Precedence",
+        "description": "Evaluates project-owned governance policy precedence over generic catalog skill defaults in mature workspaces.",
+        "steps": [
+          {
+            "id": "step-1",
+            "name": "route-mature",
+            "action": "route-skill"
+          }
+        ],
+        "requiredCapabilities": {
+          "readonlyFs": true,
+          "writeFs": false,
+          "processExecution": false,
+          "networkAccess": false,
+          "maxDurationMs": 10000,
+          "maxMemoryMb": 256
+        }
+      }
+    }
+  ]
+}

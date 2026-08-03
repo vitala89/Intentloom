@@ -9,6 +9,23 @@ are not included in the current npm artifact until a later release.
 
 ### Added
 
+- Added Agentic Harness adoption gate and fail-closed mutation enforcement contract
+  (`evaluateHarnessAdoptionGate`) in `packages/protocol`, `packages/validator`, and `packages/application`
+  verifying passing, non-stale scorecards and required governance approvals.
+- Added managed external skill import normalization and safety proposal contract
+  (`normalizeExternalSkill`, `proposeExternalSkillImport`) in `packages/protocol`, `packages/validator`,
+  and `packages/application` with SHA256 checksumming, risk assessment, and inactive proposal creation.
+- Added versioned `TaskRouteDecision` protocol schema and input/output validators in
+  `packages/protocol` and `packages/validator` alongside canonical `routeTaskRequest`
+  application operation in `packages/application` for provider-neutral task routing.
+- Added versioned C4 curated skill dogfooding scenario seeds (`C4_MINIMAL_PROJECT_CASE`,
+  `C4_TYPESCRIPT_PROJECT_CASE`, `C4_MATURE_PROJECT_CASE`) and fixture corpus
+  (`createC4DogfoodingCorpus`) for evaluating skill routing, adapter evidence,
+  and project-owned policy precedence in the Agentic Harness.
+- Added read-only MCP parity tools `intentloom_harness_inspect` and
+  `intentloom_harness_replay` in `packages/mcp-server` over canonical application
+  harness operations. Scorecard files are bounded to the explicit project root and
+  non-symlink roots; no process execution, transport, or mutation authority is included.
 - Added canonical read-only harness inspect/replay application operations over
   existing scorecards. The summaries preserve status, score, diagnostics,
   event/artifact counts, and deterministic replay outcomes without exposing raw

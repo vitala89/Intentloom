@@ -455,11 +455,10 @@ any mutating MCP or agent capability is activated.
 The next planned control-plane milestone after that gate is the Agentic
 Evaluation and Execution Harness described by ADR-0052. Its H0 decision,
 specification, source provenance, threat boundary, and phased roadmap are
-accepted; H1-H8 implementation slices are complete, with H9 adoption and
-production hardening remaining. Curated-skill C4 dogfooding will provide
-initial scenario candidates, while managed external skill activation and
-broader mutation remain gated on later deterministic and adversarial harness
-evidence.
+accepted; H1-H9 implementation slices and C1-C6 curated skill adaptation phases
+are complete. Curated-skill C4 dogfooding fixtures, C5 structured task routing,
+C6 managed external skill import normalization, and H9 adoption gate fail-closed
+enforcement are implemented, tested, and committed on dedicated feature branches.
 
 The current implementation increment, merged through PR #173 as `341984a`, adds
 bounded GitHub/GitLab pagination and deterministic rate-limit diagnostics to the

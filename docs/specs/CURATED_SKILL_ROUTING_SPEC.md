@@ -2,8 +2,7 @@
 
 ## Status
 
-Initial catalog slice implemented; managed external import runtime remains
-planned.
+Initial catalog slice (C1-C3), deterministic scenario fixtures (C4), and versioned TaskRouteDecision protocol contract & application operation (C5) are complete. Managed external import runtime (C6-C7) remains planned.
 
 ## Purpose
 
