@@ -175,7 +175,6 @@ import {
   validateWorkspaceConversationRecord,
   validateNeutronSubagentTaskRecord,
 } from "@intentloom/protocol";
-
 export { INTENTLOOM_VERSION } from "@intentloom/core";
 
 export function evaluateProjectEngineeringConformance(options: {
@@ -7432,3 +7431,4 @@ export * from "./inception-flow.js";
 export * from "./inception-templates.js";
 export * from "./harness-runner.js";
 export * from "./harness-comparison.js";
+export * from "./harness-sandbox.js";
