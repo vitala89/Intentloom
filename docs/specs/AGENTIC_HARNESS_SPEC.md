@@ -10,7 +10,10 @@ resume, and replay contracts. The bounded H5 increment adds provider-neutral
 agent capabilities, fail-closed negotiation, normalized results, and an offline
 fake adapter. The bounded H6 increment adds risk-triggered deterministic voting
 contracts and aggregation for advisory generator, critic, and judge reviews.
-Real provider adapters, model-backed roles, and public harness commands remain
+The bounded H7 increment adds a versioned synthetic scenario-corpus seed and a
+pure scorecard evaluator covering security/product targets without executing a
+model, provider, network request, or mutation. Real provider adapters,
+model-backed roles, public harness commands, and certification matrices remain
 unimplemented.
 
 ## Purpose

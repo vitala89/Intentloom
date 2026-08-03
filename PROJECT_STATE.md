@@ -133,6 +133,12 @@ and real consumers justify them.
   `feat/harness-deterministic-voting` adds risk-triggered deterministic review
   contracts and aggregation with explicit quorum, role coverage, independent
   context, abstention, disagreement, false-consensus, and usage-budget outcomes.
+  The bounded H7 increment on `feat/harness-scenario-corpus` adds a versioned
+  synthetic scenario corpus seed and pure scorecard evaluator covering skill
+  routing, external MCP, provider evidence, capability negotiation, approvals,
+  memory, paths, and voting across positive, negative, regression, and
+  adversarial cases. Public harness commands, provider execution,
+  certification claims, and mutation remain deferred.
 
 These statements must be revalidated against code, tags, CI, and Git history
 before a new release or implementation milestone is declared complete.
