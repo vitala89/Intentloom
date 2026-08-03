@@ -9,6 +9,10 @@ are not included in the current npm artifact until a later release.
 
 ### Added
 
+- Added read-only MCP parity tools `intentloom_harness_inspect` and
+  `intentloom_harness_replay` in `packages/mcp-server` over canonical application
+  harness operations. Scorecard files are bounded to the explicit project root and
+  non-symlink roots; no process execution, transport, or mutation authority is included.
 - Added canonical read-only harness inspect/replay application operations over
   existing scorecards. The summaries preserve status, score, diagnostics,
   event/artifact counts, and deterministic replay outcomes without exposing raw

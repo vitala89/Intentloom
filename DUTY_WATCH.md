@@ -9,18 +9,16 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Phase H8 bounded read-only CLI consumer implemented** —
-`intentloom harness inspect` and `intentloom harness replay` load validated
+Status: **Phase H8 bounded read-only MCP parity consumer implemented** —
+`intentloom_harness_inspect` and `intentloom_harness_replay` load validated
 scorecards within an explicit root and reuse the canonical application views
 without execution, network access, or mutation.
 
-Active branch: `feat/harness-cli-inspect-replay`
+Active branch: `feat/harness-mcp-inspect-replay`
 
-Current objective: Prepare the read-only CLI consumer for review, then define
-the smallest MCP parity consumer for the canonical inspect/replay operations.
+Current objective: Prepare the read-only MCP parity consumer for review and pull request.
 
-Next first action: Run the full verification gate, commit the CLI slice
-atomically, and open its pull request; do not add transport or mutation.
+Next first action: Push `feat/harness-mcp-inspect-replay` branch and open pull request for review.
 
 Known open items, in the order they should be handled:
 
@@ -66,6 +64,39 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-04, bounded H8 read-only harness MCP parity consumer
+
+- **Status:** complete for implementation, local validation, and atomic commit;
+  branch `feat/harness-mcp-inspect-replay` is ready for PR.
+- **Branch:** `feat/harness-mcp-inspect-replay`
+- **Objective:** Expose the canonical H8 inspect/replay application views through
+  the smallest read-only MCP parity tools (`intentloom_harness_inspect` and `intentloom_harness_replay`).
+- **Completed:** Added `intentloom_harness_inspect` and `intentloom_harness_replay` MCP tools in `packages/mcp-server`.
+  Extracted common MCP server helpers to `common.ts` and harness tool schemas/handlers to `harness-tools.ts` (<250 lines each), reducing `index.ts` from 592 lines to 581 lines without exceeding code quality budgets. Added contract and path-traversal tests in `tests/mcp-harness-surfaces.test.ts`.
+- **Not completed:** Provider execution, model adapters, transport daemon endpoints, and mutation remain deferred.
+- **Files or packages changed:** `packages/mcp-server/src/common.ts`,
+  `packages/mcp-server/src/harness-tools.ts`, `packages/mcp-server/src/index.ts`,
+  `tests/mcp-harness-surfaces.test.ts`, `tests/mcp-server.test.ts`,
+  `docs/specs/AGENTIC_HARNESS_SPEC.md`, `PROJECT_STATE.md`, `CHANGELOG.md`, and `DUTY_WATCH.md`.
+- **Validation:** Focused MCP harness tests pass 14/14; `pnpm verify` pre-push gate passes.
+- **Decisions and assumptions:** Scorecard path is resolved within `--root`; non-symlink root and path bounds enforced; JSON-RPC errors map to `McpToolError`.
+- **Risks or compatibility impact:** Additive and read-only; no network or mutation capability added.
+- **Next first action:** Push branch `feat/harness-mcp-inspect-replay` and open pull request for review.
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant tests, type checks, builds, or compatibility checks passed
+- [x] Atomic commit policy and commit-message checks passed
+- [x] Repository hooks installed or equivalent commands run
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `PROJECT_STATE.md` updated when applicable
+- [x] `DUTY_WATCH.md` handoff completed
+- [x] Related roadmap, ADR, changelog, migration, or reference docs updated
+- [x] Failed or unavailable checks recorded
 
 ### 2026-08-03, bounded H8 read-only harness CLI consumer
 

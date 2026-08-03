@@ -6,6 +6,8 @@ import type {
 import { validateHarnessScorecard } from "@intentloom/validator";
 import { replayHarnessEvents } from "./harness-state.js";
 
+export type { HarnessInspectionView, HarnessReplayView, HarnessScorecard };
+
 export function inspectHarnessScorecard(
   scorecard: HarnessScorecard,
 ): HarnessInspectionView {

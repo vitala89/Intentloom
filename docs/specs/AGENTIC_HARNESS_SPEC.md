@@ -12,11 +12,11 @@ fake adapter. The bounded H6 increment adds risk-triggered deterministic voting
 contracts and aggregation for advisory generator, critic, and judge reviews.
 The bounded H7 increment adds a versioned synthetic scenario-corpus seed and a
 pure scorecard evaluator covering security/product targets without executing a
-model, provider, network request, or mutation. The first bounded H8 slice adds
-canonical read-only inspect/replay application operations over existing
-scorecards and the CLI consumer `intentloom harness inspect|replay`;
-transport endpoints, provider adapters, model-backed roles, and certification
-matrices remain unimplemented.
+model, provider, network request, or mutation. Phase H8 read-only application
+inspect/replay operations and product surfaces (CLI `intentloom harness inspect|replay`
+and MCP tools `intentloom_harness_inspect` and `intentloom_harness_replay`) are
+implemented; transport endpoints, provider adapters, model-backed roles, and
+certification matrices remain unimplemented.
 
 ## Purpose
 

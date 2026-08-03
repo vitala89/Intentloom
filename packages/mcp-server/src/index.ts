@@ -1,5 +1,4 @@
 import { readFile } from "node:fs/promises";
-import { isAbsolute, relative, resolve } from "node:path";
 import {
   doctorProject,
   inspectProject,
@@ -25,6 +24,29 @@ import {
   type ProviderName,
 } from "@intentloom/evidence-provider";
 import { INTENTLOOM_VERSION } from "@intentloom/application";
+import {
+  assertNonSymlinkRoot,
+  boundedPath,
+  McpToolError,
+  toolArguments,
+  type McpServerOptions,
+  type McpToolErrorCode,
+} from "./common.js";
+import {
+  HARNESS_INSPECT_TOOL,
+  HARNESS_REPLAY_TOOL,
+  harnessInspect,
+  harnessInspectTool,
+  harnessReplay,
+  harnessReplayTool,
+} from "./harness-tools.js";
+
+export {
+  McpToolError,
+  type McpServerOptions,
+  type McpToolErrorCode,
+} from "./common.js";
+export { HARNESS_INSPECT_TOOL, HARNESS_REPLAY_TOOL } from "./harness-tools.js";
 
 export const MCP_PROTOCOL_VERSION = "2024-11-05" as const;
 export const RELEASE_ANALYSIS_TOOL = "intentloom_release_analysis" as const;
@@ -46,11 +68,6 @@ export interface McpResponse {
   readonly id: string | number | null;
   readonly result?: Record<string, unknown>;
   readonly error?: { readonly code: number; readonly message: string };
-}
-
-export interface McpServerOptions {
-  readonly root: string;
-  readonly readFile?: (path: string) => Promise<string>;
 }
 
 const releaseAnalysisTool = {
@@ -244,13 +261,17 @@ const tools = [
   projectInspectTool,
   projectDoctorTool,
   engineeringConformanceTool,
+  harnessInspectTool,
+  harnessReplayTool,
 ] as const;
 
 type McpToolName =
   | typeof RELEASE_ANALYSIS_TOOL
   | typeof PROJECT_INSPECT_TOOL
   | typeof PROJECT_DOCTOR_TOOL
-  | typeof ENGINEERING_CONFORMANCE_TOOL;
+  | typeof ENGINEERING_CONFORMANCE_TOOL
+  | typeof HARNESS_INSPECT_TOOL
+  | typeof HARNESS_REPLAY_TOOL;
 
 const profiles = [
   "generic",
@@ -262,18 +283,8 @@ const profiles = [
 ] as const;
 const adapters = ["claude", "codex", "cursor", "copilot"] as const;
 
-type McpToolErrorCode = "arguments-invalid" | "root-symlink" | "tool-failed";
 type McpProfile = (typeof profiles)[number];
 type McpAdapter = (typeof adapters)[number];
-
-class McpToolError extends Error {
-  constructor(
-    readonly code: McpToolErrorCode,
-    message: string,
-  ) {
-    super(message);
-  }
-}
 
 function error(
   id: string | number | null,
@@ -281,21 +292,6 @@ function error(
   message: string,
 ): McpResponse {
   return { jsonrpc: "2.0", id, error: { code, message } };
-}
-
-function boundedPath(root: string, value: unknown): string {
-  if (typeof value !== "string" || value.length === 0)
-    throw new Error("file must be a non-empty string");
-  const candidate = resolve(root, value);
-  const relativePath = relative(resolve(root), candidate);
-  if (
-    relativePath === "" ||
-    relativePath === ".." ||
-    relativePath.startsWith("../") ||
-    (isAbsolute(relativePath) && relativePath !== candidate)
-  )
-    throw new Error("file must remain within the project root");
-  return candidate;
 }
 
 async function releaseAnalysis(
@@ -351,14 +347,6 @@ async function releaseAnalysis(
     },
     projectKey,
   );
-}
-
-async function assertNonSymlinkRoot(options: McpServerOptions): Promise<void> {
-  if (await nodeFileSystem.isSymbolicLink(resolve(options.root)))
-    throw new McpToolError(
-      "root-symlink",
-      "configured project root must not be a symbolic link",
-    );
 }
 
 function emptyArguments(args: Record<string, unknown>): void {
@@ -498,19 +486,14 @@ async function engineeringConformance(
   return evaluateEngineeringConformance(timeline, policy);
 }
 
-function toolArguments(value: unknown): Record<string, unknown> {
-  if (value === undefined) return {};
-  if (value === null || typeof value !== "object" || Array.isArray(value))
-    throw new McpToolError("arguments-invalid", "arguments must be an object");
-  return value as Record<string, unknown>;
-}
-
 function isMcpToolName(value: unknown): value is McpToolName {
   return (
     value === RELEASE_ANALYSIS_TOOL ||
     value === PROJECT_INSPECT_TOOL ||
     value === PROJECT_DOCTOR_TOOL ||
-    value === ENGINEERING_CONFORMANCE_TOOL
+    value === ENGINEERING_CONFORMANCE_TOOL ||
+    value === HARNESS_INSPECT_TOOL ||
+    value === HARNESS_REPLAY_TOOL
   );
 }
 
@@ -546,7 +529,11 @@ export async function handleMcpRequest(
           ? await projectInspect(args, options)
           : params.name === PROJECT_DOCTOR_TOOL
             ? await projectDoctor(args, options)
-            : await engineeringConformance(args, options);
+            : params.name === ENGINEERING_CONFORMANCE_TOOL
+              ? await engineeringConformance(args, options)
+              : params.name === HARNESS_INSPECT_TOOL
+                ? await harnessInspect(args, options)
+                : await harnessReplay(args, options);
     return {
       jsonrpc: "2.0",
       id,

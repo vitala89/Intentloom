@@ -12,6 +12,8 @@ import { describe, expect, it } from "vitest";
 import {
   handleMcpRequest,
   ENGINEERING_CONFORMANCE_TOOL,
+  HARNESS_INSPECT_TOOL,
+  HARNESS_REPLAY_TOOL,
   PROJECT_DOCTOR_TOOL,
   PROJECT_INSPECT_TOOL,
   RELEASE_ANALYSIS_TOOL,
@@ -46,6 +48,8 @@ describe("MCP release analysis server", () => {
         PROJECT_INSPECT_TOOL,
         PROJECT_DOCTOR_TOOL,
         ENGINEERING_CONFORMANCE_TOOL,
+        HARNESS_INSPECT_TOOL,
+        HARNESS_REPLAY_TOOL,
       ].sort(),
     );
     expect(
@@ -56,6 +60,8 @@ describe("MCP release analysis server", () => {
       "urn:intentloom:mcp:project-inspect:output:1",
       "urn:intentloom:mcp:project-doctor:output:1",
       "urn:intentloom:mcp:engineering-conformance:output:1",
+      "urn:intentloom:mcp:harness-inspect:output:1",
+      "urn:intentloom:mcp:harness-replay:output:1",
     ]);
   });
 
