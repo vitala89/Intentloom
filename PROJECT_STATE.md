@@ -129,7 +129,10 @@ and real consumers justify them.
   remote data-policy declarations, and an offline fake adapter. Real provider,
   local-model, and CLI-agent adapters remain deferred pending an approved real
   consumer and adapter-specific credential/network/retention review; no model
-  voting or public harness command exists yet.
+  execution or public harness command exists yet. The bounded H6 increment on
+  `feat/harness-deterministic-voting` adds risk-triggered deterministic review
+  contracts and aggregation with explicit quorum, role coverage, independent
+  context, abstention, disagreement, false-consensus, and usage-budget outcomes.
 
 These statements must be revalidated against code, tags, CI, and Git history
 before a new release or implementation milestone is declared complete.
