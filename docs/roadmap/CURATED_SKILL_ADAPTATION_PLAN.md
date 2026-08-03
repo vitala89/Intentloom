@@ -111,8 +111,7 @@ Exit gate:
 
 ## Phase C5: Structured routing contract
 
-Status: planned; requires demonstrated demand from C4 and accepted harness H1
-protocol boundaries.
+Status: complete for versioned TaskRouteDecision protocol contract and application operation.
 
 Scope:
 

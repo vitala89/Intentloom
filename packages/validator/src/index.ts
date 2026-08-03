@@ -815,12 +815,8 @@ export interface ExtensionCapabilities {
     readonly read?: readonly string[];
     readonly write?: readonly string[];
   };
-  readonly process?: {
-    readonly exec?: readonly string[];
-  };
-  readonly network?: {
-    readonly connect?: readonly string[];
-  };
+  readonly process?: { readonly exec?: readonly string[] };
+  readonly network?: { readonly connect?: readonly string[] };
 }
 
 export function validateExtensionCapabilityGrant(
@@ -880,3 +876,4 @@ export * from "./extension.js";
 export * from "./desktop-extension.js";
 export * from "./harness.js";
 export * from "./inception.js";
+export * from "./task-routing.js";

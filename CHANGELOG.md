@@ -9,6 +9,9 @@ are not included in the current npm artifact until a later release.
 
 ### Added
 
+- Added versioned `TaskRouteDecision` protocol schema and input/output validators in
+  `packages/protocol` and `packages/validator` alongside canonical `routeTaskRequest`
+  application operation in `packages/application` for provider-neutral task routing.
 - Added versioned C4 curated skill dogfooding scenario seeds (`C4_MINIMAL_PROJECT_CASE`,
   `C4_TYPESCRIPT_PROJECT_CASE`, `C4_MATURE_PROJECT_CASE`) and fixture corpus
   (`createC4DogfoodingCorpus`) for evaluating skill routing, adapter evidence,

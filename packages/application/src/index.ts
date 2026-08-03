@@ -1,15 +1,6 @@
 // Private project-operation layer. It must remain independent of CLI/process code.
-import {
-  mkdir,
-  lstat,
-  readFile,
-  readdir,
-  rename,
-  rm,
-  stat,
-  realpath,
-  writeFile,
-} from "node:fs/promises";
+import { mkdir, lstat, readFile, readdir, rename, rm } from "node:fs/promises";
+import { stat, realpath, writeFile } from "node:fs/promises";
 import { createHash } from "node:crypto";
 import { extractMarkdownSection } from "./skill-markdown.js";
 import { dirname, relative, resolve, sep } from "node:path";
@@ -48,11 +39,11 @@ import {
   type RoleCandidate,
   type ValidationRequirement,
 } from "@intentloom/core/adoption";
-import {
-  type ArtifactValidationResult,
-  type ArtifactValidator,
-  validateSkillSet,
+import type {
+  ArtifactValidationResult,
+  ArtifactValidator,
 } from "@intentloom/validator";
+import { validateSkillSet } from "@intentloom/validator";
 import {
   collectGitEvidence,
   createReleaseTimeline,
@@ -288,6 +279,7 @@ export type {
   NeutronSubagentStatus,
   NeutronSubagentTaskRecord,
 };
+export * from "./task-routing.js";
 export {
   validateNeutronSubagentTaskRecord,
   validateWorkspaceConversationRecord,

@@ -34,13 +34,12 @@ import {
   type DaemonInfoResponse,
 } from "./daemon.js";
 
-import {
-  type ProjectDiffParams,
-  type ProjectDiffChange,
-  type ProjectDiffResult,
-  type ProjectDiffRequest,
-  type ProjectDiffResponse,
+import type {
+  ProjectDiffParams,
+  ProjectDiffChange,
+  ProjectDiffResult,
 } from "./diff.js";
+import type { ProjectDiffRequest, ProjectDiffResponse } from "./diff.js";
 
 export * from "./jsonrpc.js";
 export * from "./daemon.js";
@@ -48,6 +47,7 @@ export * from "./desktop-extension.js";
 export * from "./diff.js";
 export * from "./inception.js";
 export * from "./harness.js";
+export * from "./task-routing.js";
 export const TIMELINE_DEFAULT_LIMIT = 50;
 export const TIMELINE_MAX_LIMIT = 500;
 export const TIMELINE_DEFAULT_TIMEOUT_MS = 5_000;

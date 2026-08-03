@@ -9,16 +9,16 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Phase C4 curated skill dogfooding scenario fixtures implemented** —
-versioned `HarnessScenario` seeds (`C4_MINIMAL_PROJECT_CASE`, `C4_TYPESCRIPT_PROJECT_CASE`,
-`C4_MATURE_PROJECT_CASE`) and fixture corpus (`createC4DogfoodingCorpus`) provide
-deterministic evaluation benchmarks for skill routing and policy precedence in the Agentic Harness.
+Status: **Phase C5 versioned TaskRouteDecision protocol contract & application operation implemented** —
+versioned `TaskRouteDecision` protocol schema and validators in `packages/protocol` and `packages/validator`
+alongside canonical `routeTaskRequest` application operation in `packages/application` provide deterministic,
+provider-neutral task classification for all Intentloom surfaces.
 
-Active branch: `feat/curated-skill-harness-fixtures`
+Active branch: `feat/structured-task-routing`
 
-Current objective: Prepare Phase C4 scenario fixtures for review and pull request.
+Current objective: Prepare Phase C5 structured task routing contract for review and pull request.
 
-Next first action: Push `feat/curated-skill-harness-fixtures` branch and open pull request for review.
+Next first action: Push `feat/structured-task-routing` branch and open pull request for review.
 
 Known open items, in the order they should be handled:
 
@@ -64,6 +64,38 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-04, Phase C5 versioned TaskRouteDecision protocol contract & application operation
+
+- **Status:** complete for implementation, local validation, and atomic commit;
+  branch `feat/structured-task-routing` is ready for PR.
+- **Branch:** `feat/structured-task-routing`
+- **Objective:** Define the normative versioned `TaskRouteDecision` protocol schema, input/output validators, and canonical `routeTaskRequest` application operation.
+- **Completed:** Created `packages/protocol/src/task-routing.ts` (32 lines), `packages/validator/src/task-routing.ts` (124 lines), `packages/application/src/task-routing.ts` (131 lines), and `tests/task-routing.test.ts` (140 lines). Re-exported in package entrypoints.
+- **Not completed:** Managed external skill import runtime (C6-C7) remains planned.
+- **Files or packages changed:** `packages/protocol/src/task-routing.ts`, `packages/protocol/src/index.ts`,
+  `packages/validator/src/task-routing.ts`, `packages/validator/src/index.ts`,
+  `packages/application/src/task-routing.ts`, `packages/application/src/index.ts`,
+  `tests/task-routing.test.ts`, `docs/specs/CURATED_SKILL_ROUTING_SPEC.md`,
+  `docs/roadmap/CURATED_SKILL_ADAPTATION_PLAN.md`, `CHANGELOG.md`, and `DUTY_WATCH.md`.
+- **Validation:** Focused task routing tests pass 10/10; `pnpm verify` pre-push gate passes.
+- **Decisions and assumptions:** Routing heuristics match task intent deterministically across `review`, `adopt`, `discover`, `plan`, `diagnose`, `implement`, and `direct` kinds.
+- **Risks or compatibility impact:** Additive protocol and application contract; no breaking changes.
+- **Next first action:** Push branch `feat/structured-task-routing` and open pull request for review.
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant tests, type checks, builds, or compatibility checks passed
+- [x] Atomic commit policy and commit-message checks passed
+- [x] Repository hooks installed or equivalent commands run
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `PROJECT_STATE.md` updated when applicable
+- [x] `DUTY_WATCH.md` handoff completed
+- [x] Related roadmap, ADR, changelog, migration, or reference docs updated
+- [x] Failed or unavailable checks recorded
 
 ### 2026-08-04, C4 curated skill dogfooding scenario fixtures
 
