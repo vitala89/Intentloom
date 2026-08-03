@@ -9,6 +9,10 @@ are not included in the current npm artifact until a later release.
 
 ### Added
 
+- Added versioned C4 curated skill dogfooding scenario seeds (`C4_MINIMAL_PROJECT_CASE`,
+  `C4_TYPESCRIPT_PROJECT_CASE`, `C4_MATURE_PROJECT_CASE`) and fixture corpus
+  (`createC4DogfoodingCorpus`) for evaluating skill routing, adapter evidence,
+  and project-owned policy precedence in the Agentic Harness.
 - Added read-only MCP parity tools `intentloom_harness_inspect` and
   `intentloom_harness_replay` in `packages/mcp-server` over canonical application
   harness operations. Scorecard files are bounded to the explicit project root and

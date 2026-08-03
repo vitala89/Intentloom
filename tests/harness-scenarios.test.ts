@@ -1,3 +1,5 @@
+import { readFile } from "node:fs/promises";
+import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import type {
   HarnessCapabilities,
@@ -5,6 +7,10 @@ import type {
   HarnessScenarioCorpus,
 } from "@intentloom/protocol";
 import {
+  C4_MATURE_PROJECT_CASE,
+  C4_MINIMAL_PROJECT_CASE,
+  C4_TYPESCRIPT_PROJECT_CASE,
+  createC4DogfoodingCorpus,
   evaluateHarnessScenarioCase,
   executeHarnessScenario,
 } from "../packages/application/src/index.js";
@@ -200,6 +206,55 @@ describe("H7 deterministic harness scenario corpus", () => {
         "voting",
       ]),
     );
+  });
+
+  it("validates and evaluates the C4 curated skill dogfooding scenario corpus", async () => {
+    const c4Corpus = createC4DogfoodingCorpus();
+    expect(c4Corpus.cases).toHaveLength(3);
+
+    expect(C4_MINIMAL_PROJECT_CASE.caseId).toBe("case:c4-minimal-project");
+    expect(C4_TYPESCRIPT_PROJECT_CASE.caseId).toBe(
+      "case:c4-typescript-project",
+    );
+    expect(C4_MATURE_PROJECT_CASE.caseId).toBe("case:c4-mature-project");
+
+    const fixturePath = join(
+      process.cwd(),
+      "tests",
+      "fixtures",
+      "harness",
+      "c4-dogfooding.json",
+    );
+    const fixtureContent = await readFile(fixturePath, "utf8");
+    const parsedFixture = JSON.parse(fixtureContent);
+
+    const validatedFixture = validateHarnessScenarioCorpus(parsedFixture);
+    expect(validatedFixture).toEqual(c4Corpus);
+
+    for (const c4Case of c4Corpus.cases) {
+      const scorecard = await executeHarnessScenario({
+        scenario: c4Case.scenario,
+        request: {
+          schemaVersion: 1,
+          requestId: `req-${c4Case.caseId}`,
+          scenarioId: c4Case.scenario.scenarioId,
+          projectRoot: `/projects/${c4Case.caseId}`,
+          executorType: "fake",
+          requestedCapabilities: c4Case.scenario.requiredCapabilities,
+          createdTimestamp: 1000,
+        },
+        now: () => 1000,
+        generateId: (prefix) => `${prefix}-c4`,
+      });
+
+      const evaluation = evaluateHarnessScenarioCase({
+        scenarioCase: c4Case,
+        scorecard,
+      });
+
+      expect(evaluation.passed).toBe(true);
+      expect(evaluation.actualStatus).toBe("passed");
+    }
   });
 
   it("rejects duplicate cases and unsafe fixture references", () => {

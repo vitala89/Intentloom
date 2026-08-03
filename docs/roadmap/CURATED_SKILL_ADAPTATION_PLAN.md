@@ -85,7 +85,7 @@ Exit gate:
 
 ## Phase C4: Adapter and adoption evidence
 
-Status: planned.
+Status: complete for deterministic scenario fixtures and corpus seed.
 
 Scope:
 
