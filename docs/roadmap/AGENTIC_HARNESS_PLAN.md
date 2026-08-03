@@ -2,8 +2,11 @@
 
 ## Status
 
-Phase H0 documentation and source review are complete. H1-H9 are planned and do
-not displace the active read-only evidence hardening gate.
+Phases H0-H4 are complete. The bounded H5 core is implemented with
+provider-neutral capability negotiation, normalized adapter results, and an
+offline fake consumer. Real network, local-model, and CLI-agent integrations
+remain conditional on an approved consumer and adapter-specific review. H6-H9
+remain planned.
 
 ## Outcome
 
@@ -45,7 +48,7 @@ Exit gate:
 
 ## Phase H1: Versioned protocol contracts
 
-Status: planned after the active read-only hardening gate and C4 fixture design.
+Status: complete.
 
 Scope:
 
@@ -66,7 +69,7 @@ Exit gate:
 
 ## Phase H2: Deterministic runner and comparison
 
-Status: planned; depends on H1.
+Status: complete.
 
 Scope:
 
@@ -86,7 +89,8 @@ Exit gate:
 
 ## Phase H3: Execution isolation adapters
 
-Status: planned; depends on H2 and a separate execution threat review.
+Status: complete for the local-readonly, container abstraction, and fake
+adapters. Product surfaces still expose no generic host shell.
 
 Scope:
 
@@ -107,7 +111,9 @@ Exit gate:
 
 ## Phase H4: Durable state, tracing, resume, and replay
 
-Status: planned; depends on H2 and composes with H3.
+Status: complete for the provider-neutral state-store contract, in-memory
+adapter, checkpoint resume validation, and deterministic event replay. A local
+SQLite adapter remains a later real-consumer increment.
 
 Scope:
 
@@ -126,7 +132,11 @@ Exit gate:
 
 ## Phase H5: Agent and model adapters
 
-Status: planned; depends on H2 and H4.
+Status: bounded core complete. Versioned agent capability and request/result
+contracts, fail-closed negotiation, result normalization, explicit data policy,
+and the offline fake adapter are implemented. OpenAI-compatible, Anthropic,
+local-model, and CLI-agent adapters remain deferred until each has an approved
+real consumer and adapter-specific credential, network, and retention review.
 
 Scope:
 
@@ -258,6 +268,7 @@ and explicit approval design.
 
 ## Next first action
 
-Finish the active `intentloom clean --cache` and credential-revocation
-read-only hardening increments. Then design C4 dogfooding fixtures as versioned
-scenario candidates and begin H1 with protocol-only contracts and tests.
+Prepare the bounded Phase H6 implementation plan for risk-triggered generator,
+critic, and judge roles plus deterministic aggregation. Keep real provider
+integration separate until a consumer and adapter-specific decision are
+approved.

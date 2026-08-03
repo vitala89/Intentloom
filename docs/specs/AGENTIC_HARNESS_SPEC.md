@@ -4,8 +4,12 @@
 
 Architecture accepted by
 [ADR-0052](../decisions/ADR-0052-agentic-evaluation-and-execution-harness.md).
-No harness runtime, OS sandbox, model voting, or public harness command is
-implemented yet.
+Phases H1-H4 are implemented on `main`: versioned contracts, the deterministic
+runner and comparison engine, isolation adapters, and in-memory durable-state,
+resume, and replay contracts. The bounded H5 increment adds provider-neutral
+agent capabilities, fail-closed negotiation, normalized results, and an offline
+fake adapter. Real provider adapters, model voting, and public harness commands
+remain unimplemented.
 
 ## Purpose
 
