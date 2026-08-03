@@ -8,8 +8,10 @@ Phases H1-H4 are implemented on `main`: versioned contracts, the deterministic
 runner and comparison engine, isolation adapters, and in-memory durable-state,
 resume, and replay contracts. The bounded H5 increment adds provider-neutral
 agent capabilities, fail-closed negotiation, normalized results, and an offline
-fake adapter. Real provider adapters, model voting, and public harness commands
-remain unimplemented.
+fake adapter. The bounded H6 increment adds risk-triggered deterministic voting
+contracts and aggregation for advisory generator, critic, and judge reviews.
+Real provider adapters, model-backed roles, and public harness commands remain
+unimplemented.
 
 ## Purpose
 

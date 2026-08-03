@@ -9,16 +9,17 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Phase H5 provider-neutral agent adapter core implemented** — versioned
-capabilities and request/result contracts, fail-closed negotiation, normalized
-results, explicit data policy, and the offline fake adapter are implemented.
+Status: **Phase H6 bounded deterministic voting core implemented** — risk
+triggering, versioned review/policy/result contracts, fail-closed aggregation,
+and adversarial evidence outcomes are implemented without model execution.
 
-Active branch: `feat/harness-agent-adapters`
+Active branch: `feat/harness-deterministic-voting`
 
-Current objective: Phase H6 — adversarial validation and deterministic voting.
+Current objective: Phase H7 — security and product scenario corpus.
 
-Next first action: Prepare the bounded Phase H6 plan for risk-triggered
-generator, critic, and judge roles plus deterministic aggregation.
+Next first action: Prepare the bounded Phase H7 scenario-corpus plan, beginning
+with deterministic skill-routing, MCP evidence, capability-confusion, and
+false-consensus cases.
 
 Known open items, in the order they should be handled:
 
@@ -64,6 +65,39 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-03, deterministic adversarial voting core (Phase H6)
+
+- **Status:** complete for implementation and local validation; branch
+  `feat/harness-deterministic-voting` prepared for review.
+- **Branch:** `feat/harness-deterministic-voting`
+- **Objective:** Implement the bounded provider-neutral H6 voting core without
+  model execution, provider credentials, network access, or mutation authority.
+- **Completed:** Added versioned generator/critic/judge review, risk trigger,
+  voting policy, usage budget, request, and result contracts with validators.
+  Added deterministic aggregation that preserves deterministic-gate authority,
+  weighted outcomes, quorum and role coverage, independent contexts, abstention,
+  errors, disagreement, false-consensus risk, ties, and budget exhaustion.
+  Review evidence remains digest/context metadata; raw review content is not
+  propagated into the result.
+- **Not completed:** Model-backed role execution, provider adapters, leakage
+  orchestration, public harness commands, and H7 scenario corpus. These remain
+  separate roadmap increments requiring real consumers and further threat review.
+- **Files or packages changed:** `packages/protocol/src/harness-voting.ts`,
+  `packages/validator/src/harness-voting.ts`, the focused
+  `packages/application/src/harness-voting*.ts` modules, harness facade exports,
+  `tests/harness-voting.test.ts`, the harness specification and roadmap,
+  `PROJECT_STATE.md`, `CHANGELOG.md`, and `DUTY_WATCH.md`.
+- **Validation:** focused H6 tests pass 10/10; combined harness tests pass
+  47/47. Full `pnpm verify` passes with 122 test files, 935 passed, and 3
+  skipped after allowing temporary local Unix sockets for daemon tests;
+  typecheck, formatting, build, and `git diff --check` pass. Staged governance
+  passes for all 14 changed files. The initial sandboxed daemon run limitation
+  remains documented as local IPC `EPERM`.
+- **Code budgets:** new production modules are 76, 226, 195, and 95 formatted
+  lines; no oversized entrypoint is expanded and no exception is required.
+- **Next first action:** Review and merge this branch when authorized, then
+  prepare the bounded H7 scenario-corpus plan.
 
 ### 2026-08-03, provider-neutral agent adapter core (Phase H5)
 

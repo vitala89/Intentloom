@@ -19,7 +19,7 @@ adoption workflow have been exercised in multiple real projects.
 | `1.0.0`                        | Stable compatibility contract                                             | Stable release criteria, documented support policy, verified upgrade path, and maintained compatibility commitments                   | Released 2026-07-30 as Git tag `v1.0.0`; patch release `v1.0.2` published 2026-08-02          |
 | `post-v1.0 read-only evidence` | Live provider, external MCP, and extension capability boundaries          | Provider isolation, explicit credentials/allowlists, untrusted evidence, and capability validation are implemented; hardening remains | Implementation slice merged in PR #160 (`3713b15`); hardening gate active                     |
 | `post-v1.0 curated skills`     | Project-aware routing, discovery, verification, and external-skill review | First-party skills are provider-neutral and generated safely; structured routing and managed import require later evidence gates      | Initial catalog slice implemented; adapter dogfooding and managed import remain planned       |
-| `post-v1.0 agentic harness`    | Reproducible agent evaluation, isolated execution, scoring, and replay    | Versioned scenarios, deterministic gates, executor conformance, durable traces, and adversarial corpus pass before mutation expansion | H1-H4 merged; bounded H5 agent-adapter core prepared; H6-H9 remain planned                    |
+| `post-v1.0 agentic harness`    | Reproducible agent evaluation, isolated execution, scoring, and replay    | Versioned scenarios, deterministic gates, executor conformance, durable traces, and adversarial corpus pass before mutation expansion | H1-H4 merged; bounded H5/H6 cores prepared; H7-H9 remain planned                              |
 
 Before the first beta, Intentloom needed at least three real dogfooding scenarios: a
 minimal project, a TypeScript project, and a sanitized existing-project example
@@ -83,9 +83,12 @@ the [Agentic Harness Specification](docs/specs/AGENTIC_HARNESS_SPEC.md), the
 [reference-source ledger](docs/reference/AGENTIC_HARNESS_SOURCES.md). H1-H4 are
 implemented on `main`; the bounded H5 core adds provider-neutral agent
 capability negotiation and normalized offline adapter results without adding a
-real provider or credential path. Initial scenarios reuse curated-skill C4
-dogfooding evidence, and later harness gates must precede managed external skill
-activation and broader mutating MCP or agent capabilities.
+real provider or credential path. The bounded H6 core adds risk-triggered,
+provider-neutral deterministic aggregation with explicit quorum, coverage,
+abstention, disagreement, false-consensus, and budget outcomes. Initial
+scenarios reuse curated-skill C4 dogfooding evidence, and later harness gates
+must precede managed external skill activation and broader mutating MCP or agent
+capabilities.
 
 The connected-project direction is documented in [Project Connection, Evidence, and MCP](docs/concepts/PROJECT_CONNECTION_EVIDENCE_AND_MCP.md). Interactive and agent surfaces are documented in [Interactive Surfaces and Agent Workspace](docs/concepts/INTERACTIVE_SURFACES_AND_AGENT_WORKSPACE.md). The model direction is documented in [Neutron Model Strategy](docs/concepts/NEUTRON_MODEL_STRATEGY.md).
 

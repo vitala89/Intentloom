@@ -5,8 +5,8 @@
 Phases H0-H4 are complete. The bounded H5 core is implemented with
 provider-neutral capability negotiation, normalized adapter results, and an
 offline fake consumer. Real network, local-model, and CLI-agent integrations
-remain conditional on an approved consumer and adapter-specific review. H6-H9
-remain planned.
+remain conditional on an approved consumer and adapter-specific review. The
+bounded H6 deterministic voting core is implemented; H7-H9 remain planned.
 
 ## Outcome
 
@@ -157,7 +157,8 @@ Exit gate:
 
 ## Phase H6: Adversarial validation and deterministic voting
 
-Status: planned; depends on H2 and H5.
+Status: bounded deterministic aggregation core complete. Role execution through
+model/provider adapters remains deferred.
 
 Scope:
 
@@ -268,7 +269,7 @@ and explicit approval design.
 
 ## Next first action
 
-Prepare the bounded Phase H6 implementation plan for risk-triggered generator,
-critic, and judge roles plus deterministic aggregation. Keep real provider
-integration separate until a consumer and adapter-specific decision are
-approved.
+Prepare the bounded Phase H7 scenario-corpus plan, starting with deterministic
+positive, negative, and adversarial cases for skill routing, MCP evidence,
+capability confusion, and false consensus. Keep role execution separate until a
+real provider consumer and adapter-specific decision are approved.

@@ -9,6 +9,11 @@ are not included in the current npm artifact until a later release.
 
 ### Added
 
+- Added bounded provider-neutral harness voting contracts and deterministic
+  aggregation for risk-triggered generator, critic, and judge reviews, including
+  quorum, role coverage, independent-context, abstention, disagreement,
+  false-consensus, and usage-budget outcomes. No model execution or provider
+  integration is included.
 - Added provider-neutral agent capability and request/result contracts for the
   agentic harness, fail-closed negotiation, normalized structured output, tool
   calls, usage, cancellation and errors, explicit adapter data policy, and a
