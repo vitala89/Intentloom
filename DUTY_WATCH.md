@@ -9,17 +9,18 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Phase H7 bounded scenario-corpus seed implemented** — versioned
-positive, negative, regression, and adversarial cases now exercise the existing
-deterministic harness without model execution, network access, or mutation.
+Status: **Phase H8 bounded canonical inspect/replay operation implemented** —
+read-only scorecard summaries now exercise the existing H4 replay contract
+without public commands, network access, or mutation.
 
-Active branch: `feat/harness-scenario-corpus`
+Active branch: `feat/harness-inspect-replay`
 
-Current objective: Prepare the H8 product-surface plan while retaining H7 corpus
-coverage as a reviewed protocol fixture.
+Current objective: Prepare CLI/MCP parity consumers for the canonical
+inspect/replay operations while retaining product-surface read-only boundaries.
 
-Next first action: Define the smallest read-only `harness inspect`/`replay`
-consumer for the H8 parity gate; do not add public commands or mutation yet.
+Next first action: Design the smallest CLI adapter for `harness inspect` and
+`harness replay`; keep command dispatch decomposition separate from this
+canonical operation commit.
 
 Known open items, in the order they should be handled:
 
@@ -65,6 +66,33 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-03, canonical read-only harness inspect/replay operations (Phase H8)
+
+- **Status:** complete for implementation and local validation; branch
+  `feat/harness-inspect-replay` prepared for review.
+- **Branch:** `feat/harness-inspect-replay`
+- **Objective:** Add the first H8 product-surface building block without
+  expanding oversized CLI/daemon entrypoints or adding effectful authority.
+- **Completed:** Added versioned protocol view contracts and canonical
+  `inspectHarnessScorecard` / `replayHarnessScorecard` operations. Both validate
+  scorecards at the application boundary, return stable read-only summaries,
+  reuse deterministic H4 replay, and omit raw event/artifact payloads.
+- **Not completed:** CLI, daemon, MCP, TUI, Desktop, Neutron consumers, public
+  command wiring, provider execution, and mutation remain deferred.
+- **Files or packages changed:** `packages/protocol/src/harness-surfaces.ts`,
+  `packages/application/src/harness-surfaces.ts`, harness facade exports,
+  `tests/harness-surfaces.test.ts`, and the harness specification, roadmap,
+  project state, changelog, and Duty Watch records.
+- **Validation:** Focused H8/H4 tests pass 9/9. Full `pnpm verify` passes with
+  124 test files, 941 passed, and 3 skipped; typecheck, formatting, build, and
+  `git diff --check` pass. The initial sandboxed daemon run remains limited by
+  local Unix-socket `EPERM`; authoritative verification used the permitted
+  local IPC environment. Staged governance passes for all 11 changed files.
+- **Code budgets:** New production modules are 29 and 47 formatted lines; no
+  oversized entrypoint is expanded and no exception is required.
+- **Next first action:** Design the smallest CLI adapter for the canonical
+  inspect/replay views; keep parser/dispatch decomposition explicit.
 
 ### 2026-08-03, bounded security scenario corpus seed (Phase H7)
 

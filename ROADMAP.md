@@ -19,7 +19,7 @@ adoption workflow have been exercised in multiple real projects.
 | `1.0.0`                        | Stable compatibility contract                                             | Stable release criteria, documented support policy, verified upgrade path, and maintained compatibility commitments                   | Released 2026-07-30 as Git tag `v1.0.0`; patch release `v1.0.2` published 2026-08-02          |
 | `post-v1.0 read-only evidence` | Live provider, external MCP, and extension capability boundaries          | Provider isolation, explicit credentials/allowlists, untrusted evidence, and capability validation are implemented; hardening remains | Implementation slice merged in PR #160 (`3713b15`); hardening gate active                     |
 | `post-v1.0 curated skills`     | Project-aware routing, discovery, verification, and external-skill review | First-party skills are provider-neutral and generated safely; structured routing and managed import require later evidence gates      | Initial catalog slice implemented; adapter dogfooding and managed import remain planned       |
-| `post-v1.0 agentic harness`    | Reproducible agent evaluation, isolated execution, scoring, and replay    | Versioned scenarios, deterministic gates, executor conformance, durable traces, and adversarial corpus pass before mutation expansion | H1-H4 merged; bounded H5/H6 cores and H7 corpus seed prepared; H8-H9 remain planned           |
+| `post-v1.0 agentic harness`    | Reproducible agent evaluation, isolated execution, scoring, and replay    | Versioned scenarios, deterministic gates, executor conformance, durable traces, and adversarial corpus pass before mutation expansion | H1-H4 merged; bounded H5-H7 cores prepared; H8 operation added; parity planned                |
 
 Before the first beta, Intentloom needed at least three real dogfooding scenarios: a
 minimal project, a TypeScript project, and a sanitized existing-project example
@@ -360,6 +360,11 @@ The current H7 increment provides a synthetic, executable scenario-corpus seed
 for the existing deterministic runner. It covers security/product targets and
 keeps raw events, provider execution, public commands, and mutation outside the
 corpus result until a later parity and approval decision.
+
+The first H8 slice adds canonical read-only inspect/replay summaries over
+existing scorecards. CLI, daemon, MCP, TUI, Desktop, and Neutron consumers are
+still separate parity increments; no public command or transport endpoint is
+implied by the application operation.
 
 Required boundary:
 

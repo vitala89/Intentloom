@@ -9,6 +9,11 @@ are not included in the current npm artifact until a later release.
 
 ### Added
 
+- Added canonical read-only harness inspect/replay application operations over
+  existing scorecards. The summaries preserve status, score, diagnostics,
+  event/artifact counts, and deterministic replay outcomes without exposing raw
+  event payloads or repeating effects; no public command or transport endpoint
+  is included.
 - Added a bounded provider-neutral H7 harness scenario corpus seed with
   versioned positive, negative, regression, and adversarial cases for skill
   routing, external MCP, provider evidence, capability negotiation, approvals,

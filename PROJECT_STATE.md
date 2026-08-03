@@ -139,6 +139,11 @@ and real consumers justify them.
   memory, paths, and voting across positive, negative, regression, and
   adversarial cases. Public harness commands, provider execution,
   certification claims, and mutation remain deferred.
+  The bounded H8 increment on `feat/harness-inspect-replay` adds canonical
+  read-only inspect/replay application operations over existing scorecards.
+  They validate at the application boundary, return stable summaries, and do
+  not expose raw event payloads or repeat effects; CLI, daemon, MCP, TUI,
+  Desktop, and Neutron consumers remain deferred.
 
 These statements must be revalidated against code, tags, CI, and Git history
 before a new release or implementation milestone is declared complete.

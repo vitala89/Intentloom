@@ -6,7 +6,9 @@ Phases H0-H4 are complete. The bounded H5 core is implemented with
 provider-neutral capability negotiation, normalized adapter results, and an
 offline fake consumer. Real network, local-model, and CLI-agent integrations
 remain conditional on an approved consumer and adapter-specific review. The
-bounded H6 deterministic voting core is implemented; H7-H9 remain planned.
+bounded H6 deterministic voting core and H7 scenario corpus are implemented.
+The first H8 canonical read-only inspect/replay operation is implemented; CLI,
+daemon, MCP, TUI, Desktop, and Neutron consumers remain planned.
 
 ## Outcome
 
@@ -204,7 +206,8 @@ Exit gate:
 
 ## Phase H8: Product surfaces and parity
 
-Status: planned; depends on stable H2/H4 operations.
+Status: bounded canonical operation complete on `feat/harness-inspect-replay`;
+product-surface consumers and parity remain planned.
 
 Scope:
 
@@ -213,6 +216,12 @@ Scope:
 - add read-only daemon/MCP/TUI/Desktop/Neutron views as real consumers justify;
 - keep effectful execution behind explicit CLI or reviewed product approvals;
 - add structured output, documentation, accessibility, and equivalence tests.
+
+The bounded H8 slice adds `inspectHarnessScorecard` and
+`replayHarnessScorecard` to the canonical application facade. Both validate the
+existing scorecard contract, return stable read-only summaries, and never expose
+raw event payloads or repeat effects. No public command or transport endpoint is
+added by this slice.
 
 Exit gate:
 
