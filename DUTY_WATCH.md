@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Phase E4 Update Discovery & Migration Pipeline is open in PR #224** — canonical discovery, explicit approval, exact migration previews, isolated integrity/health checks, stale-lock rejection, and transactional rollback are committed and pushed.
+Status: **PR #224 has a bounded cross-platform test fix applied; fresh verification and hosted CI are pending** — the symlink test mock now normalizes path separators before matching the extension-owned directory.
 
 Active branch: `feat/extension-update-pipeline`; implementation commit `ee58517`; PR #224
 
-Current objective: Observe PR #224 hosted CI and request review.
+Current objective: Complete fresh local verification, push the test-only correction, and re-observe hosted CI.
 
-Next first action: Inspect PR #224 hosted checks; merge remains maintainer-controlled.
+Next first action: Run staged and full verification, then push the test-only correction and confirm PR #224 checks.
 
 Known open items, in the order they should be handled:
 
@@ -60,20 +60,29 @@ entry directly below this section.
 
 ## Watch entries
 
+### 2026-08-04, Phase E4 Windows test portability correction
+
+- **Status:** implementation and local verification complete; hosted CI recheck is pending after push.
+- **Branch:** `feat/extension-update-pipeline` at `f44b23d` plus the working-tree test correction; PR #224.
+- **Objective:** Correct the Windows-only symlink mock defect reported by hosted Compatibility CI without changing production behavior.
+- **Completed:** Updated `tests/extension-update.test.ts` so the mocked symbolic-link path normalizes Windows backslashes to POSIX separators before checking the `.aif/extensions` suffix.
+- **Validation:** Prettier check and the focused extension-update suite passed (10/10). `pnpm verify:staged` passed for both changed files. Full verification passed with typecheck, format check, 133/133 test files, 1003 passed, 3 skipped, build, and diff checks.
+- **Next first action:** Commit the test-only correction with this handoff, push, and re-observe PR #224.
+
 ### 2026-08-04, Phase E4 Extension Update Discovery & Migration Pipeline
 
-- **Status:** implementation, local verification, commit, push, and pull request complete; hosted CI, review, and merge remain pending.
+- **Status:** partial; implementation and local verification are complete, but hosted Windows checks expose an OS-specific test-mock defect awaiting an approved fix.
 - **Branch:** `feat/extension-update-pipeline` at `ee58517` from `main` at `094a222`.
 - **Pull request:** [#224](https://github.com/vitala89/Intentloom/pull/224)
 - **Objective:** Implement Phase E4 of the Managed Extension Lifecycle with read-only update discovery, explicit review evidence, reversible migration previews, and isolated transactional apply/rollback.
 - **Completed:** Added update candidate, plan, approval, migration preview, discovery report, and application result contracts. Added deterministic update comparison covering version/channel, compatibility, capability, publisher, source, license, integrity, release notes, breaking changes, and reversible migrations. Added canonical `discoverExtensionUpdates` and `applyExtensionUpdate` operations with stale-lock rejection, exact SHA256 before/after migration guards, symlink-safe extension-owned path confinement, injected runtime staging/integrity/health/commit/rollback seams, and byte-for-byte filesystem recovery. Added optional publisher snapshots to extension lock entries and schema. Added `tests/extension-update.test.ts`.
-- **Not completed:** Hosted CI, review, and merge remain pending. `PROJECT_STATE.md` remains unchanged because Phase E4 is not on `main` yet.
+- **Not completed:** The Windows test mock still compares `/workspace/.aif/extensions` literally instead of normalizing the drive-qualified backslash path. A bounded test-only correction, fresh verification, hosted CI, review, and merge remain pending. `PROJECT_STATE.md` remains unchanged because Phase E4 is not on `main` yet.
 - **Files or packages changed:** `packages/protocol/src/extension-lifecycle.ts`, `packages/protocol/src/extension-update.ts`, `catalog/schemas/extension-lock.schema.json`, `packages/validator/src/extension-resolution.ts`, `packages/validator/src/extension-update.ts`, `packages/validator/src/extension-update-review.ts`, `packages/application/src/propose-and-apply-extension-adoption.ts`, `packages/application/src/discover-and-apply-extension-update.ts`, `packages/application/src/apply-extension-update.ts`, `packages/application/src/extension-update-files.ts`, `tests/extension-update.test.ts`, `docs/roadmap/MANAGED_EXTENSION_LIFECYCLE_PLAN.md`, `ROADMAP.md`, `CHANGELOG.md`, and `DUTY_WATCH.md`.
-- **Validation:** Focused extension suite passed (29/29). Final `pnpm verify` passed outside the sandbox: 133/133 test files, 1003 passed, 3 skipped; typecheck, format check, full tests, build, and `git diff --check` succeeded. `pnpm verify:staged` passed for all 15 changed files. The first sandboxed full run failed only in 22 daemon/IPC tests because the sandbox denied Unix socket `listen` with `EPERM`; 131 other suites passed. The required unsandboxed reruns completed successfully.
+- **Validation:** Focused extension suite passed locally (29/29), and local/pre-push `pnpm verify` passed with 133/133 test files, 1003 passed, 3 skipped. Hosted governance, CodeQL, macOS, and Ubuntu checks observed so far passed. Windows logs fail at `tests/extension-update.test.ts:393`: expected `unchanged`, received `updated`, because the symlink mock does not match Windows path syntax. The first sandboxed local full run separately failed only in 22 daemon/IPC tests because the sandbox denied Unix socket `listen` with `EPERM`; required unsandboxed reruns passed.
 - **Code-quality evidence:** New production files are 84, 80, 199, 35, 246, and 173 formatted lines; the new test file is 399 lines. The longest new function is 68 lines. Existing oversized root barrel files were not increased; extension-local re-export seams expose the new contracts. No exception requested.
 - **Decisions and assumptions:** Discovery accepts caller-supplied candidate metadata and grants no network access. Every available update requires explicit approval. Downloaded or bundled candidates require integrity metadata. Irreversible migrations are rejected in E4 because this phase guarantees automatic rollback.
 - **Risks or compatibility impact:** Additive public contracts and operations. The lock schema gains an optional publisher snapshot; existing lockfiles remain valid. No extension installation, registry client, process execution, or automatic update authority is introduced.
-- **Next first action:** Inspect PR #224 hosted checks and request review; do not merge without maintainer approval.
+- **Next first action:** After explicit approval, make the test mock normalize `\\` to `/` and match the `.aif/extensions` suffix, rerun focused/full/staged checks, push, and re-observe PR #224 CI.
 
 #### Duty completion checklist
 

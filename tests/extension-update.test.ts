@@ -374,8 +374,8 @@ describe("Phase E4: Extension Update Discovery & Migration Pipeline", () => {
       [`${root}/.aif/extension-lock.json`]: JSON.stringify(currentLockfile),
       [`${root}/.aif/extensions/vector-search.json`]: oldConfig,
     });
-    fs.isSymbolicLink = vi.fn(
-      async (path) => path === `${root}/.aif/extensions`,
+    fs.isSymbolicLink = vi.fn(async (path) =>
+      path.replaceAll("\\", "/").endsWith("/.aif/extensions"),
     );
     const isolatedRuntime = runtime();
 
