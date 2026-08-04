@@ -429,8 +429,8 @@ and the [Managed Extension Lifecycle Plan](docs/roadmap/MANAGED_EXTENSION_LIFECY
 Implementation status: protocol schemas, pre-adoption inspection, transactional
 resolution, and the Phase E4 update discovery/migration pipeline are implemented
 through the shared protocol, validator, and application boundaries. Phase E4 is
-pending review on `feat/extension-update-pipeline`; doctor diagnostics, removal,
-and provider adapters remain later phases.
+pending review in PR #224 from `feat/extension-update-pipeline`; doctor
+diagnostics, removal, and provider adapters remain later phases.
 
 Exit criteria: a fixture extension can be installed or referenced with explicit
 approval, pinned reproducibly, checked for compatibility and legal metadata,
