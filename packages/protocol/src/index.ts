@@ -38,6 +38,7 @@ export * from "./task-routing.js";
 export * from "./external-skill-import.js";
 export * from "./harness-adoption-gate.js";
 export * from "./extension-lifecycle.js";
+export * from "./knowledge-provider.js";
 export const TIMELINE_DEFAULT_LIMIT = 50;
 export const TIMELINE_MAX_LIMIT = 500;
 export const TIMELINE_DEFAULT_TIMEOUT_MS = 5_000;

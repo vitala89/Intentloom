@@ -99,6 +99,39 @@
       "scope": "Phase E5 Doctor Diagnostics & Health Verification",
       "reviewTrigger": "Decompose the application barrel before the next application operation feature.",
       "expires": "2026-09-15"
+    },
+    {
+      "path": "packages/protocol/src/index.ts",
+      "rule": "existing-oversized-growth",
+      "baseLines": 4424,
+      "headLines": 4425,
+      "reason": "Phase E7 knowledge-provider protocol re-export added to protocol barrel file.",
+      "owner": "Protocol maintainers",
+      "scope": "Phase E7 Knowledge-Provider Boundary",
+      "reviewTrigger": "Decompose protocol index barrel into domain sub-barrels before next feature.",
+      "expires": "2026-09-30"
+    },
+    {
+      "path": "packages/validator/src/index.ts",
+      "rule": "existing-oversized-growth",
+      "baseLines": 870,
+      "headLines": 871,
+      "reason": "Phase E7 knowledge-provider validator re-export added to validator barrel file.",
+      "owner": "Validator maintainers",
+      "scope": "Phase E7 Knowledge-Provider Boundary",
+      "reviewTrigger": "Decompose validator index barrel into domain sub-barrels before next feature.",
+      "expires": "2026-09-30"
+    },
+    {
+      "path": "packages/application/src/index.ts",
+      "rule": "existing-oversized-growth",
+      "baseLines": 7417,
+      "headLines": 7419,
+      "reason": "Phase E7 knowledge-provider and Graphify adapter re-exports added to application barrel file.",
+      "owner": "Application maintainers",
+      "scope": "Phase E7 Knowledge-Provider Boundary",
+      "reviewTrigger": "Decompose application index barrel into domain sub-barrels before next feature.",
+      "expires": "2026-09-30"
     }
   ]
 }

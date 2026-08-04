@@ -9,6 +9,12 @@ are not included in the current npm artifact until a later release.
 
 ### Added
 
+- Added Phase E7 Knowledge-Provider & Adapter-Pack Boundaries
+  (`queryKnowledgeProvider`, `validateKnowledgeProviderQuery`,
+  `validateKnowledgeProviderQueryResult`, `verifyKnowledgeProviderCapability`, and
+  `GraphifyKnowledgeAdapter`) with zero hard runtime dependencies, fallback
+  behavior, capability gating, and test suite `tests/knowledge-provider.test.ts`.
+
 - Added Phase E4 Extension Update Discovery & Migration Pipeline
   (`discoverExtensionUpdatePlans`, `discoverExtensionUpdates`,
   `applyExtensionUpdate`) with explicit update approval, capability/license/

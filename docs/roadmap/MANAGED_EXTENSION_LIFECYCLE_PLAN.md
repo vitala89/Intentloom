@@ -2,11 +2,11 @@
 
 ## Status
 
-Phases E1-E6 are implemented on `main`. Phase E4 Update Discovery & Migration
-Pipeline merged through PR #224 (`18b6b53`) and Phase E5 Doctor Diagnostics &
-Health Verification merged through PR #226 (`56bf4bd`), both after full hosted
-verification. Phase E6 Safe Revocation, Removal & Rollback Recovery merged
-through PR #227 (`d65e735`). Phase E7 remains candidate.
+Phases E1-E7 are implemented. Phase E4 Update Discovery & Migration Pipeline
+merged through PR #224 (`18b6b53`), Phase E5 Doctor Diagnostics & Health
+Verification merged through PR #226 (`56bf4bd`), and Phase E6 Safe Revocation,
+Removal & Rollback Recovery merged through PR #227 (`d65e735`). Phase E7
+Knowledge-Provider & Adapter-Pack Boundaries is implemented on `feat/knowledge-provider-boundary`.
 
 ## Outcome
 
@@ -174,7 +174,7 @@ Exit gate:
 
 ## Phase E7: Knowledge-Provider & Adapter-Pack Boundaries (Graphify Integration)
 
-Status: candidate; follows Phase E6.
+Status: complete in protocol, validator, application, and graphify adapter modules.
 
 Scope:
 

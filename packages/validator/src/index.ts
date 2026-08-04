@@ -868,3 +868,4 @@ export * from "./external-skill-import.js";
 export * from "./harness-adoption-gate.js";
 export * from "./extension-inspection.js";
 export * from "./extension-resolution.js";
+export * from "./knowledge-provider.js";
