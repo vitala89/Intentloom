@@ -360,6 +360,21 @@ Compromised publishers, revoked artifacts, or known malicious versions require a
 security advisory path that can block new adoption and clearly warn existing
 installations. Automatic destructive removal is not allowed.
 
+The canonical application boundary is split into a read-only
+`previewExtensionRemoval` operation and an explicitly approved
+`removeExtension` operation. Removal plans must enumerate every extension-owned
+file to delete and every `.aif/` configuration change with its expected current
+digest and replacement digest. Extension-owned deletion is limited to
+`.aif/extensions/` and `.aif/extension-state/`; project-owned source files,
+notices, audit records, and retained evidence are never deletion targets.
+
+Runtime process stopping and artifact cleanup are injected adapter operations.
+The canonical application operation performs no hidden process execution,
+network access, or discovery of additional deletion targets. Before mutation it
+rechecks the lock entry and all target digests. A failure after runtime stop or
+file mutation restores the exact prior lockfile, configuration, and file
+snapshots, and reports incomplete rollback explicitly when restoration fails.
+
 ---
 
 ## 12. Graphify as an Example, Not a Core Dependency

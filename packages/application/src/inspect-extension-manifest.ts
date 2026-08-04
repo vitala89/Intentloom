@@ -27,3 +27,4 @@ export async function inspectExtensionManifest(
 }
 
 export * from "./extension-health.js";
+export * from "./remove-extension.js";

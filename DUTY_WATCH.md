@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Phase E4 and its post-merge reconciliation are merged into `main` at `653050c`; Phase E5 doctor diagnostics are in PR #226 with all hosted checks passing.**
+Status: **Phase E5 doctor diagnostics are merged into `main` at `56bf4bd`; Phase E6 safe removal and rollback recovery are in draft PR #227 with all hosted checks passing.**
 
-Active branch: `feat/extension-doctor-health`; base `main` at `653050c`
+Active branch: `feat/extension-safe-removal`; base `main` at `56bf4bd`
 
-Current objective: Monitor and land Phase E5 doctor diagnostics PR #226.
+Current objective: Hand the verified Phase E6 increment to the maintainer for review and merge.
 
-Next first action: Confirm hosted PR #226 checks, then maintainer review and merge; after merge update `main` state and inspect Phase E6.
+Next first action: Maintainer reviews and merges PR #227; after merge reconcile `main` and inspect Phase E7.
 
 Known open items, in the order they should be handled:
 
@@ -59,6 +59,29 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-04, Phase E6 PR publication and hosted verification
+
+- **Status:** complete on the review branch; draft PR #227 is open and all hosted checks pass.
+- **Branch:** `feat/extension-safe-removal`, head `1ef99f6`, based on merged `main` commit `56bf4bd`.
+- **Pull request:** [#227](https://github.com/vitala89/Intentloom/pull/227), draft.
+- **Objective:** Publish the verified Phase E6 safe removal and rollback increment for maintainer review.
+- **Completed:** Pushed the implementation and Duty Watch handoff, opened the draft PR, and confirmed Analyze, CodeQL, Governance, and Ubuntu/macOS/Windows Node 22/24 checks are successful.
+- **Validation:** Pre-push `pnpm verify` passed with 135 test files and 1013 passed / 3 skipped tests; the hosted PR checks also pass.
+- **Not completed:** Maintainer review/merge and post-merge `main` reconciliation remain. No Phase E7 implementation or release was inferred.
+- **Next first action:** Maintainer reviews and merges PR #227, then update durable state to the merge commit.
+
+### 2026-08-04, Phase E6 Safe Revocation, Removal & Rollback Recovery
+
+- **Status:** implementation complete on the review branch; no removal PR has been published yet.
+- **Branch:** `feat/extension-safe-removal` from merged `main` commit `56bf4bd` (PR #226).
+- **Commit:** `0c74dae` (`feat(extension): add safe removal and rollback`).
+- **Objective:** Add a provider-neutral preview and explicitly approved removal operation with fail-closed rollback.
+- **Completed:** Added protocol contracts for removal plans, approval, and outcomes; added read-only `previewExtensionRemoval`; added `removeExtension` with explicit injected runtime boundaries, digest-checked extension-owned file deletion, configuration updates, lockfile removal, notice/project-owned retention records, and exact snapshot rollback.
+- **Boundary:** Removal targets must be explicit and project-local; extension-owned deletion is restricted to `.aif/extensions/` and `.aif/extension-state/`; configuration changes are digest-verified under `.aif/`; the lockfile cannot be a removal target; no process execution, network access, or hidden mutation is performed by canonical code.
+- **Validation:** Focused E6, E5, and E4 suites pass (20 tests); full `pnpm verify` passes with 135 test files and 1013 passed / 3 skipped tests; staged quality checks, typecheck, formatting, build, and diff checks pass.
+- **Not completed:** Draft PR publication and hosted checks remain.
+- **Next first action:** Publish the branch as a draft PR and monitor hosted checks; merge remains maintainer-controlled.
 
 ### 2026-08-04, Phase E5 Doctor Diagnostics & Health Verification
 

@@ -2,13 +2,11 @@
 
 ## Status
 
-Phases E1-E4 are implemented on `main`. Phase E4 Update Discovery & Migration
-Pipeline merged through PR #224 (`18b6b53`) after its Windows portability fix and
-full hosted verification.
-Phase E5 Doctor Diagnostics & Health Verification is implemented on
-`feat/extension-doctor-health`; review and merge are pending. Phases E6-E7
-remain the candidate roadmap for safe removal, rollback recovery, and provider
-adapters.
+Phases E1-E5 are implemented on `main`. Phase E4 Update Discovery & Migration
+Pipeline merged through PR #224 (`18b6b53`) and Phase E5 Doctor Diagnostics &
+Health Verification merged through PR #226 (`56bf4bd`), both after full hosted
+verification. Phase E6 Safe Revocation, Removal & Rollback Recovery is in
+implementation on `feat/extension-safe-removal`; Phase E7 remains candidate.
 
 ## Outcome
 
@@ -135,7 +133,7 @@ Exit gate:
 
 ## Phase E5: Doctor Diagnostics & Health Verification
 
-Status: implemented on `feat/extension-doctor-health`; pending review and merge.
+Status: implemented and merged through PR #226 (`56bf4bd`).
 
 Scope:
 
@@ -156,7 +154,7 @@ Exit gate:
 
 ## Phase E6: Safe Revocation, Removal & Rollback Recovery
 
-Status: candidate; follows Phase E5.
+Status: implementation in progress on `feat/extension-safe-removal`; review and merge pending.
 
 Scope:
 

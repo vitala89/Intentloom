@@ -82,3 +82,47 @@ export interface ExtensionUpdateApplicationResult {
   readonly rollbackCompleted: boolean;
   readonly rollbackFailures: readonly string[];
 }
+
+export interface ExtensionRemovalFileTarget {
+  readonly path: string;
+  readonly description: string;
+  readonly beforeDigest: string;
+}
+
+export interface ExtensionRemovalConfigurationChange {
+  readonly path: string;
+  readonly description: string;
+  readonly beforeDigest: string;
+  readonly afterDigest: string;
+  readonly afterContent: string;
+}
+
+export interface ExtensionRemovalPlan {
+  readonly status: "requires-approval" | "rejected";
+  readonly extensionId: string;
+  readonly lockfilePath: string;
+  readonly currentLockEntry?: ExtensionLockEntry | undefined;
+  readonly filesToRemove: readonly ExtensionRemovalFileTarget[];
+  readonly configurationChanges: readonly ExtensionRemovalConfigurationChange[];
+  readonly processesToStop: readonly string[];
+  readonly projectOwnedPaths: readonly string[];
+  readonly retainedPaths: readonly string[];
+  readonly noticePaths: readonly string[];
+  readonly requiresApproval: true;
+  readonly diagnostics: readonly string[];
+}
+
+export interface ExtensionRemovalApproval {
+  readonly approvedBy: string;
+  readonly approvedAt: string;
+}
+
+export interface ExtensionRemovalApplicationResult {
+  readonly status: "removed" | "unchanged" | "failed";
+  readonly lockfileUpdated: boolean;
+  readonly failedStage?: "preflight" | "stop" | "remove" | "commit" | undefined;
+  readonly diagnostics: readonly string[];
+  readonly rollbackAttempted: boolean;
+  readonly rollbackCompleted: boolean;
+  readonly rollbackFailures: readonly string[];
+}

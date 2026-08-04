@@ -427,11 +427,12 @@ The planned lifecycle is documented in
 and the [Managed Extension Lifecycle Plan](docs/roadmap/MANAGED_EXTENSION_LIFECYCLE_PLAN.md).
 
 Implementation status: protocol schemas, pre-adoption inspection, transactional
-resolution, and the Phase E4 update discovery/migration pipeline are implemented
-through the shared protocol, validator, and application boundaries. Phase E4 is
-merged through PR #224 (`18b6b53`). Phase E5 doctor diagnostics and health
-verification are implemented on `feat/extension-doctor-health` pending review;
-removal and provider adapters remain later phases.
+resolution, the Phase E4 update discovery/migration pipeline, and Phase E5
+doctor diagnostics and health verification are implemented through the shared
+protocol, validator, and application boundaries. Phase E4 is merged through PR
+#224 (`18b6b53`) and Phase E5 through PR #226 (`56bf4bd`). Phase E6 safe removal
+and rollback recovery is in implementation on `feat/extension-safe-removal`;
+provider adapters remain later.
 
 Exit criteria: a fixture extension can be installed or referenced with explicit
 approval, pinned reproducibly, checked for compatibility and legal metadata,
