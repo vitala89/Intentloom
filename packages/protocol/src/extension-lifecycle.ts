@@ -80,6 +80,7 @@ export interface ExtensionLockEntry {
   readonly requestedVersion: string;
   readonly resolvedVersion: string;
   readonly source?: ExtensionSource | undefined;
+  readonly publisher?: ExtensionPublisher | undefined;
   readonly integrity?: string | undefined;
   readonly manifestSchemaVersion?: string | undefined;
   readonly grantedCapabilities: ExtensionCapabilities;
@@ -151,3 +152,5 @@ export interface ExtensionAdoptionPlan {
   readonly approvalReasons: readonly string[];
   readonly diagnostics: readonly string[];
 }
+
+export * from "./extension-update.js";

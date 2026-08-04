@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **PR #222 merged; Phase E3 Transactional Resolution & Lockfile Management is on `main`** — `resolveExtensionAdoptionProposal`, `applyExtensionAdoptionPlan`, `proposeExtensionAdoption`, `applyExtensionAdoption`, and test suite `tests/extension-resolution.test.ts` are merged into `main` (`649f7ae`).
+Status: **Phase E4 Update Discovery & Migration Pipeline implemented and locally verified on `feat/extension-update-pipeline`** — canonical discovery, explicit approval, exact migration previews, isolated integrity/health checks, stale-lock rejection, and transactional rollback are ready for commit and review.
 
-Active branch: `main` at `649f7ae` (PR #222)
+Active branch: `feat/extension-update-pipeline` from `main` at `094a222`
 
-Current objective: Select next implementation phase from `MANAGED_EXTENSION_LIFECYCLE_PLAN.md` (Phase E4: Update Discovery & Migration Pipeline) or read-only evidence hardening gate.
+Current objective: Commit, push, and open the Phase E4 pull request.
 
-Next first action: Review Phase E4 candidate scope or read-only evidence hardening gate.
+Next first action: Review the final diff, create the atomic commit, and open the pull request.
 
 Known open items, in the order they should be handled:
 
@@ -59,6 +59,33 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-04, Phase E4 Extension Update Discovery & Migration Pipeline
+
+- **Status:** implementation and local verification complete on `feat/extension-update-pipeline`; commit, push, and pull request remain pending.
+- **Branch:** `feat/extension-update-pipeline` from `main` at `094a222`.
+- **Objective:** Implement Phase E4 of the Managed Extension Lifecycle with read-only update discovery, explicit review evidence, reversible migration previews, and isolated transactional apply/rollback.
+- **Completed:** Added update candidate, plan, approval, migration preview, discovery report, and application result contracts. Added deterministic update comparison covering version/channel, compatibility, capability, publisher, source, license, integrity, release notes, breaking changes, and reversible migrations. Added canonical `discoverExtensionUpdates` and `applyExtensionUpdate` operations with stale-lock rejection, exact SHA256 before/after migration guards, symlink-safe extension-owned path confinement, injected runtime staging/integrity/health/commit/rollback seams, and byte-for-byte filesystem recovery. Added optional publisher snapshots to extension lock entries and schema. Added `tests/extension-update.test.ts`.
+- **Not completed:** Commit, push, PR creation, hosted CI, review, and merge remain pending. `PROJECT_STATE.md` remains unchanged because Phase E4 is not on `main` yet.
+- **Files or packages changed:** `packages/protocol/src/extension-lifecycle.ts`, `packages/protocol/src/extension-update.ts`, `catalog/schemas/extension-lock.schema.json`, `packages/validator/src/extension-resolution.ts`, `packages/validator/src/extension-update.ts`, `packages/validator/src/extension-update-review.ts`, `packages/application/src/propose-and-apply-extension-adoption.ts`, `packages/application/src/discover-and-apply-extension-update.ts`, `packages/application/src/apply-extension-update.ts`, `packages/application/src/extension-update-files.ts`, `tests/extension-update.test.ts`, `docs/roadmap/MANAGED_EXTENSION_LIFECYCLE_PLAN.md`, `ROADMAP.md`, `CHANGELOG.md`, and `DUTY_WATCH.md`.
+- **Validation:** Focused extension suite passed (29/29). Final `pnpm verify` passed outside the sandbox: 133/133 test files, 1003 passed, 3 skipped; typecheck, format check, full tests, build, and `git diff --check` succeeded. `pnpm verify:staged` passed for all 15 changed files. The first sandboxed full run failed only in 22 daemon/IPC tests because the sandbox denied Unix socket `listen` with `EPERM`; 131 other suites passed. The required unsandboxed reruns completed successfully.
+- **Code-quality evidence:** New production files are 84, 80, 199, 35, 246, and 173 formatted lines; the new test file is 399 lines. The longest new function is 68 lines. Existing oversized root barrel files were not increased; extension-local re-export seams expose the new contracts. No exception requested.
+- **Decisions and assumptions:** Discovery accepts caller-supplied candidate metadata and grants no network access. Every available update requires explicit approval. Downloaded or bundled candidates require integrity metadata. Irreversible migrations are rejected in E4 because this phase guarantees automatic rollback.
+- **Risks or compatibility impact:** Additive public contracts and operations. The lock schema gains an optional publisher snapshot; existing lockfiles remain valid. No extension installation, registry client, process execution, or automatic update authority is introduced.
+- **Next first action:** Inspect the final diff, run staged governance checks, then create the atomic Phase E4 commit and pull request.
+
+#### Duty completion checklist
+
+- [x] Focused tests and typecheck passed
+- [x] New production and test files satisfy size budgets
+- [x] Existing oversized barrel files did not grow
+- [x] Full `pnpm verify` passed outside the socket-restricted sandbox
+- [x] Staged governance checks passed
+- [x] Final diff reviewed
+- [x] Roadmap and changelog updated
+- [x] Duty Watch handoff updated
+- [x] `PROJECT_STATE.md` intentionally unchanged until merge
+- [ ] Commit, push, and pull request completed
 
 ### 2026-08-04, Phase E3 Transactional Extension Resolution & Lockfile Management
 
