@@ -9,6 +9,12 @@ are not included in the current npm artifact until a later release.
 
 ### Added
 
+- Added Phase E4 Extension Update Discovery & Migration Pipeline
+  (`discoverExtensionUpdatePlans`, `discoverExtensionUpdates`,
+  `applyExtensionUpdate`) with explicit update approval, capability/license/
+  publisher/source/breaking-change reporting, SHA256 migration previews,
+  isolated integrity and health checks, stale-lock and symlink protections, and
+  byte-for-byte rollback coverage in `tests/extension-update.test.ts`.
 - Added Phase E3 Transactional Extension Resolution & Lockfile Management
   (`resolveExtensionAdoptionProposal`, `applyExtensionAdoptionPlan`, `proposeExtensionAdoption`,
   `applyExtensionAdoption`) and test suite `tests/extension-resolution.test.ts`.

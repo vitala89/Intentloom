@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **PR #222 merged; Phase E3 Transactional Resolution & Lockfile Management is on `main`** — `resolveExtensionAdoptionProposal`, `applyExtensionAdoptionPlan`, `proposeExtensionAdoption`, `applyExtensionAdoption`, and test suite `tests/extension-resolution.test.ts` are merged into `main` (`649f7ae`).
+Status: **PR #224 has the Windows test fix applied and all hosted checks passing** — the symlink test mock now normalizes path separators before matching the extension-owned directory; review and merge remain maintainer-controlled.
 
-Active branch: `main` at `649f7ae` (PR #222)
+Active branch: `feat/extension-update-pipeline`; implementation commit `ee58517`; PR #224
 
-Current objective: Select next implementation phase from `MANAGED_EXTENSION_LIFECYCLE_PLAN.md` (Phase E4: Update Discovery & Migration Pipeline) or read-only evidence hardening gate.
+Current objective: Hand off PR #224 for maintainer review and merge.
 
-Next first action: Review Phase E4 candidate scope or read-only evidence hardening gate.
+Next first action: Maintainer reviews and merges PR #224; do not update `PROJECT_STATE.md` until the merge lands on `main`.
 
 Known open items, in the order they should be handled:
 
@@ -59,6 +59,52 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-04, Phase E4 Windows test portability correction
+
+- **Status:** implementation and local verification complete; hosted CI recheck is pending after push.
+- **Branch:** `feat/extension-update-pipeline` at `f44b23d` plus the working-tree test correction; PR #224.
+- **Objective:** Correct the Windows-only symlink mock defect reported by hosted Compatibility CI without changing production behavior.
+- **Completed:** Updated `tests/extension-update.test.ts` so the mocked symbolic-link path normalizes Windows backslashes to POSIX separators before checking the `.aif/extensions` suffix.
+- **Validation:** Prettier check and the focused extension-update suite passed (10/10). `pnpm verify:staged` passed for both changed files. Full verification passed with typecheck, format check, 133/133 test files, 1003 passed, 3 skipped, build, and diff checks.
+- **Next first action:** Commit the test-only correction with this handoff, push, and re-observe PR #224.
+
+### 2026-08-04, Phase E4 hosted CI recheck
+
+- **Status:** complete; the bounded test-only correction is pushed and all required hosted checks pass.
+- **Branch:** `feat/extension-update-pipeline` at `06a87dc`; PR #224.
+- **Objective:** Verify that the Windows symlink regression is resolved without changing production behavior.
+- **Completed:** Pushed the normalized-path test mock and updated the Duty Watch handoff.
+- **Validation:** Local focused suite passed (10/10), `pnpm verify:staged` passed, full `pnpm verify` and pre-push verification passed (133/133 test files, 1003 passed, 3 skipped, typecheck, format, build, and diff checks). Hosted Compatibility passed on macOS, Ubuntu, and Windows for Node 22 and 24; Desktop SEA Feasibility, CodeQL, and Governance also passed.
+- **Next first action:** Maintainer review and merge of PR #224. `PROJECT_STATE.md` remains unchanged until Phase E4 reaches `main`.
+
+### 2026-08-04, Phase E4 Extension Update Discovery & Migration Pipeline
+
+- **Status:** partial; implementation and local verification are complete, but hosted Windows checks expose an OS-specific test-mock defect awaiting an approved fix.
+- **Branch:** `feat/extension-update-pipeline` at `ee58517` from `main` at `094a222`.
+- **Pull request:** [#224](https://github.com/vitala89/Intentloom/pull/224)
+- **Objective:** Implement Phase E4 of the Managed Extension Lifecycle with read-only update discovery, explicit review evidence, reversible migration previews, and isolated transactional apply/rollback.
+- **Completed:** Added update candidate, plan, approval, migration preview, discovery report, and application result contracts. Added deterministic update comparison covering version/channel, compatibility, capability, publisher, source, license, integrity, release notes, breaking changes, and reversible migrations. Added canonical `discoverExtensionUpdates` and `applyExtensionUpdate` operations with stale-lock rejection, exact SHA256 before/after migration guards, symlink-safe extension-owned path confinement, injected runtime staging/integrity/health/commit/rollback seams, and byte-for-byte filesystem recovery. Added optional publisher snapshots to extension lock entries and schema. Added `tests/extension-update.test.ts`.
+- **Not completed:** The Windows test mock still compares `/workspace/.aif/extensions` literally instead of normalizing the drive-qualified backslash path. A bounded test-only correction, fresh verification, hosted CI, review, and merge remain pending. `PROJECT_STATE.md` remains unchanged because Phase E4 is not on `main` yet.
+- **Files or packages changed:** `packages/protocol/src/extension-lifecycle.ts`, `packages/protocol/src/extension-update.ts`, `catalog/schemas/extension-lock.schema.json`, `packages/validator/src/extension-resolution.ts`, `packages/validator/src/extension-update.ts`, `packages/validator/src/extension-update-review.ts`, `packages/application/src/propose-and-apply-extension-adoption.ts`, `packages/application/src/discover-and-apply-extension-update.ts`, `packages/application/src/apply-extension-update.ts`, `packages/application/src/extension-update-files.ts`, `tests/extension-update.test.ts`, `docs/roadmap/MANAGED_EXTENSION_LIFECYCLE_PLAN.md`, `ROADMAP.md`, `CHANGELOG.md`, and `DUTY_WATCH.md`.
+- **Validation:** Focused extension suite passed locally (29/29), and local/pre-push `pnpm verify` passed with 133/133 test files, 1003 passed, 3 skipped. Hosted governance, CodeQL, macOS, and Ubuntu checks observed so far passed. Windows logs fail at `tests/extension-update.test.ts:393`: expected `unchanged`, received `updated`, because the symlink mock does not match Windows path syntax. The first sandboxed local full run separately failed only in 22 daemon/IPC tests because the sandbox denied Unix socket `listen` with `EPERM`; required unsandboxed reruns passed.
+- **Code-quality evidence:** New production files are 84, 80, 199, 35, 246, and 173 formatted lines; the new test file is 399 lines. The longest new function is 68 lines. Existing oversized root barrel files were not increased; extension-local re-export seams expose the new contracts. No exception requested.
+- **Decisions and assumptions:** Discovery accepts caller-supplied candidate metadata and grants no network access. Every available update requires explicit approval. Downloaded or bundled candidates require integrity metadata. Irreversible migrations are rejected in E4 because this phase guarantees automatic rollback.
+- **Risks or compatibility impact:** Additive public contracts and operations. The lock schema gains an optional publisher snapshot; existing lockfiles remain valid. No extension installation, registry client, process execution, or automatic update authority is introduced.
+- **Next first action:** After explicit approval, make the test mock normalize `\\` to `/` and match the `.aif/extensions` suffix, rerun focused/full/staged checks, push, and re-observe PR #224 CI.
+
+#### Duty completion checklist
+
+- [x] Focused tests and typecheck passed
+- [x] New production and test files satisfy size budgets
+- [x] Existing oversized barrel files did not grow
+- [x] Full `pnpm verify` passed outside the socket-restricted sandbox
+- [x] Staged governance checks passed
+- [x] Final diff reviewed
+- [x] Roadmap and changelog updated
+- [x] Duty Watch handoff updated
+- [x] `PROJECT_STATE.md` intentionally unchanged until merge
+- [x] Commit, push, and pull request completed
 
 ### 2026-08-04, Phase E3 Transactional Extension Resolution & Lockfile Management
 

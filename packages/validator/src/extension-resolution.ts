@@ -110,6 +110,7 @@ export function resolveExtensionAdoptionProposal(
           resolved: options.registryResolution.resolvedUrl,
         }
       : manifest.source,
+    publisher: manifest.publisher,
     integrity,
     grantedCapabilities: options.approvedCapabilities ?? manifest.capabilities,
     license: manifest.license,
@@ -133,6 +134,8 @@ export function resolveExtensionAdoptionProposal(
     diagnostics,
   };
 }
+
+export * from "./extension-update.js";
 
 export interface ApplyAdoptionPlanResult {
   readonly lockfile: ExtensionLockfile;

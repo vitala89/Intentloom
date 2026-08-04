@@ -18,6 +18,8 @@ export interface FileSystem {
   mkdir?(path: string): Promise<void>;
   remove?(path: string): Promise<void>;
   list?(path: string): Promise<string[]>;
+  realpath?(path: string): Promise<string>;
+  isSymbolicLink?(path: string): Promise<boolean>;
 }
 
 export interface ProposeExtensionAdoptionOptions {
@@ -129,3 +131,5 @@ export async function applyExtensionAdoption(
 
   return result;
 }
+
+export * from "./discover-and-apply-extension-update.js";

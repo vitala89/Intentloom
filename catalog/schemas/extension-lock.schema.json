@@ -54,6 +54,15 @@
               "resolved": { "type": "string", "maxLength": 2048 }
             }
           },
+          "publisher": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "name": { "type": "string", "minLength": 1, "maxLength": 128 },
+              "url": { "type": "string", "maxLength": 2048 }
+            },
+            "required": ["name"]
+          },
           "integrity": {
             "type": "string",
             "maxLength": 256

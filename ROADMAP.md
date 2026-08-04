@@ -401,7 +401,7 @@ External evidence, prompts, recommendations, model output, or endpoint reachabil
 
 Exit criteria: a prepared plan is rejected for changed root, ownership, state, digest, expiry, permission, or capability scope; approved applies use the existing transactional rollback guarantee; no other signal is accepted as approval.
 
-## Later candidate — Managed external extensions
+## In progress — Managed external extensions
 
 Intentloom should support optional Agent Skills, MCP servers, knowledge providers,
 adapters, and other tool integrations through a shared vendor-neutral lifecycle.
@@ -425,6 +425,12 @@ The planned lifecycle is documented in
 [External Extension Lifecycle](docs/concepts/EXTENSION_LIFECYCLE.md), the
 [Managed Extension Lifecycle Specification](docs/specs/MANAGED_EXTENSION_LIFECYCLE_V0_3_SPEC.md),
 and the [Managed Extension Lifecycle Plan](docs/roadmap/MANAGED_EXTENSION_LIFECYCLE_PLAN.md).
+
+Implementation status: protocol schemas, pre-adoption inspection, transactional
+resolution, and the Phase E4 update discovery/migration pipeline are implemented
+through the shared protocol, validator, and application boundaries. Phase E4 is
+pending review in PR #224 from `feat/extension-update-pipeline`; doctor
+diagnostics, removal, and provider adapters remain later phases.
 
 Exit criteria: a fixture extension can be installed or referenced with explicit
 approval, pinned reproducibly, checked for compatibility and legal metadata,

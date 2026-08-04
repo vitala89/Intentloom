@@ -2,11 +2,11 @@
 
 ## Status
 
-Phase E1 protocol contracts (`urn:aif:schema:extension-manifest:1` and
-`urn:aif:schema:extension-lock:1`) are implemented in `@intentloom/protocol` and
-`@intentloom/validator`. Phases E2-E7 detail the phased candidate roadmap for
-governed extension adoption, capability gating, integrity locking, and safe
-rollback.
+Phases E1-E3 are implemented on `main`. Phase E4 Update Discovery & Migration
+Pipeline is implemented on `feat/extension-update-pipeline` in PR #224 and
+pending review.
+Phases E5-E7 remain the candidate roadmap for doctor diagnostics, safe removal,
+rollback recovery, and provider adapters.
 
 ## Outcome
 
@@ -54,7 +54,7 @@ Exit gate:
 
 ## Phase E2: Pre-Adoption Inspection & Capability Delta Engine
 
-Status: candidate; ready for implementation.
+Status: complete in protocol, validator, and application packages.
 
 Scope:
 
@@ -77,7 +77,7 @@ Exit gate:
 
 ## Phase E3: Transactional Extension Resolution & Lockfile Management
 
-Status: candidate; follows Phase E2.
+Status: complete in protocol, validator, and application packages.
 
 Scope:
 
@@ -99,7 +99,8 @@ Exit gate:
 
 ## Phase E4: Update Discovery & Migration Pipeline
 
-Status: candidate; follows Phase E3.
+Status: implemented on `feat/extension-update-pipeline` in PR #224; pending
+review and merge.
 
 Scope:
 
@@ -108,6 +109,18 @@ Scope:
 - highlight capability expansions, license changes, publisher changes, and breaking changes;
 - prepare migration preview for configuration and project-local extension state;
 - execute update via isolated transactional engine (`applyExtensionUpdate`).
+
+Implementation notes:
+
+- discovery consumes explicit candidate metadata and never performs hidden
+  registry or network access;
+- every available update requires approval evidence, with additional reasons for
+  capability, publisher, source, license, breaking, and migration changes;
+- reversible configuration and project-local state migrations use exact SHA256
+  before/after digests plus symlink-safe, extension-owned project paths;
+- runtime staging, integrity verification, health checking, commit, and rollback
+  remain behind a narrow injected boundary rather than granting canonical core
+  process or installation authority.
 
 Exit gate:
 
