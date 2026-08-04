@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Phase E5 doctor diagnostics and Phase E6 safe removal are merged into `main` at `d65e735`; Phase E7 provider-adapter boundaries remain candidate scope.**
+Status: **Phase E7 Knowledge-Provider & Adapter-Pack Boundaries implementation complete on `feat/knowledge-provider-boundary`; ready for PR.**
 
-Active branch: `docs/reconcile-phase-e6-merge`; base `main` at `d65e735`
+Active branch: `feat/knowledge-provider-boundary`; base `main` at `6f5bf27`
 
-Current objective: Reconcile durable records after the Phase E6 merge and preserve the bounded Phase E7 handoff.
+Current objective: Publish PR for Phase E7 Knowledge-Provider & Adapter-Pack Boundaries and verify hosted CI.
 
-Next first action: Publish the reconciliation PR; after merge inspect Phase E7 specification and ADR boundaries before implementation.
+Next first action: Push branch `feat/knowledge-provider-boundary` to remote, open PR, and verify hosted CI matrix.
 
 Known open items, in the order they should be handled:
 
@@ -59,6 +59,17 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-05, Phase E7 Knowledge-Provider & Adapter-Pack Boundaries (Graphify Integration)
+
+- **Status:** complete for implementation, unit tests, formatting, typechecking, and local validation; branch `feat/knowledge-provider-boundary` is ready for PR.
+- **Branch:** `feat/knowledge-provider-boundary`
+- **Objective:** Implement Phase E7 of the Managed Extension Lifecycle (`docs/roadmap/MANAGED_EXTENSION_LIFECYCLE_PLAN.md`) providing a vendor-neutral `knowledge-provider` application boundary, capability verification, fallback behavior, and `GraphifyKnowledgeAdapter` reference implementation.
+- **Completed:** Created `packages/protocol/src/knowledge-provider.ts`, `packages/validator/src/knowledge-provider.ts`, `packages/application/src/knowledge-provider.ts`, `packages/application/src/graphify-adapter.ts`, and test suite `tests/knowledge-provider.test.ts`. Updated `ROADMAP.md`, `docs/roadmap/MANAGED_EXTENSION_LIFECYCLE_PLAN.md`, `CHANGELOG.md`, and `DUTY_WATCH.md`.
+- **Validation:** `pnpm test tests/knowledge-provider.test.ts` passed (11/11 tests); `pnpm typecheck` and `pnpm format:check` passed cleanly.
+- **Decisions and assumptions:** The canonical platform has zero hard runtime dependencies on Graphify or external code-graph tools. When a provider is absent or disabled, operations return deterministic fallback status (`provider_unavailable`).
+- **Risks or compatibility impact:** Additive protocol types, validator functions, and application operations; zero breaking changes.
+- **Next first action:** Push branch `feat/knowledge-provider-boundary` to remote, open PR, and verify hosted CI matrix.
 
 ### 2026-08-04, Phase E6 post-merge reconciliation
 

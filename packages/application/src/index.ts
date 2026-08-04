@@ -7415,3 +7415,5 @@ export * from "./inception-templates.js";
 export * from "./harness.js";
 export * from "./inspect-extension-manifest.js";
 export * from "./propose-and-apply-extension-adoption.js";
+export * from "./knowledge-provider.js";
+export * from "./graphify-adapter.js";
