@@ -9,6 +9,9 @@ are not included in the current npm artifact until a later release.
 
 ### Added
 
+- Added Phase E3 Transactional Extension Resolution & Lockfile Management
+  (`resolveExtensionAdoptionProposal`, `applyExtensionAdoptionPlan`, `proposeExtensionAdoption`,
+  `applyExtensionAdoption`) and test suite `tests/extension-resolution.test.ts`.
 - Added Phase E2 Pre-Adoption Inspection & Capability Delta Engine
   (`inspectExtensionManifest`, `computeExtensionCapabilityDelta`,
   `evaluateExtensionCompatibility`, `auditExtensionLicense`) and suite
