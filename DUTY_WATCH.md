@@ -13,9 +13,9 @@ Status: **Phase E4 and its post-merge reconciliation are merged into `main` at `
 
 Active branch: `feat/extension-doctor-health`; base `main` at `653050c`
 
-Current objective: Validate and publish the Phase E5 doctor diagnostics increment.
+Current objective: Monitor and land Phase E5 doctor diagnostics PR #226.
 
-Next first action: Run the full verification gate, commit the Phase E5 increment, and open a reviewable pull request.
+Next first action: Confirm hosted PR #226 checks, then maintainer review and merge; after merge update `main` state and inspect Phase E6.
 
 Known open items, in the order they should be handled:
 
@@ -62,14 +62,15 @@ entry directly below this section.
 
 ### 2026-08-04, Phase E5 Doctor Diagnostics & Health Verification
 
-- **Status:** complete on the review branch; merge is pending.
+- **Status:** complete on the review branch; PR #226 is open and merge is pending.
 - **Branch:** `feat/extension-doctor-health` from `main` at `653050c`.
+- **Pull request:** [#226](https://github.com/vitala89/Intentloom/pull/226), draft.
 - **Objective:** Extend read-only doctor diagnostics with deterministic managed-extension health checks.
 - **Completed:** Added protocol evidence/report contracts, application lock and runtime evidence evaluation, integration into `doctorProject`, and regression coverage for stale/unpinned locks, integrity and notice metadata, capability/configuration drift, source revocation or compromise, entrypoint availability, and health-check failures.
 - **Boundary:** Existing ADR-0021 and the managed extension lifecycle specification govern the increment; no new architectural decision was required. Runtime evidence is injected explicitly, so canonical code performs no hidden network, process, or mutation work. Health evaluation is split across focused modules; the existing application barrel grows by two wiring lines under the documented `quality-exceptions.json` follow-up.
 - **Validation:** Focused Phase E5 and doctor suites pass (11 tests), focused extension/update and client-surface suites pass (31 tests), full `pnpm verify` passes with 134 test files and 1008 passed / 3 skipped tests, and the sandbox-independent full run required escalated local IPC permission for daemon sockets.
-- **Not completed:** Atomic commit and pull request publication remain for the next watch step.
-- **Next first action:** Review the staged diff and code budgets, commit the increment, and open the Phase E5 pull request.
+- **Not completed:** Hosted checks, maintainer review, and merge remain pending.
+- **Next first action:** Watch PR #226 checks and hand it to the maintainer for review.
 
 ### 2026-08-04, Phase E4 post-merge reconciliation
 
