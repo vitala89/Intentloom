@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Phase E5 doctor diagnostics are merged into `main` at `56bf4bd`; Phase E6 safe removal and rollback recovery are in draft PR #227 with all hosted checks passing.**
+Status: **Phase E5 doctor diagnostics and Phase E6 safe removal are merged into `main` at `d65e735`; Phase E7 provider-adapter boundaries remain candidate scope.**
 
-Active branch: `feat/extension-safe-removal`; base `main` at `56bf4bd`
+Active branch: `docs/reconcile-phase-e6-merge`; base `main` at `d65e735`
 
-Current objective: Hand the verified Phase E6 increment to the maintainer for review and merge.
+Current objective: Reconcile durable records after the Phase E6 merge and preserve the bounded Phase E7 handoff.
 
-Next first action: Maintainer reviews and merges PR #227; after merge reconcile `main` and inspect Phase E7.
+Next first action: Publish the reconciliation PR; after merge inspect Phase E7 specification and ADR boundaries before implementation.
 
 Known open items, in the order they should be handled:
 
@@ -59,6 +59,17 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-04, Phase E6 post-merge reconciliation
+
+- **Status:** complete on the documentation branch; draft PR #228 is open with all hosted checks passing.
+- **Branch:** `docs/reconcile-phase-e6-merge` at `25ddf02`, from `main` merge commit `d65e735`.
+- **Pull request:** [#228](https://github.com/vitala89/Intentloom/pull/228), draft.
+- **Objective:** Reconcile project state, roadmap, lifecycle plan, and handoff records after the Phase E6 merge.
+- **Completed:** Confirmed the squash merge, fast-forwarded local `main`, marked E6 merged, and kept E7 as a candidate provider-adapter increment requiring its own reviewed contract.
+- **Validation:** Merge state and `origin/main` were verified with Git history and GitHub PR metadata; staged documentation checks, pre-push `pnpm verify` (135 test files, 1013 passed / 3 skipped), and all hosted PR checks pass.
+- **Not completed:** Maintainer review and merge remain. No Phase E7 implementation or release was inferred.
+- **Next first action:** Maintainer reviews and merges PR #228; after merge inspect Phase E7 specification and ADR boundaries before implementation.
 
 ### 2026-08-04, Phase E6 PR publication and hosted verification
 

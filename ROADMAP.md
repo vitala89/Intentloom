@@ -430,9 +430,8 @@ Implementation status: protocol schemas, pre-adoption inspection, transactional
 resolution, the Phase E4 update discovery/migration pipeline, and Phase E5
 doctor diagnostics and health verification are implemented through the shared
 protocol, validator, and application boundaries. Phase E4 is merged through PR
-#224 (`18b6b53`) and Phase E5 through PR #226 (`56bf4bd`). Phase E6 safe removal
-and rollback recovery is in implementation on `feat/extension-safe-removal`;
-provider adapters remain later.
+#224 (`18b6b53`), Phase E5 through PR #226 (`56bf4bd`), and Phase E6 through
+PR #227 (`d65e735`). Provider adapters remain later.
 
 Exit criteria: a fixture extension can be installed or referenced with explicit
 approval, pinned reproducibly, checked for compatibility and legal metadata,

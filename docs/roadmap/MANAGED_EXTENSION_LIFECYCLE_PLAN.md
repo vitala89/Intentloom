@@ -2,11 +2,11 @@
 
 ## Status
 
-Phases E1-E5 are implemented on `main`. Phase E4 Update Discovery & Migration
+Phases E1-E6 are implemented on `main`. Phase E4 Update Discovery & Migration
 Pipeline merged through PR #224 (`18b6b53`) and Phase E5 Doctor Diagnostics &
 Health Verification merged through PR #226 (`56bf4bd`), both after full hosted
-verification. Phase E6 Safe Revocation, Removal & Rollback Recovery is in
-implementation on `feat/extension-safe-removal`; Phase E7 remains candidate.
+verification. Phase E6 Safe Revocation, Removal & Rollback Recovery merged
+through PR #227 (`d65e735`). Phase E7 remains candidate.
 
 ## Outcome
 
@@ -154,7 +154,7 @@ Exit gate:
 
 ## Phase E6: Safe Revocation, Removal & Rollback Recovery
 
-Status: implementation in progress on `feat/extension-safe-removal`; review and merge pending.
+Status: implemented and merged through PR #227 (`d65e735`).
 
 Scope:
 
