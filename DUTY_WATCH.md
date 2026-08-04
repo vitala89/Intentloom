@@ -9,16 +9,18 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Phase H9 Agentic Harness adoption gate & fail-closed mutation enforcement implemented** —
-normative protocol schemas and validators in `packages/protocol` and `packages/validator`
-alongside canonical `evaluateHarnessAdoptionGate` application operation in `packages/application`
-provide mandatory scorecard verification, freshness checks, and approval enforcement before external skill activation or agent mutation.
+Status: **PR #213 merged; H1-H9 and C4-C6 harness contracts are on `main`** —
+read-only CLI/MCP consumers, structured routing, managed external-skill
+normalization, and fail-closed adoption enforcement are merged and locally
+verified. H9 production-hardening evidence remains the next focus.
 
-Active branch: `feat/harness-adoption-gate`
+Active branch: `docs/reconcile-harness-main-state`
 
-Current objective: Prepare Phase H9 Agentic Harness adoption gate contract for review and pull request.
+Current objective: Record the merged baseline accurately, then audit existing CI
+and release-readiness workflows for the smallest H9 hardening slice.
 
-Next first action: Push `feat/harness-adoption-gate` branch and open pull request for review.
+Next first action: Audit existing CI and release-readiness workflows to select
+one bounded H9 hardening slice with explicit evidence.
 
 Known open items, in the order they should be handled:
 
@@ -64,6 +66,37 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-04, PR #213 merged and harness baseline reconciled
+
+- **Status:** complete for hosted merge verification and durable-state
+  reconciliation.
+- **Branch:** `main` at `a173931f75a9197812d451cdcd25b86b3ed6ab3a`; local `main` is
+  synchronized with `origin/main`. Documentation reconciliation is prepared on
+  `docs/reconcile-harness-main-state`.
+- **Objective:** Verify that the stacked H8/H9 and curated-skill branches were
+  actually merged, then correct stale roadmap and project-state claims.
+- **Evidence:** GitHub PR #212 is merged; PR #213 is merged with all three
+  hosted workflows successful. No open pull requests remain. PR #213 contains
+  the MCP inspect/replay parity tools, C4 fixtures, C5 routing contract, C6
+  import contract, and H9 fail-closed adoption gate.
+- **Completed:** Fast-forwarded local `main` to `a173931`; updated
+  `PROJECT_STATE.md`, the Agentic Harness roadmap, the curated-skill roadmap,
+  and this watch status to reflect the merged baseline and the remaining H9
+  production-hardening work.
+- **Not completed:** Cross-platform hardening, performance budgets,
+  retention/rollback drills, and independent release-readiness review remain
+  future work; no provider or mutation authority was added.
+- **Next first action:** Audit existing CI and release-readiness workflows to
+  select one bounded H9 hardening slice with explicit evidence.
+
+#### Duty completion checklist
+
+- [x] GitHub merge state verified
+- [x] Local `main` synchronized with `origin/main`
+- [x] Stale durable-state claims corrected
+- [x] No code-quality exception
+- [ ] Documentation reconciliation committed and opened as a PR
 
 ### 2026-08-04, Phase H9 Agentic Harness adoption gate contract & fail-closed mutation enforcement
 

@@ -1,6 +1,6 @@
 # Intentloom Project State
 
-Last verified: 2026-08-03
+Last verified: 2026-08-04
 
 This file records the durable current state of the project. It is not a
 chronological log. Session history and handoff details belong in
@@ -117,20 +117,17 @@ and real consumers justify them.
   discovery, fresh completion verification, and external-skill/plugin review.
   ADR-0051 keeps these as first-party provider-neutral procedures informed by
   pinned external method reviews; no external plugin, hook, telemetry, updater,
-  or runtime dependency is bundled. Structured routing operations and managed
-  external skill import remain later roadmap phases.
+  or runtime dependency is bundled. Structured routing and managed external-skill
+  import contracts are merged through PR #213; optional provider bridges remain
+  deferred.
 - ADR-0052 accepts a first-party provider-neutral Agentic Evaluation and
-  Execution Harness architecture and phased plan. Phases H1-H4 are merged into
-  `main`: versioned protocol contracts, deterministic scenario execution and
-  comparison, isolation adapters, and provider-neutral state/resume/replay
-  contracts. H5-H8 are now also merged into `main`: provider-neutral agent
-  capability and result contracts, deterministic voting, the synthetic scenario
-  corpus, and canonical read-only inspect/replay views. The bounded CLI
-  consumer on `feat/harness-cli-inspect-replay` adds file-based
-  `intentloom harness inspect` and `intentloom harness replay` commands that
-  validate scorecards, constrain inputs to an explicit root, omit raw payloads,
-  and never repeat effects. Real provider/model/CLI-agent adapters, daemon/MCP/
-  UI consumers, certification claims, and mutation remain deferred.
+  Execution Harness architecture and phased plan. Phases H1-H9 and curated-
+  skill phases C4-C6 are merged into `main` through PR #213 (`a173931`). The
+  increment includes read-only CLI and MCP inspect/replay consumers, structured
+  task routing, managed external-skill import normalization, and a fail-closed
+  adoption gate requiring fresh scorecards and approvals. Real provider/model/
+  CLI-agent adapters, certification claims, and effectful mutation remain
+  deferred; H9 production-hardening evidence is the next planned increment.
 
 These statements must be revalidated against code, tags, CI, and Git history
 before a new release or implementation milestone is declared complete.
@@ -198,8 +195,8 @@ before a new release or implementation milestone is declared complete.
 ## Current blockers and unknowns
 
 - Any expansion to bottleneck, performance, causal, actor, repository-reading, persisted, remote, or model-assisted analysis requires a new ADR, specification, and threat review.
-- Current `main` is verified at `bdcc33d` (H8 canonical inspect/replay
-  operations) and tracks `origin/main`.
+- Current `main` is verified at `a173931` (PR #213; H1-H9 and C4-C6 harness
+  contracts) and tracks `origin/main`.
 - npm reports `latest=1.0.2` and `next=1.0.0`, verified 2026-08-02.
 - Workspace packages are synchronized to `1.0.2`; Git tag `v1.0.2` and GitHub
   Release `v1.0.2` point at the verified `192fd05` release commit. The stable
