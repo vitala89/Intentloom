@@ -9,6 +9,9 @@ are not included in the current npm artifact until a later release.
 
 ### Added
 
+- Added Managed Extension Lifecycle implementation plan (`docs/roadmap/MANAGED_EXTENSION_LIFECYCLE_PLAN.md`)
+  detailing Phases E1-E7 for extension governance, pre-adoption inspection,
+  capability delta computation, integrity locking, update discovery, and Graphify integration.
 - Added deterministic Phase H9 Agentic Harness evidence contract test
   (`tests/harness-h9-evidence-contract.test.ts`) composing adoption gate,
   event replay, checkpoint purge, and rollback recovery terminal states.

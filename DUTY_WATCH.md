@@ -9,15 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **PR #216 merged; Phase H9 evidence contract is on `main`** —
-deterministic fixture-backed evidence contract test (`tests/harness-h9-evidence-contract.test.ts`)
-composing adoption gate, event replay, checkpoint purge, and rollback recovery terminal states is merged and verified.
+Status: **Remote branch triage complete; Managed Extension Lifecycle implementation plan added on `docs/extension-lifecycle-roadmap-plan`** — deleted obsolete remote branches `codex/public-readiness-blockers` and `security/intentloomd-lifecycle-design`; created `docs/roadmap/MANAGED_EXTENSION_LIFECYCLE_PLAN.md` detailing Phases E1-E7.
 
-Active branch: `main` at `cec3f45` (PR #216)
+Active branch: `docs/extension-lifecycle-roadmap-plan`
 
-Current objective: Complete documentation reconciliation for merged PR #216.
+Current objective: Open PR for `docs/extension-lifecycle-roadmap-plan` and merge into `main`.
 
-Next first action: Open PR for documentation reconciliation on `docs/reconcile-h9-merged-state` and merge into `main`.
+Next first action: Open PR for `docs/extension-lifecycle-roadmap-plan` and request review.
 
 Known open items, in the order they should be handled:
 
@@ -35,9 +33,7 @@ Known open items, in the order they should be handled:
    crates.io still reports Tauri `2.11.5` as current.
 5. Branch and tag protection rules for `main` and `v*` are not recorded anywhere
    in the repository; `.github/CODEOWNERS` exists to support required review.
-6. Two remote branches remain untriaged: `codex/public-readiness-blockers` and
-   `security/intentloomd-lifecycle-design`. The backup ref
-   `backup/pre-attribution-rewrite` still exists pending explicit deletion.
+6. Legacy remote branches `codex/public-readiness-blockers` and `security/intentloomd-lifecycle-design` triaged and deleted (completed 2026-08-04). Backup ref `backup/pre-attribution-rewrite` remains pending explicit owner deletion.
 
 ## Watch rules
 
@@ -63,6 +59,51 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-04, Remote branch triage & Managed Extension Lifecycle implementation plan
+
+- **Status:** complete for implementation, branch triage, formatting, and local validation; branch `docs/extension-lifecycle-roadmap-plan` is ready for PR.
+- **Branch:** `docs/extension-lifecycle-roadmap-plan`
+- **Objective:** Triage and delete obsolete remote branches (`codex/public-readiness-blockers` and `security/intentloomd-lifecycle-design`) and write the Managed Extension Lifecycle implementation plan (`docs/roadmap/MANAGED_EXTENSION_LIFECYCLE_PLAN.md`).
+- **Completed:** Triaged and deleted obsolete remote/local branches `codex/public-readiness-blockers` and `security/intentloomd-lifecycle-design`. Created `docs/roadmap/MANAGED_EXTENSION_LIFECYCLE_PLAN.md` defining Phases E1-E7 (manifest/lock schemas, pre-adoption inspection, capability delta engine, lockfile resolution, update discovery, doctor diagnostics, safe revocation/rollback, and Graphify knowledge-provider integration). Updated `ROADMAP.md`, `CHANGELOG.md`, and `DUTY_WATCH.md`.
+- **Not completed:** PR creation and merge to `main` remain pending.
+- **Files or packages changed:** `docs/roadmap/MANAGED_EXTENSION_LIFECYCLE_PLAN.md`, `ROADMAP.md`, `CHANGELOG.md`, `DUTY_WATCH.md`.
+- **Validation:** `pnpm format:check`, `pnpm typecheck`, `git diff --check` passed cleanly.
+- **Decisions and assumptions:** Managed extensions remain optional, vendor-neutral, pinned, inspectable, and subject to transactional health checks and fail-closed rollback.
+- **Risks or compatibility impact:** Additive roadmap documentation; no breaking changes or production code modifications.
+- **Next first action:** Open PR for branch `docs/extension-lifecycle-roadmap-plan` and merge into `main`.
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant tests, type checks, builds, or compatibility checks passed
+- [x] Atomic commit policy and commit-message checks passed
+- [x] Repository hooks installed or equivalent commands run
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `PROJECT_STATE.md` updated when applicable
+- [x] `DUTY_WATCH.md` handoff completed
+- [x] Related roadmap, ADR, changelog, migration, or reference docs updated
+- [x] Failed or unavailable checks recorded
+
+### 2026-08-04, PR #217 merged and H9 documentation reconciliation complete
+
+- **Status:** complete; PR #217 squash-merged into `main` (`afe369e`).
+- **Branch:** `main` at `afe369e`; local `main` is synchronized with `origin/main`.
+- **Pull Request:** [#217](https://github.com/vitala89/Intentloom/pull/217)
+- **Objective:** Reconcile `PROJECT_STATE.md` and `DUTY_WATCH.md` after PR #216 merged.
+- **Evidence:** GitHub PR #217 is merged into `main`. All 16 hosted CI matrix jobs (Ubuntu, macOS, Windows × Node 22/24, CodeQL, Governance) passed (`pass`).
+- **Completed:** Synchronized local `main` to `afe369e`; updated `DUTY_WATCH.md` and `PROJECT_STATE.md` to record the merged baseline.
+- **Not completed:** None; H9 evidence contract implementation and documentation reconciliation are complete on `main`.
+- **Next first action:** Select the next approved roadmap milestone.
+
+#### Duty completion checklist
+
+- [x] GitHub merge state verified
+- [x] Local `main` synchronized with `origin/main`
+- [x] Stale durable-state claims corrected
+- [x] No code-quality exception
 
 ### 2026-08-04, PR #216 merged and H9 evidence contract baseline reconciled
 
