@@ -422,7 +422,9 @@ Candidate scope:
 - Introduce provider-specific adapters such as a future Graphify CLI or MCP adapter only after the shared lifecycle and knowledge-provider contract exist.
 
 The planned lifecycle is documented in
-[External Extension Lifecycle](docs/concepts/EXTENSION_LIFECYCLE.md).
+[External Extension Lifecycle](docs/concepts/EXTENSION_LIFECYCLE.md), the
+[Managed Extension Lifecycle Specification](docs/specs/MANAGED_EXTENSION_LIFECYCLE_V0_3_SPEC.md),
+and the [Managed Extension Lifecycle Plan](docs/roadmap/MANAGED_EXTENSION_LIFECYCLE_PLAN.md).
 
 Exit criteria: a fixture extension can be installed or referenced with explicit
 approval, pinned reproducibly, checked for compatibility and legal metadata,
