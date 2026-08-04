@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Remote branch triage complete; Managed Extension Lifecycle implementation plan added on `docs/extension-lifecycle-roadmap-plan`** — deleted obsolete remote branches `codex/public-readiness-blockers` and `security/intentloomd-lifecycle-design`; created `docs/roadmap/MANAGED_EXTENSION_LIFECYCLE_PLAN.md` detailing Phases E1-E7.
+Status: **PR #218 merged; Managed Extension Lifecycle plan & remote branch triage are on `main`** — deleted obsolete remote branches `codex/public-readiness-blockers` and `security/intentloomd-lifecycle-design`; merged `docs/roadmap/MANAGED_EXTENSION_LIFECYCLE_PLAN.md` detailing Phases E1-E7.
 
-Active branch: `docs/extension-lifecycle-roadmap-plan`
+Active branch: `main` at `6eac1ee` (PR #218)
 
-Current objective: Open PR for `docs/extension-lifecycle-roadmap-plan` and merge into `main`.
+Current objective: Select next implementation phase from `MANAGED_EXTENSION_LIFECYCLE_PLAN.md` or read-only evidence hardening gate.
 
-Next first action: Open PR for `docs/extension-lifecycle-roadmap-plan` and request review.
+Next first action: Begin implementation of Phase E2 (Pre-Adoption Inspection & Capability Delta Engine) or read-only evidence hardening follow-ups.
 
 Known open items, in the order they should be handled:
 
