@@ -62,14 +62,15 @@ entry directly below this section.
 
 ### 2026-08-04, Phase E6 Safe Revocation, Removal & Rollback Recovery
 
-- **Status:** implementation in progress on the review branch; no removal PR has been published yet.
+- **Status:** implementation complete on the review branch; no removal PR has been published yet.
 - **Branch:** `feat/extension-safe-removal` from merged `main` commit `56bf4bd` (PR #226).
+- **Commit:** `0c74dae` (`feat(extension): add safe removal and rollback`).
 - **Objective:** Add a provider-neutral preview and explicitly approved removal operation with fail-closed rollback.
 - **Completed:** Added protocol contracts for removal plans, approval, and outcomes; added read-only `previewExtensionRemoval`; added `removeExtension` with explicit injected runtime boundaries, digest-checked extension-owned file deletion, configuration updates, lockfile removal, notice/project-owned retention records, and exact snapshot rollback.
 - **Boundary:** Removal targets must be explicit and project-local; extension-owned deletion is restricted to `.aif/extensions/` and `.aif/extension-state/`; configuration changes are digest-verified under `.aif/`; the lockfile cannot be a removal target; no process execution, network access, or hidden mutation is performed by canonical code.
-- **Validation:** Focused E6, E5, and E4 suites pass (20 tests); typecheck and diff checks pass. Full verification and hosted checks remain pending.
-- **Not completed:** Atomic commits, full verification, documentation review, and draft PR publication remain.
-- **Next first action:** Update the lifecycle specification and project records, then run the verification gate before committing.
+- **Validation:** Focused E6, E5, and E4 suites pass (20 tests); full `pnpm verify` passes with 135 test files and 1013 passed / 3 skipped tests; staged quality checks, typecheck, formatting, build, and diff checks pass.
+- **Not completed:** Draft PR publication and hosted checks remain.
+- **Next first action:** Publish the branch as a draft PR and monitor hosted checks; merge remains maintainer-controlled.
 
 ### 2026-08-04, Phase E5 Doctor Diagnostics & Health Verification
 
