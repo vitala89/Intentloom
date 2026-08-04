@@ -195,8 +195,10 @@ before a new release or implementation milestone is declared complete.
 ## Current blockers and unknowns
 
 - Any expansion to bottleneck, performance, causal, actor, repository-reading, persisted, remote, or model-assisted analysis requires a new ADR, specification, and threat review.
-- Current `main` is verified at `18b6b53` (PR #224; Phase E4 extension update
-  discovery and migration pipeline) and tracks `origin/main`.
+- Current `main` is verified at `653050c` (PR #225; Phase E4 post-merge
+  reconciliation) and tracks `origin/main`.
+- Phase E5 doctor diagnostics and health verification are implemented on
+  `feat/extension-doctor-health` but are not yet merged to `main`.
 - npm reports `latest=1.0.2` and `next=1.0.0`, verified 2026-08-02.
 - Workspace packages are synchronized to `1.0.2`; Git tag `v1.0.2` and GitHub
   Release `v1.0.2` point at the verified `192fd05` release commit. The stable

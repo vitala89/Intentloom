@@ -88,6 +88,17 @@
       "scope": "Project Inception Phase I10",
       "reviewTrigger": "Decompose application index barrel into domain sub-barrels before next feature.",
       "expires": "2026-09-15"
+    },
+    {
+      "path": "packages/application/src/index.ts",
+      "rule": "existing-oversized-growth",
+      "baseLines": 7415,
+      "headLines": 7417,
+      "reason": "Phase E5 wires the extracted extension-health operation into the existing doctor operation and keeps the public application barrel export stable; the new evaluator logic is isolated in focused modules.",
+      "owner": "Application maintainers",
+      "scope": "Phase E5 Doctor Diagnostics & Health Verification",
+      "reviewTrigger": "Decompose the application barrel before the next application operation feature.",
+      "expires": "2026-09-15"
     }
   ]
 }

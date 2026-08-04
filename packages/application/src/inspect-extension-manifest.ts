@@ -25,3 +25,5 @@ export async function inspectExtensionManifest(
     params.environment,
   );
 }
+
+export * from "./extension-health.js";

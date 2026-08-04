@@ -34,6 +34,7 @@ import type {
   ArtifactValidator,
 } from "@intentloom/validator";
 import { validateSkillSet } from "@intentloom/validator";
+import { collectExtensionHealthDoctorFindings } from "./extension-health.js";
 import {
   collectGitEvidence,
   createReleaseTimeline,
@@ -2837,6 +2838,7 @@ export async function doctorProject(
       adapter: null,
       profile: options.profile,
     });
+  findings.push(...(await collectExtensionHealthDoctorFindings(options, fs)));
   if (!findings.some((finding) => finding.severity === "error"))
     findings.push({
       code: "installation-healthy",

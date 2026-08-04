@@ -5,8 +5,10 @@
 Phases E1-E4 are implemented on `main`. Phase E4 Update Discovery & Migration
 Pipeline merged through PR #224 (`18b6b53`) after its Windows portability fix and
 full hosted verification.
-Phases E5-E7 remain the candidate roadmap for doctor diagnostics, safe removal,
-rollback recovery, and provider adapters.
+Phase E5 Doctor Diagnostics & Health Verification is implemented on
+`feat/extension-doctor-health`; review and merge are pending. Phases E6-E7
+remain the candidate roadmap for safe removal, rollback recovery, and provider
+adapters.
 
 ## Outcome
 
@@ -133,7 +135,7 @@ Exit gate:
 
 ## Phase E5: Doctor Diagnostics & Health Verification
 
-Status: candidate; follows Phase E4.
+Status: implemented on `feat/extension-doctor-health`; pending review and merge.
 
 Scope:
 
