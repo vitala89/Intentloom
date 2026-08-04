@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Phase E4 and its post-merge reconciliation are merged into `main` at `653050c`; Phase E5 doctor diagnostics are in PR #226 with all hosted checks passing.**
+Status: **Phase E5 doctor diagnostics are merged into `main` at `56bf4bd`; Phase E6 safe removal and rollback recovery are in implementation on `feat/extension-safe-removal`.**
 
-Active branch: `feat/extension-doctor-health`; base `main` at `653050c`
+Active branch: `feat/extension-safe-removal`; base `main` at `56bf4bd`
 
-Current objective: Monitor and land Phase E5 doctor diagnostics PR #226.
+Current objective: Complete the bounded Phase E6 safe removal and rollback recovery increment.
 
-Next first action: Confirm hosted PR #226 checks, then maintainer review and merge; after merge update `main` state and inspect Phase E6.
+Next first action: Finish local verification for the E6 preview/remove contract, then publish a reviewable draft PR.
 
 Known open items, in the order they should be handled:
 
@@ -59,6 +59,17 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-04, Phase E6 Safe Revocation, Removal & Rollback Recovery
+
+- **Status:** implementation in progress on the review branch; no removal PR has been published yet.
+- **Branch:** `feat/extension-safe-removal` from merged `main` commit `56bf4bd` (PR #226).
+- **Objective:** Add a provider-neutral preview and explicitly approved removal operation with fail-closed rollback.
+- **Completed:** Added protocol contracts for removal plans, approval, and outcomes; added read-only `previewExtensionRemoval`; added `removeExtension` with explicit injected runtime boundaries, digest-checked extension-owned file deletion, configuration updates, lockfile removal, notice/project-owned retention records, and exact snapshot rollback.
+- **Boundary:** Removal targets must be explicit and project-local; extension-owned deletion is restricted to `.aif/extensions/` and `.aif/extension-state/`; configuration changes are digest-verified under `.aif/`; the lockfile cannot be a removal target; no process execution, network access, or hidden mutation is performed by canonical code.
+- **Validation:** Focused E6, E5, and E4 suites pass (20 tests); typecheck and diff checks pass. Full verification and hosted checks remain pending.
+- **Not completed:** Atomic commits, full verification, documentation review, and draft PR publication remain.
+- **Next first action:** Update the lifecycle specification and project records, then run the verification gate before committing.
 
 ### 2026-08-04, Phase E5 Doctor Diagnostics & Health Verification
 
