@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **PR #218 merged; Managed Extension Lifecycle plan & remote branch triage are on `main`** — deleted obsolete remote branches `codex/public-readiness-blockers` and `security/intentloomd-lifecycle-design`; merged `docs/roadmap/MANAGED_EXTENSION_LIFECYCLE_PLAN.md` detailing Phases E1-E7.
+Status: **Phase E2 Pre-Adoption Inspection & Capability Delta Engine implemented on `feat/extension-pre-adoption-inspection`** — implemented `inspectExtensionManifest`, `computeExtensionCapabilityDelta`, `evaluateExtensionCompatibility`, `auditExtensionLicense`, and test suite `tests/extension-inspection.test.ts`.
 
-Active branch: `main` at `6eac1ee` (PR #218)
+Active branch: `feat/extension-pre-adoption-inspection`
 
-Current objective: Select next implementation phase from `MANAGED_EXTENSION_LIFECYCLE_PLAN.md` or read-only evidence hardening gate.
+Current objective: Open PR for `feat/extension-pre-adoption-inspection` and merge into `main`.
 
-Next first action: Begin implementation of Phase E2 (Pre-Adoption Inspection & Capability Delta Engine) or read-only evidence hardening follow-ups.
+Next first action: Open PR for `feat/extension-pre-adoption-inspection` and request review.
 
 Known open items, in the order they should be handled:
 
@@ -59,6 +59,33 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-04, Phase E2 Pre-Adoption Inspection & Capability Delta Engine
+
+- **Status:** complete for implementation, unit tests, formatting, typechecking, and local validation; branch `feat/extension-pre-adoption-inspection` is ready for PR.
+- **Branch:** `feat/extension-pre-adoption-inspection`
+- **Objective:** Implement Phase E2 of the Managed Extension Lifecycle (`docs/roadmap/MANAGED_EXTENSION_LIFECYCLE_PLAN.md`) providing pre-adoption manifest inspection, capability delta calculation, semver runtime compatibility auditing, and SPDX license verification.
+- **Completed:** Created `packages/protocol/src/extension-lifecycle.ts`, `packages/validator/src/extension-inspection.ts`, `packages/application/src/inspect-extension-manifest.ts`, and test suite `tests/extension-inspection.test.ts`. Implemented deterministic semver range evaluation (`satisfiesSemverRange`), capability delta computation (`computeExtensionCapabilityDelta`), SPDX license auditing (`auditExtensionLicense`), and async application operation `inspectExtensionManifest`. Updated `CHANGELOG.md` and `DUTY_WATCH.md`.
+- **Not completed:** PR creation and merge to `main` remain pending.
+- **Files or packages changed:** `packages/protocol/src/extension-lifecycle.ts`, `packages/protocol/src/index.ts`, `packages/validator/src/extension-inspection.ts`, `packages/validator/src/index.ts`, `packages/application/src/inspect-extension-manifest.ts`, `packages/application/src/index.ts`, `tests/extension-inspection.test.ts`, `CHANGELOG.md`, `DUTY_WATCH.md`.
+- **Validation:** `pnpm format:check`, `pnpm typecheck`, `pnpm test tests/extension-inspection.test.ts`, `git diff --check` passed cleanly.
+- **Decisions and assumptions:** Manifest inspection is byte-for-byte read-only, vendor-neutral, and provides structured capability delta and license auditing before any lock state mutation.
+- **Risks or compatibility impact:** Additive protocol types, validator functions, and application operation; zero breaking changes.
+- **Next first action:** Open PR for branch `feat/extension-pre-adoption-inspection` and merge into `main`.
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant tests, type checks, builds, or compatibility checks passed
+- [x] Atomic commit policy and commit-message checks passed
+- [x] Repository hooks installed or equivalent commands run
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `PROJECT_STATE.md` updated when applicable
+- [x] `DUTY_WATCH.md` handoff completed
+- [x] Related roadmap, ADR, changelog, migration, or reference docs updated
+- [x] Failed or unavailable checks recorded
 
 ### 2026-08-04, Remote branch triage & Managed Extension Lifecycle implementation plan
 

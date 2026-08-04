@@ -15,19 +15,15 @@ import {
   WORKFLOW_REPETITION_SUMMARY_METHOD,
   WORKFLOW_TRANSITION_INTERVALS_METHOD,
   SESSION_GET_METHOD,
-  type RequestId,
-  type JsonObject,
-  type JsonRpcRequest,
-  type JsonRpcSuccess,
-  type JsonRpcFailure,
 } from "./jsonrpc.js";
+import type { RequestId, JsonObject, JsonRpcRequest } from "./jsonrpc.js";
+import type { JsonRpcSuccess, JsonRpcFailure } from "./jsonrpc.js";
 
 import type { ClientErrorCode, CapabilityClassification } from "./daemon.js";
 import type { DaemonCapability, DaemonLimits } from "./daemon.js";
 import type { DaemonCompatibility, DaemonInfoParams } from "./daemon.js";
 import type { DaemonInfoResult, DaemonInfoRequest } from "./daemon.js";
 import type { DaemonInfoResponse } from "./daemon.js";
-
 import type { ProjectDiffParams, ProjectDiffChange } from "./diff.js";
 import type { ProjectDiffResult, ProjectDiffRequest } from "./diff.js";
 import type { ProjectDiffResponse } from "./diff.js";
@@ -41,6 +37,7 @@ export * from "./harness.js";
 export * from "./task-routing.js";
 export * from "./external-skill-import.js";
 export * from "./harness-adoption-gate.js";
+export * from "./extension-lifecycle.js";
 export const TIMELINE_DEFAULT_LIMIT = 50;
 export const TIMELINE_MAX_LIMIT = 500;
 export const TIMELINE_DEFAULT_TIMEOUT_MS = 5_000;

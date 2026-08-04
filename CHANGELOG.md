@@ -9,6 +9,10 @@ are not included in the current npm artifact until a later release.
 
 ### Added
 
+- Added Phase E2 Pre-Adoption Inspection & Capability Delta Engine
+  (`inspectExtensionManifest`, `computeExtensionCapabilityDelta`,
+  `evaluateExtensionCompatibility`, `auditExtensionLicense`) and suite
+  `tests/extension-inspection.test.ts`.
 - Added Managed Extension Lifecycle implementation plan (`docs/roadmap/MANAGED_EXTENSION_LIFECYCLE_PLAN.md`)
   detailing Phases E1-E7 for extension governance, pre-adoption inspection,
   capability delta computation, integrity locking, update discovery, and Graphify integration.

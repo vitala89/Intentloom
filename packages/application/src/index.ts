@@ -7375,7 +7375,6 @@ export interface LocalWorkspaceSyncState {
   readonly subagentTasksCount: number;
   readonly syncedAt: string;
 }
-
 export async function syncLocalWorkspaceState(
   options: { root: string; projectId?: string },
   fs: FileSystem = nodeFileSystem,
@@ -7413,3 +7412,4 @@ export * from "./inception-actions.js";
 export * from "./inception-flow.js";
 export * from "./inception-templates.js";
 export * from "./harness.js";
+export * from "./inspect-extension-manifest.js";
