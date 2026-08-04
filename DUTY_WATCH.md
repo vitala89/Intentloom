@@ -9,13 +9,15 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **PR #216 open on `test/h9-evidence-contract`** — Phase H9 deterministic evidence contract test implemented, verified, pushed, and opened as PR #216.
+Status: **PR #216 merged; Phase H9 evidence contract is on `main`** —
+deterministic fixture-backed evidence contract test (`tests/harness-h9-evidence-contract.test.ts`)
+composing adoption gate, event replay, checkpoint purge, and rollback recovery terminal states is merged and verified.
 
-Active branch: `test/h9-evidence-contract`
+Active branch: `main` at `cec3f45` (PR #216)
 
-Current objective: Review and merge PR #216 when authorized by maintainer.
+Current objective: Complete documentation reconciliation for merged PR #216.
 
-Next first action: Review hosted CI for PR #216 and merge when authorized.
+Next first action: Open PR for documentation reconciliation on `docs/reconcile-h9-merged-state` and merge into `main`.
 
 Known open items, in the order they should be handled:
 
@@ -62,19 +64,36 @@ entry directly below this section.
 
 ## Watch entries
 
+### 2026-08-04, PR #216 merged and H9 evidence contract baseline reconciled
+
+- **Status:** complete for GitHub merge verification and durable-state reconciliation.
+- **Branch:** `main` at `cec3f45`; local `main` is synchronized with `origin/main`.
+- **Objective:** Verify that PR #216 merged cleanly, all hosted CI jobs passed, and update project records.
+- **Evidence:** GitHub PR #216 is merged into `main` (`cec3f45`). All 16 hosted CI matrix jobs (Ubuntu, macOS, Windows × Node 22/24, CodeQL, Governance) passed (`pass`).
+- **Completed:** Synchronized local `main` to `cec3f45`; updated `DUTY_WATCH.md` and `PROJECT_STATE.md` to reflect the merged H9 deterministic evidence contract baseline.
+- **Not completed:** Future performance benchmark suite remains separate work.
+- **Next first action:** Open PR for documentation reconciliation branch `docs/reconcile-h9-merged-state`.
+
+#### Duty completion checklist
+
+- [x] GitHub merge state verified
+- [x] Local `main` synchronized with `origin/main`
+- [x] Stale durable-state claims corrected
+- [x] No code-quality exception
+
 ### 2026-08-04, Phase H9 deterministic evidence contract test
 
-- **Status:** complete for implementation, local validation, formatting, push, and PR creation; PR #216 is open.
+- **Status:** complete for implementation, local validation, formatting, push, and PR creation; PR #216 is merged.
 - **Branch:** `test/h9-evidence-contract`
 - **Pull Request:** [#216](https://github.com/vitala89/Intentloom/pull/216)
 - **Objective:** Add a deterministic, fixture-backed Phase H9 evidence contract test composing adoption gate, event replay, checkpoint purge, and rollback recovery terminal states (`docs/roadmap/AGENTIC_HARNESS_H9_AUDIT.md`).
-- **Completed:** Created `tests/harness-h9-evidence-contract.test.ts` with versioned H9 fixtures (`H9_PASSING_SCORECARD`, `H9_FAILING_SCORECARD`, `H9_DRILL_SCENARIO`, `H9_DRILL_REQUEST`), adoption gate fail-closed verification, state replay, cross-project resume rejection, checkpoint purge, and composed terminal state matrix assertions. Updated `CHANGELOG.md` and `DUTY_WATCH.md`. Pushed branch `test/h9-evidence-contract` to `origin` and opened PR #216.
-- **Not completed:** Merge to `main` remains pending hosted CI and maintainer review.
+- **Completed:** Created `tests/harness-h9-evidence-contract.test.ts` with versioned H9 fixtures (`H9_PASSING_SCORECARD`, `H9_FAILING_SCORECARD`, `H9_DRILL_SCENARIO`, `H9_DRILL_REQUEST`), adoption gate fail-closed verification, state replay, cross-project resume rejection, checkpoint purge, and composed terminal state matrix assertions. Updated `CHANGELOG.md` and `DUTY_WATCH.md`. Pushed branch `test/h9-evidence-contract` to `origin` and merged PR #216.
+- **Not completed:** None; PR #216 is merged and verified.
 - **Files or packages changed:** `tests/harness-h9-evidence-contract.test.ts`, `CHANGELOG.md`, `DUTY_WATCH.md`.
-- **Validation:** `pnpm test tests/harness-h9-evidence-contract.test.ts` passed (6/6 tests); `pnpm format:check`, `pnpm typecheck`, `git diff --check` passed cleanly; `pnpm verify` pre-push validation passed (130/130 test files, 980 passed).
+- **Validation:** `pnpm test tests/harness-h9-evidence-contract.test.ts` passed (6/6 tests); `pnpm format:check`, `pnpm typecheck`, `git diff --check` passed cleanly; `pnpm verify` pre-push validation passed (130/130 test files, 980 passed). Hosted CI passed 16/16 jobs.
 - **Decisions and assumptions:** The evidence contract uses pure deterministic fixtures and in-memory state stores; no wall-clock timing or external network/process capabilities are introduced.
 - **Risks or compatibility impact:** Additive test coverage; no breaking changes or production API modifications.
-- **Next first action:** Monitor hosted CI for PR #216 and merge into `main` when authorized.
+- **Next first action:** Complete documentation reconciliation for merged PR #216.
 
 #### Duty completion checklist
 

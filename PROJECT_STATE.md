@@ -454,8 +454,9 @@ Evaluation and Execution Harness described by ADR-0052. Its H0 decision,
 specification, source provenance, threat boundary, and phased roadmap are
 accepted; H1-H9 implementation slices and C1-C6 curated skill adaptation phases
 are complete. Curated-skill C4 dogfooding fixtures, C5 structured task routing,
-C6 managed external skill import normalization, and H9 adoption gate fail-closed
-enforcement are implemented, tested, and committed on dedicated feature branches.
+C6 managed external skill import normalization, H9 adoption gate fail-closed
+enforcement, and H9 deterministic evidence contract tests are merged into `main`
+through PR #213 (`a173931`), PR #214 (`8a1ce50`), and PR #216 (`cec3f45`).
 
 The current implementation increment, merged through PR #173 as `341984a`, adds
 bounded GitHub/GitLab pagination and deterministic rate-limit diagnostics to the
