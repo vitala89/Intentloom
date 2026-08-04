@@ -195,11 +195,10 @@ before a new release or implementation milestone is declared complete.
 ## Current blockers and unknowns
 
 - Any expansion to bottleneck, performance, causal, actor, repository-reading, persisted, remote, or model-assisted analysis requires a new ADR, specification, and threat review.
-- Current `main` is verified at `d65e735` (PR #227; Phase E6 merge) and tracks
+- Current `main` is verified at `8d4eed5` (PR #229; Phase E7 merge) and tracks
   `origin/main`.
-- Phase E5 doctor diagnostics and health verification, and Phase E6 safe
-  revocation, removal, and rollback recovery, are merged to `main`. Phase E7
-  provider-adapter boundaries remain a candidate increment.
+- Phase E5 doctor diagnostics, Phase E6 safe revocation and removal, and
+  Phase E7 knowledge-provider & adapter-pack boundaries are merged to `main`.
 - npm reports `latest=1.0.2` and `next=1.0.0`, verified 2026-08-02.
 - Workspace packages are synchronized to `1.0.2`; Git tag `v1.0.2` and GitHub
   Release `v1.0.2` point at the verified `192fd05` release commit. The stable
@@ -463,14 +462,15 @@ through PR #213 (`a173931`), PR #214 (`8a1ce50`), and PR #216 (`cec3f45`).
 
 The Managed Extension Lifecycle roadmap plan (`docs/roadmap/MANAGED_EXTENSION_LIFECYCLE_PLAN.md`),
 Phase E2 Pre-Adoption Inspection & Capability Delta Engine (`inspectExtensionManifest`,
-`computeExtensionCapabilityDelta`, `evaluateExtensionCompatibility`, `auditExtensionLicense`), and
+`computeExtensionCapabilityDelta`, `evaluateExtensionCompatibility`, `auditExtensionLicense`),
 Phase E3 Transactional Resolution & Lockfile Management (`resolveExtensionAdoptionProposal`,
-`applyExtensionAdoptionPlan`, `proposeExtensionAdoption`, `applyExtensionAdoption`)
-and Phase E4 Update Discovery & Migration Pipeline (`discoverExtensionUpdatePlans`,
-`discoverExtensionUpdates`, `applyExtensionUpdate`), and Phase E5 Doctor Diagnostics
-(`checkExtensionHealth`, `doctorProject`) are merged into `main` through PR #218
-(`6eac1ee`), PR #220 (`af7b6e5`), PR #222 (`649f7ae`), PR #224 (`18b6b53`),
-PR #226 (`56bf4bd`), and PR #227 (`d65e735`).
+`applyExtensionAdoptionPlan`, `proposeExtensionAdoption`, `applyExtensionAdoption`),
+Phase E4 Update Discovery & Migration Pipeline (`discoverExtensionUpdatePlans`,
+`discoverExtensionUpdates`, `applyExtensionUpdate`), Phase E5 Doctor Diagnostics
+(`checkExtensionHealth`, `doctorProject`), Phase E6 Safe Removal (`removeExtension`),
+and Phase E7 Knowledge-Provider Boundaries (`queryKnowledgeProvider`, `GraphifyKnowledgeAdapter`)
+are merged into `main` through PR #218 (`6eac1ee`), PR #220 (`af7b6e5`), PR #222 (`649f7ae`),
+PR #224 (`18b6b53`), PR #226 (`56bf4bd`), PR #227 (`d65e735`), and PR #229 (`8d4eed5`).
 
 The current implementation increment, merged through PR #173 as `341984a`, adds
 bounded GitHub/GitLab pagination and deterministic rate-limit diagnostics to the
