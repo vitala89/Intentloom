@@ -62,14 +62,14 @@ entry directly below this section.
 
 ### 2026-08-04, Phase E6 post-merge reconciliation
 
-- **Status:** in progress on the documentation branch; PR #227 is merged into `main`.
-- **Branch:** `docs/reconcile-phase-e6-merge` from `main` at merge commit `d65e735`.
-- **Pull request:** [#227](https://github.com/vitala89/Intentloom/pull/227), merged 2026-08-04.
+- **Status:** complete on the documentation branch; draft PR #228 is open with all hosted checks passing.
+- **Branch:** `docs/reconcile-phase-e6-merge` at `25ddf02`, from `main` merge commit `d65e735`.
+- **Pull request:** [#228](https://github.com/vitala89/Intentloom/pull/228), draft.
 - **Objective:** Reconcile project state, roadmap, lifecycle plan, and handoff records after the Phase E6 merge.
 - **Completed:** Confirmed the squash merge, fast-forwarded local `main`, marked E6 merged, and kept E7 as a candidate provider-adapter increment requiring its own reviewed contract.
-- **Validation:** Merge state and `origin/main` were verified with Git history and GitHub PR metadata; documentation-only validation remains before publication.
-- **Not completed:** Reconciliation commit, draft PR publication, hosted checks, and maintainer merge remain.
-- **Next first action:** Run documentation quality checks, commit the reconciliation, and publish a draft PR.
+- **Validation:** Merge state and `origin/main` were verified with Git history and GitHub PR metadata; staged documentation checks, pre-push `pnpm verify` (135 test files, 1013 passed / 3 skipped), and all hosted PR checks pass.
+- **Not completed:** Maintainer review and merge remain. No Phase E7 implementation or release was inferred.
+- **Next first action:** Maintainer reviews and merges PR #228; after merge inspect Phase E7 specification and ADR boundaries before implementation.
 
 ### 2026-08-04, Phase E6 PR publication and hosted verification
 
