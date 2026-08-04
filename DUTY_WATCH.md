@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Phase E5 doctor diagnostics are merged into `main` at `56bf4bd`; Phase E6 safe removal and rollback recovery are in implementation on `feat/extension-safe-removal`.**
+Status: **Phase E5 doctor diagnostics are merged into `main` at `56bf4bd`; Phase E6 safe removal and rollback recovery are in draft PR #227 with all hosted checks passing.**
 
 Active branch: `feat/extension-safe-removal`; base `main` at `56bf4bd`
 
-Current objective: Complete the bounded Phase E6 safe removal and rollback recovery increment.
+Current objective: Hand the verified Phase E6 increment to the maintainer for review and merge.
 
-Next first action: Finish local verification for the E6 preview/remove contract, then publish a reviewable draft PR.
+Next first action: Maintainer reviews and merges PR #227; after merge reconcile `main` and inspect Phase E7.
 
 Known open items, in the order they should be handled:
 
@@ -59,6 +59,17 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-04, Phase E6 PR publication and hosted verification
+
+- **Status:** complete on the review branch; draft PR #227 is open and all hosted checks pass.
+- **Branch:** `feat/extension-safe-removal`, head `1ef99f6`, based on merged `main` commit `56bf4bd`.
+- **Pull request:** [#227](https://github.com/vitala89/Intentloom/pull/227), draft.
+- **Objective:** Publish the verified Phase E6 safe removal and rollback increment for maintainer review.
+- **Completed:** Pushed the implementation and Duty Watch handoff, opened the draft PR, and confirmed Analyze, CodeQL, Governance, and Ubuntu/macOS/Windows Node 22/24 checks are successful.
+- **Validation:** Pre-push `pnpm verify` passed with 135 test files and 1013 passed / 3 skipped tests; the hosted PR checks also pass.
+- **Not completed:** Maintainer review/merge and post-merge `main` reconciliation remain. No Phase E7 implementation or release was inferred.
+- **Next first action:** Maintainer reviews and merges PR #227, then update durable state to the merge commit.
 
 ### 2026-08-04, Phase E6 Safe Revocation, Removal & Rollback Recovery
 
