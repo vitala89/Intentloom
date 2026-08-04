@@ -9,19 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **PR #214 merged; H1-H9 and C4-C6 harness contracts are on `main`** —
-read-only CLI/MCP consumers, structured routing, managed external-skill
-normalization, and fail-closed adoption enforcement are merged and locally
-verified. The H9 CI/release-readiness audit is recorded; a deterministic
-fixture-backed evidence contract is the next focus.
+Status: **PR #216 open on `test/h9-evidence-contract`** — Phase H9 deterministic evidence contract test implemented, verified, pushed, and opened as PR #216.
 
-Active branch: `docs/h9-hardening-audit`
+Active branch: `test/h9-evidence-contract`
 
-Current objective: Record the H9 hardening audit and prepare the bounded
-fixture-backed evidence contract for review.
+Current objective: Review and merge PR #216 when authorized by maintainer.
 
-Next first action: Add the deterministic H9 evidence contract test described in
-`docs/roadmap/AGENTIC_HARNESS_H9_AUDIT.md`.
+Next first action: Review hosted CI for PR #216 and merge when authorized.
 
 Known open items, in the order they should be handled:
 
@@ -67,6 +61,34 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-04, Phase H9 deterministic evidence contract test
+
+- **Status:** complete for implementation, local validation, formatting, push, and PR creation; PR #216 is open.
+- **Branch:** `test/h9-evidence-contract`
+- **Pull Request:** [#216](https://github.com/vitala89/Intentloom/pull/216)
+- **Objective:** Add a deterministic, fixture-backed Phase H9 evidence contract test composing adoption gate, event replay, checkpoint purge, and rollback recovery terminal states (`docs/roadmap/AGENTIC_HARNESS_H9_AUDIT.md`).
+- **Completed:** Created `tests/harness-h9-evidence-contract.test.ts` with versioned H9 fixtures (`H9_PASSING_SCORECARD`, `H9_FAILING_SCORECARD`, `H9_DRILL_SCENARIO`, `H9_DRILL_REQUEST`), adoption gate fail-closed verification, state replay, cross-project resume rejection, checkpoint purge, and composed terminal state matrix assertions. Updated `CHANGELOG.md` and `DUTY_WATCH.md`. Pushed branch `test/h9-evidence-contract` to `origin` and opened PR #216.
+- **Not completed:** Merge to `main` remains pending hosted CI and maintainer review.
+- **Files or packages changed:** `tests/harness-h9-evidence-contract.test.ts`, `CHANGELOG.md`, `DUTY_WATCH.md`.
+- **Validation:** `pnpm test tests/harness-h9-evidence-contract.test.ts` passed (6/6 tests); `pnpm format:check`, `pnpm typecheck`, `git diff --check` passed cleanly; `pnpm verify` pre-push validation passed (130/130 test files, 980 passed).
+- **Decisions and assumptions:** The evidence contract uses pure deterministic fixtures and in-memory state stores; no wall-clock timing or external network/process capabilities are introduced.
+- **Risks or compatibility impact:** Additive test coverage; no breaking changes or production API modifications.
+- **Next first action:** Monitor hosted CI for PR #216 and merge into `main` when authorized.
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant tests, type checks, builds, or compatibility checks passed
+- [x] Atomic commit policy and commit-message checks passed
+- [x] Repository hooks installed or equivalent commands run
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `PROJECT_STATE.md` updated when applicable
+- [x] `DUTY_WATCH.md` handoff completed
+- [x] Related roadmap, ADR, changelog, migration, or reference docs updated
+- [x] Failed or unavailable checks recorded
 
 ### 2026-08-04, H9 CI and release-readiness hardening audit
 
