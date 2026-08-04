@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **PR #224 has a bounded cross-platform test fix applied; fresh verification and hosted CI are pending** — the symlink test mock now normalizes path separators before matching the extension-owned directory.
+Status: **PR #224 has the Windows test fix applied and all hosted checks passing** — the symlink test mock now normalizes path separators before matching the extension-owned directory; review and merge remain maintainer-controlled.
 
 Active branch: `feat/extension-update-pipeline`; implementation commit `ee58517`; PR #224
 
-Current objective: Complete fresh local verification, push the test-only correction, and re-observe hosted CI.
+Current objective: Hand off PR #224 for maintainer review and merge.
 
-Next first action: Run staged and full verification, then push the test-only correction and confirm PR #224 checks.
+Next first action: Maintainer reviews and merges PR #224; do not update `PROJECT_STATE.md` until the merge lands on `main`.
 
 Known open items, in the order they should be handled:
 
@@ -68,6 +68,15 @@ entry directly below this section.
 - **Completed:** Updated `tests/extension-update.test.ts` so the mocked symbolic-link path normalizes Windows backslashes to POSIX separators before checking the `.aif/extensions` suffix.
 - **Validation:** Prettier check and the focused extension-update suite passed (10/10). `pnpm verify:staged` passed for both changed files. Full verification passed with typecheck, format check, 133/133 test files, 1003 passed, 3 skipped, build, and diff checks.
 - **Next first action:** Commit the test-only correction with this handoff, push, and re-observe PR #224.
+
+### 2026-08-04, Phase E4 hosted CI recheck
+
+- **Status:** complete; the bounded test-only correction is pushed and all required hosted checks pass.
+- **Branch:** `feat/extension-update-pipeline` at `06a87dc`; PR #224.
+- **Objective:** Verify that the Windows symlink regression is resolved without changing production behavior.
+- **Completed:** Pushed the normalized-path test mock and updated the Duty Watch handoff.
+- **Validation:** Local focused suite passed (10/10), `pnpm verify:staged` passed, full `pnpm verify` and pre-push verification passed (133/133 test files, 1003 passed, 3 skipped, typecheck, format, build, and diff checks). Hosted Compatibility passed on macOS, Ubuntu, and Windows for Node 22 and 24; Desktop SEA Feasibility, CodeQL, and Governance also passed.
+- **Next first action:** Maintainer review and merge of PR #224. `PROJECT_STATE.md` remains unchanged until Phase E4 reaches `main`.
 
 ### 2026-08-04, Phase E4 Extension Update Discovery & Migration Pipeline
 
