@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Phase E3 Transactional Extension Resolution & Lockfile Management implemented on `feat/extension-transactional-resolution`** — implemented `resolveExtensionAdoptionProposal`, `applyExtensionAdoptionPlan`, `proposeExtensionAdoption`, `applyExtensionAdoption`, and test suite `tests/extension-resolution.test.ts`.
+Status: **PR #222 merged; Phase E3 Transactional Resolution & Lockfile Management is on `main`** — `resolveExtensionAdoptionProposal`, `applyExtensionAdoptionPlan`, `proposeExtensionAdoption`, `applyExtensionAdoption`, and test suite `tests/extension-resolution.test.ts` are merged into `main` (`649f7ae`).
 
-Active branch: `feat/extension-transactional-resolution`
+Active branch: `main` at `649f7ae` (PR #222)
 
-Current objective: Open PR for `feat/extension-transactional-resolution` and merge into `main`.
+Current objective: Select next implementation phase from `MANAGED_EXTENSION_LIFECYCLE_PLAN.md` (Phase E4: Update Discovery & Migration Pipeline) or read-only evidence hardening gate.
 
-Next first action: Open PR for `feat/extension-transactional-resolution` and request review.
+Next first action: Review Phase E4 candidate scope or read-only evidence hardening gate.
 
 Known open items, in the order they should be handled:
 
