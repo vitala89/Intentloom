@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Phase E2 Pre-Adoption Inspection & Capability Delta Engine implemented on `feat/extension-pre-adoption-inspection`** — implemented `inspectExtensionManifest`, `computeExtensionCapabilityDelta`, `evaluateExtensionCompatibility`, `auditExtensionLicense`, and test suite `tests/extension-inspection.test.ts`.
+Status: **PR #220 merged; Phase E2 Pre-Adoption Inspection & Capability Delta Engine is on `main`** — `inspectExtensionManifest`, `computeExtensionCapabilityDelta`, `evaluateExtensionCompatibility`, `auditExtensionLicense`, and test suite `tests/extension-inspection.test.ts` are merged into `main` (`af7b6e5`).
 
-Active branch: `feat/extension-pre-adoption-inspection`
+Active branch: `main` at `af7b6e5` (PR #220)
 
-Current objective: Open PR for `feat/extension-pre-adoption-inspection` and merge into `main`.
+Current objective: Select next implementation phase from `MANAGED_EXTENSION_LIFECYCLE_PLAN.md` (Phase E3: Transactional Resolution & Lockfile Management) or read-only evidence hardening gate.
 
-Next first action: Open PR for `feat/extension-pre-adoption-inspection` and request review.
+Next first action: Review Phase E3 candidate scope or read-only evidence hardening gate.
 
 Known open items, in the order they should be handled:
 

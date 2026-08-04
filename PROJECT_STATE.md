@@ -458,6 +458,11 @@ C6 managed external skill import normalization, H9 adoption gate fail-closed
 enforcement, and H9 deterministic evidence contract tests are merged into `main`
 through PR #213 (`a173931`), PR #214 (`8a1ce50`), and PR #216 (`cec3f45`).
 
+The Managed Extension Lifecycle roadmap plan (`docs/roadmap/MANAGED_EXTENSION_LIFECYCLE_PLAN.md`)
+and Phase E2 Pre-Adoption Inspection & Capability Delta Engine (`inspectExtensionManifest`,
+`computeExtensionCapabilityDelta`, `evaluateExtensionCompatibility`, `auditExtensionLicense`)
+are merged into `main` through PR #218 (`6eac1ee`) and PR #220 (`af7b6e5`).
+
 The current implementation increment, merged through PR #173 as `341984a`, adds
 bounded GitHub/GitLab pagination and deterministic rate-limit diagnostics to the
 live provider boundary. Its focused and full regression suites are green; the
