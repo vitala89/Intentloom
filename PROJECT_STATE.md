@@ -195,8 +195,8 @@ before a new release or implementation milestone is declared complete.
 ## Current blockers and unknowns
 
 - Any expansion to bottleneck, performance, causal, actor, repository-reading, persisted, remote, or model-assisted analysis requires a new ADR, specification, and threat review.
-- Current `main` is verified at `a173931` (PR #213; H1-H9 and C4-C6 harness
-  contracts) and tracks `origin/main`.
+- Current `main` is verified at `18b6b53` (PR #224; Phase E4 extension update
+  discovery and migration pipeline) and tracks `origin/main`.
 - npm reports `latest=1.0.2` and `next=1.0.0`, verified 2026-08-02.
 - Workspace packages are synchronized to `1.0.2`; Git tag `v1.0.2` and GitHub
   Release `v1.0.2` point at the verified `192fd05` release commit. The stable
@@ -463,7 +463,9 @@ Phase E2 Pre-Adoption Inspection & Capability Delta Engine (`inspectExtensionMan
 `computeExtensionCapabilityDelta`, `evaluateExtensionCompatibility`, `auditExtensionLicense`), and
 Phase E3 Transactional Resolution & Lockfile Management (`resolveExtensionAdoptionProposal`,
 `applyExtensionAdoptionPlan`, `proposeExtensionAdoption`, `applyExtensionAdoption`)
-are merged into `main` through PR #218 (`6eac1ee`), PR #220 (`af7b6e5`), and PR #222 (`649f7ae`).
+and Phase E4 Update Discovery & Migration Pipeline (`discoverExtensionUpdatePlans`,
+`discoverExtensionUpdates`, `applyExtensionUpdate`) are merged into `main` through PR #218
+(`6eac1ee`), PR #220 (`af7b6e5`), PR #222 (`649f7ae`), and PR #224 (`18b6b53`).
 
 The current implementation increment, merged through PR #173 as `341984a`, adds
 bounded GitHub/GitLab pagination and deterministic rate-limit diagnostics to the

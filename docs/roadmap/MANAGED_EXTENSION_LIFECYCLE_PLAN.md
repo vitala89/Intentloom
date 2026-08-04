@@ -2,9 +2,9 @@
 
 ## Status
 
-Phases E1-E3 are implemented on `main`. Phase E4 Update Discovery & Migration
-Pipeline is implemented on `feat/extension-update-pipeline` in PR #224 and
-pending review.
+Phases E1-E4 are implemented on `main`. Phase E4 Update Discovery & Migration
+Pipeline merged through PR #224 (`18b6b53`) after its Windows portability fix and
+full hosted verification.
 Phases E5-E7 remain the candidate roadmap for doctor diagnostics, safe removal,
 rollback recovery, and provider adapters.
 
@@ -99,8 +99,8 @@ Exit gate:
 
 ## Phase E4: Update Discovery & Migration Pipeline
 
-Status: implemented on `feat/extension-update-pipeline` in PR #224; pending
-review and merge.
+Status: complete on `main` through PR #224 (`18b6b53`); Windows portability and
+hosted compatibility verification are complete.
 
 Scope:
 

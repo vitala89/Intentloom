@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **PR #224 has the Windows test fix applied and all hosted checks passing** — the symlink test mock now normalizes path separators before matching the extension-owned directory; review and merge remain maintainer-controlled.
+Status: **Phase E4 is merged into `main` at `18b6b53`; post-merge reconciliation is in draft PR #225** — all PR #225 checks currently pass, and its review/merge remains pending.
 
-Active branch: `feat/extension-update-pipeline`; implementation commit `ee58517`; PR #224
+Active branch: `docs/reconcile-phase-e4-merge`; merge commit `18b6b53`; PR #224
 
-Current objective: Hand off PR #224 for maintainer review and merge.
+Current objective: Land the post-merge reconciliation records, then hand off the next roadmap action.
 
-Next first action: Maintainer reviews and merges PR #224; do not update `PROJECT_STATE.md` until the merge lands on `main`.
+Next first action: Maintainer reviews and merges draft PR #225; then inspect Phase E5 doctor diagnostics scope and its required specification, ADR, tests, and security boundaries before implementation.
 
 Known open items, in the order they should be handled:
 
@@ -59,6 +59,27 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-04, Phase E4 post-merge reconciliation
+
+- **Status:** complete; PR #224 is merged into `main`.
+- **Branch:** `docs/reconcile-phase-e4-merge` from `main` at merge commit `18b6b53`.
+- **Pull request:** [#224](https://github.com/vitala89/Intentloom/pull/224), merged 2026-08-04.
+- **Objective:** Reconcile durable project and roadmap records after the Phase E4 merge.
+- **Completed:** Confirmed the squash merge commit, fast-forwarded local `main` to `origin/main`, and updated `PROJECT_STATE.md`, `ROADMAP.md`, `docs/roadmap/MANAGED_EXTENSION_LIFECYCLE_PLAN.md`, and this handoff to record Phase E4 as merged.
+- **Validation:** PR #224 hosted checks all passed, including Compatibility on Ubuntu/macOS/Windows Node 22/24, Desktop SEA Feasibility, CodeQL, and Governance. Local branch was clean before documentation changes.
+- **Not completed:** Phase E5 doctor diagnostics, Phase E6 safe removal/revocation, and Phase E7 provider adapters remain roadmap candidates. No release, tag, or npm publication was inferred.
+- **Next first action:** Inspect the Phase E5 specification and relevant ADR/security boundaries, then propose the smallest bounded doctor-diagnostics increment before implementation.
+
+### 2026-08-04, Phase E4 reconciliation PR publication
+
+- **Status:** partial; draft PR #225 is published with all current hosted checks passing, but maintainer merge remains pending.
+- **Branch:** `docs/reconcile-phase-e4-merge` at `145e1bb`, based on merged `main` commit `18b6b53`.
+- **Pull request:** [#225](https://github.com/vitala89/Intentloom/pull/225), draft.
+- **Objective:** Publish the durable post-merge state reconciliation for Phase E4.
+- **Completed:** Pushed the documentation branch and opened the draft PR with `PROJECT_STATE.md`, `ROADMAP.md`, the managed lifecycle plan, and Duty Watch updates.
+- **Validation:** Pre-push `pnpm verify` passed (133/133 test files, 1003 passed, 3 skipped, typecheck, format, build, and diff checks). PR #225 Compatibility, CodeQL, and Governance checks passed.
+- **Next first action:** Maintainer reviews and merges PR #225; no Phase E5 implementation should begin until the reconciliation lands on `main`.
 
 ### 2026-08-04, Phase E4 Windows test portability correction
 
