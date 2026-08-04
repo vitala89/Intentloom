@@ -806,14 +806,7 @@ export function validateCanonicalReferences(
     }));
 }
 
-export interface ExtensionCapabilities {
-  readonly filesystem?: {
-    readonly read?: readonly string[];
-    readonly write?: readonly string[];
-  };
-  readonly process?: { readonly exec?: readonly string[] };
-  readonly network?: { readonly connect?: readonly string[] };
-}
+import type { ExtensionCapabilities } from "@intentloom/protocol";
 
 export function validateExtensionCapabilityGrant(
   requested: ExtensionCapabilities | undefined,
@@ -865,7 +858,6 @@ export function validateExtensionCapabilityGrant(
       });
     }
   }
-
   return diagnostics;
 }
 export * from "./extension.js";
@@ -875,3 +867,4 @@ export * from "./inception.js";
 export * from "./task-routing.js";
 export * from "./external-skill-import.js";
 export * from "./harness-adoption-gate.js";
+export * from "./extension-inspection.js";

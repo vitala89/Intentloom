@@ -1,0 +1,138 @@
+export type ExtensionCategory =
+  | "skill"
+  | "mcp-server"
+  | "knowledge-provider"
+  | "adapter-pack"
+  | "policy-pack"
+  | "daemon-integration";
+
+export interface ExtensionFilesystemCapabilities {
+  readonly read?: readonly string[];
+  readonly write?: readonly string[];
+}
+
+export interface ExtensionProcessCapabilities {
+  readonly exec?: readonly string[];
+}
+
+export interface ExtensionNetworkCapabilities {
+  readonly connect?: readonly string[];
+}
+
+export interface ExtensionCapabilities {
+  readonly filesystem?: ExtensionFilesystemCapabilities;
+  readonly process?: ExtensionProcessCapabilities;
+  readonly network?: ExtensionNetworkCapabilities;
+}
+
+export interface ExtensionPublisher {
+  readonly name: string;
+  readonly url?: string;
+}
+
+export interface ExtensionSource {
+  readonly registry: string;
+  readonly package: string;
+  readonly resolved?: string;
+}
+
+export interface ExtensionCompatibility {
+  readonly intentloomCore: string;
+  readonly node?: string;
+  readonly os?: readonly string[];
+  readonly arch?: readonly string[];
+}
+
+export interface ExtensionLicense {
+  readonly spdxId: string;
+  readonly licenseFile?: string;
+  readonly noticeRequired?: boolean;
+  readonly noticeFile?: string;
+}
+
+export interface ExtensionEntrypoint {
+  readonly type: string;
+  readonly command?: string;
+  readonly args?: readonly string[];
+}
+
+export interface ExtensionManifest {
+  readonly $schema?: string;
+  readonly extensionId: string;
+  readonly name: string;
+  readonly category: ExtensionCategory;
+  readonly version: string;
+  readonly publisher: ExtensionPublisher;
+  readonly source?: ExtensionSource;
+  readonly compatibility: ExtensionCompatibility;
+  readonly license: ExtensionLicense;
+  readonly capabilities: ExtensionCapabilities;
+  readonly entrypoint: ExtensionEntrypoint;
+  readonly updateChannel?: string;
+  readonly installationType?:
+    "bundled" | "downloaded" | "externally-installed" | "referenced";
+  readonly configSchema?: string;
+}
+
+export interface ExtensionLockEntry {
+  readonly extensionId: string;
+  readonly category: ExtensionCategory;
+  readonly requestedVersion: string;
+  readonly resolvedVersion: string;
+  readonly source?: ExtensionSource;
+  readonly integrity?: string;
+  readonly manifestSchemaVersion?: string;
+  readonly grantedCapabilities: ExtensionCapabilities;
+  readonly license?: ExtensionLicense;
+  readonly configDigest?: string;
+  readonly approvedAt: string;
+  readonly approvedBy: string;
+  readonly lastHealthCheck?: string;
+  readonly pendingMigration?: boolean;
+  readonly installationType?: string;
+}
+
+export interface ExtensionLockfile {
+  readonly lockVersion: number;
+  readonly updatedAt: string;
+  readonly extensions: Record<string, ExtensionLockEntry>;
+}
+
+export interface ExtensionCapabilityDelta {
+  readonly filesystemReadAdded: readonly string[];
+  readonly filesystemWriteAdded: readonly string[];
+  readonly processExecAdded: readonly string[];
+  readonly networkConnectAdded: readonly string[];
+  readonly hasExpansions: boolean;
+}
+
+export interface ExtensionCompatibilityReport {
+  readonly isCompatible: boolean;
+  readonly nodeCompatible: boolean;
+  readonly osCompatible: boolean;
+  readonly archCompatible: boolean;
+  readonly coreApiCompatible: boolean;
+  readonly diagnostics: readonly string[];
+}
+
+export interface ExtensionLicenseAudit {
+  readonly spdxId: string;
+  readonly noticeRequired: boolean;
+  readonly isPermissive: boolean;
+  readonly hasRestrictiveTerms: boolean;
+  readonly publisherChanged: boolean;
+  readonly diagnostics: readonly string[];
+}
+
+export interface ExtensionInspectionReport {
+  readonly status: "approved" | "warning" | "rejected";
+  readonly extensionId: string;
+  readonly name: string;
+  readonly category: ExtensionCategory;
+  readonly version: string;
+  readonly publisher: ExtensionPublisher;
+  readonly licenseAudit: ExtensionLicenseAudit;
+  readonly capabilityDelta: ExtensionCapabilityDelta;
+  readonly compatibility: ExtensionCompatibilityReport;
+  readonly diagnostics: readonly string[];
+}
