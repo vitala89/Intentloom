@@ -79,17 +79,17 @@ export interface ExtensionLockEntry {
   readonly category: ExtensionCategory;
   readonly requestedVersion: string;
   readonly resolvedVersion: string;
-  readonly source?: ExtensionSource;
-  readonly integrity?: string;
-  readonly manifestSchemaVersion?: string;
+  readonly source?: ExtensionSource | undefined;
+  readonly integrity?: string | undefined;
+  readonly manifestSchemaVersion?: string | undefined;
   readonly grantedCapabilities: ExtensionCapabilities;
-  readonly license?: ExtensionLicense;
-  readonly configDigest?: string;
+  readonly license?: ExtensionLicense | undefined;
+  readonly configDigest?: string | undefined;
   readonly approvedAt: string;
   readonly approvedBy: string;
-  readonly lastHealthCheck?: string;
-  readonly pendingMigration?: boolean;
-  readonly installationType?: string;
+  readonly lastHealthCheck?: string | undefined;
+  readonly pendingMigration?: boolean | undefined;
+  readonly installationType?: string | undefined;
 }
 
 export interface ExtensionLockfile {
@@ -134,5 +134,20 @@ export interface ExtensionInspectionReport {
   readonly licenseAudit: ExtensionLicenseAudit;
   readonly capabilityDelta: ExtensionCapabilityDelta;
   readonly compatibility: ExtensionCompatibilityReport;
+  readonly diagnostics: readonly string[];
+}
+
+export interface ExtensionAdoptionPlan {
+  readonly status: "ready" | "requires-approval" | "rejected";
+  readonly targetExtensionId: string;
+  readonly requestedVersion: string;
+  readonly resolvedVersion: string;
+  readonly integrity?: string | undefined;
+  readonly capabilityDelta: ExtensionCapabilityDelta;
+  readonly compatibility: ExtensionCompatibilityReport;
+  readonly licenseAudit: ExtensionLicenseAudit;
+  readonly proposedLockEntry: ExtensionLockEntry;
+  readonly requiresApproval: boolean;
+  readonly approvalReasons: readonly string[];
   readonly diagnostics: readonly string[];
 }

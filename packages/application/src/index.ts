@@ -7364,7 +7364,6 @@ export async function listNeutronSubagentTasks(
     (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
   );
 }
-
 export interface LocalWorkspaceSyncState {
   readonly projectId: string;
   readonly root: string;
@@ -7413,3 +7412,4 @@ export * from "./inception-flow.js";
 export * from "./inception-templates.js";
 export * from "./harness.js";
 export * from "./inspect-extension-manifest.js";
+export * from "./propose-and-apply-extension-adoption.js";

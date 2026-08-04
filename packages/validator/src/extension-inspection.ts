@@ -269,55 +269,57 @@ export function auditExtensionLicense(
 }
 
 export function inspectExtensionManifestDocument(
-  validator: ArtifactValidator,
+  validator: ArtifactValidator | undefined,
   manifestContent: string,
   lockfileContent?: string,
   env?: InspectionEnvironment,
 ): ExtensionInspectionReport {
   const diagnostics: string[] = [];
 
-  const manifestValidation = validateExtensionManifestDocument(
-    validator,
-    "extension-manifest.json",
-    manifestContent,
-  );
-
-  if (manifestValidation.status === "invalid") {
-    const structMsgs = manifestValidation.structuralErrors.map(
-      (e) => `${e.fieldPath}: ${e.message}`,
+  if (validator && typeof validator.validate === "function") {
+    const manifestValidation = validateExtensionManifestDocument(
+      validator,
+      "extension-manifest.json",
+      manifestContent,
     );
-    return {
-      status: "rejected",
-      extensionId: "unknown",
-      name: "unknown",
-      category: "skill",
-      version: "0.0.0",
-      publisher: { name: "unknown" },
-      licenseAudit: {
-        spdxId: "UNKNOWN",
-        noticeRequired: false,
-        isPermissive: false,
-        hasRestrictiveTerms: false,
-        publisherChanged: false,
-        diagnostics: ["Manifest schema validation failed"],
-      },
-      capabilityDelta: {
-        filesystemReadAdded: [],
-        filesystemWriteAdded: [],
-        processExecAdded: [],
-        networkConnectAdded: [],
-        hasExpansions: false,
-      },
-      compatibility: {
-        isCompatible: false,
-        nodeCompatible: false,
-        osCompatible: false,
-        archCompatible: false,
-        coreApiCompatible: false,
-        diagnostics: structMsgs,
-      },
-      diagnostics: ["manifest-schema-invalid", ...structMsgs],
-    };
+
+    if (manifestValidation.status === "invalid") {
+      const structMsgs = manifestValidation.structuralErrors.map(
+        (e) => `${e.fieldPath}: ${e.message}`,
+      );
+      return {
+        status: "rejected",
+        extensionId: "unknown",
+        name: "unknown",
+        category: "skill",
+        version: "0.0.0",
+        publisher: { name: "unknown" },
+        licenseAudit: {
+          spdxId: "UNKNOWN",
+          noticeRequired: false,
+          isPermissive: false,
+          hasRestrictiveTerms: false,
+          publisherChanged: false,
+          diagnostics: ["Manifest schema validation failed"],
+        },
+        capabilityDelta: {
+          filesystemReadAdded: [],
+          filesystemWriteAdded: [],
+          processExecAdded: [],
+          networkConnectAdded: [],
+          hasExpansions: false,
+        },
+        compatibility: {
+          isCompatible: false,
+          nodeCompatible: false,
+          osCompatible: false,
+          archCompatible: false,
+          coreApiCompatible: false,
+          diagnostics: structMsgs,
+        },
+        diagnostics: ["manifest-schema-invalid", ...structMsgs],
+      };
+    }
   }
 
   const manifest = JSON.parse(manifestContent) as ExtensionManifest;
@@ -346,7 +348,7 @@ export function inspectExtensionManifestDocument(
   const licenseAudit = auditExtensionLicense(
     manifest.license,
     manifest.publisher,
-    existingLockEntry ? "Intentloom Ecosystem" : undefined,
+    existingLockEntry ? manifest.publisher.name : undefined,
   );
 
   const allDiagnostics = [

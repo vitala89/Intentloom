@@ -847,7 +847,6 @@ export function validateExtensionCapabilityGrant(
       });
     }
   }
-
   const reqNet = requested?.network?.connect ?? [];
   for (const host of granted.network?.connect ?? []) {
     if (!reqNet.includes(host)) {
@@ -868,3 +867,4 @@ export * from "./task-routing.js";
 export * from "./external-skill-import.js";
 export * from "./harness-adoption-gate.js";
 export * from "./extension-inspection.js";
+export * from "./extension-resolution.js";

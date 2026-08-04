@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **PR #220 merged; Phase E2 Pre-Adoption Inspection & Capability Delta Engine is on `main`** — `inspectExtensionManifest`, `computeExtensionCapabilityDelta`, `evaluateExtensionCompatibility`, `auditExtensionLicense`, and test suite `tests/extension-inspection.test.ts` are merged into `main` (`af7b6e5`).
+Status: **Phase E3 Transactional Extension Resolution & Lockfile Management implemented on `feat/extension-transactional-resolution`** — implemented `resolveExtensionAdoptionProposal`, `applyExtensionAdoptionPlan`, `proposeExtensionAdoption`, `applyExtensionAdoption`, and test suite `tests/extension-resolution.test.ts`.
 
-Active branch: `main` at `af7b6e5` (PR #220)
+Active branch: `feat/extension-transactional-resolution`
 
-Current objective: Select next implementation phase from `MANAGED_EXTENSION_LIFECYCLE_PLAN.md` (Phase E3: Transactional Resolution & Lockfile Management) or read-only evidence hardening gate.
+Current objective: Open PR for `feat/extension-transactional-resolution` and merge into `main`.
 
-Next first action: Review Phase E3 candidate scope or read-only evidence hardening gate.
+Next first action: Open PR for `feat/extension-transactional-resolution` and request review.
 
 Known open items, in the order they should be handled:
 
@@ -59,6 +59,33 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-04, Phase E3 Transactional Extension Resolution & Lockfile Management
+
+- **Status:** complete for implementation, unit tests, formatting, typechecking, and local validation; branch `feat/extension-transactional-resolution` is ready for PR.
+- **Branch:** `feat/extension-transactional-resolution`
+- **Objective:** Implement Phase E3 of the Managed Extension Lifecycle (`docs/roadmap/MANAGED_EXTENSION_LIFECYCLE_PLAN.md`) providing transactional extension resolution, integrity digest verification, human approval evaluation, and atomic lockfile management.
+- **Completed:** Created `packages/protocol/src/extension-lifecycle.ts` (`ExtensionAdoptionPlan`), `packages/validator/src/extension-resolution.ts` (`resolveExtensionAdoptionProposal`, `applyExtensionAdoptionPlan`), `packages/application/src/propose-and-apply-extension-adoption.ts` (`proposeExtensionAdoption`, `applyExtensionAdoption`), and test suite `tests/extension-resolution.test.ts`. Updated `CHANGELOG.md` and `DUTY_WATCH.md`.
+- **Not completed:** PR creation and merge to `main` remain pending.
+- **Files or packages changed:** `packages/protocol/src/extension-lifecycle.ts`, `packages/validator/src/extension-resolution.ts`, `packages/validator/src/index.ts`, `packages/application/src/propose-and-apply-extension-adoption.ts`, `packages/application/src/index.ts`, `tests/extension-resolution.test.ts`, `CHANGELOG.md`, `DUTY_WATCH.md`.
+- **Validation:** `pnpm format:check`, `pnpm typecheck`, `pnpm test tests/extension-resolution.test.ts`, `git diff --check` passed cleanly.
+- **Decisions and assumptions:** Unpinned requested versions require explicit registry resolution; capability expansions, restrictive license terms, or publisher changes mandate human approval before atomic lockfile modification.
+- **Risks or compatibility impact:** Additive protocol types, validator functions, and application operations; zero breaking changes.
+- **Next first action:** Open PR for branch `feat/extension-transactional-resolution` and merge into `main`.
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant tests, type checks, builds, or compatibility checks passed
+- [x] Atomic commit policy and commit-message checks passed
+- [x] Repository hooks installed or equivalent commands run
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `PROJECT_STATE.md` updated when applicable
+- [x] `DUTY_WATCH.md` handoff completed
+- [x] Related roadmap, ADR, changelog, migration, or reference docs updated
+- [x] Failed or unavailable checks recorded
 
 ### 2026-08-04, Phase E2 Pre-Adoption Inspection & Capability Delta Engine
 
