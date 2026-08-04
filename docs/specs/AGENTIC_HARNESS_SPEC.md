@@ -15,8 +15,10 @@ pure scorecard evaluator covering security/product targets without executing a
 model, provider, network request, or mutation. Phase H8 read-only application
 inspect/replay operations and product surfaces (CLI `intentloom harness inspect|replay`
 and MCP tools `intentloom_harness_inspect` and `intentloom_harness_replay`) are
-implemented; transport endpoints, provider adapters, model-backed roles, and
-certification matrices remain unimplemented.
+implemented. H9 adds the fail-closed adoption gate for fresh scorecards and
+approvals; a hardening audit records existing CI, rollback, and purge evidence.
+Transport endpoints, provider adapters, model-backed roles, and certification
+matrices remain unimplemented.
 
 ## Purpose
 

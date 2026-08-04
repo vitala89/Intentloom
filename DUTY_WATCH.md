@@ -9,18 +9,19 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **PR #213 merged; H1-H9 and C4-C6 harness contracts are on `main`** —
+Status: **PR #214 merged; H1-H9 and C4-C6 harness contracts are on `main`** —
 read-only CLI/MCP consumers, structured routing, managed external-skill
 normalization, and fail-closed adoption enforcement are merged and locally
-verified. H9 production-hardening evidence remains the next focus.
+verified. The H9 CI/release-readiness audit is recorded; a deterministic
+fixture-backed evidence contract is the next focus.
 
-Active branch: `docs/reconcile-harness-main-state`
+Active branch: `docs/h9-hardening-audit`
 
-Current objective: Record the merged baseline accurately, then audit existing CI
-and release-readiness workflows for the smallest H9 hardening slice.
+Current objective: Record the H9 hardening audit and prepare the bounded
+fixture-backed evidence contract for review.
 
-Next first action: Audit existing CI and release-readiness workflows to select
-one bounded H9 hardening slice with explicit evidence.
+Next first action: Add the deterministic H9 evidence contract test described in
+`docs/roadmap/AGENTIC_HARNESS_H9_AUDIT.md`.
 
 Known open items, in the order they should be handled:
 
@@ -66,6 +67,33 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-04, H9 CI and release-readiness hardening audit
+
+- **Status:** complete for audit and documentation; implementation remains
+  intentionally deferred to the next bounded slice.
+- **Branch:** `docs/h9-hardening-audit`
+- **Objective:** Audit existing CI, release, rollback, purge, and adoption-gate
+  evidence after PR #214 merged, then select the smallest safe H9 hardening gap.
+- **Completed:** Added `docs/roadmap/AGENTIC_HARNESS_H9_AUDIT.md` with an
+  evidence matrix. Confirmed the six-job Ubuntu/macOS/Windows × Node 22/24
+  compatibility matrix, governance and CodeQL checks, dependency review, and
+  manual trusted-publishing release controls. Mapped existing adoption-gate,
+  rollback, migration, checkpoint-purge, and cache-purge tests.
+- **Decision:** Do not add wall-clock thresholds to the hosted matrix. The next
+  slice is a deterministic fixture-backed contract composing adoption-gate,
+  replay/purge, and rollback terminal states without new authority.
+- **Not completed:** The composed evidence test and any performance benchmark
+  remain future work.
+- **Next first action:** Add the deterministic H9 evidence contract test.
+
+#### Duty completion checklist
+
+- [x] Existing CI and release controls verified
+- [x] H9 evidence gap documented
+- [x] Bounded next slice selected
+- [x] No code-quality exception
+- [ ] Documentation audit committed and opened as a PR
 
 ### 2026-08-04, PR #213 merged and harness baseline reconciled
 

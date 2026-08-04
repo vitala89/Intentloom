@@ -287,6 +287,7 @@ and explicit approval design.
 
 ## Next first action
 
-Audit existing CI and release-readiness workflows to define the smallest H9
-production-hardening slice (cross-platform checks, performance budget, or
-retention/rollback drill) with explicit evidence and no new mutation authority.
+Implement the deterministic, fixture-backed H9 evidence contract described in
+[`AGENTIC_HARNESS_H9_AUDIT.md`](./AGENTIC_HARNESS_H9_AUDIT.md), composing
+adoption-gate, replay/purge, and rollback outcomes without wall-clock budgets or
+new mutation authority.
