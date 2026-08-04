@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Phase E4 is merged into `main` at `18b6b53`** — the Windows symlink mock fix and all hosted checks passed; the next candidate remains Phase E5 doctor diagnostics.
+Status: **Phase E4 is merged into `main` at `18b6b53`; post-merge reconciliation is in draft PR #225** — all PR #225 checks currently pass, and its review/merge remains pending.
 
 Active branch: `docs/reconcile-phase-e4-merge`; merge commit `18b6b53`; PR #224
 
-Current objective: Record the merged Phase E4 state and hand off the next roadmap action.
+Current objective: Land the post-merge reconciliation records, then hand off the next roadmap action.
 
-Next first action: Review Phase E5 doctor diagnostics scope and its required specification, ADR, tests, and security boundaries before implementation.
+Next first action: Maintainer reviews and merges draft PR #225; then inspect Phase E5 doctor diagnostics scope and its required specification, ADR, tests, and security boundaries before implementation.
 
 Known open items, in the order they should be handled:
 
@@ -70,6 +70,16 @@ entry directly below this section.
 - **Validation:** PR #224 hosted checks all passed, including Compatibility on Ubuntu/macOS/Windows Node 22/24, Desktop SEA Feasibility, CodeQL, and Governance. Local branch was clean before documentation changes.
 - **Not completed:** Phase E5 doctor diagnostics, Phase E6 safe removal/revocation, and Phase E7 provider adapters remain roadmap candidates. No release, tag, or npm publication was inferred.
 - **Next first action:** Inspect the Phase E5 specification and relevant ADR/security boundaries, then propose the smallest bounded doctor-diagnostics increment before implementation.
+
+### 2026-08-04, Phase E4 reconciliation PR publication
+
+- **Status:** partial; draft PR #225 is published with all current hosted checks passing, but maintainer merge remains pending.
+- **Branch:** `docs/reconcile-phase-e4-merge` at `145e1bb`, based on merged `main` commit `18b6b53`.
+- **Pull request:** [#225](https://github.com/vitala89/Intentloom/pull/225), draft.
+- **Objective:** Publish the durable post-merge state reconciliation for Phase E4.
+- **Completed:** Pushed the documentation branch and opened the draft PR with `PROJECT_STATE.md`, `ROADMAP.md`, the managed lifecycle plan, and Duty Watch updates.
+- **Validation:** Pre-push `pnpm verify` passed (133/133 test files, 1003 passed, 3 skipped, typecheck, format, build, and diff checks). PR #225 Compatibility, CodeQL, and Governance checks passed.
+- **Next first action:** Maintainer reviews and merges PR #225; no Phase E5 implementation should begin until the reconciliation lands on `main`.
 
 ### 2026-08-04, Phase E4 Windows test portability correction
 
