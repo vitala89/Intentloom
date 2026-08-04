@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Phase E4 is merged into `main` at `18b6b53`; post-merge reconciliation is in draft PR #225** — all PR #225 checks currently pass, and its review/merge remains pending.
+Status: **Phase E4 and its post-merge reconciliation are merged into `main` at `653050c`; Phase E5 doctor diagnostics are in PR #226 with all hosted checks passing.**
 
-Active branch: `docs/reconcile-phase-e4-merge`; merge commit `18b6b53`; PR #224
+Active branch: `feat/extension-doctor-health`; base `main` at `653050c`
 
-Current objective: Land the post-merge reconciliation records, then hand off the next roadmap action.
+Current objective: Monitor and land Phase E5 doctor diagnostics PR #226.
 
-Next first action: Maintainer reviews and merges draft PR #225; then inspect Phase E5 doctor diagnostics scope and its required specification, ADR, tests, and security boundaries before implementation.
+Next first action: Confirm hosted PR #226 checks, then maintainer review and merge; after merge update `main` state and inspect Phase E6.
 
 Known open items, in the order they should be handled:
 
@@ -59,6 +59,18 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-04, Phase E5 Doctor Diagnostics & Health Verification
+
+- **Status:** complete on the review branch; PR #226 is open, all hosted checks pass, and merge is pending.
+- **Branch:** `feat/extension-doctor-health` from `main` at `653050c`.
+- **Pull request:** [#226](https://github.com/vitala89/Intentloom/pull/226), draft.
+- **Objective:** Extend read-only doctor diagnostics with deterministic managed-extension health checks.
+- **Completed:** Added protocol evidence/report contracts, application lock and runtime evidence evaluation, integration into `doctorProject`, and regression coverage for stale/unpinned locks, integrity and notice metadata, capability/configuration drift, source revocation or compromise, entrypoint availability, and health-check failures.
+- **Boundary:** Existing ADR-0021 and the managed extension lifecycle specification govern the increment; no new architectural decision was required. Runtime evidence is injected explicitly, so canonical code performs no hidden network, process, or mutation work. Health evaluation is split across focused modules; the existing application barrel grows by two wiring lines under the documented `quality-exceptions.json` follow-up.
+- **Validation:** Focused Phase E5 and doctor suites pass (11 tests), focused extension/update and client-surface suites pass (31 tests), full `pnpm verify` passes with 134 test files and 1008 passed / 3 skipped tests, pre-push verification passes, and hosted PR #226 checks pass across CodeQL, Governance, and Ubuntu/macOS/Windows Node 22/24.
+- **Not completed:** Hosted checks, maintainer review, and merge remain pending.
+- **Next first action:** Watch PR #226 checks and hand it to the maintainer for review.
 
 ### 2026-08-04, Phase E4 post-merge reconciliation
 

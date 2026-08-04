@@ -334,6 +334,12 @@ The `intentloom doctor` command must detect and report:
 - Missing integrity or notice metadata.
 - Failed health checks.
 
+Doctor health checks are read-only. Runtime adapters may provide explicit local
+evidence for source status, artifact digest, declared and granted capabilities,
+configuration digest, entrypoint availability, and endpoint health; the
+canonical application operation performs deterministic comparisons and never
+performs hidden network requests, process execution, or mutation.
+
 ---
 
 ## 11. Revocation and Removal

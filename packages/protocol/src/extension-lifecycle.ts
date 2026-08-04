@@ -153,4 +153,37 @@ export interface ExtensionAdoptionPlan {
   readonly diagnostics: readonly string[];
 }
 
+export type ExtensionSourceHealth =
+  "available" | "unavailable" | "revoked" | "compromised";
+
+export type ExtensionEndpointHealth = "healthy" | "unhealthy" | "unavailable";
+
+/** Read-only evidence supplied by a local extension adapter. */
+export interface ExtensionHealthEvidence {
+  readonly extensionId: string;
+  readonly sourceStatus?: ExtensionSourceHealth | undefined;
+  readonly artifactIntegrity?: string | undefined;
+  readonly declaredCapabilities?: ExtensionCapabilities | undefined;
+  readonly grantedCapabilities?: ExtensionCapabilities | undefined;
+  readonly configDigest?: string | undefined;
+  readonly entrypointAvailable?: boolean | undefined;
+  readonly healthCheckStatus?: ExtensionEndpointHealth | undefined;
+}
+
+export interface ExtensionHealthFinding {
+  readonly extensionId: string;
+  readonly code: string;
+  readonly severity: "error" | "warning" | "info";
+  readonly path: string;
+  readonly message: string;
+  readonly remediation: string;
+}
+
+export interface ExtensionHealthReport {
+  readonly status: "healthy" | "warning" | "failed";
+  readonly checkedExtensionIds: readonly string[];
+  readonly findings: readonly ExtensionHealthFinding[];
+  readonly diagnostics: readonly string[];
+}
+
 export * from "./extension-update.js";
