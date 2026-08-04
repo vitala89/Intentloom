@@ -2,8 +2,9 @@
 
 ## Status
 
-Phases C1-C3 implemented in the canonical catalog. Phases C4-C7 remain planned
-and do not supersede the active read-only evidence hardening milestone.
+Phases C1-C6 are implemented in the canonical catalog and application
+contracts. Phase C7 remains future and does not authorize provider-plugin
+installation or activation.
 
 ## Outcome
 
@@ -202,7 +203,7 @@ Each curated or imported skill should be evaluated against:
 
 ## Next first action
 
-Run Phase C4 dogfooding with the generated four-skill addition in the minimal
-and TypeScript fixtures, then record false-trigger and interaction-cost evidence
-as candidate harness scenarios before proposing a structured routing protocol.
-The active read-only evidence hardening gate still completes first.
+Keep C7 deferred until a real provider-plugin consumer exists. Continue with the
+Agentic Harness H9 production-hardening audit so any future activation or
+mutation path is backed by measured cross-platform, retention, and rollback
+evidence.

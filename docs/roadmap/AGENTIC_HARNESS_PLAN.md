@@ -7,9 +7,8 @@ provider-neutral capability negotiation, normalized adapter results, and an
 offline fake consumer. Real network, local-model, and CLI-agent integrations
 remain conditional on an approved consumer and adapter-specific review. The
 bounded H6 deterministic voting core and H7 scenario corpus are implemented.
-The first H8 canonical read-only inspect/replay operation and its bounded CLI
-consumer are implemented; daemon, MCP, TUI, Desktop, and Neutron consumers
-remain planned.
+The H8 canonical read-only inspect/replay operation and bounded CLI and MCP
+consumers are implemented. TUI, Desktop, and Neutron consumers remain planned.
 
 ## Outcome
 
@@ -207,9 +206,8 @@ Exit gate:
 
 ## Phase H8: Product surfaces and parity
 
-Status: bounded canonical operation and read-only CLI consumer complete on
-`feat/harness-cli-inspect-replay`; transport and product-surface parity remain
-planned.
+Status: bounded canonical operation and read-only CLI/MCP consumers complete
+through PR #213; TUI, Desktop, and Neutron parity remain planned.
 
 Scope:
 
@@ -220,12 +218,12 @@ Scope:
 - add structured output, documentation, accessibility, and equivalence tests.
 
 The bounded H8 slice adds `inspectHarnessScorecard` and
-`replayHarnessScorecard` to the canonical application facade, plus
-`intentloom harness inspect` and `intentloom harness replay` as a file-based
-read-only CLI consumer. All paths are constrained to the supplied root, both
-commands validate scorecards before rendering, and neither exposes raw event
-payloads or repeats effects. No daemon, MCP, TUI, Desktop, or Neutron endpoint
-is added by this slice.
+`replayHarnessScorecard` to the canonical application facade, plus file-based
+read-only CLI commands and MCP tools (`intentloom_harness_inspect` and
+`intentloom_harness_replay`). All paths are constrained to the supplied root,
+all consumers validate scorecards before rendering, and none exposes raw event
+payloads or repeats effects. TUI, Desktop, and Neutron consumers remain future
+slices.
 
 Exit gate:
 
@@ -237,7 +235,8 @@ Exit gate:
 
 ## Phase H9: Adoption gate and production hardening
 
-Status: complete for adoption gate contract & fail-closed mutation enforcement.
+Status: adoption gate contract and fail-closed mutation enforcement complete;
+production-hardening evidence remains planned.
 
 Scope:
 
@@ -288,6 +287,6 @@ and explicit approval design.
 
 ## Next first action
 
-Define the smallest read-only MCP parity consumer for the canonical H8
-inspect/replay views. Keep transport exposure, provider execution, and mutation
-separate until their own consumer and approval gates are satisfied.
+Audit existing CI and release-readiness workflows to define the smallest H9
+production-hardening slice (cross-platform checks, performance budget, or
+retention/rollback drill) with explicit evidence and no new mutation authority.
