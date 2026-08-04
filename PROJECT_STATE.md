@@ -195,11 +195,11 @@ before a new release or implementation milestone is declared complete.
 ## Current blockers and unknowns
 
 - Any expansion to bottleneck, performance, causal, actor, repository-reading, persisted, remote, or model-assisted analysis requires a new ADR, specification, and threat review.
-- Current `main` is verified at `56bf4bd` (PR #226; Phase E5 merge) and tracks
+- Current `main` is verified at `d65e735` (PR #227; Phase E6 merge) and tracks
   `origin/main`.
-- Phase E5 doctor diagnostics and health verification are merged to `main`.
-  Phase E6 safe revocation, removal, and rollback recovery is implemented on
-  `feat/extension-safe-removal` pending review.
+- Phase E5 doctor diagnostics and health verification, and Phase E6 safe
+  revocation, removal, and rollback recovery, are merged to `main`. Phase E7
+  provider-adapter boundaries remain a candidate increment.
 - npm reports `latest=1.0.2` and `next=1.0.0`, verified 2026-08-02.
 - Workspace packages are synchronized to `1.0.2`; Git tag `v1.0.2` and GitHub
   Release `v1.0.2` point at the verified `192fd05` release commit. The stable
@@ -470,7 +470,7 @@ and Phase E4 Update Discovery & Migration Pipeline (`discoverExtensionUpdatePlan
 `discoverExtensionUpdates`, `applyExtensionUpdate`), and Phase E5 Doctor Diagnostics
 (`checkExtensionHealth`, `doctorProject`) are merged into `main` through PR #218
 (`6eac1ee`), PR #220 (`af7b6e5`), PR #222 (`649f7ae`), PR #224 (`18b6b53`),
-and PR #226 (`56bf4bd`).
+PR #226 (`56bf4bd`), and PR #227 (`d65e735`).
 
 The current implementation increment, merged through PR #173 as `341984a`, adds
 bounded GitHub/GitLab pagination and deterministic rate-limit diagnostics to the
