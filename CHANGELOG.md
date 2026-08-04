@@ -9,6 +9,9 @@ are not included in the current npm artifact until a later release.
 
 ### Added
 
+- Added deterministic Phase H9 Agentic Harness evidence contract test
+  (`tests/harness-h9-evidence-contract.test.ts`) composing adoption gate,
+  event replay, checkpoint purge, and rollback recovery terminal states.
 - Added Agentic Harness adoption gate and fail-closed mutation enforcement contract
   (`evaluateHarnessAdoptionGate`) in `packages/protocol`, `packages/validator`, and `packages/application`
   verifying passing, non-stale scorecards and required governance approvals.
