@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Phase E7 Knowledge-Provider & Adapter-Pack Boundaries implementation complete on `feat/knowledge-provider-boundary`; ready for PR.**
+Status: **Phase E7 Knowledge-Provider & Adapter-Pack Boundaries implementation complete on `feat/knowledge-provider-boundary`; PR #229 is open and hosted checks are running.**
 
 Active branch: `feat/knowledge-provider-boundary`; base `main` at `6f5bf27`
 
-Current objective: Publish PR for Phase E7 Knowledge-Provider & Adapter-Pack Boundaries and verify hosted CI.
+Current objective: Monitor hosted CI checks for PR #229 and hand to maintainer for review and merge.
 
-Next first action: Push branch `feat/knowledge-provider-boundary` to remote, open PR, and verify hosted CI matrix.
+Next first action: Verify hosted PR #229 CI matrix runs; after maintainer merge reconcile `main` state.
 
 Known open items, in the order they should be handled:
 
@@ -62,14 +62,15 @@ entry directly below this section.
 
 ### 2026-08-05, Phase E7 Knowledge-Provider & Adapter-Pack Boundaries (Graphify Integration)
 
-- **Status:** complete for implementation, unit tests, formatting, typechecking, and local validation; branch `feat/knowledge-provider-boundary` is ready for PR.
-- **Branch:** `feat/knowledge-provider-boundary`
+- **Status:** complete on the review branch; draft PR #229 is open and hosted checks are running.
+- **Branch:** `feat/knowledge-provider-boundary` at `8a4d099`.
+- **Pull request:** [#229](https://github.com/vitala89/Intentloom/pull/229), draft.
 - **Objective:** Implement Phase E7 of the Managed Extension Lifecycle (`docs/roadmap/MANAGED_EXTENSION_LIFECYCLE_PLAN.md`) providing a vendor-neutral `knowledge-provider` application boundary, capability verification, fallback behavior, and `GraphifyKnowledgeAdapter` reference implementation.
-- **Completed:** Created `packages/protocol/src/knowledge-provider.ts`, `packages/validator/src/knowledge-provider.ts`, `packages/application/src/knowledge-provider.ts`, `packages/application/src/graphify-adapter.ts`, and test suite `tests/knowledge-provider.test.ts`. Updated `ROADMAP.md`, `docs/roadmap/MANAGED_EXTENSION_LIFECYCLE_PLAN.md`, `CHANGELOG.md`, and `DUTY_WATCH.md`.
-- **Validation:** `pnpm test tests/knowledge-provider.test.ts` passed (11/11 tests); `pnpm typecheck` and `pnpm format:check` passed cleanly.
+- **Completed:** Created `packages/protocol/src/knowledge-provider.ts`, `packages/validator/src/knowledge-provider.ts`, `packages/application/src/knowledge-provider.ts`, `packages/application/src/graphify-adapter.ts`, and test suite `tests/knowledge-provider.test.ts`. Updated `ROADMAP.md`, `docs/roadmap/MANAGED_EXTENSION_LIFECYCLE_PLAN.md`, `CHANGELOG.md`, `DUTY_WATCH.md`, and opened PR #229.
+- **Validation:** Pre-push `pnpm verify` passed full test suite (136 test files, 1024 passed); `pnpm typecheck` and `pnpm format:check` passed cleanly.
 - **Decisions and assumptions:** The canonical platform has zero hard runtime dependencies on Graphify or external code-graph tools. When a provider is absent or disabled, operations return deterministic fallback status (`provider_unavailable`).
 - **Risks or compatibility impact:** Additive protocol types, validator functions, and application operations; zero breaking changes.
-- **Next first action:** Push branch `feat/knowledge-provider-boundary` to remote, open PR, and verify hosted CI matrix.
+- **Next first action:** Monitor hosted PR #229 checks; maintainer reviews and merges PR #229.
 
 ### 2026-08-04, Phase E6 post-merge reconciliation
 
