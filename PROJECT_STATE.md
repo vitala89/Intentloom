@@ -1,6 +1,6 @@
 # Intentloom Project State
 
-Last verified: 2026-08-05
+Last verified: 2026-08-06
 
 This file records the durable current state of the project. It is not a
 chronological log. Session history and handoff details belong in
@@ -129,7 +129,9 @@ and real consumers justify them.
   deterministic fixture-backed evidence for replay, purge, and transactional
   rollback. PR #233 merged the remaining deterministic rollback evidence and
   the Windows Node 22 compatibility timeout correction; PR #234 merged the
-  separate provider-neutral performance-benchmark specification. Real
+  separate provider-neutral performance-benchmark specification; PR #235
+  merged the post-merge reconciliation and platform-specific Node 22 timeout
+  corrections. Real
   provider/model/CLI-agent adapters, certification claims, benchmark runner,
   and effectful mutation remain deferred.
 
@@ -199,8 +201,8 @@ before a new release or implementation milestone is declared complete.
 ## Current blockers and unknowns
 
 - Any expansion to bottleneck, performance, causal, actor, repository-reading, persisted, remote, or model-assisted analysis requires a new ADR, specification, and threat review.
-- Current `main` is verified at `7fb752f` (PR #234; H9 benchmark specification
-  merge) and tracks `origin/main`.
+- Current `main` is verified at `ab7bbe1` (PR #235; post-merge H9
+  reconciliation) and tracks `origin/main`.
 - Phase E5 doctor diagnostics, Phase E6 safe revocation and removal, and
   Phase E7 knowledge-provider & adapter-pack boundaries are merged to `main`.
 - npm reports `latest=1.0.2` and `next=1.0.0`, verified 2026-08-02.
@@ -467,8 +469,10 @@ remaining H9 production-hardening work is intentionally separate from the
 deterministic contract and must not add provider, network, or mutation authority.
 PR #233 merged the deterministic rollback evidence and the Windows Node 22
 compatibility timeout correction. PR #234 merged the H9 performance-benchmark
-specification as a design artifact only; it does not authorize a runner,
-threshold, release gate, provider, network, or mutation capability.
+specification as a design artifact only; PR #235 merged the post-merge
+reconciliation and platform-specific Node 22 timeout corrections. These
+changes do not authorize a runner, threshold, release gate, provider, network,
+or mutation capability.
 
 The Managed Extension Lifecycle roadmap plan (`docs/roadmap/MANAGED_EXTENSION_LIFECYCLE_PLAN.md`),
 Phase E2 Pre-Adoption Inspection & Capability Delta Engine (`inspectExtensionManifest`,

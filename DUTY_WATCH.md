@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **PR #235 contains the post-merge reconciliation and platform-specific test timeout corrections; all hosted checks are green and maintainer review/merge remains pending.**
+Status: **PR #235 is merged into `main`; its post-merge reconciliation and platform-specific Node 22 timeout corrections are now part of the verified baseline, and documentation-only PR #236 is open for review.**
 
-Active branch: `docs/reconcile-h9-benchmark-merge`
+Active branch: `docs/reconcile-pr235-merge`
 
-Current objective: Complete verification and hosted recheck for PR #235 without adding a runtime runner or release gate.
+Current objective: Reconcile durable documentation with merged PR #235 without adding a runtime runner or release gate.
 
-Next first action: Maintainer reviews and merges PR #235; keep benchmark-runner implementation as a separately authorized follow-up.
+Next first action: Review and merge documentation-only PR #236; keep benchmark-runner implementation as a separately authorized follow-up.
 
 Known open items, in the order they should be handled:
 
@@ -59,6 +59,31 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-06, PR #235 merged and durable state reconciliation
+
+- **Status:** partial; the merged PR state is reconciled and documentation-only
+  PR #236 is open as a draft for review.
+- **Branch:** `docs/reconcile-pr235-merge` from `origin/main` at `ab7bbe1`.
+- **Pull request:** [#235](https://github.com/vitala89/Intentloom/pull/235) is
+  merged with merge commit `ab7bbe1`; documentation reconciliation is in
+  [#236](https://github.com/vitala89/Intentloom/pull/236), draft.
+- **Objective:** Synchronize project state, roadmap, H9 plan/audit, and this
+  handoff with the merged compatibility fixes without adding a benchmark
+  runner, threshold, release gate, provider, network, or mutation capability.
+- **Completed:** Confirmed the maintainer merge and `origin/main` ref; the
+  merged PR contains the macOS Node 22 evidence-analysis timeout correction and
+  Windows Node 22 packed-adoption hook timeout correction. Updated current
+  durable references from pre-merge `7fb752f` to `ab7bbe1` while preserving
+  historical watch entries.
+- **Not completed:** No benchmark runner or performance threshold was
+  implemented. Cleanup of the superseded remote reconciliation branch remains
+  an explicit owner action.
+- **Validation:** Staged quality checks passed for all five changed files;
+  full `pnpm verify` passed with 136 test files, 1,024 tests passed, 3 skipped,
+  typecheck, formatting, build, and diff checks.
+- **Next action:** Review and merge documentation-only PR #236;
+  authorize any benchmark-runner slice separately.
 
 ### 2026-08-05, PR #235 Windows Node 22 packed adoption hook timeout correction
 
