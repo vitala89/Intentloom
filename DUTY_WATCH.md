@@ -9,11 +9,11 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **PR #235 contains the post-merge reconciliation and platform-specific test timeout corrections; all hosted checks are green and maintainer review/merge remains pending.**
+Status: **PR #235 contains the post-merge reconciliation and platform-specific test timeout corrections; all hosted checks are green and the PR is ready for maintainer review.**
 
 Active branch: `docs/reconcile-h9-benchmark-merge`
 
-Current objective: Complete verification and hosted recheck for PR #235 without adding a runtime runner or release gate.
+Current objective: Hand off verified PR #235 for maintainer review without adding a runtime runner or release gate.
 
 Next first action: Maintainer reviews and merges PR #235; keep benchmark-runner implementation as a separately authorized follow-up.
 
@@ -59,6 +59,25 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-06, PR #235 marked ready for maintainer review
+
+- **Status:** partial; PR #235 is ready for review with all hosted checks
+  green, while maintainer review and merge remain pending.
+- **Branch:** `docs/reconcile-h9-benchmark-merge` at `18a6f40`.
+- **Pull request:** [#235](https://github.com/vitala89/Intentloom/pull/235),
+  ready for review.
+- **Objective:** Complete the CI repair handoff without adding a benchmark
+  runner, release gate, provider, network, subprocess, or mutation authority.
+- **Completed:** Verified the branch is clean and the PR head is unchanged;
+  Compatibility, Governance, and CodeQL remain green. Converted the PR from
+  draft to ready for maintainer review.
+- **Not completed:** Maintainer review and merge remain pending. No production
+  behavior changed.
+- **Validation:** Hosted Compatibility rechecks passed all six matrix jobs,
+  including Windows Node 22; Governance and CodeQL also passed.
+- **Next action:** Maintainer reviews and merges PR #235; continue only with a
+  separately authorized benchmark-runner slice.
 
 ### 2026-08-05, PR #235 Windows Node 22 packed adoption hook timeout correction
 
