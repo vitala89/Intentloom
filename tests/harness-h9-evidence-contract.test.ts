@@ -5,10 +5,16 @@ import type {
   HarnessScorecard,
 } from "@intentloom/protocol";
 import {
+  assertProjectStateUnchanged,
+  snapshotProjectState,
+} from "./project-state.js";
+import {
   createInMemoryHarnessStateStore,
+  createMemoryFileSystem,
   evaluateHarnessAdoptionGate,
   replayHarnessEvents,
   resumeHarnessExecution,
+  synchronizeGeneratedFiles,
   type HarnessCheckpointRecord,
 } from "../packages/application/src/index.js";
 import {
@@ -279,6 +285,10 @@ describe("Phase H9 Agentic Harness Deterministic Evidence Contract", () => {
   describe("Composed Terminal State Matrix (Adoption Gate + Replay + Rollback Recovery)", () => {
     it("composes execution, event replay, failing checkpoint, and fail-closed adoption gate without mutating state", async () => {
       const store = createInMemoryHarnessStateStore();
+      const fileSystem = createMemoryFileSystem({
+        "/workspace/h9-evidence-target/AGENTS.md": "project-owned content",
+      });
+      const beforeRollback = await snapshotProjectState(fileSystem);
 
       const failCheckpoint: HarnessCheckpointRecord = {
         checkpointId: "cp-h9-fail-002",
@@ -316,6 +326,28 @@ describe("Phase H9 Agentic Harness Deterministic Evidence Contract", () => {
       // Assert fail closed
       expect(gateResult.passed).toBe(false);
       expect(gateResult.safeNextAction).toContain("fail closed");
+
+      const rollbackResult = await synchronizeGeneratedFiles(
+        H9_DRILL_REQUEST.projectRoot,
+        [
+          {
+            path: "AGENTS.md",
+            content: "generated content",
+            sources: ["harness:h9-evidence-drill"],
+            checksum: "fixture checksum is normalized by the operation",
+          },
+        ],
+        fileSystem,
+        { failAt: "source-map-finalize" },
+      );
+
+      expect(rollbackResult.status).toBe("failed");
+      expect(rollbackResult.rollbackAttempted).toBe(true);
+      expect(rollbackResult.rollbackCompleted).toBe(true);
+      assertProjectStateUnchanged(
+        beforeRollback,
+        await snapshotProjectState(fileSystem),
+      );
 
       // Purge state after failure rollback handling
       const purged = await store.purge({

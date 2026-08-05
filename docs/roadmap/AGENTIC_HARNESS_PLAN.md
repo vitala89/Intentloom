@@ -8,7 +8,9 @@ offline fake consumer. Real network, local-model, and CLI-agent integrations
 remain conditional on an approved consumer and adapter-specific review. The
 bounded H6 deterministic voting core and H7 scenario corpus are implemented.
 The H8 canonical read-only inspect/replay operation and bounded CLI and MCP
-consumers are implemented. TUI, Desktop, and Neutron consumers remain planned.
+consumers are implemented. The H9 adoption gate and deterministic fixture-backed
+evidence contract are merged. TUI, Desktop, Neutron, and production-hardening
+evidence remain planned.
 
 ## Outcome
 

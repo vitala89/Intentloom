@@ -122,12 +122,14 @@ and real consumers justify them.
   deferred.
 - ADR-0052 accepts a first-party provider-neutral Agentic Evaluation and
   Execution Harness architecture and phased plan. Phases H1-H9 and curated-
-  skill phases C4-C6 are merged into `main` through PR #213 (`a173931`). The
-  increment includes read-only CLI and MCP inspect/replay consumers, structured
-  task routing, managed external-skill import normalization, and a fail-closed
-  adoption gate requiring fresh scorecards and approvals. Real provider/model/
-  CLI-agent adapters, certification claims, and effectful mutation remain
-  deferred; H9 production-hardening evidence is the next planned increment.
+  skill phases C4-C6 are merged into `main` through PR #213 (`a173931`), PR
+  #214 (`8a1ce50`), and PR #216 (`cec3f45`). The increment includes read-only
+  CLI and MCP inspect/replay consumers, structured task routing, managed
+  external-skill import normalization, fail-closed adoption enforcement, and
+  deterministic fixture-backed evidence for replay, purge, and transactional
+  rollback. Real provider/model/CLI-agent adapters, certification claims, and
+  effectful mutation remain deferred; production-hardening evidence is the
+  next planned increment.
 
 These statements must be revalidated against code, tags, CI, and Git history
 before a new release or implementation milestone is declared complete.
@@ -457,8 +459,10 @@ specification, source provenance, threat boundary, and phased roadmap are
 accepted; H1-H9 implementation slices and C1-C6 curated skill adaptation phases
 are complete. Curated-skill C4 dogfooding fixtures, C5 structured task routing,
 C6 managed external skill import normalization, H9 adoption gate fail-closed
-enforcement, and H9 deterministic evidence contract tests are merged into `main`
-through PR #213 (`a173931`), PR #214 (`8a1ce50`), and PR #216 (`cec3f45`).
+enforcement, and the deterministic H9 evidence contract are merged into `main`
+through PR #213 (`a173931`), PR #214 (`8a1ce50`), and PR #216 (`cec3f45`). The
+remaining H9 production-hardening work is intentionally separate from the
+deterministic contract and must not add provider, network, or mutation authority.
 
 The Managed Extension Lifecycle roadmap plan (`docs/roadmap/MANAGED_EXTENSION_LIFECYCLE_PLAN.md`),
 Phase E2 Pre-Adoption Inspection & Capability Delta Engine (`inspectExtensionManifest`,

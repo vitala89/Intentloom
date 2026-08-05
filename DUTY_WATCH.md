@@ -60,6 +60,45 @@ entry directly below this section.
 
 ## Watch entries
 
+### 2026-08-05, H9 rollback evidence and roadmap reconciliation
+
+- **Status:** complete for implementation, local verification, and atomic commit;
+  hosted review remains.
+- **Branch:** `test/h9-rollback-evidence` from `origin/main` at `55ab966`.
+- **Commit:** local atomic commit `test(harness): verify H9 rollback recovery`.
+- **Objective:** Continue the approved H9 hardening slice after verifying that
+  the deterministic evidence contract already merged in PR #216, and close
+  the gap between its stated rollback coverage and the actual assertions.
+- **Completed:** Extended `tests/harness-h9-evidence-contract.test.ts` to run
+  `synchronizeGeneratedFiles` through a deterministic failure and assert
+  attempted, completed rollback plus byte-for-byte project-state preservation.
+  Reconciled `PROJECT_STATE.md`, `ROADMAP.md`, the H9 development plan, and
+  `docs/roadmap/AGENTIC_HARNESS_H9_AUDIT.md`; the audit now records the merged
+  fixture contract and its stable terminal states.
+- **Not completed:** Push and hosted review remain.
+- **Files or packages changed:** `tests/harness-h9-evidence-contract.test.ts`,
+  `PROJECT_STATE.md`, `ROADMAP.md`,
+  `docs/roadmap/AGENTIC_HARNESS_PLAN.md`,
+  `docs/roadmap/AGENTIC_HARNESS_H9_AUDIT.md`, and `DUTY_WATCH.md`.
+- **Validation:** Focused H9 test passed (6/6); sandboxed full verification was
+  unable to open Unix sockets and failed only the 22 daemon/IPC tests; the
+  required unsandboxed rerun passed `pnpm verify` with 136/136 test files,
+  1024 passed, 3 skipped, build, and diff checks. `pnpm typecheck`,
+  `pnpm format:check`, and `git -c core.fsmonitor=false diff --check` passed.
+- **Decisions and assumptions:** The H9 fixture contract remains local,
+  deterministic, and provider-neutral; no wall-clock budget, provider,
+  network, subprocess, or new mutation authority is introduced. The existing
+  transactional application operation is used only as a failure/rollback test
+  seam.
+- **Risks or compatibility impact:** Test and documentation coverage only; no
+  production API or runtime behavior changes.
+- **Open issues or blockers:** A future performance benchmark still requires a
+  separately reviewed specification and must not become a release gate before
+  variance is characterized.
+- **Next first action:** Push `test/h9-rollback-evidence` and open a review PR
+  when external publication is authorized; keep the future performance
+  benchmark as a separately reviewed follow-up.
+
 ### 2026-08-05, Remote and local branch triage & reconciliation complete
 
 - **Status:** complete; merged PR branches triaged and deleted.
