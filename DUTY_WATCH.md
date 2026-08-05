@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Phase E7 Knowledge-Provider Boundaries and Graphify Integration are merged into `main` at `8d4eed5`; post-merge reconciliation PR #230 is open with all hosted checks passing.**
+Status: **Phase E7 Knowledge-Provider Boundaries and Graphify Integration are merged into `main` at `8d4eed5` and reconciled at `c57a0ce` (PR #230).**
 
-Active branch: `docs/reconcile-phase-e7-merge`; base `main` at `8d4eed5`
+Active branch: `main` at `c57a0ce`
 
-Current objective: Maintainer reviews and merges PR #230 to conclude Phase E7 post-merge reconciliation.
+Current objective: Select the next approved candidate milestone or roadmap increment.
 
-Next first action: Maintainer reviews and merges PR #230; select the next approved roadmap milestone.
+Next first action: Inspect roadmap and candidate specifications before proposing the next increment.
 
 Known open items, in the order they should be handled:
 

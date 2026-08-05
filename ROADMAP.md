@@ -431,8 +431,8 @@ resolution, the Phase E4 update discovery/migration pipeline, Phase E5 doctor
 diagnostics, Phase E6 safe removal, and Phase E7 knowledge-provider boundaries
 with Graphify adapter reference implementation are complete through the shared
 protocol, validator, and application boundaries. Phase E4 is merged through PR
-#224 (`18b6b53`), Phase E5 through PR #226 (`56bf4bd`), and Phase E6 through PR
-#227 (`d65e735`). Phase E7 is implemented on `feat/knowledge-provider-boundary`.
+#224 (`18b6b53`), Phase E5 through PR #226 (`56bf4bd`), Phase E6 through PR
+#227 (`d65e735`), and Phase E7 through PR #229 (`8d4eed5`).
 
 Exit criteria: a fixture extension can be installed or referenced with explicit
 approval, pinned reproducibly, checked for compatibility and legal metadata,
