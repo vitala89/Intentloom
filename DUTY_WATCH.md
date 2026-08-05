@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **PR #235 is merged into `main`; its post-merge reconciliation and platform-specific Node 22 timeout corrections are now part of the verified baseline.**
+Status: **PR #235 is merged into `main`; its post-merge reconciliation and platform-specific Node 22 timeout corrections are now part of the verified baseline, and documentation-only PR #236 is open for review.**
 
 Active branch: `docs/reconcile-pr235-merge`
 
 Current objective: Reconcile durable documentation with merged PR #235 without adding a runtime runner or release gate.
 
-Next first action: Review and merge the documentation-only post-merge reconciliation; keep benchmark-runner implementation as a separately authorized follow-up.
+Next first action: Review and merge documentation-only PR #236; keep benchmark-runner implementation as a separately authorized follow-up.
 
 Known open items, in the order they should be handled:
 
@@ -62,11 +62,12 @@ entry directly below this section.
 
 ### 2026-08-06, PR #235 merged and durable state reconciliation
 
-- **Status:** complete for the merged PR state; documentation-only reconciliation
-  is prepared on a new branch for review.
+- **Status:** partial; the merged PR state is reconciled and documentation-only
+  PR #236 is open as a draft for review.
 - **Branch:** `docs/reconcile-pr235-merge` from `origin/main` at `ab7bbe1`.
 - **Pull request:** [#235](https://github.com/vitala89/Intentloom/pull/235) is
-  merged with merge commit `ab7bbe1`.
+  merged with merge commit `ab7bbe1`; documentation reconciliation is in
+  [#236](https://github.com/vitala89/Intentloom/pull/236), draft.
 - **Objective:** Synchronize project state, roadmap, H9 plan/audit, and this
   handoff with the merged compatibility fixes without adding a benchmark
   runner, threshold, release gate, provider, network, or mutation capability.
@@ -81,7 +82,7 @@ entry directly below this section.
 - **Validation:** Staged quality checks passed for all five changed files;
   full `pnpm verify` passed with 136 test files, 1,024 tests passed, 3 skipped,
   typecheck, formatting, build, and diff checks.
-- **Next action:** Review and merge the documentation-only reconciliation PR;
+- **Next action:** Review and merge documentation-only PR #236;
   authorize any benchmark-runner slice separately.
 
 ### 2026-08-05, PR #235 Windows Node 22 packed adoption hook timeout correction
