@@ -11,7 +11,8 @@ The H8 canonical read-only inspect/replay operation and bounded CLI and MCP
 consumers are implemented. The H9 adoption gate and deterministic fixture-backed
 evidence contract are merged through PR #233, including the hosted Windows Node
 22 timeout correction. PR #234 merged the separate, non-release-gating H9
-performance-benchmark specification. TUI, Desktop, Neutron, and
+performance-benchmark specification, and PR #235 merged the post-merge
+reconciliation plus platform-specific Node 22 timeout corrections. TUI, Desktop, Neutron, and
 production-hardening implementation evidence remain planned.
 
 ## Outcome
@@ -240,8 +241,8 @@ Exit gate:
 ## Phase H9: Adoption gate and production hardening
 
 Status: adoption gate contract and fail-closed mutation enforcement complete;
-performance-benchmark design merged through PR #234; production-hardening
-evidence remains planned.
+performance-benchmark design and PR #235 compatibility reconciliation merged;
+production-hardening evidence remains planned.
 
 Scope:
 
