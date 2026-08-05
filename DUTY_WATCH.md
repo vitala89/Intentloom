@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **PR #235 is merged into `main`; its post-merge reconciliation and platform-specific Node 22 timeout corrections are now part of the verified baseline, and documentation-only PR #236 is open for review.**
+Status: **PR #235 and the documentation-only reconciliation PR #236 are merged into `main`; the platform-specific Node 22 timeout corrections and durable state updates are part of the verified baseline.**
 
-Active branch: `docs/reconcile-pr235-merge`
+Active branch: `docs/reconcile-pr236-merge`
 
-Current objective: Reconcile durable documentation with merged PR #235 without adding a runtime runner or release gate.
+Current objective: Record the merged PR #236 state without adding a runtime runner or release gate.
 
-Next first action: Review and merge documentation-only PR #236; keep benchmark-runner implementation as a separately authorized follow-up.
+Next first action: Review and merge the documentation-only PR for the PR #236 post-merge handoff; keep benchmark-runner implementation as a separately authorized follow-up.
 
 Known open items, in the order they should be handled:
 
@@ -59,6 +59,27 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-06, PR #236 merged and hosted checks green
+
+- **Status:** complete for the PR #236 merge and verification; a small
+  documentation-only post-merge handoff is prepared for review.
+- **Branch:** `docs/reconcile-pr236-merge` from `origin/main` at `462c696`.
+- **Pull request:** [#236](https://github.com/vitala89/Intentloom/pull/236) is
+  merged with merge commit `462c696`.
+- **Objective:** Record that the durable reconciliation landed without adding a
+  benchmark runner, threshold, release gate, provider, network, or mutation
+  capability.
+- **Completed:** Confirmed the maintainer merge and `origin/main` ref. PR #236
+  passed both Compatibility matrix runs, Governance, and CodeQL, including
+  Windows Node 22 and Node 24. Local full verification also passed with 136
+  test files, 1,024 tests passed, 3 skipped, typecheck, formatting, build, and
+  diff checks.
+- **Not completed:** No benchmark runner or performance threshold was
+  implemented. Cleanup of superseded reconciliation branches remains an
+  explicit owner action.
+- **Next action:** Review and merge the documentation-only post-merge handoff;
+  authorize any benchmark-runner slice separately.
 
 ### 2026-08-06, PR #235 merged and durable state reconciliation
 
