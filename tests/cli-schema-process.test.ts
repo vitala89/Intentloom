@@ -17,6 +17,7 @@ const repositoryRoot = resolve(".");
 const cli = resolve("packages/cli/dist/intentloom.cjs");
 const windows = process.platform === "win32";
 const cliProcessTestTimeout = windows ? 15_000 : 5_000;
+const ms = windows ? 90_000 : 30_000;
 const command = (name: string) => (windows ? `${name}.cmd` : name);
 
 function tarEntries(archive: Buffer) {
@@ -227,78 +228,84 @@ describe("built CLI schema validation process cases", () => {
   it("usage failure remains exit code 2", () => {
     expect(aif(["sync", "--unknown-option"]).status).toBe(2);
   });
-  it("packed CLI resolves bundled schemas outside the monorepo", async () => {
-    const schemaDirectory = resolve("packages/cli/dist/catalog/schemas");
-    const schemaSnapshot = async () =>
-      Promise.all(
-        (await readdir(schemaDirectory))
-          .sort()
-          .map(
-            async (path) =>
-              [
-                path,
-                await readFile(join(schemaDirectory, path), "utf8"),
-              ] as const,
-          ),
+  it(
+    "packed CLI resolves bundled schemas outside the monorepo",
+    async () => {
+      const schemaDirectory = resolve("packages/cli/dist/catalog/schemas");
+      const schemaSnapshot = async () =>
+        Promise.all(
+          (await readdir(schemaDirectory))
+            .sort()
+            .map(
+              async (path) =>
+                [
+                  path,
+                  await readFile(join(schemaDirectory, path), "utf8"),
+                ] as const,
+            ),
+        );
+      const firstBuild = await schemaSnapshot();
+      execFileSync(command("pnpm"), ["build"], {
+        cwd: repositoryRoot,
+        stdio: "pipe",
+        shell: windows,
+      });
+      expect(await schemaSnapshot()).toEqual(firstBuild);
+      const packRoot = await mkdtemp(join(tmpdir(), "aif-schema-pack-"));
+      execFileSync(
+        command("pnpm"),
+        ["--filter", "./packages/cli", "pack", "--pack-destination", packRoot],
+        { cwd: repositoryRoot, stdio: "pipe", shell: windows },
       );
-    const firstBuild = await schemaSnapshot();
-    execFileSync(command("pnpm"), ["build"], {
-      cwd: repositoryRoot,
-      stdio: "pipe",
-      shell: windows,
-    });
-    expect(await schemaSnapshot()).toEqual(firstBuild);
-    const packRoot = await mkdtemp(join(tmpdir(), "aif-schema-pack-"));
-    execFileSync(
-      command("pnpm"),
-      ["--filter", "./packages/cli", "pack", "--pack-destination", packRoot],
-      { cwd: repositoryRoot, stdio: "pipe", shell: windows },
-    );
-    const tarball = join(
-      packRoot,
-      (await readdir(packRoot)).find((entry) => entry.endsWith(".tgz"))!,
-    );
-    const contents = tarEntries(await readFile(tarball));
-    expect(
-      contents.filter((entry) =>
-        /package\/dist\/catalog\/schemas\/[^/]+\.json/u.test(entry),
-      ),
-    ).toHaveLength(10);
-    expect(contents).not.toEqual(
-      expect.arrayContaining([
-        expect.stringMatching(/(?:^|\/)(?:tests?|fixtures?)(?:\/|$)/u),
-      ]),
-    );
-    expect(contents).not.toEqual(
-      expect.arrayContaining([expect.stringMatching(/(?:^|\/)\.env(?:\.|$)/u)]),
-    );
-    const runtime = join(packRoot, "runtime");
-    await mkdir(runtime);
-    execFileSync(
-      command("npm"),
-      [
-        "install",
-        "--cache",
-        join(packRoot, "npm-cache"),
-        "--ignore-scripts",
-        "--no-audit",
-        "--no-fund",
-        tarball,
-      ],
-      { cwd: runtime, stdio: "pipe", shell: windows },
-    );
-    const packedCli = resolvePackedCliEntry(runtime);
-    const root = join(packRoot, "external-project");
-    await mkdir(root);
-    expect(
-      runPackedCli(
-        packedCli,
-        ["init", "--root", root, "--adapters", "codex"],
-        runtime,
-      ).status,
-    ).toBe(0);
-    expect(
-      runPackedCli(packedCli, ["sync", "--root", root], runtime).status,
-    ).toBe(0);
-  }, 30_000);
+      const tarball = join(
+        packRoot,
+        (await readdir(packRoot)).find((entry) => entry.endsWith(".tgz"))!,
+      );
+      const contents = tarEntries(await readFile(tarball));
+      expect(
+        contents.filter((entry) =>
+          /package\/dist\/catalog\/schemas\/[^/]+\.json/u.test(entry),
+        ),
+      ).toHaveLength(10);
+      expect(contents).not.toEqual(
+        expect.arrayContaining([
+          expect.stringMatching(/(?:^|\/)(?:tests?|fixtures?)(?:\/|$)/u),
+        ]),
+      );
+      expect(contents).not.toEqual(
+        expect.arrayContaining([
+          expect.stringMatching(/(?:^|\/)\.env(?:\.|$)/u),
+        ]),
+      );
+      const runtime = join(packRoot, "runtime");
+      await mkdir(runtime);
+      execFileSync(
+        command("npm"),
+        [
+          "install",
+          "--cache",
+          join(packRoot, "npm-cache"),
+          "--ignore-scripts",
+          "--no-audit",
+          "--no-fund",
+          tarball,
+        ],
+        { cwd: runtime, stdio: "pipe", shell: windows },
+      );
+      const packedCli = resolvePackedCliEntry(runtime);
+      const root = join(packRoot, "external-project");
+      await mkdir(root);
+      expect(
+        runPackedCli(
+          packedCli,
+          ["init", "--root", root, "--adapters", "codex"],
+          runtime,
+        ).status,
+      ).toBe(0);
+      expect(
+        runPackedCli(packedCli, ["sync", "--root", root], runtime).status,
+      ).toBe(0);
+    },
+    ms,
+  );
 });

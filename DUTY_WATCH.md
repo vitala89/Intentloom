@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **H9 rollback evidence is published in draft PR #233; Phase E7 Knowledge-Provider Boundaries & Graphify Integration remains merged into `main`.**
+Status: **H9 rollback evidence and the Windows Node 22 CI timeout fix are published in draft PR #233; Phase E7 Knowledge-Provider Boundaries & Graphify Integration remains merged into `main`.**
 
 Active branch: `test/h9-rollback-evidence`
 
 Current objective: Obtain maintainer review and merge of draft PR #233.
 
-Next first action: Monitor PR #233 hosted checks and address maintainer feedback if any.
+Next first action: Monitor the new PR #233 hosted checks and address maintainer feedback if any.
 
 Known open items, in the order they should be handled:
 
@@ -59,6 +59,25 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-05, Windows Node 22 compatibility timeout fixed for PR #233
+
+- **Status:** complete; the failing hosted check was diagnosed, the focused test
+  fix was verified locally, and the change was committed and pushed for CI.
+- **Branch:** `test/h9-rollback-evidence`.
+- **Pull request:** [#233](https://github.com/vitala89/Intentloom/pull/233), draft.
+- **Objective:** Remove the platform-specific timeout failure in the Windows
+  Node 22 compatibility job without changing CLI behavior.
+- **Completed:** Increased only the Windows timeout for the packed CLI schema
+  process test from 30 seconds to 90 seconds. The failing run showed the test
+  completing in 53.9 seconds on Windows Node 22; Windows Node 24 completed it
+  in 4.6 seconds, and other matrix jobs passed.
+- **Not completed:** The post-push hosted checks and maintainer review remain.
+- **Files or packages changed:** `tests/cli-schema-process.test.ts` and
+  `DUTY_WATCH.md`.
+- **Validation:** Focused packed CLI test passed locally; full verification and
+  pre-push checks are required before completion is claimed.
+- **Next action:** Confirm the new Windows Node 22 and full PR checks are green.
 
 ### 2026-08-05, H9 rollback evidence published for review
 
