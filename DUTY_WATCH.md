@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **PR #235 contains the post-merge reconciliation and the macOS Node 22 timeout correction; all hosted checks are green and maintainer review/merge remains pending.**
+Status: **PR #235 contains the post-merge reconciliation and platform-specific test timeout corrections; the Windows Node 22 packed adoption setup fix is being verified before hosted recheck.**
 
 Active branch: `docs/reconcile-h9-benchmark-merge`
 
-Current objective: Hand off the verified PR #235 for maintainer review without adding a runtime runner or release gate.
+Current objective: Complete verification and hosted recheck for PR #235 without adding a runtime runner or release gate.
 
-Next first action: Maintainer reviews and merges PR #235; keep benchmark-runner implementation as a separately authorized follow-up.
+Next first action: Complete verification and hosted recheck for the Windows Node 22 correction, then return PR #235 to maintainer review; keep benchmark-runner implementation as a separately authorized follow-up.
 
 Known open items, in the order they should be handled:
 
@@ -59,6 +59,33 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-05, PR #235 Windows Node 22 packed adoption hook timeout correction
+
+- **Status:** partial; the failing hosted job is diagnosed and the focused
+  correction is in progress; full verification, publication, and hosted
+  recheck remain.
+- **Branch:** `docs/reconcile-h9-benchmark-merge`.
+- **Pull request:** [#235](https://github.com/vitala89/Intentloom/pull/235),
+  draft.
+- **Objective:** Resolve the Windows Node 22 Compatibility failure without
+  changing production behavior or widening the H9 benchmark scope.
+- **Completed:** Confirmed the only failing job was `windows-latest / Node 22`
+  and that `tests/adoption-doctor-packed-process.test.ts:45` exceeded
+  Vitest's default 30-second `beforeAll` hook timeout while building and
+  packing the CLI. Added a 90-second setup-hook timeout only on Windows;
+  non-Windows runners retain 30 seconds.
+- **Not completed:** Atomic commit, push, and hosted PR recheck remain
+  pending. No production code, benchmark runner,
+  threshold, release gate, provider, network, subprocess, or mutation
+  capability changed.
+- **Validation:** Hosted run `31041490095` had all other Compatibility matrix
+  jobs, Governance, and CodeQL green; the Windows Node 22 job failed only at
+  this hook timeout. The focused test passed locally with 1 file and 11 tests;
+  staged checks passed; full `pnpm verify` passed with 136 files, 1,024 tests
+  passed, 3 skipped, typecheck, formatting, build, and diff checks.
+- **Next action:** Commit and push PR #235, then confirm the Windows Node 22
+  hosted job is green and return the draft to maintainer review.
 
 ### 2026-08-05, PR #235 macOS Node 22 timeout correction verified green
 
