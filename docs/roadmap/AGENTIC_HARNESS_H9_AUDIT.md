@@ -2,9 +2,10 @@
 
 ## Status
 
-Audit completed on 2026-08-04 against `main` at `8a1ce50` (PR #214). This
-document records existing evidence and the smallest remaining hardening gap; it
-does not authorize provider execution, network access, or mutation.
+Audit updated on 2026-08-05 against `main` at `55ab966`, including PR #216
+(`cec3f45`). This document records existing evidence and the smallest remaining
+hardening gap; it does not authorize provider execution, network access, or
+mutation.
 
 ## Existing evidence
 
@@ -16,23 +17,22 @@ does not authorize provider execution, network access, or mutation.
 | Adoption gate                    | `tests/harness-adoption-gate.test.ts` covers passing scorecards, missing/failing/stale scorecards, and missing approvals.                                                                                                                      | Fail-closed contract covered.                   |
 | Rollback and migration recovery  | `tests/transaction-consistency.test.ts`, `tests/cli-adopt-apply.test.ts`, and `tests/cli-pack-update.test.ts` cover transactional rollback, stale plans, and migration journals.                                                               | Existing application recovery evidence.         |
 | Retention and purge              | `tests/harness-state.test.ts` covers checkpoint purge; `tests/evidence-cache-revocation-cross-surface.test.ts` covers provider-cache purge and revocation across surfaces.                                                                     | Existing bounded purge evidence.                |
+| Composed H9 evidence             | `tests/harness-h9-evidence-contract.test.ts` uses versioned deterministic fixtures to compose adoption-gate failure, replay, cross-project resume rejection, checkpoint purge, and transactional rollback recovery.                            | Covered without wall-clock thresholds.          |
 
 ## Remaining gap
 
-There is no dedicated harness-specific CI drill that combines scorecard
-freshness/approval enforcement with checkpoint purge and rollback recovery, and
-there is no stable harness performance budget suitable for a hosted matrix.
-Adding wall-clock thresholds to the test suite would be flaky across the
-existing six compatibility jobs.
+There is no stable harness performance budget suitable for a hosted matrix, and
+the deterministic contract is not a certification claim. Adding wall-clock
+thresholds to the test suite would be flaky across the existing six
+compatibility jobs.
 
 ## Bounded next slice
 
-Add a deterministic, fixture-backed H9 evidence contract that composes the
-existing adoption gate, replay/purge, and rollback outcomes without measuring
-wall-clock time or granting new capabilities. Keep it as a focused test and
-document the fixture versions and expected terminal states. A later, separately
-reviewed performance benchmark may consume the same fixtures without becoming a
-release gate until its variance is characterized.
+Design a separately reviewed performance-benchmark specification that can
+consume the existing H9 fixtures without becoming a release gate until its
+variance is characterized. Keep fixture version `h9-evidence-drill@1` and its
+expected terminal states (`passed` gate, `failed` gate, deterministic replay,
+purged checkpoint, and completed rollback) stable for that future benchmark.
 
 ## Explicitly out of scope
 

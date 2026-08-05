@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Phase E7 Knowledge-Provider Boundaries & Graphify Integration are merged into `main` at `8d4eed5` and reconciled at `caf81a7` (PR #230 & PR #231); branch triage complete.**
+Status: **H9 rollback evidence and the Windows Node 22 CI timeout fix are published in draft PR #233; Phase E7 Knowledge-Provider Boundaries & Graphify Integration remains merged into `main`.**
 
-Active branch: `main` at `caf81a7`
+Active branch: `test/h9-rollback-evidence`
 
-Current objective: Select the next approved candidate milestone or roadmap increment.
+Current objective: Obtain maintainer review and merge of draft PR #233.
 
-Next first action: Inspect roadmap and candidate specifications before proposing the next increment.
+Next first action: Monitor the new PR #233 hosted checks and address maintainer feedback if any.
 
 Known open items, in the order they should be handled:
 
@@ -59,6 +59,65 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-05, Windows Node 22 compatibility timeout fixed for PR #233
+
+- **Status:** complete; the failing hosted check was diagnosed, the focused test
+  fix was verified locally, and the change was committed and pushed for CI.
+- **Branch:** `test/h9-rollback-evidence`.
+- **Pull request:** [#233](https://github.com/vitala89/Intentloom/pull/233), draft.
+- **Objective:** Remove the platform-specific timeout failure in the Windows
+  Node 22 compatibility job without changing CLI behavior.
+- **Completed:** Increased only the Windows timeout for the packed CLI schema
+  process test from 30 seconds to 90 seconds. The failing run showed the test
+  completing in 53.9 seconds on Windows Node 22; Windows Node 24 completed it
+  in 4.6 seconds, and other matrix jobs passed.
+- **Not completed:** The post-push hosted checks and maintainer review remain.
+- **Files or packages changed:** `tests/cli-schema-process.test.ts` and
+  `DUTY_WATCH.md`.
+- **Validation:** Focused packed CLI test passed locally; full verification and
+  pre-push checks are required before completion is claimed.
+- **Next action:** Confirm the new Windows Node 22 and full PR checks are green.
+
+### 2026-08-05, H9 rollback evidence published for review
+
+- **Status:** complete; implementation, local verification, atomic commit, push,
+  and draft PR creation succeeded.
+- **Branch:** `test/h9-rollback-evidence` from `origin/main` at `55ab966`.
+- **Commit:** local atomic commit `test(harness): verify H9 rollback recovery`.
+- **Pull request:** [#233](https://github.com/vitala89/Intentloom/pull/233), draft.
+- **Objective:** Continue the approved H9 hardening slice after verifying that
+  the deterministic evidence contract already merged in PR #216, and close
+  the gap between its stated rollback coverage and the actual assertions.
+- **Completed:** Extended `tests/harness-h9-evidence-contract.test.ts` to run
+  `synchronizeGeneratedFiles` through a deterministic failure and assert
+  attempted, completed rollback plus byte-for-byte project-state preservation.
+  Reconciled `PROJECT_STATE.md`, `ROADMAP.md`, the H9 development plan, and
+  `docs/roadmap/AGENTIC_HARNESS_H9_AUDIT.md`; the audit now records the merged
+  fixture contract and its stable terminal states.
+- **Not completed:** Maintainer review and merge remain.
+- **Files or packages changed:** `tests/harness-h9-evidence-contract.test.ts`,
+  `PROJECT_STATE.md`, `ROADMAP.md`,
+  `docs/roadmap/AGENTIC_HARNESS_PLAN.md`,
+  `docs/roadmap/AGENTIC_HARNESS_H9_AUDIT.md`, and `DUTY_WATCH.md`.
+- **Validation:** Focused H9 test passed (6/6); sandboxed full verification was
+  unable to open Unix sockets and failed only the 22 daemon/IPC tests; the
+  required unsandboxed rerun passed `pnpm verify` with 136/136 test files,
+  1024 passed, 3 skipped, build, and diff checks. `pnpm typecheck`,
+  `pnpm format:check`, and `git -c core.fsmonitor=false diff --check` passed.
+- **Decisions and assumptions:** The H9 fixture contract remains local,
+  deterministic, and provider-neutral; no wall-clock budget, provider,
+  network, subprocess, or new mutation authority is introduced. The existing
+  transactional application operation is used only as a failure/rollback test
+  seam.
+- **Risks or compatibility impact:** Test and documentation coverage only; no
+  production API or runtime behavior changes.
+- **Open issues or blockers:** A future performance benchmark still requires a
+  separately reviewed specification and must not become a release gate before
+  variance is characterized.
+- **Next first action:** Monitor PR #233 hosted checks and hand it to the
+  maintainer for review; keep the future performance benchmark as a separately
+  reviewed follow-up.
 
 ### 2026-08-05, Remote and local branch triage & reconciliation complete
 
