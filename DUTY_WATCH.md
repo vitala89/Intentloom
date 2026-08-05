@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **PR #233 merged the H9 rollback evidence and Windows Node 22 CI timeout fix; the next bounded slice is review of the separate H9 performance-benchmark specification.**
+Status: **PR #233 merged the H9 rollback evidence and Windows Node 22 CI timeout fix; draft PR #234 publishes the separate H9 performance-benchmark specification for review.**
 
 Active branch: `docs/h9-performance-benchmark-spec`
 
-Current objective: Prepare the separate H9 performance-benchmark design for review without adding a runtime runner or release gate.
+Current objective: Support review of the separate H9 performance-benchmark design without adding a runtime runner or release gate.
 
-Next first action: Review the open sampling, clock, retention, and workflow decisions in `docs/specs/AGENTIC_HARNESS_PERFORMANCE_BENCHMARK_SPEC.md`.
+Next first action: Maintainer reviews draft PR #234, especially the open sampling, clock, retention, and workflow decisions in `docs/specs/AGENTIC_HARNESS_PERFORMANCE_BENCHMARK_SPEC.md`.
 
 Known open items, in the order they should be handled:
 
@@ -59,6 +59,30 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-05, H9 performance benchmark specification published as PR #234
+
+- **Status:** partial; draft PR #234 is published for maintainer review.
+- **Branch:** `docs/h9-performance-benchmark-spec` at `0a95e12`, based on
+  merged `main` commit `9af9e1d`.
+- **Pull request:** [#234](https://github.com/vitala89/Intentloom/pull/234),
+  draft.
+- **Objective:** Publish the separately reviewed, provider-neutral H9
+  performance-benchmark design boundary.
+- **Completed:** Pushed the benchmark specification and reconciled project
+  state, roadmap, H9 audit/plan, and Duty Watch with merged PR #233. The PR
+  records the design-only scope and review decisions without claiming a runner
+  or release gate.
+- **Not completed:** Maintainer review/merge and resolution of the open clock,
+  sampling, variance, retention, and workflow decisions remain pending. No
+  benchmark runner, threshold, CI workflow, provider or model adapter,
+  subprocess capability, release gate, or new mutation authority was added.
+- **Validation:** Full `pnpm verify` and pre-push verification passed outside
+  the sandbox: 136 test files passed, 1024 tests passed, 3 skipped; build and
+  `git diff --check` passed. The sandbox-only run hit its known Unix-socket
+  `listen EPERM` restriction in daemon tests.
+- **Next action:** Maintainer reviews and merges PR #234 or requests revisions;
+  do not implement a benchmark runner until the specification is accepted.
 
 ### 2026-08-05, PR #233 merged and benchmark design slice drafted
 
