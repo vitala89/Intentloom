@@ -9,9 +9,9 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Phase E7 Knowledge-Provider Boundaries and Graphify Integration are merged into `main` at `8d4eed5` and reconciled at `c57a0ce` (PR #230).**
+Status: **Phase E7 Knowledge-Provider Boundaries & Graphify Integration are merged into `main` at `8d4eed5` and reconciled at `caf81a7` (PR #230 & PR #231); branch triage complete.**
 
-Active branch: `main` at `c57a0ce`
+Active branch: `main` at `caf81a7`
 
 Current objective: Select the next approved candidate milestone or roadmap increment.
 
@@ -59,6 +59,16 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-05, Remote and local branch triage & reconciliation complete
+
+- **Status:** complete; merged PR branches triaged and deleted.
+- **Branch:** `main` at `caf81a7`.
+- **Pull request:** [#230](https://github.com/vitala89/Intentloom/pull/230), [#231](https://github.com/vitala89/Intentloom/pull/231), merged.
+- **Objective:** Clean up obsolete remote tracking and local feature branches for merged PRs (Phase E6, Phase E7, Harness H1-H9, C1-C6).
+- **Completed:** Deleted 19 merged remote tracking branches on `origin`, pruned remote tracking refs, and deleted 40 stale local feature branches.
+- **Validation:** `git fetch --prune` and `git branch -r` confirm clean remote tracking state; full `pnpm verify` suite passed.
+- **Next first action:** Select the next approved candidate roadmap milestone.
 
 ### 2026-08-05, Phase E7 post-merge reconciliation
 
