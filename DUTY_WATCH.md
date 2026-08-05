@@ -9,7 +9,7 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **PR #235 is merged into `main`; its post-merge reconciliation and platform-specific Node 22 timeout corrections are now part of the verified baseline, and documentation-only PR #236 is open for review.**
+Status: **PR #235 is merged into `main`; its post-merge reconciliation and platform-specific Node 22 timeout corrections are now part of the verified baseline, and documentation-only PR #236 is open with all hosted checks green.**
 
 Active branch: `docs/reconcile-pr235-merge`
 
@@ -81,7 +81,9 @@ entry directly below this section.
   an explicit owner action.
 - **Validation:** Staged quality checks passed for all five changed files;
   full `pnpm verify` passed with 136 test files, 1,024 tests passed, 3 skipped,
-  typecheck, formatting, build, and diff checks.
+  typecheck, formatting, build, and diff checks. PR #236 then passed both
+  Compatibility matrix runs, Governance, and CodeQL, including Windows Node 22
+  and Node 24.
 - **Next action:** Review and merge documentation-only PR #236;
   authorize any benchmark-runner slice separately.
 
