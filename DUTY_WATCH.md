@@ -15,7 +15,7 @@ Active branch: `docs/reconcile-h9-benchmark-merge`
 
 Current objective: Reconcile durable project state after PR #234 without adding a runtime runner or release gate.
 
-Next first action: Validate and publish this post-merge reconciliation, then keep benchmark-runner implementation as a separately authorized follow-up.
+Next first action: Validate and publish the macOS Node 22 timeout correction in PR #235, then re-observe hosted Compatibility before any benchmark-runner work.
 
 Known open items, in the order they should be handled:
 
@@ -59,6 +59,28 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-05, PR #235 macOS Node 22 test timeout correction
+
+- **Status:** partial; the failing hosted job is diagnosed and the focused fix
+  passes locally; full verification, publication, and hosted recheck remain.
+- **Branch:** `docs/reconcile-h9-benchmark-merge` from `a99ec27`.
+- **Pull request:** [#235](https://github.com/vitala89/Intentloom/pull/235),
+  draft.
+- **Objective:** Remove the macOS Node 22 Compatibility timeout without
+  changing production behavior or widening the H9 benchmark scope.
+- **Completed:** Confirmed only `macos-latest / Node 22` failed, in
+  `tests/cli-evidence-analysis.test.ts`, where the test exceeded Vitest's
+  default 5-second timeout. Added a 15-second timeout only for macOS Node 22;
+  other platforms and runtimes retain 5 seconds.
+- **Not completed:** Full verification, atomic commit, push, and hosted PR
+  recheck remain pending. No production code, benchmark runner, threshold,
+  release gate, provider, network, subprocess, or mutation capability changed.
+- **Validation:** Focused `tests/cli-evidence-analysis.test.ts` passes on local
+  Node `v22.17.0`; Prettier and `git diff --check` pass.
+- **Next action:** Run staged and full verification, commit the test-only
+  correction with this handoff, push PR #235, and confirm Compatibility is
+  green.
 
 ### 2026-08-05, PR #234 post-merge reconciliation
 
