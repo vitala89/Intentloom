@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **PR #233 merged the H9 rollback evidence and Windows Node 22 CI timeout fix; draft PR #234 publishes the separate H9 performance-benchmark specification for review.**
+Status: **PR #234 merged the H9 performance-benchmark specification; durable project state is being reconciled from the merge commit.**
 
-Active branch: `docs/h9-performance-benchmark-spec`
+Active branch: `docs/reconcile-h9-benchmark-merge`
 
-Current objective: Support review of the separate H9 performance-benchmark design without adding a runtime runner or release gate.
+Current objective: Reconcile durable project state after PR #234 without adding a runtime runner or release gate.
 
-Next first action: Maintainer reviews draft PR #234, especially the open sampling, clock, retention, and workflow decisions in `docs/specs/AGENTIC_HARNESS_PERFORMANCE_BENCHMARK_SPEC.md`.
+Next first action: Validate and publish this post-merge reconciliation, then keep benchmark-runner implementation as a separately authorized follow-up.
 
 Known open items, in the order they should be handled:
 
@@ -59,6 +59,26 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-05, PR #234 post-merge reconciliation
+
+- **Status:** partial; PR #234 is merged and the reconciliation branch is being
+  prepared from the merge commit.
+- **Branch:** `docs/reconcile-h9-benchmark-merge` from `origin/main` at
+  `7fb752f`.
+- **Pull request:** [#234](https://github.com/vitala89/Intentloom/pull/234),
+  merged.
+- **Objective:** Update durable project state, roadmap, H9 audit/plan, and this
+  handoff after the accepted benchmark specification landed in `main`.
+- **Completed:** Confirmed the merge and green hosted workflows; updated
+  references from pre-merge `9af9e1d`/draft PR #234 to merge commit `7fb752f`.
+  The benchmark remains design-only and does not authorize a runner, threshold,
+  release gate, provider, network, subprocess, or mutation capability.
+- **Not completed:** Reconciliation validation, commit, publication, and
+  maintainer review remain pending. No runtime code changed.
+- **Next action:** Run documentation and full repository verification, commit
+  the reconciliation atomically, publish its draft PR, and keep runner work
+  separately authorized.
 
 ### 2026-08-05, H9 performance benchmark specification published as PR #234
 

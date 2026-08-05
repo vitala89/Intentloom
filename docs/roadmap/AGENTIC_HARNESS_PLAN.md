@@ -10,8 +10,8 @@ bounded H6 deterministic voting core and H7 scenario corpus are implemented.
 The H8 canonical read-only inspect/replay operation and bounded CLI and MCP
 consumers are implemented. The H9 adoption gate and deterministic fixture-backed
 evidence contract are merged through PR #233, including the hosted Windows Node
-22 timeout correction. The H9 performance-benchmark specification is now drafted
-as a separate, non-release-gating design artifact. TUI, Desktop, Neutron, and
+22 timeout correction. PR #234 merged the separate, non-release-gating H9
+performance-benchmark specification. TUI, Desktop, Neutron, and
 production-hardening implementation evidence remain planned.
 
 ## Outcome
@@ -240,8 +240,8 @@ Exit gate:
 ## Phase H9: Adoption gate and production hardening
 
 Status: adoption gate contract and fail-closed mutation enforcement complete;
-performance-benchmark design drafted; production-hardening evidence remains
-planned.
+performance-benchmark design merged through PR #234; production-hardening
+evidence remains planned.
 
 Scope:
 
@@ -249,8 +249,9 @@ Scope:
   activation and broader agent/MCP mutation;
 - add cross-platform CI matrices, performance budgets, migration and retention
   drills, and adapter compatibility policy;
-- review and accept the separate performance-benchmark specification before
-  implementing any measurement runner;
+- keep any future measurement runner within the accepted performance-benchmark
+  specification and outside release/Compatibility gates until variance is
+  characterized;
 - document supported guarantees and unsupported environments;
 - complete independent security and release-readiness reviews.
 

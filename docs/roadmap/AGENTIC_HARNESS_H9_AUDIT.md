@@ -2,10 +2,10 @@
 
 ## Status
 
-Audit updated on 2026-08-05 against `main` at `9af9e1d`, including PR #233
-(`04b93e2`). This document records existing evidence and the smallest remaining
-hardening gap; it does not authorize provider execution, network access, or
-mutation.
+Audit updated on 2026-08-05 against `main` at `7fb752f`, including PR #233
+(`04b93e2`) and PR #234 (`bb67e1d`). This document records existing evidence
+and the smallest remaining hardening gap; it does not authorize provider
+execution, network access, or mutation.
 
 ## Existing evidence
 
@@ -30,13 +30,13 @@ that observed runner duration into a product budget.
 
 ## Bounded next slice
 
-The draft [H9 performance benchmark specification](../specs/AGENTIC_HARNESS_PERFORMANCE_BENCHMARK_SPEC.md)
+The merged [H9 performance benchmark specification](../specs/AGENTIC_HARNESS_PERFORMANCE_BENCHMARK_SPEC.md)
 defines a local, provider-neutral measurement contract that consumes the
 existing H9 fixtures without becoming a release gate until its variance is
-characterized. Review and accept the specification before implementing a
-benchmark runner. Keep fixture version `h9-evidence-drill@1` and its expected
+characterized. Any future benchmark runner requires its own implementation
+review and must keep fixture version `h9-evidence-drill@1` and its expected
 terminal states (`passed` gate, `failed` gate, deterministic replay, purged
-checkpoint, and completed rollback) stable for that future benchmark.
+checkpoint, and completed rollback) stable.
 
 ## Explicitly out of scope
 
