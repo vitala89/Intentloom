@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **H9 rollback evidence and the Windows Node 22 CI timeout fix are published in draft PR #233; Phase E7 Knowledge-Provider Boundaries & Graphify Integration remains merged into `main`.**
+Status: **PR #233 merged the H9 rollback evidence and Windows Node 22 CI timeout fix; draft PR #234 publishes the separate H9 performance-benchmark specification for review.**
 
-Active branch: `test/h9-rollback-evidence`
+Active branch: `docs/h9-performance-benchmark-spec`
 
-Current objective: Obtain maintainer review and merge of draft PR #233.
+Current objective: Support review of the separate H9 performance-benchmark design without adding a runtime runner or release gate.
 
-Next first action: Monitor the new PR #233 hosted checks and address maintainer feedback if any.
+Next first action: Maintainer reviews draft PR #234, especially the open sampling, clock, retention, and workflow decisions in `docs/specs/AGENTIC_HARNESS_PERFORMANCE_BENCHMARK_SPEC.md`.
 
 Known open items, in the order they should be handled:
 
@@ -59,6 +59,55 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-05, H9 performance benchmark specification published as PR #234
+
+- **Status:** partial; draft PR #234 is published for maintainer review.
+- **Branch:** `docs/h9-performance-benchmark-spec` at `0a95e12`, based on
+  merged `main` commit `9af9e1d`.
+- **Pull request:** [#234](https://github.com/vitala89/Intentloom/pull/234),
+  draft.
+- **Objective:** Publish the separately reviewed, provider-neutral H9
+  performance-benchmark design boundary.
+- **Completed:** Pushed the benchmark specification and reconciled project
+  state, roadmap, H9 audit/plan, and Duty Watch with merged PR #233. The PR
+  records the design-only scope and review decisions without claiming a runner
+  or release gate.
+- **Not completed:** Maintainer review/merge and resolution of the open clock,
+  sampling, variance, retention, and workflow decisions remain pending. No
+  benchmark runner, threshold, CI workflow, provider or model adapter,
+  subprocess capability, release gate, or new mutation authority was added.
+- **Validation:** Full `pnpm verify` and pre-push verification passed outside
+  the sandbox: 136 test files passed, 1024 tests passed, 3 skipped; build and
+  `git diff --check` passed. The sandbox-only run hit its known Unix-socket
+  `listen EPERM` restriction in daemon tests.
+- **Next action:** Maintainer reviews and merges PR #234 or requests revisions;
+  do not implement a benchmark runner until the specification is accepted.
+
+### 2026-08-05, PR #233 merged and benchmark design slice drafted
+
+- **Status:** partial; PR #233 is merged with all hosted checks green, and the
+  next H9 benchmark design artifact is drafted for review.
+- **Branch:** `docs/h9-performance-benchmark-spec` from `origin/main` at
+  `9af9e1d`.
+- **Pull request:** not opened; publication awaits review of the new design
+  slice.
+- **Objective:** Convert the H9 audit's remaining performance gap into a
+  separately reviewed, non-release-gating benchmark specification.
+- **Completed:** Added the provider-neutral benchmark contract, execution
+  profiles, metrics, variance rules, baseline comparability, CI boundary,
+  retention/redaction rules, and open review decisions. Reconciled the H9
+  audit, development plan, roadmap, project state, and this handoff with PR
+  #233's merged state.
+- **Not completed:** No benchmark runner, threshold, CI workflow, provider or
+  model adapter, subprocess capability, release gate, or new mutation authority
+  was added. The design still needs review before implementation or
+  publication.
+- **Validation:** Documentation formatting, link checks, diff review, and the
+  repository's full verification are required before commit; no runtime code
+  changed in this slice.
+- **Next action:** Review the open decisions in the benchmark specification and
+  authorize publication or further revision.
 
 ### 2026-08-05, Windows Node 22 compatibility timeout fixed for PR #233
 
