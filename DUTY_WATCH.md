@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **PR #233 merged the H9 rollback evidence and Windows Node 22 CI timeout fix; draft PR #234 publishes the separate H9 performance-benchmark specification for review.**
+Status: **PR #235 contains the post-merge reconciliation and platform-specific test timeout corrections; all hosted checks are green and maintainer review/merge remains pending.**
 
-Active branch: `docs/h9-performance-benchmark-spec`
+Active branch: `docs/reconcile-h9-benchmark-merge`
 
-Current objective: Support review of the separate H9 performance-benchmark design without adding a runtime runner or release gate.
+Current objective: Complete verification and hosted recheck for PR #235 without adding a runtime runner or release gate.
 
-Next first action: Maintainer reviews draft PR #234, especially the open sampling, clock, retention, and workflow decisions in `docs/specs/AGENTIC_HARNESS_PERFORMANCE_BENCHMARK_SPEC.md`.
+Next first action: Maintainer reviews and merges PR #235; keep benchmark-runner implementation as a separately authorized follow-up.
 
 Known open items, in the order they should be handled:
 
@@ -59,6 +59,98 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-05, PR #235 Windows Node 22 packed adoption hook timeout correction
+
+- **Status:** partial; the correction is committed and pushed and all hosted
+  checks are green, while maintainer review/merge remains pending.
+- **Branch:** `docs/reconcile-h9-benchmark-merge`.
+- **Pull request:** [#235](https://github.com/vitala89/Intentloom/pull/235),
+  draft.
+- **Objective:** Resolve the Windows Node 22 Compatibility failure without
+  changing production behavior or widening the H9 benchmark scope.
+- **Completed:** Confirmed the only failing job was `windows-latest / Node 22`
+  and that `tests/adoption-doctor-packed-process.test.ts:45` exceeded
+  Vitest's default 30-second `beforeAll` hook timeout while building and
+  packing the CLI. Added a 90-second setup-hook timeout only on Windows;
+  non-Windows runners retain 30 seconds.
+- **Not completed:** Maintainer review and merge remain pending. No production
+  code, benchmark runner,
+  threshold, release gate, provider, network, subprocess, or mutation
+  capability changed.
+- **Validation:** The focused test passed locally with 1 file and 11 tests;
+  staged checks passed; full `pnpm verify` and pre-push verification passed
+  with 136 files, 1,024 tests passed, 3 skipped, typecheck, formatting, build,
+  and diff checks. Hosted Compatibility runs `31045701058` and `31045703073`
+  passed all six matrix jobs, including Windows Node 22; Governance and CodeQL
+  also passed.
+- **Next action:** Maintainer reviews and merges the draft PR #235, then
+  continue only with a separately authorized benchmark-runner slice.
+
+### 2026-08-05, PR #235 macOS Node 22 timeout correction verified green
+
+- **Status:** partial; the timeout correction is pushed and all hosted checks
+  are green, while maintainer review/merge remains pending.
+- **Branch:** `docs/reconcile-h9-benchmark-merge` at `0e1abae`.
+- **Pull request:** [#235](https://github.com/vitala89/Intentloom/pull/235),
+  draft.
+- **Objective:** Resolve the macOS Node 22 Compatibility failure without
+  changing production behavior or widening the H9 benchmark scope.
+- **Completed:** Added a 15-second test timeout only for macOS Node 22 in
+  `tests/cli-evidence-analysis.test.ts`; all other platforms and runtimes
+  retain the 5-second timeout. Pushed the fix and re-observed both hosted
+  Compatibility runs: all six matrix jobs passed in each run. Governance and
+  CodeQL also passed.
+- **Validation:** Focused test passed on Node `v22.17.0`; staged checks passed;
+  full `pnpm verify` and pre-push verification passed with 136 test files,
+  1024 tests passed, 3 skipped, build, and diff checks.
+- **Not completed:** Maintainer review and merge remain pending. No production
+  code, benchmark runner, threshold, release gate, provider, network,
+  subprocess, or mutation capability changed.
+- **Next action:** Maintainer reviews and merges PR #235, then continue only
+  with a separately authorized benchmark-runner slice.
+
+### 2026-08-05, PR #235 macOS Node 22 test timeout correction
+
+- **Status:** partial; the failing hosted job is diagnosed and the focused fix
+  passes locally; full verification, publication, and hosted recheck remain.
+- **Branch:** `docs/reconcile-h9-benchmark-merge` from `a99ec27`.
+- **Pull request:** [#235](https://github.com/vitala89/Intentloom/pull/235),
+  draft.
+- **Objective:** Remove the macOS Node 22 Compatibility timeout without
+  changing production behavior or widening the H9 benchmark scope.
+- **Completed:** Confirmed only `macos-latest / Node 22` failed, in
+  `tests/cli-evidence-analysis.test.ts`, where the test exceeded Vitest's
+  default 5-second timeout. Added a 15-second timeout only for macOS Node 22;
+  other platforms and runtimes retain 5 seconds.
+- **Not completed:** Full verification, atomic commit, push, and hosted PR
+  recheck remain pending. No production code, benchmark runner, threshold,
+  release gate, provider, network, subprocess, or mutation capability changed.
+- **Validation:** Focused `tests/cli-evidence-analysis.test.ts` passes on local
+  Node `v22.17.0`; Prettier and `git diff --check` pass.
+- **Next action:** Run staged and full verification, commit the test-only
+  correction with this handoff, push PR #235, and confirm Compatibility is
+  green.
+
+### 2026-08-05, PR #234 post-merge reconciliation
+
+- **Status:** partial; PR #234 is merged and the reconciliation branch is being
+  prepared from the merge commit.
+- **Branch:** `docs/reconcile-h9-benchmark-merge` from `origin/main` at
+  `7fb752f`.
+- **Pull request:** [#234](https://github.com/vitala89/Intentloom/pull/234),
+  merged.
+- **Objective:** Update durable project state, roadmap, H9 audit/plan, and this
+  handoff after the accepted benchmark specification landed in `main`.
+- **Completed:** Confirmed the merge and green hosted workflows; updated
+  references from pre-merge `9af9e1d`/draft PR #234 to merge commit `7fb752f`.
+  The benchmark remains design-only and does not authorize a runner, threshold,
+  release gate, provider, network, subprocess, or mutation capability.
+- **Not completed:** Reconciliation validation, commit, publication, and
+  maintainer review remain pending. No runtime code changed.
+- **Next action:** Run documentation and full repository verification, commit
+  the reconciliation atomically, publish its draft PR, and keep runner work
+  separately authorized.
 
 ### 2026-08-05, H9 performance benchmark specification published as PR #234
 

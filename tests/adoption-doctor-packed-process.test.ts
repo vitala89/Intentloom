@@ -16,6 +16,7 @@ import { resolvePackedCliEntry, runPackedCli } from "./helpers/packed-cli.js";
 const repositoryRoot = resolve(".");
 const windows = process.platform === "win32";
 const processTestTimeout = windows ? 15_000 : 5_000;
+const packedSetupHookTimeout = windows ? 90_000 : 30_000;
 const command = (name: string) => (windows ? `${name}.cmd` : name);
 let packRoot: string;
 let packedCliEntry: string;
@@ -74,7 +75,7 @@ beforeAll(async () => {
     { cwd: runtime, stdio: "pipe", shell: windows },
   );
   packedCliEntry = resolvePackedCliEntry(runtime);
-}, 30_000);
+}, packedSetupHookTimeout);
 
 afterAll(async () => {
   await rm(packRoot, { recursive: true, force: true });

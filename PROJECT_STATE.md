@@ -127,9 +127,11 @@ and real consumers justify them.
   CLI and MCP inspect/replay consumers, structured task routing, managed
   external-skill import normalization, fail-closed adoption enforcement, and
   deterministic fixture-backed evidence for replay, purge, and transactional
-  rollback. Real provider/model/CLI-agent adapters, certification claims, and
-  effectful mutation remain deferred; production-hardening evidence is the
-  next planned increment.
+  rollback. PR #233 merged the remaining deterministic rollback evidence and
+  the Windows Node 22 compatibility timeout correction; PR #234 merged the
+  separate provider-neutral performance-benchmark specification. Real
+  provider/model/CLI-agent adapters, certification claims, benchmark runner,
+  and effectful mutation remain deferred.
 
 These statements must be revalidated against code, tags, CI, and Git history
 before a new release or implementation milestone is declared complete.
@@ -197,8 +199,8 @@ before a new release or implementation milestone is declared complete.
 ## Current blockers and unknowns
 
 - Any expansion to bottleneck, performance, causal, actor, repository-reading, persisted, remote, or model-assisted analysis requires a new ADR, specification, and threat review.
-- Current `main` is verified at `9af9e1d` (PR #233; H9 evidence merge) and tracks
-  `origin/main`.
+- Current `main` is verified at `7fb752f` (PR #234; H9 benchmark specification
+  merge) and tracks `origin/main`.
 - Phase E5 doctor diagnostics, Phase E6 safe revocation and removal, and
   Phase E7 knowledge-provider & adapter-pack boundaries are merged to `main`.
 - npm reports `latest=1.0.2` and `next=1.0.0`, verified 2026-08-02.
@@ -464,8 +466,8 @@ through PR #213 (`a173931`), PR #214 (`8a1ce50`), and PR #216 (`cec3f45`). The
 remaining H9 production-hardening work is intentionally separate from the
 deterministic contract and must not add provider, network, or mutation authority.
 PR #233 merged the deterministic rollback evidence and the Windows Node 22
-compatibility timeout correction. The draft H9 performance-benchmark
-specification is a design artifact only; it does not authorize a runner,
+compatibility timeout correction. PR #234 merged the H9 performance-benchmark
+specification as a design artifact only; it does not authorize a runner,
 threshold, release gate, provider, network, or mutation capability.
 
 The Managed Extension Lifecycle roadmap plan (`docs/roadmap/MANAGED_EXTENSION_LIFECYCLE_PLAN.md`),
