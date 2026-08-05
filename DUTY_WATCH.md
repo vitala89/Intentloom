@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Phase E7 Knowledge-Provider Boundaries & Graphify Integration are merged into `main` at `8d4eed5` and reconciled at `caf81a7` (PR #230 & PR #231); branch triage complete.**
+Status: **H9 rollback evidence is published in draft PR #233; Phase E7 Knowledge-Provider Boundaries & Graphify Integration remains merged into `main`.**
 
-Active branch: `main` at `caf81a7`
+Active branch: `test/h9-rollback-evidence`
 
-Current objective: Select the next approved candidate milestone or roadmap increment.
+Current objective: Obtain maintainer review and merge of draft PR #233.
 
-Next first action: Inspect roadmap and candidate specifications before proposing the next increment.
+Next first action: Monitor PR #233 hosted checks and address maintainer feedback if any.
 
 Known open items, in the order they should be handled:
 
@@ -60,12 +60,13 @@ entry directly below this section.
 
 ## Watch entries
 
-### 2026-08-05, H9 rollback evidence and roadmap reconciliation
+### 2026-08-05, H9 rollback evidence published for review
 
-- **Status:** complete for implementation, local verification, and atomic commit;
-  hosted review remains.
+- **Status:** complete; implementation, local verification, atomic commit, push,
+  and draft PR creation succeeded.
 - **Branch:** `test/h9-rollback-evidence` from `origin/main` at `55ab966`.
 - **Commit:** local atomic commit `test(harness): verify H9 rollback recovery`.
+- **Pull request:** [#233](https://github.com/vitala89/Intentloom/pull/233), draft.
 - **Objective:** Continue the approved H9 hardening slice after verifying that
   the deterministic evidence contract already merged in PR #216, and close
   the gap between its stated rollback coverage and the actual assertions.
@@ -75,7 +76,7 @@ entry directly below this section.
   Reconciled `PROJECT_STATE.md`, `ROADMAP.md`, the H9 development plan, and
   `docs/roadmap/AGENTIC_HARNESS_H9_AUDIT.md`; the audit now records the merged
   fixture contract and its stable terminal states.
-- **Not completed:** Push and hosted review remain.
+- **Not completed:** Maintainer review and merge remain.
 - **Files or packages changed:** `tests/harness-h9-evidence-contract.test.ts`,
   `PROJECT_STATE.md`, `ROADMAP.md`,
   `docs/roadmap/AGENTIC_HARNESS_PLAN.md`,
@@ -95,9 +96,9 @@ entry directly below this section.
 - **Open issues or blockers:** A future performance benchmark still requires a
   separately reviewed specification and must not become a release gate before
   variance is characterized.
-- **Next first action:** Push `test/h9-rollback-evidence` and open a review PR
-  when external publication is authorized; keep the future performance
-  benchmark as a separately reviewed follow-up.
+- **Next first action:** Monitor PR #233 hosted checks and hand it to the
+  maintainer for review; keep the future performance benchmark as a separately
+  reviewed follow-up.
 
 ### 2026-08-05, Remote and local branch triage & reconciliation complete
 
