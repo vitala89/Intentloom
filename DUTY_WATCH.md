@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **PR #234 merged the H9 performance-benchmark specification; durable project state is being reconciled from the merge commit.**
+Status: **PR #235 contains the post-merge reconciliation and the macOS Node 22 timeout correction; all hosted checks are green and maintainer review/merge remains pending.**
 
 Active branch: `docs/reconcile-h9-benchmark-merge`
 
-Current objective: Reconcile durable project state after PR #234 without adding a runtime runner or release gate.
+Current objective: Hand off the verified PR #235 for maintainer review without adding a runtime runner or release gate.
 
-Next first action: Validate and publish the macOS Node 22 timeout correction in PR #235, then re-observe hosted Compatibility before any benchmark-runner work.
+Next first action: Maintainer reviews and merges PR #235; keep benchmark-runner implementation as a separately authorized follow-up.
 
 Known open items, in the order they should be handled:
 
@@ -59,6 +59,29 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-05, PR #235 macOS Node 22 timeout correction verified green
+
+- **Status:** partial; the timeout correction is pushed and all hosted checks
+  are green, while maintainer review/merge remains pending.
+- **Branch:** `docs/reconcile-h9-benchmark-merge` at `0e1abae`.
+- **Pull request:** [#235](https://github.com/vitala89/Intentloom/pull/235),
+  draft.
+- **Objective:** Resolve the macOS Node 22 Compatibility failure without
+  changing production behavior or widening the H9 benchmark scope.
+- **Completed:** Added a 15-second test timeout only for macOS Node 22 in
+  `tests/cli-evidence-analysis.test.ts`; all other platforms and runtimes
+  retain the 5-second timeout. Pushed the fix and re-observed both hosted
+  Compatibility runs: all six matrix jobs passed in each run. Governance and
+  CodeQL also passed.
+- **Validation:** Focused test passed on Node `v22.17.0`; staged checks passed;
+  full `pnpm verify` and pre-push verification passed with 136 test files,
+  1024 tests passed, 3 skipped, build, and diff checks.
+- **Not completed:** Maintainer review and merge remain pending. No production
+  code, benchmark runner, threshold, release gate, provider, network,
+  subprocess, or mutation capability changed.
+- **Next action:** Maintainer reviews and merges PR #235, then continue only
+  with a separately authorized benchmark-runner slice.
 
 ### 2026-08-05, PR #235 macOS Node 22 test timeout correction
 
