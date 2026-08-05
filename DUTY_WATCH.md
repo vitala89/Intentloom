@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **H9 rollback evidence and the Windows Node 22 CI timeout fix are published in draft PR #233; Phase E7 Knowledge-Provider Boundaries & Graphify Integration remains merged into `main`.**
+Status: **PR #233 merged the H9 rollback evidence and Windows Node 22 CI timeout fix; the next bounded slice is review of the separate H9 performance-benchmark specification.**
 
-Active branch: `test/h9-rollback-evidence`
+Active branch: `docs/h9-performance-benchmark-spec`
 
-Current objective: Obtain maintainer review and merge of draft PR #233.
+Current objective: Prepare the separate H9 performance-benchmark design for review without adding a runtime runner or release gate.
 
-Next first action: Monitor the new PR #233 hosted checks and address maintainer feedback if any.
+Next first action: Review the open sampling, clock, retention, and workflow decisions in `docs/specs/AGENTIC_HARNESS_PERFORMANCE_BENCHMARK_SPEC.md`.
 
 Known open items, in the order they should be handled:
 
@@ -59,6 +59,31 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-05, PR #233 merged and benchmark design slice drafted
+
+- **Status:** partial; PR #233 is merged with all hosted checks green, and the
+  next H9 benchmark design artifact is drafted for review.
+- **Branch:** `docs/h9-performance-benchmark-spec` from `origin/main` at
+  `9af9e1d`.
+- **Pull request:** not opened; publication awaits review of the new design
+  slice.
+- **Objective:** Convert the H9 audit's remaining performance gap into a
+  separately reviewed, non-release-gating benchmark specification.
+- **Completed:** Added the provider-neutral benchmark contract, execution
+  profiles, metrics, variance rules, baseline comparability, CI boundary,
+  retention/redaction rules, and open review decisions. Reconciled the H9
+  audit, development plan, roadmap, project state, and this handoff with PR
+  #233's merged state.
+- **Not completed:** No benchmark runner, threshold, CI workflow, provider or
+  model adapter, subprocess capability, release gate, or new mutation authority
+  was added. The design still needs review before implementation or
+  publication.
+- **Validation:** Documentation formatting, link checks, diff review, and the
+  repository's full verification are required before commit; no runtime code
+  changed in this slice.
+- **Next action:** Review the open decisions in the benchmark specification and
+  authorize publication or further revision.
 
 ### 2026-08-05, Windows Node 22 compatibility timeout fixed for PR #233
 

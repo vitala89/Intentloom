@@ -1,6 +1,6 @@
 # Intentloom Project State
 
-Last verified: 2026-08-04
+Last verified: 2026-08-05
 
 This file records the durable current state of the project. It is not a
 chronological log. Session history and handoff details belong in
@@ -197,7 +197,7 @@ before a new release or implementation milestone is declared complete.
 ## Current blockers and unknowns
 
 - Any expansion to bottleneck, performance, causal, actor, repository-reading, persisted, remote, or model-assisted analysis requires a new ADR, specification, and threat review.
-- Current `main` is verified at `8d4eed5` (PR #229; Phase E7 merge) and tracks
+- Current `main` is verified at `9af9e1d` (PR #233; H9 evidence merge) and tracks
   `origin/main`.
 - Phase E5 doctor diagnostics, Phase E6 safe revocation and removal, and
   Phase E7 knowledge-provider & adapter-pack boundaries are merged to `main`.
@@ -463,6 +463,10 @@ enforcement, and the deterministic H9 evidence contract are merged into `main`
 through PR #213 (`a173931`), PR #214 (`8a1ce50`), and PR #216 (`cec3f45`). The
 remaining H9 production-hardening work is intentionally separate from the
 deterministic contract and must not add provider, network, or mutation authority.
+PR #233 merged the deterministic rollback evidence and the Windows Node 22
+compatibility timeout correction. The draft H9 performance-benchmark
+specification is a design artifact only; it does not authorize a runner,
+threshold, release gate, provider, network, or mutation capability.
 
 The Managed Extension Lifecycle roadmap plan (`docs/roadmap/MANAGED_EXTENSION_LIFECYCLE_PLAN.md`),
 Phase E2 Pre-Adoption Inspection & Capability Delta Engine (`inspectExtensionManifest`,
