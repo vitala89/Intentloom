@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **PR #235, PR #236, and PR #237 are merged into `main`; post-merge state for PR #237 is being reconciled on a documentation-only branch.**
+Status: **PR #235, PR #236, and PR #237 are merged into `main`; documentation-only post-merge reconciliation is open in PR #238 with hosted checks pending.**
 
 Active branch: `docs/reconcile-pr237-merge`
 
 Current objective: Record PR #237's merge and verified `main` state without changing runtime behavior or adding a benchmark runner/release gate.
 
-Next first action: Validate and publish this documentation-only reconciliation; keep benchmark-runner implementation as a separately authorized follow-up.
+Next first action: Confirm PR #238 hosted checks, then leave review/merge to the maintainer; keep benchmark-runner implementation as a separately authorized follow-up.
 
 Known open items, in the order they should be handled:
 
@@ -62,11 +62,12 @@ entry directly below this section.
 
 ### 2026-08-06, PR #237 merged and post-merge state reconciliation
 
-- **Status:** partial; PR #237 is merged and the reconciliation changes are
-  prepared on a new documentation-only branch.
+- **Status:** partial; PR #237 is merged, the reconciliation is committed and
+  published, and PR #238 is open as a draft with hosted checks pending.
 - **Branch:** `docs/reconcile-pr237-merge` from `origin/main` at `8e92bd7`.
 - **Pull request:** [#237](https://github.com/vitala89/Intentloom/pull/237) is
-  merged with merge commit `8e92bd7`.
+  merged with merge commit `8e92bd7`; the reconciliation is in
+  [#238](https://github.com/vitala89/Intentloom/pull/238), draft.
 - **Objective:** Reconcile durable project state after the maintainer merged
   the Windows Node 22 package-readiness timeout correction.
 - **Completed:** Confirmed the merge through GitHub and `origin/main`. Updated
@@ -78,10 +79,10 @@ entry directly below this section.
   Governance and CodeQL. The earlier local full verification passed with 136
   test files, 1,024 tests passed, 3 skipped, typecheck, formatting, build, and
   diff checks.
-- **Not completed:** The reconciliation branch has not yet been committed or
-  published; no release or benchmark-runner work is authorized.
-- **Next action:** Run staged and full verification, commit and push the
-  documentation-only reconciliation, then record the resulting hosted checks.
+- **Not completed:** PR #238 hosted checks and maintainer review/merge remain
+  pending; no release or benchmark-runner work is authorized.
+- **Next action:** Confirm the hosted checks for PR #238, then leave review and
+  merge to the maintainer; authorize any benchmark-runner slice separately.
 
 ### 2026-08-06, PR #237 CI correction hosted verification complete
 
