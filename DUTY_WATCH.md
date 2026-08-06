@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **PR #235, PR #236, and PR #237 are merged into `main`; documentation-only post-merge reconciliation is published in PR #238 with hosted checks green.**
+Status: **PR #235, PR #236, PR #237, and PR #238 are merged into `main`; documentation-only post-merge reconciliation is open in PR #239 with hosted checks pending.**
 
-Active branch: `docs/reconcile-pr237-merge`
+Active branch: `docs/reconcile-pr238-merge`
 
-Current objective: Record PR #237's merge and verified `main` state without changing runtime behavior or adding a benchmark runner/release gate.
+Current objective: Record PR #238's merge and verified `main` state without changing runtime behavior or adding a benchmark runner/release gate.
 
-Next first action: Maintainer reviews and merges PR #238; keep benchmark-runner implementation as a separately authorized follow-up.
+Next first action: Confirm PR #239 hosted checks, then leave review/merge to the maintainer; keep benchmark-runner implementation as a separately authorized follow-up.
 
 Known open items, in the order they should be handled:
 
@@ -59,6 +59,26 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-06, PR #238 merged and post-merge state reconciliation
+
+- **Status:** partial; PR #238 is merged and the next documentation-only
+  reconciliation is prepared on a new branch.
+- **Branch:** `docs/reconcile-pr238-merge` from `origin/main` at `e1fd877`.
+- **Pull request:** [#238](https://github.com/vitala89/Intentloom/pull/238) is
+  merged with merge commit `e1fd877`.
+- **Objective:** Reconcile durable project state after the maintainer merged
+  the documentation-only PR #238.
+- **Completed:** Confirmed the merge through GitHub and `origin/main`. The
+  merged PR records PR #237's post-merge state; no runtime, benchmark runner,
+  threshold, release gate, provider, network, or mutation capability was added.
+- **Validation:** PR #238 head `baebfe5` passed both push and pull-request
+  Compatibility runs, including Windows Node 22/24, plus Governance and
+  CodeQL. Local full verification on the reconciliation branch is pending.
+- **Not completed:** This reconciliation has not yet been committed or
+  published; no release or benchmark-runner work is authorized.
+- **Next action:** Run staged and full verification, commit and push the
+  documentation-only reconciliation, then record its hosted checks.
 
 ### 2026-08-06, PR #237 merged and post-merge state reconciliation
 

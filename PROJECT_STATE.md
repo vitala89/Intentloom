@@ -132,7 +132,8 @@ and real consumers justify them.
   separate provider-neutral performance-benchmark specification; PR #235
   merged the post-merge reconciliation and platform-specific Node 22 timeout
   corrections; PR #237 merged the focused Windows Node 22 package-readiness
-  timeout correction. Real
+  timeout correction; PR #238 merged the documentation-only reconciliation
+  of the post-merge state. Real
   provider/model/CLI-agent adapters, certification claims, benchmark runner,
   and effectful mutation remain deferred.
 
@@ -202,7 +203,7 @@ before a new release or implementation milestone is declared complete.
 ## Current blockers and unknowns
 
 - Any expansion to bottleneck, performance, causal, actor, repository-reading, persisted, remote, or model-assisted analysis requires a new ADR, specification, and threat review.
-- Current `main` is verified at `8e92bd7` (PR #237; post-merge CI timeout
+- Current `main` is verified at `e1fd877` (PR #238; post-merge state
   reconciliation) and tracks `origin/main`.
 - Phase E5 doctor diagnostics, Phase E6 safe revocation and removal, and
   Phase E7 knowledge-provider & adapter-pack boundaries are merged to `main`.
@@ -472,9 +473,10 @@ PR #233 merged the deterministic rollback evidence and the Windows Node 22
 compatibility timeout correction. PR #234 merged the H9 performance-benchmark
 specification as a design artifact only; PR #235 merged the post-merge
 reconciliation and platform-specific Node 22 timeout corrections; PR #237
-merged the focused Windows Node 22 package-readiness timeout correction. These
-changes do not authorize a runner, threshold, release gate, provider, network,
-or mutation capability.
+merged the focused Windows Node 22 package-readiness timeout correction; PR
+#238 merged the documentation-only post-merge reconciliation. These changes do
+not authorize a runner, threshold, release gate, provider, network, or mutation
+capability.
 
 The Managed Extension Lifecycle roadmap plan (`docs/roadmap/MANAGED_EXTENSION_LIFECYCLE_PLAN.md`),
 Phase E2 Pre-Adoption Inspection & Capability Delta Engine (`inspectExtensionManifest`,
