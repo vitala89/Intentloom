@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **PR #235, PR #236, PR #237, and PR #238 are merged into `main`; documentation-only post-merge reconciliation is published in PR #239 with hosted checks green.**
+Status: **PR #235 through PR #239 are all merged into `main` (HEAD `96eb6ff`). An independent audit on 2026-08-06 found `PROJECT_STATE.md` and this file's status header stale in several places; this watch corrects them and begins the previously-gated follow-up work.**
 
-Active branch: `docs/reconcile-pr238-merge`
+Active branch: `docs/post-audit-state-reconciliation`
 
-Current objective: Record PR #238's merge and verified `main` state without changing runtime behavior or adding a benchmark runner/release gate.
+Current objective: Correct stale durable-state claims (Desktop D2-D5 merge status, this file's own "PR #239 pending" status) without changing runtime behavior, then proceed with the audit's approved follow-ups: quality-exception records for 5 unrecorded oversized files, a real ESLint setup, `main`/`v*` branch and tag protection, and the benchmark-runner slice.
 
-Next first action: Maintainer reviews and merges PR #239; keep benchmark-runner implementation as a separately authorized follow-up.
+Next first action: Open PR for `docs/post-audit-state-reconciliation`, merge, then continue with governance/tooling fixes and the benchmark-runner implementation in separate atomic commits/PRs.
 
 Known open items, in the order they should be handled:
 
@@ -33,7 +33,19 @@ Known open items, in the order they should be handled:
    crates.io still reports Tauri `2.11.5` as current.
 5. Branch and tag protection rules for `main` and `v*` are not recorded anywhere
    in the repository; `.github/CODEOWNERS` exists to support required review.
-6. Legacy remote branches `codex/public-readiness-blockers` and `security/intentloomd-lifecycle-design` triaged and deleted (completed 2026-08-04). Backup ref `backup/pre-attribution-rewrite` remains pending explicit owner deletion.
+   In progress this watch: applying standard protection via `gh api` (required
+   PR, required Compatibility/Governance/CodeQL status checks, no force-push,
+   no deletion on `main`; no deletion/rewrite on `v*` tags).
+6. Legacy remote branches `codex/public-readiness-blockers` and `security/intentloomd-lifecycle-design` triaged and deleted (completed 2026-08-04). The backup ref is a Git **tag**, not a branch - `refs/tags/backup/pre-attribution-rewrite` - confirmed still present on `origin` as of 2026-08-06 and remains pending explicit owner deletion.
+7. `packages/daemon/src/index.ts` (1031 lines), `packages/evidence-analysis/src/index.ts`
+   (778), `packages/mcp-server/src/index.ts` (578), `packages/core/src/adoption.ts`
+   (429), and `packages/adapters/src/index.ts` (420) exceed the 400-line
+   production-file ceiling in `docs/governance/CODE_QUALITY_STANDARDS.md` with
+   no recorded exception in `docs/governance/quality-exceptions.json`. In
+   progress this watch.
+8. `pnpm lint` is currently an alias for `pnpm typecheck` (`tsc -b --pretty
+false`) - no ESLint or equivalent style/correctness linter runs in CI or
+   locally. In progress this watch.
 
 ## Watch rules
 
@@ -59,6 +71,46 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-06, Post-audit stale-state correction and governance follow-up kickoff
+
+- **Status:** in progress; this entry covers the docs-only correction commit,
+  landed as the first of several planned atomic commits on this branch.
+- **Branch:** `docs/post-audit-state-reconciliation` from `origin/main` at
+  `96eb6ff`.
+- **Pull request:** not yet opened.
+- **Objective:** An independent audit (5 parallel verification passes against
+  code, tests, and Git/GitHub state rather than trusting the docs) found the
+  durable-state files disagreeing with reality in two places, plus a set of
+  genuinely open governance gaps. Correct the stale claims first, then work
+  the open items in order.
+- **Completed:** Corrected `PROJECT_STATE.md`'s claim that the Desktop
+  Extension Ecosystem D2-D5 work (ADR-0045 through ADR-0050) was "not yet
+  merged to `main`" - it merged through PR #161 (`e71a239`, 2026-08-01); the
+  squash-merge left `feature/post-v1-enhancements` looking unmerged under
+  `git log main..branch` by commit hash even though its content is fully on
+  `main`. Corrected this file's own "Current watch status" header, which
+  still claimed PR #239 was open and awaiting maintainer merge - PR #239 is
+  merged and is the current `main` HEAD (`96eb6ff`); there are currently zero
+  open pull requests. Clarified that the "backup ref" open item refers to a
+  Git tag (`refs/tags/backup/pre-attribution-rewrite`), not a branch - it is
+  still present on `origin`, so that item was correctly still open, not
+  stale. Added two new known-open-items entries for governance gaps the audit
+  surfaced: five production files over the 400-line ceiling with no recorded
+  exception, and `pnpm lint` being a no-op alias for `pnpm typecheck` with no
+  real linter.
+- **Validation:** Documentation-only change in this commit; no code touched.
+  Full `pnpm verify` to be run before this branch's PR is opened.
+- **Not completed:** The governance-exception records, ESLint setup,
+  `main`/`v*` branch protection, and benchmark-runner slice referenced above
+  are separate, not-yet-landed commits; see the Known open items list for
+  status.
+- **Decisions:** Stale durable-state claims are corrected in place rather than
+  left standing, per this file's own watch rules; the "Current watch status"
+  header is not historical record and may be freely rewritten to match
+  reality, unlike numbered `### date, title` entries below it.
+- **Next first action:** Add quality-exception records (or decomposition
+  follow-ups) for the five oversized files, then add a real ESLint config.
 
 ### 2026-08-06, PR #238 merged and post-merge state reconciliation
 
