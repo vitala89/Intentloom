@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **PR #235, PR #236, and PR #237 are merged into `main`; documentation-only post-merge reconciliation is open in PR #238 with hosted checks pending.**
+Status: **PR #235, PR #236, and PR #237 are merged into `main`; documentation-only post-merge reconciliation is published in PR #238 with hosted checks green.**
 
 Active branch: `docs/reconcile-pr237-merge`
 
 Current objective: Record PR #237's merge and verified `main` state without changing runtime behavior or adding a benchmark runner/release gate.
 
-Next first action: Confirm PR #238 hosted checks, then leave review/merge to the maintainer; keep benchmark-runner implementation as a separately authorized follow-up.
+Next first action: Maintainer reviews and merges PR #238; keep benchmark-runner implementation as a separately authorized follow-up.
 
 Known open items, in the order they should be handled:
 
@@ -63,7 +63,7 @@ entry directly below this section.
 ### 2026-08-06, PR #237 merged and post-merge state reconciliation
 
 - **Status:** partial; PR #237 is merged, the reconciliation is committed and
-  published, and PR #238 is open as a draft with hosted checks pending.
+  published, and PR #238 is open as a draft with hosted checks green.
 - **Branch:** `docs/reconcile-pr237-merge` from `origin/main` at `8e92bd7`.
 - **Pull request:** [#237](https://github.com/vitala89/Intentloom/pull/237) is
   merged with merge commit `8e92bd7`; the reconciliation is in
@@ -76,13 +76,17 @@ entry directly below this section.
   release gate, provider, network, or mutation capability was added.
 - **Validation:** The merged PR head `b4fc794` passed both push and
   pull-request Compatibility runs, including Windows Node 22/24, plus
-  Governance and CodeQL. The earlier local full verification passed with 136
-  test files, 1,024 tests passed, 3 skipped, typecheck, formatting, build, and
-  diff checks.
-- **Not completed:** PR #238 hosted checks and maintainer review/merge remain
-  pending; no release or benchmark-runner work is authorized.
-- **Next action:** Confirm the hosted checks for PR #238, then leave review and
-  merge to the maintainer; authorize any benchmark-runner slice separately.
+  Governance and CodeQL. PR #238 head `a6b6094` passed push run
+  [31110671142](https://github.com/vitala89/Intentloom/actions/runs/31110671142)
+  and pull-request run
+  [31110676289](https://github.com/vitala89/Intentloom/actions/runs/31110676289),
+  including Windows Node 22/24; Governance and CodeQL also passed. The local
+  full verification passed with 136 test files, 1,024 tests passed, 3 skipped,
+  typecheck, formatting, build, and diff checks.
+- **Not completed:** Maintainer review/merge of PR #238 remains pending; no
+  release or benchmark-runner work is authorized.
+- **Next action:** Maintainer reviews and merges PR #238; authorize any
+  benchmark-runner slice separately.
 
 ### 2026-08-06, PR #237 CI correction hosted verification complete
 
