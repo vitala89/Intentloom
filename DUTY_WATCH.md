@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **PR #235 and the documentation-only reconciliation PR #236 are merged into `main`; PR #237 contains the focused Windows Node 22 CI timeout correction and all hosted checks are green.**
+Status: **PR #235, PR #236, and PR #237 are merged into `main`; post-merge state for PR #237 is being reconciled on a documentation-only branch.**
 
-Active branch: `docs/reconcile-pr236-merge`
+Active branch: `docs/reconcile-pr237-merge`
 
-Current objective: Resolve the Windows Node 22 push-check timeout in PR #237 without changing runtime behavior or adding a benchmark runner/release gate.
+Current objective: Record PR #237's merge and verified `main` state without changing runtime behavior or adding a benchmark runner/release gate.
 
-Next first action: Review and merge PR #237; keep benchmark-runner implementation as a separately authorized follow-up.
+Next first action: Validate and publish this documentation-only reconciliation; keep benchmark-runner implementation as a separately authorized follow-up.
 
 Known open items, in the order they should be handled:
 
@@ -60,13 +60,36 @@ entry directly below this section.
 
 ## Watch entries
 
+### 2026-08-06, PR #237 merged and post-merge state reconciliation
+
+- **Status:** partial; PR #237 is merged and the reconciliation changes are
+  prepared on a new documentation-only branch.
+- **Branch:** `docs/reconcile-pr237-merge` from `origin/main` at `8e92bd7`.
+- **Pull request:** [#237](https://github.com/vitala89/Intentloom/pull/237) is
+  merged with merge commit `8e92bd7`.
+- **Objective:** Reconcile durable project state after the maintainer merged
+  the Windows Node 22 package-readiness timeout correction.
+- **Completed:** Confirmed the merge through GitHub and `origin/main`. Updated
+  `PROJECT_STATE.md` references from `ab7bbe1` to `8e92bd7` and recorded PR #237
+  in the H9 compatibility history. No runtime, benchmark runner, threshold,
+  release gate, provider, network, or mutation capability was added.
+- **Validation:** The merged PR head `b4fc794` passed both push and
+  pull-request Compatibility runs, including Windows Node 22/24, plus
+  Governance and CodeQL. The earlier local full verification passed with 136
+  test files, 1,024 tests passed, 3 skipped, typecheck, formatting, build, and
+  diff checks.
+- **Not completed:** The reconciliation branch has not yet been committed or
+  published; no release or benchmark-runner work is authorized.
+- **Next action:** Run staged and full verification, commit and push the
+  documentation-only reconciliation, then record the resulting hosted checks.
+
 ### 2026-08-06, PR #237 CI correction hosted verification complete
 
-- **Status:** partial; the CI correction is committed, pushed, and verified by
-  both hosted workflow events, while maintainer review/merge remains pending.
+- **Status:** complete for the pre-merge CI correction; the correction was
+  committed, pushed, and verified by both hosted workflow events before merge.
 - **Branch:** `docs/reconcile-pr236-merge` at `a9beaec`.
 - **Pull request:** [#237](https://github.com/vitala89/Intentloom/pull/237),
-  draft.
+  merged.
 - **Objective:** Resolve the Windows Node 22 Compatibility timeout without
   changing production behavior or widening the benchmark scope.
 - **Completed:** Commit `a9beaec` applies the Windows Node 22-only 90-second
@@ -80,9 +103,9 @@ entry directly below this section.
   passed with 136 test files, 1,024 tests passed, 3 skipped, typecheck,
   formatting, build, and diff checks.
 - **Not completed:** No production runtime, benchmark runner, performance
-  threshold, or release gate was changed. PR #237 has not been merged.
-- **Next action:** Review and merge PR #237; authorize any benchmark-runner
-  slice separately.
+  threshold, or release gate was changed.
+- **Next action:** Reconcile the merged state on the new documentation-only
+  branch; authorize any benchmark-runner slice separately.
 
 ### 2026-08-06, PR #237 Windows Node 22 package readiness timeout correction
 
