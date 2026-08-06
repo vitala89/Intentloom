@@ -131,7 +131,8 @@ and real consumers justify them.
   the Windows Node 22 compatibility timeout correction; PR #234 merged the
   separate provider-neutral performance-benchmark specification; PR #235
   merged the post-merge reconciliation and platform-specific Node 22 timeout
-  corrections. Real
+  corrections; PR #237 merged the focused Windows Node 22 package-readiness
+  timeout correction. Real
   provider/model/CLI-agent adapters, certification claims, benchmark runner,
   and effectful mutation remain deferred.
 
@@ -201,7 +202,7 @@ before a new release or implementation milestone is declared complete.
 ## Current blockers and unknowns
 
 - Any expansion to bottleneck, performance, causal, actor, repository-reading, persisted, remote, or model-assisted analysis requires a new ADR, specification, and threat review.
-- Current `main` is verified at `ab7bbe1` (PR #235; post-merge H9
+- Current `main` is verified at `8e92bd7` (PR #237; post-merge CI timeout
   reconciliation) and tracks `origin/main`.
 - Phase E5 doctor diagnostics, Phase E6 safe revocation and removal, and
   Phase E7 knowledge-provider & adapter-pack boundaries are merged to `main`.
@@ -470,7 +471,8 @@ deterministic contract and must not add provider, network, or mutation authority
 PR #233 merged the deterministic rollback evidence and the Windows Node 22
 compatibility timeout correction. PR #234 merged the H9 performance-benchmark
 specification as a design artifact only; PR #235 merged the post-merge
-reconciliation and platform-specific Node 22 timeout corrections. These
+reconciliation and platform-specific Node 22 timeout corrections; PR #237
+merged the focused Windows Node 22 package-readiness timeout correction. These
 changes do not authorize a runner, threshold, release gate, provider, network,
 or mutation capability.
 
