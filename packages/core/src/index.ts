@@ -39,10 +39,11 @@ export function checksum(value: string): string {
   return createHash("sha256").update(value, "utf8").digest("hex");
 }
 
+function invalidStoredPath(): never {
+  throw new Error("stored path must be safe and project-relative");
+}
+
 export function normalizeStoredPath(candidate: string): string {
-  const invalid = () => {
-    throw new Error("stored path must be safe and project-relative");
-  };
   if (
     candidate === "" ||
     candidate.includes("\0") ||
@@ -50,22 +51,24 @@ export function normalizeStoredPath(candidate: string): string {
     candidate.startsWith("/") ||
     candidate.startsWith("\\")
   )
-    return invalid();
+    return invalidStoredPath();
   const segments: string[] = [];
   for (const rawSegment of candidate.replaceAll("\\", "/").split("/")) {
     if (rawSegment === "" || rawSegment === ".") continue;
-    if (rawSegment === "..") return invalid();
+    if (rawSegment === "..") return invalidStoredPath();
     const segment = rawSegment.normalize("NFC");
     const device = segment.split(".", 1)[0]!.toUpperCase();
     if (
+      // Control characters are intentionally rejected: they are invalid in Windows filenames.
+      // oxlint-disable-next-line no-control-regex
       /[<>:"|?*\u0000-\u001f]/u.test(segment) ||
       /[ .]$/u.test(segment) ||
       /^(?:CON|PRN|AUX|NUL|COM[1-9]|LPT[1-9])$/u.test(device)
     )
-      return invalid();
+      return invalidStoredPath();
     segments.push(segment);
   }
-  if (segments.length === 0) return invalid();
+  if (segments.length === 0) return invalidStoredPath();
   return segments.join("/");
 }
 

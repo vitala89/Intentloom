@@ -37,7 +37,7 @@ describe("Memory & Security Candidate M2: Accepted persistent memory", () => {
         options,
         fs,
       ),
-    ).rejects.toThrow();
+    ).rejects.toThrow("approval.evidence must be a non-empty string");
     const accepted = await acceptPersistentMemory(
       "decision-1",
       { approvedBy: "maintainer", evidence: "ADR-0024" },

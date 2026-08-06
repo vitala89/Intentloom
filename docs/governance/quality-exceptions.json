@@ -132,6 +132,28 @@
       "scope": "Phase E7 Knowledge-Provider Boundary",
       "reviewTrigger": "Decompose application index barrel into domain sub-barrels before next feature.",
       "expires": "2026-09-30"
+    },
+    {
+      "path": "packages/application/src/index.ts",
+      "rule": "existing-oversized-growth",
+      "baseLines": 7419,
+      "headLines": 7432,
+      "reason": "Adopting oxlint fixed real no-shadow findings in this file (e.g. applyProjectAdoption's destructured plan option shadowed the module-level plan() function). Renaming the shadowed local and re-wrapping the now-longer call/expression lines it appears in adds a few lines; no behavior changed and no new abstraction was introduced.",
+      "owner": "Application maintainers",
+      "scope": "oxlint adoption - no-shadow fixes",
+      "reviewTrigger": "Decompose the application barrel before the next application operation feature.",
+      "expires": "2026-09-30"
+    },
+    {
+      "path": "packages/validator/src/index.ts",
+      "rule": "existing-oversized-growth",
+      "baseLines": 871,
+      "headLines": 874,
+      "reason": "Adopting oxlint fixed a no-useless-constructor and a no-shadow finding in this file: ParserFailure's parameter-property constructor (a redundant super call) became an explicit readonly field assigned in the constructor body, and the shadowed fieldPath parameter in issue() was renamed to path. Both are correctness/clarity fixes that add a few lines; no behavior changed.",
+      "owner": "Validator maintainers",
+      "scope": "oxlint adoption - no-useless-constructor and no-shadow fixes",
+      "reviewTrigger": "Extract extension validation from index.ts before the next behavior change touching this file.",
+      "expires": "2026-09-30"
     }
   ]
 }

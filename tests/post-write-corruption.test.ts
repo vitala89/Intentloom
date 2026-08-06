@@ -396,7 +396,7 @@ const corruptionCases: readonly CorruptionCase[] = [
 
 describe("post-write corruption validation", () => {
   for (const testCase of corruptionCases) {
-    it(testCase.name, async () => {
+    it(`${testCase.name}`, async () => {
       const fs = createMemoryFileSystem({
         [existingPath]: "old generated contents\n",
         [manifestPath]: "old manifest bytes\n",
@@ -421,16 +421,17 @@ describe("post-write corruption validation", () => {
       expect(result.rollbackFailures).toEqual([]);
       const validation = result.postWriteValidation;
       expect(validation?.status).toBe("invalid");
-      if (validation?.status === "invalid") {
-        expect(
-          validation.affectedPaths.every((path) => !path.startsWith("/")),
-        ).toBe(true);
-        expect(
-          validation.affectedIdentifiers.every(
-            (identifier) => !identifier.includes("old generated contents"),
-          ),
-        ).toBe(true);
+      if (validation?.status !== "invalid") {
+        throw new Error("expected invalid post-write validation result");
       }
+      expect(
+        validation.affectedPaths.every((path) => !path.startsWith("/")),
+      ).toBe(true);
+      expect(
+        validation.affectedIdentifiers.every(
+          (identifier) => !identifier.includes("old generated contents"),
+        ),
+      ).toBe(true);
       assertProjectStateUnchanged(before, await snapshotProjectState(fs));
       expect(await fs.read(`${root}/unrelated-sentinel.txt`)).toBe(
         "unrelated sentinel\n",

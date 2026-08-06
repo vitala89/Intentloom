@@ -1,5 +1,5 @@
 // Private project-operation layer. It must remain independent of CLI/process code.
-import { mkdir, lstat, readFile, readdir, rename, rm } from "node:fs/promises";
+import { mkdir, lstat, readFile, readdir, rm } from "node:fs/promises";
 import { stat, realpath, writeFile } from "node:fs/promises";
 import { createHash } from "node:crypto";
 import { extractMarkdownSection } from "./skill-markdown.js";
@@ -797,13 +797,11 @@ export async function detectProjectProfiles(
       : []),
   ];
   const securitySensitiveEvidence = [
-    ...[
-      "src-tauri/src/stealth",
-      "src-tauri/src/audio",
-      "secrets",
-      "credentials",
-    ].filter((path) => paths.has(path) && !secretLikePath(path)),
-  ];
+    "src-tauri/src/stealth",
+    "src-tauri/src/audio",
+    "secrets",
+    "credentials",
+  ].filter((path) => paths.has(path) && !secretLikePath(path));
   const hasAngular = angularEvidence.length > 0;
   const hasTauri = tauriEvidence.length > 0;
   const hasNx = nxEvidence.length > 0;
@@ -1221,7 +1219,10 @@ function buildTransactionMetadata(
           left.id.localeCompare(right.id),
         ),
         ...sharedMetadata,
-        generated: files.map(({ path, checksum }) => ({ path, checksum })),
+        generated: files.map(({ path, checksum: fileChecksum }) => ({
+          path,
+          checksum: fileChecksum,
+        })),
       },
       null,
       2,
@@ -1230,9 +1231,9 @@ function buildTransactionMetadata(
       {
         schemaVersion: metadataFormatVersion,
         ...sharedMetadata,
-        files: files.map(({ path, checksum, sources }) => ({
+        files: files.map(({ path, checksum: fileChecksum, sources }) => ({
           path,
-          checksum,
+          checksum: fileChecksum,
           sources,
           ownership: "aif-owned-generated",
         })),
@@ -1786,7 +1787,7 @@ export async function synchronizeGeneratedFiles(
       const projectPath = relative(resolve(root), path).replaceAll("\\", "/");
       try {
         if (injectedRollbackFailures.has(projectPath))
-          throw new Error("injected rollback failure");
+          throw new Error("injected rollback failure", { cause: error });
         await fs.write(path, content);
       } catch {
         rollbackFailures.push(projectPath);
@@ -1796,7 +1797,7 @@ export async function synchronizeGeneratedFiles(
       const projectPath = relative(resolve(root), path).replaceAll("\\", "/");
       try {
         if (injectedRollbackFailures.has(projectPath))
-          throw new Error("injected rollback failure");
+          throw new Error("injected rollback failure", { cause: error });
         await fs.remove(path);
       } catch {
         rollbackFailures.push(projectPath);
@@ -2274,6 +2275,16 @@ export async function diffProject(
 ): Promise<Plan> {
   return plan(options, fs);
 }
+function portableGlob(pattern: string): boolean {
+  return (
+    pattern.length > 0 &&
+    !pattern.includes("\\") &&
+    !pattern.includes("\0") &&
+    !/^(?:[A-Za-z]:|\/)/u.test(pattern) &&
+    !pattern.split("/").some((segment) => segment === ".." || segment === "")
+  );
+}
+
 export async function doctorProject(
   options: InitOptions,
   fs: FileSystem,
@@ -2578,11 +2589,11 @@ export async function doctorProject(
         adapter: null,
         profile: options.profile,
       });
-    const generated = Array.isArray(manifest.generated)
+    const generatedRecords = Array.isArray(manifest.generated)
       ? (manifest.generated as Record<string, unknown>[])
       : [];
-    addStoredPathFinding(lockPath, generated);
-    for (const record of generated)
+    addStoredPathFinding(lockPath, generatedRecords);
+    for (const record of generatedRecords)
       if (typeof record.path === "string" && !desiredPaths.has(record.path))
         addFinding({
           code: "manifest-entry-orphaned",
@@ -2708,12 +2719,6 @@ export async function doctorProject(
     const globalCursorRule =
       path.startsWith(".cursor/") &&
       /^alwaysApply:\s*true$/mu.test(frontmatter);
-    const portableGlob = (pattern: string) =>
-      pattern.length > 0 &&
-      !pattern.includes("\\") &&
-      !pattern.includes("\0") &&
-      !/^(?:[A-Za-z]:|\/)/u.test(pattern) &&
-      !pattern.split("/").some((segment) => segment === ".." || segment === "");
     const valid =
       globalCursorRule ||
       (typeof value === "string" && value.split(",").every(portableGlob));
@@ -2874,6 +2879,55 @@ export async function doctorProject(
     errors,
   };
 }
+function adapterForKnownPath(path: string): AdapterName | null {
+  if (path === "CLAUDE.md" || path.startsWith(".claude/")) return "claude";
+  if (path.startsWith(".cursor/")) return "cursor";
+  if (path.startsWith(".github/")) return "copilot";
+  if (path.startsWith(".agents/")) return "codex";
+  return null;
+}
+
+function instructionPath(path: string): boolean {
+  return (
+    path === "AGENTS.md" ||
+    path === "CLAUDE.md" ||
+    path.startsWith(".claude/") ||
+    path.startsWith(".agents/") ||
+    path.startsWith(".cursor/") ||
+    path === ".github/copilot-instructions.md" ||
+    /^\.github\/instructions\/.+\.instructions\.md$/u.test(path)
+  );
+}
+
+function unsupportedPath(path: string): boolean {
+  return /^\.github\/agents\/.+\.agent\.md$/u.test(path);
+}
+
+function documentConcept(path: string): string | null {
+  const lower = path.toLowerCase();
+  const name = lower.split("/").at(-1)!;
+  if (name === "readme.md") return "public-readme";
+  if (name === "changelog.md") return "change-history";
+  if (
+    name === "roadmap.md" ||
+    /(?:product[-_ ]?(?:state|roadmap)|state[-_ ]?of[-_ ]?product)/u.test(name)
+  )
+    return "product-state";
+  if (/(?:architecture|architectural|adr)/u.test(name)) return "architecture";
+  if (/(?:technical[-_ ]?debt|tech[-_ ]?debt)/u.test(name))
+    return "technical-debt";
+  return null;
+}
+
+function normalizeMappingPath(path: string): string | null {
+  try {
+    const normalized = normalizeOutputPath(path);
+    return normalized === path ? normalized : null;
+  } catch {
+    return null;
+  }
+}
+
 export async function adoptProject(
   options: InitOptions,
   fs: FileSystem,
@@ -2897,49 +2951,7 @@ export async function adoptProject(
     ({ content: _content, ...change }) => change,
   );
   const changeByPath = new Map(changes.map((change) => [change.path, change]));
-  const adapterForPath = (path: string): AdapterName | null => {
-    if (path === "CLAUDE.md" || path.startsWith(".claude/")) return "claude";
-    if (path.startsWith(".cursor/")) return "cursor";
-    if (path.startsWith(".github/")) return "copilot";
-    if (path.startsWith(".agents/")) return "codex";
-    return null;
-  };
-  const instructionPath = (path: string) =>
-    path === "AGENTS.md" ||
-    path === "CLAUDE.md" ||
-    path.startsWith(".claude/") ||
-    path.startsWith(".agents/") ||
-    path.startsWith(".cursor/") ||
-    path === ".github/copilot-instructions.md" ||
-    /^\.github\/instructions\/.+\.instructions\.md$/u.test(path);
-  const unsupportedPath = (path: string) =>
-    /^\.github\/agents\/.+\.agent\.md$/u.test(path);
-  const documentConcept = (path: string): string | null => {
-    const lower = path.toLowerCase();
-    const name = lower.split("/").at(-1)!;
-    if (name === "readme.md") return "public-readme";
-    if (name === "changelog.md") return "change-history";
-    if (
-      name === "roadmap.md" ||
-      /(?:product[-_ ]?(?:state|roadmap)|state[-_ ]?of[-_ ]?product)/u.test(
-        name,
-      )
-    )
-      return "product-state";
-    if (/(?:architecture|architectural|adr)/u.test(name)) return "architecture";
-    if (/(?:technical[-_ ]?debt|tech[-_ ]?debt)/u.test(name))
-      return "technical-debt";
-    return null;
-  };
   const mappingDiagnostics: string[] = [];
-  const normalizeMappingPath = (path: string): string | null => {
-    try {
-      const normalized = normalizeOutputPath(path);
-      return normalized === path ? normalized : null;
-    } catch {
-      return null;
-    }
-  };
   for (const mapping of options.projectOwnedMappings ?? []) {
     const source = normalizeMappingPath(mapping.source);
     const destination = normalizeMappingPath(mapping.destination);
@@ -3029,7 +3041,7 @@ export async function adoptProject(
             : (change?.reason ??
               "existing Intentloom-owned output already matches"),
       canonicalSource: file.sources[0] ?? null,
-      adapter: adapterForPath(file.path),
+      adapter: adapterForKnownPath(file.path),
       profile: options.profile,
       conflictDetails: metadataConflict
         ? ["ownership cannot be established from .aif/source-map.json"]
@@ -3098,7 +3110,7 @@ export async function adoptProject(
                   ? "existing tool instruction remains project-owned"
                   : "project file is not an adoption artifact",
       canonicalSource: null,
-      adapter: adapterForPath(path),
+      adapter: adapterForKnownPath(path),
       profile: null,
       conflictDetails: duplicate
         ? mappedDocument === undefined
@@ -3285,12 +3297,14 @@ export async function planFeature(
   return JSON.stringify({ featureBrief, contextPack }, null, 2);
 }
 
+function memoryPath(path: string): string {
+  return path.replaceAll("\\", "/").replace(/^[A-Za-z]:/u, "");
+}
+
 export function createMemoryFileSystem(
   initial: Record<string, string> = {},
   failAfterWrites?: number,
 ): FileSystem & { files: Map<string, string> } {
-  const memoryPath = (path: string) =>
-    path.replaceAll("\\", "/").replace(/^[A-Za-z]:/u, "");
   const files = new Map(
     Object.entries(initial).map(([path, content]) => [
       memoryPath(path),
@@ -3430,9 +3444,9 @@ export async function planProjectAdoption(
     }
     const contentHash = checksum(content);
 
-    let ownership: OwnershipClass = "project-owned";
+    let ownershipClass: OwnershipClass = "project-owned";
     if (path.startsWith(".aif/") || path.startsWith("catalog/")) {
-      ownership = "intentloom-managed";
+      ownershipClass = "intentloom-managed";
     } else if (
       path.startsWith(".claude/") ||
       path === "CLAUDE.md" ||
@@ -3440,7 +3454,7 @@ export async function planProjectAdoption(
       path === ".cursorrules" ||
       path.includes("copilot-instructions.md")
     ) {
-      ownership = "provider-derivative";
+      ownershipClass = "provider-derivative";
     }
 
     const roleCandidates: RoleCandidate[] = [];
@@ -3553,7 +3567,7 @@ export async function planProjectAdoption(
     artifacts.push({
       path,
       contentHash,
-      ownership,
+      ownership: ownershipClass,
       roleCandidates,
     });
   }
@@ -3598,12 +3612,12 @@ export async function applyProjectAdoption(
       "adoption apply requires a non-symbolic explicit project root",
     );
   }
-  const { plan, dryRun = false } = options;
-  if (plan.schemaVersion !== 1) {
+  const { plan: adoptionPlan, dryRun = false } = options;
+  if (adoptionPlan.schemaVersion !== 1) {
     throw new Error("unsupported adoption plan schema version");
   }
 
-  for (const op of plan.operations) {
+  for (const op of adoptionPlan.operations) {
     if (op.path !== undefined && op.expectedCurrentHash !== undefined) {
       const fullPath = inside(root, op.path);
       if (await fs.exists(fullPath)) {
@@ -3635,7 +3649,7 @@ export async function applyProjectAdoption(
   if (dryRun) {
     return {
       status: "no-op",
-      appliedOperations: plan.operations.map((op) => op.id),
+      appliedOperations: adoptionPlan.operations.map((op) => op.id),
       createdFiles: [],
       updatedFiles: [],
     };
@@ -3647,7 +3661,7 @@ export async function applyProjectAdoption(
   const updatedFiles: string[] = [];
 
   try {
-    for (const op of plan.operations) {
+    for (const op of adoptionPlan.operations) {
       if (op.kind === "create" && op.path !== undefined) {
         const fullPath = inside(root, op.path);
         const exists = await fs.exists(fullPath);
@@ -3683,12 +3697,12 @@ export async function applyProjectAdoption(
       }
     }
     const entryId = deterministicId("journal", {
-      planId: plan.planId,
+      planId: adoptionPlan.planId,
       timestamp: appliedOperations.join(","),
     });
     const entry: MigrationJournalEntry = {
       id: entryId,
-      planId: plan.planId,
+      planId: adoptionPlan.planId,
       status: "applied",
       operationIds: appliedOperations,
       timestamp: new Date().toISOString(),
@@ -4096,8 +4110,6 @@ export async function discoverSkills(
   fs: FileSystem = nodeFileSystem,
 ): Promise<SkillDiscoveryResult> {
   const level: SkillLoadingLevel = options.level ?? "catalog";
-  const catalogDir = options.catalogRoot ?? inside(options.root, "catalog");
-  const skillsDir = inside(catalogDir, "skills");
 
   const allFiles = await fs.list(options.root);
   const skillMap = new Map<string, string>();
@@ -4624,10 +4636,10 @@ export async function validateSkillExtensionLock(
   options: { root: string },
   fs: FileSystem = nodeFileSystem,
 ): Promise<"clean" | "stale" | "unverified" | "corrupted"> {
-  const lockPath = inside(options.root, ".aif/memory/lock.json");
-  if (!(await fs.exists(lockPath))) return "unverified";
+  const lockFilePath = inside(options.root, ".aif/memory/lock.json");
+  if (!(await fs.exists(lockFilePath))) return "unverified";
   try {
-    const content = await fs.read(lockPath);
+    const content = await fs.read(lockFilePath);
     JSON.parse(content);
     return "clean";
   } catch {
@@ -4739,7 +4751,9 @@ export async function prepareSkillMutationPlan(
 
   const planId = `plan-skill-${options.proposalId}-${Date.now()}`;
   const checksumPayload = `${planId}:${options.action}:${options.proposalId}:${targetState}:${options.approvalEvidence ?? ""}`;
-  const checksum = createHash("sha256").update(checksumPayload).digest("hex");
+  const checksumDigest = createHash("sha256")
+    .update(checksumPayload)
+    .digest("hex");
 
   return validateSkillMutationPlan({
     schemaVersion: "1",
@@ -4750,7 +4764,7 @@ export async function prepareSkillMutationPlan(
     ...(options.approvalEvidence !== undefined
       ? { approvalEvidence: options.approvalEvidence }
       : {}),
-    checksum,
+    checksum: checksumDigest,
     createdAt: new Date().toISOString(),
   });
 }
@@ -4760,40 +4774,43 @@ export async function applySkillMutationPlan(
   options: { root: string },
   fs: FileSystem = nodeFileSystem,
 ): Promise<SkillProposal> {
-  const plan = validateSkillMutationPlan(planInput);
+  const mutationPlan = validateSkillMutationPlan(planInput);
 
   let result: SkillProposal;
-  if (plan.action === "rollback") {
+  if (mutationPlan.action === "rollback") {
     result = await rollbackSkill(
-      plan.proposalId,
+      mutationPlan.proposalId,
       {
         root: options.root,
-        ...(plan.approvalEvidence !== undefined
-          ? { approvalEvidence: plan.approvalEvidence }
+        ...(mutationPlan.approvalEvidence !== undefined
+          ? { approvalEvidence: mutationPlan.approvalEvidence }
           : {}),
       },
       fs,
     );
   } else {
     result = await updateSkillProposalState(
-      plan.proposalId,
-      plan.targetState,
+      mutationPlan.proposalId,
+      mutationPlan.targetState,
       {
         root: options.root,
-        ...(plan.approvalEvidence !== undefined
-          ? { approvalEvidence: plan.approvalEvidence }
+        ...(mutationPlan.approvalEvidence !== undefined
+          ? { approvalEvidence: mutationPlan.approvalEvidence }
           : {}),
       },
       fs,
     );
   }
 
-  const logPath = inside(options.root, `.aif/memory/mutations/${plan.id}.json`);
+  const logPath = inside(
+    options.root,
+    `.aif/memory/mutations/${mutationPlan.id}.json`,
+  );
   const dir = dirname(logPath);
   if (!(await fs.exists(dir))) {
     await fs.mkdir(dir);
   }
-  await fs.write(logPath, `${JSON.stringify(plan, null, 2)}\n`);
+  await fs.write(logPath, `${JSON.stringify(mutationPlan, null, 2)}\n`);
 
   return result;
 }
@@ -4809,7 +4826,7 @@ export async function createTaskCheckpoint(
 ): Promise<TaskCheckpoint> {
   const id = `chk-${taskId}-${Date.now()}`;
   const path = inside(options.root, `.aif/memory/checkpoints/${id}.json`);
-  const checksum = createHash("sha256")
+  const snapshotChecksum = createHash("sha256")
     .update(`${id}:${taskId}:${options.root}:${Date.now()}`)
     .digest("hex");
 
@@ -4820,7 +4837,7 @@ export async function createTaskCheckpoint(
     state: "active",
     completedSteps: options.completedSteps ?? [],
     unresolvedWork: options.unresolvedWork ?? [],
-    createdSnapshotChecksum: checksum,
+    createdSnapshotChecksum: snapshotChecksum,
     invalidatedPlans: [],
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
@@ -5030,14 +5047,14 @@ export async function updateSemanticRankingConfig(
   options: { root: string },
   fs: FileSystem = nodeFileSystem,
 ): Promise<SemanticRankingConfig> {
-  const config = validateSemanticRankingConfig(input);
+  const rankingConfig = validateSemanticRankingConfig(input);
   const path = inside(options.root, ".aif/memory/semantic_config.json");
   const dir = dirname(path);
   if (!(await fs.exists(dir))) {
     await fs.mkdir(dir);
   }
-  await fs.write(path, `${JSON.stringify(config, null, 2)}\n`);
-  return config;
+  await fs.write(path, `${JSON.stringify(rankingConfig, null, 2)}\n`);
+  return rankingConfig;
 }
 
 export async function rankProceduralMemory(
@@ -6238,8 +6255,8 @@ export async function runLocalSecurityAdapters(
         try {
           const content = JSON.parse(await fs.read(pkgPath));
           const deps = {
-            ...(content.dependencies ?? {}),
-            ...(content.devDependencies ?? {}),
+            ...content.dependencies,
+            ...content.devDependencies,
           };
           for (const [name, version] of Object.entries(deps)) {
             if (
@@ -7027,10 +7044,6 @@ function workspaceConversationPath(
   conversationId: string,
 ): string {
   return inside(root, `.aif/workspace/conversations/${conversationId}.json`);
-}
-
-function workspaceConversationsDir(root: string): string {
-  return inside(root, ".aif/workspace/conversations");
 }
 
 export async function startWorkspaceConversation(

@@ -124,7 +124,7 @@ describe("summarizeConformanceTrend", () => {
         reports[0]!,
         { ...reports[1]!, operationVersion: 2 as unknown as 1 },
       ]),
-    ).toThrow();
+    ).toThrow("engineering conformance report is invalid");
     expect(reports).toEqual(snapshot);
   });
 });

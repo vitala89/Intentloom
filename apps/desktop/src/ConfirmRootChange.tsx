@@ -17,8 +17,9 @@ export function ConfirmRootChange({
 }) {
   // Return focus to trigger on unmount
   useEffect(() => {
+    const trigger = triggerRef.current;
     return () => {
-      triggerRef.current?.focus();
+      trigger?.focus();
     };
   }, [triggerRef]);
 

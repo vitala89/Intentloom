@@ -24,7 +24,7 @@ describe("filesystem security", () => {
     );
 
     expect(result.changes[0]?.kind).toBe("security-error");
-    await expect(readFile(target, "utf8")).rejects.toThrow();
+    await expect(readFile(target, "utf8")).rejects.toThrow("ENOENT");
   });
 
   it.each([
@@ -80,7 +80,7 @@ describe("filesystem security", () => {
       expect(await readFile(external, "utf8")).toBe("sentinel");
       await expect(
         readFile(join(project, "AGENTS.md"), "utf8"),
-      ).rejects.toThrow();
+      ).rejects.toThrow("ENOENT");
     },
   );
 
@@ -107,7 +107,7 @@ describe("filesystem security", () => {
         { root: project, profile: "generic", adapters: ["codex"] },
         racingFs,
       ),
-    ).rejects.toThrow();
+    ).rejects.toThrow("security-error");
     expect(await readFile(external, "utf8")).toBe("sentinel");
   });
 

@@ -106,11 +106,11 @@ async function run(
 }
 
 function commandArgs(
-  command: "init" | "sync" | "adopt",
+  commandName: "init" | "sync" | "adopt",
   project: string,
   extra: readonly string[] = [],
 ): string[] {
-  return [command, "--root", project, "--adapters", "codex", ...extra];
+  return [commandName, "--root", project, "--adapters", "codex", ...extra];
 }
 
 async function runBuiltCli(
@@ -124,11 +124,11 @@ async function runFaultCli(
   project: string,
   env: NodeJS.ProcessEnv,
   extra: readonly string[] = [],
-  command: "sync" | "adopt" = "sync",
+  commandName: "sync" | "adopt" = "sync",
 ): Promise<ProcessResult> {
   return run(
     process.execPath,
-    [faultRunner, ...commandArgs(command, project, extra)],
+    [faultRunner, ...commandArgs(commandName, project, extra)],
     project,
     {
       AIF_TEST_CATALOG_ROOT: join(repositoryRoot, "packages/cli/dist/catalog"),

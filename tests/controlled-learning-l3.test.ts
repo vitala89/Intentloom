@@ -59,7 +59,7 @@ describe("Controlled Agent Learning Candidate L3 — Skill Proposal Lifecycle", 
 
     expect(() =>
       validateSkillProposal({ ...valid, state: "invalid-state" }),
-    ).toThrow();
+    ).toThrow("invalid state: invalid-state");
   });
 
   it("creates an inactive proposal stored in .aif/memory/proposals/", async () => {

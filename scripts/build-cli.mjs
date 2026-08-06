@@ -1,4 +1,4 @@
-import { cp, mkdir, readFile, rm } from "node:fs/promises";
+import { cp, mkdir, rm } from "node:fs/promises";
 import { build } from "esbuild";
 
 await rm("packages/cli/dist/catalog", { recursive: true, force: true });

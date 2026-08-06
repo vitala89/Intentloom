@@ -29,6 +29,19 @@ class MemoryProviderCacheStore implements ProviderCacheStore {
   }
 }
 
+function result(projectKey: string) {
+  return {
+    operationVersion: 1 as const,
+    source: "provider-live" as const,
+    provider: "github" as const,
+    projectKey,
+    trust: "provider-supplied-unverified" as const,
+    status: "available" as const,
+    events: [],
+    diagnostics: [],
+  };
+}
+
 describe("clean cache CLI", () => {
   it("purges provider cache without touching project files", async () => {
     const root = await mkdtemp(join(tmpdir(), "intentloom-clean-cache-"));
@@ -50,7 +63,9 @@ describe("clean cache CLI", () => {
         status: "purged",
         cachePath: ".aif/cache/providers",
       });
-      await expect(rm(join(root, ".aif/cache/providers"))).rejects.toThrow();
+      await expect(rm(join(root, ".aif/cache/providers"))).rejects.toThrow(
+        "ENOENT",
+      );
       await expect(readFile(join(root, "project.txt"), "utf8")).resolves.toBe(
         "project-owned",
       );
@@ -105,16 +120,6 @@ describe("clean cache CLI", () => {
       rootDirectory: join(root, ".aif/cache/providers"),
       store,
     };
-    const result = (projectKey: string) => ({
-      operationVersion: 1 as const,
-      source: "provider-live" as const,
-      provider: "github" as const,
-      projectKey,
-      trust: "provider-supplied-unverified" as const,
-      status: "available" as const,
-      events: [],
-      diagnostics: [],
-    });
     try {
       await writeCachedProviderResult(result("org/one"), cache);
       await writeCachedProviderResult(result("org/two"), cache);

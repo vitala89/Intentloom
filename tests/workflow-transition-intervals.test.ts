@@ -219,6 +219,6 @@ describe("summarizeWorkflowTransitionIntervals", () => {
           events: [{ activity: "", source: "fixture", sourceId: "1" }],
         },
       ]),
-    ).toThrow();
+    ).toThrow("must be a non-empty string");
   });
 });

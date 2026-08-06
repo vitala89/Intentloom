@@ -111,6 +111,15 @@ and real consumers justify them.
   explicitly enabled per checkout with `pnpm hooks:install`; CI independently
   validates commit structure, attribution, whitespace, and production-file
   budgets.
+- `pnpm lint` now runs `oxlint` (config in `.oxlintrc.json`) instead of
+  duplicating `pnpm typecheck`. `typescript-eslint` cannot parse this
+  repository's TypeScript 7 toolchain yet (upstream tracking issue), so
+  `oxlint` was adopted instead of a non-functional ESLint setup; `pnpm lint`
+  is wired into `pnpm verify` and the Compatibility CI job. `correctness` and
+  `suspicious` categories are errors; `react/react-in-jsx-scope` is off
+  (the Desktop app uses the automatic JSX runtime); `unicorn/no-array-sort`,
+  `unicorn/no-array-reverse`, and `vitest/require-mock-type-parameters` are
+  warnings tracking pre-existing debt rather than new violations.
 - Branch governance now requires new dedicated branches to use a change-type
   prefix such as `feat/`, `fix/`, `refactor/`, or `docs/`, with a short
   kebab-case description; actor, tool, model, and harness prefixes such as

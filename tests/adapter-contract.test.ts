@@ -96,13 +96,13 @@ describe("normalized adapter contract", () => {
       const result = generateAdapter(adapter, catalog);
       expect(result.contract).toBe(getAdapterContract(adapter));
       for (const file of result.files)
-        expect(file.content, file.path).toContain(
+        expect(file.content).toContain(
           "Intentloom adapter output version: 0.1.0",
         );
       for (const file of result.files.filter((candidate) =>
         /(?:SKILL\.md|\.mdc|\.instructions\.md)$/u.test(candidate.path),
       ))
-        expect(file.content, file.path).toMatch(/^---\n/u);
+        expect(file.content).toMatch(/^---\n/u);
     },
   );
 

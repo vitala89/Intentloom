@@ -16,12 +16,11 @@ import {
   WORKFLOW_TRANSITION_INTERVALS_METHOD,
   SESSION_GET_METHOD,
 } from "./jsonrpc.js";
-import type { RequestId, JsonObject, JsonRpcRequest } from "./jsonrpc.js";
-import type { JsonRpcSuccess, JsonRpcFailure } from "./jsonrpc.js";
+import type { RequestId, JsonRpcRequest } from "./jsonrpc.js";
+import type { JsonRpcSuccess } from "./jsonrpc.js";
 
-import type { ClientErrorCode, CapabilityClassification } from "./daemon.js";
+import type { CapabilityClassification } from "./daemon.js";
 import type { DaemonCapability, DaemonLimits } from "./daemon.js";
-import type { DaemonCompatibility, DaemonInfoParams } from "./daemon.js";
 import type { DaemonInfoResult, DaemonInfoRequest } from "./daemon.js";
 import type { DaemonInfoResponse } from "./daemon.js";
 import type { ProjectDiffParams, ProjectDiffChange } from "./diff.js";

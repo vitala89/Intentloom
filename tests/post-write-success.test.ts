@@ -162,10 +162,12 @@ describe("successful post-write consistency", () => {
     const { fs } = await expectValid(twoFiles);
     const { manifest, sourceMap } = await metadata(fs);
     expect(manifest.generated).toEqual(
-      (sourceMap.files as JsonObject[]).map(({ path, checksum }) => ({
-        path,
-        checksum,
-      })),
+      (sourceMap.files as JsonObject[]).map(
+        ({ path, checksum: recordChecksum }) => ({
+          path,
+          checksum: recordChecksum,
+        }),
+      ),
     );
   });
 

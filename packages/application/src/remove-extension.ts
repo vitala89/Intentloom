@@ -14,10 +14,6 @@ import {
   restoreExtensionUpdateSnapshots,
   type PreparedRemovalFiles,
 } from "./extension-removal-files.js";
-import {
-  previewExtensionRemoval,
-  type PreviewExtensionRemovalOptions,
-} from "./preview-extension-removal.js";
 
 export interface ExtensionRemovalRuntime {
   stop(plan: ExtensionRemovalPlan): Promise<void>;

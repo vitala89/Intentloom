@@ -124,10 +124,10 @@ describe("reusable adoption fixture metadata", () => {
       const secondProposal = await adoptProject(options, fs);
       const firstDoctor = await doctorProject(options, fs);
       const secondDoctor = await doctorProject(options, fs);
-      expect(firstProposal, fixture.name).toEqual(secondProposal);
-      expect(firstDoctor, fixture.name).toEqual(secondDoctor);
-      expect([...fs.files.entries()], fixture.name).toEqual(before);
-      expect(firstProposal.profileDetection.selectedProfile, fixture.name).toBe(
+      expect(firstProposal).toEqual(secondProposal);
+      expect(firstDoctor).toEqual(secondDoctor);
+      expect([...fs.files.entries()]).toEqual(before);
+      expect(firstProposal.profileDetection.selectedProfile).toBe(
         fixture.expectedProfile,
       );
       const actions = firstProposal.items.map((item) => item.action);
@@ -152,15 +152,9 @@ describe("reusable adoption fixture metadata", () => {
       const codes = firstDoctor.findings.map((finding) => finding.code);
       for (const code of fixture.expectedDoctorFindings)
         expect(codes, `${fixture.name}:${code}`).toContain(code);
-      expect(doctorExitCode(firstDoctor), fixture.name).toBe(
-        fixture.expectedExitCode,
-      );
-      expect(JSON.stringify(firstProposal), fixture.name).not.toContain(
-        "/project/",
-      );
-      expect(JSON.stringify(firstDoctor), fixture.name).not.toContain(
-        "/project/",
-      );
+      expect(doctorExitCode(firstDoctor)).toBe(fixture.expectedExitCode);
+      expect(JSON.stringify(firstProposal)).not.toContain("/project/");
+      expect(JSON.stringify(firstDoctor)).not.toContain("/project/");
       for (const path of fixture.unchangedPaths)
         expect(
           fs.files.get(`/project/${path}`),
@@ -190,13 +184,13 @@ describe("reusable adoption fixture metadata", () => {
       const secondProposal = await adoptProject(options, fs);
       const firstDoctor = await doctorProject(options, fs);
       const secondDoctor = await doctorProject(options, fs);
-      expect(firstProposal, variant.name).toEqual(secondProposal);
-      expect(firstDoctor, variant.name).toEqual(secondDoctor);
-      expect([...fs.files.entries()], variant.name).toEqual(before);
+      expect(firstProposal).toEqual(secondProposal);
+      expect(firstDoctor).toEqual(secondDoctor);
+      expect([...fs.files.entries()]).toEqual(before);
       const codes = firstDoctor.findings.map((finding) => finding.code);
       for (const code of variant.expectedDoctorFindings)
         expect(codes, `${variant.name}:${code}`).toContain(code);
-      expect(doctorExitCode(firstDoctor), variant.name).toBe(3);
+      expect(doctorExitCode(firstDoctor)).toBe(3);
     }
   });
 });

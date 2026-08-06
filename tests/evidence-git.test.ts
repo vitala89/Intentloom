@@ -7,11 +7,11 @@ import {
 describe("local Git evidence", () => {
   it("parses bounded, redacted, deterministic commit evidence", async () => {
     const stdout = [
-      "abc1234\0def5678\0" + "1234567890",
+      "abc1234\x00def5678\x001234567890",
       "src/index.ts",
       "../outside.txt",
       "",
-      "def5678\0\0" + "1234567800",
+      "def5678\x00\x001234567800",
       "README.md",
     ].join("\n");
     const run = async () => ({ stdout, stderr: "" });
@@ -56,7 +56,7 @@ describe("local Git evidence", () => {
     const evidence = await collectGitEvidence({
       root: "/project",
       run: async () => ({
-        stdout: "abc1234\0\0" + "100\nREADME.md\n",
+        stdout: "abc1234\x00\x00100\nREADME.md\n",
         stderr: "",
       }),
     });

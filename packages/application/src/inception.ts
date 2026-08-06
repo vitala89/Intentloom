@@ -2,10 +2,6 @@ import type {
   InceptionSessionState,
   InceptionQuestion,
   InceptionAnswer,
-  ProjectConstraint,
-  ProjectAssumption,
-  BlueprintAlternative,
-  AnswerConfidence,
 } from "@intentloom/protocol";
 import {
   validateInceptionQuestion,

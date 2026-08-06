@@ -67,7 +67,9 @@ describe("v1.0 Stable Compatibility Contract & Protocol Guarantees (ADR-0043)", 
       },
     };
 
-    expect(() => parseDaemonInfoResponse(invalidRes as any)).toThrow();
+    expect(() => parseDaemonInfoResponse(invalidRes as any)).toThrow(
+      "jsonrpc must equal 2.0",
+    );
   });
 
   it("verifies structured interactive workspace state schema stability across releases", async () => {

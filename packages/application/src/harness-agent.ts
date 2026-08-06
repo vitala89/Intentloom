@@ -126,9 +126,10 @@ export async function executeHarnessAgent(
     );
   }
   try {
-    const raw = await options.adapter.invoke(request, {
-      ...(options.signal ? { signal: options.signal } : {}),
-    });
+    const raw = await options.adapter.invoke(
+      request,
+      options.signal ? { signal: options.signal } : {},
+    );
     return normalizeHarnessAgentResult(options.adapter.adapterId, request, raw);
   } catch (error) {
     const cancelled =

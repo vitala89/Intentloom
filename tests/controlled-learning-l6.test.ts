@@ -5,7 +5,6 @@ import {
   createMemoryFileSystem,
   createTaskCheckpoint,
   getTaskCheckpoint,
-  listTaskCheckpoints,
   pauseTask,
   redirectTask,
   resumeTask,

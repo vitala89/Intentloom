@@ -117,9 +117,10 @@ Deployment status log.
     expect(procedureSkill).not.toBeNull();
     expect(procedureSkill?.level).toBe("procedure");
     expect(procedureSkill).toHaveProperty("content");
-    if (procedureSkill?.level === "procedure") {
-      expect(procedureSkill.content).toContain("# sample-code-review");
+    if (procedureSkill?.level !== "procedure") {
+      throw new Error("expected skill resolved at the procedure level");
     }
+    expect(procedureSkill.content).toContain("# sample-code-review");
   });
 
   it("filters skills by pack and role", async () => {

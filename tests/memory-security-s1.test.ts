@@ -3,7 +3,6 @@ import { describe, expect, it } from "vitest";
 import {
   createMemoryFileSystem,
   importSarifSecurityReport,
-  getSecurityFinding,
   listSecurityFindings,
   dismissSecurityFinding,
   acceptSecurityRisk,

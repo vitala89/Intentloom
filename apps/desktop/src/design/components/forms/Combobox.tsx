@@ -124,7 +124,7 @@ export function Combobox({
                 aria-selected={o.value === value}
                 onClick={(e) => {
                   e.stopPropagation();
-                  onChange && onChange(o.value);
+                  if (onChange) onChange(o.value);
                   setOpen(false);
                   setQ("");
                 }}

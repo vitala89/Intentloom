@@ -108,7 +108,7 @@ describe("summarizeWorkflowRepetitions", () => {
         timeline,
         { ...timeline, operationVersion: 2 as unknown as 1 },
       ]),
-    ).toThrow();
+    ).toThrow("unique case ids");
   });
 
   it("returns an empty repeated-activity list when no case repeats", () => {
