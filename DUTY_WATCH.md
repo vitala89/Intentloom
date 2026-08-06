@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **PR #235 and the documentation-only reconciliation PR #236 are merged into `main`; post-merge handoff PR #237 is open with all hosted checks green.**
+Status: **PR #235 and the documentation-only reconciliation PR #236 are merged into `main`; PR #237 now includes a focused Windows Node 22 CI timeout correction, locally verified and ready to push.**
 
 Active branch: `docs/reconcile-pr236-merge`
 
-Current objective: Record the merged PR #236 state without adding a runtime runner or release gate.
+Current objective: Resolve the Windows Node 22 push-check timeout in PR #237 without changing runtime behavior or adding a benchmark runner/release gate.
 
-Next first action: Review and merge documentation-only PR #237; keep benchmark-runner implementation as a separately authorized follow-up.
+Next first action: Push the focused CI correction and confirm the hosted Windows Node 22 push and pull-request checks; then review and merge PR #237. Keep benchmark-runner implementation as a separately authorized follow-up.
 
 Known open items, in the order they should be handled:
 
@@ -59,6 +59,32 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-06, PR #237 Windows Node 22 package readiness timeout correction
+
+- **Status:** partial; the correction is implemented, staged, and locally
+  verified, with commit and push pending.
+- **Branch:** `docs/reconcile-pr236-merge` at the PR #237 head.
+- **Pull request:** [#237](https://github.com/vitala89/Intentloom/pull/237),
+  draft.
+- **Objective:** Resolve the `windows-latest / Node 22 (push)` Compatibility
+  failure without changing production behavior or widening the benchmark
+  scope.
+- **Completed:** Confirmed the only failure in push run `31057006071` was the
+  Windows Node 22 `public package publishing readiness` test timing out at the
+  generic 30-second limit after all other tests passed. Added a platform- and
+  runtime-specific 90-second timeout for that package-install test on Windows
+  Node 22; non-Windows and Node 24 paths retain the 30-second timeout.
+- **Validation:** Focused package-readiness tests passed (4 passed, 1
+  skipped); staged quality checks passed; full `pnpm verify` passed with 136
+  test files, 1,024 tests passed, 3 skipped, typecheck, formatting, build, and
+  diff checks.
+- **Not completed:** No production runtime, benchmark runner, performance
+  threshold, or release gate was changed. Hosted checks for the new commit are
+  pending push.
+- **Next action:** Commit and push the correction, confirm both hosted event
+  checks are green, then review and merge PR #237; authorize any benchmark
+  runner slice separately.
 
 ### 2026-08-06, PR #236 merged and hosted checks green
 
