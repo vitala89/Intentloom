@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **PR #235 is merged into `main`; its post-merge reconciliation and platform-specific Node 22 timeout corrections are now part of the verified baseline, and documentation-only PR #236 is open for review.**
+Status: **PR #235 and the documentation-only reconciliation PR #236 are merged into `main`; PR #237 contains the focused Windows Node 22 CI timeout correction and all hosted checks are green.**
 
-Active branch: `docs/reconcile-pr235-merge`
+Active branch: `docs/reconcile-pr236-merge`
 
-Current objective: Reconcile durable documentation with merged PR #235 without adding a runtime runner or release gate.
+Current objective: Resolve the Windows Node 22 push-check timeout in PR #237 without changing runtime behavior or adding a benchmark runner/release gate.
 
-Next first action: Review and merge documentation-only PR #236; keep benchmark-runner implementation as a separately authorized follow-up.
+Next first action: Review and merge PR #237; keep benchmark-runner implementation as a separately authorized follow-up.
 
 Known open items, in the order they should be handled:
 
@@ -59,6 +59,79 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-06, PR #237 CI correction hosted verification complete
+
+- **Status:** partial; the CI correction is committed, pushed, and verified by
+  both hosted workflow events, while maintainer review/merge remains pending.
+- **Branch:** `docs/reconcile-pr236-merge` at `a9beaec`.
+- **Pull request:** [#237](https://github.com/vitala89/Intentloom/pull/237),
+  draft.
+- **Objective:** Resolve the Windows Node 22 Compatibility timeout without
+  changing production behavior or widening the benchmark scope.
+- **Completed:** Commit `a9beaec` applies the Windows Node 22-only 90-second
+  timeout for the package-install readiness test and preserves the 30-second
+  timeout elsewhere. Push run
+  [31092719843](https://github.com/vitala89/Intentloom/actions/runs/31092719843)
+  and pull-request run
+  [31092723107](https://github.com/vitala89/Intentloom/actions/runs/31092723107)
+  both completed successfully, including Windows Node 22 and Node 24.
+- **Validation:** Pre-push and hosted checks passed; local full `pnpm verify`
+  passed with 136 test files, 1,024 tests passed, 3 skipped, typecheck,
+  formatting, build, and diff checks.
+- **Not completed:** No production runtime, benchmark runner, performance
+  threshold, or release gate was changed. PR #237 has not been merged.
+- **Next action:** Review and merge PR #237; authorize any benchmark-runner
+  slice separately.
+
+### 2026-08-06, PR #237 Windows Node 22 package readiness timeout correction
+
+- **Status:** partial; the correction is implemented, staged, and locally
+  verified, with commit and push pending.
+- **Branch:** `docs/reconcile-pr236-merge` at the PR #237 head.
+- **Pull request:** [#237](https://github.com/vitala89/Intentloom/pull/237),
+  draft.
+- **Objective:** Resolve the `windows-latest / Node 22 (push)` Compatibility
+  failure without changing production behavior or widening the benchmark
+  scope.
+- **Completed:** Confirmed the only failure in push run `31057006071` was the
+  Windows Node 22 `public package publishing readiness` test timing out at the
+  generic 30-second limit after all other tests passed. Added a platform- and
+  runtime-specific 90-second timeout for that package-install test on Windows
+  Node 22; non-Windows and Node 24 paths retain the 30-second timeout.
+- **Validation:** Focused package-readiness tests passed (4 passed, 1
+  skipped); staged quality checks passed; full `pnpm verify` passed with 136
+  test files, 1,024 tests passed, 3 skipped, typecheck, formatting, build, and
+  diff checks.
+- **Not completed:** No production runtime, benchmark runner, performance
+  threshold, or release gate was changed. Hosted checks for the new commit are
+  pending push.
+- **Next action:** Commit and push the correction, confirm both hosted event
+  checks are green, then review and merge PR #237; authorize any benchmark
+  runner slice separately.
+
+### 2026-08-06, PR #236 merged and hosted checks green
+
+- **Status:** partial; the PR #236 merge and verification are complete, and
+  documentation-only PR #237 is open as a draft with hosted checks green.
+- **Branch:** `docs/reconcile-pr236-merge` from `origin/main` at `462c696`.
+- **Pull request:** [#236](https://github.com/vitala89/Intentloom/pull/236) is
+  merged with merge commit `462c696`; the post-merge handoff is in
+  [#237](https://github.com/vitala89/Intentloom/pull/237), draft.
+- **Objective:** Record that the durable reconciliation landed without adding a
+  benchmark runner, threshold, release gate, provider, network, or mutation
+  capability.
+- **Completed:** Confirmed the maintainer merge and `origin/main` ref. PR #236
+  passed both Compatibility matrix runs, Governance, and CodeQL, including
+  Windows Node 22 and Node 24. Local full verification also passed with 136
+  test files, 1,024 tests passed, 3 skipped, typecheck, formatting, build, and
+  diff checks. PR #237 passed both Compatibility matrix runs, Governance, and
+  CodeQL, including Windows Node 22 and Node 24.
+- **Not completed:** No benchmark runner or performance threshold was
+  implemented. Cleanup of superseded reconciliation branches remains an
+  explicit owner action.
+- **Next action:** Review and merge documentation-only PR #237; authorize any
+  benchmark-runner slice separately.
 
 ### 2026-08-06, PR #235 merged and durable state reconciliation
 

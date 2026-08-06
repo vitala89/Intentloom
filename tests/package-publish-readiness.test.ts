@@ -15,6 +15,8 @@ import {
 
 const repositoryRoot = resolve(".");
 const windows = process.platform === "win32";
+const node22 = process.versions.node.startsWith("22.");
+const packageInstallTestTimeout = windows && node22 ? 90_000 : 30_000;
 const command = (name: string) => (windows ? `${name}.cmd` : name);
 let packRoot: string;
 let tarball: string;
@@ -292,7 +294,7 @@ describe("public package publishing readiness", () => {
         expect(deepImport.stdout.trim()).toBe("ERR_PACKAGE_PATH_NOT_EXPORTED");
       }
     },
-    30_000,
+    packageInstallTestTimeout,
   );
 
   it.runIf(windows)("exposes the installed command shim", () => {
