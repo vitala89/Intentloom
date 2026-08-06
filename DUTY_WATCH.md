@@ -62,11 +62,12 @@ entry directly below this section.
 
 ### 2026-08-06, PR #238 merged and post-merge state reconciliation
 
-- **Status:** partial; PR #238 is merged and the next documentation-only
-  reconciliation is prepared on a new branch.
+- **Status:** partial; PR #238 is merged, the reconciliation is committed and
+  published, and PR #239 is open as a draft with hosted checks pending.
 - **Branch:** `docs/reconcile-pr238-merge` from `origin/main` at `e1fd877`.
 - **Pull request:** [#238](https://github.com/vitala89/Intentloom/pull/238) is
-  merged with merge commit `e1fd877`.
+  merged with merge commit `e1fd877`; the reconciliation is in
+  [#239](https://github.com/vitala89/Intentloom/pull/239), draft.
 - **Objective:** Reconcile durable project state after the maintainer merged
   the documentation-only PR #238.
 - **Completed:** Confirmed the merge through GitHub and `origin/main`. The
@@ -75,10 +76,10 @@ entry directly below this section.
 - **Validation:** PR #238 head `baebfe5` passed both push and pull-request
   Compatibility runs, including Windows Node 22/24, plus Governance and
   CodeQL. Local full verification on the reconciliation branch is pending.
-- **Not completed:** This reconciliation has not yet been committed or
-  published; no release or benchmark-runner work is authorized.
-- **Next action:** Run staged and full verification, commit and push the
-  documentation-only reconciliation, then record its hosted checks.
+- **Not completed:** PR #239 hosted checks and maintainer review/merge remain
+  pending; no release or benchmark-runner work is authorized.
+- **Next action:** Confirm the hosted checks for PR #239, then leave review and
+  merge to the maintainer; authorize any benchmark-runner slice separately.
 
 ### 2026-08-06, PR #237 merged and post-merge state reconciliation
 
