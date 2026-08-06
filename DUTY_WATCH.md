@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **PR #235, PR #236, and PR #237 are merged into `main`; documentation-only post-merge reconciliation is published in PR #238 with hosted checks green.**
+Status: **PR #235, PR #236, PR #237, and PR #238 are merged into `main`; documentation-only post-merge reconciliation is published in PR #239 with hosted checks green.**
 
-Active branch: `docs/reconcile-pr237-merge`
+Active branch: `docs/reconcile-pr238-merge`
 
-Current objective: Record PR #237's merge and verified `main` state without changing runtime behavior or adding a benchmark runner/release gate.
+Current objective: Record PR #238's merge and verified `main` state without changing runtime behavior or adding a benchmark runner/release gate.
 
-Next first action: Maintainer reviews and merges PR #238; keep benchmark-runner implementation as a separately authorized follow-up.
+Next first action: Maintainer reviews and merges PR #239; keep benchmark-runner implementation as a separately authorized follow-up.
 
 Known open items, in the order they should be handled:
 
@@ -59,6 +59,33 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-06, PR #238 merged and post-merge state reconciliation
+
+- **Status:** partial; PR #238 is merged, the reconciliation is committed and
+  published, and PR #239 is open as a draft with hosted checks green.
+- **Branch:** `docs/reconcile-pr238-merge` from `origin/main` at `e1fd877`.
+- **Pull request:** [#238](https://github.com/vitala89/Intentloom/pull/238) is
+  merged with merge commit `e1fd877`; the reconciliation is in
+  [#239](https://github.com/vitala89/Intentloom/pull/239), draft.
+- **Objective:** Reconcile durable project state after the maintainer merged
+  the documentation-only PR #238.
+- **Completed:** Confirmed the merge through GitHub and `origin/main`. The
+  merged PR records PR #237's post-merge state; no runtime, benchmark runner,
+  threshold, release gate, provider, network, or mutation capability was added.
+- **Validation:** PR #238 head `baebfe5` passed both push and pull-request
+  Compatibility runs, including Windows Node 22/24, plus Governance and
+  CodeQL. PR #239 head `636b9a3` passed push run
+  [31112374114](https://github.com/vitala89/Intentloom/actions/runs/31112374114)
+  and pull-request run
+  [31112378657](https://github.com/vitala89/Intentloom/actions/runs/31112378657),
+  including Windows Node 22/24; Governance and CodeQL also passed. Local full
+  verification passed with 136 test files, 1,024 tests passed, 3 skipped,
+  typecheck, formatting, build, and diff checks.
+- **Not completed:** Maintainer review/merge of PR #239 remains pending; no
+  release or benchmark-runner work is authorized.
+- **Next action:** Maintainer reviews and merges PR #239; authorize any
+  benchmark-runner slice separately.
 
 ### 2026-08-06, PR #237 merged and post-merge state reconciliation
 
