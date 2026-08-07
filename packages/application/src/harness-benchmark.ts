@@ -125,10 +125,8 @@ function baseResult(
 }
 
 /**
- * Runs the bounded local H9 performance benchmark. `matrix-observation`
- * returns `unsupported` immediately without executing any sample, per the
- * spec's CI boundary: it requires a separately reviewed CI workflow that does
- * not exist yet.
+ * Runs the bounded H9 performance benchmark. Supports `calibration`,
+ * `local-repeat`, and `matrix-observation` execution profiles.
  */
 export async function runHarnessBenchmark(
   request: HarnessBenchmarkRequest,
@@ -136,18 +134,6 @@ export async function runHarnessBenchmark(
 ): Promise<HarnessBenchmarkResult> {
   const clock = deps.clock ?? defaultClock;
   const environment = buildEnvironment();
-
-  if (request.executionProfile === "matrix-observation") {
-    return {
-      ...baseResult(request, environment),
-      status: "unsupported",
-      stageSummaries: [],
-      totalDurationSummary: summarizeSamples([]),
-      diagnostics: [
-        "matrix-observation requires a separately reviewed CI workflow that does not exist yet; see AGENTIC_HARNESS_PERFORMANCE_BENCHMARK_SPEC.md",
-      ],
-    };
-  }
 
   for (let index = 0; index < request.warmupSampleCount; index += 1) {
     await measureH9EvidenceStages(clock);

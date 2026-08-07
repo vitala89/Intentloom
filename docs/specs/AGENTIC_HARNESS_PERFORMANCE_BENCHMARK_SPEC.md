@@ -2,13 +2,13 @@
 
 ## Status
 
-A bounded initial implementation exists. The `calibration` and `local-repeat`
-execution profiles are implemented as `intentloom harness benchmark`. The
-runner is fully offline, is never a release or Compatibility gate, and applies
-no thresholds. `matrix-observation` remains unimplemented pending separate CI
-workflow review; it is rejected at the CLI parse level today. This document
-remains the normative measurement contract; implementation details that
-diverge from it should be treated as a bug, not a silent reinterpretation.
+A bounded implementation exists. The `calibration`, `local-repeat`, and
+`matrix-observation` execution profiles are implemented as `intentloom harness benchmark`.
+A non-release-gating, reporting-only CI workflow `.github/workflows/harness-benchmark.yml`
+collects matrix observations across Linux, macOS, and Windows under Node 22/24. The runner
+is fully offline, is never a release or Compatibility gate, and applies no thresholds. This
+document remains the normative measurement contract; implementation details that diverge from it
+should be treated as a bug, not a silent reinterpretation.
 
 ## Purpose
 
@@ -221,7 +221,8 @@ that the benchmark:
 - Which resource metrics, if any, justify their privacy and portability cost?
   Resolved for the first implementation: none. Only elapsed time is measured.
 - Should matrix observations be manual-dispatch, scheduled, or local-only?
-  Still open; no `matrix-observation` workflow exists yet.
+  Resolved for initial CI integration: non-release-gating `workflow_dispatch`
+  and PR-path reporting job in `.github/workflows/harness-benchmark.yml`.
 - What is the smallest retained sample record that still supports diagnosis?
   Resolved provisionally: the raw per-stage `elapsedMs` array plus the
   aggregate summary (median, p90, p95, min, max, MAD spread), nothing else.
