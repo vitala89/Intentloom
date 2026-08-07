@@ -6,10 +6,16 @@ import {
   type FileSystem,
 } from "@intentloom/application";
 import type {
+  HarnessBenchmarkExecutionProfile,
   HarnessInspectionView,
   HarnessReplayView,
   HarnessScorecard,
 } from "@intentloom/protocol";
+import {
+  parseBenchmarkProfile,
+  parseNonNegativeInteger,
+  runHarnessBenchmarkCommand,
+} from "./harness-benchmark-command.js";
 
 export type HarnessCliExitCode = 0 | 2 | 3;
 
@@ -23,27 +29,43 @@ export interface HarnessCliOptions {
 }
 
 interface HarnessArguments {
-  readonly subcommand: "inspect" | "replay";
+  readonly subcommand: "inspect" | "replay" | "benchmark";
   readonly root: string;
   readonly file: string;
   readonly mode: "simulate" | "strict";
   readonly json: boolean;
+  readonly profile: HarnessBenchmarkExecutionProfile;
+  readonly warmupSampleCount: number;
+  readonly measuredSampleCount: number;
+  readonly output?: string;
 }
 
 const usage =
-  "Usage: intentloom harness <inspect|replay> --file SCORECARD.json [--root PATH] [--mode simulate|strict] [--json]";
+  "Usage: intentloom harness <inspect|replay> --file SCORECARD.json [--root PATH] [--mode simulate|strict] [--json]\n" +
+  "       intentloom harness benchmark --profile calibration|local-repeat [--warmup N] [--samples N] [--output PATH] [--root PATH] [--json]";
 
 function parseHarnessArguments(args: readonly string[]): HarnessArguments {
   const subcommand = args[1];
-  if (subcommand !== "inspect" && subcommand !== "replay")
+  if (
+    subcommand !== "inspect" &&
+    subcommand !== "replay" &&
+    subcommand !== "benchmark"
+  )
     throw new Error(usage);
 
   let root = cwd();
   let file: string | undefined;
   let mode: "simulate" | "strict" = "simulate";
   let json = false;
+  let profile: HarnessBenchmarkExecutionProfile | undefined;
+  let warmupSampleCount = 3;
+  let measuredSampleCount = 10;
+  let output: string | undefined;
   let rootProvided = false;
   let modeProvided = false;
+  let profileProvided = false;
+  let warmupProvided = false;
+  let samplesProvided = false;
   for (let index = 2; index < args.length; index += 1) {
     const token = args[index];
     if (token === "--json") {
@@ -51,7 +73,15 @@ function parseHarnessArguments(args: readonly string[]): HarnessArguments {
       json = true;
       continue;
     }
-    if (token !== "--root" && token !== "--file" && token !== "--mode")
+    if (
+      token !== "--root" &&
+      token !== "--file" &&
+      token !== "--mode" &&
+      token !== "--profile" &&
+      token !== "--warmup" &&
+      token !== "--samples" &&
+      token !== "--output"
+    )
       throw new Error(`unknown harness option: ${token}`);
     const value = args[index + 1];
     if (value === undefined || value.startsWith("--"))
@@ -62,23 +92,78 @@ function parseHarnessArguments(args: readonly string[]): HarnessArguments {
       rootProvided = true;
       root = value;
     } else if (token === "--file") {
+      if (subcommand === "benchmark")
+        throw new Error("harness benchmark does not support --file");
       if (file !== undefined)
         throw new Error("harness --file specified more than once");
       file = value;
-    } else {
-      if (subcommand === "inspect")
-        throw new Error("harness inspect does not support --mode");
+    } else if (token === "--mode") {
+      if (subcommand !== "replay")
+        throw new Error("harness --mode is only supported by replay");
       if (modeProvided)
         throw new Error("harness --mode specified more than once");
       if (value !== "simulate" && value !== "strict")
         throw new Error("harness replay --mode must be simulate or strict");
       modeProvided = true;
       mode = value;
+    } else if (token === "--profile") {
+      if (subcommand !== "benchmark")
+        throw new Error("harness --profile is only supported by benchmark");
+      if (profileProvided)
+        throw new Error("harness --profile specified more than once");
+      profileProvided = true;
+      profile = parseBenchmarkProfile(value);
+    } else if (token === "--warmup") {
+      if (subcommand !== "benchmark")
+        throw new Error("harness --warmup is only supported by benchmark");
+      if (warmupProvided)
+        throw new Error("harness --warmup specified more than once");
+      warmupProvided = true;
+      warmupSampleCount = parseNonNegativeInteger(value, "harness --warmup");
+    } else if (token === "--samples") {
+      if (subcommand !== "benchmark")
+        throw new Error("harness --samples is only supported by benchmark");
+      if (samplesProvided)
+        throw new Error("harness --samples specified more than once");
+      samplesProvided = true;
+      measuredSampleCount = parseNonNegativeInteger(value, "harness --samples");
+    } else {
+      if (subcommand !== "benchmark")
+        throw new Error("harness --output is only supported by benchmark");
+      if (output !== undefined)
+        throw new Error("harness --output specified more than once");
+      output = value;
     }
     index += 1;
   }
+  if (subcommand === "benchmark") {
+    if (!profile)
+      throw new Error(
+        "harness benchmark requires --profile calibration|local-repeat",
+      );
+    return {
+      subcommand,
+      root,
+      file: "",
+      mode,
+      json,
+      profile,
+      warmupSampleCount,
+      measuredSampleCount,
+      ...(output !== undefined ? { output } : {}),
+    };
+  }
   if (!file) throw new Error(`${subcommand} requires --file SCORECARD.json`);
-  return { subcommand, root, file, mode, json };
+  return {
+    subcommand,
+    root,
+    file,
+    mode,
+    json,
+    profile: "local-repeat",
+    warmupSampleCount,
+    measuredSampleCount,
+  };
 }
 
 function invalidScorecard(
@@ -137,6 +222,20 @@ export async function runHarnessCommand(
   io: HarnessCliIo,
 ): Promise<HarnessCliExitCode> {
   const parsed = parseHarnessArguments(args);
+  if (parsed.subcommand === "benchmark")
+    return runHarnessBenchmarkCommand(
+      {
+        root: parsed.root,
+        json: parsed.json,
+        profile: parsed.profile,
+        warmupSampleCount: parsed.warmupSampleCount,
+        measuredSampleCount: parsed.measuredSampleCount,
+        ...(parsed.output !== undefined ? { output: parsed.output } : {}),
+      },
+      options,
+      io,
+    );
+
   const scorecardPath = resolveWithin(parsed.root, parsed.file);
   let scorecard: HarnessScorecard;
   try {

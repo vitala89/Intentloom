@@ -490,6 +490,12 @@ merged the focused Windows Node 22 package-readiness timeout correction; PR
 not authorize a runner, threshold, release gate, provider, network, or mutation
 capability.
 
+A bounded H9 benchmark runner slice adds `intentloom harness benchmark`,
+which measures the six `h9-evidence-drill@1` stages offline for the
+`calibration` and `local-repeat` execution profiles and reports
+`observed`/`inconclusive`/`invalid`/`unsupported` status with no thresholds
+and no CI or release gate; `matrix-observation` remains unimplemented.
+
 The Managed Extension Lifecycle roadmap plan (`docs/roadmap/MANAGED_EXTENSION_LIFECYCLE_PLAN.md`),
 Phase E2 Pre-Adoption Inspection & Capability Delta Engine (`inspectExtensionManifest`,
 `computeExtensionCapabilityDelta`, `evaluateExtensionCompatibility`, `auditExtensionLicense`),

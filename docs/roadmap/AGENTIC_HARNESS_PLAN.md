@@ -242,7 +242,10 @@ Exit gate:
 
 Status: adoption gate contract and fail-closed mutation enforcement complete;
 performance-benchmark design and PR #235 compatibility reconciliation merged;
-production-hardening evidence remains planned.
+a bounded local benchmark runner (`calibration` and `local-repeat` profiles
+via `intentloom harness benchmark`) is now implemented. `matrix-observation`
+and any threshold or release gate remain planned pending a variance report and
+separate CI workflow review; production-hardening evidence remains planned.
 
 Scope:
 
