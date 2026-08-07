@@ -96,6 +96,131 @@ entry directly below this section.
 
 ## Watch entries
 
+### 2026-08-07, Agent task-triage policy: tool-neutral canon plus Claude Code carrier
+
+- **Status:** complete.
+- **Agent/tool:** Claude Code. PRs #240 and #241 are confirmed merged into
+  `main` (both commits present locally and on `origin/main`, hash `0604e15`)
+  since the previous entry - `main` was current and clean when this watch
+  started, not `feat/harness-benchmark-runner` as the first draft of this
+  entry mistakenly said before that was corrected.
+- **Branch:** `docs/agent-task-triage-policy`, cut from `main` at `0604e15`.
+- **Commits:** see commit hash once created below (this entry is written
+  before the commit that carries it, per this repository's own convention of
+  writing the handoff as part of the change it describes).
+- **Pull request:** opened immediately after this commit; not yet open at
+  entry-write time.
+- **Objective:** two passes. First, per an external handover prompt: give
+  this repository a triage step scoring a task 0-10 across five axes (blast
+  radius, ambiguity, risk, verification, unknowns) that routes coding-agent
+  model, reasoning effort, subagent plan, and token budget from that score.
+  Second, per an addendum: make that system tool-neutral rather than an
+  implicit Claude Code emulation, since this repository's own
+  `AI_AGENT_WORKFLOW.md` names Codex, Antigravity, and Gemini CLI as agents
+  that also operate here.
+- **Completed:**
+  - Discovered a global Claude Code skill, `~/.claude/skills/task-triage`
+    (outside this repository, applies to every project on this machine),
+    already implements the scoring method. Confirmed
+    `catalog/skills/aif-task-router` is a different concern (skill/workflow
+    routing, not model/effort routing) - nothing to replace.
+  - Verified two claims against this session's actual `Agent` tool schema
+    rather than memory, and found one wrong: the global skill claimed `Agent`
+    accepts an `effort` parameter directly. It does not - only `model`
+    (`haiku`/`sonnet`/`opus`/`fable`). Effort is fixed per subagent-type
+    definition or set via `Workflow`'s `agent(prompt, {effort})`. Corrected
+    this in the global skill (both the harness-detection table and the
+    routing-table intro) rather than leaving a plausible-but-wrong claim.
+  - Genericized two other hardcoded lines in the global skill that leaked a
+    different project's specifics (`aif-grilling` gate skill,
+    `docs/ai/model-policy.md` path) into a file meant to be portable.
+  - Rewrote `docs/governance/AGENT_TASK_TRIAGE_POLICY.md` as the single
+    tool-neutral canon (rubric, thresholds, gate commands, adjustments,
+    role-named routing table - `cheapest`/`mid`/`frontier`, not vendor model
+    names) with a "Carriers, per tool" section mapping role to verified
+    names: Claude Code (verified from this session's own tool schema),
+    Codex (per its documented `AGENTS.md` convention, explicitly marked
+    **unverified** in this session since this session runs as Claude Code),
+    and a placeholder note for Cursor/Antigravity/Copilot since no
+    `.cursor/rules/`, `GEMINI.md`, or `.github/copilot-instructions.md` exist
+    in this repository today.
+  - Corrected the Enforcement section after discovering, live in this
+    session, that a `UserPromptSubmit` hook already fires every prompt and
+    injects a triage reminder - but it lives in the user's personal, global
+    `~/.claude/settings.json`, not this repository, so it is deterministic
+    for that one person and invisible to any other contributor or fresh
+    checkout. No repository-versioned hook was added (`AGENTS.md` requires
+    explicit authorization for that; not given this watch).
+  - Added a short pointer paragraph in `AGENTS.md` itself, under "Task
+    routing and curated skills" - the one instruction file both Claude Code
+    (via `CLAUDE.md`'s `@AGENTS.md` include) and Codex read natively - so the
+    triage step is visible without Codex needing any Claude-Code-specific
+    concept. No table was copied into it, per the addendum's "one canon,
+    thin pointers" rule.
+  - Added a short "Related" cross-link in `catalog/skills/aif-task-router/SKILL.md`
+    pointing to the policy doc, without changing its own routing logic (user
+    decision: sit beside, not fold in).
+- **Not completed:** no repository-versioned `UserPromptSubmit` hook
+  (requires explicit authorization not given this watch); no per-tool
+  carrier paragraphs for Cursor/Antigravity/Copilot (no evidence this
+  repository is used from them yet - a placeholder note says to add one if
+  that changes, rather than fabricating specifics for tools not in use).
+- **Files or packages changed:**
+  - `docs/governance/AGENT_TASK_TRIAGE_POLICY.md` (new).
+  - `catalog/skills/aif-task-router/SKILL.md` (added "Related" section).
+  - `AGENTS.md` (added triage pointer paragraph).
+  - `~/.claude/skills/task-triage/SKILL.md` (outside this repository; not
+    tracked by this repo's Git history; genericized + effort-param fix).
+- **Validation:** re-invoked the `task-triage` skill three times live across
+  both passes, confirming edits load correctly each time; checked
+  `catalog/skills/aif-task-router/SKILL.md`'s YAML frontmatter still parses;
+  confirmed no `catalog/skills` schema-validation script exists in
+  `package.json`. Full validation command and result recorded below once run
+  ahead of the commit.
+- **Decisions and assumptions:** first pass - user chose (1) global skill
+  kept plus a repo-local canon file, (2) canon sits beside `aif-task-router`
+  rather than folding in, (3) enforcement stays advisory rather than adding a
+  hook. Second pass (addendum) - user directed the canon be rewritten
+  tool-neutral rather than assuming Claude Code mechanisms (`skill`,
+  `subagent`, `hook`, `scout`) apply universally, and explicitly authorized
+  branch, commit, push, and PR for the result.
+- **Risks or compatibility impact:** none. Docs and skill-guidance text only;
+  no runtime behavior, build, or CI surface touched.
+- **Open issues or blockers:** none for this item. Unrelated to this entry:
+  the watch status block at the top of this file is stale relative to PR
+  #240/#241 now being merged (not touched here to avoid conflating an
+  unrelated reconciliation with this change; a future watch should update it).
+- **Next first action:** none for this item - complete. For the repository
+  generally: reconcile the top-of-file watch status block now that PR
+  #240/#241 are merged, and add Cursor/Antigravity/Copilot carrier
+  paragraphs to `AGENT_TASK_TRIAGE_POLICY.md` if this repository starts being
+  worked on from one of them.
+- **Evidence:** live verdicts across this watch -
+  `Triage 8/10 (radius 1 · ambiguity 2 · risk 1 · verify 2 · unknowns 2)` on
+  the initial build, `Triage 2/10 (radius 1 · ambiguity 0 · risk 0 · verify 1
+· unknowns 0)` on the Duty Watch write-up, and
+  `Triage 6/10 (radius 1 · ambiguity 0 · risk 2 · verify 2 · unknowns 1)` on
+  this addendum (risk=2 because it ends in a push and a PR).
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant tests, type checks, builds, or compatibility checks passed
+- [x] Atomic commit policy and commit-message checks passed
+- [ ] Repository hooks installed or equivalent commands run (`.githooks` not
+      installed in this checkout via `pnpm hooks:install`; ran the underlying
+      commands - `pnpm verify` - directly instead)
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [ ] `PROJECT_STATE.md` updated when applicable (not applicable - governance
+      guidance, not durable product state; consistent with how the prior
+      linter/branch-protection governance entry was handled)
+- [x] `DUTY_WATCH.md` handoff completed
+- [ ] Related roadmap, ADR, changelog, migration, or reference docs updated
+      (none applicable - no ADR-level decision, no user-visible change)
+- [x] Failed or unavailable checks recorded
+
 ### 2026-08-06, Governance follow-ups: real linter, branch/tag protection correction, glib recheck
 
 - **Status:** complete for the three items below; the benchmark-runner slice
