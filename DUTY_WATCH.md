@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Agentic Harness H9 Production-Hardening Audit complete and verified (`docs/releases/H9_HARNESS_HARDENING_AUDIT.md`); PR pending.**
+Status: **PR #249 merged (`b344d87`); Agentic Harness H9 Hardening Audit complete; ready for next milestone.**
 
-Active branch: `docs/harness-h9-hardening-audit`
+Active branch: `main`
 
-Current objective: Land Agentic Harness H9 Production-Hardening Audit documentation and update project state.
+Current objective: Select the next roadmap milestone (Transactional Apply Engine / Safe Agent & MCP Mutation).
 
-Next first action: Open PR for `docs/harness-h9-hardening-audit` and merge to `main`.
+Next first action: Review roadmap and design the Transactional Apply Engine specification.
 
 Known open items, in the order they should be handled:
 
@@ -102,7 +102,7 @@ entry directly below this section.
 - **Agent/tool:** Google Antigravity (AGY).
 - **Branch:** `docs/harness-h9-hardening-audit` cut from `main` at `48922d1`.
 - **Commits:** local commit `docs(audit): complete Agentic Harness H9 Production-Hardening Audit`.
-- **Pull request:** pending review/creation.
+- **Pull request:** [#249](https://github.com/vitala89/Intentloom/pull/249) merged (`b344d87`).
 - **Objective:** Audit and verify all 6 security, isolation, fail-closed enforcement, checkpoint persistence, replay, purge, and transactional rollback recovery controls for the Agentic Harness H9 milestone under ADR-0052.
 - **Completed:**
   - Audited 6 verification criteria across fail-closed adoption gate, cross-project isolation, event replay, state purge, transactional rollback, and benchmark reporting.
