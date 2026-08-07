@@ -42,3 +42,10 @@ expected checks, and the first safe action.
 Stop after one bounded route is selected, or when a material product decision
 requires user input. Do not begin implementation from an unapproved discovery
 result.
+
+## Related
+
+This skill selects _which route and skills_ a request needs. It does not set
+model, reasoning effort, subagent plan, or token budget for the coding agent
+carrying out the work - see `docs/governance/AGENT_TASK_TRIAGE_POLICY.md` for
+that axis.

@@ -52,6 +52,12 @@ or bug fix requires `aif-verification-gate` before completion claims. Skill text
 never overrides project rules or grants filesystem, network, process,
 credential, delegation, publication, or mutation authority.
 
+Before starting a non-trivial task, score it against
+`docs/governance/AGENT_TASK_TRIAGE_POLICY.md` and state the score, the model
+and effort it deserves, and the stop condition - this is a separate question
+from the skill route above and applies whether or not this session can set
+its own model.
+
 ## Code quality and decomposition
 
 Before changing implementation code, inspect the affected module boundaries,
