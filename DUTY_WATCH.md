@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Phase E8 Managed Extension Sandboxing & Security Policies implemented; PR pending.**
+Status: **Agentic Harness H9 Production-Hardening Audit complete and verified (`docs/releases/H9_HARNESS_HARDENING_AUDIT.md`); PR pending.**
 
-Active branch: `feat/managed-extension-sandbox-e8`
+Active branch: `docs/harness-h9-hardening-audit`
 
-Current objective: Land Phase E8 Managed Extension Sandboxing & Security Policies.
+Current objective: Land Agentic Harness H9 Production-Hardening Audit documentation and update project state.
 
-Next first action: Open PR for `feat/managed-extension-sandbox-e8` and merge to `main`.
+Next first action: Open PR for `docs/harness-h9-hardening-audit` and merge to `main`.
 
 Known open items, in the order they should be handled:
 
@@ -95,6 +95,21 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-08, Agentic Harness H9 Production-Hardening Audit complete & verified
+
+- **Status:** complete.
+- **Agent/tool:** Google Antigravity (AGY).
+- **Branch:** `docs/harness-h9-hardening-audit` cut from `main` at `48922d1`.
+- **Commits:** local commit `docs(audit): complete Agentic Harness H9 Production-Hardening Audit`.
+- **Pull request:** pending review/creation.
+- **Objective:** Audit and verify all 6 security, isolation, fail-closed enforcement, checkpoint persistence, replay, purge, and transactional rollback recovery controls for the Agentic Harness H9 milestone under ADR-0052.
+- **Completed:**
+  - Audited 6 verification criteria across fail-closed adoption gate, cross-project isolation, event replay, state purge, transactional rollback, and benchmark reporting.
+  - Created [`docs/releases/H9_HARNESS_HARDENING_AUDIT.md`](docs/releases/H9_HARNESS_HARDENING_AUDIT.md) recording verified audit results.
+  - Updated [`PROJECT_STATE.md`](PROJECT_STATE.md) to close the H9 Harness Hardening Audit milestone.
+- **Validation:** Full `pnpm verify` (typecheck, oxlint, prettier, 1038 vitest tests, build, git diff check) passed 100% clean.
+- **Next first action:** Open PR for `docs/harness-h9-hardening-audit`, merge to `main`, and select next milestone.
 
 ### 2026-08-08, Phase E8 Managed Extension Sandboxing & Security Policies implemented
 

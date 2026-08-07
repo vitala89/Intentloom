@@ -471,27 +471,7 @@ The read-only evidence hardening gate milestone is complete and closed (`docs/re
 The next planned control-plane milestone after that gate is the Agentic
 Evaluation and Execution Harness described by ADR-0052. Its H0 decision,
 specification, source provenance, threat boundary, and phased roadmap are
-accepted; H1-H9 implementation slices and C1-C6 curated skill adaptation phases
-are complete. Curated-skill C4 dogfooding fixtures, C5 structured task routing,
-C6 managed external skill import normalization, H9 adoption gate fail-closed
-enforcement, and the deterministic H9 evidence contract are merged into `main`
-through PR #213 (`a173931`), PR #214 (`8a1ce50`), and PR #216 (`cec3f45`). The
-remaining H9 production-hardening work is intentionally separate from the
-deterministic contract and must not add provider, network, or mutation authority.
-PR #233 merged the deterministic rollback evidence and the Windows Node 22
-compatibility timeout correction. PR #234 merged the H9 performance-benchmark
-specification as a design artifact only; PR #235 merged the post-merge
-reconciliation and platform-specific Node 22 timeout corrections; PR #237
-merged the focused Windows Node 22 package-readiness timeout correction; PR
-#238 merged the documentation-only post-merge reconciliation. These changes do
-not authorize a runner, threshold, release gate, provider, network, or mutation
-capability.
-
-A bounded H9 benchmark runner slice adds `intentloom harness benchmark`,
-which measures the six `h9-evidence-drill@1` stages offline for the
-`calibration` and `local-repeat` execution profiles and reports
-`observed`/`inconclusive`/`invalid`/`unsupported` status with no thresholds
-and no CI or release gate; `matrix-observation` remains unimplemented.
+The Agentic Evaluation and Execution Harness H9 Production-Hardening Audit is complete and closed (`docs/releases/H9_HARNESS_HARDENING_AUDIT.md`). It verifies fail-closed adoption gate enforcement, cross-project isolation, event replay, state purge, transactional rollback, and the non-gating `matrix-observation` benchmark profile merged through PR #244 (`44a3819`).
 
 The Managed Extension Lifecycle roadmap plan (`docs/roadmap/MANAGED_EXTENSION_LIFECYCLE_PLAN.md`),
 Phase E2 Pre-Adoption Inspection & Capability Delta Engine (`inspectExtensionManifest`,
@@ -521,8 +501,8 @@ rotation remain out of scope.
 
 ## Next platform milestone
 
-The read-only evidence hardening gate is complete ([READ_ONLY_EVIDENCE_HARDENING_AUDIT.md](docs/releases/READ_ONLY_EVIDENCE_HARDENING_AUDIT.md)).
-The next approved platform milestone is the expansion of the Agentic Evaluation and Execution Harness (ADR-0052) and Managed Extension Lifecycle (ADR-0045..0050).
+The read-only evidence hardening gate ([READ_ONLY_EVIDENCE_HARDENING_AUDIT.md](docs/releases/READ_ONLY_EVIDENCE_HARDENING_AUDIT.md)), Managed Extension Lifecycle Phases E1-E8 (PR #248), and Agentic Harness H9 Hardening Audit ([H9_HARNESS_HARDENING_AUDIT.md](docs/releases/H9_HARNESS_HARDENING_AUDIT.md)) are complete.
+The next approved platform milestone is the transactional apply engine for safe agent and MCP mutation.
 
 The Desktop discovery/error and Diff/Timeline slices remain recorded in
 [PHASE1_CONTRACTS.md](docs/desktop/PHASE1_CONTRACTS.md), while the packaged
