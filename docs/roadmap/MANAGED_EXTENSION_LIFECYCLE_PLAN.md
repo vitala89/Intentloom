@@ -2,11 +2,12 @@
 
 ## Status
 
-Phases E1-E7 are implemented. Phase E4 Update Discovery & Migration Pipeline
+Phases E1-E8 are implemented. Phase E4 Update Discovery & Migration Pipeline
 merged through PR #224 (`18b6b53`), Phase E5 Doctor Diagnostics & Health
-Verification merged through PR #226 (`56bf4bd`), and Phase E6 Safe Revocation,
-Removal & Rollback Recovery merged through PR #227 (`d65e735`). Phase E7
-Knowledge-Provider & Adapter-Pack Boundaries is implemented on `feat/knowledge-provider-boundary`.
+Verification merged through PR #226 (`56bf4bd`), Phase E6 Safe Revocation,
+Removal & Rollback Recovery merged through PR #227 (`d65e735`), Phase E7
+Knowledge-Provider & Adapter-Pack Boundaries merged through PR #229 (`8d4eed5`),
+and Phase E8 Extension Sandboxing & Contextual Security Policies is complete.
 
 ## Outcome
 
@@ -188,6 +189,28 @@ Exit gate:
 - core platform has zero hard runtime dependency on Graphify or third-party graph tools;
 - Graphify adapter consumes standard application operation contracts;
 - no third-party binary is bundled or redistributed without explicit license review.
+
+---
+
+## Phase E8: Extension Sandboxing & Contextual Security Policies
+
+Status: implemented and complete.
+
+Scope:
+
+- define vendor-neutral isolation profiles (`strict`, `workspace-read`, `workspace-write`, `network-read`, `unrestricted`) in `@intentloom/protocol`;
+- add schema and semantic validators `validateExtensionSandboxPolicy` and `validateExtensionSandboxEvaluation` in `@intentloom/validator`;
+- define canonical application operation `evaluateExtensionSandboxPolicy` in `@intentloom/application`;
+- evaluate requested vs allowed capability boundaries across filesystem, process exec, and network endpoints;
+- emit typed sandbox evaluation verdicts (`approved`, `requires-approval`, `rejected`) with actionable diagnostics;
+- add contract and unit test suite in `tests/extension-sandbox.test.ts`.
+
+Exit gate:
+
+- isolation profile violations reject adoption with `isolation-profile-exceeded` diagnostic;
+- unapproved read/write paths, exec commands, or connect hosts require explicit user approval;
+- policy requiring explicit approval triggers `requires-approval` status;
+- byte-for-byte read-only evaluation without side effects or unapproved capability grants.
 
 ---
 

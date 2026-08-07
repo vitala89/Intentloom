@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Read-Only Evidence Hardening Gate audit merged in PR #246 (`48922d1`). `main` is current, clean, and verified.**
+Status: **Phase E8 Managed Extension Sandboxing & Security Policies implemented; PR pending.**
 
-Active branch: `main`
+Active branch: `feat/managed-extension-sandbox-e8`
 
-Current objective: Maintain clean `main` baseline and select next roadmap milestone.
+Current objective: Land Phase E8 Managed Extension Sandboxing & Security Policies.
 
-Next first action: Select next roadmap milestone from `ROADMAP.md`.
+Next first action: Open PR for `feat/managed-extension-sandbox-e8` and merge to `main`.
 
 Known open items, in the order they should be handled:
 
@@ -95,6 +95,23 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-08, Phase E8 Managed Extension Sandboxing & Security Policies implemented
+
+- **Status:** complete.
+- **Agent/tool:** Google Antigravity (AGY).
+- **Branch:** `feat/managed-extension-sandbox-e8` cut from `main` at `48922d1`.
+- **Commits:** local commit `feat(extension): implement Phase E8 sandboxing and security policies`.
+- **Pull request:** pending review/creation.
+- **Objective:** Implement Phase E8 of MANAGED_EXTENSION_LIFECYCLE_PLAN.md: isolation profiles, sandbox policies, evaluation logic, validators, and contract tests.
+- **Completed:**
+  - Added isolation profiles (`strict`, `workspace-read`, `workspace-write`, `network-read`, `unrestricted`) and sandbox policy types to `@intentloom/protocol`.
+  - Added schema/semantic validators `validateExtensionSandboxPolicy` and `validateExtensionSandboxEvaluation` to `@intentloom/validator`.
+  - Added canonical application operation `evaluateExtensionSandboxPolicy` to `@intentloom/application`.
+  - Added unit and contract tests in `tests/extension-sandbox.test.ts`.
+  - Updated [`docs/roadmap/MANAGED_EXTENSION_LIFECYCLE_PLAN.md`](docs/roadmap/MANAGED_EXTENSION_LIFECYCLE_PLAN.md).
+- **Validation:** Full `pnpm verify` (typecheck, oxlint, prettier, 1043 vitest tests, build, git diff check) passed 100% clean.
+- **Next first action:** Open PR for `feat/managed-extension-sandbox-e8` and merge to `main`.
 
 ### 2026-08-08, PR #246 merged and post-merge state reconciliation
 

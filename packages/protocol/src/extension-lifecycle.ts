@@ -187,3 +187,4 @@ export interface ExtensionHealthReport {
 }
 
 export * from "./extension-update.js";
+export * from "./extension-sandbox.js";
