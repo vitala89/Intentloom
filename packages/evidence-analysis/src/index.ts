@@ -7,7 +7,6 @@ import {
   type EngineeringConformanceSummary,
   type EngineeringConformanceStatus,
   type EngineeringEvidenceRef,
-  type EngineeringWorkflowCaseType,
   type EngineeringWorkflowPolicy,
   type GenericTimeline,
   type TimelineEventRef,

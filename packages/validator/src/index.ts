@@ -138,17 +138,20 @@ const maximumDocumentBytes = 1024 * 1024;
 const maximumDocumentDepth = 64;
 
 class ParserFailure extends Error {
-  constructor(readonly code: string) {
+  readonly code: string;
+
+  constructor(code: string) {
     super(code);
+    this.code = code;
   }
 }
 
 function issue(
   code: string,
   message: string,
-  fieldPath = "",
+  path = "",
 ): ArtifactValidationIssue {
-  return { code, message, fieldPath };
+  return { code, message, fieldPath: path };
 }
 
 function invalidResult(

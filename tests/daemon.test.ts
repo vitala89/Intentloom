@@ -63,7 +63,7 @@ async function request(
   token: string,
   root = "/project",
 ): Promise<unknown> {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolveRequest, reject) => {
     const socket = createConnection(endpoint);
     let output = "";
     socket.on("connect", () =>
@@ -74,7 +74,7 @@ async function request(
     socket.on("data", (chunk: Buffer) => {
       output += chunk.toString("utf8");
     });
-    socket.on("end", () => resolve(JSON.parse(output)));
+    socket.on("end", () => resolveRequest(JSON.parse(output)));
     socket.on("error", reject);
   });
 }
@@ -94,13 +94,13 @@ async function snapshot(root: string): Promise<readonly [string, string][]> {
 }
 
 async function applicationDoctor(
-  request: ReturnType<typeof createDoctorRequest>,
+  doctorRequest: ReturnType<typeof createDoctorRequest>,
 ) {
   const report = await doctorProject(
     {
-      root: request.params.root,
-      profile: request.params.profile,
-      adapters: request.params.adapters as never,
+      root: doctorRequest.params.root,
+      profile: doctorRequest.params.profile,
+      adapters: doctorRequest.params.adapters as never,
       catalogRoot: resolve("catalog"),
     },
     nodeFileSystem,
@@ -123,14 +123,14 @@ async function applicationDoctor(
 }
 
 async function rawRequest(endpoint: string, payload: string): Promise<unknown> {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolveRequest, reject) => {
     const socket = createConnection(endpoint);
     let output = "";
     socket.on("connect", () => socket.write(`${payload}\n`));
     socket.on("data", (chunk: Buffer) => {
       output += chunk.toString("utf8");
     });
-    socket.on("end", () => resolve(JSON.parse(output)));
+    socket.on("end", () => resolveRequest(JSON.parse(output)));
     socket.on("error", reject);
   });
 }
@@ -143,8 +143,8 @@ function sendRequest(
 } {
   let resolveOutput: (value: unknown) => void;
   let rejectOutput: (error: Error) => void;
-  const output = new Promise<unknown>((resolve, reject) => {
-    resolveOutput = resolve;
+  const output = new Promise<unknown>((resolveOutputExecutor, reject) => {
+    resolveOutput = resolveOutputExecutor;
     rejectOutput = reject;
   });
   const socket = createConnection(endpoint);
@@ -176,6 +176,8 @@ function sendRequest(
   socket.on("error", (error) => rejectOutput!(error));
   return { output };
 }
+
+const doctor = async () => ({ findings: [], diagnostics: [], exitCode: 0 });
 
 describe.skipIf(process.platform === "win32")("local daemon", () => {
   it("discovers the daemon version, bounded limits, and enabled capabilities", async () => {
@@ -263,22 +265,22 @@ describe.skipIf(process.platform === "win32")("local daemon", () => {
       endpoint,
       sessionToken: "i".repeat(32),
       enforceCanonicalRoots: true,
-      inspect: async (request) => ({
+      inspect: async (inspectRequest) => ({
         projectId: "project-local",
-        root: request.params.root,
+        root: inspectRequest.params.root,
       }),
       doctor: async () => ({ findings: [], diagnostics: [], exitCode: 0 }),
-      diff: async (request) => ({
+      diff: async (diffRequest) => ({
         operationVersion: 1,
-        root: request.params.root,
+        root: diffRequest.params.root,
         changes: [],
         diagnostics: [],
       }),
-      timeline: async (request) => ({
+      timeline: async (timelineRequest) => ({
         operationVersion: 1,
-        root: request.params.root,
+        root: timelineRequest.params.root,
         caseType: "release",
-        caseId: request.params.caseId,
+        caseId: timelineRequest.params.caseId,
         quality: "complete",
         events: [],
         findings: [],
@@ -351,9 +353,9 @@ describe.skipIf(process.platform === "win32")("local daemon", () => {
       endpoint,
       sessionToken: "g".repeat(32),
       enforceCanonicalRoots: true,
-      diff: async (request) => ({
+      diff: async (diffRequest) => ({
         operationVersion: 1,
-        root: request.params.root,
+        root: diffRequest.params.root,
         changes: [
           {
             path: ".aif/config.yaml",
@@ -363,11 +365,11 @@ describe.skipIf(process.platform === "win32")("local daemon", () => {
         ],
         diagnostics: [],
       }),
-      timeline: async (request) => ({
+      timeline: async (timelineRequest) => ({
         operationVersion: 1,
-        root: request.params.root,
+        root: timelineRequest.params.root,
         caseType: "release",
-        caseId: request.params.caseId,
+        caseId: timelineRequest.params.caseId,
         quality: "complete",
         events: [],
         findings: [],
@@ -476,15 +478,15 @@ describe.skipIf(process.platform === "win32")("local daemon", () => {
       endpoint,
       sessionToken: "j".repeat(32),
       enforceCanonicalRoots: true,
-      timeline: async (request) => {
+      timeline: async (timelineRequest) => {
         setTimeout(() => controller.abort(), 5);
-        await new Promise((resolve) => setTimeout(resolve, 50));
+        await new Promise((resolveDelay) => setTimeout(resolveDelay, 50));
         completed = true;
         return {
           operationVersion: 1,
-          root: request.params.root,
+          root: timelineRequest.params.root,
           caseType: "release",
-          caseId: request.params.caseId,
+          caseId: timelineRequest.params.caseId,
           quality: "complete",
           events: [],
           findings: [],
@@ -493,7 +495,7 @@ describe.skipIf(process.platform === "win32")("local daemon", () => {
       },
     });
     daemons.push(daemon);
-    const request = requestDaemonTimeline({
+    const timelineRequest = requestDaemonTimeline({
       endpoint,
       sessionToken: "j".repeat(32),
       root,
@@ -501,11 +503,11 @@ describe.skipIf(process.platform === "win32")("local daemon", () => {
       signal: controller.signal,
     });
 
-    await expect(request).rejects.toMatchObject<DaemonClientError>({
+    await expect(timelineRequest).rejects.toMatchObject<DaemonClientError>({
       code: "cancelled",
       retryable: false,
     });
-    await new Promise((resolve) => setTimeout(resolve, 75));
+    await new Promise((resolveDelay) => setTimeout(resolveDelay, 75));
     expect(completed).toBe(true);
   });
 
@@ -554,7 +556,6 @@ describe.skipIf(process.platform === "win32")("local daemon", () => {
   });
 
   it("rejects missing, relative, and non-IPC endpoints", async () => {
-    const doctor = async () => ({ findings: [], diagnostics: [], exitCode: 0 });
     await expect(
       startLocalDaemon({ endpoint: "", sessionToken: "a".repeat(32), doctor }),
     ).rejects.toThrow("endpoint must be an absolute local IPC path");
@@ -577,7 +578,7 @@ describe.skipIf(process.platform === "win32")("local daemon", () => {
     });
     await stat(endpoint);
     await daemon.close();
-    await expect(stat(endpoint)).rejects.toThrow();
+    await expect(stat(endpoint)).rejects.toThrow("ENOENT");
   });
 
   it("rejects malformed protocol input without invoking the handler", async () => {
@@ -650,7 +651,9 @@ describe.skipIf(process.platform === "win32")("local daemon", () => {
     const directory = await mkdtemp(join(tmpdir(), "intentloomd-"));
     const endpoint = join(directory, "daemon.sock");
     const occupied = createServer();
-    await new Promise<void>((resolve) => occupied.listen(endpoint, resolve));
+    await new Promise<void>((resolveListening) =>
+      occupied.listen(endpoint, resolveListening),
+    );
     try {
       await expect(
         startLocalDaemon({
@@ -658,11 +661,11 @@ describe.skipIf(process.platform === "win32")("local daemon", () => {
           sessionToken: "e".repeat(32),
           doctor: async () => ({ findings: [], diagnostics: [], exitCode: 0 }),
         }),
-      ).rejects.toThrow();
+      ).rejects.toThrow("EADDRINUSE");
       await stat(endpoint);
     } finally {
-      await new Promise<void>((resolve, reject) =>
-        occupied.close((error) => (error ? reject(error) : resolve())),
+      await new Promise<void>((resolveClosed, reject) =>
+        occupied.close((error) => (error ? reject(error) : resolveClosed())),
       );
     }
   });
@@ -677,10 +680,11 @@ describe.skipIf(process.platform === "win32")("local daemon", () => {
     });
     daemons.push(daemon);
     const socket = createConnection(daemon.endpoint);
-    await new Promise<void>((resolve, reject) => {
-      socket.on("close", () => resolve());
+    await new Promise<void>((resolveClosed, reject) => {
+      socket.on("close", () => resolveClosed());
       socket.on("error", reject);
     });
+    expect(socket.destroyed).toBe(true);
   });
 
   it("drops connections above the configured concurrency limit", async () => {
@@ -693,23 +697,24 @@ describe.skipIf(process.platform === "win32")("local daemon", () => {
     });
     daemons.push(daemon);
     const first = createConnection(daemon.endpoint);
-    await new Promise<void>((resolve, reject) => {
-      first.once("connect", resolve);
+    await new Promise<void>((resolveConnected, reject) => {
+      first.once("connect", resolveConnected);
       first.once("error", reject);
     });
     const second = createConnection(daemon.endpoint);
-    await new Promise<void>((resolve, reject) => {
+    await new Promise<void>((resolveClosed, reject) => {
       const timeout = setTimeout(
         () => reject(new Error("connection limit did not close peer")),
         500,
       );
       const done = () => {
         clearTimeout(timeout);
-        resolve();
+        resolveClosed();
       };
       second.once("close", done);
       second.once("error", done);
     });
+    expect(second.destroyed).toBe(true);
     first.destroy();
   });
 
@@ -717,8 +722,8 @@ describe.skipIf(process.platform === "win32")("local daemon", () => {
     const directory = await mkdtemp(join(tmpdir(), "intentloomd-"));
     let release: (() => void) | undefined;
     let markStarted: (() => void) | undefined;
-    const started = new Promise<void>((resolve) => {
-      markStarted = resolve;
+    const started = new Promise<void>((resolveStarted) => {
+      markStarted = resolveStarted;
     });
     const daemon = await startLocalDaemon({
       endpoint: join(directory, "daemon.sock"),
@@ -726,23 +731,23 @@ describe.skipIf(process.platform === "win32")("local daemon", () => {
       shutdownTimeoutMs: 100,
       doctor: async () => {
         markStarted!();
-        await new Promise<void>((resolve) => {
-          release = resolve;
+        await new Promise<void>((resolveRelease) => {
+          release = resolveRelease;
         });
         return { findings: [], diagnostics: [], exitCode: 0 };
       },
     });
-    const request = sendRequest(daemon.endpoint, "h".repeat(32));
+    const pendingRequest = sendRequest(daemon.endpoint, "h".repeat(32));
     await started;
     const closing = daemon.close();
     let closed = false;
     void closing.then(() => {
       closed = true;
     });
-    await new Promise((resolve) => setTimeout(resolve, 10));
+    await new Promise((resolveDelay) => setTimeout(resolveDelay, 10));
     expect(closed).toBe(false);
     release!();
-    await expect(request.output).resolves.toMatchObject({
+    await expect(pendingRequest.output).resolves.toMatchObject({
       result: { exitCode: 0 },
     });
     await expect(closing).resolves.toBeUndefined();
@@ -751,8 +756,8 @@ describe.skipIf(process.platform === "win32")("local daemon", () => {
   it("forces shutdown after the configured drain deadline", async () => {
     const directory = await mkdtemp(join(tmpdir(), "intentloomd-"));
     let markStarted: (() => void) | undefined;
-    const started = new Promise<void>((resolve) => {
-      markStarted = resolve;
+    const started = new Promise<void>((resolveStarted) => {
+      markStarted = resolveStarted;
     });
     const daemon = await startLocalDaemon({
       endpoint: join(directory, "daemon.sock"),
@@ -764,10 +769,12 @@ describe.skipIf(process.platform === "win32")("local daemon", () => {
         return { findings: [], diagnostics: [], exitCode: 0 };
       },
     });
-    const request = sendRequest(daemon.endpoint, "i".repeat(32));
+    const pendingRequest = sendRequest(daemon.endpoint, "i".repeat(32));
     await started;
     await expect(daemon.close()).resolves.toBeUndefined();
-    await expect(request.output).rejects.toThrow();
+    await expect(pendingRequest.output).rejects.toThrow(
+      "Unexpected end of JSON input",
+    );
   });
 
   it("runs doctor read-only for initialized, invalid, and symlinked projects", async () => {
@@ -1227,6 +1234,6 @@ describe.skipIf(process.platform !== "win32")("Windows local daemon", () => {
       result: { exitCode: 0, findings: [] },
     });
     await daemon.close();
-    await expect(request(endpoint, "k".repeat(32))).rejects.toThrow();
+    await expect(request(endpoint, "k".repeat(32))).rejects.toThrow("ENOENT");
   });
 });

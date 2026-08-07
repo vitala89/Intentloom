@@ -60,9 +60,9 @@ describe("Project Inception Read-Only Contracts & Operations (Phase I1)", () => 
         timestamp: Date.now(),
       });
 
-      if (i < requiredQuestions.length - 1) {
-        expect(session.status).toBe("discovering");
-      }
+      const expectedStatus =
+        i < requiredQuestions.length - 1 ? "discovering" : "blueprinting";
+      expect(session.status).toBe(expectedStatus);
     }
 
     expect(session.status).toBe("blueprinting");

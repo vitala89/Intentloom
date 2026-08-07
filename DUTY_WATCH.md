@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **PR #235, PR #236, PR #237, and PR #238 are merged into `main`; documentation-only post-merge reconciliation is published in PR #239 with hosted checks green.**
+Status: **PR #235 through PR #239 are merged into `main`. A 2026-08-06 audit's stale-doc corrections and governance follow-ups (real linter, `main`/`v*` protection) are complete and staged for commit on `docs/post-audit-state-reconciliation`; the benchmark-runner slice is not yet implemented.**
 
-Active branch: `docs/reconcile-pr238-merge`
+Active branch: `docs/post-audit-state-reconciliation`
 
-Current objective: Record PR #238's merge and verified `main` state without changing runtime behavior or adding a benchmark runner/release gate.
+Current objective: Land the audit follow-ups as atomic commits: stale-doc correction (committed), then governance/tooling fixes (this entry), then the benchmark-runner slice (not started - a background implementation agent failed on a session usage limit before writing any files).
 
-Next first action: Maintainer reviews and merges PR #239; keep benchmark-runner implementation as a separately authorized follow-up.
+Next first action: Open a PR for the governance/tooling commit, then start the H9 benchmark-runner implementation described in `docs/specs/AGENTIC_HARNESS_PERFORMANCE_BENCHMARK_SPEC.md` as its own commit/PR - the exact six-stage design (reusing the `h9-evidence-drill@1` fixture from `tests/harness-h9-evidence-contract.test.ts`) was worked out this watch but never written to disk.
 
 Known open items, in the order they should be handled:
 
@@ -28,12 +28,48 @@ Known open items, in the order they should be handled:
 3. `homepage` URL in `packages/cli/package.json` and the published npm metadata
    point to live GitHub Pages documentation site `https://vitala89.github.io/Intentloom/` (completed).
 4. Dependabot alert #2 (`glib@0.18.5`, transitive, medium) carries an approved
-   exception that expires 2026-10-29. Rechecked 2026-08-02: the advisory is
-   GHSA-wrw7-89jp-8q8g, Cargo rejects `glib@0.20.0` under `gtk@0.18.2`, and
-   crates.io still reports Tauri `2.11.5` as current.
-5. Branch and tag protection rules for `main` and `v*` are not recorded anywhere
-   in the repository; `.github/CODEOWNERS` exists to support required review.
-6. Legacy remote branches `codex/public-readiness-blockers` and `security/intentloomd-lifecycle-design` triaged and deleted (completed 2026-08-04). Backup ref `backup/pre-attribution-rewrite` remains pending explicit owner deletion.
+   exception that expires 2026-10-29. Rechecked 2026-08-06 with
+   `cargo update -p glib --dry-run` in `apps/desktop/src-tauri`: 0 packages
+   locked to a newer version, confirming Tauri `2.11.5` (still latest upstream
+   as of this recheck) has not moved its `gtk` pin. No action possible until
+   upstream Tauri/gtk-rs bumps `glib`.
+5. Branch and tag protection for `main`/`v*` (completed 2026-08-06): a
+   pre-existing ruleset `Protect main` (created 2026-07-18, undocumented here
+   until now) already required PRs and the Compatibility matrix; it was
+   missing the Governance and CodeQL checks, which are now added. A new
+   `Protect version tags` ruleset blocks deletion/update/non-fast-forward on
+   `refs/tags/v*`, which had no protection at all before. This item was
+   previously described as "not recorded anywhere in the repository," which
+   undersold what already existed - correcting that here.
+6. Legacy remote branches `codex/public-readiness-blockers` and `security/intentloomd-lifecycle-design` triaged and deleted (completed 2026-08-04). The backup ref is a Git **tag**, not a branch - `refs/tags/backup/pre-attribution-rewrite` - confirmed still present on `origin` as of 2026-08-06 and remains pending explicit owner deletion.
+7. `packages/daemon/src/index.ts` (1031 lines), `packages/evidence-analysis/src/index.ts`
+   (778), `packages/mcp-server/src/index.ts` (578), `packages/core/src/adoption.ts`
+   (429), and `packages/adapters/src/index.ts` (420) exceed the 400-line
+   production-file ceiling with no recorded exception. Confirmed this watch
+   that none of the five has been touched since `quality-exceptions.json`'s
+   per-PR growth-tracking convention began (PR #160, 2026-07-31) - this is
+   legacy debt predating that convention, not a violation of it. No exception
+   record was fabricated; a future meaningful change touching any of these
+   files must still extract a cohesive responsibility or record one, per
+   `docs/governance/CODE_QUALITY_STANDARDS.md`.
+8. `pnpm lint` real-linter gap (completed 2026-08-06): replaced the
+   `pnpm typecheck` alias with `oxlint` (config in `.oxlintrc.json`), wired
+   into `pnpm verify`. `typescript-eslint` cannot parse this repository's
+   TypeScript 7 toolchain (hard version gate, upstream issue
+   typescript-eslint#10940), so ESLint was not viable; `oxlint` has its own
+   TS-aware parser and is unaffected. Found and fixed ~155 real findings
+   (unused imports/vars, variable shadowing, missing test assertions,
+   conditional `expect`, useless escapes/constructors, non-string test
+   titles, control-regex, etc.) across 44 files with zero behavior change -
+   full `pnpm verify` (typecheck, lint, format, 1,026 tests, build, diff
+   check) passes. Two rule categories are intentionally left as warnings
+   rather than fixed now: `unicorn/no-array-sort`/`no-array-reverse` (122+13
+   occurrences - rewriting each to `toSorted()`/`toReversed()` needs a
+   per-call check that nothing downstream relies on the in-place mutation,
+   too large and risky to do unreviewed in one pass) and
+   `vitest/require-mock-type-parameters` (41 occurrences - low-value
+   `vi.fn<T>()` type-parameter strictness). Both are visible in every
+   `oxlint`/`pnpm lint` run, not silently suppressed.
 
 ## Watch rules
 
@@ -59,6 +95,132 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-06, Governance follow-ups: real linter, branch/tag protection correction, glib recheck
+
+- **Status:** complete for the three items below; the benchmark-runner slice
+  from the same audit is a separate, not-yet-started item (see "Not
+  completed").
+- **Branch:** `docs/post-audit-state-reconciliation` (same branch as the prior
+  entry's stale-doc correction commit; this is a second, separate commit on
+  it).
+- **Pull request:** not yet opened.
+- **Objective:** Work the governance gaps the 2026-08-06 audit surfaced:
+  `pnpm lint` being a no-op alias for `pnpm typecheck`, `main`/`v*` branch
+  protection status, and a recheck of the still-open Dependabot glib
+  exception.
+- **Completed:**
+  - Replaced `pnpm lint` (previously `tsc -b --pretty false`, identical to
+    `pnpm typecheck`) with `oxlint`. Attempted `typescript-eslint` first; it
+    hard-refuses to run against TypeScript 7.0 (`typescript-eslint does not
+support TS 7.0`, tracked upstream as typescript-eslint#10940), so ESLint
+    was not a viable option against this repository's actual TypeScript
+    version. `oxlint` uses its own Rust-based parser (not the TypeScript
+    compiler) and is unaffected. Added `.oxlintrc.json`: `correctness` and
+    `suspicious` categories as errors, `react/react-in-jsx-scope` off (the
+    Desktop app uses React's automatic JSX runtime, so the rule's premise
+    doesn't apply), and `unicorn/no-array-sort`, `unicorn/no-array-reverse`,
+    `vitest/require-mock-type-parameters` downgraded to warnings rather than
+    fixed - see item 8 in "Known open items" for why. Fixed every remaining
+    `correctness`/`suspicious` finding (~155 across 44 files, dispatched as
+    four parallel review-and-fix passes plus a manual pass on the remainder
+    after a session usage limit interrupted one pass mid-file): unused
+    imports/locals/functions, variable shadowing (renamed only the inner
+    binding in every case, e.g. `applyProjectAdoption`'s destructured `plan`
+    option to `adoptionPlan` since it shadowed the module-level `plan()`
+    function), missing/conditional test assertions, non-string test titles,
+    useless string concatenation/escapes/constructors, an intentional
+    control-character regex (documented in-code, silenced with
+    `oxlint-disable-next-line` rather than deleted), and a React
+    `exhaustive-deps` ref-cleanup bug in `ConfirmRootChange.tsx` (the
+    cleanup read `triggerRef.current` at unmount time instead of capturing it
+    at effect-setup time - fixed by capturing it, which is also a genuine
+    correctness improvement, not just a lint silence). Wired `pnpm lint` into
+    `pnpm verify`, ahead of `pnpm format:check`.
+  - Corrected the `main`/`v*` protection open item: it claimed protection was
+    "not recorded anywhere in the repository," which was wrong - a ruleset
+    named `Protect main` already existed (created 2026-07-18) requiring PRs
+    and the Compatibility matrix, just missing the Governance and CodeQL
+    checks and undocumented here. Added those two missing check contexts to
+    the existing ruleset rather than creating a redundant second protection
+    mechanism (briefly added, then removed, a classic-API branch protection
+    object before noticing the ruleset already existed). Created a new
+    `Protect version tags` ruleset (`refs/tags/v*`: deletion, update, and
+    non-fast-forward all blocked) - this part was genuinely missing.
+  - Rechecked the Dependabot glib exception: `cargo update -p glib --dry-run`
+    in `apps/desktop/src-tauri` locks 0 packages to a newer version. No
+    upstream movement since the 2026-08-02 recheck; exception (expires
+    2026-10-29) stands unchanged.
+- **Validation:** `pnpm typecheck`, `pnpm lint` (0 errors, 176 warnings, all
+  in the three deferred rules), `pnpm format:check`, `pnpm test` (136 files,
+  1,026 passed, 3 skipped - platform-gated, run on macOS), `pnpm build`, and
+  `git diff --check` all pass via `pnpm verify`.
+- **Not completed:** The benchmark-runner implementation
+  (`docs/specs/AGENTIC_HARNESS_PERFORMANCE_BENCHMARK_SPEC.md`) was scoped in
+  full this watch - the exact six H9 stages to measure, their fixture
+  (`h9-evidence-drill@1` from `tests/harness-h9-evidence-contract.test.ts`),
+  and the module layout to mirror (small per-concern files matching
+  `packages/*/src/harness-*.ts`) - but a background agent given that brief
+  failed on an API session-usage limit before writing any file. `git status`
+  confirms zero benchmark-related files exist on disk. This is next-watch
+  work, not silently dropped.
+- **Decisions:** Deferred-but-visible over silently-disabled for lint rules
+  with real signal but too large/low-value to fix blind in one pass (see
+  "Known open items" item 8 for the specific reasoning per rule). One
+  protection mechanism per branch (ruleset, matching the pre-existing
+  convention) rather than layering the classic branch-protection API on top.
+- **Risks or compatibility impact:** None. All fixes are lint-driven
+  refactors verified behavior-identical by the full test suite; the
+  GitHub protection changes only add restrictions (no existing capability
+  removed) and were applied with `admin:true` access already held by the
+  authenticated account.
+- **Next first action:** Commit and open a PR for this governance/tooling
+  change, then start the H9 benchmark-runner implementation as its own
+  commit/PR using the design worked out above.
+- **Evidence:** local `pnpm verify` run in full; `gh api
+repos/vitala89/Intentloom/branches/main/protection` and `.../rulesets`
+  inspected before and after to confirm the pre-existing ruleset and the new
+  tag ruleset; `cargo update -p glib --dry-run` output.
+
+### 2026-08-06, Post-audit stale-state correction and governance follow-up kickoff
+
+- **Status:** in progress; this entry covers the docs-only correction commit,
+  landed as the first of several planned atomic commits on this branch.
+- **Branch:** `docs/post-audit-state-reconciliation` from `origin/main` at
+  `96eb6ff`.
+- **Pull request:** not yet opened.
+- **Objective:** An independent audit (5 parallel verification passes against
+  code, tests, and Git/GitHub state rather than trusting the docs) found the
+  durable-state files disagreeing with reality in two places, plus a set of
+  genuinely open governance gaps. Correct the stale claims first, then work
+  the open items in order.
+- **Completed:** Corrected `PROJECT_STATE.md`'s claim that the Desktop
+  Extension Ecosystem D2-D5 work (ADR-0045 through ADR-0050) was "not yet
+  merged to `main`" - it merged through PR #161 (`e71a239`, 2026-08-01); the
+  squash-merge left `feature/post-v1-enhancements` looking unmerged under
+  `git log main..branch` by commit hash even though its content is fully on
+  `main`. Corrected this file's own "Current watch status" header, which
+  still claimed PR #239 was open and awaiting maintainer merge - PR #239 is
+  merged and is the current `main` HEAD (`96eb6ff`); there are currently zero
+  open pull requests. Clarified that the "backup ref" open item refers to a
+  Git tag (`refs/tags/backup/pre-attribution-rewrite`), not a branch - it is
+  still present on `origin`, so that item was correctly still open, not
+  stale. Added two new known-open-items entries for governance gaps the audit
+  surfaced: five production files over the 400-line ceiling with no recorded
+  exception, and `pnpm lint` being a no-op alias for `pnpm typecheck` with no
+  real linter.
+- **Validation:** Documentation-only change in this commit; no code touched.
+  Full `pnpm verify` to be run before this branch's PR is opened.
+- **Not completed:** The governance-exception records, ESLint setup,
+  `main`/`v*` branch protection, and benchmark-runner slice referenced above
+  are separate, not-yet-landed commits; see the Known open items list for
+  status.
+- **Decisions:** Stale durable-state claims are corrected in place rather than
+  left standing, per this file's own watch rules; the "Current watch status"
+  header is not historical record and may be freely rewritten to match
+  reality, unlike numbered `### date, title` entries below it.
+- **Next first action:** Add quality-exception records (or decomposition
+  follow-ups) for the five oversized files, then add a real ESLint config.
 
 ### 2026-08-06, PR #238 merged and post-merge state reconciliation
 

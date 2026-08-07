@@ -1,6 +1,6 @@
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
-import { isAbsolute, relative, resolve, sep } from "node:path";
+import { isAbsolute, relative, resolve } from "node:path";
 
 const executeGit = promisify(execFile);
 const logFormat = "%H%x00%P%x00%ct";

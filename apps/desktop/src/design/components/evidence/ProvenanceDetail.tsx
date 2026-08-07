@@ -23,17 +23,8 @@ export interface ProvenanceDetailProps {
   children?: ReactNode;
 }
 
-/** Where a result came from: source, trust, freshness, root, and uncertainty. */
-export function ProvenanceDetail({
-  source,
-  trust,
-  collectedAt,
-  root,
-  uncertainty,
-  rows = [],
-  children,
-}: ProvenanceDetailProps) {
-  const line = (label: string, value: ReactNode) => (
+function line(label: string, value: ReactNode) {
+  return (
     <div
       key={label}
       style={{
@@ -62,6 +53,18 @@ export function ProvenanceDetail({
       </span>
     </div>
   );
+}
+
+/** Where a result came from: source, trust, freshness, root, and uncertainty. */
+export function ProvenanceDetail({
+  source,
+  trust,
+  collectedAt,
+  root,
+  uncertainty,
+  rows = [],
+  children,
+}: ProvenanceDetailProps) {
   return (
     <div
       style={{

@@ -14,7 +14,7 @@ async function waitForSocket(endpoint: string): Promise<void> {
       await stat(endpoint);
       return;
     } catch {
-      await new Promise((resolve) => setTimeout(resolve, 25));
+      await new Promise((resolveDelay) => setTimeout(resolveDelay, 25));
     }
   }
   throw new Error("daemon socket did not appear");
@@ -25,7 +25,7 @@ async function request(
   token: string,
   root: string,
 ): Promise<unknown> {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolveRequest, reject) => {
     const socket = createConnection(endpoint);
     let output = "";
     socket.on("connect", () =>
@@ -49,7 +49,7 @@ async function request(
     socket.on("data", (chunk: Buffer) => {
       output += chunk.toString("utf8");
     });
-    socket.on("end", () => resolve(JSON.parse(output)));
+    socket.on("end", () => resolveRequest(JSON.parse(output)));
     socket.on("error", reject);
   });
 }
@@ -91,7 +91,9 @@ describe.skipIf(process.platform === "win32")("intentloomd binary", () => {
       result: { protocolVersion: 1 },
     });
     child.kill("SIGTERM");
-    await new Promise<void>((resolve) => child.once("exit", () => resolve()));
-    await expect(stat(endpoint)).rejects.toThrow();
+    await new Promise<void>((resolveExit) =>
+      child.once("exit", () => resolveExit()),
+    );
+    await expect(stat(endpoint)).rejects.toThrow("ENOENT");
   });
 });

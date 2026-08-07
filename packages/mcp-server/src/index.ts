@@ -30,7 +30,6 @@ import {
   McpToolError,
   toolArguments,
   type McpServerOptions,
-  type McpToolErrorCode,
 } from "./common.js";
 import {
   HARNESS_INSPECT_TOOL,

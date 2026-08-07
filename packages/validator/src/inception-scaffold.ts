@@ -7,8 +7,6 @@ import type {
   GitInitPlan,
   PackageManagerKind,
   InceptionFlowState,
-  ProjectBlueprint,
-  BlueprintApproval,
   TemplateManifest,
 } from "@intentloom/protocol";
 import {

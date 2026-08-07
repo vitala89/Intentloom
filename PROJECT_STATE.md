@@ -95,19 +95,31 @@ and real consumers justify them.
   Desktop view modules. Icons and fonts are local, so the zero-external-network
   invariant still holds and is now also true offline.
 - The Desktop Extension Ecosystem roadmap's D2 through D5 declarative and
-  sandboxed contribution surfaces are implemented on `feature/post-v1-enhancements`
-  (not yet merged to `main`): Extension Host API and contribution types
+  sandboxed contribution surfaces are merged into `main` through PR #161
+  (`e71a239`, 2026-08-01): Extension Host API and contribution types
   (ADR-0045), theme contribution and design-token bridge (ADR-0046), view
   sandbox and frame protocol (ADR-0047), command palette contribution and
   action registry (ADR-0048), provider UI and extension settings integration
   (ADR-0049), and renderer contribution and panel placement (ADR-0050). No
   arbitrary third-party code execution or project mutation is enabled by this
-  work; each ADR documents its trust-level boundary.
+  work; each ADR documents its trust-level boundary. The originating
+  `feature/post-v1-enhancements` branch predates the squash-merge and still
+  exists with its unsquashed commit history; its content is a subset of what
+  is now on `main` and it carries no unmerged work.
 - Commit and quality governance is now versioned in `.githooks/`,
   `scripts/validate-*.mjs`, and `.github/workflows/governance.yml`. Hooks are
   explicitly enabled per checkout with `pnpm hooks:install`; CI independently
   validates commit structure, attribution, whitespace, and production-file
   budgets.
+- `pnpm lint` now runs `oxlint` (config in `.oxlintrc.json`) instead of
+  duplicating `pnpm typecheck`. `typescript-eslint` cannot parse this
+  repository's TypeScript 7 toolchain yet (upstream tracking issue), so
+  `oxlint` was adopted instead of a non-functional ESLint setup; `pnpm lint`
+  is wired into `pnpm verify` and the Compatibility CI job. `correctness` and
+  `suspicious` categories are errors; `react/react-in-jsx-scope` is off
+  (the Desktop app uses the automatic JSX runtime); `unicorn/no-array-sort`,
+  `unicorn/no-array-reverse`, and `vitest/require-mock-type-parameters` are
+  warnings tracking pre-existing debt rather than new violations.
 - Branch governance now requires new dedicated branches to use a change-type
   prefix such as `feat/`, `fix/`, `refactor/`, or `docs/`, with a short
   kebab-case description; actor, tool, model, and harness prefixes such as

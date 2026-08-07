@@ -56,6 +56,10 @@ export function runPackedCli(entry: string, args: string[], cwd: string) {
   );
 }
 
+function quote(value: string) {
+  return `"${value.replaceAll('"', '""')}"`;
+}
+
 export function runPackedCommandShim(
   shim: string,
   args: string[],
@@ -69,7 +73,6 @@ export function runPackedCommandShim(
       "Windows packed command shim arguments must be shell-safe.",
     );
   }
-  const quote = (value: string) => `\"${value.replaceAll('\"', '\"\"')}\"`;
   return execution(
     spawnSync([quote(shim), ...args.map(quote)].join(" "), {
       cwd,

@@ -55,7 +55,7 @@ describe("v1.0 Upgrade and Protocol Path (V1_0_STABLE_COMPATIBILITY_PLAN Phase 2
         ok: false,
         result: invalidEnvelope as any,
       }),
-    ).toThrow();
+    ).toThrow("jsonrpc must equal 2.0");
   });
 
   it("verifies capability discovery handshake and protocol limits negotiation", () => {

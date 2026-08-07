@@ -20,6 +20,8 @@ const packageInstallTestTimeout = windows && node22 ? 90_000 : 30_000;
 const command = (name: string) => (windows ? `${name}.cmd` : name);
 let packRoot: string;
 let tarball: string;
+let repeatedTarball: string;
+let npmRuntime: string;
 
 function tarEntries(archive: Buffer) {
   const tar = gunzipSync(archive);
@@ -139,39 +141,9 @@ beforeAll(async () => {
     first,
     (await readdir(first)).find((file) => file.endsWith(".tgz"))!,
   );
-  const repeatedTarball = join(
+  repeatedTarball = join(
     second,
     (await readdir(second)).find((file) => file.endsWith(".tgz"))!,
-  );
-  expect(tarEntries(await readFile(tarball))).toEqual(
-    tarEntries(await readFile(repeatedTarball)),
-  );
-  const firstPayloadChecksums = tarPayloadChecksums(await readFile(tarball));
-  const repeatedPayloadChecksums = tarPayloadChecksums(
-    await readFile(repeatedTarball),
-  );
-  expect(
-    firstPayloadChecksums.filter(
-      (entry) => !entry.startsWith("package/package.json:"),
-    ),
-  ).toEqual(
-    repeatedPayloadChecksums.filter(
-      (entry) => !entry.startsWith("package/package.json:"),
-    ),
-  );
-  expect(
-    JSON.parse(
-      tarPayload(await readFile(tarball), "package/package.json").toString(
-        "utf8",
-      ),
-    ),
-  ).toEqual(
-    JSON.parse(
-      tarPayload(
-        await readFile(repeatedTarball),
-        "package/package.json",
-      ).toString("utf8"),
-    ),
   );
 }, 30_000);
 
@@ -180,6 +152,39 @@ afterAll(async () => {
 });
 
 describe("public package publishing readiness", () => {
+  it("packs a reproducible tarball across two independent pack runs", async () => {
+    expect(tarEntries(await readFile(tarball))).toEqual(
+      tarEntries(await readFile(repeatedTarball)),
+    );
+    const firstPayloadChecksums = tarPayloadChecksums(await readFile(tarball));
+    const repeatedPayloadChecksums = tarPayloadChecksums(
+      await readFile(repeatedTarball),
+    );
+    expect(
+      firstPayloadChecksums.filter(
+        (entry) => !entry.startsWith("package/package.json:"),
+      ),
+    ).toEqual(
+      repeatedPayloadChecksums.filter(
+        (entry) => !entry.startsWith("package/package.json:"),
+      ),
+    );
+    expect(
+      JSON.parse(
+        tarPayload(await readFile(tarball), "package/package.json").toString(
+          "utf8",
+        ),
+      ),
+    ).toEqual(
+      JSON.parse(
+        tarPayload(
+          await readFile(repeatedTarball),
+          "package/package.json",
+        ).toString("utf8"),
+      ),
+    );
+  });
+
   it("has complete public metadata and private internal workspace packages", async () => {
     const cli = JSON.parse(
       await readFile(join(repositoryRoot, "packages/cli/package.json"), "utf8"),
@@ -242,6 +247,9 @@ describe("public package publishing readiness", () => {
     "installs with %s and runs the offline CLI workflow",
     async (packageManager) => {
       const runtime = await install(packageManager);
+      if (packageManager === "npm") {
+        npmRuntime = runtime;
+      }
       const entry = resolvePackedCliEntry(runtime);
       const root = join(runtime, "project");
       await mkdir(root);
@@ -269,30 +277,36 @@ describe("public package publishing readiness", () => {
       expect(
         runPackedCli(entry, ["sync", "--root", root], runtime).status,
       ).toBe(0);
-      if (packageManager === "npm") {
-        const metadata = spawnSync(
-          process.execPath,
-          [
-            "--input-type=module",
-            "--eval",
-            'import manifest from "intentloom/package.json" with { type: "json" }; console.log(manifest.name);',
-          ],
-          { cwd: runtime, encoding: "utf8" },
-        );
-        expect(metadata.status).toBe(0);
-        expect(metadata.stdout.trim()).toBe("intentloom");
-        const deepImport = spawnSync(
-          process.execPath,
-          [
-            "--input-type=module",
-            "--eval",
-            'import("intentloom").catch((error) => console.log(error.code));',
-          ],
-          { cwd: runtime, encoding: "utf8" },
-        );
-        expect(deepImport.status).toBe(0);
-        expect(deepImport.stdout.trim()).toBe("ERR_PACKAGE_PATH_NOT_EXPORTED");
-      }
+    },
+    packageInstallTestTimeout,
+  );
+
+  it(
+    "resolves the packed package via node module resolution when installed with npm",
+    async () => {
+      const runtime = npmRuntime;
+      const metadata = spawnSync(
+        process.execPath,
+        [
+          "--input-type=module",
+          "--eval",
+          'import manifest from "intentloom/package.json" with { type: "json" }; console.log(manifest.name);',
+        ],
+        { cwd: runtime, encoding: "utf8" },
+      );
+      expect(metadata.status).toBe(0);
+      expect(metadata.stdout.trim()).toBe("intentloom");
+      const deepImport = spawnSync(
+        process.execPath,
+        [
+          "--input-type=module",
+          "--eval",
+          'import("intentloom").catch((error) => console.log(error.code));',
+        ],
+        { cwd: runtime, encoding: "utf8" },
+      );
+      expect(deepImport.status).toBe(0);
+      expect(deepImport.stdout.trim()).toBe("ERR_PACKAGE_PATH_NOT_EXPORTED");
     },
     packageInstallTestTimeout,
   );

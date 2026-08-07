@@ -2,24 +2,11 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import { desktopClient, DesktopBridgeError } from "./desktop-client.js";
 import { Logo } from "./design/components/brand/Logo.js";
 import { Wordmark } from "./design/components/brand/Wordmark.js";
-import { Button } from "./design/components/core/Button.js";
-import { IconButton } from "./design/components/core/IconButton.js";
-import { KeyboardKey } from "./design/components/core/KeyboardKey.js";
-import { EvidenceBadge } from "./design/components/evidence/EvidenceBadge.js";
-import { SearchInput } from "./design/components/forms/SearchInput.js";
-import { StatusChip } from "./design/components/status/StatusChip.js";
-import { Card } from "./design/components/layout/Card.js";
-import { Tabs } from "./design/components/navigation/Tabs.js";
-import { Modal } from "./design/components/overlays/Modal.js";
-import { EmptyState } from "./design/components/states/EmptyState.js";
 import type {
   DaemonInfoResult,
-  DoctorFinding,
   DoctorResult,
   InspectResult,
-  ProjectDiffChange,
   ProjectDiffResult,
-  ProjectTimelineEvent,
   ProjectTimelineResult,
 } from "@intentloom/protocol";
 
@@ -44,21 +31,6 @@ const views: Array<{ label: View; icon: string }> = [
   { label: "Timeline", icon: "◷" },
 ];
 
-function StatusChipHelper({ children }: { children: string }) {
-  const tone =
-    children.includes("Connected") ||
-    children.includes("ready") ||
-    children.includes("available")
-      ? "success"
-      : children.includes("Disconnected") ||
-          children.includes("Error") ||
-          children.includes("failed") ||
-          children.includes("stale")
-        ? "error"
-        : "neutral";
-  return <StatusChip tone={tone} label={children} size="sm" />;
-}
-
 import { ConfirmRootChange } from "./ConfirmRootChange.js";
 import { OverviewView } from "./views/OverviewView.js";
 import { InspectView } from "./views/InspectView.js";
@@ -80,26 +52,6 @@ function inspectStatusForError(error: unknown): InspectStatus {
   }
   if (error.code === "protocol_incompatible") return "protocol-mismatch";
   return "error";
-}
-
-function findingKey(finding: DoctorFinding, index: number) {
-  return `${finding.code}:${finding.path}:${index}`;
-}
-
-function diffChangeKey(change: ProjectDiffChange, index: number) {
-  return `${change.kind}:${change.path}:${index}`;
-}
-
-function timelineEventKey(event: ProjectTimelineEvent, index: number) {
-  return `${event.id}:${event.commitId}:${index}`;
-}
-
-function formatTimestamp(ts: number): string {
-  try {
-    return new Date(ts).toISOString().replace("T", " ").replace("Z", " UTC");
-  } catch {
-    return String(ts);
-  }
 }
 
 export default function App() {
@@ -510,14 +462,6 @@ export default function App() {
       setIsConnecting(false);
     }
   }
-
-  const doctorErrors =
-    doctor?.findings.filter((finding) => finding.severity === "error").length ??
-    0;
-  const doctorWarnings =
-    doctor?.findings.filter((finding) => finding.severity === "warning")
-      .length ?? 0;
-  const evaluated = inspect !== null && doctor !== null;
 
   return (
     <main className={`app-shell theme-${theme}`}>
