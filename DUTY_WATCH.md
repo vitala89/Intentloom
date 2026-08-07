@@ -105,11 +105,8 @@ entry directly below this section.
   started, not `feat/harness-benchmark-runner` as the first draft of this
   entry mistakenly said before that was corrected.
 - **Branch:** `docs/agent-task-triage-policy`, cut from `main` at `0604e15`.
-- **Commits:** see commit hash once created below (this entry is written
-  before the commit that carries it, per this repository's own convention of
-  writing the handoff as part of the change it describes).
-- **Pull request:** opened immediately after this commit; not yet open at
-  entry-write time.
+- **Commits:** `518b75c` - `docs(governance): add tool-neutral agent task-triage policy`.
+- **Pull request:** [#242](https://github.com/vitala89/Intentloom/pull/242).
 - **Objective:** two passes. First, per an external handover prompt: give
   this repository a triage step scoring a task 0-10 across five axes (blast
   radius, ambiguity, risk, verification, unknowns) that routes coding-agent
@@ -175,8 +172,17 @@ entry directly below this section.
   both passes, confirming edits load correctly each time; checked
   `catalog/skills/aif-task-router/SKILL.md`'s YAML frontmatter still parses;
   confirmed no `catalog/skills` schema-validation script exists in
-  `package.json`. Full validation command and result recorded below once run
-  ahead of the commit.
+  `package.json`. `pnpm verify` (`typecheck && lint && format:check && test
+&& build && git diff --check`) run twice: first caught 3 unformatted
+  markdown files (fixed with `npx prettier --write`, no `pnpm format` script
+  exists in this repo), second run clean - typecheck clean, `oxlint`
+  pre-existing warnings only (no new findings from this change), 137/137
+  test files (1038 passed, 3 skipped), build clean, `git diff --check`
+  clean. `core.hooksPath=.githooks` is active in this checkout (confirmed via
+  `git config --get core.hooksPath`, correcting an earlier assumption in this
+  same entry that hooks were not installed - `.git/hooks/` was the wrong path
+  to check); `.githooks/pre-push` re-ran the identical full `pnpm verify`
+  automatically on `git push`, clean.
 - **Decisions and assumptions:** first pass - user chose (1) global skill
   kept plus a repo-local canon file, (2) canon sits beside `aif-task-router`
   rather than folding in, (3) enforcement stays advisory rather than adding a
@@ -208,9 +214,9 @@ entry directly below this section.
 - [x] Markdown and lint checks passed when configured
 - [x] Relevant tests, type checks, builds, or compatibility checks passed
 - [x] Atomic commit policy and commit-message checks passed
-- [ ] Repository hooks installed or equivalent commands run (`.githooks` not
-      installed in this checkout via `pnpm hooks:install`; ran the underlying
-      commands - `pnpm verify` - directly instead)
+- [x] Repository hooks installed or equivalent commands run
+      (`core.hooksPath=.githooks` active in this checkout;
+      `verify:staged` ran on commit, full `pnpm verify` ran again on push)
 - [x] `git diff --check` passed
 - [x] Final diff reviewed
 - [ ] `PROJECT_STATE.md` updated when applicable (not applicable - governance
