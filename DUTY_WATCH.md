@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **PR #235 through PR #239 are merged into `main`. A 2026-08-06 audit's stale-doc corrections and governance follow-ups (real linter, `main`/`v*` protection) are complete and staged for commit on `docs/post-audit-state-reconciliation`; the benchmark-runner slice is not yet implemented.**
+Status: **PR #240 (`oxlint` & branch protection), PR #241 (`intentloom harness benchmark`), and PR #242 (`AGENT_TASK_TRIAGE_POLICY.md`) are merged into `main` (`5cef72e`). Antigravity carrier added to governance policy and duty watch status reconciled.**
 
-Active branch: `docs/post-audit-state-reconciliation`
+Active branch: `docs/antigravity-carrier-and-duty-reconciliation`
 
-Current objective: Land the audit follow-ups as atomic commits: stale-doc correction (committed), then governance/tooling fixes (this entry), then the benchmark-runner slice (not started - a background implementation agent failed on a session usage limit before writing any files).
+Current objective: Land documentation update (Antigravity carrier definition and watch status reconciliation), then select the next milestone from `ROADMAP.md`.
 
-Next first action: Open a PR for the governance/tooling commit, then start the H9 benchmark-runner implementation described in `docs/specs/AGENTIC_HARNESS_PERFORMANCE_BENCHMARK_SPEC.md` as its own commit/PR - the exact six-stage design (reusing the `h9-evidence-drill@1` fixture from `tests/harness-h9-evidence-contract.test.ts`) was worked out this watch but never written to disk.
+Next first action: Merge this documentation update, then select the next milestone from `ROADMAP.md`.
 
 Known open items, in the order they should be handled:
 
@@ -95,6 +95,21 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-07, Governance carrier definition for Antigravity & watch status reconciliation
+
+- **Status:** complete.
+- **Agent/tool:** Google Antigravity (AGY). PRs #240, #241, and #242 are merged into `main` (`5cef72e`).
+- **Branch:** `docs/antigravity-carrier-and-duty-reconciliation`, cut from `main` at `5cef72e`.
+- **Commits:** local commit `docs(governance): add Antigravity carrier to triage policy and reconcile watch status`.
+- **Pull request:** pending review/creation.
+- **Objective:** Add Google Antigravity (AGY) carrier definition to `docs/governance/AGENT_TASK_TRIAGE_POLICY.md` and reconcile top-of-file watch status in `DUTY_WATCH.md`.
+- **Completed:**
+  - Added dedicated Google Antigravity carrier paragraph in `docs/governance/AGENT_TASK_TRIAGE_POLICY.md` mapping model tiers (Gemini Flash/Pro) and subagent orchestration (`invoke_subagent`) to the canonical triage policy.
+  - Reconciled top-of-file `Current watch status` header in `DUTY_WATCH.md` to record that PRs #240, #241, and #242 are all merged into `main`.
+- **Validation:** Formatting and markdown diff checks; `pnpm verify` clean.
+- **Decisions and assumptions:** Followed tool-neutral policy rules; recorded Antigravity carrier without duplicating triage tables.
+- **Next first action:** Merge this documentation reconciliation, then select the next roadmap milestone from `ROADMAP.md`.
 
 ### 2026-08-07, Agent task-triage policy: tool-neutral canon plus Claude Code carrier
 

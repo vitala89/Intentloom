@@ -69,12 +69,9 @@ attention drifts over a long session. Codex chooses its model and effort at
 launch, not at runtime, so its output here is a **recommendation the human
 acts on**, not a setting the agent applies to itself.
 
-**Cursor / Antigravity / Copilot / anything else:** no evidence this
-repository is worked on from these tools today (no `.cursor/rules/`,
-`GEMINI.md`, or `.github/copilot-instructions.md` exist at the time of
-writing). If one of these is added, give it a matching short carrier
-paragraph here - pointing at this same canon - rather than duplicating the
-rubric or routing table into that tool's own instruction file.
+**Google Antigravity (AGY)** (verified from this session running as Antigravity): carrier is this repository's `AGENTS.md` and default system instructions loaded at session start. Model tiers map to available LLM offerings (e.g. Gemini Flash/Flash-Lite = cheapest/mid, Gemini Pro = frontier). `invoke_subagent` handles delegation. The triage rubric and routing table serve as the authoritative standard for model tier selection, subagent orchestration, and verification gate execution before committing.
+
+**Cursor / Copilot / anything else:** no evidence this repository is worked on from these tools today (no `.cursor/rules/` or `.github/copilot-instructions.md` exist at the time of writing). If one of these is added, give it a matching short carrier paragraph here - pointing at this same canon - rather than duplicating the rubric or routing table into that tool's own instruction file.
 
 ## Adjustments specific to this repository
 
