@@ -35,9 +35,9 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm build
       - name: Run matrix-observation benchmark
-        run: node packages/cli/dist/index.js harness benchmark --profile matrix-observation --warmup 1 --samples 3 --json > benchmark-observation-${{ matrix.os }}-node${{ matrix.node }}.json
+        run: node packages/cli/dist/intentloom.cjs harness benchmark --profile matrix-observation --warmup 1 --samples 3 --json > benchmark-observation-${{ matrix.os }}-node${{ matrix.node }}.json
       - name: Display human-readable benchmark summary
-        run: node packages/cli/dist/index.js harness benchmark --profile matrix-observation --warmup 1 --samples 3
+        run: node packages/cli/dist/intentloom.cjs harness benchmark --profile matrix-observation --warmup 1 --samples 3
       - name: Upload benchmark artifact
         uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1 # v4.6.1
         with:
