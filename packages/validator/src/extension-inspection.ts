@@ -12,6 +12,7 @@ import type {
 } from "@intentloom/protocol";
 import type { ArtifactValidator } from "./index.js";
 import { validateExtensionManifestDocument } from "./extension.js";
+export * from "./extension-sandbox.js";
 
 interface SemverTuple {
   readonly major: number;
