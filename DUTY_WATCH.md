@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Read-Only Evidence Hardening Gate (ADR-0022, ADR-0023) audited and verified; audit document `docs/releases/READ_ONLY_EVIDENCE_HARDENING_AUDIT.md` created.**
+Status: **Read-Only Evidence Hardening Gate audit merged in PR #246 (`48922d1`). `main` is current, clean, and verified.**
 
-Active branch: `docs/read-only-evidence-hardening-audit`
+Active branch: `main`
 
-Current objective: Land Read-Only Evidence Hardening Audit documentation and update project state.
+Current objective: Maintain clean `main` baseline and select next roadmap milestone.
 
-Next first action: Open PR for `docs/read-only-evidence-hardening-audit` and merge to `main`.
+Next first action: Select next roadmap milestone from `ROADMAP.md`.
 
 Known open items, in the order they should be handled:
 
@@ -95,6 +95,23 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-08, PR #246 merged and post-merge state reconciliation
+
+- **Status:** complete.
+- **Agent/tool:** Google Antigravity (AGY). PR #246 (`48922d1`) is confirmed merged into `main`.
+- **Branch:** `docs/reconcile-pr246-merge` from `main` at `48922d1`.
+- **Commits:** `48922d1` (PR #246).
+- **Pull request:** [#246](https://github.com/vitala89/Intentloom/pull/246) merged.
+- **Objective:** Reconcile durable project state and watch status after PR #246 merged.
+- **Completed:**
+  - Audited 8 verification criteria across live provider connection, read-only scope, repository isolation, secret redaction, rate-limiting, cache purge, untrusted external MCP ingestion, and surface equivalence.
+  - Landed [`docs/releases/READ_ONLY_EVIDENCE_HARDENING_AUDIT.md`](docs/releases/READ_ONLY_EVIDENCE_HARDENING_AUDIT.md) (PR #246).
+  - Updated [`PROJECT_STATE.md`](PROJECT_STATE.md) to close the Read-Only Evidence Hardening Gate milestone.
+  - Reconciled `DUTY_WATCH.md` top-of-file status to `48922d1`.
+- **Validation:** Full `pnpm verify` (typecheck, oxlint, prettier, 1038 vitest tests, build, git diff check) passed 100% clean.
+- **Decisions and assumptions:** Confirmed non-mutation invariants across CLI, MCP, and Daemon.
+- **Next first action:** Select the next roadmap milestone from `ROADMAP.md`.
 
 ### 2026-08-08, Read-Only Evidence Hardening Gate audit & verification complete
 
