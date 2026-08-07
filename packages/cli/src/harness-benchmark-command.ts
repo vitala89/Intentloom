@@ -29,13 +29,13 @@ export function parseNonNegativeInteger(value: string, flag: string): number {
 export function parseBenchmarkProfile(
   value: string,
 ): HarnessBenchmarkExecutionProfile {
-  if (value === "matrix-observation")
+  if (
+    value !== "calibration" &&
+    value !== "local-repeat" &&
+    value !== "matrix-observation"
+  )
     throw new Error(
-      "harness benchmark --profile matrix-observation is not CLI-invocable yet; it requires a separately reviewed CI workflow",
-    );
-  if (value !== "calibration" && value !== "local-repeat")
-    throw new Error(
-      "harness benchmark --profile must be calibration or local-repeat",
+      "harness benchmark --profile must be calibration, local-repeat, or matrix-observation",
     );
   return value;
 }

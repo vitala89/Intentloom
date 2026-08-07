@@ -59,7 +59,7 @@ describe("H9 performance benchmark runner", () => {
     expect(result.stageSummaries).toHaveLength(6);
   });
 
-  it("returns unsupported for matrix-observation without running samples", async () => {
+  it("produces an observed matrix-observation result with six stage summaries", async () => {
     const result = await runHarnessBenchmark({
       schemaVersion: 1,
       executionProfile: "matrix-observation",
@@ -67,9 +67,9 @@ describe("H9 performance benchmark runner", () => {
       measuredSampleCount: 2,
     });
 
-    expect(result.status).toBe("unsupported");
-    expect(result.stageSummaries).toHaveLength(0);
-    expect(result.diagnostics.length).toBeGreaterThan(0);
+    expect(result.status).toBe("observed");
+    expect(result.executionProfile).toBe("matrix-observation");
+    expect(result.stageSummaries).toHaveLength(6);
   });
 
   it("produces an identical evidenceDigest for a stage across two independent runs", async () => {
@@ -137,17 +137,30 @@ describe("H9 performance benchmark runner", () => {
       expect(() => validateHarnessBenchmarkResult(parsed)).not.toThrow();
     });
 
-    it("rejects --profile matrix-observation at parse time", async () => {
-      const errors: string[] = [];
+    it("runs --profile matrix-observation via CLI successfully", async () => {
+      const output: string[] = [];
 
       const exitCode = await runCli(
-        ["harness", "benchmark", "--profile", "matrix-observation"],
+        [
+          "harness",
+          "benchmark",
+          "--profile",
+          "matrix-observation",
+          "--warmup",
+          "1",
+          "--samples",
+          "2",
+          "--json",
+        ],
         dependencies,
-        { stdout: () => undefined, stderr: (message) => errors.push(message) },
+        { stdout: (message) => output.push(message), stderr: () => undefined },
       );
 
-      expect(exitCode).toBe(2);
-      expect(errors.join("\n")).toContain("matrix-observation");
+      expect(exitCode).toBe(0);
+      const parsed = JSON.parse(output.join("\n")) as HarnessBenchmarkResult;
+      expect(parsed.status).toBe("observed");
+      expect(parsed.executionProfile).toBe("matrix-observation");
+      expect(parsed.stageSummaries).toHaveLength(6);
     });
   });
 });
