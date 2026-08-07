@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **PR #240 (`oxlint` & branch protection), PR #241 (`intentloom harness benchmark`), and PR #242 (`AGENT_TASK_TRIAGE_POLICY.md`) are merged into `main` (`5cef72e`). Antigravity carrier added to governance policy and duty watch status reconciled.**
+Status: **PR #240 through PR #244 are merged into `main` (`44a3819`). Antigravity carrier governance definition and harness benchmark `matrix-observation` profile with non-gating CI workflow are merged.**
 
-Active branch: `docs/antigravity-carrier-and-duty-reconciliation`
+Active branch: `main`
 
-Current objective: Land documentation update (Antigravity carrier definition and watch status reconciliation), then select the next milestone from `ROADMAP.md`.
+Current objective: Maintain clean `main` baseline, monitor non-gating benchmark CI observations, and select next candidate roadmap milestone.
 
-Next first action: Merge this documentation update, then select the next milestone from `ROADMAP.md`.
+Next first action: Select next candidate roadmap milestone from `ROADMAP.md`.
 
 Known open items, in the order they should be handled:
 
@@ -95,6 +95,23 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-07, PR #243 & PR #244 merged and post-merge state reconciliation
+
+- **Status:** complete.
+- **Agent/tool:** Google Antigravity (AGY). PR #243 (`cf27cb2`) and PR #244 (`44a3819`) are confirmed merged into `main`.
+- **Branch:** `docs/reconcile-pr244-merge` from `main` at `44a3819`.
+- **Commits:** `cf27cb2` (PR #243), `44a3819` (PR #244).
+- **Pull request:** [#243](https://github.com/vitala89/Intentloom/pull/243) and [#244](https://github.com/vitala89/Intentloom/pull/244) merged.
+- **Objective:** Reconcile durable project state and watch status after PR #243 and PR #244 merged.
+- **Completed:**
+  - Added dedicated Antigravity carrier definition to `docs/governance/AGENT_TASK_TRIAGE_POLICY.md` (PR #243).
+  - Enabled `matrix-observation` execution profile in `intentloom harness benchmark` and added reporting-only CI workflow `.github/workflows/harness-benchmark.yml` (PR #244).
+  - Fixed CLI invocation path in CI workflow to use compiled CJS bundle `packages/cli/dist/intentloom.cjs`.
+  - Reconciled `DUTY_WATCH.md` top-of-file status to `44a3819`.
+- **Validation:** Full `pnpm verify` (typecheck, oxlint, prettier, 1038 vitest tests, build, git diff check) passed 100% clean.
+- **Decisions and assumptions:** The benchmark workflow remains reporting-only (`continue-on-error: true`), offline, and non-release-gating.
+- **Next first action:** Select the next roadmap milestone from `ROADMAP.md`.
 
 ### 2026-08-07, Governance carrier definition for Antigravity & watch status reconciliation
 
