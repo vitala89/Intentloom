@@ -2,10 +2,13 @@
 
 ## Status
 
-Draft for review. This document defines a future measurement contract only. It
-does not add a benchmark command, CI release gate, runtime dependency, provider
-adapter, network access, subprocess capability, mutation authority, or
-certification claim.
+A bounded initial implementation exists. The `calibration` and `local-repeat`
+execution profiles are implemented as `intentloom harness benchmark`. The
+runner is fully offline, is never a release or Compatibility gate, and applies
+no thresholds. `matrix-observation` remains unimplemented pending separate CI
+workflow review; it is rejected at the CLI parse level today. This document
+remains the normative measurement contract; implementation details that
+diverge from it should be treated as a bug, not a silent reinterpretation.
 
 ## Purpose
 
@@ -207,11 +210,23 @@ that the benchmark:
 ## Open review decisions
 
 - Which clock and resolution are portable enough for the first implementation?
-- What warm-up and sample-count policy does calibration support?
+  Resolved provisionally: `process.hrtime.bigint()`, a monotonic,
+  sub-millisecond clock available on Linux, macOS, and Windows under Node
+  22/24.
+- What warm-up and sample-count policy does calibration support? Resolved
+  provisionally: `local-repeat` defaults to 3 warm-up and 10 measured
+  samples; `calibration` uses the same runner with caller-supplied counts to
+  help decide whether those defaults are right. This is provisional pending a
+  real variance report.
 - Which resource metrics, if any, justify their privacy and portability cost?
+  Resolved for the first implementation: none. Only elapsed time is measured.
 - Should matrix observations be manual-dispatch, scheduled, or local-only?
+  Still open; no `matrix-observation` workflow exists yet.
 - What is the smallest retained sample record that still supports diagnosis?
-- Which owner reviews any future threshold, and when does it expire?
+  Resolved provisionally: the raw per-stage `elapsedMs` array plus the
+  aggregate summary (median, p90, p95, min, max, MAD spread), nothing else.
+- Which owner reviews any future threshold, and when does it expire? Still
+  open; no threshold is proposed by this implementation.
 
 Until these decisions are accepted, the H9 evidence contract remains the
 release-readiness evidence and this benchmark remains a design artifact.

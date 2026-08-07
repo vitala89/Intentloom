@@ -107,3 +107,4 @@ export * from "./harness-agent.js";
 export * from "./harness-voting.js";
 export * from "./harness-scenarios.js";
 export * from "./harness-surfaces.js";
+export * from "./harness-benchmark.js";
