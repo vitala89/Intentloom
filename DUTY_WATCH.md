@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **PR #240 through PR #244 are merged into `main` (`44a3819`). Antigravity carrier governance definition and harness benchmark `matrix-observation` profile with non-gating CI workflow are merged.**
+Status: **Read-Only Evidence Hardening Gate (ADR-0022, ADR-0023) audited and verified; audit document `docs/releases/READ_ONLY_EVIDENCE_HARDENING_AUDIT.md` created.**
 
-Active branch: `main`
+Active branch: `docs/read-only-evidence-hardening-audit`
 
-Current objective: Maintain clean `main` baseline, monitor non-gating benchmark CI observations, and select next candidate roadmap milestone.
+Current objective: Land Read-Only Evidence Hardening Audit documentation and update project state.
 
-Next first action: Select next candidate roadmap milestone from `ROADMAP.md`.
+Next first action: Open PR for `docs/read-only-evidence-hardening-audit` and merge to `main`.
 
 Known open items, in the order they should be handled:
 
@@ -95,6 +95,22 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-08, Read-Only Evidence Hardening Gate audit & verification complete
+
+- **Status:** complete.
+- **Agent/tool:** Google Antigravity (AGY).
+- **Branch:** `docs/read-only-evidence-hardening-audit` cut from `main` at `a2bb0a1`.
+- **Commits:** local commit `docs(audit): complete Read-Only Evidence Hardening Gate audit`.
+- **Pull request:** pending review/creation.
+- **Objective:** Audit and verify all 8 security, evidence, redaction, rate-limiting, cache retention, credential revocation, and non-mutation requirements for the Read-Only Evidence Hardening Gate under ADR-0022 and ADR-0023.
+- **Completed:**
+  - Audited 8 verification criteria across live provider connection, read-only scope, repository isolation, secret redaction, rate-limiting, cache purge, untrusted external MCP ingestion, and surface equivalence.
+  - Created [`docs/releases/READ_ONLY_EVIDENCE_HARDENING_AUDIT.md`](docs/releases/READ_ONLY_EVIDENCE_HARDENING_AUDIT.md) recording verified audit results.
+  - Updated [`PROJECT_STATE.md`](PROJECT_STATE.md) to close the Read-Only Evidence Hardening Gate milestone.
+- **Validation:** Full `pnpm verify` (typecheck, oxlint, prettier, 1038 vitest tests, build, git diff check) passed 100% clean.
+- **Decisions and assumptions:** Followed ADR-0022 and ADR-0023 security boundaries; verified non-mutation invariants across CLI, MCP, and Daemon.
+- **Next first action:** Open PR for `docs/read-only-evidence-hardening-audit`, merge to `main`, and select next milestone.
 
 ### 2026-08-07, PR #243 & PR #244 merged and post-merge state reconciliation
 

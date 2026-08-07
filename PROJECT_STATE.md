@@ -466,10 +466,7 @@ also merged through PR #160 (`3713b15`): live GitHub/GitLab reads, external MCP
 evidence normalization, and managed-extension capability validation exist in
 the source and are included in the published CLI baseline.
 
-The active milestone is the read-only evidence hardening gate. It must close
-pagination, rate-limit, redaction, cache retention/deletion, revocation,
-adversarial-payload, provenance, and CLI/application-equivalence gaps before
-any mutating MCP or agent capability is activated.
+The read-only evidence hardening gate milestone is complete and closed (`docs/releases/READ_ONLY_EVIDENCE_HARDENING_AUDIT.md`). It verifies pagination, rate-limiting, secret/token redaction, provider cache retention/purge (`clean --cache`), local credential revocation, adversarial MCP payload filtering, and CLI/MCP/daemon structured equivalence under ADR-0022 and ADR-0023.
 
 The next planned control-plane milestone after that gate is the Agentic
 Evaluation and Execution Harness described by ADR-0052. Its H0 decision,
@@ -524,12 +521,8 @@ rotation remain out of scope.
 
 ## Next platform milestone
 
-The next approved platform milestone is the read-only evidence hardening gate,
-not mutation. It extends the implementation slices governed by
-[ADR-0022](docs/decisions/ADR-0022-live-read-only-provider-connections.md) and
-[ADR-0023](docs/decisions/ADR-0023-external-mcp-evidence-ingestion.md). The
-managed extension work remains validation-only until its reviewed lifecycle
-and installation boundaries are separately completed.
+The read-only evidence hardening gate is complete ([READ_ONLY_EVIDENCE_HARDENING_AUDIT.md](docs/releases/READ_ONLY_EVIDENCE_HARDENING_AUDIT.md)).
+The next approved platform milestone is the expansion of the Agentic Evaluation and Execution Harness (ADR-0052) and Managed Extension Lifecycle (ADR-0045..0050).
 
 The Desktop discovery/error and Diff/Timeline slices remain recorded in
 [PHASE1_CONTRACTS.md](docs/desktop/PHASE1_CONTRACTS.md), while the packaged
