@@ -1,7 +1,5 @@
 import { describe, expect, it } from "vitest";
-import {
-  DeterministicTestModelAdapter,
-} from "@intentloom/application/model-adapter";
+import { DeterministicTestModelAdapter } from "@intentloom/application/model-adapter";
 import type { ModelTurnRequest } from "@intentloom/protocol/model-adapter";
 import {
   validateModelAdapterConfig,
