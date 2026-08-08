@@ -5,9 +5,9 @@
 Candidate open-source product direction.
 
 This document defines how Intentloom can compose existing project inspection,
-evidence, conformance, Quality Pack, Checker Adapter, architecture graph,
-Foundation, Agent Workspace, Neutron, memory, plan, approval, and transaction
-capabilities into reproducible engineering assessments.
+evidence, conformance, Quality Packs, Checker Adapters, graph providers,
+Foundation, Agent Workspace, Neutron, memory, planning, approval, and
+transaction capabilities into reproducible engineering assessments.
 
 It does not add a public schema, CLI command, daemon method, Desktop view, MCP
 tool, dependency, network permission, runtime package, or mutation capability by
@@ -23,18 +23,15 @@ This direction extends, but does not replace:
 - `ENGINEERING_PROCESS_INTELLIGENCE.md`;
 - `SECURITY_ANALYSIS_AND_REMEDIATION.md`;
 - `ENGINEERING_CONFORMANCE_V0_3_SPEC.md`;
-- Quality Pack, Checker Adapter, graph-provider, approval, prepared-plan,
-  transaction, and evidence contracts.
+- the existing pack, graph, evidence, approval, plan, and transaction contracts.
 
 ## Problem
 
-Existing engineering tools often provide one of two incomplete experiences:
-
-1. deterministic tools emit isolated diagnostics without a coherent project
-   assessment; or
-2. an AI model reads repository content and produces an authoritative-sounding
-   opinion without stable evidence, provenance, reproducibility, or explicit
-   uncertainty.
+Existing engineering tooling often produces one of two incomplete outcomes.
+Deterministic tools emit isolated diagnostics without a coherent project-level
+assessment, while AI systems may read a repository and produce
+an authoritative-sounding opinion without stable evidence, provenance,
+reproducibility, or explicit uncertainty.
 
 Intentloom should provide a third path:
 
@@ -47,7 +44,7 @@ selected project
 -> deterministic checker and conformance results
 -> assessment orchestration
 -> findings with provenance
--> technical-debt projection
+-> technical debt projection
 -> prioritized recommendations
 -> target-state options
 -> remediation roadmap
@@ -55,37 +52,34 @@ selected project
 -> optional reviewed implementation plan
 ```
 
-The assessment capability evaluates software, project, and system evidence. It
-must not score employees, rank developers, infer individual productivity, or
-become a surveillance system.
+Assessment evaluates software, project, and system evidence. It must not score
+employees, rank developers, infer individual productivity, or become a
+surveillance system.
 
 ## Goals
 
 Engineering Assessments should:
 
-- produce explainable, evidence-backed project findings;
-- distinguish deterministic evidence from derived or AI-assisted interpretation;
-- compare declared architecture with observed architecture where a Foundation or
-  project architecture map exists;
+- produce explainable, evidence-backed findings;
+- distinguish deterministic evidence from AI-assisted interpretation;
+- compare declared architecture with observed architecture when intent exists;
 - reuse Quality Packs instead of hardcoding framework rules into Core;
 - reuse Checker Adapters instead of replacing specialist tools;
 - reuse Graph Providers without requiring Nx;
-- support scoped assessment of a workspace, application, package, feature,
-  domain, directory, changed files, or affected projects;
+- support workspace, application, package, feature, domain, directory,
+  changed-file, affected-project, and explicit-file scopes;
 - support architecture, frontend, performance, monorepo and CI, testing,
   maintainability, security, accessibility, observability, and AI-engineering
-  assessment modules;
+  modules;
 - preserve severity, confidence, evidence quality, and priority as separate
   concepts;
 - treat `insufficient-evidence` as a valid result;
-- provide technical-debt grouping and dependency-aware remediation ordering;
-- support multiple target-state options rather than one universal architecture;
-- remain local-first, provider-neutral, read-only first, permission-bounded, and
-  open source;
-- expose one canonical structured result to CLI, Desktop, TUI, daemon, MCP,
-  Agent Workspace, and Neutron;
-- integrate future remediation through the existing prepare, preview, approve,
-  revalidate, and transactional apply boundary.
+- group technical debt and dependency-aware remediation order;
+- provide multiple target-state options rather than one universal architecture;
+- remain local-first, provider-neutral, read-only first, and permission-bounded;
+- expose one canonical result to CLI, Desktop, TUI, daemon, MCP, Agent
+  Workspace, and Neutron;
+- use existing reviewed planning and transactional apply for future remediation.
 
 ## Non-goals
 
@@ -94,29 +88,28 @@ This direction does not create:
 - a second policy or conformance engine;
 - a universal architecture score;
 - an autonomous refactoring agent;
-- automatic dependency installation;
 - unrestricted shell execution;
+- automatic dependency installation;
 - mandatory Nx;
 - mandatory AI or one model provider;
-- mandatory cloud storage or hosted backend;
+- mandatory cloud storage or a hosted backend;
 - hidden repository upload or telemetry;
 - AI-generated performance measurements;
 - guaranteed performance improvements;
-- employee performance scoring, developer ranking, activity leaderboards, or
-  productivity surveillance;
-- a billing, subscription, pricing, consulting, or proprietary audit layer.
+- employee performance scoring or developer ranking;
+- pricing, billing, subscriptions, consulting workflows, or paywalls.
 
 Engineering Assessments are part of the open-source Intentloom product
 direction. Any future hosted or enterprise service would require a separate
-product decision and architecture review and must not make the local assessment
-core artificially incomplete.
+product and architecture decision and must not make the local assessment core
+artificially incomplete.
 
 ## Architectural decision
 
 Do not introduce an independent `Audit Engine` that owns policies, checkers,
 graphs, or project truth.
 
-Use an **Assessment Orchestrator** over existing canonical systems:
+Use an Assessment Orchestrator over existing canonical systems:
 
 ```text
 Project Inspection
@@ -138,9 +131,9 @@ Optional AI Interpretation
 Assessment Orchestrator
       ↓
 Canonical Assessment Result
-      ├── findings
+      ├── finding projections
       ├── unsupported / insufficient-evidence areas
-      ├── debt projection
+      ├── technical debt projection
       ├── prioritization view
       ├── target-state options
       ├── remediation roadmap
@@ -150,27 +143,31 @@ Canonical Assessment Result
 The orchestrator coordinates evidence and normalizes assessment-specific output.
 It does not become a new source of policy authority.
 
-## Reused Intentloom capabilities
+## Existing Intentloom capabilities reused
 
 ### Project inspection
 
 The selected project root and bounded inspection rules remain owned by existing
 project-access and application-operation contracts. Assessment must not broaden
-filesystem access merely because a deeper analysis was requested.
+filesystem access merely because deeper analysis was requested.
 
-### Project evidence
+### Project Evidence
 
-Existing local Git, provider evidence, normalized engineering events, trust
-states, redaction, and provenance form part of the evidence substrate.
+Existing local Git evidence, provider evidence, normalized engineering events,
+trust states, redaction, and provenance form part of the evidence substrate.
 Assessment-specific evidence extends this substrate rather than inventing a
 parallel repository crawler.
 
-### Engineering conformance
+### Engineering Conformance
 
 Conformance remains the authority for comparing observed engineering workflow
 evidence with canonical workflow policies. Assessment may include conformance
-findings and summarize their implications, but does not reimplement conformance
-rules.
+findings and summarize their implications, but it does not reimplement
+conformance rules.
+
+The current conformance model already distinguishes verified violations from
+missing, ambiguous, and unsupported evidence. Assessment should preserve those
+semantics instead of flattening them into one generic failure state.
 
 ### Engineering Quality Packs
 
@@ -178,14 +175,14 @@ Quality Packs provide versioned framework, language, discipline, architecture,
 accessibility, security, testing, observability, and organization-specific
 rules. Assessment Core remains domain-neutral.
 
-Examples may eventually include:
+Candidate first-party packs may include:
 
 - TypeScript;
 - Angular;
 - React;
 - Rust;
 - Tauri;
-- backend/service;
+- backend and service boundaries;
 - accessibility;
 - security;
 - testing;
@@ -197,8 +194,8 @@ React, TanStack Query, RxJS, NgRx, Zustand, or similar implementation rules.
 
 ### Checker Adapters
 
-Checker Adapters normalize deterministic tool results into bounded Intentloom
-evidence and findings.
+Checker Adapters normalize deterministic specialist-tool results into bounded
+Intentloom evidence and findings.
 
 Candidate assessment inputs include:
 
@@ -223,9 +220,9 @@ scopes, and dependency edges.
 
 Candidate providers include:
 
-- Nx project and task graphs;
+- Nx project and task graph exports;
 - TypeScript project references;
-- pnpm, npm, or Yarn workspace manifests;
+- pnpm, npm, and Yarn workspace manifests;
 - import graphs;
 - Cargo workspace and crate metadata;
 - explicit Intentloom architecture maps;
@@ -247,7 +244,7 @@ vs
 observed architecture
 ```
 
-Example:
+For example:
 
 ```text
 Declared:
@@ -262,8 +259,7 @@ architecture drift with dependency-edge evidence
 
 The project-defined architecture is the reference. Intentloom must not prefer
 Clean Architecture, Feature-Sliced Design, DDD, Hexagonal Architecture,
-microservices, microfrontends, modular monoliths, or any other style
-universally.
+microservices, microfrontends, modular monoliths, or another style universally.
 
 ### Agent Workspace and Neutron
 
@@ -274,9 +270,9 @@ They may help answer questions such as:
 
 - Why is finding `ARCH-017` classified as high severity?
 - Which evidence supports it?
-- Which three remediations are currently most useful?
+- Which remediations are currently most useful?
 - What target-state alternatives exist?
-- Prepare an implementation plan for one approved finding.
+- Prepare an implementation plan for one selected finding.
 
 Model output may explain, compare, summarize, or propose. It cannot change
 measured evidence, policy, severity rules, approval state, or mutation authority.
@@ -289,7 +285,7 @@ trust, provenance, review, retention, export, deletion, and supersession rules.
 
 Raw model interpretation does not silently become canonical memory.
 
-### Approved apply and transaction boundary
+### Approved Apply and transaction boundary
 
 Assessment itself is read-only.
 
@@ -355,31 +351,31 @@ LLM reads repository
 Assessment should preserve evidence origin and confidence rather than flattening
 all inputs into prose.
 
-Candidate evidence classes:
+Candidate provenance classes are:
 
-- `deterministic`: produced directly by stable Intentloom logic;
-- `tool-backed`: produced by a bounded external checker or project tool;
-- `derived`: computed deterministically from other evidence;
-- `ai-assisted`: interpretation or classification proposed by a model;
-- `review-required`: useful hypothesis that requires explicit human review;
-- `insufficient-evidence`: the requested conclusion cannot be supported.
+- `deterministic`, produced directly by stable Intentloom logic;
+- `tool-backed`, produced by a bounded external checker or project tool;
+- `derived`, computed deterministically from other evidence;
+- `ai-assisted`, interpretation or classification proposed by a model;
+- `review-required`, a useful hypothesis requiring explicit human review;
+- `insufficient-evidence`, a conclusion that cannot currently be supported.
 
-These are assessment provenance classes, not severity levels.
+These are provenance classes, not severity levels.
 
-Every material assessment conclusion should be traceable to evidence references,
-rule references, graph snapshots, tool versions, configuration digests, or an
+Every material conclusion should be traceable to evidence references, rule
+references, graph snapshots, tool versions, configuration digests, or an
 explicit AI interpretation record.
 
 ## Canonical assessment model
 
 The first implementation should define a versioned canonical assessment result
-without prematurely replacing existing conformance or quality schemas.
+without replacing existing conformance or quality schemas prematurely.
 
-Candidate top-level shape:
+An illustrative top-level shape is:
 
 ```yaml
 schemaVersion: 1
-assessmentId: assessment:2026-08-08:example
+assessmentId: assessment:example
 projectId: project:example
 scope:
   kind: workspace
@@ -405,20 +401,19 @@ report:
 provenance: {}
 ```
 
-This example is illustrative. A public schema requires ADR, threat review,
-validator, compatibility, fixture, migration, size-limit, and support-policy
-work.
+This is not a valid public schema until an ADR, validator, compatibility policy,
+fixtures, migration rules, limits, and threat review are accepted.
 
 ## Finding integration
 
 Intentloom already has conformance and engineering-quality finding directions.
 Assessment should not create a competing generic `Finding` type if existing
-schemas can be safely extended or wrapped.
+schemas can be safely referenced.
 
-The assessment layer needs a stable cross-domain projection that can reference
+The assessment layer needs a stable cross-domain projection that can point to
 the original source finding.
 
-Candidate projection:
+An illustrative projection is:
 
 ```yaml
 id: ARCH-017
@@ -450,8 +445,8 @@ provenance:
 ```
 
 The original source result remains authoritative for its own domain. The
-assessment projection supplies cross-domain presentation, prioritization, debt,
-and report context.
+assessment projection adds cross-domain presentation, prioritization, debt, and
+report context.
 
 ## Severity, confidence, evidence quality, and priority
 
@@ -460,27 +455,14 @@ These dimensions must remain separate.
 ### Severity
 
 Severity describes potential engineering impact if the finding is correct.
-Candidate levels may be:
-
-- critical;
-- high;
-- medium;
-- low;
-- informational.
-
+Candidate levels may include critical, high, medium, low, and informational.
 Exact levels and blocking semantics must be owned by versioned policy.
 
 ### Confidence
 
 Confidence describes how strongly the available evidence supports the finding.
 A high-severity, low-confidence hypothesis is not automatically a blocker.
-
-Candidate levels:
-
-- high;
-- medium;
-- low;
-- unknown.
+Candidate levels may include high, medium, low, and unknown.
 
 ### Evidence quality
 
@@ -489,7 +471,7 @@ Evidence quality describes source completeness and trust.
 Candidate factors include:
 
 - deterministic versus inferred source;
-- content digest binding;
+- content-digest binding;
 - tool version and configuration availability;
 - graph completeness;
 - timestamp and scope completeness;
@@ -515,13 +497,13 @@ It may consider:
 - remediation complexity;
 - dependency order.
 
-Any formula must be transparent, versioned, inspectable, configurable where
-appropriate, and accompanied by its inputs. AI-generated priority should be
-labeled as a recommendation rather than presented as objective mathematics.
+Any formula must be transparent, versioned, inspectable, and configurable where
+appropriate. AI-generated priority must be labeled as a recommendation rather
+than objective mathematics.
 
 ## Assessment scopes
 
-Assessment should accept an explicit scope:
+Assessment should accept an explicit scope such as:
 
 - workspace;
 - application;
@@ -533,19 +515,18 @@ Assessment should accept an explicit scope:
 - affected projects;
 - explicit file set.
 
-A graph provider may resolve affected scopes, but the user-selected root and
+A graph provider may resolve affected scopes, but the selected project root and
 scope remain authoritative. Assessment must not expand to sibling repositories
 or unrelated projects silently.
 
 ## Assessment profiles
 
-Candidate execution profiles:
+Candidate execution profiles are:
 
-- `quick`: bounded deterministic checks and existing evidence only;
-- `standard`: normal project evidence, quality, graph, and checker coverage;
-- `deep`: broader approved read-only evidence collection and optional
-  AI-assisted interpretation;
-- `custom`: explicit module and evidence selection.
+- `quick`, for bounded deterministic checks and existing evidence;
+- `standard`, for normal project, quality, graph, and checker coverage;
+- `deep`, for broader approved read-only evidence and optional AI interpretation;
+- `custom`, for explicit module and evidence selection.
 
 A profile changes depth and enabled capabilities. It must not silently change
 canonical engineering rules or weaken safety policy.
@@ -553,8 +534,7 @@ canonical engineering rules or weaken safety policy.
 ## Architecture Assessment
 
 Architecture Assessment compares observed project structure and dependency
-relationships with the architecture selected or declared by the user or
-project.
+relationships with the architecture selected or declared by the user or project.
 
 Candidate checks, where applicable, include:
 
@@ -577,7 +557,7 @@ Candidate checks, where applicable, include:
 
 Architecture styles may include DDD, Feature-Sliced Design, Clean Architecture,
 Hexagonal Architecture, modular monoliths, microservices, microfrontends, or a
-custom project model. The active architecture determines the relevant rules.
+custom project model. The active architecture determines relevant rules.
 
 A directory name alone does not prove an architecture violation.
 
@@ -594,7 +574,7 @@ Candidate capabilities include:
 - component architecture;
 - state ownership and state management;
 - data fetching and caching;
-- TanStack Query / React Query;
+- TanStack Query and React Query;
 - RxJS;
 - Angular Signals;
 - NgRx;
@@ -611,8 +591,8 @@ Candidate capabilities include:
 - performance;
 - large dataset handling.
 
-Framework-specific knowledge belongs in Quality Packs, checker adapters, and
-specialized graph providers, not in Assessment Core.
+Framework-specific knowledge belongs in Quality Packs, Checker Adapters, and
+specialized Graph Providers, not in Assessment Core.
 
 ## Performance Assessment
 
@@ -652,8 +632,7 @@ Candidate metrics include:
 - test duration.
 
 Every metric needs provenance such as source artifact, timestamp, environment,
-configuration, URL or scenario where applicable, tool version, and project-state
-digest.
+configuration, scenario, tool version, and project-state digest.
 
 ### Baseline comparison
 
@@ -666,20 +645,12 @@ baseline
 -> comparison
 ```
 
-Candidate representation:
+A report may show measured values such as LCP, bundle size, memory, and initial
+render before and after a change. Example numbers in documentation are never
+runtime evidence.
 
-| Metric         | Before | After |
-| -------------- | ------ | ----- |
-| LCP            | 4.1 s  | 1.8 s |
-| Bundle         | 2.8 MB | 1.7 MB |
-| Memory         | 420 MB | 270 MB |
-| Initial render | 2.4 s  | 1.1 s |
-
-Values in documentation examples are illustrative only. Runtime reports must
-come from collected evidence.
-
-Comparisons must reject or qualify materially incompatible environments rather
-than claiming improvement from incomparable samples.
+Comparisons must reject or qualify materially incompatible environments instead
+of claiming improvement from incomparable samples.
 
 ## Monorepo and Developer Productivity Assessment
 
@@ -698,7 +669,7 @@ Candidate areas include:
 - build and CI performance;
 - flaky tests;
 - dependency boundaries;
-- test pyramid evidence;
+- test-pyramid evidence;
 - release automation;
 - duplicated pipelines;
 - dependency cycles;
@@ -710,13 +681,13 @@ build latency, duplicate work, flaky checks, slow feedback loops, or unclear
 ownership. It must not be converted into developer rankings or individual
 activity metrics.
 
-Affected analysis may accelerate feedback only after its completeness is proven.
-It does not replace authoritative full security, compatibility, release, or
-publication gates prematurely.
+Affected analysis may accelerate feedback only after completeness is proven. It
+does not replace authoritative security, compatibility, release, or publication
+gates prematurely.
 
 ## AI Engineering Assessment
 
-AI Engineering Assessment evaluates the controls around AI-assisted software
+AI Engineering Assessment evaluates controls around AI-assisted software
 development.
 
 Candidate evidence sources include repository instructions, Intentloom policies,
@@ -752,7 +723,7 @@ Candidate assessment questions include:
 - Can workflows be reproduced from stable configuration and evidence?
 
 The output describes engineering controls around AI-assisted development. It is
-not a marketing score and must not rate individual developers by how they use AI.
+not a marketing score and must not rate individual developers by AI usage.
 
 ## Technical Debt Map
 
@@ -794,24 +765,21 @@ explicit deterministic metric.
 
 Recommendations should be explainable and reversible where possible.
 
-The system should expose why an item is ordered ahead of another, including
+The system should expose why one item is ordered ahead of another, including
 policy inputs, dependency order, blockers, evidence quality, and estimated cost.
 
 A recommended order may be overridden by the user. User overrides should be
-recorded as decisions rather than silently rewriting assessment evidence.
+recorded as decisions instead of silently rewriting assessment evidence.
 
 ## Target-state options
 
 Material remediation may offer multiple target states.
 
-Typical options:
+Typical options are:
 
-- **Option A: Minimal remediation**: remove the immediate risk with the least
-  structural change;
-- **Option B: Incremental architecture improvement**: reduce debt while
-  preserving staged migration;
-- **Option C: Target architecture migration**: move toward a larger approved
-  architecture change when evidence and project goals justify it.
+- minimal remediation, removing the immediate risk with least structural change;
+- incremental architecture improvement, reducing debt through staged migration;
+- target architecture migration, when broader change is justified by evidence.
 
 Each option should include:
 
@@ -830,22 +798,8 @@ Neutron may explain or compare options. The user chooses the target state.
 
 ## Remediation roadmap
 
-The assessment result may produce a dependency-aware roadmap such as:
-
-```text
-Immediate
-Next
-Later
-```
-
-or:
-
-```text
-Phase 0
-Phase 1
-Phase 2
-Phase 3
-```
+The assessment result may produce a dependency-aware roadmap such as
+`Immediate`, `Next`, and `Later`, or a phase-based sequence.
 
 The roadmap does not require calendar dates.
 
@@ -866,7 +820,7 @@ A remediation roadmap is a plan input, not approval to mutate the repository.
 Define one provider-neutral report model first. Rendering formats remain
 adapters.
 
-Candidate report sections:
+Candidate report sections are:
 
 1. Executive Summary
 2. Project Context
@@ -891,15 +845,10 @@ Candidate report sections:
 21. Unsupported or Unverified Areas
 22. Appendix and Evidence References
 
-Candidate renderers may later include:
+Candidate renderers may later include JSON, Markdown, HTML, and PDF.
 
-- JSON;
-- Markdown;
-- HTML;
-- PDF.
-
-The first implementation should prioritize the canonical JSON/report contract.
-PDF generation is not required for the initial assessment milestone.
+The first implementation should prioritize the canonical JSON and report
+contract. PDF generation is not required for the initial assessment milestone.
 
 ## Historical comparison
 
@@ -936,22 +885,22 @@ baseline assessment
 
 This remains user-controlled. It is not mandatory background monitoring.
 
-The optimization must preserve a path to a full assessment and must not silently
+The optimization must preserve a path to full assessment and must not silently
 omit findings whose dependency reach cannot be determined reliably.
 
 ## Privacy and local-first behavior
 
-Default assessment behavior:
+Default assessment behavior is:
 
 - repository content remains local;
-- no hidden telemetry;
-- no hidden network access;
-- external models require explicit provider and data-handling permissions;
+- telemetry is not required;
+- network access is explicit;
+- external models require provider and data-handling permissions;
 - secrets are redacted before persistence, export, or provider transmission;
 - evidence is project-scoped;
-- exported reports are produced only by explicit user action;
+- report export occurs only through explicit user action;
 - raw private repository content is not uploaded merely to render a report;
-- no user repository or assessment becomes training data by default.
+- repositories and assessments do not become training data by default.
 
 Assessment permissions remain capabilities, not model instructions.
 
@@ -987,22 +936,9 @@ Intentloom compatibility policy.
 
 ## Desktop surface
 
-A future Desktop presentation may include:
-
-```text
-Project
-└── Assessments
-    ├── Overview
-    ├── Architecture
-    ├── Quality
-    ├── Performance
-    ├── Testing
-    ├── Monorepo / CI
-    ├── AI Engineering
-    ├── Technical Debt
-    ├── Recommendations
-    └── Roadmap
-```
+A future Desktop presentation may include an Assessments workspace with Overview,
+Architecture, Quality, Performance, Testing, Monorepo and CI, AI Engineering,
+Technical Debt, Recommendations, and Roadmap views.
 
 A finding may drill down through:
 
@@ -1017,7 +953,7 @@ finding
 ```
 
 Desktop remains a client over shared application and daemon contracts. It must
-not contain assessment logic.
+not contain assessment business logic.
 
 ## CLI, TUI, daemon, MCP, and Agent Workspace
 
@@ -1035,28 +971,27 @@ No client parses another client's human output.
 ## Extensibility and non-software disciplines
 
 Assessment Core should use provider-neutral concepts such as scope, evidence,
-rule, finding projection, recommendation, option, roadmap, and report.
+rule reference, finding projection, recommendation, option, roadmap, and report.
 
-Software-specific modules may add source graphs, package graphs, framework
-packs, build evidence, or browser metrics. Future non-software engineering
-disciplines should be able to contribute other evidence and rule providers
-without changing the core provenance and review model.
+Software-specific modules may add source graphs, package graphs, framework packs,
+build evidence, or browser metrics. Future non-software engineering disciplines
+should be able to contribute other evidence and rule providers without changing
+the core provenance and review model.
 
 ## Compatibility considerations
 
-The documentation phase changes no public contract.
+This documentation phase changes no public contract.
 
 Before implementation, an ADR should decide:
 
 - whether an assessment schema wraps existing finding schemas or introduces a
   shared finding envelope;
-- stable assessment and evidence reference identifiers;
+- stable assessment and evidence-reference identifiers;
 - severity and confidence vocabularies;
 - report schema versioning;
 - policy and pack version binding;
 - historical-comparison compatibility rules;
-- size and count limits for findings, evidence references, graph snapshots, and
-  reports;
+- limits for findings, evidence references, graph snapshots, and reports;
 - unknown-field behavior;
 - redaction and retention rules;
 - daemon, CLI JSON, and MCP compatibility surfaces.
@@ -1086,19 +1021,18 @@ External tools remain least-privileged and permission-bounded.
 
 ## Open architecture questions
 
-The following require implementation-phase ADR work rather than being silently
-resolved in documentation:
+The following questions require implementation-phase ADR work instead of being
+silently resolved in this concept:
 
 1. Should the assessment layer expose a shared finding envelope, or only stable
    references to existing domain-specific finding contracts?
-2. Which evidence reference identity survives checker reruns and historical
+2. Which evidence-reference identity survives checker reruns and historical
    comparison?
 3. Which severity vocabulary can compose conformance, security, quality, and
-   architecture findings without flattening their domain semantics?
-4. How are performance environments normalized before two metrics are considered
-   comparable?
-5. Which graph completeness guarantees are required before architecture drift or
-   affected-scope claims can be deterministic?
+   architecture findings without flattening domain semantics?
+4. How are performance environments normalized before metrics are comparable?
+5. Which graph completeness guarantees are required before architecture drift
+   or affected-scope claims can be deterministic?
 6. Which AI-assisted classifications may be persisted before human review?
 7. Where should project-local assessment snapshots live, if persisted at all,
    without making them canonical project intent?
@@ -1106,12 +1040,13 @@ resolved in documentation:
 ## Open-source boundary
 
 Engineering Assessments, architecture assessment, canonical reports, evidence
-provenance, and local report generation are open-source product capabilities.
+provenance, technical-debt projection, and local report generation are
+open-source product capabilities.
 
 This direction contains no paywall, billing, pricing, consulting, or commercial
 service design.
 
 A future optional hosted, team, or enterprise service may be considered only
 through a separate non-binding product decision after the open-source contracts
-are mature. Such a service must not redefine the local open-source assessment
+are mature. Such a service must not redefine local open-source assessment
 semantics.
