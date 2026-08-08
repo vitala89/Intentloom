@@ -8,7 +8,9 @@ import {
 
 describe("DeterministicTestModelAdapter", () => {
   it("provides valid deterministic model capabilities", () => {
-    const adapter = new DeterministicTestModelAdapter({ modelId: "test-model-1" });
+    const adapter = new DeterministicTestModelAdapter({
+      modelId: "test-model-1",
+    });
     const capabilities = adapter.getCapabilities();
 
     expect(capabilities.providerKind).toBe("deterministic-test");
@@ -23,7 +25,9 @@ describe("DeterministicTestModelAdapter", () => {
     const request: ModelTurnRequest = {
       schemaVersion: 1,
       sessionId: "session-1",
-      messages: [{ role: "user", content: "Inspect the repository structure" }],
+      messages: [
+        { role: "user", content: "Inspect the repository structure" },
+      ],
       maxTokens: 100,
     };
 
