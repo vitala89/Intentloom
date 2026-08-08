@@ -68,8 +68,7 @@ export class DeterministicTestModelAdapter implements ModelAdapter {
     if (predefined) return predefined;
 
     const userPrompt = validatedRequest.messages.at(-1)?.content ?? "";
-    const responseText =
-      `[Deterministic Reference Model Output]: Processing prompt "${userPrompt}"`;
+    const responseText = `[Deterministic Reference Model Output]: Processing prompt "${userPrompt}"`;
     const inputTokens = syntheticTokenCount(userPrompt);
     const outputTokens = syntheticTokenCount(responseText);
 
