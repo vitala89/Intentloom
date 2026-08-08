@@ -501,8 +501,9 @@ rotation remain out of scope.
 
 ## Next platform milestone
 
-The read-only evidence hardening gate ([READ_ONLY_EVIDENCE_HARDENING_AUDIT.md](docs/releases/READ_ONLY_EVIDENCE_HARDENING_AUDIT.md)), Managed Extension Lifecycle Phases E1-E8 (PR #248), and Agentic Harness H9 Hardening Audit ([H9_HARNESS_HARDENING_AUDIT.md](docs/releases/H9_HARNESS_HARDENING_AUDIT.md)) are complete.
-The next approved platform milestone is the transactional apply engine for safe agent and MCP mutation.
+The read-only evidence hardening gate ([READ_ONLY_EVIDENCE_HARDENING_AUDIT.md](docs/releases/READ_ONLY_EVIDENCE_HARDENING_AUDIT.md)), Managed Extension Lifecycle Phases E1-E8 (PR #248), Agentic Harness H9 Hardening Audit ([H9_HARNESS_HARDENING_AUDIT.md](docs/releases/H9_HARNESS_HARDENING_AUDIT.md)), Approved Apply Transaction Engine & Desktop Integration ([APPROVED_APPLY_HARDENING_AUDIT.md](docs/releases/APPROVED_APPLY_HARDENING_AUDIT.md)), and Desktop v0.6.0-beta.1 Release Readiness Audit ([V0_6_READINESS_AUDIT.md](docs/desktop/V0_6_READINESS_AUDIT.md)) are 100% complete, audited, and verified.
+The platform has achieved full production readiness for local agentic workflow orchestration and safe human-approved transactional file mutations via Intent Loop.
+Next maintainer action: Tag release `v0.6.0-beta.1`.
 
 The Desktop discovery/error and Diff/Timeline slices remain recorded in
 [PHASE1_CONTRACTS.md](docs/desktop/PHASE1_CONTRACTS.md), while the packaged

@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **PR #249 merged (`b344d87`); Agentic Harness H9 Hardening Audit complete; ready for next milestone.**
+Status: **Approved Apply Transaction Engine (ADR-0053), Daemon RPC Integration, and Desktop UI Modal complete and verified (`docs/releases/APPROVED_APPLY_HARDENING_AUDIT.md`).**
 
-Active branch: `main`
+Active branch: `feat/approved-apply-transaction-engine`
 
-Current objective: Select the next roadmap milestone (Transactional Apply Engine / Safe Agent & MCP Mutation).
+Current objective: Hand over Phase 7 & Desktop Integration; open PR for Approved Apply.
 
-Next first action: Review roadmap and design the Transactional Apply Engine specification.
+Next first action: Open PR for `feat/approved-apply-transaction-engine` and merge to `main`.
 
 Known open items, in the order they should be handled:
 

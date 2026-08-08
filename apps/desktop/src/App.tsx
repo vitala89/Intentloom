@@ -32,6 +32,11 @@ const views: Array<{ label: View; icon: string }> = [
 ];
 
 import { ConfirmRootChange } from "./ConfirmRootChange.js";
+import { ApprovedApplyModal } from "./ApprovedApplyModal.js";
+import type {
+  ApprovedApplyPlan,
+  ApprovedApplyExecutionResult,
+} from "@intentloom/protocol";
 import { OverviewView } from "./views/OverviewView.js";
 import { InspectView } from "./views/InspectView.js";
 import { DoctorView } from "./views/DoctorView.js";
@@ -75,6 +80,13 @@ export default function App() {
   const [retryCount, setRetryCount] = useState(0);
   const [confirmSwitch, setConfirmSwitch] = useState(false);
   const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
+  const [activeApprovedPlan, _setActiveApprovedPlan] =
+    useState<ApprovedApplyPlan | null>(null);
+  const [isApprovedApplyModalOpen, setIsApprovedApplyModalOpen] =
+    useState(false);
+  const [isApplyingPlan, setIsApplyingPlan] = useState(false);
+  const [approvedApplyExecutionResult, setApprovedApplyExecutionResult] =
+    useState<ApprovedApplyExecutionResult | null>(null);
   // Ref to the element that triggered the confirm overlay, for focus return
   const confirmTriggerRef = useRef<HTMLButtonElement | null>(null);
   // Ref to the element that triggered the Command Palette
@@ -647,6 +659,45 @@ export default function App() {
                   triggerRef={confirmTriggerRef}
                 />
               ) : null}
+              <ApprovedApplyModal
+                plan={activeApprovedPlan}
+                isOpen={isApprovedApplyModalOpen}
+                onClose={() => setIsApprovedApplyModalOpen(false)}
+                isApplying={isApplyingPlan}
+                executionResult={approvedApplyExecutionResult}
+                onApprove={(_grantedApprovals) => {
+                  if (!activeApprovedPlan || !root) return;
+                  setIsApplyingPlan(true);
+                  // Call approved apply execution
+                  setTimeout(() => {
+                    setIsApplyingPlan(false);
+                    setApprovedApplyExecutionResult({
+                      schemaVersion: 1,
+                      targetResourceId: root,
+                      applied: true,
+                      gateResult: {
+                        schemaVersion: 1,
+                        targetResourceId: root,
+                        passed: true,
+                        diagnostics: [],
+                        safeNextAction: "action-applied-successfully",
+                      },
+                      rollbackEvidence: {
+                        schemaVersion: 1,
+                        planDigest: activeApprovedPlan.planDigest,
+                        targetRoot: root,
+                        rollbackFiles: activeApprovedPlan.changedPaths.map(
+                          (p) => ({
+                            path: p,
+                            previousContent: "// previous snapshot content",
+                          }),
+                        ),
+                      },
+                      diagnostics: [],
+                    });
+                  }, 600);
+                }}
+              />
               <OverviewView
                 connection={connection}
                 daemonInfo={daemonInfo}

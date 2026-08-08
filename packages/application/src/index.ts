@@ -273,6 +273,8 @@ export type {
 export * from "./task-routing.js";
 export * from "./external-skill-import.js";
 export * from "./harness-adoption-gate.js";
+export * from "./approved-apply-gate.js";
+export * from "./approved-apply-engine.js";
 export {
   validateNeutronSubagentTaskRecord,
   validateWorkspaceConversationRecord,

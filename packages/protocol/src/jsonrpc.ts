@@ -22,6 +22,8 @@ export const WORKFLOW_REPETITION_SUMMARY_METHOD =
 export const WORKFLOW_TRANSITION_INTERVALS_METHOD =
   "intentloom.workflow.transitions.intervals.v1" as const;
 export const SESSION_GET_METHOD = "intentloom.session.get.v1" as const;
+export const APPROVED_APPLY_METHOD =
+  "intentloom.project.approvedApply.v1" as const;
 
 export type JsonPrimitive = boolean | null | number | string;
 export type JsonValue = JsonPrimitive | JsonObject | readonly JsonValue[];
