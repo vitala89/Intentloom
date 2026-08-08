@@ -132,7 +132,9 @@ export function validateModelAdapterConfig(value: unknown): ModelAdapterConfig {
 }
 
 export function validateModelMessage(value: unknown): ModelMessage {
-  if (!isObject(value)) throw new Error("model message must be an object");
+  if (!isObject(value)) {
+    throw new Error("model message must be an object");
+  }
   if (!["system", "user", "assistant", "tool"].includes(value.role as string)) {
     throw new Error("invalid message role");
   }
@@ -150,7 +152,9 @@ export function validateModelMessage(value: unknown): ModelMessage {
 }
 
 export function validateModelToolCall(value: unknown): ModelToolCall {
-  if (!isObject(value)) throw new Error("model tool call must be an object");
+  if (!isObject(value)) {
+    throw new Error("model tool call must be an object");
+  }
   if (typeof value.id !== "string" || !value.id.trim()) {
     throw new Error("tool call id must be a non-empty string");
   }
@@ -160,7 +164,11 @@ export function validateModelToolCall(value: unknown): ModelToolCall {
   if (typeof value.argumentsJson !== "string") {
     throw new Error("argumentsJson must be a string");
   }
-  return { id: value.id, name: value.name, argumentsJson: value.argumentsJson };
+  return {
+    id: value.id,
+    name: value.name,
+    argumentsJson: value.argumentsJson,
+  };
 }
 
 function validateToolDefinition(value: unknown): ModelToolDefinition {
@@ -182,15 +190,18 @@ function validateToolDefinition(value: unknown): ModelToolDefinition {
 }
 
 export function validateModelTurnRequest(value: unknown): ModelTurnRequest {
-  if (!isObject(value)) throw new Error("model turn request must be an object");
+  if (!isObject(value)) {
+    throw new Error("model turn request must be an object");
+  }
   if (value.schemaVersion !== 1) {
     throw new Error("model turn request schemaVersion must equal 1");
   }
   if (typeof value.sessionId !== "string" || !value.sessionId.trim()) {
     throw new Error("sessionId must be a non-empty string");
   }
-  if (!Array.isArray(value.messages))
+  if (!Array.isArray(value.messages)) {
     throw new Error("messages must be an array");
+  }
   if (value.tools !== undefined && !Array.isArray(value.tools)) {
     throw new Error("tools must be an array if provided");
   }
@@ -209,7 +220,9 @@ export function validateModelTurnRequest(value: unknown): ModelTurnRequest {
 }
 
 export function validateModelTurnResult(value: unknown): ModelTurnResult {
-  if (!isObject(value)) throw new Error("model turn result must be an object");
+  if (!isObject(value)) {
+    throw new Error("model turn result must be an object");
+  }
   if (value.schemaVersion !== 1) {
     throw new Error("model turn result schemaVersion must equal 1");
   }
@@ -219,8 +232,9 @@ export function validateModelTurnResult(value: unknown): ModelTurnResult {
   if (typeof value.responseText !== "string") {
     throw new Error("responseText must be a string");
   }
-  if (!Array.isArray(value.toolCalls))
+  if (!Array.isArray(value.toolCalls)) {
     throw new Error("toolCalls must be an array");
+  }
   if (
     !["stop", "tool_call", "length", "error"].includes(
       value.stopReason as string,
@@ -228,7 +242,9 @@ export function validateModelTurnResult(value: unknown): ModelTurnResult {
   ) {
     throw new Error("invalid stopReason");
   }
-  if (!isObject(value.usage)) throw new Error("usage must be an object");
+  if (!isObject(value.usage)) {
+    throw new Error("usage must be an object");
+  }
   const inputTokens = optionalPositiveIntegerOrZero(
     value.usage.inputTokens,
     "usage.inputTokens",
