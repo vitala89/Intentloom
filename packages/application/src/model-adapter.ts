@@ -2,12 +2,12 @@ import type {
   ModelAdapterCapabilities,
   ModelTurnRequest,
   ModelTurnResult,
-} from "@intentloom/protocol/model-adapter";
+} from "../../protocol/src/model-adapter.js";
 import {
   validateModelAdapterCapabilities,
   validateModelTurnRequest,
   validateModelTurnResult,
-} from "@intentloom/validator/model-adapter";
+} from "../../validator/src/model-adapter.js";
 
 export interface ModelAdapter {
   getCapabilities(): ModelAdapterCapabilities;
