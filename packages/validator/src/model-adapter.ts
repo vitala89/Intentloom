@@ -125,7 +125,9 @@ export function validateModelAdapterConfig(value: unknown): ModelAdapterConfig {
     schemaVersion: 1,
     providerKind: kind,
     modelId: value.modelId,
-    ...(value.baseUrl !== undefined ? { baseUrl: value.baseUrl as string } : {}),
+    ...(value.baseUrl !== undefined
+      ? { baseUrl: value.baseUrl as string }
+      : {}),
     ...(temperature !== undefined ? { temperature } : {}),
     ...(maxTokens !== undefined ? { maxTokens } : {}),
   };
@@ -135,9 +137,7 @@ export function validateModelMessage(value: unknown): ModelMessage {
   if (!isObject(value)) {
     throw new Error("model message must be an object");
   }
-  if (
-    !["system", "user", "assistant", "tool"].includes(value.role as string)
-  ) {
+  if (!["system", "user", "assistant", "tool"].includes(value.role as string)) {
     throw new Error("invalid message role");
   }
   if (typeof value.content !== "string") {
