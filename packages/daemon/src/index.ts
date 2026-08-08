@@ -23,6 +23,7 @@ import {
   WORKFLOW_REPETITION_SUMMARY_METHOD,
   WORKFLOW_TRANSITION_INTERVALS_METHOD,
   SESSION_GET_METHOD,
+  APPROVED_APPLY_METHOD,
   PROTOCOL_VERSION,
   createDaemonInfoRequest,
   createDaemonInfoResponse,
@@ -80,6 +81,8 @@ import {
   type WorkflowTransitionIntervalsResultPayload,
   type SessionGetRequest,
   type SessionGetResultPayload,
+  type ApprovedApplyRpcRequest,
+  type ApprovedApplyExecutionResult,
 } from "../../protocol/src/index.js";
 
 const maxMessageBytes = 1024 * 1024;
@@ -138,6 +141,9 @@ export interface DaemonOptions {
   readonly sessionGet?: (
     request: SessionGetRequest,
   ) => Promise<Omit<SessionGetResultPayload, "protocolVersion">>;
+  readonly approvedApply?: (
+    request: ApprovedApplyRpcRequest,
+  ) => Promise<ApprovedApplyExecutionResult>;
 }
 
 export interface LocalDaemon {
@@ -368,6 +374,11 @@ function daemonCapabilities(
       SESSION_GET_METHOD,
       "session.get",
       options.sessionGet !== undefined,
+    ),
+    capability(
+      APPROVED_APPLY_METHOD,
+      "project.approvedApply",
+      options.approvedApply !== undefined,
     ),
   ].filter((entry): entry is DaemonCapability => entry !== undefined);
 }
@@ -687,6 +698,20 @@ export async function startLocalDaemon(
               await options.sessionGet(request),
             ),
           );
+        } else if (request.method === APPROVED_APPLY_METHOD) {
+          if (!options.approvedApply)
+            return failure(
+              socket,
+              -32601,
+              "unsupported method approvedApply",
+              "unsupported_capability",
+            );
+          const executionResult = await options.approvedApply(request);
+          response(socket, {
+            jsonrpc: "2.0",
+            id: request.id,
+            result: executionResult,
+          });
         }
       } catch (error) {
         if (

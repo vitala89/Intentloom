@@ -154,6 +154,61 @@
       "scope": "oxlint adoption - no-useless-constructor and no-shadow fixes",
       "reviewTrigger": "Extract extension validation from index.ts before the next behavior change touching this file.",
       "expires": "2026-09-30"
+    },
+    {
+      "path": "apps/desktop/src/App.tsx",
+      "rule": "existing-oversized-growth",
+      "baseLines": 675,
+      "headLines": 726,
+      "reason": "Approved Apply review modal integration adds state and modal component call in Desktop shell.",
+      "owner": "Desktop maintainers",
+      "scope": "Approved Apply Desktop Modal Integration",
+      "reviewTrigger": "Extract Desktop command modals before next feature.",
+      "expires": "2026-09-30"
+    },
+    {
+      "path": "packages/application/src/index.ts",
+      "rule": "existing-oversized-growth",
+      "baseLines": 7432,
+      "headLines": 7434,
+      "reason": "Approved Apply gate and execution engine re-exports added to application barrel file.",
+      "owner": "Application maintainers",
+      "scope": "Approved Apply Transaction Engine",
+      "reviewTrigger": "Decompose application index barrel before next feature.",
+      "expires": "2026-09-30"
+    },
+    {
+      "path": "packages/daemon/src/index.ts",
+      "rule": "existing-oversized-growth",
+      "baseLines": 1031,
+      "headLines": 1056,
+      "reason": "Approved Apply RPC method handler and capabilities added to daemon server.",
+      "owner": "Daemon maintainers",
+      "scope": "Approved Apply Daemon RPC Handler",
+      "reviewTrigger": "Decompose daemon request router before next RPC feature.",
+      "expires": "2026-09-30"
+    },
+    {
+      "path": "packages/protocol/src/index.ts",
+      "rule": "existing-oversized-growth",
+      "baseLines": 4424,
+      "headLines": 4468,
+      "reason": "Approved Apply protocol schemas and RPC request creators added to protocol barrel file.",
+      "owner": "Protocol maintainers",
+      "scope": "Approved Apply Protocol Schemas",
+      "reviewTrigger": "Decompose protocol index barrel into domain sub-barrels before next feature.",
+      "expires": "2026-09-30"
+    },
+    {
+      "path": "packages/validator/src/index.ts",
+      "rule": "existing-oversized-growth",
+      "baseLines": 874,
+      "headLines": 875,
+      "reason": "Approved Apply runtime validator re-exports added to validator barrel file.",
+      "owner": "Validator maintainers",
+      "scope": "Approved Apply Validator Schemas",
+      "reviewTrigger": "Decompose validator index barrel into domain sub-barrels before next feature.",
+      "expires": "2026-09-30"
     }
   ]
 }

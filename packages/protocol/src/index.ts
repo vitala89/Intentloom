@@ -15,9 +15,14 @@ import {
   WORKFLOW_REPETITION_SUMMARY_METHOD,
   WORKFLOW_TRANSITION_INTERVALS_METHOD,
   SESSION_GET_METHOD,
+  APPROVED_APPLY_METHOD,
 } from "./jsonrpc.js";
 import type { RequestId, JsonRpcRequest } from "./jsonrpc.js";
 import type { JsonRpcSuccess } from "./jsonrpc.js";
+import type {
+  ApprovedApplyRequest,
+  ApprovedApplyExecutionResult,
+} from "./approved-apply.js";
 
 import type { CapabilityClassification } from "./daemon.js";
 import type { DaemonCapability, DaemonLimits } from "./daemon.js";
@@ -38,6 +43,7 @@ export * from "./external-skill-import.js";
 export * from "./harness-adoption-gate.js";
 export * from "./extension-lifecycle.js";
 export * from "./knowledge-provider.js";
+export * from "./approved-apply.js";
 export const TIMELINE_DEFAULT_LIMIT = 50;
 export const TIMELINE_MAX_LIMIT = 500;
 export const TIMELINE_DEFAULT_TIMEOUT_MS = 5_000;
@@ -272,6 +278,17 @@ export type SessionGetRequest = JsonRpcRequest<
 >;
 export type SessionGetResponse = JsonRpcSuccess<SessionGetResultPayload>;
 
+export interface ApprovedApplyParams {
+  readonly protocolVersion: typeof PROTOCOL_VERSION;
+  readonly request: ApprovedApplyRequest;
+}
+export type ApprovedApplyRpcRequest = JsonRpcRequest<
+  typeof APPROVED_APPLY_METHOD,
+  ApprovedApplyParams
+>;
+export type ApprovedApplyRpcResponse =
+  JsonRpcSuccess<ApprovedApplyExecutionResult>;
+
 export type DaemonRequest =
   | DaemonInfoRequest
   | DoctorRequest
@@ -287,7 +304,8 @@ export type DaemonRequest =
   | ConformanceTrendSummaryRequest
   | WorkflowRepetitionSummaryRequest
   | WorkflowTransitionIntervalsRequest
-  | SessionGetRequest;
+  | SessionGetRequest
+  | ApprovedApplyRpcRequest;
 
 export type DaemonResponse =
   | DaemonInfoResponse
@@ -304,7 +322,8 @@ export type DaemonResponse =
   | ConformanceTrendSummaryResponse
   | WorkflowRepetitionSummaryResponse
   | WorkflowTransitionIntervalsResponse
-  | SessionGetResponse;
+  | SessionGetResponse
+  | ApprovedApplyRpcResponse;
 
 export class ProtocolValidationError extends Error {
   constructor(
@@ -627,6 +646,21 @@ export function createSessionGetRequest(
   };
 }
 
+export function createApprovedApplyRpcRequest(
+  id: RequestId,
+  request: ApprovedApplyRequest,
+): ApprovedApplyRpcRequest {
+  return {
+    jsonrpc: "2.0",
+    id,
+    method: APPROVED_APPLY_METHOD,
+    params: {
+      protocolVersion: PROTOCOL_VERSION,
+      request,
+    },
+  };
+}
+
 export function parseDoctorRequest(value: unknown): DoctorRequest {
   if (!isObject(value) || value.jsonrpc !== "2.0")
     throw new ProtocolValidationError(-32600, "jsonrpc must equal 2.0");
@@ -664,6 +698,7 @@ export function parseDaemonRequest(value: unknown): DaemonRequest {
     WORKFLOW_REPETITION_SUMMARY_METHOD,
     WORKFLOW_TRANSITION_INTERVALS_METHOD,
     SESSION_GET_METHOD,
+    APPROVED_APPLY_METHOD,
   ];
   if (typeof value.method !== "string" || !validMethods.includes(value.method))
     throw new ProtocolValidationError(-32601, "unsupported protocol method");
@@ -803,6 +838,15 @@ export function parseDaemonRequest(value: unknown): DaemonRequest {
       root: stringValue(value.params.root, "root"),
       sessionId: stringValue(value.params.sessionId, "sessionId"),
     });
+  }
+  if (value.method === APPROVED_APPLY_METHOD) {
+    if (!isObject(value.params.request)) {
+      throw new ProtocolValidationError(-32602, "request must be an object");
+    }
+    return createApprovedApplyRpcRequest(
+      id,
+      value.params.request as unknown as ApprovedApplyRequest,
+    );
   }
   throw new ProtocolValidationError(-32601, "unsupported protocol method");
 }
