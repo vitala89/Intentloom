@@ -15,7 +15,10 @@ function isObject(value: unknown): value is Record<string, unknown> {
 }
 
 function stringArray(value: unknown, field: string): readonly string[] {
-  if (!Array.isArray(value) || !value.every((item) => typeof item === "string")) {
+  if (
+    !Array.isArray(value) ||
+    !value.every((item) => typeof item === "string")
+  ) {
     throw new Error(`${field} must be an array of strings`);
   }
   return value;
@@ -186,7 +189,8 @@ export function validateModelTurnRequest(value: unknown): ModelTurnRequest {
   if (typeof value.sessionId !== "string" || !value.sessionId.trim()) {
     throw new Error("sessionId must be a non-empty string");
   }
-  if (!Array.isArray(value.messages)) throw new Error("messages must be an array");
+  if (!Array.isArray(value.messages))
+    throw new Error("messages must be an array");
   if (value.tools !== undefined && !Array.isArray(value.tools)) {
     throw new Error("tools must be an array if provided");
   }
@@ -215,8 +219,13 @@ export function validateModelTurnResult(value: unknown): ModelTurnResult {
   if (typeof value.responseText !== "string") {
     throw new Error("responseText must be a string");
   }
-  if (!Array.isArray(value.toolCalls)) throw new Error("toolCalls must be an array");
-  if (!["stop", "tool_call", "length", "error"].includes(value.stopReason as string)) {
+  if (!Array.isArray(value.toolCalls))
+    throw new Error("toolCalls must be an array");
+  if (
+    !["stop", "tool_call", "length", "error"].includes(
+      value.stopReason as string,
+    )
+  ) {
     throw new Error("invalid stopReason");
   }
   if (!isObject(value.usage)) throw new Error("usage must be an object");
