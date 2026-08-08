@@ -1,10 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { DeterministicTestModelAdapter } from "@intentloom/application/model-adapter";
-import type { ModelTurnRequest } from "@intentloom/protocol/model-adapter";
+import { DeterministicTestModelAdapter } from "../packages/application/src/model-adapter.js";
+import type { ModelTurnRequest } from "../packages/protocol/src/model-adapter.js";
 import {
   validateModelAdapterConfig,
   validateModelTurnRequest,
-} from "@intentloom/validator/model-adapter";
+} from "../packages/validator/src/model-adapter.js";
 
 describe("DeterministicTestModelAdapter", () => {
   it("provides valid deterministic model capabilities", () => {
