@@ -13,6 +13,7 @@
     "yaml": "^2.9.0"
   },
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./src/index.ts",
+    "./model-adapter": "./src/model-adapter.ts"
   }
 }
