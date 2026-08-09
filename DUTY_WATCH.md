@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Evidence-Backed Engineering Assessments roadmap (Phases A1-A22: Envelope Protocol, Evidence References, Finding Projections, Architecture Slice, Technical Debt Map, Canonical Report Model, Application Operation, Quality Packs, Checker Adapters, Graph Providers, Performance Baseline Evidence, Monorepo/CI Assessment, AI Engineering Controls, Target-State Remediation Roadmap, Agent Workspace Conversational Explanation, Desktop/UI ViewModel Adapter, Historical Comparison, Incremental Assessment, Remediation Planning Integration, Report Renderers, and Stabilization) fully implemented, stabilized, and verified.**
+Status: **Engineering Quality Packs Phase Q3 (Legacy Baseline and Ratchet Engine) implemented, verified, and committed on the Q1/Q2 branch.**
 
-Active branch: `main`
+Active branch: `feat/engineering-quality-contracts-and-metrics`
 
-Current objective: Evidence-Backed Engineering Assessments roadmap complete. Proceed to next scheduled roadmap objective.
+Current objective: Review the Q3 commit and prepare the merge request for the Q1–Q3 quality increment.
 
-Next first action: Review next prioritized engineering roadmap task in PROJECT_STATE.md and DUTY_WATCH.md.
+Next first action: Review the current Q3 commit, then open the merge request when external publication is authorized.
 
 Known open items, in the order they should be handled:
 
@@ -95,6 +95,28 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-09, Engineering Quality Packs Phase Q3 Legacy Baseline and Ratchet Engine implemented and verified
+
+- **Status:** complete.
+- **Branch:** `feat/engineering-quality-contracts-and-metrics`.
+- **Commits:** current local commit (`feat(quality): add legacy baseline ratchet engine`).
+- **Pull request:** not opened.
+- **Objective:** Implement Phase Q3 of `ENGINEERING_QUALITY_PACKS_MARKETPLACE_AND_GRAPH_PLAN.md` on top of the Q1/Q2 quality-contract and metrics baseline.
+- **Completed:**
+  - Added explicit baseline preview and approval contracts and pure application operations; preview output cannot become an approved baseline without approval evidence.
+  - Added non-growing ratchet comparison by stable rule/path identity, reporting new violations, growth, retained legacy findings, and resolved debt.
+  - Added stale content-digest and expired review-window detection, plus a read-only baseline reduction result that removes only resolved entries.
+  - Kept persistence, CLI routing, checker execution, network access, and automatic mutation out of scope.
+  - Added `tests/engineering-quality-baseline.test.ts` with 7 Q3 regression tests.
+- **Not completed:** Pull request, merge, CLI persistence, and automatic baseline writes remain for the next workflow step.
+- **Files or packages changed:** `@intentloom/protocol`, `@intentloom/validator`, `@intentloom/application`, `tests/engineering-quality-baseline.test.ts`, `implementation_plan.md`, and `PROJECT_STATE.md`/`DUTY_WATCH.md`.
+- **Validation:** `pnpm test` passed outside the restricted sandbox: 156 files, 1124 passed, 3 skipped, 0 failed. The initial sandbox run failed 22 pre-existing daemon Unix-socket tests with `EPERM`; the unchanged command was rerun with explicit escalation and passed. `pnpm typecheck`, `pnpm lint`, `pnpm format:check`, and `git diff --check` passed. Lint retains the repository's documented pre-existing warnings for array mutation and Vitest mock type parameters.
+- **Decisions and assumptions:** The existing Q1 baseline schema URN remains compatible; Q3 metadata is optional for legacy documents. Ratchet status fails only on new or growing violations, while stale and expired entries set `requiresReview` and remain visible. Q3 operations are pure and do not persist or approve changes implicitly.
+- **Risks or compatibility impact:** Additive protocol and package exports only. Existing baseline documents without Q3 metadata remain valid. No dependency, network, process, or project-file mutation was introduced.
+- **Open issues or blockers:** The Q1/Q2 branch is not merged into `main`; pull request publication and merge remain pending authorization. The repository fsmonitor reports a non-fatal `.git/fsmonitor--daemon.ipc` query warning during Git commands.
+- **Next first action:** Review the current Q3 commit and open the merge request without agent/tool attribution when authorized.
+- **Evidence:** Full test rerun outside sandbox; requested typecheck, lint, format check; `git diff --check`; file-budget review showing all new production files below 250 lines.
 
 ### 2026-08-09, Engineering Quality Packs roadmap Phase Q1 (Versioned Quality Contracts) & Phase Q2 (Artifact Classifier & File Metrics) implemented & verified
 
