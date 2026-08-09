@@ -9,4 +9,5 @@ export * from "./decomposition-plan.js";
 export * from "./pack.js";
 export * from "./checker-report.js";
 export * from "./checker-report-input.js";
+export * from "./checker-execution.js";
 export * from "./pack-entry.js";

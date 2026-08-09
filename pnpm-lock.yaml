@@ -97,6 +97,9 @@ importers:
       '@intentloom/evidence-analysis':
         specifier: workspace:*
         version: link:../evidence-analysis
+      '@intentloom/evidence-checker':
+        specifier: workspace:*
+        version: link:../evidence-checker
       '@intentloom/evidence-git':
         specifier: workspace:*
         version: link:../evidence-git
@@ -138,6 +141,12 @@ importers:
         version: link:../protocol
 
   packages/evidence-analysis:
+    dependencies:
+      '@intentloom/protocol':
+        specifier: workspace:*
+        version: link:../protocol
+
+  packages/evidence-checker:
     dependencies:
       '@intentloom/protocol':
         specifier: workspace:*

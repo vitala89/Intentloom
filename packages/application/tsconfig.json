@@ -6,6 +6,7 @@
     { "path": "../adapters" },
     { "path": "../evidence-analysis" },
     { "path": "../evidence-git" },
+    { "path": "../evidence-checker" },
     { "path": "../protocol" },
     { "path": "../validator" }
   ],

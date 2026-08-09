@@ -10,6 +10,7 @@
     "@intentloom/adapters": "workspace:*",
     "@intentloom/core": "workspace:*",
     "@intentloom/evidence-analysis": "workspace:*",
+    "@intentloom/evidence-checker": "workspace:*",
     "@intentloom/evidence-git": "workspace:*",
     "@intentloom/protocol": "workspace:*",
     "@intentloom/validator": "workspace:*",
