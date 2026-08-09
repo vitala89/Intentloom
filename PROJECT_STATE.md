@@ -82,13 +82,15 @@ and real consumers justify them.
   read-only responsibility analysis, dependency and public API evidence,
   whole-responsibility decomposition options, migration steps, test
   preservation evidence, and the Windows Node 22 preparation-hook timeout
-  remediation. Phase Q6 is now in progress on
-  `feat/engineering-quality-q6-first-party-quality-packs`: the implementation
-  plan, canonical pack contracts, untrusted-data validator, pure deterministic
-  resolver, and data-only first-party pack catalog are implemented locally
-  with focused tests passing. The increment is committed as `c148355` plus the
-  durable handoff commit `19ba234` and published in draft PR #259; all remote
-  CI checks now pass and review/merge remain pending.
+  remediation. Phase Q6 is merged into `main` through PR #259 (`f18d3d4`):
+  canonical pack contracts, untrusted-data validation, pure deterministic
+  resolution, and data-only first-party pack catalog are complete. Phase Q7
+  Checker Report Ingestion is now in progress on
+  `feat/engineering-quality-q7-checker-report-ingestion`: its implementation
+  plan, protocol contracts, validator-boundary checks, pure ESLint/TypeScript/
+  SARIF/Clippy normalization, bounded redaction, deterministic deduplication,
+  and focused tests are implemented locally; staged/full verification and the
+  draft PR handoff remain pending.
 - Duty Watch governance contracts (Phase 1), proposal CLI `intentloom adopt --plan` (Phase 2), transactional apply & rollback engine `intentloom adopt --apply` (Phase 3), pack update 3-way migration `intentloom update` (Phase 4), conformance & security profiles `intentloom conformance` (Phase 5), provider synchronization `intentloom sync` / `intentloom diff` (Phase 6), Memory & Security Candidates M1–M4, S1–S5, Daemon Protocol Contracts for Second Clients, Read-Only Interactive Surfaces TUI, Agent Workspace Discuss & Inspect Modes, Agent Workspace Plan, Review & Apply Modes, Neutron Autonomous Subagent Orchestration & Local Workspace Sync Engine, and Evidence-Backed Engineering Assessments roadmap (Phases A1–A22: Envelope Protocol, Evidence References, Finding Projections, Architecture Slice, Technical Debt Map, Canonical Report Model, Application Operation, Quality Packs, Checker Adapters, Graph Providers, Performance Baseline Evidence, Monorepo/CI Assessment, AI Engineering Controls, Target-State Remediation Roadmap, Agent Workspace Conversational Explanation, Desktop/UI ViewModel Adapter, Historical Comparison, Incremental Assessment, Remediation Planning Integration, Report Renderers, and Public Contract Stabilization) are merged into `main`.
 - v1.0 compatibility phases 1–4 are merged into `main`: ADR-0043 and contract tests, the v1 migration/protocol guide and upgrade tests, client-surface equivalence evidence and tests, and the security/supply-chain audit and tests.
 - The bounded provider-evidence cache increment is merged into `main` through
