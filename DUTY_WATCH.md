@@ -96,6 +96,25 @@ entry directly below this section.
 
 ## Watch entries
 
+### 2026-08-09, Engineering Quality Packs Q7 CI compatibility hardening
+
+- **Status:** complete; PR #260 remains open for review/merge.
+- **Branch:** `feat/engineering-quality-q7-checker-report-ingestion`.
+- **Commit:** `2383361` (`fix(ci): extend packed inspect test timeout`).
+- **Pull request:** [#260](https://github.com/vitala89/Intentloom/pull/260).
+- **Root cause:** The previous Windows Node 22 Compatibility run
+  `31326972252` timed out `tests/adapter-packed-process.test.ts` test
+  `inspects an installed project through the packed CLI` at Vitest's default
+  5-second limit. The packed CLI setup already takes longer on Windows, and
+  neighboring packed process tests use explicit 15–20 second limits.
+- **Completed:** Added the same explicit `20_000` millisecond test timeout; no
+  workflow, production, dependency, or roadmap changes were made.
+- **Validation:** Focused packed-process suite passes (13 passed, 1 skipped).
+  Full host `pnpm verify` and pre-push verification pass (160 test files,
+  1152 passed, 3 skipped). The complete PR check matrix for `2383361` passes,
+  including Windows Node 22 Compatibility.
+- **Next action:** Review PR #260 and merge through the protected workflow.
+
 ### 2026-08-09, Engineering Quality Packs Phase Q7 checker report ingestion
 
 - **Status:** complete; draft PR review and merge remain.
