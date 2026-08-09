@@ -19,7 +19,9 @@ const REVIEW_TRIGGERS = [
 export function validateEngineeringQualityBaseline(
   value: unknown,
 ): EngineeringQualityBaseline {
-  if (!isObject(value)) throw new Error("quality baseline must be an object");
+  if (!isObject(value)) {
+    throw new Error("quality baseline must be an object");
+  }
   if (value.schemaVersion !== QUALITY_BASELINE_SCHEMA_URN) {
     throw new Error(
       `baseline.schemaVersion must equal ${QUALITY_BASELINE_SCHEMA_URN}`,
@@ -28,8 +30,9 @@ export function validateEngineeringQualityBaseline(
   if (typeof value.projectId !== "string" || !value.projectId.trim()) {
     throw new Error("baseline.projectId must be a non-empty string");
   }
-  if (!Array.isArray(value.items))
+  if (!Array.isArray(value.items)) {
     throw new Error("baseline.items must be an array");
+  }
   const items = value.items.map(validateEngineeringQualityBaselineItem);
   const policyId =
     typeof value.policyId === "string" ? value.policyId : undefined;

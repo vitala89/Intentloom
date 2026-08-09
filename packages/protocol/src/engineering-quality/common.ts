@@ -15,7 +15,6 @@ export const QUALITY_BASELINE_RATCHET_SCHEMA_URN =
 
 export const QUALITY_BASELINE_REDUCTION_SCHEMA_URN =
   "urn:intentloom:schema:engineering-quality-baseline-reduction:1" as const;
-
 export type QualityRuleSeverity = "error" | "warning" | "info";
 
 export type QualityThresholdLevel =
@@ -46,7 +45,6 @@ export type QualityFindingState =
   | "exception-expired"
   | "unsupported-measurement"
   | "classification-required";
-
 export type QualityBaselineReviewTrigger =
   "manual" | "expiry" | "artifact-touch" | "policy-change";
 
