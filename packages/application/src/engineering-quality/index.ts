@@ -7,3 +7,4 @@ export * from "./metrics.js";
 export * from "./plan-growth.js";
 export * from "./plan-diff.js";
 export * from "./pull-request-evidence.js";
+export * from "./decomposition-planner.js";

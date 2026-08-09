@@ -71,16 +71,21 @@ and real consumers justify them.
   connection, evidence, MCP, interactive surfaces, Agent Workspace, Neutron,
   persistent memory, security analysis, engineering process intelligence,
   public monorepo evolution, controlled agent learning, and portable Duty Watch adoption.
-- Engineering Quality Packs phases Q1–Q3 are implemented, verified, and merged
-  into `main` through PR #256 (`7fd67e1`):
+- Engineering Quality Packs phases Q1–Q4 are implemented, verified, and merged
+  into `main` through PR #257 (`1271ee1`):
   versioned quality contracts, deterministic artifact metrics, reviewed
   legacy-baseline preview and approval, non-growing ratchet comparison,
-  stale/expired review flags, and baseline reduction. Phase Q4 is now in
-  progress on `feat/engineering-quality-q4-task-pr-integration`: task and
-  pull-request integration with projected-growth evidence, affected-path policy
-  resolution, acceptance criteria, final diff comparison, and PR evidence
-  rendering. The Q4 implementation is published in draft PR #257 and awaits
-  review and merge.
+  stale/expired review flags, baseline reduction, task and pull-request
+  integration with projected-growth evidence, affected-path policy resolution,
+  acceptance criteria, final diff comparison, and PR evidence rendering. Phase
+  Q5 is implemented on `feat/engineering-quality-q5-decomposition-planner`:
+  read-only responsibility analysis, dependency and public API evidence,
+  whole-responsibility decomposition options, migration steps, and test
+  preservation evidence. The Q5 increment is published in draft PR #258. A
+  focused Windows Node 22 CI timeout fix is merged into the branch after the
+  initial remote run exceeded Vitest's 30-second preparation-hook limit. The
+  push and pull-request Compatibility runs passed; review and merge remain
+  pending.
 - Duty Watch governance contracts (Phase 1), proposal CLI `intentloom adopt --plan` (Phase 2), transactional apply & rollback engine `intentloom adopt --apply` (Phase 3), pack update 3-way migration `intentloom update` (Phase 4), conformance & security profiles `intentloom conformance` (Phase 5), provider synchronization `intentloom sync` / `intentloom diff` (Phase 6), Memory & Security Candidates M1–M4, S1–S5, Daemon Protocol Contracts for Second Clients, Read-Only Interactive Surfaces TUI, Agent Workspace Discuss & Inspect Modes, Agent Workspace Plan, Review & Apply Modes, Neutron Autonomous Subagent Orchestration & Local Workspace Sync Engine, and Evidence-Backed Engineering Assessments roadmap (Phases A1–A22: Envelope Protocol, Evidence References, Finding Projections, Architecture Slice, Technical Debt Map, Canonical Report Model, Application Operation, Quality Packs, Checker Adapters, Graph Providers, Performance Baseline Evidence, Monorepo/CI Assessment, AI Engineering Controls, Target-State Remediation Roadmap, Agent Workspace Conversational Explanation, Desktop/UI ViewModel Adapter, Historical Comparison, Incremental Assessment, Remediation Planning Integration, Report Renderers, and Public Contract Stabilization) are merged into `main`.
 - v1.0 compatibility phases 1–4 are merged into `main`: ADR-0043 and contract tests, the v1 migration/protocol guide and upgrade tests, client-surface equivalence evidence and tests, and the security/supply-chain audit and tests.
 - The bounded provider-evidence cache increment is merged into `main` through

@@ -67,7 +67,7 @@ beforeAll(async () => {
     { cwd: runtime, stdio: "pipe", shell: windows },
   );
   packedCliEntry = resolvePackedCliEntry(runtime);
-}, 30_000);
+}, 120_000);
 
 afterAll(async () => {
   await rm(packRoot, { recursive: true, force: true });

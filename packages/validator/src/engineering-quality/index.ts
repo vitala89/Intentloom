@@ -5,3 +5,4 @@ export * from "./evidence-finding.js";
 export * from "./policy.js";
 export * from "./task-diff.js";
 export * from "./task-plan.js";
+export * from "./decomposition-plan.js";
