@@ -46,7 +46,7 @@ export * from "./knowledge-provider.js";
 export * from "./approved-apply.js";
 export * from "./model-adapter.js";
 export * from "./engineering-assessment.js";
-export * from "./engineering-quality.js";
+export * from "./engineering-quality-entry.js";
 export const TIMELINE_DEFAULT_LIMIT = 50;
 export const TIMELINE_MAX_LIMIT = 500;
 export const TIMELINE_DEFAULT_TIMEOUT_MS = 5_000;

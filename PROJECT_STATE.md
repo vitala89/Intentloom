@@ -85,17 +85,21 @@ and real consumers justify them.
   remediation. Phase Q6 is merged into `main` through PR #259 (`f18d3d4`):
   canonical pack contracts, untrusted-data validation, pure deterministic
   resolution, and data-only first-party pack catalog are complete. Phase Q7
-  Checker Report Ingestion is now in progress on
-  `feat/engineering-quality-q7-checker-report-ingestion`: its implementation
-  plan, protocol contracts, validator-boundary checks, pure ESLint/TypeScript/
-  SARIF/Clippy normalization, bounded redaction, deterministic deduplication,
-  and focused tests are implemented and merged through PR #260 (`991a44b`).
-  Phase Q8 Bounded Checker Execution is now in progress on
-  `feat/engineering-quality-q8-bounded-checker-execution`; its implementation
-  plan defines the first project-pinned ESLint execution slice with explicit
-  command, environment, timeout, cancellation, output, and truthful-failure
-  controls. The implementation is published in draft PR #261; review, remote
-  CI, and merge remain pending.
+  Checker Report Ingestion is merged through PR #260 (`991a44b`): its
+  implementation plan, protocol contracts, validator-boundary checks, pure
+  ESLint/TypeScript/SARIF/Clippy normalization, bounded redaction,
+  deterministic deduplication, and focused tests are complete. Phase Q8
+  Bounded Checker Execution is merged through PR #261 (`330bcd4`): its
+  project-pinned ESLint execution slice has explicit command, environment,
+  timeout, cancellation, output, and truthful-failure controls. Phase Q9
+  External Pack Import is now in progress on
+  `feat/engineering-quality-q9-external-pack-import`; its implementation plan
+  defines caller-supplied data-only import, exact source pinning and digest
+  verification, provenance/license/compatibility validation, deterministic
+  normalization, and separate review/pin/activation decisions. Fetchers,
+  package managers, VCS clients, documentation crawlers, persistence, and
+  automatic activation remain out of scope. The implementation is published
+  in draft PR #262; remote CI, review, and merge remain pending.
 - Duty Watch governance contracts (Phase 1), proposal CLI `intentloom adopt --plan` (Phase 2), transactional apply & rollback engine `intentloom adopt --apply` (Phase 3), pack update 3-way migration `intentloom update` (Phase 4), conformance & security profiles `intentloom conformance` (Phase 5), provider synchronization `intentloom sync` / `intentloom diff` (Phase 6), Memory & Security Candidates M1–M4, S1–S5, Daemon Protocol Contracts for Second Clients, Read-Only Interactive Surfaces TUI, Agent Workspace Discuss & Inspect Modes, Agent Workspace Plan, Review & Apply Modes, Neutron Autonomous Subagent Orchestration & Local Workspace Sync Engine, and Evidence-Backed Engineering Assessments roadmap (Phases A1–A22: Envelope Protocol, Evidence References, Finding Projections, Architecture Slice, Technical Debt Map, Canonical Report Model, Application Operation, Quality Packs, Checker Adapters, Graph Providers, Performance Baseline Evidence, Monorepo/CI Assessment, AI Engineering Controls, Target-State Remediation Roadmap, Agent Workspace Conversational Explanation, Desktop/UI ViewModel Adapter, Historical Comparison, Incremental Assessment, Remediation Planning Integration, Report Renderers, and Public Contract Stabilization) are merged into `main`.
 - v1.0 compatibility phases 1–4 are merged into `main`: ADR-0043 and contract tests, the v1 migration/protocol guide and upgrade tests, client-surface equivalence evidence and tests, and the security/supply-chain audit and tests.
 - The bounded provider-evidence cache increment is merged into `main` through

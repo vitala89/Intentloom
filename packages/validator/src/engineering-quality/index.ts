@@ -10,4 +10,5 @@ export * from "./pack.js";
 export * from "./checker-report.js";
 export * from "./checker-report-input.js";
 export * from "./checker-execution.js";
+export * from "./external-pack-import.js";
 export * from "./pack-entry.js";
