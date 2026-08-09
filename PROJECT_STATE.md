@@ -100,11 +100,14 @@ and real consumers justify them.
   implementation plan, protocol schemas, validator boundary, pure application operations
   (search, entry inspection, SHA-256 quarantine digest verification, pack lock comparison,
   update diffing, revocation fail-closed enforcement), first-party catalog metadata, and
-  test suite are complete. Phase Q11 Graph-Provider Contracts is implemented on branch
-  `feat/engineering-quality-q11-graph-provider-contracts`: its implementation plan,
-  versioned graph snapshot contracts, validator boundaries, TypeScript/workspace and
-  Nx graph providers, architecture rule validation across provider fixtures, affected scope
-  resolution, and test suite are complete and submitted as PR #264.
+  test suite are complete. Phase Q11 Graph-Provider Contracts is merged through PR #264 (`9f8575d`):
+  its implementation plan, versioned graph snapshot contracts, validator boundaries, TypeScript/workspace
+  and Nx graph providers, architecture rule validation across provider fixtures, affected scope
+  resolution, and test suite are complete. Phase Q12 Nx Graph and Boundary Integration is implemented on branch
+  `feat/engineering-quality-q12-nx-graph-boundary-integration`: its implementation plan,
+  versioned Nx metadata and boundary schemas, validator boundaries, read-only Nx workspace detection,
+  multi-mode snapshot acquisition, Nx module boundary tag enforcement with dependency cause tracking,
+  transitive affected project resolution, and test suite are complete and submitted as PR #265.
 - Duty Watch governance contracts (Phase 1), proposal CLI `intentloom adopt --plan` (Phase 2), transactional apply & rollback engine `intentloom adopt --apply` (Phase 3), pack update 3-way migration `intentloom update` (Phase 4), conformance & security profiles `intentloom conformance` (Phase 5), provider synchronization `intentloom sync` / `intentloom diff` (Phase 6), Memory & Security Candidates M1–M4, S1–S5, Daemon Protocol Contracts for Second Clients, Read-Only Interactive Surfaces TUI, Agent Workspace Discuss & Inspect Modes, Agent Workspace Plan, Review & Apply Modes, Neutron Autonomous Subagent Orchestration & Local Workspace Sync Engine, and Evidence-Backed Engineering Assessments roadmap (Phases A1–A22: Envelope Protocol, Evidence References, Finding Projections, Architecture Slice, Technical Debt Map, Canonical Report Model, Application Operation, Quality Packs, Checker Adapters, Graph Providers, Performance Baseline Evidence, Monorepo/CI Assessment, AI Engineering Controls, Target-State Remediation Roadmap, Agent Workspace Conversational Explanation, Desktop/UI ViewModel Adapter, Historical Comparison, Incremental Assessment, Remediation Planning Integration, Report Renderers, and Public Contract Stabilization) are merged into `main`.
 - v1.0 compatibility phases 1–4 are merged into `main`: ADR-0043 and contract tests, the v1 migration/protocol guide and upgrade tests, client-surface equivalence evidence and tests, and the security/supply-chain audit and tests.
 - The bounded provider-evidence cache increment is merged into `main` through
