@@ -873,3 +873,6 @@ export * from "./extension-inspection.js";
 export * from "./extension-resolution.js";
 export * from "./knowledge-provider.js";
 export * from "./approved-apply.js";
+export * from "./model-adapter.js";
+export * from "./engineering-assessment.js";
+export * from "./engineering-quality.js";
