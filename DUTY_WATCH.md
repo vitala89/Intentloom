@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Engineering Quality Packs Phases Q3–Q6 are merged in PRs #256–#259; Phase Q7 Checker Report Ingestion is published in PR #260 with local and remote verification green.**
+Status: **Engineering Quality Packs Phases Q3–Q7 are merged in PRs #256–#260; Phase Q8 Bounded Checker Execution is implemented and published in draft PR #261, with remote CI and review pending.**
 
-Active branch: `feat/engineering-quality-q7-checker-report-ingestion`
+Active branch: `feat/engineering-quality-q8-bounded-checker-execution`
 
-Current objective: Obtain review on the verified Q7 checker report ingestion increment and merge it through the protected workflow.
+Current objective: Publish the verified Q8 bounded, project-pinned ESLint execution slice for review without dependency installation, hidden network, mutation, or secret inheritance.
 
-Next first action: Monitor PR #260 checks and review feedback; address only actionable findings, then merge through the protected workflow.
+Next first action: Monitor PR #261 checks and review feedback; address only actionable findings, then merge through the protected workflow.
 
 Known open items, in the order they should be handled:
 
@@ -95,6 +95,20 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-09, Engineering Quality Packs Phase Q8 bounded checker execution
+
+- **Status:** partial; implementation and local verification complete, draft PR review, remote CI, and merge remain.
+- **Branch:** `feat/engineering-quality-q8-bounded-checker-execution`, based on merged Q7 commit `991a44b`.
+- **Pull request:** draft [#261](https://github.com/vitala89/Intentloom/pull/261).
+- **Implementation plan:** `implementation_plan_q8.md`.
+- **Objective:** Execute one project-pinned ESLint checker through a bounded, provider-neutral adapter and feed successful bounded JSON output into Q7 ingestion.
+- **Decisions:** Canonical contracts belong in `packages/protocol`; untrusted request validation belongs in `packages/validator`; pure candidate resolution and command preview belong in `packages/application`; process effects belong behind the new `@intentloom/evidence-checker` adapter and injected runner seam. Generic shell, arbitrary commands, dependency installation, external pack import, and new CLI/MCP surfaces remain deferred.
+- **Triage:** 9/10; frontier/highest effort recommendation, security-focused review, and full `pnpm verify` required. The dedicated security-review skill is unavailable in this checkout, so the review will use the repository threat-model and execution-control contracts directly.
+- **Completed:** Confirmed PR #260 is merged with all checks successful; updated `origin/main`; created the Q8 branch; recorded `implementation_plan_q8.md`; added protocol execution contracts, validator-boundary checks, pure application request/preview mapping, project-local ESLint discovery, and a shell-free bounded process adapter. Successful JSON is normalized through Q7 ingestion; non-zero exits, malformed output, timeout, cancellation, output overflow, unsafe paths, and secret environment names remain explicit failures.
+- **Validation:** Full host `pnpm verify` passed: 162 test files, 1163 passed, 3 skipped; typecheck, lint, format check, build, and `git diff --check` passed. Focused Q8 tests pass (11 tests across 2 files); staged checks and staged diff check passed. New hand-written production files remain below 250 lines; the largest is 195 lines. Existing lint warnings remain unchanged. Restricted sandbox Unix-domain socket limitation remains documented from prior phases.
+- **Not completed:** Review, remote CI, and merge.
+- **Next action:** Monitor PR #261 checks and review feedback, address actionable findings, and merge through the protected workflow.
 
 ### 2026-08-09, Engineering Quality Packs Q7 CI compatibility hardening
 

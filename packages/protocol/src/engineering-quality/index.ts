@@ -6,3 +6,4 @@ export * from "./task-integration.js";
 export * from "./decomposition.js";
 export * from "./packs.js";
 export * from "./checker-report.js";
+export * from "./checker-execution.js";

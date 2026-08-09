@@ -16,6 +16,7 @@ const packageFiles = [
   "packages/protocol/package.json",
   "packages/daemon/package.json",
   "packages/evidence-git/package.json",
+  "packages/evidence-checker/package.json",
   "packages/evidence-provider/package.json",
   "packages/evidence-analysis/package.json",
   "packages/mcp-server/package.json",
