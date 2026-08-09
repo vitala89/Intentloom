@@ -15,6 +15,15 @@ export const QUALITY_BASELINE_RATCHET_SCHEMA_URN =
 
 export const QUALITY_BASELINE_REDUCTION_SCHEMA_URN =
   "urn:intentloom:schema:engineering-quality-baseline-reduction:1" as const;
+
+export const QUALITY_TASK_PLAN_SCHEMA_URN =
+  "urn:intentloom:schema:engineering-quality-task-plan:1" as const;
+
+export const QUALITY_TASK_DIFF_SCHEMA_URN =
+  "urn:intentloom:schema:engineering-quality-task-diff:1" as const;
+
+export const QUALITY_PULL_REQUEST_EVIDENCE_SCHEMA_URN =
+  "urn:intentloom:schema:engineering-quality-pull-request-evidence:1" as const;
 export type QualityRuleSeverity = "error" | "warning" | "info";
 
 export type QualityThresholdLevel =
@@ -55,3 +64,31 @@ export type QualityBaselineRatchetStatus = "passed" | "failed";
 
 export type QualityBaselineRatchetIssueKind =
   "new-violation" | "growth" | "stale" | "expired" | "resolved";
+
+export type QualityProjectionConfidence = "low" | "medium" | "high";
+
+export type QualityTaskPlanStatus = "accepted" | "review-required" | "conflict";
+
+export type QualityTaskProjectionDisposition =
+  | "within-policy"
+  | "likely-review-threshold-crossing"
+  | "likely-hard-limit-crossing"
+  | "unsupported";
+
+export type QualityTaskConflictKind =
+  | "hard-limit-crossing"
+  | "policy-unresolved"
+  | "missing-acceptance-criteria"
+  | "projection-drift"
+  | "unexpected-path"
+  | "missing-final-evidence";
+
+export type QualityTaskDiffStatus = "passed" | "conflict";
+
+export type QualityTaskChangeStatus =
+  | "within-plan"
+  | "under-projected"
+  | "over-projected"
+  | "hard-limit-exceeded"
+  | "unexpected-path"
+  | "missing-final-evidence";

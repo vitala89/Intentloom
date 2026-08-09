@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Engineering Quality Packs Phase Q3 (Legacy Baseline and Ratchet Engine) implemented, verified, committed, and published in draft PR #256.**
+Status: **Engineering Quality Packs Phase Q3 merged in PR #256; Phase Q4 Task and Pull-Request Integration is implemented, verified, and committed.**
 
-Active branch: `feat/engineering-quality-contracts-and-metrics`
+Active branch: `feat/engineering-quality-q4-task-pr-integration`
 
-Current objective: Obtain review and merge for PR #256, then begin Engineering Quality Packs Phase Q4.
+Current objective: Publish the verified Q4 task/PR integration increment for review.
 
-Next first action: Review PR #256; after merge, start Q4 on a branch based on updated `main`.
+Next first action: Push the Q4 branch and create its dedicated PR.
 
 Known open items, in the order they should be handled:
 
@@ -95,6 +95,18 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-09, Engineering Quality Packs Phase Q4 Task and Pull-Request Integration implemented and verified
+
+- **Status:** complete.
+- **Branch:** `feat/engineering-quality-q4-task-pr-integration`, based on merged Q3 commit `7fd67e1`.
+- **Commits:** current local commit (`feat(quality): integrate task and pull-request evidence`).
+- **Pull request:** not opened yet.
+- **Objective:** Implement Q4 from `ENGINEERING_QUALITY_PACKS_MARKETPLACE_AND_GRAPH_PLAN.md` without mixing it into merged PR #256.
+- **Completed:** Added versioned protocol contracts, split validators, deterministic affected-path policy resolution, projected-growth plan conflicts, final evidence comparison, and Markdown PR evidence rendering. Added `implementation_plan_q4.md` and focused tests.
+- **Validation:** Full `pnpm verify` passed: 157 test files, 1131 passed, 3 skipped; typecheck, lint, format, build, and diff check passed. Q3/Q4 focused tests pass 20/20. All new production files remain below 250 lines.
+- **Not completed:** Q4 PR publication and merge remain for the next workflow step. The repository fsmonitor reports a non-fatal `.git/fsmonitor--daemon.ipc` query warning during Git commands.
+- **Next first action:** Push the Q4 branch and create its dedicated PR.
 
 ### 2026-08-09, Engineering Quality Packs Phase Q3 Legacy Baseline and Ratchet Engine implemented and verified
 

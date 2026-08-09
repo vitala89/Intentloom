@@ -4,3 +4,6 @@ export * from "./baseline-ratchet.js";
 export * from "./baseline-reduction.js";
 export * from "./classifier.js";
 export * from "./metrics.js";
+export * from "./plan-growth.js";
+export * from "./plan-diff.js";
+export * from "./pull-request-evidence.js";
