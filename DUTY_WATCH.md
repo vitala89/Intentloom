@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Engineering Quality Packs Phase Q3 merged in PR #256; Phase Q4 Task and Pull-Request Integration is published in draft PR #257.**
+Status: **Engineering Quality Packs Phases Q3–Q4 are merged in PRs #256 and #257; Phase Q5 Read-only Decomposition Planner is implemented on the active branch.**
 
-Active branch: `feat/engineering-quality-q4-task-pr-integration`
+Active branch: `feat/engineering-quality-q5-decomposition-planner`
 
-Current objective: Review and merge the verified Q4 task/PR integration increment.
+Current objective: Publish the verified Q5 decomposition planner increment for review.
 
-Next first action: Review draft PR [#257](https://github.com/vitala89/Intentloom/pull/257), address actionable feedback, and merge it through the protected workflow.
+Next first action: Run staged checks, commit the Q5 increment, push the branch, and create its dedicated draft PR.
 
 Known open items, in the order they should be handled:
 
@@ -95,6 +95,28 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-09, Engineering Quality Packs Phase Q5 Read-only Decomposition Planner implemented and verified
+
+- **Status:** complete.
+- **Branch:** `feat/engineering-quality-q5-decomposition-planner`, based on merged Q4 commit `1271ee1`.
+- **Commits:** implementation commit (`feat(quality): add read-only decomposition planner`).
+- **Pull request:** pending publication.
+- **Objective:** Implement Q5 from `ENGINEERING_QUALITY_PACKS_MARKETPLACE_AND_GRAPH_PLAN.md` without mixing it into merged PR #257.
+- **Completed:** Added versioned responsibility, dependency, public API, test-preservation, whole-responsibility option, migration-step, conflict, and plan contracts. Added validator boundaries and a deterministic read-only planner producing minimal, recommended, keep-together, defer, and exception options without arbitrary line slicing or mutation. Added focused Q5 tests covering oversized fixtures, evidence preservation, risk conflicts, validation, and read-only behavior. Added `implementation_plan_q5.md`.
+- **Validation:** Full host `pnpm verify` passed: 158 test files, 1139 passed, 3 skipped; typecheck, lint, format, build, and diff check passed. Focused Q3/Q4/Q5 tests pass 22/22. All new hand-written production files remain below 250 lines; the largest is 219 lines.
+- **Not completed:** Atomic commit, branch publication, and Q5 review/merge remain. The restricted sandbox still cannot open Unix-domain sockets for the existing daemon tests; the host rerun passed them.
+- **Next first action:** Run staged checks, create the atomic Q5 commit, push the branch, and open a dedicated draft PR.
+
+### 2026-08-09, Engineering Quality Packs Phase Q4 merge reconciliation
+
+- **Status:** complete.
+- **Branch:** `feat/engineering-quality-q4-task-pr-integration`.
+- **Commits:** merged as `1271ee1` on `main`.
+- **Pull request:** [#257](https://github.com/vitala89/Intentloom/pull/257), merged.
+- **Objective:** Reconcile the earlier draft handoff after maintainer merge.
+- **Completed:** Confirmed the Q4 branch is merged into `main`; all required GitHub checks were green before merge. Q5 was branched from updated `origin/main`.
+- **Next first action:** Continue Q5 on `feat/engineering-quality-q5-decomposition-planner`.
 
 ### 2026-08-09, Engineering Quality Packs Phase Q4 Task and Pull-Request Integration published
 

@@ -24,6 +24,9 @@ export const QUALITY_TASK_DIFF_SCHEMA_URN =
 
 export const QUALITY_PULL_REQUEST_EVIDENCE_SCHEMA_URN =
   "urn:intentloom:schema:engineering-quality-pull-request-evidence:1" as const;
+
+export const QUALITY_DECOMPOSITION_PLAN_SCHEMA_URN =
+  "urn:intentloom:schema:engineering-quality-decomposition-plan:1" as const;
 export type QualityRuleSeverity = "error" | "warning" | "info";
 
 export type QualityThresholdLevel =
@@ -92,3 +95,22 @@ export type QualityTaskChangeStatus =
   | "hard-limit-exceeded"
   | "unexpected-path"
   | "missing-final-evidence";
+
+export type QualityResponsibilityCohesion = "high" | "medium" | "low";
+
+export type QualityDependencyKind = "internal" | "public-api" | "test";
+
+export type QualityPublicApiCompatibility = "preserve" | "review";
+
+export type QualityDecompositionOptionKind =
+  "minimal" | "recommended" | "keep-together" | "defer" | "exception";
+
+export type QualityDecompositionPlanStatus =
+  "ready" | "review-required" | "unsupported";
+
+export type QualityDecompositionConflictKind =
+  | "insufficient-evidence"
+  | "no-cohesive-extraction"
+  | "public-api-risk"
+  | "dependency-risk"
+  | "oversized-retained";
