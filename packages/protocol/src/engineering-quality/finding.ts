@@ -2,6 +2,8 @@ import type {
   QUALITY_BASELINE_SCHEMA_URN,
   QUALITY_FINDING_SCHEMA_URN,
   QualityArtifactClassification,
+  QualityBaselineItemStatus,
+  QualityBaselineReviewTrigger,
   QualityFindingState,
   QualityRuleSeverity,
   QualityThresholdLevel,
@@ -41,12 +43,25 @@ export interface EngineeringQualityBaselineItem {
   readonly owner: string;
   readonly createdAt: number;
   readonly allowedGrowth: number;
+  readonly ruleVersion?: string;
+  readonly classification?: QualityArtifactClassification;
+  readonly reviewTrigger?: QualityBaselineReviewTrigger;
+  readonly reviewAt?: number;
+  readonly expiresAt?: number;
+  readonly status?: QualityBaselineItemStatus;
 }
 
 export interface EngineeringQualityBaseline {
   readonly schemaVersion: typeof QUALITY_BASELINE_SCHEMA_URN;
   readonly projectId: string;
   readonly items: readonly EngineeringQualityBaselineItem[];
+  readonly policyId?: string;
+  readonly policyVersion?: string;
+  readonly createdAt?: number;
+  readonly reviewTrigger?: QualityBaselineReviewTrigger;
+  readonly reviewAt?: number;
+  readonly approvedBy?: string;
+  readonly approvedAt?: number;
 }
 
 export interface EngineeringQualityException {
