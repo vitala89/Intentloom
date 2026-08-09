@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Engineering Quality Packs Phases Q3–Q4 are merged in PRs #256 and #257; Phase Q5 Read-only Decomposition Planner is published in draft PR #258 with a local Windows CI timeout fix awaiting remote rerun.**
+Status: **Engineering Quality Packs Phases Q3–Q4 are merged in PRs #256 and #257; Phase Q5 Read-only Decomposition Planner is published in draft PR #258 with all CI checks green after Windows timeout remediation.**
 
 Active branch: `feat/engineering-quality-q5-decomposition-planner`
 
 Current objective: Review and merge the verified Q5 decomposition planner increment.
 
-Next first action: Commit and push the Windows CI timeout fix, recheck [PR #258](https://github.com/vitala89/Intentloom/pull/258), then address actionable feedback and merge it through the protected workflow.
+Next first action: Review [PR #258](https://github.com/vitala89/Intentloom/pull/258), address actionable feedback if any arrives, and merge it through the protected workflow; do not start Q6 before merge.
 
 Known open items, in the order they should be handled:
 
@@ -98,15 +98,15 @@ entry directly below this section.
 
 ### 2026-08-09, Engineering Quality Packs Q5 Windows CI timeout remediation
 
-- **Status:** partial; local fix and verification complete, remote rerun pending.
+- **Status:** complete; PR remains open and draft for maintainer review.
 - **Branch:** `feat/engineering-quality-q5-decomposition-planner`.
 - **Pull request:** draft [#258](https://github.com/vitala89/Intentloom/pull/258), still open and unmerged.
 - **Objective:** Diagnose and fix the single failed GitHub Actions job without starting Q6 or mixing unrelated changes into the Q5 branch.
-- **Completed:** Confirmed PR #258 is `OPEN`, `DRAFT`, `MERGEABLE`, and has no review comments. All checks passed except Compatibility `windows-latest / Node 22` in run `31319736754`, job `93260662413`. The failure was a Vitest `beforeAll` timeout in `tests/adapter-packed-process.test.ts` while running the build/pack preparation. Increased that preparation-hook timeout from 30 seconds to 120 seconds.
-- **Validation:** Focused `tests/adapter-packed-process.test.ts` passed with 13 passed and 1 skipped. Host `pnpm verify` passed with 158 test files, 1139 passed, 3 skipped; typecheck, lint, format check, build, and diff check passed. Restricted sandbox verification still cannot open Unix-domain sockets for the existing daemon tests and reports 22 expected `EPERM` failures; the host rerun passed them. Existing lint warnings remain unchanged.
-- **Not completed:** The fix has not yet been committed or pushed, so GitHub has not rerun CI. Q5 review and merge remain pending; Q6 has not started.
-- **Next first action:** Stage the test fix and handoff updates, run staged checks, commit atomically, push the branch, and recheck PR #258.
-- **Evidence:** failed [Compatibility job](https://github.com/vitala89/Intentloom/actions/runs/31319736754/job/93260662413), [PR #258](https://github.com/vitala89/Intentloom/pull/258), and local host verification.
+- **Completed:** Confirmed PR #258 is `OPEN`, `DRAFT`, `MERGEABLE`, and has no review comments. All checks passed except Compatibility `windows-latest / Node 22` in run `31319736754`, job `93260662413`. The failure was a Vitest `beforeAll` timeout in `tests/adapter-packed-process.test.ts` while running the build/pack preparation. Increased that preparation-hook timeout from 30 seconds to 120 seconds, committed as `6268b9d`, and pushed it to the PR branch.
+- **Validation:** Focused `tests/adapter-packed-process.test.ts` passed with 13 passed and 1 skipped. Host `pnpm verify` passed with 158 test files, 1139 passed, 3 skipped; typecheck, lint, format check, build, and diff check passed. Restricted sandbox verification still cannot open Unix-domain sockets for the existing daemon tests and reports 22 expected `EPERM` failures; the host rerun passed them. Existing lint warnings remain unchanged. Push-event Compatibility run `31320607710` and pull-request Compatibility run `31320609114` both passed, including PR-event Windows Node 22 job `93262858153`.
+- **Not completed:** Q5 review and merge remain pending; Q6 has not started.
+- **Next first action:** Review PR #258, address actionable feedback, and merge it through the protected workflow before beginning Q6.
+- **Evidence:** failed [initial Compatibility job](https://github.com/vitala89/Intentloom/actions/runs/31319736754/job/93260662413), successful [push-event Compatibility run](https://github.com/vitala89/Intentloom/actions/runs/31320607710), successful [pull-request Compatibility run](https://github.com/vitala89/Intentloom/actions/runs/31320609114), [PR #258](https://github.com/vitala89/Intentloom/pull/258), and local host verification.
 
 ### 2026-08-09, Engineering Quality Packs Phase Q5 Read-only Decomposition Planner implemented and verified
 
