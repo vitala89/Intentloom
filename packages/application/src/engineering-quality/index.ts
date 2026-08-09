@@ -9,3 +9,4 @@ export * from "./plan-diff.js";
 export * from "./pull-request-evidence.js";
 export * from "./decomposition-planner.js";
 export * from "./pack-resolution.js";
+export * from "./checker-report-ingestion.js";

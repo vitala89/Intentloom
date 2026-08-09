@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Engineering Quality Packs Phases Q3–Q5 are merged in PRs #256–#258; Phase Q6 First-party Quality Packs is published in draft PR #259 with local and remote verification green.**
+Status: **Engineering Quality Packs Phases Q3–Q6 are merged in PRs #256–#259; Phase Q7 Checker Report Ingestion is published in PR #260 with local and remote verification green.**
 
-Active branch: `feat/engineering-quality-q6-first-party-quality-packs`
+Active branch: `feat/engineering-quality-q7-checker-report-ingestion`
 
-Current objective: Review and merge the verified Q6 first-party data-only pack contracts and deterministic resolver.
+Current objective: Obtain review on the verified Q7 checker report ingestion increment and merge it through the protected workflow.
 
-Next first action: Obtain review on PR #259, address actionable feedback, and merge through the protected workflow.
+Next first action: Monitor PR #260 checks and review feedback; address only actionable findings, then merge through the protected workflow.
 
 Known open items, in the order they should be handled:
 
@@ -95,6 +95,38 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-09, Engineering Quality Packs Q7 CI compatibility hardening
+
+- **Status:** complete; PR #260 remains open for review/merge.
+- **Branch:** `feat/engineering-quality-q7-checker-report-ingestion`.
+- **Commit:** `2383361` (`fix(ci): extend packed inspect test timeout`).
+- **Pull request:** [#260](https://github.com/vitala89/Intentloom/pull/260).
+- **Root cause:** The previous Windows Node 22 Compatibility run
+  `31326972252` timed out `tests/adapter-packed-process.test.ts` test
+  `inspects an installed project through the packed CLI` at Vitest's default
+  5-second limit. The packed CLI setup already takes longer on Windows, and
+  neighboring packed process tests use explicit 15–20 second limits.
+- **Completed:** Added the same explicit `20_000` millisecond test timeout; no
+  workflow, production, dependency, or roadmap changes were made.
+- **Validation:** Focused packed-process suite passes (13 passed, 1 skipped).
+  Full host `pnpm verify` and pre-push verification pass (160 test files,
+  1152 passed, 3 skipped). The complete PR check matrix for `2383361` passes,
+  including Windows Node 22 Compatibility.
+- **Next action:** Review PR #260 and merge through the protected workflow.
+
+### 2026-08-09, Engineering Quality Packs Phase Q7 checker report ingestion
+
+- **Status:** complete; PR review and merge remain.
+- **Branch:** `feat/engineering-quality-q7-checker-report-ingestion`, based on merged Q6 commit `f18d3d4`.
+- **Commit:** `cfe7a11` (`feat(quality): add checker report ingestion`).
+- **Pull request:** [#260](https://github.com/vitala89/Intentloom/pull/260).
+- **Implementation plan:** `implementation_plan_q7.md`.
+- **Objective:** Add provider-neutral, read-only ingestion for ESLint JSON, TypeScript diagnostics, SARIF, and Clippy JSON into canonical checker findings without executing tools or performing external import, network, telemetry, dependency installation, mutation, or publishing.
+- **Completed:** Added protocol contracts, validator-boundary limits and schema checks, pure source adapters, deterministic path/message redaction, stable finding IDs, duplicate/conflicting-meaning diagnostics, deterministic ordering, and focused contract tests. TypeScript array and object forms, nested input bounds, SARIF per-run provenance, and absolute-path redaction are explicitly covered.
+- **Validation:** Full host `pnpm verify` passed: 160 test files, 1152 passed, 3 skipped; typecheck, lint, format check, build, `git diff --check`, staged checks, and pre-push verification passed. Focused Q3–Q7 regression tests pass (38 tests across 6 files). New hand-written production files are below 250 lines; the largest is 217 lines. Existing lint warnings remain unchanged.
+- **Not completed:** Review and merge.
+- **Next action:** Monitor PR #260 checks and review feedback, address actionable findings, and merge through the protected workflow.
 
 ### 2026-08-09, Engineering Quality Packs Phase Q6 first-party quality packs
 

@@ -7,4 +7,6 @@ export * from "./task-diff.js";
 export * from "./task-plan.js";
 export * from "./decomposition-plan.js";
 export * from "./pack.js";
+export * from "./checker-report.js";
+export * from "./checker-report-input.js";
 export * from "./pack-entry.js";

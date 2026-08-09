@@ -143,7 +143,7 @@ describe("packed adapter compatibility matrix", () => {
       readiness: "ready",
       detectedAdapters: ["codex", "cursor"],
     });
-  });
+  }, 20_000);
 
   it("dry-runs an ownership conflict without writing metadata", async () => {
     const root = await project("packed-conflict");
