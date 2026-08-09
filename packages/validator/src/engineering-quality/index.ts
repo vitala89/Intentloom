@@ -13,3 +13,4 @@ export * from "./checker-execution.js";
 export * from "./external-pack-import.js";
 export * from "./pack-entry.js";
 export * from "./curated-catalog.js";
+export * from "./graph-provider.js";
