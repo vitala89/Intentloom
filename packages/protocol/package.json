@@ -8,6 +8,8 @@
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
-    "./model-adapter": "./src/model-adapter.ts"
+    "./model-adapter": "./src/model-adapter.ts",
+    "./engineering-assessment": "./src/engineering-assessment.ts",
+    "./engineering-quality": "./src/engineering-quality.ts"
   }
 }
