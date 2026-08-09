@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Engineering Quality Packs Phases Q3–Q4 are merged in PRs #256 and #257; Phase Q5 Read-only Decomposition Planner is published in draft PR #258 with all CI checks green after Windows timeout remediation.**
+Status: **Engineering Quality Packs Phases Q3–Q5 are merged in PRs #256–#258; Phase Q6 First-party Quality Packs is in progress on a dedicated branch.**
 
-Active branch: `feat/engineering-quality-q5-decomposition-planner`
+Active branch: `feat/engineering-quality-q6-first-party-quality-packs`
 
-Current objective: Review and merge the verified Q5 decomposition planner increment.
+Current objective: Complete and verify the Q6 first-party data-only pack contracts and deterministic resolver.
 
-Next first action: Review [PR #258](https://github.com/vitala89/Intentloom/pull/258), address actionable feedback if any arrives, and merge it through the protected workflow; do not start Q6 before merge.
+Next first action: Run the full Q6 verification gate, update the durable handoff, and create the dedicated draft PR only after the gate is green.
 
 Known open items, in the order they should be handled:
 
@@ -95,6 +95,17 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-09, Engineering Quality Packs Phase Q6 first-party quality packs
+
+- **Status:** complete locally; atomic commit, publication, and PR review remain.
+- **Branch:** `feat/engineering-quality-q6-first-party-quality-packs`, based on merged Q5 commit `5fb3749`.
+- **Implementation plan:** `implementation_plan_q6.md`.
+- **Objective:** Add provider-neutral, data-only first-party quality packs and pure deterministic resolution without checker execution, external import, mutation, network, telemetry, dependency installation, or publishing.
+- **Completed:** Added versioned protocol contracts for pack identity, entries, provenance, compatibility, dependencies, conflicts, and resolution. Added validator-boundary checks for bounded untrusted pack data and source-reference integrity. Added a pure application resolver with dependency ordering, compatibility checks, canonical-meaning deduplication, and conflicting-meaning rejection. Added base quality, TypeScript, Angular, React, Rust, Tauri 2, testing, accessibility, and security-sensitive first-party catalog data with primary-source references.
+- **Validation:** Full host `pnpm verify` passed: 159 test files, 1145 passed, 3 skipped; typecheck, lint, format check, build, and `git diff --check` passed. Focused Q3–Q6 regression tests pass (31 tests across 5 files). New hand-written production files are below 250 lines; the largest is 239 lines. Existing lint warnings remain unchanged.
+- **Not completed:** Staged checks, atomic commit, push, draft PR, and remote review.
+- **Next first action:** Run staged checks, commit the verified Q6 increment, push the dedicated branch, and create its draft PR through the repository workflow.
 
 ### 2026-08-09, Engineering Quality Packs Q5 Windows CI timeout remediation
 
