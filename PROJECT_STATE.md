@@ -89,8 +89,8 @@ and real consumers justify them.
   `feat/engineering-quality-q7-checker-report-ingestion`: its implementation
   plan, protocol contracts, validator-boundary checks, pure ESLint/TypeScript/
   SARIF/Clippy normalization, bounded redaction, deterministic deduplication,
-  and focused tests are implemented and published in draft PR #260; review and
-  merge remain pending.
+  and focused tests are implemented and published in PR #260; review and merge
+  remain pending.
 - Duty Watch governance contracts (Phase 1), proposal CLI `intentloom adopt --plan` (Phase 2), transactional apply & rollback engine `intentloom adopt --apply` (Phase 3), pack update 3-way migration `intentloom update` (Phase 4), conformance & security profiles `intentloom conformance` (Phase 5), provider synchronization `intentloom sync` / `intentloom diff` (Phase 6), Memory & Security Candidates M1–M4, S1–S5, Daemon Protocol Contracts for Second Clients, Read-Only Interactive Surfaces TUI, Agent Workspace Discuss & Inspect Modes, Agent Workspace Plan, Review & Apply Modes, Neutron Autonomous Subagent Orchestration & Local Workspace Sync Engine, and Evidence-Backed Engineering Assessments roadmap (Phases A1–A22: Envelope Protocol, Evidence References, Finding Projections, Architecture Slice, Technical Debt Map, Canonical Report Model, Application Operation, Quality Packs, Checker Adapters, Graph Providers, Performance Baseline Evidence, Monorepo/CI Assessment, AI Engineering Controls, Target-State Remediation Roadmap, Agent Workspace Conversational Explanation, Desktop/UI ViewModel Adapter, Historical Comparison, Incremental Assessment, Remediation Planning Integration, Report Renderers, and Public Contract Stabilization) are merged into `main`.
 - v1.0 compatibility phases 1–4 are merged into `main`: ADR-0043 and contract tests, the v1 migration/protocol guide and upgrade tests, client-surface equivalence evidence and tests, and the security/supply-chain audit and tests.
 - The bounded provider-evidence cache increment is merged into `main` through

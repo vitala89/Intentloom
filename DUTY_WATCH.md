@@ -9,7 +9,7 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Engineering Quality Packs Phases Q3–Q6 are merged in PRs #256–#259; Phase Q7 Checker Report Ingestion is published in draft PR #260 with local verification green.**
+Status: **Engineering Quality Packs Phases Q3–Q6 are merged in PRs #256–#259; Phase Q7 Checker Report Ingestion is published in PR #260 with local and remote verification green.**
 
 Active branch: `feat/engineering-quality-q7-checker-report-ingestion`
 
@@ -117,10 +117,10 @@ entry directly below this section.
 
 ### 2026-08-09, Engineering Quality Packs Phase Q7 checker report ingestion
 
-- **Status:** complete; draft PR review and merge remain.
+- **Status:** complete; PR review and merge remain.
 - **Branch:** `feat/engineering-quality-q7-checker-report-ingestion`, based on merged Q6 commit `f18d3d4`.
 - **Commit:** `cfe7a11` (`feat(quality): add checker report ingestion`).
-- **Pull request:** draft [#260](https://github.com/vitala89/Intentloom/pull/260).
+- **Pull request:** [#260](https://github.com/vitala89/Intentloom/pull/260).
 - **Implementation plan:** `implementation_plan_q7.md`.
 - **Objective:** Add provider-neutral, read-only ingestion for ESLint JSON, TypeScript diagnostics, SARIF, and Clippy JSON into canonical checker findings without executing tools or performing external import, network, telemetry, dependency installation, mutation, or publishing.
 - **Completed:** Added protocol contracts, validator-boundary limits and schema checks, pure source adapters, deterministic path/message redaction, stable finding IDs, duplicate/conflicting-meaning diagnostics, deterministic ordering, and focused contract tests. TypeScript array and object forms, nested input bounds, SARIF per-run provenance, and absolute-path redaction are explicitly covered.
