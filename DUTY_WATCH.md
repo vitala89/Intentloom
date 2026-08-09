@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Engineering Quality Packs Phases Q3–Q7 are merged in PRs #256–#260; Phase Q8 Bounded Checker Execution is implemented and published in draft PR #261, with remote CI and review pending.**
+Status: **Engineering Quality Packs Phases Q3–Q8 are merged in PRs #256–#261; Phase Q9 External Pack Import is implemented locally on its dedicated branch and remains to be committed, verified, and published.**
 
-Active branch: `feat/engineering-quality-q8-bounded-checker-execution`
+Active branch: `feat/engineering-quality-q9-external-pack-import`
 
-Current objective: Publish the verified Q8 bounded, project-pinned ESLint execution slice for review without dependency installation, hidden network, mutation, or secret inheritance.
+Current objective: Complete the bounded Q9 caller-supplied data-only pack import slice with exact pin/digest verification and separate review/activation approval, without executing code, network access, installation, mutation, or automatic activation.
 
-Next first action: Monitor PR #261 checks and review feedback; address only actionable findings, then merge through the protected workflow.
+Next first action: Run the full verification gate, update the Q9 handoff, commit atomically, push, and create a separate draft PR.
 
 Known open items, in the order they should be handled:
 
@@ -95,6 +95,18 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-09, Engineering Quality Packs Phase Q9 external pack import
+
+- **Status:** partial; implementation and focused verification are complete, while full verification, commit, push, and draft PR remain.
+- **Branch:** `feat/engineering-quality-q9-external-pack-import`, based on merged Q8 commit `330bcd4`.
+- **Implementation plan:** `implementation_plan_q9.md`.
+- **Objective:** Import caller-supplied data-only external quality packs for package, Git, local, organization-registry, and documentation-snapshot source kinds with exact source pinning and digest verification; keep import, review, pin, and activation separate.
+- **Completed:** Added canonical protocol contracts for external source identity, import results, and explicit activation approval. Added validator-boundary checks for bounded JSON payloads, source-kind-specific locators and pins, SHA-256 digests, publisher/license metadata, and approval binding. Added pure application normalization, stable canonical digesting, data-only import, and explicit activation binding without fetchers, process execution, dependency installation, persistence, or mutation. Added focused Q9 contract tests covering all five source kinds, deterministic normalization, provenance mismatch, digest mismatch, duplicate entries, unsafe locators, and approval binding.
+- **Validation:** Focused Q9 tests pass (10 tests); focused Q6–Q9 regression tests pass (33 tests); typecheck and targeted lint/format checks pass. New hand-written production files are below 250 lines; the largest is 197 lines. The repository's existing lint warnings remain unchanged. Git reports the known non-fatal `.git/fsmonitor--daemon.ipc` query warning.
+- **Extension review:** No external pack, package, Git source, registry, or documentation was fetched or adopted. The import boundary treats all supplied content as untrusted, requires exact source identity and declared license/provenance, and recommends explicit human review before activation. Recommendation for this bounded slice: **changes-required** until the future Q10 catalog provides verified retrieval/quarantine; no activation is persisted here.
+- **Not completed:** Full `pnpm verify`, staged checks, commit, push, draft PR, and remote CI/review.
+- **Next action:** Run full `pnpm verify`, inspect/stage the implementation and durable-state diff, run staged checks and `git diff --cached --check`, then commit and publish the draft PR.
 
 ### 2026-08-09, Engineering Quality Packs Phase Q8 bounded checker execution
 

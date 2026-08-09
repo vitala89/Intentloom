@@ -81,13 +81,35 @@ export function validateEngineeringQualityPack(
         });
   if (!isObject(value.provenance))
     throw new Error("pack.provenance must be an object");
-  if (
-    value.provenance.sourceKind !== "first-party" ||
-    value.provenance.publisher !== "intentloom" ||
-    value.provenance.license !== "Apache-2.0"
-  ) {
+  if (value.provenance.sourceKind === "first-party") {
+    if (
+      value.provenance.publisher !== "intentloom" ||
+      value.provenance.license !== "Apache-2.0"
+    ) {
+      throw new Error(
+        "first-party pack provenance must identify the Intentloom Apache-2.0 source",
+      );
+    }
+  } else if (value.provenance.sourceKind === "external") {
+    const publisher = text(
+      value.provenance.publisher,
+      "pack.provenance.publisher",
+      128,
+    );
+    const license = text(
+      value.provenance.license,
+      "pack.provenance.license",
+      64,
+    );
+    if (!/^[A-Za-z0-9][A-Za-z0-9.+-]{0,63}$/u.test(license)) {
+      throw new Error(
+        "external pack provenance license must be an SPDX-like identifier",
+      );
+    }
+    if (!publisher.trim()) throw new Error("external pack publisher is empty");
+  } else {
     throw new Error(
-      "pack.provenance must identify the first-party Intentloom source",
+      "pack.provenance.sourceKind must be first-party or external",
     );
   }
   const references = items(
@@ -137,9 +159,9 @@ export function validateEngineeringQualityPack(
       ...(technologies !== undefined ? { technologies } : {}),
     },
     provenance: {
-      sourceKind: "first-party",
-      publisher: "intentloom",
-      license: "Apache-2.0",
+      sourceKind: value.provenance.sourceKind as "first-party" | "external",
+      publisher: value.provenance.publisher as string,
+      license: value.provenance.license as string,
       references,
     },
     entries,

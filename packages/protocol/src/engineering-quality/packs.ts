@@ -19,9 +19,9 @@ export interface EngineeringQualityPackSourceReference {
 }
 
 export interface EngineeringQualityPackProvenance {
-  readonly sourceKind: "first-party";
-  readonly publisher: "intentloom";
-  readonly license: "Apache-2.0";
+  readonly sourceKind: "first-party" | "external";
+  readonly publisher: string;
+  readonly license: string;
   readonly references: readonly EngineeringQualityPackSourceReference[];
 }
 

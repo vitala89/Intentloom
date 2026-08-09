@@ -7433,4 +7433,4 @@ export * from "./propose-and-apply-extension-adoption.js";
 export * from "./knowledge-provider.js";
 export * from "./graphify-adapter.js";
 export * from "./engineering-assessment.js";
-export * from "./engineering-quality.js";
+export * from "./engineering-quality-entry.js";
