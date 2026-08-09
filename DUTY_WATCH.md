@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Engineering Quality Packs Phases Q3–Q6 are merged in PRs #256–#259; Phase Q7 Checker Report Ingestion is in progress on a dedicated branch.**
+Status: **Engineering Quality Packs Phases Q3–Q6 are merged in PRs #256–#259; Phase Q7 Checker Report Ingestion is published in draft PR #260 with local verification green.**
 
 Active branch: `feat/engineering-quality-q7-checker-report-ingestion`
 
-Current objective: Complete the verified Q7 checker report ingestion increment and publish its draft PR.
+Current objective: Obtain review on the verified Q7 checker report ingestion increment and merge it through the protected workflow.
 
-Next first action: Run staged checks and full `pnpm verify`, then commit, push, and create the Q7 draft PR.
+Next first action: Monitor PR #260 checks and review feedback; address only actionable findings, then merge through the protected workflow.
 
 Known open items, in the order they should be handled:
 
@@ -98,13 +98,16 @@ entry directly below this section.
 
 ### 2026-08-09, Engineering Quality Packs Phase Q7 checker report ingestion
 
-- **Status:** incomplete; implementation and focused validation are complete, while staged/full verification and publication remain.
+- **Status:** complete; draft PR review and merge remain.
 - **Branch:** `feat/engineering-quality-q7-checker-report-ingestion`, based on merged Q6 commit `f18d3d4`.
+- **Commit:** `cfe7a11` (`feat(quality): add checker report ingestion`).
+- **Pull request:** draft [#260](https://github.com/vitala89/Intentloom/pull/260).
 - **Implementation plan:** `implementation_plan_q7.md`.
 - **Objective:** Add provider-neutral, read-only ingestion for ESLint JSON, TypeScript diagnostics, SARIF, and Clippy JSON into canonical checker findings without executing tools or performing external import, network, telemetry, dependency installation, mutation, or publishing.
 - **Completed:** Added protocol contracts, validator-boundary limits and schema checks, pure source adapters, deterministic path/message redaction, stable finding IDs, duplicate/conflicting-meaning diagnostics, deterministic ordering, and focused contract tests. TypeScript array and object forms, nested input bounds, SARIF per-run provenance, and absolute-path redaction are explicitly covered.
-- **Validation:** `pnpm typecheck`, focused Q7/Q3–Q6 tests (38 tests), `pnpm lint`, and `pnpm format:check` pass. Existing lint warnings remain unchanged. Full verification, staged checks, commit, push, and draft PR are pending.
-- **Next action:** Run repository staged checks and full `pnpm verify`; then record the final handoff and publish the draft PR.
+- **Validation:** Full host `pnpm verify` passed: 160 test files, 1152 passed, 3 skipped; typecheck, lint, format check, build, `git diff --check`, staged checks, and pre-push verification passed. Focused Q3–Q7 regression tests pass (38 tests across 6 files). New hand-written production files are below 250 lines; the largest is 217 lines. Existing lint warnings remain unchanged.
+- **Not completed:** Review and merge.
+- **Next action:** Monitor PR #260 checks and review feedback, address actionable findings, and merge through the protected workflow.
 
 ### 2026-08-09, Engineering Quality Packs Phase Q6 first-party quality packs
 
