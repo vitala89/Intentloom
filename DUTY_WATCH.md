@@ -96,6 +96,16 @@ entry directly below this section.
 
 ## Watch entries
 
+### 2026-08-10, Engineering Quality Packs Phase Q14 Desktop and TUI viewmodels
+
+- **Status:** partial; implementation and full verification complete, commit, push, and draft PR creation remain.
+- **Branch:** `feat/engineering-quality-q14-desktop-tui-viewmodels`, based on merged Q13 commit `b7e2e35`.
+- **Implementation plan:** `implementation_plan_q14.md`.
+- **Objective:** Expose the full read-only Engineering Quality workflow through Desktop & TUI viewmodels (standards, catalog, checkers, graph), accessible tree/table text renderers, and approval preview renderers, with CLI vs Viewmodel state equivalence validated across identical project fixtures.
+- **Completed:** Added `buildQualityStandardsViewModel`, `buildQualityCatalogViewModel`, `buildQualityCheckersViewModel`, and `buildQualityGraphViewModel` in `packages/application/src/engineering-quality/viewmodel.ts`. Added accessible TUI renderers and approval preview renderer in `packages/application/src/engineering-quality/viewmodel-renderers.ts`. Added entry point `packages/application/src/quality-viewmodel-entry.ts` and barrel exports. Wrote comprehensive test suite `tests/desktop-tui-engineering-quality.test.ts` (8 tests including CLI equivalence assertions). All 168 Vitest test files passed (1,220 passed, 3 skipped). `pnpm typecheck`, `pnpm lint`, `pnpm format:check`, `pnpm build`, and `git diff --check` all passed cleanly.
+- **Validation:** Full host `pnpm verify` passed with 168 Vitest test files (1,220 tests passed, 3 skipped). Staged checks, Prettier format, oxlint, typecheck, build, and diff checks passed. All hand-written production files remain strictly below 250 lines.
+- **Next action:** Stage files, verify staged checks (`pnpm verify:staged && git diff --cached --check`), commit (`feat(quality): add desktop and tui viewmodels (#267)`), push to `origin`, create draft PR #267, and verify GitHub Actions CI status.
+
 ### 2026-08-10, Engineering Quality Packs Phase Q13 CLI and JSON surface
 
 - **Status:** partial; implementation, full verification, commit, push, and draft PR creation are queued for immediate completion.

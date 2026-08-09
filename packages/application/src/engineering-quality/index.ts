@@ -16,3 +16,5 @@ export * from "./curated-catalog.js";
 export * from "./graph-provider.js";
 export * from "./nx-graph.js";
 export * from "./cli-commands.js";
+export * from "./viewmodel.js";
+export * from "./viewmodel-renderers.js";
