@@ -27,6 +27,12 @@ export const QUALITY_PULL_REQUEST_EVIDENCE_SCHEMA_URN =
 
 export const QUALITY_DECOMPOSITION_PLAN_SCHEMA_URN =
   "urn:intentloom:schema:engineering-quality-decomposition-plan:1" as const;
+
+export const QUALITY_PACK_SCHEMA_URN =
+  "urn:intentloom:schema:engineering-quality-pack:1" as const;
+
+export const QUALITY_PACK_RESOLUTION_SCHEMA_URN =
+  "urn:intentloom:schema:engineering-quality-pack-resolution:1" as const;
 export type QualityRuleSeverity = "error" | "warning" | "info";
 
 export type QualityThresholdLevel =
@@ -114,3 +120,27 @@ export type QualityDecompositionConflictKind =
   | "public-api-risk"
   | "dependency-risk"
   | "oversized-retained";
+
+export type QualityPackEntryKind = "rule" | "guidance";
+
+export type QualityPackMetric =
+  | "physical-lines"
+  | "function-lines"
+  | "cyclomatic-complexity"
+  | "nesting-depth"
+  | "parameter-count";
+
+export type QualityPackEnforcement =
+  "deterministic" | "checker-backed" | "review-checklist" | "guidance";
+
+export type QualityPackResolutionStatus =
+  "resolved" | "conflict" | "incompatible" | "unsupported";
+
+export type QualityPackConflictKind =
+  | "unknown-pack"
+  | "duplicate-pack"
+  | "missing-dependency"
+  | "dependency-cycle"
+  | "incompatible-pack"
+  | "duplicate-meaning"
+  | "conflicting-meaning";
