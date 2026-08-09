@@ -92,14 +92,15 @@ and real consumers justify them.
   Bounded Checker Execution is merged through PR #261 (`330bcd4`): its
   project-pinned ESLint execution slice has explicit command, environment,
   timeout, cancellation, output, and truthful-failure controls. Phase Q9
-  External Pack Import is now in progress on
-  `feat/engineering-quality-q9-external-pack-import`; its implementation plan
-  defines caller-supplied data-only import, exact source pinning and digest
+  External Pack Import is merged through PR #262 (`52dd28c`): its
+  caller-supplied data-only import, exact source pinning and digest
   verification, provenance/license/compatibility validation, deterministic
-  normalization, and separate review/pin/activation decisions. Fetchers,
-  package managers, VCS clients, documentation crawlers, persistence, and
-  automatic activation remain out of scope. The implementation is published
-  in draft PR #262; remote CI, review, and merge remain pending.
+  normalization, and separate review/pin/activation decisions are complete.
+  Phase Q10 Curated Catalog is implemented on branch `feat/engineering-quality-q10-curated-catalog`:
+  its implementation plan, protocol schemas, validator boundary, pure application operations
+  (search, entry inspection, SHA-256 quarantine digest verification, pack lock comparison,
+  update diffing, revocation fail-closed enforcement), first-party catalog metadata, and
+  test suite are complete and submitted as PR #263.
 - Duty Watch governance contracts (Phase 1), proposal CLI `intentloom adopt --plan` (Phase 2), transactional apply & rollback engine `intentloom adopt --apply` (Phase 3), pack update 3-way migration `intentloom update` (Phase 4), conformance & security profiles `intentloom conformance` (Phase 5), provider synchronization `intentloom sync` / `intentloom diff` (Phase 6), Memory & Security Candidates M1–M4, S1–S5, Daemon Protocol Contracts for Second Clients, Read-Only Interactive Surfaces TUI, Agent Workspace Discuss & Inspect Modes, Agent Workspace Plan, Review & Apply Modes, Neutron Autonomous Subagent Orchestration & Local Workspace Sync Engine, and Evidence-Backed Engineering Assessments roadmap (Phases A1–A22: Envelope Protocol, Evidence References, Finding Projections, Architecture Slice, Technical Debt Map, Canonical Report Model, Application Operation, Quality Packs, Checker Adapters, Graph Providers, Performance Baseline Evidence, Monorepo/CI Assessment, AI Engineering Controls, Target-State Remediation Roadmap, Agent Workspace Conversational Explanation, Desktop/UI ViewModel Adapter, Historical Comparison, Incremental Assessment, Remediation Planning Integration, Report Renderers, and Public Contract Stabilization) are merged into `main`.
 - v1.0 compatibility phases 1–4 are merged into `main`: ADR-0043 and contract tests, the v1 migration/protocol guide and upgrade tests, client-surface equivalence evidence and tests, and the security/supply-chain audit and tests.
 - The bounded provider-evidence cache increment is merged into `main` through

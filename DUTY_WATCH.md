@@ -171,6 +171,23 @@ entry directly below this section.
 - **Next first action:** Obtain review on PR #259, address actionable feedback, and merge through the protected workflow.
 - **Evidence:** local host `pnpm verify`, focused Q3–Q6 tests, commit `c148355`, pushed branch, and [PR #259](https://github.com/vitala89/Intentloom/pull/259).
 
+### 2026-08-09, Engineering Quality Packs Phase Q10 Curated Catalog implemented, verified, and published in draft PR #263
+
+- **Status:** complete; draft PR #263 created and remote CI verified green.
+- **Branch:** `feat/engineering-quality-q10-curated-catalog`, based on merged Q9 commit `52dd28c`.
+- **Pull request:** draft [#263](https://github.com/vitala89/Intentloom/pull/263).
+- **Objective:** Implement Phase Q10 Curated Catalog from `ENGINEERING_QUALITY_PACKS_MARKETPLACE_AND_GRAPH_PLAN.md` on top of merged Q9 PR #262.
+- **Completed:**
+  - Verified PR #262 is `MERGED` into `main` (`52dd28ca86a200e855b3c8712541a0efe67abf97`), updated `main`, and created `feat/engineering-quality-q10-curated-catalog`.
+  - Defined versioned protocol schemas & canonical types (`CatalogTrustClass`, `CatalogPackClass`, `CatalogSupportStatus`, `CatalogSearchQuery`, `CatalogEntry`, `CatalogSearchResult`, `QuarantineArtifact`, `EngineeringQualityPackLock`, `EngineeringQualityPackUpdateDiff`, `EngineeringQualityRevocationState`).
+  - Implemented strict validator runtime boundary (`validateCatalogSearchQuery`, `validateCatalogEntry`, `validateQuarantineArtifact`, `validateEngineeringQualityPackLock`, `validateEngineeringQualityPackUpdateDiff`, `validateEngineeringQualityRevocationState`).
+  - Implemented pure, data-only deterministic application operations (`searchEngineeringCatalog`, `inspectEngineeringCatalogEntry`, `verifyQuarantineArtifact`, `comparePackLock`, `diffEngineeringQualityPackUpdates`, `evaluateRevocationState`) and first-party catalog metadata (`FIRST_PARTY_CATALOG_ENTRIES`).
+  - Created test suite `tests/engineering-quality-curated-catalog.test.ts` (13 tests) covering search, inspection, SHA-256 quarantine verification, lock comparison, update diffing, revocation fail-closed enforcement, and untrusted payload validation.
+- **Validation:** Full `pnpm verify` passed: 164 Vitest test files (1186 tests passed, 3 skipped), `pnpm typecheck` passed (0 errors), `pnpm lint` passed (0 errors), `pnpm format:check` passed, `pnpm build` passed, and `git diff --check` passed. All hand-written production files remain below 250 lines.
+- **Not completed:** Maintainer review and PR #263 merge remain.
+- **Next first action:** Review draft PR #263, resolve maintainer feedback, and merge through the protected workflow.
+- **Evidence:** Host `pnpm verify`, 164 Vitest test files passing, `implementation_plan_q10.md`, branch `feat/engineering-quality-q10-curated-catalog`, and draft [PR #263](https://github.com/vitala89/Intentloom/pull/263).
+
 ### 2026-08-09, Engineering Quality Packs Q5 Windows CI timeout remediation
 
 - **Status:** complete; PR remains open and draft for maintainer review.

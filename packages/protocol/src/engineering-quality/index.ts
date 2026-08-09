@@ -8,3 +8,4 @@ export * from "./packs.js";
 export * from "./checker-report.js";
 export * from "./checker-execution.js";
 export * from "./external-pack-import.js";
+export * from "./curated-catalog.js";
