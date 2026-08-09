@@ -96,6 +96,16 @@ entry directly below this section.
 
 ## Watch entries
 
+### 2026-08-10, Engineering Quality Packs Phase Q13 CLI and JSON surface
+
+- **Status:** partial; implementation, full verification, commit, push, and draft PR creation are queued for immediate completion.
+- **Branch:** `feat/engineering-quality-q13-cli-json-surface`, based on merged Q12 commit `852ddf7`.
+- **Implementation plan:** `implementation_plan_q13.md`.
+- **Objective:** Expose the full read-only Engineering Quality workflow through CLI command handlers (`quality`/`standards`, `packs`, `checkers`, `graph`) in `packages/application/src/engineering-quality/cli-commands.ts` with machine-readable `--json` output, stable exit codes (0/1), and zero mutations.
+- **Completed:** Added high-level CLI command handlers `runQualityCliCommand`, `runPacksCliCommand`, `runCheckersCliCommand`, and `runGraphCliCommand`. Added entry points `packages/application/src/cli-quality-entry.ts` and barrel exports. Wrote comprehensive test suite `tests/cli-engineering-quality.test.ts` (14 tests). All 167 Vitest test files passed (1,212 passed, 3 skipped). `pnpm typecheck`, `pnpm lint`, `pnpm format:check`, `pnpm build`, and `git diff --check` all passed cleanly.
+- **Validation:** Full host `pnpm verify` passed with 167 test files and 1,212 tests passed. Staged checks, Prettier format, oxlint, typecheck, build, and diff checks passed. All hand-written production files remain strictly below 250 lines (largest is 245 lines).
+- **Next action:** Stage files, verify staged checks (`pnpm verify:staged && git diff --cached --check`), commit (`feat(quality): add cli and json surface (#266)`), push to `origin`, create draft PR #266, and verify GitHub Actions CI status.
+
 ### 2026-08-09, Engineering Quality Packs Phase Q9 external pack import
 
 - **Status:** partial; implementation, full verification, commit, push, and draft PR are complete, while remote CI/review/merge remain.
