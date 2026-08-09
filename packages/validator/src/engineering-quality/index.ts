@@ -3,3 +3,5 @@ export * from "./baseline-item.js";
 export * from "./baseline-results.js";
 export * from "./evidence-finding.js";
 export * from "./policy.js";
+export * from "./task-diff.js";
+export * from "./task-plan.js";
