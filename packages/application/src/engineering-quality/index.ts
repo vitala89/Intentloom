@@ -21,3 +21,4 @@ export * from "./viewmodel-renderers.js";
 export * from "./surface.js";
 export * from "./remediation-engine.js";
 export * from "./organization-catalog-engine.js";
+export * from "./executable-marketplace-engine.js";

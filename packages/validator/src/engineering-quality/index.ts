@@ -17,3 +17,4 @@ export * from "./graph-provider.js";
 export * from "./nx-graph.js";
 export * from "./remediation-plan.js";
 export * from "./organization-catalog.js";
+export * from "./executable-marketplace.js";

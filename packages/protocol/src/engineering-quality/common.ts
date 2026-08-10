@@ -156,3 +156,6 @@ export type QualityRemediationStatus =
 
 export const QUALITY_ORGANIZATION_CATALOG_SCHEMA_URN =
   "urn:intentloom:schema:quality-organization-catalog:1" as const;
+
+export const QUALITY_EXECUTABLE_MARKETPLACE_SCHEMA_URN =
+  "urn:intentloom:schema:quality-executable-marketplace:1" as const;

@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Engineering Quality Packs Phases Q3–Q16 are implemented on the current release line; Phase Q17 Organization Catalogs is implemented and verified on branch `feat/engineering-quality-q17-organization-catalogs`.**
+Status: **Engineering Quality Packs Roadmap Phases Q0–Q18 are fully implemented and verified on branch `feat/engineering-quality-q18-executable-marketplace`.**
 
-Active branch: `feat/engineering-quality-q17-organization-catalogs`
+Active branch: `feat/engineering-quality-q18-executable-marketplace`
 
-Current objective: Complete the bounded Q17 Organization Catalogs contracts, validators, application engine, and tests without storing credentials in project metadata or violating scoped trust boundaries.
+Current objective: Complete Phase Q18 Executable Marketplace Decision contracts, validators, application evaluation engine, and test suite with fail-closed security defaults.
 
-Next first action: Stage files, commit (`feat(quality): add organization catalogs (#276)`), push to `origin`, create PR #276, and monitor CI.
+Next first action: Stage files, commit (`feat(quality): add executable marketplace decision (#277)`), push to `origin`, create PR #277, and monitor CI.
 
 Known open items, in the order they should be handled:
 
@@ -95,6 +95,31 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-10, Engineering Quality Packs Phase Q18 Executable Marketplace Decision
+
+- **Status:** complete; implementation, full verification, typecheck, lint, formatting, test suite (173 test files, 1,263 tests passed, 3 skipped), build, and diff checks are complete.
+- **Branch:** `feat/engineering-quality-q18-executable-marketplace`, based on `feat/engineering-quality-q17-organization-catalogs`.
+- **Implementation plan:** `implementation_plan.md`.
+- **Objective:** Implement Phase Q18 Executable Marketplace Decision from `ENGINEERING_QUALITY_PACKS_MARKETPLACE_AND_GRAPH_PLAN.md` with versioned contracts, validators, pure application engine (fail-closed decision evaluation, capability boundary check, signature and sandbox compliance evaluation), and tests.
+- **Completed:** Added `QUALITY_EXECUTABLE_MARKETPLACE_SCHEMA_URN`, `QualityExecutableMarketplaceDecisionStatus`, `QualityExecutableMarketplaceDecision`, `QualityExecutablePackSafetyOptions`, `QualityExecutablePackEvaluationDecision`, `QualityExecutableMarketplaceEvaluation` in `@intentloom/protocol`. Added validator runtime boundary `validateQualityExecutableMarketplaceDecision`, `validateQualityExecutablePackSafetyOptions`, `validateQualityExecutableMarketplaceEvaluation` in `@intentloom/validator`. Added pure application operations `evaluateExecutableMarketplacePolicy`, `evaluateExecutablePackSafety` in `@intentloom/application`. Added unit and contract test suite `tests/engineering-quality-executable-marketplace.test.ts` (6 tests).
+- **Validation:** Full host `pnpm verify` passed with 173 Vitest test files (1,263 passed, 3 skipped). Typecheck, lint (`oxlint`), Prettier formatting, package build, and `git diff --check` all passed 100% clean. All hand-written production files remain strictly below 250 physical lines (`executable-marketplace.ts` protocol 41 lines, `executable-marketplace.ts` validator 127 lines, `executable-marketplace-engine.ts` application 113 lines, test file 131 lines).
+- **Next first action:** Create atomic commit (`feat(quality): add executable marketplace decision (#277)`), push branch `feat/engineering-quality-q18-executable-marketplace`, open pull request #277, and verify GitHub Actions CI matrix.
+
+#### Duty completion checklist
+
+- [x] Formatter passed for changed source and test files
+- [x] Markdown and lint checks passed after documentation update
+- [x] Relevant focused tests, type check, and lint passed
+- [x] Atomic commit policy and commit-message checks passed
+- [x] Staged quality checks and staged diff check passed
+- [x] Repository hooks installed or equivalent commands run
+- [x] Final `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `PROJECT_STATE.md` updated when applicable
+- [x] Duty Watch handoff completed
+- [x] Related roadmap, ADR, changelog, migration, or reference docs reviewed; no Q18 roadmap or ADR change was required
+- [x] Failed or unavailable checks recorded
 
 ### 2026-08-10, Engineering Quality Packs Phase Q17 Organization Catalogs
 
