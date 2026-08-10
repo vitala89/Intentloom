@@ -14,3 +14,4 @@ export * from "./nx-graph.js";
 export * from "./remediation.js";
 export * from "./organization-catalog.js";
 export * from "./executable-marketplace.js";
+export * from "./specialized-disciplines.js";
