@@ -1,0 +1,26 @@
+{
+  "desktop-tauri": [
+    "apps/desktop/src-tauri/Cargo.toml",
+    "apps/desktop/src-tauri/src/main.rs",
+    "apps/desktop/src/App.tsx",
+    "packages/core/src/index.ts"
+  ],
+  "embedded-firmware": [
+    "firmware/Cargo.toml",
+    "firmware/linker/memory.x",
+    "firmware/src/main.rs",
+    "firmware/boards/nucleo-f401re.json"
+  ],
+  "cloud-terraform": [
+    "infra/main.tf",
+    "infra/variables.tf",
+    "infra/.terraform/providers/registry.terraform.io/hashicorp/aws/5.0.0",
+    "infra/modules/network/main.tf"
+  ],
+  "game-development": [
+    "games/demo/project.godot",
+    "games/demo/scenes/main.tscn",
+    "client/Assets/Scripts/PlayerController.cs",
+    "shared/net/protocol.md"
+  ]
+}
