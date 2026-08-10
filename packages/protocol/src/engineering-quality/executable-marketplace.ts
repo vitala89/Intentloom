@@ -1,5 +1,7 @@
 import type { QUALITY_EXECUTABLE_MARKETPLACE_SCHEMA_URN } from "./common.js";
 
+export { QUALITY_EXECUTABLE_MARKETPLACE_SCHEMA_URN } from "./common.js";
+
 export type QualityExecutableMarketplaceDecisionStatus =
   "rejected" | "accepted-scoped" | "deferred";
 

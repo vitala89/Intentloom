@@ -1,5 +1,7 @@
 import type { QUALITY_ORGANIZATION_CATALOG_SCHEMA_URN } from "./common.js";
 
+export { QUALITY_ORGANIZATION_CATALOG_SCHEMA_URN } from "./common.js";
+
 export type QualityOrganizationTrustRootStatus = "active" | "revoked";
 
 export type QualityOrganizationSignatureAlgorithm = "ed25519" | "rsa-sha256";

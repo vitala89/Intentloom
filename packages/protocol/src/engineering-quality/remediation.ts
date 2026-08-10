@@ -4,6 +4,8 @@ import type {
   QualityRemediationStatus,
 } from "./common.js";
 
+export { QUALITY_REMEDIATION_PLAN_SCHEMA_URN } from "./common.js";
+
 export interface QualityRemediationProposal {
   readonly id: string;
   readonly kind: QualityRemediationKind;
