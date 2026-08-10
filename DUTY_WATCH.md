@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Engineering Quality Packs Phases Q3–Q15 are merged into `main`; Phase Q16 Assisted Remediation is implemented and verified on branch `feat/engineering-quality-q16-assisted-remediation`.**
+Status: **Engineering Quality Packs Phases Q3–Q16 are implemented on the current release line; Phase Q17 Organization Catalogs is implemented and verified on branch `feat/engineering-quality-q17-organization-catalogs`.**
 
-Active branch: `feat/engineering-quality-q16-assisted-remediation`
+Active branch: `feat/engineering-quality-q17-organization-catalogs`
 
-Current objective: Complete the bounded Q16 Assisted Remediation contracts, validators, application engine, and tests without violating human-approval or evidence-before-mutation boundaries.
+Current objective: Complete the bounded Q17 Organization Catalogs contracts, validators, application engine, and tests without storing credentials in project metadata or violating scoped trust boundaries.
 
-Next first action: Stage files, commit (`feat(quality): add assisted remediation (#275)`), push to `origin`, create PR #275, and monitor CI.
+Next first action: Stage files, commit (`feat(quality): add organization catalogs (#276)`), push to `origin`, create PR #276, and monitor CI.
 
 Known open items, in the order they should be handled:
 
@@ -95,6 +95,31 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-10, Engineering Quality Packs Phase Q17 Organization Catalogs
+
+- **Status:** complete; implementation, full verification, typecheck, lint, formatting, test suite (172 test files, 1,257 tests passed, 3 skipped), build, and diff checks are complete.
+- **Branch:** `feat/engineering-quality-q17-organization-catalogs`, based on `feat/engineering-quality-q16-assisted-remediation`.
+- **Implementation plan:** `implementation_plan.md`.
+- **Objective:** Implement Phase Q17 Organization Catalogs from `ENGINEERING_QUALITY_PACKS_MARKETPLACE_AND_GRAPH_PLAN.md` with versioned contracts, validators, pure application engine (trust roots, signature verification, policy composition, audit logging), and tests.
+- **Completed:** Added `QUALITY_ORGANIZATION_CATALOG_SCHEMA_URN`, `QualityOrganizationTrustRoot`, `QualityOrganizationCatalogEntry`, `QualityOrganizationPolicyComposition`, `QualityOrganizationAuditRecord` in `@intentloom/protocol`. Added validator runtime boundary `validateQualityOrganizationTrustRoot`, `validateQualityOrganizationCatalogEntry`, `validateQualityOrganizationPolicyComposition`, `validateQualityOrganizationAuditRecord` in `@intentloom/validator`. Added pure application operations `registerOrganizationTrustRoot`, `revokeOrganizationTrustRoot`, `verifyOrganizationArtifactSignature`, `composeOrganizationPolicy`, `auditOrganizationCatalogAccess` in `@intentloom/application`. Added unit and contract test suite `tests/engineering-quality-organization-catalog.test.ts` (6 tests).
+- **Validation:** Full host `pnpm verify` passed with 172 Vitest test files (1,257 passed, 3 skipped). Typecheck, lint (`oxlint`), Prettier formatting, package build, and `git diff --check` all passed 100% clean. All hand-written production files remain strictly below 250 physical lines (`organization-catalog.ts` protocol 62 lines, `organization-catalog.ts` validator 140 lines, `organization-catalog-engine.ts` application 145 lines, test file 150 lines).
+- **Next first action:** Create atomic commit (`feat(quality): add organization catalogs (#276)`), push branch `feat/engineering-quality-q17-organization-catalogs`, open pull request #276, and verify GitHub Actions CI matrix.
+
+#### Duty completion checklist
+
+- [x] Formatter passed for changed source and test files
+- [x] Markdown and lint checks passed after documentation update
+- [x] Relevant focused tests, type check, and lint passed
+- [x] Atomic commit policy and commit-message checks passed
+- [x] Staged quality checks and staged diff check passed
+- [x] Repository hooks installed or equivalent commands run
+- [x] Final `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `PROJECT_STATE.md` updated when applicable
+- [x] Duty Watch handoff completed
+- [x] Related roadmap, ADR, changelog, migration, or reference docs reviewed; no Q17 roadmap or ADR change was required
+- [x] Failed or unavailable checks recorded
 
 ### 2026-08-10, Engineering Quality Packs Phase Q16 Assisted Remediation
 

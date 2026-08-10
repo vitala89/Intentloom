@@ -153,3 +153,6 @@ export type QualityRemediationKind =
 
 export type QualityRemediationStatus =
   "draft" | "approved" | "applied" | "rolled-back" | "rejected" | "stale";
+
+export const QUALITY_ORGANIZATION_CATALOG_SCHEMA_URN =
+  "urn:intentloom:schema:quality-organization-catalog:1" as const;
