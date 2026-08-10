@@ -16,3 +16,4 @@ export * from "./engineering-quality/organization-catalog.js";
 export * from "./engineering-quality/executable-marketplace.js";
 export * from "./engineering-quality/daemon-rpc.js";
 export * from "./engineering-quality/specialized-disciplines.js";
+export * from "./engineering-quality/specialized-pack-manifest.js";

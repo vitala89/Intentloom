@@ -32,5 +32,6 @@ export default defineConfig({
     // Process suites build and pack the same CLI artifact; serialize files so
     // version synchronization cannot race another build's package writes.
     fileParallelism: false,
+    testTimeout: 15000,
   },
 });

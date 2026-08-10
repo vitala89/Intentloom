@@ -19,3 +19,4 @@ export * from "./remediation-plan.js";
 export * from "./organization-catalog.js";
 export * from "./executable-marketplace.js";
 export * from "./specialized-disciplines.js";
+export * from "./specialized-pack-manifest.js";

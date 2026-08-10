@@ -23,3 +23,4 @@ export * from "./remediation-engine.js";
 export * from "./organization-catalog-engine.js";
 export * from "./executable-marketplace-engine.js";
 export * from "./specialized-disciplines-engine.js";
+export * from "./specialized-pack-manifest-engine.js";
