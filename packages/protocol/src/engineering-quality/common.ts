@@ -171,3 +171,6 @@ export const QUALITY_SPECIALIZED_PACK_SCHEMA_URN =
 
 export const QUALITY_SPECIALIZED_PACK_TRUST_STATE_SCHEMA_URN =
   "urn:intentloom:schema:quality-specialized-pack-trust-state:1" as const;
+
+export const QUALITY_DISCIPLINE_ALIAS_SCHEMA_URN =
+  "urn:intentloom:schema:quality-discipline-alias:1" as const;

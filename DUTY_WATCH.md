@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Engineering Quality Packs Phases Q0–Q18 are merged into `main`; Specialized Engineering Packs Phase S1 Canonical Disciplines (PR #277) and Phase S2 Pack Manifests & Trust States are implemented and verified on branch `feat/specialized-packs-s2-manifests-trust`.**
+Status: **Engineering Quality Packs Phases Q0–Q18 are merged into `main`; Specialized Engineering Packs Phase S1 (PR #277) and Phase S2 (PR #278) are merged into `main`; Phase S3 Discipline Aliases is implemented and verified on branch `feat/specialized-packs-s3-aliases`.**
 
-Active branch: `feat/specialized-packs-s2-manifests-trust`
+Active branch: `feat/specialized-packs-s3-aliases`
 
-Current objective: Complete Phase S2 Specialized Pack Manifests & Trust States contracts, validators, application engine, and test suite with fail-closed security defaults.
+Current objective: Complete Phase S3 Discipline Aliases & Non-Duplicating Rule Resolution contracts, validators, application engine, and test suite without rule duplication.
 
-Next first action: Stage files, commit (`feat(specialized-packs): add specialized pack manifests and trust states (#279)`), push to `origin`, create PR #279, and monitor CI.
+Next first action: Stage files, commit (`feat(specialized-packs): add discipline aliases and non-duplicating rule resolution (#280)`), push to `origin`, create PR #280, and monitor CI.
 
 Known open items, in the order they should be handled:
 
@@ -97,6 +97,31 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-10, Specialized Engineering Packs Phase S3 Discipline Aliases and Non-Duplicating Rule Resolution
+
+- **Status:** complete; implementation, full verification, typecheck, lint, formatting, test suite (176 test files, 1,274 tests passed, 3 skipped), build, and diff checks are complete.
+- **Branch:** `feat/specialized-packs-s3-aliases`, based on updated `main` (`5e50117`).
+- **Implementation plan:** `implementation_plan.md`.
+- **Objective:** Implement Phase S3 Discipline Aliases and Non-Duplicating Rule Resolution from `SPECIALIZED_ENGINEERING_PACKS_PLAN.md` with versioned contracts, validators, pure application engine (alias registration, case-insensitive alias resolution to canonical disciplines), and tests without rule duplication or authorization mutation.
+- **Completed:** Added `QUALITY_DISCIPLINE_ALIAS_SCHEMA_URN`, `QualityDisciplineAlias` in `@intentloom/protocol`. Added validator runtime boundary `validateQualityDisciplineAlias` in `@intentloom/validator`. Added pure application operations `registerDisciplineAlias`, `resolveDisciplineFromAlias` in `@intentloom/application`. Added unit and contract test suite `tests/engineering-quality-specialized-aliases.test.ts` (3 tests).
+- **Validation:** Full host `pnpm verify` passed with 176 Vitest test files (1,274 passed, 3 skipped). Typecheck, lint (`oxlint`), Prettier formatting, package build, and `git diff --check` all passed 100% clean. All hand-written production files remain strictly below 250 physical lines (`specialized-aliases.ts` protocol 12 lines, `specialized-aliases.ts` validator 35 lines, `specialized-aliases-engine.ts` application 62 lines, test file 79 lines).
+- **Next first action:** Create atomic commit (`feat(specialized-packs): add discipline aliases and non-duplicating rule resolution (#280)`), push branch `feat/specialized-packs-s3-aliases`, open pull request #280, and verify GitHub Actions CI matrix.
+
+#### Duty completion checklist
+
+- [x] Formatter passed for changed source and test files
+- [x] Markdown and lint checks passed after documentation update
+- [x] Relevant focused tests, type check, and lint passed
+- [x] Atomic commit policy and commit-message checks passed
+- [x] Staged quality checks and staged diff check passed
+- [x] Repository hooks installed or equivalent commands run
+- [x] Final `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `PROJECT_STATE.md` updated when applicable
+- [x] Duty Watch handoff completed
+- [x] Related roadmap, ADR, changelog, migration, or reference docs reviewed; no Phase S3 roadmap or ADR change was required
+- [x] Failed or unavailable checks recorded
 
 ### 2026-08-10, Specialized Engineering Packs Phase S2 Specialized Pack Manifests and Trust States
 
