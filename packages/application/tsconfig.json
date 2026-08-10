@@ -8,7 +8,8 @@
     { "path": "../evidence-git" },
     { "path": "../evidence-checker" },
     { "path": "../protocol" },
-    { "path": "../validator" }
+    { "path": "../validator" },
+    { "path": "../../catalog/packs/specialized-engineering" }
   ],
   "include": ["src/**/*.ts"]
 }

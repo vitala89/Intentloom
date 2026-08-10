@@ -90,11 +90,18 @@ import {
   qualityCapabilities,
   type QualityDaemonOptions,
 } from "./engineering-quality-handlers.js";
+import {
+  dispatchSpecializedPackRequest,
+  isSpecializedPackRequest,
+  specializedPackCapabilities,
+  type SpecializedPackDaemonOptions,
+} from "./specialized-pack-handlers.js";
 const maxMessageBytes = 1024 * 1024;
 const defaultMaxConnections = 16;
 const defaultRequestTimeoutMs = 30_000;
 
-export interface DaemonOptions extends QualityDaemonOptions {
+export interface DaemonOptions
+  extends QualityDaemonOptions, SpecializedPackDaemonOptions {
   readonly endpoint: string;
   readonly sessionToken: string;
   readonly maxConnections?: number;
@@ -386,6 +393,7 @@ function daemonCapabilities(
       options.approvedApply !== undefined,
     ),
     ...qualityCapabilities(options),
+    ...specializedPackCapabilities(options),
   ].filter((entry): entry is DaemonCapability => entry !== undefined);
 }
 
@@ -732,6 +740,20 @@ export async function startLocalDaemon(
               "unsupported_capability",
             );
           response(socket, qualityResponse);
+        } else if (isSpecializedPackRequest(request)) {
+          const specializedResponse = await dispatchSpecializedPackRequest(
+            request,
+            options,
+            canonicalProjectRoot,
+          );
+          if (!specializedResponse)
+            return failure(
+              socket,
+              -32601,
+              "unsupported specialized pack method",
+              "unsupported_capability",
+            );
+          response(socket, specializedResponse);
         }
       } catch (error) {
         if (

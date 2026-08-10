@@ -275,6 +275,39 @@
       "scope": "Engineering Quality Packs Phase Q15",
       "reviewTrigger": "Extract daemon request parsing and response validation into protocol domain submodules before the next protocol feature.",
       "expires": "2026-10-31"
+    },
+    {
+      "path": "packages/daemon/src/index.ts",
+      "rule": "existing-oversized-growth",
+      "baseLines": 1076,
+      "headLines": 1098,
+      "reason": "Phase S6 wires two read-only Specialized Engineering Pack RPC capabilities into the pre-existing daemon router; handler implementation and dispatch are extracted into specialized-pack-handlers.ts.",
+      "owner": "Daemon maintainers",
+      "scope": "Specialized Engineering Packs Phase S6",
+      "reviewTrigger": "Extract the remaining daemon request-router branches before the next daemon RPC feature.",
+      "expires": "2026-10-31"
+    },
+    {
+      "path": "packages/mcp-server/src/index.ts",
+      "rule": "existing-oversized-growth",
+      "baseLines": 617,
+      "headLines": 639,
+      "reason": "Phase S6 registers two read-only Specialized Engineering Pack MCP tools in the existing MCP registry and dispatch chain; descriptors and handlers are isolated in specialized-pack-tools.ts.",
+      "owner": "MCP maintainers",
+      "scope": "Specialized Engineering Packs Phase S6",
+      "reviewTrigger": "Extract the MCP tool registry and dispatch chain before the next MCP tool feature.",
+      "expires": "2026-10-31"
+    },
+    {
+      "path": "packages/protocol/src/index.ts",
+      "rule": "existing-oversized-growth",
+      "baseLines": 4569,
+      "headLines": 4597,
+      "reason": "Phase S6 adds two typed specialized-pack daemon request/response unions and parser branches to the existing protocol compatibility boundary; the versioned contracts are isolated in engineering-quality/specialized-daemon-rpc.ts.",
+      "owner": "Protocol maintainers",
+      "scope": "Specialized Engineering Packs Phase S6",
+      "reviewTrigger": "Extract daemon request parsing and response validation into protocol domain submodules before the next protocol feature.",
+      "expires": "2026-10-31"
     }
   ]
 }
