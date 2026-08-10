@@ -136,3 +136,37 @@ The source of product scope is `docs/specs/AIF_V0_1_SPEC.md`; architecture
 decisions live in `docs/decisions/`. If newer approved documents supersede a
 historical name or direction, preserve the history and link the newer decision
 rather than silently rewriting it.
+
+## Cursor Cloud specific instructions
+
+This environment ships Node 22 and pnpm 10.12.4 preinstalled, and the startup
+update script runs `pnpm install --frozen-lockfile`, so dependencies for every
+workspace project (including the `apps/desktop` frontend) are ready on boot. Do
+not add dependency-install steps here; keep this section to durable, non-obvious
+run/test caveats.
+
+- Standard commands live in the root `package.json` scripts and `README.md`
+  ("Development and testing"). The authoritative CI recipe is
+  `.github/workflows/compatibility.yml`: `pnpm typecheck` → `pnpm lint` →
+  `pnpm format:check` → `pnpm build` → `pnpm test`. `pnpm lint` is `oxlint` and
+  currently emits known `unicorn/no-array-sort` warnings that are pre-existing
+  debt, not new failures.
+- `pnpm install` prints `Ignored build scripts: esbuild`. This is expected and
+  harmless: esbuild resolves its platform binary through optional dependencies,
+  so `pnpm build` (which bundles the CLI/daemon/MCP with esbuild) still succeeds.
+  Do not run the interactive `pnpm approve-builds`.
+- The published product is the `intentloom` CLI. After `pnpm build`, the built
+  entrypoint is `packages/cli/dist/intentloom.cjs`; run it with
+  `node packages/cli/dist/intentloom.cjs <command>`. Running `intentloom init`
+  in a throwaway directory is a safe end-to-end smoke: it writes `.aif/`
+  metadata and adapter files only under that directory. `doctor` and `diff` are
+  read-only.
+- `apps/desktop` (`@intentloom/desktop`) is a Tauri 2 GUI surface that is not
+  distributed as a build and is outside the default headless setup. Its React
+  frontend typechecks and builds with Node alone
+  (`pnpm --filter @intentloom/desktop build`), but the native shell
+  (`pnpm --filter @intentloom/desktop tauri ...`) additionally needs the Rust
+  toolchain plus Linux GTK/WebKitGTK/libsoup system libraries and a display,
+  none of which the update script installs.
+- Git hooks are opt-in per checkout via `pnpm hooks:install` and are
+  intentionally NOT installed automatically.
