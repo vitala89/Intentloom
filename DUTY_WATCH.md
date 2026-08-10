@@ -15,7 +15,7 @@ Active branch: `feat/engineering-quality-q15-daemon-mcp`
 
 Current objective: Complete the bounded Q15 read-only Daemon JSON-RPC and MCP Engineering Quality surface with CLI/application parity, without network access, process execution, mutation, or automatic activation.
 
-Next first action: Review the final diff, then perform the repository's atomic commit and publication workflow if authorized.
+Next first action: Monitor draft PR #274 checks and review feedback; address only actionable findings, then merge through the protected workflow.
 
 Known open items, in the order they should be handled:
 
@@ -98,20 +98,20 @@ entry directly below this section.
 
 ### 2026-08-10, Engineering Quality Packs Phase Q15 Daemon and MCP surface
 
-- **Status:** partial; implementation, full verification, staged checks, and atomic commit are complete, while publication and remote review remain.
+- **Status:** partial; implementation, full verification, staged checks, atomic commit, push, and draft PR are complete, while remote CI/review and merge remain.
 - **Branch:** `feat/engineering-quality-q15-daemon-mcp`, based on the Q14 release-line state.
 - **Commits:** Q15 atomic implementation commit (`feat(quality): add daemon and MCP surfaces`).
-- **Pull request:** none yet.
+- **Pull request:** draft [#274](https://github.com/vitala89/Intentloom/pull/274).
 - **Objective:** Expose the Q14 Engineering Quality standards, catalog, checker, and graph viewmodels through read-only daemon JSON-RPC and MCP surfaces, with equivalent fixture results and explicit root/argument validation.
 - **Completed:** Added versioned quality JSON-RPC methods, request/response contracts, parser support, daemon capability advertisement and dispatch, extracted daemon handlers, shared read-only graph snapshot loading, four MCP tools with bounded empty argument schemas, and application-equivalence tests. Daemon handlers require absolute canonical non-symlink roots; MCP tools remain bound to the configured non-symlink root and reject extra arguments.
-- **Not completed:** Push, draft PR, and remote CI/review.
+- **Not completed:** Remote CI/review and merge.
 - **Files or packages changed:** `packages/protocol`, `packages/application`, `packages/daemon`, `packages/mcp-server`, `tests/mcp-server.test.ts`, `tests/mcp-engineering-quality.test.ts`, `tests/daemon-engineering-quality.test.ts`, `docs/governance/quality-exceptions.json`, and `pnpm-lock.yaml`.
 - **Validation:** `pnpm verify` passed with 170 test files, 1,245 tests passed, and 3 skipped; typecheck, lint, format check, build, and `git diff --check` all passed. Focused MCP verification passed with 24 tests, focused daemon verification passed with 9 parameterized tests when run with host permission for the Unix socket, and `pnpm verify:staged` passed for 21 files. The daemon test file is 194 formatted lines, the handler is 197 lines, the protocol contract is 120 lines, and the MCP tool module is 135 lines. Known repository lint warnings remain unchanged.
 - **Decisions and assumptions:** Canonical viewmodel construction remains in `@intentloom/application`; transport contracts carry provider-neutral viewmodel payloads and do not introduce an application-to-protocol runtime dependency. No network, subprocess, telemetry, installation, persistence, or mutation path was added. The pre-existing oversized protocol, daemon, and MCP barrels receive only routing additions; daemon and MCP handlers are extracted into focused modules. Three scoped, expiring Q15 quality exceptions record the measured growth and decomposition review triggers.
 - **Risks or compatibility impact:** The new daemon methods and MCP tool names are additive and versioned. Existing clients are unaffected. Local daemon tests require Unix-socket permission unavailable in the restricted sandbox, so the focused daemon suite was rerun with explicit host permission.
-- **Open issues or blockers:** Repository publication workflow is still outstanding. The known non-fatal Git fsmonitor IPC warning remains present in this checkout.
-- **Next first action:** Run the final full verification on the Q15 commit, push the branch, and create the draft PR through the protected workflow.
-- **Evidence:** Q15 handoff specification supplied in the task attachment; source contracts in `packages/protocol/src/engineering-quality/daemon-rpc.ts`; extracted handlers in `packages/daemon/src/engineering-quality-handlers.ts`; MCP tools in `packages/mcp-server/src/engineering-quality-tools.ts`.
+- **Open issues or blockers:** Remote CI/review and merge are still outstanding. The known non-fatal Git fsmonitor IPC warning remains present in this checkout.
+- **Next first action:** Monitor draft PR #274 checks and review feedback, address only actionable findings, and merge through the protected workflow.
+- **Evidence:** Q15 handoff specification supplied in the task attachment; source contracts in `packages/protocol/src/engineering-quality/daemon-rpc.ts`; extracted handlers in `packages/daemon/src/engineering-quality-handlers.ts`; MCP tools in `packages/mcp-server/src/engineering-quality-tools.ts`; implementation commit `c4defb4`; draft PR #274.
 
 #### Duty completion checklist
 
