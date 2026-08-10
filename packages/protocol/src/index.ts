@@ -48,7 +48,7 @@ import {
   createQualityStandardsRequest,
 } from "./engineering-quality/daemon-rpc.js";
 // prettier-ignore
-export { QUALITY_REMEDIATION_PLAN_SCHEMA_URN, QUALITY_ORGANIZATION_CATALOG_SCHEMA_URN, QUALITY_EXECUTABLE_MARKETPLACE_SCHEMA_URN } from "./engineering-quality/common.js";
+export { QUALITY_REMEDIATION_PLAN_SCHEMA_URN, QUALITY_ORGANIZATION_CATALOG_SCHEMA_URN, QUALITY_EXECUTABLE_MARKETPLACE_SCHEMA_URN, QUALITY_DISCIPLINE_SCHEMA_URN, QUALITY_ROLE_COMPOSITION_SCHEMA_URN } from "./engineering-quality/common.js";
 
 export * from "./jsonrpc.js";
 export * from "./daemon.js";

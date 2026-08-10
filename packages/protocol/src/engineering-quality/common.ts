@@ -159,3 +159,9 @@ export const QUALITY_ORGANIZATION_CATALOG_SCHEMA_URN =
 
 export const QUALITY_EXECUTABLE_MARKETPLACE_SCHEMA_URN =
   "urn:intentloom:schema:quality-executable-marketplace:1" as const;
+
+export const QUALITY_DISCIPLINE_SCHEMA_URN =
+  "urn:intentloom:schema:quality-discipline:1" as const;
+
+export const QUALITY_ROLE_COMPOSITION_SCHEMA_URN =
+  "urn:intentloom:schema:quality-role-composition:1" as const;
