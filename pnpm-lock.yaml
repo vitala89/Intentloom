@@ -136,6 +136,9 @@ importers:
 
   packages/daemon:
     dependencies:
+      '@intentloom/application':
+        specifier: workspace:*
+        version: link:../application
       '@intentloom/protocol':
         specifier: workspace:*
         version: link:../protocol

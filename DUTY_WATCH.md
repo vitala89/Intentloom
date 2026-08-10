@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Engineering Quality Packs Phases Q3–Q8 are merged in PRs #256–#261; Phase Q9 External Pack Import is implemented and published in draft PR #262, with remote CI/review/merge pending.**
+Status: **Engineering Quality Packs Phases Q3–Q14 are implemented on the current release line; Phase Q15 Daemon and MCP surface is implemented and fully verified, while atomic publication remains pending.**
 
-Active branch: `feat/engineering-quality-q9-external-pack-import`
+Active branch: `feat/engineering-quality-q15-daemon-mcp`
 
-Current objective: Complete the bounded Q9 caller-supplied data-only pack import slice with exact pin/digest verification and separate review/activation approval, without executing code, network access, installation, mutation, or automatic activation.
+Current objective: Complete the bounded Q15 read-only Daemon JSON-RPC and MCP Engineering Quality surface with CLI/application parity, without network access, process execution, mutation, or automatic activation.
 
-Next first action: Monitor PR #262 checks and review feedback; address only actionable findings, then merge through the protected workflow.
+Next first action: Monitor draft PR #274 review feedback; address only actionable findings, then merge through the protected workflow.
 
 Known open items, in the order they should be handled:
 
@@ -95,6 +95,38 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-10, Engineering Quality Packs Phase Q15 Daemon and MCP surface
+
+- **Status:** partial; implementation, full verification, staged checks, atomic commits, push, draft PR, and remote CI are complete, while review and merge remain.
+- **Branch:** `feat/engineering-quality-q15-daemon-mcp`, based on the Q14 release-line state.
+- **Commits:** Q15 atomic implementation commit (`feat(quality): add daemon and MCP surfaces`).
+- **Pull request:** draft [#274](https://github.com/vitala89/Intentloom/pull/274).
+- **Objective:** Expose the Q14 Engineering Quality standards, catalog, checker, and graph viewmodels through read-only daemon JSON-RPC and MCP surfaces, with equivalent fixture results and explicit root/argument validation.
+- **Completed:** Added versioned quality JSON-RPC methods, request/response contracts, parser support, daemon capability advertisement and dispatch, extracted daemon handlers, shared read-only graph snapshot loading, four MCP tools with bounded empty argument schemas, and application-equivalence tests. Daemon handlers require absolute canonical non-symlink roots; MCP tools remain bound to the configured non-symlink root and reject extra arguments. After the first remote matrix run exposed a Windows fixture path mismatch, the daemon test now uses a Windows named pipe endpoint and a Unix socket elsewhere.
+- **Not completed:** Remote CI/review and merge.
+- **Files or packages changed:** `packages/protocol`, `packages/application`, `packages/daemon`, `packages/mcp-server`, `tests/mcp-server.test.ts`, `tests/mcp-engineering-quality.test.ts`, `tests/daemon-engineering-quality.test.ts`, `docs/governance/quality-exceptions.json`, and `pnpm-lock.yaml`.
+- **Validation:** `pnpm verify` and pre-push verification pass with 170 test files, 1,245 tests passed, and 3 skipped; typecheck, lint, format check, build, and diff checks pass. The corrected focused daemon suite passes locally with 9 tests, focused MCP verification passes with 24 tests, and staged checks pass. Remote PR #274 CI is green across CodeQL, governance, dependency review, Compatibility Node 22/24 on Ubuntu/macOS/Windows, Desktop SEA Feasibility, and reporting-only Harness Benchmark jobs. The daemon test file is 201 formatted lines after the platform endpoint helper, the handler is 197 lines, the protocol contract is 120 lines, and the MCP tool module is 135 lines. Known repository lint warnings remain unchanged.
+- **Decisions and assumptions:** Canonical viewmodel construction remains in `@intentloom/application`; transport contracts carry provider-neutral viewmodel payloads and do not introduce an application-to-protocol runtime dependency. No network, subprocess, telemetry, installation, persistence, or mutation path was added. The pre-existing oversized protocol, daemon, and MCP barrels receive only routing additions; daemon and MCP handlers are extracted into focused modules. Three scoped, expiring Q15 quality exceptions record the measured growth and decomposition review triggers.
+- **Risks or compatibility impact:** The new daemon methods and MCP tool names are additive and versioned. Existing clients are unaffected. Local daemon tests require Unix-socket permission unavailable in the restricted sandbox, so the focused daemon suite was rerun with explicit host permission.
+- **Open issues or blockers:** The first PR-triggered Windows Node 22/24 compatibility jobs failed because the fixture passed a Windows filesystem path instead of a named-pipe endpoint; the test-only correction was committed as `bfee119`, rerun successfully, and all remote checks are now green. Review and merge remain outstanding. The known non-fatal Git fsmonitor IPC warning remains present in this checkout.
+- **Next first action:** Monitor PR #274 review feedback, address only actionable findings, and merge through the protected workflow.
+- **Evidence:** Q15 handoff specification supplied in the task attachment; source contracts in `packages/protocol/src/engineering-quality/daemon-rpc.ts`; extracted handlers in `packages/daemon/src/engineering-quality-handlers.ts`; MCP tools in `packages/mcp-server/src/engineering-quality-tools.ts`; implementation commit `c4defb4`; draft PR #274.
+
+#### Duty completion checklist
+
+- [x] Formatter passed for changed source and test files
+- [x] Markdown and lint checks passed after documentation update
+- [x] Relevant focused tests, type check, and lint passed
+- [x] Atomic commit policy and commit-message checks passed
+- [x] Staged quality checks and staged diff check passed
+- [x] Repository hooks installed or equivalent commands run
+- [x] Final `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `PROJECT_STATE.md` updated when applicable
+- [x] Duty Watch handoff completed
+- [x] Related roadmap, ADR, changelog, migration, or reference docs reviewed; no Q15 roadmap or ADR change was required
+- [x] Failed or unavailable checks recorded
 
 ### 2026-08-10, Engineering Quality Packs Phase Q14 Desktop and TUI viewmodels
 

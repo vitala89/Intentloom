@@ -18,3 +18,4 @@ export * from "./nx-graph.js";
 export * from "./cli-commands.js";
 export * from "./viewmodel.js";
 export * from "./viewmodel-renderers.js";
+export * from "./surface.js";

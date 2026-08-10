@@ -84,12 +84,17 @@ import {
   type ApprovedApplyRpcRequest,
   type ApprovedApplyExecutionResult,
 } from "../../protocol/src/index.js";
-
+import {
+  dispatchQualityRequest,
+  isQualityRequest,
+  qualityCapabilities,
+  type QualityDaemonOptions,
+} from "./engineering-quality-handlers.js";
 const maxMessageBytes = 1024 * 1024;
 const defaultMaxConnections = 16;
 const defaultRequestTimeoutMs = 30_000;
 
-export interface DaemonOptions {
+export interface DaemonOptions extends QualityDaemonOptions {
   readonly endpoint: string;
   readonly sessionToken: string;
   readonly maxConnections?: number;
@@ -380,6 +385,7 @@ function daemonCapabilities(
       "project.approvedApply",
       options.approvedApply !== undefined,
     ),
+    ...qualityCapabilities(options),
   ].filter((entry): entry is DaemonCapability => entry !== undefined);
 }
 
@@ -712,6 +718,20 @@ export async function startLocalDaemon(
             id: request.id,
             result: executionResult,
           });
+        } else if (isQualityRequest(request)) {
+          const qualityResponse = await dispatchQualityRequest(
+            request,
+            options,
+            canonicalProjectRoot,
+          );
+          if (!qualityResponse)
+            return failure(
+              socket,
+              -32601,
+              "unsupported quality method",
+              "unsupported_capability",
+            );
+          response(socket, qualityResponse);
         }
       } catch (error) {
         if (

@@ -9,6 +9,12 @@ import {
   timelineProject,
 } from "../../application/dist/index.js";
 import { startLocalDaemon } from "./index.js";
+import {
+  handleQualityCatalog,
+  handleQualityCheckers,
+  handleQualityGraph,
+  handleQualityStandards,
+} from "./engineering-quality-handlers.js";
 
 function value(args: readonly string[], flag: string): string {
   const index = args.indexOf(flag);
@@ -109,6 +115,13 @@ async function main(): Promise<void> {
         diagnostics: result.diagnostics,
       };
     },
+    qualityStandards: (request) =>
+      handleQualityStandards(request, request.params.root),
+    qualityCatalog: (request) =>
+      handleQualityCatalog(request, request.params.root),
+    qualityCheckers: (request) =>
+      handleQualityCheckers(request, request.params.root),
+    qualityGraph: (request) => handleQualityGraph(request, request.params.root),
   });
   const stop = () => void daemon.close().then(() => process.exit(0));
   process.once("SIGINT", stop);

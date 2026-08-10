@@ -14,6 +14,10 @@ import {
   ENGINEERING_CONFORMANCE_TOOL,
   HARNESS_INSPECT_TOOL,
   HARNESS_REPLAY_TOOL,
+  QUALITY_CATALOG_TOOL,
+  QUALITY_CHECKERS_TOOL,
+  QUALITY_GRAPH_TOOL,
+  QUALITY_STANDARDS_TOOL,
   PROJECT_DOCTOR_TOOL,
   PROJECT_INSPECT_TOOL,
   RELEASE_ANALYSIS_TOOL,
@@ -50,6 +54,10 @@ describe("MCP release analysis server", () => {
         ENGINEERING_CONFORMANCE_TOOL,
         HARNESS_INSPECT_TOOL,
         HARNESS_REPLAY_TOOL,
+        QUALITY_STANDARDS_TOOL,
+        QUALITY_CATALOG_TOOL,
+        QUALITY_CHECKERS_TOOL,
+        QUALITY_GRAPH_TOOL,
       ].sort(),
     );
     expect(
@@ -62,6 +70,10 @@ describe("MCP release analysis server", () => {
       "urn:intentloom:mcp:engineering-conformance:output:1",
       "urn:intentloom:mcp:harness-inspect:output:1",
       "urn:intentloom:mcp:harness-replay:output:1",
+      "urn:intentloom:mcp:quality-standards:output:1",
+      "urn:intentloom:mcp:quality-catalog:output:1",
+      "urn:intentloom:mcp:quality-checkers:output:1",
+      "urn:intentloom:mcp:quality-graph:output:1",
     ]);
   });
 
