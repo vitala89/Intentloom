@@ -174,3 +174,19 @@ export const QUALITY_SPECIALIZED_PACK_TRUST_STATE_SCHEMA_URN =
 
 export const QUALITY_DISCIPLINE_ALIAS_SCHEMA_URN =
   "urn:intentloom:schema:quality-discipline-alias:1" as const;
+
+export const QUALITY_SPECIALIZED_PACK_DETECTION_RULE_SCHEMA_URN =
+  "urn:intentloom:schema:quality-specialized-pack-detection-rule:1" as const;
+
+export const QUALITY_SPECIALIZED_PACK_DETECTION_RESULT_SCHEMA_URN =
+  "urn:intentloom:schema:quality-specialized-pack-detection-result:1" as const;
+
+export const QUALITY_SPECIALIZED_PACK_DETECTION_RESOLUTION_SCHEMA_URN =
+  "urn:intentloom:schema:quality-specialized-pack-detection-resolution:1" as const;
+
+export type QualityDetectionConfidence = "low" | "medium" | "high";
+
+export type QualityDetectionSecurityImpact =
+  "none" | "review-required" | "elevated";
+
+export type QualityDetectionPathMatchKind = "suffix" | "contains" | "exact";

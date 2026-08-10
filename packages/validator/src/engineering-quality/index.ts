@@ -21,3 +21,4 @@ export * from "./executable-marketplace.js";
 export * from "./specialized-disciplines.js";
 export * from "./specialized-pack-manifest.js";
 export * from "./specialized-aliases.js";
+export * from "./specialized-pack-detection.js";

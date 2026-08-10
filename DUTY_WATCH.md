@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Engineering Quality Packs Phases Q0–Q18 are merged into `main`; Specialized Engineering Packs Phase S1 (PR #277) and Phase S2 (PR #278) are merged into `main`; Phase S3 Discipline Aliases is implemented and verified on branch `feat/specialized-packs-s3-aliases`.**
+Status: **Engineering Quality Packs Phases Q0–Q18 are merged into `main`; Specialized Engineering Packs Phases S1 (PR #277), S2 (PR #278), and S3 (PR #280) are merged into `main`; Phase S4 Read-Only Detection and Compatibility Resolution is implemented and verified on branch `feat/specialized-packs-s4-detection`.**
 
-Active branch: `feat/specialized-packs-s3-aliases`
+Active branch: `feat/specialized-packs-s4-detection`
 
-Current objective: Complete Phase S3 Discipline Aliases & Non-Duplicating Rule Resolution contracts, validators, application engine, and test suite without rule duplication.
+Current objective: Prepare atomic commit and pull request for Phase S4 read-only specialized-pack detection and compatibility resolution.
 
-Next first action: Stage files, commit (`feat(specialized-packs): add discipline aliases and non-duplicating rule resolution (#280)`), push to `origin`, create PR #280, and monitor CI.
+Next first action: Commit S4 implementation, push branch, open PR, and monitor CI.
 
 Known open items, in the order they should be handled:
 
@@ -97,6 +97,25 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-10, Specialized Engineering Packs Phase S4 Read-Only Detection and Compatibility Resolution
+
+- **Status:** complete; implementation, full verification, typecheck, lint, formatting, test suite, build, and diff checks are complete.
+- **Branch:** `feat/specialized-packs-s4-detection`, based on updated `main` (`d2008f3`).
+- **Objective:** Implement Phase S4 read-only detection and compatibility resolution from `SPECIALIZED_ENGINEERING_PACKS_PLAN.md` with versioned contracts, validators, pure application engine, bounded caller-supplied path scanning, and tests without enabling packs, installing tooling, or mutating project state.
+- **Completed:** Added detection rule/result/resolution contracts in `@intentloom/protocol`, validator runtime boundaries in `@intentloom/validator`, pure application operations `registerSpecializedPackDetectionRule`, `detectSpecializedPacks`, and `resolveSpecializedPackDetection` in `@intentloom/application`, and contract test suite `tests/engineering-quality-specialized-detection.test.ts` (4 tests). Reconciled post-S3 merge state in Duty Watch and `PROJECT_STATE.md`.
+- **Next first action:** Create atomic commit, push branch `feat/specialized-packs-s4-detection`, open pull request, and verify GitHub Actions CI matrix.
+
+#### Duty completion checklist
+
+- [x] Formatter passed for changed source and test files
+- [x] Markdown and lint checks passed after documentation update
+- [x] Relevant focused tests, type check, and lint passed
+- [x] Full `pnpm verify` passed
+- [x] Final `git diff --check` passed
+- [x] `PROJECT_STATE.md` updated when applicable
+- [x] Duty Watch handoff completed
+- [x] Related roadmap, ADR, changelog, migration, or reference docs reviewed; no Phase S4 roadmap or ADR change was required
 
 ### 2026-08-10, Specialized Engineering Packs Phase S3 Discipline Aliases and Non-Duplicating Rule Resolution
 
