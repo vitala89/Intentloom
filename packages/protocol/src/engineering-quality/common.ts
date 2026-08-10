@@ -165,3 +165,9 @@ export const QUALITY_DISCIPLINE_SCHEMA_URN =
 
 export const QUALITY_ROLE_COMPOSITION_SCHEMA_URN =
   "urn:intentloom:schema:quality-role-composition:1" as const;
+
+export const QUALITY_SPECIALIZED_PACK_SCHEMA_URN =
+  "urn:intentloom:schema:quality-specialized-pack:1" as const;
+
+export const QUALITY_SPECIALIZED_PACK_TRUST_STATE_SCHEMA_URN =
+  "urn:intentloom:schema:quality-specialized-pack-trust-state:1" as const;
