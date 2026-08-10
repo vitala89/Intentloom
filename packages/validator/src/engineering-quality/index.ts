@@ -15,3 +15,4 @@ export * from "./pack-entry.js";
 export * from "./curated-catalog.js";
 export * from "./graph-provider.js";
 export * from "./nx-graph.js";
+export * from "./remediation-plan.js";

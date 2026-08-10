@@ -144,3 +144,12 @@ export type QualityPackConflictKind =
   | "incompatible-pack"
   | "duplicate-meaning"
   | "conflicting-meaning";
+
+export const QUALITY_REMEDIATION_PLAN_SCHEMA_URN =
+  "urn:intentloom:schema:engineering-quality-remediation-plan:1" as const;
+
+export type QualityRemediationKind =
+  "decomposition-plan" | "baseline-reduction" | "exception-expiry" | "rule-fix";
+
+export type QualityRemediationStatus =
+  "draft" | "approved" | "applied" | "rolled-back" | "rejected" | "stale";

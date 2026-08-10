@@ -11,3 +11,4 @@ export * from "./external-pack-import.js";
 export * from "./curated-catalog.js";
 export * from "./graph-provider.js";
 export * from "./nx-graph.js";
+export * from "./remediation.js";

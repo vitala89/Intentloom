@@ -19,3 +19,4 @@ export * from "./cli-commands.js";
 export * from "./viewmodel.js";
 export * from "./viewmodel-renderers.js";
 export * from "./surface.js";
+export * from "./remediation-engine.js";
