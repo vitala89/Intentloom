@@ -1,4 +1,5 @@
 import { createConnection } from "node:net";
+import { randomUUID } from "node:crypto";
 import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -58,13 +59,19 @@ async function fixtureRoot(): Promise<string> {
   return root;
 }
 
+function daemonEndpoint(directory: string): string {
+  return process.platform === "win32"
+    ? `\\\\.\\pipe\\intentloom-quality-${process.pid}-${randomUUID()}`
+    : join(directory, "daemon.sock");
+}
+
 async function startQualityDaemon(root: string) {
   const directory = await mkdtemp(
     join(tmpdir(), "intentloom-quality-endpoint-"),
   );
   const token = "q".repeat(32);
   const daemon = await startLocalDaemon({
-    endpoint: join(directory, "daemon.sock"),
+    endpoint: daemonEndpoint(directory),
     sessionToken: token,
     enforceCanonicalRoots: true,
     qualityStandards: (request) =>
