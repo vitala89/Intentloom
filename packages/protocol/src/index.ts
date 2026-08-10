@@ -16,6 +16,10 @@ import {
   WORKFLOW_TRANSITION_INTERVALS_METHOD,
   SESSION_GET_METHOD,
   APPROVED_APPLY_METHOD,
+  QUALITY_STANDARDS_METHOD,
+  QUALITY_CATALOG_METHOD,
+  QUALITY_CHECKERS_METHOD,
+  QUALITY_GRAPH_METHOD,
 } from "./jsonrpc.js";
 import type { RequestId, JsonRpcRequest } from "./jsonrpc.js";
 import type { JsonRpcSuccess } from "./jsonrpc.js";
@@ -31,6 +35,23 @@ import type { DaemonInfoResponse } from "./daemon.js";
 import type { ProjectDiffParams, ProjectDiffChange } from "./diff.js";
 import type { ProjectDiffResult, ProjectDiffRequest } from "./diff.js";
 import type { ProjectDiffResponse } from "./diff.js";
+import type {
+  QualityCatalogRequest,
+  QualityCatalogResponse,
+  QualityCheckersRequest,
+  QualityCheckersResponse,
+  QualityGraphRequest,
+  QualityGraphResponse,
+  QualityStandardsRequest,
+  QualityStandardsResponse,
+  QualityViewmodelPayload,
+} from "./engineering-quality/daemon-rpc.js";
+import {
+  createQualityCatalogRequest,
+  createQualityCheckersRequest,
+  createQualityGraphRequest,
+  createQualityStandardsRequest,
+} from "./engineering-quality/daemon-rpc.js";
 
 export * from "./jsonrpc.js";
 export * from "./daemon.js";
@@ -308,7 +329,11 @@ export type DaemonRequest =
   | WorkflowRepetitionSummaryRequest
   | WorkflowTransitionIntervalsRequest
   | SessionGetRequest
-  | ApprovedApplyRpcRequest;
+  | ApprovedApplyRpcRequest
+  | QualityStandardsRequest
+  | QualityCatalogRequest
+  | QualityCheckersRequest
+  | QualityGraphRequest;
 
 export type DaemonResponse =
   | DaemonInfoResponse
@@ -326,7 +351,11 @@ export type DaemonResponse =
   | WorkflowRepetitionSummaryResponse
   | WorkflowTransitionIntervalsResponse
   | SessionGetResponse
-  | ApprovedApplyRpcResponse;
+  | ApprovedApplyRpcResponse
+  | QualityStandardsResponse
+  | QualityCatalogResponse
+  | QualityCheckersResponse
+  | QualityGraphResponse;
 
 export class ProtocolValidationError extends Error {
   constructor(
@@ -702,6 +731,10 @@ export function parseDaemonRequest(value: unknown): DaemonRequest {
     WORKFLOW_TRANSITION_INTERVALS_METHOD,
     SESSION_GET_METHOD,
     APPROVED_APPLY_METHOD,
+    QUALITY_STANDARDS_METHOD,
+    QUALITY_CATALOG_METHOD,
+    QUALITY_CHECKERS_METHOD,
+    QUALITY_GRAPH_METHOD,
   ];
   if (typeof value.method !== "string" || !validMethods.includes(value.method))
     throw new ProtocolValidationError(-32601, "unsupported protocol method");
@@ -851,6 +884,26 @@ export function parseDaemonRequest(value: unknown): DaemonRequest {
       value.params.request as unknown as ApprovedApplyRequest,
     );
   }
+  if (value.method === QUALITY_STANDARDS_METHOD)
+    return createQualityStandardsRequest(
+      id,
+      stringValue(value.params.root, "root"),
+    );
+  if (value.method === QUALITY_CATALOG_METHOD)
+    return createQualityCatalogRequest(
+      id,
+      stringValue(value.params.root, "root"),
+    );
+  if (value.method === QUALITY_CHECKERS_METHOD)
+    return createQualityCheckersRequest(
+      id,
+      stringValue(value.params.root, "root"),
+    );
+  if (value.method === QUALITY_GRAPH_METHOD)
+    return createQualityGraphRequest(
+      id,
+      stringValue(value.params.root, "root"),
+    );
   throw new ProtocolValidationError(-32601, "unsupported protocol method");
 }
 
@@ -1241,6 +1294,53 @@ export function parseDaemonInfoResponse(value: unknown): DaemonInfoResponse {
         : {}),
     },
   });
+}
+
+function parseQualityResponse(value: unknown): JsonRpcSuccess<{
+  readonly protocolVersion: typeof PROTOCOL_VERSION;
+  readonly viewmodel: QualityViewmodelPayload;
+}> {
+  if (!isObject(value) || value.jsonrpc !== "2.0")
+    throw new ProtocolValidationError(-32600, "jsonrpc must equal 2.0");
+  const id = requestId(value.id);
+  if (!isObject(value.result))
+    throw new ProtocolValidationError(-32600, "result must be an object");
+  if (value.result.protocolVersion !== PROTOCOL_VERSION)
+    throw new ProtocolValidationError(-32602, "unsupported protocol version");
+  if (!isObject(value.result.viewmodel))
+    throw new ProtocolValidationError(-32602, "viewmodel must be an object");
+  return {
+    jsonrpc: "2.0",
+    id,
+    result: {
+      protocolVersion: PROTOCOL_VERSION,
+      viewmodel: value.result.viewmodel,
+    },
+  };
+}
+
+export function parseQualityStandardsResponse(
+  value: unknown,
+): QualityStandardsResponse {
+  return parseQualityResponse(value) as QualityStandardsResponse;
+}
+
+export function parseQualityCatalogResponse(
+  value: unknown,
+): QualityCatalogResponse {
+  return parseQualityResponse(value) as QualityCatalogResponse;
+}
+
+export function parseQualityCheckersResponse(
+  value: unknown,
+): QualityCheckersResponse {
+  return parseQualityResponse(value) as QualityCheckersResponse;
+}
+
+export function parseQualityGraphResponse(
+  value: unknown,
+): QualityGraphResponse {
+  return parseQualityResponse(value) as QualityGraphResponse;
 }
 
 export function parseProjectDiffResponse(value: unknown): ProjectDiffResponse {

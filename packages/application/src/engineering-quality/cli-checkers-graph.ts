@@ -9,6 +9,29 @@ import {
 } from "./nx-graph.js";
 import type { QualityCliResult } from "./cli-quality-standards.js";
 
+export const QUALITY_CHECKER_ADAPTERS = [
+  {
+    adapterId: "eslint-json",
+    adapterName: "ESLint JSON Reporter Ingestion",
+    supportedReportFormats: ["eslint-json"],
+  },
+  {
+    adapterId: "typescript-tsc",
+    adapterName: "TypeScript Diagnostics Ingestion",
+    supportedReportFormats: ["tsc-json"],
+  },
+  {
+    adapterId: "sarif-v2.1.0",
+    adapterName: "SARIF Report Ingestion",
+    supportedReportFormats: ["sarif-json"],
+  },
+  {
+    adapterId: "clippy-json",
+    adapterName: "Clippy Cargo JSON Ingestion",
+    supportedReportFormats: ["clippy-json"],
+  },
+] as const;
+
 export function runCheckersCliCommand(
   command: "list" | "inspect" | "consume" | "run",
   args: {
@@ -20,28 +43,7 @@ export function runCheckersCliCommand(
 ): QualityCliResult {
   const json = args.json ?? false;
 
-  const builtInAdapters = [
-    {
-      adapterId: "eslint-json",
-      adapterName: "ESLint JSON Reporter Ingestion",
-      supportedReportFormats: ["eslint-json"],
-    },
-    {
-      adapterId: "typescript-tsc",
-      adapterName: "TypeScript Diagnostics Ingestion",
-      supportedReportFormats: ["tsc-json"],
-    },
-    {
-      adapterId: "sarif-v2.1.0",
-      adapterName: "SARIF Report Ingestion",
-      supportedReportFormats: ["sarif-json"],
-    },
-    {
-      adapterId: "clippy-json",
-      adapterName: "Clippy Cargo JSON Ingestion",
-      supportedReportFormats: ["clippy-json"],
-    },
-  ];
+  const builtInAdapters = QUALITY_CHECKER_ADAPTERS;
 
   if (command === "list") {
     const stdout = json

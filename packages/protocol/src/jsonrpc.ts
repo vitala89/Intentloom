@@ -24,6 +24,12 @@ export const WORKFLOW_TRANSITION_INTERVALS_METHOD =
 export const SESSION_GET_METHOD = "intentloom.session.get.v1" as const;
 export const APPROVED_APPLY_METHOD =
   "intentloom.project.approvedApply.v1" as const;
+export const QUALITY_STANDARDS_METHOD =
+  "intentloom.quality.standards.v1" as const;
+export const QUALITY_CATALOG_METHOD = "intentloom.quality.catalog.v1" as const;
+export const QUALITY_CHECKERS_METHOD =
+  "intentloom.quality.checkers.v1" as const;
+export const QUALITY_GRAPH_METHOD = "intentloom.quality.graph.v1" as const;
 
 export type JsonPrimitive = boolean | null | number | string;
 export type JsonValue = JsonPrimitive | JsonObject | readonly JsonValue[];

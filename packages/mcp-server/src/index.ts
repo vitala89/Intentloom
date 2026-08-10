@@ -39,6 +39,20 @@ import {
   harnessReplay,
   harnessReplayTool,
 } from "./harness-tools.js";
+import {
+  QUALITY_CATALOG_TOOL,
+  QUALITY_CHECKERS_TOOL,
+  QUALITY_GRAPH_TOOL,
+  QUALITY_STANDARDS_TOOL,
+  qualityCatalog,
+  qualityCatalogTool,
+  qualityCheckers,
+  qualityCheckersTool,
+  qualityGraph,
+  qualityGraphTool,
+  qualityStandards,
+  qualityStandardsTool,
+} from "./engineering-quality-tools.js";
 
 export {
   McpToolError,
@@ -46,6 +60,12 @@ export {
   type McpToolErrorCode,
 } from "./common.js";
 export { HARNESS_INSPECT_TOOL, HARNESS_REPLAY_TOOL } from "./harness-tools.js";
+export {
+  QUALITY_CATALOG_TOOL,
+  QUALITY_CHECKERS_TOOL,
+  QUALITY_GRAPH_TOOL,
+  QUALITY_STANDARDS_TOOL,
+} from "./engineering-quality-tools.js";
 
 export const MCP_PROTOCOL_VERSION = "2024-11-05" as const;
 export const RELEASE_ANALYSIS_TOOL = "intentloom_release_analysis" as const;
@@ -262,6 +282,10 @@ const tools = [
   engineeringConformanceTool,
   harnessInspectTool,
   harnessReplayTool,
+  qualityStandardsTool,
+  qualityCatalogTool,
+  qualityCheckersTool,
+  qualityGraphTool,
 ] as const;
 
 type McpToolName =
@@ -270,7 +294,11 @@ type McpToolName =
   | typeof PROJECT_DOCTOR_TOOL
   | typeof ENGINEERING_CONFORMANCE_TOOL
   | typeof HARNESS_INSPECT_TOOL
-  | typeof HARNESS_REPLAY_TOOL;
+  | typeof HARNESS_REPLAY_TOOL
+  | typeof QUALITY_STANDARDS_TOOL
+  | typeof QUALITY_CATALOG_TOOL
+  | typeof QUALITY_CHECKERS_TOOL
+  | typeof QUALITY_GRAPH_TOOL;
 
 const profiles = [
   "generic",
@@ -492,7 +520,11 @@ function isMcpToolName(value: unknown): value is McpToolName {
     value === PROJECT_DOCTOR_TOOL ||
     value === ENGINEERING_CONFORMANCE_TOOL ||
     value === HARNESS_INSPECT_TOOL ||
-    value === HARNESS_REPLAY_TOOL
+    value === HARNESS_REPLAY_TOOL ||
+    value === QUALITY_STANDARDS_TOOL ||
+    value === QUALITY_CATALOG_TOOL ||
+    value === QUALITY_CHECKERS_TOOL ||
+    value === QUALITY_GRAPH_TOOL
   );
 }
 
@@ -532,7 +564,15 @@ export async function handleMcpRequest(
               ? await engineeringConformance(args, options)
               : params.name === HARNESS_INSPECT_TOOL
                 ? await harnessInspect(args, options)
-                : await harnessReplay(args, options);
+                : params.name === HARNESS_REPLAY_TOOL
+                  ? await harnessReplay(args, options)
+                  : params.name === QUALITY_STANDARDS_TOOL
+                    ? await qualityStandards(args, options)
+                    : params.name === QUALITY_CATALOG_TOOL
+                      ? await qualityCatalog(args, options)
+                      : params.name === QUALITY_CHECKERS_TOOL
+                        ? await qualityCheckers(args, options)
+                        : await qualityGraph(args, options);
     return {
       jsonrpc: "2.0",
       id,

@@ -7,6 +7,7 @@
     "node": ">=22"
   },
   "dependencies": {
+    "@intentloom/application": "workspace:*",
     "@intentloom/protocol": "workspace:*"
   },
   "bin": {

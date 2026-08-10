@@ -242,6 +242,39 @@
       "scope": "Engineering Assessment & Quality Packs Roadmap",
       "reviewTrigger": "Decompose validator index barrel before next feature.",
       "expires": "2026-10-31"
+    },
+    {
+      "path": "packages/daemon/src/index.ts",
+      "rule": "existing-oversized-growth",
+      "baseLines": 1056,
+      "headLines": 1076,
+      "reason": "Phase Q15 wires four read-only Engineering Quality RPC capabilities into the pre-existing daemon router; handler implementation and quality dispatch are extracted into engineering-quality-handlers.ts.",
+      "owner": "Daemon maintainers",
+      "scope": "Engineering Quality Packs Phase Q15",
+      "reviewTrigger": "Extract the remaining daemon request-router branches before the next daemon RPC feature.",
+      "expires": "2026-10-31"
+    },
+    {
+      "path": "packages/mcp-server/src/index.ts",
+      "rule": "existing-oversized-growth",
+      "baseLines": 577,
+      "headLines": 617,
+      "reason": "Phase Q15 registers four read-only Engineering Quality MCP tools in the existing MCP registry and dispatch chain; descriptors and handlers are isolated in engineering-quality-tools.ts.",
+      "owner": "MCP maintainers",
+      "scope": "Engineering Quality Packs Phase Q15",
+      "reviewTrigger": "Extract the MCP tool registry and dispatch chain before the next MCP tool feature.",
+      "expires": "2026-10-31"
+    },
+    {
+      "path": "packages/protocol/src/index.ts",
+      "rule": "existing-oversized-growth",
+      "baseLines": 4471,
+      "headLines": 4571,
+      "reason": "Phase Q15 adds four typed daemon request/response unions and parser branches to the existing protocol compatibility boundary; the versioned quality contracts are isolated in engineering-quality/daemon-rpc.ts.",
+      "owner": "Protocol maintainers",
+      "scope": "Engineering Quality Packs Phase Q15",
+      "reviewTrigger": "Extract daemon request parsing and response validation into protocol domain submodules before the next protocol feature.",
+      "expires": "2026-10-31"
     }
   ]
 }
