@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Engineering Quality Packs Roadmap Phases Q0–Q18 are fully implemented and verified on branch `feat/engineering-quality-q18-executable-marketplace`.**
+Status: **Engineering Quality Packs Roadmap Phases Q0–Q18 are fully implemented, verified, and merged into `main` (PR #275, `88ac3a2`).**
 
-Active branch: `feat/engineering-quality-q18-executable-marketplace`
+Active branch: `main`
 
-Current objective: Complete Phase Q18 Executable Marketplace Decision contracts, validators, application evaluation engine, and test suite with fail-closed security defaults.
+Current objective: Maintain clean `main` release line state, monitor open maintainer tasks, and prepare for future roadmap increments.
 
-Next first action: Stage files, commit (`feat(quality): add executable marketplace decision (#277)`), push to `origin`, create PR #277, and monitor CI.
+Next first action: Review open maintainer items and roadmap requirements.
 
 Known open items, in the order they should be handled:
 
