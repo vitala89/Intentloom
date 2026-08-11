@@ -2,6 +2,10 @@ import { invoke } from "@tauri-apps/api/core";
 import {
   createDaemonInfoRequest,
   createDoctorRequest,
+  createFoundationConflictsIdentifyRequest,
+  createFoundationWorkshopCreateRequest,
+  createFoundationWorkshopDeleteRequest,
+  createFoundationWorkshopGetRequest,
   createInceptionSessionCreateRequest,
   createInceptionSessionDeleteRequest,
   createInceptionSessionGetRequest,
@@ -15,6 +19,7 @@ import {
   parseProjectTimelineResponse,
   type DaemonInfoResult,
   type DoctorResult,
+  type FoundationViewmodelPayload,
   type InceptionViewmodelPayload,
   type InspectResult,
   type ProjectDiffParams,
@@ -199,5 +204,72 @@ export const desktopClient = {
       sessionId,
     );
     return this.inceptionRequest(request, signal);
+  },
+
+  async foundationRequest(
+    request: object,
+    signal?: AbortSignal,
+  ): Promise<FoundationViewmodelPayload> {
+    const response = await call<{ result?: { viewmodel?: unknown } }>(
+      "invoke_foundation_request",
+      { request },
+      signal,
+    );
+    const viewmodel = response.result?.viewmodel;
+    if (typeof viewmodel !== "object" || viewmodel === null) {
+      throw new DesktopBridgeError(
+        "Foundation response did not include a viewmodel",
+        "bounded_validation_failed",
+      );
+    }
+    return viewmodel as FoundationViewmodelPayload;
+  },
+
+  async foundationWorkshopCreate(
+    root: string,
+    idea: string,
+    inceptionSessionId?: string,
+    signal?: AbortSignal,
+  ): Promise<FoundationViewmodelPayload> {
+    const request = createFoundationWorkshopCreateRequest(
+      "desktop-foundation-create",
+      root,
+      idea,
+      inceptionSessionId,
+    );
+    return this.foundationRequest(request, signal);
+  },
+
+  async foundationWorkshopGet(
+    workshopId: string,
+    signal?: AbortSignal,
+  ): Promise<FoundationViewmodelPayload> {
+    const request = createFoundationWorkshopGetRequest(
+      "desktop-foundation-get",
+      workshopId,
+    );
+    return this.foundationRequest(request, signal);
+  },
+
+  async foundationWorkshopDelete(
+    workshopId: string,
+    signal?: AbortSignal,
+  ): Promise<FoundationViewmodelPayload> {
+    const request = createFoundationWorkshopDeleteRequest(
+      "desktop-foundation-delete",
+      workshopId,
+    );
+    return this.foundationRequest(request, signal);
+  },
+
+  async foundationConflictsIdentify(
+    workshopId: string,
+    signal?: AbortSignal,
+  ): Promise<FoundationViewmodelPayload> {
+    const request = createFoundationConflictsIdentifyRequest(
+      "desktop-foundation-conflicts",
+      workshopId,
+    );
+    return this.foundationRequest(request, signal);
   },
 };

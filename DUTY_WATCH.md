@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **W2 Foundation Workshop Core complete on branch `feat/workspace-w2-foundation-workshop-core`; open PR next. W1 complete on `main` (`2f63f99`).**
+Status: **W2 Client complete on branch `feat/workspace-w2-foundation-workshop-client`; open PR next. W1 + W2 Core on `main` (`329dec3`).**
 
-Active branch: `feat/workspace-w2-foundation-workshop-core`
+Active branch: `feat/workspace-w2-foundation-workshop-client`
 
-Current objective: Open PR for W2 Foundation Workshop Core contracts (typed state, URNs, readiness rules, daemon RPC, fixtures).
+Current objective: Open PR for W2 Client surfaces (foundation viewmodels, TUI renderers, Desktop Foundation Workshop view, Tauri bridge, fixture parity tests).
 
-Next first action: Open PR from `feat/workspace-w2-foundation-workshop-core`, then start W2 Client surfaces after merge.
+Next first action: Open PR from `feat/workspace-w2-foundation-workshop-client`, then W3 Neutron or W5 binary parity per roadmap priority.
 
 Known open items, in the order they should be handled:
 
@@ -95,6 +95,25 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-11, Engineering Workspace W2 Foundation Workshop Client
+
+- **Status:** implementation complete on branch `feat/workspace-w2-foundation-workshop-client`; ready for PR.
+- **Branch:** `feat/workspace-w2-foundation-workshop-client` (based on `main` at `329dec3`).
+- **Objective:** Deliver W2 Client surfaces after W2 Core merge (PR #288): shared foundation progress viewmodels, accessible TUI renderers, Desktop Foundation Workshop view, Tauri bridge, and fixture parity tests against six frozen fixture IDs.
+- **Completed:** Reconciled handoff docs for W2 Core merge on `main`. Added `foundation-client-viewmodel.ts` and `foundation-viewmodel-renderers.ts` with workshop progress, readiness summary, and shell viewmodels plus TUI text renderers. Added `tests/desktop-tui-foundation.test.ts` (6 tests) for CLI/viewmodel parity against all six frozen fixture IDs. Added Desktop `FoundationWorkshopView` with empty/loading/error/resume/deleted states, navigation entry via `WorkspaceContent.tsx`, Tauri `invoke_foundation_request` bridge, and `desktopClient.foundationWorkshopCreate/Get/Delete/ConflictsIdentify` helpers.
+- **Validation:** `pnpm verify` green (1330 tests passed, 3 skipped).
+- **Non-goals preserved:** W3 Neutron live provider, W5 binary `intentloom foundation` routing, project-root mutation, oversized barrel growth.
+- **Next action:** Open PR, then W3 Neutron discovery integration or W5 CLI binary parity per maintainer priority.
+
+### 2026-08-11, Engineering Workspace W2 handoff reconciliation (post PR #288 merge)
+
+- **Status:** complete on `main` (`329dec3`).
+- **Branch:** `main`
+- **Objective:** Reconcile handoff docs after W2 Core merge (PR #288): update `PROJECT_STATE.md`, `DUTY_WATCH.md`, and capability matrix §3/§8 to record W1 + W2 Core complete on main.
+- **Completed:** Pulled `main` to `329dec3` (PR #288 squash-merge). Verified PR #288 merged with CI/CodeQL/Governance green. Updated active focus, verified-main pointers, W2 phase table row, §3 Foundation Workshop sync state, and §8 client readiness checkpoint. Set next objective to W2 Client on branch `feat/workspace-w2-foundation-workshop-client`.
+- **Validation:** `git pull` fast-forward to `329dec3`; `gh pr view 288` confirms MERGED at 2026-08-11T13:46:02Z.
+- **Next action:** Create branch `feat/workspace-w2-foundation-workshop-client` and implement foundation client viewmodels, TUI renderers, Desktop view, Tauri bridge, and `tests/desktop-tui-foundation.test.ts` parity against six frozen fixture IDs.
 
 ### 2026-08-11, Engineering Workspace W2 Foundation Workshop Core
 

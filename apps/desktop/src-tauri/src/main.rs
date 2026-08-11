@@ -692,6 +692,48 @@ async fn invoke_inception_request(
     .await
 }
 
+fn is_foundation_method(method: &str) -> bool {
+    matches!(
+        method,
+        "intentloom.foundation.workshop.create.v1"
+            | "intentloom.foundation.workshop.get.v1"
+            | "intentloom.foundation.questions.list.v1"
+            | "intentloom.foundation.answer.record.v1"
+            | "intentloom.foundation.understanding.summarize.v1"
+            | "intentloom.foundation.conflicts.identify.v1"
+            | "intentloom.foundation.readiness.evaluate.v1"
+            | "intentloom.foundation.workshop.export.v1"
+            | "intentloom.foundation.workshop.delete.v1"
+    )
+}
+
+#[tauri::command]
+async fn invoke_foundation_request(
+    app: AppHandle,
+    state: State<'_, DaemonRuntime>,
+    request: Value,
+) -> Result<Value, BridgeError> {
+    let state = state.inner().clone();
+    run_blocking(move || {
+        let method = request
+            .get("method")
+            .and_then(Value::as_str)
+            .ok_or_else(|| {
+                BridgeError::new("unsupported_capability", "missing foundation method")
+            })?;
+        if !is_foundation_method(method) {
+            return Err(BridgeError::new(
+                "unsupported_capability",
+                "desktop command is not allowed for this foundation operation",
+            ));
+        }
+        state
+            .ensure_daemon(&app, &request)
+            .map(|(_, response)| response)
+    })
+    .await
+}
+
 fn main() {
     let runtime = DaemonRuntime::default();
     let runtime_for_exit = runtime.clone();
@@ -706,6 +748,7 @@ fn main() {
             preview_project_diff,
             load_project_timeline,
             invoke_inception_request,
+            invoke_foundation_request,
         ])
         .build(tauri::generate_context!())
         .expect("error while building Intentloom Desktop");
