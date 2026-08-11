@@ -14,6 +14,7 @@ import { DiffView } from "./views/DiffView.js";
 import { DoctorView } from "./views/DoctorView.js";
 import { InspectView } from "./views/InspectView.js";
 import { NewProjectView } from "./views/NewProjectView.js";
+import { FoundationWorkshopView } from "./views/FoundationWorkshopView.js";
 import { OverviewView } from "./views/OverviewView.js";
 import { SettingsView } from "./views/SettingsView.js";
 import { TimelineView } from "./views/TimelineView.js";
@@ -100,6 +101,10 @@ export function WorkspaceContent({
 }: WorkspaceContentProps) {
   if (activeView === "New project") {
     return <NewProjectView />;
+  }
+
+  if (activeView === "Foundation workshop") {
+    return <FoundationWorkshopView />;
   }
 
   if (activeView === "Inspect") {
