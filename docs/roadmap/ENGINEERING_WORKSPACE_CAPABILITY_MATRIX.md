@@ -90,16 +90,16 @@ surfaces expose inception. No `tests/fixtures/inception/` tree.
 
 ### Engineering Workspace phases (plan vs evidence)
 
-| W phase | Plan intent                                                                                | Current evidence                                                    | Sync state                                                |
-| ------- | ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------- | --------------------------------------------------------- |
-| **W0**  | Capability map + state reconciliation                                                      | **this document** + updated `PROJECT_STATE.md` / `DUTY_WATCH.md`    | **complete**                                              |
-| **W1**  | Versioned inception **session** contracts + daemon + CLI JSON + fixtures + client surfaces | Merged on `main` (`2f63f99`, PR #286 Core + PR #287 Client)         | **complete** — frozen fixtures + Desktop/TUI parity       |
-| **W2**  | Foundation Workshop typed state + readiness + client surfaces                              | Merged on `main` (`208f7c4`, PR #288 Core + PR #289 Client); see §3 | **complete** — frozen fixtures + Desktop/TUI parity       |
-| **W3**  | Neutron discovery integration for Foundation path                                          | Merged Core + Client on `main` (`be81bed`, PR #293)                 | **complete** — frozen fixtures + Desktop/TUI parity       |
-| **W4**  | Blueprint alternatives (workspace naming)                                                  | Core merged on `main` (`de9b473`, PR #295); Client on branch        | **Client in review** — Desktop/TUI parity pending merge   |
-| **W5**  | CLI/daemon/client parity freeze                                                            | Inception + foundation binary routing merged (#290)                 | **complete** for inception/foundation; blueprint deferred |
-| **W6**  | Minimal scaffold planner (workspace gate)                                                  | I5 app ops exist                                                    | `integration-pending` after W5                            |
-| **W7**  | Transactional empty-root creation                                                          | I6 app ops exist                                                    | `integration-pending`; gated on W5–W6                     |
+| W phase | Plan intent                                                                                | Current evidence                                                    | Sync state                                          |
+| ------- | ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------- | --------------------------------------------------- |
+| **W0**  | Capability map + state reconciliation                                                      | **this document** + updated `PROJECT_STATE.md` / `DUTY_WATCH.md`    | **complete**                                        |
+| **W1**  | Versioned inception **session** contracts + daemon + CLI JSON + fixtures + client surfaces | Merged on `main` (`2f63f99`, PR #286 Core + PR #287 Client)         | **complete** — frozen fixtures + Desktop/TUI parity |
+| **W2**  | Foundation Workshop typed state + readiness + client surfaces                              | Merged on `main` (`208f7c4`, PR #288 Core + PR #289 Client); see §3 | **complete** — frozen fixtures + Desktop/TUI parity |
+| **W3**  | Neutron discovery integration for Foundation path                                          | Merged Core + Client on `main` (`be81bed`, PR #293)                 | **complete** — frozen fixtures + Desktop/TUI parity |
+| **W4**  | Blueprint alternatives (workspace naming)                                                  | Core + Client merged on `main` (`92e82fb`, PR #296)                 | **complete** — Desktop/TUI parity                   |
+| **W5**  | CLI/daemon/client parity freeze                                                            | Inception + foundation on main (#290); blueprint routing PR #297    | **blueprint top-level routing in review**           |
+| **W6**  | Minimal scaffold planner (workspace gate)                                                  | I5 app ops exist                                                    | `integration-pending` after W5                      |
+| **W7**  | Transactional empty-root creation                                                          | I6 app ops exist                                                    | `integration-pending`; gated on W5–W6               |
 
 ---
 
@@ -327,19 +327,19 @@ JSON helper, and frozen fixtures — **reusing** existing
 ## 8. Client readiness summary (W2 checkpoint)
 
 ```text
-Current Engineering Workspace phase: W4 Client in review (Blueprint Desktop/TUI); W1 + W2 + W3 + W4 Core + W5 complete on main
-Verified main: de9b473 (PR #295 W4 Core merged)
+Current Engineering Workspace phase: W5 blueprint binary routing in review (PR #297); W1–W4 complete on main
+Verified main: 92e82fb (PR #296 W4 Client merged)
 
 CORE
 Current completed capability:
 - W1 inception session URNs, store, daemon RPC, CLI JSON helper, frozen fixtures + client surfaces
 - W2 foundation workshop typed state, URNs, readiness rules, daemon RPC, CLI helper, frozen fixtures + client surfaces
 - W3 foundation discovery URNs, adaptive questions, fake-adapter discovery turn, daemon RPC, CLI discover commands, Desktop/TUI client surfaces
-- W4 foundation blueprint proposal/compare/approve/revoke URNs, resolver, daemon RPC, CLI blueprint commands (main)
-- W5 `intentloom inception` / `intentloom foundation` binary routing
+- W4 foundation blueprint proposal/compare/approve/revoke URNs, resolver, daemon RPC, CLI foundation blueprint-* commands, Desktop/TUI client surfaces (main)
+- W5 `intentloom inception` / `intentloom foundation` binary routing (main); `intentloom blueprint` top-level routing (PR #297)
 
 Next Core task:
-- W5 `intentloom blueprint ...` top-level binary routing (optional increment)
+- W6 minimal scaffold planner (workspace gate)
 
 CLIENTS: DESKTOP + CLI/TUI
 Ready now:
@@ -347,13 +347,12 @@ Ready now:
 - W1 New Project shell (Desktop) + TUI viewmodels against frozen inception fixtures
 - W2 Foundation Workshop shell (Desktop) + TUI viewmodels, Tauri bridge, 6-test fixture parity
 - W3 Neutron discovery panel (Desktop) + TUI viewmodels, 4-test fixture parity
-- W5 inception/foundation CLI binary commands
+- W4 blueprint alternatives panel (Desktop) + TUI viewmodels, 4-test fixture parity
+- W5 inception/foundation CLI binary commands (main); blueprint top-level routing (PR #297)
 
 Integration pending:
-- W4 Client Desktop/TUI blueprint alternatives UX (branch ready for PR)
 - EQ CLI helpers → `intentloom` binary
 - Specialized packs CLI → binary
-- W5 `intentloom blueprint ...` binary routing
 
 Blocked / future:
 - Full existing-project W9 composed flow
@@ -361,8 +360,8 @@ Blocked / future:
 - S8 external specialized packs
 
 Next synchronization checkpoint:
-- After W4 Client PR merges
-- Before W5 blueprint binary routing or W6 scaffold increment
+- After W5 PR #297 merges
+- Before W6 scaffold increment
 ```
 
 ---
