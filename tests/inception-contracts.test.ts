@@ -1,9 +1,12 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it } from "vitest";
 import {
   createInceptionSession,
+  getInceptionSession,
+  listInceptionQuestions,
   recordInceptionAnswer,
   summarizeInceptionState,
   exportInceptionSessionMarkdown,
+  clearInceptionSessionStore,
 } from "@intentloom/application";
 import {
   validateInceptionQuestion,
@@ -12,6 +15,22 @@ import {
 } from "@intentloom/validator";
 
 describe("Project Inception Read-Only Contracts & Operations (Phase I1)", () => {
+  afterEach(() => {
+    clearInceptionSessionStore();
+  });
+
+  it("loads stored sessions through getInceptionSession and listInceptionQuestions", () => {
+    const session = createInceptionSession({
+      root: "/tmp/get-session-test",
+      idea: "Stored session lookup test",
+      sessionId: "inc_fixture_get_session",
+    });
+    expect(getInceptionSession(session.id).idea).toBe(session.idea);
+    const questions = listInceptionQuestions(session.id, { pendingOnly: true });
+    expect(questions.questions.length).toBe(session.questions.length);
+    expect(questions.pendingQuestionIds.length).toBe(session.questions.length);
+  });
+
   it("initializes an inception session with default starter questions", () => {
     const session = createInceptionSession({
       root: "/tmp/new-library",

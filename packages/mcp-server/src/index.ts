@@ -54,12 +54,9 @@ import {
   qualityStandardsTool,
 } from "./engineering-quality-tools.js";
 import {
-  SPECIALIZED_PACKS_CATALOG_TOOL,
-  SPECIALIZED_PACKS_DETECT_TOOL,
-  specializedPacksCatalog,
-  specializedPacksCatalogTool,
-  specializedPacksDetect,
-  specializedPacksDetectTool,
+  callSpecializedPackTool,
+  specializedPackTools,
+  type SpecializedPackToolName,
 } from "./specialized-pack-tools.js";
 
 export {
@@ -76,6 +73,7 @@ export {
 } from "./engineering-quality-tools.js";
 export {
   SPECIALIZED_PACKS_CATALOG_TOOL,
+  SPECIALIZED_PACKS_CHECKS_TOOL,
   SPECIALIZED_PACKS_DETECT_TOOL,
 } from "./specialized-pack-tools.js";
 
@@ -298,23 +296,10 @@ const tools = [
   qualityCatalogTool,
   qualityCheckersTool,
   qualityGraphTool,
-  specializedPacksCatalogTool,
-  specializedPacksDetectTool,
+  ...specializedPackTools,
 ] as const;
 
-type McpToolName =
-  | typeof RELEASE_ANALYSIS_TOOL
-  | typeof PROJECT_INSPECT_TOOL
-  | typeof PROJECT_DOCTOR_TOOL
-  | typeof ENGINEERING_CONFORMANCE_TOOL
-  | typeof HARNESS_INSPECT_TOOL
-  | typeof HARNESS_REPLAY_TOOL
-  | typeof QUALITY_STANDARDS_TOOL
-  | typeof QUALITY_CATALOG_TOOL
-  | typeof QUALITY_CHECKERS_TOOL
-  | typeof QUALITY_GRAPH_TOOL
-  | typeof SPECIALIZED_PACKS_CATALOG_TOOL
-  | typeof SPECIALIZED_PACKS_DETECT_TOOL;
+type McpToolName = (typeof tools)[number]["name"];
 
 const profiles = [
   "generic",
@@ -530,20 +515,7 @@ async function engineeringConformance(
 }
 
 function isMcpToolName(value: unknown): value is McpToolName {
-  return (
-    value === RELEASE_ANALYSIS_TOOL ||
-    value === PROJECT_INSPECT_TOOL ||
-    value === PROJECT_DOCTOR_TOOL ||
-    value === ENGINEERING_CONFORMANCE_TOOL ||
-    value === HARNESS_INSPECT_TOOL ||
-    value === HARNESS_REPLAY_TOOL ||
-    value === QUALITY_STANDARDS_TOOL ||
-    value === QUALITY_CATALOG_TOOL ||
-    value === QUALITY_CHECKERS_TOOL ||
-    value === QUALITY_GRAPH_TOOL ||
-    value === SPECIALIZED_PACKS_CATALOG_TOOL ||
-    value === SPECIALIZED_PACKS_DETECT_TOOL
-  );
+  return typeof value === "string" && tools.some((tool) => tool.name === value);
 }
 
 export async function handleMcpRequest(
@@ -592,9 +564,11 @@ export async function handleMcpRequest(
                         ? await qualityCheckers(args, options)
                         : params.name === QUALITY_GRAPH_TOOL
                           ? await qualityGraph(args, options)
-                          : params.name === SPECIALIZED_PACKS_CATALOG_TOOL
-                            ? await specializedPacksCatalog(args, options)
-                            : await specializedPacksDetect(args, options);
+                          : await callSpecializedPackTool(
+                              params.name as SpecializedPackToolName,
+                              args,
+                              options,
+                            );
     return {
       jsonrpc: "2.0",
       id,

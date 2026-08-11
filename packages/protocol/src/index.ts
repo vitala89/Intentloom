@@ -26,6 +26,8 @@ import {
 import type { RequestId, JsonRpcRequest } from "./jsonrpc.js";
 import type { JsonRpcSuccess } from "./jsonrpc.js";
 // prettier-ignore
+import { ProtocolValidationError, WORKSPACE_DAEMON_REQUEST_METHODS, parseWorkspaceDaemonRequest, type WorkspaceDaemonRequest, type WorkspaceDaemonResponse } from "./workspace-daemon-request.js";
+// prettier-ignore
 import type { ApprovedApplyRequest, ApprovedApplyExecutionResult } from "./approved-apply.js";
 // prettier-ignore
 import type { CapabilityClassification, DaemonCapability, DaemonLimits, DaemonInfoResult, DaemonInfoRequest, DaemonInfoResponse } from "./daemon.js";
@@ -67,6 +69,7 @@ export * from "./daemon.js";
 export * from "./desktop-extension.js";
 export * from "./diff.js";
 export * from "./inception.js";
+export * from "./workspace-daemon-request.js";
 export * from "./harness.js";
 export * from "./task-routing.js";
 export * from "./external-skill-import.js";
@@ -345,7 +348,8 @@ export type DaemonRequest =
   | QualityCheckersRequest
   | QualityGraphRequest
   | SpecializedPacksCatalogRequest
-  | SpecializedPacksDetectRequest;
+  | SpecializedPacksDetectRequest
+  | WorkspaceDaemonRequest;
 
 export type DaemonResponse =
   | DaemonInfoResponse
@@ -369,16 +373,8 @@ export type DaemonResponse =
   | QualityCheckersResponse
   | QualityGraphResponse
   | SpecializedPacksCatalogResponse
-  | SpecializedPacksDetectResponse;
-
-export class ProtocolValidationError extends Error {
-  constructor(
-    readonly code: -32600 | -32601 | -32602,
-    message: string,
-  ) {
-    super(message);
-  }
-}
+  | SpecializedPacksDetectResponse
+  | WorkspaceDaemonResponse;
 
 function isObject(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
@@ -416,6 +412,19 @@ function positiveInteger(value: unknown, field: string): number {
     -32602,
     `${field} must be a positive integer`,
   );
+}
+
+function nonNegativeIntegerField(
+  source: Record<string, unknown>,
+  field: string,
+): number {
+  const result = source[field];
+  if (typeof result !== "number" || !Number.isInteger(result) || result < 0)
+    throw new ProtocolValidationError(
+      -32602,
+      `${field} must be a non-negative integer`,
+    );
+  return result;
 }
 
 function validateTimelineBounds(
@@ -751,6 +760,7 @@ export function parseDaemonRequest(value: unknown): DaemonRequest {
     QUALITY_GRAPH_METHOD,
     SPECIALIZED_PACKS_CATALOG_METHOD,
     SPECIALIZED_PACKS_DETECT_METHOD,
+    ...WORKSPACE_DAEMON_REQUEST_METHODS,
   ];
   if (typeof value.method !== "string" || !validMethods.includes(value.method))
     throw new ProtocolValidationError(-32601, "unsupported protocol method");
@@ -930,6 +940,8 @@ export function parseDaemonRequest(value: unknown): DaemonRequest {
       id,
       stringValue(value.params.root, "root"),
     );
+  const workspaceRequest = parseWorkspaceDaemonRequest(value, id);
+  if (workspaceRequest) return workspaceRequest;
   throw new ProtocolValidationError(-32601, "unsupported protocol method");
 }
 
@@ -4331,42 +4343,30 @@ export function validateConformanceTrendSummaryReport(
       -32602,
       "conformance trend summary report is invalid",
     );
-  const nonNegativeInteger = (
-    source: Record<string, unknown>,
-    field: string,
-  ) => {
-    const result = source[field];
-    if (typeof result !== "number" || !Number.isInteger(result) || result < 0)
-      throw new ProtocolValidationError(
-        -32602,
-        `${field} must be a non-negative integer`,
-      );
-    return result;
-  };
-  const reportCount = nonNegativeInteger(value, "reportCount");
-  const findingCount = nonNegativeInteger(value, "findingCount");
+  const reportCount = nonNegativeIntegerField(value, "reportCount");
+  const findingCount = nonNegativeIntegerField(value, "findingCount");
   if (reportCount < 2)
     throw new ProtocolValidationError(
       -32602,
       "reportCount must be at least two",
     );
   const statusCounts = {
-    pass: nonNegativeInteger(value.statusCounts, "pass"),
-    violation: nonNegativeInteger(value.statusCounts, "violation"),
-    "missing-evidence": nonNegativeInteger(
+    pass: nonNegativeIntegerField(value.statusCounts, "pass"),
+    violation: nonNegativeIntegerField(value.statusCounts, "violation"),
+    "missing-evidence": nonNegativeIntegerField(
       value.statusCounts,
       "missing-evidence",
     ),
-    "ambiguous-evidence": nonNegativeInteger(
+    "ambiguous-evidence": nonNegativeIntegerField(
       value.statusCounts,
       "ambiguous-evidence",
     ),
-    unsupported: nonNegativeInteger(value.statusCounts, "unsupported"),
+    unsupported: nonNegativeIntegerField(value.statusCounts, "unsupported"),
   };
   const severityCounts = {
-    error: nonNegativeInteger(value.severityCounts, "error"),
-    warning: nonNegativeInteger(value.severityCounts, "warning"),
-    info: nonNegativeInteger(value.severityCounts, "info"),
+    error: nonNegativeIntegerField(value.severityCounts, "error"),
+    warning: nonNegativeIntegerField(value.severityCounts, "warning"),
+    info: nonNegativeIntegerField(value.severityCounts, "info"),
   };
   if (
     Object.values(statusCounts).reduce((sum, count) => sum + count, 0) !==
@@ -4411,19 +4411,7 @@ export function validateWorkflowRepetitionSummaryReport(
       -32602,
       "workflow repetition summary report is invalid",
     );
-  const nonNegativeInteger = (
-    source: Record<string, unknown>,
-    field: string,
-  ) => {
-    const result = source[field];
-    if (typeof result !== "number" || !Number.isInteger(result) || result < 0)
-      throw new ProtocolValidationError(
-        -32602,
-        `${field} must be a non-negative integer`,
-      );
-    return result;
-  };
-  const timelineCount = nonNegativeInteger(value, "timelineCount");
+  const timelineCount = nonNegativeIntegerField(value, "timelineCount");
   if (timelineCount < 2)
     throw new ProtocolValidationError(
       -32602,
@@ -4441,9 +4429,9 @@ export function validateWorkflowRepetitionSummaryReport(
         "repetition pattern is invalid",
       );
     const activity = stringValue(item.activity, "activity");
-    const caseCount = nonNegativeInteger(item, "caseCount");
-    const occurrenceCount = nonNegativeInteger(item, "occurrenceCount");
-    const maxOccurrencesPerCase = nonNegativeInteger(
+    const caseCount = nonNegativeIntegerField(item, "caseCount");
+    const occurrenceCount = nonNegativeIntegerField(item, "occurrenceCount");
+    const maxOccurrencesPerCase = nonNegativeIntegerField(
       item,
       "maxOccurrencesPerCase",
     );

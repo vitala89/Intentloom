@@ -1,0 +1,374 @@
+{
+  "fixtures": [
+    {
+      "fixtureId": "inception-fixture-empty-discovering",
+      "session": {
+        "id": "inc_fixture_empty_discovering",
+        "root": "/tmp/inception-fixture-empty",
+        "idea": "Deterministic fixture: empty discovering session",
+        "status": "discovering",
+        "questions": [
+          {
+            "id": "q1_target_audience",
+            "prompt": "Who is the primary audience or consumer for this project?",
+            "category": "product",
+            "required": true
+          },
+          {
+            "id": "q2_architecture_style",
+            "prompt": "What is the intended architectural topology (single package, monorepo, CLI, web app)?",
+            "category": "architecture",
+            "required": true,
+            "options": [
+              "single-package",
+              "pnpm-workspace",
+              "cli-tool",
+              "web-product",
+              "desktop-product"
+            ]
+          },
+          {
+            "id": "q3_framework_neutrality",
+            "prompt": "Should core business logic remain independent of UI or external framework dependencies?",
+            "category": "architecture",
+            "required": true,
+            "options": ["yes", "no"]
+          },
+          {
+            "id": "q4_testing_strategy",
+            "prompt": "What testing framework and quality verification strategy should be configured?",
+            "category": "tooling",
+            "required": false,
+            "options": ["vitest", "jest", "custom"]
+          }
+        ],
+        "answers": [],
+        "constraints": [],
+        "assumptions": [],
+        "alternatives": [],
+        "createdAt": 1700000000000,
+        "updatedAt": 1700000000000
+      }
+    },
+    {
+      "fixtureId": "inception-fixture-partial-discovering",
+      "session": {
+        "id": "inc_fixture_partial_discovering",
+        "root": "/tmp/inception-fixture-partial",
+        "idea": "Deterministic fixture: partial discovering session",
+        "status": "discovering",
+        "questions": [
+          {
+            "id": "q1_target_audience",
+            "prompt": "Who is the primary audience or consumer for this project?",
+            "category": "product",
+            "required": true
+          },
+          {
+            "id": "q2_architecture_style",
+            "prompt": "What is the intended architectural topology (single package, monorepo, CLI, web app)?",
+            "category": "architecture",
+            "required": true,
+            "options": [
+              "single-package",
+              "pnpm-workspace",
+              "cli-tool",
+              "web-product",
+              "desktop-product"
+            ]
+          },
+          {
+            "id": "q3_framework_neutrality",
+            "prompt": "Should core business logic remain independent of UI or external framework dependencies?",
+            "category": "architecture",
+            "required": true,
+            "options": ["yes", "no"]
+          },
+          {
+            "id": "q4_testing_strategy",
+            "prompt": "What testing framework and quality verification strategy should be configured?",
+            "category": "tooling",
+            "required": false,
+            "options": ["vitest", "jest", "custom"]
+          }
+        ],
+        "answers": [
+          {
+            "questionId": "q4_testing_strategy",
+            "value": "vitest",
+            "confidence": "preference",
+            "timestamp": 1700000000001
+          }
+        ],
+        "constraints": [],
+        "assumptions": [],
+        "alternatives": [],
+        "createdAt": 1700000000000,
+        "updatedAt": 1700000000001
+      }
+    },
+    {
+      "fixtureId": "inception-fixture-ready-blueprinting",
+      "session": {
+        "id": "inc_fixture_ready_blueprinting",
+        "root": "/tmp/inception-fixture-ready",
+        "idea": "Deterministic fixture: ready for blueprinting",
+        "status": "blueprinting",
+        "questions": [
+          {
+            "id": "q1_target_audience",
+            "prompt": "Who is the primary audience or consumer for this project?",
+            "category": "product",
+            "required": true
+          },
+          {
+            "id": "q2_architecture_style",
+            "prompt": "What is the intended architectural topology (single package, monorepo, CLI, web app)?",
+            "category": "architecture",
+            "required": true,
+            "options": [
+              "single-package",
+              "pnpm-workspace",
+              "cli-tool",
+              "web-product",
+              "desktop-product"
+            ]
+          },
+          {
+            "id": "q3_framework_neutrality",
+            "prompt": "Should core business logic remain independent of UI or external framework dependencies?",
+            "category": "architecture",
+            "required": true,
+            "options": ["yes", "no"]
+          },
+          {
+            "id": "q4_testing_strategy",
+            "prompt": "What testing framework and quality verification strategy should be configured?",
+            "category": "tooling",
+            "required": false,
+            "options": ["vitest", "jest", "custom"]
+          }
+        ],
+        "answers": [
+          {
+            "questionId": "q1_target_audience",
+            "value": "TypeScript library authors",
+            "confidence": "confirmed",
+            "timestamp": 1700000000001
+          },
+          {
+            "questionId": "q2_architecture_style",
+            "value": "single-package",
+            "confidence": "confirmed",
+            "timestamp": 1700000000002
+          },
+          {
+            "questionId": "q3_framework_neutrality",
+            "value": "yes",
+            "confidence": "confirmed",
+            "timestamp": 1700000000003
+          }
+        ],
+        "constraints": [],
+        "assumptions": [],
+        "alternatives": [],
+        "createdAt": 1700000000000,
+        "updatedAt": 1700000000003
+      }
+    },
+    {
+      "fixtureId": "inception-fixture-conflict-warning",
+      "session": {
+        "id": "inc_fixture_conflict_warning",
+        "root": "/tmp/inception-fixture-conflict",
+        "idea": "Deterministic fixture: conflict warning",
+        "status": "blueprinting",
+        "questions": [
+          {
+            "id": "q1_target_audience",
+            "prompt": "Who is the primary audience or consumer for this project?",
+            "category": "product",
+            "required": true
+          },
+          {
+            "id": "q2_architecture_style",
+            "prompt": "What is the intended architectural topology (single package, monorepo, CLI, web app)?",
+            "category": "architecture",
+            "required": true,
+            "options": [
+              "single-package",
+              "pnpm-workspace",
+              "cli-tool",
+              "web-product",
+              "desktop-product"
+            ]
+          },
+          {
+            "id": "q3_framework_neutrality",
+            "prompt": "Should core business logic remain independent of UI or external framework dependencies?",
+            "category": "architecture",
+            "required": true,
+            "options": ["yes", "no"]
+          },
+          {
+            "id": "q4_testing_strategy",
+            "prompt": "What testing framework and quality verification strategy should be configured?",
+            "category": "tooling",
+            "required": false,
+            "options": ["vitest", "jest", "custom"]
+          }
+        ],
+        "answers": [
+          {
+            "questionId": "q1_target_audience",
+            "value": "Web product teams",
+            "confidence": "confirmed",
+            "timestamp": 1700000000001
+          },
+          {
+            "questionId": "q2_architecture_style",
+            "value": "web-product",
+            "confidence": "confirmed",
+            "timestamp": 1700000000002
+          },
+          {
+            "questionId": "q3_framework_neutrality",
+            "value": "yes",
+            "confidence": "confirmed",
+            "timestamp": 1700000000003
+          }
+        ],
+        "constraints": [],
+        "assumptions": [],
+        "alternatives": [],
+        "createdAt": 1700000000000,
+        "updatedAt": 1700000000003
+      }
+    },
+    {
+      "fixtureId": "inception-fixture-cancelled",
+      "session": {
+        "id": "inc_fixture_cancelled",
+        "root": "/tmp/inception-fixture-cancelled",
+        "idea": "Deterministic fixture: cancelled session",
+        "status": "cancelled",
+        "questions": [
+          {
+            "id": "q1_target_audience",
+            "prompt": "Who is the primary audience or consumer for this project?",
+            "category": "product",
+            "required": true
+          },
+          {
+            "id": "q2_architecture_style",
+            "prompt": "What is the intended architectural topology (single package, monorepo, CLI, web app)?",
+            "category": "architecture",
+            "required": true,
+            "options": [
+              "single-package",
+              "pnpm-workspace",
+              "cli-tool",
+              "web-product",
+              "desktop-product"
+            ]
+          },
+          {
+            "id": "q3_framework_neutrality",
+            "prompt": "Should core business logic remain independent of UI or external framework dependencies?",
+            "category": "architecture",
+            "required": true,
+            "options": ["yes", "no"]
+          },
+          {
+            "id": "q4_testing_strategy",
+            "prompt": "What testing framework and quality verification strategy should be configured?",
+            "category": "tooling",
+            "required": false,
+            "options": ["vitest", "jest", "custom"]
+          }
+        ],
+        "answers": [],
+        "constraints": [],
+        "assumptions": [],
+        "alternatives": [],
+        "createdAt": 1700000000000,
+        "updatedAt": 1700000000004
+      }
+    },
+    {
+      "fixtureId": "inception-fixture-summary-complete",
+      "session": {
+        "id": "inc_fixture_summary_complete",
+        "root": "/tmp/inception-fixture-summary",
+        "idea": "Deterministic fixture: summary complete",
+        "status": "blueprinting",
+        "questions": [
+          {
+            "id": "q1_target_audience",
+            "prompt": "Who is the primary audience or consumer for this project?",
+            "category": "product",
+            "required": true
+          },
+          {
+            "id": "q2_architecture_style",
+            "prompt": "What is the intended architectural topology (single package, monorepo, CLI, web app)?",
+            "category": "architecture",
+            "required": true,
+            "options": [
+              "single-package",
+              "pnpm-workspace",
+              "cli-tool",
+              "web-product",
+              "desktop-product"
+            ]
+          },
+          {
+            "id": "q3_framework_neutrality",
+            "prompt": "Should core business logic remain independent of UI or external framework dependencies?",
+            "category": "architecture",
+            "required": true,
+            "options": ["yes", "no"]
+          },
+          {
+            "id": "q4_testing_strategy",
+            "prompt": "What testing framework and quality verification strategy should be configured?",
+            "category": "tooling",
+            "required": false,
+            "options": ["vitest", "jest", "custom"]
+          }
+        ],
+        "answers": [
+          {
+            "questionId": "q1_target_audience",
+            "value": "Platform engineers",
+            "confidence": "confirmed",
+            "timestamp": 1700000000001
+          },
+          {
+            "questionId": "q2_architecture_style",
+            "value": "pnpm-workspace",
+            "confidence": "confirmed",
+            "timestamp": 1700000000002
+          },
+          {
+            "questionId": "q3_framework_neutrality",
+            "value": "yes",
+            "confidence": "assumed",
+            "timestamp": 1700000000003
+          },
+          {
+            "questionId": "q4_testing_strategy",
+            "value": "vitest",
+            "confidence": "preference",
+            "timestamp": 1700000000004
+          }
+        ],
+        "constraints": [],
+        "assumptions": [],
+        "alternatives": [],
+        "createdAt": 1700000000000,
+        "updatedAt": 1700000000004
+      }
+    }
+  ]
+}

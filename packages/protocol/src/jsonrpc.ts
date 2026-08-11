@@ -34,6 +34,24 @@ export const SPECIALIZED_PACKS_CATALOG_METHOD =
   "intentloom.specialized-packs.catalog.v1" as const;
 export const SPECIALIZED_PACKS_DETECT_METHOD =
   "intentloom.specialized-packs.detect.v1" as const;
+export const SPECIALIZED_PACKS_CHECKS_METHOD =
+  "intentloom.specialized-packs.checks.v1" as const;
+export const INCEPTION_SESSION_CREATE_METHOD =
+  "intentloom.inception.session.create.v1" as const;
+export const INCEPTION_SESSION_GET_METHOD =
+  "intentloom.inception.session.get.v1" as const;
+export const INCEPTION_QUESTIONS_LIST_METHOD =
+  "intentloom.inception.questions.list.v1" as const;
+export const INCEPTION_ANSWER_RECORD_METHOD =
+  "intentloom.inception.answer.record.v1" as const;
+export const INCEPTION_STATE_SUMMARIZE_METHOD =
+  "intentloom.inception.state.summarize.v1" as const;
+export const INCEPTION_CONFLICTS_IDENTIFY_METHOD =
+  "intentloom.inception.conflicts.identify.v1" as const;
+export const INCEPTION_SESSION_EXPORT_METHOD =
+  "intentloom.inception.session.export.v1" as const;
+export const INCEPTION_SESSION_DELETE_METHOD =
+  "intentloom.inception.session.delete.v1" as const;
 
 export type JsonPrimitive = boolean | null | number | string;
 export type JsonValue = JsonPrimitive | JsonObject | readonly JsonValue[];

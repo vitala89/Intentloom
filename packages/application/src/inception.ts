@@ -1,3 +1,4 @@
+import { randomBytes } from "node:crypto";
 import type {
   InceptionSessionState,
   InceptionQuestion,
@@ -8,11 +9,27 @@ import {
   validateInceptionAnswer,
   validateInceptionSessionState,
 } from "@intentloom/validator";
+import {
+  deleteInceptionSessionStoreEntry,
+  getInceptionSessionStoreEntry,
+  registerInceptionSession,
+  updateInceptionSessionStoreEntry,
+} from "./inception-session-store.js";
+import {
+  buildInceptionConflictList,
+  buildInceptionQuestionList,
+  buildInceptionSessionDeleteResult,
+  buildInceptionSessionExport,
+  buildInceptionSessionViewmodel,
+  buildVersionedInceptionSummary,
+} from "./inception-viewmodel.js";
+import { identifyInceptionConflicts } from "./inception-discovery.js";
 
 export interface CreateInceptionSessionParams {
   readonly root: string;
   readonly idea: string;
   readonly initialQuestions?: readonly InceptionQuestion[];
+  readonly sessionId?: string;
 }
 
 export interface InceptionSummary {
@@ -68,6 +85,10 @@ const DEFAULT_STARTER_QUESTIONS: readonly InceptionQuestion[] = [
   },
 ];
 
+function createDefaultInceptionSessionId(now: number): string {
+  return `inc_${randomBytes(4).toString("hex")}_${now}`;
+}
+
 export function createInceptionSession(
   params: CreateInceptionSessionParams,
 ): InceptionSessionState {
@@ -84,7 +105,7 @@ export function createInceptionSession(
     validateInceptionQuestion,
   );
   const now = Date.now();
-  const id = `inc_${Math.random().toString(36).substring(2, 10)}_${now}`;
+  const id = params.sessionId ?? createDefaultInceptionSessionId(now);
 
   const session: InceptionSessionState = {
     id,
@@ -100,7 +121,71 @@ export function createInceptionSession(
     updatedAt: now,
   };
 
+  return registerInceptionSession(validateInceptionSessionState(session));
+}
+
+export function getInceptionSession(sessionId: string): InceptionSessionState {
+  const session = getInceptionSessionStoreEntry(sessionId);
+  if (session === undefined) {
+    throw new Error(`unknown inception session '${sessionId}'`);
+  }
   return validateInceptionSessionState(session);
+}
+
+export function listInceptionQuestions(
+  sessionId: string,
+  options?: { readonly pendingOnly?: boolean },
+) {
+  const session = getInceptionSession(sessionId);
+  const list = buildInceptionQuestionList({
+    sessionId: session.id,
+    questions: session.questions,
+    answers: session.answers,
+  });
+  if (options?.pendingOnly) {
+    const pending = new Set(list.pendingQuestionIds);
+    return {
+      ...list,
+      questions: list.questions.filter((question) => pending.has(question.id)),
+    };
+  }
+  return list;
+}
+
+export function deleteInceptionSession(sessionId: string) {
+  deleteInceptionSessionStoreEntry(sessionId);
+  return buildInceptionSessionDeleteResult(sessionId);
+}
+
+export function exportInceptionSessionJson(sessionId: string) {
+  const session = getInceptionSession(sessionId);
+  return buildInceptionSessionExport(session);
+}
+
+export function getInceptionSessionViewmodel(sessionId: string) {
+  const session = getInceptionSession(sessionId);
+  return buildInceptionSessionViewmodel(session);
+}
+
+export function summarizeInceptionSessionViewmodel(sessionId: string) {
+  return buildVersionedInceptionSummary(
+    summarizeInceptionState(getInceptionSession(sessionId)),
+  );
+}
+
+export function identifyInceptionSessionConflicts(sessionId: string) {
+  const session = getInceptionSession(sessionId);
+  return buildInceptionConflictList({
+    sessionId: session.id,
+    conflicts: identifyInceptionConflicts(session),
+  });
+}
+
+export function recordInceptionSessionAnswer(
+  sessionId: string,
+  rawAnswer: InceptionAnswer,
+): InceptionSessionState {
+  return recordInceptionAnswer(getInceptionSession(sessionId), rawAnswer);
 }
 
 export function recordInceptionAnswer(
@@ -137,7 +222,9 @@ export function recordInceptionAnswer(
     updatedAt: Date.now(),
   };
 
-  return validateInceptionSessionState(updatedSession);
+  return updateInceptionSessionStoreEntry(
+    validateInceptionSessionState(updatedSession),
+  );
 }
 
 export function summarizeInceptionState(

@@ -1,4 +1,4 @@
-import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
@@ -9,6 +9,7 @@ import {
   buildQualityGraphViewModel,
   buildQualityStandardsViewModel,
   buildSpecializedPackCatalogViewModel,
+  buildSpecializedPackChecksViewModel,
   buildSpecializedPackDetectionViewModel,
   getEffectiveEngineeringQualityPolicy,
   getFirstPartySpecializedPackEntries,
@@ -18,6 +19,7 @@ import {
   renderQualityGraphAccessibleText,
   renderQualityStandardsSummaryText,
   resolveFirstPartySpecializedPackDetection,
+  resolveFirstPartySpecializedPackChecks,
   runGraphCliCommand,
   runPacksCliCommand,
   runQualityCliCommand,
@@ -223,6 +225,13 @@ describe("Phase Q14: Desktop and TUI Viewmodels & Renderers", () => {
         join(root, "apps", "desktop", "src-tauri", "Cargo.toml"),
         "",
       );
+      await mkdir(join(root, "apps", "desktop", "src-tauri", "src"), {
+        recursive: true,
+      });
+      await writeFile(
+        join(root, "apps", "desktop", "src-tauri", "src", "main.rs"),
+        "",
+      );
       try {
         const cliRes = await runSpecializedPacksCliCommand("detect", {
           root,
@@ -243,6 +252,66 @@ describe("Phase Q14: Desktop and TUI Viewmodels & Renderers", () => {
       } finally {
         await rm(root, { recursive: true, force: true });
       }
+    });
+
+    it("ensures equivalence between CLI specialized-packs checks and the shared viewmodel", async () => {
+      const root = await mkdtemp(
+        join(tmpdir(), "intentloom-specialized-checks-tui-"),
+      );
+      await mkdir(join(root, "apps", "desktop", "src-tauri", "src"), {
+        recursive: true,
+      });
+      await writeFile(
+        join(root, "apps", "desktop", "src-tauri", "Cargo.toml"),
+        "",
+      );
+      await writeFile(
+        join(root, "apps", "desktop", "src-tauri", "src", "main.rs"),
+        "",
+      );
+      try {
+        const cliRes = await runSpecializedPacksCliCommand("checks", {
+          root,
+          json: true,
+        });
+        const vm = buildSpecializedPackChecksViewModel(
+          resolveFirstPartySpecializedPackChecks({
+            projectPaths: await nodeFileSystem.list(root),
+            entries: getFirstPartySpecializedPackEntries(),
+          }),
+        );
+        expect(cliRes.exitCode).toBe(0);
+        expect(JSON.parse(cliRes.stdout)).toEqual(vm);
+      } finally {
+        await rm(root, { recursive: true, force: true });
+      }
+    });
+
+    it("keeps checks parity against the canonical S7 fixture profile", async () => {
+      const profiles = JSON.parse(
+        await readFile(
+          new URL(
+            "./fixtures/specialized-packs/project-path-profiles.json",
+            import.meta.url,
+          ),
+          "utf8",
+        ),
+      ) as Record<string, readonly string[]>;
+      const projectPaths = profiles["desktop-tauri"];
+      expect(projectPaths).toBeDefined();
+      const cliRes = await runSpecializedPacksCliCommand("checks", {
+        json: true,
+        root: "/fixture/desktop-tauri",
+        fs: { list: async () => projectPaths! },
+      });
+      const vm = buildSpecializedPackChecksViewModel(
+        resolveFirstPartySpecializedPackChecks({
+          projectPaths: projectPaths!,
+          entries: getFirstPartySpecializedPackEntries(),
+        }),
+      );
+      expect(cliRes.exitCode).toBe(0);
+      expect(JSON.parse(cliRes.stdout)).toEqual(vm);
     });
   });
 });
