@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **W5 complete on `main` at `7a18ddd` (PR #297). W6 Core scaffold planner implemented on `feat/workspace-w6-scaffold-planner-core` (not yet committed/PR).**
+Status: **W6 Core on branch `feat/workspace-w6-scaffold-planner-core` at `9640421` (PR #298, CI pending). W5 complete on `main` at `7a18ddd` (PR #297).**
 
 Active branch: `feat/workspace-w6-scaffold-planner-core`
 
 Current objective: Land W6 Core minimal scaffold planner (foundation gate over I5); then W6 Client Desktop/TUI.
 
-Next first action: Commit W6 Core, open PR, confirm CI green; then W6 Client surfaces.
+Next first action: Confirm CI green on PR #298; then W6 Client Desktop/TUI surfaces.
 
 Known open items, in the order they should be handled:
 
@@ -98,7 +98,7 @@ entry directly below this section.
 
 ### 2026-08-12, Engineering Workspace W6 scaffold planner Core
 
-- **Status:** partial (implementation complete locally; commit/PR pending)
+- **Status:** complete on branch `feat/workspace-w6-scaffold-planner-core`; PR open pending CI.
 - **Agent/tool:** Cursor Agent
 - **Branch:** `feat/workspace-w6-scaffold-planner-core` (from `main` at `7a18ddd`)
 - **Objective:** Deliver W6 Core — foundation-gated, side-effect-free scaffold planner packaging over I5 `ScaffoldPlan`, with versioned protocol URNs, validators, daemon RPC, and CLI under `intentloom foundation scaffold-*`.
@@ -107,18 +107,19 @@ entry directly below this section.
   - Application ops `prepareProjectScaffold`, `getProjectScaffoldPlan`, `compareProjectScaffoldPlan`, `validateProjectScaffoldPlan` with in-memory plan store; fail-closed on missing/revoked/expired blueprint approval; deterministic planId/digest.
   - Validator contracts; daemon handlers + dispatch/bin wiring; CLI `scaffold-prepare|get|compare|validate`.
   - Tests: `tests/foundation-scaffold.test.ts` (4) and daemon parity extension in `tests/daemon-foundation.test.ts`.
-- **Not completed:** Commit, PR, CI; W6 Client Desktop/TUI preview; W7 apply.
+- **Pull request:** #298
+- **Not completed:** CI merge; W6 Client Desktop/TUI preview; W7 apply.
 - **Files or packages changed:** `packages/protocol`, `packages/validator`, `packages/application`, `packages/daemon`, `packages/cli`, focused tests, `DUTY_WATCH.md`, capability matrix, `PROJECT_STATE.md`.
 - **Validation:** `pnpm verify` green (typecheck, lint, format, full test suite, build, `git diff --check`).
 - **Decisions and assumptions:** Reused I5 `ScaffoldPlan` without forking; workspace envelope adds planDigest/expiry/capabilities/verificationChecks/templateVersions. Apply remains W7. Scaffold RPC lives in a separate handler module to avoid growing oversized `foundation-handlers.ts`.
-- **Next first action:** Commit W6 Core atomically, open PR, then start W6 Client against frozen contracts.
+- **Next first action:** Confirm CI green on PR #298; then start W6 Client against frozen contracts.
 
 #### Duty completion checklist
 
 - [x] Formatter passed (touched files)
 - [x] Markdown and lint checks passed when configured
 - [x] Relevant tests, type checks, builds passed (`pnpm verify`)
-- [ ] Atomic commit / PR
+- [x] Atomic commit / PR
 - [x] `git diff --check` passed
 - [x] Final diff reviewed
 - [x] `PROJECT_STATE.md` updated when applicable
