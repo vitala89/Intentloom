@@ -22,6 +22,7 @@ Product and platform directions:
 - [Project Design and Development Workspace](concepts/PROJECT_DESIGN_AND_DEVELOPMENT_WORKSPACE.md)
 - [Engineering Workspace Implementation Plan](roadmap/ENGINEERING_WORKSPACE_IMPLEMENTATION_PLAN.md)
 - [Engineering Workspace Principles](governance/ENGINEERING_WORKSPACE_PRINCIPLES.md)
+- [Core and Client Parallel Development Protocol](governance/CORE_CLIENT_PARALLEL_DEVELOPMENT_PROTOCOL.md)
 - [Engineering Workspace Desktop, CLI, and TUI UX](desktop/ENGINEERING_WORKSPACE_UX.md)
 - [Project Connection, Evidence, and MCP](concepts/PROJECT_CONNECTION_EVIDENCE_AND_MCP.md)
 - [Interactive Surfaces and Agent Workspace](concepts/INTERACTIVE_SURFACES_AND_AGENT_WORKSPACE.md)
