@@ -1,6 +1,11 @@
+import { useCallback, useState } from "react";
 import { Card } from "../design/components/layout/Card.js";
 import { Button } from "../design/components/core/Button.js";
 import { StatusChip } from "../design/components/status/StatusChip.js";
+import { desktopClient, DesktopBridgeError } from "../desktop-client.js";
+import { FoundationDiscoveryPanel } from "./FoundationDiscoveryPanel.js";
+import { buildDiscoveryTurnProgress } from "./foundation-discovery-view-helpers.js";
+import type { FoundationDiscoveryTurnViewModel } from "./foundation-discovery-view-helpers.js";
 import type { FoundationWorkshopProgress } from "./foundation-workshop-view-helpers.js";
 import { foundationReadinessTone } from "./foundation-workshop-view-helpers.js";
 
@@ -16,6 +21,32 @@ export function FoundationWorkshopProgressPanel({
   onStartNew,
 }: FoundationWorkshopProgressPanelProps) {
   const tone = foundationReadinessTone(progress.readinessStatus);
+  const [effort, setEffort] = useState<"low" | "medium" | "high">("medium");
+  const [discovery, setDiscovery] =
+    useState<FoundationDiscoveryTurnViewModel | null>(null);
+  const [discoveryLoading, setDiscoveryLoading] = useState(false);
+  const [discoveryError, setDiscoveryError] = useState<string | null>(null);
+
+  const runDiscovery = useCallback(async () => {
+    setDiscoveryLoading(true);
+    setDiscoveryError(null);
+    try {
+      const viewmodel = await desktopClient.foundationDiscoveryTurn(
+        progress.workshopId,
+        { effort },
+      );
+      setDiscovery(buildDiscoveryTurnProgress(viewmodel));
+    } catch (error) {
+      setDiscovery(null);
+      setDiscoveryError(
+        error instanceof DesktopBridgeError
+          ? error.message
+          : "Could not run the foundation discovery turn.",
+      );
+    } finally {
+      setDiscoveryLoading(false);
+    }
+  }, [effort, progress.workshopId]);
 
   return (
     <div
@@ -60,6 +91,15 @@ export function FoundationWorkshopProgressPanel({
           warning
         </p>
       </Card>
+
+      <FoundationDiscoveryPanel
+        discovery={discovery}
+        effort={effort}
+        loading={discoveryLoading}
+        errorMessage={discoveryError}
+        onEffortChange={setEffort}
+        onRunDiscovery={() => void runDiscovery()}
+      />
 
       <Card variant="default">
         <h3 style={{ marginBottom: "var(--space-4)" }}>Discovery questions</h3>

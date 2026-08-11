@@ -3,6 +3,8 @@ import {
   createDaemonInfoRequest,
   createDoctorRequest,
   createFoundationConflictsIdentifyRequest,
+  createFoundationDiscoveryQuestionsRequest,
+  createFoundationDiscoveryTurnRequest,
   createFoundationWorkshopCreateRequest,
   createFoundationWorkshopDeleteRequest,
   createFoundationWorkshopGetRequest,
@@ -269,6 +271,35 @@ export const desktopClient = {
     const request = createFoundationConflictsIdentifyRequest(
       "desktop-foundation-conflicts",
       workshopId,
+    );
+    return this.foundationRequest(request, signal);
+  },
+
+  async foundationDiscoveryQuestions(
+    workshopId: string,
+    effort?: "low" | "medium" | "high",
+    signal?: AbortSignal,
+  ): Promise<FoundationViewmodelPayload> {
+    const request = createFoundationDiscoveryQuestionsRequest(
+      "desktop-foundation-discovery-questions",
+      workshopId,
+      effort,
+    );
+    return this.foundationRequest(request, signal);
+  },
+
+  async foundationDiscoveryTurn(
+    workshopId: string,
+    options?: {
+      readonly effort?: "low" | "medium" | "high";
+      readonly turnIndex?: number;
+    },
+    signal?: AbortSignal,
+  ): Promise<FoundationViewmodelPayload> {
+    const request = createFoundationDiscoveryTurnRequest(
+      "desktop-foundation-discovery-turn",
+      workshopId,
+      options ?? {},
     );
     return this.foundationRequest(request, signal);
   },

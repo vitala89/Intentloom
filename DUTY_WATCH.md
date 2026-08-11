@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **W3 Neutron discovery Core on branch `cursor/workspace-w3-neutron-discovery-f3ed` (PR #292), merging to `main` after #291 (`e7d380a`). W1+W2+W5 on `main`.**
+Status: **W3 Neutron discovery Core + Client on `main` at `31fe4b3` (PR #292 Core merged); W3 Client PR pending on `cursor/workspace-w3-client-discovery-f3ed`. W1+W2+W5 on `main`.**
 
-Active branch: `cursor/workspace-w3-neutron-discovery-f3ed`
+Active branch: `cursor/workspace-w3-client-discovery-f3ed`
 
-Current objective: Merge PR #292 (W3 Core), then W3 Client Desktop/TUI discovery surfaces.
+Current objective: Merge W3 Client PR (Desktop/TUI Neutron discovery UX), then W4 Blueprint alternatives.
 
-Next first action: Complete PR #292 merge, branch `cursor/workspace-w3-client-discovery-f3ed` for Desktop/TUI parity.
+Next first action: Open and merge W3 Client PR; update capability matrix §8 checkpoint.
 
 Known open items, in the order they should be handled:
 
@@ -96,15 +96,26 @@ entry directly below this section.
 
 ## Watch entries
 
+### 2026-08-11, Engineering Workspace W3 Neutron discovery Client
+
+- **Status:** implementation complete on branch `cursor/workspace-w3-client-discovery-f3ed`; PR pending.
+- **Branch:** `cursor/workspace-w3-client-discovery-f3ed` (based on `main` at `31fe4b3`, PR #292 Core merged).
+- **Objective:** Deliver W3 Client surfaces after W3 Core merge: shared discovery turn/questions viewmodels, TUI text renderers, Desktop Neutron discovery panel wired through daemon RPC bridge, and fixture/CLI parity tests.
+- **Completed:** Added `foundation-discovery-client-viewmodel.ts` and `foundation-discovery-viewmodel-renderers.ts` in application. Added Desktop `FoundationDiscoveryPanel`, workshop progress integration, `desktopClient.foundationDiscoveryQuestions/Turn`, Tauri allowlist for discovery RPC methods, and `tests/desktop-tui-foundation-discovery.test.ts` (4 tests).
+- **Validation:** `pnpm verify` green (1345 tests passed, 3 skipped).
+- **Non-goals preserved:** Live Neutron provider (N2), automatic answer recording from proposals, W4 Blueprint.
+- **Next action:** Merge W3 Client PR, then W4 Blueprint alternatives.
+
 ### 2026-08-11, Engineering Workspace W3 Neutron discovery Core
 
-- **Status:** implementation complete on branch `cursor/workspace-w3-neutron-discovery-f3ed`; PR #292 pending merge.
-- **Branch:** `cursor/workspace-w3-neutron-discovery-f3ed` (based on `main` at `7110fed`, merged with `e7d380a` / PR #291).
+- **Status:** complete on `main` (`31fe4b3`, PR #292).
+- **Branch:** `cursor/workspace-w3-neutron-discovery-f3ed` (squash-merged to `main` as `31fe4b3`).
+- **Pull request:** #292
 - **Objective:** Land W3 Core slice — versioned Foundation discovery contracts, adaptive question generation, provider-neutral discovery turn via H5 fake adapter, daemon RPC, CLI `discover-questions`/`discover-turn`, and contract tests without Desktop/TUI or project-root mutation.
 - **Completed:** Added protocol types/URNs (`foundation-discovery.ts`), validator boundaries, application engines (`generateAdaptiveFoundationQuestions`, `runFoundationDiscoveryTurn`, completeness evaluation), daemon methods `intentloom.foundation.discovery.questions.v1` and `.turn.v1`, CLI/binary routing flags, and tests `foundation-discovery.test.ts` + daemon parity extension.
-- **Validation:** `pnpm verify` green (1344 tests passed, 3 skipped); CI green on PR #292 after capability-matrix Prettier fix.
-- **Non-goals preserved:** W3 Client Desktop/TUI Neutron UX, live remote provider adapter (N2), W4 Blueprint, project-root mutation.
-- **Next action:** Merge PR #292, then W3 Client Desktop/TUI.
+- **Validation:** `pnpm verify` green (1344 tests passed, 3 skipped); Governance + Compatibility CI green after removing forbidden `Co-authored-by` trailer.
+- **Non-goals preserved:** W3 Client Desktop/TUI Neutron UX (delivered in follow-up PR), live remote provider adapter (N2), W4 Blueprint, project-root mutation.
+- **Next action:** W3 Client Desktop/TUI (completed on branch).
 
 ### 2026-08-11, CLI command.ts evidence extract + decomposition plan
 

@@ -704,6 +704,8 @@ fn is_foundation_method(method: &str) -> bool {
             | "intentloom.foundation.readiness.evaluate.v1"
             | "intentloom.foundation.workshop.export.v1"
             | "intentloom.foundation.workshop.delete.v1"
+            | "intentloom.foundation.discovery.questions.v1"
+            | "intentloom.foundation.discovery.turn.v1"
     )
 }
 
