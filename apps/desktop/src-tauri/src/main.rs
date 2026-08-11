@@ -710,6 +710,10 @@ fn is_foundation_method(method: &str) -> bool {
             | "intentloom.foundation.blueprint.compare.v1"
             | "intentloom.foundation.blueprint.approve.v1"
             | "intentloom.foundation.blueprint.revoke.v1"
+            | "intentloom.foundation.scaffold.prepare.v1"
+            | "intentloom.foundation.scaffold.get.v1"
+            | "intentloom.foundation.scaffold.compare.v1"
+            | "intentloom.foundation.scaffold.validate.v1"
     )
 }
 
