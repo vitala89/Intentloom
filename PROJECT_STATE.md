@@ -231,11 +231,11 @@ before a new release or implementation milestone is declared complete.
 
 ## Active focus
 
-1. Engineering Workspace **W1** is complete on `main` at `2f63f99` (Core + Client,
-   PR #286 + PR #287). **W2 Foundation Workshop Core** is complete on `main` at
-   `329dec3` (PR #288). **W2 Client** (Foundation Workshop Desktop + TUI
-   viewmodels, Tauri bridge, fixture parity) is implemented on branch
-   `feat/workspace-w2-foundation-workshop-client` — PR pending.
+1. Engineering Workspace **W1** and **W2** are complete on `main` at `208f7c4`
+   (W1 Core + Client: PR #286 + PR #287; W2 Core: PR #288; W2 Client: PR #289).
+   Next recommended track: **W3 Neutron** discovery integration or **W5** CLI
+   binary parity (`intentloom inception` / `intentloom foundation`), per
+   maintainer priority.
 2. Engineering Workspace **W0** capability reconciliation remains complete on `main`.
 3. Keep GitHub Pages as the canonical public documentation destination and
    continue the roadmap after the completed `1.0.2` metadata release.
@@ -259,8 +259,9 @@ before a new release or implementation milestone is declared complete.
 ## Current blockers and unknowns
 
 - Any expansion to bottleneck, performance, causal, actor, repository-reading, persisted, remote, or model-assisted analysis requires a new ADR, specification, and threat review.
-- Current `main` is verified at `329dec3` (PR #288 W2 Core; PR #287 W1 Client;
-  PR #286 W1 Core; PR #285 workspace planning docs) and tracks `origin/main`.
+- Current `main` is verified at `208f7c4` (PR #289 W2 Client; PR #288 W2 Core;
+  PR #287 W1 Client; PR #286 W1 Core; PR #285 workspace planning docs) and
+  tracks `origin/main`.
 - Phase E5 doctor diagnostics, Phase E6 safe revocation and removal, and
   Phase E7 knowledge-provider & adapter-pack boundaries are merged to `main`.
 - npm reports `latest=1.0.2` and `next=1.0.0`, verified 2026-08-02.
