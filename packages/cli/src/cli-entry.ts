@@ -4,6 +4,7 @@ import {
   type CliExitCode,
   type CliIo,
 } from "./command.js";
+import { runBlueprintCommand } from "./engineering-workspace-blueprint-command.js";
 import {
   runFoundationCommand,
   runInceptionCommand,
@@ -21,6 +22,9 @@ export async function runCliEntry(
   }
   if (args[0] === "foundation") {
     return await runFoundationCommand(args, io);
+  }
+  if (args[0] === "blueprint") {
+    return await runBlueprintCommand(args, io);
   }
   return runCli(args, dependencies, io);
 }

@@ -1,14 +1,18 @@
 import { resolve } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
 import {
+  clearFoundationBlueprintStore,
   clearFoundationWorkshopStore,
   clearInceptionSessionStore,
+  compareFoundationBlueprintTiers,
+  createFoundationWorkshop,
   identifyFoundationWorkshopConflicts,
   identifyInceptionSessionConflicts,
   installFoundationFixtureCatalog,
   installInceptionFixtureCatalog,
   loadFoundationFixtureCatalog,
   loadInceptionFixtureCatalog,
+  recordFoundationWorkshopAnswer,
   summarizeFoundationUnderstandingViewmodel,
   summarizeInceptionSessionViewmodel,
 } from "@intentloom/application";
@@ -27,6 +31,7 @@ const catalogRoot = resolve(process.cwd(), "catalog");
 afterEach(() => {
   clearInceptionSessionStore();
   clearFoundationWorkshopStore();
+  clearFoundationBlueprintStore();
 });
 
 describe("Engineering Workspace W5: inception binary CLI routing", () => {
@@ -239,6 +244,123 @@ describe("Engineering Workspace W5: foundation binary CLI routing", () => {
     expect(stderr.join("\n")).toContain("Usage: intentloom foundation");
   });
 });
+
+describe("Engineering Workspace W5: blueprint binary CLI routing", () => {
+  it("routes propose and compare through intentloom blueprint", async () => {
+    seedBlueprintWorkshop("fnd_fixture_blueprint_binary");
+
+    const proposal = await runBinaryJson([
+      "blueprint",
+      "propose",
+      "--workshop-id",
+      "fnd_fixture_blueprint_binary",
+      "--json",
+    ]);
+    expect(proposal).toMatchObject({
+      schemaVersion: "urn:intentloom:schema:foundation-blueprint-proposal:1",
+      workshopId: "fnd_fixture_blueprint_binary",
+      recommended: { tier: "recommended" },
+      workshopUnchanged: true,
+    });
+    expect(
+      (proposal as { alternatives: { tier: string }[] }).alternatives.map(
+        (entry) => entry.tier,
+      ),
+    ).toEqual(["minimal", "extensible"]);
+
+    const compareFlags = await runBinaryJson([
+      "blueprint",
+      "compare",
+      "--workshop-id",
+      "fnd_fixture_blueprint_binary",
+      "--left-tier",
+      "minimal",
+      "--right-tier",
+      "extensible",
+      "--json",
+    ]);
+    expect(compareFlags).toEqual(
+      compareFoundationBlueprintTiers(
+        "fnd_fixture_blueprint_binary",
+        "minimal",
+        "extensible",
+      ),
+    );
+
+    const comparePositional = await runBinaryJson([
+      "blueprint",
+      "compare",
+      "minimal",
+      "recommended",
+      "--workshop-id",
+      "fnd_fixture_blueprint_binary",
+      "--json",
+    ]);
+    expect(comparePositional).toEqual(
+      compareFoundationBlueprintTiers(
+        "fnd_fixture_blueprint_binary",
+        "minimal",
+        "recommended",
+      ),
+    );
+  });
+
+  it("routes approve and revoke through intentloom blueprint", async () => {
+    seedBlueprintWorkshop("fnd_fixture_blueprint_binary_lifecycle");
+
+    const approval = await runBinaryJson([
+      "blueprint",
+      "approve",
+      "--workshop-id",
+      "fnd_fixture_blueprint_binary_lifecycle",
+      "--tier",
+      "recommended",
+      "--approver",
+      "reviewer",
+      "--json",
+    ]);
+    expect(approval).toMatchObject({
+      schemaVersion: "urn:intentloom:schema:foundation-blueprint-approval:1",
+      approval: { status: "approved", approver: "reviewer" },
+    });
+
+    const revoked = await runBinaryJson([
+      "blueprint",
+      "revoke",
+      "--workshop-id",
+      "fnd_fixture_blueprint_binary_lifecycle",
+      "--json",
+    ]);
+    expect(revoked).toMatchObject({
+      approval: { status: "revoked" },
+    });
+  });
+
+  it("rejects unknown blueprint subcommands with usage", async () => {
+    const stderr: string[] = [];
+    const exitCode = await runCliEntry(
+      ["blueprint", "unknown"],
+      { catalogRoot },
+      { stdout: () => undefined, stderr: (message) => stderr.push(message) },
+    );
+    expect(exitCode).toBe(2);
+    expect(stderr.join("\n")).toContain("Usage: intentloom blueprint");
+  });
+});
+
+function seedBlueprintWorkshop(workshopId: string) {
+  createFoundationWorkshop({
+    root: "/tmp/foundation-blueprint-binary",
+    idea: "Local-first desktop planning tool",
+    workshopId,
+  });
+  recordFoundationWorkshopAnswer(workshopId, {
+    questionId: "fq8_offline_required",
+    value: "yes",
+    confidence: "confirmed",
+    timestamp: Date.now(),
+  });
+}
 
 async function runBinary(
   args: readonly string[],
