@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Engineering Quality Packs Phases Q0–Q18 are merged into `main`; Specialized Engineering Packs Phases S1 (PR #277), S2 (PR #278), S3 (PR #280), S4 (PR #280), S5 (PR #282), and S6 (PR #283) are merged into `main`; Phase S7 Deterministic Checks is complete on branch `feat/specialized-packs-s7-deterministic-checks` and ready for commit/PR.**
+Status: **Engineering Workspace W1 Core inception contracts implemented on branch `feat/workspace-w1-inception-contracts` (not merged). W0 reconciliation complete on `main` (`10ff713`).**
 
-Active branch: `feat/specialized-packs-s7-deterministic-checks`
+Active branch: `feat/workspace-w1-inception-contracts`
 
-Current objective: Land Phase S7 deterministic path-based specialized pack checks with protocol contracts, validators, application engine, first-party check definitions, and contract tests.
+Current objective: Review W1 Core diff, run full `pnpm verify`, open PR, and merge versioned inception session URNs, session store, daemon RPC handlers, CLI JSON helper, and frozen fixtures.
 
-Next first action: Create atomic commit without attribution trailers, push branch, and open PR.
+Next first action: Run `pnpm verify`, open PR from `feat/workspace-w1-inception-contracts`, then start W1 client integration (Desktop New Project shell) against frozen fixture IDs after merge.
 
 Known open items, in the order they should be handled:
 
@@ -96,13 +96,77 @@ entry directly below this section.
 
 ## Watch entries
 
+### 2026-08-11, Specialized Engineering Packs S7 Client Surfaces
+
+- **Status:** implementation complete; final repository gate is partial because concurrent W1/Inception work in the shared worktree is not buildable yet. Functional New Project remains deferred to W1 Core.
+- **Branch:** `main` worktree at `10ff713`; no commit or pull request created in this session.
+- **Objective:** Expose S7 deterministic specialized-pack checks through the established S6 cross-surface pattern without duplicating application check logic or adding mutation capability.
+- **Completed:** Added `specialized-packs checks` to `runSpecializedPacksCliCommand` with JSON output, non-mutation coverage, and stable exit codes; added `intentloom.specialized-packs.checks.v1` typed daemon request/response helpers, capability, handler, canonical-root boundary coverage; added `intentloom_specialized_packs_checks` MCP tool; added shared checks viewmodel and CLI/daemon/MCP/Desktop-TUI equivalence tests.
+- **Not completed:** No functional Create New Project/Inception flow, Foundation Workshop, scaffold mutation UX, or composed W9 shell was introduced. The existing read-only Open Project views remain the available Desktop path.
+- **Files or packages changed:** `@intentloom/protocol`, `@intentloom/application`, `@intentloom/daemon`, `@intentloom/mcp-server`, and specialized-pack/Desktop/TUI contract tests.
+- **Validation:** Initial `pnpm typecheck` passed before concurrent W1 files appeared; `pnpm lint` passed with existing repository warnings; focused contract suite passed (6 files, 35 tests); the final full suite passed (182 files, 1,302 passed, 3 skipped), formatting passed, and `git diff --check` passed. Final `pnpm verify` stopped in build on unrelated concurrent W1/Inception files (`packages/protocol/src/inception-daemon-rpc.ts` missing `./errors.js`; validator imports missing protocol exports). Daemon tests required local IPC permission in this sandbox.
+- **Decisions and assumptions:** The repository’s established S6 CLI surface is the application helper `runSpecializedPacksCliCommand`; the process CLI binary remains unwired for S6 quality families per the W0 capability matrix. Exit code `1` indicates one or more failed deterministic findings; `0` indicates none.
+- **Risks or compatibility impact:** Added one versioned read-only daemon method and one read-only MCP tool; no check semantics, validators, filesystem writes, network calls, or telemetry changed. `packages/protocol/src/index.ts` is a required legacy oversized barrel touched only for protocol wiring.
+- **Open issues or blockers:** Functional New Project flow depends on W1 Core session contracts and fixtures; Foundation Workshop depends on W2. Pre-existing untracked `.worktrees/` and generated catalog output were preserved.
+- **Next first action:** Start the W1 Core branch and freeze inception session fixtures per `docs/roadmap/ENGINEERING_WORKSPACE_CAPABILITY_MATRIX.md` §6–7.
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [ ] Full repository verification passed (blocked by concurrent W1/Inception build errors; focused checks passed)
+- [ ] Atomic commit policy and commit-message checks passed (no commit requested or created)
+- [x] Repository hooks equivalent checks run through `pnpm verify`
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `PROJECT_STATE.md` updated
+- [x] `DUTY_WATCH.md` handoff completed
+- [x] Related roadmap/capability documentation updated
+- [x] Failed or unavailable checks recorded
+
+### 2026-08-11, Engineering Workspace W1 Core Inception Contracts
+
+- **Status:** complete on branch `feat/workspace-w1-inception-contracts`; not merged to `main`.
+- **Objective:** Land W1 Core slice — versioned inception session URNs, missing session operations, in-process session store, daemon handlers, CLI JSON surface, and deterministic fixtures without Foundation Workshop or client UI.
+- **Completed:** Added `INCEPTION_*_SCHEMA_URN` contracts; eight read-only daemon methods (`intentloom.inception.*.v1`); validator boundaries; application session store, viewmodels, fixtures loader, and `runInceptionCliCommand`; daemon handlers wired in `packages/daemon/src/inception-handlers.ts`; frozen fixture catalog `tests/fixtures/inception/session-states.v1.json` with six fixture IDs; tests `inception-session-urns.test.ts`, `inception-cli.test.ts`, `daemon-inception.test.ts`.
+- **Next first action:** Run full `pnpm verify`, open PR, merge to `main`, then start W1 client shell against frozen fixtures.
+
+#### Duty completion checklist
+
+- [x] Protocol URNs and daemon method identities frozen in source
+- [x] Application ops: `getInceptionSession`, `listInceptionQuestions`, export/delete, session store
+- [x] CLI JSON helper and daemon parity tests against fixtures
+- [x] `pnpm typecheck` and focused W1 tests pass
+- [x] Prettier/format check on changed files
+- [ ] Full `pnpm verify` before PR
+- [ ] PR opened and merged
+
+### 2026-08-11, Engineering Workspace W0 Capability Reconciliation
+
+- **Status:** complete; documentation and state reconciliation only; no runtime changes.
+- **Branch:** `main` at `10ff713`.
+- **Objective:** Produce W0 exit gate — evidence-backed capability map, reconcile stale `PROJECT_STATE.md` and `DUTY_WATCH.md` (S7 merged via PR #284; workspace docs via PR #285), classify surfaces using Core/Client sync states, map I1–I10 vs W1–W7 gaps, and propose minimal W1 Core slice.
+- **Completed:** Added `docs/roadmap/ENGINEERING_WORKSPACE_CAPABILITY_MATRIX.md`; updated `PROJECT_STATE.md` active focus and S7 merge state; updated `DUTY_WATCH.md` current watch; cross-linked capability matrix from `ENGINEERING_WORKSPACE_IMPLEMENTATION_PLAN.md`.
+- **Next first action:** Implement W1 Core on branch `feat/workspace-w1-inception-contracts` — see capability matrix §7 for scope, frozen fixture IDs, and exit gate.
+
+#### Duty completion checklist
+
+- [x] Verified `main` at `10ff713` and recent merge history (PR #284, PR #285)
+- [x] Evidence-backed capability matrix distinguishes implemented / partial / planned / blocked
+- [x] Naming collisions and I1–I10 vs W1–W7 gap documented with missing URNs, daemon methods, CLI commands, fixtures
+- [x] W1 Core slice scoped with explicit non-goals (no W2, no Desktop, no S7 clients)
+- [x] `PROJECT_STATE.md` reconciled to verified `main`
+- [x] Duty Watch handoff completed
+
 ### 2026-08-11, Specialized Engineering Packs Phase S7 Deterministic Checks
 
-- **Status:** complete; implementation, full verification, typecheck, lint, formatting, test suite, build, and diff checks are complete.
-- **Branch:** `feat/specialized-packs-s7-deterministic-checks`, based on updated `main` (`58c2746`).
+- **Status:** complete; merged into `main` through PR #284 (`cd4e6b8`).
+
+- **Status:** complete; merged into `main` through PR #284 (`cd4e6b8`).
+- **Branch:** merged from `feat/specialized-packs-s7-deterministic-checks` (based on `58c2746`).
 - **Objective:** Add deterministic path-based specialized pack checks only where evidence is stable, per `SPECIALIZED_ENGINEERING_PACKS_PLAN.md` delivery step 7.
 - **Completed:** Added versioned check definition/result/report contracts in `@intentloom/protocol`; validator boundaries in `@intentloom/validator`; pure application engine (`registerSpecializedPackCheckDefinition`, `runSpecializedPackDeterministicChecks`, `resolveSpecializedPackDeterministicChecks`, `resolveFirstPartySpecializedPackChecks`); first-party check definitions for all four specialized packs linked to manifest `providedRuleIds`; contract test suite `tests/engineering-quality-specialized-deterministic-checks.test.ts` (7 tests).
-- **Next first action:** Create atomic commit, push branch, open pull request, and verify GitHub Actions CI matrix.
+- **Next first action:** None; S7 Core merged. Client surfaces deferred — see capability matrix §4.
 
 #### Duty completion checklist
 

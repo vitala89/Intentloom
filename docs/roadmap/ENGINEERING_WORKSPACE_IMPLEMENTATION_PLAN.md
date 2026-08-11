@@ -87,8 +87,11 @@ changes require explicit coordination and fixture updates.
 
 ## Capability state baseline
 
-This matrix is a planning baseline and must be revalidated against current
-`main` before each implementation phase.
+The evidence-backed capability matrix lives in
+[`ENGINEERING_WORKSPACE_CAPABILITY_MATRIX.md`](ENGINEERING_WORKSPACE_CAPABILITY_MATRIX.md).
+Revalidate that document against current `main` before each implementation phase.
+
+The table below is a planning baseline only and may lag `main`.
 
 | Capability                     | Core/App                      | Protocol                        | Daemon                     | CLI                 | Desktop                         | TUI                    | MCP                 | Status     |
 | ------------------------------ | ----------------------------- | ------------------------------- | -------------------------- | ------------------- | ------------------------------- | ---------------------- | ------------------- | ---------- |

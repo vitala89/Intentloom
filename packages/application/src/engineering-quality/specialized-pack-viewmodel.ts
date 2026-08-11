@@ -1,4 +1,7 @@
-import type { QualitySpecializedPackDetectionResolution } from "@intentloom/protocol";
+import type {
+  QualitySpecializedPackCheckReport,
+  QualitySpecializedPackDetectionResolution,
+} from "@intentloom/protocol";
 import type { FirstPartySpecializedPackCatalogEntry } from "./specialized-pack-catalog-engine.js";
 
 export interface SpecializedPackCatalogEntryViewModel {
@@ -43,6 +46,28 @@ export interface SpecializedPackExplainViewModel {
   readonly permissionsRequired: readonly string[];
   readonly conflicts: readonly string[];
   readonly dependencies: readonly string[];
+}
+
+export interface SpecializedPackCheckFindingViewModel {
+  readonly ruleId: string;
+  readonly packId: string;
+  readonly state: "passed" | "failed" | "skipped";
+  readonly severity: "info" | "review" | "blocking";
+  readonly summary: string;
+  readonly evidencePaths: readonly string[];
+  readonly message: string;
+}
+
+export interface SpecializedPackChecksViewModel {
+  readonly activePackIds: readonly string[];
+  readonly scannedPathCount: number;
+  readonly excludedPathCount: number;
+  readonly scanLimitReached: boolean;
+  readonly findings: readonly SpecializedPackCheckFindingViewModel[];
+  readonly passedCount: number;
+  readonly failedCount: number;
+  readonly skippedCount: number;
+  readonly blockingFailureCount: number;
 }
 
 export function buildSpecializedPackCatalogViewModel(
@@ -93,5 +118,36 @@ export function buildSpecializedPackExplainViewModel(
     permissionsRequired: entry.manifest.permissionsRequired,
     conflicts: entry.manifest.conflicts,
     dependencies: entry.manifest.dependencies,
+  };
+}
+
+export function buildSpecializedPackChecksViewModel(
+  report: QualitySpecializedPackCheckReport,
+): SpecializedPackChecksViewModel {
+  const findings = report.result.findings.map((finding) => ({
+    ruleId: finding.ruleId,
+    packId: finding.packId,
+    state: finding.state,
+    severity: finding.severity,
+    summary: finding.summary,
+    evidencePaths: finding.evidencePaths,
+    message: finding.message,
+  }));
+  return {
+    activePackIds: report.activePackIds,
+    scannedPathCount: report.result.scannedPathCount,
+    excludedPathCount: report.result.excludedPathCount,
+    scanLimitReached: report.result.scanLimitReached,
+    findings,
+    passedCount: findings.filter((finding) => finding.state === "passed")
+      .length,
+    failedCount: findings.filter((finding) => finding.state === "failed")
+      .length,
+    skippedCount: findings.filter((finding) => finding.state === "skipped")
+      .length,
+    blockingFailureCount: findings.filter(
+      (finding) =>
+        finding.state === "failed" && finding.severity === "blocking",
+    ).length,
   };
 }

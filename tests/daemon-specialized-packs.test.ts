@@ -66,6 +66,8 @@ async function startSpecializedDaemon(root: string) {
       specializedHandlers.handleSpecializedPacksCatalog(request, root),
     specializedPacksDetect: (request) =>
       specializedHandlers.handleSpecializedPacksDetect(request, root),
+    specializedPacksChecks: (request) =>
+      specializedHandlers.handleSpecializedPacksChecks(request, root),
   });
   daemons.push({
     async close() {
@@ -110,6 +112,35 @@ describe("daemon Specialized Engineering Packs surface", () => {
         }),
       ),
     );
+
+    const checks = responseViewmodel(
+      await rawRequest(
+        daemon.endpoint,
+        protocol.createSpecializedPacksChecksRequest("checks", root),
+        daemon.token,
+      ),
+    );
+    expect(checks).toEqual(
+      application.buildSpecializedPackChecksViewModel(
+        application.resolveFirstPartySpecializedPackChecks({
+          projectPaths: await application.nodeFileSystem.list(root),
+          entries: application.getFirstPartySpecializedPackEntries(),
+        }),
+      ),
+    );
+  });
+
+  it("rejects a non-absolute checks root at the configured-root boundary", async () => {
+    const root = await fixtureRoot();
+    const daemon = await startSpecializedDaemon(root);
+    const response = await rawRequest(
+      daemon.endpoint,
+      protocol.createSpecializedPacksChecksRequest("relative", "project"),
+      daemon.token,
+    );
+    expect(response).toMatchObject({
+      error: { code: -32602 },
+    });
   });
 });
 

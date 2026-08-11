@@ -19,6 +19,16 @@ import {
   handleSpecializedPacksCatalog,
   handleSpecializedPacksDetect,
 } from "./specialized-pack-handlers.js";
+import {
+  handleInceptionAnswerRecord,
+  handleInceptionConflictsIdentify,
+  handleInceptionQuestionsList,
+  handleInceptionSessionCreate,
+  handleInceptionSessionDelete,
+  handleInceptionSessionExport,
+  handleInceptionSessionGet,
+  handleInceptionStateSummarize,
+} from "./inception-handlers.js";
 
 function value(args: readonly string[], flag: string): string {
   const index = args.indexOf(flag);
@@ -130,6 +140,14 @@ async function main(): Promise<void> {
       handleSpecializedPacksCatalog(request, request.params.root),
     specializedPacksDetect: (request) =>
       handleSpecializedPacksDetect(request, request.params.root),
+    inceptionSessionCreate: handleInceptionSessionCreate,
+    inceptionSessionGet: handleInceptionSessionGet,
+    inceptionQuestionsList: handleInceptionQuestionsList,
+    inceptionAnswerRecord: handleInceptionAnswerRecord,
+    inceptionStateSummarize: handleInceptionStateSummarize,
+    inceptionConflictsIdentify: handleInceptionConflictsIdentify,
+    inceptionSessionExport: handleInceptionSessionExport,
+    inceptionSessionDelete: handleInceptionSessionDelete,
   });
   const stop = () => void daemon.close().then(() => process.exit(0));
   process.once("SIGINT", stop);

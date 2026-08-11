@@ -22,6 +22,7 @@ import {
   PROJECT_INSPECT_TOOL,
   RELEASE_ANALYSIS_TOOL,
   SPECIALIZED_PACKS_CATALOG_TOOL,
+  SPECIALIZED_PACKS_CHECKS_TOOL,
   SPECIALIZED_PACKS_DETECT_TOOL,
   type McpRequest,
 } from "../packages/mcp-server/src/index.js";
@@ -62,6 +63,7 @@ describe("MCP release analysis server", () => {
         QUALITY_GRAPH_TOOL,
         SPECIALIZED_PACKS_CATALOG_TOOL,
         SPECIALIZED_PACKS_DETECT_TOOL,
+        SPECIALIZED_PACKS_CHECKS_TOOL,
       ].sort(),
     );
     expect(
@@ -79,6 +81,7 @@ describe("MCP release analysis server", () => {
       "urn:intentloom:mcp:quality-checkers:output:1",
       "urn:intentloom:mcp:quality-graph:output:1",
       "urn:intentloom:mcp:specialized-packs-catalog:output:1",
+      "urn:intentloom:mcp:specialized-packs-checks:output:1",
       "urn:intentloom:mcp:specialized-packs-detect:output:1",
     ]);
   });

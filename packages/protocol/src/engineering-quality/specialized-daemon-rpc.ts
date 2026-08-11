@@ -1,6 +1,7 @@
 import {
   PROTOCOL_VERSION,
   SPECIALIZED_PACKS_CATALOG_METHOD,
+  SPECIALIZED_PACKS_CHECKS_METHOD,
   SPECIALIZED_PACKS_DETECT_METHOD,
 } from "../jsonrpc.js";
 import type { JsonRpcRequest, JsonRpcSuccess, RequestId } from "../jsonrpc.js";
@@ -19,7 +20,8 @@ interface SpecializedPackResultPayload {
 
 type SpecializedPackMethod =
   | typeof SPECIALIZED_PACKS_CATALOG_METHOD
-  | typeof SPECIALIZED_PACKS_DETECT_METHOD;
+  | typeof SPECIALIZED_PACKS_DETECT_METHOD
+  | typeof SPECIALIZED_PACKS_CHECKS_METHOD;
 
 type SpecializedPackRequest<Method extends SpecializedPackMethod> =
   JsonRpcRequest<Method, SpecializedPackParams>;
@@ -37,6 +39,12 @@ export type SpecializedPacksDetectRequest = SpecializedPackRequest<
   typeof SPECIALIZED_PACKS_DETECT_METHOD
 >;
 export type SpecializedPacksDetectResponse = SpecializedPackResponse;
+
+export type SpecializedPacksChecksResultPayload = SpecializedPackResultPayload;
+export type SpecializedPacksChecksRequest = SpecializedPackRequest<
+  typeof SPECIALIZED_PACKS_CHECKS_METHOD
+>;
+export type SpecializedPacksChecksResponse = SpecializedPackResponse;
 
 function createSpecializedPackRequest<Method extends SpecializedPackMethod>(
   id: RequestId,
@@ -84,6 +92,17 @@ export function createSpecializedPacksDetectRequest(
   );
 }
 
+export function createSpecializedPacksChecksRequest(
+  id: RequestId,
+  root: string,
+): SpecializedPacksChecksRequest {
+  return createSpecializedPackRequest(
+    id,
+    SPECIALIZED_PACKS_CHECKS_METHOD,
+    root,
+  );
+}
+
 export function createSpecializedPacksCatalogResponse(
   id: RequestId,
   result: Omit<SpecializedPacksCatalogResultPayload, "protocolVersion">,
@@ -95,5 +114,12 @@ export function createSpecializedPacksDetectResponse(
   id: RequestId,
   result: Omit<SpecializedPacksDetectResultPayload, "protocolVersion">,
 ): SpecializedPacksDetectResponse {
+  return createSpecializedPackResponse(id, result);
+}
+
+export function createSpecializedPacksChecksResponse(
+  id: RequestId,
+  result: Omit<SpecializedPacksChecksResultPayload, "protocolVersion">,
+): SpecializedPacksChecksResponse {
   return createSpecializedPackResponse(id, result);
 }

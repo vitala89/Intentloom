@@ -3,17 +3,19 @@ import { nodeFileSystem } from "../index.js";
 import { getFirstPartySpecializedPackEntries } from "./first-party-specialized-pack-runtime.js";
 import {
   resolveFirstPartySpecializedPackDetection,
+  resolveFirstPartySpecializedPackChecks,
   validateFirstPartySpecializedPackCatalog,
 } from "./specialized-pack-catalog-engine.js";
 import {
   buildSpecializedPackCatalogViewModel,
+  buildSpecializedPackChecksViewModel,
   buildSpecializedPackDetectionViewModel,
   buildSpecializedPackExplainViewModel,
 } from "./specialized-pack-viewmodel.js";
 import type { QualityCliResult } from "./cli-quality-standards.js";
 
 export type SpecializedPacksCliCommand =
-  "list" | "detect" | "explain" | "compatibility";
+  "list" | "detect" | "explain" | "compatibility" | "checks";
 
 async function collectProjectPaths(
   root: string,
@@ -107,6 +109,31 @@ export async function runSpecializedPacksCliCommand(
       ? JSON.stringify(viewmodel, null, 2)
       : `Detected ${viewmodel.candidates.length} candidate pack(s); compatible: ${viewmodel.compatiblePackIds.join(", ") || "none"}`;
     return { exitCode: 0, stdout, stderr: "" };
+  }
+
+  if (command === "checks") {
+    if (!args.root) {
+      return {
+        exitCode: 1,
+        stdout: "",
+        stderr: "Error: root is required for checks",
+      };
+    }
+    const fs = args.fs ?? nodeFileSystem;
+    const projectPaths = await collectProjectPaths(args.root, fs);
+    const report = resolveFirstPartySpecializedPackChecks({
+      projectPaths,
+      entries,
+    });
+    const viewmodel = buildSpecializedPackChecksViewModel(report);
+    const stdout = json
+      ? JSON.stringify(viewmodel, null, 2)
+      : `Specialized pack checks: ${viewmodel.failedCount} failed, ${viewmodel.passedCount} passed, ${viewmodel.skippedCount} skipped`;
+    return {
+      exitCode: viewmodel.failedCount > 0 ? 1 : 0,
+      stdout,
+      stderr: "",
+    };
   }
 
   return { exitCode: 1, stdout: "", stderr: `Unknown command: '${command}'` };
