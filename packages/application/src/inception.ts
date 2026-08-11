@@ -1,3 +1,4 @@
+import { randomBytes } from "node:crypto";
 import type {
   InceptionSessionState,
   InceptionQuestion,
@@ -84,6 +85,10 @@ const DEFAULT_STARTER_QUESTIONS: readonly InceptionQuestion[] = [
   },
 ];
 
+function createDefaultInceptionSessionId(now: number): string {
+  return `inc_${randomBytes(4).toString("hex")}_${now}`;
+}
+
 export function createInceptionSession(
   params: CreateInceptionSessionParams,
 ): InceptionSessionState {
@@ -100,9 +105,7 @@ export function createInceptionSession(
     validateInceptionQuestion,
   );
   const now = Date.now();
-  const id =
-    params.sessionId ??
-    `inc_${Math.random().toString(36).substring(2, 10)}_${now}`;
+  const id = params.sessionId ?? createDefaultInceptionSessionId(now);
 
   const session: InceptionSessionState = {
     id,
