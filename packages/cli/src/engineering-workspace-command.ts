@@ -5,6 +5,10 @@ import {
   type InceptionCliCommand,
 } from "@intentloom/application";
 import type { FoundationAnswer, InceptionAnswer } from "@intentloom/protocol";
+import {
+  isFoundationScaffoldSubcommand,
+  runFoundationScaffoldCommand,
+} from "./engineering-workspace-foundation-scaffold.js";
 
 export type WorkspaceCliExitCode = 0 | 2;
 
@@ -65,8 +69,8 @@ export const inceptionUsage =
   "[--root PATH] [--idea TEXT] [--session-id ID] [--pending-only] [--json-input JSON] [--json]";
 
 export const foundationUsage =
-  "Usage: intentloom foundation <start|get|questions|answer|summarize|conflicts|readiness|discover-questions|discover-turn|blueprint-propose|blueprint-compare|blueprint-approve|blueprint-revoke|export|delete> " +
-  "[--root PATH] [--idea TEXT] [--workshop-id ID] [--inception-session-id ID] [--effort low|medium|high] [--turn-index N] [--model-profile NAME] [--tier minimal|recommended|extensible] [--left-tier TIER] [--right-tier TIER] [--approver NAME] [--pending-only] [--json-input JSON] [--json]";
+  "Usage: intentloom foundation <start|get|questions|answer|summarize|conflicts|readiness|discover-questions|discover-turn|blueprint-propose|blueprint-compare|blueprint-approve|blueprint-revoke|scaffold-prepare|scaffold-get|scaffold-compare|scaffold-validate|export|delete> " +
+  "[--root PATH] [--idea TEXT] [--workshop-id ID] [--inception-session-id ID] [--effort low|medium|high] [--turn-index N] [--model-profile NAME] [--tier minimal|recommended|extensible] [--left-tier TIER] [--right-tier TIER] [--approver NAME] [--plan-id ID] [--existing-paths a,b] [--pending-only] [--json-input JSON] [--json]";
 
 function isInceptionSubcommand(
   value: string | undefined,
@@ -308,6 +312,9 @@ export async function runFoundationCommand(
   io: WorkspaceCliIo,
 ): Promise<WorkspaceCliExitCode> {
   const subcommand = args[1];
+  if (isFoundationScaffoldSubcommand(subcommand)) {
+    return runFoundationScaffoldCommand(args, io);
+  }
   if (!isFoundationSubcommand(subcommand)) {
     io.stderr(foundationUsage);
     return 2;

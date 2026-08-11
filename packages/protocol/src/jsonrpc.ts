@@ -82,6 +82,14 @@ export const FOUNDATION_BLUEPRINT_APPROVE_METHOD =
   "intentloom.foundation.blueprint.approve.v1" as const;
 export const FOUNDATION_BLUEPRINT_REVOKE_METHOD =
   "intentloom.foundation.blueprint.revoke.v1" as const;
+export const FOUNDATION_SCAFFOLD_PREPARE_METHOD =
+  "intentloom.foundation.scaffold.prepare.v1" as const;
+export const FOUNDATION_SCAFFOLD_GET_METHOD =
+  "intentloom.foundation.scaffold.get.v1" as const;
+export const FOUNDATION_SCAFFOLD_COMPARE_METHOD =
+  "intentloom.foundation.scaffold.compare.v1" as const;
+export const FOUNDATION_SCAFFOLD_VALIDATE_METHOD =
+  "intentloom.foundation.scaffold.validate.v1" as const;
 
 export type JsonPrimitive = boolean | null | number | string;
 export type JsonValue = JsonPrimitive | JsonObject | readonly JsonValue[];

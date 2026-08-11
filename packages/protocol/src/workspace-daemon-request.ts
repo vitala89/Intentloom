@@ -23,6 +23,10 @@ import {
   FOUNDATION_BLUEPRINT_COMPARE_METHOD,
   FOUNDATION_BLUEPRINT_APPROVE_METHOD,
   FOUNDATION_BLUEPRINT_REVOKE_METHOD,
+  FOUNDATION_SCAFFOLD_PREPARE_METHOD,
+  FOUNDATION_SCAFFOLD_GET_METHOD,
+  FOUNDATION_SCAFFOLD_COMPARE_METHOD,
+  FOUNDATION_SCAFFOLD_VALIDATE_METHOD,
 } from "./jsonrpc.js";
 import type { RequestId } from "./jsonrpc.js";
 import { createSpecializedPacksChecksRequest } from "./engineering-quality/specialized-daemon-rpc.js";
@@ -81,6 +85,8 @@ import type {
   FoundationBlueprintApproveRequest,
   FoundationBlueprintRevokeRequest,
 } from "./foundation-daemon-rpc.js";
+import { parseFoundationScaffoldDaemonRequest } from "./foundation-scaffold-daemon-rpc.js";
+import type { FoundationScaffoldDaemonRequest } from "./foundation-scaffold-daemon-rpc.js";
 import type { SpecializedPacksChecksResponse } from "./engineering-quality/specialized-daemon-rpc.js";
 import { ProtocolValidationError } from "./protocol-validation-error.js";
 
@@ -108,7 +114,8 @@ export type WorkspaceDaemonRequest =
   | FoundationBlueprintProposeRequest
   | FoundationBlueprintCompareRequest
   | FoundationBlueprintApproveRequest
-  | FoundationBlueprintRevokeRequest;
+  | FoundationBlueprintRevokeRequest
+  | FoundationScaffoldDaemonRequest;
 
 export type WorkspaceDaemonResponse = SpecializedPacksChecksResponse;
 
@@ -119,6 +126,8 @@ export * from "./foundation-common.js";
 export * from "./foundation-daemon-rpc.js";
 export * from "./foundation-discovery.js";
 export * from "./foundation-blueprint.js";
+export * from "./foundation-scaffold.js";
+export * from "./foundation-scaffold-daemon-rpc.js";
 export { ProtocolValidationError } from "./protocol-validation-error.js";
 
 export const WORKSPACE_DAEMON_REQUEST_METHODS = [
@@ -146,6 +155,10 @@ export const WORKSPACE_DAEMON_REQUEST_METHODS = [
   FOUNDATION_BLUEPRINT_COMPARE_METHOD,
   FOUNDATION_BLUEPRINT_APPROVE_METHOD,
   FOUNDATION_BLUEPRINT_REVOKE_METHOD,
+  FOUNDATION_SCAFFOLD_PREPARE_METHOD,
+  FOUNDATION_SCAFFOLD_GET_METHOD,
+  FOUNDATION_SCAFFOLD_COMPARE_METHOD,
+  FOUNDATION_SCAFFOLD_VALIDATE_METHOD,
 ] as const;
 
 function isObject(value: unknown): value is Record<string, unknown> {
@@ -376,5 +389,9 @@ export function parseWorkspaceDaemonRequest(
       stringValue(params.workshopId, "workshopId"),
     );
   }
-  return null;
+  return parseFoundationScaffoldDaemonRequest(
+    typeof value.method === "string" ? value.method : "",
+    params,
+    id,
+  );
 }

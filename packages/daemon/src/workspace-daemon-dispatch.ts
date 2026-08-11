@@ -12,6 +12,12 @@ import {
   foundationCapabilities,
   isFoundationRequest,
 } from "./foundation-handlers.js";
+import type { FoundationScaffoldDaemonOptions } from "./foundation-scaffold-handlers.js";
+import {
+  dispatchFoundationScaffoldRequest,
+  foundationScaffoldCapabilities,
+  isFoundationScaffoldRequest,
+} from "./foundation-scaffold-handlers.js";
 import type { SpecializedPackDaemonOptions } from "./specialized-pack-handlers.js";
 import {
   dispatchSpecializedPackRequest,
@@ -22,7 +28,8 @@ import type { DaemonCapability } from "@intentloom/protocol";
 
 export type WorkspaceDaemonOptions = SpecializedPackDaemonOptions &
   InceptionDaemonOptions &
-  FoundationDaemonOptions;
+  FoundationDaemonOptions &
+  FoundationScaffoldDaemonOptions;
 
 export function workspaceDaemonCapabilities(
   options: WorkspaceDaemonOptions,
@@ -31,6 +38,7 @@ export function workspaceDaemonCapabilities(
     ...specializedPackCapabilities(options),
     ...inceptionCapabilities(options),
     ...foundationCapabilities(options),
+    ...foundationScaffoldCapabilities(options),
   ];
 }
 
@@ -94,6 +102,23 @@ export async function dispatchWorkspaceDaemonRequest(
       return true;
     }
     response(socket, foundationResponse);
+    return true;
+  }
+  if (isFoundationScaffoldRequest(request)) {
+    const scaffoldResponse = await dispatchFoundationScaffoldRequest(
+      request,
+      options,
+    );
+    if (!scaffoldResponse) {
+      failure(
+        socket,
+        -32601,
+        "unsupported foundation scaffold method",
+        "unsupported_capability",
+      );
+      return true;
+    }
+    response(socket, scaffoldResponse);
     return true;
   }
   return false;

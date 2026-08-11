@@ -231,9 +231,10 @@ before a new release or implementation milestone is declared complete.
 
 ## Active focus
 
-1. Engineering Workspace **W1–W4** and **W5 inception/foundation** are on `main` at
-   `92e82fb` (W4 Client: PR #296). **W5 blueprint** top-level binary routing is
-   on branch `feat/workspace-w5-blueprint-binary` (PR #297).
+1. Engineering Workspace **W1–W5** are on `main` at `7a18ddd` (W5 blueprint
+   top-level binary routing: PR #297). **W6 Core** scaffold planner is
+   implemented on `feat/workspace-w6-scaffold-planner-core` (foundation-gated
+   prepare/get/compare/validate over I5 `ScaffoldPlan`; Client and apply deferred).
 2. Engineering Workspace **W0** capability reconciliation remains complete on `main`.
 3. Keep GitHub Pages as the canonical public documentation destination and
    continue the roadmap after the completed `1.0.2` metadata release.
