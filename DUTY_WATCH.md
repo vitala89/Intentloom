@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Engineering Workspace W1 Core inception contracts implemented on branch `feat/workspace-w1-inception-contracts` (not merged). W0 reconciliation complete on `main` (`10ff713`).**
+Status: **W1 Core merged on `main` (`d82e6cb`, PR #286). W1 Client complete on branch `feat/workspace-w1-inception-client`; open PR next.**
 
-Active branch: `feat/workspace-w1-inception-contracts`
+Active branch: `feat/workspace-w1-inception-client`
 
-Current objective: Review W1 Core diff, run full `pnpm verify`, open PR, and merge versioned inception session URNs, session store, daemon RPC handlers, CLI JSON helper, and frozen fixtures.
+Current objective: Open PR for W1 client surfaces (viewmodels, TUI renderers, Desktop New Project shell, fixture parity tests).
 
-Next first action: Run `pnpm verify`, open PR from `feat/workspace-w1-inception-contracts`, then start W1 client integration (Desktop New Project shell) against frozen fixture IDs after merge.
+Next first action: Open PR from `feat/workspace-w1-inception-client`, then start W2 Foundation Workshop Core contracts.
 
 Known open items, in the order they should be handled:
 
@@ -95,6 +95,16 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-11, Engineering Workspace W1 Client (Desktop + TUI)
+
+- **Status:** implementation complete on branch `feat/workspace-w1-inception-client`; ready for PR.
+- **Branch:** `feat/workspace-w1-inception-client` (based on `main` at `d82e6cb`).
+- **Objective:** Deliver W1 client surfaces after W1 Core merge (PR #286): shared inception progress viewmodels, accessible TUI renderers, Desktop New Project shell, and fixture parity tests.
+- **Completed:** Reconciled `PROJECT_STATE.md`, `DUTY_WATCH.md`, and capability matrix §7/§8 for W1 Core merge on `main` (`d82e6cb`). Added `inception-client-viewmodel.ts` and `inception-viewmodel-renderers.ts` with session progress and new-project shell viewmodels plus TUI text renderers. Added `tests/desktop-tui-inception.test.ts` (5 tests) for CLI/viewmodel parity against all six frozen fixture IDs. Added Desktop `NewProjectView` with empty/loading/error/resume/deleted states, navigation entry, Tauri `invoke_inception_request` bridge, and `desktopClient.inceptionSessionCreate/Get/Delete` helpers.
+- **Validation:** `pnpm verify` green (1316 tests passed, 3 skipped).
+- **Non-goals preserved:** W2 Foundation Workshop, W5 binary `intentloom inception` routing, Neutron live provider, project-root mutation.
+- **Next action:** Open PR from `feat/workspace-w1-inception-client`, then start W2 Foundation Workshop Core contracts per `FOUNDATION_WORKSHOP_IMPLEMENTATION_PLAN.md`.
 
 ### 2026-08-11, Specialized Engineering Packs S7 Client Surfaces
 
