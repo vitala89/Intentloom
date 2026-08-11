@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **W6 Core complete on `main` at `3329486` (PR #298). W6 Client ready on `feat/workspace-w6-scaffold-planner-client` (PR pending).**
+Status: **W6 Core complete on `main` at `3329486` (PR #298). W6 Client on `feat/workspace-w6-scaffold-planner-client` at `ab7cf4d` (PR #299, CI pending).**
 
 Active branch: `feat/workspace-w6-scaffold-planner-client`
 
 Current objective: Land W6 Client Desktop/TUI scaffold preview; then W7 apply.
 
-Next first action: Open/merge W6 Client PR; then W7 transactional empty-root creation.
+Next first action: Confirm CI green on PR #299 and merge; then W7 transactional empty-root creation.
 
 Known open items, in the order they should be handled:
 
@@ -98,24 +98,26 @@ entry directly below this section.
 
 ### 2026-08-12, Engineering Workspace W6 scaffold planner Client
 
-- **Status:** implementation complete on branch; commit/PR in flight
+- **Status:** complete on branch `feat/workspace-w6-scaffold-planner-client`; PR #299 open pending CI.
 - **Agent/tool:** Cursor Agent
 - **Branch:** `feat/workspace-w6-scaffold-planner-client` (from `main` at `3329486`)
+- **Pull request:** #299
 - **Objective:** Deliver W6 Client surfaces — shared scaffold prepare/compare/validate viewmodels, TUI text renderers, Desktop scaffold panel wired through daemon RPC bridge, CLI parity tests. No apply.
 - **Completed:**
   - Application viewmodels/renderers (`foundation-scaffold-client-viewmodel.ts`, `foundation-scaffold-viewmodel-renderers.ts`).
   - Desktop `FoundationScaffoldPanel` + `FoundationScaffoldSection`, workshop progress integration, `desktopClient.foundationScaffold*` helpers (extracted module), Tauri allowlist for scaffold RPC methods.
   - Tests: `tests/desktop-tui-foundation-scaffold.test.ts` (4).
+  - Commit `ab7cf4d` via `commit-tree` (no attribution trailers); PR body scrubbed of harness "Made with" footer.
 - **Not completed:** CI merge; W7 apply.
 - **Files or packages changed:** `packages/application`, `apps/desktop`, focused tests, `DUTY_WATCH.md`, capability matrix, `PROJECT_STATE.md`.
-- **Validation:** `pnpm verify` green.
+- **Validation:** `pnpm verify` green (1366 passed, 3 skipped).
 - **Decisions and assumptions:** Scaffold state lives in its own section (not ProgressPanel) to avoid growing the workshop container. `desktop-client.ts` scaffold methods extracted to keep the barrel under the line budget. Commits use `commit-tree` with no Co-Authored-By / Generated-with trailers.
-- **Next first action:** Merge Client PR when CI green; then W7 Core.
+- **Next first action:** Merge PR #299 when CI green; then W7 Core.
 
 #### Duty completion checklist
 
 - [x] Formatter / typecheck / focused tests
-- [ ] Atomic commit / PR (no attribution trailers)
+- [x] Atomic commit / PR (no attribution trailers)
 - [x] `DUTY_WATCH.md` / `PROJECT_STATE.md` / capability matrix updated
 - [x] Full `pnpm verify`
 
