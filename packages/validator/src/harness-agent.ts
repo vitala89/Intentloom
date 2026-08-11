@@ -1,5 +1,6 @@
 import type {
   HarnessAgentCapabilities,
+  HarnessAgentDataPolicy,
   HarnessAgentFeature,
   HarnessAgentRequest,
   HarnessAgentRequirements,
@@ -146,5 +147,37 @@ export function validateHarnessAgentRequest(
     responseFormat: value.responseFormat,
     requirements,
     ...(tools ? { tools } : {}),
+  };
+}
+
+export function validateHarnessAgentDataPolicy(
+  value: unknown,
+): HarnessAgentDataPolicy {
+  if (!isObject(value)) throw new Error("agent data policy must be an object");
+  if (
+    value.networkAccess !== "disabled" &&
+    value.networkAccess !== "explicit"
+  ) {
+    throw new Error("agent data policy networkAccess is invalid");
+  }
+  if (
+    value.credentialSource !== "none" &&
+    value.credentialSource !== "invocation"
+  ) {
+    throw new Error("agent data policy credentialSource is invalid");
+  }
+  if (
+    value.retention !== "local-only" &&
+    value.retention !== "adapter-disclosed"
+  ) {
+    throw new Error("agent data policy retention is invalid");
+  }
+  return {
+    networkAccess: value.networkAccess,
+    credentialSource: value.credentialSource,
+    retention: value.retention,
+    ...(typeof value.disclosure === "string"
+      ? { disclosure: value.disclosure }
+      : {}),
   };
 }

@@ -70,6 +70,10 @@ export const FOUNDATION_WORKSHOP_EXPORT_METHOD =
   "intentloom.foundation.workshop.export.v1" as const;
 export const FOUNDATION_WORKSHOP_DELETE_METHOD =
   "intentloom.foundation.workshop.delete.v1" as const;
+export const FOUNDATION_DISCOVERY_QUESTIONS_METHOD =
+  "intentloom.foundation.discovery.questions.v1" as const;
+export const FOUNDATION_DISCOVERY_TURN_METHOD =
+  "intentloom.foundation.discovery.turn.v1" as const;
 
 export type JsonPrimitive = boolean | null | number | string;
 export type JsonValue = JsonPrimitive | JsonObject | readonly JsonValue[];

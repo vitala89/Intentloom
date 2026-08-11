@@ -20,7 +20,7 @@ export async function runCliEntry(
     return runInceptionCommand(args, io);
   }
   if (args[0] === "foundation") {
-    return runFoundationCommand(args, io);
+    return await runFoundationCommand(args, io);
   }
   return runCli(args, dependencies, io);
 }

@@ -231,12 +231,9 @@ before a new release or implementation milestone is declared complete.
 
 ## Active focus
 
-1. Engineering Workspace **W1**, **W2**, and **W5** are on `main` at `7110fed`
-   (W1–W2: PR #286–#289; W5 CLI binary parity: PR #290). CLI oversized
-   `command.ts` decomposition continues: evidence family extracted on
-   `refactor/cli-extract-evidence-command` / PR #291 (see
-   `docs/roadmap/CLI_COMMAND_TS_DECOMPOSITION.md`). Next product track:
-   **W3 Neutron** discovery integration.
+1. Engineering Workspace **W1**, **W2**, and **W5** are on `main` at `e7d380a`
+   (W1–W2: PR #286–#289; W5 CLI binary parity: PR #290; CLI evidence extract: PR #291).
+   **W3 Neutron discovery Core** is on PR #292 pending merge; next track: **W3 Client** Desktop/TUI.
 2. Engineering Workspace **W0** capability reconciliation remains complete on `main`.
 3. Keep GitHub Pages as the canonical public documentation destination and
    continue the roadmap after the completed `1.0.2` metadata release.
@@ -260,9 +257,9 @@ before a new release or implementation milestone is declared complete.
 ## Current blockers and unknowns
 
 - Any expansion to bottleneck, performance, causal, actor, repository-reading, persisted, remote, or model-assisted analysis requires a new ADR, specification, and threat review.
-- Current `main` is verified at `7110fed` (PR #290 W5 CLI binary parity;
-  PR #289 W2 Client; PR #288 W2 Core; PR #287 W1 Client; PR #286 W1 Core;
-  PR #285 workspace planning docs) and tracks `origin/main`.
+- Current `main` is verified at `e7d380a` (PR #291 CLI evidence extract; PR #290 W5 CLI binary;
+  PR #289 W2 Client; PR #288 W2 Core; PR #287 W1 Client; PR #286 W1 Core) and
+  tracks `origin/main`.
 - Phase E5 doctor diagnostics, Phase E6 safe revocation and removal, and
   Phase E7 knowledge-provider & adapter-pack boundaries are merged to `main`.
 - npm reports `latest=1.0.2` and `next=1.0.0`, verified 2026-08-02.

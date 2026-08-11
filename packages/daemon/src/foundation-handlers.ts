@@ -1,12 +1,14 @@
 import {
   createFoundationWorkshop,
   deleteFoundationWorkshop,
+  discoverFoundationAdaptiveQuestions,
   evaluateFoundationWorkshopReadiness,
   exportFoundationWorkshopJson,
   getFoundationWorkshopViewmodel,
   identifyFoundationWorkshopConflicts,
   listFoundationQuestions,
   recordFoundationWorkshopAnswer,
+  runFoundationDiscoveryTurn,
   summarizeFoundationUnderstandingViewmodel,
 } from "@intentloom/application";
 import type {
@@ -15,6 +17,10 @@ import type {
   FoundationAnswerRecordResultPayload,
   FoundationConflictsIdentifyRequest,
   FoundationConflictsIdentifyResultPayload,
+  FoundationDiscoveryQuestionsRequest,
+  FoundationDiscoveryQuestionsResultPayload,
+  FoundationDiscoveryTurnRequest,
+  FoundationDiscoveryTurnResultPayload,
   FoundationQuestionsListRequest,
   FoundationQuestionsListResultPayload,
   FoundationReadinessEvaluateRequest,
@@ -34,6 +40,8 @@ import type {
 import {
   FOUNDATION_ANSWER_RECORD_METHOD,
   FOUNDATION_CONFLICTS_IDENTIFY_METHOD,
+  FOUNDATION_DISCOVERY_QUESTIONS_METHOD,
+  FOUNDATION_DISCOVERY_TURN_METHOD,
   FOUNDATION_QUESTIONS_LIST_METHOD,
   FOUNDATION_READINESS_EVALUATE_METHOD,
   FOUNDATION_UNDERSTANDING_SUMMARIZE_METHOD,
@@ -43,6 +51,8 @@ import {
   FOUNDATION_WORKSHOP_GET_METHOD,
   createFoundationAnswerRecordResponse,
   createFoundationConflictsIdentifyResponse,
+  createFoundationDiscoveryQuestionsResponse,
+  createFoundationDiscoveryTurnResponse,
   createFoundationQuestionsListResponse,
   createFoundationReadinessEvaluateResponse,
   createFoundationUnderstandingSummarizeResponse,
@@ -88,6 +98,14 @@ export interface FoundationDaemonOptions {
   readonly foundationWorkshopDelete?: (
     request: FoundationWorkshopDeleteRequest,
   ) => Promise<Omit<FoundationWorkshopDeleteResultPayload, "protocolVersion">>;
+  readonly foundationDiscoveryQuestions?: (
+    request: FoundationDiscoveryQuestionsRequest,
+  ) => Promise<
+    Omit<FoundationDiscoveryQuestionsResultPayload, "protocolVersion">
+  >;
+  readonly foundationDiscoveryTurn?: (
+    request: FoundationDiscoveryTurnRequest,
+  ) => Promise<Omit<FoundationDiscoveryTurnResultPayload, "protocolVersion">>;
 }
 
 function vm(value: object): { readonly viewmodel: FoundationViewmodelPayload } {
@@ -137,6 +155,15 @@ export function foundationCapabilities(
       : undefined,
     options.foundationWorkshopDelete
       ? enabled(FOUNDATION_WORKSHOP_DELETE_METHOD, "foundation.workshop.delete")
+      : undefined,
+    options.foundationDiscoveryQuestions
+      ? enabled(
+          FOUNDATION_DISCOVERY_QUESTIONS_METHOD,
+          "foundation.discovery.questions",
+        )
+      : undefined,
+    options.foundationDiscoveryTurn
+      ? enabled(FOUNDATION_DISCOVERY_TURN_METHOD, "foundation.discovery.turn")
       : undefined,
   ].filter((entry): entry is DaemonCapability => entry !== undefined);
 }
@@ -236,6 +263,24 @@ export async function dispatchFoundationRequest(
       await options.foundationWorkshopDelete(request),
     );
   }
+  if (
+    request.method === FOUNDATION_DISCOVERY_QUESTIONS_METHOD &&
+    options.foundationDiscoveryQuestions
+  ) {
+    return createFoundationDiscoveryQuestionsResponse(
+      request.id,
+      await options.foundationDiscoveryQuestions(request),
+    );
+  }
+  if (
+    request.method === FOUNDATION_DISCOVERY_TURN_METHOD &&
+    options.foundationDiscoveryTurn
+  ) {
+    return createFoundationDiscoveryTurnResponse(
+      request.id,
+      await options.foundationDiscoveryTurn(request),
+    );
+  }
   return undefined;
 }
 
@@ -306,4 +351,34 @@ export async function handleFoundationWorkshopDelete(
   request: FoundationWorkshopDeleteRequest,
 ): Promise<Omit<FoundationWorkshopDeleteResultPayload, "protocolVersion">> {
   return vm(deleteFoundationWorkshop(request.params.workshopId));
+}
+
+export async function handleFoundationDiscoveryQuestions(
+  request: FoundationDiscoveryQuestionsRequest,
+): Promise<Omit<FoundationDiscoveryQuestionsResultPayload, "protocolVersion">> {
+  return vm(
+    discoverFoundationAdaptiveQuestions(
+      request.params.workshopId,
+      request.params.effort !== undefined
+        ? { effort: request.params.effort }
+        : undefined,
+    ),
+  );
+}
+
+export async function handleFoundationDiscoveryTurn(
+  request: FoundationDiscoveryTurnRequest,
+): Promise<Omit<FoundationDiscoveryTurnResultPayload, "protocolVersion">> {
+  const turn = await runFoundationDiscoveryTurn(request.params.workshopId, {
+    ...(request.params.effort !== undefined
+      ? { effort: request.params.effort }
+      : {}),
+    ...(request.params.turnIndex !== undefined
+      ? { turnIndex: request.params.turnIndex }
+      : {}),
+    ...(request.params.modelProfile !== undefined
+      ? { modelProfile: request.params.modelProfile }
+      : {}),
+  });
+  return vm(turn);
 }

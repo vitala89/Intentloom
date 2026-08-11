@@ -22,6 +22,9 @@ interface ParsedWorkspaceFlags {
   readonly inceptionSessionId?: string;
   readonly pendingOnly: boolean;
   readonly jsonInput?: string;
+  readonly effort?: "low" | "medium" | "high";
+  readonly turnIndex?: number;
+  readonly modelProfile?: string;
 }
 
 const inceptionSubcommands = [
@@ -43,6 +46,8 @@ const foundationSubcommands = [
   "summarize",
   "conflicts",
   "readiness",
+  "discover-questions",
+  "discover-turn",
   "export",
   "delete",
 ] as const satisfies readonly FoundationCliCommand[];
@@ -52,8 +57,8 @@ export const inceptionUsage =
   "[--root PATH] [--idea TEXT] [--session-id ID] [--pending-only] [--json-input JSON] [--json]";
 
 export const foundationUsage =
-  "Usage: intentloom foundation <start|get|questions|answer|summarize|conflicts|readiness|export|delete> " +
-  "[--root PATH] [--idea TEXT] [--workshop-id ID] [--inception-session-id ID] [--pending-only] [--json-input JSON] [--json]";
+  "Usage: intentloom foundation <start|get|questions|answer|summarize|conflicts|readiness|discover-questions|discover-turn|export|delete> " +
+  "[--root PATH] [--idea TEXT] [--workshop-id ID] [--inception-session-id ID] [--effort low|medium|high] [--turn-index N] [--model-profile NAME] [--pending-only] [--json-input JSON] [--json]";
 
 function isInceptionSubcommand(
   value: string | undefined,
@@ -85,6 +90,9 @@ function parseWorkspaceFlags(
   let workshopId: string | undefined;
   let inceptionSessionId: string | undefined;
   let jsonInput: string | undefined;
+  let effort: ParsedWorkspaceFlags["effort"];
+  let turnIndex: number | undefined;
+  let modelProfile: string | undefined;
 
   for (let index = 0; index < args.length; index += 1) {
     const token = args[index];
@@ -105,7 +113,10 @@ function parseWorkspaceFlags(
       token !== "--session-id" &&
       token !== "--workshop-id" &&
       token !== "--inception-session-id" &&
-      token !== "--json-input"
+      token !== "--json-input" &&
+      token !== "--effort" &&
+      token !== "--turn-index" &&
+      token !== "--model-profile"
     ) {
       throw new Error(`${usage}\nunknown option: ${token}`);
     }
@@ -136,6 +147,28 @@ function parseWorkspaceFlags(
         );
       }
       inceptionSessionId = value;
+    } else if (token === "--effort") {
+      if (effort !== undefined)
+        throw new Error(`${usage}\n--effort specified more than once`);
+      if (value !== "low" && value !== "medium" && value !== "high") {
+        throw new Error(`${usage}\n--effort must be low, medium, or high`);
+      }
+      effort = value;
+    } else if (token === "--turn-index") {
+      if (turnIndex !== undefined)
+        throw new Error(`${usage}\n--turn-index specified more than once`);
+      const parsed = Number.parseInt(value, 10);
+      if (!Number.isFinite(parsed) || parsed < 0) {
+        throw new Error(
+          `${usage}\n--turn-index must be a non-negative integer`,
+        );
+      }
+      turnIndex = parsed;
+    } else if (token === "--model-profile") {
+      if (modelProfile !== undefined) {
+        throw new Error(`${usage}\n--model-profile specified more than once`);
+      }
+      modelProfile = value;
     } else if (jsonInput !== undefined) {
       throw new Error(`${usage}\n--json-input specified more than once`);
     } else {
@@ -153,6 +186,9 @@ function parseWorkspaceFlags(
     ...(workshopId !== undefined ? { workshopId } : {}),
     ...(inceptionSessionId !== undefined ? { inceptionSessionId } : {}),
     ...(jsonInput !== undefined ? { jsonInput } : {}),
+    ...(effort !== undefined ? { effort } : {}),
+    ...(turnIndex !== undefined ? { turnIndex } : {}),
+    ...(modelProfile !== undefined ? { modelProfile } : {}),
   };
 }
 
@@ -214,10 +250,10 @@ export function runInceptionCommand(
   }
 }
 
-export function runFoundationCommand(
+export async function runFoundationCommand(
   args: readonly string[],
   io: WorkspaceCliIo,
-): WorkspaceCliExitCode {
+): Promise<WorkspaceCliExitCode> {
   const subcommand = args[1];
   if (!isFoundationSubcommand(subcommand)) {
     io.stderr(foundationUsage);
@@ -231,22 +267,26 @@ export function runFoundationCommand(
         ? parseAnswerJson<FoundationAnswer>(flags.jsonInput, foundationUsage)
         : undefined;
 
-    return emitCliResult(
-      runFoundationCliCommand(subcommand, {
-        json: flags.json,
-        ...(flags.root !== undefined ? { root: flags.root } : {}),
-        ...(flags.idea !== undefined ? { idea: flags.idea } : {}),
-        ...(flags.workshopId !== undefined
-          ? { workshopId: flags.workshopId }
-          : {}),
-        ...(flags.inceptionSessionId !== undefined
-          ? { inceptionSessionId: flags.inceptionSessionId }
-          : {}),
-        ...(flags.pendingOnly ? { pendingOnly: true } : {}),
-        ...(answer !== undefined ? { answer } : {}),
-      }),
-      io,
-    );
+    const result = await runFoundationCliCommand(subcommand, {
+      json: flags.json,
+      ...(flags.root !== undefined ? { root: flags.root } : {}),
+      ...(flags.idea !== undefined ? { idea: flags.idea } : {}),
+      ...(flags.workshopId !== undefined
+        ? { workshopId: flags.workshopId }
+        : {}),
+      ...(flags.inceptionSessionId !== undefined
+        ? { inceptionSessionId: flags.inceptionSessionId }
+        : {}),
+      ...(flags.pendingOnly ? { pendingOnly: true } : {}),
+      ...(answer !== undefined ? { answer } : {}),
+      ...(flags.effort !== undefined ? { effort: flags.effort } : {}),
+      ...(flags.turnIndex !== undefined ? { turnIndex: flags.turnIndex } : {}),
+      ...(flags.modelProfile !== undefined
+        ? { modelProfile: flags.modelProfile }
+        : {}),
+    });
+
+    return emitCliResult(result, io);
   } catch (error) {
     return handleCommandError(error, foundationUsage, io);
   }

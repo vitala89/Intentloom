@@ -55,7 +55,7 @@ describe("Engineering Workspace W2 Client: Desktop and TUI viewmodels", () => {
 
     for (const fixtureId of FOUNDATION_FIXTURE_IDS) {
       const workshop = getFoundationFixtureWorkshop(catalog, fixtureId);
-      const cliResult = runFoundationCliCommand("get", {
+      const cliResult = await runFoundationCliCommand("get", {
         workshopId: workshop.id,
         json: true,
       });
@@ -88,7 +88,7 @@ describe("Engineering Workspace W2 Client: Desktop and TUI viewmodels", () => {
     const catalog = await loadFoundationFixtureCatalog(fixturePath);
     installFoundationFixture("foundation-fixture-readiness-ready", catalog);
 
-    const summarize = runFoundationCliCommand("summarize", {
+    const summarize = await runFoundationCliCommand("summarize", {
       workshopId: "fnd_fixture_readiness_ready",
       json: true,
     });
@@ -112,7 +112,7 @@ describe("Engineering Workspace W2 Client: Desktop and TUI viewmodels", () => {
     const catalog = await loadFoundationFixtureCatalog(fixturePath);
     installFoundationFixture("foundation-fixture-conflict-warning", catalog);
 
-    const conflicts = runFoundationCliCommand("conflicts", {
+    const conflicts = await runFoundationCliCommand("conflicts", {
       workshopId: "fnd_fixture_conflict_warning",
       json: true,
     });
@@ -146,7 +146,7 @@ describe("Engineering Workspace W2 Client: Desktop and TUI viewmodels", () => {
     installFoundationFixture("foundation-fixture-readiness-ready", catalog);
     evaluateFoundationWorkshopReadiness("fnd_fixture_readiness_ready");
 
-    const readiness = runFoundationCliCommand("readiness", {
+    const readiness = await runFoundationCliCommand("readiness", {
       workshopId: "fnd_fixture_readiness_ready",
       json: true,
     });
@@ -173,13 +173,13 @@ describe("Engineering Workspace W2 Client: Desktop and TUI viewmodels", () => {
       "fnd_fixture_empty_draft",
     );
 
-    const deleted = runFoundationCliCommand("delete", {
+    const deleted = await runFoundationCliCommand("delete", {
       workshopId: "fnd_fixture_empty_draft",
       json: true,
     });
     expect(deleted.exitCode).toBe(0);
 
-    const missing = runFoundationCliCommand("get", {
+    const missing = await runFoundationCliCommand("get", {
       workshopId: "fnd_fixture_empty_draft",
       json: true,
     });

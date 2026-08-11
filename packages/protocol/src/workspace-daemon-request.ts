@@ -17,6 +17,8 @@ import {
   FOUNDATION_READINESS_EVALUATE_METHOD,
   FOUNDATION_WORKSHOP_EXPORT_METHOD,
   FOUNDATION_WORKSHOP_DELETE_METHOD,
+  FOUNDATION_DISCOVERY_QUESTIONS_METHOD,
+  FOUNDATION_DISCOVERY_TURN_METHOD,
 } from "./jsonrpc.js";
 import type { RequestId } from "./jsonrpc.js";
 import { createSpecializedPacksChecksRequest } from "./engineering-quality/specialized-daemon-rpc.js";
@@ -51,6 +53,8 @@ import {
   createFoundationReadinessEvaluateRequest,
   createFoundationWorkshopExportRequest,
   createFoundationWorkshopDeleteRequest,
+  createFoundationDiscoveryQuestionsRequest,
+  createFoundationDiscoveryTurnRequest,
 } from "./foundation-daemon-rpc.js";
 import type {
   FoundationWorkshopCreateRequest,
@@ -62,6 +66,8 @@ import type {
   FoundationReadinessEvaluateRequest,
   FoundationWorkshopExportRequest,
   FoundationWorkshopDeleteRequest,
+  FoundationDiscoveryQuestionsRequest,
+  FoundationDiscoveryTurnRequest,
 } from "./foundation-daemon-rpc.js";
 import type { SpecializedPacksChecksResponse } from "./engineering-quality/specialized-daemon-rpc.js";
 import { ProtocolValidationError } from "./protocol-validation-error.js";
@@ -84,7 +90,9 @@ export type WorkspaceDaemonRequest =
   | FoundationConflictsIdentifyRequest
   | FoundationReadinessEvaluateRequest
   | FoundationWorkshopExportRequest
-  | FoundationWorkshopDeleteRequest;
+  | FoundationWorkshopDeleteRequest
+  | FoundationDiscoveryQuestionsRequest
+  | FoundationDiscoveryTurnRequest;
 
 export type WorkspaceDaemonResponse = SpecializedPacksChecksResponse;
 
@@ -93,6 +101,7 @@ export * from "./inception-daemon-rpc.js";
 export * from "./foundation-workshop.js";
 export * from "./foundation-common.js";
 export * from "./foundation-daemon-rpc.js";
+export * from "./foundation-discovery.js";
 export { ProtocolValidationError } from "./protocol-validation-error.js";
 
 export const WORKSPACE_DAEMON_REQUEST_METHODS = [
@@ -114,6 +123,8 @@ export const WORKSPACE_DAEMON_REQUEST_METHODS = [
   FOUNDATION_READINESS_EVALUATE_METHOD,
   FOUNDATION_WORKSHOP_EXPORT_METHOD,
   FOUNDATION_WORKSHOP_DELETE_METHOD,
+  FOUNDATION_DISCOVERY_QUESTIONS_METHOD,
+  FOUNDATION_DISCOVERY_TURN_METHOD,
 ] as const;
 
 function isObject(value: unknown): value is Record<string, unknown> {
@@ -268,6 +279,38 @@ export function parseWorkspaceDaemonRequest(
       stringValue(params.workshopId, "workshopId"),
       parseFoundationAnswer(params.answer),
     );
+  }
+  if (
+    value.method === FOUNDATION_DISCOVERY_QUESTIONS_METHOD ||
+    value.method === FOUNDATION_DISCOVERY_TURN_METHOD
+  ) {
+    const workshopId = stringValue(params.workshopId, "workshopId");
+    const effort =
+      params.effort === undefined
+        ? undefined
+        : params.effort === "low" ||
+            params.effort === "medium" ||
+            params.effort === "high"
+          ? params.effort
+          : (() => {
+              throw new ProtocolValidationError(-32602, "invalid effort");
+            })();
+    if (value.method === FOUNDATION_DISCOVERY_QUESTIONS_METHOD) {
+      return createFoundationDiscoveryQuestionsRequest(id, workshopId, effort);
+    }
+    const turnIndex =
+      params.turnIndex === undefined
+        ? undefined
+        : positiveInteger(params.turnIndex, "turnIndex");
+    const modelProfile =
+      params.modelProfile === undefined
+        ? undefined
+        : stringValue(params.modelProfile, "modelProfile");
+    return createFoundationDiscoveryTurnRequest(id, workshopId, {
+      ...(effort !== undefined ? { effort } : {}),
+      ...(turnIndex !== undefined ? { turnIndex } : {}),
+      ...(modelProfile !== undefined ? { modelProfile } : {}),
+    });
   }
   return null;
 }
