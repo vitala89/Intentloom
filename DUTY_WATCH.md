@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **W2 Client complete on branch `feat/workspace-w2-foundation-workshop-client`; open PR next. W1 + W2 Core on `main` (`329dec3`).**
+Status: **CLI evidence extract in progress on `refactor/cli-extract-evidence-command`. W1+W2 on `main` (`208f7c4`). W5 CLI binary parity open as PR #290.**
 
-Active branch: `feat/workspace-w2-foundation-workshop-client`
+Active branch: `refactor/cli-extract-evidence-command`
 
-Current objective: Open PR for W2 Client surfaces (foundation viewmodels, TUI renderers, Desktop Foundation Workshop view, Tauri bridge, fixture parity tests).
+Current objective: Extract `intentloom evidence` from oversized `command.ts` into `evidence-command.ts` and record the CLI decomposition plan.
 
-Next first action: Open PR from `feat/workspace-w2-foundation-workshop-client`, then W3 Neutron or W5 binary parity per roadmap priority.
+Next first action: Open PR for evidence extract; then continue plan order (`clean` dispatch) or W3 Neutron after W5 merges.
 
 Known open items, in the order they should be handled:
 
@@ -95,6 +95,15 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-11, CLI command.ts evidence extract + decomposition plan
+
+- **Status:** implementation complete on branch `refactor/cli-extract-evidence-command`; ready for PR.
+- **Branch:** `refactor/cli-extract-evidence-command` (based on `main` at `208f7c4`).
+- **Objective:** Satisfy the PR #160 quality-exception review trigger by extracting the evidence command family, shrink `command.ts`, and publish a prioritized decomposition plan for remaining CLI families.
+- **Completed:** Added `packages/cli/src/evidence-command.ts` with fetch/import/analyze routing and early dispatch from `runCli`. Removed the inline evidence block from `command.ts` (3429 → 3321 lines). Added `docs/roadmap/CLI_COMMAND_TS_DECOMPOSITION.md` with done/remaining priority order.
+- **Validation:** Focused evidence CLI tests green; full `pnpm verify` pending before push.
+- **Next action:** Open PR, then next extract (`clean` dispatch) or W3 Neutron per maintainer priority after W5 (#290) merges.
 
 ### 2026-08-11, Engineering Workspace W2 Foundation Workshop Client
 

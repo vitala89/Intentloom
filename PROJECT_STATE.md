@@ -231,11 +231,12 @@ before a new release or implementation milestone is declared complete.
 
 ## Active focus
 
-1. Engineering Workspace **W1** is complete on `main` at `2f63f99` (Core + Client,
-   PR #286 + PR #287). **W2 Foundation Workshop Core** is complete on `main` at
-   `329dec3` (PR #288). **W2 Client** (Foundation Workshop Desktop + TUI
-   viewmodels, Tauri bridge, fixture parity) is implemented on branch
-   `feat/workspace-w2-foundation-workshop-client` — PR pending.
+1. Engineering Workspace **W1** and **W2** are complete on `main` at `208f7c4`
+   (PR #286–#289). **W5 CLI binary parity** is open as PR #290. CLI oversized
+   `command.ts` decomposition started: evidence family extracted on
+   `refactor/cli-extract-evidence-command` (see
+   `docs/roadmap/CLI_COMMAND_TS_DECOMPOSITION.md`). Next product track after W5:
+   **W3 Neutron**.
 2. Engineering Workspace **W0** capability reconciliation remains complete on `main`.
 3. Keep GitHub Pages as the canonical public documentation destination and
    continue the roadmap after the completed `1.0.2` metadata release.

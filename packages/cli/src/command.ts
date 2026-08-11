@@ -117,14 +117,9 @@ import {
   collectGitEvidence,
   createReleaseTimeline,
 } from "@intentloom/evidence-git";
-import {
-  fetchLiveProviderEvidence,
-  importProviderExport,
-  type ProviderCacheStore,
-  type ProviderEvidenceResult,
-  type ProviderName,
-} from "@intentloom/evidence-provider";
+import { type ProviderCacheStore } from "@intentloom/evidence-provider";
 import { cleanProviderCache } from "./clean-cache.js";
+import { runEvidenceCommand } from "./evidence-command.js";
 import { runHarnessCommand } from "./harness-command.js";
 import { usage } from "./usage.js";
 import {
@@ -133,11 +128,8 @@ import {
   formatDoctor,
   formatInspection,
   formatPlan,
-  formatProviderEvidence,
-  formatReleaseAnalysis,
 } from "./formatters.js";
 import {
-  analyzeReleaseEvidence,
   evaluateEngineeringConformance,
   type EngineeringWorkflowCaseType,
   type EngineeringWorkflowPolicy,
@@ -1218,6 +1210,9 @@ export async function runCli(
         io,
       );
     }
+    if (args[0] === "evidence") {
+      return await runEvidenceCommand(args, io);
+    }
     const parsed = parseArguments(args);
     const fileSystem = dependencies.fileSystem ?? nodeFileSystem;
     const root = parsed.values.get("--root") ?? cwd();
@@ -1265,109 +1260,6 @@ export async function runCli(
         supportedAdapters: [...adapters].sort(),
       },
     );
-    if (parsed.command === "evidence") {
-      const evidenceSubcommand = args[1];
-      const provider = parsed.values.get("--provider");
-      const file = parsed.values.get("--file");
-      const projectKey = parsed.values.get("--project-key");
-      const token = parsed.values.get("--token");
-      if (provider !== "github" && provider !== "gitlab")
-        throw new CliUsageError("--provider must be github or gitlab");
-      if (!projectKey)
-        throw new CliUsageError(
-          `evidence ${evidenceSubcommand} requires --project-key`,
-        );
-
-      if (evidenceSubcommand === "fetch") {
-        const liveResult = await fetchLiveProviderEvidence({
-          provider: provider as ProviderName,
-          projectKey,
-          ...(token ? { token } : {}),
-        });
-        io.stdout(
-          parsed.flags.has("--json")
-            ? JSON.stringify(liveResult, null, 2)
-            : formatProviderEvidence(liveResult),
-        );
-        return liveResult.status === "invalid" ? 3 : 0;
-      }
-
-      if (!file)
-        throw new CliUsageError(
-          `evidence ${evidenceSubcommand} requires --file and --project-key`,
-        );
-      let payload: unknown;
-      let result: ProviderEvidenceResult;
-      try {
-        payload = JSON.parse(await readFile(resolve(file), "utf8"));
-      } catch {
-        result = {
-          operationVersion: 1,
-          source: "provider-export",
-          provider: provider as ProviderName,
-          projectKey,
-          trust: "provider-supplied-unverified",
-          status: "invalid",
-          events: [],
-          diagnostics: ["export-file-unreadable"],
-        };
-        if (evidenceSubcommand === "import") {
-          io.stdout(
-            parsed.flags.has("--json")
-              ? JSON.stringify(result, null, 2)
-              : formatProviderEvidence(result),
-          );
-          return 3;
-        }
-      }
-      if (payload !== undefined)
-        result = importProviderExport({
-          provider: provider as ProviderName,
-          projectKey,
-          payload,
-        });
-      if (evidenceSubcommand === "import") {
-        io.stdout(
-          parsed.flags.has("--json")
-            ? JSON.stringify(result!, null, 2)
-            : formatProviderEvidence(result!),
-        );
-        return result!.status === "invalid" ? 3 : 0;
-      }
-      const timeline = createReleaseTimeline(
-        parsed.values.get("--case-id") ?? "release",
-        await collectGitEvidence({ root }),
-      );
-      const report = analyzeReleaseEvidence(
-        {
-          caseId: timeline.caseId,
-          quality: timeline.quality,
-          events: timeline.events.map((event) => ({
-            commitId: event.commitId,
-            timestamp: event.timestamp,
-          })),
-        },
-        {
-          provider: result!.provider,
-          projectKey: result!.projectKey,
-          status: result!.status,
-          events: result!.events.map((event) => ({
-            eventType: event.eventType,
-            sourceId: event.sourceId,
-            ...(event.commitIds ? { commitIds: event.commitIds } : {}),
-          })),
-        },
-        projectKey,
-      );
-      io.stdout(
-        parsed.flags.has("--json")
-          ? JSON.stringify(report, null, 2)
-          : formatReleaseAnalysis(report),
-      );
-      return report.quality === "conflicted" || report.quality === "unavailable"
-        ? 3
-        : 0;
-    }
     const readsProject = ["sync", "adopt", "diff", "doctor"].includes(
       parsed.command,
     );
