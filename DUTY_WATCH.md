@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **W3 complete on `main` at `be81bed` (PR #293). W4 Blueprint Core in review on `feat/workspace-w4-blueprint-core`.**
+Status: **W4 Blueprint Core on `main` at `de9b473` (PR #295). W4 Client in review on `feat/workspace-w4-blueprint-client`.**
 
-Active branch: `feat/workspace-w4-blueprint-core`
+Active branch: `feat/workspace-w4-blueprint-client`
 
-Current objective: Merge W4 Core PR (Foundation blueprint resolver, daemon RPC, CLI), then W4 Client Desktop/TUI.
+Current objective: Merge W4 Client PR (Desktop/TUI blueprint alternatives UX), then W5 blueprint binary routing or W6 scaffold per roadmap.
 
-Next first action: Merge W4 Core PR on correctly named branch; branch for W4 Client parity surfaces.
+Next first action: Merge W4 Client PR; update capability matrix §8 checkpoint.
 
 Known open items, in the order they should be handled:
 
@@ -96,10 +96,21 @@ entry directly below this section.
 
 ## Watch entries
 
+### 2026-08-11, Engineering Workspace W4 Blueprint Client
+
+- **Status:** implementation complete on branch `feat/workspace-w4-blueprint-client`; PR pending.
+- **Branch:** `feat/workspace-w4-blueprint-client` (based on `main` at `de9b473`, PR #295 Core merged).
+- **Objective:** Deliver W4 Client surfaces after W4 Core merge: shared blueprint proposal/compare/approval viewmodels, TUI text renderers, Desktop blueprint panel wired through daemon RPC bridge, and CLI parity tests.
+- **Completed:** Added `foundation-blueprint-client-viewmodel.ts` and `foundation-blueprint-viewmodel-renderers.ts`. Added Desktop `FoundationBlueprintPanel`, workshop progress integration, `desktopClient.foundationBlueprint*` helpers, Tauri allowlist for blueprint RPC methods, and `tests/desktop-tui-foundation-blueprint.test.ts` (4 tests).
+- **Validation:** `pnpm verify` green (1354 tests passed, 3 skipped).
+- **Non-goals preserved:** Blueprint YAML editing, top-level `intentloom blueprint` binary routing (W5), scaffold/apply.
+- **Next action:** Merge W4 Client PR.
+
 ### 2026-08-11, Engineering Workspace W4 Blueprint Core
 
-- **Status:** implementation complete on branch `feat/workspace-w4-blueprint-core`; PR pending.
-- **Branch:** `feat/workspace-w4-blueprint-core` (based on `main` at `be81bed`; replaces prohibited `cursor/` harness branch).
+- **Status:** complete on `main` (`de9b473`, PR #295).
+- **Branch:** `feat/workspace-w4-blueprint-core` (squash-merged to `main` as `de9b473`).
+- **Pull request:** #295
 - **Objective:** Land W4 Core slice — Foundation blueprint proposal resolver (minimal/recommended/extensible), tier comparison, in-memory approval/revocation, versioned protocol URNs, daemon RPC, CLI `blueprint-*` commands, and contract tests without Desktop/TUI or filesystem mutation.
 - **Completed:** Added protocol/validator contracts, application resolver reusing inception blueprint digest/approval helpers, daemon methods `intentloom.foundation.blueprint.{propose,compare,approve,revoke}.v1`, CLI/binary routing, and tests `foundation-blueprint.test.ts` + daemon parity extension.
 - **Validation:** `pnpm verify` green (1350 tests passed, 3 skipped).

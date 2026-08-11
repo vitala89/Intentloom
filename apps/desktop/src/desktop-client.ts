@@ -5,6 +5,10 @@ import {
   createFoundationConflictsIdentifyRequest,
   createFoundationDiscoveryQuestionsRequest,
   createFoundationDiscoveryTurnRequest,
+  createFoundationBlueprintProposeRequest,
+  createFoundationBlueprintCompareRequest,
+  createFoundationBlueprintApproveRequest,
+  createFoundationBlueprintRevokeRequest,
   createFoundationWorkshopCreateRequest,
   createFoundationWorkshopDeleteRequest,
   createFoundationWorkshopGetRequest,
@@ -300,6 +304,58 @@ export const desktopClient = {
       "desktop-foundation-discovery-turn",
       workshopId,
       options ?? {},
+    );
+    return this.foundationRequest(request, signal);
+  },
+
+  async foundationBlueprintPropose(
+    workshopId: string,
+    signal?: AbortSignal,
+  ): Promise<FoundationViewmodelPayload> {
+    const request = createFoundationBlueprintProposeRequest(
+      "desktop-foundation-blueprint-propose",
+      workshopId,
+    );
+    return this.foundationRequest(request, signal);
+  },
+
+  async foundationBlueprintCompare(
+    workshopId: string,
+    leftTier: "minimal" | "recommended" | "extensible",
+    rightTier: "minimal" | "recommended" | "extensible",
+    signal?: AbortSignal,
+  ): Promise<FoundationViewmodelPayload> {
+    const request = createFoundationBlueprintCompareRequest(
+      "desktop-foundation-blueprint-compare",
+      workshopId,
+      leftTier,
+      rightTier,
+    );
+    return this.foundationRequest(request, signal);
+  },
+
+  async foundationBlueprintApprove(
+    workshopId: string,
+    tier: "minimal" | "recommended" | "extensible",
+    approver?: string,
+    signal?: AbortSignal,
+  ): Promise<FoundationViewmodelPayload> {
+    const request = createFoundationBlueprintApproveRequest(
+      "desktop-foundation-blueprint-approve",
+      workshopId,
+      tier,
+      approver,
+    );
+    return this.foundationRequest(request, signal);
+  },
+
+  async foundationBlueprintRevoke(
+    workshopId: string,
+    signal?: AbortSignal,
+  ): Promise<FoundationViewmodelPayload> {
+    const request = createFoundationBlueprintRevokeRequest(
+      "desktop-foundation-blueprint-revoke",
+      workshopId,
     );
     return this.foundationRequest(request, signal);
   },

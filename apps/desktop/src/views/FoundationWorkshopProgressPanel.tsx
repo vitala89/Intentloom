@@ -4,8 +4,20 @@ import { Button } from "../design/components/core/Button.js";
 import { StatusChip } from "../design/components/status/StatusChip.js";
 import { desktopClient, DesktopBridgeError } from "../desktop-client.js";
 import { FoundationDiscoveryPanel } from "./FoundationDiscoveryPanel.js";
+import { FoundationBlueprintPanel } from "./FoundationBlueprintPanel.js";
 import { buildDiscoveryTurnProgress } from "./foundation-discovery-view-helpers.js";
 import type { FoundationDiscoveryTurnViewModel } from "./foundation-discovery-view-helpers.js";
+import {
+  buildBlueprintApprovalProgress,
+  buildBlueprintCompareProgress,
+  buildBlueprintProposalProgress,
+} from "./foundation-blueprint-view-helpers.js";
+import type {
+  FoundationBlueprintApprovalViewModel,
+  FoundationBlueprintCompareViewModel,
+  FoundationBlueprintProposalViewModel,
+  FoundationBlueprintTier,
+} from "./foundation-blueprint-view-helpers.js";
 import type { FoundationWorkshopProgress } from "./foundation-workshop-view-helpers.js";
 import { foundationReadinessTone } from "./foundation-workshop-view-helpers.js";
 
@@ -26,6 +38,19 @@ export function FoundationWorkshopProgressPanel({
     useState<FoundationDiscoveryTurnViewModel | null>(null);
   const [discoveryLoading, setDiscoveryLoading] = useState(false);
   const [discoveryError, setDiscoveryError] = useState<string | null>(null);
+  const [proposal, setProposal] =
+    useState<FoundationBlueprintProposalViewModel | null>(null);
+  const [compare, setCompare] =
+    useState<FoundationBlueprintCompareViewModel | null>(null);
+  const [approval, setApproval] =
+    useState<FoundationBlueprintApprovalViewModel | null>(null);
+  const [leftTier, setLeftTier] = useState<FoundationBlueprintTier>("minimal");
+  const [rightTier, setRightTier] =
+    useState<FoundationBlueprintTier>("extensible");
+  const [approveTier, setApproveTier] =
+    useState<FoundationBlueprintTier>("recommended");
+  const [blueprintLoading, setBlueprintLoading] = useState(false);
+  const [blueprintError, setBlueprintError] = useState<string | null>(null);
 
   const runDiscovery = useCallback(async () => {
     setDiscoveryLoading(true);
@@ -47,6 +72,88 @@ export function FoundationWorkshopProgressPanel({
       setDiscoveryLoading(false);
     }
   }, [effort, progress.workshopId]);
+
+  const runBlueprintPropose = useCallback(async () => {
+    setBlueprintLoading(true);
+    setBlueprintError(null);
+    try {
+      const viewmodel = await desktopClient.foundationBlueprintPropose(
+        progress.workshopId,
+      );
+      setProposal(buildBlueprintProposalProgress(viewmodel));
+      setCompare(null);
+    } catch (error) {
+      setProposal(null);
+      setBlueprintError(
+        error instanceof DesktopBridgeError
+          ? error.message
+          : "Could not propose foundation blueprints.",
+      );
+    } finally {
+      setBlueprintLoading(false);
+    }
+  }, [progress.workshopId]);
+
+  const runBlueprintCompare = useCallback(async () => {
+    setBlueprintLoading(true);
+    setBlueprintError(null);
+    try {
+      const viewmodel = await desktopClient.foundationBlueprintCompare(
+        progress.workshopId,
+        leftTier,
+        rightTier,
+      );
+      setCompare(buildBlueprintCompareProgress(viewmodel));
+    } catch (error) {
+      setCompare(null);
+      setBlueprintError(
+        error instanceof DesktopBridgeError
+          ? error.message
+          : "Could not compare blueprint tiers.",
+      );
+    } finally {
+      setBlueprintLoading(false);
+    }
+  }, [leftTier, progress.workshopId, rightTier]);
+
+  const runBlueprintApprove = useCallback(async () => {
+    setBlueprintLoading(true);
+    setBlueprintError(null);
+    try {
+      const viewmodel = await desktopClient.foundationBlueprintApprove(
+        progress.workshopId,
+        approveTier,
+      );
+      setApproval(buildBlueprintApprovalProgress(viewmodel));
+    } catch (error) {
+      setBlueprintError(
+        error instanceof DesktopBridgeError
+          ? error.message
+          : "Could not approve the blueprint.",
+      );
+    } finally {
+      setBlueprintLoading(false);
+    }
+  }, [approveTier, progress.workshopId]);
+
+  const runBlueprintRevoke = useCallback(async () => {
+    setBlueprintLoading(true);
+    setBlueprintError(null);
+    try {
+      const viewmodel = await desktopClient.foundationBlueprintRevoke(
+        progress.workshopId,
+      );
+      setApproval(buildBlueprintApprovalProgress(viewmodel));
+    } catch (error) {
+      setBlueprintError(
+        error instanceof DesktopBridgeError
+          ? error.message
+          : "Could not revoke blueprint approval.",
+      );
+    } finally {
+      setBlueprintLoading(false);
+    }
+  }, [progress.workshopId]);
 
   return (
     <div
@@ -99,6 +206,24 @@ export function FoundationWorkshopProgressPanel({
         errorMessage={discoveryError}
         onEffortChange={setEffort}
         onRunDiscovery={() => void runDiscovery()}
+      />
+
+      <FoundationBlueprintPanel
+        proposal={proposal}
+        compare={compare}
+        approval={approval}
+        leftTier={leftTier}
+        rightTier={rightTier}
+        approveTier={approveTier}
+        loading={blueprintLoading}
+        errorMessage={blueprintError}
+        onLeftTierChange={setLeftTier}
+        onRightTierChange={setRightTier}
+        onApproveTierChange={setApproveTier}
+        onPropose={() => void runBlueprintPropose()}
+        onCompare={() => void runBlueprintCompare()}
+        onApprove={() => void runBlueprintApprove()}
+        onRevoke={() => void runBlueprintRevoke()}
       />
 
       <Card variant="default">
