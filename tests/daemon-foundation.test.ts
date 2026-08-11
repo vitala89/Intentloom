@@ -7,6 +7,7 @@ import { afterEach, describe, expect, it } from "vitest";
 import * as application from "@intentloom/application";
 import * as protocol from "@intentloom/protocol";
 import * as foundationHandlers from "../packages/daemon/src/foundation-handlers.js";
+import * as foundationScaffoldHandlers from "../packages/daemon/src/foundation-scaffold-handlers.js";
 import { startLocalDaemon } from "../packages/daemon/src/index.js";
 
 const fixturePath = resolve(
@@ -19,6 +20,7 @@ const daemons: { close(): Promise<void> }[] = [];
 afterEach(async () => {
   application.clearFoundationWorkshopStore();
   application.clearFoundationBlueprintStore();
+  application.clearFoundationScaffoldStore();
   await Promise.all(daemons.splice(0).map((daemon) => daemon.close()));
 });
 
@@ -85,6 +87,14 @@ async function startFoundationDaemon() {
       foundationHandlers.handleFoundationBlueprintApprove,
     foundationBlueprintRevoke:
       foundationHandlers.handleFoundationBlueprintRevoke,
+    foundationScaffoldPrepare:
+      foundationScaffoldHandlers.handleFoundationScaffoldPrepare,
+    foundationScaffoldGet:
+      foundationScaffoldHandlers.handleFoundationScaffoldGet,
+    foundationScaffoldCompare:
+      foundationScaffoldHandlers.handleFoundationScaffoldCompare,
+    foundationScaffoldValidate:
+      foundationScaffoldHandlers.handleFoundationScaffoldValidate,
   });
   daemons.push({
     async close() {
@@ -281,6 +291,45 @@ describe("Engineering Workspace W2: foundation daemon RPC", () => {
     );
     expect(daemonProposal.recommended.tier).toBe("recommended");
     expect(daemonProposal.workshopUnchanged).toBe(true);
+    expect(application.getFoundationWorkshop(workshop.id)).toEqual(before);
+  });
+
+  it("returns CLI-equivalent scaffold prepare viewmodels without mutating workshop state", async () => {
+    const workshop = application.createFoundationWorkshop({
+      root: "/tmp/foundation-daemon-scaffold",
+      idea: "Daemon scaffold parity library",
+      workshopId: "fnd_fixture_daemon_scaffold",
+    });
+    application.recordFoundationWorkshopAnswer(workshop.id, {
+      questionId: "fq5_workflow",
+      value: "Library consumers import typed helpers",
+      confidence: "confirmed",
+      timestamp: Date.now(),
+    });
+    application.approveFoundationBlueprint(
+      workshop.id,
+      "recommended",
+      "reviewer",
+    );
+    const before = application.getFoundationWorkshop(workshop.id);
+    const daemon = await startFoundationDaemon();
+
+    const cliPrepare = application.prepareProjectScaffold(workshop.id);
+    const daemonPrepare = responseViewmodel(
+      await rawRequest(
+        daemon.endpoint,
+        protocol.createFoundationScaffoldPrepareRequest(
+          "scaffold-prepare",
+          workshop.id,
+        ),
+        daemon.token,
+      ),
+    );
+    expect(daemonPrepare.schemaVersion).toBe(
+      "urn:intentloom:schema:foundation-scaffold-prepare:1",
+    );
+    expect(daemonPrepare.record.planDigest).toBe(cliPrepare.record.planDigest);
+    expect(daemonPrepare.workshopUnchanged).toBe(true);
     expect(application.getFoundationWorkshop(workshop.id)).toEqual(before);
   });
 });

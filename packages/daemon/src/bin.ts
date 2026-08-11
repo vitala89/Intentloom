@@ -46,6 +46,12 @@ import {
   handleFoundationWorkshopExport,
   handleFoundationWorkshopGet,
 } from "./foundation-handlers.js";
+import {
+  handleFoundationScaffoldCompare,
+  handleFoundationScaffoldGet,
+  handleFoundationScaffoldPrepare,
+  handleFoundationScaffoldValidate,
+} from "./foundation-scaffold-handlers.js";
 
 function value(args: readonly string[], flag: string): string {
   const index = args.indexOf(flag);
@@ -180,6 +186,10 @@ async function main(): Promise<void> {
     foundationBlueprintCompare: handleFoundationBlueprintCompare,
     foundationBlueprintApprove: handleFoundationBlueprintApprove,
     foundationBlueprintRevoke: handleFoundationBlueprintRevoke,
+    foundationScaffoldPrepare: handleFoundationScaffoldPrepare,
+    foundationScaffoldGet: handleFoundationScaffoldGet,
+    foundationScaffoldCompare: handleFoundationScaffoldCompare,
+    foundationScaffoldValidate: handleFoundationScaffoldValidate,
   });
   const stop = () => void daemon.close().then(() => process.exit(0));
   process.once("SIGINT", stop);

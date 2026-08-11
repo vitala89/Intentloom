@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **W4 complete on `main` at `92e82fb` (PR #296). W5 blueprint binary routing in review on `feat/workspace-w5-blueprint-binary` (PR #297).**
+Status: **W5 complete on `main` at `7a18ddd` (PR #297). W6 Core scaffold planner implemented on `feat/workspace-w6-scaffold-planner-core` (not yet committed/PR).**
 
-Active branch: `feat/workspace-w5-blueprint-binary`
+Active branch: `feat/workspace-w6-scaffold-planner-core`
 
-Current objective: Land W5 top-level `intentloom blueprint` binary routing (PR #297 rebased onto main); then W6 scaffold increment.
+Current objective: Land W6 Core minimal scaffold planner (foundation gate over I5); then W6 Client Desktop/TUI.
 
-Next first action: Push rebased PR #297 and confirm CI green.
+Next first action: Commit W6 Core, open PR, confirm CI green; then W6 Client surfaces.
 
 Known open items, in the order they should be handled:
 
@@ -95,6 +95,36 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-12, Engineering Workspace W6 scaffold planner Core
+
+- **Status:** partial (implementation complete locally; commit/PR pending)
+- **Agent/tool:** Cursor Agent
+- **Branch:** `feat/workspace-w6-scaffold-planner-core` (from `main` at `7a18ddd`)
+- **Objective:** Deliver W6 Core — foundation-gated, side-effect-free scaffold planner packaging over I5 `ScaffoldPlan`, with versioned protocol URNs, validators, daemon RPC, and CLI under `intentloom foundation scaffold-*`.
+- **Completed:**
+  - Protocol types/URNs (`foundation-scaffold.ts`) and RPC helpers (`foundation-scaffold-daemon-rpc.ts`).
+  - Application ops `prepareProjectScaffold`, `getProjectScaffoldPlan`, `compareProjectScaffoldPlan`, `validateProjectScaffoldPlan` with in-memory plan store; fail-closed on missing/revoked/expired blueprint approval; deterministic planId/digest.
+  - Validator contracts; daemon handlers + dispatch/bin wiring; CLI `scaffold-prepare|get|compare|validate`.
+  - Tests: `tests/foundation-scaffold.test.ts` (4) and daemon parity extension in `tests/daemon-foundation.test.ts`.
+- **Not completed:** Commit, PR, CI; W6 Client Desktop/TUI preview; W7 apply.
+- **Files or packages changed:** `packages/protocol`, `packages/validator`, `packages/application`, `packages/daemon`, `packages/cli`, focused tests, `DUTY_WATCH.md`, capability matrix, `PROJECT_STATE.md`.
+- **Validation:** `pnpm verify` green (typecheck, lint, format, full test suite, build, `git diff --check`).
+- **Decisions and assumptions:** Reused I5 `ScaffoldPlan` without forking; workspace envelope adds planDigest/expiry/capabilities/verificationChecks/templateVersions. Apply remains W7. Scaffold RPC lives in a separate handler module to avoid growing oversized `foundation-handlers.ts`.
+- **Next first action:** Commit W6 Core atomically, open PR, then start W6 Client against frozen contracts.
+
+#### Duty completion checklist
+
+- [x] Formatter passed (touched files)
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant tests, type checks, builds passed (`pnpm verify`)
+- [ ] Atomic commit / PR
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `PROJECT_STATE.md` updated when applicable
+- [x] `DUTY_WATCH.md` handoff completed
+- [x] Related roadmap docs updated (capability matrix)
+- [x] Full `pnpm verify` green
 
 ### 2026-08-11, Engineering Workspace W5 blueprint binary CLI routing
 
