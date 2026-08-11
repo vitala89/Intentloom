@@ -102,7 +102,7 @@ entry directly below this section.
 - **Branch:** `refactor/cli-extract-evidence-command` (based on `main` at `208f7c4`).
 - **Objective:** Satisfy the PR #160 quality-exception review trigger by extracting the evidence command family, shrink `command.ts`, and publish a prioritized decomposition plan for remaining CLI families.
 - **Completed:** Added `packages/cli/src/evidence-command.ts` with fetch/import/analyze routing and early dispatch from `runCli`. Removed the inline evidence block from `command.ts` (3429 → 3321 lines). Added `docs/roadmap/CLI_COMMAND_TS_DECOMPOSITION.md` with done/remaining priority order.
-- **Validation:** Focused evidence CLI tests green; full `pnpm verify` pending before push.
+- **Validation:** `pnpm verify` green (1330 tests passed, 3 skipped).
 - **Next action:** Open PR, then next extract (`clean` dispatch) or W3 Neutron per maintainer priority after W5 (#290) merges.
 
 ### 2026-08-11, Engineering Workspace W2 Foundation Workshop Client
