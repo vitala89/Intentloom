@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **W3 complete on `main` at `be81bed` (PR #293). W4 Blueprint Core in review on `cursor/workspace-w4-blueprint-core-f3ed`.**
+Status: **W3 complete on `main` at `be81bed` (PR #293). W4 Blueprint Core in review on `feat/workspace-w4-blueprint-core`.**
 
-Active branch: `cursor/workspace-w4-blueprint-core-f3ed`
+Active branch: `feat/workspace-w4-blueprint-core`
 
 Current objective: Merge W4 Core PR (Foundation blueprint resolver, daemon RPC, CLI), then W4 Client Desktop/TUI.
 
-Next first action: Open and merge W4 Core PR; branch for W4 Client parity surfaces.
+Next first action: Merge W4 Core PR on correctly named branch; branch for W4 Client parity surfaces.
 
 Known open items, in the order they should be handled:
 
@@ -98,8 +98,8 @@ entry directly below this section.
 
 ### 2026-08-11, Engineering Workspace W4 Blueprint Core
 
-- **Status:** implementation complete on branch `cursor/workspace-w4-blueprint-core-f3ed`; PR pending.
-- **Branch:** `cursor/workspace-w4-blueprint-core-f3ed` (based on `main` at `be81bed`).
+- **Status:** implementation complete on branch `feat/workspace-w4-blueprint-core`; PR pending.
+- **Branch:** `feat/workspace-w4-blueprint-core` (based on `main` at `be81bed`; replaces prohibited `cursor/` harness branch).
 - **Objective:** Land W4 Core slice — Foundation blueprint proposal resolver (minimal/recommended/extensible), tier comparison, in-memory approval/revocation, versioned protocol URNs, daemon RPC, CLI `blueprint-*` commands, and contract tests without Desktop/TUI or filesystem mutation.
 - **Completed:** Added protocol/validator contracts, application resolver reusing inception blueprint digest/approval helpers, daemon methods `intentloom.foundation.blueprint.{propose,compare,approve,revoke}.v1`, CLI/binary routing, and tests `foundation-blueprint.test.ts` + daemon parity extension.
 - **Validation:** `pnpm verify` green (1350 tests passed, 3 skipped).
