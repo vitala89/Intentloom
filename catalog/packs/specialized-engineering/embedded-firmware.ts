@@ -2,6 +2,7 @@ import {
   FIRST_PARTY_ALIAS_CREATED_AT,
   FIRST_PARTY_PUBLISHER,
   QUALITY_DISCIPLINE_ALIAS_SCHEMA_URN,
+  QUALITY_SPECIALIZED_PACK_CHECK_DEFINITION_SCHEMA_URN,
   QUALITY_SPECIALIZED_PACK_DETECTION_RULE_SCHEMA_URN,
   QUALITY_SPECIALIZED_PACK_SCHEMA_URN,
 } from "./common.js";
@@ -51,6 +52,39 @@ export const embeddedFirmwareSpecializedPack: FirstPartySpecializedPackEntry = {
     ],
     minimumSignalMatches: 2,
   },
+  checkDefinitions: [
+    {
+      schemaVersion: QUALITY_SPECIALIZED_PACK_CHECK_DEFINITION_SCHEMA_URN,
+      packId: "pack-embedded-firmware",
+      ruleId: "EMB-001-unsafe-hal-review",
+      kind: "path-presence",
+      signals: [
+        {
+          pathPattern: "/src/",
+          matchKind: "contains",
+          label: "firmware-sources",
+        },
+      ],
+      severity: "review",
+      summary: "Firmware sources are present for unsafe HAL review",
+    },
+    {
+      schemaVersion: QUALITY_SPECIALIZED_PACK_CHECK_DEFINITION_SCHEMA_URN,
+      packId: "pack-embedded-firmware",
+      ruleId: "EMB-002-interrupt-latency-budget",
+      kind: "path-presence",
+      signals: [
+        {
+          pathPattern: "linker/",
+          matchKind: "contains",
+          label: "linker-layout",
+        },
+      ],
+      severity: "review",
+      summary:
+        "Linker layout artifacts are present for interrupt latency review",
+    },
+  ],
   aliases: [
     {
       schemaVersion: QUALITY_DISCIPLINE_ALIAS_SCHEMA_URN,

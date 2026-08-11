@@ -9,15 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Engineering Quality Packs Phases Q0–Q18 are merged into `main`; Specialized Engineering Packs Phases S1 (PR #277), S2 (PR #278), S3 (PR #280), S4 (PR #280), and S5 (PR #282) are merged into `main`; Phase S6 Client Surfaces is complete on branch `feat/specialized-packs-s6-client-surfaces` and ready for commit/PR.**
+Status: **Engineering Quality Packs Phases Q0–Q18 are merged into `main`; Specialized Engineering Packs Phases S1 (PR #277), S2 (PR #278), S3 (PR #280), S4 (PR #280), S5 (PR #282), and S6 (PR #283) are merged into `main`; Phase S7 Deterministic Checks is complete on branch `feat/specialized-packs-s7-deterministic-checks` and ready for commit/PR.**
 
-Active branch: `feat/specialized-packs-s6-client-surfaces`
+Active branch: `feat/specialized-packs-s7-deterministic-checks`
 
-Current objective: Land Phase S6 with CLI, daemon, MCP, and Desktop/TUI viewmodel parity for first-party specialized packs.
+Current objective: Land Phase S7 deterministic path-based specialized pack checks with protocol contracts, validators, application engine, first-party check definitions, and contract tests.
 
 Next first action: Create atomic commit without attribution trailers, push branch, and open PR.
-
-Known open items, in the order they should be handled:
 
 Known open items, in the order they should be handled:
 
@@ -98,13 +96,31 @@ entry directly below this section.
 
 ## Watch entries
 
-### 2026-08-10, Specialized Engineering Packs Phase S6 Client Surfaces
+### 2026-08-11, Specialized Engineering Packs Phase S7 Deterministic Checks
 
 - **Status:** complete; implementation, full verification, typecheck, lint, formatting, test suite, build, and diff checks are complete.
-- **Branch:** `feat/specialized-packs-s6-client-surfaces`, based on updated `main` (`61a3d82`).
+- **Branch:** `feat/specialized-packs-s7-deterministic-checks`, based on updated `main` (`58c2746`).
+- **Objective:** Add deterministic path-based specialized pack checks only where evidence is stable, per `SPECIALIZED_ENGINEERING_PACKS_PLAN.md` delivery step 7.
+- **Completed:** Added versioned check definition/result/report contracts in `@intentloom/protocol`; validator boundaries in `@intentloom/validator`; pure application engine (`registerSpecializedPackCheckDefinition`, `runSpecializedPackDeterministicChecks`, `resolveSpecializedPackDeterministicChecks`, `resolveFirstPartySpecializedPackChecks`); first-party check definitions for all four specialized packs linked to manifest `providedRuleIds`; contract test suite `tests/engineering-quality-specialized-deterministic-checks.test.ts` (7 tests).
+- **Next first action:** Create atomic commit, push branch, open pull request, and verify GitHub Actions CI matrix.
+
+#### Duty completion checklist
+
+- [x] Formatter passed for changed source and test files
+- [x] Markdown and lint checks passed after documentation update
+- [x] Relevant focused tests, type check, and lint passed
+- [x] Full `pnpm verify` passed
+- [x] Final `git diff --check` passed
+- [x] `PROJECT_STATE.md` updated when applicable
+- [x] Duty Watch handoff completed
+- [x] Related roadmap, ADR, changelog, migration, or reference docs reviewed; no Phase S7 roadmap or ADR change was required
+
+### 2026-08-10, Specialized Engineering Packs Phase S6 Client Surfaces
+
+- **Status:** complete; merged into `main` through PR #283 (`58c2746`).
 - **Objective:** Expose equivalent CLI, daemon, MCP, Desktop, and TUI results for first-party specialized pack catalog and read-only detection per `SPECIALIZED_ENGINEERING_PACKS_PLAN.md` step 6.
 - **Completed:** Added shared viewmodels and runtime bridge in `@intentloom/application`; CLI command `runSpecializedPacksCliCommand`; daemon RPC methods `intentloom.specialized-packs.catalog.v1` and `intentloom.specialized-packs.detect.v1` with handlers; MCP tools `intentloom_specialized_packs_catalog` and `intentloom_specialized_packs_detect`; protocol daemon RPC helpers in `specialized-daemon-rpc.ts`; contract tests `tests/cli-specialized-packs.test.ts`, `tests/daemon-specialized-packs.test.ts`, `tests/mcp-specialized-packs.test.ts`, and Desktop/TUI parity cases in `tests/desktop-tui-engineering-quality.test.ts`; aligned catalog schema URNs in `catalog/packs/specialized-engineering/common.ts` for packed CLI bundling.
-- **Next first action:** Create atomic commit, push branch, open pull request, and verify GitHub Actions CI matrix.
+- **Next first action:** None; continue with Phase S7 on branch `feat/specialized-packs-s7-deterministic-checks`.
 
 #### Duty completion checklist
 

@@ -20,3 +20,4 @@ export * from "./engineering-quality/specialized-disciplines.js";
 export * from "./engineering-quality/specialized-pack-manifest.js";
 export * from "./engineering-quality/specialized-aliases.js";
 export * from "./engineering-quality/specialized-pack-detection.js";
+export * from "./engineering-quality/specialized-pack-checks.js";

@@ -26,6 +26,7 @@ export * from "./specialized-disciplines-engine.js";
 export * from "./specialized-pack-manifest-engine.js";
 export * from "./specialized-aliases-engine.js";
 export * from "./specialized-pack-detection-engine.js";
+export * from "./specialized-pack-check-engine.js";
 export * from "./specialized-pack-catalog-engine.js";
 export * from "./first-party-specialized-pack-runtime.js";
 export * from "./specialized-pack-viewmodel.js";
