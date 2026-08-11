@@ -184,6 +184,15 @@ export const QUALITY_SPECIALIZED_PACK_DETECTION_RESULT_SCHEMA_URN =
 export const QUALITY_SPECIALIZED_PACK_DETECTION_RESOLUTION_SCHEMA_URN =
   "urn:intentloom:schema:quality-specialized-pack-detection-resolution:1" as const;
 
+export const QUALITY_SPECIALIZED_PACK_CHECK_DEFINITION_SCHEMA_URN =
+  "urn:intentloom:schema:quality-specialized-pack-check-definition:1" as const;
+
+export const QUALITY_SPECIALIZED_PACK_CHECK_RESULT_SCHEMA_URN =
+  "urn:intentloom:schema:quality-specialized-pack-check-result:1" as const;
+
+export const QUALITY_SPECIALIZED_PACK_CHECK_REPORT_SCHEMA_URN =
+  "urn:intentloom:schema:quality-specialized-pack-check-report:1" as const;
+
 export type QualityDetectionConfidence = "low" | "medium" | "high";
 
 export type QualityDetectionSecurityImpact =

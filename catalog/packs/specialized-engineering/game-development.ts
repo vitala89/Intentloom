@@ -2,6 +2,7 @@ import {
   FIRST_PARTY_ALIAS_CREATED_AT,
   FIRST_PARTY_PUBLISHER,
   QUALITY_DISCIPLINE_ALIAS_SCHEMA_URN,
+  QUALITY_SPECIALIZED_PACK_CHECK_DEFINITION_SCHEMA_URN,
   QUALITY_SPECIALIZED_PACK_DETECTION_RULE_SCHEMA_URN,
   QUALITY_SPECIALIZED_PACK_SCHEMA_URN,
 } from "./common.js";
@@ -42,6 +43,44 @@ export const gameDevelopmentSpecializedPack: FirstPartySpecializedPackEntry = {
       },
     ],
   },
+  checkDefinitions: [
+    {
+      schemaVersion: QUALITY_SPECIALIZED_PACK_CHECK_DEFINITION_SCHEMA_URN,
+      packId: "pack-game-development",
+      ruleId: "GAME-001-frame-budget",
+      kind: "path-presence",
+      signals: [
+        {
+          pathPattern: "project.godot",
+          matchKind: "suffix",
+          label: "godot-project",
+        },
+        {
+          pathPattern: "Assets/Scripts/",
+          matchKind: "contains",
+          label: "unity-scripts",
+        },
+      ],
+      minimumSignalMatches: 1,
+      severity: "info",
+      summary: "Game project sources are present for frame budget review",
+    },
+    {
+      schemaVersion: QUALITY_SPECIALIZED_PACK_CHECK_DEFINITION_SCHEMA_URN,
+      packId: "pack-game-development",
+      ruleId: "GAME-002-save-compatibility",
+      kind: "path-presence",
+      signals: [
+        {
+          pathPattern: "scenes/",
+          matchKind: "contains",
+          label: "game-scenes",
+        },
+      ],
+      severity: "review",
+      summary: "Game scenes are present for save compatibility review",
+    },
+  ],
   aliases: [
     {
       schemaVersion: QUALITY_DISCIPLINE_ALIAS_SCHEMA_URN,

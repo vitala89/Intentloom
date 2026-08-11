@@ -2,6 +2,7 @@ import {
   FIRST_PARTY_ALIAS_CREATED_AT,
   FIRST_PARTY_PUBLISHER,
   QUALITY_DISCIPLINE_ALIAS_SCHEMA_URN,
+  QUALITY_SPECIALIZED_PACK_CHECK_DEFINITION_SCHEMA_URN,
   QUALITY_SPECIALIZED_PACK_DETECTION_RULE_SCHEMA_URN,
   QUALITY_SPECIALIZED_PACK_SCHEMA_URN,
 } from "./common.js";
@@ -43,6 +44,38 @@ export const desktopTauriSpecializedPack: FirstPartySpecializedPackEntry = {
     ],
     securityImpact: "review-required",
   },
+  checkDefinitions: [
+    {
+      schemaVersion: QUALITY_SPECIALIZED_PACK_CHECK_DEFINITION_SCHEMA_URN,
+      packId: "pack-tauri-desktop",
+      ruleId: "DESK-001-ipc-capability-review",
+      kind: "path-presence",
+      signals: [
+        {
+          pathPattern: "src-tauri/",
+          matchKind: "contains",
+          label: "tauri-native-root",
+        },
+      ],
+      severity: "review",
+      summary: "Tauri native project root is present for IPC capability review",
+    },
+    {
+      schemaVersion: QUALITY_SPECIALIZED_PACK_CHECK_DEFINITION_SCHEMA_URN,
+      packId: "pack-tauri-desktop",
+      ruleId: "DESK-002-native-dialog-threading",
+      kind: "path-presence",
+      signals: [
+        {
+          pathPattern: "src-tauri/src/",
+          matchKind: "contains",
+          label: "tauri-native-sources",
+        },
+      ],
+      severity: "review",
+      summary: "Tauri native sources are present for dialog threading review",
+    },
+  ],
   aliases: [
     {
       schemaVersion: QUALITY_DISCIPLINE_ALIAS_SCHEMA_URN,

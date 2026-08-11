@@ -9,3 +9,5 @@ export const QUALITY_DISCIPLINE_ALIAS_SCHEMA_URN =
   "urn:intentloom:schema:quality-discipline-alias:1" as const;
 export const QUALITY_SPECIALIZED_PACK_DETECTION_RULE_SCHEMA_URN =
   "urn:intentloom:schema:quality-specialized-pack-detection-rule:1" as const;
+export const QUALITY_SPECIALIZED_PACK_CHECK_DEFINITION_SCHEMA_URN =
+  "urn:intentloom:schema:quality-specialized-pack-check-definition:1" as const;
