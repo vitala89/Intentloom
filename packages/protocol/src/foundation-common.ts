@@ -36,6 +36,15 @@ export const FOUNDATION_DISCOVERY_QUESTION_LIST_SCHEMA_URN =
 export const FOUNDATION_DISCOVERY_TURN_SCHEMA_URN =
   "urn:intentloom:schema:foundation-discovery-turn:1" as const;
 
+export const FOUNDATION_BLUEPRINT_PROPOSAL_SCHEMA_URN =
+  "urn:intentloom:schema:foundation-blueprint-proposal:1" as const;
+
+export const FOUNDATION_BLUEPRINT_COMPARE_SCHEMA_URN =
+  "urn:intentloom:schema:foundation-blueprint-compare:1" as const;
+
+export const FOUNDATION_BLUEPRINT_APPROVAL_SCHEMA_URN =
+  "urn:intentloom:schema:foundation-blueprint-approval:1" as const;
+
 export type FoundationRetentionStatus = "active" | "exported" | "deleted";
 
 export interface FoundationRetentionState {

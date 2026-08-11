@@ -11,10 +11,15 @@ import {
   FOUNDATION_WORKSHOP_DELETE_METHOD,
   FOUNDATION_DISCOVERY_QUESTIONS_METHOD,
   FOUNDATION_DISCOVERY_TURN_METHOD,
+  FOUNDATION_BLUEPRINT_PROPOSE_METHOD,
+  FOUNDATION_BLUEPRINT_COMPARE_METHOD,
+  FOUNDATION_BLUEPRINT_APPROVE_METHOD,
+  FOUNDATION_BLUEPRINT_REVOKE_METHOD,
 } from "./jsonrpc.js";
 import type { JsonRpcRequest, JsonRpcSuccess, RequestId } from "./jsonrpc.js";
 import type { FoundationAnswer } from "./foundation-workshop.js";
 import type { FoundationDiscoveryEffort } from "./foundation-discovery.js";
+import type { FoundationBlueprintTier } from "./foundation-blueprint.js";
 
 export type FoundationViewmodelPayload = Readonly<Record<string, unknown>>;
 
@@ -34,7 +39,11 @@ type FoundationMethod =
   | typeof FOUNDATION_WORKSHOP_EXPORT_METHOD
   | typeof FOUNDATION_WORKSHOP_DELETE_METHOD
   | typeof FOUNDATION_DISCOVERY_QUESTIONS_METHOD
-  | typeof FOUNDATION_DISCOVERY_TURN_METHOD;
+  | typeof FOUNDATION_DISCOVERY_TURN_METHOD
+  | typeof FOUNDATION_BLUEPRINT_PROPOSE_METHOD
+  | typeof FOUNDATION_BLUEPRINT_COMPARE_METHOD
+  | typeof FOUNDATION_BLUEPRINT_APPROVE_METHOD
+  | typeof FOUNDATION_BLUEPRINT_REVOKE_METHOD;
 
 export interface FoundationWorkshopCreateParams {
   readonly protocolVersion: typeof PROTOCOL_VERSION;
@@ -118,6 +127,42 @@ export type FoundationDiscoveryTurnRequest = FoundationRequest<
 export type FoundationDiscoveryQuestionsResultPayload = FoundationResultPayload;
 export type FoundationDiscoveryTurnResultPayload = FoundationResultPayload;
 
+export interface FoundationBlueprintCompareParams {
+  readonly protocolVersion: typeof PROTOCOL_VERSION;
+  readonly workshopId: string;
+  readonly leftTier: FoundationBlueprintTier;
+  readonly rightTier: FoundationBlueprintTier;
+}
+
+export interface FoundationBlueprintApproveParams {
+  readonly protocolVersion: typeof PROTOCOL_VERSION;
+  readonly workshopId: string;
+  readonly tier: FoundationBlueprintTier;
+  readonly approver?: string;
+}
+
+export type FoundationBlueprintProposeRequest = FoundationRequest<
+  typeof FOUNDATION_BLUEPRINT_PROPOSE_METHOD,
+  FoundationWorkshopIdParams
+>;
+export type FoundationBlueprintCompareRequest = FoundationRequest<
+  typeof FOUNDATION_BLUEPRINT_COMPARE_METHOD,
+  FoundationBlueprintCompareParams
+>;
+export type FoundationBlueprintApproveRequest = FoundationRequest<
+  typeof FOUNDATION_BLUEPRINT_APPROVE_METHOD,
+  FoundationBlueprintApproveParams
+>;
+export type FoundationBlueprintRevokeRequest = FoundationRequest<
+  typeof FOUNDATION_BLUEPRINT_REVOKE_METHOD,
+  FoundationWorkshopIdParams
+>;
+
+export type FoundationBlueprintProposeResultPayload = FoundationResultPayload;
+export type FoundationBlueprintCompareResultPayload = FoundationResultPayload;
+export type FoundationBlueprintApproveResultPayload = FoundationResultPayload;
+export type FoundationBlueprintRevokeResultPayload = FoundationResultPayload;
+
 export type FoundationDaemonRequest =
   | FoundationWorkshopCreateRequest
   | FoundationWorkshopGetRequest
@@ -129,7 +174,11 @@ export type FoundationDaemonRequest =
   | FoundationWorkshopExportRequest
   | FoundationWorkshopDeleteRequest
   | FoundationDiscoveryQuestionsRequest
-  | FoundationDiscoveryTurnRequest;
+  | FoundationDiscoveryTurnRequest
+  | FoundationBlueprintProposeRequest
+  | FoundationBlueprintCompareRequest
+  | FoundationBlueprintApproveRequest
+  | FoundationBlueprintRevokeRequest;
 
 export type FoundationWorkshopCreateResultPayload = FoundationResultPayload;
 export type FoundationWorkshopGetResultPayload = FoundationResultPayload;
@@ -295,6 +344,54 @@ export function createFoundationDiscoveryTurnRequest(
   });
 }
 
+export function createFoundationBlueprintProposeRequest(
+  id: RequestId,
+  workshopId: string,
+): FoundationBlueprintProposeRequest {
+  return createFoundationRequest(id, FOUNDATION_BLUEPRINT_PROPOSE_METHOD, {
+    protocolVersion: PROTOCOL_VERSION,
+    workshopId,
+  });
+}
+
+export function createFoundationBlueprintCompareRequest(
+  id: RequestId,
+  workshopId: string,
+  leftTier: FoundationBlueprintTier,
+  rightTier: FoundationBlueprintTier,
+): FoundationBlueprintCompareRequest {
+  return createFoundationRequest(id, FOUNDATION_BLUEPRINT_COMPARE_METHOD, {
+    protocolVersion: PROTOCOL_VERSION,
+    workshopId,
+    leftTier,
+    rightTier,
+  });
+}
+
+export function createFoundationBlueprintApproveRequest(
+  id: RequestId,
+  workshopId: string,
+  tier: FoundationBlueprintTier,
+  approver?: string,
+): FoundationBlueprintApproveRequest {
+  return createFoundationRequest(id, FOUNDATION_BLUEPRINT_APPROVE_METHOD, {
+    protocolVersion: PROTOCOL_VERSION,
+    workshopId,
+    tier,
+    ...(approver !== undefined ? { approver } : {}),
+  });
+}
+
+export function createFoundationBlueprintRevokeRequest(
+  id: RequestId,
+  workshopId: string,
+): FoundationBlueprintRevokeRequest {
+  return createFoundationRequest(id, FOUNDATION_BLUEPRINT_REVOKE_METHOD, {
+    protocolVersion: PROTOCOL_VERSION,
+    workshopId,
+  });
+}
+
 export function createFoundationWorkshopCreateResponse(
   id: RequestId,
   result: Omit<FoundationWorkshopCreateResultPayload, "protocolVersion">,
@@ -375,6 +472,34 @@ export function createFoundationDiscoveryTurnResponse(
   return createFoundationResponse(id, result);
 }
 
+export function createFoundationBlueprintProposeResponse(
+  id: RequestId,
+  result: Omit<FoundationBlueprintProposeResultPayload, "protocolVersion">,
+): JsonRpcSuccess<FoundationBlueprintProposeResultPayload> {
+  return createFoundationResponse(id, result);
+}
+
+export function createFoundationBlueprintCompareResponse(
+  id: RequestId,
+  result: Omit<FoundationBlueprintCompareResultPayload, "protocolVersion">,
+): JsonRpcSuccess<FoundationBlueprintCompareResultPayload> {
+  return createFoundationResponse(id, result);
+}
+
+export function createFoundationBlueprintApproveResponse(
+  id: RequestId,
+  result: Omit<FoundationBlueprintApproveResultPayload, "protocolVersion">,
+): JsonRpcSuccess<FoundationBlueprintApproveResultPayload> {
+  return createFoundationResponse(id, result);
+}
+
+export function createFoundationBlueprintRevokeResponse(
+  id: RequestId,
+  result: Omit<FoundationBlueprintRevokeResultPayload, "protocolVersion">,
+): JsonRpcSuccess<FoundationBlueprintRevokeResultPayload> {
+  return createFoundationResponse(id, result);
+}
+
 const FOUNDATION_METHODS: readonly FoundationMethod[] = [
   FOUNDATION_WORKSHOP_CREATE_METHOD,
   FOUNDATION_WORKSHOP_GET_METHOD,
@@ -387,6 +512,10 @@ const FOUNDATION_METHODS: readonly FoundationMethod[] = [
   FOUNDATION_WORKSHOP_DELETE_METHOD,
   FOUNDATION_DISCOVERY_QUESTIONS_METHOD,
   FOUNDATION_DISCOVERY_TURN_METHOD,
+  FOUNDATION_BLUEPRINT_PROPOSE_METHOD,
+  FOUNDATION_BLUEPRINT_COMPARE_METHOD,
+  FOUNDATION_BLUEPRINT_APPROVE_METHOD,
+  FOUNDATION_BLUEPRINT_REVOKE_METHOD,
 ];
 
 export function isFoundationDaemonMethod(

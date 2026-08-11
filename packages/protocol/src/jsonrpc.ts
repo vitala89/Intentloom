@@ -74,6 +74,14 @@ export const FOUNDATION_DISCOVERY_QUESTIONS_METHOD =
   "intentloom.foundation.discovery.questions.v1" as const;
 export const FOUNDATION_DISCOVERY_TURN_METHOD =
   "intentloom.foundation.discovery.turn.v1" as const;
+export const FOUNDATION_BLUEPRINT_PROPOSE_METHOD =
+  "intentloom.foundation.blueprint.propose.v1" as const;
+export const FOUNDATION_BLUEPRINT_COMPARE_METHOD =
+  "intentloom.foundation.blueprint.compare.v1" as const;
+export const FOUNDATION_BLUEPRINT_APPROVE_METHOD =
+  "intentloom.foundation.blueprint.approve.v1" as const;
+export const FOUNDATION_BLUEPRINT_REVOKE_METHOD =
+  "intentloom.foundation.blueprint.revoke.v1" as const;
 
 export type JsonPrimitive = boolean | null | number | string;
 export type JsonValue = JsonPrimitive | JsonObject | readonly JsonValue[];

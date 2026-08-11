@@ -25,6 +25,10 @@ interface ParsedWorkspaceFlags {
   readonly effort?: "low" | "medium" | "high";
   readonly turnIndex?: number;
   readonly modelProfile?: string;
+  readonly tier?: "minimal" | "recommended" | "extensible";
+  readonly leftTier?: "minimal" | "recommended" | "extensible";
+  readonly rightTier?: "minimal" | "recommended" | "extensible";
+  readonly approver?: string;
 }
 
 const inceptionSubcommands = [
@@ -48,6 +52,10 @@ const foundationSubcommands = [
   "readiness",
   "discover-questions",
   "discover-turn",
+  "blueprint-propose",
+  "blueprint-compare",
+  "blueprint-approve",
+  "blueprint-revoke",
   "export",
   "delete",
 ] as const satisfies readonly FoundationCliCommand[];
@@ -57,8 +65,8 @@ export const inceptionUsage =
   "[--root PATH] [--idea TEXT] [--session-id ID] [--pending-only] [--json-input JSON] [--json]";
 
 export const foundationUsage =
-  "Usage: intentloom foundation <start|get|questions|answer|summarize|conflicts|readiness|discover-questions|discover-turn|export|delete> " +
-  "[--root PATH] [--idea TEXT] [--workshop-id ID] [--inception-session-id ID] [--effort low|medium|high] [--turn-index N] [--model-profile NAME] [--pending-only] [--json-input JSON] [--json]";
+  "Usage: intentloom foundation <start|get|questions|answer|summarize|conflicts|readiness|discover-questions|discover-turn|blueprint-propose|blueprint-compare|blueprint-approve|blueprint-revoke|export|delete> " +
+  "[--root PATH] [--idea TEXT] [--workshop-id ID] [--inception-session-id ID] [--effort low|medium|high] [--turn-index N] [--model-profile NAME] [--tier minimal|recommended|extensible] [--left-tier TIER] [--right-tier TIER] [--approver NAME] [--pending-only] [--json-input JSON] [--json]";
 
 function isInceptionSubcommand(
   value: string | undefined,
@@ -78,6 +86,23 @@ function isFoundationSubcommand(
   );
 }
 
+function parseBlueprintTierFlag(
+  value: string,
+  flag: string,
+  usage: string,
+): "minimal" | "recommended" | "extensible" {
+  if (
+    value !== "minimal" &&
+    value !== "recommended" &&
+    value !== "extensible"
+  ) {
+    throw new Error(
+      `${usage}\n${flag} must be minimal, recommended, or extensible`,
+    );
+  }
+  return value;
+}
+
 function parseWorkspaceFlags(
   args: readonly string[],
   usage: string,
@@ -93,6 +118,10 @@ function parseWorkspaceFlags(
   let effort: ParsedWorkspaceFlags["effort"];
   let turnIndex: number | undefined;
   let modelProfile: string | undefined;
+  let tier: ParsedWorkspaceFlags["tier"];
+  let leftTier: ParsedWorkspaceFlags["leftTier"];
+  let rightTier: ParsedWorkspaceFlags["rightTier"];
+  let approver: string | undefined;
 
   for (let index = 0; index < args.length; index += 1) {
     const token = args[index];
@@ -116,7 +145,11 @@ function parseWorkspaceFlags(
       token !== "--json-input" &&
       token !== "--effort" &&
       token !== "--turn-index" &&
-      token !== "--model-profile"
+      token !== "--model-profile" &&
+      token !== "--tier" &&
+      token !== "--left-tier" &&
+      token !== "--right-tier" &&
+      token !== "--approver"
     ) {
       throw new Error(`${usage}\nunknown option: ${token}`);
     }
@@ -169,6 +202,22 @@ function parseWorkspaceFlags(
         throw new Error(`${usage}\n--model-profile specified more than once`);
       }
       modelProfile = value;
+    } else if (token === "--tier") {
+      if (tier !== undefined)
+        throw new Error(`${usage}\n--tier specified more than once`);
+      tier = parseBlueprintTierFlag(value, "--tier", usage);
+    } else if (token === "--left-tier") {
+      if (leftTier !== undefined)
+        throw new Error(`${usage}\n--left-tier specified more than once`);
+      leftTier = parseBlueprintTierFlag(value, "--left-tier", usage);
+    } else if (token === "--right-tier") {
+      if (rightTier !== undefined)
+        throw new Error(`${usage}\n--right-tier specified more than once`);
+      rightTier = parseBlueprintTierFlag(value, "--right-tier", usage);
+    } else if (token === "--approver") {
+      if (approver !== undefined)
+        throw new Error(`${usage}\n--approver specified more than once`);
+      approver = value;
     } else if (jsonInput !== undefined) {
       throw new Error(`${usage}\n--json-input specified more than once`);
     } else {
@@ -189,6 +238,10 @@ function parseWorkspaceFlags(
     ...(effort !== undefined ? { effort } : {}),
     ...(turnIndex !== undefined ? { turnIndex } : {}),
     ...(modelProfile !== undefined ? { modelProfile } : {}),
+    ...(tier !== undefined ? { tier } : {}),
+    ...(leftTier !== undefined ? { leftTier } : {}),
+    ...(rightTier !== undefined ? { rightTier } : {}),
+    ...(approver !== undefined ? { approver } : {}),
   };
 }
 
@@ -284,6 +337,10 @@ export async function runFoundationCommand(
       ...(flags.modelProfile !== undefined
         ? { modelProfile: flags.modelProfile }
         : {}),
+      ...(flags.tier !== undefined ? { tier: flags.tier } : {}),
+      ...(flags.leftTier !== undefined ? { leftTier: flags.leftTier } : {}),
+      ...(flags.rightTier !== undefined ? { rightTier: flags.rightTier } : {}),
+      ...(flags.approver !== undefined ? { approver: flags.approver } : {}),
     });
 
     return emitCliResult(result, io);

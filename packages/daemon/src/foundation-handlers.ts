@@ -10,6 +10,10 @@ import {
   recordFoundationWorkshopAnswer,
   runFoundationDiscoveryTurn,
   summarizeFoundationUnderstandingViewmodel,
+  proposeFoundationBlueprints,
+  compareFoundationBlueprintTiers,
+  approveFoundationBlueprint,
+  revokeFoundationBlueprintApproval,
 } from "@intentloom/application";
 import type {
   DaemonCapability,
@@ -21,6 +25,14 @@ import type {
   FoundationDiscoveryQuestionsResultPayload,
   FoundationDiscoveryTurnRequest,
   FoundationDiscoveryTurnResultPayload,
+  FoundationBlueprintProposeRequest,
+  FoundationBlueprintProposeResultPayload,
+  FoundationBlueprintCompareRequest,
+  FoundationBlueprintCompareResultPayload,
+  FoundationBlueprintApproveRequest,
+  FoundationBlueprintApproveResultPayload,
+  FoundationBlueprintRevokeRequest,
+  FoundationBlueprintRevokeResultPayload,
   FoundationQuestionsListRequest,
   FoundationQuestionsListResultPayload,
   FoundationReadinessEvaluateRequest,
@@ -42,6 +54,10 @@ import {
   FOUNDATION_CONFLICTS_IDENTIFY_METHOD,
   FOUNDATION_DISCOVERY_QUESTIONS_METHOD,
   FOUNDATION_DISCOVERY_TURN_METHOD,
+  FOUNDATION_BLUEPRINT_PROPOSE_METHOD,
+  FOUNDATION_BLUEPRINT_COMPARE_METHOD,
+  FOUNDATION_BLUEPRINT_APPROVE_METHOD,
+  FOUNDATION_BLUEPRINT_REVOKE_METHOD,
   FOUNDATION_QUESTIONS_LIST_METHOD,
   FOUNDATION_READINESS_EVALUATE_METHOD,
   FOUNDATION_UNDERSTANDING_SUMMARIZE_METHOD,
@@ -53,6 +69,10 @@ import {
   createFoundationConflictsIdentifyResponse,
   createFoundationDiscoveryQuestionsResponse,
   createFoundationDiscoveryTurnResponse,
+  createFoundationBlueprintProposeResponse,
+  createFoundationBlueprintCompareResponse,
+  createFoundationBlueprintApproveResponse,
+  createFoundationBlueprintRevokeResponse,
   createFoundationQuestionsListResponse,
   createFoundationReadinessEvaluateResponse,
   createFoundationUnderstandingSummarizeResponse,
@@ -106,6 +126,24 @@ export interface FoundationDaemonOptions {
   readonly foundationDiscoveryTurn?: (
     request: FoundationDiscoveryTurnRequest,
   ) => Promise<Omit<FoundationDiscoveryTurnResultPayload, "protocolVersion">>;
+  readonly foundationBlueprintPropose?: (
+    request: FoundationBlueprintProposeRequest,
+  ) => Promise<
+    Omit<FoundationBlueprintProposeResultPayload, "protocolVersion">
+  >;
+  readonly foundationBlueprintCompare?: (
+    request: FoundationBlueprintCompareRequest,
+  ) => Promise<
+    Omit<FoundationBlueprintCompareResultPayload, "protocolVersion">
+  >;
+  readonly foundationBlueprintApprove?: (
+    request: FoundationBlueprintApproveRequest,
+  ) => Promise<
+    Omit<FoundationBlueprintApproveResultPayload, "protocolVersion">
+  >;
+  readonly foundationBlueprintRevoke?: (
+    request: FoundationBlueprintRevokeRequest,
+  ) => Promise<Omit<FoundationBlueprintRevokeResultPayload, "protocolVersion">>;
 }
 
 function vm(value: object): { readonly viewmodel: FoundationViewmodelPayload } {
@@ -164,6 +202,30 @@ export function foundationCapabilities(
       : undefined,
     options.foundationDiscoveryTurn
       ? enabled(FOUNDATION_DISCOVERY_TURN_METHOD, "foundation.discovery.turn")
+      : undefined,
+    options.foundationBlueprintPropose
+      ? enabled(
+          FOUNDATION_BLUEPRINT_PROPOSE_METHOD,
+          "foundation.blueprint.propose",
+        )
+      : undefined,
+    options.foundationBlueprintCompare
+      ? enabled(
+          FOUNDATION_BLUEPRINT_COMPARE_METHOD,
+          "foundation.blueprint.compare",
+        )
+      : undefined,
+    options.foundationBlueprintApprove
+      ? enabled(
+          FOUNDATION_BLUEPRINT_APPROVE_METHOD,
+          "foundation.blueprint.approve",
+        )
+      : undefined,
+    options.foundationBlueprintRevoke
+      ? enabled(
+          FOUNDATION_BLUEPRINT_REVOKE_METHOD,
+          "foundation.blueprint.revoke",
+        )
       : undefined,
   ].filter((entry): entry is DaemonCapability => entry !== undefined);
 }
@@ -281,6 +343,42 @@ export async function dispatchFoundationRequest(
       await options.foundationDiscoveryTurn(request),
     );
   }
+  if (
+    request.method === FOUNDATION_BLUEPRINT_PROPOSE_METHOD &&
+    options.foundationBlueprintPropose
+  ) {
+    return createFoundationBlueprintProposeResponse(
+      request.id,
+      await options.foundationBlueprintPropose(request),
+    );
+  }
+  if (
+    request.method === FOUNDATION_BLUEPRINT_COMPARE_METHOD &&
+    options.foundationBlueprintCompare
+  ) {
+    return createFoundationBlueprintCompareResponse(
+      request.id,
+      await options.foundationBlueprintCompare(request),
+    );
+  }
+  if (
+    request.method === FOUNDATION_BLUEPRINT_APPROVE_METHOD &&
+    options.foundationBlueprintApprove
+  ) {
+    return createFoundationBlueprintApproveResponse(
+      request.id,
+      await options.foundationBlueprintApprove(request),
+    );
+  }
+  if (
+    request.method === FOUNDATION_BLUEPRINT_REVOKE_METHOD &&
+    options.foundationBlueprintRevoke
+  ) {
+    return createFoundationBlueprintRevokeResponse(
+      request.id,
+      await options.foundationBlueprintRevoke(request),
+    );
+  }
   return undefined;
 }
 
@@ -381,4 +479,40 @@ export async function handleFoundationDiscoveryTurn(
       : {}),
   });
   return vm(turn);
+}
+
+export async function handleFoundationBlueprintPropose(
+  request: FoundationBlueprintProposeRequest,
+): Promise<Omit<FoundationBlueprintProposeResultPayload, "protocolVersion">> {
+  return vm(proposeFoundationBlueprints(request.params.workshopId));
+}
+
+export async function handleFoundationBlueprintCompare(
+  request: FoundationBlueprintCompareRequest,
+): Promise<Omit<FoundationBlueprintCompareResultPayload, "protocolVersion">> {
+  return vm(
+    compareFoundationBlueprintTiers(
+      request.params.workshopId,
+      request.params.leftTier,
+      request.params.rightTier,
+    ),
+  );
+}
+
+export async function handleFoundationBlueprintApprove(
+  request: FoundationBlueprintApproveRequest,
+): Promise<Omit<FoundationBlueprintApproveResultPayload, "protocolVersion">> {
+  return vm(
+    approveFoundationBlueprint(
+      request.params.workshopId,
+      request.params.tier,
+      request.params.approver,
+    ),
+  );
+}
+
+export async function handleFoundationBlueprintRevoke(
+  request: FoundationBlueprintRevokeRequest,
+): Promise<Omit<FoundationBlueprintRevokeResultPayload, "protocolVersion">> {
+  return vm(revokeFoundationBlueprintApproval(request.params.workshopId));
 }
