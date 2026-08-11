@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **CLI evidence extract on `refactor/cli-extract-evidence-command` (PR #291), merging `main` after W5 (#290). W1+W2+W5 on `main` (`7110fed`).**
+Status: **W3 Neutron discovery Core on branch `cursor/workspace-w3-neutron-discovery-f3ed` (PR #292), merging to `main` after #291 (`e7d380a`). W1+W2+W5 on `main`.**
 
-Active branch: `refactor/cli-extract-evidence-command`
+Active branch: `cursor/workspace-w3-neutron-discovery-f3ed`
 
-Current objective: Resolve PR #291 merge conflicts after W5 landed; keep evidence extract + decomposition plan.
+Current objective: Merge PR #292 (W3 Core), then W3 Client Desktop/TUI discovery surfaces.
 
-Next first action: Push conflict resolution for #291 (no Co-Authored-By trailers), then next CLI extract (`clean`) or W3 Neutron.
+Next first action: Complete PR #292 merge, branch `cursor/workspace-w3-client-discovery-f3ed` for Desktop/TUI parity.
 
 Known open items, in the order they should be handled:
 
@@ -96,14 +96,23 @@ entry directly below this section.
 
 ## Watch entries
 
+### 2026-08-11, Engineering Workspace W3 Neutron discovery Core
+
+- **Status:** implementation complete on branch `cursor/workspace-w3-neutron-discovery-f3ed`; PR #292 pending merge.
+- **Branch:** `cursor/workspace-w3-neutron-discovery-f3ed` (based on `main` at `7110fed`, merged with `e7d380a` / PR #291).
+- **Objective:** Land W3 Core slice — versioned Foundation discovery contracts, adaptive question generation, provider-neutral discovery turn via H5 fake adapter, daemon RPC, CLI `discover-questions`/`discover-turn`, and contract tests without Desktop/TUI or project-root mutation.
+- **Completed:** Added protocol types/URNs (`foundation-discovery.ts`), validator boundaries, application engines (`generateAdaptiveFoundationQuestions`, `runFoundationDiscoveryTurn`, completeness evaluation), daemon methods `intentloom.foundation.discovery.questions.v1` and `.turn.v1`, CLI/binary routing flags, and tests `foundation-discovery.test.ts` + daemon parity extension.
+- **Validation:** `pnpm verify` green (1344 tests passed, 3 skipped); CI green on PR #292 after capability-matrix Prettier fix.
+- **Non-goals preserved:** W3 Client Desktop/TUI Neutron UX, live remote provider adapter (N2), W4 Blueprint, project-root mutation.
+- **Next action:** Merge PR #292, then W3 Client Desktop/TUI.
+
 ### 2026-08-11, CLI command.ts evidence extract + decomposition plan
 
-- **Status:** implementation complete on branch `refactor/cli-extract-evidence-command`; PR #291 (resolving merge with `main` after #290).
-- **Branch:** `refactor/cli-extract-evidence-command` (rebased/merged onto `main` at `7110fed`).
+- **Status:** complete on `main` (`e7d380a`, PR #291).
+- **Branch:** `refactor/cli-extract-evidence-command` (squash-merged)
 - **Objective:** Satisfy the PR #160 quality-exception review trigger by extracting the evidence command family, shrink `command.ts`, and publish a prioritized decomposition plan for remaining CLI families.
-- **Completed:** Added `packages/cli/src/evidence-command.ts` with fetch/import/analyze routing and early dispatch from `runCli`. Removed the inline evidence block from `command.ts` (3429 → 3321 lines). Added `docs/roadmap/CLI_COMMAND_TS_DECOMPOSITION.md` with done/remaining priority order. Merged `origin/main` after W5 (#290) and resolved handoff-doc conflicts.
-- **Validation:** `pnpm verify` green before merge (1330 tests); re-verify after conflict resolution before push.
-- **Next action:** Land PR #291, then next extract (`clean` dispatch) or W3 Neutron.
+- **Completed:** Added `packages/cli/src/evidence-command.ts` with fetch/import/analyze routing and early dispatch from `runCli`. Removed the inline evidence block from `command.ts`. Added `docs/roadmap/CLI_COMMAND_TS_DECOMPOSITION.md`.
+- **Next action:** Continue CLI extract (`clean` dispatch) or W3 Client after W3 Core merge.
 
 ### 2026-08-11, Engineering Workspace W5 CLI binary parity
 

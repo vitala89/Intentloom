@@ -1,4 +1,7 @@
-import type { FoundationAnswer } from "@intentloom/protocol";
+import type {
+  FoundationAnswer,
+  FoundationDiscoveryEffort,
+} from "@intentloom/protocol";
 import {
   createFoundationWorkshop,
   deleteFoundationWorkshop,
@@ -10,6 +13,8 @@ import {
   recordFoundationWorkshopAnswer,
   summarizeFoundationUnderstandingViewmodel,
 } from "./foundation-workshop.js";
+import { discoverFoundationAdaptiveQuestions } from "./foundation-discovery.js";
+import { runFoundationDiscoveryTurn } from "./foundation-discovery-turn.js";
 import type { QualityCliResult } from "./engineering-quality/cli-quality-standards.js";
 
 export type FoundationCliCommand =
@@ -20,6 +25,8 @@ export type FoundationCliCommand =
   | "summarize"
   | "conflicts"
   | "readiness"
+  | "discover-questions"
+  | "discover-turn"
   | "export"
   | "delete";
 
@@ -39,7 +46,7 @@ function errorResult(message: string): QualityCliResult {
   return { exitCode: 1, stdout: "", stderr: message };
 }
 
-export function runFoundationCliCommand(
+export async function runFoundationCliCommand(
   command: FoundationCliCommand,
   args: {
     readonly json?: boolean;
@@ -49,8 +56,11 @@ export function runFoundationCliCommand(
     readonly answer?: FoundationAnswer;
     readonly pendingOnly?: boolean;
     readonly inceptionSessionId?: string;
+    readonly effort?: FoundationDiscoveryEffort;
+    readonly turnIndex?: number;
+    readonly modelProfile?: string;
   },
-): QualityCliResult {
+): Promise<QualityCliResult> {
   const json = args.json ?? false;
 
   try {
@@ -133,6 +143,32 @@ export function runFoundationCliCommand(
         evaluateFoundationWorkshopReadiness(args.workshopId),
         json,
         `Readiness for ${args.workshopId}`,
+      );
+    }
+
+    if (command === "discover-questions") {
+      return jsonResult(
+        discoverFoundationAdaptiveQuestions(
+          args.workshopId,
+          args.effort !== undefined ? { effort: args.effort } : undefined,
+        ),
+        json,
+        `Discovery questions for ${args.workshopId}`,
+      );
+    }
+
+    if (command === "discover-turn") {
+      const turnOptions = {
+        ...(args.effort !== undefined ? { effort: args.effort } : {}),
+        ...(args.turnIndex !== undefined ? { turnIndex: args.turnIndex } : {}),
+        ...(args.modelProfile !== undefined
+          ? { modelProfile: args.modelProfile }
+          : {}),
+      };
+      return jsonResult(
+        await runFoundationDiscoveryTurn(args.workshopId, turnOptions),
+        json,
+        `Discovery turn for ${args.workshopId}`,
       );
     }
 

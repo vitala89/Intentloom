@@ -73,6 +73,9 @@ async function startFoundationDaemon() {
       foundationHandlers.handleFoundationReadinessEvaluate,
     foundationWorkshopExport: foundationHandlers.handleFoundationWorkshopExport,
     foundationWorkshopDelete: foundationHandlers.handleFoundationWorkshopDelete,
+    foundationDiscoveryQuestions:
+      foundationHandlers.handleFoundationDiscoveryQuestions,
+    foundationDiscoveryTurn: foundationHandlers.handleFoundationDiscoveryTurn,
   });
   daemons.push({
     async close() {
@@ -181,5 +184,57 @@ describe("Engineering Workspace W2: foundation daemon RPC", () => {
     expect(() => application.getFoundationWorkshop(workshopId)).toThrow(
       /unknown foundation workshop/,
     );
+  });
+
+  it("returns CLI-equivalent discovery turn viewmodels without mutating workshop state", async () => {
+    const workshop = application.createFoundationWorkshop({
+      root: "/tmp/foundation-daemon-discovery",
+      idea: "Daemon discovery parity",
+      workshopId: "fnd_fixture_daemon_discovery",
+    });
+    const before = application.getFoundationWorkshop(workshop.id);
+    const daemon = await startFoundationDaemon();
+
+    const cliTurn = await application.runFoundationDiscoveryTurn(workshop.id, {
+      effort: "medium",
+    });
+    const daemonTurn = responseViewmodel(
+      await rawRequest(
+        daemon.endpoint,
+        protocol.createFoundationDiscoveryTurnRequest("turn", workshop.id, {
+          effort: "medium",
+        }),
+        daemon.token,
+      ),
+    ) as typeof cliTurn;
+    expect(daemonTurn.schemaVersion).toBe(
+      "urn:intentloom:schema:foundation-discovery-turn:1",
+    );
+    expect(daemonTurn.workshopId).toBe(workshop.id);
+    expect(daemonTurn.workshopUnchanged).toBe(true);
+    expect(daemonTurn.agentStatus).toBe("completed");
+    expect(daemonTurn.visibility.networkMode).toBe("disabled");
+    expect(daemonTurn.proposedQuestions.map((entry) => entry.question)).toEqual(
+      cliTurn.proposedQuestions.map((entry) => entry.question),
+    );
+    expect(daemonTurn.completeness).toEqual(cliTurn.completeness);
+    expect(application.getFoundationWorkshop(workshop.id)).toEqual(before);
+
+    const cliQuestions = application.discoverFoundationAdaptiveQuestions(
+      workshop.id,
+      { effort: "high" },
+    );
+    const daemonQuestions = responseViewmodel(
+      await rawRequest(
+        daemon.endpoint,
+        protocol.createFoundationDiscoveryQuestionsRequest(
+          "questions",
+          workshop.id,
+          "high",
+        ),
+        daemon.token,
+      ),
+    );
+    expect(daemonQuestions).toEqual(cliQuestions);
   });
 });

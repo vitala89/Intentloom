@@ -9,9 +9,12 @@ import {
   FOUNDATION_READINESS_EVALUATE_METHOD,
   FOUNDATION_WORKSHOP_EXPORT_METHOD,
   FOUNDATION_WORKSHOP_DELETE_METHOD,
+  FOUNDATION_DISCOVERY_QUESTIONS_METHOD,
+  FOUNDATION_DISCOVERY_TURN_METHOD,
 } from "./jsonrpc.js";
 import type { JsonRpcRequest, JsonRpcSuccess, RequestId } from "./jsonrpc.js";
 import type { FoundationAnswer } from "./foundation-workshop.js";
+import type { FoundationDiscoveryEffort } from "./foundation-discovery.js";
 
 export type FoundationViewmodelPayload = Readonly<Record<string, unknown>>;
 
@@ -29,7 +32,9 @@ type FoundationMethod =
   | typeof FOUNDATION_CONFLICTS_IDENTIFY_METHOD
   | typeof FOUNDATION_READINESS_EVALUATE_METHOD
   | typeof FOUNDATION_WORKSHOP_EXPORT_METHOD
-  | typeof FOUNDATION_WORKSHOP_DELETE_METHOD;
+  | typeof FOUNDATION_WORKSHOP_DELETE_METHOD
+  | typeof FOUNDATION_DISCOVERY_QUESTIONS_METHOD
+  | typeof FOUNDATION_DISCOVERY_TURN_METHOD;
 
 export interface FoundationWorkshopCreateParams {
   readonly protocolVersion: typeof PROTOCOL_VERSION;
@@ -93,6 +98,26 @@ export type FoundationWorkshopDeleteRequest = FoundationRequest<
   FoundationWorkshopIdParams
 >;
 
+export interface FoundationDiscoveryParams {
+  readonly protocolVersion: typeof PROTOCOL_VERSION;
+  readonly workshopId: string;
+  readonly effort?: FoundationDiscoveryEffort;
+  readonly turnIndex?: number;
+  readonly modelProfile?: string;
+}
+
+export type FoundationDiscoveryQuestionsRequest = FoundationRequest<
+  typeof FOUNDATION_DISCOVERY_QUESTIONS_METHOD,
+  FoundationDiscoveryParams
+>;
+export type FoundationDiscoveryTurnRequest = FoundationRequest<
+  typeof FOUNDATION_DISCOVERY_TURN_METHOD,
+  FoundationDiscoveryParams
+>;
+
+export type FoundationDiscoveryQuestionsResultPayload = FoundationResultPayload;
+export type FoundationDiscoveryTurnResultPayload = FoundationResultPayload;
+
 export type FoundationDaemonRequest =
   | FoundationWorkshopCreateRequest
   | FoundationWorkshopGetRequest
@@ -102,7 +127,9 @@ export type FoundationDaemonRequest =
   | FoundationConflictsIdentifyRequest
   | FoundationReadinessEvaluateRequest
   | FoundationWorkshopExportRequest
-  | FoundationWorkshopDeleteRequest;
+  | FoundationWorkshopDeleteRequest
+  | FoundationDiscoveryQuestionsRequest
+  | FoundationDiscoveryTurnRequest;
 
 export type FoundationWorkshopCreateResultPayload = FoundationResultPayload;
 export type FoundationWorkshopGetResultPayload = FoundationResultPayload;
@@ -234,6 +261,40 @@ export function createFoundationWorkshopDeleteRequest(
   });
 }
 
+export function createFoundationDiscoveryQuestionsRequest(
+  id: RequestId,
+  workshopId: string,
+  effort?: FoundationDiscoveryEffort,
+): FoundationDiscoveryQuestionsRequest {
+  return createFoundationRequest(id, FOUNDATION_DISCOVERY_QUESTIONS_METHOD, {
+    protocolVersion: PROTOCOL_VERSION,
+    workshopId,
+    ...(effort !== undefined ? { effort } : {}),
+  });
+}
+
+export function createFoundationDiscoveryTurnRequest(
+  id: RequestId,
+  workshopId: string,
+  options?: {
+    readonly effort?: FoundationDiscoveryEffort;
+    readonly turnIndex?: number;
+    readonly modelProfile?: string;
+  },
+): FoundationDiscoveryTurnRequest {
+  return createFoundationRequest(id, FOUNDATION_DISCOVERY_TURN_METHOD, {
+    protocolVersion: PROTOCOL_VERSION,
+    workshopId,
+    ...(options?.effort !== undefined ? { effort: options.effort } : {}),
+    ...(options?.turnIndex !== undefined
+      ? { turnIndex: options.turnIndex }
+      : {}),
+    ...(options?.modelProfile !== undefined
+      ? { modelProfile: options.modelProfile }
+      : {}),
+  });
+}
+
 export function createFoundationWorkshopCreateResponse(
   id: RequestId,
   result: Omit<FoundationWorkshopCreateResultPayload, "protocolVersion">,
@@ -300,6 +361,20 @@ export function createFoundationWorkshopDeleteResponse(
   return createFoundationResponse(id, result);
 }
 
+export function createFoundationDiscoveryQuestionsResponse(
+  id: RequestId,
+  result: Omit<FoundationDiscoveryQuestionsResultPayload, "protocolVersion">,
+): JsonRpcSuccess<FoundationDiscoveryQuestionsResultPayload> {
+  return createFoundationResponse(id, result);
+}
+
+export function createFoundationDiscoveryTurnResponse(
+  id: RequestId,
+  result: Omit<FoundationDiscoveryTurnResultPayload, "protocolVersion">,
+): JsonRpcSuccess<FoundationDiscoveryTurnResultPayload> {
+  return createFoundationResponse(id, result);
+}
+
 const FOUNDATION_METHODS: readonly FoundationMethod[] = [
   FOUNDATION_WORKSHOP_CREATE_METHOD,
   FOUNDATION_WORKSHOP_GET_METHOD,
@@ -310,6 +385,8 @@ const FOUNDATION_METHODS: readonly FoundationMethod[] = [
   FOUNDATION_READINESS_EVALUATE_METHOD,
   FOUNDATION_WORKSHOP_EXPORT_METHOD,
   FOUNDATION_WORKSHOP_DELETE_METHOD,
+  FOUNDATION_DISCOVERY_QUESTIONS_METHOD,
+  FOUNDATION_DISCOVERY_TURN_METHOD,
 ];
 
 export function isFoundationDaemonMethod(

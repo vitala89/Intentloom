@@ -78,7 +78,10 @@ describe("Engineering Workspace W2: foundation CLI JSON surface", () => {
       deleted: true,
     });
 
-    const missing = runFoundationCliCommand("get", { workshopId, json: true });
+    const missing = await runFoundationCliCommand("get", {
+      workshopId,
+      json: true,
+    });
     expect(missing.exitCode).toBe(1);
   });
 });
@@ -87,7 +90,10 @@ async function runResult(
   command: Parameters<typeof runFoundationCliCommand>[0],
   args: Parameters<typeof runFoundationCliCommand>[1],
 ): Promise<unknown> {
-  const result = runFoundationCliCommand(command, { ...args, json: true });
+  const result = await runFoundationCliCommand(command, {
+    ...args,
+    json: true,
+  });
   expect(result.exitCode).toBe(0);
   return JSON.parse(result.stdout);
 }

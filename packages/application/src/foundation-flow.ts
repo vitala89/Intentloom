@@ -1,2 +1,3 @@
 export * from "./foundation-workshop.js";
 export * from "./foundation-w2.js";
+export * from "./foundation-w3.js";

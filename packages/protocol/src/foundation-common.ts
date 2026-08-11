@@ -24,6 +24,18 @@ export const FOUNDATION_WORKSHOP_EXPORT_SCHEMA_URN =
 export const FOUNDATION_WORKSHOP_DELETE_SCHEMA_URN =
   "urn:intentloom:schema:foundation-workshop-delete:1" as const;
 
+export const FOUNDATION_DISCOVERY_OPTIONS_SCHEMA_URN =
+  "urn:intentloom:schema:foundation-discovery-options:1" as const;
+
+export const FOUNDATION_DISCOVERY_COMPLETENESS_SCHEMA_URN =
+  "urn:intentloom:schema:foundation-discovery-completeness:1" as const;
+
+export const FOUNDATION_DISCOVERY_QUESTION_LIST_SCHEMA_URN =
+  "urn:intentloom:schema:foundation-discovery-question-list:1" as const;
+
+export const FOUNDATION_DISCOVERY_TURN_SCHEMA_URN =
+  "urn:intentloom:schema:foundation-discovery-turn:1" as const;
+
 export type FoundationRetentionStatus = "active" | "exported" | "deleted";
 
 export interface FoundationRetentionState {
