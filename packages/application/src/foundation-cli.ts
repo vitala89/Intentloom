@@ -1,6 +1,7 @@
 import type {
   FoundationAnswer,
   FoundationDiscoveryEffort,
+  FoundationBlueprintTier,
 } from "@intentloom/protocol";
 import {
   createFoundationWorkshop,
@@ -15,6 +16,12 @@ import {
 } from "./foundation-workshop.js";
 import { discoverFoundationAdaptiveQuestions } from "./foundation-discovery.js";
 import { runFoundationDiscoveryTurn } from "./foundation-discovery-turn.js";
+import {
+  approveFoundationBlueprint,
+  compareFoundationBlueprintTiers,
+  proposeFoundationBlueprints,
+  revokeFoundationBlueprintApproval,
+} from "./foundation-blueprint.js";
 import type { QualityCliResult } from "./engineering-quality/cli-quality-standards.js";
 
 export type FoundationCliCommand =
@@ -27,6 +34,10 @@ export type FoundationCliCommand =
   | "readiness"
   | "discover-questions"
   | "discover-turn"
+  | "blueprint-propose"
+  | "blueprint-compare"
+  | "blueprint-approve"
+  | "blueprint-revoke"
   | "export"
   | "delete";
 
@@ -59,6 +70,10 @@ export async function runFoundationCliCommand(
     readonly effort?: FoundationDiscoveryEffort;
     readonly turnIndex?: number;
     readonly modelProfile?: string;
+    readonly tier?: FoundationBlueprintTier;
+    readonly leftTier?: FoundationBlueprintTier;
+    readonly rightTier?: FoundationBlueprintTier;
+    readonly approver?: string;
   },
 ): Promise<QualityCliResult> {
   const json = args.json ?? false;
@@ -169,6 +184,50 @@ export async function runFoundationCliCommand(
         await runFoundationDiscoveryTurn(args.workshopId, turnOptions),
         json,
         `Discovery turn for ${args.workshopId}`,
+      );
+    }
+
+    if (command === "blueprint-propose") {
+      return jsonResult(
+        proposeFoundationBlueprints(args.workshopId),
+        json,
+        `Blueprint proposal for ${args.workshopId}`,
+      );
+    }
+
+    if (command === "blueprint-compare") {
+      if (!args.leftTier || !args.rightTier) {
+        return errorResult(
+          "Error: leftTier and rightTier are required for blueprint-compare",
+        );
+      }
+      return jsonResult(
+        compareFoundationBlueprintTiers(
+          args.workshopId,
+          args.leftTier,
+          args.rightTier,
+        ),
+        json,
+        `Blueprint compare for ${args.workshopId}`,
+      );
+    }
+
+    if (command === "blueprint-approve") {
+      if (!args.tier) {
+        return errorResult("Error: tier is required for blueprint-approve");
+      }
+      return jsonResult(
+        approveFoundationBlueprint(args.workshopId, args.tier, args.approver),
+        json,
+        `Blueprint approval for ${args.workshopId}`,
+      );
+    }
+
+    if (command === "blueprint-revoke") {
+      return jsonResult(
+        revokeFoundationBlueprintApproval(args.workshopId),
+        json,
+        `Blueprint approval revoked for ${args.workshopId}`,
       );
     }
 

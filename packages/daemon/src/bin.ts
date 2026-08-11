@@ -39,6 +39,10 @@ import {
   handleFoundationWorkshopDelete,
   handleFoundationDiscoveryQuestions,
   handleFoundationDiscoveryTurn,
+  handleFoundationBlueprintPropose,
+  handleFoundationBlueprintCompare,
+  handleFoundationBlueprintApprove,
+  handleFoundationBlueprintRevoke,
   handleFoundationWorkshopExport,
   handleFoundationWorkshopGet,
 } from "./foundation-handlers.js";
@@ -172,6 +176,10 @@ async function main(): Promise<void> {
     foundationWorkshopDelete: handleFoundationWorkshopDelete,
     foundationDiscoveryQuestions: handleFoundationDiscoveryQuestions,
     foundationDiscoveryTurn: handleFoundationDiscoveryTurn,
+    foundationBlueprintPropose: handleFoundationBlueprintPropose,
+    foundationBlueprintCompare: handleFoundationBlueprintCompare,
+    foundationBlueprintApprove: handleFoundationBlueprintApprove,
+    foundationBlueprintRevoke: handleFoundationBlueprintRevoke,
   });
   const stop = () => void daemon.close().then(() => process.exit(0));
   process.once("SIGINT", stop);

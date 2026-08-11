@@ -19,6 +19,10 @@ import {
   FOUNDATION_WORKSHOP_DELETE_METHOD,
   FOUNDATION_DISCOVERY_QUESTIONS_METHOD,
   FOUNDATION_DISCOVERY_TURN_METHOD,
+  FOUNDATION_BLUEPRINT_PROPOSE_METHOD,
+  FOUNDATION_BLUEPRINT_COMPARE_METHOD,
+  FOUNDATION_BLUEPRINT_APPROVE_METHOD,
+  FOUNDATION_BLUEPRINT_REVOKE_METHOD,
 } from "./jsonrpc.js";
 import type { RequestId } from "./jsonrpc.js";
 import { createSpecializedPacksChecksRequest } from "./engineering-quality/specialized-daemon-rpc.js";
@@ -55,6 +59,10 @@ import {
   createFoundationWorkshopDeleteRequest,
   createFoundationDiscoveryQuestionsRequest,
   createFoundationDiscoveryTurnRequest,
+  createFoundationBlueprintProposeRequest,
+  createFoundationBlueprintCompareRequest,
+  createFoundationBlueprintApproveRequest,
+  createFoundationBlueprintRevokeRequest,
 } from "./foundation-daemon-rpc.js";
 import type {
   FoundationWorkshopCreateRequest,
@@ -68,6 +76,10 @@ import type {
   FoundationWorkshopDeleteRequest,
   FoundationDiscoveryQuestionsRequest,
   FoundationDiscoveryTurnRequest,
+  FoundationBlueprintProposeRequest,
+  FoundationBlueprintCompareRequest,
+  FoundationBlueprintApproveRequest,
+  FoundationBlueprintRevokeRequest,
 } from "./foundation-daemon-rpc.js";
 import type { SpecializedPacksChecksResponse } from "./engineering-quality/specialized-daemon-rpc.js";
 import { ProtocolValidationError } from "./protocol-validation-error.js";
@@ -92,7 +104,11 @@ export type WorkspaceDaemonRequest =
   | FoundationWorkshopExportRequest
   | FoundationWorkshopDeleteRequest
   | FoundationDiscoveryQuestionsRequest
-  | FoundationDiscoveryTurnRequest;
+  | FoundationDiscoveryTurnRequest
+  | FoundationBlueprintProposeRequest
+  | FoundationBlueprintCompareRequest
+  | FoundationBlueprintApproveRequest
+  | FoundationBlueprintRevokeRequest;
 
 export type WorkspaceDaemonResponse = SpecializedPacksChecksResponse;
 
@@ -102,6 +118,7 @@ export * from "./foundation-workshop.js";
 export * from "./foundation-common.js";
 export * from "./foundation-daemon-rpc.js";
 export * from "./foundation-discovery.js";
+export * from "./foundation-blueprint.js";
 export { ProtocolValidationError } from "./protocol-validation-error.js";
 
 export const WORKSPACE_DAEMON_REQUEST_METHODS = [
@@ -125,6 +142,10 @@ export const WORKSPACE_DAEMON_REQUEST_METHODS = [
   FOUNDATION_WORKSHOP_DELETE_METHOD,
   FOUNDATION_DISCOVERY_QUESTIONS_METHOD,
   FOUNDATION_DISCOVERY_TURN_METHOD,
+  FOUNDATION_BLUEPRINT_PROPOSE_METHOD,
+  FOUNDATION_BLUEPRINT_COMPARE_METHOD,
+  FOUNDATION_BLUEPRINT_APPROVE_METHOD,
+  FOUNDATION_BLUEPRINT_REVOKE_METHOD,
 ] as const;
 
 function isObject(value: unknown): value is Record<string, unknown> {
@@ -173,6 +194,17 @@ function parseFoundationAnswer(value: unknown): {
     confidence,
     timestamp: positiveInteger(value.timestamp, "answer.timestamp"),
   };
+}
+
+function parseBlueprintTier(value: unknown, field: string) {
+  if (
+    value !== "minimal" &&
+    value !== "recommended" &&
+    value !== "extensible"
+  ) {
+    throw new ProtocolValidationError(-32602, `invalid ${field}`);
+  }
+  return value;
 }
 
 export function parseWorkspaceDaemonRequest(
@@ -311,6 +343,38 @@ export function parseWorkspaceDaemonRequest(
       ...(turnIndex !== undefined ? { turnIndex } : {}),
       ...(modelProfile !== undefined ? { modelProfile } : {}),
     });
+  }
+  if (value.method === FOUNDATION_BLUEPRINT_PROPOSE_METHOD) {
+    return createFoundationBlueprintProposeRequest(
+      id,
+      stringValue(params.workshopId, "workshopId"),
+    );
+  }
+  if (value.method === FOUNDATION_BLUEPRINT_COMPARE_METHOD) {
+    return createFoundationBlueprintCompareRequest(
+      id,
+      stringValue(params.workshopId, "workshopId"),
+      parseBlueprintTier(params.leftTier, "leftTier"),
+      parseBlueprintTier(params.rightTier, "rightTier"),
+    );
+  }
+  if (value.method === FOUNDATION_BLUEPRINT_APPROVE_METHOD) {
+    const approver =
+      params.approver === undefined
+        ? undefined
+        : stringValue(params.approver, "approver");
+    return createFoundationBlueprintApproveRequest(
+      id,
+      stringValue(params.workshopId, "workshopId"),
+      parseBlueprintTier(params.tier, "tier"),
+      approver,
+    );
+  }
+  if (value.method === FOUNDATION_BLUEPRINT_REVOKE_METHOD) {
+    return createFoundationBlueprintRevokeRequest(
+      id,
+      stringValue(params.workshopId, "workshopId"),
+    );
   }
   return null;
 }

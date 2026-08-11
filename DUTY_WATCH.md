@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **W3 Neutron discovery Core + Client on `main` at `31fe4b3` (PR #292 Core merged); W3 Client PR pending on `cursor/workspace-w3-client-discovery-f3ed`. W1+W2+W5 on `main`.**
+Status: **W3 complete on `main` at `be81bed` (PR #293). W4 Blueprint Core in review on `feat/workspace-w4-blueprint-core`.**
 
-Active branch: `cursor/workspace-w3-client-discovery-f3ed`
+Active branch: `feat/workspace-w4-blueprint-core`
 
-Current objective: Merge W3 Client PR (Desktop/TUI Neutron discovery UX), then W4 Blueprint alternatives.
+Current objective: Merge W4 Core PR (Foundation blueprint resolver, daemon RPC, CLI), then W4 Client Desktop/TUI.
 
-Next first action: Open and merge W3 Client PR; update capability matrix §8 checkpoint.
+Next first action: Merge W4 Core PR on correctly named branch; branch for W4 Client parity surfaces.
 
 Known open items, in the order they should be handled:
 
@@ -96,15 +96,25 @@ entry directly below this section.
 
 ## Watch entries
 
+### 2026-08-11, Engineering Workspace W4 Blueprint Core
+
+- **Status:** implementation complete on branch `feat/workspace-w4-blueprint-core`; PR pending.
+- **Branch:** `feat/workspace-w4-blueprint-core` (based on `main` at `be81bed`; replaces prohibited `cursor/` harness branch).
+- **Objective:** Land W4 Core slice — Foundation blueprint proposal resolver (minimal/recommended/extensible), tier comparison, in-memory approval/revocation, versioned protocol URNs, daemon RPC, CLI `blueprint-*` commands, and contract tests without Desktop/TUI or filesystem mutation.
+- **Completed:** Added protocol/validator contracts, application resolver reusing inception blueprint digest/approval helpers, daemon methods `intentloom.foundation.blueprint.{propose,compare,approve,revoke}.v1`, CLI/binary routing, and tests `foundation-blueprint.test.ts` + daemon parity extension.
+- **Validation:** `pnpm verify` green (1350 tests passed, 3 skipped).
+- **Non-goals preserved:** W4 Client Desktop/TUI comparison UX, `intentloom blueprint` top-level binary routing (W5), scaffold/apply.
+- **Next action:** Merge W4 Core PR, then W4 Client surfaces.
+
 ### 2026-08-11, Engineering Workspace W3 Neutron discovery Client
 
-- **Status:** implementation complete on branch `cursor/workspace-w3-client-discovery-f3ed`; PR pending.
-- **Branch:** `cursor/workspace-w3-client-discovery-f3ed` (based on `main` at `31fe4b3`, PR #292 Core merged).
+- **Status:** complete on `main` (`be81bed`, PR #293).
+- **Branch:** `cursor/workspace-w3-client-discovery-f3ed` (squash-merged to `main` as `be81bed`).
+- **Pull request:** #293
 - **Objective:** Deliver W3 Client surfaces after W3 Core merge: shared discovery turn/questions viewmodels, TUI text renderers, Desktop Neutron discovery panel wired through daemon RPC bridge, and fixture/CLI parity tests.
-- **Completed:** Added `foundation-discovery-client-viewmodel.ts` and `foundation-discovery-viewmodel-renderers.ts` in application. Added Desktop `FoundationDiscoveryPanel`, workshop progress integration, `desktopClient.foundationDiscoveryQuestions/Turn`, Tauri allowlist for discovery RPC methods, and `tests/desktop-tui-foundation-discovery.test.ts` (4 tests).
+- **Completed:** Added discovery client viewmodels/renderers, Desktop `FoundationDiscoveryPanel`, Tauri allowlist, and `tests/desktop-tui-foundation-discovery.test.ts` (4 tests).
 - **Validation:** `pnpm verify` green (1345 tests passed, 3 skipped).
-- **Non-goals preserved:** Live Neutron provider (N2), automatic answer recording from proposals, W4 Blueprint.
-- **Next action:** Merge W3 Client PR, then W4 Blueprint alternatives.
+- **Next action:** W4 Blueprint Core (completed on branch).
 
 ### 2026-08-11, Engineering Workspace W3 Neutron discovery Core
 

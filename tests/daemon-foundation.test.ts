@@ -18,6 +18,7 @@ const daemons: { close(): Promise<void> }[] = [];
 
 afterEach(async () => {
   application.clearFoundationWorkshopStore();
+  application.clearFoundationBlueprintStore();
   await Promise.all(daemons.splice(0).map((daemon) => daemon.close()));
 });
 
@@ -76,6 +77,14 @@ async function startFoundationDaemon() {
     foundationDiscoveryQuestions:
       foundationHandlers.handleFoundationDiscoveryQuestions,
     foundationDiscoveryTurn: foundationHandlers.handleFoundationDiscoveryTurn,
+    foundationBlueprintPropose:
+      foundationHandlers.handleFoundationBlueprintPropose,
+    foundationBlueprintCompare:
+      foundationHandlers.handleFoundationBlueprintCompare,
+    foundationBlueprintApprove:
+      foundationHandlers.handleFoundationBlueprintApprove,
+    foundationBlueprintRevoke:
+      foundationHandlers.handleFoundationBlueprintRevoke,
   });
   daemons.push({
     async close() {
@@ -236,5 +245,42 @@ describe("Engineering Workspace W2: foundation daemon RPC", () => {
       ),
     );
     expect(daemonQuestions).toEqual(cliQuestions);
+  });
+
+  it("returns CLI-equivalent blueprint proposal viewmodels without mutating workshop state", async () => {
+    const workshop = application.createFoundationWorkshop({
+      root: "/tmp/foundation-daemon-blueprint",
+      idea: "Daemon blueprint parity CLI",
+      workshopId: "fnd_fixture_daemon_blueprint",
+    });
+    application.recordFoundationWorkshopAnswer(workshop.id, {
+      questionId: "fq5_workflow",
+      value: "Command-line automation workflow",
+      confidence: "confirmed",
+      timestamp: Date.now(),
+    });
+    const before = application.getFoundationWorkshop(workshop.id);
+    const daemon = await startFoundationDaemon();
+
+    const cliProposal = application.proposeFoundationBlueprints(workshop.id);
+    const daemonProposal = responseViewmodel(
+      await rawRequest(
+        daemon.endpoint,
+        protocol.createFoundationBlueprintProposeRequest(
+          "blueprint",
+          workshop.id,
+        ),
+        daemon.token,
+      ),
+    );
+    expect(daemonProposal.schemaVersion).toBe(
+      "urn:intentloom:schema:foundation-blueprint-proposal:1",
+    );
+    expect(daemonProposal.recommendedTopology).toBe(
+      cliProposal.recommendedTopology,
+    );
+    expect(daemonProposal.recommended.tier).toBe("recommended");
+    expect(daemonProposal.workshopUnchanged).toBe(true);
+    expect(application.getFoundationWorkshop(workshop.id)).toEqual(before);
   });
 });
