@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **W1 Core merged on `main` (`d82e6cb`, PR #286). W1 Client complete on branch `feat/workspace-w1-inception-client`; open PR next.**
+Status: **W2 Foundation Workshop Core complete on branch `feat/workspace-w2-foundation-workshop-core`; open PR next. W1 complete on `main` (`2f63f99`).**
 
-Active branch: `feat/workspace-w1-inception-client`
+Active branch: `feat/workspace-w2-foundation-workshop-core`
 
-Current objective: Open PR for W1 client surfaces (viewmodels, TUI renderers, Desktop New Project shell, fixture parity tests).
+Current objective: Open PR for W2 Foundation Workshop Core contracts (typed state, URNs, readiness rules, daemon RPC, fixtures).
 
-Next first action: Open PR from `feat/workspace-w1-inception-client`, then start W2 Foundation Workshop Core contracts.
+Next first action: Open PR from `feat/workspace-w2-foundation-workshop-core`, then start W2 Client surfaces after merge.
 
 Known open items, in the order they should be handled:
 
@@ -95,6 +95,25 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-11, Engineering Workspace W2 Foundation Workshop Core
+
+- **Status:** implementation complete on branch `feat/workspace-w2-foundation-workshop-core`; ready for PR.
+- **Branch:** `feat/workspace-w2-foundation-workshop-core` (based on `main` at `2f63f99`).
+- **Objective:** Land W2 Core slice — typed Foundation Workshop state, versioned URNs, application operations, deterministic readiness rules, read-only daemon RPC, CLI JSON helper, and frozen fixtures without Desktop/TUI or project-root mutation.
+- **Completed:** Added protocol types (`foundation-workshop.ts`, `foundation-common.ts`, `foundation-daemon-rpc.ts`), nine daemon methods (`intentloom.foundation.*.v1`), validator boundaries, application store/ops/readiness/conflicts/viewmodels/CLI/fixtures, daemon handlers wired through `workspace-daemon-dispatch.ts`, frozen fixture catalog `tests/fixtures/foundation/workshop-states.v1.json` (6 fixture IDs), and contract tests `foundation-session-urns.test.ts`, `foundation-cli.test.ts`, `daemon-foundation.test.ts`.
+- **Validation:** `pnpm verify` green (1324 tests passed, 3 skipped).
+- **Non-goals preserved:** W2 Client Desktop/TUI, W5 binary `intentloom foundation` routing, Neutron live provider (W3), project-root mutation.
+- **Next action:** Open PR, then start W2 Client against frozen Foundation fixtures.
+
+### 2026-08-11, Engineering Workspace W1 handoff reconciliation (post PR #287 merge)
+
+- **Status:** complete on `main` (`2f63f99`).
+- **Branch:** `main`
+- **Objective:** Reconcile handoff docs after W1 Client merge (PR #287): update `PROJECT_STATE.md`, `DUTY_WATCH.md`, and capability matrix §7/§8 to record W1 Core + Client complete.
+- **Completed:** Pulled `main` to `2f63f99` (PR #287). Verified PR #287 merged with CI/CodeQL green. Updated active focus, verified-main pointers, W1 phase table row, §7 W1 Client exit gate, and §8 client readiness checkpoint. Set next objective to W2 Foundation Workshop Core.
+- **Validation:** `git pull` fast-forward to `2f63f99`; `gh pr view 287` confirms MERGED.
+- **Next action:** Create branch `feat/workspace-w2-foundation-workshop-core` and implement W2 Core per `FOUNDATION_WORKSHOP_IMPLEMENTATION_PLAN.md`.
 
 ### 2026-08-11, Engineering Workspace W1 Client (Desktop + TUI)
 

@@ -6,6 +6,12 @@ import {
   inceptionCapabilities,
   isInceptionRequest,
 } from "./inception-handlers.js";
+import type { FoundationDaemonOptions } from "./foundation-handlers.js";
+import {
+  dispatchFoundationRequest,
+  foundationCapabilities,
+  isFoundationRequest,
+} from "./foundation-handlers.js";
 import type { SpecializedPackDaemonOptions } from "./specialized-pack-handlers.js";
 import {
   dispatchSpecializedPackRequest,
@@ -15,7 +21,8 @@ import {
 import type { DaemonCapability } from "@intentloom/protocol";
 
 export type WorkspaceDaemonOptions = SpecializedPackDaemonOptions &
-  InceptionDaemonOptions;
+  InceptionDaemonOptions &
+  FoundationDaemonOptions;
 
 export function workspaceDaemonCapabilities(
   options: WorkspaceDaemonOptions,
@@ -23,6 +30,7 @@ export function workspaceDaemonCapabilities(
   return [
     ...specializedPackCapabilities(options),
     ...inceptionCapabilities(options),
+    ...foundationCapabilities(options),
   ];
 }
 
@@ -69,6 +77,23 @@ export async function dispatchWorkspaceDaemonRequest(
       return true;
     }
     response(socket, inceptionResponse);
+    return true;
+  }
+  if (isFoundationRequest(request)) {
+    const foundationResponse = await dispatchFoundationRequest(
+      request,
+      options,
+    );
+    if (!foundationResponse) {
+      failure(
+        socket,
+        -32601,
+        "unsupported foundation method",
+        "unsupported_capability",
+      );
+      return true;
+    }
+    response(socket, foundationResponse);
     return true;
   }
   return false;
