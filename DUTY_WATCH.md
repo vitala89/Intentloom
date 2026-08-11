@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **CLI evidence extract in progress on `refactor/cli-extract-evidence-command`. W1+W2 on `main` (`208f7c4`). W5 CLI binary parity open as PR #290.**
+Status: **CLI evidence extract on `refactor/cli-extract-evidence-command` (PR #291), merging `main` after W5 (#290). W1+W2+W5 on `main` (`7110fed`).**
 
 Active branch: `refactor/cli-extract-evidence-command`
 
-Current objective: Extract `intentloom evidence` from oversized `command.ts` into `evidence-command.ts` and record the CLI decomposition plan.
+Current objective: Resolve PR #291 merge conflicts after W5 landed; keep evidence extract + decomposition plan.
 
-Next first action: Open PR for evidence extract; then continue plan order (`clean` dispatch) or W3 Neutron after W5 merges.
+Next first action: Push conflict resolution for #291 (no Co-Authored-By trailers), then next CLI extract (`clean`) or W3 Neutron.
 
 Known open items, in the order they should be handled:
 
@@ -98,22 +98,44 @@ entry directly below this section.
 
 ### 2026-08-11, CLI command.ts evidence extract + decomposition plan
 
-- **Status:** implementation complete on branch `refactor/cli-extract-evidence-command`; ready for PR.
-- **Branch:** `refactor/cli-extract-evidence-command` (based on `main` at `208f7c4`).
+- **Status:** implementation complete on branch `refactor/cli-extract-evidence-command`; PR #291 (resolving merge with `main` after #290).
+- **Branch:** `refactor/cli-extract-evidence-command` (rebased/merged onto `main` at `7110fed`).
 - **Objective:** Satisfy the PR #160 quality-exception review trigger by extracting the evidence command family, shrink `command.ts`, and publish a prioritized decomposition plan for remaining CLI families.
-- **Completed:** Added `packages/cli/src/evidence-command.ts` with fetch/import/analyze routing and early dispatch from `runCli`. Removed the inline evidence block from `command.ts` (3429 → 3321 lines). Added `docs/roadmap/CLI_COMMAND_TS_DECOMPOSITION.md` with done/remaining priority order.
-- **Validation:** `pnpm verify` green (1330 tests passed, 3 skipped).
-- **Next action:** Open PR, then next extract (`clean` dispatch) or W3 Neutron per maintainer priority after W5 (#290) merges.
+- **Completed:** Added `packages/cli/src/evidence-command.ts` with fetch/import/analyze routing and early dispatch from `runCli`. Removed the inline evidence block from `command.ts` (3429 → 3321 lines). Added `docs/roadmap/CLI_COMMAND_TS_DECOMPOSITION.md` with done/remaining priority order. Merged `origin/main` after W5 (#290) and resolved handoff-doc conflicts.
+- **Validation:** `pnpm verify` green before merge (1330 tests); re-verify after conflict resolution before push.
+- **Next action:** Land PR #291, then next extract (`clean` dispatch) or W3 Neutron.
+
+### 2026-08-11, Engineering Workspace W5 CLI binary parity
+
+- **Status:** complete on `main` (`7110fed`, PR #290).
+- **Branch:** `feat/workspace-w5-cli-binary-parity` (squash-merged to `main` as `7110fed`).
+- **Pull request:** #290
+- **Objective:** Wire `intentloom inception ...` and `intentloom foundation ...` into the CLI binary without growing `command.ts` beyond minimal dispatch hooks.
+- **Completed:** Added `engineering-workspace-command.ts` with inception/foundation subcommand routing to existing application helpers. Early dispatch via `cli-entry.ts`. Updated `usage.ts`. Added `tests/cli-workspace-binary.test.ts` (6 tests) for fixture parity and lifecycle commands.
+- **Validation:** `pnpm verify` green (1336 tests passed, 3 skipped) on the feature branch; squash-merged to `main`.
+- **Non-goals preserved:** W3 Neutron live provider, blueprint binary routing, project-root mutation, oversized barrel growth in `command.ts`.
+- **Next action:** W3 Neutron discovery integration or continue CLI `command.ts` decomposition.
+
+### 2026-08-11, Engineering Workspace W2 handoff reconciliation (post PR #289 merge)
+
+- **Status:** complete on `main` (`208f7c4`).
+- **Branch:** `main`
+- **Pull request:** #289 merged at 2026-08-11T14:58:55Z
+- **Objective:** Reconcile handoff docs after W2 Client merge (PR #289): update `PROJECT_STATE.md`, `DUTY_WATCH.md`, and capability matrix §3/§8 to record W1 + W2 (Core + Client) complete on main.
+- **Completed:** Pulled `main` to `208f7c4` (PR #289 squash-merge). Verified PR #289 merged with Compatibility/CodeQL/Documentation CI green. Updated active focus, verified-main pointers, W2 phase table row, §3 Foundation Workshop sync state, and §8 client readiness checkpoint. Removed stale "PR pending" / "on branch" wording for W2 Client.
+- **Validation:** `git pull` fast-forward to `208f7c4`; `gh pr view 289` confirms MERGED; post-merge CI runs green on `main`.
+- **Next action:** W3 Neutron discovery integration or W5 CLI binary parity per maintainer priority.
 
 ### 2026-08-11, Engineering Workspace W2 Foundation Workshop Client
 
-- **Status:** implementation complete on branch `feat/workspace-w2-foundation-workshop-client`; ready for PR.
-- **Branch:** `feat/workspace-w2-foundation-workshop-client` (based on `main` at `329dec3`).
+- **Status:** complete on `main` (`208f7c4`, PR #289).
+- **Branch:** `feat/workspace-w2-foundation-workshop-client` (squash-merged to `main` as `208f7c4`).
+- **Pull request:** #289
 - **Objective:** Deliver W2 Client surfaces after W2 Core merge (PR #288): shared foundation progress viewmodels, accessible TUI renderers, Desktop Foundation Workshop view, Tauri bridge, and fixture parity tests against six frozen fixture IDs.
 - **Completed:** Reconciled handoff docs for W2 Core merge on `main`. Added `foundation-client-viewmodel.ts` and `foundation-viewmodel-renderers.ts` with workshop progress, readiness summary, and shell viewmodels plus TUI text renderers. Added `tests/desktop-tui-foundation.test.ts` (6 tests) for CLI/viewmodel parity against all six frozen fixture IDs. Added Desktop `FoundationWorkshopView` with empty/loading/error/resume/deleted states, navigation entry via `WorkspaceContent.tsx`, Tauri `invoke_foundation_request` bridge, and `desktopClient.foundationWorkshopCreate/Get/Delete/ConflictsIdentify` helpers.
 - **Validation:** `pnpm verify` green (1330 tests passed, 3 skipped).
 - **Non-goals preserved:** W3 Neutron live provider, W5 binary `intentloom foundation` routing, project-root mutation, oversized barrel growth.
-- **Next action:** Open PR, then W3 Neutron discovery integration or W5 CLI binary parity per maintainer priority.
+- **Next action:** W3 Neutron discovery integration or W5 CLI binary parity per maintainer priority.
 
 ### 2026-08-11, Engineering Workspace W2 handoff reconciliation (post PR #288 merge)
 

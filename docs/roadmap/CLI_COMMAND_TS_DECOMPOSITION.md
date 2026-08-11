@@ -8,11 +8,11 @@ Existing oversized files must not grow. New CLI families ship as dedicated
 
 ## Done
 
-| Slice                       | Module                                                             | Notes                                                                                          |
-| --------------------------- | ------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------- |
-| Harness                     | `harness-command.ts`, `harness-benchmark-command.ts`               | Early dispatch in `runCli`                                                                     |
-| Evidence                    | `evidence-command.ts`                                              | Early dispatch; first extract required by `quality-exceptions.json` review trigger for PR #160 |
-| Inception / Foundation (W5) | `engineering-workspace-command.ts` (+ `cli-entry.ts` on W5 branch) | Binary routing without growing `command.ts`                                                    |
+| Slice                       | Module                                               | Notes                                                                                          |
+| --------------------------- | ---------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| Harness                     | `harness-command.ts`, `harness-benchmark-command.ts` | Early dispatch in `runCli`                                                                     |
+| Evidence                    | `evidence-command.ts`                                | Early dispatch; first extract required by `quality-exceptions.json` review trigger for PR #160 |
+| Inception / Foundation (W5) | `engineering-workspace-command.ts`, `cli-entry.ts`   | Merged on `main` via PR #290; binary routing without growing `command.ts`                      |
 
 ## Priority order (remaining)
 

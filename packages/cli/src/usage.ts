@@ -23,6 +23,8 @@ export const usage = [
   "       intentloom neutron subagent <spawn|get|list> [--role ROLE] [--task-id ID] [--input TEXT] [--root PATH] [--json]",
   "       intentloom neutron sync [PROJECT_PATH|--root PATH] [--json]",
   "       intentloom harness <inspect|replay> --file SCORECARD.json [--root PATH] [--mode simulate|strict] [--json]",
+  "       intentloom inception <start|get|questions|answer|summarize|conflicts|export|delete> [--root PATH] [--idea TEXT] [--session-id ID] [--pending-only] [--json-input JSON] [--json]",
+  "       intentloom foundation <start|get|questions|answer|summarize|conflicts|readiness|export|delete> [--root PATH] [--idea TEXT] [--workshop-id ID] [--inception-session-id ID] [--pending-only] [--json-input JSON] [--json]",
   "       adoption mappings use --project-owned-mapping SOURCE=DESTINATION",
   "       or --documentation-mapping SOURCE=DESTINATION",
 ].join("\n");
