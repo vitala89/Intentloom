@@ -1,3 +1,6 @@
+import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import {
   FIRST_PARTY_CATALOG_ENTRIES,
@@ -5,14 +8,21 @@ import {
   buildQualityCheckersViewModel,
   buildQualityGraphViewModel,
   buildQualityStandardsViewModel,
+  buildSpecializedPackCatalogViewModel,
+  buildSpecializedPackDetectionViewModel,
   getEffectiveEngineeringQualityPolicy,
+  getFirstPartySpecializedPackEntries,
+  nodeFileSystem,
   renderApprovalPreviewText,
   renderQualityCatalogTreeText,
   renderQualityGraphAccessibleText,
   renderQualityStandardsSummaryText,
-  runQualityCliCommand,
-  runPacksCliCommand,
+  resolveFirstPartySpecializedPackDetection,
   runGraphCliCommand,
+  runPacksCliCommand,
+  runQualityCliCommand,
+  runSpecializedPacksCliCommand,
+  validateFirstPartySpecializedPackCatalog,
 } from "@intentloom/application";
 import type { EngineeringGraphSnapshot } from "@intentloom/protocol";
 import {
@@ -185,6 +195,54 @@ describe("Phase Q14: Desktop and TUI Viewmodels & Renderers", () => {
       expect(decompositionText).toContain(
         "Approval Preview [DECOMPOSITION] [APPROVAL REQUIRED]",
       );
+    });
+  });
+
+  describe("Specialized Packs Viewmodels", () => {
+    it("ensures equivalence between CLI specialized-packs list and catalog viewmodel", async () => {
+      const cliRes = await runSpecializedPacksCliCommand("list", {
+        json: true,
+      });
+      const cliParsed = JSON.parse(cliRes.stdout) as { totalEntries: number };
+
+      const vm = buildSpecializedPackCatalogViewModel(
+        validateFirstPartySpecializedPackCatalog(
+          getFirstPartySpecializedPackEntries(),
+        ).entries,
+      );
+      expect(vm.totalEntries).toBe(cliParsed.totalEntries);
+      expect(vm.totalEntries).toBe(4);
+    });
+
+    it("builds detection viewmodel aligned with CLI specialized-packs detect output", async () => {
+      const root = await mkdtemp(join(tmpdir(), "intentloom-specialized-tui-"));
+      await mkdir(join(root, "apps", "desktop", "src-tauri"), {
+        recursive: true,
+      });
+      await writeFile(
+        join(root, "apps", "desktop", "src-tauri", "Cargo.toml"),
+        "",
+      );
+      try {
+        const cliRes = await runSpecializedPacksCliCommand("detect", {
+          root,
+          json: true,
+        });
+        const cliParsed = JSON.parse(cliRes.stdout) as {
+          compatiblePackIds: string[];
+        };
+
+        const vm = buildSpecializedPackDetectionViewModel(
+          resolveFirstPartySpecializedPackDetection({
+            projectPaths: await nodeFileSystem.list(root),
+            entries: getFirstPartySpecializedPackEntries(),
+          }),
+        );
+        expect(vm.compatiblePackIds).toEqual(cliParsed.compatiblePackIds);
+        expect(vm.compatiblePackIds).toContain("pack-tauri-desktop");
+      } finally {
+        await rm(root, { recursive: true, force: true });
+      }
     });
   });
 });

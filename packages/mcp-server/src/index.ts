@@ -53,6 +53,14 @@ import {
   qualityStandards,
   qualityStandardsTool,
 } from "./engineering-quality-tools.js";
+import {
+  SPECIALIZED_PACKS_CATALOG_TOOL,
+  SPECIALIZED_PACKS_DETECT_TOOL,
+  specializedPacksCatalog,
+  specializedPacksCatalogTool,
+  specializedPacksDetect,
+  specializedPacksDetectTool,
+} from "./specialized-pack-tools.js";
 
 export {
   McpToolError,
@@ -66,6 +74,10 @@ export {
   QUALITY_GRAPH_TOOL,
   QUALITY_STANDARDS_TOOL,
 } from "./engineering-quality-tools.js";
+export {
+  SPECIALIZED_PACKS_CATALOG_TOOL,
+  SPECIALIZED_PACKS_DETECT_TOOL,
+} from "./specialized-pack-tools.js";
 
 export const MCP_PROTOCOL_VERSION = "2024-11-05" as const;
 export const RELEASE_ANALYSIS_TOOL = "intentloom_release_analysis" as const;
@@ -286,6 +298,8 @@ const tools = [
   qualityCatalogTool,
   qualityCheckersTool,
   qualityGraphTool,
+  specializedPacksCatalogTool,
+  specializedPacksDetectTool,
 ] as const;
 
 type McpToolName =
@@ -298,7 +312,9 @@ type McpToolName =
   | typeof QUALITY_STANDARDS_TOOL
   | typeof QUALITY_CATALOG_TOOL
   | typeof QUALITY_CHECKERS_TOOL
-  | typeof QUALITY_GRAPH_TOOL;
+  | typeof QUALITY_GRAPH_TOOL
+  | typeof SPECIALIZED_PACKS_CATALOG_TOOL
+  | typeof SPECIALIZED_PACKS_DETECT_TOOL;
 
 const profiles = [
   "generic",
@@ -524,7 +540,9 @@ function isMcpToolName(value: unknown): value is McpToolName {
     value === QUALITY_STANDARDS_TOOL ||
     value === QUALITY_CATALOG_TOOL ||
     value === QUALITY_CHECKERS_TOOL ||
-    value === QUALITY_GRAPH_TOOL
+    value === QUALITY_GRAPH_TOOL ||
+    value === SPECIALIZED_PACKS_CATALOG_TOOL ||
+    value === SPECIALIZED_PACKS_DETECT_TOOL
   );
 }
 
@@ -572,7 +590,11 @@ export async function handleMcpRequest(
                       ? await qualityCatalog(args, options)
                       : params.name === QUALITY_CHECKERS_TOOL
                         ? await qualityCheckers(args, options)
-                        : await qualityGraph(args, options);
+                        : params.name === QUALITY_GRAPH_TOOL
+                          ? await qualityGraph(args, options)
+                          : params.name === SPECIALIZED_PACKS_CATALOG_TOOL
+                            ? await specializedPacksCatalog(args, options)
+                            : await specializedPacksDetect(args, options);
     return {
       jsonrpc: "2.0",
       id,

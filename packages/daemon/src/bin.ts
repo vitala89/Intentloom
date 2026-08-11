@@ -15,6 +15,10 @@ import {
   handleQualityGraph,
   handleQualityStandards,
 } from "./engineering-quality-handlers.js";
+import {
+  handleSpecializedPacksCatalog,
+  handleSpecializedPacksDetect,
+} from "./specialized-pack-handlers.js";
 
 function value(args: readonly string[], flag: string): string {
   const index = args.indexOf(flag);
@@ -122,6 +126,10 @@ async function main(): Promise<void> {
     qualityCheckers: (request) =>
       handleQualityCheckers(request, request.params.root),
     qualityGraph: (request) => handleQualityGraph(request, request.params.root),
+    specializedPacksCatalog: (request) =>
+      handleSpecializedPacksCatalog(request, request.params.root),
+    specializedPacksDetect: (request) =>
+      handleSpecializedPacksDetect(request, request.params.root),
   });
   const stop = () => void daemon.close().then(() => process.exit(0));
   process.once("SIGINT", stop);

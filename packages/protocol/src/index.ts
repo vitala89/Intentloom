@@ -20,6 +20,8 @@ import {
   QUALITY_CATALOG_METHOD,
   QUALITY_CHECKERS_METHOD,
   QUALITY_GRAPH_METHOD,
+  SPECIALIZED_PACKS_CATALOG_METHOD,
+  SPECIALIZED_PACKS_DETECT_METHOD,
 } from "./jsonrpc.js";
 import type { RequestId, JsonRpcRequest } from "./jsonrpc.js";
 import type { JsonRpcSuccess } from "./jsonrpc.js";
@@ -47,6 +49,16 @@ import {
   createQualityGraphRequest,
   createQualityStandardsRequest,
 } from "./engineering-quality/daemon-rpc.js";
+import type {
+  SpecializedPacksCatalogRequest,
+  SpecializedPacksCatalogResponse,
+  SpecializedPacksDetectRequest,
+  SpecializedPacksDetectResponse,
+} from "./engineering-quality/specialized-daemon-rpc.js";
+import {
+  createSpecializedPacksCatalogRequest,
+  createSpecializedPacksDetectRequest,
+} from "./engineering-quality/specialized-daemon-rpc.js";
 // prettier-ignore
 export { QUALITY_REMEDIATION_PLAN_SCHEMA_URN, QUALITY_ORGANIZATION_CATALOG_SCHEMA_URN, QUALITY_EXECUTABLE_MARKETPLACE_SCHEMA_URN, QUALITY_DISCIPLINE_SCHEMA_URN, QUALITY_ROLE_COMPOSITION_SCHEMA_URN, QUALITY_SPECIALIZED_PACK_SCHEMA_URN, QUALITY_SPECIALIZED_PACK_TRUST_STATE_SCHEMA_URN, QUALITY_DISCIPLINE_ALIAS_SCHEMA_URN, QUALITY_SPECIALIZED_PACK_DETECTION_RULE_SCHEMA_URN, QUALITY_SPECIALIZED_PACK_DETECTION_RESULT_SCHEMA_URN, QUALITY_SPECIALIZED_PACK_DETECTION_RESOLUTION_SCHEMA_URN, type QualityDetectionConfidence, type QualityDetectionSecurityImpact, type QualityDetectionPathMatchKind } from "./engineering-quality/common.js";
 
@@ -331,7 +343,9 @@ export type DaemonRequest =
   | QualityStandardsRequest
   | QualityCatalogRequest
   | QualityCheckersRequest
-  | QualityGraphRequest;
+  | QualityGraphRequest
+  | SpecializedPacksCatalogRequest
+  | SpecializedPacksDetectRequest;
 
 export type DaemonResponse =
   | DaemonInfoResponse
@@ -353,7 +367,9 @@ export type DaemonResponse =
   | QualityStandardsResponse
   | QualityCatalogResponse
   | QualityCheckersResponse
-  | QualityGraphResponse;
+  | QualityGraphResponse
+  | SpecializedPacksCatalogResponse
+  | SpecializedPacksDetectResponse;
 
 export class ProtocolValidationError extends Error {
   constructor(
@@ -733,6 +749,8 @@ export function parseDaemonRequest(value: unknown): DaemonRequest {
     QUALITY_CATALOG_METHOD,
     QUALITY_CHECKERS_METHOD,
     QUALITY_GRAPH_METHOD,
+    SPECIALIZED_PACKS_CATALOG_METHOD,
+    SPECIALIZED_PACKS_DETECT_METHOD,
   ];
   if (typeof value.method !== "string" || !validMethods.includes(value.method))
     throw new ProtocolValidationError(-32601, "unsupported protocol method");
@@ -899,6 +917,16 @@ export function parseDaemonRequest(value: unknown): DaemonRequest {
     );
   if (value.method === QUALITY_GRAPH_METHOD)
     return createQualityGraphRequest(
+      id,
+      stringValue(value.params.root, "root"),
+    );
+  if (value.method === SPECIALIZED_PACKS_CATALOG_METHOD)
+    return createSpecializedPacksCatalogRequest(
+      id,
+      stringValue(value.params.root, "root"),
+    );
+  if (value.method === SPECIALIZED_PACKS_DETECT_METHOD)
+    return createSpecializedPacksDetectRequest(
       id,
       stringValue(value.params.root, "root"),
     );

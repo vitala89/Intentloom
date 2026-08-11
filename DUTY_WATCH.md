@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Engineering Quality Packs Phases Q0–Q18 are merged into `main`; Specialized Engineering Packs Phases S1 (PR #277), S2 (PR #278), S3 (PR #280), and S4 (PR #280) are merged into `main`; Phase S5 First-Party Specialized Pack Catalog and Fixtures is implemented and verified on branch `feat/specialized-packs-s5-first-party-packs`.**
+Status: **Engineering Quality Packs Phases Q0–Q18 are merged into `main`; Specialized Engineering Packs Phases S1 (PR #277), S2 (PR #278), S3 (PR #280), S4 (PR #280), and S5 (PR #282) are merged into `main`; Phase S6 Client Surfaces is complete on branch `feat/specialized-packs-s6-client-surfaces` and ready for commit/PR.**
 
-Active branch: `feat/specialized-packs-s5-first-party-packs`
+Active branch: `feat/specialized-packs-s6-client-surfaces`
 
-Current objective: Prepare atomic commit and pull request for Phase S5 first-party specialized pack catalog, fixtures, and catalog resolution engine.
+Current objective: Land Phase S6 with CLI, daemon, MCP, and Desktop/TUI viewmodel parity for first-party specialized packs.
 
-Next first action: Commit S5 implementation, push branch, open PR, and monitor CI.
+Next first action: Create atomic commit without attribution trailers, push branch, and open PR.
 
 Known open items, in the order they should be handled:
 
@@ -98,13 +98,31 @@ entry directly below this section.
 
 ## Watch entries
 
-### 2026-08-10, Specialized Engineering Packs Phase S5 First-Party Pack Catalog and Fixtures
+### 2026-08-10, Specialized Engineering Packs Phase S6 Client Surfaces
 
 - **Status:** complete; implementation, full verification, typecheck, lint, formatting, test suite, build, and diff checks are complete.
-- **Branch:** `feat/specialized-packs-s5-first-party-packs`, based on updated `main` (`92596e2`).
+- **Branch:** `feat/specialized-packs-s6-client-surfaces`, based on updated `main` (`61a3d82`).
+- **Objective:** Expose equivalent CLI, daemon, MCP, Desktop, and TUI results for first-party specialized pack catalog and read-only detection per `SPECIALIZED_ENGINEERING_PACKS_PLAN.md` step 6.
+- **Completed:** Added shared viewmodels and runtime bridge in `@intentloom/application`; CLI command `runSpecializedPacksCliCommand`; daemon RPC methods `intentloom.specialized-packs.catalog.v1` and `intentloom.specialized-packs.detect.v1` with handlers; MCP tools `intentloom_specialized_packs_catalog` and `intentloom_specialized_packs_detect`; protocol daemon RPC helpers in `specialized-daemon-rpc.ts`; contract tests `tests/cli-specialized-packs.test.ts`, `tests/daemon-specialized-packs.test.ts`, `tests/mcp-specialized-packs.test.ts`, and Desktop/TUI parity cases in `tests/desktop-tui-engineering-quality.test.ts`; aligned catalog schema URNs in `catalog/packs/specialized-engineering/common.ts` for packed CLI bundling.
+- **Next first action:** Create atomic commit, push branch, open pull request, and verify GitHub Actions CI matrix.
+
+#### Duty completion checklist
+
+- [x] Formatter passed for changed source and test files
+- [x] Markdown and lint checks passed after documentation update
+- [x] Relevant focused tests, type check, and lint passed
+- [x] Full `pnpm verify` passed
+- [x] Final `git diff --check` passed
+- [x] `PROJECT_STATE.md` updated when applicable
+- [x] Duty Watch handoff completed
+- [x] Related roadmap, ADR, changelog, migration, or reference docs reviewed; no Phase S6 roadmap or ADR change was required
+
+### 2026-08-10, Specialized Engineering Packs Phase S5 First-Party Pack Catalog and Fixtures
+
+- **Status:** complete; merged into `main` through PR #282 (`61a3d82`).
 - **Objective:** Implement Phase S5 first-party specialized pack catalog and fixtures from `SPECIALIZED_ENGINEERING_PACKS_PLAN.md` with catalog manifests, detection rules, discipline aliases, project-path fixtures, pure catalog validation/resolution engine, and tests without enabling packs, installing tooling, or mutating project state.
 - **Completed:** Added first-party catalog entries in `catalog/packs/specialized-engineering/` (desktop Tauri, embedded firmware, cloud Terraform, game development), fixture profiles in `tests/fixtures/specialized-packs/project-path-profiles.json`, pure application operations `validateFirstPartySpecializedPackCatalog` and `resolveFirstPartySpecializedPackDetection` in `@intentloom/application`, and contract test suite `tests/engineering-quality-specialized-first-party-packs.test.ts` (5 tests).
-- **Next first action:** Create atomic commit, push branch `feat/specialized-packs-s5-first-party-packs`, open pull request, and verify GitHub Actions CI matrix.
+- **Next first action:** None; continue with Phase S6 on branch `feat/specialized-packs-s6-client-surfaces`.
 
 #### Duty completion checklist
 

@@ -1,11 +1,9 @@
 import {
+  FIRST_PARTY_ALIAS_CREATED_AT,
+  FIRST_PARTY_PUBLISHER,
   QUALITY_DISCIPLINE_ALIAS_SCHEMA_URN,
   QUALITY_SPECIALIZED_PACK_DETECTION_RULE_SCHEMA_URN,
   QUALITY_SPECIALIZED_PACK_SCHEMA_URN,
-} from "@intentloom/protocol";
-import {
-  FIRST_PARTY_ALIAS_CREATED_AT,
-  FIRST_PARTY_PUBLISHER,
 } from "./common.js";
 import type { FirstPartySpecializedPackEntry } from "./types.js";
 

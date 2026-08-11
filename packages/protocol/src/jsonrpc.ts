@@ -30,6 +30,10 @@ export const QUALITY_CATALOG_METHOD = "intentloom.quality.catalog.v1" as const;
 export const QUALITY_CHECKERS_METHOD =
   "intentloom.quality.checkers.v1" as const;
 export const QUALITY_GRAPH_METHOD = "intentloom.quality.graph.v1" as const;
+export const SPECIALIZED_PACKS_CATALOG_METHOD =
+  "intentloom.specialized-packs.catalog.v1" as const;
+export const SPECIALIZED_PACKS_DETECT_METHOD =
+  "intentloom.specialized-packs.detect.v1" as const;
 
 export type JsonPrimitive = boolean | null | number | string;
 export type JsonValue = JsonPrimitive | JsonObject | readonly JsonValue[];
