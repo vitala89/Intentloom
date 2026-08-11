@@ -706,6 +706,10 @@ fn is_foundation_method(method: &str) -> bool {
             | "intentloom.foundation.workshop.delete.v1"
             | "intentloom.foundation.discovery.questions.v1"
             | "intentloom.foundation.discovery.turn.v1"
+            | "intentloom.foundation.blueprint.propose.v1"
+            | "intentloom.foundation.blueprint.compare.v1"
+            | "intentloom.foundation.blueprint.approve.v1"
+            | "intentloom.foundation.blueprint.revoke.v1"
     )
 }
 

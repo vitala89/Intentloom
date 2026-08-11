@@ -231,9 +231,9 @@ before a new release or implementation milestone is declared complete.
 
 ## Active focus
 
-1. Engineering Workspace **W1**, **W2**, **W5**, **W3 Core**, and **W3 Client** are on
-   `main` at `be81bed` (W3 Client: PR #293). **W4 Blueprint Core** is on branch
-   `cursor/workspace-w4-blueprint-core-f3ed` pending PR merge; next track: **W4 Client**.
+1. Engineering Workspace **W1–W5**, **W3**, and **W4 Core** are on `main` at
+   `de9b473` (W4 Core: PR #295). **W4 Client** Desktop/TUI blueprint surfaces are
+   on branch `feat/workspace-w4-blueprint-client` pending PR merge.
 2. Engineering Workspace **W0** capability reconciliation remains complete on `main`.
 3. Keep GitHub Pages as the canonical public documentation destination and
    continue the roadmap after the completed `1.0.2` metadata release.
