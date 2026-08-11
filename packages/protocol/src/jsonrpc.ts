@@ -52,6 +52,24 @@ export const INCEPTION_SESSION_EXPORT_METHOD =
   "intentloom.inception.session.export.v1" as const;
 export const INCEPTION_SESSION_DELETE_METHOD =
   "intentloom.inception.session.delete.v1" as const;
+export const FOUNDATION_WORKSHOP_CREATE_METHOD =
+  "intentloom.foundation.workshop.create.v1" as const;
+export const FOUNDATION_WORKSHOP_GET_METHOD =
+  "intentloom.foundation.workshop.get.v1" as const;
+export const FOUNDATION_QUESTIONS_LIST_METHOD =
+  "intentloom.foundation.questions.list.v1" as const;
+export const FOUNDATION_ANSWER_RECORD_METHOD =
+  "intentloom.foundation.answer.record.v1" as const;
+export const FOUNDATION_UNDERSTANDING_SUMMARIZE_METHOD =
+  "intentloom.foundation.understanding.summarize.v1" as const;
+export const FOUNDATION_CONFLICTS_IDENTIFY_METHOD =
+  "intentloom.foundation.conflicts.identify.v1" as const;
+export const FOUNDATION_READINESS_EVALUATE_METHOD =
+  "intentloom.foundation.readiness.evaluate.v1" as const;
+export const FOUNDATION_WORKSHOP_EXPORT_METHOD =
+  "intentloom.foundation.workshop.export.v1" as const;
+export const FOUNDATION_WORKSHOP_DELETE_METHOD =
+  "intentloom.foundation.workshop.delete.v1" as const;
 
 export type JsonPrimitive = boolean | null | number | string;
 export type JsonValue = JsonPrimitive | JsonObject | readonly JsonValue[];

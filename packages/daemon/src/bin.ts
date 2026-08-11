@@ -29,6 +29,17 @@ import {
   handleInceptionSessionGet,
   handleInceptionStateSummarize,
 } from "./inception-handlers.js";
+import {
+  handleFoundationAnswerRecord,
+  handleFoundationConflictsIdentify,
+  handleFoundationQuestionsList,
+  handleFoundationReadinessEvaluate,
+  handleFoundationUnderstandingSummarize,
+  handleFoundationWorkshopCreate,
+  handleFoundationWorkshopDelete,
+  handleFoundationWorkshopExport,
+  handleFoundationWorkshopGet,
+} from "./foundation-handlers.js";
 
 function value(args: readonly string[], flag: string): string {
   const index = args.indexOf(flag);
@@ -148,6 +159,15 @@ async function main(): Promise<void> {
     inceptionConflictsIdentify: handleInceptionConflictsIdentify,
     inceptionSessionExport: handleInceptionSessionExport,
     inceptionSessionDelete: handleInceptionSessionDelete,
+    foundationWorkshopCreate: handleFoundationWorkshopCreate,
+    foundationWorkshopGet: handleFoundationWorkshopGet,
+    foundationQuestionsList: handleFoundationQuestionsList,
+    foundationAnswerRecord: handleFoundationAnswerRecord,
+    foundationUnderstandingSummarize: handleFoundationUnderstandingSummarize,
+    foundationConflictsIdentify: handleFoundationConflictsIdentify,
+    foundationReadinessEvaluate: handleFoundationReadinessEvaluate,
+    foundationWorkshopExport: handleFoundationWorkshopExport,
+    foundationWorkshopDelete: handleFoundationWorkshopDelete,
   });
   const stop = () => void daemon.close().then(() => process.exit(0));
   process.once("SIGINT", stop);

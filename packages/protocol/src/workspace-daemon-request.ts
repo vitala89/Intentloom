@@ -8,6 +8,15 @@ import {
   INCEPTION_CONFLICTS_IDENTIFY_METHOD,
   INCEPTION_SESSION_EXPORT_METHOD,
   INCEPTION_SESSION_DELETE_METHOD,
+  FOUNDATION_WORKSHOP_CREATE_METHOD,
+  FOUNDATION_WORKSHOP_GET_METHOD,
+  FOUNDATION_QUESTIONS_LIST_METHOD,
+  FOUNDATION_ANSWER_RECORD_METHOD,
+  FOUNDATION_UNDERSTANDING_SUMMARIZE_METHOD,
+  FOUNDATION_CONFLICTS_IDENTIFY_METHOD,
+  FOUNDATION_READINESS_EVALUATE_METHOD,
+  FOUNDATION_WORKSHOP_EXPORT_METHOD,
+  FOUNDATION_WORKSHOP_DELETE_METHOD,
 } from "./jsonrpc.js";
 import type { RequestId } from "./jsonrpc.js";
 import { createSpecializedPacksChecksRequest } from "./engineering-quality/specialized-daemon-rpc.js";
@@ -32,6 +41,28 @@ import type {
   InceptionSessionExportRequest,
   InceptionSessionDeleteRequest,
 } from "./inception-daemon-rpc.js";
+import {
+  createFoundationWorkshopCreateRequest,
+  createFoundationWorkshopGetRequest,
+  createFoundationQuestionsListRequest,
+  createFoundationAnswerRecordRequest,
+  createFoundationUnderstandingSummarizeRequest,
+  createFoundationConflictsIdentifyRequest,
+  createFoundationReadinessEvaluateRequest,
+  createFoundationWorkshopExportRequest,
+  createFoundationWorkshopDeleteRequest,
+} from "./foundation-daemon-rpc.js";
+import type {
+  FoundationWorkshopCreateRequest,
+  FoundationWorkshopGetRequest,
+  FoundationQuestionsListRequest,
+  FoundationAnswerRecordRequest,
+  FoundationUnderstandingSummarizeRequest,
+  FoundationConflictsIdentifyRequest,
+  FoundationReadinessEvaluateRequest,
+  FoundationWorkshopExportRequest,
+  FoundationWorkshopDeleteRequest,
+} from "./foundation-daemon-rpc.js";
 import type { SpecializedPacksChecksResponse } from "./engineering-quality/specialized-daemon-rpc.js";
 import { ProtocolValidationError } from "./protocol-validation-error.js";
 
@@ -44,12 +75,24 @@ export type WorkspaceDaemonRequest =
   | InceptionStateSummarizeRequest
   | InceptionConflictsIdentifyRequest
   | InceptionSessionExportRequest
-  | InceptionSessionDeleteRequest;
+  | InceptionSessionDeleteRequest
+  | FoundationWorkshopCreateRequest
+  | FoundationWorkshopGetRequest
+  | FoundationQuestionsListRequest
+  | FoundationAnswerRecordRequest
+  | FoundationUnderstandingSummarizeRequest
+  | FoundationConflictsIdentifyRequest
+  | FoundationReadinessEvaluateRequest
+  | FoundationWorkshopExportRequest
+  | FoundationWorkshopDeleteRequest;
 
 export type WorkspaceDaemonResponse = SpecializedPacksChecksResponse;
 
 export * from "./inception-common.js";
 export * from "./inception-daemon-rpc.js";
+export * from "./foundation-workshop.js";
+export * from "./foundation-common.js";
+export * from "./foundation-daemon-rpc.js";
 export { ProtocolValidationError } from "./protocol-validation-error.js";
 
 export const WORKSPACE_DAEMON_REQUEST_METHODS = [
@@ -62,6 +105,15 @@ export const WORKSPACE_DAEMON_REQUEST_METHODS = [
   INCEPTION_CONFLICTS_IDENTIFY_METHOD,
   INCEPTION_SESSION_EXPORT_METHOD,
   INCEPTION_SESSION_DELETE_METHOD,
+  FOUNDATION_WORKSHOP_CREATE_METHOD,
+  FOUNDATION_WORKSHOP_GET_METHOD,
+  FOUNDATION_QUESTIONS_LIST_METHOD,
+  FOUNDATION_ANSWER_RECORD_METHOD,
+  FOUNDATION_UNDERSTANDING_SUMMARIZE_METHOD,
+  FOUNDATION_CONFLICTS_IDENTIFY_METHOD,
+  FOUNDATION_READINESS_EVALUATE_METHOD,
+  FOUNDATION_WORKSHOP_EXPORT_METHOD,
+  FOUNDATION_WORKSHOP_DELETE_METHOD,
 ] as const;
 
 function isObject(value: unknown): value is Record<string, unknown> {
@@ -84,6 +136,32 @@ function positiveInteger(value: unknown, field: string): number {
       `${field} must be a positive integer`,
     );
   return value;
+}
+
+function parseFoundationAnswer(value: unknown): {
+  questionId: string;
+  value: string;
+  confidence: "confirmed" | "assumed" | "preference" | "unknown" | "deferred";
+  timestamp: number;
+} {
+  if (!isObject(value))
+    throw new ProtocolValidationError(-32602, "answer must be an object");
+  const confidence = value.confidence;
+  if (
+    confidence !== "confirmed" &&
+    confidence !== "assumed" &&
+    confidence !== "preference" &&
+    confidence !== "unknown" &&
+    confidence !== "deferred"
+  ) {
+    throw new ProtocolValidationError(-32602, "invalid answer confidence");
+  }
+  return {
+    questionId: stringValue(value.questionId, "answer.questionId"),
+    value: typeof value.value === "string" ? value.value : "",
+    confidence,
+    timestamp: positiveInteger(value.timestamp, "answer.timestamp"),
+  };
 }
 
 export function parseWorkspaceDaemonRequest(
@@ -146,6 +224,49 @@ export function parseWorkspaceDaemonRequest(
         confidence,
         timestamp: positiveInteger(answer.timestamp, "answer.timestamp"),
       },
+    );
+  }
+  if (value.method === FOUNDATION_WORKSHOP_CREATE_METHOD) {
+    const inceptionSessionId =
+      params.inceptionSessionId === undefined
+        ? undefined
+        : stringValue(params.inceptionSessionId, "inceptionSessionId");
+    return createFoundationWorkshopCreateRequest(
+      id,
+      stringValue(params.root, "root"),
+      stringValue(params.idea, "idea"),
+      inceptionSessionId,
+    );
+  }
+  if (
+    value.method === FOUNDATION_WORKSHOP_GET_METHOD ||
+    value.method === FOUNDATION_QUESTIONS_LIST_METHOD ||
+    value.method === FOUNDATION_UNDERSTANDING_SUMMARIZE_METHOD ||
+    value.method === FOUNDATION_CONFLICTS_IDENTIFY_METHOD ||
+    value.method === FOUNDATION_READINESS_EVALUATE_METHOD ||
+    value.method === FOUNDATION_WORKSHOP_EXPORT_METHOD ||
+    value.method === FOUNDATION_WORKSHOP_DELETE_METHOD
+  ) {
+    const workshopId = stringValue(params.workshopId, "workshopId");
+    if (value.method === FOUNDATION_WORKSHOP_GET_METHOD)
+      return createFoundationWorkshopGetRequest(id, workshopId);
+    if (value.method === FOUNDATION_QUESTIONS_LIST_METHOD)
+      return createFoundationQuestionsListRequest(id, workshopId);
+    if (value.method === FOUNDATION_UNDERSTANDING_SUMMARIZE_METHOD)
+      return createFoundationUnderstandingSummarizeRequest(id, workshopId);
+    if (value.method === FOUNDATION_CONFLICTS_IDENTIFY_METHOD)
+      return createFoundationConflictsIdentifyRequest(id, workshopId);
+    if (value.method === FOUNDATION_READINESS_EVALUATE_METHOD)
+      return createFoundationReadinessEvaluateRequest(id, workshopId);
+    if (value.method === FOUNDATION_WORKSHOP_EXPORT_METHOD)
+      return createFoundationWorkshopExportRequest(id, workshopId);
+    return createFoundationWorkshopDeleteRequest(id, workshopId);
+  }
+  if (value.method === FOUNDATION_ANSWER_RECORD_METHOD) {
+    return createFoundationAnswerRecordRequest(
+      id,
+      stringValue(params.workshopId, "workshopId"),
+      parseFoundationAnswer(params.answer),
     );
   }
   return null;

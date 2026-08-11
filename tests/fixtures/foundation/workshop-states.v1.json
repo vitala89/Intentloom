@@ -1,0 +1,633 @@
+{
+  "fixtures": [
+    {
+      "fixtureId": "foundation-fixture-empty-draft",
+      "workshop": {
+        "id": "fnd_fixture_empty_draft",
+        "root": "/tmp/foundation-fixture",
+        "idea": "Deterministic foundation fixture",
+        "problemStatement": "",
+        "smallestOutcome": "",
+        "nonGoals": [],
+        "status": "draft",
+        "questions": [
+          {
+            "id": "fq1_problem",
+            "prompt": "What primary problem or need does this initiative address?",
+            "category": "intent",
+            "required": true
+          },
+          {
+            "id": "fq2_outcome",
+            "prompt": "What is the smallest useful outcome for the first release?",
+            "category": "intent",
+            "required": true
+          },
+          {
+            "id": "fq3_non_goals",
+            "prompt": "What is explicitly out of scope for the first release?",
+            "category": "intent",
+            "required": false
+          },
+          {
+            "id": "fq4_primary_actor",
+            "prompt": "Who is the primary user or actor?",
+            "category": "actors",
+            "required": true
+          },
+          {
+            "id": "fq5_workflow",
+            "prompt": "Describe the primary workflow this initiative must support.",
+            "category": "domain",
+            "required": true
+          },
+          {
+            "id": "fq6_security",
+            "prompt": "What is the security and privacy sensitivity level?",
+            "category": "quality",
+            "required": true,
+            "options": ["not-applicable", "low", "medium", "high"]
+          },
+          {
+            "id": "fq7_change_scenario",
+            "prompt": "Name one strategically important future change scenario.",
+            "category": "change",
+            "required": true
+          },
+          {
+            "id": "fq8_offline_required",
+            "prompt": "Must the solution work offline or local-first?",
+            "category": "quality",
+            "required": false,
+            "options": ["yes", "no", "partial"]
+          }
+        ],
+        "answers": [],
+        "actors": [],
+        "workflows": [],
+        "domainConcepts": [],
+        "qualityScenarios": [],
+        "constraints": [],
+        "changeScenarios": [],
+        "risks": [],
+        "alternatives": [],
+        "readinessFindings": [],
+        "readinessStatus": "not-ready",
+        "createdAt": 1700000000000,
+        "updatedAt": 1700000000000
+      }
+    },
+    {
+      "fixtureId": "foundation-fixture-partial-discovering",
+      "workshop": {
+        "id": "fnd_fixture_partial_discovering",
+        "root": "/tmp/foundation-fixture",
+        "idea": "Deterministic foundation fixture",
+        "problemStatement": "Reduce manual onboarding friction",
+        "smallestOutcome": "",
+        "nonGoals": [],
+        "status": "discovering",
+        "questions": [
+          {
+            "id": "fq1_problem",
+            "prompt": "What primary problem or need does this initiative address?",
+            "category": "intent",
+            "required": true
+          },
+          {
+            "id": "fq2_outcome",
+            "prompt": "What is the smallest useful outcome for the first release?",
+            "category": "intent",
+            "required": true
+          },
+          {
+            "id": "fq3_non_goals",
+            "prompt": "What is explicitly out of scope for the first release?",
+            "category": "intent",
+            "required": false
+          },
+          {
+            "id": "fq4_primary_actor",
+            "prompt": "Who is the primary user or actor?",
+            "category": "actors",
+            "required": true
+          },
+          {
+            "id": "fq5_workflow",
+            "prompt": "Describe the primary workflow this initiative must support.",
+            "category": "domain",
+            "required": true
+          },
+          {
+            "id": "fq6_security",
+            "prompt": "What is the security and privacy sensitivity level?",
+            "category": "quality",
+            "required": true,
+            "options": ["not-applicable", "low", "medium", "high"]
+          },
+          {
+            "id": "fq7_change_scenario",
+            "prompt": "Name one strategically important future change scenario.",
+            "category": "change",
+            "required": true
+          },
+          {
+            "id": "fq8_offline_required",
+            "prompt": "Must the solution work offline or local-first?",
+            "category": "quality",
+            "required": false,
+            "options": ["yes", "no", "partial"]
+          }
+        ],
+        "answers": [
+          {
+            "questionId": "fq1_problem",
+            "value": "Reduce manual onboarding friction",
+            "confidence": "confirmed",
+            "timestamp": 1700000001000
+          }
+        ],
+        "actors": [],
+        "workflows": [],
+        "domainConcepts": [],
+        "qualityScenarios": [],
+        "constraints": [],
+        "changeScenarios": [],
+        "risks": [],
+        "alternatives": [],
+        "readinessFindings": [],
+        "readinessStatus": "not-ready",
+        "createdAt": 1700000000000,
+        "updatedAt": 1700000000000
+      }
+    },
+    {
+      "fixtureId": "foundation-fixture-readiness-blocking",
+      "workshop": {
+        "id": "fnd_fixture_readiness_blocking",
+        "root": "/tmp/foundation-fixture",
+        "idea": "Deterministic foundation fixture",
+        "problemStatement": "",
+        "smallestOutcome": "",
+        "nonGoals": [],
+        "status": "evaluating",
+        "questions": [
+          {
+            "id": "fq1_problem",
+            "prompt": "What primary problem or need does this initiative address?",
+            "category": "intent",
+            "required": true
+          },
+          {
+            "id": "fq2_outcome",
+            "prompt": "What is the smallest useful outcome for the first release?",
+            "category": "intent",
+            "required": true
+          },
+          {
+            "id": "fq3_non_goals",
+            "prompt": "What is explicitly out of scope for the first release?",
+            "category": "intent",
+            "required": false
+          },
+          {
+            "id": "fq4_primary_actor",
+            "prompt": "Who is the primary user or actor?",
+            "category": "actors",
+            "required": true
+          },
+          {
+            "id": "fq5_workflow",
+            "prompt": "Describe the primary workflow this initiative must support.",
+            "category": "domain",
+            "required": true
+          },
+          {
+            "id": "fq6_security",
+            "prompt": "What is the security and privacy sensitivity level?",
+            "category": "quality",
+            "required": true,
+            "options": ["not-applicable", "low", "medium", "high"]
+          },
+          {
+            "id": "fq7_change_scenario",
+            "prompt": "Name one strategically important future change scenario.",
+            "category": "change",
+            "required": true
+          },
+          {
+            "id": "fq8_offline_required",
+            "prompt": "Must the solution work offline or local-first?",
+            "category": "quality",
+            "required": false,
+            "options": ["yes", "no", "partial"]
+          }
+        ],
+        "answers": [],
+        "actors": [],
+        "workflows": [],
+        "domainConcepts": [],
+        "qualityScenarios": [],
+        "constraints": [],
+        "changeScenarios": [],
+        "risks": [],
+        "alternatives": [],
+        "readinessFindings": [],
+        "readinessStatus": "blocked",
+        "createdAt": 1700000000000,
+        "updatedAt": 1700000000000
+      }
+    },
+    {
+      "fixtureId": "foundation-fixture-readiness-ready",
+      "workshop": {
+        "id": "fnd_fixture_readiness_ready",
+        "root": "/tmp/foundation-fixture",
+        "idea": "Deterministic foundation fixture",
+        "problemStatement": "Team needs a shared planning workflow",
+        "smallestOutcome": "Capture intent and readiness without mutation",
+        "nonGoals": ["Automatic deployment"],
+        "status": "ready",
+        "questions": [
+          {
+            "id": "fq1_problem",
+            "prompt": "What primary problem or need does this initiative address?",
+            "category": "intent",
+            "required": true
+          },
+          {
+            "id": "fq2_outcome",
+            "prompt": "What is the smallest useful outcome for the first release?",
+            "category": "intent",
+            "required": true
+          },
+          {
+            "id": "fq3_non_goals",
+            "prompt": "What is explicitly out of scope for the first release?",
+            "category": "intent",
+            "required": false
+          },
+          {
+            "id": "fq4_primary_actor",
+            "prompt": "Who is the primary user or actor?",
+            "category": "actors",
+            "required": true
+          },
+          {
+            "id": "fq5_workflow",
+            "prompt": "Describe the primary workflow this initiative must support.",
+            "category": "domain",
+            "required": true
+          },
+          {
+            "id": "fq6_security",
+            "prompt": "What is the security and privacy sensitivity level?",
+            "category": "quality",
+            "required": true,
+            "options": ["not-applicable", "low", "medium", "high"]
+          },
+          {
+            "id": "fq7_change_scenario",
+            "prompt": "Name one strategically important future change scenario.",
+            "category": "change",
+            "required": true
+          },
+          {
+            "id": "fq8_offline_required",
+            "prompt": "Must the solution work offline or local-first?",
+            "category": "quality",
+            "required": false,
+            "options": ["yes", "no", "partial"]
+          }
+        ],
+        "answers": [
+          {
+            "questionId": "fq1_problem",
+            "value": "Team needs a shared planning workflow",
+            "confidence": "confirmed",
+            "timestamp": 1700000001000
+          },
+          {
+            "questionId": "fq2_outcome",
+            "value": "Capture intent and readiness without mutation",
+            "confidence": "confirmed",
+            "timestamp": 1700000002000
+          },
+          {
+            "questionId": "fq3_non_goals",
+            "value": "Automatic deployment",
+            "confidence": "confirmed",
+            "timestamp": 1700000003000
+          },
+          {
+            "questionId": "fq4_primary_actor",
+            "value": "Product engineer",
+            "confidence": "confirmed",
+            "timestamp": 1700000004000
+          },
+          {
+            "questionId": "fq5_workflow",
+            "value": "Describe idea and approve foundation",
+            "confidence": "confirmed",
+            "timestamp": 1700000005000
+          },
+          {
+            "questionId": "fq6_security",
+            "value": "medium",
+            "confidence": "confirmed",
+            "timestamp": 1700000006000
+          },
+          {
+            "questionId": "fq7_change_scenario",
+            "value": "Add mobile client",
+            "confidence": "confirmed",
+            "timestamp": 1700000007000
+          }
+        ],
+        "actors": [
+          {
+            "id": "actor_primary",
+            "name": "Product engineer",
+            "role": "primary-user",
+            "description": "Product engineer"
+          }
+        ],
+        "workflows": [
+          {
+            "id": "workflow_primary",
+            "name": "Primary workflow",
+            "description": "Describe idea and approve foundation",
+            "primaryActorId": "actor_primary"
+          }
+        ],
+        "domainConcepts": [],
+        "qualityScenarios": [
+          {
+            "id": "quality_security_primary",
+            "category": "security",
+            "description": "Primary security sensitivity",
+            "sensitivity": "medium",
+            "expectation": "Sensitivity classified as medium"
+          }
+        ],
+        "constraints": [],
+        "changeScenarios": [
+          {
+            "id": "change_primary",
+            "name": "Add mobile client",
+            "description": "Add mobile client",
+            "importance": "strategic",
+            "reviewed": true
+          }
+        ],
+        "risks": [],
+        "alternatives": [],
+        "readinessFindings": [],
+        "readinessStatus": "ready",
+        "createdAt": 1700000000000,
+        "updatedAt": 1700000000000
+      }
+    },
+    {
+      "fixtureId": "foundation-fixture-conflict-warning",
+      "workshop": {
+        "id": "fnd_fixture_conflict_warning",
+        "root": "/tmp/foundation-fixture",
+        "idea": "Deterministic foundation fixture",
+        "problemStatement": "",
+        "smallestOutcome": "",
+        "nonGoals": [],
+        "status": "structuring",
+        "questions": [
+          {
+            "id": "fq1_problem",
+            "prompt": "What primary problem or need does this initiative address?",
+            "category": "intent",
+            "required": true
+          },
+          {
+            "id": "fq2_outcome",
+            "prompt": "What is the smallest useful outcome for the first release?",
+            "category": "intent",
+            "required": true
+          },
+          {
+            "id": "fq3_non_goals",
+            "prompt": "What is explicitly out of scope for the first release?",
+            "category": "intent",
+            "required": false
+          },
+          {
+            "id": "fq4_primary_actor",
+            "prompt": "Who is the primary user or actor?",
+            "category": "actors",
+            "required": true
+          },
+          {
+            "id": "fq5_workflow",
+            "prompt": "Describe the primary workflow this initiative must support.",
+            "category": "domain",
+            "required": true
+          },
+          {
+            "id": "fq6_security",
+            "prompt": "What is the security and privacy sensitivity level?",
+            "category": "quality",
+            "required": true,
+            "options": ["not-applicable", "low", "medium", "high"]
+          },
+          {
+            "id": "fq7_change_scenario",
+            "prompt": "Name one strategically important future change scenario.",
+            "category": "change",
+            "required": true
+          },
+          {
+            "id": "fq8_offline_required",
+            "prompt": "Must the solution work offline or local-first?",
+            "category": "quality",
+            "required": false,
+            "options": ["yes", "no", "partial"]
+          }
+        ],
+        "answers": [
+          {
+            "questionId": "fq6_security",
+            "value": "high",
+            "confidence": "confirmed",
+            "timestamp": 1700000006000
+          },
+          {
+            "questionId": "fq8_offline_required",
+            "value": "yes",
+            "confidence": "confirmed",
+            "timestamp": 1700000008000
+          }
+        ],
+        "actors": [],
+        "workflows": [],
+        "domainConcepts": [],
+        "qualityScenarios": [],
+        "constraints": [
+          {
+            "id": "c_cloud_only",
+            "kind": "hard",
+            "scope": "delivery",
+            "description": "Cloud-only deployment required"
+          }
+        ],
+        "changeScenarios": [],
+        "risks": [],
+        "alternatives": [],
+        "readinessFindings": [],
+        "readinessStatus": "not-ready",
+        "createdAt": 1700000000000,
+        "updatedAt": 1700000000000
+      }
+    },
+    {
+      "fixtureId": "foundation-fixture-exported",
+      "workshop": {
+        "id": "fnd_fixture_exported",
+        "root": "/tmp/foundation-fixture",
+        "idea": "Deterministic foundation fixture",
+        "problemStatement": "Export fixture workshop",
+        "smallestOutcome": "Export JSON without mutation",
+        "nonGoals": [],
+        "status": "ready",
+        "questions": [
+          {
+            "id": "fq1_problem",
+            "prompt": "What primary problem or need does this initiative address?",
+            "category": "intent",
+            "required": true
+          },
+          {
+            "id": "fq2_outcome",
+            "prompt": "What is the smallest useful outcome for the first release?",
+            "category": "intent",
+            "required": true
+          },
+          {
+            "id": "fq3_non_goals",
+            "prompt": "What is explicitly out of scope for the first release?",
+            "category": "intent",
+            "required": false
+          },
+          {
+            "id": "fq4_primary_actor",
+            "prompt": "Who is the primary user or actor?",
+            "category": "actors",
+            "required": true
+          },
+          {
+            "id": "fq5_workflow",
+            "prompt": "Describe the primary workflow this initiative must support.",
+            "category": "domain",
+            "required": true
+          },
+          {
+            "id": "fq6_security",
+            "prompt": "What is the security and privacy sensitivity level?",
+            "category": "quality",
+            "required": true,
+            "options": ["not-applicable", "low", "medium", "high"]
+          },
+          {
+            "id": "fq7_change_scenario",
+            "prompt": "Name one strategically important future change scenario.",
+            "category": "change",
+            "required": true
+          },
+          {
+            "id": "fq8_offline_required",
+            "prompt": "Must the solution work offline or local-first?",
+            "category": "quality",
+            "required": false,
+            "options": ["yes", "no", "partial"]
+          }
+        ],
+        "answers": [
+          {
+            "questionId": "fq1_problem",
+            "value": "Export fixture workshop",
+            "confidence": "confirmed",
+            "timestamp": 1700000001000
+          },
+          {
+            "questionId": "fq2_outcome",
+            "value": "Export JSON without mutation",
+            "confidence": "confirmed",
+            "timestamp": 1700000002000
+          },
+          {
+            "questionId": "fq4_primary_actor",
+            "value": "Maintainer",
+            "confidence": "confirmed",
+            "timestamp": 1700000004000
+          },
+          {
+            "questionId": "fq5_workflow",
+            "value": "Export foundation brief",
+            "confidence": "confirmed",
+            "timestamp": 1700000005000
+          },
+          {
+            "questionId": "fq6_security",
+            "value": "low",
+            "confidence": "confirmed",
+            "timestamp": 1700000006000
+          },
+          {
+            "questionId": "fq7_change_scenario",
+            "value": "Scale to enterprise",
+            "confidence": "confirmed",
+            "timestamp": 1700000007000
+          }
+        ],
+        "actors": [
+          {
+            "id": "actor_primary",
+            "name": "Maintainer",
+            "role": "primary-user",
+            "description": "Maintainer"
+          }
+        ],
+        "workflows": [
+          {
+            "id": "workflow_primary",
+            "name": "Primary workflow",
+            "description": "Export foundation brief",
+            "primaryActorId": "actor_primary"
+          }
+        ],
+        "domainConcepts": [],
+        "qualityScenarios": [
+          {
+            "id": "quality_security_primary",
+            "category": "security",
+            "description": "Security sensitivity",
+            "sensitivity": "low",
+            "expectation": "Low sensitivity"
+          }
+        ],
+        "constraints": [],
+        "changeScenarios": [
+          {
+            "id": "change_primary",
+            "name": "Scale to enterprise",
+            "description": "Scale to enterprise",
+            "importance": "likely",
+            "reviewed": true
+          }
+        ],
+        "risks": [],
+        "alternatives": [],
+        "readinessFindings": [],
+        "readinessStatus": "ready",
+        "createdAt": 1700000000000,
+        "updatedAt": 1700000000000
+      }
+    }
+  ]
+}
