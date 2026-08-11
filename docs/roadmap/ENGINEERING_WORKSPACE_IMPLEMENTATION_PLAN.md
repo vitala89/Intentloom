@@ -90,22 +90,22 @@ changes require explicit coordination and fixture updates.
 This matrix is a planning baseline and must be revalidated against current
 `main` before each implementation phase.
 
-| Capability | Core/App | Protocol | Daemon | CLI | Desktop | TUI | MCP | Status |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Project inspect | implemented | implemented | implemented | implemented | implemented | implemented/partial UX | implemented | existing |
-| Doctor | implemented | implemented | implemented | implemented | implemented | implemented/partial UX | partial | existing |
-| Diff | implemented | implemented | implemented | implemented | implemented | implemented | partial | existing |
-| Timeline | implemented | implemented | implemented | implemented | implemented | implemented | implemented/partial | existing |
-| Existing-project adoption | implemented | application contracts exist | partial | implemented | partial/review-oriented | partial | partial | existing |
-| Engineering Quality | implemented | implemented | implemented | implemented | viewmodels implemented | viewmodels implemented | implemented | existing |
-| Engineering Assessments | implemented roadmap phases | implemented canonical contracts | partial/implemented slices | partial/implemented | viewmodel direction implemented | viewmodel direction | partial | revalidate |
-| Inception sessions | planned | planned | planned | planned | planned | planned | planned | gap |
-| Foundation Workshop | planned | planned | planned | planned | planned | planned | planned | gap |
-| Blueprint resolver | planned | planned | planned | planned | planned | planned | planned | gap |
-| Scaffold planner | foundations only | planned | planned | planned | planned | planned | planned | gap |
-| Empty-root scaffold apply | transaction foundations exist | planned | planned | planned | planned | planned | not first | gap |
-| Feature intent / impact | partial task/plan foundations | partial | partial | partial | partial | partial | partial | gap |
-| Bounded coding-agent execution | harness/Neutron foundations | partial | partial | partial | future | future | future | gated |
+| Capability                     | Core/App                      | Protocol                        | Daemon                     | CLI                 | Desktop                         | TUI                    | MCP                 | Status     |
+| ------------------------------ | ----------------------------- | ------------------------------- | -------------------------- | ------------------- | ------------------------------- | ---------------------- | ------------------- | ---------- |
+| Project inspect                | implemented                   | implemented                     | implemented                | implemented         | implemented                     | implemented/partial UX | implemented         | existing   |
+| Doctor                         | implemented                   | implemented                     | implemented                | implemented         | implemented                     | implemented/partial UX | partial             | existing   |
+| Diff                           | implemented                   | implemented                     | implemented                | implemented         | implemented                     | implemented            | partial             | existing   |
+| Timeline                       | implemented                   | implemented                     | implemented                | implemented         | implemented                     | implemented            | implemented/partial | existing   |
+| Existing-project adoption      | implemented                   | application contracts exist     | partial                    | implemented         | partial/review-oriented         | partial                | partial             | existing   |
+| Engineering Quality            | implemented                   | implemented                     | implemented                | implemented         | viewmodels implemented          | viewmodels implemented | implemented         | existing   |
+| Engineering Assessments        | implemented roadmap phases    | implemented canonical contracts | partial/implemented slices | partial/implemented | viewmodel direction implemented | viewmodel direction    | partial             | revalidate |
+| Inception sessions             | planned                       | planned                         | planned                    | planned             | planned                         | planned                | planned             | gap        |
+| Foundation Workshop            | planned                       | planned                         | planned                    | planned             | planned                         | planned                | planned             | gap        |
+| Blueprint resolver             | planned                       | planned                         | planned                    | planned             | planned                         | planned                | planned             | gap        |
+| Scaffold planner               | foundations only              | planned                         | planned                    | planned             | planned                         | planned                | planned             | gap        |
+| Empty-root scaffold apply      | transaction foundations exist | planned                         | planned                    | planned             | planned                         | planned                | not first           | gap        |
+| Feature intent / impact        | partial task/plan foundations | partial                         | partial                    | partial             | partial                         | partial                | partial             | gap        |
+| Bounded coding-agent execution | harness/Neutron foundations   | partial                         | partial                    | partial             | future                          | future                 | future              | gated      |
 
 The implementation must update this matrix when durable truth changes.
 
