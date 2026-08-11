@@ -119,8 +119,6 @@ entry directly below this section.
 ### 2026-08-11, Engineering Workspace W2 Foundation Workshop Client
 
 - **Status:** complete on `main` (`208f7c4`, PR #289).
-
-- **Status:** complete on `main` (`208f7c4`, PR #289).
 - **Branch:** `feat/workspace-w2-foundation-workshop-client` (squash-merged to `main` as `208f7c4`).
 - **Pull request:** #289
 - **Objective:** Deliver W2 Client surfaces after W2 Core merge (PR #288): shared foundation progress viewmodels, accessible TUI renderers, Desktop Foundation Workshop view, Tauri bridge, and fixture parity tests against six frozen fixture IDs.
