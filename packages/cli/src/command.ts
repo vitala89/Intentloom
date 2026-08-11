@@ -125,10 +125,6 @@ import {
   type ProviderName,
 } from "@intentloom/evidence-provider";
 import { cleanProviderCache } from "./clean-cache.js";
-import {
-  runFoundationCommand,
-  runInceptionCommand,
-} from "./engineering-workspace-command.js";
 import { runHarnessCommand } from "./harness-command.js";
 import { usage } from "./usage.js";
 import {
@@ -1221,12 +1217,6 @@ export async function runCli(
         { fileSystem: dependencies.fileSystem ?? nodeFileSystem },
         io,
       );
-    }
-    if (args[0] === "inception") {
-      return runInceptionCommand(args, io);
-    }
-    if (args[0] === "foundation") {
-      return runFoundationCommand(args, io);
     }
     const parsed = parseArguments(args);
     const fileSystem = dependencies.fileSystem ?? nodeFileSystem;

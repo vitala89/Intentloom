@@ -12,7 +12,7 @@ import {
   summarizeFoundationUnderstandingViewmodel,
   summarizeInceptionSessionViewmodel,
 } from "@intentloom/application";
-import { runCli } from "../packages/cli/src/command.js";
+import { runCliEntry } from "../packages/cli/src/cli-entry.js";
 
 const inceptionFixturePath = resolve(
   process.cwd(),
@@ -117,7 +117,7 @@ describe("Engineering Workspace W5: inception binary CLI routing", () => {
 
   it("rejects unknown inception subcommands with usage", async () => {
     const stderr: string[] = [];
-    const exitCode = await runCli(
+    const exitCode = await runCliEntry(
       ["inception", "unknown"],
       { catalogRoot },
       { stdout: () => undefined, stderr: (message) => stderr.push(message) },
@@ -230,7 +230,7 @@ describe("Engineering Workspace W5: foundation binary CLI routing", () => {
 
   it("rejects unknown foundation subcommands with usage", async () => {
     const stderr: string[] = [];
-    const exitCode = await runCli(
+    const exitCode = await runCliEntry(
       ["foundation", "unknown"],
       { catalogRoot },
       { stdout: () => undefined, stderr: (message) => stderr.push(message) },
@@ -245,7 +245,7 @@ async function runBinary(
 ): Promise<{ exitCode: number; stdout: string; stderr: string }> {
   const stdout: string[] = [];
   const stderr: string[] = [];
-  const exitCode = await runCli(
+  const exitCode = await runCliEntry(
     args,
     { catalogRoot },
     {
