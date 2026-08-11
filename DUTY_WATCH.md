@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **W1 + W2 (Core + Client) complete on `main` (`208f7c4`, PR #289 merged 2026-08-11).**
+Status: **W5 CLI binary parity implemented on branch `feat/workspace-w5-cli-binary-parity`; PR pending. W1 + W2 complete on `main` (`208f7c4`).**
 
-Active branch: `main`
+Active branch: `feat/workspace-w5-cli-binary-parity`
 
-Current objective: Choose next Engineering Workspace increment — W3 Neutron discovery integration or W5 CLI binary parity per maintainer priority.
+Current objective: Open PR for W5 — wire `intentloom inception` and `intentloom foundation` into the CLI binary with fixture-backed tests.
 
-Next first action: Read `docs/roadmap/ENGINEERING_WORKSPACE_IMPLEMENTATION_PLAN.md` § W3 or § W5, then open a scoped branch (`feat/workspace-w3-*` or `feat/workspace-w5-*`).
+Next first action: Open PR from `feat/workspace-w5-cli-binary-parity`, then W3 Neutron per roadmap.
 
 Known open items, in the order they should be handled:
 
@@ -95,6 +95,16 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-11, Engineering Workspace W5 CLI binary parity
+
+- **Status:** implementation complete on branch `feat/workspace-w5-cli-binary-parity`; ready for PR.
+- **Branch:** `feat/workspace-w5-cli-binary-parity` (based on `main` at `d65fcc3` handoff + W5 work).
+- **Objective:** Wire `intentloom inception ...` and `intentloom foundation ...` into the CLI binary without growing `command.ts` beyond minimal dispatch hooks.
+- **Completed:** Added `engineering-workspace-command.ts` with inception/foundation subcommand routing to existing application helpers. Hooked early dispatch in `command.ts` (mirroring harness pattern). Updated `usage.ts`. Added `tests/cli-workspace-binary.test.ts` (6 tests) for fixture parity and lifecycle commands.
+- **Validation:** `pnpm verify` green (1336 tests passed, 3 skipped).
+- **Non-goals preserved:** W3 Neutron live provider, blueprint binary routing, project-root mutation, oversized barrel growth in `command.ts` (net +6 dispatch lines only).
+- **Next action:** Open PR, then W3 Neutron discovery integration.
 
 ### 2026-08-11, Engineering Workspace W2 handoff reconciliation (post PR #289 merge)
 

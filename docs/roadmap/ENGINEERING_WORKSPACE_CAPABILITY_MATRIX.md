@@ -90,30 +90,30 @@ surfaces expose inception. No `tests/fixtures/inception/` tree.
 
 ### Engineering Workspace phases (plan vs evidence)
 
-| W phase | Plan intent                                                                                | Current evidence                                                             | Sync state                                          |
-| ------- | ------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------- | --------------------------------------------------- |
-| **W0**  | Capability map + state reconciliation                                                      | **this document** + updated `PROJECT_STATE.md` / `DUTY_WATCH.md`             | **complete**                                        |
-| **W1**  | Versioned inception **session** contracts + daemon + CLI JSON + fixtures + client surfaces | Merged on `main` (`2f63f99`, PR #286 Core + PR #287 Client)                  | **complete** — frozen fixtures + Desktop/TUI parity |
-| **W2**  | Foundation Workshop typed state + readiness + client surfaces                              | Merged on `main` (`208f7c4`, PR #288 Core + PR #289 Client); see §3          | **complete** — frozen fixtures + Desktop/TUI parity |
-| **W3**  | Neutron discovery integration for Foundation path                                          | I2 partial (deterministic only)                                              | `core-first`                                        |
-| **W4**  | Blueprint alternatives (workspace naming)                                                  | I3–I4 app ops exist                                                          | `integration-pending` after W1                      |
-| **W5**  | CLI/daemon/client parity freeze                                                            | EQ and specialized packs show pattern: app CLI helpers exist, binary unwired | `core-first` for inception family                   |
-| **W6**  | Minimal scaffold planner (workspace gate)                                                  | I5 app ops exist                                                             | `integration-pending` after W5                      |
-| **W7**  | Transactional empty-root creation                                                          | I6 app ops exist                                                             | `integration-pending`; gated on W5–W6               |
+| W phase | Plan intent                                                                                | Current evidence                                                    | Sync state                                                       |
+| ------- | ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| **W0**  | Capability map + state reconciliation                                                      | **this document** + updated `PROJECT_STATE.md` / `DUTY_WATCH.md`    | **complete**                                                     |
+| **W1**  | Versioned inception **session** contracts + daemon + CLI JSON + fixtures + client surfaces | Merged on `main` (`2f63f99`, PR #286 Core + PR #287 Client)         | **complete** — frozen fixtures + Desktop/TUI parity              |
+| **W2**  | Foundation Workshop typed state + readiness + client surfaces                              | Merged on `main` (`208f7c4`, PR #288 Core + PR #289 Client); see §3 | **complete** — frozen fixtures + Desktop/TUI parity              |
+| **W3**  | Neutron discovery integration for Foundation path                                          | I2 partial (deterministic only)                                     | `core-first`                                                     |
+| **W4**  | Blueprint alternatives (workspace naming)                                                  | I3–I4 app ops exist                                                 | `integration-pending` after W1                                   |
+| **W5**  | CLI/daemon/client parity freeze                                                            | Inception + foundation binary routing on branch; blueprint deferred | **in progress** — inception/foundation wired; blueprint deferred |
+| **W6**  | Minimal scaffold planner (workspace gate)                                                  | I5 app ops exist                                                    | `integration-pending` after W5                                   |
+| **W7**  | Transactional empty-root creation                                                          | I6 app ops exist                                                    | `integration-pending`; gated on W5–W6                            |
 
 ---
 
 ## 3. Foundation Workshop gap (W2)
 
-| Surface                                                | Status                 | Evidence                                                                                       |
-| ------------------------------------------------------ | ---------------------- | ---------------------------------------------------------------------------------------------- |
-| Application operations (`createFoundationWorkshop`, …) | **implemented**        | `packages/application/src/foundation-workshop.ts` + readiness/conflicts                        |
-| Protocol schemas / URNs                                | **implemented**        | `foundation-workshop.ts`, `foundation-common.ts`, `foundation-daemon-rpc.ts`                   |
-| Validator                                              | **implemented**        | `packages/validator/src/foundation-base.ts`, `foundation-contracts.ts`                         |
-| Tests                                                  | **implemented**        | `tests/foundation-*.test.ts`, `tests/daemon-foundation.test.ts`                                |
-| CLI app helper                                         | **implemented**        | `runFoundationCliCommand` in `foundation-cli.ts`                                               |
-| Daemon RPC                                             | **implemented**        | 9 read-only methods in `foundation-handlers.ts`                                                |
-| CLI binary / Desktop / TUI                             | **implemented (main)** | W2 Client: viewmodels + Desktop view + Tauri bridge + 6-test parity; W5 binary routing pending |
+| Surface                                                | Status                          | Evidence                                                                     |
+| ------------------------------------------------------ | ------------------------------- | ---------------------------------------------------------------------------- |
+| Application operations (`createFoundationWorkshop`, …) | **implemented**                 | `packages/application/src/foundation-workshop.ts` + readiness/conflicts      |
+| Protocol schemas / URNs                                | **implemented**                 | `foundation-workshop.ts`, `foundation-common.ts`, `foundation-daemon-rpc.ts` |
+| Validator                                              | **implemented**                 | `packages/validator/src/foundation-base.ts`, `foundation-contracts.ts`       |
+| Tests                                                  | **implemented**                 | `tests/foundation-*.test.ts`, `tests/daemon-foundation.test.ts`              |
+| CLI app helper                                         | **implemented**                 | `runFoundationCliCommand` in `foundation-cli.ts`                             |
+| Daemon RPC                                             | **implemented**                 | 9 read-only methods in `foundation-handlers.ts`                              |
+| CLI binary / Desktop / TUI                             | **implemented (main + branch)** | Desktop/TUI on main; W5 inception/foundation binary routing on branch        |
 
 **Sync state:** W2 complete on `main` — Core (PR #288) and Client (PR #289) with Desktop/TUI parity tests against six frozen fixture IDs.
 
@@ -351,7 +351,7 @@ Ready now:
 Integration pending:
 - EQ CLI helpers → `intentloom` binary
 - Specialized packs CLI → binary
-- W5 `intentloom inception ...` / `intentloom foundation ...` binary routing
+- W5 `intentloom blueprint ...` binary routing (inception + foundation wired on branch)
 
 Blocked / future:
 - Full existing-project W9 composed flow
@@ -359,7 +359,8 @@ Blocked / future:
 - S8 external specialized packs
 
 Next synchronization checkpoint:
-- Before W3 Neutron or W5 binary parity increment
+- After W5 PR merges (inception/foundation binary)
+- Before W3 Neutron increment
 ```
 
 ---

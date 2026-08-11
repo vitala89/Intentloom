@@ -233,9 +233,9 @@ before a new release or implementation milestone is declared complete.
 
 1. Engineering Workspace **W1** and **W2** are complete on `main` at `208f7c4`
    (W1 Core + Client: PR #286 + PR #287; W2 Core: PR #288; W2 Client: PR #289).
-   Next recommended track: **W3 Neutron** discovery integration or **W5** CLI
-   binary parity (`intentloom inception` / `intentloom foundation`), per
-   maintainer priority.
+   **W5 CLI binary parity** for `intentloom inception` / `intentloom foundation`
+   is implemented on branch `feat/workspace-w5-cli-binary-parity` (PR pending).
+   Next recommended track after W5 merge: **W3 Neutron** discovery integration.
 2. Engineering Workspace **W0** capability reconciliation remains complete on `main`.
 3. Keep GitHub Pages as the canonical public documentation destination and
    continue the roadmap after the completed `1.0.2` metadata release.
