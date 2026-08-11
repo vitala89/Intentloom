@@ -2,6 +2,9 @@ import { invoke } from "@tauri-apps/api/core";
 import {
   createDaemonInfoRequest,
   createDoctorRequest,
+  createInceptionSessionCreateRequest,
+  createInceptionSessionDeleteRequest,
+  createInceptionSessionGetRequest,
   createInspectRequest,
   createProjectDiffRequest,
   createProjectTimelineRequest,
@@ -12,6 +15,7 @@ import {
   parseProjectTimelineResponse,
   type DaemonInfoResult,
   type DoctorResult,
+  type InceptionViewmodelPayload,
   type InspectResult,
   type ProjectDiffParams,
   type ProjectDiffResult,
@@ -141,5 +145,59 @@ export const desktopClient = {
     return parseProjectTimelineResponse(
       await call("load_project_timeline", { request }, signal),
     ).result;
+  },
+
+  async inceptionRequest(
+    request: object,
+    signal?: AbortSignal,
+  ): Promise<InceptionViewmodelPayload> {
+    const response = await call<{ result?: { viewmodel?: unknown } }>(
+      "invoke_inception_request",
+      { request },
+      signal,
+    );
+    const viewmodel = response.result?.viewmodel;
+    if (typeof viewmodel !== "object" || viewmodel === null) {
+      throw new DesktopBridgeError(
+        "Inception response did not include a viewmodel",
+        "bounded_validation_failed",
+      );
+    }
+    return viewmodel as InceptionViewmodelPayload;
+  },
+
+  async inceptionSessionCreate(
+    root: string,
+    idea: string,
+    signal?: AbortSignal,
+  ): Promise<InceptionViewmodelPayload> {
+    const request = createInceptionSessionCreateRequest(
+      "desktop-inception-create",
+      root,
+      idea,
+    );
+    return this.inceptionRequest(request, signal);
+  },
+
+  async inceptionSessionGet(
+    sessionId: string,
+    signal?: AbortSignal,
+  ): Promise<InceptionViewmodelPayload> {
+    const request = createInceptionSessionGetRequest(
+      "desktop-inception-get",
+      sessionId,
+    );
+    return this.inceptionRequest(request, signal);
+  },
+
+  async inceptionSessionDelete(
+    sessionId: string,
+    signal?: AbortSignal,
+  ): Promise<InceptionViewmodelPayload> {
+    const request = createInceptionSessionDeleteRequest(
+      "desktop-inception-delete",
+      sessionId,
+    );
+    return this.inceptionRequest(request, signal);
   },
 };

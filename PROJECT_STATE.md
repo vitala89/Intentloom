@@ -231,14 +231,15 @@ before a new release or implementation milestone is declared complete.
 
 ## Active focus
 
-1. Engineering Workspace **W1 Core** inception session contracts are implemented on branch
-   `feat/workspace-w1-inception-contracts` (versioned URNs, session store, daemon RPC,
-   `runInceptionCliCommand`, frozen fixtures). Next: PR review/merge, then W1 client shell.
-2. Engineering Workspace **W0** capability reconciliation remains complete on `main`
-   at `10ff713` (`docs/roadmap/ENGINEERING_WORKSPACE_CAPABILITY_MATRIX.md`).
+1. Engineering Workspace **W1 Core** inception session contracts are merged on
+   `main` at `d82e6cb` (PR #286): versioned URNs, session store, daemon RPC,
+   `runInceptionCliCommand`, frozen fixtures, and S7 client-surface gap closure.
+   **W1 Client** (Desktop New Project shell + TUI viewmodels) is complete on
+   branch `feat/workspace-w1-inception-client` (PR pending).
+2. Engineering Workspace **W0** capability reconciliation remains complete on `main`.
 3. Specialized Engineering Packs Phase S8 (reviewed external packs) follows the
-   completed S7 client increment; functional New Project remains core-first on
-   W1 session contracts and frozen fixtures.
+   completed S7 client increment; functional New Project client surfaces build on
+   W1 frozen fixture IDs.
 4. Keep GitHub Pages as the canonical public documentation destination and
    continue the roadmap after the completed `1.0.2` metadata release.
 5. Keep bottleneck inference, remote ingestion, model-based judgments, and any
@@ -261,8 +262,9 @@ before a new release or implementation milestone is declared complete.
 ## Current blockers and unknowns
 
 - Any expansion to bottleneck, performance, causal, actor, repository-reading, persisted, remote, or model-assisted analysis requires a new ADR, specification, and threat review.
-- Current `main` is verified at `10ff713` (PR #285 workspace planning docs;
-  PR #284 Specialized Packs S7 checks) and tracks `origin/main`.
+- Current `main` is verified at `d82e6cb` (PR #286 W1 Core inception contracts;
+  PR #285 workspace planning docs; PR #284 Specialized Packs S7 checks) and tracks
+  `origin/main`.
 - Phase E5 doctor diagnostics, Phase E6 safe revocation and removal, and
   Phase E7 knowledge-provider & adapter-pack boundaries are merged to `main`.
 - npm reports `latest=1.0.2` and `next=1.0.0`, verified 2026-08-02.

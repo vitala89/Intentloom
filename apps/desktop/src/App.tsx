@@ -3,52 +3,27 @@ import { desktopClient, DesktopBridgeError } from "./desktop-client.js";
 import { Logo } from "./design/components/brand/Logo.js";
 import { Wordmark } from "./design/components/brand/Wordmark.js";
 import type {
+  ApprovedApplyExecutionResult,
+  ApprovedApplyPlan,
   DaemonInfoResult,
   DoctorResult,
   InspectResult,
   ProjectDiffResult,
   ProjectTimelineResult,
 } from "@intentloom/protocol";
-
-type View =
-  "Overview" | "Inspect" | "Doctor" | "Diff review" | "Timeline" | "Settings";
-type InspectStatus =
-  | "idle"
-  | "loading"
-  | "ready"
-  | "stale"
-  | "invalid-root"
-  | "disconnected"
-  | "protocol-mismatch"
-  | "error";
-type TimelineStatus = InspectStatus | "empty";
-
-const views: Array<{ label: View; icon: string }> = [
-  { label: "Overview", icon: "◈" },
-  { label: "Inspect", icon: "⌘" },
-  { label: "Doctor", icon: "✚" },
-  { label: "Diff review", icon: "⇄" },
-  { label: "Timeline", icon: "◷" },
-];
-
-import { ConfirmRootChange } from "./ConfirmRootChange.js";
-import { ApprovedApplyModal } from "./ApprovedApplyModal.js";
-import type {
-  ApprovedApplyPlan,
-  ApprovedApplyExecutionResult,
-} from "@intentloom/protocol";
-import { OverviewView } from "./views/OverviewView.js";
-import { InspectView } from "./views/InspectView.js";
-import { DoctorView } from "./views/DoctorView.js";
-import { DiffView } from "./views/DiffView.js";
-import { TimelineView } from "./views/TimelineView.js";
-import { SettingsView } from "./views/SettingsView.js";
+import { WorkspaceContent } from "./WorkspaceContent.js";
 import {
   CommandPaletteModal,
   type CommandOption,
 } from "./views/CommandPaletteModal.js";
+import {
+  workspaceViews,
+  type WorkspaceInspectStatus,
+  type WorkspaceTimelineStatus,
+  type WorkspaceView,
+} from "./workspace-navigation.js";
 
-function inspectStatusForError(error: unknown): InspectStatus {
+function inspectStatusForError(error: unknown): WorkspaceInspectStatus {
   if (!(error instanceof DesktopBridgeError)) return "error";
   if (error.code === "stale_root") return "stale";
   if (error.code === "invalid_root") return "invalid-root";
@@ -60,21 +35,23 @@ function inspectStatusForError(error: unknown): InspectStatus {
 }
 
 export default function App() {
-  const [activeView, setActiveView] = useState<View>("Overview");
+  const [activeView, setActiveView] = useState<WorkspaceView>("Overview");
   const [theme, setTheme] = useState<"dark" | "light">("dark");
   const [connection, setConnection] = useState("Not connected");
   const [root, setRoot] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
   const [daemonInfo, setDaemonInfo] = useState<DaemonInfoResult | null>(null);
   const [inspect, setInspect] = useState<InspectResult | null>(null);
-  const [inspectStatus, setInspectStatus] = useState<InspectStatus>("idle");
+  const [inspectStatus, setInspectStatus] =
+    useState<WorkspaceInspectStatus>("idle");
   const [inspectError, setInspectError] = useState<string | null>(null);
   const [doctor, setDoctor] = useState<DoctorResult | null>(null);
   const [diff, setDiff] = useState<ProjectDiffResult | null>(null);
-  const [diffStatus, setDiffStatus] = useState<InspectStatus>("idle");
+  const [diffStatus, setDiffStatus] = useState<WorkspaceInspectStatus>("idle");
   const [diffError, setDiffError] = useState<string | null>(null);
   const [timeline, setTimeline] = useState<ProjectTimelineResult | null>(null);
-  const [timelineStatus, setTimelineStatus] = useState<TimelineStatus>("idle");
+  const [timelineStatus, setTimelineStatus] =
+    useState<WorkspaceTimelineStatus>("idle");
   const [timelineError, setTimelineError] = useState<string | null>(null);
   const [isConnecting, setIsConnecting] = useState(false);
   const [retryCount, setRetryCount] = useState(0);
@@ -145,11 +122,19 @@ export default function App() {
       action: () => setActiveView("Overview"),
     },
     {
+      id: "nav-new-project",
+      category: "Navigation",
+      label: "Go to New project",
+      icon: "✦",
+      shortcut: "2",
+      action: () => setActiveView("New project"),
+    },
+    {
       id: "nav-inspect",
       category: "Navigation",
       label: "Go to Inspect",
       icon: "⌘",
-      shortcut: "2",
+      shortcut: "3",
       action: () => setActiveView("Inspect"),
     },
     {
@@ -505,7 +490,7 @@ export default function App() {
 
         <nav aria-label="Primary navigation">
           <p className="nav-label">Workspace</p>
-          {views.map((view) => (
+          {workspaceViews.map((view) => (
             <button
               aria-current={activeView === view.label ? "page" : undefined}
               className={`nav-item ${activeView === view.label ? "active" : ""}`}
@@ -604,114 +589,70 @@ export default function App() {
         </header>
 
         <div className="content">
-          {activeView === "Inspect" ? (
-            <InspectView
-              errorMessage={inspectError}
-              onConnect={connectDaemon}
-              onSelectProject={() => requestProjectSelect()}
-              result={inspect}
-              root={root}
-              status={inspectStatus}
-            />
-          ) : activeView === "Doctor" ? (
-            <DoctorView
-              errorMessage={inspectError}
-              onConnect={connectDaemon}
-              onSelectProject={() => requestProjectSelect()}
-              result={doctor}
-              root={root}
-              status={inspectStatus}
-            />
-          ) : activeView === "Diff review" ? (
-            <DiffView
-              errorMessage={diffError}
-              onLoadDiff={loadDiff}
-              onSelectProject={() => requestProjectSelect()}
-              result={diff}
-              root={root}
-              status={diffStatus}
-            />
-          ) : activeView === "Timeline" ? (
-            <TimelineView
-              errorMessage={timelineError}
-              onLoadTimeline={loadTimeline}
-              onSelectProject={() => requestProjectSelect()}
-              result={timeline}
-              root={root}
-              status={timelineStatus}
-            />
-          ) : activeView === "Settings" ? (
-            <SettingsView
-              connection={connection}
-              daemonInfo={daemonInfo}
-              onThemeToggle={setTheme}
-              root={root}
-              theme={theme}
-            />
-          ) : (
-            <>
-              {confirmSwitch && root ? (
-                <ConfirmRootChange
-                  currentRoot={root}
-                  loadedViews={loadedViews}
-                  onConfirm={handleConfirmChange}
-                  onCancel={handleCancelChange}
-                  triggerRef={confirmTriggerRef}
-                />
-              ) : null}
-              <ApprovedApplyModal
-                plan={activeApprovedPlan}
-                isOpen={isApprovedApplyModalOpen}
-                onClose={() => setIsApprovedApplyModalOpen(false)}
-                isApplying={isApplyingPlan}
-                executionResult={approvedApplyExecutionResult}
-                onApprove={(_grantedApprovals) => {
-                  if (!activeApprovedPlan || !root) return;
-                  setIsApplyingPlan(true);
-                  // Call approved apply execution
-                  setTimeout(() => {
-                    setIsApplyingPlan(false);
-                    setApprovedApplyExecutionResult({
-                      schemaVersion: 1,
-                      targetResourceId: root,
-                      applied: true,
-                      gateResult: {
-                        schemaVersion: 1,
-                        targetResourceId: root,
-                        passed: true,
-                        diagnostics: [],
-                        safeNextAction: "action-applied-successfully",
-                      },
-                      rollbackEvidence: {
-                        schemaVersion: 1,
-                        planDigest: activeApprovedPlan.planDigest,
-                        targetRoot: root,
-                        rollbackFiles: activeApprovedPlan.changedPaths.map(
-                          (p) => ({
-                            path: p,
-                            previousContent: "// previous snapshot content",
-                          }),
-                        ),
-                      },
-                      diagnostics: [],
-                    });
-                  }, 600);
-                }}
-              />
-              <OverviewView
-                connection={connection}
-                daemonInfo={daemonInfo}
-                doctor={doctor}
-                inspect={inspect}
-                isConnecting={isConnecting}
-                message={message}
-                onConnectDaemon={connectDaemon}
-                onRequestProjectSelect={requestProjectSelect}
-                retryCount={retryCount}
-                root={root}
-              />
-            </>
-          )}
+          <WorkspaceContent
+            activeView={activeView}
+            root={root}
+            connection={connection}
+            theme={theme}
+            daemonInfo={daemonInfo}
+            inspect={inspect}
+            inspectStatus={inspectStatus}
+            inspectError={inspectError}
+            doctor={doctor}
+            diff={diff}
+            diffStatus={diffStatus}
+            diffError={diffError}
+            timeline={timeline}
+            timelineStatus={timelineStatus}
+            timelineError={timelineError}
+            isConnecting={isConnecting}
+            retryCount={retryCount}
+            message={message}
+            confirmSwitch={confirmSwitch}
+            loadedViews={loadedViews}
+            confirmTriggerRef={confirmTriggerRef}
+            activeApprovedPlan={activeApprovedPlan}
+            isApprovedApplyModalOpen={isApprovedApplyModalOpen}
+            isApplyingPlan={isApplyingPlan}
+            approvedApplyExecutionResult={approvedApplyExecutionResult}
+            onConfirmChange={handleConfirmChange}
+            onCancelChange={handleCancelChange}
+            onCloseApprovedApplyModal={() => setIsApprovedApplyModalOpen(false)}
+            onApprovePlan={() => {
+              if (!activeApprovedPlan || !root) return;
+              setIsApplyingPlan(true);
+              setTimeout(() => {
+                setIsApplyingPlan(false);
+                setApprovedApplyExecutionResult({
+                  schemaVersion: 1,
+                  targetResourceId: root,
+                  applied: true,
+                  gateResult: {
+                    schemaVersion: 1,
+                    targetResourceId: root,
+                    passed: true,
+                    diagnostics: [],
+                    safeNextAction: "action-applied-successfully",
+                  },
+                  rollbackEvidence: {
+                    schemaVersion: 1,
+                    planDigest: activeApprovedPlan.planDigest,
+                    targetRoot: root,
+                    rollbackFiles: activeApprovedPlan.changedPaths.map((p) => ({
+                      path: p,
+                      previousContent: "// previous snapshot content",
+                    })),
+                  },
+                  diagnostics: [],
+                });
+              }, 600);
+            }}
+            onConnectDaemon={() => void connectDaemon()}
+            onRequestProjectSelect={requestProjectSelect}
+            onLoadDiff={() => void loadDiff()}
+            onLoadTimeline={() => void loadTimeline()}
+            onThemeToggle={setTheme}
+          />
         </div>
 
         <CommandPaletteModal

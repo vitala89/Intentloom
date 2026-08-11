@@ -88,16 +88,16 @@ surfaces expose inception. No `tests/fixtures/inception/` tree.
 
 ### Engineering Workspace phases (plan vs evidence)
 
-| W phase | Plan intent                                                              | Current evidence                                                                    | Sync state                                    |
-| ------- | ------------------------------------------------------------------------ | ----------------------------------------------------------------------------------- | --------------------------------------------- |
-| **W0**  | Capability map + state reconciliation                                    | **this document** + updated `PROJECT_STATE.md` / `DUTY_WATCH.md`                    | completing                                    |
-| **W1**  | Versioned inception **session** contracts + daemon + CLI JSON + fixtures | Implemented on `feat/workspace-w1-inception-contracts`; see §7                      | `ready-against-frozen-fixture` after PR merge |
-| **W2**  | Foundation Workshop typed state + readiness                              | **no application module**; plan only (`FOUNDATION_WORKSHOP_IMPLEMENTATION_PLAN.md`) | `future` / `core-first`                       |
-| **W3**  | Neutron discovery integration for Foundation path                        | I2 partial (deterministic only)                                                     | `core-first`                                  |
-| **W4**  | Blueprint alternatives (workspace naming)                                | I3–I4 app ops exist                                                                 | `integration-pending` after W1                |
-| **W5**  | CLI/daemon/client parity freeze                                          | EQ and specialized packs show pattern: app CLI helpers exist, binary unwired        | `core-first` for inception family             |
-| **W6**  | Minimal scaffold planner (workspace gate)                                | I5 app ops exist                                                                    | `integration-pending` after W5                |
-| **W7**  | Transactional empty-root creation                                        | I6 app ops exist                                                                    | `integration-pending`; gated on W5–W6         |
+| W phase | Plan intent                                                              | Current evidence                                                                    | Sync state                                             |
+| ------- | ------------------------------------------------------------------------ | ----------------------------------------------------------------------------------- | ------------------------------------------------------ |
+| **W0**  | Capability map + state reconciliation                                    | **this document** + updated `PROJECT_STATE.md` / `DUTY_WATCH.md`                    | completing                                             |
+| **W1**  | Versioned inception **session** contracts + daemon + CLI JSON + fixtures | Merged on `main` (`d82e6cb`, PR #286); client surfaces in progress                  | `ready-against-frozen-fixture` on Core; W1 Client next |
+| **W2**  | Foundation Workshop typed state + readiness                              | **no application module**; plan only (`FOUNDATION_WORKSHOP_IMPLEMENTATION_PLAN.md`) | `future` / `core-first`                                |
+| **W3**  | Neutron discovery integration for Foundation path                        | I2 partial (deterministic only)                                                     | `core-first`                                           |
+| **W4**  | Blueprint alternatives (workspace naming)                                | I3–I4 app ops exist                                                                 | `integration-pending` after W1                         |
+| **W5**  | CLI/daemon/client parity freeze                                          | EQ and specialized packs show pattern: app CLI helpers exist, binary unwired        | `core-first` for inception family                      |
+| **W6**  | Minimal scaffold planner (workspace gate)                                | I5 app ops exist                                                                    | `integration-pending` after W5                         |
+| **W7**  | Transactional empty-root creation                                        | I6 app ops exist                                                                    | `integration-pending`; gated on W5–W6                  |
 
 ---
 
@@ -296,59 +296,73 @@ JSON helper, and frozen fixtures — **reusing** existing
 - S7 specialized-pack check client surfaces
 - Wiring all EQ commands into `intentloom` binary (separate parity PR)
 
-### Exit gate (W1 Core PR)
+### Exit gate (W1 Core PR) — **complete on `main` (`d82e6cb`, PR #286)**
 
 - Session create → answer → summarize → export → delete without writing project files.
 - CLI JSON and daemon return identical viewmodels for each fixture ID.
 - `pnpm verify` green.
 - Fixture IDs frozen in `tests/fixtures/inception/session-states.v1.json`.
 
+### W1 Client slice (in progress)
+
+**Branch:** `feat/workspace-w1-inception-client`
+
+**In scope**
+
+1. Shared inception session progress viewmodels and accessible TUI renderers.
+2. Desktop `New project` shell and session-progress view (empty/loading/error/resume/delete).
+3. Fixture parity tests (`tests/desktop-tui-inception.test.ts`).
+4. Desktop Tauri bridge for inception daemon RPC methods.
+
+**Out of scope**
+
+- Foundation Workshop (W2)
+- Wiring `intentloom inception ...` into binary command routing (W5)
+- Neutron live provider
+
 ---
 
-## 8. Client readiness summary (W0 checkpoint)
+## 8. Client readiness summary (W1 checkpoint)
 
 ```text
-Current Engineering Workspace phase: W0 complete → W1 Core next
-Verified main: 10ff713
-Relevant active PRs: none
+Current Engineering Workspace phase: W1 Core complete → W1 Client in progress
+Verified main: d82e6cb
 
 CORE
 Current completed capability:
+- W1 inception session URNs, store, daemon RPC, CLI JSON helper, frozen fixtures
 - Existing-project inspect/doctor/diff/timeline/adoption engines
 - Engineering Quality Q1–Q18 application + daemon quality RPCs
-- Specialized Packs S1–S7 Core checks
-- Project Inception I1–I10 application operations (no transport)
+- Specialized Packs S1–S7 Core checks + client surfaces
 
 Next Core task:
-- W1 inception session URNs + missing ops + daemon + CLI JSON + fixtures
+- W2 Foundation Workshop typed state + readiness rules
 
 CLIENTS: DESKTOP + CLI/TUI
 Ready now:
 - Inspect, Doctor, Diff, Timeline Desktop views (read-only)
+- W1 inception CLI JSON helper + fixture parity (Core)
 
 Safe in parallel against frozen contracts:
-- None until W1 fixtures freeze in Core PR
+- W1 Client Desktop New Project shell + TUI renderers
 
 Must wait for Core:
-- Engineering Workspace New Project shell (W1+)
 - Foundation Workshop screens (W2)
-- Functional New Project shell and Inception flow (W1 Core)
 - Full existing-project W9 composed flow
 
 Integration pending:
 - EQ CLI helpers → `intentloom` binary
 - Specialized packs CLI → binary
-- S6 catalog/detect Desktop parity completion
-- Assessments transport layer
+- W5 `intentloom inception ...` binary routing
 
 Blocked / future:
-- W2 Foundation until W1 session contracts merge
+- W2 Foundation Core until W1 client slice lands
 - W11 bounded coding-agent execution (harness gate)
 - S8 external specialized packs
 
 Next synchronization checkpoint:
-- After W1 Core PR opens (fixture freeze)
-- After W1 Core PR merges (client agents may start Desktop New Project shell)
+- After W1 Client PR merges (Desktop shell + TUI parity)
+- Before W2 Foundation Core PR opens
 ```
 
 ---
