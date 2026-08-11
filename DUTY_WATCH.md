@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **W2 Client complete on branch `feat/workspace-w2-foundation-workshop-client`; open PR next. W1 + W2 Core on `main` (`329dec3`).**
+Status: **W5 CLI binary parity implemented on branch `feat/workspace-w5-cli-binary-parity`; PR pending. W1 + W2 complete on `main` (`208f7c4`).**
 
-Active branch: `feat/workspace-w2-foundation-workshop-client`
+Active branch: `feat/workspace-w5-cli-binary-parity`
 
-Current objective: Open PR for W2 Client surfaces (foundation viewmodels, TUI renderers, Desktop Foundation Workshop view, Tauri bridge, fixture parity tests).
+Current objective: Open PR for W5 — wire `intentloom inception` and `intentloom foundation` into the CLI binary with fixture-backed tests.
 
-Next first action: Open PR from `feat/workspace-w2-foundation-workshop-client`, then W3 Neutron or W5 binary parity per roadmap priority.
+Next first action: Open PR from `feat/workspace-w5-cli-binary-parity`, then W3 Neutron per roadmap.
 
 Known open items, in the order they should be handled:
 
@@ -96,15 +96,36 @@ entry directly below this section.
 
 ## Watch entries
 
+### 2026-08-11, Engineering Workspace W5 CLI binary parity
+
+- **Status:** implementation complete on branch `feat/workspace-w5-cli-binary-parity`; ready for PR.
+- **Branch:** `feat/workspace-w5-cli-binary-parity` (based on `main` at `d65fcc3` handoff + W5 work).
+- **Objective:** Wire `intentloom inception ...` and `intentloom foundation ...` into the CLI binary without growing `command.ts` beyond minimal dispatch hooks.
+- **Completed:** Added `engineering-workspace-command.ts` with inception/foundation subcommand routing to existing application helpers. Hooked early dispatch in `command.ts` (mirroring harness pattern). Updated `usage.ts`. Added `tests/cli-workspace-binary.test.ts` (6 tests) for fixture parity and lifecycle commands.
+- **Validation:** `pnpm verify` green (1336 tests passed, 3 skipped).
+- **Non-goals preserved:** W3 Neutron live provider, blueprint binary routing, project-root mutation, oversized barrel growth in `command.ts` (net +6 dispatch lines only).
+- **Next action:** Open PR, then W3 Neutron discovery integration.
+
+### 2026-08-11, Engineering Workspace W2 handoff reconciliation (post PR #289 merge)
+
+- **Status:** complete on `main` (`208f7c4`).
+- **Branch:** `main`
+- **Pull request:** #289 merged at 2026-08-11T14:58:55Z
+- **Objective:** Reconcile handoff docs after W2 Client merge (PR #289): update `PROJECT_STATE.md`, `DUTY_WATCH.md`, and capability matrix §3/§8 to record W1 + W2 (Core + Client) complete on main.
+- **Completed:** Pulled `main` to `208f7c4` (PR #289 squash-merge). Verified PR #289 merged with Compatibility/CodeQL/Documentation CI green. Updated active focus, verified-main pointers, W2 phase table row, §3 Foundation Workshop sync state, and §8 client readiness checkpoint. Removed stale "PR pending" / "on branch" wording for W2 Client.
+- **Validation:** `git pull` fast-forward to `208f7c4`; `gh pr view 289` confirms MERGED; post-merge CI runs green on `main`.
+- **Next action:** W3 Neutron discovery integration or W5 CLI binary parity per maintainer priority.
+
 ### 2026-08-11, Engineering Workspace W2 Foundation Workshop Client
 
-- **Status:** implementation complete on branch `feat/workspace-w2-foundation-workshop-client`; ready for PR.
-- **Branch:** `feat/workspace-w2-foundation-workshop-client` (based on `main` at `329dec3`).
+- **Status:** complete on `main` (`208f7c4`, PR #289).
+- **Branch:** `feat/workspace-w2-foundation-workshop-client` (squash-merged to `main` as `208f7c4`).
+- **Pull request:** #289
 - **Objective:** Deliver W2 Client surfaces after W2 Core merge (PR #288): shared foundation progress viewmodels, accessible TUI renderers, Desktop Foundation Workshop view, Tauri bridge, and fixture parity tests against six frozen fixture IDs.
 - **Completed:** Reconciled handoff docs for W2 Core merge on `main`. Added `foundation-client-viewmodel.ts` and `foundation-viewmodel-renderers.ts` with workshop progress, readiness summary, and shell viewmodels plus TUI text renderers. Added `tests/desktop-tui-foundation.test.ts` (6 tests) for CLI/viewmodel parity against all six frozen fixture IDs. Added Desktop `FoundationWorkshopView` with empty/loading/error/resume/deleted states, navigation entry via `WorkspaceContent.tsx`, Tauri `invoke_foundation_request` bridge, and `desktopClient.foundationWorkshopCreate/Get/Delete/ConflictsIdentify` helpers.
 - **Validation:** `pnpm verify` green (1330 tests passed, 3 skipped).
 - **Non-goals preserved:** W3 Neutron live provider, W5 binary `intentloom foundation` routing, project-root mutation, oversized barrel growth.
-- **Next action:** Open PR, then W3 Neutron discovery integration or W5 CLI binary parity per maintainer priority.
+- **Next action:** W3 Neutron discovery integration or W5 CLI binary parity per maintainer priority.
 
 ### 2026-08-11, Engineering Workspace W2 handoff reconciliation (post PR #288 merge)
 

@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 import { resolve } from "node:path";
-import { runCli } from "./command.js";
+import { runCliEntry } from "./cli-entry.js";
 
-void runCli(
+void runCliEntry(
   process.argv.slice(2),
   { catalogRoot: resolve(__dirname, "catalog") },
   {
