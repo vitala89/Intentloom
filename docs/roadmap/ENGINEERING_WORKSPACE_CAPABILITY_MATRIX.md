@@ -90,19 +90,19 @@ surfaces expose inception. No `tests/fixtures/inception/` tree.
 
 ### Engineering Workspace phases (plan vs evidence)
 
-| W phase | Plan intent                                                                                | Current evidence                                                    | Sync state                                          |
-| ------- | ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------- | --------------------------------------------------- |
-| **W0**  | Capability map + state reconciliation                                                      | **this document** + updated `PROJECT_STATE.md` / `DUTY_WATCH.md`    | **complete**                                        |
-| **W1**  | Versioned inception **session** contracts + daemon + CLI JSON + fixtures + client surfaces | Merged on `main` (`2f63f99`, PR #286 Core + PR #287 Client)         | **complete** — frozen fixtures + Desktop/TUI parity |
-| **W2**  | Foundation Workshop typed state + readiness + client surfaces                              | Merged on `main` (`208f7c4`, PR #288 Core + PR #289 Client); see §3 | **complete** — frozen fixtures + Desktop/TUI parity |
-| **W3**  | Neutron discovery integration for Foundation path                                          | Merged Core + Client on `main` (`be81bed`, PR #293)                 | **complete** — frozen fixtures + Desktop/TUI parity |
-| **W4**  | Blueprint alternatives (workspace naming)                                                  | Core + Client merged on `main` (`92e82fb`, PR #296)                 | **complete** — Desktop/TUI parity                   |
-| **W5**  | CLI/daemon/client parity freeze                                                            | Inception + foundation + blueprint top-level on main (#290, #297)   | **complete**                                        |
-| **W6**  | Minimal scaffold planner (workspace gate)                                                  | Core + Client merged on `main` (`7ff98e4`, PR #298 + #299)          | **complete** — Desktop/TUI parity                   |
-| **W7**  | Transactional empty-root creation                                                          | Core + Client merged on `main` (`0af87a1`, PR #300 + #301)          | **complete** — Desktop/TUI parity                   |
-| **W8**  | Library ecosystem starter and dogfooding                                                   | Merged on `main` (`0b42163`, PR #302 Core + PR #303 Client)         | **complete** — Desktop/TUI workspace tree parity    |
-| **W9**  | Existing-project composed inspect/assessment flow                                          | Merged on `main` (`0c948c3`, PR #304 Core+Client)                   | **complete** — frozen fixtures + Desktop/TUI parity |
-| **W10** | Feature intent and architecture impact                                                     | Core PR #305 on `feat/workspace-w10-feature-intent-core`; Client follows        | Core **complete** on branch; Client `core-first`    |
+| W phase | Plan intent                                                                                | Current evidence                                                         | Sync state                                          |
+| ------- | ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------ | --------------------------------------------------- |
+| **W0**  | Capability map + state reconciliation                                                      | **this document** + updated `PROJECT_STATE.md` / `DUTY_WATCH.md`         | **complete**                                        |
+| **W1**  | Versioned inception **session** contracts + daemon + CLI JSON + fixtures + client surfaces | Merged on `main` (`2f63f99`, PR #286 Core + PR #287 Client)              | **complete** — frozen fixtures + Desktop/TUI parity |
+| **W2**  | Foundation Workshop typed state + readiness + client surfaces                              | Merged on `main` (`208f7c4`, PR #288 Core + PR #289 Client); see §3      | **complete** — frozen fixtures + Desktop/TUI parity |
+| **W3**  | Neutron discovery integration for Foundation path                                          | Merged Core + Client on `main` (`be81bed`, PR #293)                      | **complete** — frozen fixtures + Desktop/TUI parity |
+| **W4**  | Blueprint alternatives (workspace naming)                                                  | Core + Client merged on `main` (`92e82fb`, PR #296)                      | **complete** — Desktop/TUI parity                   |
+| **W5**  | CLI/daemon/client parity freeze                                                            | Inception + foundation + blueprint top-level on main (#290, #297)        | **complete**                                        |
+| **W6**  | Minimal scaffold planner (workspace gate)                                                  | Core + Client merged on `main` (`7ff98e4`, PR #298 + #299)               | **complete** — Desktop/TUI parity                   |
+| **W7**  | Transactional empty-root creation                                                          | Core + Client merged on `main` (`0af87a1`, PR #300 + #301)               | **complete** — Desktop/TUI parity                   |
+| **W8**  | Library ecosystem starter and dogfooding                                                   | Merged on `main` (`0b42163`, PR #302 Core + PR #303 Client)              | **complete** — Desktop/TUI workspace tree parity    |
+| **W9**  | Existing-project composed inspect/assessment flow                                          | Merged on `main` (`0c948c3`, PR #304 Core+Client)                        | **complete** — frozen fixtures + Desktop/TUI parity |
+| **W10** | Feature intent and architecture impact                                                     | Core PR #305 on `feat/workspace-w10-feature-intent-core`; Client follows | Core **complete** on branch; Client `core-first`    |
 
 ---
 
