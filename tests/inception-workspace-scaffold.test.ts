@@ -6,6 +6,7 @@ import {
   prepareProjectScaffoldPlan,
   formatScaffoldPlanDryRun,
   diffScaffoldPlan,
+  validateWorkspaceScaffoldPlan,
 } from "@intentloom/application";
 
 describe("Project Inception Library Workspace Starter (Phase I7)", () => {
@@ -35,14 +36,20 @@ describe("Project Inception Library Workspace Starter (Phase I7)", () => {
     expect(paths).toContain("packages/core/package.json");
     expect(paths).toContain("packages/core/src/index.ts");
     expect(paths).toContain("packages/core/tests/index.test.ts");
-    expect(paths).toContain("packages/adapter/package.json");
-    expect(paths).toContain("packages/adapter/src/index.ts");
+    expect(paths).toContain("packages/react/package.json");
+    expect(paths).toContain("packages/testing/package.json");
+    expect(paths).toContain("examples/vanilla-basic/package.json");
+    expect(paths).toContain("examples/react-basic/package.json");
     expect(paths).toContain("README.md");
 
     const workspaceYaml = plan.files.find(
       (f) => f.path === "pnpm-workspace.yaml",
     );
     expect(workspaceYaml?.content).toContain("packages/*");
+    expect(workspaceYaml?.content).toContain("examples/*");
+
+    const validation = validateWorkspaceScaffoldPlan(plan);
+    expect(validation.valid).toBe(true);
   });
 
   it("includes nx.json when recommendedPacks contains nx-monorepo", () => {
@@ -87,6 +94,9 @@ describe("Project Inception Library Workspace Starter (Phase I7)", () => {
     const dryRun = formatScaffoldPlanDryRun(plan);
     expect(dryRun).toContain("[CREATE] pnpm-workspace.yaml (managed)");
     expect(dryRun).toContain("[CREATE] packages/core/package.json (managed)");
+    expect(dryRun).toContain(
+      "[CREATE] examples/vanilla-basic/package.json (managed)",
+    );
 
     const diff = diffScaffoldPlan(plan, ["pnpm-workspace.yaml", "README.md"]);
     expect(diff.collisions).toEqual(["pnpm-workspace.yaml", "README.md"]);

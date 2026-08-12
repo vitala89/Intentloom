@@ -20,6 +20,9 @@ const execute = promisify(execFile);
 const repositoryRoot = resolve(import.meta.dirname, "..");
 const builtCli = join(repositoryRoot, "packages/cli/dist/intentloom.cjs");
 const windows = process.platform === "win32";
+const node22 = process.version.startsWith("v22.");
+const cliSyncSetupHookTimeout =
+  windows && node22 ? 300_000 : windows ? 180_000 : 120_000;
 const command = (name: string) => (windows ? `${name}.cmd` : name);
 let faultRunner = "";
 const temporaryRoots: string[] = [];
@@ -444,7 +447,7 @@ beforeAll(async () => {
     adoptionRestoredFailure,
     adoptionIncompleteRollback,
   };
-}, 120_000);
+}, cliSyncSetupHookTimeout);
 
 afterAll(async () => {
   await Promise.all(

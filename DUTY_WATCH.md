@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **W7 Client PR #301 open on `feat/workspace-w7-scaffold-apply-client` @ `c9c3008`. W7 Core merged to `main` @ `1e54350` (PR #300).**
+Status: **W8 Core PR #302 open on `feat/workspace-w8-library-starter-core`. W7 complete on `main` @ `0af87a1` (PR #301).**
 
-Active branch: `feat/workspace-w7-scaffold-apply-client`
+Active branch: `feat/workspace-w8-library-starter-core`
 
-Current objective: Land W7 Client PR #301; then W8 or next workspace increment.
+Current objective: Land W8 Core PR #302; then W8 Client workspace tree UX.
 
-Next first action: Confirm CI green on PR #301 and merge.
+Next first action: Confirm CI green on PR #302 and merge.
 
 Known open items, in the order they should be handled:
 
@@ -96,23 +96,32 @@ entry directly below this section.
 
 ## Watch entries
 
-### 2026-08-12, Engineering Workspace W7 scaffold apply Client
+### 2026-08-12, Engineering Workspace W8 library workspace starter Core
 
-- **Status:** complete on branch; PR #301 open.
+- **Status:** complete on branch; PR #302 open.
 - **Agent/tool:** Cursor Agent
-- **Branch:** `feat/workspace-w7-scaffold-apply-client` (from `main` at `1e54350`)
-- **Pull request:** #301
-- **Commit:** `c9c3008`
-- **Objective:** Deliver W7 Client — separate explicit scaffold apply approval (distinct from blueprint approve), truthful `applied`/`failed`/`rolled-back` transaction states, shared apply/rollback viewmodels + TUI renderers, Desktop panel Apply/Rollback actions, daemon bridge + Tauri allowlist, CLI/daemon parity tests.
+- **Branch:** `feat/workspace-w8-library-starter-core` (from `main` at `0af87a1`)
+- **Pull request:** #302
+- **Objective:** Deliver W8 Core — expand pnpm workspace starter to core/react/testing/examples shape, optional local-only Nx on extensible tier, workspace scaffold invariants, foundation prepare integration, dogfooding record.
 - **Completed so far:**
-  - Track A reconciliation: W7 Core marked complete on `main` @ `1e54350` (PR #300).
-  - Application apply/rollback viewmodels and TUI renderers.
-  - Desktop scaffold section/panel with explicit apply confirmation checkbox, status chips, error display (`FoundationScaffoldApplyPanel` extracted to keep panel under budget).
-  - `desktopClient.foundationScaffoldApply/Rollback` bridge; Tauri allowlist for apply/rollback RPC.
-  - Tests: `tests/desktop-tui-foundation-scaffold-apply.test.ts`.
-- **Not completed:** PR merge.
-- **Validation:** `pnpm verify` — 1377 passed, 3 skipped; pre-push hook green.
-- **Non-goals preserved:** No dep install, git init, remote/CI/provider actions in scaffold approval.
+  - Track A: W7 Client merged on `main` @ `0af87a1` (PR #301).
+  - `inception-workspace-scaffold-files.ts` + `validateWorkspaceScaffoldPlan`.
+  - Extensible foundation blueprint adds optional `nx-monorepo` for `pnpm-workspace`.
+  - Tests: `foundation-scaffold-workspace.test.ts`, updated `inception-workspace-scaffold.test.ts`.
+  - Dogfooding: `docs/releases/dogfooding/2026-08-12-workspace-starter-scaffold.md`.
+- **Not completed:** PR merge; W8 Client.
+- **Validation:** `pnpm verify` — 1379 passed, 3 skipped.
+
+### 2026-08-12, Engineering Workspace W7 scaffold apply Client (merged)
+
+- **Status:** complete on `main` (`0af87a1`, PR #301).
+- **Agent/tool:** Cursor Agent
+- **Branch:** `feat/workspace-w7-scaffold-apply-client` (squash-merged)
+- **Pull request:** #301
+- **Commit:** `0af87a1`
+- **Objective:** Deliver W7 Client — separate explicit scaffold apply approval, truthful transaction states, shared apply/rollback viewmodels, Desktop/TUI + daemon bridge.
+- **Validation:** `pnpm verify` green; CI green on PR #301.
+- **Next first action:** W8 library workspace starter Core.
 
 ### 2026-08-12, Engineering Workspace W7 scaffold apply Core (merged)
 
