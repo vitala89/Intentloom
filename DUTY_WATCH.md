@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **W7 Core PR #300 open on `feat/workspace-w7-scaffold-apply-core` at `d182643`. W7 Client follows Core merge.**
+Status: **W7 Client in progress on `feat/workspace-w7-scaffold-apply-client`. W7 Core merged to `main` @ `1e54350` (PR #300).**
 
-Active branch: `feat/workspace-w7-scaffold-apply-core`
+Active branch: `feat/workspace-w7-scaffold-apply-client`
 
-Current objective: Land W7 Core PR #300; then W7 Client explicit approval UX.
+Current objective: Deliver W7 Client — explicit scaffold apply approval UX, truthful transaction states, Desktop/TUI viewmodels, daemon bridge, Tauri allowlist, parity tests.
 
-Next first action: Confirm CI green on PR #300 and merge; then W7 Client branch.
+Next first action: Complete W7 Client implementation, run `pnpm verify`, open Client PR.
 
 Known open items, in the order they should be handled:
 
@@ -96,23 +96,38 @@ entry directly below this section.
 
 ## Watch entries
 
-### 2026-08-12, Engineering Workspace W7 scaffold apply Core (in progress)
+### 2026-08-12, Engineering Workspace W7 scaffold apply Client (in progress)
 
-- **Status:** complete on branch; PR #300 open.
+- **Status:** in progress on `feat/workspace-w7-scaffold-apply-client`.
 - **Agent/tool:** Cursor Agent
-- **Branch:** `feat/workspace-w7-scaffold-apply-core` (from `main` at `7ff98e4`)
-- **Pull request:** #300
-- **Commit:** `d182643`
-- **Objective:** Deliver W7 Core — foundation-gated transactional empty-root scaffold apply/rollback over I6 ops, with fail-closed revalidation, versioned protocol URNs, daemon RPC, and CLI.
+- **Branch:** `feat/workspace-w7-scaffold-apply-client` (from `main` at `1e54350`)
+- **Objective:** Deliver W7 Client — separate explicit scaffold apply approval (distinct from blueprint approve), truthful `applied`/`failed`/`rolled-back` transaction states, shared apply/rollback viewmodels + TUI renderers, Desktop panel Apply/Rollback actions, daemon bridge + Tauri allowlist, CLI/daemon parity tests.
 - **Completed so far:**
+  - Track A reconciliation: W7 Core marked complete on `main` @ `1e54350` (PR #300).
+  - Application apply/rollback viewmodels and TUI renderers.
+  - Desktop scaffold section/panel with explicit apply confirmation checkbox, status chips, error display (`FoundationScaffoldApplyPanel` extracted to keep panel under budget).
+  - `desktopClient.foundationScaffoldApply/Rollback` bridge; Tauri allowlist for apply/rollback RPC.
+  - Tests: `tests/desktop-tui-foundation-scaffold-apply.test.ts`.
+- **Not completed:** PR open.
+- **Validation:** `pnpm verify` — 1377 passed, 3 skipped.
+- **Non-goals preserved:** No dep install, git init, remote/CI/provider actions in scaffold approval.
+
+### 2026-08-12, Engineering Workspace W7 scaffold apply Core (merged)
+
+- **Status:** complete on `main` (`1e54350`, PR #300).
+- **Agent/tool:** Cursor Agent
+- **Branch:** `feat/workspace-w7-scaffold-apply-core` (squash-merged)
+- **Pull request:** #300
+- **Commit:** `1e54350`
+- **Objective:** Deliver W7 Core — foundation-gated transactional empty-root scaffold apply/rollback over I6 ops, with fail-closed revalidation, versioned protocol URNs, daemon RPC, and CLI.
+- **Completed:**
   - Track A handoff reconciliation: W6 marked complete on `main` (`7ff98e4`).
   - Protocol: `FOUNDATION_SCAFFOLD_APPLY/ROLLBACK` schema URNs; daemon methods `intentloom.foundation.scaffold.{apply,rollback}.v1`.
   - Application: `applyFoundationProjectScaffold`, `rollbackFoundationProjectScaffold` with revalidation (empty-root, blueprint/plan digest, path safety, template integrity, capability grants, Intentloom compatibility).
   - Validator contracts; daemon handlers (mutating classification); CLI `scaffold-apply`/`scaffold-rollback`.
   - Tests: `tests/foundation-scaffold-apply.test.ts` (6) + daemon parity extension.
-- **Not completed:** PR merge; W7 Client explicit approval UX.
-- **Validation:** `pnpm typecheck`, `pnpm format:check`, `pnpm build`, focused scaffold tests green; full `pnpm test` 1373 passed.
-- **Next first action:** Open Core PR when ready; then W7 Client branch.
+- **Validation:** `pnpm verify` — 1373 passed, 3 skipped; CI green on PR #300.
+- **Next first action:** W7 Client explicit approval UX on `feat/workspace-w7-scaffold-apply-client`.
 
 ### 2026-08-12, Engineering Workspace W6 handoff reconciliation (post PR #299 merge)
 

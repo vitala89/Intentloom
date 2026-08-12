@@ -1,7 +1,10 @@
 import type {
+  FoundationScaffoldApplyResult,
   FoundationScaffoldCompareResult,
   FoundationScaffoldPrepareResult,
+  FoundationScaffoldRollbackResult,
   FoundationScaffoldValidateResult,
+  ScaffoldResultStatus,
 } from "@intentloom/protocol";
 
 export interface FoundationScaffoldFileRow {
@@ -41,6 +44,28 @@ export interface FoundationScaffoldValidateViewModel {
   readonly planDigest: string;
   readonly approvalRequired: true;
   readonly expiresAt: number;
+}
+
+export interface FoundationScaffoldApplyViewModel {
+  readonly workshopId: string;
+  readonly planId: string;
+  readonly status: ScaffoldResultStatus;
+  readonly root: string;
+  readonly writtenFiles: readonly string[];
+  readonly error?: string;
+  readonly appliedAt: number;
+  readonly revalidatedAt: number;
+}
+
+export interface FoundationScaffoldRollbackViewModel {
+  readonly workshopId: string;
+  readonly planId: string;
+  readonly status: ScaffoldResultStatus;
+  readonly root: string;
+  readonly writtenFiles: readonly string[];
+  readonly error?: string;
+  readonly appliedAt: number;
+  readonly rolledBackAt: number;
 }
 
 export function buildScaffoldPrepareProgress(
@@ -105,4 +130,52 @@ export function buildScaffoldValidateProgress(
     approvalRequired: true,
     expiresAt: validate.expiresAt,
   };
+}
+
+export function buildScaffoldApplyProgress(
+  payload: unknown,
+): FoundationScaffoldApplyViewModel {
+  const apply = payload as FoundationScaffoldApplyResult;
+  if (typeof apply !== "object" || apply === null || !apply.result) {
+    throw new Error("Invalid foundation scaffold apply viewmodel");
+  }
+  const { result } = apply;
+  return {
+    workshopId: apply.workshopId,
+    planId: apply.planId,
+    status: result.status,
+    root: result.root,
+    writtenFiles: result.writtenFiles,
+    ...(result.error !== undefined ? { error: result.error } : {}),
+    appliedAt: result.appliedAt,
+    revalidatedAt: apply.revalidatedAt,
+  };
+}
+
+export function buildScaffoldRollbackProgress(
+  payload: unknown,
+): FoundationScaffoldRollbackViewModel {
+  const rollback = payload as FoundationScaffoldRollbackResult;
+  if (typeof rollback !== "object" || rollback === null || !rollback.result) {
+    throw new Error("Invalid foundation scaffold rollback viewmodel");
+  }
+  const { result } = rollback;
+  return {
+    workshopId: rollback.workshopId,
+    planId: rollback.planId,
+    status: result.status,
+    root: result.root,
+    writtenFiles: result.writtenFiles,
+    ...(result.error !== undefined ? { error: result.error } : {}),
+    appliedAt: result.appliedAt,
+    rolledBackAt: rollback.rolledBackAt,
+  };
+}
+
+export function scaffoldApplyStatusTone(
+  status: ScaffoldResultStatus,
+): "success" | "warning" | "error" | "neutral" {
+  if (status === "applied") return "success";
+  if (status === "failed") return "error";
+  return "warning";
 }

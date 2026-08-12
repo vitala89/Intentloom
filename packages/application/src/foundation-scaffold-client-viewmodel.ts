@@ -1,8 +1,11 @@
 import type {
+  FoundationScaffoldApplyResult,
   FoundationScaffoldCompareResult,
   FoundationScaffoldPrepareResult,
+  FoundationScaffoldRollbackResult,
   FoundationScaffoldValidateResult,
   ScaffoldFilePlan,
+  ScaffoldResultStatus,
 } from "@intentloom/protocol";
 import type { FoundationClientSurfaceState } from "./foundation-client-viewmodel.js";
 
@@ -46,6 +49,30 @@ export interface FoundationScaffoldValidateViewModel {
   readonly planDigest: string;
   readonly approvalRequired: true;
   readonly expiresAt: number;
+  readonly surfaceState: FoundationClientSurfaceState;
+}
+
+export interface FoundationScaffoldApplyViewModel {
+  readonly workshopId: string;
+  readonly planId: string;
+  readonly status: ScaffoldResultStatus;
+  readonly root: string;
+  readonly writtenFiles: readonly string[];
+  readonly error?: string;
+  readonly appliedAt: number;
+  readonly revalidatedAt: number;
+  readonly surfaceState: FoundationClientSurfaceState;
+}
+
+export interface FoundationScaffoldRollbackViewModel {
+  readonly workshopId: string;
+  readonly planId: string;
+  readonly status: ScaffoldResultStatus;
+  readonly root: string;
+  readonly writtenFiles: readonly string[];
+  readonly error?: string;
+  readonly appliedAt: number;
+  readonly rolledBackAt: number;
   readonly surfaceState: FoundationClientSurfaceState;
 }
 
@@ -108,6 +135,42 @@ export function buildFoundationScaffoldValidateViewModel(
     planDigest: validate.planDigest,
     approvalRequired: true,
     expiresAt: validate.expiresAt,
+    surfaceState,
+  };
+}
+
+export function buildFoundationScaffoldApplyViewModel(
+  apply: FoundationScaffoldApplyResult,
+  surfaceState: FoundationClientSurfaceState = "ready",
+): FoundationScaffoldApplyViewModel {
+  const { result } = apply;
+  return {
+    workshopId: apply.workshopId,
+    planId: apply.planId,
+    status: result.status,
+    root: result.root,
+    writtenFiles: result.writtenFiles,
+    ...(result.error !== undefined ? { error: result.error } : {}),
+    appliedAt: result.appliedAt,
+    revalidatedAt: apply.revalidatedAt,
+    surfaceState,
+  };
+}
+
+export function buildFoundationScaffoldRollbackViewModel(
+  rollback: FoundationScaffoldRollbackResult,
+  surfaceState: FoundationClientSurfaceState = "ready",
+): FoundationScaffoldRollbackViewModel {
+  const { result } = rollback;
+  return {
+    workshopId: rollback.workshopId,
+    planId: rollback.planId,
+    status: result.status,
+    root: result.root,
+    writtenFiles: result.writtenFiles,
+    ...(result.error !== undefined ? { error: result.error } : {}),
+    appliedAt: result.appliedAt,
+    rolledBackAt: rollback.rolledBackAt,
     surfaceState,
   };
 }

@@ -1,6 +1,8 @@
 import type {
+  FoundationScaffoldApplyViewModel,
   FoundationScaffoldCompareViewModel,
   FoundationScaffoldPrepareViewModel,
+  FoundationScaffoldRollbackViewModel,
   FoundationScaffoldValidateViewModel,
 } from "./foundation-scaffold-client-viewmodel.js";
 
@@ -55,6 +57,39 @@ export function renderFoundationScaffoldValidateText(
     `Plan digest: ${vm.planDigest}`,
     `Approval required: ${vm.approvalRequired ? "yes" : "no"}`,
     `Expires at: ${vm.expiresAt}`,
+    `Surface state: ${vm.surfaceState}`,
+  ].join("\n");
+}
+
+export function renderFoundationScaffoldApplyText(
+  vm: FoundationScaffoldApplyViewModel,
+): string {
+  return [
+    `Foundation scaffold apply: ${vm.workshopId}`,
+    `Plan id: ${vm.planId}`,
+    `Status: ${vm.status}`,
+    `Root: ${vm.root}`,
+    `Written files: ${vm.writtenFiles.length}`,
+    vm.writtenFiles.map((path) => `  - ${path}`).join("\n"),
+    vm.error ? `Error: ${vm.error}` : "Error: none",
+    `Applied at: ${vm.appliedAt}`,
+    `Revalidated at: ${vm.revalidatedAt}`,
+    `Surface state: ${vm.surfaceState}`,
+  ]
+    .filter((line) => line.length > 0)
+    .join("\n");
+}
+
+export function renderFoundationScaffoldRollbackText(
+  vm: FoundationScaffoldRollbackViewModel,
+): string {
+  return [
+    `Foundation scaffold rollback: ${vm.workshopId}`,
+    `Plan id: ${vm.planId}`,
+    `Status: ${vm.status}`,
+    `Root: ${vm.root}`,
+    vm.error ? `Error: ${vm.error}` : "Error: none",
+    `Rolled back at: ${vm.rolledBackAt}`,
     `Surface state: ${vm.surfaceState}`,
   ].join("\n");
 }
