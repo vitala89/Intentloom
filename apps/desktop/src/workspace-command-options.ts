@@ -42,6 +42,14 @@ export function buildWorkspaceCommandOptions(
       action: () => deps.setActiveView("Open existing project"),
     },
     {
+      id: "nav-feature-intent",
+      category: "Navigation",
+      label: "Go to Feature intent",
+      icon: "◎",
+      shortcut: "",
+      action: () => deps.setActiveView("Feature intent"),
+    },
+    {
       id: "nav-inspect",
       category: "Navigation",
       label: "Go to Inspect",

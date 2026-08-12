@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **W10 Core in progress on `feat/workspace-w10-feature-intent-core`. W1–W9 complete on `main` @ `0c948c3` (PR #304).**
+Status: **W10 Client in progress on `feat/workspace-w10-feature-intent-client`. W1–W10 Core complete on `main` @ `c0b90ad` (PR #305).**
 
-Active branch: `feat/workspace-w10-feature-intent-core`
+Active branch: `feat/workspace-w10-feature-intent-client`
 
-Current objective: Land W10 Core feature-intent contracts; then W10 Client.
+Current objective: Land W10 Client Desktop/TUI feature-intent panel.
 
-Next first action: Merge W10 Core PR #305 after CodeQL/Governance CI is green; then W10 Client.
+Next first action: Open W10 Client PR; then W11 bounded execution remains future.
 
 Known open items, in the order they should be handled:
 
@@ -95,6 +95,20 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-13, Engineering Workspace W10 feature intent Client
+
+- **Status:** complete on branch; PR pending.
+- **Agent/tool:** Cursor Agent
+- **Branch:** `feat/workspace-w10-feature-intent-client` (from `main` at `c0b90ad`)
+- **Objective:** Deliver W10 Client — Desktop feature-intent panel (impact, affected scope, alternatives, plan preview), TUI text parity, daemon bridge prepare/analyze, frozen-fixture parity tests. No W11 execution.
+- **Completed:**
+  - Track A: W10 Core merged on `main` @ `c0b90ad` (PR #305).
+  - Application: panel fields on `feature-intent-workspace-viewmodel.ts` (alternatives, plan steps, public API surfaces).
+  - Desktop: `FeatureIntentView`, navigation + command palette, Tauri allowlist, `desktop-client-feature-intent.ts`.
+  - Tests: `tests/desktop-tui-feature-intent-workspace.test.ts` (3) — parity with W10 Core fixtures.
+- **Validation:** `pnpm verify` — 1407 passed, 3 skipped.
+- **Next first action:** Merge W10 Client PR; W11 bounded execution remains future.
 
 ### 2026-08-13, W10 Core CI: CodeQL ReDoS and commit policy
 
