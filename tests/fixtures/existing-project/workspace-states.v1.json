@@ -1,0 +1,65 @@
+{
+  "fixtures": [
+    {
+      "fixtureId": "existing-fixture-generic-uninitialized",
+      "root": "/project/generic",
+      "scope": "standard",
+      "initialTree": {
+        "README.md": "generic project\n",
+        "src/main.txt": "source\n"
+      },
+      "expected": {
+        "inspectProfile": "generic",
+        "inspectReadiness": "not-initialized",
+        "inspectFindingCount": 1,
+        "specializedCandidateCount": 0,
+        "compatiblePackIds": [],
+        "adoptionOperationCount": 1,
+        "assessmentFindingsCount": 0,
+        "doctorFindingCount": 3
+      }
+    },
+    {
+      "fixtureId": "existing-fixture-typescript-ready",
+      "root": "/project/typescript",
+      "scope": "quick",
+      "initialTree": {
+        "package.json": "{\"name\":\"sample-ts\",\"private\":true}\n",
+        "tsconfig.json": "{\"compilerOptions\":{\"strict\":true}}\n",
+        "src/index.ts": "export const value = 1;\n",
+        ".aif/config.yaml": "version: 1\n",
+        ".aif/manifest.lock.json": "{}\n",
+        ".aif/source-map.json": "{}\n"
+      },
+      "expected": {
+        "inspectProfile": "typescript",
+        "inspectReadiness": "ready",
+        "inspectFindingCount": 0,
+        "specializedCandidateCount": 0,
+        "compatiblePackIds": [],
+        "adoptionOperationCount": 0
+      }
+    },
+    {
+      "fixtureId": "existing-fixture-tauri-detected",
+      "root": "/project/tauri",
+      "scope": "standard",
+      "initialTree": {
+        "apps/desktop/src-tauri/Cargo.toml": "[package]\nname=\"desktop\"\n",
+        "apps/desktop/src-tauri/src/main.rs": "fn main() {}\n",
+        "apps/desktop/src/App.tsx": "export default function App(){return null}\n",
+        "packages/core/src/index.ts": "export {};\n"
+      },
+      "expected": {
+        "inspectProfile": "generic",
+        "inspectReadiness": "not-initialized",
+        "inspectFindingCount": 1,
+        "specializedCandidateCount": 1,
+        "compatiblePackIds": ["pack-tauri-desktop"],
+        "adoptionOperationCount": 1,
+        "assessmentFindingsCount": 0,
+        "doctorFindingCount": 4
+      }
+    }
+  ]
+}

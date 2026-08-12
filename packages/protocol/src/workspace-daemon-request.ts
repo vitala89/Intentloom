@@ -29,6 +29,7 @@ import {
   FOUNDATION_SCAFFOLD_VALIDATE_METHOD,
   FOUNDATION_SCAFFOLD_APPLY_METHOD,
   FOUNDATION_SCAFFOLD_ROLLBACK_METHOD,
+  EXISTING_PROJECT_WORKSPACE_PREPARE_METHOD,
 } from "./jsonrpc.js";
 import type { RequestId } from "./jsonrpc.js";
 import { createSpecializedPacksChecksRequest } from "./engineering-quality/specialized-daemon-rpc.js";
@@ -89,6 +90,8 @@ import type {
 } from "./foundation-daemon-rpc.js";
 import { parseFoundationScaffoldDaemonRequest } from "./foundation-scaffold-daemon-rpc.js";
 import type { FoundationScaffoldDaemonRequest } from "./foundation-scaffold-daemon-rpc.js";
+import { parseExistingProjectDaemonRequest } from "./existing-project-daemon-rpc.js";
+import type { ExistingProjectWorkspacePrepareRequest } from "./existing-project-daemon-rpc.js";
 import type { SpecializedPacksChecksResponse } from "./engineering-quality/specialized-daemon-rpc.js";
 import { ProtocolValidationError } from "./protocol-validation-error.js";
 
@@ -117,7 +120,8 @@ export type WorkspaceDaemonRequest =
   | FoundationBlueprintCompareRequest
   | FoundationBlueprintApproveRequest
   | FoundationBlueprintRevokeRequest
-  | FoundationScaffoldDaemonRequest;
+  | FoundationScaffoldDaemonRequest
+  | ExistingProjectWorkspacePrepareRequest;
 
 export type WorkspaceDaemonResponse = SpecializedPacksChecksResponse;
 
@@ -130,6 +134,8 @@ export * from "./foundation-discovery.js";
 export * from "./foundation-blueprint.js";
 export * from "./foundation-scaffold.js";
 export * from "./foundation-scaffold-daemon-rpc.js";
+export * from "./existing-project-workspace.js";
+export * from "./existing-project-daemon-rpc.js";
 export { ProtocolValidationError } from "./protocol-validation-error.js";
 
 export const WORKSPACE_DAEMON_REQUEST_METHODS = [
@@ -163,6 +169,7 @@ export const WORKSPACE_DAEMON_REQUEST_METHODS = [
   FOUNDATION_SCAFFOLD_VALIDATE_METHOD,
   FOUNDATION_SCAFFOLD_APPLY_METHOD,
   FOUNDATION_SCAFFOLD_ROLLBACK_METHOD,
+  EXISTING_PROJECT_WORKSPACE_PREPARE_METHOD,
 ] as const;
 
 function isObject(value: unknown): value is Record<string, unknown> {
@@ -393,6 +400,12 @@ export function parseWorkspaceDaemonRequest(
       stringValue(params.workshopId, "workshopId"),
     );
   }
+  const existingProjectRequest = parseExistingProjectDaemonRequest(
+    typeof value.method === "string" ? value.method : "",
+    params,
+    id,
+  );
+  if (existingProjectRequest !== null) return existingProjectRequest;
   return parseFoundationScaffoldDaemonRequest(
     typeof value.method === "string" ? value.method : "",
     params,
