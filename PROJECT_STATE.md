@@ -232,7 +232,7 @@ before a new release or implementation milestone is declared complete.
 ## Active focus
 
 1. Engineering Workspace **W1–W9** are complete on `main` at `0c948c3` (W9 PR #304).
-   **W10** feature-intent Core is on `feat/workspace-w10-feature-intent-core`; Client follows Core.
+   **W10** feature-intent Core is on `feat/workspace-w10-feature-intent-core` (PR #305); Client follows Core.
 2. Engineering Workspace **W0** capability reconciliation remains complete on `main`.
 3. Keep GitHub Pages as the canonical public documentation destination and
    continue the roadmap after the completed `1.0.2` metadata release.

@@ -15,7 +15,7 @@ Active branch: `feat/workspace-w10-feature-intent-core`
 
 Current objective: Land W10 Core feature-intent contracts; then W10 Client.
 
-Next first action: Open W10 Core PR; W10 Client Desktop/TUI panel after Core merges.
+Next first action: Open W10 Core PR #305; W10 Client Desktop/TUI panel after Core merges.
 
 Known open items, in the order they should be handled:
 
@@ -98,7 +98,7 @@ entry directly below this section.
 
 ### 2026-08-13, Engineering Workspace W10 feature intent Core
 
-- **Status:** complete on branch; PR pending.
+- **Status:** complete on branch; PR #305 open.
 - **Agent/tool:** Cursor Agent
 - **Branch:** `feat/workspace-w10-feature-intent-core` (from `main` at `0c948c3`)
 - **Objective:** Deliver W10 Core — structured feature-development entry point that composes Foundation/Blueprint markers, observed graph, specialized packs, assessments/debt, public API boundaries, and project decisions into a read-only impact summary and reviewed plan. No W11 execution.
@@ -113,7 +113,7 @@ entry directly below this section.
 
 ### 2026-08-12, Engineering Workspace W9 existing-project integration Core + Client
 
-- **Status:** complete on branch; PR pending.
+- **Status:** complete on `main` (`0c948c3`, PR #304).
 - **Agent/tool:** Cursor Agent
 - **Branch:** `cursor/workspace-w9-existing-project-core-abd9` (from `main` at `0b42163`)
 - **Objective:** Deliver W9 — compose inspect → adoption → specialized detection → doctor → assessment into one read-only existing-project workspace flow with Core contracts, daemon RPC, CLI helper, Desktop Open Existing Project view, TUI text parity, and frozen fixtures.

@@ -102,7 +102,7 @@ surfaces expose inception. No `tests/fixtures/inception/` tree.
 | **W7**  | Transactional empty-root creation                                                          | Core + Client merged on `main` (`0af87a1`, PR #300 + #301)          | **complete** — Desktop/TUI parity                   |
 | **W8**  | Library ecosystem starter and dogfooding                                                   | Merged on `main` (`0b42163`, PR #302 Core + PR #303 Client)         | **complete** — Desktop/TUI workspace tree parity    |
 | **W9**  | Existing-project composed inspect/assessment flow                                          | Merged on `main` (`0c948c3`, PR #304 Core+Client)                   | **complete** — frozen fixtures + Desktop/TUI parity |
-| **W10** | Feature intent and architecture impact                                                     | Core on `feat/workspace-w10-feature-intent-core`; Client follows    | Core **complete** on branch; Client `core-first`    |
+| **W10** | Feature intent and architecture impact                                                     | Core PR #305 on `feat/workspace-w10-feature-intent-core`; Client follows        | Core **complete** on branch; Client `core-first`    |
 
 ---
 
