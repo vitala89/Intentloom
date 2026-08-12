@@ -231,10 +231,9 @@ before a new release or implementation milestone is declared complete.
 
 ## Active focus
 
-1. Engineering Workspace **W1–W6** are on `main` at `7ff98e4`. **W7 Core**
-   transactional empty-root apply is merged on `main` at `1e54350` (PR #300).
-   **W7 Client** explicit scaffold apply approval UX is in progress on
-   `feat/workspace-w7-scaffold-apply-client`.
+1. Engineering Workspace **W1–W7** are on `main` at `0af87a1` (W7 Client PR #301).
+   **W8 Core** pnpm workspace starter is in progress on
+   `feat/workspace-w8-library-starter-core`.
 2. Engineering Workspace **W0** capability reconciliation remains complete on `main`.
 3. Keep GitHub Pages as the canonical public documentation destination and
    continue the roadmap after the completed `1.0.2` metadata release.

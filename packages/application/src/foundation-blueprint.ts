@@ -174,6 +174,13 @@ function buildBlueprintCandidate(
   if (tier === "extensible" && !recommendedPacks.includes("pnpm-workspaces")) {
     recommendedPacks.push("pnpm-workspaces");
   }
+  if (
+    tier === "extensible" &&
+    topology === "pnpm-workspace" &&
+    !recommendedPacks.includes("nx-monorepo")
+  ) {
+    recommendedPacks.push("nx-monorepo");
+  }
 
   const partialBlueprint = {
     id: `bp_${workshop.id}_${tier}`,

@@ -30,6 +30,7 @@ import {
   formatScaffoldPlanDryRun,
   prepareProjectScaffoldPlan,
 } from "./inception-scaffold-planner.js";
+import { validateWorkspaceScaffoldPlan } from "./inception-workspace-scaffold-validation.js";
 import {
   clearFoundationScaffoldPlans,
   getFoundationScaffoldPlan,
@@ -142,6 +143,14 @@ export function prepareProjectScaffold(
     planId,
     createdAt: approved.approvedAt,
   };
+  if (approved.blueprint.topology === "pnpm-workspace") {
+    const workspaceValidation = validateWorkspaceScaffoldPlan(plan);
+    if (!workspaceValidation.valid) {
+      throw new Error(
+        `Invalid workspace scaffold plan: ${workspaceValidation.violations.join("; ")}`,
+      );
+    }
+  }
   const record = validateFoundationScaffoldPlanRecord({
     schemaVersion: FOUNDATION_SCAFFOLD_PLAN_SCHEMA_URN,
     workshopId,
