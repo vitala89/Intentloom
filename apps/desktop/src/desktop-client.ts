@@ -12,6 +12,7 @@ import {
   createFoundationWorkshopCreateRequest,
   createFoundationWorkshopDeleteRequest,
   createFoundationWorkshopGetRequest,
+  createExistingProjectWorkspacePrepareRequest,
   createInceptionSessionCreateRequest,
   createInceptionSessionDeleteRequest,
   createInceptionSessionGetRequest,
@@ -26,6 +27,7 @@ import {
   type DaemonInfoResult,
   type DoctorResult,
   type FoundationViewmodelPayload,
+  type ExistingProjectViewmodelPayload,
   type InceptionViewmodelPayload,
   type InspectResult,
   type ProjectDiffParams,
@@ -359,6 +361,24 @@ const desktopClientBase = {
       workshopId,
     );
     return this.foundationRequest(request, signal);
+  },
+
+  async existingProjectWorkspacePrepare(
+    root: string,
+    scope: "quick" | "standard" | "deep" = "standard",
+    projectId?: string,
+    signal?: AbortSignal,
+  ): Promise<ExistingProjectViewmodelPayload> {
+    const request = createExistingProjectWorkspacePrepareRequest(
+      "desktop-existing-project-prepare",
+      root,
+      projectId,
+      scope,
+    );
+    return this.foundationRequest(
+      request,
+      signal,
+    ) as Promise<ExistingProjectViewmodelPayload>;
   },
 };
 

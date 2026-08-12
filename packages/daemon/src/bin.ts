@@ -54,6 +54,7 @@ import {
   handleFoundationScaffoldRollback,
   handleFoundationScaffoldValidate,
 } from "./foundation-scaffold-handlers.js";
+import { handleExistingProjectWorkspacePrepare } from "./existing-project-handlers.js";
 
 function value(args: readonly string[], flag: string): string {
   const index = args.indexOf(flag);
@@ -194,6 +195,7 @@ async function main(): Promise<void> {
     foundationScaffoldValidate: handleFoundationScaffoldValidate,
     foundationScaffoldApply: handleFoundationScaffoldApply,
     foundationScaffoldRollback: handleFoundationScaffoldRollback,
+    existingProjectWorkspacePrepare: handleExistingProjectWorkspacePrepare,
   });
   const stop = () => void daemon.close().then(() => process.exit(0));
   process.once("SIGINT", stop);

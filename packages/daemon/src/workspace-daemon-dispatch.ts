@@ -24,12 +24,19 @@ import {
   isSpecializedPackRequest,
   specializedPackCapabilities,
 } from "./specialized-pack-handlers.js";
+import type { ExistingProjectDaemonOptions } from "./existing-project-handlers.js";
+import {
+  dispatchExistingProjectRequest,
+  existingProjectCapabilities,
+  isExistingProjectRequest,
+} from "./existing-project-handlers.js";
 import type { DaemonCapability } from "@intentloom/protocol";
 
 export type WorkspaceDaemonOptions = SpecializedPackDaemonOptions &
   InceptionDaemonOptions &
   FoundationDaemonOptions &
-  FoundationScaffoldDaemonOptions;
+  FoundationScaffoldDaemonOptions &
+  ExistingProjectDaemonOptions;
 
 export function workspaceDaemonCapabilities(
   options: WorkspaceDaemonOptions,
@@ -39,6 +46,7 @@ export function workspaceDaemonCapabilities(
     ...inceptionCapabilities(options),
     ...foundationCapabilities(options),
     ...foundationScaffoldCapabilities(options),
+    ...existingProjectCapabilities(options),
   ];
 }
 
@@ -119,6 +127,24 @@ export async function dispatchWorkspaceDaemonRequest(
       return true;
     }
     response(socket, scaffoldResponse);
+    return true;
+  }
+  if (isExistingProjectRequest(request)) {
+    const existingProjectResponse = await dispatchExistingProjectRequest(
+      request,
+      options,
+      canonicalProjectRoot,
+    );
+    if (!existingProjectResponse) {
+      failure(
+        socket,
+        -32601,
+        "unsupported existing project method",
+        "unsupported_capability",
+      );
+      return true;
+    }
+    response(socket, existingProjectResponse);
     return true;
   }
   return false;
