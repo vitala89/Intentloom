@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **W7 Client in progress on `feat/workspace-w7-scaffold-apply-client`. W7 Core merged to `main` @ `1e54350` (PR #300).**
+Status: **W7 Client PR #301 open on `feat/workspace-w7-scaffold-apply-client` @ `c9c3008`. W7 Core merged to `main` @ `1e54350` (PR #300).**
 
 Active branch: `feat/workspace-w7-scaffold-apply-client`
 
-Current objective: Deliver W7 Client — explicit scaffold apply approval UX, truthful transaction states, Desktop/TUI viewmodels, daemon bridge, Tauri allowlist, parity tests.
+Current objective: Land W7 Client PR #301; then W8 or next workspace increment.
 
-Next first action: Complete W7 Client implementation, run `pnpm verify`, open Client PR.
+Next first action: Confirm CI green on PR #301 and merge.
 
 Known open items, in the order they should be handled:
 
@@ -96,11 +96,13 @@ entry directly below this section.
 
 ## Watch entries
 
-### 2026-08-12, Engineering Workspace W7 scaffold apply Client (in progress)
+### 2026-08-12, Engineering Workspace W7 scaffold apply Client
 
-- **Status:** in progress on `feat/workspace-w7-scaffold-apply-client`.
+- **Status:** complete on branch; PR #301 open.
 - **Agent/tool:** Cursor Agent
 - **Branch:** `feat/workspace-w7-scaffold-apply-client` (from `main` at `1e54350`)
+- **Pull request:** #301
+- **Commit:** `c9c3008`
 - **Objective:** Deliver W7 Client — separate explicit scaffold apply approval (distinct from blueprint approve), truthful `applied`/`failed`/`rolled-back` transaction states, shared apply/rollback viewmodels + TUI renderers, Desktop panel Apply/Rollback actions, daemon bridge + Tauri allowlist, CLI/daemon parity tests.
 - **Completed so far:**
   - Track A reconciliation: W7 Core marked complete on `main` @ `1e54350` (PR #300).
@@ -108,8 +110,8 @@ entry directly below this section.
   - Desktop scaffold section/panel with explicit apply confirmation checkbox, status chips, error display (`FoundationScaffoldApplyPanel` extracted to keep panel under budget).
   - `desktopClient.foundationScaffoldApply/Rollback` bridge; Tauri allowlist for apply/rollback RPC.
   - Tests: `tests/desktop-tui-foundation-scaffold-apply.test.ts`.
-- **Not completed:** PR open.
-- **Validation:** `pnpm verify` — 1377 passed, 3 skipped.
+- **Not completed:** PR merge.
+- **Validation:** `pnpm verify` — 1377 passed, 3 skipped; pre-push hook green.
 - **Non-goals preserved:** No dep install, git init, remote/CI/provider actions in scaffold approval.
 
 ### 2026-08-12, Engineering Workspace W7 scaffold apply Core (merged)
