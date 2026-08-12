@@ -160,3 +160,6 @@ export function diffScaffoldPlan(
 
   return { created, skipped, collisions };
 }
+
+export * from "./inception-workspace-scaffold-files.js";
+export * from "./inception-workspace-scaffold-validation.js";
