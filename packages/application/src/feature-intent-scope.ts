@@ -24,10 +24,20 @@ function normalizeRelative(root: string, absolutePath: string): string {
 }
 
 function tokenize(text: string): readonly string[] {
-  return text
-    .toLowerCase()
-    .split(/[^a-z0-9]+/)
-    .filter((token) => token.length >= 3);
+  const tokens: string[] = [];
+  let current = "";
+  for (const char of text.toLowerCase()) {
+    const code = char.charCodeAt(0);
+    const isAlnum = (code >= 48 && code <= 57) || (code >= 97 && code <= 122);
+    if (isAlnum) {
+      current += char;
+      continue;
+    }
+    if (current.length >= 3) tokens.push(current);
+    current = "";
+  }
+  if (current.length >= 3) tokens.push(current);
+  return tokens;
 }
 
 function packageIdFromPath(relativePath: string): string | undefined {

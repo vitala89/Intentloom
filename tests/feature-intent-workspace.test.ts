@@ -38,6 +38,15 @@ describe("Engineering Workspace W10 Core: feature intent orchestration", () => {
     expect(intent.readOnly).toBe(true);
   });
 
+  it("slugs punctuation-heavy titles without regular expressions", () => {
+    const intent = createFeatureIntent({
+      title: `---Add---structured---${"-".repeat(400)}logging---`,
+      summary: "Keep the identifier linear-time.",
+      now: () => 1_700_000_000_000,
+    });
+    expect(intent.id).toBe("fi-add-structured-logging-1700000000000");
+  });
+
   it("prepares generic logging impact without mutation", async () => {
     const fixture = getFeatureIntentFixture(
       catalog,

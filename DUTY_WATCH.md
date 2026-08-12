@@ -15,7 +15,7 @@ Active branch: `feat/workspace-w10-feature-intent-core`
 
 Current objective: Land W10 Core feature-intent contracts; then W10 Client.
 
-Next first action: Open W10 Core PR #305; W10 Client Desktop/TUI panel after Core merges.
+Next first action: Merge W10 Core PR #305 after CodeQL/Governance CI is green; then W10 Client.
 
 Known open items, in the order they should be handled:
 
@@ -95,6 +95,18 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-13, W10 Core CI: CodeQL ReDoS and commit policy
+
+- **Status:** complete on branch; PR #305.
+- **Agent/tool:** Cursor Agent
+- **Branch:** `feat/workspace-w10-feature-intent-core`
+- **Objective:** Clear PR #305 Governance and CodeQL failures.
+- **Completed:**
+  - Governance: rewrite invalid `style(workspace)` commit to `docs(workspace)` (allowed Conventional Commit type).
+  - CodeQL `js/polynomial-redos` on `feature-intent-create.ts` slug: replace `/[^a-z0-9]+/` and `/^-+|-+$/` with a linear alphanumeric scan. Same for tokenize and public-API keyword checks.
+- **Validation:** scoped tests + `pnpm verify` on push.
+- **Next first action:** Confirm PR #305 CodeQL and Governance are green; merge; start W10 Client.
 
 ### 2026-08-13, Engineering Workspace W10 feature intent Core
 

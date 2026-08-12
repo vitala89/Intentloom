@@ -8,12 +8,31 @@ export interface CreateFeatureIntentOptions {
   readonly now?: () => number;
 }
 
+function isAsciiAlphanumeric(char: string): boolean {
+  const code = char.charCodeAt(0);
+  return (
+    (code >= 48 && code <= 57) ||
+    (code >= 97 && code <= 122) ||
+    (code >= 65 && code <= 90)
+  );
+}
+
 function slug(value: string): string {
-  const normalized = value
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "");
-  return normalized.length > 0 ? normalized.slice(0, 48) : "feature";
+  const parts: string[] = [];
+  let current = "";
+  for (const char of value.toLowerCase()) {
+    if (isAsciiAlphanumeric(char)) {
+      current += char;
+      continue;
+    }
+    if (current.length > 0) {
+      parts.push(current);
+      current = "";
+    }
+  }
+  if (current.length > 0) parts.push(current);
+  const normalized = parts.join("-").slice(0, 48);
+  return normalized.length > 0 ? normalized : "feature";
 }
 
 export function createFeatureIntent(

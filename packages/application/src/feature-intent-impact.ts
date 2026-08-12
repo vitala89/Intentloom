@@ -24,9 +24,12 @@ export async function analyzeArchitectureImpact(
     now: () => preparedAt,
   });
   const viewmodel = buildAssessmentViewModel(report);
-  const mentionsPublicApi = /api|export|public/i.test(
-    `${options.intent.title} ${options.intent.summary}`,
-  );
+  const haystack =
+    `${options.intent.title} ${options.intent.summary}`.toLowerCase();
+  const mentionsPublicApi =
+    haystack.includes("api") ||
+    haystack.includes("export") ||
+    haystack.includes("public");
   const publicApiChangeRisk =
     options.affectedScope.publicApiSurfaces.length === 0
       ? "none"
