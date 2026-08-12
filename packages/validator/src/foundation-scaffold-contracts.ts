@@ -1,19 +1,26 @@
 import type {
+  FoundationScaffoldApplyResult,
   FoundationScaffoldCompareResult,
   FoundationScaffoldGetResult,
   FoundationScaffoldPlanRecord,
   FoundationScaffoldPrepareResult,
+  FoundationScaffoldRollbackResult,
   FoundationScaffoldTemplateVersion,
   FoundationScaffoldValidateResult,
 } from "@intentloom/protocol";
 import {
+  FOUNDATION_SCAFFOLD_APPLY_SCHEMA_URN,
   FOUNDATION_SCAFFOLD_COMPARE_SCHEMA_URN,
   FOUNDATION_SCAFFOLD_GET_SCHEMA_URN,
   FOUNDATION_SCAFFOLD_PLAN_SCHEMA_URN,
   FOUNDATION_SCAFFOLD_PREPARE_SCHEMA_URN,
+  FOUNDATION_SCAFFOLD_ROLLBACK_SCHEMA_URN,
   FOUNDATION_SCAFFOLD_VALIDATE_SCHEMA_URN,
 } from "@intentloom/protocol";
-import { validateScaffoldPlan } from "./inception-scaffold.js";
+import {
+  validateScaffoldPlan,
+  validateScaffoldResult,
+} from "./inception-scaffold.js";
 
 function assertSchemaVersion(
   value: unknown,
@@ -211,4 +218,58 @@ export function validateFoundationScaffoldValidateResult(
     throw new Error("Invalid foundation scaffold validate.expiresAt");
   }
   return value as FoundationScaffoldValidateResult;
+}
+
+export function validateFoundationScaffoldApplyResult(
+  value: unknown,
+): FoundationScaffoldApplyResult {
+  if (typeof value !== "object" || value === null) {
+    throw new Error("Invalid foundation scaffold apply: expected object");
+  }
+  assertSchemaVersion(
+    value,
+    "foundation scaffold apply",
+    FOUNDATION_SCAFFOLD_APPLY_SCHEMA_URN,
+  );
+  const record = value as Record<string, unknown>;
+  assertNonEmptyString(
+    record.workshopId,
+    "foundation scaffold apply.workshopId",
+  );
+  assertNonEmptyString(record.planId, "foundation scaffold apply.planId");
+  validateScaffoldResult(record.result);
+  if (
+    typeof record.revalidatedAt !== "number" ||
+    !Number.isFinite(record.revalidatedAt)
+  ) {
+    throw new Error("Invalid foundation scaffold apply.revalidatedAt");
+  }
+  return value as FoundationScaffoldApplyResult;
+}
+
+export function validateFoundationScaffoldRollbackResult(
+  value: unknown,
+): FoundationScaffoldRollbackResult {
+  if (typeof value !== "object" || value === null) {
+    throw new Error("Invalid foundation scaffold rollback: expected object");
+  }
+  assertSchemaVersion(
+    value,
+    "foundation scaffold rollback",
+    FOUNDATION_SCAFFOLD_ROLLBACK_SCHEMA_URN,
+  );
+  const record = value as Record<string, unknown>;
+  assertNonEmptyString(
+    record.workshopId,
+    "foundation scaffold rollback.workshopId",
+  );
+  assertNonEmptyString(record.planId, "foundation scaffold rollback.planId");
+  validateScaffoldResult(record.result);
+  if (
+    typeof record.rolledBackAt !== "number" ||
+    !Number.isFinite(record.rolledBackAt)
+  ) {
+    throw new Error("Invalid foundation scaffold rollback.rolledBackAt");
+  }
+  return value as FoundationScaffoldRollbackResult;
 }

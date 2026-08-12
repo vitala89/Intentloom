@@ -1,6 +1,6 @@
 # Intentloom Project State
 
-Last verified: 2026-08-11
+Last verified: 2026-08-12
 
 This file records the durable current state of the project. It is not a
 chronological log. Session history and handoff details belong in
@@ -231,9 +231,9 @@ before a new release or implementation milestone is declared complete.
 
 ## Active focus
 
-1. Engineering Workspace **W1–W6 Core** are on `main` at `3329486` (W6 Core
-   scaffold planner: PR #298). **W6 Client** Desktop/TUI scaffold preview is on
-   `feat/workspace-w6-scaffold-planner-client`. Apply remains W7.
+1. Engineering Workspace **W1–W6** are on `main` at `7ff98e4`. **W7 Core**
+   transactional empty-root apply is implemented on
+   `feat/workspace-w7-scaffold-apply-core` (PR pending).
 2. Engineering Workspace **W0** capability reconciliation remains complete on `main`.
 3. Keep GitHub Pages as the canonical public documentation destination and
    continue the roadmap after the completed `1.0.2` metadata release.

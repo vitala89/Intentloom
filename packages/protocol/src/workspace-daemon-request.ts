@@ -27,6 +27,8 @@ import {
   FOUNDATION_SCAFFOLD_GET_METHOD,
   FOUNDATION_SCAFFOLD_COMPARE_METHOD,
   FOUNDATION_SCAFFOLD_VALIDATE_METHOD,
+  FOUNDATION_SCAFFOLD_APPLY_METHOD,
+  FOUNDATION_SCAFFOLD_ROLLBACK_METHOD,
 } from "./jsonrpc.js";
 import type { RequestId } from "./jsonrpc.js";
 import { createSpecializedPacksChecksRequest } from "./engineering-quality/specialized-daemon-rpc.js";
@@ -159,6 +161,8 @@ export const WORKSPACE_DAEMON_REQUEST_METHODS = [
   FOUNDATION_SCAFFOLD_GET_METHOD,
   FOUNDATION_SCAFFOLD_COMPARE_METHOD,
   FOUNDATION_SCAFFOLD_VALIDATE_METHOD,
+  FOUNDATION_SCAFFOLD_APPLY_METHOD,
+  FOUNDATION_SCAFFOLD_ROLLBACK_METHOD,
 ] as const;
 
 function isObject(value: unknown): value is Record<string, unknown> {

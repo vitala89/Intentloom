@@ -21,6 +21,7 @@ afterEach(async () => {
   application.clearFoundationWorkshopStore();
   application.clearFoundationBlueprintStore();
   application.clearFoundationScaffoldStore();
+  application.clearFoundationScaffoldApplyResults();
   await Promise.all(daemons.splice(0).map((daemon) => daemon.close()));
 });
 
@@ -95,6 +96,10 @@ async function startFoundationDaemon() {
       foundationScaffoldHandlers.handleFoundationScaffoldCompare,
     foundationScaffoldValidate:
       foundationScaffoldHandlers.handleFoundationScaffoldValidate,
+    foundationScaffoldApply:
+      foundationScaffoldHandlers.handleFoundationScaffoldApply,
+    foundationScaffoldRollback:
+      foundationScaffoldHandlers.handleFoundationScaffoldRollback,
   });
   daemons.push({
     async close() {
@@ -331,5 +336,49 @@ describe("Engineering Workspace W2: foundation daemon RPC", () => {
     expect(daemonPrepare.record.planDigest).toBe(cliPrepare.record.planDigest);
     expect(daemonPrepare.workshopUnchanged).toBe(true);
     expect(application.getFoundationWorkshop(workshop.id)).toEqual(before);
+  });
+
+  it("returns CLI-equivalent scaffold apply viewmodels for empty-root apply", async () => {
+    const workshop = application.createFoundationWorkshop({
+      root: "/tmp/foundation-daemon-scaffold-apply",
+      idea: "Daemon scaffold apply parity library",
+      workshopId: "fnd_fixture_daemon_scaffold_apply",
+    });
+    application.recordFoundationWorkshopAnswer(workshop.id, {
+      questionId: "fq5_workflow",
+      value: "Library consumers import typed helpers",
+      confidence: "confirmed",
+      timestamp: Date.now(),
+    });
+    application.approveFoundationBlueprint(
+      workshop.id,
+      "recommended",
+      "reviewer",
+    );
+    const daemon = await startFoundationDaemon();
+    const prepared = application.prepareProjectScaffold(workshop.id);
+    const planId = prepared.record.plan.planId;
+
+    const daemonApply = responseViewmodel(
+      await rawRequest(
+        daemon.endpoint,
+        protocol.createFoundationScaffoldApplyRequest(
+          "scaffold-apply",
+          workshop.id,
+          planId,
+        ),
+        daemon.token,
+      ),
+    );
+    const cliApply = application.applyFoundationProjectScaffold(
+      workshop.id,
+      planId,
+    );
+    expect(daemonApply.schemaVersion).toBe(
+      "urn:intentloom:schema:foundation-scaffold-apply:1",
+    );
+    expect(daemonApply.result.status).toBe("applied");
+    expect(daemonApply.planId).toBe(planId);
+    expect(cliApply.result.planId).toBe(planId);
   });
 });

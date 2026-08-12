@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **W6 Core complete on `main` at `3329486` (PR #298). W6 Client on `feat/workspace-w6-scaffold-planner-client` at `ab7cf4d` (PR #299, CI pending).**
+Status: **W7 Core PR #300 open on `feat/workspace-w7-scaffold-apply-core` at `d182643`. W7 Client follows Core merge.**
 
-Active branch: `feat/workspace-w6-scaffold-planner-client`
+Active branch: `feat/workspace-w7-scaffold-apply-core`
 
-Current objective: Land W6 Client Desktop/TUI scaffold preview; then W7 apply.
+Current objective: Land W7 Core PR #300; then W7 Client explicit approval UX.
 
-Next first action: Confirm CI green on PR #299 and merge; then W7 transactional empty-root creation.
+Next first action: Confirm CI green on PR #300 and merge; then W7 Client branch.
 
 Known open items, in the order they should be handled:
 
@@ -95,6 +95,33 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-12, Engineering Workspace W7 scaffold apply Core (in progress)
+
+- **Status:** complete on branch; PR #300 open.
+- **Agent/tool:** Cursor Agent
+- **Branch:** `feat/workspace-w7-scaffold-apply-core` (from `main` at `7ff98e4`)
+- **Pull request:** #300
+- **Commit:** `d182643`
+- **Objective:** Deliver W7 Core — foundation-gated transactional empty-root scaffold apply/rollback over I6 ops, with fail-closed revalidation, versioned protocol URNs, daemon RPC, and CLI.
+- **Completed so far:**
+  - Track A handoff reconciliation: W6 marked complete on `main` (`7ff98e4`).
+  - Protocol: `FOUNDATION_SCAFFOLD_APPLY/ROLLBACK` schema URNs; daemon methods `intentloom.foundation.scaffold.{apply,rollback}.v1`.
+  - Application: `applyFoundationProjectScaffold`, `rollbackFoundationProjectScaffold` with revalidation (empty-root, blueprint/plan digest, path safety, template integrity, capability grants, Intentloom compatibility).
+  - Validator contracts; daemon handlers (mutating classification); CLI `scaffold-apply`/`scaffold-rollback`.
+  - Tests: `tests/foundation-scaffold-apply.test.ts` (6) + daemon parity extension.
+- **Not completed:** PR merge; W7 Client explicit approval UX.
+- **Validation:** `pnpm typecheck`, `pnpm format:check`, `pnpm build`, focused scaffold tests green; full `pnpm test` 1373 passed.
+- **Next first action:** Open Core PR when ready; then W7 Client branch.
+
+### 2026-08-12, Engineering Workspace W6 handoff reconciliation (post PR #299 merge)
+
+- **Status:** complete on `main` (`7ff98e4`, PR #299).
+- **Agent/tool:** Cursor Agent
+- **Branch:** `main` at `7ff98e4`
+- **Objective:** Reconcile handoff docs after W6 Client merge; confirm W0–W6 complete on `main`.
+- **Completed:** Updated `DUTY_WATCH.md` watch status, `PROJECT_STATE.md` active focus, capability matrix § W6 → **complete**.
+- **Next first action:** W7 Core transactional empty-root scaffold apply on `feat/workspace-w7-scaffold-apply-core`.
 
 ### 2026-08-12, Engineering Workspace W6 scaffold planner Client
 
