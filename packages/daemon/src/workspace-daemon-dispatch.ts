@@ -30,13 +30,20 @@ import {
   existingProjectCapabilities,
   isExistingProjectRequest,
 } from "./existing-project-handlers.js";
+import type { FeatureIntentDaemonOptions } from "./feature-intent-handlers.js";
+import {
+  dispatchFeatureIntentRequest,
+  featureIntentCapabilities,
+  isFeatureIntentRequest,
+} from "./feature-intent-handlers.js";
 import type { DaemonCapability } from "@intentloom/protocol";
 
 export type WorkspaceDaemonOptions = SpecializedPackDaemonOptions &
   InceptionDaemonOptions &
   FoundationDaemonOptions &
   FoundationScaffoldDaemonOptions &
-  ExistingProjectDaemonOptions;
+  ExistingProjectDaemonOptions &
+  FeatureIntentDaemonOptions;
 
 export function workspaceDaemonCapabilities(
   options: WorkspaceDaemonOptions,
@@ -47,6 +54,7 @@ export function workspaceDaemonCapabilities(
     ...foundationCapabilities(options),
     ...foundationScaffoldCapabilities(options),
     ...existingProjectCapabilities(options),
+    ...featureIntentCapabilities(options),
   ];
 }
 
@@ -145,6 +153,24 @@ export async function dispatchWorkspaceDaemonRequest(
       return true;
     }
     response(socket, existingProjectResponse);
+    return true;
+  }
+  if (isFeatureIntentRequest(request)) {
+    const featureIntentResponse = await dispatchFeatureIntentRequest(
+      request,
+      options,
+      canonicalProjectRoot,
+    );
+    if (!featureIntentResponse) {
+      failure(
+        socket,
+        -32601,
+        "unsupported feature intent method",
+        "unsupported_capability",
+      );
+      return true;
+    }
+    response(socket, featureIntentResponse);
     return true;
   }
   return false;

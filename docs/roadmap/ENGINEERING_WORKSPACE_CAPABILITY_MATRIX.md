@@ -56,7 +56,7 @@ Canonical read-only path: **Open root → Inspect → Adoption readiness → Gra
 | Evidence fetch / MCP equivalence              | implemented | evidence contracts                            | yes       | partial                                                 | `evidence`                               | —                         | —                       | implemented                           | `ready-now`           | Read-only evidence hardening gate closed                                                                                                                          |
 | Approved apply / transactions                 | implemented | `APPROVED_APPLY_METHOD`                       | yes       | yes                                                     | via adoption/update apply paths          | gated apply UX            | partial                 | partial                               | `ready-now`           | Transaction boundary exists; W9 composes into one flow later                                                                                                      |
 
-**Existing-project W9 gap (planned):** No single composed Desktop `Open Project` experience or CLI command family ties inspect → specialized detection → graph → quality → assessment → remediation into one workspace entry flow. Underlying engines exist; orchestration and client parity remain `future` until W9.
+**Existing-project W9:** Composed Desktop `Open Project` flow and CLI helper now exist on `main` (`0c948c3`, PR #304). Underlying engines remain the source of truth; W9 orchestrates inspect → specialized detection → doctor → assessment without a second engine.
 
 ---
 
@@ -76,7 +76,7 @@ surfaces expose inception. No `tests/fixtures/inception/` tree.
 | I4 Blueprint storage/review  | `approveBlueprint`, `revokeBlueprintApproval`, `exportBlueprintYaml`, `parseBlueprintYaml`                     | `inception-approval.test.ts`                                                    | **none**                      | **none**                                 | `integration-pending`                           |                                                                             |
 | I5 Scaffold planner          | `prepareProjectScaffoldPlan`, `formatScaffoldPlanDryRun`, `diffScaffoldPlan`                                   | `inception-scaffold-planner.test.ts`                                            | **none**                      | **none**                                 | `integration-pending`                           | Side-effect free in tests                                                   |
 | I6 Transactional apply       | `applyFoundationProjectScaffold`, `rollbackFoundationProjectScaffold` (wrap I6)                                | `foundation-scaffold-apply.test.ts`                                             | foundation apply/rollback RPC | CLI `scaffold-apply`/`scaffold-rollback` | W7 complete on `main` (`0af87a1`, PR #300+#301) | Foundation gate + revalidation; Desktop/TUI parity                          |
-| I7 Library workspace starter | workspace scaffold helpers + invariants                                                                        | `inception-workspace-scaffold.test.ts`, `foundation-scaffold-workspace.test.ts` | **none**                      | **none**                                 | W8 Core complete on `main` (`7196897`, PR #302) | Expanded W8 shape: core/react/testing/examples; Client in progress          |
+| I7 Library workspace starter | workspace scaffold helpers + invariants                                                                        | `inception-workspace-scaffold.test.ts`, `foundation-scaffold-workspace.test.ts` | **none**                      | **none**                                 | W8 complete on `main` (`0b42163`, PR #302+#303) | Expanded W8 shape: core/react/testing/examples; Desktop/TUI workspace tree  |
 | I8 Dependency / Git plans    | `prepareDependencyInstallPlan`, `prepareGitInitPlan`                                                           | `inception-actions.test.ts`                                                     | **none**                      | **none**                                 | `integration-pending`                           | Plans only; no execution surface                                            |
 | I9 Desktop/TUI product flow  | `initializeInceptionFlow`, `advanceInceptionFlow`, `generateFlowReviewCard`                                    | `inception-flow.test.ts`                                                        | **none**                      | **none**                                 | `core-first`                                    | Flow state machine exists; **no client UI**                                 |
 | I10 Third-party templates    | `registerStarterTemplate`, `resolveStarterTemplate`, `buildTemplateScaffoldPlan`                               | `inception-templates.test.ts`                                                   | **none**                      | **none**                                 | `future` for managed extensions                 | Registry in application only                                                |
@@ -90,17 +90,19 @@ surfaces expose inception. No `tests/fixtures/inception/` tree.
 
 ### Engineering Workspace phases (plan vs evidence)
 
-| W phase | Plan intent                                                                                | Current evidence                                                    | Sync state                                          |
-| ------- | ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------- | --------------------------------------------------- |
-| **W0**  | Capability map + state reconciliation                                                      | **this document** + updated `PROJECT_STATE.md` / `DUTY_WATCH.md`    | **complete**                                        |
-| **W1**  | Versioned inception **session** contracts + daemon + CLI JSON + fixtures + client surfaces | Merged on `main` (`2f63f99`, PR #286 Core + PR #287 Client)         | **complete** — frozen fixtures + Desktop/TUI parity |
-| **W2**  | Foundation Workshop typed state + readiness + client surfaces                              | Merged on `main` (`208f7c4`, PR #288 Core + PR #289 Client); see §3 | **complete** — frozen fixtures + Desktop/TUI parity |
-| **W3**  | Neutron discovery integration for Foundation path                                          | Merged Core + Client on `main` (`be81bed`, PR #293)                 | **complete** — frozen fixtures + Desktop/TUI parity |
-| **W4**  | Blueprint alternatives (workspace naming)                                                  | Core + Client merged on `main` (`92e82fb`, PR #296)                 | **complete** — Desktop/TUI parity                   |
-| **W5**  | CLI/daemon/client parity freeze                                                            | Inception + foundation + blueprint top-level on main (#290, #297)   | **complete**                                        |
-| **W6**  | Minimal scaffold planner (workspace gate)                                                  | Core + Client merged on `main` (`7ff98e4`, PR #298 + #299)          | **complete** — Desktop/TUI parity                   |
-| **W7**  | Transactional empty-root creation                                                          | Core + Client merged on `main` (`0af87a1`, PR #300 + #301)          | **complete** — Desktop/TUI parity                   |
-| **W8**  | Library ecosystem starter and dogfooding                                                   | W8 Core merged on `main` (`7196897`, PR #302); Client PR open       | Core **complete**; Client follows Core              |
+| W phase | Plan intent                                                                                | Current evidence                                                         | Sync state                                          |
+| ------- | ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------ | --------------------------------------------------- |
+| **W0**  | Capability map + state reconciliation                                                      | **this document** + updated `PROJECT_STATE.md` / `DUTY_WATCH.md`         | **complete**                                        |
+| **W1**  | Versioned inception **session** contracts + daemon + CLI JSON + fixtures + client surfaces | Merged on `main` (`2f63f99`, PR #286 Core + PR #287 Client)              | **complete** — frozen fixtures + Desktop/TUI parity |
+| **W2**  | Foundation Workshop typed state + readiness + client surfaces                              | Merged on `main` (`208f7c4`, PR #288 Core + PR #289 Client); see §3      | **complete** — frozen fixtures + Desktop/TUI parity |
+| **W3**  | Neutron discovery integration for Foundation path                                          | Merged Core + Client on `main` (`be81bed`, PR #293)                      | **complete** — frozen fixtures + Desktop/TUI parity |
+| **W4**  | Blueprint alternatives (workspace naming)                                                  | Core + Client merged on `main` (`92e82fb`, PR #296)                      | **complete** — Desktop/TUI parity                   |
+| **W5**  | CLI/daemon/client parity freeze                                                            | Inception + foundation + blueprint top-level on main (#290, #297)        | **complete**                                        |
+| **W6**  | Minimal scaffold planner (workspace gate)                                                  | Core + Client merged on `main` (`7ff98e4`, PR #298 + #299)               | **complete** — Desktop/TUI parity                   |
+| **W7**  | Transactional empty-root creation                                                          | Core + Client merged on `main` (`0af87a1`, PR #300 + #301)               | **complete** — Desktop/TUI parity                   |
+| **W8**  | Library ecosystem starter and dogfooding                                                   | Merged on `main` (`0b42163`, PR #302 Core + PR #303 Client)              | **complete** — Desktop/TUI workspace tree parity    |
+| **W9**  | Existing-project composed inspect/assessment flow                                          | Merged on `main` (`0c948c3`, PR #304 Core+Client)                        | **complete** — frozen fixtures + Desktop/TUI parity |
+| **W10** | Feature intent and architecture impact                                                     | Core PR #305 on `feat/workspace-w10-feature-intent-core`; Client follows | Core **complete** on branch; Client `core-first`    |
 
 ---
 
@@ -328,41 +330,34 @@ JSON helper, and frozen fixtures — **reusing** existing
 ## 8. Client readiness summary (W2 checkpoint)
 
 ```text
-Current Engineering Workspace phase: W5 blueprint binary routing in review (PR #297); W1–W4 complete on main
-Verified main: 92e82fb (PR #296 W4 Client merged)
+Current Engineering Workspace phase: W10 Core feature intent (branch); W1–W9 complete on main
+Verified main: 0c948c3 (PR #304 W9 Core+Client merged)
 
 CORE
 Current completed capability:
-- W1 inception session URNs, store, daemon RPC, CLI JSON helper, frozen fixtures + client surfaces
-- W2 foundation workshop typed state, URNs, readiness rules, daemon RPC, CLI helper, frozen fixtures + client surfaces
-- W3 foundation discovery URNs, adaptive questions, fake-adapter discovery turn, daemon RPC, CLI discover commands, Desktop/TUI client surfaces
-- W4 foundation blueprint proposal/compare/approve/revoke URNs, resolver, daemon RPC, CLI foundation blueprint-* commands, Desktop/TUI client surfaces (main)
-- W5 `intentloom inception` / `intentloom foundation` binary routing (main); `intentloom blueprint` top-level routing (PR #297)
+- W1–W9 on main, including W9 existing-project workspace prepare
+- W10 Core feature-intent URNs, five composed operations, daemon prepare/analyze, CLI JSON, frozen fixtures (this branch)
 
 Next Core task:
-- W6 minimal scaffold planner (workspace gate)
+- Merge W10 Core; W11 bounded execution remains future
 
 CLIENTS: DESKTOP + CLI/TUI
 Ready now:
-- Inspect, Doctor, Diff, Timeline Desktop views (read-only)
-- W1 New Project shell (Desktop) + TUI viewmodels against frozen inception fixtures
-- W2 Foundation Workshop shell (Desktop) + TUI viewmodels, Tauri bridge, 6-test fixture parity
-- W3 Neutron discovery panel (Desktop) + TUI viewmodels, 4-test fixture parity
-- W4 blueprint alternatives panel (Desktop) + TUI viewmodels, 4-test fixture parity
-- W5 inception/foundation CLI binary commands (main); blueprint top-level routing (PR #297)
+- W1–W9 Desktop/TUI surfaces on main
 
-Integration pending:
-- EQ CLI helpers → `intentloom` binary
-- Specialized packs CLI → binary
+Safe in parallel against frozen contracts:
+- W10 Client feature-intent panel against `tests/fixtures/feature-intent/workspace-states.v1.json`
+
+Must wait for Core:
+- none for W10 Client once this Core PR merges
 
 Blocked / future:
-- Full existing-project W9 composed flow
 - W11 bounded coding-agent execution (harness gate)
 - S8 external specialized packs
 
 Next synchronization checkpoint:
-- After W5 PR #297 merges
-- Before W6 scaffold increment
+- After W10 Core PR merges
+- Before W10 Client Desktop/TUI panel
 ```
 
 ---

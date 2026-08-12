@@ -30,6 +30,8 @@ import {
   FOUNDATION_SCAFFOLD_APPLY_METHOD,
   FOUNDATION_SCAFFOLD_ROLLBACK_METHOD,
   EXISTING_PROJECT_WORKSPACE_PREPARE_METHOD,
+  FEATURE_INTENT_WORKSPACE_PREPARE_METHOD,
+  FEATURE_INTENT_WORKSPACE_ANALYZE_METHOD,
 } from "./jsonrpc.js";
 import type { RequestId } from "./jsonrpc.js";
 import { createSpecializedPacksChecksRequest } from "./engineering-quality/specialized-daemon-rpc.js";
@@ -92,6 +94,8 @@ import { parseFoundationScaffoldDaemonRequest } from "./foundation-scaffold-daem
 import type { FoundationScaffoldDaemonRequest } from "./foundation-scaffold-daemon-rpc.js";
 import { parseExistingProjectDaemonRequest } from "./existing-project-daemon-rpc.js";
 import type { ExistingProjectWorkspacePrepareRequest } from "./existing-project-daemon-rpc.js";
+import { parseFeatureIntentDaemonRequest } from "./feature-intent-daemon-rpc.js";
+import type { FeatureIntentDaemonRequest } from "./feature-intent-daemon-rpc.js";
 import type { SpecializedPacksChecksResponse } from "./engineering-quality/specialized-daemon-rpc.js";
 import { ProtocolValidationError } from "./protocol-validation-error.js";
 import {
@@ -128,7 +132,8 @@ export type WorkspaceDaemonRequest =
   | FoundationBlueprintApproveRequest
   | FoundationBlueprintRevokeRequest
   | FoundationScaffoldDaemonRequest
-  | ExistingProjectWorkspacePrepareRequest;
+  | ExistingProjectWorkspacePrepareRequest
+  | FeatureIntentDaemonRequest;
 
 export type WorkspaceDaemonResponse = SpecializedPacksChecksResponse;
 
@@ -143,6 +148,8 @@ export * from "./foundation-scaffold.js";
 export * from "./foundation-scaffold-daemon-rpc.js";
 export * from "./existing-project-workspace.js";
 export * from "./existing-project-daemon-rpc.js";
+export * from "./feature-intent-workspace.js";
+export * from "./feature-intent-daemon-rpc.js";
 export { ProtocolValidationError } from "./protocol-validation-error.js";
 
 export const WORKSPACE_DAEMON_REQUEST_METHODS = [
@@ -177,6 +184,8 @@ export const WORKSPACE_DAEMON_REQUEST_METHODS = [
   FOUNDATION_SCAFFOLD_APPLY_METHOD,
   FOUNDATION_SCAFFOLD_ROLLBACK_METHOD,
   EXISTING_PROJECT_WORKSPACE_PREPARE_METHOD,
+  FEATURE_INTENT_WORKSPACE_PREPARE_METHOD,
+  FEATURE_INTENT_WORKSPACE_ANALYZE_METHOD,
 ] as const;
 
 export function parseWorkspaceDaemonRequest(
@@ -354,6 +363,12 @@ export function parseWorkspaceDaemonRequest(
     id,
   );
   if (existingProjectRequest !== null) return existingProjectRequest;
+  const featureIntentRequest = parseFeatureIntentDaemonRequest(
+    typeof value.method === "string" ? value.method : "",
+    params,
+    id,
+  );
+  if (featureIntentRequest !== null) return featureIntentRequest;
   return parseFoundationScaffoldDaemonRequest(
     typeof value.method === "string" ? value.method : "",
     params,

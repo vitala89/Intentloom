@@ -5,3 +5,4 @@ export * from "./foundation-discovery-contracts.js";
 export * from "./foundation-blueprint-contracts.js";
 export * from "./foundation-scaffold-contracts.js";
 export * from "./existing-project-contracts.js";
+export * from "./feature-intent-contracts.js";

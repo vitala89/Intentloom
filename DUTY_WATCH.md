@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **W9 Core + Client complete on `cursor/workspace-w9-existing-project-core-abd9`. W8 complete on `main` @ `0b42163` (PR #303).**
+Status: **W10 Core in progress on `feat/workspace-w10-feature-intent-core`. W1–W9 complete on `main` @ `0c948c3` (PR #304).**
 
-Active branch: `cursor/workspace-w9-existing-project-core-abd9`
+Active branch: `feat/workspace-w10-feature-intent-core`
 
-Current objective: Land W9 PR; plan W10 feature intent.
+Current objective: Land W10 Core feature-intent contracts; then W10 Client.
 
-Next first action: Merge W9 PR; begin W10 planning.
+Next first action: Merge W10 Core PR #305 after CodeQL/Governance CI is green; then W10 Client.
 
 Known open items, in the order they should be handled:
 
@@ -96,9 +96,36 @@ entry directly below this section.
 
 ## Watch entries
 
+### 2026-08-13, W10 Core CI: CodeQL ReDoS and commit policy
+
+- **Status:** complete on branch; PR #305.
+- **Agent/tool:** Cursor Agent
+- **Branch:** `feat/workspace-w10-feature-intent-core`
+- **Objective:** Clear PR #305 Governance and CodeQL failures.
+- **Completed:**
+  - Governance: rewrite invalid `style(workspace)` commit to `docs(workspace)` (allowed Conventional Commit type).
+  - CodeQL `js/polynomial-redos` on `feature-intent-create.ts` slug: replace `/[^a-z0-9]+/` and `/^-+|-+$/` with a linear alphanumeric scan. Same for tokenize and public-API keyword checks.
+- **Validation:** scoped tests + `pnpm verify` on push.
+- **Next first action:** Confirm PR #305 CodeQL and Governance are green; merge; start W10 Client.
+
+### 2026-08-13, Engineering Workspace W10 feature intent Core
+
+- **Status:** complete on branch; PR #305 open.
+- **Agent/tool:** Cursor Agent
+- **Branch:** `feat/workspace-w10-feature-intent-core` (from `main` at `0c948c3`)
+- **Objective:** Deliver W10 Core — structured feature-development entry point that composes Foundation/Blueprint markers, observed graph, specialized packs, assessments/debt, public API boundaries, and project decisions into a read-only impact summary and reviewed plan. No W11 execution.
+- **Completed:**
+  - Track A: W9 Core+Client merged on `main` @ `0c948c3` (PR #304). Handoff docs reconciled for W8 Client and W9.
+  - Protocol: `FeatureIntentWorkspaceOverview` URNs; daemon methods `intentloom.feature-intent.workspace.prepare.v1` and `.analyze.v1`.
+  - Application ops: `createFeatureIntent`, `resolveAffectedScope`, `analyzeArchitectureImpact`, `prepareImplementationAlternatives`, `prepareImplementationPlan`, composed by `prepareFeatureIntentWorkspace`.
+  - Validator, CLI JSON helper, daemon handlers, 3 frozen fixture IDs under `tests/fixtures/feature-intent/`.
+  - Tests: `tests/feature-intent-workspace.test.ts` (8), `tests/daemon-feature-intent.test.ts` (2).
+- **Validation:** `pnpm verify` — 1403 passed, 3 skipped.
+- **Next first action:** Merge W10 Core PR; W10 Client Desktop/TUI feature-intent panel against frozen fixtures.
+
 ### 2026-08-12, Engineering Workspace W9 existing-project integration Core + Client
 
-- **Status:** complete on branch; PR pending.
+- **Status:** complete on `main` (`0c948c3`, PR #304).
 - **Agent/tool:** Cursor Agent
 - **Branch:** `cursor/workspace-w9-existing-project-core-abd9` (from `main` at `0b42163`)
 - **Objective:** Deliver W9 — compose inspect → adoption → specialized detection → doctor → assessment into one read-only existing-project workspace flow with Core contracts, daemon RPC, CLI helper, Desktop Open Existing Project view, TUI text parity, and frozen fixtures.
