@@ -2,6 +2,7 @@ import { Card } from "../design/components/layout/Card.js";
 import { Button } from "../design/components/core/Button.js";
 import { StatusChip } from "../design/components/status/StatusChip.js";
 import { FoundationScaffoldApplyPanel } from "./FoundationScaffoldApplyPanel.js";
+import { FoundationScaffoldWorkspaceTree } from "./FoundationScaffoldWorkspaceTree.js";
 import type {
   FoundationScaffoldApplyViewModel,
   FoundationScaffoldCompareViewModel,
@@ -65,9 +66,10 @@ export function FoundationScaffoldPanel({
         <div>
           <h3>Scaffold planner</h3>
           <p style={{ color: "var(--text-secondary)" }}>
-            Preview the TypeScript library scaffold tree, dependencies, and
-            verification checks. Plans are side-effect-free until a later apply
-            approval.
+            {prepare?.workspace
+              ? "Preview the pnpm workspace scaffold tree with packages/ and examples/ grouping, dependencies, and verification checks."
+              : "Preview the TypeScript library scaffold tree, dependencies, and verification checks."}{" "}
+            Plans are side-effect-free until a later apply approval.
           </p>
         </div>
         <StatusChip
@@ -138,24 +140,28 @@ export function FoundationScaffoldPanel({
           <div style={{ color: "var(--text-secondary)" }}>
             Templates: {prepare.templateVersions.join(", ") || "none"}
           </div>
-          <ul
-            style={{
-              listStyle: "none",
-              margin: 0,
-              padding: 0,
-              display: "grid",
-              gap: "var(--space-2)",
-            }}
-          >
-            {prepare.files.map((file) => (
-              <li key={file.path}>
-                <strong>[{file.action}]</strong> {file.path}{" "}
-                <span style={{ color: "var(--text-secondary)" }}>
-                  ({file.ownership})
-                </span>
-              </li>
-            ))}
-          </ul>
+          {prepare.workspace ? (
+            <FoundationScaffoldWorkspaceTree workspace={prepare.workspace} />
+          ) : (
+            <ul
+              style={{
+                listStyle: "none",
+                margin: 0,
+                padding: 0,
+                display: "grid",
+                gap: "var(--space-2)",
+              }}
+            >
+              {prepare.files.map((file) => (
+                <li key={file.path}>
+                  <strong>[{file.action}]</strong> {file.path}{" "}
+                  <span style={{ color: "var(--text-secondary)" }}>
+                    ({file.ownership})
+                  </span>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
       ) : null}
 

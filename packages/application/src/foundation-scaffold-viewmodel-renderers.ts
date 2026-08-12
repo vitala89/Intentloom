@@ -25,6 +25,19 @@ export function renderFoundationScaffoldPrepareText(
     `Templates: ${vm.templateVersions.join(", ") || "none"}`,
     `Surface state: ${vm.surfaceState}`,
   ];
+  if (vm.workspace) {
+    lines.push(
+      `Workspace topology: ${vm.workspace.topology}`,
+      `Nx orchestration: ${vm.workspace.hasNx ? "yes" : "no"}`,
+    );
+    for (const group of vm.workspace.groups) {
+      lines.push(`  ${group.label} (${group.files.length} files)`);
+      for (const file of group.files) {
+        lines.push(`    - [${file.action}] ${file.path} (${file.ownership})`);
+      }
+    }
+    return lines.join("\n");
+  }
   for (const file of vm.files) {
     lines.push(`  - [${file.action}] ${file.path} (${file.ownership})`);
   }

@@ -8,6 +8,13 @@ import type {
   ScaffoldResultStatus,
 } from "@intentloom/protocol";
 import type { FoundationClientSurfaceState } from "./foundation-client-viewmodel.js";
+import {
+  buildFoundationScaffoldWorkspaceSection,
+  type FoundationScaffoldWorkspaceSection,
+} from "./foundation-scaffold-workspace-viewmodel.js";
+
+export type { FoundationScaffoldWorkspaceSection };
+export type { FoundationScaffoldWorkspaceFileGroup } from "./foundation-scaffold-workspace-viewmodel.js";
 
 export interface FoundationScaffoldFileRow {
   readonly path: string;
@@ -30,6 +37,7 @@ export interface FoundationScaffoldPrepareViewModel {
   readonly requiredCapabilities: readonly string[];
   readonly templateVersions: readonly string[];
   readonly dryRun: string;
+  readonly workspace?: FoundationScaffoldWorkspaceSection;
   readonly surfaceState: FoundationClientSurfaceState;
 }
 
@@ -89,6 +97,14 @@ export function buildFoundationScaffoldPrepareViewModel(
   surfaceState: FoundationClientSurfaceState = "ready",
 ): FoundationScaffoldPrepareViewModel {
   const { record } = prepare;
+  const templateVersions = record.templateVersions.map(
+    (entry) => `${entry.id}@${entry.version}`,
+  );
+  const files = record.plan.files.map(mapFile);
+  const workspace = buildFoundationScaffoldWorkspaceSection(
+    files,
+    templateVersions,
+  );
   return {
     workshopId: prepare.workshopId,
     planId: record.plan.planId,
@@ -97,15 +113,14 @@ export function buildFoundationScaffoldPrepareViewModel(
     blueprintDigest: record.plan.blueprintDigest,
     expiresAt: record.expiresAt,
     workshopUnchanged: true,
-    files: record.plan.files.map(mapFile),
+    files,
     dependencies: record.plan.dependencies,
     scripts: Object.keys(record.plan.scripts).sort(),
     verificationChecks: record.verificationChecks,
     requiredCapabilities: record.requiredCapabilities,
-    templateVersions: record.templateVersions.map(
-      (entry) => `${entry.id}@${entry.version}`,
-    ),
+    templateVersions,
     dryRun: record.dryRun,
+    ...(workspace !== undefined ? { workspace } : {}),
     surfaceState,
   };
 }
