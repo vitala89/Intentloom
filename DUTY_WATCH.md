@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **W9 Core + Client complete on `cursor/workspace-w9-existing-project-core-abd9`. W8 complete on `main` @ `0b42163` (PR #303).**
+Status: **W10 Core in progress on `feat/workspace-w10-feature-intent-core`. W1–W9 complete on `main` @ `0c948c3` (PR #304).**
 
-Active branch: `cursor/workspace-w9-existing-project-core-abd9`
+Active branch: `feat/workspace-w10-feature-intent-core`
 
-Current objective: Land W9 PR; plan W10 feature intent.
+Current objective: Land W10 Core feature-intent contracts; then W10 Client.
 
-Next first action: Merge W9 PR; begin W10 planning.
+Next first action: Open W10 Core PR; W10 Client Desktop/TUI panel after Core merges.
 
 Known open items, in the order they should be handled:
 
@@ -95,6 +95,21 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-13, Engineering Workspace W10 feature intent Core
+
+- **Status:** complete on branch; PR pending.
+- **Agent/tool:** Cursor Agent
+- **Branch:** `feat/workspace-w10-feature-intent-core` (from `main` at `0c948c3`)
+- **Objective:** Deliver W10 Core — structured feature-development entry point that composes Foundation/Blueprint markers, observed graph, specialized packs, assessments/debt, public API boundaries, and project decisions into a read-only impact summary and reviewed plan. No W11 execution.
+- **Completed:**
+  - Track A: W9 Core+Client merged on `main` @ `0c948c3` (PR #304). Handoff docs reconciled for W8 Client and W9.
+  - Protocol: `FeatureIntentWorkspaceOverview` URNs; daemon methods `intentloom.feature-intent.workspace.prepare.v1` and `.analyze.v1`.
+  - Application ops: `createFeatureIntent`, `resolveAffectedScope`, `analyzeArchitectureImpact`, `prepareImplementationAlternatives`, `prepareImplementationPlan`, composed by `prepareFeatureIntentWorkspace`.
+  - Validator, CLI JSON helper, daemon handlers, 3 frozen fixture IDs under `tests/fixtures/feature-intent/`.
+  - Tests: `tests/feature-intent-workspace.test.ts` (8), `tests/daemon-feature-intent.test.ts` (2).
+- **Validation:** `pnpm verify` — 1403 passed, 3 skipped.
+- **Next first action:** Merge W10 Core PR; W10 Client Desktop/TUI feature-intent panel against frozen fixtures.
 
 ### 2026-08-12, Engineering Workspace W9 existing-project integration Core + Client
 

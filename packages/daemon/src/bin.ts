@@ -55,6 +55,10 @@ import {
   handleFoundationScaffoldValidate,
 } from "./foundation-scaffold-handlers.js";
 import { handleExistingProjectWorkspacePrepare } from "./existing-project-handlers.js";
+import {
+  handleFeatureIntentWorkspaceAnalyze,
+  handleFeatureIntentWorkspacePrepare,
+} from "./feature-intent-handlers.js";
 
 function value(args: readonly string[], flag: string): string {
   const index = args.indexOf(flag);
@@ -196,6 +200,8 @@ async function main(): Promise<void> {
     foundationScaffoldApply: handleFoundationScaffoldApply,
     foundationScaffoldRollback: handleFoundationScaffoldRollback,
     existingProjectWorkspacePrepare: handleExistingProjectWorkspacePrepare,
+    featureIntentWorkspacePrepare: handleFeatureIntentWorkspacePrepare,
+    featureIntentWorkspaceAnalyze: handleFeatureIntentWorkspaceAnalyze,
   });
   const stop = () => void daemon.close().then(() => process.exit(0));
   process.once("SIGINT", stop);
