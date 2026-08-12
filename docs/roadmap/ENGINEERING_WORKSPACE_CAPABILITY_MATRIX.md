@@ -90,16 +90,16 @@ surfaces expose inception. No `tests/fixtures/inception/` tree.
 
 ### Engineering Workspace phases (plan vs evidence)
 
-| W phase | Plan intent                                                                                | Current evidence                                                    | Sync state                                          |
-| ------- | ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------- | --------------------------------------------------- |
-| **W0**  | Capability map + state reconciliation                                                      | **this document** + updated `PROJECT_STATE.md` / `DUTY_WATCH.md`    | **complete**                                        |
-| **W1**  | Versioned inception **session** contracts + daemon + CLI JSON + fixtures + client surfaces | Merged on `main` (`2f63f99`, PR #286 Core + PR #287 Client)         | **complete** — frozen fixtures + Desktop/TUI parity |
-| **W2**  | Foundation Workshop typed state + readiness + client surfaces                              | Merged on `main` (`208f7c4`, PR #288 Core + PR #289 Client); see §3 | **complete** — frozen fixtures + Desktop/TUI parity |
-| **W3**  | Neutron discovery integration for Foundation path                                          | Merged Core + Client on `main` (`be81bed`, PR #293)                 | **complete** — frozen fixtures + Desktop/TUI parity |
-| **W4**  | Blueprint alternatives (workspace naming)                                                  | Core + Client merged on `main` (`92e82fb`, PR #296)                 | **complete** — Desktop/TUI parity                   |
-| **W5**  | CLI/daemon/client parity freeze                                                            | Inception + foundation + blueprint top-level on main (#290, #297)   | **complete**                                        |
-| **W6**  | Minimal scaffold planner (workspace gate)                                                  | Core on branch `feat/workspace-w6-scaffold-planner-core`            | **core-first** for Client until Core merges         |
-| **W7**  | Transactional empty-root creation                                                          | I6 app ops exist                                                    | `integration-pending`; gated on W6 Core             |
+| W phase | Plan intent                                                                                | Current evidence                                                             | Sync state                                          |
+| ------- | ------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------- | --------------------------------------------------- |
+| **W0**  | Capability map + state reconciliation                                                      | **this document** + updated `PROJECT_STATE.md` / `DUTY_WATCH.md`             | **complete**                                        |
+| **W1**  | Versioned inception **session** contracts + daemon + CLI JSON + fixtures + client surfaces | Merged on `main` (`2f63f99`, PR #286 Core + PR #287 Client)                  | **complete** — frozen fixtures + Desktop/TUI parity |
+| **W2**  | Foundation Workshop typed state + readiness + client surfaces                              | Merged on `main` (`208f7c4`, PR #288 Core + PR #289 Client); see §3          | **complete** — frozen fixtures + Desktop/TUI parity |
+| **W3**  | Neutron discovery integration for Foundation path                                          | Merged Core + Client on `main` (`be81bed`, PR #293)                          | **complete** — frozen fixtures + Desktop/TUI parity |
+| **W4**  | Blueprint alternatives (workspace naming)                                                  | Core + Client merged on `main` (`92e82fb`, PR #296)                          | **complete** — Desktop/TUI parity                   |
+| **W5**  | CLI/daemon/client parity freeze                                                            | Inception + foundation + blueprint top-level on main (#290, #297)            | **complete**                                        |
+| **W6**  | Minimal scaffold planner (workspace gate)                                                  | Core on `main` (#298); Client on `feat/workspace-w6-scaffold-planner-client` | **integration-pending** Client PR                   |
+| **W7**  | Transactional empty-root creation                                                          | I6 app ops exist                                                             | `integration-pending`; gated on W6 Core             |
 
 ---
 

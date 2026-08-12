@@ -33,6 +33,7 @@ import {
   type ProjectTimelineParams,
   type ProjectTimelineResult,
 } from "@intentloom/protocol";
+import { foundationScaffoldDesktopMethods } from "./desktop-client-foundation-scaffold.js";
 
 export class DesktopBridgeError extends Error {
   readonly code: string;
@@ -102,7 +103,7 @@ async function call<T>(
   }
 }
 
-export const desktopClient = {
+const desktopClientBase = {
   async selectProjectRoot(): Promise<string | null> {
     return call<string | null>("select_project_root", {});
   },
@@ -359,4 +360,11 @@ export const desktopClient = {
     );
     return this.foundationRequest(request, signal);
   },
+};
+
+export const desktopClient = {
+  ...desktopClientBase,
+  ...foundationScaffoldDesktopMethods((request, signal) =>
+    desktopClientBase.foundationRequest(request, signal),
+  ),
 };

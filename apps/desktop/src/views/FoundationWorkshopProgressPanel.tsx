@@ -5,6 +5,7 @@ import { StatusChip } from "../design/components/status/StatusChip.js";
 import { desktopClient, DesktopBridgeError } from "../desktop-client.js";
 import { FoundationDiscoveryPanel } from "./FoundationDiscoveryPanel.js";
 import { FoundationBlueprintPanel } from "./FoundationBlueprintPanel.js";
+import { FoundationScaffoldSection } from "./FoundationScaffoldSection.js";
 import { buildDiscoveryTurnProgress } from "./foundation-discovery-view-helpers.js";
 import type { FoundationDiscoveryTurnViewModel } from "./foundation-discovery-view-helpers.js";
 import {
@@ -225,6 +226,8 @@ export function FoundationWorkshopProgressPanel({
         onApprove={() => void runBlueprintApprove()}
         onRevoke={() => void runBlueprintRevoke()}
       />
+
+      <FoundationScaffoldSection workshopId={progress.workshopId} />
 
       <Card variant="default">
         <h3 style={{ marginBottom: "var(--space-4)" }}>Discovery questions</h3>
