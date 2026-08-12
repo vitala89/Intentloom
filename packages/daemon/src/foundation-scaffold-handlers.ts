@@ -3,27 +3,37 @@ import {
   getProjectScaffoldPlan,
   prepareProjectScaffold,
   validateProjectScaffoldPlan,
+  applyFoundationProjectScaffold,
+  rollbackFoundationProjectScaffold,
 } from "@intentloom/application";
 import type {
   DaemonCapability,
+  FoundationScaffoldApplyRequest,
+  FoundationScaffoldApplyResultPayload,
   FoundationScaffoldCompareRequest,
   FoundationScaffoldCompareResultPayload,
   FoundationScaffoldGetRequest,
   FoundationScaffoldGetResultPayload,
   FoundationScaffoldPrepareRequest,
   FoundationScaffoldPrepareResultPayload,
+  FoundationScaffoldRollbackRequest,
+  FoundationScaffoldRollbackResultPayload,
   FoundationScaffoldValidateRequest,
   FoundationScaffoldValidateResultPayload,
   FoundationViewmodelPayload,
 } from "@intentloom/protocol";
 import {
+  FOUNDATION_SCAFFOLD_APPLY_METHOD,
   FOUNDATION_SCAFFOLD_COMPARE_METHOD,
   FOUNDATION_SCAFFOLD_GET_METHOD,
   FOUNDATION_SCAFFOLD_PREPARE_METHOD,
+  FOUNDATION_SCAFFOLD_ROLLBACK_METHOD,
   FOUNDATION_SCAFFOLD_VALIDATE_METHOD,
+  createFoundationScaffoldApplyResponse,
   createFoundationScaffoldCompareResponse,
   createFoundationScaffoldGetResponse,
   createFoundationScaffoldPrepareResponse,
+  createFoundationScaffoldRollbackResponse,
   createFoundationScaffoldValidateResponse,
   isFoundationScaffoldDaemonMethod,
   type FoundationScaffoldDaemonRequest,
@@ -44,6 +54,14 @@ export interface FoundationScaffoldDaemonOptions {
   ) => Promise<
     Omit<FoundationScaffoldValidateResultPayload, "protocolVersion">
   >;
+  readonly foundationScaffoldApply?: (
+    request: FoundationScaffoldApplyRequest,
+  ) => Promise<Omit<FoundationScaffoldApplyResultPayload, "protocolVersion">>;
+  readonly foundationScaffoldRollback?: (
+    request: FoundationScaffoldRollbackRequest,
+  ) => Promise<
+    Omit<FoundationScaffoldRollbackResultPayload, "protocolVersion">
+  >;
 }
 
 function vm(value: object): { readonly viewmodel: FoundationViewmodelPayload } {
@@ -52,6 +70,10 @@ function vm(value: object): { readonly viewmodel: FoundationViewmodelPayload } {
 
 function enabled(method: string, operation: string): DaemonCapability {
   return { method, operation, classification: "read-only" };
+}
+
+function mutating(method: string, operation: string): DaemonCapability {
+  return { method, operation, classification: "mutating" };
 }
 
 export function foundationScaffoldCapabilities(
@@ -77,6 +99,15 @@ export function foundationScaffoldCapabilities(
       ? enabled(
           FOUNDATION_SCAFFOLD_VALIDATE_METHOD,
           "foundation.scaffold.validate",
+        )
+      : undefined,
+    options.foundationScaffoldApply
+      ? mutating(FOUNDATION_SCAFFOLD_APPLY_METHOD, "foundation.scaffold.apply")
+      : undefined,
+    options.foundationScaffoldRollback
+      ? mutating(
+          FOUNDATION_SCAFFOLD_ROLLBACK_METHOD,
+          "foundation.scaffold.rollback",
         )
       : undefined,
   ].filter((entry): entry is DaemonCapability => entry !== undefined);
@@ -132,6 +163,24 @@ export async function dispatchFoundationScaffoldRequest(
       await options.foundationScaffoldValidate(request),
     );
   }
+  if (
+    request.method === FOUNDATION_SCAFFOLD_APPLY_METHOD &&
+    options.foundationScaffoldApply
+  ) {
+    return createFoundationScaffoldApplyResponse(
+      request.id,
+      await options.foundationScaffoldApply(request),
+    );
+  }
+  if (
+    request.method === FOUNDATION_SCAFFOLD_ROLLBACK_METHOD &&
+    options.foundationScaffoldRollback
+  ) {
+    return createFoundationScaffoldRollbackResponse(
+      request.id,
+      await options.foundationScaffoldRollback(request),
+    );
+  }
   return undefined;
 }
 
@@ -168,6 +217,37 @@ export async function handleFoundationScaffoldValidate(
 ): Promise<Omit<FoundationScaffoldValidateResultPayload, "protocolVersion">> {
   return vm(
     validateProjectScaffoldPlan(
+      request.params.workshopId,
+      request.params.planId,
+    ),
+  );
+}
+
+export async function handleFoundationScaffoldApply(
+  request: FoundationScaffoldApplyRequest,
+): Promise<Omit<FoundationScaffoldApplyResultPayload, "protocolVersion">> {
+  return vm(
+    applyFoundationProjectScaffold(
+      request.params.workshopId,
+      request.params.planId,
+      {
+        ...(request.params.existingPaths !== undefined
+          ? { existingPaths: request.params.existingPaths }
+          : {}),
+        grantedCapabilities: request.params.grantedCapabilities ?? [
+          "filesystem.write",
+          "scaffold.apply",
+        ],
+      },
+    ),
+  );
+}
+
+export async function handleFoundationScaffoldRollback(
+  request: FoundationScaffoldRollbackRequest,
+): Promise<Omit<FoundationScaffoldRollbackResultPayload, "protocolVersion">> {
+  return vm(
+    rollbackFoundationProjectScaffold(
       request.params.workshopId,
       request.params.planId,
     ),

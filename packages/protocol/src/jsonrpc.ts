@@ -90,6 +90,10 @@ export const FOUNDATION_SCAFFOLD_COMPARE_METHOD =
   "intentloom.foundation.scaffold.compare.v1" as const;
 export const FOUNDATION_SCAFFOLD_VALIDATE_METHOD =
   "intentloom.foundation.scaffold.validate.v1" as const;
+export const FOUNDATION_SCAFFOLD_APPLY_METHOD =
+  "intentloom.foundation.scaffold.apply.v1" as const;
+export const FOUNDATION_SCAFFOLD_ROLLBACK_METHOD =
+  "intentloom.foundation.scaffold.rollback.v1" as const;
 
 export type JsonPrimitive = boolean | null | number | string;
 export type JsonValue = JsonPrimitive | JsonObject | readonly JsonValue[];

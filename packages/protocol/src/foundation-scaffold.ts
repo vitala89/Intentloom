@@ -1,4 +1,4 @@
-import type { ScaffoldPlan } from "./inception.js";
+import type { ScaffoldPlan, ScaffoldResult } from "./inception.js";
 
 export const FOUNDATION_SCAFFOLD_PLAN_SCHEMA_URN =
   "urn:intentloom:schema:foundation-scaffold-plan:1" as const;
@@ -15,6 +15,11 @@ export const FOUNDATION_SCAFFOLD_COMPARE_SCHEMA_URN =
 export const FOUNDATION_SCAFFOLD_VALIDATE_SCHEMA_URN =
   "urn:intentloom:schema:foundation-scaffold-validate:1" as const;
 
+export const FOUNDATION_SCAFFOLD_APPLY_SCHEMA_URN =
+  "urn:intentloom:schema:foundation-scaffold-apply:1" as const;
+
+export const FOUNDATION_SCAFFOLD_ROLLBACK_SCHEMA_URN =
+  "urn:intentloom:schema:foundation-scaffold-rollback:1" as const;
 export interface FoundationScaffoldTemplateVersion {
   readonly id: string;
   readonly version: string;
@@ -62,4 +67,20 @@ export interface FoundationScaffoldValidateResult {
   readonly planDigest: string;
   readonly approvalRequired: true;
   readonly expiresAt: number;
+}
+
+export interface FoundationScaffoldApplyResult {
+  readonly schemaVersion: typeof FOUNDATION_SCAFFOLD_APPLY_SCHEMA_URN;
+  readonly workshopId: string;
+  readonly planId: string;
+  readonly result: ScaffoldResult;
+  readonly revalidatedAt: number;
+}
+
+export interface FoundationScaffoldRollbackResult {
+  readonly schemaVersion: typeof FOUNDATION_SCAFFOLD_ROLLBACK_SCHEMA_URN;
+  readonly workshopId: string;
+  readonly planId: string;
+  readonly result: ScaffoldResult;
+  readonly rolledBackAt: number;
 }

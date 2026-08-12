@@ -12,11 +12,13 @@ const scaffoldSubcommands = [
   "scaffold-get",
   "scaffold-compare",
   "scaffold-validate",
+  "scaffold-apply",
+  "scaffold-rollback",
 ] as const satisfies readonly FoundationScaffoldCliCommand[];
 
 export const foundationScaffoldUsage =
-  "Usage: intentloom foundation <scaffold-prepare|scaffold-get|scaffold-compare|scaffold-validate> " +
-  "[--workshop-id ID] [--root PATH] [--plan-id ID] [--existing-paths a,b] [--json]";
+  "Usage: intentloom foundation <scaffold-prepare|scaffold-get|scaffold-compare|scaffold-validate|scaffold-apply|scaffold-rollback> " +
+  "[--workshop-id ID] [--root PATH] [--plan-id ID] [--existing-paths a,b] [--granted-capabilities a,b] [--json]";
 
 export function isFoundationScaffoldSubcommand(
   value: string | undefined,
@@ -33,6 +35,7 @@ interface ParsedScaffoldFlags {
   readonly root?: string;
   readonly planId?: string;
   readonly existingPaths?: readonly string[];
+  readonly grantedCapabilities?: readonly string[];
 }
 
 function parseScaffoldFlags(args: readonly string[]): ParsedScaffoldFlags {
@@ -41,6 +44,7 @@ function parseScaffoldFlags(args: readonly string[]): ParsedScaffoldFlags {
   let root: string | undefined;
   let planId: string | undefined;
   let existingPaths: readonly string[] | undefined;
+  let grantedCapabilities: readonly string[] | undefined;
 
   for (let index = 0; index < args.length; index += 1) {
     const token = args[index];
@@ -119,6 +123,25 @@ function parseScaffoldFlags(args: readonly string[]): ParsedScaffoldFlags {
       index += 1;
       continue;
     }
+    if (token === "--granted-capabilities") {
+      const value = args[index + 1];
+      if (value === undefined || value.startsWith("--")) {
+        throw new Error(
+          `${foundationScaffoldUsage}\nmissing value for --granted-capabilities`,
+        );
+      }
+      if (grantedCapabilities !== undefined) {
+        throw new Error(
+          `${foundationScaffoldUsage}\n--granted-capabilities specified more than once`,
+        );
+      }
+      grantedCapabilities = value
+        .split(",")
+        .map((entry) => entry.trim())
+        .filter((entry) => entry.length > 0);
+      index += 1;
+      continue;
+    }
     throw new Error(
       `${foundationScaffoldUsage}\nunexpected argument: ${token}`,
     );
@@ -130,6 +153,7 @@ function parseScaffoldFlags(args: readonly string[]): ParsedScaffoldFlags {
     ...(root !== undefined ? { root } : {}),
     ...(planId !== undefined ? { planId } : {}),
     ...(existingPaths !== undefined ? { existingPaths } : {}),
+    ...(grantedCapabilities !== undefined ? { grantedCapabilities } : {}),
   };
 }
 
@@ -154,6 +178,9 @@ export async function runFoundationScaffoldCommand(
       ...(flags.planId !== undefined ? { planId: flags.planId } : {}),
       ...(flags.existingPaths !== undefined
         ? { existingPaths: flags.existingPaths }
+        : {}),
+      ...(flags.grantedCapabilities !== undefined
+        ? { grantedCapabilities: flags.grantedCapabilities }
         : {}),
     });
     if (result.stdout.length > 0) io.stdout(result.stdout);

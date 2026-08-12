@@ -5,12 +5,18 @@ import {
   prepareProjectScaffold,
   validateProjectScaffoldPlan,
 } from "./foundation-scaffold.js";
+import {
+  applyFoundationProjectScaffold,
+  rollbackFoundationProjectScaffold,
+} from "./foundation-scaffold-apply.js";
 
 export type FoundationScaffoldCliCommand =
   | "scaffold-prepare"
   | "scaffold-get"
   | "scaffold-compare"
-  | "scaffold-validate";
+  | "scaffold-validate"
+  | "scaffold-apply"
+  | "scaffold-rollback";
 
 function jsonResult(
   payload: unknown,
@@ -36,6 +42,7 @@ export async function runFoundationScaffoldCliCommand(
     readonly root?: string;
     readonly planId?: string;
     readonly existingPaths?: readonly string[];
+    readonly grantedCapabilities?: readonly string[];
   },
 ): Promise<QualityCliResult> {
   const json = args.json ?? false;
@@ -71,10 +78,32 @@ export async function runFoundationScaffoldCliCommand(
         `Scaffold compare for ${args.planId}`,
       );
     }
+    if (command === "scaffold-validate") {
+      return jsonResult(
+        validateProjectScaffoldPlan(args.workshopId, args.planId),
+        json,
+        `Scaffold plan ${args.planId} validated`,
+      );
+    }
+    if (command === "scaffold-apply") {
+      return jsonResult(
+        applyFoundationProjectScaffold(args.workshopId, args.planId, {
+          ...(args.existingPaths !== undefined
+            ? { existingPaths: args.existingPaths }
+            : {}),
+          grantedCapabilities: args.grantedCapabilities ?? [
+            "filesystem.write",
+            "scaffold.apply",
+          ],
+        }),
+        json,
+        `Scaffold plan ${args.planId} applied`,
+      );
+    }
     return jsonResult(
-      validateProjectScaffoldPlan(args.workshopId, args.planId),
+      rollbackFoundationProjectScaffold(args.workshopId, args.planId),
       json,
-      `Scaffold plan ${args.planId} validated`,
+      `Scaffold plan ${args.planId} rolled back`,
     );
   } catch (error: unknown) {
     return errorResult(error instanceof Error ? error.message : String(error));
