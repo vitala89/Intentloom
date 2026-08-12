@@ -1,3 +1,4 @@
+import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 import {
   buildExistingProjectWorkspaceViewModel,
@@ -28,10 +29,11 @@ describe("Engineering Workspace W9 Core: existing project workspace orchestratio
       catalog,
       "existing-fixture-generic-uninitialized",
     );
+    const fixtureRoot = resolve(fixture.root);
     const fs = createExistingProjectFixtureFileSystem(fixture);
     const overview = await prepareExistingProjectWorkspace(
       {
-        root: fixture.root,
+        root: fixtureRoot,
         scope: fixture.scope,
         now: () => 1_700_000_000_000,
       },
@@ -64,9 +66,10 @@ describe("Engineering Workspace W9 Core: existing project workspace orchestratio
       catalog,
       "existing-fixture-typescript-ready",
     );
+    const fixtureRoot = resolve(fixture.root);
     const fs = createExistingProjectFixtureFileSystem(fixture);
     const overview = await prepareExistingProjectWorkspace(
-      { root: fixture.root, scope: "quick", now: () => 1_700_000_000_000 },
+      { root: fixtureRoot, scope: "quick", now: () => 1_700_000_000_000 },
       fs,
     );
 
@@ -87,10 +90,11 @@ describe("Engineering Workspace W9 Core: existing project workspace orchestratio
       catalog,
       "existing-fixture-tauri-detected",
     );
+    const fixtureRoot = resolve(fixture.root);
     const fs = createExistingProjectFixtureFileSystem(fixture);
     const overview = await prepareExistingProjectWorkspace(
       {
-        root: fixture.root,
+        root: fixtureRoot,
         scope: fixture.scope,
         now: () => 1_700_000_000_000,
       },
@@ -108,9 +112,10 @@ describe("Engineering Workspace W9 Core: existing project workspace orchestratio
       catalog,
       "existing-fixture-generic-uninitialized",
     );
+    const fixtureRoot = resolve(fixture.root);
     const fs = createExistingProjectFixtureFileSystem(fixture);
     const overview = await prepareExistingProjectWorkspace(
-      { root: fixture.root, scope: "standard", now: () => 1_700_000_000_000 },
+      { root: fixtureRoot, scope: "standard", now: () => 1_700_000_000_000 },
       fs,
     );
     const viewmodel = buildExistingProjectWorkspaceViewModel(overview, "ready");
@@ -127,9 +132,10 @@ describe("Engineering Workspace W9 Core: existing project workspace orchestratio
       catalog,
       "existing-fixture-tauri-detected",
     );
+    const fixtureRoot = resolve(fixture.root);
     const fs = createExistingProjectFixtureFileSystem(fixture);
     const result = await runExistingProjectWorkspaceCliCommand("prepare", {
-      root: fixture.root,
+      root: fixtureRoot,
       scope: "standard",
       json: true,
       fs,

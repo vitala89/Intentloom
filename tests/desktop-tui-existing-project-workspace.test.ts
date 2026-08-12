@@ -1,3 +1,4 @@
+import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 import {
   EXISTING_PROJECT_FIXTURE_IDS,
@@ -16,10 +17,11 @@ describe("Engineering Workspace W9 Client: Desktop and TUI viewmodels", () => {
   it("builds workspace viewmodels for frozen fixture IDs", async () => {
     for (const fixtureId of EXISTING_PROJECT_FIXTURE_IDS) {
       const fixture = getExistingProjectFixture(catalog, fixtureId);
+      const fixtureRoot = resolve(fixture.root);
       const fs = createExistingProjectFixtureFileSystem(fixture);
       const overview = await prepareExistingProjectWorkspace(
         {
-          root: fixture.root,
+          root: fixtureRoot,
           scope: fixture.scope,
           now: () => 1_700_000_000_000,
         },
@@ -29,7 +31,7 @@ describe("Engineering Workspace W9 Client: Desktop and TUI viewmodels", () => {
         overview,
         "ready",
       );
-      expect(viewmodel.root).toBe(fixture.root);
+      expect(viewmodel.root).toBe(fixtureRoot);
       expect(viewmodel.profile).toBe(fixture.expected.inspectProfile);
     }
   });
@@ -39,10 +41,11 @@ describe("Engineering Workspace W9 Client: Desktop and TUI viewmodels", () => {
       catalog,
       "existing-fixture-tauri-detected",
     );
+    const fixtureRoot = resolve(fixture.root);
     const fs = createExistingProjectFixtureFileSystem(fixture);
     const overview = await prepareExistingProjectWorkspace(
       {
-        root: fixture.root,
+        root: fixtureRoot,
         scope: fixture.scope,
         now: () => 1_700_000_000_000,
       },
@@ -60,10 +63,11 @@ describe("Engineering Workspace W9 Client: Desktop and TUI viewmodels", () => {
   it("keeps CLI prepare parity with workspace viewmodels for frozen fixtures", async () => {
     for (const fixtureId of EXISTING_PROJECT_FIXTURE_IDS) {
       const fixture = getExistingProjectFixture(catalog, fixtureId);
+      const fixtureRoot = resolve(fixture.root);
       const fs = createExistingProjectFixtureFileSystem(fixture);
       const overview = await prepareExistingProjectWorkspace(
         {
-          root: fixture.root,
+          root: fixtureRoot,
           scope: fixture.scope,
           now: () => 1_700_000_000_000,
         },
@@ -74,7 +78,7 @@ describe("Engineering Workspace W9 Client: Desktop and TUI viewmodels", () => {
         "ready",
       );
       const cliResult = await runExistingProjectWorkspaceCliCommand("prepare", {
-        root: fixture.root,
+        root: fixtureRoot,
         scope: fixture.scope,
         json: true,
         fs,

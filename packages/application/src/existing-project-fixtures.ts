@@ -107,9 +107,10 @@ export function getExistingProjectFixture(
 export function createExistingProjectFixtureFileSystem(
   entry: ExistingProjectFixtureEntry,
 ): FileSystem & { files: Map<string, string> } {
+  const root = resolve(entry.root);
   const initial: Record<string, string> = {};
   for (const [relativePath, content] of Object.entries(entry.initialTree)) {
-    initial[join(entry.root, relativePath)] = content;
+    initial[join(root, relativePath)] = content;
   }
   return createMemoryFileSystem(initial);
 }

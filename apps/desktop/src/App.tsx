@@ -12,10 +12,8 @@ import type {
   ProjectTimelineResult,
 } from "@intentloom/protocol";
 import { WorkspaceContent } from "./WorkspaceContent.js";
-import {
-  CommandPaletteModal,
-  type CommandOption,
-} from "./views/CommandPaletteModal.js";
+import { CommandPaletteModal } from "./views/CommandPaletteModal.js";
+import { buildWorkspaceCommandOptions } from "./workspace-command-options.js";
 import {
   workspaceViews,
   type WorkspaceInspectStatus,
@@ -111,107 +109,6 @@ export default function App() {
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, []);
-
-  const commandOptions: CommandOption[] = [
-    {
-      id: "nav-overview",
-      category: "Navigation",
-      label: "Go to Overview",
-      icon: "◈",
-      shortcut: "1",
-      action: () => setActiveView("Overview"),
-    },
-    {
-      id: "nav-new-project",
-      category: "Navigation",
-      label: "Go to New project",
-      icon: "✦",
-      shortcut: "2",
-      action: () => setActiveView("New project"),
-    },
-    {
-      id: "nav-open-existing",
-      category: "Navigation",
-      label: "Go to Open existing project",
-      icon: "⌂",
-      shortcut: "",
-      action: () => setActiveView("Open existing project"),
-    },
-    {
-      id: "nav-inspect",
-      category: "Navigation",
-      label: "Go to Inspect",
-      icon: "⌘",
-      shortcut: "3",
-      action: () => setActiveView("Inspect"),
-    },
-    {
-      id: "nav-doctor",
-      category: "Navigation",
-      label: "Go to Doctor",
-      icon: "✚",
-      shortcut: "3",
-      action: () => setActiveView("Doctor"),
-    },
-    {
-      id: "nav-diff",
-      category: "Navigation",
-      label: "Go to Diff Review",
-      icon: "⇄",
-      shortcut: "4",
-      action: () => setActiveView("Diff review"),
-    },
-    {
-      id: "nav-timeline",
-      category: "Navigation",
-      label: "Go to Timeline",
-      icon: "◷",
-      shortcut: "5",
-      action: () => setActiveView("Timeline"),
-    },
-    {
-      id: "nav-settings",
-      category: "Navigation",
-      label: "Go to Settings & Diagnostics",
-      icon: "⚙",
-      action: () => setActiveView("Settings"),
-    },
-    {
-      id: "action-select-root",
-      category: "Actions",
-      label: "Select local project root...",
-      icon: "⌂",
-      action: () => requestProjectSelect(),
-    },
-    {
-      id: "action-reconnect",
-      category: "Actions",
-      label: "Reconnect daemon",
-      icon: "↻",
-      action: () => void connectDaemon(),
-    },
-    {
-      id: "action-load-diff",
-      category: "Actions",
-      label: "Load diff preview",
-      icon: "⇄",
-      action: () => void loadDiff(),
-    },
-    {
-      id: "action-load-timeline",
-      category: "Actions",
-      label: "Load project timeline",
-      icon: "◷",
-      action: () => void loadTimeline(),
-    },
-    {
-      id: "action-toggle-theme",
-      category: "Actions",
-      label: `Switch to ${theme === "dark" ? "Light" : "Dark"} mode`,
-      icon: theme === "dark" ? "☼" : "☾",
-      action: () => setTheme((t) => (t === "dark" ? "light" : "dark")),
-    },
-  ];
 
   /**
    * Start a new cancellable operation.
@@ -467,6 +364,16 @@ export default function App() {
       setIsConnecting(false);
     }
   }
+
+  const commandOptions = buildWorkspaceCommandOptions({
+    theme,
+    setActiveView,
+    requestProjectSelect,
+    connectDaemon,
+    loadDiff,
+    loadTimeline,
+    setTheme,
+  });
 
   return (
     <main className={`app-shell theme-${theme}`}>
