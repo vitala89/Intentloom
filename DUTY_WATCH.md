@@ -98,7 +98,7 @@ entry directly below this section.
 
 ### 2026-08-12, Engineering Workspace W8 library workspace starter Client
 
-- **Status:** complete on branch; PR open.
+- **Status:** complete on branch; PR #303 open.
 - **Agent/tool:** Cursor Agent
 - **Branch:** `feat/workspace-w8-library-starter-client` (from `main` at `7196897`)
 - **Objective:** Deliver W8 Client — workspace-aware scaffold tree for extensible/pnpm-workspace workshops with packages/examples grouping, optional Nx chip, shared prepare viewmodels, Desktop/TUI parity, and handoff reconciliation.
