@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **W1–W6 complete on `main` at `7ff98e4` (W6 Client PR #299 merged). W7 Core in progress on `feat/workspace-w7-scaffold-apply-core`.**
+Status: **W7 Core PR #300 open on `feat/workspace-w7-scaffold-apply-core` at `d182643`. W7 Client follows Core merge.**
 
 Active branch: `feat/workspace-w7-scaffold-apply-core`
 
-Current objective: Deliver W7 Core — foundation-gated transactional empty-root scaffold apply and rollback.
+Current objective: Land W7 Core PR #300; then W7 Client explicit approval UX.
 
-Next first action: Implement W7 Core (protocol → application → daemon → CLI → tests); then W7 Client.
+Next first action: Confirm CI green on PR #300 and merge; then W7 Client branch.
 
 Known open items, in the order they should be handled:
 
@@ -98,9 +98,11 @@ entry directly below this section.
 
 ### 2026-08-12, Engineering Workspace W7 scaffold apply Core (in progress)
 
-- **Status:** in progress on `feat/workspace-w7-scaffold-apply-core`
+- **Status:** complete on branch; PR #300 open.
 - **Agent/tool:** Cursor Agent
 - **Branch:** `feat/workspace-w7-scaffold-apply-core` (from `main` at `7ff98e4`)
+- **Pull request:** #300
+- **Commit:** `d182643`
 - **Objective:** Deliver W7 Core — foundation-gated transactional empty-root scaffold apply/rollback over I6 ops, with fail-closed revalidation, versioned protocol URNs, daemon RPC, and CLI.
 - **Completed so far:**
   - Track A handoff reconciliation: W6 marked complete on `main` (`7ff98e4`).
