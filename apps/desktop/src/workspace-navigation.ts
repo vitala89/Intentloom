@@ -12,6 +12,7 @@ export type WorkspaceTimelineStatus = WorkspaceInspectStatus | "empty";
 
 export type WorkspaceView =
   | "Overview"
+  | "Open existing project"
   | "New project"
   | "Foundation workshop"
   | "Inspect"
@@ -22,6 +23,7 @@ export type WorkspaceView =
 
 export const workspaceViews: Array<{ label: WorkspaceView; icon: string }> = [
   { label: "Overview", icon: "◈" },
+  { label: "Open existing project", icon: "⌂" },
   { label: "New project", icon: "✦" },
   { label: "Foundation workshop", icon: "◆" },
   { label: "Inspect", icon: "⌘" },

@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **W8 Client PR open on `feat/workspace-w8-library-starter-client`. W8 Core complete on `main` @ `7196897` (PR #302).**
+Status: **W9 Core + Client complete on `cursor/workspace-w9-existing-project-core-abd9`. W8 complete on `main` @ `0b42163` (PR #303).**
 
-Active branch: `feat/workspace-w8-library-starter-client`
+Active branch: `cursor/workspace-w9-existing-project-core-abd9`
 
-Current objective: Land W8 Client PR; W8 complete after merge.
+Current objective: Land W9 PR; plan W10 feature intent.
 
-Next first action: Confirm CI green on W8 Client PR and merge.
+Next first action: Merge W9 PR; begin W10 planning.
 
 Known open items, in the order they should be handled:
 
@@ -95,6 +95,18 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-12, Engineering Workspace W9 existing-project integration Core + Client
+
+- **Status:** complete on branch; PR pending.
+- **Agent/tool:** Cursor Agent
+- **Branch:** `cursor/workspace-w9-existing-project-core-abd9` (from `main` at `0b42163`)
+- **Objective:** Deliver W9 — compose inspect → adoption → specialized detection → doctor → assessment into one read-only existing-project workspace flow with Core contracts, daemon RPC, CLI helper, Desktop Open Existing Project view, TUI text parity, and frozen fixtures.
+- **Completed:**
+  - Core: `ExistingProjectWorkspaceOverview` orchestration, protocol URNs, validator, daemon `intentloom.existing-project.workspace.prepare.v1`, CLI helper, 3 frozen fixture IDs, 8 contract tests.
+  - Client: Desktop `OpenExistingProjectView`, navigation + command palette entry, Tauri bridge allowlist, 3 Desktop/TUI parity tests.
+- **Validation:** `pnpm verify` — 1393 passed, 3 skipped.
+- **Next first action:** Merge W9 PR; W10 feature intent planning.
 
 ### 2026-08-12, Engineering Workspace W8 library workspace starter Client
 

@@ -231,9 +231,9 @@ before a new release or implementation milestone is declared complete.
 
 ## Active focus
 
-1. Engineering Workspace **W1–W8 Core** are on `main` at `7196897` (W8 Core PR #302).
-   **W8 Client** workspace tree UX is in progress on
-   `feat/workspace-w8-library-starter-client`.
+1. Engineering Workspace **W1–W8** are complete on `main` at `0b42163` (W8 Client PR #303).
+   **W9** existing-project integration Core + Client is complete on branch
+   `cursor/workspace-w9-existing-project-core-abd9` (PR pending).
 2. Engineering Workspace **W0** capability reconciliation remains complete on `main`.
 3. Keep GitHub Pages as the canonical public documentation destination and
    continue the roadmap after the completed `1.0.2` metadata release.

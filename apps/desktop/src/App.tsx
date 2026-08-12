@@ -130,6 +130,14 @@ export default function App() {
       action: () => setActiveView("New project"),
     },
     {
+      id: "nav-open-existing",
+      category: "Navigation",
+      label: "Go to Open existing project",
+      icon: "⌂",
+      shortcut: "",
+      action: () => setActiveView("Open existing project"),
+    },
+    {
       id: "nav-inspect",
       category: "Navigation",
       label: "Go to Inspect",
