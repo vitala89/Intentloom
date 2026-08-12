@@ -1,37 +1,56 @@
 import { Card } from "../design/components/layout/Card.js";
 import { Button } from "../design/components/core/Button.js";
 import { StatusChip } from "../design/components/status/StatusChip.js";
+import { FoundationScaffoldApplyPanel } from "./FoundationScaffoldApplyPanel.js";
 import type {
+  FoundationScaffoldApplyViewModel,
   FoundationScaffoldCompareViewModel,
   FoundationScaffoldPrepareViewModel,
+  FoundationScaffoldRollbackViewModel,
   FoundationScaffoldValidateViewModel,
 } from "./foundation-scaffold-view-helpers.js";
+import { scaffoldApplyStatusTone } from "./foundation-scaffold-view-helpers.js";
 
 export interface FoundationScaffoldPanelProps {
   readonly prepare: FoundationScaffoldPrepareViewModel | null;
   readonly compare: FoundationScaffoldCompareViewModel | null;
   readonly validate: FoundationScaffoldValidateViewModel | null;
+  readonly apply: FoundationScaffoldApplyViewModel | null;
+  readonly rollback: FoundationScaffoldRollbackViewModel | null;
   readonly existingPaths: string;
+  readonly applyConfirmed: boolean;
   readonly loading: boolean;
   readonly errorMessage: string | null;
   readonly onExistingPathsChange: (value: string) => void;
+  readonly onApplyConfirmedChange: (value: boolean) => void;
   readonly onPrepare: () => void;
   readonly onCompare: () => void;
   readonly onValidate: () => void;
+  readonly onApply: () => void;
+  readonly onRollback: () => void;
 }
 
 export function FoundationScaffoldPanel({
   prepare,
   compare,
   validate,
+  apply,
+  rollback,
   existingPaths,
+  applyConfirmed,
   loading,
   errorMessage,
   onExistingPathsChange,
+  onApplyConfirmedChange,
   onPrepare,
   onCompare,
   onValidate,
+  onApply,
+  onRollback,
 }: FoundationScaffoldPanelProps) {
+  const transaction = rollback ?? apply;
+  const transactionStatus = transaction?.status;
+
   return (
     <Card variant="default">
       <div
@@ -52,9 +71,18 @@ export function FoundationScaffoldPanel({
           </p>
         </div>
         <StatusChip
-          tone={validate?.valid ? "success" : prepare ? "warning" : "neutral"}
+          tone={
+            transactionStatus
+              ? scaffoldApplyStatusTone(transactionStatus)
+              : validate?.valid
+                ? "warning"
+                : prepare
+                  ? "warning"
+                  : "neutral"
+          }
           label={
-            validate?.valid ? "validated" : prepare ? "planned" : "no plan"
+            transactionStatus ??
+            (validate?.valid ? "validated" : prepare ? "planned" : "no plan")
           }
           size="sm"
         />
@@ -169,17 +197,16 @@ export function FoundationScaffoldPanel({
         </p>
       ) : null}
 
-      {validate ? (
-        <p
-          style={{
-            color: "var(--text-secondary)",
-            marginTop: "var(--space-3)",
-          }}
-        >
-          Validation: valid, approval still required before apply. Digest{" "}
-          <code>{validate.planDigest.slice(0, 12)}…</code>
-        </p>
-      ) : null}
+      <FoundationScaffoldApplyPanel
+        validate={validate}
+        apply={apply}
+        rollback={rollback}
+        applyConfirmed={applyConfirmed}
+        loading={loading}
+        onApplyConfirmedChange={onApplyConfirmedChange}
+        onApply={onApply}
+        onRollback={onRollback}
+      />
     </Card>
   );
 }

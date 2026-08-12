@@ -1,6 +1,8 @@
 import {
+  createFoundationScaffoldApplyRequest,
   createFoundationScaffoldCompareRequest,
   createFoundationScaffoldPrepareRequest,
+  createFoundationScaffoldRollbackRequest,
   createFoundationScaffoldValidateRequest,
   type FoundationViewmodelPayload,
 } from "@intentloom/protocol";
@@ -54,6 +56,38 @@ export function foundationScaffoldDesktopMethods(
       return foundationRequest(
         createFoundationScaffoldValidateRequest(
           "desktop-foundation-scaffold-validate",
+          workshopId,
+          planId,
+        ),
+        signal,
+      );
+    },
+
+    async foundationScaffoldApply(
+      workshopId: string,
+      planId: string,
+      existingPaths?: readonly string[],
+      signal?: AbortSignal,
+    ): Promise<FoundationViewmodelPayload> {
+      return foundationRequest(
+        createFoundationScaffoldApplyRequest(
+          "desktop-foundation-scaffold-apply",
+          workshopId,
+          planId,
+          existingPaths,
+        ),
+        signal,
+      );
+    },
+
+    async foundationScaffoldRollback(
+      workshopId: string,
+      planId: string,
+      signal?: AbortSignal,
+    ): Promise<FoundationViewmodelPayload> {
+      return foundationRequest(
+        createFoundationScaffoldRollbackRequest(
+          "desktop-foundation-scaffold-rollback",
           workshopId,
           planId,
         ),

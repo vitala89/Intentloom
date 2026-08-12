@@ -714,6 +714,8 @@ fn is_foundation_method(method: &str) -> bool {
             | "intentloom.foundation.scaffold.get.v1"
             | "intentloom.foundation.scaffold.compare.v1"
             | "intentloom.foundation.scaffold.validate.v1"
+            | "intentloom.foundation.scaffold.apply.v1"
+            | "intentloom.foundation.scaffold.rollback.v1"
     )
 }
 
