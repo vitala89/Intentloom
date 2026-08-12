@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **W8 Core in progress on `feat/workspace-w8-library-starter-core`. W7 complete on `main` @ `0af87a1` (PR #301).**
+Status: **W8 Core PR #302 open on `feat/workspace-w8-library-starter-core`. W7 complete on `main` @ `0af87a1` (PR #301).**
 
 Active branch: `feat/workspace-w8-library-starter-core`
 
-Current objective: Deliver W8 Core — pnpm workspace starter template (core/react/testing/examples), optional local Nx, workspace invariants, foundation integration tests, dogfooding record.
+Current objective: Land W8 Core PR #302; then W8 Client workspace tree UX.
 
-Next first action: Run `pnpm verify`, open W8 Core PR; then W8 Client.
+Next first action: Confirm CI green on PR #302 and merge.
 
 Known open items, in the order they should be handled:
 
@@ -96,11 +96,12 @@ entry directly below this section.
 
 ## Watch entries
 
-### 2026-08-12, Engineering Workspace W8 library workspace starter Core (in progress)
+### 2026-08-12, Engineering Workspace W8 library workspace starter Core
 
-- **Status:** in progress on `feat/workspace-w8-library-starter-core`.
+- **Status:** complete on branch; PR #302 open.
 - **Agent/tool:** Cursor Agent
 - **Branch:** `feat/workspace-w8-library-starter-core` (from `main` at `0af87a1`)
+- **Pull request:** #302
 - **Objective:** Deliver W8 Core — expand pnpm workspace starter to core/react/testing/examples shape, optional local-only Nx on extensible tier, workspace scaffold invariants, foundation prepare integration, dogfooding record.
 - **Completed so far:**
   - Track A: W7 Client merged on `main` @ `0af87a1` (PR #301).
@@ -108,7 +109,8 @@ entry directly below this section.
   - Extensible foundation blueprint adds optional `nx-monorepo` for `pnpm-workspace`.
   - Tests: `foundation-scaffold-workspace.test.ts`, updated `inception-workspace-scaffold.test.ts`.
   - Dogfooding: `docs/releases/dogfooding/2026-08-12-workspace-starter-scaffold.md`.
-- **Not completed:** Full verify, PR open, W8 Client.
+- **Not completed:** PR merge; W8 Client.
+- **Validation:** `pnpm verify` — 1379 passed, 3 skipped.
 
 ### 2026-08-12, Engineering Workspace W7 scaffold apply Client (merged)
 
