@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **W8 Core PR #302 open on `feat/workspace-w8-library-starter-core`. W7 complete on `main` @ `0af87a1` (PR #301).**
+Status: **W8 Client PR open on `feat/workspace-w8-library-starter-client`. W8 Core complete on `main` @ `7196897` (PR #302).**
 
-Active branch: `feat/workspace-w8-library-starter-core`
+Active branch: `feat/workspace-w8-library-starter-client`
 
-Current objective: Land W8 Core PR #302; then W8 Client workspace tree UX.
+Current objective: Land W8 Client PR; W8 complete after merge.
 
-Next first action: Confirm CI green on PR #302 and merge.
+Next first action: Confirm CI green on W8 Client PR and merge.
 
 Known open items, in the order they should be handled:
 
@@ -96,21 +96,37 @@ entry directly below this section.
 
 ## Watch entries
 
-### 2026-08-12, Engineering Workspace W8 library workspace starter Core
+### 2026-08-12, Engineering Workspace W8 library workspace starter Client
 
-- **Status:** complete on branch; PR #302 open.
+- **Status:** complete on branch; PR open.
 - **Agent/tool:** Cursor Agent
-- **Branch:** `feat/workspace-w8-library-starter-core` (from `main` at `0af87a1`)
+- **Branch:** `feat/workspace-w8-library-starter-client` (from `main` at `7196897`)
+- **Objective:** Deliver W8 Client — workspace-aware scaffold tree for extensible/pnpm-workspace workshops with packages/examples grouping, optional Nx chip, shared prepare viewmodels, Desktop/TUI parity, and handoff reconciliation.
+- **Completed:**
+  - Track A: W8 Core merged on `main` @ `7196897` (PR #302).
+  - Application: `foundation-scaffold-workspace-viewmodel.ts`; extended prepare viewmodel + TUI renderer workspace section; `foundation-w8.ts` exports.
+  - Desktop: `FoundationScaffoldWorkspaceTree.tsx`; grouped tree in `FoundationScaffoldPanel`; workspace section in view helpers.
+  - Tests: `tests/desktop-tui-foundation-scaffold-workspace.test.ts` (3) — parity with W8 Core fixtures.
+  - Handoff: `PROJECT_STATE.md`, `DUTY_WATCH.md`, capability matrix § W8 reconciled.
+- **Validation:** `pnpm verify` — 1382 passed, 3 skipped.
+- **Next first action:** Merge W8 Client PR; W9 existing-project integration planning.
+
+### 2026-08-12, Engineering Workspace W8 library workspace starter Core (merged)
+
+- **Status:** complete on `main` (`7196897`, PR #302).
+- **Agent/tool:** Cursor Agent
+- **Branch:** `feat/workspace-w8-library-starter-core` (squash-merged)
 - **Pull request:** #302
+- **Commit:** `7196897`
 - **Objective:** Deliver W8 Core — expand pnpm workspace starter to core/react/testing/examples shape, optional local-only Nx on extensible tier, workspace scaffold invariants, foundation prepare integration, dogfooding record.
-- **Completed so far:**
+- **Completed:**
   - Track A: W7 Client merged on `main` @ `0af87a1` (PR #301).
   - `inception-workspace-scaffold-files.ts` + `validateWorkspaceScaffoldPlan`.
   - Extensible foundation blueprint adds optional `nx-monorepo` for `pnpm-workspace`.
   - Tests: `foundation-scaffold-workspace.test.ts`, updated `inception-workspace-scaffold.test.ts`.
   - Dogfooding: `docs/releases/dogfooding/2026-08-12-workspace-starter-scaffold.md`.
-- **Not completed:** PR merge; W8 Client.
-- **Validation:** `pnpm verify` — 1379 passed, 3 skipped.
+- **Validation:** `pnpm verify` — 1379 passed, 3 skipped; CI green on PR #302.
+- **Next first action:** W8 Client workspace tree UX on `feat/workspace-w8-library-starter-client`.
 
 ### 2026-08-12, Engineering Workspace W7 scaffold apply Client (merged)
 

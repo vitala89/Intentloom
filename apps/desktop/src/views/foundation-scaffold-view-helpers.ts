@@ -13,6 +13,17 @@ export interface FoundationScaffoldFileRow {
   readonly ownership: "managed" | "project-owned";
 }
 
+export interface FoundationScaffoldWorkspaceFileGroup {
+  readonly label: string;
+  readonly files: readonly FoundationScaffoldFileRow[];
+}
+
+export interface FoundationScaffoldWorkspaceSection {
+  readonly topology: "pnpm-workspace";
+  readonly hasNx: boolean;
+  readonly groups: readonly FoundationScaffoldWorkspaceFileGroup[];
+}
+
 export interface FoundationScaffoldPrepareViewModel {
   readonly workshopId: string;
   readonly planId: string;
@@ -27,6 +38,7 @@ export interface FoundationScaffoldPrepareViewModel {
   readonly verificationChecks: readonly string[];
   readonly requiredCapabilities: readonly string[];
   readonly templateVersions: readonly string[];
+  readonly workspace?: FoundationScaffoldWorkspaceSection;
 }
 
 export interface FoundationScaffoldCompareViewModel {
@@ -76,6 +88,17 @@ export function buildScaffoldPrepareProgress(
     throw new Error("Invalid foundation scaffold prepare viewmodel");
   }
   const { record } = prepare;
+  const templateVersions = record.templateVersions.map(
+    (entry) => `${entry.id}@${entry.version}`,
+  );
+  const files = record.plan.files.map((file) => ({
+    path: file.path,
+    action: file.action,
+    ownership: file.isManaged
+      ? ("managed" as const)
+      : ("project-owned" as const),
+  }));
+  const workspace = buildWorkspaceSection(files, templateVersions);
   return {
     workshopId: prepare.workshopId,
     planId: record.plan.planId,
@@ -84,18 +107,13 @@ export function buildScaffoldPrepareProgress(
     blueprintDigest: record.plan.blueprintDigest,
     expiresAt: record.expiresAt,
     workshopUnchanged: true,
-    files: record.plan.files.map((file) => ({
-      path: file.path,
-      action: file.action,
-      ownership: file.isManaged ? "managed" : "project-owned",
-    })),
+    files,
     dependencies: record.plan.dependencies,
     scripts: Object.keys(record.plan.scripts).sort(),
     verificationChecks: record.verificationChecks,
     requiredCapabilities: record.requiredCapabilities,
-    templateVersions: record.templateVersions.map(
-      (entry) => `${entry.id}@${entry.version}`,
-    ),
+    templateVersions,
+    ...(workspace !== undefined ? { workspace } : {}),
   };
 }
 
@@ -178,4 +196,49 @@ export function scaffoldApplyStatusTone(
   if (status === "applied") return "success";
   if (status === "failed") return "error";
   return "warning";
+}
+
+const WORKSPACE_TEMPLATE_PREFIX = "typescript-pnpm-workspace-starter@";
+
+function buildWorkspaceSection(
+  files: readonly FoundationScaffoldFileRow[],
+  templateVersions: readonly string[],
+): FoundationScaffoldWorkspaceSection | undefined {
+  const isWorkspace = templateVersions.some((entry) =>
+    entry.startsWith(WORKSPACE_TEMPLATE_PREFIX),
+  );
+  if (!isWorkspace) return undefined;
+
+  const rootFiles: FoundationScaffoldFileRow[] = [];
+  const packageFiles: FoundationScaffoldFileRow[] = [];
+  const exampleFiles: FoundationScaffoldFileRow[] = [];
+
+  for (const file of files) {
+    if (file.path.startsWith("packages/")) {
+      packageFiles.push(file);
+      continue;
+    }
+    if (file.path.startsWith("examples/")) {
+      exampleFiles.push(file);
+      continue;
+    }
+    rootFiles.push(file);
+  }
+
+  const groups: FoundationScaffoldWorkspaceFileGroup[] = [];
+  if (rootFiles.length > 0) {
+    groups.push({ label: "Root", files: rootFiles });
+  }
+  if (packageFiles.length > 0) {
+    groups.push({ label: "packages/", files: packageFiles });
+  }
+  if (exampleFiles.length > 0) {
+    groups.push({ label: "examples/", files: exampleFiles });
+  }
+
+  return {
+    topology: "pnpm-workspace",
+    hasNx: files.some((file) => file.path === "nx.json"),
+    groups,
+  };
 }
