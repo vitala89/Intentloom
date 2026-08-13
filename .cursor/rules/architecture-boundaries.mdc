@@ -1,0 +1,33 @@
+---
+description: Clean Architecture and dependency direction for the Intentloom monorepo
+alwaysApply: true
+---
+
+# Architecture boundaries
+
+Canon (do not fork a second handbook):
+`docs/governance/ENGINEERING_PRINCIPLES.md`,
+`docs/governance/CODE_QUALITY_STANDARDS.md`,
+`AGENTS.md`.
+
+## Stay at one public monorepo
+
+This repo is Stage 3 (`apps/*` + `packages/*` + `catalog/*`). Do not split
+into multi-monorepo, microfrontends, Module Federation, or a second UI
+framework without a new ADR. Desktop is one Tauri app, not a shell of remotes.
+
+## Dependency direction
+
+- Clients depend on `@intentloom/protocol` and public application contracts.
+- `apps/desktop` must not import `@intentloom/application`, `@intentloom/core`,
+  or `@intentloom/daemon`.
+- Platform packages must not import `apps/desktop`.
+- Rust (`src-tauri`) is transport, window, dialog, and daemon lifecycle only.
+  Domain rules stay in application/protocol/validator.
+- Generated adapters and `catalog/` derivatives are not hand-edited as truth.
+
+## File budgets
+
+Prefer production files ≤250 lines. Do not grow a file past 400 without a
+documented exception. Extract a cohesive responsibility instead of adding
+helpers dumps or unused layers.

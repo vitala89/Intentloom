@@ -1,0 +1,29 @@
+---
+description: React 19 and TypeScript rules for Intentloom Desktop
+globs: apps/desktop/**/*.{ts,tsx}
+alwaysApply: false
+---
+
+# React 19 + TypeScript (Desktop)
+
+Canon: `docs/governance/REACT_BEST_PRACTICES.md` and ADR-0044.
+
+## Must
+
+- Functional components, explicit `export interface …Props`.
+- Relative imports keep `.js` extensions (NodeNext).
+- Import design-system modules by path. No UI barrel files.
+- Narrowest local state. Derive during render. Do not sync copies in
+  `useEffect`.
+- Long IPC/daemon calls take `AbortSignal`. Do not setState after unmount.
+- Focus returns to the trigger on dialog dismiss. Use `useId()` for aria pairs.
+- Status is never color-only: glyph + word label.
+- CSP / zero-network: no remote fonts, CDN icons, or fetch to the public web
+  from the webview.
+
+## Must not
+
+- Server Components, SSR, or a browser-hosted second app.
+- Boolean prop piles (`isCompact`, `hasHeader`, `isRed`). Use composition.
+- Domain orchestration inside views. Views call `desktopClient` and render
+  protocol viewmodels.
