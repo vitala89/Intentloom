@@ -16,6 +16,7 @@ import { InspectView } from "./views/InspectView.js";
 import { NewProjectView } from "./views/NewProjectView.js";
 import { FoundationWorkshopView } from "./views/FoundationWorkshopView.js";
 import { OpenExistingProjectView } from "./views/OpenExistingProjectView.js";
+import { FeatureIntentView } from "./views/FeatureIntentView.js";
 import { OverviewView } from "./views/OverviewView.js";
 import { SettingsView } from "./views/SettingsView.js";
 import { TimelineView } from "./views/TimelineView.js";
@@ -107,6 +108,15 @@ export function WorkspaceContent({
   if (activeView === "Open existing project") {
     return (
       <OpenExistingProjectView
+        onSelectProject={() => onRequestProjectSelect()}
+        root={root}
+      />
+    );
+  }
+
+  if (activeView === "Feature intent") {
+    return (
+      <FeatureIntentView
         onSelectProject={() => onRequestProjectSelect()}
         root={root}
       />

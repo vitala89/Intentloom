@@ -717,6 +717,8 @@ fn is_foundation_method(method: &str) -> bool {
             | "intentloom.foundation.scaffold.apply.v1"
             | "intentloom.foundation.scaffold.rollback.v1"
             | "intentloom.existing-project.workspace.prepare.v1"
+            | "intentloom.feature-intent.workspace.prepare.v1"
+            | "intentloom.feature-intent.workspace.analyze.v1"
     )
 }
 
