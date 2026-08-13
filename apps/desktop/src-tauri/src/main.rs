@@ -719,6 +719,8 @@ fn is_foundation_method(method: &str) -> bool {
             | "intentloom.existing-project.workspace.prepare.v1"
             | "intentloom.feature-intent.workspace.prepare.v1"
             | "intentloom.feature-intent.workspace.analyze.v1"
+            | "intentloom.bounded-execution.workspace.prepare.v1"
+            | "intentloom.bounded-execution.workspace.execute.v1"
     )
 }
 
