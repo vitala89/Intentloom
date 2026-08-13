@@ -59,6 +59,10 @@ import {
   handleFeatureIntentWorkspaceAnalyze,
   handleFeatureIntentWorkspacePrepare,
 } from "./feature-intent-handlers.js";
+import {
+  handleBoundedExecutionWorkspaceExecute,
+  handleBoundedExecutionWorkspacePrepare,
+} from "./bounded-execution-handlers.js";
 
 function value(args: readonly string[], flag: string): string {
   const index = args.indexOf(flag);
@@ -202,6 +206,8 @@ async function main(): Promise<void> {
     existingProjectWorkspacePrepare: handleExistingProjectWorkspacePrepare,
     featureIntentWorkspacePrepare: handleFeatureIntentWorkspacePrepare,
     featureIntentWorkspaceAnalyze: handleFeatureIntentWorkspaceAnalyze,
+    boundedExecutionWorkspacePrepare: handleBoundedExecutionWorkspacePrepare,
+    boundedExecutionWorkspaceExecute: handleBoundedExecutionWorkspaceExecute,
   });
   const stop = () => void daemon.close().then(() => process.exit(0));
   process.once("SIGINT", stop);
