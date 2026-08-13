@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **W11 Client PR #308 open** from `main` @ `889ce68`.
+Status: **W1–W11 Core and Client complete** on `main` @ `19f2582`. Chore branch `chore/agent-architecture-cursor-rules` records Cursor architecture rules and gitignore.
 
-Active branch: `feat/workspace-w11-bounded-execution-client`
+Active branch: `chore/agent-architecture-cursor-rules`
 
-Current objective: Land W11 Client (Desktop/TUI bounded-execution panel) against frozen Core fixtures and RPC. Do not invent domain semantics; no unrestricted shell.
+Current objective: Reconcile stale W11 Client-in-review handoff docs and land thin Cursor architecture rules. Do not start W12.
 
-Next first action: Review and merge https://github.com/vitala89/Intentloom/pull/308; then start W12 only after an explicit brief.
+Next first action: Review and merge the chore PR; start W12 only after an explicit brief.
 
 Known open items, in the order they should be handled:
 
@@ -95,6 +95,35 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-14, Engineering Workspace W11 Client merge reconciliation and Cursor architecture rules
+
+- **Status:** complete on branch; PR to follow.
+- **Branch:** `chore/agent-architecture-cursor-rules` from `origin/main` @ `19f2582`
+- **Pull request:** (this chore branch)
+- **Objective:** Reconcile `DUTY_WATCH.md`, `PROJECT_STATE.md`, and the capability matrix after W11 Client squash-merge, and version thin Cursor architecture pointers plus gitignore for catalog dist and local worktrees.
+- **Completed:**
+  - Verified `origin/main` @ `19f2582` (`feat(workspace): add W11 bounded-execution client surfaces (#308)`). PR #308 is merged.
+  - Recorded W1–W11 Core and Client complete on main. W12 remains future until an explicit brief.
+  - Kept `.cursor/rules/architecture-boundaries.mdc`, `react-typescript-desktop.mdc`, and `tauri-rust-desktop.mdc` as pointers to existing canon (no second handbook).
+  - Ignored `catalog/**/dist/` and `.worktrees/` in `.gitignore` without deleting those local directories.
+- **Not completed:** W12 continuous development loop; extraction of oversized `App.tsx`, `main.rs`, and `desktop-client.ts`.
+- **Files or packages changed:** `DUTY_WATCH.md`, `PROJECT_STATE.md`, `docs/roadmap/ENGINEERING_WORKSPACE_CAPABILITY_MATRIX.md`, `.cursor/rules/*.mdc`, `.gitignore`.
+- **Validation:** `pnpm exec prettier --check` on touched markdown; `git diff --check`; staged `validate-staged` equivalent before each commit.
+- **Decisions and assumptions:** Architecture stays Stage 3 one public monorepo and one React 19 + Tauri 2.11 Desktop. Desktop must not import `@intentloom/application`, `core`, or `daemon`. Rust remains transport and lifecycle only (ADR-0042).
+- **Risks or compatibility impact:** none. Documentation and local-ignore rules only.
+- **Open issues or blockers:** none for this chore. W12 is out of scope until requested.
+- **Next first action:** Review and merge this chore PR. Do not open a W12 feature branch from this handoff.
+- **Evidence:** `git rev-parse origin/main` = `19f2582536e1f3fe1a537a20552731dca256c135`; `gh pr view 308` state MERGED.
+
+#### Duty completion checklist
+
+- [x] Markdown format check on touched docs
+- [x] `git diff --check` passed
+- [x] Atomic commits via `git commit-tree` (no attribution trailers)
+- [x] `PROJECT_STATE.md` / capability matrix updated
+- [x] `DUTY_WATCH.md` handoff completed
+- [ ] PR opened without tool or agent credit
 
 ### 2026-08-14, Engineering Workspace W11 bounded execution Client
 
