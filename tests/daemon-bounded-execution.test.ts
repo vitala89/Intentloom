@@ -66,8 +66,8 @@ function responseViewmodel(value: unknown): Record<string, unknown> {
 
 function daemonEndpoint(directory: string): string {
   return process.platform === "win32"
-    ? `\\\\.\\pipe\\intentloom-bounded-execution-${process.pid}-${randomUUID()}`
-    : join(directory, "daemon.sock");
+    ? `\\\\.\\pipe\\il-w11-${process.pid}-${randomUUID()}`
+    : join(directory, "d.sock");
 }
 
 describe("Engineering Workspace W11 Core: bounded execution daemon RPC", () => {
@@ -81,9 +81,7 @@ describe("Engineering Workspace W11 Core: bounded execution daemon RPC", () => {
     );
     await writeFixtureTree(projectRoot, fixture.initialTree);
 
-    const directory = await mkdtemp(
-      join(tmpdir(), "intentloom-bounded-execution-endpoint-"),
-    );
+    const directory = await mkdtemp(join(tmpdir(), "il-w11-ep-"));
     const token = "f".repeat(32);
     const daemon = await startLocalDaemon({
       endpoint: daemonEndpoint(directory),

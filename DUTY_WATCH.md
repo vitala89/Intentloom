@@ -15,7 +15,7 @@ Active branch: `feat/workspace-w11-bounded-execution-core`
 
 Current objective: Land W11 Core — bounded implementation execution (plan approval, explicit capability, harness task, checkpoints, verification, diff review, approved apply). No unrestricted shell; W11 Client deferred.
 
-Next first action: Wait for PR #307 CI (Governance, CodeQL, compatibility); W11 Client waits for frozen fixtures.
+Next first action: Confirm PR #307 macOS Node 24 Compatibility after the Unix-socket path shortening; W11 Client waits for frozen fixtures.
 
 Known open items, in the order they should be handled:
 
@@ -95,6 +95,18 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-14, W11 Core CI: macOS Node 24 Unix socket path
+
+- **Status:** complete on branch; PR #307.
+- **Agent/tool:** Cursor Agent
+- **Branch:** `feat/workspace-w11-bounded-execution-core`
+- **Objective:** Clear Compatibility `macos-latest / Node 24` `listen EINVAL` on the daemon prepare test.
+- **Completed:**
+  - Cause: `intentloom-bounded-execution-endpoint-…/daemon.sock` exceeded macOS `sockaddr_un` path length on GHA runners.
+  - Fix: shorten the test socket directory prefix to `il-w11-ep-` and the socket name to `d.sock`.
+- **Validation:** scoped daemon test locally; Compatibility rerun after push.
+- **Next first action:** Confirm PR #307 macOS Node 24 is green.
 
 ### 2026-08-13, Engineering Workspace W11 bounded execution Core
 
