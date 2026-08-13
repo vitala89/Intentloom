@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **W11 Client implemented on `feat/workspace-w11-bounded-execution-client` from `main` @ `889ce68`. PR opening next.**
+Status: **W11 Client PR #308 open** from `main` @ `889ce68`.
 
 Active branch: `feat/workspace-w11-bounded-execution-client`
 
 Current objective: Land W11 Client (Desktop/TUI bounded-execution panel) against frozen Core fixtures and RPC. Do not invent domain semantics; no unrestricted shell.
 
-Next first action: Review and merge the W11 Client PR; then start W12 only after an explicit brief.
+Next first action: Review and merge https://github.com/vitala89/Intentloom/pull/308; then start W12 only after an explicit brief.
 
 Known open items, in the order they should be handled:
 
@@ -98,10 +98,10 @@ entry directly below this section.
 
 ### 2026-08-14, Engineering Workspace W11 bounded execution Client
 
-- **Status:** complete on branch; PR opening.
+- **Status:** complete on branch; PR open.
 - **Agent/tool:** Cursor Agent
 - **Branch:** `feat/workspace-w11-bounded-execution-client` from `origin/main` @ `889ce68`
-- **Pull request:** opening after verification.
+- **Pull request:** https://github.com/vitala89/Intentloom/pull/308
 - **Objective:** Deliver W11 Client — Desktop/TUI bounded-execution panel against frozen Core fixtures and RPC, with explicit execute/apply and no capability widening.
 - **Completed:**
   - Desktop panel, navigation, command palette, and Tauri allowlist for `prepare.v1` (read-only) and `execute.v1` (mutating).
@@ -115,17 +115,17 @@ entry directly below this section.
 - **Decisions and assumptions:** Copy W10 Client structure; do not change Core contracts or add a second viewmodel. Plan-approval text and atomic-commit checkbox map to existing Core params only.
 - **Risks or compatibility impact:** `execute.v1` is mutating. Residual risk: a connected Desktop user can request apply when they also supply Core approvals. Mitigated by daemon `applyRequested` pairing, Tauri method allowlist, and no auto-apply on prepare.
 - **Open issues or blockers:** none for W11 Client.
-- **Next first action:** Open the Client PR with no attribution trailers; review and merge; then W12 only with an explicit brief.
+- **Next first action:** Review and merge PR #308; then W12 only with an explicit brief.
 - **Evidence:** `BoundedExecutionView`, `desktop-client-bounded-execution.ts`, `tests/desktop-tui-bounded-execution-workspace.test.ts`; frozen fixtures unchanged.
 
 #### Duty completion checklist
 
 - [x] Focused W11 Client/Core tests passed
 - [x] `pnpm verify` and `git diff --check` before push
-- [ ] Atomic commit via `git commit-tree` (no attribution trailers)
-- [ ] `PROJECT_STATE.md` / capability matrix updated
-- [ ] `DUTY_WATCH.md` handoff completed
-- [ ] PR opened without tool/agent credit
+- [x] Atomic commit via `git commit-tree` (no attribution trailers)
+- [x] `PROJECT_STATE.md` / capability matrix updated
+- [x] `DUTY_WATCH.md` handoff completed
+- [x] PR opened without tool/agent credit
 
 ### 2026-08-14, W11 Core merged; W11 Client protocol frozen
 

@@ -232,8 +232,9 @@ before a new release or implementation milestone is declared complete.
 ## Active focus
 
 1. Engineering Workspace **W1–W11 Core** are complete on `main` at `889ce68` (W11 Core PR #307; W10 Core PR #305, W10 Client PR #306 at `5795c6c`).
-   **W11 Client** (Desktop/TUI bounded-execution panel) is implemented on
-   `feat/workspace-w11-bounded-execution-client` against those frozen fixtures and RPC.
+   **W11 Client** (Desktop/TUI bounded-execution panel) is on
+   `feat/workspace-w11-bounded-execution-client` as PR #308 against those frozen
+   fixtures and RPC.
 2. Engineering Workspace **W0** capability reconciliation remains complete on `main`.
 3. Keep GitHub Pages as the canonical public documentation destination and
    continue the roadmap after the completed `1.0.2` metadata release.
