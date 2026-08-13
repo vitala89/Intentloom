@@ -17,6 +17,7 @@ import { NewProjectView } from "./views/NewProjectView.js";
 import { FoundationWorkshopView } from "./views/FoundationWorkshopView.js";
 import { OpenExistingProjectView } from "./views/OpenExistingProjectView.js";
 import { FeatureIntentView } from "./views/FeatureIntentView.js";
+import { BoundedExecutionView } from "./views/BoundedExecutionView.js";
 import { OverviewView } from "./views/OverviewView.js";
 import { SettingsView } from "./views/SettingsView.js";
 import { TimelineView } from "./views/TimelineView.js";
@@ -117,6 +118,15 @@ export function WorkspaceContent({
   if (activeView === "Feature intent") {
     return (
       <FeatureIntentView
+        onSelectProject={() => onRequestProjectSelect()}
+        root={root}
+      />
+    );
+  }
+
+  if (activeView === "Bounded execution") {
+    return (
+      <BoundedExecutionView
         onSelectProject={() => onRequestProjectSelect()}
         root={root}
       />

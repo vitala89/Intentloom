@@ -50,6 +50,14 @@ export function buildWorkspaceCommandOptions(
       action: () => deps.setActiveView("Feature intent"),
     },
     {
+      id: "nav-bounded-execution",
+      category: "Navigation",
+      label: "Go to Bounded execution",
+      icon: "▷",
+      shortcut: "",
+      action: () => deps.setActiveView("Bounded execution"),
+    },
+    {
       id: "nav-inspect",
       category: "Navigation",
       label: "Go to Inspect",

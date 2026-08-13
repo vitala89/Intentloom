@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **W1–W10 complete on `main` @ `5795c6c` (PR #305 Core, PR #306 Client). W11 Core PR #307 open on `feat/workspace-w11-bounded-execution-core`.**
+Status: **W11 Client PR #308 open** from `main` @ `889ce68`.
 
-Active branch: `feat/workspace-w11-bounded-execution-core`
+Active branch: `feat/workspace-w11-bounded-execution-client`
 
-Current objective: Land W11 Core — bounded implementation execution (plan approval, explicit capability, harness task, checkpoints, verification, diff review, approved apply). No unrestricted shell; W11 Client deferred.
+Current objective: Land W11 Client (Desktop/TUI bounded-execution panel) against frozen Core fixtures and RPC. Do not invent domain semantics; no unrestricted shell.
 
-Next first action: Confirm PR #307 macOS Node 24 Compatibility after the Unix-socket path shortening; W11 Client waits for frozen fixtures.
+Next first action: Review and merge https://github.com/vitala89/Intentloom/pull/308; then start W12 only after an explicit brief.
 
 Known open items, in the order they should be handled:
 
@@ -95,6 +95,65 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-14, Engineering Workspace W11 bounded execution Client
+
+- **Status:** complete on branch; PR open.
+- **Agent/tool:** Cursor Agent
+- **Branch:** `feat/workspace-w11-bounded-execution-client` from `origin/main` @ `889ce68`
+- **Pull request:** https://github.com/vitala89/Intentloom/pull/308
+- **Objective:** Deliver W11 Client — Desktop/TUI bounded-execution panel against frozen Core fixtures and RPC, with explicit execute/apply and no capability widening.
+- **Completed:**
+  - Desktop panel, navigation, command palette, and Tauri allowlist for `prepare.v1` (read-only) and `execute.v1` (mutating).
+  - Prepare never sends `applyRequested`; execute/apply requires an explicit button.
+  - Desktop does not expose network, process, or path-widening controls; viewmodel still forces `networkAccess` and `processExecution` false.
+  - Fixture-parity tests for the four frozen IDs: panel viewmodel, TUI text, CLI JSON.
+  - Reconciled `DUTY_WATCH.md`, `PROJECT_STATE.md`, and the capability matrix to `main` @ `889ce68` plus this Client branch.
+- **Not completed:** W11 Client merge to `main`; W12 continuous development loop.
+- **Files or packages changed:** `apps/desktop` (view, helpers, desktop client, navigation, WorkspaceContent, Tauri allowlist), `tests/desktop-tui-bounded-execution-workspace.test.ts`, Duty Watch / project state / capability matrix.
+- **Validation:** `pnpm verify` — 1420 passed, 3 skipped; `git diff --check` clean.
+- **Decisions and assumptions:** Copy W10 Client structure; do not change Core contracts or add a second viewmodel. Plan-approval text and atomic-commit checkbox map to existing Core params only.
+- **Risks or compatibility impact:** `execute.v1` is mutating. Residual risk: a connected Desktop user can request apply when they also supply Core approvals. Mitigated by daemon `applyRequested` pairing, Tauri method allowlist, and no auto-apply on prepare.
+- **Open issues or blockers:** none for W11 Client.
+- **Next first action:** Review and merge PR #308; then W12 only with an explicit brief.
+- **Evidence:** `BoundedExecutionView`, `desktop-client-bounded-execution.ts`, `tests/desktop-tui-bounded-execution-workspace.test.ts`; frozen fixtures unchanged.
+
+#### Duty completion checklist
+
+- [x] Focused W11 Client/Core tests passed
+- [x] `pnpm verify` and `git diff --check` before push
+- [x] Atomic commit via `git commit-tree` (no attribution trailers)
+- [x] `PROJECT_STATE.md` / capability matrix updated
+- [x] `DUTY_WATCH.md` handoff completed
+- [x] PR opened without tool/agent credit
+
+### 2026-08-14, W11 Core merged; W11 Client protocol frozen
+
+- **Status:** complete (handoff only; no Client code).
+- **Agent/tool:** Cursor Agent
+- **Branch:** observed `origin/main` @ `889ce68` (PR #307 squash-merged).
+- **Pull request:** https://github.com/vitala89/Intentloom/pull/307 (merged; all required checks green, including Compatibility `macos-latest / Node 24`).
+- **Objective:** Confirm PR #307 CI after the Unix-socket path shortening; freeze W11 Client protocol for the next session.
+- **Completed:**
+  - PR #307 merged to `main` as `889ce68 feat(workspace): add W11 bounded-execution core contracts (#307)`.
+  - Compatibility `macos-latest / Node 24` passed after `il-w11-ep-` / `d.sock` shortening.
+  - W11 Client classification: `ready-now` (contracts, fixtures, viewmodel, CLI helper, and daemon RPC are on `main`).
+- **Not completed:** W11 Client Desktop/TUI panel, Tauri allowlist, navigation, parity tests, Client PR.
+- **Validation:** `gh pr view 307` — `state=MERGED`; `gh pr checks 307` — all listed checks `pass`.
+- **Next first action:** Implement W11 Client from `main` @ `889ce68`. Copy the next-session prompt from this watch’s evidence. Never add `Co-Authored-By`, `Generated with`, or `Made with` trailers to commits or PRs; use `git commit-tree` + `git update-ref HEAD`.
+- **Evidence:** Frozen Client contract on `main`:
+  - Schema URN `urn:intentloom:schema:bounded-execution-workspace-overview:1`
+  - RPC `intentloom.bounded-execution.workspace.prepare.v1` (read-only) and `.execute.v1` (mutating)
+  - Viewmodel `buildBoundedExecutionWorkspaceViewModel` / `renderBoundedExecutionWorkspaceText` (`packages/application/src/bounded-execution-workspace-viewmodel.ts`); `networkAccess` and `processExecution` are always `false`
+  - Fixtures (4): `bounded-fixture-ready-logging` (`applied` / mutation true), `bounded-fixture-blocked-unapproved` (`w11-blocked`), `bounded-fixture-unsupported-network` (`unsupported`), `bounded-fixture-path-widening` (`blocked`) at `tests/fixtures/bounded-execution/workspace-states.v1.json`
+  - Analog: W10 Client (`FeatureIntentView`, `desktop-client-feature-intent.ts`, `tests/desktop-tui-feature-intent-workspace.test.ts`, Tauri allowlist in `apps/desktop/src-tauri/src/main.rs`)
+
+#### Duty completion checklist
+
+- [x] PR #307 merge and checks verified against GitHub
+- [x] `DUTY_WATCH.md` / `PROJECT_STATE.md` / capability matrix updated
+- [ ] Formatter / `pnpm verify` not required for this handoff-only watch
+- [ ] Docs not committed unless the maintainer asks
 
 ### 2026-08-14, W11 Core CI: macOS Node 24 Unix socket path
 

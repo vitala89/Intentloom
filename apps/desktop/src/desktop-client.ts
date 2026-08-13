@@ -37,6 +37,7 @@ import {
 } from "@intentloom/protocol";
 import { foundationScaffoldDesktopMethods } from "./desktop-client-foundation-scaffold.js";
 import { featureIntentDesktopMethods } from "./desktop-client-feature-intent.js";
+import { boundedExecutionDesktopMethods } from "./desktop-client-bounded-execution.js";
 
 export class DesktopBridgeError extends Error {
   readonly code: string;
@@ -389,6 +390,9 @@ export const desktopClient = {
     desktopClientBase.foundationRequest(request, signal),
   ),
   ...featureIntentDesktopMethods((request, signal) =>
+    desktopClientBase.foundationRequest(request, signal),
+  ),
+  ...boundedExecutionDesktopMethods((request, signal) =>
     desktopClientBase.foundationRequest(request, signal),
   ),
 };
