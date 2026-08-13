@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **W1–W10 complete on `main` @ `5795c6c` (PR #305 Core, PR #306 Client). W11 Core in progress on `feat/workspace-w11-bounded-execution-core`.**
+Status: **W1–W10 complete on `main` @ `5795c6c` (PR #305 Core, PR #306 Client). W11 Core PR #307 open on `feat/workspace-w11-bounded-execution-core`.**
 
 Active branch: `feat/workspace-w11-bounded-execution-core`
 
 Current objective: Land W11 Core — bounded implementation execution (plan approval, explicit capability, harness task, checkpoints, verification, diff review, approved apply). No unrestricted shell; W11 Client deferred.
 
-Next first action: Open W11 Core PR after `pnpm verify`; W11 Client waits for frozen fixtures.
+Next first action: Wait for PR #307 CI (Governance, CodeQL, compatibility); W11 Client waits for frozen fixtures.
 
 Known open items, in the order they should be handled:
 
@@ -98,9 +98,10 @@ entry directly below this section.
 
 ### 2026-08-13, Engineering Workspace W11 bounded execution Core
 
-- **Status:** complete on branch; PR pending.
+- **Status:** complete on branch; PR #307.
 - **Agent/tool:** Cursor Agent
 - **Branch:** `feat/workspace-w11-bounded-execution-core` (from `main` at `5795c6c`)
+- **Pull request:** https://github.com/vitala89/Intentloom/pull/307
 - **Objective:** Deliver W11 Core — one bounded coding-agent task can run and verify without widening approved root, paths, commands, network, or mutation capabilities. Reconcile stale W10 Client handoff.
 - **Completed:**
   - Track A: W10 Core+Client merged on `main` @ `5795c6c` (PR #305, PR #306). Handoff docs reconciled.
@@ -111,7 +112,7 @@ entry directly below this section.
   - Tests: `tests/bounded-execution-workspace.test.ts` (8), `tests/daemon-bounded-execution.test.ts` (2).
 - **Not completed:** W11 Client Desktop/TUI panel (deferred until fixtures freeze).
 - **Validation:** `pnpm verify` — 1417 passed, 3 skipped.
-- **Next first action:** Open W11 Core PR; W11 Client waits for frozen fixtures.
+- **Next first action:** Wait for PR #307 CI; W11 Client waits for frozen fixtures.
 
 ### 2026-08-13, Engineering Workspace W10 feature intent Client
 
