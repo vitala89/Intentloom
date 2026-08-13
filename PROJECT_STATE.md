@@ -1,6 +1,6 @@
 # Intentloom Project State
 
-Last verified: 2026-08-12
+Last verified: 2026-08-13
 
 This file records the durable current state of the project. It is not a
 chronological log. Session history and handoff details belong in
@@ -231,8 +231,8 @@ before a new release or implementation milestone is declared complete.
 
 ## Active focus
 
-1. Engineering Workspace **W1–W10 Core** are complete on `main` at `c0b90ad` (W10 Core PR #305).
-   **W10 Client** feature-intent Desktop/TUI panel is on `feat/workspace-w10-feature-intent-client`.
+1. Engineering Workspace **W1–W10** are complete on `main` at `5795c6c` (W10 Core PR #305, W10 Client PR #306).
+   **W11 Core** bounded execution is on `feat/workspace-w11-bounded-execution-core`.
 2. Engineering Workspace **W0** capability reconciliation remains complete on `main`.
 3. Keep GitHub Pages as the canonical public documentation destination and
    continue the roadmap after the completed `1.0.2` metadata release.

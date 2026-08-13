@@ -36,6 +36,12 @@ import {
   featureIntentCapabilities,
   isFeatureIntentRequest,
 } from "./feature-intent-handlers.js";
+import type { BoundedExecutionDaemonOptions } from "./bounded-execution-handlers.js";
+import {
+  boundedExecutionCapabilities,
+  dispatchBoundedExecutionRequest,
+  isBoundedExecutionRequest,
+} from "./bounded-execution-handlers.js";
 import type { DaemonCapability } from "@intentloom/protocol";
 
 export type WorkspaceDaemonOptions = SpecializedPackDaemonOptions &
@@ -43,7 +49,8 @@ export type WorkspaceDaemonOptions = SpecializedPackDaemonOptions &
   FoundationDaemonOptions &
   FoundationScaffoldDaemonOptions &
   ExistingProjectDaemonOptions &
-  FeatureIntentDaemonOptions;
+  FeatureIntentDaemonOptions &
+  BoundedExecutionDaemonOptions;
 
 export function workspaceDaemonCapabilities(
   options: WorkspaceDaemonOptions,
@@ -55,6 +62,7 @@ export function workspaceDaemonCapabilities(
     ...foundationScaffoldCapabilities(options),
     ...existingProjectCapabilities(options),
     ...featureIntentCapabilities(options),
+    ...boundedExecutionCapabilities(options),
   ];
 }
 
@@ -171,6 +179,24 @@ export async function dispatchWorkspaceDaemonRequest(
       return true;
     }
     response(socket, featureIntentResponse);
+    return true;
+  }
+  if (isBoundedExecutionRequest(request)) {
+    const boundedExecutionResponse = await dispatchBoundedExecutionRequest(
+      request,
+      options,
+      canonicalProjectRoot,
+    );
+    if (!boundedExecutionResponse) {
+      failure(
+        socket,
+        -32601,
+        "unsupported bounded execution method",
+        "unsupported_capability",
+      );
+      return true;
+    }
+    response(socket, boundedExecutionResponse);
     return true;
   }
   return false;

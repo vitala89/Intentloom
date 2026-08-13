@@ -1,0 +1,78 @@
+{
+  "fixtures": [
+    {
+      "fixtureId": "bounded-fixture-ready-logging",
+      "root": "/project/bounded-ready",
+      "title": "Add structured logging",
+      "summary": "Introduce a project-local logging helper without changing public APIs.",
+      "initialTree": {
+        "README.md": "generic project\n",
+        "src/main.txt": "source\n"
+      },
+      "planApproval": "approved:implementation-plan",
+      "requestedAllowedPaths": ["."],
+      "proposedPaths": ["src/bounded-task-evidence.txt"],
+      "applyRequested": true,
+      "grantedApprovals": ["atomic-commit-approval"],
+      "applyFiles": [
+        {
+          "path": "src/bounded-task-evidence.txt",
+          "content": "bounded-execution-verified\n"
+        }
+      ],
+      "expected": {
+        "executionGate": "applied",
+        "mutationAllowed": true
+      }
+    },
+    {
+      "fixtureId": "bounded-fixture-blocked-unapproved",
+      "root": "/project/bounded-blocked",
+      "title": "Add structured logging",
+      "summary": "Hold execution until the implementation plan is approved.",
+      "initialTree": {
+        "README.md": "generic project\n",
+        "src/main.txt": "source\n"
+      },
+      "expected": {
+        "executionGate": "w11-blocked",
+        "mutationAllowed": false,
+        "diagnosticIncludes": "plan-approval-missing"
+      }
+    },
+    {
+      "fixtureId": "bounded-fixture-unsupported-network",
+      "root": "/project/bounded-network",
+      "title": "Add structured logging",
+      "summary": "Reject network widening during bounded execution.",
+      "initialTree": {
+        "README.md": "generic project\n",
+        "src/main.txt": "source\n"
+      },
+      "planApproval": "approved:implementation-plan",
+      "requestedNetworkAccess": true,
+      "expected": {
+        "executionGate": "unsupported",
+        "mutationAllowed": false,
+        "diagnosticIncludes": "network-access-not-granted"
+      }
+    },
+    {
+      "fixtureId": "bounded-fixture-path-widening",
+      "root": "/project/bounded-paths",
+      "title": "Add structured logging",
+      "summary": "Reject paths outside the approved root.",
+      "initialTree": {
+        "README.md": "generic project\n",
+        "src/main.txt": "source\n"
+      },
+      "planApproval": "approved:implementation-plan",
+      "requestedAllowedPaths": ["../outside"],
+      "expected": {
+        "executionGate": "blocked",
+        "mutationAllowed": false,
+        "diagnosticIncludes": "path-widening-rejected"
+      }
+    }
+  ]
+}
