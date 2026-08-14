@@ -104,6 +104,10 @@ export const BOUNDED_EXECUTION_WORKSPACE_PREPARE_METHOD =
   "intentloom.bounded-execution.workspace.prepare.v1" as const;
 export const BOUNDED_EXECUTION_WORKSPACE_EXECUTE_METHOD =
   "intentloom.bounded-execution.workspace.execute.v1" as const;
+export const CONTINUOUS_LOOP_WORKSPACE_PREPARE_METHOD =
+  "intentloom.continuous-loop.workspace.prepare.v1" as const;
+export const CONTINUOUS_LOOP_WORKSPACE_EXECUTE_METHOD =
+  "intentloom.continuous-loop.workspace.execute.v1" as const;
 
 export type JsonPrimitive = boolean | null | number | string;
 export type JsonValue = JsonPrimitive | JsonObject | readonly JsonValue[];

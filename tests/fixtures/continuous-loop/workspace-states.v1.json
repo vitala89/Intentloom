@@ -1,0 +1,121 @@
+{
+  "fixtures": [
+    {
+      "fixtureId": "loop-fixture-ready-memory",
+      "root": "/tmp/intentloom-w12-ready",
+      "projectId": "loop-ready",
+      "previous": {
+        "projectId": "loop-ready",
+        "schemaVersion": "1",
+        "findingIds": ["finding-old", "finding-keep"],
+        "technicalDebtItemCount": 2,
+        "architectureViolationCount": 1
+      },
+      "current": {
+        "projectId": "loop-ready",
+        "schemaVersion": "1",
+        "findingIds": ["finding-keep", "finding-new"],
+        "technicalDebtItemCount": 1,
+        "architectureViolationCount": 0
+      },
+      "initialTree": {
+        "README.md": "ready loop\n"
+      },
+      "memoryContent": "Fixed finding-old after bounded execution.",
+      "applyRequested": true,
+      "grantedApprovals": ["approved:w12-memory"],
+      "expected": {
+        "loopGate": "accepted",
+        "mutationAllowed": true
+      }
+    },
+    {
+      "fixtureId": "loop-fixture-blocked-unapproved",
+      "root": "/tmp/intentloom-w12-unapproved",
+      "projectId": "loop-unapproved",
+      "previous": {
+        "projectId": "loop-unapproved",
+        "schemaVersion": "1",
+        "findingIds": ["finding-a"],
+        "technicalDebtItemCount": 1,
+        "architectureViolationCount": 0
+      },
+      "current": {
+        "projectId": "loop-unapproved",
+        "schemaVersion": "1",
+        "findingIds": ["finding-b"],
+        "technicalDebtItemCount": 1,
+        "architectureViolationCount": 0
+      },
+      "initialTree": {
+        "README.md": "unapproved loop\n"
+      },
+      "applyRequested": true,
+      "grantedApprovals": [],
+      "expected": {
+        "loopGate": "w12-blocked",
+        "mutationAllowed": false,
+        "diagnosticIncludes": "apply-blocked:memory-approval-missing"
+      }
+    },
+    {
+      "fixtureId": "loop-fixture-incompatible-history",
+      "root": "/tmp/intentloom-w12-incompatible",
+      "projectId": "loop-current",
+      "previous": {
+        "projectId": "loop-previous",
+        "schemaVersion": "1",
+        "findingIds": ["finding-a"],
+        "technicalDebtItemCount": 1,
+        "architectureViolationCount": 0
+      },
+      "current": {
+        "projectId": "loop-current",
+        "schemaVersion": "2",
+        "findingIds": ["finding-a"],
+        "technicalDebtItemCount": 1,
+        "architectureViolationCount": 0
+      },
+      "initialTree": {
+        "README.md": "incompatible loop\n"
+      },
+      "applyRequested": true,
+      "grantedApprovals": ["approved:w12-memory"],
+      "expected": {
+        "loopGate": "incompatible",
+        "mutationAllowed": false,
+        "diagnosticIncludes": "historical-incompatible:schema-or-project"
+      }
+    },
+    {
+      "fixtureId": "loop-fixture-model-interpretation",
+      "root": "/tmp/intentloom-w12-model",
+      "projectId": "loop-model",
+      "changeKind": "model-interpretation",
+      "previous": {
+        "projectId": "loop-model",
+        "schemaVersion": "1",
+        "findingIds": ["finding-same"],
+        "technicalDebtItemCount": 0,
+        "architectureViolationCount": 0
+      },
+      "current": {
+        "projectId": "loop-model",
+        "schemaVersion": "1",
+        "findingIds": ["finding-same"],
+        "technicalDebtItemCount": 0,
+        "architectureViolationCount": 0
+      },
+      "initialTree": {
+        "README.md": "model loop\n"
+      },
+      "applyRequested": true,
+      "grantedApprovals": ["approved:w12-memory"],
+      "expected": {
+        "loopGate": "unsupported",
+        "mutationAllowed": false,
+        "diagnosticIncludes": "model-interpretation-not-auto-accepted"
+      }
+    }
+  ]
+}

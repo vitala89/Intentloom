@@ -63,6 +63,10 @@ import {
   handleBoundedExecutionWorkspaceExecute,
   handleBoundedExecutionWorkspacePrepare,
 } from "./bounded-execution-handlers.js";
+import {
+  handleContinuousLoopWorkspaceExecute,
+  handleContinuousLoopWorkspacePrepare,
+} from "./continuous-loop-handlers.js";
 
 function value(args: readonly string[], flag: string): string {
   const index = args.indexOf(flag);
@@ -208,6 +212,8 @@ async function main(): Promise<void> {
     featureIntentWorkspaceAnalyze: handleFeatureIntentWorkspaceAnalyze,
     boundedExecutionWorkspacePrepare: handleBoundedExecutionWorkspacePrepare,
     boundedExecutionWorkspaceExecute: handleBoundedExecutionWorkspaceExecute,
+    continuousLoopWorkspacePrepare: handleContinuousLoopWorkspacePrepare,
+    continuousLoopWorkspaceExecute: handleContinuousLoopWorkspaceExecute,
   });
   const stop = () => void daemon.close().then(() => process.exit(0));
   process.once("SIGINT", stop);

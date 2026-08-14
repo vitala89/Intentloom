@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **W1–W11 Core and Client complete** on `main` @ `19f2582`. Chore branch `chore/agent-architecture-cursor-rules` records Cursor architecture rules and gitignore.
+Status: **W12 Core in progress** on `feat/workspace-w12-continuous-loop-core` from `main` @ `ea42b15`.
 
-Active branch: `chore/agent-architecture-cursor-rules`
+Active branch: `feat/workspace-w12-continuous-loop-core`
 
-Current objective: Reconcile stale W11 Client-in-review handoff docs and land thin Cursor architecture rules. Do not start W12.
+Current objective: Land W12 Core continuous-loop contracts, fixtures, viewmodel, CLI helper, and daemon RPC. Do not invent a second assessment or memory engine.
 
-Next first action: Review and merge https://github.com/vitala89/Intentloom/pull/309; start W12 only after an explicit brief.
+Next first action: Review and merge https://github.com/vitala89/Intentloom/pull/310; start W12 Client only after fixtures freeze.
 
 Known open items, in the order they should be handled:
 
@@ -95,6 +95,34 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-15, Engineering Workspace W12 continuous loop Core
+
+- **Status:** implementation complete on branch; PR open.
+- **Branch:** `feat/workspace-w12-continuous-loop-core` from `origin/main` @ `ea42b15`
+- **Pull request:** https://github.com/vitala89/Intentloom/pull/310
+- **Objective:** Land W12 Core: compose assessment-refresh comparison, finding classification (code/policy/evidence/model-interpretation), draft memory proposal, reviewed memory apply, and next-feature suggestion without a second engine.
+- **Completed:**
+  - Verified PR #309 merged to `main` as `ea42b15`.
+  - Protocol overview URN, prepare/execute RPC, validator, application orchestrator, viewmodel, CLI helper, four frozen fixtures, daemon handlers.
+  - Prepare stays read-only. Execute writes memory only with `approved:w12-memory`. Model-interpretation and incompatible history cannot apply.
+- **Not completed:** W12 Client Desktop/TUI panel; live `assessProject` refresh (caller supplies snapshots).
+- **Files or packages changed:** protocol, validator, application, daemon, `tests/continuous-loop-workspace.test.ts`, `tests/daemon-continuous-loop.test.ts`, Duty Watch / project state / capability matrix.
+- **Validation:** `vitest run tests/continuous-loop-workspace.test.ts tests/daemon-continuous-loop.test.ts` — 10 passed.
+- **Decisions and assumptions:** Snapshots are the comparison input so Core stays deterministic and does not call models. Memory persist uses `.aif/memory/items/` and `working-context`.
+- **Risks or compatibility impact:** execute is mutating. Mitigated by prepare forcing apply false, approval token, and fail-closed gates.
+- **Open issues or blockers:** none for W12 Core.
+- **Next first action:** Review and merge https://github.com/vitala89/Intentloom/pull/310. Client waits for frozen fixtures.
+- **Evidence:** `tests/fixtures/continuous-loop/workspace-states.v1.json`; RPC `intentloom.continuous-loop.workspace.prepare.v1` and `.execute.v1`.
+
+#### Duty completion checklist
+
+- [x] Focused W12 Core tests passed
+- [x] `pnpm verify` and `git diff --check` before push
+- [x] Atomic commit via `git commit-tree` (no attribution trailers)
+- [x] `PROJECT_STATE.md` / capability matrix updated
+- [x] `DUTY_WATCH.md` handoff completed
+- [x] PR opened without tool or agent credit
 
 ### 2026-08-14, Engineering Workspace W11 Client merge reconciliation and Cursor architecture rules
 
