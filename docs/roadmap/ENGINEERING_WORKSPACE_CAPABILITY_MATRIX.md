@@ -104,6 +104,7 @@ surfaces expose inception. No `tests/fixtures/inception/` tree.
 | **W9**  | Existing-project composed inspect/assessment flow                                          | Merged on `main` (`0c948c3`, PR #304 Core+Client)                   | **complete** — frozen fixtures + Desktop/TUI parity |
 | **W10** | Feature intent and architecture impact                                                     | Merged on `main` (`5795c6c`, PR #305 Core + PR #306 Client)         | **complete** — frozen fixtures + Desktop/TUI parity |
 | **W11** | Bounded implementation execution                                                           | Merged on `main` (`19f2582`, PR #307 Core + PR #308 Client)         | **complete** — frozen fixtures + Desktop/TUI parity |
+| **W12** | Continuous development loop                                                                | Core on `feat/workspace-w12-continuous-loop-core`                   | Core **in progress**; Client waits for frozen RPC   |
 
 ---
 
@@ -331,29 +332,29 @@ JSON helper, and frozen fixtures — **reusing** existing
 ## 8. Client readiness summary (W2 checkpoint)
 
 ```text
-Current Engineering Workspace phase: W1-W11 complete on main; W12 future
-Verified main: 19f2582 (PR #308 W11 Client merged; PR #307 W11 Core)
+Current Engineering Workspace phase: W12 Core continuous development loop
+Verified main: ea42b15 (PR #309 chore rules; PR #308 W11 Client)
 
 CORE
 Current completed capability:
-- W1-W11 Core complete on main, including bounded-execution prepare/execute RPC, viewmodel, CLI helper, and four frozen fixtures
+- W1-W11 complete on main
+- W12 Core in progress: assessment-refresh comparison, finding classification, memory proposal/apply, next-feature suggestion
 
 Next Core task:
-- W12 continuous development loop is future until an explicit brief
+- Land W12 Core PR, then freeze Client against four fixtures
 
 CLIENTS: DESKTOP + CLI/TUI
 Ready now:
-- W1-W11 Desktop/TUI surfaces on main, including the bounded-execution panel, Tauri allowlist, navigation, and fixture-parity tests
+- W1-W11 Desktop/TUI surfaces on main
 
 Must wait for Core:
-- W12 Core contracts (not started)
+- W12 Client Desktop/TUI panel until fixtures and RPC freeze
 
 Blocked / future:
-- W12 continuous development loop
 - S8 external specialized packs
 
 Next synchronization checkpoint:
-- W12 only after an explicit maintainer brief
+- After W12 Core PR review
 ```
 
 ---

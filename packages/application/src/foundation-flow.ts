@@ -8,3 +8,4 @@ export * from "./foundation-w8.js";
 export * from "./existing-project-w9.js";
 export * from "./feature-intent-w10.js";
 export * from "./bounded-execution-w11.js";
+export * from "./continuous-loop-w12.js";

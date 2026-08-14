@@ -34,6 +34,8 @@ import {
   FEATURE_INTENT_WORKSPACE_ANALYZE_METHOD,
   BOUNDED_EXECUTION_WORKSPACE_PREPARE_METHOD,
   BOUNDED_EXECUTION_WORKSPACE_EXECUTE_METHOD,
+  CONTINUOUS_LOOP_WORKSPACE_PREPARE_METHOD,
+  CONTINUOUS_LOOP_WORKSPACE_EXECUTE_METHOD,
 } from "./jsonrpc.js";
 import type { RequestId } from "./jsonrpc.js";
 import { createSpecializedPacksChecksRequest } from "./engineering-quality/specialized-daemon-rpc.js";
@@ -92,14 +94,10 @@ import type {
   FoundationBlueprintApproveRequest,
   FoundationBlueprintRevokeRequest,
 } from "./foundation-daemon-rpc.js";
-import { parseFoundationScaffoldDaemonRequest } from "./foundation-scaffold-daemon-rpc.js";
-import type { FoundationScaffoldDaemonRequest } from "./foundation-scaffold-daemon-rpc.js";
-import { parseExistingProjectDaemonRequest } from "./existing-project-daemon-rpc.js";
-import type { ExistingProjectWorkspacePrepareRequest } from "./existing-project-daemon-rpc.js";
-import { parseFeatureIntentDaemonRequest } from "./feature-intent-daemon-rpc.js";
-import type { FeatureIntentDaemonRequest } from "./feature-intent-daemon-rpc.js";
-import { parseBoundedExecutionDaemonRequest } from "./bounded-execution-daemon-rpc.js";
-import type { BoundedExecutionDaemonRequest } from "./bounded-execution-daemon-rpc.js";
+import {
+  parseWorkspaceSliceDaemonRequest,
+  type WorkspaceSliceDaemonRequest,
+} from "./workspace-slice-daemon-parse.js";
 import type { SpecializedPacksChecksResponse } from "./engineering-quality/specialized-daemon-rpc.js";
 import { ProtocolValidationError } from "./protocol-validation-error.js";
 import {
@@ -135,10 +133,7 @@ export type WorkspaceDaemonRequest =
   | FoundationBlueprintCompareRequest
   | FoundationBlueprintApproveRequest
   | FoundationBlueprintRevokeRequest
-  | FoundationScaffoldDaemonRequest
-  | ExistingProjectWorkspacePrepareRequest
-  | FeatureIntentDaemonRequest
-  | BoundedExecutionDaemonRequest;
+  | WorkspaceSliceDaemonRequest;
 
 export type WorkspaceDaemonResponse = SpecializedPacksChecksResponse;
 
@@ -157,6 +152,9 @@ export * from "./feature-intent-workspace.js";
 export * from "./feature-intent-daemon-rpc.js";
 export * from "./bounded-execution-workspace.js";
 export * from "./bounded-execution-daemon-rpc.js";
+export * from "./continuous-loop-workspace.js";
+export * from "./continuous-loop-daemon-rpc.js";
+export * from "./workspace-slice-daemon-parse.js";
 export { ProtocolValidationError } from "./protocol-validation-error.js";
 
 export const WORKSPACE_DAEMON_REQUEST_METHODS = [
@@ -195,6 +193,8 @@ export const WORKSPACE_DAEMON_REQUEST_METHODS = [
   FEATURE_INTENT_WORKSPACE_ANALYZE_METHOD,
   BOUNDED_EXECUTION_WORKSPACE_PREPARE_METHOD,
   BOUNDED_EXECUTION_WORKSPACE_EXECUTE_METHOD,
+  CONTINUOUS_LOOP_WORKSPACE_PREPARE_METHOD,
+  CONTINUOUS_LOOP_WORKSPACE_EXECUTE_METHOD,
 ] as const;
 
 export function parseWorkspaceDaemonRequest(
@@ -366,25 +366,7 @@ export function parseWorkspaceDaemonRequest(
       stringValue(params.workshopId, "workshopId"),
     );
   }
-  const existingProjectRequest = parseExistingProjectDaemonRequest(
-    typeof value.method === "string" ? value.method : "",
-    params,
-    id,
-  );
-  if (existingProjectRequest !== null) return existingProjectRequest;
-  const featureIntentRequest = parseFeatureIntentDaemonRequest(
-    typeof value.method === "string" ? value.method : "",
-    params,
-    id,
-  );
-  if (featureIntentRequest !== null) return featureIntentRequest;
-  const boundedExecutionRequest = parseBoundedExecutionDaemonRequest(
-    typeof value.method === "string" ? value.method : "",
-    params,
-    id,
-  );
-  if (boundedExecutionRequest !== null) return boundedExecutionRequest;
-  return parseFoundationScaffoldDaemonRequest(
+  return parseWorkspaceSliceDaemonRequest(
     typeof value.method === "string" ? value.method : "",
     params,
     id,

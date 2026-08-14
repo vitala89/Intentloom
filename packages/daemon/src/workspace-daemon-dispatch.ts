@@ -42,6 +42,12 @@ import {
   dispatchBoundedExecutionRequest,
   isBoundedExecutionRequest,
 } from "./bounded-execution-handlers.js";
+import type { ContinuousLoopDaemonOptions } from "./continuous-loop-handlers.js";
+import {
+  continuousLoopCapabilities,
+  dispatchContinuousLoopRequest,
+  isContinuousLoopRequest,
+} from "./continuous-loop-handlers.js";
 import type { DaemonCapability } from "@intentloom/protocol";
 
 export type WorkspaceDaemonOptions = SpecializedPackDaemonOptions &
@@ -50,7 +56,8 @@ export type WorkspaceDaemonOptions = SpecializedPackDaemonOptions &
   FoundationScaffoldDaemonOptions &
   ExistingProjectDaemonOptions &
   FeatureIntentDaemonOptions &
-  BoundedExecutionDaemonOptions;
+  BoundedExecutionDaemonOptions &
+  ContinuousLoopDaemonOptions;
 
 export function workspaceDaemonCapabilities(
   options: WorkspaceDaemonOptions,
@@ -63,6 +70,7 @@ export function workspaceDaemonCapabilities(
     ...existingProjectCapabilities(options),
     ...featureIntentCapabilities(options),
     ...boundedExecutionCapabilities(options),
+    ...continuousLoopCapabilities(options),
   ];
 }
 
@@ -197,6 +205,24 @@ export async function dispatchWorkspaceDaemonRequest(
       return true;
     }
     response(socket, boundedExecutionResponse);
+    return true;
+  }
+  if (isContinuousLoopRequest(request)) {
+    const continuousLoopResponse = await dispatchContinuousLoopRequest(
+      request,
+      options,
+      canonicalProjectRoot,
+    );
+    if (!continuousLoopResponse) {
+      failure(
+        socket,
+        -32601,
+        "unsupported continuous loop method",
+        "unsupported_capability",
+      );
+      return true;
+    }
+    response(socket, continuousLoopResponse);
     return true;
   }
   return false;

@@ -232,9 +232,10 @@ before a new release or implementation milestone is declared complete.
 ## Active focus
 
 1. Engineering Workspace **W1–W11 Core and Client** are complete on `main` at
-   `19f2582` (W11 Client PR #308; W11 Core PR #307 at `889ce68`; W10 Client
-   PR #306 at `5795c6c`). **W12** continuous development loop is future until
-   an explicit brief. Do not start it from this handoff.
+   `ea42b15` (chore PR #309; W11 Client PR #308 at `19f2582`). **W12 Core**
+   (continuous development loop contracts) is on
+   `feat/workspace-w12-continuous-loop-core`. W12 Client waits for frozen
+   fixtures and RPC.
 2. Engineering Workspace **W0** capability reconciliation remains complete on `main`.
 3. Keep GitHub Pages as the canonical public documentation destination and
    continue the roadmap after the completed `1.0.2` metadata release.
