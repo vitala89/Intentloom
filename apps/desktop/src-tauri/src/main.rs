@@ -10,6 +10,9 @@ use serde_json::{json, Value};
 use tauri::{AppHandle, Manager, State};
 use tauri_plugin_dialog::DialogExt;
 
+mod method_allowlist;
+use method_allowlist::{is_foundation_method, is_inception_method};
+
 const PROTOCOL_VERSION: u64 = 1;
 const MAX_REQUEST_BYTES: usize = 512 * 1024;
 const MAX_RESPONSE_BYTES: usize = 1024 * 1024;
@@ -651,20 +654,6 @@ async fn load_project_timeline(
     .await
 }
 
-fn is_inception_method(method: &str) -> bool {
-    matches!(
-        method,
-        "intentloom.inception.session.create.v1"
-            | "intentloom.inception.session.get.v1"
-            | "intentloom.inception.questions.list.v1"
-            | "intentloom.inception.answer.record.v1"
-            | "intentloom.inception.state.summarize.v1"
-            | "intentloom.inception.conflicts.identify.v1"
-            | "intentloom.inception.session.export.v1"
-            | "intentloom.inception.session.delete.v1"
-    )
-}
-
 #[tauri::command]
 async fn invoke_inception_request(
     app: AppHandle,
@@ -690,38 +679,6 @@ async fn invoke_inception_request(
             .map(|(_, response)| response)
     })
     .await
-}
-
-fn is_foundation_method(method: &str) -> bool {
-    matches!(
-        method,
-        "intentloom.foundation.workshop.create.v1"
-            | "intentloom.foundation.workshop.get.v1"
-            | "intentloom.foundation.questions.list.v1"
-            | "intentloom.foundation.answer.record.v1"
-            | "intentloom.foundation.understanding.summarize.v1"
-            | "intentloom.foundation.conflicts.identify.v1"
-            | "intentloom.foundation.readiness.evaluate.v1"
-            | "intentloom.foundation.workshop.export.v1"
-            | "intentloom.foundation.workshop.delete.v1"
-            | "intentloom.foundation.discovery.questions.v1"
-            | "intentloom.foundation.discovery.turn.v1"
-            | "intentloom.foundation.blueprint.propose.v1"
-            | "intentloom.foundation.blueprint.compare.v1"
-            | "intentloom.foundation.blueprint.approve.v1"
-            | "intentloom.foundation.blueprint.revoke.v1"
-            | "intentloom.foundation.scaffold.prepare.v1"
-            | "intentloom.foundation.scaffold.get.v1"
-            | "intentloom.foundation.scaffold.compare.v1"
-            | "intentloom.foundation.scaffold.validate.v1"
-            | "intentloom.foundation.scaffold.apply.v1"
-            | "intentloom.foundation.scaffold.rollback.v1"
-            | "intentloom.existing-project.workspace.prepare.v1"
-            | "intentloom.feature-intent.workspace.prepare.v1"
-            | "intentloom.feature-intent.workspace.analyze.v1"
-            | "intentloom.bounded-execution.workspace.prepare.v1"
-            | "intentloom.bounded-execution.workspace.execute.v1"
-    )
 }
 
 #[tauri::command]

@@ -35,9 +35,7 @@ import {
   type ProjectTimelineParams,
   type ProjectTimelineResult,
 } from "@intentloom/protocol";
-import { foundationScaffoldDesktopMethods } from "./desktop-client-foundation-scaffold.js";
-import { featureIntentDesktopMethods } from "./desktop-client-feature-intent.js";
-import { boundedExecutionDesktopMethods } from "./desktop-client-bounded-execution.js";
+import { composeDesktopClient } from "./desktop-client-facade.js";
 
 export class DesktopBridgeError extends Error {
   readonly code: string;
@@ -384,15 +382,4 @@ const desktopClientBase = {
   },
 };
 
-export const desktopClient = {
-  ...desktopClientBase,
-  ...foundationScaffoldDesktopMethods((request, signal) =>
-    desktopClientBase.foundationRequest(request, signal),
-  ),
-  ...featureIntentDesktopMethods((request, signal) =>
-    desktopClientBase.foundationRequest(request, signal),
-  ),
-  ...boundedExecutionDesktopMethods((request, signal) =>
-    desktopClientBase.foundationRequest(request, signal),
-  ),
-};
+export const desktopClient = composeDesktopClient(desktopClientBase);
