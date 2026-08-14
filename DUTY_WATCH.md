@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **W12 Client implementation complete on branch** `feat/workspace-w12-continuous-loop-client` from `origin/main` @ `615bb48`.
+Status: **W12 Client PR open** on `feat/workspace-w12-continuous-loop-client` from `origin/main` @ `615bb48`.
 
 Active branch: `feat/workspace-w12-continuous-loop-client`
 
-Current objective: Open the W12 Client PR. Do not reopen W12 Core contracts or invent a W13.
+Current objective: Review and merge the W12 Client PR. Do not reopen W12 Core contracts or invent a W13.
 
-Next first action: Review and merge the W12 Client pull request.
+Next first action: Review and merge https://github.com/vitala89/Intentloom/pull/311.
 
 Known open items, in the order they should be handled:
 
@@ -98,9 +98,9 @@ entry directly below this section.
 
 ### 2026-08-15, Engineering Workspace W12 continuous loop Client
 
-- **Status:** implementation complete on branch; PR to open.
+- **Status:** implementation complete on branch; PR open.
 - **Branch:** `feat/workspace-w12-continuous-loop-client` from `origin/main` @ `615bb48`
-- **Pull request:** pending
+- **Pull request:** https://github.com/vitala89/Intentloom/pull/311
 - **Objective:** Land W12 Client Desktop/TUI panel, navigation, protocol helpers, Tauri allowlist, and fixture-parity tests against frozen Core.
 - **Completed:**
   - Desktop Continuous Loop view with empty/loading/error/ready/unsupported states.
@@ -115,17 +115,17 @@ entry directly below this section.
 - **Decisions and assumptions:** Snapshots stay caller-supplied JSON. Approval token remains `approved:w12-memory`. Core fixtures and RPC identities unchanged.
 - **Risks or compatibility impact:** execute is mutating. Mitigated by explicit execute control, prepare read-only, and Core approval gates.
 - **Open issues or blockers:** none for W12 Client.
-- **Next first action:** Open the Client PR and wait for review.
+- **Next first action:** Review and merge https://github.com/vitala89/Intentloom/pull/311.
 - **Evidence:** `tests/desktop-tui-continuous-loop-workspace.test.ts`; RPC `intentloom.continuous-loop.workspace.prepare.v1` and `.execute.v1`.
 
 #### Duty completion checklist
 
 - [x] Focused W12 Client and Core tests passed
 - [x] `pnpm verify` and `git diff --check` before push
-- [ ] Atomic commits via `git commit-tree` (no attribution trailers)
+- [x] Atomic commits via `git commit-tree` (no attribution trailers)
 - [x] `PROJECT_STATE.md` / capability matrix updated
 - [x] `DUTY_WATCH.md` handoff completed
-- [ ] PR opened without tool or agent credit
+- [x] PR opened without tool or agent credit
 
 ### 2026-08-15, Reconcile W12 Core merge on main
 
