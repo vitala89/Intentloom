@@ -15,7 +15,7 @@ Active branch: `feat/workspace-w12-continuous-loop-core`
 
 Current objective: Land W12 Core continuous-loop contracts, fixtures, viewmodel, CLI helper, and daemon RPC. Do not invent a second assessment or memory engine.
 
-Next first action: Open the W12 Core PR; start W12 Client only after fixtures freeze.
+Next first action: Review and merge https://github.com/vitala89/Intentloom/pull/310; start W12 Client only after fixtures freeze.
 
 Known open items, in the order they should be handled:
 
@@ -98,9 +98,9 @@ entry directly below this section.
 
 ### 2026-08-15, Engineering Workspace W12 continuous loop Core
 
-- **Status:** implementation complete on branch; PR to follow.
+- **Status:** implementation complete on branch; PR open.
 - **Branch:** `feat/workspace-w12-continuous-loop-core` from `origin/main` @ `ea42b15`
-- **Pull request:** (this Core branch)
+- **Pull request:** https://github.com/vitala89/Intentloom/pull/310
 - **Objective:** Land W12 Core: compose assessment-refresh comparison, finding classification (code/policy/evidence/model-interpretation), draft memory proposal, reviewed memory apply, and next-feature suggestion without a second engine.
 - **Completed:**
   - Verified PR #309 merged to `main` as `ea42b15`.
@@ -112,17 +112,17 @@ entry directly below this section.
 - **Decisions and assumptions:** Snapshots are the comparison input so Core stays deterministic and does not call models. Memory persist uses `.aif/memory/items/` and `working-context`.
 - **Risks or compatibility impact:** execute is mutating. Mitigated by prepare forcing apply false, approval token, and fail-closed gates.
 - **Open issues or blockers:** none for W12 Core.
-- **Next first action:** Open the W12 Core PR. Client waits for frozen fixtures.
+- **Next first action:** Review and merge https://github.com/vitala89/Intentloom/pull/310. Client waits for frozen fixtures.
 - **Evidence:** `tests/fixtures/continuous-loop/workspace-states.v1.json`; RPC `intentloom.continuous-loop.workspace.prepare.v1` and `.execute.v1`.
 
 #### Duty completion checklist
 
-- [ ] Focused W12 Core tests passed
-- [ ] `pnpm verify` and `git diff --check` before push
-- [ ] Atomic commit via `git commit-tree` (no attribution trailers)
+- [x] Focused W12 Core tests passed
+- [x] `pnpm verify` and `git diff --check` before push
+- [x] Atomic commit via `git commit-tree` (no attribution trailers)
 - [x] `PROJECT_STATE.md` / capability matrix updated
 - [x] `DUTY_WATCH.md` handoff completed
-- [ ] PR opened without tool or agent credit
+- [x] PR opened without tool or agent credit
 
 ### 2026-08-14, Engineering Workspace W11 Client merge reconciliation and Cursor architecture rules
 
