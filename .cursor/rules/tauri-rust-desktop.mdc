@@ -1,0 +1,30 @@
+---
+description: Tauri 2 and Rust bridge rules for Intentloom Desktop
+globs: apps/desktop/src-tauri/**
+alwaysApply: false
+---
+
+# Tauri 2 + Rust bridge
+
+Canon: ADR-0042, `apps/desktop/src-tauri/capabilities/default.json`.
+
+## Must
+
+- Keep capabilities least-privilege. Default is `core:default` plus
+  `dialog:allow-open`. Do not add FS, shell, or HTTP plugins without an ADR.
+- Every `#[tauri::command]` stays on an explicit `invoke_handler` allowlist.
+- Foundation/inception/workspace methods stay on the existing method match
+  lists. New RPC needs a new arm, not a wildcard.
+- Rust owns windows, folder dialogs, daemon child lifecycle, socket/pipe
+  transport, and cleanup.
+- CSP stays `default-src 'self'` (plus the documented img/style/script self
+  exceptions). No remote origins.
+
+## Must not
+
+- Implement inspect, doctor, apply, feature-intent, or bounded-execution
+  rules in Rust.
+- Expose a generic filesystem, shell, or network bridge to the webview.
+- Hand-edit `src-tauri/gen/` or commit `target/`.
+- Grow `main.rs` further; extract transport vs allowlist vs lifecycle on the
+  next meaningful change.
