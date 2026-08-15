@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **W12 Client PR open** on `feat/workspace-w12-continuous-loop-client` from `origin/main` @ `615bb48`.
+Status: **W1–W12 Core and Client complete** on `main` @ `f8b0ad0`.
 
-Active branch: `feat/workspace-w12-continuous-loop-client`
+Active branch: `chore/workspace-w12-client-merge-reconciliation`
 
-Current objective: Review and merge the W12 Client PR. Do not reopen W12 Core contracts or invent a W13.
+Current objective: Reconcile handoff after W12 Client squash-merge. Do not invent a W13.
 
-Next first action: Review and merge https://github.com/vitala89/Intentloom/pull/311.
+Next first action: Review and merge this reconciliation PR. Do not open a W13 feature branch from this handoff.
 
 Known open items, in the order they should be handled:
 
@@ -95,6 +95,34 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-16, Engineering Workspace W12 Client merge reconciliation
+
+- **Status:** complete on branch; PR open.
+- **Branch:** `chore/workspace-w12-client-merge-reconciliation` from `origin/main` @ `f8b0ad0`
+- **Pull request:** https://github.com/vitala89/Intentloom/pull/312
+- **Objective:** Reconcile `DUTY_WATCH.md`, `PROJECT_STATE.md`, and the capability matrix after W12 Client squash-merge.
+- **Completed:**
+  - Verified `origin/main` @ `f8b0ad0` (`feat(workspace): add W12 continuous-loop client surfaces (#311)`). PR #311 is MERGED.
+  - Confirmed squash-merge message has no Co-Authored-By or Generated/Made-with trailers.
+  - Recorded W1–W12 Core and Client complete on main.
+- **Not completed:** any phase after W12; live `assessProject` refresh remains caller-supplied snapshots.
+- **Files or packages changed:** `DUTY_WATCH.md`, `PROJECT_STATE.md`, `docs/roadmap/ENGINEERING_WORKSPACE_CAPABILITY_MATRIX.md`.
+- **Validation:** `pnpm exec prettier --check` on touched markdown; `git diff --check`.
+- **Decisions and assumptions:** W12 is the last Engineering Workspace phase in the current matrix. Do not invent a W13 from this handoff.
+- **Risks or compatibility impact:** none. Documentation only.
+- **Open issues or blockers:** none for this chore.
+- **Next first action:** Review and merge this reconciliation PR. Do not open a W13 feature branch from this handoff.
+- **Evidence:** `git rev-parse origin/main` = `f8b0ad060fb742fe6426d1d64df1357094453d46`; `gh pr view 311` state MERGED.
+
+#### Duty completion checklist
+
+- [x] Markdown format check on touched docs
+- [x] `git diff --check` passed
+- [x] Atomic commit via `git commit-tree` (no attribution trailers)
+- [x] `PROJECT_STATE.md` / capability matrix updated
+- [x] `DUTY_WATCH.md` handoff completed
+- [x] PR opened without tool or agent credit
 
 ### 2026-08-15, Engineering Workspace W12 continuous loop Client
 

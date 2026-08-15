@@ -1,6 +1,6 @@
 # Intentloom Project State
 
-Last verified: 2026-08-15
+Last verified: 2026-08-16
 
 This file records the durable current state of the project. It is not a
 chronological log. Session history and handoff details belong in
@@ -231,10 +231,9 @@ before a new release or implementation milestone is declared complete.
 
 ## Active focus
 
-1. Engineering Workspace **W1–W12 Core** are complete on `main` at `615bb48`
-   (PR #310 squash-merged). **W12 Client** (continuous-loop Desktop/TUI) is on
-   `feat/workspace-w12-continuous-loop-client`. Do not reopen W12 Core
-   contracts. W13 is not in scope.
+1. Engineering Workspace **W1–W12 Core and Client** are complete on `main` at
+   `f8b0ad0` (W12 Client PR #311; W12 Core PR #310 at `615bb48`). Do not
+   reopen W12 contracts. W13 is not in scope.
 2. Engineering Workspace **W0** capability reconciliation remains complete on `main`.
 3. Keep GitHub Pages as the canonical public documentation destination and
    continue the roadmap after the completed `1.0.2` metadata release.
