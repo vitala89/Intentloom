@@ -333,7 +333,7 @@ JSON helper, and frozen fixtures — **reusing** existing
 
 ```text
 Current Engineering Workspace phase: W12 complete
-Verified main: 7d4ed80 (PR #313 W12 plan handoff; PR #312; PR #311; PR #310)
+Verified main: 64b40bb (PR #314 post-W12 plan; PR #313; PR #312; PR #311; PR #310)
 Published npm: 1.0.2 at 192fd05 — W0–W12 are not in that tarball
 
 CORE

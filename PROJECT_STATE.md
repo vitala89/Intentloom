@@ -232,7 +232,7 @@ before a new release or implementation milestone is declared complete.
 ## Active focus
 
 1. Engineering Workspace **W0–W12** are complete on current `origin/main` at
-   `7d4ed80` (W12 plan handoff PR #313; Client merge handoff PR #312 at
+   `64b40bb` (post-W12 plan PR #314; W12 plan handoff PR #313; Client merge handoff PR #312 at
    `68e05dd`; W12 Client PR #311 at `f8b0ad0`; W12 Core PR #310 at
    `615bb48`). The implementation plan ends at W12. Do not invent a W13.
 2. **P0 Release honesty** is the authorized next increment: make git-versus-npm
@@ -262,7 +262,7 @@ before a new release or implementation milestone is declared complete.
 ## Current blockers and unknowns
 
 - Any expansion to bottleneck, performance, causal, actor, repository-reading, persisted, remote, or model-assisted analysis requires a new ADR, specification, and threat review.
-- Current `origin/main` is `7d4ed80` (PR #313 W12 plan handoff). That SHA is
+- Current `origin/main` is `64b40bb` (PR #314 post-W12 plan). That SHA is
   not a published npm release.
 - Phase E5 doctor diagnostics, Phase E6 safe revocation and removal, and
   Phase E7 knowledge-provider & adapter-pack boundaries are merged to `main`.
@@ -548,7 +548,7 @@ rotation remain out of scope.
 
 ## Next platform milestone
 
-W0–W12 are complete on `origin/main` at `7d4ed80`. Desktop v0.6 readiness
+W0–W12 are complete on `origin/main` at `64b40bb`. Desktop v0.6 readiness
 ([V0_6_READINESS_AUDIT.md](docs/desktop/V0_6_READINESS_AUDIT.md)) is a
 historical implementation gate only; it is not the next publish action.
 
@@ -561,7 +561,7 @@ Maintainer options (pick later, in a publish brief):
 
 Named follow-ups after P0, none started here: workspace public-gate evidence
 (P1), Neutron N1 then N2 (P2), S8 (P3), file-budget extracts (P4). The proposed
-order lives in open PR #314 until that plan merges.
+order lives in `docs/roadmap/POST_W12_NEXT_INCREMENT_PLAN.md` (merged PR #314).
 
 The Desktop discovery/error and Diff/Timeline slices remain recorded in
 [PHASE1_CONTRACTS.md](docs/desktop/PHASE1_CONTRACTS.md).

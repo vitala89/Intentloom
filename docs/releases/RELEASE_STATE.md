@@ -6,7 +6,7 @@ Historical release audits and roadmap sections retain their original scope, but
 this document is the source of truth for the current status.
 
 Snapshot: 2026-08-16
-Implemented-in-main commit: `7d4ed80` (`docs(workspace): close W12 plan handoff on main (#313)`)
+Implemented-in-main commit: `64b40bb` (`docs(roadmap): propose post-W12 next increment order (#314)`)
 Workspace version field: `1.0.2` (unchanged; do not treat this as “current main is published”)
 Released on npm: `1.0.2`, published through trusted workflow run [`30724962105`](https://github.com/vitala89/Intentloom/actions/runs/30724962105)
 Last published npm package: `intentloom@1.0.2`, re-verified in the registry on 2026-08-16
@@ -16,7 +16,7 @@ Release commit / Git tag `v1.0.2`: `192fd05`
 GitHub release: [`v1.0.2`](https://github.com/vitala89/Intentloom/releases/tag/v1.0.2), published 2026-08-02
 
 `Implemented in main` and `Released on npm` are different facts. Current
-`origin/main` at `7d4ed80` includes Engineering Workspace W0–W12, later Quality /
+`origin/main` at `64b40bb` includes Engineering Workspace W0–W12, later Quality /
 Specialized / Extension / Assessment / Harness phases, and Desktop workspace
 panels. None of that is in the published `1.0.2` tarball. Workspace
 `package.json` versions still say `1.0.2` so they match the last publish; the
@@ -33,7 +33,7 @@ Pages documentation.
 
 | Fact                                   | Value                                                                                                                                                                                                                      |
 | -------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Code on `origin/main`                  | `7d4ed80` (2026-08-16). W0–W12 Core and Client are merged.                                                                                                                                                                 |
+| Code on `origin/main`                  | `64b40bb` (2026-08-16, PR #314). W0–W12 Core and Client are merged.                                                                                                                                                        |
 | What `npm install intentloom` installs | `intentloom@1.0.2` from commit `192fd05` (2026-08-02).                                                                                                                                                                     |
 | Next published version                 | **Undecided.** Options for the maintainer, not a recommendation: stay unpublished on npm until an explicit publish brief; later `1.0.x` metadata/docs release; `1.1.0` (or another minor) after a real release-gate brief. |
 | Do not do from this snapshot           | Tag `v0.6.0-beta.1`, dispatch `.github/workflows/release.yml`, move dist-tags, or invent a W13.                                                                                                                            |
@@ -131,12 +131,12 @@ publishing a prerelease must not move `latest`. No publish is authorized here.
   shasum `4a52f359ed6ffda5a80a73af657923285bcdc910`, the integrity recorded
   above, and a SLSA v1 provenance attestation. This session did not re-fetch
   shasum or attestations; those numbers stay the 2026-08-02 record.
-- Current git evidence, verified 2026-08-16: `origin/main` is `7d4ed80`.
-  Git tag `v1.0.2` is `192fd05`. GitHub release `v1.0.2` is published
-  (not draft, not prerelease), `publishedAt=2026-08-02T00:41:17Z`.
-- Open plan PR at snapshot time: [#314](https://github.com/vitala89/Intentloom/pull/314)
-  (`docs/post-w12-next-increment-plan`) is OPEN. P0 Release honesty is
-  authorized from that brief even while the plan file is not on `main`.
+- Current git evidence, verified 2026-08-16: `origin/main` is `64b40bb`
+  (PR #314 merged). Git tag `v1.0.2` is `192fd05`. GitHub release `v1.0.2`
+  is published (not draft, not prerelease),
+  `publishedAt=2026-08-02T00:41:17Z`.
+- Post-W12 plan: [#314](https://github.com/vitala89/Intentloom/pull/314)
+  is MERGED. P0 honesty is PR #315.
 
 - Historical npm registry evidence, re-verified 2026-07-31 after the dist-tag promotion:
   [`intentloom` package](https://www.npmjs.com/package/intentloom)
