@@ -98,9 +98,9 @@ entry directly below this section.
 
 ### 2026-08-16, Engineering Workspace W12 plan complete on main
 
-- **Status:** complete on branch; PR to open.
+- **Status:** complete on branch; PR open.
 - **Branch:** `chore/workspace-w12-complete-handoff` from `origin/main` @ `68e05dd`
-- **Pull request:** pending
+- **Pull request:** https://github.com/vitala89/Intentloom/pull/313
 - **Objective:** Close stale post-#312 handoff text and record that the W0–W12 implementation plan is finished on main.
 - **Completed:**
   - Verified `origin/main` @ `68e05dd` (`docs(workspace): reconcile W12 Client merge on main (#312)`). PR #312 is MERGED.
@@ -119,10 +119,10 @@ entry directly below this section.
 
 - [x] Markdown format check on touched docs
 - [x] `git diff --check` passed
-- [ ] Atomic commit via `git commit-tree` (no attribution trailers)
+- [x] Atomic commit via `git commit-tree` (no attribution trailers)
 - [x] `PROJECT_STATE.md` / capability matrix updated
 - [x] `DUTY_WATCH.md` handoff completed
-- [ ] PR opened without tool or agent credit
+- [x] PR opened without tool or agent credit
 
 ### 2026-08-16, Engineering Workspace W12 Client merge reconciliation
 
