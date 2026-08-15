@@ -98,9 +98,10 @@ entry directly below this section.
 
 ### 2026-08-16, P0 Release honesty
 
-- **Status:** complete on branch; PR to open.
+- **Status:** complete on branch; PR open.
 - **Branch:** `docs/release-honesty-p0` from `origin/main` @ `7d4ed80`
-- **Pull request:** pending
+- **Commits:** `804753c`
+- **Pull request:** https://github.com/vitala89/Intentloom/pull/315
 - **Objective:** Reconcile stale release docs so a reviewer can see what is on `origin/main` versus what npm serves.
 - **Completed:**
   - Re-verified `npm view intentloom`: `name=intentloom`, `version=1.0.2`, `latest=1.0.2`, `next=1.0.0`.
@@ -122,10 +123,11 @@ entry directly below this section.
 
 - [x] Markdown format check on touched docs
 - [x] `git diff --check` passed
-- [ ] Atomic commit via `git commit-tree` (no attribution trailers)
+- [x] Atomic commit via `git commit-tree` (no attribution trailers)
 - [x] `PROJECT_STATE.md` / capability matrix updated
 - [x] `DUTY_WATCH.md` handoff completed
-- [ ] PR opened without tool or agent credit
+- [x] PR opened without tool or agent credit
+- [x] `pnpm verify` (213 files, 1433 passed / 3 skipped)
 
 ### 2026-08-16, Engineering Workspace W12 plan complete on main
 
