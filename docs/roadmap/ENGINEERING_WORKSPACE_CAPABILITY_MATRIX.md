@@ -333,7 +333,8 @@ JSON helper, and frozen fixtures — **reusing** existing
 
 ```text
 Current Engineering Workspace phase: W12 complete
-Verified main: 68e05dd (PR #312 handoff; PR #311 W12 Client; PR #310 W12 Core)
+Verified main: 7d4ed80 (PR #313 W12 plan handoff; PR #312; PR #311; PR #310)
+Published npm: 1.0.2 at 192fd05 — W0–W12 are not in that tarball
 
 CORE
 Current completed capability:
@@ -355,10 +356,12 @@ Must wait for Core:
 
 Blocked / future:
 - S8 external specialized packs
-- Any phase after W12
+- Neutron N1–N2
+- Any new Engineering Workspace week
 
 Next synchronization checkpoint:
-- Only after an explicit brief for work beyond W12
+- P0 Release honesty is the authorized brief (docs only; no publish/tag).
+- Do not start P1–P4, Neutron N1, or S8 from this matrix.
 ```
 
 ---

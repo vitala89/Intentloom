@@ -34,11 +34,11 @@ signed off.
 [GitHub release](https://github.com/vitala89/Intentloom/releases/tag/v1.0.0), and
 was published to npm on 2026-07-30 under the `next` dist-tag.
 
-The registry now serves `1.0.2` as the stable release under `latest`, while
-`next` remains at `1.0.0`. Verified against the registry on 2026-08-02 after
-trusted publication. See
-[`RELEASE_STATE.md`](docs/releases/RELEASE_STATE.md) for the authoritative
-published-artifact status.
+The registry still serves `1.0.2` as the stable release under `latest`, while
+`next` remains at `1.0.0`. Re-verified with `npm view intentloom` on
+2026-08-16. That published tarball is commit `192fd05`, not current `main`.
+See [`RELEASE_STATE.md`](docs/releases/RELEASE_STATE.md) for the authoritative
+split between implemented-in-main and released-on-npm.
 
 The publication path for future releases is `.github/workflows/release.yml`,
 using npm trusted publishing so the artifact carries provenance. The `1.0.2`
@@ -231,12 +231,17 @@ before a new release or implementation milestone is declared complete.
 
 ## Active focus
 
-1. Engineering Workspace **W0–W12** are complete on `main` at `68e05dd`
-   (handoff PR #312; W12 Client PR #311 at `f8b0ad0`; W12 Core PR #310 at
+1. Engineering Workspace **W0–W12** are complete on current `origin/main` at
+   `7d4ed80` (W12 plan handoff PR #313; Client merge handoff PR #312 at
+   `68e05dd`; W12 Client PR #311 at `f8b0ad0`; W12 Core PR #310 at
    `615bb48`). The implementation plan ends at W12. Do not invent a W13.
-2. Engineering Workspace **W0** capability reconciliation remains complete on `main`.
-3. Keep GitHub Pages as the canonical public documentation destination and
-   continue the roadmap after the completed `1.0.2` metadata release.
+2. **P0 Release honesty** is the authorized next increment: make git-versus-npm
+   truth readable. Do not publish, tag, or dispatch `release.yml`. Do not start
+   Neutron N1, S8, C7, or file-budget extracts from this focus.
+3. The next **published** version is **undecided**. Maintainer options, not a
+   pick: stay unpublished on npm until an explicit publish brief; later `1.0.x`
+   metadata/docs release; `1.1.0` (or another minor) after a real release-gate
+   brief. Do not tag `v0.6.0-beta.1` as the next action.
 4. Keep bottleneck inference, remote ingestion, model-based judgments, and any
    autonomous mutation behind separate approved specifications and threat review.
 
@@ -257,12 +262,11 @@ before a new release or implementation milestone is declared complete.
 ## Current blockers and unknowns
 
 - Any expansion to bottleneck, performance, causal, actor, repository-reading, persisted, remote, or model-assisted analysis requires a new ADR, specification, and threat review.
-- Current `main` is verified at `e7d380a` (PR #291 CLI evidence extract; PR #290 W5 CLI binary;
-  PR #289 W2 Client; PR #288 W2 Core; PR #287 W1 Client; PR #286 W1 Core) and
-  tracks `origin/main`.
+- Current `origin/main` is `7d4ed80` (PR #313 W12 plan handoff). That SHA is
+  not a published npm release.
 - Phase E5 doctor diagnostics, Phase E6 safe revocation and removal, and
   Phase E7 knowledge-provider & adapter-pack boundaries are merged to `main`.
-- npm reports `latest=1.0.2` and `next=1.0.0`, verified 2026-08-02.
+- npm reports `latest=1.0.2` and `next=1.0.0`, re-verified 2026-08-16.
 - Workspace packages are synchronized to `1.0.2`; Git tag `v1.0.2` and GitHub
   Release `v1.0.2` point at the verified `192fd05` release commit. The stable
   `1.0.2` artifact carries trusted-publishing provenance; historical `1.0.0`
@@ -544,13 +548,23 @@ rotation remain out of scope.
 
 ## Next platform milestone
 
-The read-only evidence hardening gate ([READ_ONLY_EVIDENCE_HARDENING_AUDIT.md](docs/releases/READ_ONLY_EVIDENCE_HARDENING_AUDIT.md)), Managed Extension Lifecycle Phases E1-E8 (PR #248), Agentic Harness H9 Hardening Audit ([H9_HARNESS_HARDENING_AUDIT.md](docs/releases/H9_HARNESS_HARDENING_AUDIT.md)), Approved Apply Transaction Engine & Desktop Integration ([APPROVED_APPLY_HARDENING_AUDIT.md](docs/releases/APPROVED_APPLY_HARDENING_AUDIT.md)), and Desktop v0.6.0-beta.1 Release Readiness Audit ([V0_6_READINESS_AUDIT.md](docs/desktop/V0_6_READINESS_AUDIT.md)) are 100% complete, audited, and verified.
-The platform has achieved full production readiness for local agentic workflow orchestration and safe human-approved transactional file mutations via Intent Loop.
-Next maintainer action: Tag release `v0.6.0-beta.1`.
+W0–W12 are complete on `origin/main` at `7d4ed80`. Desktop v0.6 readiness
+([V0_6_READINESS_AUDIT.md](docs/desktop/V0_6_READINESS_AUDIT.md)) is a
+historical implementation gate only; it is not the next publish action.
+
+The next published version is **undecided**. Do not tag `v0.6.0-beta.1`.
+Maintainer options (pick later, in a publish brief):
+
+- stay unpublished on npm until an explicit publish brief;
+- later `1.0.x` metadata/docs release;
+- `1.1.0` (or another minor) after a real release-gate brief.
+
+Named follow-ups after P0, none started here: workspace public-gate evidence
+(P1), Neutron N1 then N2 (P2), S8 (P3), file-budget extracts (P4). The proposed
+order lives in open PR #314 until that plan merges.
 
 The Desktop discovery/error and Diff/Timeline slices remain recorded in
-[PHASE1_CONTRACTS.md](docs/desktop/PHASE1_CONTRACTS.md), while the packaged
-readiness evidence is recorded in [V0_6_READINESS_AUDIT.md](docs/desktop/V0_6_READINESS_AUDIT.md).
+[PHASE1_CONTRACTS.md](docs/desktop/PHASE1_CONTRACTS.md).
 
 ## State update rules
 

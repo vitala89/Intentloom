@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **W1–W12 Core and Client complete** on `main` @ `68e05dd`.
+Status: **P0 Release honesty** on `docs/release-honesty-p0` from `origin/main` @ `7d4ed80`.
 
-Active branch: `chore/workspace-w12-complete-handoff`
+Active branch: `docs/release-honesty-p0`
 
-Current objective: Close the Engineering Workspace W0–W12 plan. Do not invent a W13.
+Current objective: Make git-versus-npm truth readable. Do not publish, tag, or dispatch `release.yml`.
 
-Next first action: Wait for an explicit brief before any work beyond W12. Do not open a W13 feature branch from this handoff.
+Next first action: Review the P0 PR. Next published version stays undecided. Do not start P1–P4, Neutron N1, S8, or a W13.
 
 Known open items, in the order they should be handled:
 
@@ -95,6 +95,37 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-16, P0 Release honesty
+
+- **Status:** complete on branch; PR to open.
+- **Branch:** `docs/release-honesty-p0` from `origin/main` @ `7d4ed80`
+- **Pull request:** pending
+- **Objective:** Reconcile stale release docs so a reviewer can see what is on `origin/main` versus what npm serves.
+- **Completed:**
+  - Re-verified `npm view intentloom`: `name=intentloom`, `version=1.0.2`, `latest=1.0.2`, `next=1.0.0`.
+  - Re-verified Git tag / release `v1.0.2` at `192fd05` (published 2026-08-02).
+  - Confirmed `origin/main` @ `7d4ed80` (PR #313). PR #314 remains OPEN; the plan file is not on `main` and was used only as the P0 brief.
+  - Split Implemented-in-main from Released-on-npm in `RELEASE_STATE.md`. Desktop / W0–W12 / later Q/S/E/A/H rows are Yes on main and unpublished.
+  - Replaced “tag `v0.6.0-beta.1`” as the next action. Recorded version options without picking one.
+  - Left `packages/cli/package.json` at `1.0.2`. No tag, publish, or workflow dispatch.
+- **Not completed:** any publish; P1–P4; Neutron N1; S8; W13.
+- **Files or packages changed:** `docs/releases/RELEASE_STATE.md`, `PROJECT_STATE.md`, `DUTY_WATCH.md`, `docs/roadmap/ENGINEERING_WORKSPACE_CAPABILITY_MATRIX.md`.
+- **Validation:** `pnpm exec prettier --check` on touched markdown; `git diff --check`; full `pnpm verify` before push if hooks require it.
+- **Decisions and assumptions:** P0 is docs-only. Workspace version field stays `1.0.2` and the drift is documented. `V0_6_READINESS_AUDIT.md` stays a historical gate.
+- **Risks or compatibility impact:** none. Documentation only. No package version or runtime change.
+- **Open issues or blockers:** next published version undecided; npm token-disallow setting remains an owner action.
+- **Next first action:** Review and merge this PR. Do not tag or publish from it.
+- **Evidence:** `git rev-parse origin/main` = `7d4ed80ac2a5a8efbab3bda4fdf4368e6e37fae1`; `npm view` 2026-08-16; `gh release view v1.0.2`; `gh pr view 314` state OPEN.
+
+#### Duty completion checklist
+
+- [x] Markdown format check on touched docs
+- [x] `git diff --check` passed
+- [ ] Atomic commit via `git commit-tree` (no attribution trailers)
+- [x] `PROJECT_STATE.md` / capability matrix updated
+- [x] `DUTY_WATCH.md` handoff completed
+- [ ] PR opened without tool or agent credit
 
 ### 2026-08-16, Engineering Workspace W12 plan complete on main
 
