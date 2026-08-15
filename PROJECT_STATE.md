@@ -231,9 +231,9 @@ before a new release or implementation milestone is declared complete.
 
 ## Active focus
 
-1. Engineering Workspace **W1–W12 Core and Client** are complete on `main` at
-   `f8b0ad0` (W12 Client PR #311; W12 Core PR #310 at `615bb48`). Do not
-   reopen W12 contracts. W13 is not in scope.
+1. Engineering Workspace **W0–W12** are complete on `main` at `68e05dd`
+   (handoff PR #312; W12 Client PR #311 at `f8b0ad0`; W12 Core PR #310 at
+   `615bb48`). The implementation plan ends at W12. Do not invent a W13.
 2. Engineering Workspace **W0** capability reconciliation remains complete on `main`.
 3. Keep GitHub Pages as the canonical public documentation destination and
    continue the roadmap after the completed `1.0.2` metadata release.

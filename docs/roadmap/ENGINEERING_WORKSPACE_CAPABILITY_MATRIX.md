@@ -104,7 +104,7 @@ surfaces expose inception. No `tests/fixtures/inception/` tree.
 | **W9**  | Existing-project composed inspect/assessment flow                                          | Merged on `main` (`0c948c3`, PR #304 Core+Client)                   | **complete** — frozen fixtures + Desktop/TUI parity |
 | **W10** | Feature intent and architecture impact                                                     | Merged on `main` (`5795c6c`, PR #305 Core + PR #306 Client)         | **complete** — frozen fixtures + Desktop/TUI parity |
 | **W11** | Bounded implementation execution                                                           | Merged on `main` (`19f2582`, PR #307 Core + PR #308 Client)         | **complete** — frozen fixtures + Desktop/TUI parity |
-| **W12** | Continuous development loop                                                                | Merged on `main` (`f8b0ad0`, PR #310 Core + PR #311 Client)         | **complete** — frozen fixtures + Desktop/TUI parity |
+| **W12** | Continuous development loop                                                                | Merged on `main` (`68e05dd`, PR #310 Core + PR #311 Client + #312)  | **complete** — frozen fixtures + Desktop/TUI parity |
 
 ---
 
@@ -333,7 +333,7 @@ JSON helper, and frozen fixtures — **reusing** existing
 
 ```text
 Current Engineering Workspace phase: W12 complete
-Verified main: f8b0ad0 (PR #311 W12 Client; PR #310 W12 Core)
+Verified main: 68e05dd (PR #312 handoff; PR #311 W12 Client; PR #310 W12 Core)
 
 CORE
 Current completed capability:
