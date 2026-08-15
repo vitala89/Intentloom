@@ -98,9 +98,9 @@ entry directly below this section.
 
 ### 2026-08-16, Engineering Workspace W12 Client merge reconciliation
 
-- **Status:** complete on branch; PR to open.
+- **Status:** complete on branch; PR open.
 - **Branch:** `chore/workspace-w12-client-merge-reconciliation` from `origin/main` @ `f8b0ad0`
-- **Pull request:** pending
+- **Pull request:** https://github.com/vitala89/Intentloom/pull/312
 - **Objective:** Reconcile `DUTY_WATCH.md`, `PROJECT_STATE.md`, and the capability matrix after W12 Client squash-merge.
 - **Completed:**
   - Verified `origin/main` @ `f8b0ad0` (`feat(workspace): add W12 continuous-loop client surfaces (#311)`). PR #311 is MERGED.
@@ -119,10 +119,10 @@ entry directly below this section.
 
 - [x] Markdown format check on touched docs
 - [x] `git diff --check` passed
-- [ ] Atomic commit via `git commit-tree` (no attribution trailers)
+- [x] Atomic commit via `git commit-tree` (no attribution trailers)
 - [x] `PROJECT_STATE.md` / capability matrix updated
 - [x] `DUTY_WATCH.md` handoff completed
-- [ ] PR opened without tool or agent credit
+- [x] PR opened without tool or agent credit
 
 ### 2026-08-15, Engineering Workspace W12 continuous loop Client
 
