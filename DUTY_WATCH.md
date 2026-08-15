@@ -13,9 +13,9 @@ Status: **W1–W12 Core and Client complete** on `main` @ `68e05dd`.
 
 Active branch: `chore/workspace-w12-complete-handoff`
 
-Current objective: Close the Engineering Workspace W0–W12 plan. Do not invent a W13.
+Current objective: Review the proposed post-W12 increment plan. Do not invent a W13.
 
-Next first action: Wait for an explicit brief before any work beyond W12. Do not open a W13 feature branch from this handoff.
+Next first action: Start a new session with `docs/handoffs/P0_RELEASE_HONESTY_AGENT_PROMPT.md` (P0 authorized). Do not implement P0 in a leftover W12 or plan-proposal session.
 
 Known open items, in the order they should be handled:
 
@@ -95,6 +95,31 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-16, Propose post-W12 next increment plan
+
+- **Status:** complete on branch; PR to open.
+- **Branch:** `docs/post-w12-next-increment-plan` from `origin/main` @ `7d4ed80`
+- **Pull request:** pending
+- **Objective:** Analyze existing roadmaps after W12 and write a proposed next-increment order without inventing a W13.
+- **Completed:**
+  - Confirmed W0–W12 is the last Engineering Workspace phase on main.
+  - Mapped residual work to already-named increments: release honesty, workspace dogfood gate, Neutron N1–N2, S8, CLI/file-budget debt.
+- **Not completed:** maintainer choice of P0, P2, or P3; any implementation.
+- **Files or packages changed:** `docs/roadmap/POST_W12_NEXT_INCREMENT_PLAN.md`, `DUTY_WATCH.md`.
+- **Validation:** `pnpm exec prettier --check` on touched markdown; `git diff --check`.
+- **Decisions and assumptions:** Proposed only. No release, adapter, or schema authorization.
+- **Risks or compatibility impact:** none. Documentation only.
+- **Open issues or blockers:** none for this docs PR.
+- **Next first action:** Review the plan PR and pick one increment.
+- **Evidence:** `origin/main` = `7d4ed80`; plan sources listed in the new document.
+
+#### Duty completion checklist
+
+- [x] Markdown format check on touched docs
+- [x] `git diff --check` passed
+- [ ] Atomic commit via `git commit-tree` (no attribution trailers)
+- [ ] PR opened without tool or agent credit
 
 ### 2026-08-16, Engineering Workspace W12 plan complete on main
 
