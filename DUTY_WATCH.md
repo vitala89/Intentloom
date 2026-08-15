@@ -15,7 +15,7 @@ Active branch: `chore/workspace-w12-complete-handoff`
 
 Current objective: Review the proposed post-W12 increment plan. Do not invent a W13.
 
-Next first action: Review the post-W12 next-increment plan PR, then pick P0, P2, or P3.
+Next first action: Start a new session with `docs/handoffs/P0_RELEASE_HONESTY_AGENT_PROMPT.md` (P0 authorized). Do not implement P0 in a leftover W12 or plan-proposal session.
 
 Known open items, in the order they should be handled:
 
