@@ -104,7 +104,7 @@ surfaces expose inception. No `tests/fixtures/inception/` tree.
 | **W9**  | Existing-project composed inspect/assessment flow                                          | Merged on `main` (`0c948c3`, PR #304 Core+Client)                   | **complete** — frozen fixtures + Desktop/TUI parity |
 | **W10** | Feature intent and architecture impact                                                     | Merged on `main` (`5795c6c`, PR #305 Core + PR #306 Client)         | **complete** — frozen fixtures + Desktop/TUI parity |
 | **W11** | Bounded implementation execution                                                           | Merged on `main` (`19f2582`, PR #307 Core + PR #308 Client)         | **complete** — frozen fixtures + Desktop/TUI parity |
-| **W12** | Continuous development loop                                                                | Core on `feat/workspace-w12-continuous-loop-core`                   | Core **in progress**; Client waits for frozen RPC   |
+| **W12** | Continuous development loop                                                                | Core merged on `main` (`615bb48`, PR #310); Client on this branch   | Core **complete**; Client **implemented on branch** |
 
 ---
 
@@ -332,29 +332,36 @@ JSON helper, and frozen fixtures — **reusing** existing
 ## 8. Client readiness summary (W2 checkpoint)
 
 ```text
-Current Engineering Workspace phase: W12 Core continuous development loop
-Verified main: ea42b15 (PR #309 chore rules; PR #308 W11 Client)
+Current Engineering Workspace phase: W12 Client continuous development loop
+Verified main: 615bb48 (PR #310 W12 Core)
 
 CORE
 Current completed capability:
-- W1-W11 complete on main
-- W12 Core in progress: assessment-refresh comparison, finding classification, memory proposal/apply, next-feature suggestion
+- W1-W12 Core complete on main
+- W12 Core frozen: assessment-refresh comparison, finding classification, memory proposal/apply, next-feature suggestion
 
 Next Core task:
-- Land W12 Core PR, then freeze Client against four fixtures
+- None for W12. Do not invent a W13 from this handoff.
 
 CLIENTS: DESKTOP + CLI/TUI
 Ready now:
-- W1-W11 Desktop/TUI surfaces on main
+- W12 Client Desktop/TUI panel implemented on
+  `feat/workspace-w12-continuous-loop-client` against four frozen fixture IDs
+  and RPC intentloom.continuous-loop.workspace.prepare.v1 /
+  intentloom.continuous-loop.workspace.execute.v1
+
+Integration pending:
+- W12 Client PR review and merge
 
 Must wait for Core:
-- W12 Client Desktop/TUI panel until fixtures and RPC freeze
+- none for W12
 
 Blocked / future:
 - S8 external specialized packs
+- Any phase after W12
 
 Next synchronization checkpoint:
-- After W12 Core PR review
+- After W12 Client PR review
 ```
 
 ---

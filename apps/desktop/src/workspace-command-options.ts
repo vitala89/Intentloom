@@ -58,6 +58,14 @@ export function buildWorkspaceCommandOptions(
       action: () => deps.setActiveView("Bounded execution"),
     },
     {
+      id: "nav-continuous-loop",
+      category: "Navigation",
+      label: "Go to Continuous loop",
+      icon: "↻",
+      shortcut: "",
+      action: () => deps.setActiveView("Continuous loop"),
+    },
+    {
       id: "nav-inspect",
       category: "Navigation",
       label: "Go to Inspect",

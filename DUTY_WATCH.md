@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **W12 Core in progress** on `feat/workspace-w12-continuous-loop-core` from `main` @ `ea42b15`.
+Status: **W12 Client PR open** on `feat/workspace-w12-continuous-loop-client` from `origin/main` @ `615bb48`.
 
-Active branch: `feat/workspace-w12-continuous-loop-core`
+Active branch: `feat/workspace-w12-continuous-loop-client`
 
-Current objective: Land W12 Core continuous-loop contracts, fixtures, viewmodel, CLI helper, and daemon RPC. Do not invent a second assessment or memory engine.
+Current objective: Review and merge the W12 Client PR. Do not reopen W12 Core contracts or invent a W13.
 
-Next first action: Review and merge https://github.com/vitala89/Intentloom/pull/310; start W12 Client only after fixtures freeze.
+Next first action: Review and merge https://github.com/vitala89/Intentloom/pull/311.
 
 Known open items, in the order they should be handled:
 
@@ -95,6 +95,62 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-15, Engineering Workspace W12 continuous loop Client
+
+- **Status:** implementation complete on branch; PR open.
+- **Branch:** `feat/workspace-w12-continuous-loop-client` from `origin/main` @ `615bb48`
+- **Pull request:** https://github.com/vitala89/Intentloom/pull/311
+- **Objective:** Land W12 Client Desktop/TUI panel, navigation, protocol helpers, Tauri allowlist, and fixture-parity tests against frozen Core.
+- **Completed:**
+  - Desktop Continuous Loop view with empty/loading/error/ready/unsupported states.
+  - Navigation and command-palette entry.
+  - `desktopClient` prepare/execute helpers; prepare never sends `applyRequested`.
+  - Extracted Tauri method allowlist and added the two continuous-loop methods without a wildcard.
+  - Extracted `composeDesktopClient` so `desktop-client.ts` stays under 400 lines.
+  - Parity tests for the four frozen fixture IDs.
+- **Not completed:** merge to main; live `assessProject` refresh (caller supplies snapshots).
+- **Files or packages changed:** Desktop views/client/Tauri allowlist, `tests/desktop-tui-continuous-loop-workspace.test.ts`, Duty Watch / project state / capability matrix.
+- **Validation:** focused W12 Core+Client tests 13 passed; `cargo test method_allowlist` 1 passed; `pnpm typecheck` passed.
+- **Decisions and assumptions:** Snapshots stay caller-supplied JSON. Approval token remains `approved:w12-memory`. Core fixtures and RPC identities unchanged.
+- **Risks or compatibility impact:** execute is mutating. Mitigated by explicit execute control, prepare read-only, and Core approval gates.
+- **Open issues or blockers:** none for W12 Client.
+- **Next first action:** Review and merge https://github.com/vitala89/Intentloom/pull/311.
+- **Evidence:** `tests/desktop-tui-continuous-loop-workspace.test.ts`; RPC `intentloom.continuous-loop.workspace.prepare.v1` and `.execute.v1`.
+
+#### Duty completion checklist
+
+- [x] Focused W12 Client and Core tests passed
+- [x] `pnpm verify` and `git diff --check` before push
+- [x] Atomic commits via `git commit-tree` (no attribution trailers)
+- [x] `PROJECT_STATE.md` / capability matrix updated
+- [x] `DUTY_WATCH.md` handoff completed
+- [x] PR opened without tool or agent credit
+
+### 2026-08-15, Reconcile W12 Core merge on main
+
+- **Status:** complete on branch; Client implementation follows.
+- **Branch:** `feat/workspace-w12-continuous-loop-client` from `origin/main` @ `615bb48`
+- **Pull request:** none yet (docs-only reconciliation)
+- **Objective:** Correct stale handoff that still described W12 Core as in progress on PR #310.
+- **Completed:**
+  - Verified `origin/main` @ `615bb48` (`feat(workspace): add W12 continuous-loop core contracts (#310)`). PR #310 is MERGED.
+  - Recorded W1–W12 Core complete on main. W12 Client is the ready-now follow-up on this branch.
+- **Not completed:** W12 Client Desktop/TUI panel, Tauri allowlist, and fixture-parity tests.
+- **Files or packages changed:** `DUTY_WATCH.md`, `PROJECT_STATE.md`, `docs/roadmap/ENGINEERING_WORKSPACE_CAPABILITY_MATRIX.md`.
+- **Validation:** `git diff --check` on the docs commit.
+- **Decisions and assumptions:** Core fixtures, gates, approval token, and RPC identities stay frozen. Snapshots remain caller-supplied.
+- **Risks or compatibility impact:** none. Documentation only.
+- **Open issues or blockers:** none for reconciliation.
+- **Next first action:** Implement W12 Client on `feat/workspace-w12-continuous-loop-client`. Do not continue `feat/workspace-w12-continuous-loop-core`.
+- **Evidence:** `git rev-parse origin/main` = `615bb48714e34db65e22df8596b669db152b9a85`.
+
+#### Duty completion checklist
+
+- [x] Stale Core-in-progress claims corrected against origin/main
+- [x] `git diff --check` passed
+- [ ] W12 Client implementation
+- [ ] PR opened for Client
 
 ### 2026-08-15, Engineering Workspace W12 continuous loop Core
 
