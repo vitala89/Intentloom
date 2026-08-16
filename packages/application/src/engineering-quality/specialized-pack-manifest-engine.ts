@@ -88,7 +88,6 @@ export function evaluateSpecializedPackCompatibility(
       });
       continue;
     }
-
     let missingDep: string | null = null;
     for (const depId of manifest.dependencies) {
       if (!manifestMap.has(depId)) {
@@ -115,6 +114,14 @@ export function evaluateSpecializedPackCompatibility(
       rejectedPacks.push({
         packId: manifest.id,
         reason: `Conflicting pack detected: ${conflictWith}`,
+      });
+      continue;
+    }
+
+    if (trust !== undefined && trust.trustLevel === "untrusted-external") {
+      rejectedPacks.push({
+        packId: manifest.id,
+        reason: "Pack is untrusted-external until human review",
       });
       continue;
     }

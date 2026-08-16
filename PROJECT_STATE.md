@@ -232,12 +232,12 @@ before a new release or implementation milestone is declared complete.
 ## Active focus
 
 1. Engineering Workspace **W0–W12** are complete on current `origin/main` at
-   `7d1dbd1` (N1 PR #317; P1 public-gate PR #316; P0 honesty PR #315). The
+   `89b6c1d` (N2 PR #318; N1 PR #317; P1 PR #316; P0 PR #315). The
    implementation plan ends at W12. Do not invent a W13.
-2. **P2 Neutron N2** is on `feat/neutron-n2-ollama-adapter`: Ollama on an
-   explicit loopback URL (ADR-0055) and one read-only inspect loop. No new
-   package. No Desktop/TUI/MCP/daemon model calls. Do not start N3, S8, C7,
-   or file-budget extracts from this focus.
+2. **P3 S8** is on `feat/specialized-packs-s8-external-lifecycle`: reviewed
+   external specialized packs through the existing extension adoption
+   preview, with pin/digest and human activation. No auto-install. Do not
+   start P4, N3, C7, or Desktop model calls from this focus.
 3. The next **published** version is **undecided**. Maintainer options, not a
    pick: stay unpublished on npm until an explicit publish brief; later `1.0.x`
    metadata/docs release; `1.1.0` (or another minor) after a real release-gate

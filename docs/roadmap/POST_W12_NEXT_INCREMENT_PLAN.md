@@ -2,12 +2,12 @@
 
 ## Status
 
-P0, P1, and P2-N1 are merged (PR #315, PR #316, PR #317). P2-N2 Ollama
-adapter is in progress on `feat/neutron-n2-ollama-adapter`. P3–P4 are not
-started. This document still does not authorize a publish, tag, new
-package, hosted-provider credentials, or a W13 workspace phase.
+P0–P2 are merged (PR #315–#318). P3 S8 external specialized-pack
+lifecycle is in progress on `feat/specialized-packs-s8-external-lifecycle`.
+P4 is not started. This document still does not authorize a publish, tag,
+new package, hosted-provider credentials, or a W13 workspace phase.
 
-Verified against `origin/main` @ `7d1dbd1` (PR #317 merged, 2026-08-16).
+Verified against `origin/main` @ `89b6c1d` (PR #318 merged, 2026-08-16).
 
 ## Why this exists
 
@@ -78,20 +78,18 @@ Met as deferred in
 
 **N1 status:** complete on `main` via PR #317.
 
-**N2 status:** complete on this branch per ADR-0055. `OllamaModelAdapter`
-reaches only a caller-supplied loopback URL. `runNeutronN2ReadOnlyLoop`
-runs one inspect tool through `inspectProject` and refuses mutation.
-Desktop, TUI, MCP, and daemon still do not call models. CI uses a fake
-HTTP listener, not a live Ollama process.
+**N2 status:** complete on `main` via PR #318.
 
 Exit: N1 contracts validate in fixtures. The “one configured provider”
 inspect loop is implemented for Ollama on loopback.
 
 ### P3 — S8 external specialized packs
 
-Reviewed external packs through existing E-lifecycle. Provenance, pin,
-compatibility, and human confirmation. No auto-install, no new schema
-family unless Core proves a missing field.
+**Status:** complete on this branch. `previewExternalSpecializedPack` pins
+a caller-supplied payload, exposes provenance/permissions/trust, routes
+the review through `resolveExtensionAdoptionProposal`, and keeps the pack
+`untrusted-external` until `activateExternalSpecializedPack`. No
+auto-install, no network fetch, no new schema family.
 
 ### P4 — File-budget extracts
 
@@ -111,9 +109,9 @@ inspect/timeline/conformance). Do not grow oversized production files.
 
 ## First authorized action
 
-P0–P2 N2 are done on this branch. Do not start P3 (S8) or P4 without a
-new maintainer brief. Do not start N3–N9, Desktop model UI, or hosted
-adapters from this document.
+P0–P3 are done on this branch. Do not start P4 file-budget extracts
+without a new maintainer brief. Do not start N3–N9, Desktop model UI, or
+hosted adapters from this document.
 
 ## Sources
 
