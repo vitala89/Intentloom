@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **P2 Neutron N2** on `feat/neutron-n2-ollama-adapter` from `origin/main` @ `7d1dbd1`.
+Status: **P3 S8** on `feat/specialized-packs-s8-external-lifecycle` from `origin/main` @ `89b6c1d`.
 
-Active branch: `feat/neutron-n2-ollama-adapter`
+Active branch: `feat/specialized-packs-s8-external-lifecycle`
 
-Current objective: Land the ADR-0055 Ollama adapter and one read-only inspect loop. No Desktop model calls. No hosted providers.
+Current objective: Land reviewed external specialized packs through the existing extension adoption preview. No auto-install. No network fetch.
 
-Next first action: Review the N2 PR. Do not start N3, S8, or Desktop Neutron UI from it.
+Next first action: Review the S8 PR. Do not start P4 or N3 from it.
 
 Known open items, in the order they should be handled:
 
@@ -95,6 +95,33 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-16, Specialized packs S8 external lifecycle
+
+- **Status:** complete on branch; PR to open.
+- **Branch:** `feat/specialized-packs-s8-external-lifecycle` from `origin/main` @ `89b6c1d`
+- **Pull request:** pending
+- **Objective:** Implement SPECIALIZED_ENGINEERING_PACKS_PLAN step 8: reviewed external packs through the managed extension lifecycle.
+- **Completed:**
+  - Added `previewExternalSpecializedPack` and `activateExternalSpecializedPack` over caller-supplied payloads, existing pin/digest source types, and `resolveExtensionAdoptionProposal`.
+  - Untrusted-external packs stay out of the compatible set until human activation. First-party id collision and network/process/write permissions fail closed.
+  - No new schema family, package, CLI, Desktop surface, or auto-install.
+- **Not completed:** P4 file-budget extracts; N3–N9; hosted adapters.
+- **Files or packages changed:** `packages/application/src/engineering-quality/specialized-pack-external-lifecycle.ts`, compatibility gate in `specialized-pack-manifest-engine.ts`, `tests/engineering-quality-specialized-pack-s8.test.ts`, roadmap and state docs.
+- **Validation:** `pnpm exec vitest run tests/engineering-quality-specialized-pack-s8.test.ts tests/engineering-quality-specialized-pack-manifest.test.ts` (8 passed); `pnpm typecheck`; oxlint on touched files.
+- **Decisions and assumptions:** Reuse Q9 source/activation validators and the E3 extension proposal. Do not fetch registries.
+- **Risks or compatibility impact:** Compatibility now rejects `untrusted-external` after quarantine/conflict checks. S2 conflict fixtures still pass.
+- **Open issues or blockers:** none for this increment.
+- **Next first action:** Open the S8 PR. Do not start `command.ts` extracts from this watch.
+- **Evidence:** `origin/main` = `89b6c1d`; `gh pr view 318` MERGED.
+
+#### Duty completion checklist
+
+- [x] Focused tests and typecheck
+- [x] Atomic commit via `git commit-tree` (no attribution trailers)
+- [x] `PROJECT_STATE.md` / roadmap updated
+- [x] `DUTY_WATCH.md` handoff completed
+- [ ] PR opened without tool or agent credit
 
 ### 2026-08-16, Neutron N2 Ollama inspect loop
 
