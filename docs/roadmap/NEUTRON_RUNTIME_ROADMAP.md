@@ -182,12 +182,14 @@ client
 ```
 
 The first adapter decision is [ADR-0055](../decisions/ADR-0055-neutron-n2-first-model-adapter.md):
-Ollama on an explicit loopback URL. Implementation is a later PR. Desktop
-must not call models in N2.
+Ollama on an explicit loopback URL. Implementation is
+`OllamaModelAdapter` plus `runNeutronN2ReadOnlyLoop`. Desktop must not
+call models in N2.
 
 Exit gate: one explicitly configured provider can discuss and inspect one
 selected project through bounded typed tools while all project files remain
-byte-for-byte unchanged.
+byte-for-byte unchanged. Met by `tests/neutron-n2-ollama.test.ts` against a
+fake loopback `/api/chat` and `inspectProject`.
 
 ## N3. Context assembly
 

@@ -89,7 +89,7 @@ export interface NeutronRuntimeSession {
 
 export interface NeutronAdapterCapability {
   readonly schemaVersion: typeof NEUTRON_ADAPTER_CAPABILITY_SCHEMA_URN;
-  readonly providerKind: "deterministic-test" | "unconfigured";
+  readonly providerKind: "deterministic-test" | "unconfigured" | "ollama";
   readonly modelId: string;
   readonly supportsStreaming: boolean;
   readonly supportsToolCalls: boolean;

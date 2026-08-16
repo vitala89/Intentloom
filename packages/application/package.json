@@ -19,7 +19,9 @@
   "exports": {
     ".": "./src/index.ts",
     "./model-adapter": "./src/model-adapter.ts",
+    "./ollama-model-adapter": "./src/ollama-model-adapter.ts",
     "./neutron-runtime": "./src/neutron-runtime-contracts.ts",
+    "./neutron-n2": "./src/neutron-n2-loop.ts",
     "./engineering-assessment": "./src/engineering-assessment.ts",
     "./engineering-quality": "./src/engineering-quality.ts"
   }

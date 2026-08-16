@@ -16,6 +16,7 @@
     ".": "./src/index.ts",
     "./model-adapter": "./src/model-adapter.ts",
     "./neutron-runtime": "./src/neutron-runtime.ts",
+    "./neutron-runtime-n2": "./src/neutron-runtime-n2.ts",
     "./engineering-assessment": "./src/engineering-assessment.ts",
     "./engineering-quality": "./src/engineering-quality.ts"
   }
