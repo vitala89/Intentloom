@@ -1,11 +1,11 @@
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
-import { prepareNeutronRuntimeContractSnapshot } from "@intentloom/application";
+import { prepareNeutronRuntimeContractSnapshot } from "../packages/application/src/neutron-runtime-contracts.js";
 import {
   NEUTRON_RUNTIME_SESSION_SCHEMA_URN,
   type NeutronRuntimeContractSnapshot,
-} from "@intentloom/protocol";
+} from "../packages/protocol/src/neutron-runtime.js";
 
 function loadFixture(): NeutronRuntimeContractSnapshot {
   return JSON.parse(

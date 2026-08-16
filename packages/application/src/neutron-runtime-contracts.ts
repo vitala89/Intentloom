@@ -1,5 +1,5 @@
-import type { NeutronRuntimeContractSnapshot } from "@intentloom/protocol";
-import { validateNeutronRuntimeContractSnapshot } from "@intentloom/validator";
+import type { NeutronRuntimeContractSnapshot } from "../../protocol/src/neutron-runtime.js";
+import { validateNeutronRuntimeContractSnapshot } from "../../validator/src/neutron-runtime.js";
 
 export interface PrepareNeutronRuntimeContractInput {
   readonly root: string;

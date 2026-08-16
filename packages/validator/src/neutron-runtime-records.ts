@@ -20,7 +20,7 @@ import {
   type NeutronTaskState,
   type NeutronToolEnvelope,
   type NeutronUsageBudget,
-} from "@intentloom/protocol";
+} from "../../protocol/src/neutron-runtime.js";
 import {
   finiteInt,
   isObject,

@@ -78,7 +78,6 @@ export * from "./extension-lifecycle.js";
 export * from "./knowledge-provider.js";
 export * from "./approved-apply.js";
 export * from "./model-adapter.js";
-export * from "./neutron-runtime.js";
 export * from "./engineering-assessment.js";
 export * from "./engineering-quality-entry.js";
 
