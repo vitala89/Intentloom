@@ -548,6 +548,11 @@ The first useful public Project Design and Development Workspace should require:
 - one real new-project dogfood and one existing-project retrofit dogfood;
 - current capability and release documentation.
 
+P1 (2026-08-16): the two real-dogfood bullets are **deferred** to the
+maintainer. Fixture and composed-path evidence is recorded in
+[`docs/releases/dogfooding/2026-08-16-workspace-public-gate.md`](../releases/dogfooding/2026-08-16-workspace-public-gate.md).
+Do not treat fixture tests as a real-project walkthrough.
+
 Bounded coding-agent execution may remain a later gate if its permission and
 threat-model requirements are not complete.
 

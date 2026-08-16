@@ -232,12 +232,11 @@ before a new release or implementation milestone is declared complete.
 ## Active focus
 
 1. Engineering Workspace **W0–W12** are complete on current `origin/main` at
-   `64b40bb` (post-W12 plan PR #314; W12 plan handoff PR #313; Client merge handoff PR #312 at
-   `68e05dd`; W12 Client PR #311 at `f8b0ad0`; W12 Core PR #310 at
-   `615bb48`). The implementation plan ends at W12. Do not invent a W13.
-2. **P0 Release honesty** is the authorized next increment: make git-versus-npm
-   truth readable. Do not publish, tag, or dispatch `release.yml`. Do not start
-   Neutron N1, S8, C7, or file-budget extracts from this focus.
+   `6996df4` (P0 honesty PR #315; post-W12 plan PR #314; W12 plan handoff PR
+   #313). The implementation plan ends at W12. Do not invent a W13.
+2. **P1 Workspace public-gate evidence** is the authorized increment: record
+   or defer the two real dogfood bullets. No new engine. Do not start Neutron
+   N1, S8, C7, or file-budget extracts from this focus.
 3. The next **published** version is **undecided**. Maintainer options, not a
    pick: stay unpublished on npm until an explicit publish brief; later `1.0.x`
    metadata/docs release; `1.1.0` (or another minor) after a real release-gate
@@ -548,7 +547,7 @@ rotation remain out of scope.
 
 ## Next platform milestone
 
-W0–W12 are complete on `origin/main` at `64b40bb`. Desktop v0.6 readiness
+W0–W12 are complete on `origin/main` at `6996df4`. Desktop v0.6 readiness
 ([V0_6_READINESS_AUDIT.md](docs/desktop/V0_6_READINESS_AUDIT.md)) is a
 historical implementation gate only; it is not the next publish action.
 
@@ -559,9 +558,10 @@ Maintainer options (pick later, in a publish brief):
 - later `1.0.x` metadata/docs release;
 - `1.1.0` (or another minor) after a real release-gate brief.
 
-Named follow-ups after P0, none started here: workspace public-gate evidence
-(P1), Neutron N1 then N2 (P2), S8 (P3), file-budget extracts (P4). The proposed
-order lives in `docs/roadmap/POST_W12_NEXT_INCREMENT_PLAN.md` (merged PR #314).
+P1 defers real workspace dogfood to the maintainer
+([2026-08-16-workspace-public-gate.md](docs/releases/dogfooding/2026-08-16-workspace-public-gate.md)).
+Named follow-ups after P1, not started here: Neutron N1 then N2 (P2), S8 (P3),
+file-budget extracts (P4).
 
 The Desktop discovery/error and Diff/Timeline slices remain recorded in
 [PHASE1_CONTRACTS.md](docs/desktop/PHASE1_CONTRACTS.md).

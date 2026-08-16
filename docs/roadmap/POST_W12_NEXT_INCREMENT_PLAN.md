@@ -2,12 +2,12 @@
 
 ## Status
 
-P0 Release honesty is complete on `docs/release-honesty-p0` (PR #315).
-P1–P4 are not started. This document still does not authorize a publish,
-tag, new package, network capability, or a W13 workspace phase.
+P0 Release honesty is merged (PR #315). P1 public-gate evidence is in
+progress on `docs/workspace-public-gate-p1`. P2–P4 are not started. This
+document still does not authorize a publish, tag, new package, network
+capability, or a W13 workspace phase.
 
-Verified against `origin/main` @ `64b40bb` (PR #314 merged, 2026-08-16) and
-the P0 honesty branch.
+Verified against `origin/main` @ `6996df4` (PR #315 merged, 2026-08-16).
 
 ## Why this exists
 
@@ -40,9 +40,10 @@ product.
 1. **Release honesty.** Closed on PR #315. `RELEASE_STATE.md` snapshot
    2026-08-16 keeps Implemented-in-main separate from npm `1.0.2`. The next
    published version is undecided.
-2. **Workspace public gate leftover.** The W12 plan still asks for one real
-   new-project dogfood and one existing-project retrofit. Code paths exist;
-   current published evidence is incomplete.
+2. **Workspace public gate leftover.** Closed as deferred on P1. Real
+   new-project and existing-project retrofit dogfood wait for an explicit
+   maintainer brief. See
+   `docs/releases/dogfooding/2026-08-16-workspace-public-gate.md`.
 3. **Neutron N1–N2.** After Desktop v0.6, `NEUTRON_RUNTIME_ROADMAP.md`
    sequences N1 contracts then one real model adapter.
 4. **S8.** Step 8 of `SPECIALIZED_ENGINEERING_PACKS_PLAN.md`: reviewed
@@ -65,11 +66,13 @@ PR #315.
 
 ### P1 — Workspace public-gate evidence
 
-Record or explicitly defer the two dogfood requirements from
-`ENGINEERING_WORKSPACE_IMPLEMENTATION_PLAN.md` § Initial public workspace
-gate. No new engine.
+**Status:** complete on this branch. The two real-dogfood bullets are
+deferred to the maintainer. Fixture and composed W1–W12 paths are recorded,
+not treated as a live walkthrough. No new engine.
 
 Exit: the gate is closed with evidence, or marked deferred with an owner.
+Met as deferred in
+`docs/releases/dogfooding/2026-08-16-workspace-public-gate.md`.
 
 ### P2 — Neutron N1, then N2
 
@@ -108,8 +111,8 @@ inspect/timeline/conformance). Do not grow oversized production files.
 
 ## First authorized action
 
-P0 is done on PR #315. Review that PR. Do not start P1–P4, Neutron N1, or
-S8 from this file.
+P0 and P1 are done on this branch. Do not start P2 (Neutron N1), P3 (S8),
+or P4 from this file without a new maintainer brief.
 
 ## Sources
 

@@ -333,7 +333,7 @@ JSON helper, and frozen fixtures — **reusing** existing
 
 ```text
 Current Engineering Workspace phase: W12 complete
-Verified main: 64b40bb (PR #314 post-W12 plan; PR #313; PR #312; PR #311; PR #310)
+Verified main: 6996df4 (PR #315 P0 honesty; PR #314; PR #313; PR #312)
 Published npm: 1.0.2 at 192fd05 — W0–W12 are not in that tarball
 
 CORE
@@ -360,8 +360,8 @@ Blocked / future:
 - Any new Engineering Workspace week
 
 Next synchronization checkpoint:
-- P0 Release honesty is the authorized brief (docs only; no publish/tag).
-- Do not start P1–P4, Neutron N1, or S8 from this matrix.
+- P1 public-gate evidence: real dogfood deferred to the maintainer.
+- Do not start P2–P4, Neutron N1, or S8 from this matrix.
 ```
 
 ---
