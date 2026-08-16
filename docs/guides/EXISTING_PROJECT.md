@@ -51,6 +51,11 @@ paths remain candidates and never become the selected adopt profile.
 Root `README.md` is the public-readme document. Nested README files, package
 READMEs, fixture/example READMEs, RFCs, and documentation indexes do not
 compete for that concept. `docs/README.md` maps to `documentation-index`.
+Only canonical high-level architecture filenames such as `ARCHITECTURE.md`,
+`architecture.md`, `ARCHITECTURE_MAP.md`, and `architecture-overview.md`
+participate in the generic architecture concept. Specialized
+`*_ARCHITECTURE.md` files, ADR/process notes, security architecture, and RFC
+design documents stay project-owned and do not create architecture ambiguity.
 Same-concept duplicates still require an explicit mapping.
 
 Scanning ignores `.git`, dependency/vendor directories, build and coverage

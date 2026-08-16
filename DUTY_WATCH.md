@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **existing-project Nx dogfood** on `fix/existing-project-nx-dogfood` from `origin/main` @ `907e6ad`.
+Status: **existing-project architecture docs** on `fix/existing-project-architecture-docs` from `origin/main` @ `a732af9`.
 
-Active branch: `fix/existing-project-nx-dogfood`
+Active branch: `fix/existing-project-architecture-docs`
 
-Current objective: Land inspect/adopt compatibility for Nx workspaces after Vii dogfood.
+Current objective: Stop specialized architecture/governance/RFC docs from creating false architecture ambiguity.
 
-Next first action: Open and merge the dogfood PR. Do not apply Intentloom to Vii from this watch.
+Next first action: Open and merge the documentation-classification PR. Do not apply Intentloom to Vii from this watch.
 
 Known open items, in the order they should be handled:
 
@@ -95,6 +95,33 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-17, Existing-project architecture documentation
+
+- **Status:** complete on branch; PR to open.
+- **Branch:** `fix/existing-project-architecture-docs` from `origin/main` @ `a732af9`
+- **Pull request:** pending
+- **Objective:** After the Nx dogfood fix, stop specialized Vii architecture documents from requiring architecture mappings.
+- **Completed:**
+  - Generic architecture concept now matches only canonical overview/map filenames.
+  - Specialized `*_ARCHITECTURE.md`, ADR/process, security architecture, and RFC threat-model files stay project-owned skips.
+  - Two canonical architecture documents still require a human decision. `AGENTS.md` remains an expected instruction conflict.
+- **Not completed:** Applying adoption to Vii.
+- **Files or packages changed:** `document-concepts.ts`, adoption docs, changelog, Vii-like regression tests.
+- **Validation:** focused vitest plus `pnpm verify` before push.
+- **Decisions and assumptions:** Do not invent per-file concepts. Fail-closed ownership is unchanged.
+- **Risks or compatibility impact:** `ADR-0001.md` is no longer an architecture concept candidate.
+- **Open issues or blockers:** none for this increment.
+- **Next first action:** Open the PR, wait for CI, merge if green. Re-run Vii adopt dry-run without writes.
+- **Evidence:** `origin/main` = `a732af9`; Vii remains untouched.
+
+#### Duty completion checklist
+
+- [x] Focused tests and typecheck
+- [ ] Atomic commit via `git commit-tree` (no attribution trailers)
+- [x] Docs/changelog updated
+- [x] `DUTY_WATCH.md` handoff completed
+- [ ] PR opened without tool or agent credit
 
 ### 2026-08-17, Existing-project Nx dogfood
 

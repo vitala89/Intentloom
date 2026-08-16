@@ -31,6 +31,15 @@ current `main`
   `documentation-index`; other nested README/docs stay project-owned without
   false public-readme ambiguity.
 
+## Follow-up: specialized architecture documents
+
+After the first fix, inspect profile and Nx cache exclusions were confirmed.
+A second dry-run still marked specialized architecture documents as
+`manual-decision-required` for the generic architecture concept, including
+`CLI_ARCHITECTURE.md`, `ADR_PROCESS.md`, `SECURITY_ARCHITECTURE.md`, and the
+RFC threat model. Only canonical overview/map filenames now participate in
+that concept. `AGENTS.md` remains an expected instruction conflict.
+
 ## Maintainer follow-up
 
 Re-run inspect and adopt dry-run against Vii after this change lands. Do not
