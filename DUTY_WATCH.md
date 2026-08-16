@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **P3 S8** on `feat/specialized-packs-s8-external-lifecycle` from `origin/main` @ `89b6c1d`.
+Status: **existing-project Nx dogfood** on `fix/existing-project-nx-dogfood` from `origin/main` @ `907e6ad`.
 
-Active branch: `feat/specialized-packs-s8-external-lifecycle`
+Active branch: `fix/existing-project-nx-dogfood`
 
-Current objective: Land reviewed external specialized packs through the existing extension adoption preview. No auto-install. No network fetch.
+Current objective: Land inspect/adopt compatibility for Nx workspaces after Vii dogfood.
 
-Next first action: Review the S8 PR. Do not start P4 or N3 from it.
+Next first action: Open and merge the dogfood PR. Do not apply Intentloom to Vii from this watch.
 
 Known open items, in the order they should be handled:
 
@@ -95,6 +95,35 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-17, Existing-project Nx dogfood
+
+- **Status:** complete on branch; PR to open.
+- **Branch:** `fix/existing-project-nx-dogfood` from `origin/main` @ `907e6ad`
+- **Pull request:** pending
+- **Objective:** Fix three Vii dogfood defects: unsupported `nx` inspect profile, Nx cache inventory, and false public-readme ambiguity.
+- **Completed:**
+  - Selected inspect/adopt profile is always a supported engineering profile. Nx is `workspaceTopology`.
+  - Scan exclusions cover `.nx/cache`, `.nx/workspace-data`, and `.nx/installation`.
+  - Root README stays `public-readme`; nested README/docs no longer compete for that concept.
+  - Extracted detection, scan, and document-concept modules so `packages/application/src/index.ts` did not grow.
+- **Not completed:** Applying adoption to Vii; P4 file-budget extracts; N3.
+- **Files or packages changed:** application profile/scan/document modules, CLI inspect/adopt formatters and skill scan filter, existing-project docs, changelog, dogfood record, regression tests.
+- **Validation:** focused vitest suites plus full `pnpm verify` (217 files, 1455 passed, 3 skipped).
+- **Decisions and assumptions:** Do not add `nx` to `profiles/*.json`. Overlay sqlite/security-sensitive candidates remain informational.
+- **Risks or compatibility impact:** Inspect JSON gains `profileDetection.workspaceTopology`. Existing config profiles are unchanged.
+- **Open issues or blockers:** none for this increment.
+- **Next first action:** Open the PR, wait for CI, merge if green. Re-run Vii inspect/adopt dry-run without writes.
+- **Evidence:** `origin/main` = `907e6ad`; Vii remains untouched.
+
+#### Duty completion checklist
+
+- [x] Focused tests and typecheck
+- [x] Full `pnpm verify`
+- [ ] Atomic commit via `git commit-tree` (no attribution trailers)
+- [x] `PROJECT_STATE.md` / changelog / dogfood record updated
+- [x] `DUTY_WATCH.md` handoff completed
+- [ ] PR opened without tool or agent credit
 
 ### 2026-08-16, Specialized packs S8 external lifecycle
 

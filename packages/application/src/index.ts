@@ -35,6 +35,21 @@ import type {
 } from "@intentloom/validator";
 import { validateSkillSet } from "@intentloom/validator";
 import { collectExtensionHealthDoctorFindings } from "./extension-health.js";
+import { documentConcept } from "./document-concepts.js";
+import {
+  detectProjectProfiles,
+  type DetectedProfile,
+  type EngineeringProfile,
+  type ProfileCandidate,
+  type ProfileDetectionResult,
+  type WorkspaceTopology,
+} from "./project-profile-detection.js";
+import {
+  ignoredScanDirectoryName,
+  ignoredScanPath,
+  inspectionExclusions,
+  projectRelativePaths as relativeProjectPaths,
+} from "./project-scan-exclusions.js";
 import {
   collectGitEvidence,
   createReleaseTimeline,
@@ -529,31 +544,18 @@ export interface ProjectMapping {
   readonly destination: string;
 }
 
-export type DetectedProfile =
-  | "generic"
-  | "typescript"
-  | "angular"
-  | "rust"
-  | "tauri"
-  | "angular-tauri"
-  | "nx"
-  | "sqlite"
-  | "security-sensitive";
-
-export interface ProfileCandidate {
-  readonly profile: DetectedProfile;
-  readonly evidenceFiles: readonly string[];
-  readonly reason: string;
-  readonly confidence: "exact" | "inferred" | "fallback";
-}
-
-export interface ProfileDetectionResult {
-  readonly selectedProfile: DetectedProfile;
-  readonly candidates: readonly ProfileCandidate[];
-  readonly competingCandidates: readonly DetectedProfile[];
-  readonly manualConfirmationRequired: boolean;
-  readonly scannedPaths: readonly string[];
-}
+export type {
+  DetectedProfile,
+  EngineeringProfile,
+  ProfileCandidate,
+  ProfileDetectionResult,
+  WorkspaceTopology,
+};
+export {
+  detectProjectProfiles,
+  engineeringProfiles,
+} from "./project-profile-detection.js";
+export { ignoredScanPath } from "./project-scan-exclusions.js";
 
 export type ProjectInspectionCapability = "project.files.read";
 export type InspectionReadiness =
@@ -678,226 +680,6 @@ const sourceMapPath = ".aif/source-map.json";
 const metadataFormatVersion = "1";
 const adapterOutputVersion = adapterVersion;
 const transactionAdapterId = "aif:generated-files";
-const ignoredScanSegments = new Set([
-  ".git",
-  ".cache",
-  ".next",
-  ".turbo",
-  "build",
-  "coverage",
-  "dist",
-  "node_modules",
-  "out",
-  "target",
-  "vendor",
-]);
-
-function projectRelativePaths(
-  root: string,
-  entries: readonly string[],
-): string[] {
-  const normalizedRoot = resolve(root);
-  return [
-    ...new Set(
-      entries.flatMap((entry) => {
-        const normalizedEntry = entry.replaceAll("\\", "/");
-        const absolute = normalizedEntry.startsWith("/")
-          ? resolve(normalizedEntry)
-          : resolve(normalizedRoot, normalizedEntry);
-        const path = relative(normalizedRoot, absolute).replaceAll("\\", "/");
-        if (
-          path === "" ||
-          path === ".." ||
-          path.startsWith("../") ||
-          path.split("/").some((segment) => ignoredScanSegments.has(segment))
-        )
-          return [];
-        return [path];
-      }),
-    ),
-  ].sort();
-}
-
-async function readEvidenceFile(
-  root: string,
-  path: string,
-  paths: ReadonlySet<string>,
-  fs: FileSystem,
-): Promise<string | null> {
-  if (!paths.has(path)) return null;
-  try {
-    return await fs.read(inside(root, path));
-  } catch {
-    return null;
-  }
-}
-
-export async function detectProjectProfiles(
-  root: string,
-  fs: FileSystem,
-): Promise<ProfileDetectionResult> {
-  const scannedPaths = projectRelativePaths(root, await fs.list(root));
-  const paths = new Set(scannedPaths);
-  const packageSource = await readEvidenceFile(root, "package.json", paths, fs);
-  let packageNames = new Set<string>();
-  if (packageSource !== null)
-    try {
-      const document = JSON.parse(packageSource) as Record<string, unknown>;
-      packageNames = new Set(
-        ["dependencies", "devDependencies", "peerDependencies"].flatMap(
-          (field) =>
-            typeof document[field] === "object" && document[field] !== null
-              ? Object.keys(document[field] as Record<string, unknown>)
-              : [],
-        ),
-      );
-    } catch {
-      /* malformed package metadata is not stack evidence */
-    }
-  const typescriptEvidence = [
-    ...(paths.has("package.json") && packageNames.has("typescript")
-      ? ["package.json"]
-      : []),
-    ...(paths.has("tsconfig.json") ? ["tsconfig.json"] : []),
-  ];
-  const angularEvidence = [
-    ...(paths.has("angular.json") ? ["angular.json"] : []),
-    ...(paths.has("package.json") && packageNames.has("@angular/core")
-      ? ["package.json"]
-      : []),
-  ];
-  const rustEvidence = [
-    ...(paths.has("Cargo.toml") ? ["Cargo.toml"] : []),
-    ...(paths.has("src-tauri/Cargo.toml") ? ["src-tauri/Cargo.toml"] : []),
-  ];
-  const tauriEvidence = [
-    ...(paths.has("src-tauri/Cargo.toml") ? ["src-tauri/Cargo.toml"] : []),
-    ...["src-tauri/tauri.conf.json", "src-tauri/tauri.conf.json5"].filter(
-      (path) => paths.has(path),
-    ),
-    ...(paths.has("package.json") &&
-    [...packageNames].some((name) => name.startsWith("@tauri-apps/"))
-      ? ["package.json"]
-      : []),
-  ];
-  const nxEvidence = [
-    ...(paths.has("nx.json") ? ["nx.json"] : []),
-    ...(paths.has("workspace.json") ? ["workspace.json"] : []),
-    ...(paths.has("package.json") &&
-    [...packageNames].some((name) => name === "nx" || name.startsWith("@nx/"))
-      ? ["package.json"]
-      : []),
-  ];
-  const sqliteEvidence = [
-    ...(paths.has("prisma/schema.prisma") ? ["prisma/schema.prisma"] : []),
-    ...["migrations", "db"].filter((path) => paths.has(path)),
-    ...(paths.has("package.json") &&
-    [...packageNames].some((name) =>
-      ["better-sqlite3", "sqlite3", "@libsql/client"].includes(name),
-    )
-      ? ["package.json"]
-      : []),
-  ];
-  const securitySensitiveEvidence = [
-    "src-tauri/src/stealth",
-    "src-tauri/src/audio",
-    "secrets",
-    "credentials",
-  ].filter((path) => paths.has(path) && !secretLikePath(path));
-  const hasAngular = angularEvidence.length > 0;
-  const hasTauri = tauriEvidence.length > 0;
-  const hasNx = nxEvidence.length > 0;
-  const hasSqlite = sqliteEvidence.length > 0;
-  const hasSecuritySensitive = securitySensitiveEvidence.length > 0;
-  const definitions: ProfileCandidate[] = [];
-  if (hasSecuritySensitive)
-    definitions.push({
-      profile: "security-sensitive",
-      evidenceFiles: [...new Set(securitySensitiveEvidence)].sort(),
-      reason:
-        "Sensitive security, stealth, credential, or career-data indicators are present",
-      confidence: "exact",
-    });
-  if (hasAngular && hasTauri)
-    definitions.push({
-      profile: "angular-tauri",
-      evidenceFiles: [
-        ...new Set([
-          ...angularEvidence,
-          ...tauriEvidence,
-          ...typescriptEvidence,
-        ]),
-      ].sort(),
-      reason: "Angular and Tauri configuration are both present",
-      confidence: "exact",
-    });
-  if (hasNx)
-    definitions.push({
-      profile: "nx",
-      evidenceFiles: [...new Set(nxEvidence)].sort(),
-      reason: "Nx monorepo configuration or package evidence is present",
-      confidence: "exact",
-    });
-  if (hasSqlite)
-    definitions.push({
-      profile: "sqlite",
-      evidenceFiles: [...new Set(sqliteEvidence)].sort(),
-      reason: "SQLite database or migration evidence is present",
-      confidence: "inferred",
-    });
-  if (hasAngular)
-    definitions.push({
-      profile: "angular",
-      evidenceFiles: [...new Set(angularEvidence)].sort(),
-      reason: "Angular package or workspace configuration is present",
-      confidence: "exact",
-    });
-  if (hasTauri)
-    definitions.push({
-      profile: "tauri",
-      evidenceFiles: [...new Set(tauriEvidence)].sort(),
-      reason: "Tauri configuration or package evidence is present",
-      confidence: "exact",
-    });
-  if (typescriptEvidence.length > 0 || hasAngular)
-    definitions.push({
-      profile: "typescript",
-      evidenceFiles: [...new Set(typescriptEvidence)].sort(),
-      reason: "TypeScript configuration or package evidence is present",
-      confidence: "inferred",
-    });
-  if (rustEvidence.length > 0 || hasTauri)
-    definitions.push({
-      profile: "rust",
-      evidenceFiles: [...new Set(rustEvidence)].sort(),
-      reason: "Cargo project evidence is present",
-      confidence: "inferred",
-    });
-  definitions.push({
-    profile: "generic",
-    evidenceFiles: [],
-    reason: "Generic is the deterministic fallback profile",
-    confidence: "fallback",
-  });
-  const hasWebProfile = hasAngular || typescriptEvidence.length > 0;
-  const hasNativeProfile = hasTauri || rustEvidence.length > 0;
-  const ambiguous =
-    hasWebProfile && hasNativeProfile && !(hasAngular && hasTauri);
-  return {
-    selectedProfile: ambiguous ? "generic" : definitions[0]!.profile,
-    candidates: definitions,
-    competingCandidates: definitions
-      .filter(
-        (candidate) =>
-          candidate.profile !==
-          (ambiguous ? "generic" : definitions[0]!.profile),
-      )
-      .map((candidate) => candidate.profile),
-    manualConfirmationRequired: ambiguous,
-    scannedPaths,
-  };
-}
-
 const inspectionAdapterNames: readonly AdapterName[] = [
   "claude",
   "codex",
@@ -905,21 +687,6 @@ const inspectionAdapterNames: readonly AdapterName[] = [
   "copilot",
 ];
 const inspectionMetadataPaths = [configPath, lockPath, sourceMapPath] as const;
-const inspectionExclusions = [
-  ".git",
-  ".cache",
-  ".next",
-  ".turbo",
-  "build",
-  "coverage",
-  "dist",
-  "node_modules",
-  "out",
-  "target",
-  "vendor",
-  "symbolic links",
-  "secret-like paths",
-] as const;
 
 function instructionAdapters(path: string): AdapterName[] {
   const detected = new Set<AdapterName>();
@@ -951,6 +718,7 @@ export async function inspectProject(
 ): Promise<ProjectInspection> {
   const emptyDetection: Omit<ProfileDetectionResult, "scannedPaths"> = {
     selectedProfile: "generic",
+    workspaceTopology: "none",
     candidates: [
       {
         profile: "generic",
@@ -1062,6 +830,13 @@ export async function inspectProject(
     exclusions: inspectionExclusions,
     findings,
   };
+}
+
+function projectRelativePaths(
+  root: string,
+  entries: readonly string[],
+): string[] {
+  return relativeProjectPaths(root, entries, resolve, relative);
 }
 
 function inside(root: string, path: string): string {
@@ -2905,22 +2680,6 @@ function unsupportedPath(path: string): boolean {
   return /^\.github\/agents\/.+\.agent\.md$/u.test(path);
 }
 
-function documentConcept(path: string): string | null {
-  const lower = path.toLowerCase();
-  const name = lower.split("/").at(-1)!;
-  if (name === "readme.md") return "public-readme";
-  if (name === "changelog.md") return "change-history";
-  if (
-    name === "roadmap.md" ||
-    /(?:product[-_ ]?(?:state|roadmap)|state[-_ ]?of[-_ ]?product)/u.test(name)
-  )
-    return "product-state";
-  if (/(?:architecture|architectural|adr)/u.test(name)) return "architecture";
-  if (/(?:technical[-_ ]?debt|tech[-_ ]?debt)/u.test(name))
-    return "technical-debt";
-  return null;
-}
-
 function normalizeMappingPath(path: string): string | null {
   try {
     const normalized = normalizeOutputPath(path);
@@ -3391,7 +3150,11 @@ export const nodeFileSystem: FileSystem = {
           const relativePath = prefix ? `${prefix}/${entry.name}` : entry.name;
           if (entry.isSymbolicLink()) continue;
           if (entry.isDirectory()) {
-            if (ignoredScanSegments.has(entry.name)) continue;
+            if (
+              ignoredScanDirectoryName(entry.name) ||
+              ignoredScanPath(relativePath)
+            )
+              continue;
             await walk(resolve(directory, entry.name), relativePath, depth + 1);
           } else if (entry.isFile() && !binaryExtensions.test(entry.name))
             files.push(relativePath);

@@ -21,9 +21,11 @@ cross-document issues and never modifies files.
 ## Inspect
 
 `intentloom inspect PROJECT_PATH|--root PATH` reports bounded, read-only facts
-about one explicit project root. It detects the profile, known adapter
-instruction paths, and Intentloom metadata readiness. `--json` returns the
-versioned application result; human output is rendered from that same result.
+about one explicit project root. It detects a supported engineering profile,
+optional workspace topology such as Nx, known adapter instruction paths, and
+Intentloom metadata readiness. `--json` returns the versioned application
+result; human output is rendered from that same result. The selected profile
+is always a value that `adopt` can persist in `.aif/config.yaml`.
 
 Inspection does not execute scripts, invoke Git or package managers, install
 dependencies, access the network, read file contents other than bounded profile

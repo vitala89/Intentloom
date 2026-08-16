@@ -173,7 +173,8 @@ describe("adoption proposal", () => {
         }),
         expect.objectContaining({
           path: "docs/README.md",
-          action: "skip",
+          action: "map-existing-aif-compatible-document",
+          reason: expect.stringContaining("documentation-index"),
           manualDecisionRequired: false,
         }),
         expect.objectContaining({

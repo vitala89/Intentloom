@@ -42,6 +42,19 @@ manual-confirmation flag. Ambiguous unrelated TypeScript/Rust evidence falls
 back to `generic`; colocated Angular and Tauri evidence selects
 `angular-tauri`.
 
+Nx is workspace topology, not a `.aif/config.yaml` engineering profile.
+An Nx workspace still resolves to a supported profile such as `typescript`,
+`angular`, or `generic`. Inspection reports `workspaceTopology: nx` when Nx
+evidence is present. Overlay signals such as SQLite or security-sensitive
+paths remain candidates and never become the selected adopt profile.
+
+Root `README.md` is the public-readme document. Nested README files, package
+READMEs, fixture/example READMEs, RFCs, and documentation indexes do not
+compete for that concept. `docs/README.md` maps to `documentation-index`.
+Same-concept duplicates still require an explicit mapping.
+
 Scanning ignores `.git`, dependency/vendor directories, build and coverage
-output, generated caches, binaries, and symlinked directories. It is bounded to
+output, generated caches including `.nx/cache`, `.nx/workspace-data`, and
+`.nx/installation`, binaries, and symlinked directories. Root `nx.json` and
+other non-generated `.nx` files remain visible. The scan is bounded to
 32 levels and 10,000 relevant files inside the explicit root.
