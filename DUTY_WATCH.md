@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **P2 Neutron N1 CI fix + N2 ADR** on `feat/neutron-n1-runtime-contracts` from `origin/main` @ `85b8548`.
+Status: **P2 Neutron N2** on `feat/neutron-n2-ollama-adapter` from `origin/main` @ `7d1dbd1`.
 
-Active branch: `feat/neutron-n1-runtime-contracts`
+Active branch: `feat/neutron-n2-ollama-adapter`
 
-Current objective: Keep N1 contracts on package subpaths so Governance does not grow oversized barrels. ADR-0055 records the N2 Ollama decision. Do not implement the adapter yet.
+Current objective: Land the ADR-0055 Ollama adapter and one read-only inspect loop. No Desktop model calls. No hosted providers.
 
-Next first action: Confirm PR #317 Governance is green. Do not start the Ollama adapter until the maintainer asks for N2 implementation.
+Next first action: Review the N2 PR. Do not start N3, S8, or Desktop Neutron UI from it.
 
 Known open items, in the order they should be handled:
 
@@ -95,6 +95,34 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-16, Neutron N2 Ollama inspect loop
+
+- **Status:** complete on branch; PR to open.
+- **Branch:** `feat/neutron-n2-ollama-adapter` from `origin/main` @ `7d1dbd1`
+- **Pull request:** pending
+- **Objective:** Implement ADR-0055: one real loopback Ollama adapter and one read-only inspect loop after N1 merged as PR #317.
+- **Completed:**
+  - Added `OllamaModelAdapter` with fail-closed loopback URL checks and injected `fetch`.
+  - Added `runNeutronN2ReadOnlyLoop` that requires an inspect tool call, routes only N1 read-only tools, and compares project fingerprints.
+  - Added fake-HTTP tests. CI does not require a live Ollama process. No new package, no root-barrel growth, no Desktop/TUI/MCP/daemon model calls.
+- **Not completed:** N3–N9; hosted adapters; CLI inspect helper; P3; P4.
+- **Files or packages changed:** `packages/application/src/ollama-model-adapter.ts`, `packages/application/src/neutron-n2-loop.ts`, `packages/validator/src/neutron-runtime-n2.ts`, protocol providerKind union, package subpath exports, `tests/neutron-n2-ollama.test.ts`, roadmap and state docs.
+- **Validation:** `pnpm exec vitest run tests/neutron-n2-ollama.test.ts tests/neutron-runtime-contracts.test.ts tests/model-adapter.test.ts` (17 passed); `pnpm typecheck`; `git diff --check`.
+- **Decisions and assumptions:** Default Ollama URL is `http://127.0.0.1:11434`. Non-loopback hosts are `network-forbidden`. `inspectProject` is injected by the caller so the oversized application barrel is not grown.
+- **Risks or compatibility impact:** N2 opens explicit localhost egress only when the caller constructs the adapter. Unconfigured environments stay offline.
+- **Open issues or blockers:** none for this increment.
+- **Next first action:** Open the N2 PR. Do not implement N3 context assembly from this watch.
+- **Evidence:** `origin/main` = `7d1dbd1`; `gh pr view 317` MERGED.
+
+#### Duty completion checklist
+
+- [x] Focused tests and typecheck
+- [x] `git diff --check` passed
+- [ ] Atomic commit via `git commit-tree` (no attribution trailers)
+- [x] `PROJECT_STATE.md` / roadmap / ADR updated
+- [x] `DUTY_WATCH.md` handoff completed
+- [ ] PR opened without tool or agent credit
 
 ### 2026-08-16, N1 subpath exports and N2 ADR
 

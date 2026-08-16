@@ -139,6 +139,6 @@ Do not leak raw HTTP bodies that may contain secrets.
 ## Follow-up
 
 1. Implement the Ollama adapter and the read-only discuss/inspect loop in a
-   dedicated PR after N1 merges.
+   dedicated PR after N1 merges. Done on `feat/neutron-n2-ollama-adapter`.
 2. Keep N3 context assembly and N4 tool routing on their roadmap gates.
 3. Do not start N6 Desktop Neutron Workspace from this ADR.

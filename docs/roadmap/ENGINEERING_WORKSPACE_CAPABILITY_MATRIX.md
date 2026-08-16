@@ -356,12 +356,12 @@ Must wait for Core:
 
 Blocked / future:
 - S8 external specialized packs
-- Neutron N1–N2
+- Neutron N3–N9
 - Any new Engineering Workspace week
 
 Next synchronization checkpoint:
-- P2 N1 runtime contracts are the authorized increment.
-- Do not start N2, P3, or P4 from this matrix.
+- P2 N2 Ollama loopback adapter is the authorized increment.
+- Do not start N3, P3, or P4 from this matrix. Desktop does not call models.
 ```
 
 ---

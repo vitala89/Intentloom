@@ -2,12 +2,12 @@
 
 ## Status
 
-P0 and P1 are merged (PR #315, PR #316). P2 N1 runtime contracts are in
-progress on `feat/neutron-n1-runtime-contracts`. N2 and P3–P4 are not
+P0, P1, and P2-N1 are merged (PR #315, PR #316, PR #317). P2-N2 Ollama
+adapter is in progress on `feat/neutron-n2-ollama-adapter`. P3–P4 are not
 started. This document still does not authorize a publish, tag, new
-package, network capability, or a W13 workspace phase.
+package, hosted-provider credentials, or a W13 workspace phase.
 
-Verified against `origin/main` @ `85b8548` (PR #316 merged, 2026-08-16).
+Verified against `origin/main` @ `7d1dbd1` (PR #317 merged, 2026-08-16).
 
 ## Why this exists
 
@@ -76,17 +76,16 @@ Met as deferred in
 
 ### P2 — Neutron N1, then N2
 
-**N1 status:** complete on this branch. Versioned runtime session, adapter
-capability, context bundle, tool envelope, task graph, subagent result,
-usage/budget, and progress/cancellation/timeout/error contracts live in
-`packages/protocol/src/neutron-runtime.ts`. No new package. No N2 adapter.
+**N1 status:** complete on `main` via PR #317.
 
-N2: ADR-0055 accepts Ollama on an explicit loopback URL. Implementation is
-not in the N1 PR. Desktop must not call models in N2. Prepare stays
-snapshot-driven until the adapter PR.
+**N2 status:** complete on this branch per ADR-0055. `OllamaModelAdapter`
+reaches only a caller-supplied loopback URL. `runNeutronN2ReadOnlyLoop`
+runs one inspect tool through `inspectProject` and refuses mutation.
+Desktop, TUI, MCP, and daemon still do not call models. CI uses a fake
+HTTP listener, not a live Ollama process.
 
 Exit: N1 contracts validate in fixtures. The “one configured provider”
-clause is N2 and remains open.
+inspect loop is implemented for Ollama on loopback.
 
 ### P3 — S8 external specialized packs
 
@@ -112,8 +111,9 @@ inspect/timeline/conformance). Do not grow oversized production files.
 
 ## First authorized action
 
-P0, P1, and P2-N1 are done on this branch. Do not start N2, P3 (S8), or P4
-without a new maintainer brief and, for N2, a dedicated adapter ADR.
+P0–P2 N2 are done on this branch. Do not start P3 (S8) or P4 without a
+new maintainer brief. Do not start N3–N9, Desktop model UI, or hosted
+adapters from this document.
 
 ## Sources
 
