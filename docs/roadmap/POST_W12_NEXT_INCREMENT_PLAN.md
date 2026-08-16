@@ -2,12 +2,12 @@
 
 ## Status
 
-P0 Release honesty is merged (PR #315). P1 public-gate evidence is in
-progress on `docs/workspace-public-gate-p1`. P2–P4 are not started. This
-document still does not authorize a publish, tag, new package, network
-capability, or a W13 workspace phase.
+P0 and P1 are merged (PR #315, PR #316). P2 N1 runtime contracts are in
+progress on `feat/neutron-n1-runtime-contracts`. N2 and P3–P4 are not
+started. This document still does not authorize a publish, tag, new
+package, network capability, or a W13 workspace phase.
 
-Verified against `origin/main` @ `6996df4` (PR #315 merged, 2026-08-16).
+Verified against `origin/main` @ `85b8548` (PR #316 merged, 2026-08-16).
 
 ## Why this exists
 
@@ -76,16 +76,17 @@ Met as deferred in
 
 ### P2 — Neutron N1, then N2
 
-N1: versioned runtime session, adapter capability, context bundle, tool
-envelope, and task-graph contracts. Reuse protocol/application. No new
-package until a real consumer exists (ADR-0042 / Stage 3).
+**N1 status:** complete on this branch. Versioned runtime session, adapter
+capability, context bundle, tool envelope, task graph, subagent result,
+usage/budget, and progress/cancellation/timeout/error contracts live in
+`packages/protocol/src/neutron-runtime.ts`. No new package. No N2 adapter.
 
 N2: one provider adapter only after a dedicated ADR for credentials,
 network disclosure, streaming, cancellation, retention, and tests. Desktop
 must not call models until that ADR exists. Prepare stays snapshot-driven.
 
-Exit: contracts validate in fixtures; one configured provider can discuss
-and inspect one project without writing files.
+Exit: N1 contracts validate in fixtures. The “one configured provider”
+clause is N2 and remains open.
 
 ### P3 — S8 external specialized packs
 
@@ -111,8 +112,8 @@ inspect/timeline/conformance). Do not grow oversized production files.
 
 ## First authorized action
 
-P0 and P1 are done on this branch. Do not start P2 (Neutron N1), P3 (S8),
-or P4 from this file without a new maintainer brief.
+P0, P1, and P2-N1 are done on this branch. Do not start N2, P3 (S8), or P4
+without a new maintainer brief and, for N2, a dedicated adapter ADR.
 
 ## Sources
 

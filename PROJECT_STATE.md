@@ -232,11 +232,11 @@ before a new release or implementation milestone is declared complete.
 ## Active focus
 
 1. Engineering Workspace **W0–W12** are complete on current `origin/main` at
-   `6996df4` (P0 honesty PR #315; post-W12 plan PR #314; W12 plan handoff PR
-   #313). The implementation plan ends at W12. Do not invent a W13.
-2. **P1 Workspace public-gate evidence** is the authorized increment: record
-   or defer the two real dogfood bullets. No new engine. Do not start Neutron
-   N1, S8, C7, or file-budget extracts from this focus.
+   `85b8548` (P1 public-gate PR #316; P0 honesty PR #315). The implementation
+   plan ends at W12. Do not invent a W13.
+2. **P2 Neutron N1** is the authorized increment: versioned runtime contracts,
+   validators, and fixtures only. No new package. Do not start N2, S8, C7, or
+   file-budget extracts from this focus. Desktop must not call models.
 3. The next **published** version is **undecided**. Maintainer options, not a
    pick: stay unpublished on npm until an explicit publish brief; later `1.0.x`
    metadata/docs release; `1.1.0` (or another minor) after a real release-gate

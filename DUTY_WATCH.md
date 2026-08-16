@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **P1 Workspace public-gate evidence** on `docs/workspace-public-gate-p1` from `origin/main` @ `6996df4`.
+Status: **P2 Neutron N1** on `feat/neutron-n1-runtime-contracts` from `origin/main` @ `85b8548`.
 
-Active branch: `docs/workspace-public-gate-p1`
+Active branch: `feat/neutron-n1-runtime-contracts`
 
-Current objective: Close the two leftover real-dogfood bullets as deferred with an owner. No new engine.
+Current objective: Land N1 runtime contracts, validators, and fixtures. No provider adapter, daemon RPC, or Desktop model calls.
 
-Next first action: Review the P1 PR. Do not start P2–P4, Neutron N1, S8, or a W13.
+Next first action: Review the N1 PR. Do not start N2 without a dedicated adapter ADR.
 
 Known open items, in the order they should be handled:
 
@@ -95,6 +95,35 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-16, Neutron N1 runtime contracts
+
+- **Status:** complete on branch; PR to open.
+- **Branch:** `feat/neutron-n1-runtime-contracts` from `origin/main` @ `85b8548`
+- **Pull request:** pending
+- **Objective:** Implement Neutron N1 contracts only: session, adapter capability, context bundle, tool envelope, task graph, subagent result, usage/budget, and runtime events.
+- **Completed:**
+  - Added versioned protocol types and fail-closed validators. N1 snapshots require offline network mode and no mutation.
+  - Added `prepareNeutronRuntimeContractSnapshot` as a pure root-bound check over caller-supplied snapshots.
+  - Added frozen fixture and contract tests. No new package, daemon method, CLI command, or hosted adapter.
+- **Not completed:** N2 provider adapter ADR and implementation; N3–N9; P3; P4.
+- **Files or packages changed:** `packages/protocol/src/neutron-runtime.ts`, `packages/validator/src/neutron-runtime.ts`, `packages/application/src/neutron-runtime-contracts.ts`, protocol/validator/application barrels, `tests/neutron-runtime-contracts.test.ts`, `tests/fixtures/neutron-runtime/contract-snapshot.v1.json`, roadmap and state docs.
+- **Validation:** focused `pnpm exec vitest run tests/neutron-runtime-contracts.test.ts`; `pnpm exec prettier --check` on touched files; `git diff --check`.
+- **Decisions and assumptions:** Existing `ModelAdapter` / deterministic-test adapter stays as-is. N1 does not execute models. Hosted provider kinds are rejected at the N1 capability contract.
+- **Risks or compatibility impact:** none for runtime behavior. New optional contracts only.
+- **Open issues or blockers:** N2 blocked on a dedicated adapter ADR.
+- **Next first action:** Review this PR. Write the N2 ADR before any network or credential work.
+- **Evidence:** `origin/main` = `85b85487cfda995bccb0b2d9aed3c10e94889e8d`; `gh pr view 316` MERGED.
+
+#### Duty completion checklist
+
+- [x] Markdown format check on touched docs
+- [x] Focused contract tests
+- [x] `git diff --check` passed
+- [x] Atomic commit via `git commit-tree` (no attribution trailers)
+- [x] `PROJECT_STATE.md` / roadmap updated
+- [x] `DUTY_WATCH.md` handoff completed
+- [ ] PR opened without tool or agent credit
 
 ### 2026-08-16, P1 Workspace public-gate evidence
 

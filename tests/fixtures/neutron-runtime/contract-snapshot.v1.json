@@ -1,0 +1,103 @@
+{
+  "session": {
+    "schemaVersion": "urn:intentloom:schema:neutron-runtime-session:1",
+    "sessionId": "neutron-session-fixture-1",
+    "root": "/project",
+    "projectId": "proj-fixture-1",
+    "state": "inspecting",
+    "mutationAllowed": false,
+    "createdAt": "2026-08-16T00:00:00.000Z"
+  },
+  "adapter": {
+    "schemaVersion": "urn:intentloom:schema:neutron-adapter-capability:1",
+    "providerKind": "deterministic-test",
+    "modelId": "deterministic-v1",
+    "supportsStreaming": true,
+    "supportsToolCalls": true,
+    "networkMode": "offline",
+    "dataHandling": "ephemeral",
+    "credentialIsolation": "outside-project-metadata"
+  },
+  "context": {
+    "schemaVersion": "urn:intentloom:schema:neutron-context-bundle:1",
+    "root": "/project",
+    "sessionId": "neutron-session-fixture-1",
+    "estimatedTokens": 128,
+    "sources": [
+      {
+        "sourceId": "inspect-1",
+        "kind": "inspect",
+        "trustClass": "project",
+        "provenance": "intentloom.inspect.v1",
+        "included": true
+      },
+      {
+        "sourceId": "secret-env",
+        "kind": "evidence",
+        "trustClass": "project",
+        "provenance": "path-scan",
+        "included": false,
+        "exclusionReason": "secret-like path"
+      }
+    ],
+    "excludedSecretLikePaths": [".env"]
+  },
+  "tool": {
+    "schemaVersion": "urn:intentloom:schema:neutron-tool-envelope:1",
+    "invocation": {
+      "invocationId": "tool-1",
+      "toolName": "inspect",
+      "root": "/project",
+      "sessionId": "neutron-session-fixture-1",
+      "argumentsJson": "{\"root\":\"/project\"}",
+      "timeoutMs": 5000
+    },
+    "result": {
+      "invocationId": "tool-1",
+      "ok": true,
+      "payloadJson": "{\"projectId\":\"proj-fixture-1\"}",
+      "errorCode": null
+    }
+  },
+  "graph": {
+    "schemaVersion": "urn:intentloom:schema:neutron-task-graph:1",
+    "root": "/project",
+    "sessionId": "neutron-session-fixture-1",
+    "nodes": [
+      {
+        "taskId": "task-inspect",
+        "parentId": null,
+        "dependencies": [],
+        "role": "research",
+        "requiredCapabilities": ["inspect"],
+        "state": "completed",
+        "expectedOutput": "project-inspect-summary"
+      }
+    ]
+  },
+  "subagent": {
+    "schemaVersion": "urn:intentloom:schema:neutron-subagent-result:1",
+    "taskId": "task-inspect",
+    "sessionId": "neutron-session-fixture-1",
+    "root": "/project",
+    "status": "completed",
+    "outputDigest": "sha256:fixture",
+    "mutationAttempted": false
+  },
+  "usage": {
+    "schemaVersion": "urn:intentloom:schema:neutron-usage-budget:1",
+    "sessionId": "neutron-session-fixture-1",
+    "inputTokens": 40,
+    "outputTokens": 20,
+    "contextTokens": 128,
+    "tokenBudget": 4000,
+    "limitExceeded": false
+  },
+  "event": {
+    "schemaVersion": "urn:intentloom:schema:neutron-runtime-event:1",
+    "sessionId": "neutron-session-fixture-1",
+    "kind": "progress",
+    "code": null,
+    "message": "inspect completed"
+  }
+}
