@@ -196,7 +196,9 @@ before a new release or implementation milestone is declared complete.
   `.nx/cache/**`, and nested README/docs created false `public-readme`
   ambiguity. Inspect now reports Nx as workspace topology and selects a
   supported engineering profile; generated Nx directories are excluded; only
-  the root README is `public-readme`. See
+  the root README is `public-readme`. A follow-up keeps specialized
+  architecture, ADR/process, security, and RFC documents from competing for
+  the generic architecture concept. See
   [`2026-08-17-vii-nx-existing-project.md`](docs/releases/dogfooding/2026-08-17-vii-nx-existing-project.md).
 - Selecting a project in the Desktop app deadlocked the whole window (main
   event-loop thread blocked on a native dialog call that itself needed that

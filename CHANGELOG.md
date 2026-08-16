@@ -107,6 +107,8 @@ are not included in the current npm artifact until a later release.
   proposals or affect detection.
 - Nested README and documentation files no longer compete with the root
   public README for the same documentation concept.
+- Specialized architecture, ADR/process, security, and RFC documents no
+  longer compete for the generic architecture documentation concept.
 
 ### Changed
 

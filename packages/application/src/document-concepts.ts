@@ -1,3 +1,12 @@
+const canonicalArchitectureNames = new Set([
+  "architecture.md",
+  "architectural.md",
+  "architecture-map.md",
+  "architecture_map.md",
+  "architecture-overview.md",
+  "architecture_overview.md",
+]);
+
 export function documentConcept(path: string): string | null {
   const lower = path.replaceAll("\\", "/").toLowerCase();
   const segments = lower.split("/").filter(Boolean);
@@ -10,7 +19,7 @@ export function documentConcept(path: string): string | null {
     /(?:product[-_ ]?(?:state|roadmap)|state[-_ ]?of[-_ ]?product)/u.test(name)
   )
     return "product-state";
-  if (/(?:architecture|architectural|adr)/u.test(name)) return "architecture";
+  if (canonicalArchitectureNames.has(name)) return "architecture";
   if (/(?:technical[-_ ]?debt|tech[-_ ]?debt)/u.test(name))
     return "technical-debt";
   return null;
