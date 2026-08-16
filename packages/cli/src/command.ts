@@ -16,6 +16,7 @@ import {
   doctorProject,
   initProject,
   inspectProject,
+  ignoredScanPath,
   nodeFileSystem,
   planFeature,
   planProjectAdoption,
@@ -955,27 +956,12 @@ async function validateProjectSkills(
   fileSystem: FileSystem,
   validator: ArtifactValidator,
 ): Promise<ArtifactValidationResult[]> {
-  const ignored = new Set([
-    ".git",
-    ".cache",
-    ".next",
-    ".turbo",
-    "build",
-    "coverage",
-    "dist",
-    "node_modules",
-    "out",
-    "target",
-    "vendor",
-  ]);
   const entries = (await fileSystem.list(root))
     .map((entry) => entry.replaceAll("\\", "/"))
     .map((entry) =>
       entry.startsWith(`${root}/`) ? entry.slice(root.length + 1) : entry,
     )
-    .filter(
-      (entry) => !entry.split("/").some((segment) => ignored.has(segment)),
-    )
+    .filter((entry) => !ignoredScanPath(entry))
     .sort();
   const ownedSkillPaths = new Set<string>();
   const sourceMapPath = resolve(root, ".aif/source-map.json");

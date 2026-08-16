@@ -97,6 +97,17 @@ are not included in the current npm artifact until a later release.
   new branches use prefixes such as `feat/`, `fix/`, `refactor/`, or `docs/`
   instead of actor or tool prefixes such as `codex/`.
 
+### Fixed
+
+- Existing-project inspect no longer selects unsupported `nx`, `sqlite`, or
+  `security-sensitive` values as the adopt profile. Nx is reported as
+  workspace topology and resolves to a supported engineering profile.
+- Adoption scanning excludes Nx generated directories (`.nx/cache`,
+  `.nx/workspace-data`, `.nx/installation`) so cache output cannot inflate
+  proposals or affect detection.
+- Nested README and documentation files no longer compete with the root
+  public README for the same documentation concept.
+
 ### Changed
 
 - Bounded live GitHub/GitLab evidence pagination and added deterministic rate-limit diagnostics without introducing mutation or provider-specific authority.

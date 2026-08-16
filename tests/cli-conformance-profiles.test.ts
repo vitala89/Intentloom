@@ -17,7 +17,8 @@ describe("conformance and profile detection (intentloom conformance)", () => {
 
     const result = await detectProjectProfiles("/project", fs);
 
-    expect(result.selectedProfile).toBe("nx");
+    expect(result.selectedProfile).toBe("generic");
+    expect(result.workspaceTopology).toBe("nx");
     expect(result.candidates.some((c) => c.profile === "nx")).toBe(true);
   });
 
@@ -28,7 +29,7 @@ describe("conformance and profile detection (intentloom conformance)", () => {
 
     const result = await detectProjectProfiles("/project", fs);
 
-    expect(result.selectedProfile).toBe("sqlite");
+    expect(result.selectedProfile).toBe("generic");
     expect(result.candidates.some((c) => c.profile === "sqlite")).toBe(true);
   });
 
@@ -40,7 +41,7 @@ describe("conformance and profile detection (intentloom conformance)", () => {
 
     const result = await detectProjectProfiles("/project", fs);
 
-    expect(result.selectedProfile).toBe("security-sensitive");
+    expect(result.selectedProfile).toBe("generic");
     expect(
       result.candidates.some((c) => c.profile === "security-sensitive"),
     ).toBe(true);

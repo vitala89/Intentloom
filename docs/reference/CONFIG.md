@@ -15,7 +15,9 @@ project-root containment, collisions, symlinks, and adapter capability remain
 semantic validation.
 
 For an unconfigured existing repository, adoption detects a candidate profile
-from bounded stack evidence. An existing valid config remains authoritative;
+from bounded stack evidence. The selected profile is always one of the
+supported engineering profiles. Nx workspace evidence is topology, not a
+config profile. An existing valid config remains authoritative;
 doctor reports a non-fatal `profile-mismatch` when deterministic repository
 evidence disagrees. Ambiguous evidence requires confirmation and never silently
 rewrites the configured profile. README prose is not detection evidence.

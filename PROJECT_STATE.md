@@ -192,6 +192,12 @@ before a new release or implementation milestone is declared complete.
 
 ## Recently fixed
 
+- Real Vii Nx dogfood: `inspect` selected unsupported `nx`, adoption scanned
+  `.nx/cache/**`, and nested README/docs created false `public-readme`
+  ambiguity. Inspect now reports Nx as workspace topology and selects a
+  supported engineering profile; generated Nx directories are excluded; only
+  the root README is `public-readme`. See
+  [`2026-08-17-vii-nx-existing-project.md`](docs/releases/dogfooding/2026-08-17-vii-nx-existing-project.md).
 - Selecting a project in the Desktop app deadlocked the whole window (main
   event-loop thread blocked on a native dialog call that itself needed that
   thread's event loop). Fixed by dispatching all six Tauri commands through

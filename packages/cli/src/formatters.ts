@@ -60,6 +60,7 @@ export function formatPlan(result: Plan): string {
 export function formatAdoptionProposal(result: AdoptionProposal): string {
   const lines = [
     `Detected profile: ${result.profileDetection.selectedProfile}`,
+    `Workspace topology: ${result.profileDetection.workspaceTopology}`,
     `Application status: ${result.applicationStatus}`,
     ...result.items.map(
       (item) =>
@@ -101,6 +102,7 @@ export function formatInspection(
 ): string {
   return [
     `Profile: ${result.profileDetection.selectedProfile}`,
+    `Workspace topology: ${result.profileDetection.workspaceTopology}`,
     `Readiness: ${result.readiness}`,
     `Detected adapters: ${result.detectedAdapters.join(", ") || "none"}`,
     `Instruction files: ${result.instructionPaths.join(", ") || "none"}`,
