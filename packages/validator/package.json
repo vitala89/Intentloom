@@ -15,6 +15,7 @@
   "exports": {
     ".": "./src/index.ts",
     "./model-adapter": "./src/model-adapter.ts",
+    "./neutron-runtime": "./src/neutron-runtime.ts",
     "./engineering-assessment": "./src/engineering-assessment.ts",
     "./engineering-quality": "./src/engineering-quality.ts"
   }

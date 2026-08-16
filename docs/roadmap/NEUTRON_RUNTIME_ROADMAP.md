@@ -144,6 +144,10 @@ rollback awareness, and regression status.
 
 ## N1. Runtime contracts
 
+**Status:** implemented on `feat/neutron-n1-runtime-contracts`. Contracts,
+validators, deterministic fixtures, and documentation only. No provider
+execution, daemon RPC, Desktop model calls, or new package.
+
 Define versioned schemas and validators for:
 
 - runtime session and lifecycle states;
@@ -157,7 +161,10 @@ Define versioned schemas and validators for:
 
 Exit gate: contracts are deterministic, validated, root-bound, provider-neutral,
 and reusable by daemon, Desktop, TUI, CLI, and tests without parsing human
-output.
+output. Met by `prepareNeutronRuntimeContractSnapshot` and
+`tests/neutron-runtime-contracts.test.ts` against
+`tests/fixtures/neutron-runtime/contract-snapshot.v1.json`. N1 snapshots
+require `networkMode: "offline"` and `mutationAllowed: false`.
 
 ## N2. First real model adapter
 
@@ -174,9 +181,9 @@ client
 → model response
 ```
 
-The first adapter decision requires a separate implementation ADR covering
-credentials, network disclosure, streaming, cancellation, data retention,
-errors, limits, and test strategy.
+The first adapter decision is [ADR-0055](../decisions/ADR-0055-neutron-n2-first-model-adapter.md):
+Ollama on an explicit loopback URL. Implementation is a later PR. Desktop
+must not call models in N2.
 
 Exit gate: one explicitly configured provider can discuss and inspect one
 selected project through bounded typed tools while all project files remain

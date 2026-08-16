@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **P1 Workspace public-gate evidence** on `docs/workspace-public-gate-p1` from `origin/main` @ `6996df4`.
+Status: **P2 Neutron N1 CI fix + N2 ADR** on `feat/neutron-n1-runtime-contracts` from `origin/main` @ `85b8548`.
 
-Active branch: `docs/workspace-public-gate-p1`
+Active branch: `feat/neutron-n1-runtime-contracts`
 
-Current objective: Close the two leftover real-dogfood bullets as deferred with an owner. No new engine.
+Current objective: Keep N1 contracts on package subpaths so Governance does not grow oversized barrels. ADR-0055 records the N2 Ollama decision. Do not implement the adapter yet.
 
-Next first action: Review the P1 PR. Do not start P2–P4, Neutron N1, S8, or a W13.
+Next first action: Confirm PR #317 Governance is green. Do not start the Ollama adapter until the maintainer asks for N2 implementation.
 
 Known open items, in the order they should be handled:
 
@@ -95,6 +95,64 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-16, N1 subpath exports and N2 ADR
+
+- **Status:** complete on branch; push to PR #317.
+- **Branch:** `feat/neutron-n1-runtime-contracts` from `origin/main` @ `85b8548`
+- **Pull request:** https://github.com/vitala89/Intentloom/pull/317
+- **Objective:** Unblock Governance (oversized barrel growth) and record the N2 first-adapter decision.
+- **Completed:**
+  - Removed N1 `export *` lines from protocol, validator, and application root barrels.
+  - Added `@intentloom/*/neutron-runtime` package subpaths. Internal imports follow the ADR-0054 relative-path pattern.
+  - Recorded ADR-0055: Ollama on an explicit loopback URL. No adapter code, credentials, or Desktop model calls.
+- **Not completed:** N2 adapter implementation; N3–N9; P3; P4.
+- **Files or packages changed:** three package.json export maps, three root barrels (shrunk), N1 source/test imports, `docs/decisions/ADR-0055-neutron-n2-first-model-adapter.md`, Neutron and post-W12 roadmaps, `PROJECT_STATE.md`.
+- **Validation:** `pnpm exec vitest run tests/neutron-runtime-contracts.test.ts` (5 passed); `pnpm typecheck`; `pnpm exec prettier --check` on touched files; `git diff --check`.
+- **Decisions and assumptions:** First real N2 provider is local Ollama. Hosted vendors stay later. CI must not require a live Ollama process.
+- **Risks or compatibility impact:** none for runtime. N1 public import path is the subpath, not the root barrel.
+- **Open issues or blockers:** N2 implementation waits for an explicit maintainer brief after #317 merges.
+- **Next first action:** Push these commits to #317 and wait for Governance. Do not implement Ollama from this watch.
+- **Evidence:** Governance failure was oversized `index.ts` growth on protocol/validator/application barrels.
+
+#### Duty completion checklist
+
+- [x] Markdown format check on touched docs
+- [x] Focused contract tests and typecheck
+- [x] `git diff --check` passed
+- [x] Atomic commits via `git commit-tree` (no attribution trailers)
+- [x] `PROJECT_STATE.md` / roadmap / ADR updated
+- [x] `DUTY_WATCH.md` handoff completed
+- [ ] PR #317 updated without tool or agent credit
+
+### 2026-08-16, Neutron N1 runtime contracts
+
+- **Status:** complete on branch; PR to open.
+- **Branch:** `feat/neutron-n1-runtime-contracts` from `origin/main` @ `85b8548`
+- **Pull request:** pending
+- **Objective:** Implement Neutron N1 contracts only: session, adapter capability, context bundle, tool envelope, task graph, subagent result, usage/budget, and runtime events.
+- **Completed:**
+  - Added versioned protocol types and fail-closed validators. N1 snapshots require offline network mode and no mutation.
+  - Added `prepareNeutronRuntimeContractSnapshot` as a pure root-bound check over caller-supplied snapshots.
+  - Added frozen fixture and contract tests. No new package, daemon method, CLI command, or hosted adapter.
+- **Not completed:** N2 provider adapter ADR and implementation; N3–N9; P3; P4.
+- **Files or packages changed:** `packages/protocol/src/neutron-runtime.ts`, `packages/validator/src/neutron-runtime.ts`, `packages/application/src/neutron-runtime-contracts.ts`, protocol/validator/application barrels, `tests/neutron-runtime-contracts.test.ts`, `tests/fixtures/neutron-runtime/contract-snapshot.v1.json`, roadmap and state docs.
+- **Validation:** focused `pnpm exec vitest run tests/neutron-runtime-contracts.test.ts`; `pnpm exec prettier --check` on touched files; `git diff --check`.
+- **Decisions and assumptions:** Existing `ModelAdapter` / deterministic-test adapter stays as-is. N1 does not execute models. Hosted provider kinds are rejected at the N1 capability contract.
+- **Risks or compatibility impact:** none for runtime behavior. New optional contracts only.
+- **Open issues or blockers:** N2 blocked on a dedicated adapter ADR.
+- **Next first action:** Review this PR. Write the N2 ADR before any network or credential work.
+- **Evidence:** `origin/main` = `85b85487cfda995bccb0b2d9aed3c10e94889e8d`; `gh pr view 316` MERGED.
+
+#### Duty completion checklist
+
+- [x] Markdown format check on touched docs
+- [x] Focused contract tests
+- [x] `git diff --check` passed
+- [x] Atomic commit via `git commit-tree` (no attribution trailers)
+- [x] `PROJECT_STATE.md` / roadmap updated
+- [x] `DUTY_WATCH.md` handoff completed
+- [ ] PR opened without tool or agent credit
 
 ### 2026-08-16, P1 Workspace public-gate evidence
 
