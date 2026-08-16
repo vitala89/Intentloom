@@ -181,9 +181,9 @@ client
 → model response
 ```
 
-The first adapter decision requires a separate implementation ADR covering
-credentials, network disclosure, streaming, cancellation, data retention,
-errors, limits, and test strategy.
+The first adapter decision is [ADR-0055](../decisions/ADR-0055-neutron-n2-first-model-adapter.md):
+Ollama on an explicit loopback URL. Implementation is a later PR. Desktop
+must not call models in N2.
 
 Exit gate: one explicitly configured provider can discuss and inspect one
 selected project through bounded typed tools while all project files remain

@@ -234,9 +234,12 @@ before a new release or implementation milestone is declared complete.
 1. Engineering Workspace **W0–W12** are complete on current `origin/main` at
    `85b8548` (P1 public-gate PR #316; P0 honesty PR #315). The implementation
    plan ends at W12. Do not invent a W13.
-2. **P2 Neutron N1** is the authorized increment: versioned runtime contracts,
-   validators, and fixtures only. No new package. Do not start N2, S8, C7, or
-   file-budget extracts from this focus. Desktop must not call models.
+2. **P2 Neutron N1** is on `feat/neutron-n1-runtime-contracts` (PR #317):
+   versioned runtime contracts, validators, and fixtures only. No new package.
+   N1 public types use package subpaths, not oversized root barrels.
+   **ADR-0055** accepts Ollama as the N2 first adapter. Do not implement that
+   adapter, S8, C7, or file-budget extracts from this focus. Desktop must not
+   call models.
 3. The next **published** version is **undecided**. Maintainer options, not a
    pick: stay unpublished on npm until an explicit publish brief; later `1.0.x`
    metadata/docs release; `1.1.0` (or another minor) after a real release-gate

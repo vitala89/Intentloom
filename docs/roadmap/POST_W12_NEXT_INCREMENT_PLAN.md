@@ -81,9 +81,9 @@ capability, context bundle, tool envelope, task graph, subagent result,
 usage/budget, and progress/cancellation/timeout/error contracts live in
 `packages/protocol/src/neutron-runtime.ts`. No new package. No N2 adapter.
 
-N2: one provider adapter only after a dedicated ADR for credentials,
-network disclosure, streaming, cancellation, retention, and tests. Desktop
-must not call models until that ADR exists. Prepare stays snapshot-driven.
+N2: ADR-0055 accepts Ollama on an explicit loopback URL. Implementation is
+not in the N1 PR. Desktop must not call models in N2. Prepare stays
+snapshot-driven until the adapter PR.
 
 Exit: N1 contracts validate in fixtures. The “one configured provider”
 clause is N2 and remains open.
