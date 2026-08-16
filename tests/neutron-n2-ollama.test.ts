@@ -11,15 +11,13 @@ import { discloseNeutronN2Network } from "../packages/validator/src/neutron-runt
 
 describe("Neutron N2 Ollama adapter", () => {
   it("refuses a non-loopback base URL", () => {
-    expect(
-      () => new OllamaModelAdapter({ baseUrl: "http://8.8.8.8:11434" }),
-    ).toThrow(NeutronN2Error);
-    try {
-      new OllamaModelAdapter({ baseUrl: "https://example.com" });
-    } catch (error) {
-      expect(error).toBeInstanceOf(NeutronN2Error);
-      expect((error as NeutronN2Error).code).toBe("network-forbidden");
-    }
+    expect(() => constructAdapter("http://8.8.8.8:11434")).toThrow(
+      NeutronN2Error,
+    );
+    expect(() => constructAdapter("https://example.com")).toThrow(
+      NeutronN2Error,
+    );
+    expect(caughtCode("https://example.com")).toBe("network-forbidden");
   });
 
   it("discloses scheme, host, and port without credentials", () => {
@@ -106,9 +104,22 @@ describe("Neutron N2 Ollama adapter", () => {
 
 function fingerprint(fs: { files: Map<string, string> }): string {
   return [...fs.files.entries()]
-    .sort(([left], [right]) => left.localeCompare(right))
+    .toSorted(([left], [right]) => left.localeCompare(right))
     .map(([path, content]) => `${path}:${content}`)
     .join("\n");
+}
+
+function constructAdapter(baseUrl: string): OllamaModelAdapter {
+  return new OllamaModelAdapter({ baseUrl });
+}
+
+function caughtCode(baseUrl: string): string | undefined {
+  try {
+    constructAdapter(baseUrl);
+    return undefined;
+  } catch (error) {
+    return error instanceof NeutronN2Error ? error.code : undefined;
+  }
 }
 
 async function listenFakeOllama(
