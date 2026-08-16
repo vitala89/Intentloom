@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **P0 Release honesty** on `docs/release-honesty-p0`, merged with `origin/main` @ `64b40bb` (PR #314).
+Status: **P1 Workspace public-gate evidence** on `docs/workspace-public-gate-p1` from `origin/main` @ `6996df4`.
 
-Active branch: `docs/release-honesty-p0`
+Active branch: `docs/workspace-public-gate-p1`
 
-Current objective: Keep git-versus-npm truth readable after merging the post-W12 plan. Do not publish, tag, or dispatch `release.yml`.
+Current objective: Close the two leftover real-dogfood bullets as deferred with an owner. No new engine.
 
-Next first action: Review PR #315. Next published version stays undecided. Do not start P1–P4, Neutron N1, S8, or a W13.
+Next first action: Review the P1 PR. Do not start P2–P4, Neutron N1, S8, or a W13.
 
 Known open items, in the order they should be handled:
 
@@ -95,6 +95,34 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-16, P1 Workspace public-gate evidence
+
+- **Status:** complete on branch; PR to open.
+- **Branch:** `docs/workspace-public-gate-p1` from `origin/main` @ `6996df4`
+- **Pull request:** pending
+- **Objective:** Close the Initial public workspace gate dogfood leftovers without inventing a live walkthrough.
+- **Completed:**
+  - Confirmed W8 fixture record is not a real new-project dogfood.
+  - Confirmed July 2026 v1 records are not a W9–W12 existing-project retrofit.
+  - Deferred both real dogfoods to the maintainer. Recorded the rest of the gate as met on main via W0–W12 fixtures and composed paths.
+- **Not completed:** a real empty-root create; a real existing-root W9–W12 walkthrough; P2–P4.
+- **Files or packages changed:** `docs/releases/dogfooding/2026-08-16-workspace-public-gate.md`, `docs/roadmap/ENGINEERING_WORKSPACE_IMPLEMENTATION_PLAN.md`, `docs/roadmap/POST_W12_NEXT_INCREMENT_PLAN.md`, `docs/roadmap/ENGINEERING_WORKSPACE_CAPABILITY_MATRIX.md`, `PROJECT_STATE.md`, `DUTY_WATCH.md`.
+- **Validation:** `pnpm exec prettier --check` on touched markdown; `git diff --check`.
+- **Decisions and assumptions:** P1 exit allows defer-with-owner. Fixture tests are not a real-project claim.
+- **Risks or compatibility impact:** none. Documentation only.
+- **Open issues or blockers:** real dogfood waits for an explicit maintainer brief.
+- **Next first action:** Review and merge this PR. Do not start Neutron N1 from it.
+- **Evidence:** `origin/main` = `6996df45cded38039b7131777f6e1c084f94b5c0`; `gh pr view 315` MERGED.
+
+#### Duty completion checklist
+
+- [x] Markdown format check on touched docs
+- [x] `git diff --check` passed
+- [x] Atomic commit via `git commit-tree` (no attribution trailers)
+- [x] `PROJECT_STATE.md` / capability matrix updated
+- [x] `DUTY_WATCH.md` handoff completed
+- [ ] PR opened without tool or agent credit
 
 ### 2026-08-16, Merge main into P0 release honesty
 
