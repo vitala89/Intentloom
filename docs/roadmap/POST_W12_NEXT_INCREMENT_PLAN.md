@@ -2,11 +2,12 @@
 
 ## Status
 
-Proposed. This document does not authorize implementation, a release, a new
-package, network capability, or a W13 workspace phase.
+P0 Release honesty is complete on `docs/release-honesty-p0` (PR #315).
+P1–P4 are not started. This document still does not authorize a publish,
+tag, new package, network capability, or a W13 workspace phase.
 
-Verified against `origin/main` @ `7d4ed80` (2026-08-16) and the existing
-roadmap files listed below.
+Verified against `origin/main` @ `64b40bb` (PR #314 merged, 2026-08-16) and
+the P0 honesty branch.
 
 ## Why this exists
 
@@ -36,10 +37,9 @@ product.
 
 ## Gaps that are not a new W-phase
 
-1. **Release honesty.** `RELEASE_STATE.md` snapshot is 2026-08-02. npm
-   `latest=1.0.2` does not contain W1–W12, Q/S/E later work, or Desktop
-   workspace panels. `PROJECT_STATE.md` still names “tag `v0.6.0-beta.1`” as
-   the next maintainer action; that label now understates the tree.
+1. **Release honesty.** Closed on PR #315. `RELEASE_STATE.md` snapshot
+   2026-08-16 keeps Implemented-in-main separate from npm `1.0.2`. The next
+   published version is undecided.
 2. **Workspace public gate leftover.** The W12 plan still asks for one real
    new-project dogfood and one existing-project retrofit. Code paths exist;
    current published evidence is incomplete.
@@ -55,11 +55,13 @@ product.
 
 ### P0 — Release honesty (docs + maintainer decision)
 
-Reconcile `RELEASE_STATE.md` and `PROJECT_STATE.md` with `7d4ed80`. Decide
-the next published version. Do not tag `v0.6.0-beta.1` as if W12 does not
-exist. Do not publish from this document.
+**Status:** complete on PR #315. `RELEASE_STATE.md` snapshot 2026-08-16
+distinguishes Implemented in main from Released on npm (`1.0.2` @
+`192fd05`). Next published version is undecided. Do not tag
+`v0.6.0-beta.1`. Do not publish from this document.
 
-Exit: a reviewer can tell what is in git versus what is on npm.
+Exit: a reviewer can tell what is in git versus what is on npm. Met on
+PR #315.
 
 ### P1 — Workspace public-gate evidence
 
@@ -106,8 +108,8 @@ inspect/timeline/conformance). Do not grow oversized production files.
 
 ## First authorized action
 
-The maintainer picks **one**: P0, P2, or P3. Until that choice, `main` is
-correctly idle.
+P0 is done on PR #315. Review that PR. Do not start P1–P4, Neutron N1, or
+S8 from this file.
 
 ## Sources
 

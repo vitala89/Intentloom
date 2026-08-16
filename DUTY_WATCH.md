@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **W1–W12 Core and Client complete** on `main` @ `68e05dd`.
+Status: **P0 Release honesty** on `docs/release-honesty-p0`, merged with `origin/main` @ `64b40bb` (PR #314).
 
-Active branch: `chore/workspace-w12-complete-handoff`
+Active branch: `docs/release-honesty-p0`
 
-Current objective: Review the proposed post-W12 increment plan. Do not invent a W13.
+Current objective: Keep git-versus-npm truth readable after merging the post-W12 plan. Do not publish, tag, or dispatch `release.yml`.
 
-Next first action: Start a new session with `docs/handoffs/P0_RELEASE_HONESTY_AGENT_PROMPT.md` (P0 authorized). Do not implement P0 in a leftover W12 or plan-proposal session.
+Next first action: Review PR #315. Next published version stays undecided. Do not start P1–P4, Neutron N1, S8, or a W13.
 
 Known open items, in the order they should be handled:
 
@@ -95,6 +95,65 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-16, Merge main into P0 release honesty
+
+- **Status:** complete on branch; PR open.
+- **Branch:** `docs/release-honesty-p0` merged with `origin/main` @ `64b40bb`
+- **Pull request:** https://github.com/vitala89/Intentloom/pull/315
+- **Objective:** Resolve the #314 merge conflict without dropping P0 honesty or the post-W12 plan.
+- **Completed:**
+  - Kept P0 as the current watch. Kept the #314 plan entry as history.
+  - Marked P0 complete in `POST_W12_NEXT_INCREMENT_PLAN.md`. Did not start P1–P4.
+- **Not completed:** any publish; P1–P4.
+- **Files or packages changed:** `DUTY_WATCH.md`, `docs/roadmap/POST_W12_NEXT_INCREMENT_PLAN.md`, `PROJECT_STATE.md`.
+- **Validation:** `pnpm exec prettier --check` on touched markdown; `git diff --check`.
+- **Decisions and assumptions:** #314 merging does not authorize a tag or npm publish.
+- **Risks or compatibility impact:** none. Documentation only.
+- **Open issues or blockers:** next published version still undecided.
+- **Next first action:** Review PR #315.
+- **Evidence:** `origin/main` = `64b40bb`; `gh pr view 314` MERGED; `gh pr view 315` OPEN.
+
+#### Duty completion checklist
+
+- [x] Markdown format check on touched docs
+- [x] `git diff --check` passed
+- [x] Atomic commit via `git commit-tree` (no attribution trailers)
+- [x] `DUTY_WATCH.md` handoff completed
+- [x] PR opened without tool or agent credit
+
+### 2026-08-16, P0 Release honesty
+
+- **Status:** complete on branch; PR open.
+- **Branch:** `docs/release-honesty-p0` from `origin/main` @ `7d4ed80`
+- **Commits:** `804753c`
+- **Pull request:** https://github.com/vitala89/Intentloom/pull/315
+- **Objective:** Reconcile stale release docs so a reviewer can see what is on `origin/main` versus what npm serves.
+- **Completed:**
+  - Re-verified `npm view intentloom`: `name=intentloom`, `version=1.0.2`, `latest=1.0.2`, `next=1.0.0`.
+  - Re-verified Git tag / release `v1.0.2` at `192fd05` (published 2026-08-02).
+  - Confirmed `origin/main` @ `7d4ed80` (PR #313) at P0 start. PR #314 later merged as `64b40bb`; the plan is now on `main`.
+  - Split Implemented-in-main from Released-on-npm in `RELEASE_STATE.md`. Desktop / W0–W12 / later Q/S/E/A/H rows are Yes on main and unpublished.
+  - Replaced “tag `v0.6.0-beta.1`” as the next action. Recorded version options without picking one.
+  - Left `packages/cli/package.json` at `1.0.2`. No tag, publish, or workflow dispatch.
+- **Not completed:** any publish; P1–P4; Neutron N1; S8; W13.
+- **Files or packages changed:** `docs/releases/RELEASE_STATE.md`, `PROJECT_STATE.md`, `DUTY_WATCH.md`, `docs/roadmap/ENGINEERING_WORKSPACE_CAPABILITY_MATRIX.md`.
+- **Validation:** `pnpm exec prettier --check` on touched markdown; `git diff --check`; full `pnpm verify` before push if hooks require it.
+- **Decisions and assumptions:** P0 is docs-only. Workspace version field stays `1.0.2` and the drift is documented. `V0_6_READINESS_AUDIT.md` stays a historical gate.
+- **Risks or compatibility impact:** none. Documentation only. No package version or runtime change.
+- **Open issues or blockers:** next published version undecided; npm token-disallow setting remains an owner action.
+- **Next first action:** Review and merge this PR. Do not tag or publish from it.
+- **Evidence:** original `origin/main` = `7d4ed80ac2a5a8efbab3bda4fdf4368e6e37fae1`; later `64b40bb`; `npm view` 2026-08-16; `gh release view v1.0.2`.
+
+#### Duty completion checklist
+
+- [x] Markdown format check on touched docs
+- [x] `git diff --check` passed
+- [x] Atomic commit via `git commit-tree` (no attribution trailers)
+- [x] `PROJECT_STATE.md` / capability matrix updated
+- [x] `DUTY_WATCH.md` handoff completed
+- [x] PR opened without tool or agent credit
+- [x] `pnpm verify` (213 files, 1433 passed / 3 skipped)
 
 ### 2026-08-16, Propose post-W12 next increment plan
 
