@@ -98,9 +98,9 @@ entry directly below this section.
 
 ### 2026-08-18, Vii first development dogfood evidence
 
-- **Status:** complete on branch; PR to open.
+- **Status:** complete on branch; PR open.
 - **Branch:** `docs/vii-first-development-dogfood` from `origin/main` @ `779a9e2`
-- **Pull request:** pending
+- **Pull request:** https://github.com/vitala89/Intentloom/pull/334
 - **Objective:** Record the first successful real Vii development cycle after Intentloom adoption. Evidence only.
 - **Completed:**
   - Added `docs/releases/dogfooding/2026-08-18-vii-first-development-cycle.md`.
