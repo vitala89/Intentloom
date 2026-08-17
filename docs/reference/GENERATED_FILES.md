@@ -9,6 +9,14 @@ validated before ownership or transaction logic. Generated next-state metadata
 is also validated before any write. Absolute-looking and malformed path strings
 fail structurally; actual root escape and symlink safety remain semantic.
 
+`intentloom diff` compares `.aif/source-map.json` and
+`.aif/manifest.lock.json` semantically: JSON whitespace, indentation, and
+key order alone are not drift. Checksum, ownership, source, identity, and
+version field changes still conflict. Malformed metadata JSON is not
+normalized; it remains a deterministic conflict. Other generated artifacts,
+including Markdown adapters and `.aif/config.yaml`, stay byte-identical.
+Do not treat formatter exclusions as a substitute for this comparison.
+
 The manifest also pins the resolved profile, selected adapter ids and versions,
 schema-family versions, and SHA-256 hashes of every canonical catalog source
 used by generated outputs. These pins are deterministic and contain no

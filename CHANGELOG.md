@@ -109,6 +109,8 @@ are not included in the current npm artifact until a later release.
   public README for the same documentation concept.
 - Specialized architecture, ADR/process, security, and RFC documents no
   longer compete for the generic architecture documentation concept.
+- `intentloom diff` no longer treats JSON whitespace-only changes in
+  `.aif/source-map.json` or `.aif/manifest.lock.json` as drift.
 
 ### Changed
 

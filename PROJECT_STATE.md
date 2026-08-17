@@ -198,7 +198,9 @@ before a new release or implementation milestone is declared complete.
   supported engineering profile; generated Nx directories are excluded; only
   the root README is `public-readme`. A follow-up keeps specialized
   architecture, ADR/process, security, and RFC documents from competing for
-  the generic architecture concept. See
+  the generic architecture concept. Formatter-only JSON changes in
+  `.aif/source-map.json` and `.aif/manifest.lock.json` are no longer reported
+  as `intentloom diff` drift. See
   [`2026-08-17-vii-nx-existing-project.md`](docs/releases/dogfooding/2026-08-17-vii-nx-existing-project.md).
 - Selecting a project in the Desktop app deadlocked the whole window (main
   event-loop thread blocked on a native dialog call that itself needed that

@@ -36,6 +36,7 @@ import type {
 import { validateSkillSet } from "@intentloom/validator";
 import { collectExtensionHealthDoctorFindings } from "./extension-health.js";
 import { documentConcept } from "./document-concepts.js";
+import { compareGeneratedArtifact } from "./generated-metadata-compare.js";
 import {
   detectProjectProfiles,
   type DetectedProfile,
@@ -1917,39 +1918,47 @@ async function plan(
             : "missing",
         content: file.content,
       });
-    else if ((await fs.read(path)) === file.content) continue;
-    else if (
-      sync &&
-      file.path !== sourceMapPath &&
-      file.path !== lockPath &&
-      file.path !== configPath
-    ) {
-      const record = owned.get(file.path);
-      if (!record)
+    else {
+      const existing = await fs.read(path);
+      const comparison = compareGeneratedArtifact(
+        file.path,
+        existing,
+        file.content,
+      );
+      if (comparison.equal) continue;
+      else if (
+        sync &&
+        file.path !== sourceMapPath &&
+        file.path !== lockPath &&
+        file.path !== configPath
+      ) {
+        const record = owned.get(file.path);
+        if (!record)
+          changes.push({
+            path: file.path,
+            kind: "conflict",
+            reason: "existing destination has no Intentloom ownership record",
+          });
+        else if (checksum(existing) !== record.checksum)
+          changes.push({
+            path: file.path,
+            kind: "modified",
+            reason: "Intentloom-owned generated file was manually modified",
+          });
+        else
+          changes.push({
+            path: file.path,
+            kind: "update",
+            reason: "verified Intentloom-owned generated output changed",
+            content: file.content,
+          });
+      } else
         changes.push({
           path: file.path,
           kind: "conflict",
-          reason: "existing destination has no Intentloom ownership record",
+          reason: comparison.reason,
         });
-      else if (checksum(await fs.read(path)) !== record.checksum)
-        changes.push({
-          path: file.path,
-          kind: "modified",
-          reason: "Intentloom-owned generated file was manually modified",
-        });
-      else
-        changes.push({
-          path: file.path,
-          kind: "update",
-          reason: "verified Intentloom-owned generated output changed",
-          content: file.content,
-        });
-    } else
-      changes.push({
-        path: file.path,
-        kind: "conflict",
-        reason: "existing file is not identical; explicit resolution required",
-      });
+    }
   }
   return { changes, diagnostics: [] };
 }

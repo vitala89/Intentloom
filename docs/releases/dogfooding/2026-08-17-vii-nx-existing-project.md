@@ -40,6 +40,13 @@ A second dry-run still marked specialized architecture documents as
 RFC threat model. Only canonical overview/map filenames now participate in
 that concept. `AGENTS.md` remains an expected instruction conflict.
 
+## Follow-up: formatter-only source-map drift
+
+After adoption, `intentloom diff` was clean. A later formatter-only rewrite of
+`.aif/source-map.json` (`sources` array wrapping) produced a false
+`conflict` even though inspect/doctor stayed healthy. Diff now compares
+source-map and manifest-lock JSON semantically.
+
 ## Maintainer follow-up
 
 Re-run inspect and adopt dry-run against Vii after this change lands. Do not
