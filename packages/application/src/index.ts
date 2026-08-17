@@ -36,6 +36,7 @@ import type {
 import { validateSkillSet } from "@intentloom/validator";
 import { collectExtensionHealthDoctorFindings } from "./extension-health.js";
 import { documentConcept } from "./document-concepts.js";
+import { planExistingGeneratedChange } from "./generated-metadata-compare.js";
 import {
   detectProjectProfiles,
   type DetectedProfile,
@@ -1917,39 +1918,18 @@ async function plan(
             : "missing",
         content: file.content,
       });
-    else if ((await fs.read(path)) === file.content) continue;
-    else if (
-      sync &&
-      file.path !== sourceMapPath &&
-      file.path !== lockPath &&
-      file.path !== configPath
-    ) {
-      const record = owned.get(file.path);
-      if (!record)
-        changes.push({
-          path: file.path,
-          kind: "conflict",
-          reason: "existing destination has no Intentloom ownership record",
-        });
-      else if (checksum(await fs.read(path)) !== record.checksum)
-        changes.push({
-          path: file.path,
-          kind: "modified",
-          reason: "Intentloom-owned generated file was manually modified",
-        });
-      else
-        changes.push({
-          path: file.path,
-          kind: "update",
-          reason: "verified Intentloom-owned generated output changed",
-          content: file.content,
-        });
-    } else
-      changes.push({
+    else {
+      const existing = await fs.read(path);
+      const change = planExistingGeneratedChange({
         path: file.path,
-        kind: "conflict",
-        reason: "existing file is not identical; explicit resolution required",
+        existing,
+        desired: file.content,
+        sync,
+        ownedChecksum: owned.get(file.path)?.checksum,
+        checksum,
       });
+      if (change) changes.push(change);
+    }
   }
   return { changes, diagnostics: [] };
 }

@@ -1,4 +1,5 @@
 import { createHash } from "node:crypto";
+import { canonicalJson } from "../canonical-json.js";
 import {
   type EngineeringQualityPack,
   type EngineeringQualityPackEntry,
@@ -11,30 +12,6 @@ import {
   validateExternalQualityPackActivationApproval,
   validateExternalQualityPackImportRequest,
 } from "@intentloom/validator";
-
-function canonicalJson(value: unknown): string {
-  if (
-    value === null ||
-    typeof value === "string" ||
-    typeof value === "boolean"
-  ) {
-    return JSON.stringify(value);
-  }
-  if (typeof value === "number") {
-    if (!Number.isFinite(value))
-      throw new Error("pack contains a non-finite number");
-    return JSON.stringify(value);
-  }
-  if (Array.isArray(value)) return `[${value.map(canonicalJson).join(",")}]`;
-  if (typeof value !== "object")
-    throw new Error("pack contains an unsupported value");
-  const object = value as Record<string, unknown>;
-  return `{${sorted(Object.keys(object), (left, right) =>
-    left.localeCompare(right),
-  )
-    .map((key) => `${JSON.stringify(key)}:${canonicalJson(object[key])}`)
-    .join(",")}}`;
-}
 
 function sorted<T>(
   values: readonly T[],

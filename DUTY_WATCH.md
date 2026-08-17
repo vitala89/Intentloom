@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **existing-project architecture docs** on `fix/existing-project-architecture-docs` from `origin/main` @ `a732af9`.
+Status: **generated JSON semantic diff** on `fix/generated-json-semantic-diff` (PR #322) from `origin/main` @ `02695a5`.
 
-Active branch: `fix/existing-project-architecture-docs`
+Active branch: `fix/generated-json-semantic-diff`
 
-Current objective: Stop specialized architecture/governance/RFC docs from creating false architecture ambiguity.
+Current objective: Stop formatter-only AIF metadata JSON from looking like drift.
 
-Next first action: Open and merge the documentation-classification PR. Do not apply Intentloom to Vii from this watch.
+Next first action: Push the index.ts shrink so Governance file-budget CI is green, then merge PR #322. Do not modify Vii from this watch.
 
 Known open items, in the order they should be handled:
 
@@ -95,6 +95,33 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-17, Generated metadata JSON semantic diff
+
+- **Status:** incomplete — Governance CI failed on oversized `index.ts` growth.
+- **Branch:** `fix/generated-json-semantic-diff` from `origin/main` @ `02695a5`
+- **Pull request:** https://github.com/vitala89/Intentloom/pull/322
+- **Objective:** After Vii formatted `.aif/source-map.json`, `intentloom diff` reported a false conflict.
+- **Completed:**
+  - Diff compares source-map and manifest-lock JSON semantically via the existing canonical JSON helper.
+  - Malformed metadata still fails closed. Non-JSON generated files stay byte-identical.
+  - Existing-file plan branch extracted so `packages/application/src/index.ts` shrinks versus `02695a5`.
+- **Not completed:** Changing Vii or adding project `.prettierignore` rules automatically. Merge still pending green CI.
+- **Files or packages changed:** `canonical-json.ts`, `generated-metadata-compare.ts`, plan comparison, pack-import reuse, docs, regression tests.
+- **Validation:** focused vitest plus typecheck; Governance failed on first push (`index.ts` 7199 → 7208).
+- **Decisions and assumptions:** Do not weaken conflict detection for adapter Markdown or config YAML.
+- **Risks or compatibility impact:** Diff no longer asks to resolve whitespace-only metadata JSON.
+- **Open issues or blockers:** Governance file-budget check until the shrink commit is on the PR.
+- **Next first action:** Push the shrink, wait for CI, merge if green. Re-run Vii `intentloom diff` without writes.
+- **Evidence:** `origin/main` = `02695a5`; PR #322; Vii remains untouched.
+
+#### Duty completion checklist
+
+- [x] Focused tests and typecheck
+- [x] Atomic commit via `git commit-tree` (no attribution trailers)
+- [x] Docs/changelog updated
+- [x] `DUTY_WATCH.md` handoff completed
+- [x] PR opened without tool or agent credit
 
 ### 2026-08-17, Existing-project architecture documentation
 
