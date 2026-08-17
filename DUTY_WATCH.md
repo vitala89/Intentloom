@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **generated JSON semantic diff** on `fix/generated-json-semantic-diff` (PR #322) from `origin/main` @ `02695a5`.
+Status: **Vii first development dogfood evidence** on `docs/vii-first-development-dogfood` from `origin/main` @ `779a9e2`.
 
-Active branch: `fix/generated-json-semantic-diff`
+Active branch: `docs/vii-first-development-dogfood`
 
-Current objective: Stop formatter-only AIF metadata JSON from looking like drift.
+Current objective: Record the first successful real Vii development cycle after Intentloom adoption. Documentation only.
 
-Next first action: Push the index.ts shrink so Governance file-budget CI is green, then merge PR #322. Do not modify Vii from this watch.
+Next first action: Open the evidence PR, wait for CI, merge if green. Do not modify Vii, change CLI behavior, or publish.
 
 Known open items, in the order they should be handled:
 
@@ -95,6 +95,40 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-18, Vii first development dogfood evidence
+
+- **Status:** complete on branch; PR to open.
+- **Branch:** `docs/vii-first-development-dogfood` from `origin/main` @ `779a9e2`
+- **Pull request:** pending
+- **Objective:** Record the first successful real Vii development cycle after Intentloom adoption. Evidence only.
+- **Completed:**
+  - Added `docs/releases/dogfooding/2026-08-18-vii-first-development-cycle.md`.
+  - Distinguished Intentloom verification, agent skill use, Vii governance, human decisions, and observational limits.
+  - Recorded `instruction-files-conflicting` as still open and non-blocking.
+  - Pointed the 2026-08-17 Nx record and Desktop adoption plan at the new evidence.
+- **Not completed:** Runtime or CLI changes; Vii edits; publish/tag/release; Desktop adoption implementation; fixing the instruction-file warning.
+- **Files or packages changed:** dogfooding records, Desktop adoption plan pointer, changelog, project state, duty watch.
+- **Validation:** prettier format check on touched docs; `git diff --check`; governance checks required for the docs PR.
+- **Decisions and assumptions:** Do not overclaim skill-routing automation. Do not close W9–W12 retrofit dogfood.
+- **Risks or compatibility impact:** none; documentation only.
+- **Open issues or blockers:** `instruction-files-conflicting` remains a separate investigation candidate.
+- **Next first action:** Open the PR, wait for CI, merge if green.
+- **Evidence:** Vii PR #76 merge `0f5713a`; Intentloom PRs #320, #321, #322, #332.
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant tests, type checks, builds, or compatibility checks passed
+- [ ] Atomic commit policy and commit-message checks passed
+- [x] Repository hooks installed or equivalent commands run
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `PROJECT_STATE.md` updated when applicable
+- [x] `DUTY_WATCH.md` handoff completed
+- [x] Related roadmap, ADR, changelog, migration, or reference docs updated
+- [ ] Failed or unavailable checks recorded
 
 ### 2026-08-17, Generated metadata JSON semantic diff
 

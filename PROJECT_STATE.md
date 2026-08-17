@@ -1,6 +1,6 @@
 # Intentloom Project State
 
-Last verified: 2026-08-16
+Last verified: 2026-08-18
 
 This file records the durable current state of the project. It is not a
 chronological log. Session history and handoff details belong in
@@ -202,6 +202,13 @@ before a new release or implementation milestone is declared complete.
   `.aif/source-map.json` and `.aif/manifest.lock.json` are no longer reported
   as `intentloom diff` drift. See
   [`2026-08-17-vii-nx-existing-project.md`](docs/releases/dogfooding/2026-08-17-vii-nx-existing-project.md).
+- First real Vii post-adoption development cycle is recorded: kas-labs/vii
+  PR #76 (Core reference Scope-owned Computed), green consumer CI, post-merge
+  healthy doctor and empty `intentloom diff`. `instruction-files-conflicting`
+  remains an open non-blocking warning. See
+  [`2026-08-18-vii-first-development-cycle.md`](docs/releases/dogfooding/2026-08-18-vii-first-development-cycle.md).
+  This does not close W9–W12 workspace retrofit dogfood or authorize Desktop
+  adoption implementation.
 - Selecting a project in the Desktop app deadlocked the whole window (main
   event-loop thread blocked on a native dialog call that itself needed that
   thread's event loop). Fixed by dispatching all six Tauri commands through
