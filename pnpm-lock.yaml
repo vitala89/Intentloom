@@ -74,8 +74,8 @@ importers:
         specifier: ^6.0.5
         version: 6.0.5(vite@8.2.1(@types/node@26.1.2)(esbuild@0.28.1)(yaml@2.9.0))
       lucide-static:
-        specifier: 1.28.0
-        version: 1.28.0
+        specifier: 1.31.0
+        version: 1.31.0
       vite:
         specifier: ^8.2.1
         version: 8.2.1(@types/node@26.1.2)(esbuild@0.28.1)(yaml@2.9.0)
@@ -1272,8 +1272,8 @@ packages:
     resolution: {integrity: sha512-WkUDrojuJs0xkgGf2udWxa3yGBRxPtxUkB79i6aCZLRgc7PM8fZe9TosfPDcvEpQZbuFASnHYmRLBLUbmLOIIA==}
     engines: {node: '>= 12.0.0'}
 
-  lucide-static@1.28.0:
-    resolution: {integrity: sha512-dC3VJwRFsjEVX7Iaq4rY88pm7Fi2OmOb8P0WRzXsUMgbt7sCmFX8bLhaDBeNW6JdRjuele+jKqqFaam4yr+Ygg==}
+  lucide-static@1.31.0:
+    resolution: {integrity: sha512-XFX9NO+gcLsOkXISmeQZYGJa2siGWZc/lgT/BK1b83h9RdOiz3cj1eQP5nWhELiB1KhW5ryk0nmMopOgm/CuSA==}
 
   magic-string@0.30.21:
     resolution: {integrity: sha512-vd2F4YUyEXKGcLHoq+TEyCjxueSeHnFxyyjNp80yg0XV4vUhnDer/lvvlqM/arB5bXQN5K2/3oinyCRyx8T2CQ==}
@@ -2473,7 +2473,7 @@ snapshots:
       lightningcss-win32-arm64-msvc: 1.33.0
       lightningcss-win32-x64-msvc: 1.33.0
 
-  lucide-static@1.28.0: {}
+  lucide-static@1.31.0: {}
 
   magic-string@0.30.21:
     dependencies:
