@@ -5,6 +5,19 @@ const metadataJsonPaths = new Set([
   ".aif/source-map.json",
 ]);
 
+const protectedMetadataPaths = new Set([
+  ".aif/config.yaml",
+  ".aif/manifest.lock.json",
+  ".aif/source-map.json",
+]);
+
+export interface GeneratedPlanChange {
+  readonly path: string;
+  readonly kind: "update" | "conflict" | "modified";
+  readonly reason: string;
+  readonly content?: string;
+}
+
 export function isMetadataJsonPath(path: string): boolean {
   return metadataJsonPaths.has(path);
 }
@@ -41,5 +54,46 @@ export function compareGeneratedArtifact(
   return {
     equal: false,
     reason: "existing metadata JSON differs; explicit resolution required",
+  };
+}
+
+export function planExistingGeneratedChange(input: {
+  readonly path: string;
+  readonly existing: string;
+  readonly desired: string;
+  readonly sync: boolean;
+  readonly ownedChecksum: string | undefined;
+  readonly checksum: (value: string) => string;
+}): GeneratedPlanChange | undefined {
+  const comparison = compareGeneratedArtifact(
+    input.path,
+    input.existing,
+    input.desired,
+  );
+  if (comparison.equal) return undefined;
+  if (input.sync && !protectedMetadataPaths.has(input.path)) {
+    if (!input.ownedChecksum)
+      return {
+        path: input.path,
+        kind: "conflict",
+        reason: "existing destination has no Intentloom ownership record",
+      };
+    if (input.checksum(input.existing) !== input.ownedChecksum)
+      return {
+        path: input.path,
+        kind: "modified",
+        reason: "Intentloom-owned generated file was manually modified",
+      };
+    return {
+      path: input.path,
+      kind: "update",
+      reason: "verified Intentloom-owned generated output changed",
+      content: input.desired,
+    };
+  }
+  return {
+    path: input.path,
+    kind: "conflict",
+    reason: comparison.reason,
   };
 }
