@@ -12,6 +12,7 @@ import type {
   ProjectTimelineResult,
 } from "@intentloom/protocol";
 import { WorkspaceContent } from "./WorkspaceContent.js";
+import { inspectStatusForError } from "./desktop-bridge-status.js";
 import { CommandPaletteModal } from "./views/CommandPaletteModal.js";
 import { buildWorkspaceCommandOptions } from "./workspace-command-options.js";
 import {
@@ -20,17 +21,6 @@ import {
   type WorkspaceTimelineStatus,
   type WorkspaceView,
 } from "./workspace-navigation.js";
-
-function inspectStatusForError(error: unknown): WorkspaceInspectStatus {
-  if (!(error instanceof DesktopBridgeError)) return "error";
-  if (error.code === "stale_root") return "stale";
-  if (error.code === "invalid_root") return "invalid-root";
-  if (error.code === "disconnected" || error.code === "authentication_failed") {
-    return "disconnected";
-  }
-  if (error.code === "protocol_incompatible") return "protocol-mismatch";
-  return "error";
-}
 
 export default function App() {
   const [activeView, setActiveView] = useState<WorkspaceView>("Overview");

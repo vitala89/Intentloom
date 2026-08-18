@@ -123,7 +123,7 @@ entry directly below this section.
 - [x] Markdown and lint checks passed when configured
 - [x] Relevant tests, type checks, builds, or compatibility checks passed
       (`pnpm verify`: 1494 passed, 3 skipped)
-- [ ] Atomic commit policy and commit-message checks passed
+- [x] Atomic commit policy and commit-message checks passed
 - [x] `git diff --check` passed
 - [x] Final diff reviewed
 - [x] `PROJECT_STATE.md` updated when applicable
