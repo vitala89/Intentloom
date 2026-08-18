@@ -15,7 +15,7 @@ Active branch: `feat/desktop-adoption-contracts`
 
 Current objective: Land the first read-only shared contract for existing-project adoption preview (`intentloom.existing-project.adoption.plan.v1`). No wizard UI and no Approved Apply.
 
-Next first action: Review and merge this branch's pull request after CI is green. Next product slice is Desktop read-only preview UI, not apply.
+Next first action: Review and merge https://github.com/vitala89/Intentloom/pull/337 after CI is green. Next product slice is Desktop read-only preview UI, not apply.
 
 Known open items, in the order they should be handled:
 
@@ -98,9 +98,9 @@ entry directly below this section.
 
 ### 2026-08-18, Desktop existing-project adoption plan contract
 
-- **Status:** complete on branch; PR to open.
+- **Status:** complete on branch; PR open.
 - **Branch:** `feat/desktop-adoption-contracts` from `origin/main` @ `dd950d0`
-- **Pull request:** pending
+- **Pull request:** https://github.com/vitala89/Intentloom/pull/337
 - **Objective:** First Desktop Existing-Project Adoption implementation slice:
   a shared read-only adoption-preview contract, not a wizard and not apply.
 - **Completed:**
@@ -128,8 +128,7 @@ entry directly below this section.
   read-only classification, `dryRun: true`, root containment, explicit
   allowlist, and fail-closed unsupported capability.
 - **Open issues or blockers:** none for this slice.
-- **Next first action:** Open the pull request, confirm no tool attribution,
-  wait for CI, merge if green. Next slice is plan section C (Desktop preview UI).
+- **Next first action:** Review and merge https://github.com/vitala89/Intentloom/pull/337 after CI is green. Next slice is plan section C (Desktop preview UI).
 - **Evidence:** `tests/existing-project-adoption-plan.test.ts`,
   `tests/daemon-adoption-plan.test.ts`.
 
@@ -138,7 +137,7 @@ entry directly below this section.
 - [x] Focused tests passed
 - [x] `git diff --check` pending before commit
 - [x] Atomic commits via `git commit-tree` (no attribution trailers)
-- [ ] Pull request opened without tool or agent credit
+- [x] Pull request opened without tool or agent credit
 - [x] `DUTY_WATCH.md` / `PROJECT_STATE.md` updated
 - [x] Changelog updated for unreleased runtime contract
 
