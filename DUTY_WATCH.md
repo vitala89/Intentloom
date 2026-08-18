@@ -98,9 +98,9 @@ entry directly below this section.
 
 ### 2026-08-18, Matt Pocock grilling decision gate
 
-- **Status:** complete on branch; PR to open.
+- **Status:** complete on branch; PR open.
 - **Branch:** `docs/matt-pocock-grilling-skills` from `origin/main` @ `f98122a`
-- **Pull request:** pending
+- **Pull request:** https://github.com/vitala89/Intentloom/pull/338
 - **Objective:** Review the installed Matt Pocock skills, vendor them as
   project-owned copies, and turn `grilling` on as the decision gate for new
   design and ambiguous work.
@@ -123,8 +123,7 @@ entry directly below this section.
 - **Files or packages changed:** `.agents/skills/`, `skills-lock.json`,
   governance docs, Cursor rules, `AGENTS.md`, `AGENT_START_HERE.md`,
   `.prettierignore`, `.gitignore`, changelog, project state, Duty Watch.
-- **Validation:** pending formatter, `git diff --check`, and Governance CI on
-  the pull request. No runtime tests (docs and vendor markdown only).
+- **Validation:** `pnpm verify` on push (1484 tests passed, 3 skipped); `git diff --check`; staged quality checks on both commits.
 - **Decisions and assumptions:** `.agents/skills` is the portable location for
   Cursor and Codex. Project rules override vendor text (no unsolicited
   subagents, no `CONTEXT.md`, no auto-commit). Ambiguity = 2 uses grilling on
@@ -135,25 +134,25 @@ entry directly below this section.
   Intentloom adopt/generate must not silently overwrite these project-owned
   files (existing non-destructive adoption rule).
 - **Open issues or blockers:** none for this slice.
-- **Next first action:** Open the pull request without tool attribution; wait
-  for CI; merge if green.
+- **Next first action:** Wait for CI on PR #338; merge if green. Next product
+  slice remains Desktop read-only adoption preview UI.
 - **Evidence:** `docs/governance/MATT_POCOCK_SKILLS_ADOPTION.md`,
   `.cursor/rules/grilling.mdc`, `skills-lock.json`.
 
 #### Duty completion checklist
 
-- [ ] Formatter passed
-- [ ] Markdown and lint checks passed when configured
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
 - [x] Relevant tests, type checks, builds, or compatibility checks passed
-      (not applicable: no runtime change)
-- [ ] Atomic commit policy and commit-message checks passed
-- [ ] `git diff --check` passed
-- [ ] Final diff reviewed
+      (`pnpm verify`: 1484 passed, 3 skipped)
+- [x] Atomic commit policy and commit-message checks passed
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
 - [x] `PROJECT_STATE.md` updated when applicable
 - [x] `DUTY_WATCH.md` handoff completed
 - [x] Related roadmap, ADR, changelog, migration, or reference docs updated
-- [ ] Failed or unavailable checks recorded
-- [ ] Pull request opened without tool or agent credit
+- [x] Failed or unavailable checks recorded
+- [x] Pull request opened without tool or agent credit
 
 ### 2026-08-18, Desktop existing-project adoption plan contract
 
