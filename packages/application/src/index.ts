@@ -36,6 +36,13 @@ import type {
 import { validateSkillSet } from "@intentloom/validator";
 import { collectExtensionHealthDoctorFindings } from "./extension-health.js";
 import { documentConcept } from "./document-concepts.js";
+import {
+  adapterForKnownInstructionPath,
+  copilotInstructionPath,
+  instructionAdapters,
+  instructionPath,
+  instructionRootKey,
+} from "./instruction-file-taxonomy.js";
 import { planExistingGeneratedChange } from "./generated-metadata-compare.js";
 import {
   detectProjectProfiles,
@@ -688,35 +695,6 @@ const inspectionAdapterNames: readonly AdapterName[] = [
   "copilot",
 ];
 const inspectionMetadataPaths = [configPath, lockPath, sourceMapPath] as const;
-
-function copilotInstructionPath(path: string): boolean {
-  return (
-    path === ".github/copilot-instructions.md" ||
-    /^\.github\/instructions\/.+\.instructions\.md$/u.test(path) ||
-    /^\.github\/skills\/.+\/SKILL\.md$/u.test(path)
-  );
-}
-
-function instructionRootKey(path: string): string | null {
-  if (path === "AGENTS.md" || path.startsWith(".agents/")) return "agents";
-  if (path === "CLAUDE.md" || path.startsWith(".claude/")) return "claude";
-  if (path.startsWith(".cursor/")) return "cursor";
-  if (copilotInstructionPath(path)) return "copilot";
-  return null;
-}
-
-function instructionAdapters(path: string): AdapterName[] {
-  const detected = new Set<AdapterName>();
-  if (path === "AGENTS.md" || path.startsWith(".agents/")) {
-    detected.add("codex");
-    detected.add("cursor");
-  }
-  if (path === "CLAUDE.md" || path.startsWith(".claude/"))
-    detected.add("claude");
-  if (path.startsWith(".cursor/")) detected.add("cursor");
-  if (copilotInstructionPath(path)) detected.add("copilot");
-  return inspectionAdapterNames.filter((adapter) => detected.has(adapter));
-}
 
 function secretLikePath(path: string): boolean {
   return path
@@ -2647,25 +2625,6 @@ export async function doctorProject(
     errors,
   };
 }
-function adapterForKnownPath(path: string): AdapterName | null {
-  if (path === "CLAUDE.md" || path.startsWith(".claude/")) return "claude";
-  if (path.startsWith(".cursor/")) return "cursor";
-  if (copilotInstructionPath(path)) return "copilot";
-  if (path.startsWith(".agents/")) return "codex";
-  return null;
-}
-
-function instructionPath(path: string): boolean {
-  return (
-    path === "AGENTS.md" ||
-    path === "CLAUDE.md" ||
-    path.startsWith(".claude/") ||
-    path.startsWith(".agents/") ||
-    path.startsWith(".cursor/") ||
-    copilotInstructionPath(path)
-  );
-}
-
 function unsupportedPath(path: string): boolean {
   return /^\.github\/agents\/.+\.agent\.md$/u.test(path);
 }
@@ -2792,7 +2751,7 @@ export async function adoptProject(
             : (change?.reason ??
               "existing Intentloom-owned output already matches"),
       canonicalSource: file.sources[0] ?? null,
-      adapter: adapterForKnownPath(file.path),
+      adapter: adapterForKnownInstructionPath(file.path),
       profile: options.profile,
       conflictDetails: metadataConflict
         ? ["ownership cannot be established from .aif/source-map.json"]
@@ -2861,7 +2820,7 @@ export async function adoptProject(
                   ? "existing tool instruction remains project-owned"
                   : "project file is not an adoption artifact",
       canonicalSource: null,
-      adapter: adapterForKnownPath(path),
+      adapter: adapterForKnownInstructionPath(path),
       profile: null,
       conflictDetails: duplicate
         ? mappedDocument === undefined
