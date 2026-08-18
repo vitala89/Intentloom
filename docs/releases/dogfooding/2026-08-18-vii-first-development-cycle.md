@@ -211,6 +211,16 @@ Desktop mutation path is not implemented.
 - Desktop existing-project adoption is planned, not implemented.
 - This record does not close a published-release gate.
 
+## Follow-up (2026-08-18)
+
+Intentloom branch `fix/instruction-file-taxonomy` addressed the open
+`instruction-files-conflicting` warning recorded above. Root cause: doctor
+treated every path under `.github/**` as a Copilot instruction root, so Vii's
+workflows and templates falsely conflicted with `AGENTS.md` / `.agents/skills`.
+After the taxonomy fix, real Vii doctor output is healthy with no
+`instruction-files-conflicting` warning and empty `intentloom diff`. Historical
+wording in this record is preserved; this section clarifies disposition only.
+
 ## Next recommendation
 
 Not authorized by this record. Suggested order from this evidence only:

@@ -114,6 +114,9 @@ are not included in the current npm artifact until a later release.
   longer compete for the generic architecture documentation concept.
 - `intentloom diff` no longer treats JSON whitespace-only changes in
   `.aif/source-map.json` or `.aif/manifest.lock.json` as drift.
+- `doctor` no longer treats GitHub governance files (workflows, issue
+  templates, PR templates) as Copilot instruction roots when checking for
+  project-owned instruction-root conflicts.
 
 ### Changed
 

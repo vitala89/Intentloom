@@ -96,6 +96,50 @@ entry directly below this section.
 
 ## Watch entries
 
+### 2026-08-18, instruction-file taxonomy false positive
+
+- **Status:** complete on branch; PR to open.
+- **Branch:** `fix/instruction-file-taxonomy` from `origin/main` @ `2ab3b57`
+- **Pull request:** pending
+- **Objective:** Fix false `instruction-files-conflicting` doctor warning when
+  repositories contain GitHub governance files alongside agent instruction roots.
+- **Completed:**
+  - Narrowed Copilot instruction-root detection to
+    `.github/copilot-instructions.md`, `.github/instructions/*.instructions.md`,
+    and `.github/skills/**/SKILL.md`.
+  - Aligned `instructionAdapters`, `instructionPath`, `adapterForKnownPath`,
+    and doctor conflict scanning to the same taxonomy.
+  - Added `tests/instruction-file-taxonomy.test.ts` with Vii-like Nx fixture
+    coverage and regression guards for real multi-root conflicts.
+  - Verified real Vii checkout: doctor healthy, no false warning; diff clean.
+- **Not completed:** Vii edits; publish/tag/release.
+- **Files or packages changed:** `packages/application/src/index.ts`, new test
+  file, `CHANGELOG.md`, `PROJECT_STATE.md`, dogfooding clarification,
+  `DUTY_WATCH.md`.
+- **Validation:** focused vitest suites; `pnpm typecheck`, `pnpm lint`,
+  `pnpm format:check`, `pnpm verify`, `git diff --check`; real Vii doctor/diff.
+- **Decisions and assumptions:** GitHub workflows, issue templates, and PR
+  templates are repository governance metadata, not agent instruction roots.
+  Real conflicts across Claude, Cursor, Copilot, and Codex roots remain
+  fail-closed.
+- **Risks or compatibility impact:** low; classification-only change.
+- **Open issues or blockers:** none for this fix.
+- **Next first action:** Open PR, wait for CI, merge if green.
+- **Evidence:** Vii dogfood records; doctor output before/after on
+  `/Users/eugenekasap/WebstormProjects/vii`.
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Relevant tests, type checks, builds, or compatibility checks passed
+- [ ] Atomic commit policy and commit-message checks passed
+- [x] Repository hooks installed or equivalent commands run
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `PROJECT_STATE.md` updated when applicable
+- [x] `DUTY_WATCH.md` handoff completed
+- [x] Related roadmap, ADR, changelog, migration, or reference docs updated
+
 ### 2026-08-18, Vii first development dogfood evidence
 
 - **Status:** complete on branch; PR to open.

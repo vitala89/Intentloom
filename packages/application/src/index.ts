@@ -689,6 +689,22 @@ const inspectionAdapterNames: readonly AdapterName[] = [
 ];
 const inspectionMetadataPaths = [configPath, lockPath, sourceMapPath] as const;
 
+function copilotInstructionPath(path: string): boolean {
+  return (
+    path === ".github/copilot-instructions.md" ||
+    /^\.github\/instructions\/.+\.instructions\.md$/u.test(path) ||
+    /^\.github\/skills\/.+\/SKILL\.md$/u.test(path)
+  );
+}
+
+function instructionRootKey(path: string): string | null {
+  if (path === "AGENTS.md" || path.startsWith(".agents/")) return "agents";
+  if (path === "CLAUDE.md" || path.startsWith(".claude/")) return "claude";
+  if (path.startsWith(".cursor/")) return "cursor";
+  if (copilotInstructionPath(path)) return "copilot";
+  return null;
+}
+
 function instructionAdapters(path: string): AdapterName[] {
   const detected = new Set<AdapterName>();
   if (path === "AGENTS.md" || path.startsWith(".agents/")) {
@@ -698,7 +714,7 @@ function instructionAdapters(path: string): AdapterName[] {
   if (path === "CLAUDE.md" || path.startsWith(".claude/"))
     detected.add("claude");
   if (path.startsWith(".cursor/")) detected.add("cursor");
-  if (path.startsWith(".github/")) detected.add("copilot");
+  if (copilotInstructionPath(path)) detected.add("copilot");
   return inspectionAdapterNames.filter((adapter) => detected.has(adapter));
 }
 
@@ -2114,7 +2130,7 @@ export async function doctorProject(
       return owners.length === 1 ? owners[0]! : null;
     }
     if (path.startsWith(".cursor/")) return "cursor";
-    if (path.startsWith(".github/")) return "copilot";
+    if (copilotInstructionPath(path)) return "copilot";
     if (path === "AGENTS.md")
       return (
         selectedAdapters.find((adapter) => adapter !== "claude") ??
@@ -2559,13 +2575,8 @@ export async function doctorProject(
     scannedPaths
       .filter((path) => !ownedPaths.has(path) || !desiredPaths.has(path))
       .flatMap((path) => {
-        if (path === "AGENTS.md" || path.startsWith(".agents/"))
-          return ["agents"];
-        if (path === "CLAUDE.md" || path.startsWith(".claude/"))
-          return ["claude"];
-        if (path.startsWith(".cursor/")) return ["cursor"];
-        if (path.startsWith(".github/")) return ["copilot"];
-        return [];
+        const key = instructionRootKey(path);
+        return key ? [key] : [];
       }),
   );
   if (instructionRoots.size > 1)
@@ -2639,7 +2650,7 @@ export async function doctorProject(
 function adapterForKnownPath(path: string): AdapterName | null {
   if (path === "CLAUDE.md" || path.startsWith(".claude/")) return "claude";
   if (path.startsWith(".cursor/")) return "cursor";
-  if (path.startsWith(".github/")) return "copilot";
+  if (copilotInstructionPath(path)) return "copilot";
   if (path.startsWith(".agents/")) return "codex";
   return null;
 }
@@ -2651,8 +2662,7 @@ function instructionPath(path: string): boolean {
     path.startsWith(".claude/") ||
     path.startsWith(".agents/") ||
     path.startsWith(".cursor/") ||
-    path === ".github/copilot-instructions.md" ||
-    /^\.github\/instructions\/.+\.instructions\.md$/u.test(path)
+    copilotInstructionPath(path)
   );
 }
 
