@@ -218,7 +218,9 @@ export function AdoptionPreviewPage({
         {renderAdoptionDecisionSummary({
           decisionsPrepared,
           changesApplied: 0,
-        }).replace("\n", " · ")}
+        })
+          .split("\n")
+          .join(" · ")}
       </p>
       {status === "empty" ? (
         <EmptyState
