@@ -1,4 +1,4 @@
-import type { AdapterName } from "@intentloom/adapters";
+import type { AdapterName } from "@intentloom/core";
 
 const inspectionAdapterNames: readonly AdapterName[] = [
   "claude",
