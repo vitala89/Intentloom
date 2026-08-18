@@ -81,7 +81,7 @@ function rawRequest(
 
 function daemonEndpoint(directory: string): string {
   return process.platform === "win32"
-    ? `\\\\.\\pipe\\intentloom-adoption-decisions-${process.pid}-${randomUUID()}`
+    ? `\\\\.\\pipe\\il-ad-d-${process.pid}-${randomUUID()}`
     : join(directory, "daemon.sock");
 }
 
@@ -98,14 +98,10 @@ const tree = {
 
 describe("existing-project adoption decision daemon RPC", () => {
   it("validates keep-project-owned without mutating the project", async () => {
-    const projectRoot = await mkdtemp(
-      join(tmpdir(), "intentloom-adoption-decisions-root-"),
-    );
+    const projectRoot = await mkdtemp(join(tmpdir(), "il-ad-d-root-"));
     await writeTree(projectRoot, tree);
     const before = await digestTree(projectRoot);
-    const directory = await mkdtemp(
-      join(tmpdir(), "intentloom-adoption-decisions-endpoint-"),
-    );
+    const directory = await mkdtemp(join(tmpdir(), "il-ad-d-ep-"));
     const token = "a".repeat(32);
     const daemon = await startLocalDaemon({
       endpoint: daemonEndpoint(directory),
@@ -146,9 +142,7 @@ describe("existing-project adoption decision daemon RPC", () => {
   });
 
   it("fails closed when the decisions capability is not enabled", async () => {
-    const directory = await mkdtemp(
-      join(tmpdir(), "intentloom-adoption-decisions-unsupported-"),
-    );
+    const directory = await mkdtemp(join(tmpdir(), "il-ad-d-un-"));
     const token = "b".repeat(32);
     const daemon = await startLocalDaemon({
       endpoint: daemonEndpoint(directory),
