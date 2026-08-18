@@ -1,0 +1,19 @@
+---
+description: Score work against AGENT_TASK_TRIAGE_POLICY before editing
+alwaysApply: true
+---
+
+# Task triage
+
+Before planning or editing, print the verdict from
+`docs/governance/AGENT_TASK_TRIAGE_POLICY.md`: per-axis scores (0–2), total,
+harness **Cursor**, recommended model role (cheapest / mid / frontier),
+effort, subagents, budget, and stop condition.
+
+Do not copy the routing table into this file or into other Cursor rules.
+
+Do not spawn subagents unless the user asked. Cursor does not let the agent
+switch the session model; recommend the role and continue.
+
+Skip only for questions about this conversation or an unchanged-scope
+continuation already triaged in this chat.
