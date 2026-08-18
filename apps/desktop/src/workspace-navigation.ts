@@ -13,6 +13,7 @@ export type WorkspaceTimelineStatus = WorkspaceInspectStatus | "empty";
 export type WorkspaceView =
   | "Overview"
   | "Open existing project"
+  | "Adoption preview"
   | "Feature intent"
   | "Bounded execution"
   | "Continuous loop"
@@ -27,6 +28,7 @@ export type WorkspaceView =
 export const workspaceViews: Array<{ label: WorkspaceView; icon: string }> = [
   { label: "Overview", icon: "◈" },
   { label: "Open existing project", icon: "⌂" },
+  { label: "Adoption preview", icon: "▤" },
   { label: "Feature intent", icon: "◎" },
   { label: "Bounded execution", icon: "▷" },
   { label: "Continuous loop", icon: "↻" },

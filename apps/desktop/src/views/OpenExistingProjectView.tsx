@@ -34,6 +34,7 @@ interface ExistingProjectWorkspaceState {
 export interface OpenExistingProjectViewProps {
   readonly root: string | null;
   readonly onSelectProject: () => void;
+  readonly onOpenAdoptionPreview: () => void;
 }
 
 function parseExistingProjectViewmodel(
@@ -81,6 +82,7 @@ const scopeOptions: readonly ExistingProjectScanScope[] = [
 export function OpenExistingProjectView({
   root,
   onSelectProject,
+  onOpenAdoptionPreview,
 }: OpenExistingProjectViewProps) {
   const [surfaceState, setSurfaceState] =
     useState<ExistingProjectClientSurfaceState>("empty");
@@ -176,6 +178,9 @@ export function OpenExistingProjectView({
             {surfaceState === "loading"
               ? "Running assessment…"
               : "Run assessment"}
+          </Button>
+          <Button onClick={onOpenAdoptionPreview} variant="secondary">
+            Review Intentloom setup
           </Button>
         </div>
       </Card>

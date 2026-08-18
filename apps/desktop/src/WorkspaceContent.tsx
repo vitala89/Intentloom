@@ -16,6 +16,7 @@ import { InspectView } from "./views/InspectView.js";
 import { NewProjectView } from "./views/NewProjectView.js";
 import { FoundationWorkshopView } from "./views/FoundationWorkshopView.js";
 import { OpenExistingProjectView } from "./views/OpenExistingProjectView.js";
+import { AdoptionPreviewPage } from "./views/AdoptionPreviewPage.js";
 import { FeatureIntentView } from "./views/FeatureIntentView.js";
 import { BoundedExecutionView } from "./views/BoundedExecutionView.js";
 import { ContinuousLoopView } from "./views/ContinuousLoopView.js";
@@ -64,6 +65,7 @@ export interface WorkspaceContentProps {
   ) => void;
   readonly onLoadDiff: () => void;
   readonly onLoadTimeline: () => void;
+  readonly onOpenAdoptionPreview: () => void;
   readonly onThemeToggle: (theme: "dark" | "light") => void;
 }
 
@@ -101,6 +103,7 @@ export function WorkspaceContent({
   onRequestProjectSelect,
   onLoadDiff,
   onLoadTimeline,
+  onOpenAdoptionPreview,
   onThemeToggle,
 }: WorkspaceContentProps) {
   if (activeView === "New project") {
@@ -110,6 +113,16 @@ export function WorkspaceContent({
   if (activeView === "Open existing project") {
     return (
       <OpenExistingProjectView
+        onOpenAdoptionPreview={onOpenAdoptionPreview}
+        onSelectProject={() => onRequestProjectSelect()}
+        root={root}
+      />
+    );
+  }
+
+  if (activeView === "Adoption preview") {
+    return (
+      <AdoptionPreviewPage
         onSelectProject={() => onRequestProjectSelect()}
         root={root}
       />
@@ -153,6 +166,7 @@ export function WorkspaceContent({
         errorMessage={inspectError}
         onConnect={onConnectDaemon}
         onSelectProject={() => onRequestProjectSelect()}
+        onOpenAdoptionPreview={onOpenAdoptionPreview}
         result={inspect}
         root={root}
         status={inspectStatus}
@@ -239,6 +253,7 @@ export function WorkspaceContent({
         message={message}
         onConnectDaemon={onConnectDaemon}
         onRequestProjectSelect={onRequestProjectSelect}
+        onOpenAdoptionPreview={onOpenAdoptionPreview}
         retryCount={retryCount}
         root={root}
       />
