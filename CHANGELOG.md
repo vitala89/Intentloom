@@ -9,6 +9,9 @@ are not included in the current npm artifact until a later release.
 
 ### Added
 
+- Added the first Desktop Existing-Project Adoption shared contract:
+  read-only `intentloom.existing-project.adoption.plan.v1`, reusing
+  `adoptProject({ dryRun: true })`. No apply, no wizard UI.
 - Recorded the first real Vii post-adoption development dogfood cycle
   (`docs/releases/dogfooding/2026-08-18-vii-first-development-cycle.md`).
   Documentation only; no runtime or CLI change.

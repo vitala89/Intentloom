@@ -3,6 +3,8 @@ import { parseFoundationScaffoldDaemonRequest } from "./foundation-scaffold-daem
 import type { FoundationScaffoldDaemonRequest } from "./foundation-scaffold-daemon-rpc.js";
 import { parseExistingProjectDaemonRequest } from "./existing-project-daemon-rpc.js";
 import type { ExistingProjectWorkspacePrepareRequest } from "./existing-project-daemon-rpc.js";
+import { parseExistingProjectAdoptionPlanRequest } from "./adoption-plan-daemon-rpc.js";
+import type { ExistingProjectAdoptionPlanRequest } from "./adoption-plan-daemon-rpc.js";
 import { parseFeatureIntentDaemonRequest } from "./feature-intent-daemon-rpc.js";
 import type { FeatureIntentDaemonRequest } from "./feature-intent-daemon-rpc.js";
 import { parseBoundedExecutionDaemonRequest } from "./bounded-execution-daemon-rpc.js";
@@ -12,6 +14,7 @@ import type { ContinuousLoopDaemonRequest } from "./continuous-loop-daemon-rpc.j
 
 export type WorkspaceSliceDaemonRequest =
   | ExistingProjectWorkspacePrepareRequest
+  | ExistingProjectAdoptionPlanRequest
   | FeatureIntentDaemonRequest
   | BoundedExecutionDaemonRequest
   | ContinuousLoopDaemonRequest
@@ -24,6 +27,7 @@ export function parseWorkspaceSliceDaemonRequest(
 ): WorkspaceSliceDaemonRequest | null {
   return (
     parseExistingProjectDaemonRequest(method, params, id) ??
+    parseExistingProjectAdoptionPlanRequest(method, params, id) ??
     parseFeatureIntentDaemonRequest(method, params, id) ??
     parseBoundedExecutionDaemonRequest(method, params, id) ??
     parseContinuousLoopDaemonRequest(method, params, id) ??

@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Cursor session-start and git/PR rules** on `docs/cursor-session-start-and-git-rules` from `origin/main` @ `4a21a76`.
+Status: **Desktop existing-project adoption contracts** on `feat/desktop-adoption-contracts` from `origin/main` @ `dd950d0`.
 
-Active branch: `docs/cursor-session-start-and-git-rules`
+Active branch: `feat/desktop-adoption-contracts`
 
-Current objective: Version always-apply Cursor rules so new sessions read canon files, triage, and ship on a dedicated branch with no tool attribution. Move the local-only Duty Watch merge record off `main`.
+Current objective: Land the first read-only shared contract for existing-project adoption preview (`intentloom.existing-project.adoption.plan.v1`). No wizard UI and no Approved Apply.
 
-Next first action: Review and merge https://github.com/vitala89/Intentloom/pull/336. Do not commit on local `main`.
+Next first action: Review and merge this branch's pull request after CI is green. Next product slice is Desktop read-only preview UI, not apply.
 
 Known open items, in the order they should be handled:
 
@@ -95,6 +95,52 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-18, Desktop existing-project adoption plan contract
+
+- **Status:** complete on branch; PR to open.
+- **Branch:** `feat/desktop-adoption-contracts` from `origin/main` @ `dd950d0`
+- **Pull request:** pending
+- **Objective:** First Desktop Existing-Project Adoption implementation slice:
+  a shared read-only adoption-preview contract, not a wizard and not apply.
+- **Completed:**
+  - Inventory: application `inspectProject`, `adoptProject` (dry-run),
+    `planProjectAdoption`, `doctorProject`, `diffProject` already exist.
+    Protocol/daemon already expose inspect, doctor, diff, and W9 workspace
+    prepare (adoption _summary_ only). Missing was a typed full preview plan.
+  - Added `intentloom.existing-project.adoption.plan.v1` using the existing
+    `AdoptionProposalItem` shape from `adoptProject({ dryRun: true })`.
+  - Wired application helper, daemon handler/capability, Desktop typed client,
+    and explicit Tauri method allowlist (no apply method).
+- **Not completed:** Desktop wizard UI; ownership-resolution mutations;
+  Approved Apply; transactional apply; Vii checkout changes.
+- **Files or packages changed:** protocol adoption-plan modules, application
+  helper, daemon existing-project handlers and `bin.ts`, Desktop client
+  facade, `method_allowlist.rs`, tests, Duty Watch / project state / plan /
+  capability matrix / changelog.
+- **Validation:** focused vitest suites; `pnpm typecheck`; `pnpm lint`;
+  Prettier; `cargo test method_allowlist`; byte-for-byte memory and disk
+  snapshots in the new tests.
+- **Decisions and assumptions:** Reuse `adoptProject` dry-run items rather than
+  inventing a Desktop DTO or exposing `applyProjectAdoption`. W9 workspace
+  prepare remains the composed summary; this RPC is the structured plan.
+- **Risks or compatibility impact:** daemon-facing project scan. Mitigated by
+  read-only classification, `dryRun: true`, root containment, explicit
+  allowlist, and fail-closed unsupported capability.
+- **Open issues or blockers:** none for this slice.
+- **Next first action:** Open the pull request, confirm no tool attribution,
+  wait for CI, merge if green. Next slice is plan section C (Desktop preview UI).
+- **Evidence:** `tests/existing-project-adoption-plan.test.ts`,
+  `tests/daemon-adoption-plan.test.ts`.
+
+#### Duty completion checklist
+
+- [x] Focused tests passed
+- [x] `git diff --check` pending before commit
+- [x] Atomic commits via `git commit-tree` (no attribution trailers)
+- [ ] Pull request opened without tool or agent credit
+- [x] `DUTY_WATCH.md` / `PROJECT_STATE.md` updated
+- [x] Changelog updated for unreleased runtime contract
 
 ### 2026-08-18, Cursor session-start rules and local main commit
 

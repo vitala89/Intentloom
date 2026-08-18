@@ -2,6 +2,7 @@ import { foundationScaffoldDesktopMethods } from "./desktop-client-foundation-sc
 import { featureIntentDesktopMethods } from "./desktop-client-feature-intent.js";
 import { boundedExecutionDesktopMethods } from "./desktop-client-bounded-execution.js";
 import { continuousLoopDesktopMethods } from "./desktop-client-continuous-loop.js";
+import { existingProjectAdoptionPlanDesktopMethods } from "./desktop-client-adoption-plan.js";
 
 interface DesktopClientBase {
   foundationRequest(
@@ -21,5 +22,6 @@ export function composeDesktopClient<TBase extends DesktopClientBase>(
     ...featureIntentDesktopMethods(foundationRequest),
     ...boundedExecutionDesktopMethods(foundationRequest),
     ...continuousLoopDesktopMethods(foundationRequest),
+    ...existingProjectAdoptionPlanDesktopMethods(foundationRequest),
   };
 }

@@ -30,6 +30,7 @@ import {
   FOUNDATION_SCAFFOLD_APPLY_METHOD,
   FOUNDATION_SCAFFOLD_ROLLBACK_METHOD,
   EXISTING_PROJECT_WORKSPACE_PREPARE_METHOD,
+  EXISTING_PROJECT_ADOPTION_PLAN_METHOD,
   FEATURE_INTENT_WORKSPACE_PREPARE_METHOD,
   FEATURE_INTENT_WORKSPACE_ANALYZE_METHOD,
   BOUNDED_EXECUTION_WORKSPACE_PREPARE_METHOD,
@@ -148,6 +149,8 @@ export * from "./foundation-scaffold.js";
 export * from "./foundation-scaffold-daemon-rpc.js";
 export * from "./existing-project-workspace.js";
 export * from "./existing-project-daemon-rpc.js";
+export * from "./adoption-plan.js";
+export * from "./adoption-plan-daemon-rpc.js";
 export * from "./feature-intent-workspace.js";
 export * from "./feature-intent-daemon-rpc.js";
 export * from "./bounded-execution-workspace.js";
@@ -189,6 +192,7 @@ export const WORKSPACE_DAEMON_REQUEST_METHODS = [
   FOUNDATION_SCAFFOLD_APPLY_METHOD,
   FOUNDATION_SCAFFOLD_ROLLBACK_METHOD,
   EXISTING_PROJECT_WORKSPACE_PREPARE_METHOD,
+  EXISTING_PROJECT_ADOPTION_PLAN_METHOD,
   FEATURE_INTENT_WORKSPACE_PREPARE_METHOD,
   FEATURE_INTENT_WORKSPACE_ANALYZE_METHOD,
   BOUNDED_EXECUTION_WORKSPACE_PREPARE_METHOD,
