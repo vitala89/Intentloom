@@ -15,7 +15,7 @@ Active branch: `docs/cursor-session-start-and-git-rules`
 
 Current objective: Version always-apply Cursor rules so new sessions read canon files, triage, and ship on a dedicated branch with no tool attribution. Move the local-only Duty Watch merge record off `main`.
 
-Next first action: Review and merge this branch's pull request. Do not commit on local `main`.
+Next first action: Review and merge https://github.com/vitala89/Intentloom/pull/336. Do not commit on local `main`.
 
 Known open items, in the order they should be handled:
 
@@ -98,9 +98,9 @@ entry directly below this section.
 
 ### 2026-08-18, Cursor session-start rules and local main commit
 
-- **Status:** complete on branch; PR to open.
+- **Status:** complete on branch; PR open.
 - **Branch:** `docs/cursor-session-start-and-git-rules` from `origin/main` @ `4a21a76`
-- **Pull request:** pending
+- **Pull request:** https://github.com/vitala89/Intentloom/pull/336
 - **Objective:** Make Cursor always-apply rules point at existing canon so new
   sessions read required files, print triage, and never commit on `main` or
   add tool attribution; land the leftover local Duty Watch merge record.
@@ -128,8 +128,7 @@ entry directly below this section.
   only. Additional `.cursor/rules/*.mdc` files are the existing Cursor
   instruction-root family, not a new adapter.
 - **Open issues or blockers:** none for this docs change.
-- **Next first action:** Open the pull request, confirm the body has no
-  `Made with` footer, wait for CI, merge if green.
+- **Next first action:** Review and merge https://github.com/vitala89/Intentloom/pull/336. Confirm CI is green and the PR body has no tool footer.
 - **Evidence:** `git status` showed `main...origin/main [ahead 1]` before the
   branch move; PR #335 squash-merge is `4a21a76` on `origin/main`.
 
@@ -138,7 +137,7 @@ entry directly below this section.
 - [x] Markdown format check on touched docs
 - [x] `git diff --check` passed
 - [x] Atomic commits via `git commit-tree` (no attribution trailers)
-- [ ] Pull request opened without tool or agent credit
+- [x] Pull request opened without tool or agent credit
 - [x] `DUTY_WATCH.md` handoff completed
 - [ ] Related changelog not required (not user-visible product behavior)
 
