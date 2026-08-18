@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Matt Pocock grilling decision gate** on `docs/matt-pocock-grilling-skills` from `origin/main` @ `f98122a`.
+Status: **Desktop read-only adoption preview UI** on `feat/desktop-adoption-preview` from `origin/main`.
 
-Active branch: `docs/matt-pocock-grilling-skills`
+Active branch: `feat/desktop-adoption-preview`
 
-Current objective: Vendor the Matt Pocock skill pack, review which skills to auto-activate, and wire `grilling` into session-start rules without forking catalog canon.
+Current objective: Implement Slice C, the Desktop read-only adoption preview surface over the existing typed adoption-plan contract.
 
-Next first action: Review and merge this branch's pull request after CI is green.
+Next first action: After this PR is green and merged, start mapping/conflict decision modeling for adoption. Do not implement mutation until prepared-plan / approval / staleness / digest prerequisites are satisfied.
 
 Known open items, in the order they should be handled:
 
@@ -95,6 +95,41 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-18, Desktop read-only adoption preview UI
+
+- **Status:** complete on branch; PR pending.
+- **Agent/tool:** Cursor
+- **Branch:** `feat/desktop-adoption-preview`
+- **Commits:** pending
+- **Pull request:** pending
+- **Objective:** Add a Desktop workspace surface that loads and renders the existing read-only `existingProjectAdoptionPlan` result without Apply, mapping persistence, or project mutation.
+- **Completed:**
+  - Adoption Preview workspace view, command-palette navigation, and "Review Intentloom setup" entry from Overview, Inspect, and Open existing project.
+  - Grouped presentation of metadata creates, generated guidance, preserved files, skips, manual decisions, diagnostics, and safe next actions from the typed viewmodel only.
+  - Focused Desktop tests for grouping, accessible copy, loading/empty/error states, typed-client method allowlist, and retry-without-mutation.
+- **Not completed:** mapping resolution UI, Approved Apply, transactional adoption writes, adoption wizard completion.
+- **Files or packages changed:** `apps/desktop` views and navigation, `tests/desktop-adoption-preview.test.ts`, changelog, project state, adoption roadmap, Duty Watch.
+- **Validation:** focused `pnpm exec vitest run tests/desktop-adoption-preview.test.ts` (10 passed); `pnpm verify` (1494 passed, 3 skipped); `git diff --check`.
+- **Decisions and assumptions:** Reused existing Desktop view/state patterns. Manual decisions are notices, not fake replace/keep controls. Diagnostics stay untyped strings from the contract (no invented severity). `App.tsx` remains oversized (583 lines); this slice only added one navigation callback and does not expand that file further.
+- **Risks or compatibility impact:** Renderer still cannot call an apply method; Tauri allowlist still denies `adoption.apply.v1`.
+- **Open issues or blockers:** none for this slice.
+- **Next first action:** Mapping/conflict decision modeling for adoption, without mutation until security prerequisites exist.
+- **Evidence:** `apps/desktop/src/views/AdoptionPreviewPage.tsx`, `tests/desktop-adoption-preview.test.ts`.
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant tests, type checks, builds, or compatibility checks passed
+      (`pnpm verify`: 1494 passed, 3 skipped)
+- [ ] Atomic commit policy and commit-message checks passed
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `PROJECT_STATE.md` updated when applicable
+- [x] `DUTY_WATCH.md` handoff completed
+- [x] Related roadmap, ADR, changelog, migration, or reference docs updated
+- [x] Failed or unavailable checks recorded
 
 ### 2026-08-18, Matt Pocock grilling decision gate
 

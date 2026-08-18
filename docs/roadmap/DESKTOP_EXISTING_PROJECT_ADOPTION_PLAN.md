@@ -393,7 +393,10 @@ No generic command execution.
 
 ### C. Desktop read-only adoption preview
 
-Add project status, proposed changes, mappings, conflicts, and safe next actions.
+Implemented for **read-only preview UI** on Desktop. The existing typed client
+`existingProjectAdoptionPlan` now has a workspace surface: project summary,
+grouped plan items, manual-decision notices, diagnostics, and safe next
+actions. No Apply, mapping persistence, or project mutation.
 
 Still no mutation.
 

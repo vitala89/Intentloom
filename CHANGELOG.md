@@ -14,6 +14,9 @@ are not included in the current npm artifact until a later release.
   on as the decision gate for new design and ambiguous work on this
   repository. See `docs/governance/MATT_POCOCK_SKILLS_ADOPTION.md`.
   Documentation and agent-adapter copies only; no runtime or CLI change.
+- Added a Desktop read-only existing-project adoption preview UI that renders
+  the typed `existingProjectAdoptionPlan` result. No Apply, mapping save, or
+  project mutation.
 - Added the first Desktop Existing-Project Adoption shared contract:
   read-only `intentloom.existing-project.adoption.plan.v1`, reusing
   `adoptProject({ dryRun: true })`. No apply, no wizard UI.

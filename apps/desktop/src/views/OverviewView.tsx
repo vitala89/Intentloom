@@ -19,6 +19,7 @@ export interface OverviewViewProps {
   daemonInfo: DaemonInfoResult | null;
   onConnectDaemon: () => void;
   onRequestProjectSelect: (triggerEl?: HTMLButtonElement | null) => void;
+  onOpenAdoptionPreview: () => void;
 }
 
 export function OverviewView({
@@ -32,6 +33,7 @@ export function OverviewView({
   daemonInfo,
   onConnectDaemon,
   onRequestProjectSelect,
+  onOpenAdoptionPreview,
 }: OverviewViewProps) {
   const doctorErrors =
     doctor?.findings.filter((finding) => finding.severity === "error").length ??
@@ -103,6 +105,11 @@ export function OverviewView({
           >
             Select local project →
           </Button>
+          {root ? (
+            <Button variant="secondary" onClick={onOpenAdoptionPreview}>
+              Review Intentloom setup
+            </Button>
+          ) : null}
         </div>
         <div className="loop-illustration" aria-hidden="true">
           <span />

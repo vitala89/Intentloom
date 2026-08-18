@@ -566,6 +566,7 @@ export default function App() {
             onRequestProjectSelect={requestProjectSelect}
             onLoadDiff={() => void loadDiff()}
             onLoadTimeline={() => void loadTimeline()}
+            onOpenAdoptionPreview={() => setActiveView("Adoption preview")}
             onThemeToggle={setTheme}
           />
         </div>

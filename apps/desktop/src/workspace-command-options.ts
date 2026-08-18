@@ -42,6 +42,14 @@ export function buildWorkspaceCommandOptions(
       action: () => deps.setActiveView("Open existing project"),
     },
     {
+      id: "nav-adoption-preview",
+      category: "Navigation",
+      label: "Go to Adoption preview",
+      icon: "▤",
+      shortcut: "",
+      action: () => deps.setActiveView("Adoption preview"),
+    },
+    {
       id: "nav-feature-intent",
       category: "Navigation",
       label: "Go to Feature intent",

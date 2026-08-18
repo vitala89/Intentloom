@@ -21,6 +21,7 @@ export interface InspectViewProps {
   status: InspectStatus;
   errorMessage: string | null;
   onSelectProject: () => void;
+  onOpenAdoptionPreview: () => void;
   onConnect: () => void;
 }
 
@@ -30,6 +31,7 @@ export function InspectView({
   status,
   errorMessage,
   onSelectProject,
+  onOpenAdoptionPreview,
   onConnect,
 }: InspectViewProps) {
   if (status === "ready" && result) {
@@ -80,6 +82,9 @@ export function InspectView({
             Profile, adapter, and configuration details will appear when the
             corresponding typed contract is exposed by the platform.
           </p>
+          <Button variant="secondary" onClick={onOpenAdoptionPreview}>
+            Review Intentloom setup
+          </Button>
         </Card>
       </section>
     );
