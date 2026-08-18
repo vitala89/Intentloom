@@ -204,8 +204,10 @@ before a new release or implementation milestone is declared complete.
   [`2026-08-17-vii-nx-existing-project.md`](docs/releases/dogfooding/2026-08-17-vii-nx-existing-project.md).
 - First real Vii post-adoption development cycle is recorded: kas-labs/vii
   PR #76 (Core reference Scope-owned Computed), green consumer CI, post-merge
-  healthy doctor and empty `intentloom diff`. `instruction-files-conflicting`
-  remains an open non-blocking warning. See
+  healthy doctor and empty `intentloom diff`. The former
+  `instruction-files-conflicting` warning was a false positive caused by
+  classifying all `.github/**` paths as Copilot instruction roots; fixed on
+  branch `fix/instruction-file-taxonomy`. See
   [`2026-08-18-vii-first-development-cycle.md`](docs/releases/dogfooding/2026-08-18-vii-first-development-cycle.md).
   This does not close W9–W12 workspace retrofit dogfood or authorize Desktop
   adoption implementation.
