@@ -20,3 +20,7 @@ docs/architecture/CURRENT_SYSTEM_INVENTORY.md
 graphify-out/
 docs/.vitepress/dist/
 docs/.vitepress/cache/
+
+# Personal Claude Code checkout state. Skills live in `.claude/skills/`;
+# never commit local settings.
+.claude/settings.local.json

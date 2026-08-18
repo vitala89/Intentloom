@@ -15,6 +15,12 @@ Before implementation:
    specifications, ADRs, roadmaps, code, tests, and Git history.
 6. Identify the current milestone, requested outcome, affected boundaries,
    risks, required validation, and applicable domain guidance.
+7. If the task is new design, a new feature with competing approaches,
+   architecture, or triage Ambiguity = 2, run grilling
+   (`.agents/skills/grilling/SKILL.md`) and wait for shared understanding
+   before implementation. Skip it on bounded one-reading work. Hard bugs use
+   diagnosis, not grilling. See
+   `docs/governance/MATT_POCOCK_SKILLS_ADOPTION.md`.
 
 Do not rely on the user prompt as the sole source of project context.
 

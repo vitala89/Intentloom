@@ -17,6 +17,8 @@ Do not start from the user prompt alone. Read, in order:
 8. `docs/governance/AGENT_TASK_TRIAGE_POLICY.md` (print the verdict; do not copy the table)
 9. `docs/governance/REACT_BEST_PRACTICES.md` when the task touches Desktop UI
 10. The spec, ADRs, roadmap, and code for this task
+11. Grilling, when it applies — `.cursor/rules/grilling.mdc` and
+    `.agents/skills/grilling/SKILL.md`
 
 If `PROJECT_STATE.md` or `DUTY_WATCH.md` disagrees with Git, PRs, tests, or CI,
 treat evidence as truth and correct the docs in the same task.
