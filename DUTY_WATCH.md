@@ -98,11 +98,11 @@ entry directly below this section.
 
 ### 2026-08-18, Desktop read-only adoption preview UI
 
-- **Status:** complete on branch; PR pending.
+- **Status:** complete on branch; PR open.
 - **Agent/tool:** Cursor
 - **Branch:** `feat/desktop-adoption-preview`
-- **Commits:** pending
-- **Pull request:** pending
+- **Commits:** `98b5cd6`
+- **Pull request:** https://github.com/vitala89/Intentloom/pull/339
 - **Objective:** Add a Desktop workspace surface that loads and renders the existing read-only `existingProjectAdoptionPlan` result without Apply, mapping persistence, or project mutation.
 - **Completed:**
   - Adoption Preview workspace view, command-palette navigation, and "Review Intentloom setup" entry from Overview, Inspect, and Open existing project.
