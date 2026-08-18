@@ -21,6 +21,6 @@ graphify-out/
 docs/.vitepress/dist/
 docs/.vitepress/cache/
 
-# Personal Claude Code checkout state. Skills for this repo are versioned
-# under `.agents/skills/`, not `.claude/`.
+# Personal Claude Code checkout state. Skills live in `.claude/skills/`;
+# never commit local settings.
 .claude/settings.local.json

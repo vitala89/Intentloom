@@ -109,8 +109,8 @@ entry directly below this section.
     an adapted subset. Recorded in
     `docs/governance/MATT_POCOCK_SKILLS_ADOPTION.md`.
   - Vendored `.agents/skills/` plus `skills-lock.json` and upstream MIT
-    `LICENSE`. Did not commit `.claude/` (contains `settings.local.json`;
-    duplicate of the portable pack).
+    `LICENSE`. Also versioned `.claude/skills/` for Claude Code discovery.
+    `.claude/settings.local.json` stays gitignored.
   - Wired grilling through `AGENTS.md`, `AGENT_START_HERE.md`,
     `AI_AGENT_WORKFLOW.md`, `AGENT_TASK_TRIAGE_POLICY.md`,
     `.cursor/rules/grilling.mdc`, and session-start.
@@ -118,19 +118,20 @@ entry directly below this section.
     `ask-matt` on request. `grill-with-docs` not auto-on (wrong ADR/glossary
     paths). `implement`, `wizard`, `to-tickets`, and setup remain off.
 - **Not completed:** `setup-matt-pocock-skills`; remapping `grill-with-docs` to
-  `docs/decisions/`; copying skills into `.claude/skills`; catalog import of
-  these procedures.
-- **Files or packages changed:** `.agents/skills/`, `skills-lock.json`,
-  governance docs, Cursor rules, `AGENTS.md`, `AGENT_START_HERE.md`,
-  `.prettierignore`, `.gitignore`, changelog, project state, Duty Watch.
+  `docs/decisions/`; catalog import of these procedures.
+- **Files or packages changed:** `.agents/skills/`, `.claude/skills/`,
+  `skills-lock.json`, governance docs, Cursor rules, `AGENTS.md`,
+  `AGENT_START_HERE.md`, `.prettierignore`, `.gitignore`, changelog, project
+  state, Duty Watch.
 - **Validation:** `pnpm verify` on push (1484 tests passed, 3 skipped); `git diff --check`; staged quality checks on both commits.
 - **Decisions and assumptions:** `.agents/skills` is the portable location for
-  Cursor and Codex. Project rules override vendor text (no unsolicited
-  subagents, no `CONTEXT.md`, no auto-commit). Ambiguity = 2 uses grilling on
-  this repo; `aif-feature-discovery` remains for catalog product briefs.
-- **Risks or compatibility impact:** duplicate instruction files if Claude Code
-  also keeps a local `.claude/skills` copy; mitigated by gitignoring
-  `settings.local.json` and documenting `.agents/skills` as the versioned pack.
+  Cursor and Codex; `.claude/skills` is the Claude Code discovery copy.
+  Project rules override vendor text (no unsolicited subagents, no
+  `CONTEXT.md`, no auto-commit). Ambiguity = 2 uses grilling on this repo;
+  `aif-feature-discovery` remains for catalog product briefs.
+- **Risks or compatibility impact:** `.claude/skills/*` are relative symlinks
+  into `.agents/skills/`, so they cannot drift. `settings.local.json` stays
+  untracked.
   Intentloom adopt/generate must not silently overwrite these project-owned
   files (existing non-destructive adoption rule).
 - **Open issues or blockers:** none for this slice.

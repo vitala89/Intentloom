@@ -1,7 +1,9 @@
 # Matt Pocock skills adoption
 
 This record is the `aif-extension-review` for the vendored copy of
-[mattpocock/skills](https://github.com/mattpocock/skills) in `.agents/skills/`.
+[mattpocock/skills](https://github.com/mattpocock/skills) in `.agents/skills/`
+(Cursor/Codex) and `.claude/skills/` (Claude Code). `.claude/skills/<name>`
+are relative symlinks into `.agents/skills/`, not a second copy.
 It is project-owned engineering guidance for agents working **on Intentloom**.
 It is not catalog canon, not generated adapter output, and not a product
 runtime.
@@ -14,7 +16,7 @@ runtime.
 | ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Source           | GitHub `mattpocock/skills`                                                                                                                                                                                                  |
 | Integrity        | SHA-256 pins in `skills-lock.json`                                                                                                                                                                                          |
-| License          | MIT (notice in `.agents/skills/LICENSE`)                                                                                                                                                                                    |
+| License          | MIT (notice in `.agents/skills/LICENSE` and `.claude/skills/LICENSE`)                                                                                                                                                       |
 | Capability delta | Skills are markdown procedures. Several instruct commits, issue writes, `.env` / GitHub secret writes, background agents, or subagents. None of that overrides `AGENTS.md`.                                                 |
 | Conflicts        | `grill-with-docs` / `domain-modeling` assume `CONTEXT.md` and `docs/adr/`. This repo uses `AGENTS.md`, `docs/decisions/`, and `AGENT_START_HERE.md`. `implement` auto-commits. Cursor triage forbids unsolicited subagents. |
 | Residual risk    | Vendor text can still pull an inattentive agent off project workflow. Mitigated by this file, `.cursor/rules/grilling.mdc`, and the authority order in ADR-0051.                                                            |

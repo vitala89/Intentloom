@@ -9,11 +9,11 @@ are not included in the current npm artifact until a later release.
 
 ### Added
 
-- Vendored the Matt Pocock agent-skill pack under `.agents/skills/` (MIT,
-  pinned by `skills-lock.json`) and turned `grilling` on as the decision gate
-  for new design and ambiguous work on this repository. See
-  `docs/governance/MATT_POCOCK_SKILLS_ADOPTION.md`. Documentation and Cursor
-  rules only; no runtime or CLI change.
+- Vendored the Matt Pocock agent-skill pack under `.agents/skills/` and
+  `.claude/skills/` (MIT, pinned by `skills-lock.json`) and turned `grilling`
+  on as the decision gate for new design and ambiguous work on this
+  repository. See `docs/governance/MATT_POCOCK_SKILLS_ADOPTION.md`.
+  Documentation and agent-adapter copies only; no runtime or CLI change.
 - Added the first Desktop Existing-Project Adoption shared contract:
   read-only `intentloom.existing-project.adoption.plan.v1`, reusing
   `adoptProject({ dryRun: true })`. No apply, no wizard UI.

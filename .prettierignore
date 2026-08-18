@@ -11,3 +11,4 @@ artifacts
 
 # Vendored third-party agent skills (upstream markdown/yaml, not our formatter).
 .agents/skills/
+.claude/skills/

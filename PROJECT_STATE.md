@@ -170,7 +170,8 @@ and real consumers justify them.
   or runtime dependency is bundled. Structured routing and managed external-skill
   import contracts are merged through PR #213; optional provider bridges remain
   deferred. A separate, project-owned copy of Matt Pocock engineering skills
-  now lives in `.agents/skills/` (not catalog, not generated adapters).
+  now lives in `.agents/skills/` and `.claude/skills/` (not catalog, not
+  generated adapters).
   `grilling` is the on-repo decision gate; activation policy is
   [`MATT_POCOCK_SKILLS_ADOPTION.md`](docs/governance/MATT_POCOCK_SKILLS_ADOPTION.md).
 - ADR-0052 accepts a first-party provider-neutral Agentic Evaluation and
