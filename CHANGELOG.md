@@ -9,6 +9,9 @@ are not included in the current npm artifact until a later release.
 
 ### Added
 
+- Recorded the first real Vii post-adoption development dogfood cycle
+  (`docs/releases/dogfooding/2026-08-18-vii-first-development-cycle.md`).
+  Documentation only; no runtime or CLI change.
 - Added Phase E7 Knowledge-Provider & Adapter-Pack Boundaries
   (`queryKnowledgeProvider`, `validateKnowledgeProviderQuery`,
   `validateKnowledgeProviderQueryResult`, `verifyKnowledgeProviderCapability`, and

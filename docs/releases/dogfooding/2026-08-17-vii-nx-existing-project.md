@@ -49,6 +49,8 @@ source-map and manifest-lock JSON semantically.
 
 ## Maintainer follow-up
 
-Re-run inspect and adopt dry-run against Vii after this change lands. Do not
-apply writes until the proposal is reviewed. See the pull request for the
-exact commands.
+The inspect/adopt Core defects in this record were merged through Intentloom
+PRs #320, #321, and #322. Adoption and the first post-adoption development
+cycle are recorded separately in
+[2026-08-18-vii-first-development-cycle.md](2026-08-18-vii-first-development-cycle.md).
+That later record does not reopen these Core defects.

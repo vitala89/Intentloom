@@ -68,6 +68,12 @@ The Vii dogfooding exercise proved that this flow is valuable because onboarding
 
 It also exposed bugs that were fixed in Core before Desktop adoption is attempted, including Nx/profile confusion, `.nx/cache` scan noise, over-broad documentation ambiguity, and formatting-sensitive generated JSON drift.
 
+A later CLI-only record,
+[2026-08-18-vii-first-development-cycle.md](../releases/dogfooding/2026-08-18-vii-first-development-cycle.md),
+shows one real post-adoption development cycle on Vii with healthy doctor and
+empty diff. That evidence informs this plan. It does not implement Desktop
+adoption or close this follow-up.
+
 ## User journey
 
 ### 1. Open Existing Project
