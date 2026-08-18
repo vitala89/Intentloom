@@ -98,9 +98,9 @@ entry directly below this section.
 
 ### 2026-08-18, instruction-file taxonomy false positive
 
-- **Status:** complete on branch; PR to open.
+- **Status:** complete; merged.
 - **Branch:** `fix/instruction-file-taxonomy` from `origin/main` @ `2ab3b57`
-- **Pull request:** pending
+- **Pull request:** https://github.com/vitala89/Intentloom/pull/335 (squash-merged)
 - **Objective:** Fix false `instruction-files-conflicting` doctor warning when
   repositories contain GitHub governance files alongside agent instruction roots.
 - **Completed:**
@@ -124,9 +124,9 @@ entry directly below this section.
   fail-closed.
 - **Risks or compatibility impact:** low; classification-only change.
 - **Open issues or blockers:** none for this fix.
-- **Next first action:** Open PR, wait for CI, merge if green.
+- **Next first action:** none; follow-up is optional Vii second-task dogfood.
 - **Evidence:** Vii dogfood records; doctor output before/after on
-  `/Users/eugenekasap/WebstormProjects/vii`.
+  `/Users/eugenekasap/WebstormProjects/vii`; merge `4a21a76`.
 
 #### Duty completion checklist
 
