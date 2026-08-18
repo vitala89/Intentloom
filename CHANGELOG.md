@@ -7,9 +7,10 @@ All notable changes are documented here. This project follows Keep a Changelog p
 Changes listed here are merged after the current release-preparation scope and
 are not included in the current npm artifact until a later release.
 
-### Added
-
-- Vendored the Matt Pocock agent-skill pack under `.agents/skills/` and
+- Added Desktop adoption decision modeling: supported mapping choices for
+  manual adoption items are validated read-only through
+  `intentloom.existing-project.adoption.decisions.v1`. No Apply, mapping
+  persistence, or project mutation.
   `.claude/skills/` (MIT, pinned by `skills-lock.json`) and turned `grilling`
   on as the decision gate for new design and ambiguous work on this
   repository. See `docs/governance/MATT_POCOCK_SKILLS_ADOPTION.md`.

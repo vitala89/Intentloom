@@ -1,5 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
-import type { ExistingProjectAdoptionPlanViewModel } from "@intentloom/protocol";
+import {
+  supportedAdoptionDecisionKinds,
+  type AdoptionDecisionKind,
+  type ExistingProjectAdoptionDecisionViewModel,
+  type ExistingProjectAdoptionPlanViewModel,
+} from "@intentloom/protocol";
 import { Button } from "../design/components/core/Button.js";
 import { EmptyState } from "../design/components/states/EmptyState.js";
 import { StatusChip } from "../design/components/status/StatusChip.js";
@@ -9,10 +14,17 @@ import {
   type AdoptionPreviewSurfaceState,
 } from "./adoption-preview-controller.js";
 import {
+  clearStaleAdoptionDecisions,
+  validateAdoptionDecisions,
+} from "./adoption-decision-controller.js";
+import { renderAdoptionDecisionSummary } from "./adoption-decision-presentation.js";
+import {
   adoptionPreviewHasManualDecisions,
   groupAdoptionPlanItems,
 } from "./adoption-preview-grouping.js";
+import { ADOPTION_PREVIEW_STATUS_COPY } from "./adoption-preview-status-copy.js";
 import { AdoptionDecisionNotice } from "./AdoptionDecisionNotice.js";
+import { AdoptionDecisionPanel } from "./AdoptionDecisionPanel.js";
 import { AdoptionDiagnostics } from "./AdoptionDiagnostics.js";
 import { AdoptionPlanGroup } from "./AdoptionPlanGroup.js";
 import { AdoptionProjectSummary } from "./AdoptionProjectSummary.js";
@@ -21,48 +33,6 @@ export interface AdoptionPreviewPageProps {
   readonly root: string | null;
   readonly onSelectProject: () => void;
 }
-
-const STATUS_COPY: Record<
-  Exclude<AdoptionPreviewSurfaceState, "ready" | "loading" | "empty">,
-  { title: string; description: string; action: string }
-> = {
-  idle: {
-    title: "Select a project",
-    description:
-      "Choose a local project root before requesting a read-only adoption preview.",
-    action: "Select local project",
-  },
-  stale: {
-    title: "Project root changed",
-    description:
-      "The preview no longer matches the selected canonical root. Load it again.",
-    action: "Retry preview",
-  },
-  unsupported: {
-    title: "Adoption preview unsupported",
-    description:
-      "This daemon cannot serve the existing-project adoption plan contract.",
-    action: "Retry preview",
-  },
-  disconnected: {
-    title: "Daemon unavailable",
-    description:
-      "The local daemon disconnected before the preview could load. Retry without changing the project.",
-    action: "Retry preview",
-  },
-  "authentication-failure": {
-    title: "Authentication failed",
-    description:
-      "The daemon rejected the preview request. Reconnect and try again. No project files were changed.",
-    action: "Retry preview",
-  },
-  error: {
-    title: "Adoption preview unavailable",
-    description:
-      "The read-only plan could not be loaded. Retry without applying changes.",
-    action: "Retry preview",
-  },
-};
 
 export function AdoptionPreviewPage({
   root,
@@ -73,9 +43,20 @@ export function AdoptionPreviewPage({
     null,
   );
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [selections, setSelections] = useState<
+    ReadonlyMap<string, AdoptionDecisionKind>
+  >(new Map());
+  const [decisionResult, setDecisionResult] =
+    useState<ExistingProjectAdoptionDecisionViewModel | null>(null);
+
+  const resetDecisions = useCallback(() => {
+    setSelections(new Map());
+    setDecisionResult(null);
+  }, []);
 
   const loadPreview = useCallback(async () => {
     setStatus("loading");
+    resetDecisions();
     const result = await loadAdoptionPreview({
       client: desktopClient,
       root,
@@ -83,14 +64,62 @@ export function AdoptionPreviewPage({
     setPlan(result.plan);
     setErrorMessage(result.errorMessage);
     setStatus(result.status);
-  }, [root]);
+  }, [resetDecisions, root]);
 
   useEffect(() => {
     void loadPreview();
   }, [loadPreview]);
 
+  useEffect(() => {
+    if (
+      clearStaleAdoptionDecisions(
+        root,
+        plan?.root ?? null,
+        plan?.previewIdentity ?? null,
+        decisionResult?.previewIdentity ?? null,
+      )
+    ) {
+      resetDecisions();
+    }
+  }, [
+    decisionResult?.previewIdentity,
+    plan?.previewIdentity,
+    plan?.root,
+    resetDecisions,
+    root,
+  ]);
+
+  const selectDecision = useCallback(
+    async (path: string, kind: AdoptionDecisionKind) => {
+      if (!plan) return;
+      const next = new Map(selections);
+      next.set(path, kind);
+      setSelections(next);
+      const validated = await validateAdoptionDecisions({
+        client: desktopClient,
+        root,
+        previewIdentity: plan.previewIdentity,
+        projectId: plan.projectId,
+        selections: next,
+      });
+      if (validated.status === "stale") {
+        resetDecisions();
+        setStatus("stale");
+        setErrorMessage(validated.errorMessage);
+        return;
+      }
+      if (validated.status === "disconnected" || validated.status === "error") {
+        setDecisionResult(null);
+        setErrorMessage(validated.errorMessage);
+        return;
+      }
+      setDecisionResult(validated.result);
+    },
+    [plan, resetDecisions, root, selections],
+  );
+
   if (status === "idle" || status === "loading" || !root) {
-    const copy = STATUS_COPY.idle;
+    const copy = ADOPTION_PREVIEW_STATUS_COPY.idle;
     return (
       <EmptyState
         description={
@@ -114,7 +143,7 @@ export function AdoptionPreviewPage({
   }
 
   if (status !== "ready" && status !== "empty" && status !== "stale") {
-    const copy = STATUS_COPY[status];
+    const copy = ADOPTION_PREVIEW_STATUS_COPY[status];
     return (
       <EmptyState
         description={errorMessage ?? copy.description}
@@ -135,8 +164,10 @@ export function AdoptionPreviewPage({
   if (!plan) {
     return (
       <EmptyState
-        description={errorMessage ?? STATUS_COPY.error.description}
-        title={STATUS_COPY.error.title}
+        description={
+          errorMessage ?? ADOPTION_PREVIEW_STATUS_COPY.error.description
+        }
+        title={ADOPTION_PREVIEW_STATUS_COPY.error.title}
         action={
           <Button
             id="adoption-preview-primary-action"
@@ -154,6 +185,7 @@ export function AdoptionPreviewPage({
   const remainingGroups = groupAdoptionPlanItems(plan.items).filter(
     (group) => group.id !== "requires-decision",
   );
+  const decisionsPrepared = decisionResult?.decisionsPrepared ?? 0;
 
   return (
     <section aria-labelledby="adoption-preview-heading" className="view-panel">
@@ -162,8 +194,9 @@ export function AdoptionPreviewPage({
           <span className="hero-kicker">Intentloom setup</span>
           <h1 id="adoption-preview-heading">Adoption preview</h1>
           <p className="view-lead">
-            Review what Intentloom would add or map. This surface is read-only
-            and does not apply, save, or resolve mapping choices.
+            Review what Intentloom would add or map, then select supported
+            decisions. Decisions are not applied, saved, or written to the
+            project.
           </p>
         </div>
         <StatusChip
@@ -181,6 +214,14 @@ export function AdoptionPreviewPage({
         </Button>
       </div>
       <AdoptionProjectSummary plan={plan} selectedRoot={root} />
+      <p aria-live="polite">
+        {renderAdoptionDecisionSummary({
+          decisionsPrepared,
+          changesApplied: 0,
+        })
+          .split("\n")
+          .join(" · ")}
+      </p>
       {status === "empty" ? (
         <EmptyState
           compact
@@ -189,13 +230,24 @@ export function AdoptionPreviewPage({
         />
       ) : null}
       {adoptionPreviewHasManualDecisions(plan)
-        ? decisions.map((item, index) => (
-            <AdoptionDecisionNotice
-              index={index}
-              item={item}
-              key={`${item.path}:${item.action}`}
-            />
-          ))
+        ? decisions.map((item, index) =>
+            supportedAdoptionDecisionKinds(item).length > 0 ? (
+              <AdoptionDecisionPanel
+                index={index}
+                item={item}
+                key={`${item.path}:${item.action}`}
+                onSelect={(path, kind) => void selectDecision(path, kind)}
+                result={decisionResult}
+                selectedKind={selections.get(item.path) ?? null}
+              />
+            ) : (
+              <AdoptionDecisionNotice
+                index={index}
+                item={item}
+                key={`${item.path}:${item.action}`}
+              />
+            ),
+          )
         : null}
       {remainingGroups.map((group) => (
         <AdoptionPlanGroup

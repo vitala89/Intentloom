@@ -28,6 +28,7 @@ const PROPOSED_CLASSIFICATIONS = [
 ] as const;
 
 export const MAX_ADOPTION_PLAN_ENTRIES = 10_000;
+export const ADOPTION_PREVIEW_IDENTITY_PATTERN = /^[a-f0-9]{64}$/u;
 
 export type AdoptionPreviewAction = (typeof ADOPTION_ACTIONS)[number];
 
@@ -59,6 +60,7 @@ export interface ExistingProjectAdoptionPlanViewModel {
   readonly diagnostics: readonly string[];
   readonly nextActions: readonly string[];
   readonly applied: false;
+  readonly previewIdentity: string;
   readonly items: readonly AdoptionPreviewItem[];
 }
 
@@ -92,7 +94,10 @@ function nullableString(value: unknown, field: string): string | null {
   return stringValue(value, field);
 }
 
-function parseItem(value: unknown, index: number): AdoptionPreviewItem {
+export function parseAdoptionPreviewItem(
+  value: unknown,
+  index: number,
+): AdoptionPreviewItem {
   if (!isObject(value)) {
     throw new ProtocolValidationError(
       -32602,
@@ -172,6 +177,13 @@ export function parseExistingProjectAdoptionPlanViewModel(
       "adoption plan applied must be false",
     );
   }
+  const previewIdentity = stringValue(value.previewIdentity, "previewIdentity");
+  if (!ADOPTION_PREVIEW_IDENTITY_PATTERN.test(previewIdentity)) {
+    throw new ProtocolValidationError(
+      -32602,
+      "previewIdentity must be a sha256 hex digest",
+    );
+  }
   if (
     !Array.isArray(value.items) ||
     value.items.length > MAX_ADOPTION_PLAN_ENTRIES
@@ -200,6 +212,7 @@ export function parseExistingProjectAdoptionPlanViewModel(
     diagnostics: boundedStringArray(value.diagnostics, "diagnostics"),
     nextActions: boundedStringArray(value.nextActions, "nextActions"),
     applied: false,
-    items: value.items.map(parseItem),
+    previewIdentity,
+    items: value.items.map(parseAdoptionPreviewItem),
   };
 }

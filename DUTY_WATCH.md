@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Desktop read-only adoption preview UI** on `feat/desktop-adoption-preview` from `origin/main`.
+Status: **Desktop adoption decision modeling** on `feat/desktop-adoption-decisions` from `origin/main`.
 
-Active branch: `feat/desktop-adoption-preview`
+Active branch: `feat/desktop-adoption-decisions`
 
-Current objective: Implement Slice C, the Desktop read-only adoption preview surface over the existing typed adoption-plan contract.
+Current objective: Implement read-only adoption mapping/conflict decision modeling over the existing adoption-plan contract.
 
-Next first action: After this PR is green and merged, start mapping/conflict decision modeling for adoption. Do not implement mutation until prepared-plan / approval / staleness / digest prerequisites are satisfied.
+Next first action: Prepared adoption plan security envelope (plan identity + digest + project fingerprint + expiry/staleness + revalidation). Still no Apply.
 
 Known open items, in the order they should be handled:
 
@@ -95,6 +95,41 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-19, Desktop adoption decision modeling
+
+- **Status:** complete on branch; PR pending.
+- **Agent/tool:** Cursor
+- **Branch:** `feat/desktop-adoption-decisions`
+- **Commits:** pending
+- **Pull request:** pending
+- **Objective:** Model explicit user decisions for adoption conflicts/mappings without applying them to the selected project.
+- **Completed:**
+  - Reused `adoptProject` project-owned and documentation mappings as the canonical decision model.
+  - Read-only `validateExistingProjectAdoptionDecisions` plus `intentloom.existing-project.adoption.decisions.v1`.
+  - Desktop radios for supported choices only, local selection state, preview-identity stale handling, and "Decisions prepared / Changes applied: 0".
+- **Not completed:** prepared-plan security envelope, Approved Apply, mapping persistence, project mutation, adoption wizard completion.
+- **Files or packages changed:** protocol, application, daemon, Desktop client/UI, tests, changelog, project state, adoption roadmap, Duty Watch.
+- **Validation:** focused adoption tests 27 passed; `pnpm verify` (1507 passed, 3 skipped); `git diff --check`; `cargo test method_allowlist` (1 passed).
+- **Decisions and assumptions:** Keep-project-owned and map-existing-compatible-document only. Replace is not a supported application decision for this slice. Preview identity is a SHA-256 of root, projectId, and item decision fields; it is not a prepared-plan digest.
+- **Risks or compatibility impact:** Renderer cannot call apply; Tauri allowlist still denies `adoption.apply.v1`. Invalid/stale/tampered decisions fail closed.
+- **Open issues or blockers:** none for this slice.
+- **Next first action:** Prepared adoption plan security envelope: plan identity + digest + project fingerprint + expiry/staleness + revalidation. Still no Apply.
+- **Evidence:** `packages/application/src/existing-project-adoption-decisions.ts`, `apps/desktop/src/views/AdoptionDecisionPanel.tsx`.
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant tests, type checks, builds, or compatibility checks passed
+      (`pnpm verify`: 1507 passed, 3 skipped; `cargo test method_allowlist`: 1 passed)
+- [ ] Atomic commit policy and commit-message checks passed
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `PROJECT_STATE.md` updated when applicable
+- [x] `DUTY_WATCH.md` handoff completed
+- [x] Related roadmap, ADR, changelog, migration, or reference docs updated
+- [x] Failed or unavailable checks recorded
 
 ### 2026-08-18, Desktop read-only adoption preview UI
 

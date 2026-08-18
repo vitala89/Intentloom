@@ -586,9 +586,12 @@ Desktop Existing-Project Adoption is a post-v0.6 follow-up
 ([DESKTOP_EXISTING_PROJECT_ADOPTION_PLAN.md](docs/roadmap/DESKTOP_EXISTING_PROJECT_ADOPTION_PLAN.md)).
 The first shared-contract slice is the read-only daemon/protocol operation
 `intentloom.existing-project.adoption.plan.v1`, reusing `adoptProject({ dryRun: true })`.
-Desktop now also has a **read-only adoption preview UI** (Slice C) that renders
-that typed plan. Mapping resolution, Approved Apply, and transactional mutation
-are not implemented.
+Desktop now also has a **read-only adoption preview UI** (Slice C) and
+**Desktop adoption decision modeling implemented**: supported mapping
+choices are validated through
+`intentloom.existing-project.adoption.decisions.v1` without writing the
+project. Prepared-plan security envelope, Approved Apply, and transactional
+mutation are not implemented.
 
 P1 defers real workspace dogfood to the maintainer
 ([2026-08-16-workspace-public-gate.md](docs/releases/dogfooding/2026-08-16-workspace-public-gate.md)).

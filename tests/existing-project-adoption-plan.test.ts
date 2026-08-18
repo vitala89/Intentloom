@@ -63,6 +63,7 @@ describe("existing-project adoption plan application contract", () => {
     expect(preview.readOnly).toBe(true);
     expect(preview.classification).toBe("read-only");
     expect(preview.applied).toBe(false);
+    expect(preview.previewIdentity).toMatch(/^[a-f0-9]{64}$/u);
     expect(preview.profile).toBe("typescript");
     expect(preview.workspaceTopology).toBe("nx");
     expect(preview.items).toEqual(proposal.items);

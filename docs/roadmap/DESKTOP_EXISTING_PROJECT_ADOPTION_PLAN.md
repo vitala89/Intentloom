@@ -400,6 +400,18 @@ actions. No Apply, mapping persistence, or project mutation.
 
 Still no mutation.
 
+### C2. Desktop adoption decision modeling
+
+Desktop adoption decision modeling implemented. Manual-decision items expose
+only supported choices derived from `adoptProject` mapping behavior
+(`keep-project-owned` via `projectOwnedMappings`, `map-existing-compatible-document`
+via `documentationMappings`). `intentloom.existing-project.adoption.decisions.v1`
+validates selections read-only against a preview identity. No Apply, mapping
+persistence, or project mutation.
+
+Replace is not offered. Prepared-plan identity, digest, fingerprint, expiry,
+and approval remain the next slice.
+
 ### D. Approved adoption apply
 
 Only after the existing Approved Apply threat-model requirements are satisfied, expose one explicit reviewed adoption transaction.
