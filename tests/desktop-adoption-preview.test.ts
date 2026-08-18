@@ -65,6 +65,7 @@ function viiLikePlan(
       "Keep the file project-owned or explicitly resolve the generated destination conflict.",
     ],
     applied: false,
+    previewIdentity: "a".repeat(64),
     items: [
       item({
         path: ".aif/config.yaml",
@@ -190,9 +191,9 @@ describe("Desktop read-only adoption preview", () => {
       "Conflict details: existing project-owned instruction file",
     );
     expect(text).toContain("Safe next action:");
-    expect(text).toContain(
-      "Available future resolution: Review mapping before Apply",
-    );
+    expect(text).toContain("Available future resolution: Keep project-owned");
+    expect(text).toContain("Decisions prepared: 0");
+    expect(text).toContain("Changes applied: 0");
     expect(text).toContain("Diagnostic:");
     expect(text).toMatch(/Keyboard order:.*Requires decision AGENTS.md/);
   });
@@ -350,6 +351,9 @@ describe("Desktop read-only adoption preview", () => {
       "utf8",
     );
     expect(allowlist).toContain("intentloom.existing-project.adoption.plan.v1");
+    expect(allowlist).toContain(
+      "intentloom.existing-project.adoption.decisions.v1",
+    );
     expect(allowlist).toMatch(
       /assert!\(\s*!is_foundation_method\(\s*"intentloom\.existing-project\.adoption\.apply\.v1"/,
     );

@@ -98,6 +98,8 @@ export const EXISTING_PROJECT_WORKSPACE_PREPARE_METHOD =
   "intentloom.existing-project.workspace.prepare.v1" as const;
 export const EXISTING_PROJECT_ADOPTION_PLAN_METHOD =
   "intentloom.existing-project.adoption.plan.v1" as const;
+export const EXISTING_PROJECT_ADOPTION_DECISIONS_METHOD =
+  "intentloom.existing-project.adoption.decisions.v1" as const;
 export const FEATURE_INTENT_WORKSPACE_PREPARE_METHOD =
   "intentloom.feature-intent.workspace.prepare.v1" as const;
 export const FEATURE_INTENT_WORKSPACE_ANALYZE_METHOD =

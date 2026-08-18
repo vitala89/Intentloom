@@ -55,6 +55,7 @@ import {
   handleFoundationScaffoldValidate,
 } from "./foundation-scaffold-handlers.js";
 import {
+  handleExistingProjectAdoptionDecisions,
   handleExistingProjectAdoptionPlan,
   handleExistingProjectWorkspacePrepare,
 } from "./existing-project-handlers.js";
@@ -212,6 +213,7 @@ async function main(): Promise<void> {
     foundationScaffoldRollback: handleFoundationScaffoldRollback,
     existingProjectWorkspacePrepare: handleExistingProjectWorkspacePrepare,
     existingProjectAdoptionPlan: handleExistingProjectAdoptionPlan,
+    existingProjectAdoptionDecisions: handleExistingProjectAdoptionDecisions,
     featureIntentWorkspacePrepare: handleFeatureIntentWorkspacePrepare,
     featureIntentWorkspaceAnalyze: handleFeatureIntentWorkspaceAnalyze,
     boundedExecutionWorkspacePrepare: handleBoundedExecutionWorkspacePrepare,

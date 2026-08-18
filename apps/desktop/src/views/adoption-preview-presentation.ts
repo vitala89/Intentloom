@@ -1,6 +1,8 @@
-import type {
-  AdoptionPreviewItem,
-  ExistingProjectAdoptionPlanViewModel,
+import {
+  adoptionDecisionKindLabel,
+  supportedAdoptionDecisionKinds,
+  type AdoptionPreviewItem,
+  type ExistingProjectAdoptionPlanViewModel,
 } from "@intentloom/protocol";
 import {
   adoptionPreviewHasManualDecisions,
@@ -14,8 +16,12 @@ export interface AdoptionPreviewFocusTarget {
 }
 
 export function futureResolutionLabel(item: AdoptionPreviewItem): string {
+  const choices = supportedAdoptionDecisionKinds(item);
+  if (choices.length > 0) {
+    return choices.map(adoptionDecisionKindLabel).join(", ");
+  }
   if (item.manualDecisionRequired) {
-    return "Review mapping before Apply";
+    return "No supported Desktop decision";
   }
   if (item.writeEligible) {
     return "Would be write-eligible only after a future approved apply";
@@ -47,6 +53,12 @@ export function adoptionPreviewFocusOrder(
     targets.push({
       id: `adoption-decision-${index}`,
       label: `Requires decision ${item.path}`,
+    });
+    supportedAdoptionDecisionKinds(item).forEach((kind) => {
+      targets.push({
+        id: `adoption-decision-${index}-${kind}`,
+        label: `${adoptionDecisionKindLabel(kind)} for ${item.path}`,
+      });
     });
   });
   return targets;
@@ -88,6 +100,8 @@ export function renderAdoptionPreviewText(options: {
       ? "Manual decisions required"
       : "No manual decisions required",
   );
+  lines.push("Decisions prepared: 0");
+  lines.push("Changes applied: 0");
   for (const group of groupAdoptionPlanItems(plan.items)) {
     lines.push(group.heading);
     for (const item of group.items) {
