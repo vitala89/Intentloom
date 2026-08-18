@@ -54,7 +54,10 @@ import {
   handleFoundationScaffoldRollback,
   handleFoundationScaffoldValidate,
 } from "./foundation-scaffold-handlers.js";
-import { handleExistingProjectAdoptionPlan, handleExistingProjectWorkspacePrepare } from "./existing-project-handlers.js";
+import {
+  handleExistingProjectAdoptionPlan,
+  handleExistingProjectWorkspacePrepare,
+} from "./existing-project-handlers.js";
 import {
   handleFeatureIntentWorkspaceAnalyze,
   handleFeatureIntentWorkspacePrepare,
