@@ -71,7 +71,17 @@ acts on**, not a setting the agent applies to itself.
 
 **Google Antigravity (AGY)** (verified from this session running as Antigravity): carrier is this repository's `AGENTS.md` and default system instructions loaded at session start. Model tiers map to available LLM offerings (e.g. Gemini Flash/Flash-Lite = cheapest/mid, Gemini Pro = frontier). `invoke_subagent` handles delegation. The triage rubric and routing table serve as the authoritative standard for model tier selection, subagent orchestration, and verification gate execution before committing.
 
-**Cursor / Copilot / anything else:** no evidence this repository is worked on from these tools today (no `.cursor/rules/` or `.github/copilot-instructions.md` exist at the time of writing). If one of these is added, give it a matching short carrier paragraph here - pointing at this same canon - rather than duplicating the rubric or routing table into that tool's own instruction file.
+**Cursor** (verified from this repository's `.cursor/rules/*.mdc`):
+always-apply carriers are `.cursor/rules/session-start.mdc` and
+`.cursor/rules/task-triage.mdc`. They point at this file and at
+`AGENT_START_HERE.md`; they must not copy the rubric or routing table.
+Model and effort are the user's picker. The agent prints a role
+recommendation (`cheapest` / `mid` / `frontier`) and continues. Do not
+spawn subagents unless the user asked.
+
+**Copilot / anything else:** no `.github/copilot-instructions.md` exists at
+the time of this carrier update. If one is added, give it a short pointer
+to this same canon rather than duplicating the table.
 
 ## Adjustments specific to this repository
 

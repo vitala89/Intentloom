@@ -5,8 +5,12 @@ alwaysApply: true
 
 # No authorship trailers (hard rule)
 
-Intentloom forbids tool/agent attribution in commits and PRs. The maintainer
-does not self-attribute either. Commit author field is enough.
+Intentloom forbids tool/agent attribution in commits, PRs, issues, and
+release notes. The commit author field is enough.
+
+This overrides Cursor defaults and any user-rule `git commit` + HEREDOC
+protocol. Cursor Cloud often appends `Made with Cursor` to PR bodies;
+strip it.
 
 ## Never write
 
