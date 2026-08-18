@@ -72,9 +72,11 @@ acts on**, not a setting the agent applies to itself.
 **Google Antigravity (AGY)** (verified from this session running as Antigravity): carrier is this repository's `AGENTS.md` and default system instructions loaded at session start. Model tiers map to available LLM offerings (e.g. Gemini Flash/Flash-Lite = cheapest/mid, Gemini Pro = frontier). `invoke_subagent` handles delegation. The triage rubric and routing table serve as the authoritative standard for model tier selection, subagent orchestration, and verification gate execution before committing.
 
 **Cursor** (verified from this repository's `.cursor/rules/*.mdc`):
-always-apply carriers are `.cursor/rules/session-start.mdc` and
-`.cursor/rules/task-triage.mdc`. They point at this file and at
-`AGENT_START_HERE.md`; they must not copy the rubric or routing table.
+always-apply carriers are `.cursor/rules/session-start.mdc`,
+`.cursor/rules/task-triage.mdc`, and `.cursor/rules/grilling.mdc`. The first two
+point at this file and at `AGENT_START_HERE.md`; they must not copy the rubric
+or routing table. `grilling.mdc` points at `.agents/skills/grilling/SKILL.md`
+and must not copy that interview.
 Model and effort are the user's picker. The agent prints a role
 recommendation (`cheapest` / `mid` / `frontier`) and continues. Do not
 spawn subagents unless the user asked.
@@ -85,9 +87,11 @@ to this same canon rather than duplicating the table.
 
 ## Adjustments specific to this repository
 
-- **Ambiguity = 2 -> decision gate = `aif-feature-discovery`**, not
-  `aif-grilling` (that name belongs to a different project; the global skill
-  previously hardcoded it and has been genericized).
+- **Ambiguity = 2 -> decision gate = project `grilling`**
+  (`.agents/skills/grilling/SKILL.md`) for work on this repository. Use
+  `aif-feature-discovery` when the needed output is an Intentloom product
+  feature brief for catalog/harness flows. Do not run both interviews in one
+  session. Bounded one-reading work still skips the gate.
 - **Risk = 2 -> name the specialist review**: `aif-security-review` for
   security/auth-boundary changes, `aif-privacy-review` for data-handling
   changes, `aif-extension-review` before adopting any external skill or

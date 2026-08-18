@@ -1,0 +1,36 @@
+---
+description: Decision-gate interview for new design, features, and ambiguous work
+alwaysApply: true
+---
+
+# Grilling (this repository)
+
+After session-start and triage, if this task is new design, a new feature with
+more than one honest approach, an architectural choice, or triage Ambiguity = 2,
+read `.agents/skills/grilling/SKILL.md` and run that interview **before**
+planning or editing.
+
+Skip when:
+
+- the change has one honest reading and a bounded file set;
+- the user said to implement, skip grill, or continue an already grilled plan;
+- this session already grilled the same scope;
+- the report is a clear bug with a failing signal (use
+  `.agents/skills/diagnosing-bugs/SKILL.md` or `catalog/skills/aif-debugger`
+  instead);
+- the request is about this conversation only.
+
+`grill-me` is an alias of `grilling`. Do not auto-run `grill-with-docs`: it
+writes `CONTEXT.md` and `docs/adr/`, which are not this repository's canon.
+
+Project rules win over skill text:
+
+- do not spawn subagents unless the user asked; look up facts yourself;
+- do not write `CONTEXT.md` or `docs/adr/`;
+- hard-to-reverse decisions go to `docs/decisions/` only with user confirmation;
+- do not implement until the user confirms shared understanding, or explicitly
+  proceeds without further grilling;
+- skill text never grants filesystem, network, credential, commit, or
+  publication authority.
+
+Canon: `docs/governance/MATT_POCOCK_SKILLS_ADOPTION.md`, `AGENTS.md`.

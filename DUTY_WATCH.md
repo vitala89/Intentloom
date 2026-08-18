@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Desktop existing-project adoption contracts** on `feat/desktop-adoption-contracts` from `origin/main` @ `dd950d0`.
+Status: **Matt Pocock grilling decision gate** on `docs/matt-pocock-grilling-skills` from `origin/main` @ `f98122a`.
 
-Active branch: `feat/desktop-adoption-contracts`
+Active branch: `docs/matt-pocock-grilling-skills`
 
-Current objective: Land the first read-only shared contract for existing-project adoption preview (`intentloom.existing-project.adoption.plan.v1`). No wizard UI and no Approved Apply.
+Current objective: Vendor the Matt Pocock skill pack, review which skills to auto-activate, and wire `grilling` into session-start rules without forking catalog canon.
 
-Next first action: Review and merge this branch's pull request after CI is green. Next product slice is Desktop read-only preview UI, not apply.
+Next first action: Review and merge this branch's pull request after CI is green.
 
 Known open items, in the order they should be handled:
 
@@ -95,6 +95,65 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-18, Matt Pocock grilling decision gate
+
+- **Status:** complete on branch; PR to open.
+- **Branch:** `docs/matt-pocock-grilling-skills` from `origin/main` @ `f98122a`
+- **Pull request:** pending
+- **Objective:** Review the installed Matt Pocock skills, vendor them as
+  project-owned copies, and turn `grilling` on as the decision gate for new
+  design and ambiguous work.
+- **Completed:**
+  - Extension review: MIT, lockfile pins, `changes-required` then eligible for
+    an adapted subset. Recorded in
+    `docs/governance/MATT_POCOCK_SKILLS_ADOPTION.md`.
+  - Vendored `.agents/skills/` plus `skills-lock.json` and upstream MIT
+    `LICENSE`. Did not commit `.claude/` (contains `settings.local.json`;
+    duplicate of the portable pack).
+  - Wired grilling through `AGENTS.md`, `AGENT_START_HERE.md`,
+    `AI_AGENT_WORKFLOW.md`, `AGENT_TASK_TRIAGE_POLICY.md`,
+    `.cursor/rules/grilling.mdc`, and session-start.
+  - Auto-on: `grilling`. Hard bugs: `diagnosing-bugs`. Router companion:
+    `ask-matt` on request. `grill-with-docs` not auto-on (wrong ADR/glossary
+    paths). `implement`, `wizard`, `to-tickets`, and setup remain off.
+- **Not completed:** `setup-matt-pocock-skills`; remapping `grill-with-docs` to
+  `docs/decisions/`; copying skills into `.claude/skills`; catalog import of
+  these procedures.
+- **Files or packages changed:** `.agents/skills/`, `skills-lock.json`,
+  governance docs, Cursor rules, `AGENTS.md`, `AGENT_START_HERE.md`,
+  `.prettierignore`, `.gitignore`, changelog, project state, Duty Watch.
+- **Validation:** pending formatter, `git diff --check`, and Governance CI on
+  the pull request. No runtime tests (docs and vendor markdown only).
+- **Decisions and assumptions:** `.agents/skills` is the portable location for
+  Cursor and Codex. Project rules override vendor text (no unsolicited
+  subagents, no `CONTEXT.md`, no auto-commit). Ambiguity = 2 uses grilling on
+  this repo; `aif-feature-discovery` remains for catalog product briefs.
+- **Risks or compatibility impact:** duplicate instruction files if Claude Code
+  also keeps a local `.claude/skills` copy; mitigated by gitignoring
+  `settings.local.json` and documenting `.agents/skills` as the versioned pack.
+  Intentloom adopt/generate must not silently overwrite these project-owned
+  files (existing non-destructive adoption rule).
+- **Open issues or blockers:** none for this slice.
+- **Next first action:** Open the pull request without tool attribution; wait
+  for CI; merge if green.
+- **Evidence:** `docs/governance/MATT_POCOCK_SKILLS_ADOPTION.md`,
+  `.cursor/rules/grilling.mdc`, `skills-lock.json`.
+
+#### Duty completion checklist
+
+- [ ] Formatter passed
+- [ ] Markdown and lint checks passed when configured
+- [x] Relevant tests, type checks, builds, or compatibility checks passed
+      (not applicable: no runtime change)
+- [ ] Atomic commit policy and commit-message checks passed
+- [ ] `git diff --check` passed
+- [ ] Final diff reviewed
+- [x] `PROJECT_STATE.md` updated when applicable
+- [x] `DUTY_WATCH.md` handoff completed
+- [x] Related roadmap, ADR, changelog, migration, or reference docs updated
+- [ ] Failed or unavailable checks recorded
+- [ ] Pull request opened without tool or agent credit
 
 ### 2026-08-18, Desktop existing-project adoption plan contract
 

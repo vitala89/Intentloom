@@ -29,7 +29,9 @@ Before changing files, state internally or in the task plan:
 - the current size and responsibilities of touched implementation files;
 - planned extraction points for any oversized file;
 - the relevant domain guidance and required tests;
-- which validations and documentation updates will be required.
+- which validations and documentation updates will be required;
+- whether grilling applies (new design, competing approaches, architecture, or
+  Ambiguity = 2) per `docs/governance/MATT_POCOCK_SKILLS_ADOPTION.md`.
 
 If repository evidence conflicts with `PROJECT_STATE.md` or `DUTY_WATCH.md`,
 stop treating those files as authoritative, inspect Git history, pull requests,

@@ -169,7 +169,10 @@ and real consumers justify them.
   pinned external method reviews; no external plugin, hook, telemetry, updater,
   or runtime dependency is bundled. Structured routing and managed external-skill
   import contracts are merged through PR #213; optional provider bridges remain
-  deferred.
+  deferred. A separate, project-owned copy of Matt Pocock engineering skills
+  now lives in `.agents/skills/` (not catalog, not generated adapters).
+  `grilling` is the on-repo decision gate; activation policy is
+  [`MATT_POCOCK_SKILLS_ADOPTION.md`](docs/governance/MATT_POCOCK_SKILLS_ADOPTION.md).
 - ADR-0052 accepts a first-party provider-neutral Agentic Evaluation and
   Execution Harness architecture and phased plan. Phases H1-H9 and curated-
   skill phases C4-C6 are merged into `main` through PR #213 (`a173931`), PR
