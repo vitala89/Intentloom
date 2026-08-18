@@ -375,13 +375,19 @@ Keep the work reviewable.
 
 ### A. Contract inventory
 
-Confirm which adoption planning, mapping, revalidation, apply, doctor, and diff operations already exist across application, protocol, and daemon packages.
+Completed on `feat/desktop-adoption-contracts`. Application already had
+`inspectProject`, `adoptProject` (dry-run proposal items), `planProjectAdoption`,
+`doctorProject`, and `diffProject`. W9 `existing-project.workspace.prepare`
+exposes only an adoption summary. Doctor/inspect/diff already have daemon RPCs.
 
-No UI changes.
+No UI changes in this slice.
 
 ### B. Daemon adoption-plan surface
 
-Expose any missing typed read/write contracts required for prepared-plan preview and explicit mapping choices.
+Completed for **read-only preview** as `intentloom.existing-project.adoption.plan.v1`.
+The operation reuses `adoptProject({ dryRun: true })` items (creates, mappings,
+skips, manual decisions, conflict details, safe next actions). It does not
+expose mapping-choice mutation or apply.
 
 No generic command execution.
 

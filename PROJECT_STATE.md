@@ -578,6 +578,12 @@ Maintainer options (pick later, in a publish brief):
 - later `1.0.x` metadata/docs release;
 - `1.1.0` (or another minor) after a real release-gate brief.
 
+Desktop Existing-Project Adoption is a post-v0.6 follow-up
+([DESKTOP_EXISTING_PROJECT_ADOPTION_PLAN.md](docs/roadmap/DESKTOP_EXISTING_PROJECT_ADOPTION_PLAN.md)).
+The first shared-contract slice is the read-only daemon/protocol operation
+`intentloom.existing-project.adoption.plan.v1`, reusing `adoptProject({ dryRun: true })`.
+It does not implement Approved Apply, transactional mutation, or a Desktop wizard.
+
 P1 defers real workspace dogfood to the maintainer
 ([2026-08-16-workspace-public-gate.md](docs/releases/dogfooding/2026-08-16-workspace-public-gate.md)).
 Named follow-ups after P1, not started here: Neutron N1 then N2 (P2), S8 (P3),
