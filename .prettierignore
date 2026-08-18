@@ -8,3 +8,6 @@ artifacts
 # Local tool state that is never committed. Listed so that a working copy
 # containing it does not fail the repository formatting check.
 .serena/
+
+# Vendored third-party agent skills (upstream markdown/yaml, not our formatter).
+.agents/skills/
