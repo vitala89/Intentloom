@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Desktop adoption decision modeling** on `feat/desktop-adoption-decisions` from `origin/main`.
+Status: **Desktop adoption decision modeling** squash-merged to `main` as `ad20ed2` (PR #340).
 
-Active branch: `feat/desktop-adoption-decisions`
+Active branch: `main`
 
-Current objective: Implement read-only adoption mapping/conflict decision modeling over the existing adoption-plan contract.
+Current objective: Prepared adoption plan security envelope (plan identity + digest + project fingerprint + expiry/staleness + revalidation). Still no Apply.
 
-Next first action: Prepared adoption plan security envelope (plan identity + digest + project fingerprint + expiry/staleness + revalidation). Still no Apply.
+Next first action: Implement the prepared adoption plan security envelope. Do not add Approved Apply until that boundary exists.
 
 Known open items, in the order they should be handled:
 
@@ -98,11 +98,11 @@ entry directly below this section.
 
 ### 2026-08-19, Desktop adoption decision modeling
 
-- **Status:** complete on branch; PR pending.
+- **Status:** complete; squash-merged.
 - **Agent/tool:** Cursor
-- **Branch:** `feat/desktop-adoption-decisions`
-- **Commits:** pending
-- **Pull request:** pending
+- **Branch:** `feat/desktop-adoption-decisions` (deleted after merge)
+- **Commits:** squash `ad20ed2` on `main` (from `db0346b`, `ca03e3c`, `a51da3a`)
+- **Pull request:** https://github.com/vitala89/Intentloom/pull/340
 - **Objective:** Model explicit user decisions for adoption conflicts/mappings without applying them to the selected project.
 - **Completed:**
   - Reused `adoptProject` project-owned and documentation mappings as the canonical decision model.
@@ -123,7 +123,8 @@ entry directly below this section.
 - [x] Markdown and lint checks passed when configured
 - [x] Relevant tests, type checks, builds, or compatibility checks passed
       (`pnpm verify`: 1507 passed, 3 skipped; `cargo test method_allowlist`: 1 passed)
-- [ ] Atomic commit policy and commit-message checks passed
+- [x] Atomic commit policy and commit-message checks passed
+      (squash-merge `ad20ed2`; no Co-Authored-By / Generated-with trailers)
 - [x] `git diff --check` passed
 - [x] Final diff reviewed
 - [x] `PROJECT_STATE.md` updated when applicable
