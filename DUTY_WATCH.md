@@ -101,7 +101,7 @@ entry directly below this section.
 - **Status:** partial
 - **Agent/tool:** Cursor
 - **Branch:** `test/desktop-existing-project-adoption-dogfood`
-- **Commits:** pending
+- **Commits:** `7a45e64`
 - **Pull request:** pending
 - **Objective:** Dogfood the complete Desktop existing-project adoption flow against an isolated pre-adoption Vii clone and decide the completion gate.
 - **Completed:** Isolated clones at Vii `93e072c`; authenticated daemon path (Desktop request constructors) through preview, `keep-project-owned`, prepare, revalidate, approve, Apply (`applied` / Ready), replay `already-applied`, stale Apply `denied` with zero writes; project-owned checksums preserved; evidence record written. Source Vii working tree was not written by this watch.
@@ -119,10 +119,10 @@ entry directly below this section.
 - [x] Formatter passed
 - [x] Markdown and lint checks passed when configured
 - [x] Relevant tests, type checks, builds, or compatibility checks passed
-- [ ] Atomic commit policy and commit-message checks passed
-- [ ] Repository hooks installed or equivalent commands run
-- [ ] `git diff --check` passed
-- [ ] Final diff reviewed
+- [x] Atomic commit policy and commit-message checks passed
+- [x] Repository hooks installed or equivalent commands run
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
 - [x] `PROJECT_STATE.md` updated when durable state changed
 - [x] `DUTY_WATCH.md` updated with this entry
 - [x] Roadmap/docs updated when applicable
