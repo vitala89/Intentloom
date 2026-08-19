@@ -41,6 +41,7 @@ pub fn is_foundation_method(method: &str) -> bool {
             | "intentloom.existing-project.adoption.decisions.v1"
             | "intentloom.existing-project.adoption.prepare.v1"
             | "intentloom.existing-project.adoption.revalidate.v1"
+            | "intentloom.existing-project.adoption.approve.v1"
             | "intentloom.feature-intent.workspace.prepare.v1"
             | "intentloom.feature-intent.workspace.analyze.v1"
             | "intentloom.bounded-execution.workspace.prepare.v1"
@@ -73,6 +74,9 @@ mod tests {
         ));
         assert!(is_foundation_method(
             "intentloom.existing-project.adoption.revalidate.v1"
+        ));
+        assert!(is_foundation_method(
+            "intentloom.existing-project.adoption.approve.v1"
         ));
         assert!(!is_foundation_method(
             "intentloom.existing-project.adoption.apply.v1"

@@ -47,6 +47,18 @@ export function adoptionPreviewFocusOrder(
     id: "adoption-preview-primary-action",
     label: "Retry preview",
   });
+  targets.push({
+    id: "adoption-prepare-plan",
+    label: "Prepare plan",
+  });
+  targets.push({
+    id: "adoption-revalidate-plan",
+    label: "Revalidate plan",
+  });
+  targets.push({
+    id: "adoption-approve-plan",
+    label: "Approve prepared plan",
+  });
   if (!plan) return targets;
   const decisions = plan.items.filter((item) => item.manualDecisionRequired);
   decisions.forEach((item, index) => {

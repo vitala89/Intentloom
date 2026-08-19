@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Prepared adoption plan security envelope** on `feat/adoption-prepared-plan-envelope`.
+Status: **Explicit adoption approval** on `feat/adoption-explicit-approval`.
 
-Active branch: `feat/adoption-prepared-plan-envelope`
+Active branch: `feat/adoption-explicit-approval`
 
-Current objective: Explicit adoption approval bound to an unexpired, revalidated prepared-plan digest. Still no Apply unless that later slice authorizes it.
+Current objective: Dedicated pre-Apply security review of approved plan → final revalidation → atomic transaction → rollback → post-apply doctor → post-apply diff. Do not implement Apply until that review is accepted.
 
-Next first action: Explicit adoption approval. Do not combine approval with transactional Apply unless the security architecture requires one bounded operation.
+Next first action: Pre-Apply security review for transactional adoption Apply. Do not start Apply in this watch.
 
 Known open items, in the order they should be handled:
 
@@ -95,6 +95,40 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-19, Explicit adoption approval
+
+- **Status:** complete on branch; PR pending.
+- **Agent/tool:** Cursor
+- **Branch:** `feat/adoption-explicit-approval`
+- **Commits:** pending
+- **Pull request:** pending
+- **Objective:** Bind explicit local-interactive approval to one unexpired, revalidated prepared adoption plan without applying it.
+- **Completed:**
+  - Reused prepared-plan revalidation, digest/fingerprint identity, `approved:<planDigest>` token shape, and injected clocks.
+  - Read-only `approve` RPC/application/Desktop button with `approved: true`, `applied: false`, `changesApplied: 0`.
+- **Not completed:** transactional Apply, post-apply Doctor/Diff, adoption wizard completion.
+- **Files or packages changed:** protocol, application, daemon, Desktop client/UI, Tauri allowlist, tests, changelog, project state, adoption roadmap, capability matrix, Duty Watch.
+- **Validation:** focused approval/prepared-plan/daemon/Desktop tests passed; `pnpm verify` (1522 passed, 3 skipped); `git diff --check`; `cargo test method_allowlist` (1 passed).
+- **Decisions and assumptions:** No authenticated human identity. Approval source is `local-interactive`. Approval does not outlive the prepared plan. Receipt is returned to the caller and not written into the selected project. Approve always revalidates; UI validity is not trusted.
+- **Risks or compatibility impact:** Renderer still cannot call apply. Duplicate caller-held receipts are equivalent until future Apply consumes one after a fresh revalidation.
+- **Open issues or blockers:** none for this slice.
+- **Next first action:** Pre-Apply security review of approved plan → final revalidation → atomic transaction → rollback → post-apply doctor → post-apply diff.
+- **Evidence:** `packages/application/src/existing-project-adoption-approval.ts`.
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant tests, type checks, builds, or compatibility checks passed
+- [ ] Atomic commit policy and commit-message checks passed
+- [x] Repository hooks installed or equivalent commands run
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `PROJECT_STATE.md` updated when applicable
+- [x] `DUTY_WATCH.md` handoff completed
+- [x] Related roadmap, ADR, changelog, migration, or reference docs updated
+- [x] Failed or unavailable checks recorded
 
 ### 2026-08-19, Prepared adoption plan security envelope
 

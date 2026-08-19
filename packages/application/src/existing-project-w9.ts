@@ -9,3 +9,4 @@ export * from "./existing-project-adoption-project-fingerprint.js";
 export * from "./existing-project-adoption-prepared-plan-digest.js";
 export * from "./existing-project-adoption-prepared-plan.js";
 export * from "./existing-project-adoption-prepared-plan-revalidate.js";
+export * from "./existing-project-adoption-approval.js";
