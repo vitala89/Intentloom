@@ -9,9 +9,13 @@ import {
   type SelectedAdoptionDecision,
 } from "@intentloom/protocol";
 import type { FileSystem, ProjectMapping } from "./index.js";
+import {
+  spreadExistingProjectAdoptionGeneration,
+  type ExistingProjectAdoptionGenerationOptions,
+} from "./existing-project-adoption-generation.js";
 import { prepareExistingProjectAdoptionPlan } from "./existing-project-adoption-plan.js";
 
-export interface ValidateExistingProjectAdoptionDecisionsOptions {
+export interface ValidateExistingProjectAdoptionDecisionsOptions extends ExistingProjectAdoptionGenerationOptions {
   readonly root: string;
   readonly previewIdentity: string;
   readonly projectId?: string;
@@ -83,6 +87,7 @@ export async function validateExistingProjectAdoptionDecisions(
   const preview = await prepareExistingProjectAdoptionPlan(
     {
       root,
+      ...spreadExistingProjectAdoptionGeneration(options),
       ...(options.projectId !== undefined
         ? { projectId: options.projectId }
         : {}),
@@ -131,6 +136,7 @@ export async function validateExistingProjectAdoptionDecisions(
       ? await prepareExistingProjectAdoptionPlan(
           {
             root,
+            ...spreadExistingProjectAdoptionGeneration(options),
             ...(options.projectId !== undefined
               ? { projectId: options.projectId }
               : {}),

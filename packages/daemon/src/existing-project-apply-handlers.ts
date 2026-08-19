@@ -3,6 +3,7 @@ import {
   applyExistingProjectAdoptionPreparedPlan,
   nodeFileSystem,
   withCanonicalProjectRootLock,
+  type ExistingProjectAdoptionGenerationOptions,
 } from "@intentloom/application";
 import type {
   ExistingProjectAdoptionApplyRequest,
@@ -71,6 +72,7 @@ export async function dispatchExistingProjectApplyRequest(
 
 export async function handleExistingProjectAdoptionApply(
   request: ExistingProjectAdoptionApplyRequest,
+  generation: ExistingProjectAdoptionGenerationOptions = {},
 ): Promise<
   Omit<ExistingProjectAdoptionApplyResponse["result"], "protocolVersion">
 > {
@@ -81,6 +83,7 @@ export async function handleExistingProjectAdoptionApply(
       planDigest: request.params.planDigest,
       preparedPlan: request.params.preparedPlan,
       approval: request.params.approval,
+      ...generation,
     },
     nodeFileSystem,
   );

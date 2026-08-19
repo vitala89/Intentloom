@@ -603,10 +603,13 @@ implemented: `intentloom.existing-project.adoption.apply.v1` reuses
 revalidation, handled-error rollback, and post-apply Doctor/Diff/readiness.
 Crash-safe recovery is not claimed. Real Vii Desktop dogfood of the full
 adoption flow was attempted on 2026-08-19 against an isolated pre-adoption
-clone (`93e072c`). Authenticated daemon Apply succeeded (`applied` / Ready on
-the Apply result; stale plan denied with zero writes). Packaged Desktop
-click-through was not completed in that watch, so Desktop Existing-Project
-Adoption is **not** marked complete. See
+clone (`93e072c`). That run wrote empty-catalog artifacts because existing-project
+adoption did not pass `catalogRoot`; CLI doctor/diff then disagreed with Apply
+Ready. A later consistency fix binds the daemon catalog into the existing-project
+plan/apply path so generated lock, source-map, adapter outputs, and Codex skills
+match canonical CLI generation. Packaged Desktop click-through after that fix
+is still required, so Desktop Existing-Project Adoption is **not** marked
+complete. See
 [2026-08-19-vii-desktop-full-adoption.md](docs/releases/dogfooding/2026-08-19-vii-desktop-full-adoption.md).
 
 P1 defers real workspace dogfood to the maintainer

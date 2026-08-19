@@ -9,6 +9,10 @@ import {
   type SelectedAdoptionDecision,
 } from "@intentloom/protocol";
 import type { FileSystem } from "./index.js";
+import {
+  spreadExistingProjectAdoptionGeneration,
+  type ExistingProjectAdoptionGenerationOptions,
+} from "./existing-project-adoption-generation.js";
 import { validateExistingProjectAdoptionDecisions } from "./existing-project-adoption-decisions.js";
 import { prepareExistingProjectAdoptionPlan } from "./existing-project-adoption-plan.js";
 import { computeExistingProjectAdoptionFingerprint } from "./existing-project-adoption-project-fingerprint.js";
@@ -17,7 +21,7 @@ import {
   computeExistingProjectAdoptionPreparedPlanId,
 } from "./existing-project-adoption-prepared-plan-digest.js";
 
-export interface PrepareExistingProjectAdoptionPreparedPlanOptions {
+export interface PrepareExistingProjectAdoptionPreparedPlanOptions extends ExistingProjectAdoptionGenerationOptions {
   readonly root: string;
   readonly previewIdentity: string;
   readonly projectId?: string;
@@ -53,6 +57,7 @@ export async function liveExistingProjectAdoptionPreparedPlanState(
   projectId: string | undefined,
   decisions: readonly SelectedAdoptionDecision[],
   fs: FileSystem,
+  generation: ExistingProjectAdoptionGenerationOptions = {},
 ): Promise<{
   fingerprint: string;
   preview: Awaited<ReturnType<typeof prepareExistingProjectAdoptionPlan>>;
@@ -63,6 +68,7 @@ export async function liveExistingProjectAdoptionPreparedPlanState(
   const preview = await prepareExistingProjectAdoptionPlan(
     {
       root,
+      ...spreadExistingProjectAdoptionGeneration(generation),
       ...(projectId !== undefined ? { projectId } : {}),
     },
     fs,
@@ -72,6 +78,7 @@ export async function liveExistingProjectAdoptionPreparedPlanState(
       root,
       previewIdentity: preview.previewIdentity,
       decisions,
+      ...spreadExistingProjectAdoptionGeneration(generation),
       ...(projectId !== undefined ? { projectId } : {}),
     },
     fs,
@@ -196,6 +203,7 @@ export async function prepareExistingProjectAdoptionPreparedPlan(
     options.projectId,
     options.decisions,
     fs,
+    spreadExistingProjectAdoptionGeneration(options),
   );
   const reasons = adoptionPreparedPlanDecisionReasons({
     ...live.validated,

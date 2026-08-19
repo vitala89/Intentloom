@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Vii Desktop adoption dogfood (not complete)** on `test/desktop-existing-project-adoption-dogfood`.
+Status: **Post-apply catalog consistency fix** on `fix/adoption-post-apply-consistency`.
 
-Active branch: `test/desktop-existing-project-adoption-dogfood`
+Active branch: `fix/adoption-post-apply-consistency`
 
-Current objective: Record real Vii-derived existing-project adoption evidence. Packaged Desktop click-through remains.
+Current objective: Bind canonical catalog generation into existing-project adoption so Apply, doctor, and diff agree. Packaged Desktop re-dogfood remains after merge.
 
-Next first action: Maintainer-operated packaged Desktop walkthrough of the recipe in `docs/releases/dogfooding/2026-08-19-vii-desktop-full-adoption.md`. Do not start an unrelated feature.
+Next first action: After this PR is green and merged, maintainer packaged Desktop walkthrough of a fresh Vii clone at `93e072c`, then `intentloom doctor` and `intentloom diff --json`. Do not mark Desktop Existing-Project Adoption complete in this PR.
 
 Known open items, in the order they should be handled:
 
@@ -95,6 +95,38 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-19, existing-project post-apply catalog consistency
+
+- **Status:** complete on branch; PR pending
+- **Agent/tool:** Cursor
+- **Branch:** `fix/adoption-post-apply-consistency`
+- **Commits:** pending
+- **Pull request:** pending
+- **Objective:** Fix existing-project Apply so generated artifacts immediately satisfy canonical `doctor` and `diff`.
+- **Completed:** Root cause: plan/apply omitted `catalogRoot`, so `desired()` used `emptyCatalog`. Bound daemon `--catalog-root` through plan/decisions/prepare/revalidate/approve/apply and auto-create schema validator from that catalog in `desired`/`doctorProject`. Regression covers Vii-like keep-project-owned Apply, schema validation of written lock/source-map, doctor/diff, Codex skill parity, idempotency, and project-owned preservation.
+- **Not completed:** Packaged Desktop re-dogfood on a fresh Vii `93e072c` clone; product completion gate.
+- **Files or packages changed:** application existing-project generation/plan/apply/approval/revalidate/gates, `desired`/`doctorProject` catalog-bound validator, daemon existing-project handlers and `bin.ts`, tests, changelog, project state, roadmap, dogfood follow-up note.
+- **Validation:** `pnpm typecheck`, `pnpm lint`, `pnpm format:check`, `pnpm test` (1538 passed, 3 skipped), `pnpm build`, `git diff --check`, and `pnpm verify` passed. Security: catalogRoot is daemon process config, not a client-supplied write path; 20 Apply gates, approval binding, per-root lock, and Tauri allowlist unchanged.
+- **Decisions and assumptions:** One shared root cause (missing catalog), not four independent generator bugs. No Desktop redesign. No new protocol method. Security gates unchanged. Do not mark Desktop Existing-Project Adoption complete.
+- **Risks or compatibility impact:** Apply with catalog writes Codex skills and policy-backed Cursor rules; empty-catalog Apply remains possible in tests that omit `catalogRoot`. Oversized `packages/application/src/index.ts` grew slightly (`catalogBoundValidator`); extract later when that file is next decomposed.
+- **Open issues or blockers:** maintainer packaged Desktop click-through after merge.
+- **Next first action:** `pnpm verify`, commit, push, PR, wait for CI, merge when green. Then maintainer re-dogfood.
+- **Evidence:** `tests/existing-project-adoption-post-apply-consistency.test.ts`
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant tests, type checks, builds, or compatibility checks passed
+- [ ] Atomic commit policy and commit-message checks passed
+- [ ] Repository hooks installed or equivalent commands run
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `PROJECT_STATE.md` updated when durable state changed
+- [x] `DUTY_WATCH.md` updated with this entry
+- [x] Related roadmap, ADR, changelog, migration, or reference docs updated
+- [ ] Failed or unavailable checks recorded
 
 ### 2026-08-19, Vii Desktop full existing-project adoption dogfood
 

@@ -217,15 +217,17 @@ on the daemon path.
 **Decision: NOT COMPLETE: FOLLOW-UP REQUIRED**
 
 Smallest next step: maintainer-operated packaged Desktop click-through of
-this same pre-adoption disposable recipe. Smallest code PR if GUI is healthy
-and CLI doctor still fails: investigate Apply Ready vs CLI
-`schema-constraint-failed` / `adapter-output-stale`. Do not start an unrelated
-feature.
+this same pre-adoption disposable recipe, then immediately `intentloom doctor`
+and `intentloom diff --json` on that tree. A later Intentloom PR binds the
+daemon catalog into existing-project adoption so Apply should produce the same
+generated state as canonical CLI. Do not mark the product complete until that
+Desktop run agrees with CLI.
 
 ## Residual risks
 
 - External-editor TOCTOU during the write loop (documented, not closed)
 - Crash-torn tree without a journal (documented, not closed)
 - Desktop 5s native socket read timeout (not hit; Apply was 161ms)
-- Apply Ready vs CLI doctor/diff disagreement
-- Codex `.agents/skills` not in the existing-project plan for this mapping
+- Historical Apply Ready vs CLI doctor/diff disagreement on this dogfood tree
+  (empty catalog on the existing-project path; addressed in a later consistency PR)
+- Codex `.agents/skills` omitted on this dogfood tree for the same catalog-binding reason

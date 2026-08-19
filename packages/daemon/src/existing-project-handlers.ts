@@ -6,6 +6,7 @@ import {
   prepareExistingProjectWorkspace,
   validateExistingProjectAdoptionDecisions,
   withCanonicalProjectRootLock,
+  type ExistingProjectAdoptionGenerationOptions,
 } from "@intentloom/application";
 import type {
   ExistingProjectAdoptionDecisionsRequest,
@@ -290,12 +291,14 @@ export async function handleExistingProjectWorkspacePrepare(
 
 export async function handleExistingProjectAdoptionPlan(
   request: ExistingProjectAdoptionPlanRequest,
+  generation: ExistingProjectAdoptionGenerationOptions = {},
 ): Promise<
   Omit<ExistingProjectAdoptionPlanResponse["result"], "protocolVersion">
 > {
   const viewmodel = await prepareExistingProjectAdoptionPlan(
     {
       root: resolve(request.params.root),
+      ...generation,
       ...(request.params.projectId !== undefined
         ? { projectId: request.params.projectId }
         : {}),
@@ -307,6 +310,7 @@ export async function handleExistingProjectAdoptionPlan(
 
 export async function handleExistingProjectAdoptionDecisions(
   request: ExistingProjectAdoptionDecisionsRequest,
+  generation: ExistingProjectAdoptionGenerationOptions = {},
 ): Promise<
   Omit<ExistingProjectAdoptionDecisionsResponse["result"], "protocolVersion">
 > {
@@ -315,6 +319,7 @@ export async function handleExistingProjectAdoptionDecisions(
       root: resolve(request.params.root),
       previewIdentity: request.params.previewIdentity,
       decisions: request.params.decisions,
+      ...generation,
       ...(request.params.projectId !== undefined
         ? { projectId: request.params.projectId }
         : {}),
