@@ -7,6 +7,14 @@ import { parseExistingProjectAdoptionPlanRequest } from "./adoption-plan-daemon-
 import type { ExistingProjectAdoptionPlanRequest } from "./adoption-plan-daemon-rpc.js";
 import { parseExistingProjectAdoptionDecisionsRequest } from "./adoption-decision-daemon-rpc.js";
 import type { ExistingProjectAdoptionDecisionsRequest } from "./adoption-decision-daemon-rpc.js";
+import {
+  parseExistingProjectAdoptionPrepareRequest,
+  parseExistingProjectAdoptionRevalidateRequest,
+} from "./adoption-prepared-plan-daemon-rpc.js";
+import type {
+  ExistingProjectAdoptionPrepareRequest,
+  ExistingProjectAdoptionRevalidateRequest,
+} from "./adoption-prepared-plan-daemon-rpc.js";
 import { parseFeatureIntentDaemonRequest } from "./feature-intent-daemon-rpc.js";
 import type { FeatureIntentDaemonRequest } from "./feature-intent-daemon-rpc.js";
 import { parseBoundedExecutionDaemonRequest } from "./bounded-execution-daemon-rpc.js";
@@ -18,6 +26,8 @@ export type WorkspaceSliceDaemonRequest =
   | ExistingProjectWorkspacePrepareRequest
   | ExistingProjectAdoptionPlanRequest
   | ExistingProjectAdoptionDecisionsRequest
+  | ExistingProjectAdoptionPrepareRequest
+  | ExistingProjectAdoptionRevalidateRequest
   | FeatureIntentDaemonRequest
   | BoundedExecutionDaemonRequest
   | ContinuousLoopDaemonRequest
@@ -32,6 +42,8 @@ export function parseWorkspaceSliceDaemonRequest(
     parseExistingProjectDaemonRequest(method, params, id) ??
     parseExistingProjectAdoptionPlanRequest(method, params, id) ??
     parseExistingProjectAdoptionDecisionsRequest(method, params, id) ??
+    parseExistingProjectAdoptionPrepareRequest(method, params, id) ??
+    parseExistingProjectAdoptionRevalidateRequest(method, params, id) ??
     parseFeatureIntentDaemonRequest(method, params, id) ??
     parseBoundedExecutionDaemonRequest(method, params, id) ??
     parseContinuousLoopDaemonRequest(method, params, id) ??

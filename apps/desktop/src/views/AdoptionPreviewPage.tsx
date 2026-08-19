@@ -4,6 +4,8 @@ import {
   type AdoptionDecisionKind,
   type ExistingProjectAdoptionDecisionViewModel,
   type ExistingProjectAdoptionPlanViewModel,
+  type ExistingProjectAdoptionPreparedPlan,
+  type ExistingProjectAdoptionRevalidateViewModel,
 } from "@intentloom/protocol";
 import { Button } from "../design/components/core/Button.js";
 import { EmptyState } from "../design/components/states/EmptyState.js";
@@ -15,8 +17,14 @@ import {
 } from "./adoption-preview-controller.js";
 import {
   clearStaleAdoptionDecisions,
+  selectedDecisionsFromMap,
   validateAdoptionDecisions,
 } from "./adoption-decision-controller.js";
+import {
+  prepareAdoptionPlan,
+  revalidateAdoptionPlan,
+} from "./adoption-prepared-plan-controller.js";
+import { AdoptionPreparedPlanPanel } from "./AdoptionPreparedPlanPanel.js";
 import { renderAdoptionDecisionSummary } from "./adoption-decision-presentation.js";
 import {
   adoptionPreviewHasManualDecisions,
@@ -48,10 +56,16 @@ export function AdoptionPreviewPage({
   >(new Map());
   const [decisionResult, setDecisionResult] =
     useState<ExistingProjectAdoptionDecisionViewModel | null>(null);
+  const [preparedPlan, setPreparedPlan] =
+    useState<ExistingProjectAdoptionPreparedPlan | null>(null);
+  const [revalidation, setRevalidation] =
+    useState<ExistingProjectAdoptionRevalidateViewModel | null>(null);
 
   const resetDecisions = useCallback(() => {
     setSelections(new Map());
     setDecisionResult(null);
+    setPreparedPlan(null);
+    setRevalidation(null);
   }, []);
 
   const loadPreview = useCallback(async () => {
@@ -117,6 +131,30 @@ export function AdoptionPreviewPage({
     },
     [plan, resetDecisions, root, selections],
   );
+
+  const preparePlan = useCallback(async () => {
+    if (!plan) return;
+    const prepared = await prepareAdoptionPlan({
+      client: desktopClient,
+      root,
+      previewIdentity: plan.previewIdentity,
+      projectId: plan.projectId,
+      decisions: selectedDecisionsFromMap(selections),
+    });
+    setPreparedPlan(prepared.result?.plan ?? null);
+    setRevalidation(null);
+    if (prepared.errorMessage) setErrorMessage(prepared.errorMessage);
+  }, [plan, root, selections]);
+
+  const revalidatePlan = useCallback(async () => {
+    const checked = await revalidateAdoptionPlan({
+      client: desktopClient,
+      root,
+      plan: preparedPlan,
+    });
+    setRevalidation(checked.result);
+    if (checked.errorMessage) setErrorMessage(checked.errorMessage);
+  }, [preparedPlan, root]);
 
   if (status === "idle" || status === "loading" || !root) {
     const copy = ADOPTION_PREVIEW_STATUS_COPY.idle;
@@ -214,6 +252,13 @@ export function AdoptionPreviewPage({
         </Button>
       </div>
       <AdoptionProjectSummary plan={plan} selectedRoot={root} />
+      <AdoptionPreparedPlanPanel
+        canPrepare={status === "ready" || status === "empty"}
+        onPrepare={() => void preparePlan()}
+        onRevalidate={() => void revalidatePlan()}
+        plan={preparedPlan}
+        revalidation={revalidation}
+      />
       <p aria-live="polite">
         {renderAdoptionDecisionSummary({
           decisionsPrepared,

@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Desktop adoption decision modeling** squash-merged to `main` as `ad20ed2` (PR #340).
+Status: **Prepared adoption plan security envelope** on `feat/adoption-prepared-plan-envelope`.
 
-Active branch: `main`
+Active branch: `feat/adoption-prepared-plan-envelope`
 
-Current objective: Prepared adoption plan security envelope (plan identity + digest + project fingerprint + expiry/staleness + revalidation). Still no Apply.
+Current objective: Explicit adoption approval bound to an unexpired, revalidated prepared-plan digest. Still no Apply unless that later slice authorizes it.
 
-Next first action: Implement the prepared adoption plan security envelope. Do not add Approved Apply until that boundary exists.
+Next first action: Explicit adoption approval. Do not combine approval with transactional Apply unless the security architecture requires one bounded operation.
 
 Known open items, in the order they should be handled:
 
@@ -95,6 +95,40 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-19, Prepared adoption plan security envelope
+
+- **Status:** complete on branch; PR pending.
+- **Agent/tool:** Cursor
+- **Branch:** `feat/adoption-prepared-plan-envelope`
+- **Commits:** pending
+- **Pull request:** pending
+- **Objective:** Seal validated adoption decisions into a deterministic, expiring, revalidatable prepared plan without applying it.
+- **Completed:**
+  - Reused `checksum`, `canonicalJson`, `deterministicId`, adoption-relevant content hashes, and decision validation.
+  - Read-only `prepare`/`revalidate` RPCs with separate previewIdentity, preparedPlanId, planDigest, and projectFingerprint.
+- **Not completed:** explicit approval, Approved Apply, transactional mutation, adoption wizard completion.
+- **Files or packages changed:** protocol, application, daemon, Desktop client/minimal UI, tests, changelog, project state, adoption roadmap, capability matrix, Duty Watch.
+- **Validation:** focused prepared-plan/daemon/Desktop tests passed; `pnpm verify` (1515 passed, 3 skipped); `git diff --check`; `cargo test method_allowlist` (1 passed).
+- **Decisions and assumptions:** Digest excludes createdAt/expiresAt so the same logical plan is stable; expiry is checked separately. Replace remains unsupported. TTL is 15 minutes via injected clock.
+- **Risks or compatibility impact:** Renderer still cannot call apply. Tampered digest/planId fail closed.
+- **Open issues or blockers:** none for this slice.
+- **Next first action:** Explicit adoption approval bound to an unexpired, revalidated prepared-plan digest. Still no Apply unless that slice authorizes it.
+- **Evidence:** `packages/application/src/existing-project-adoption-prepared-plan.ts`.
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant tests, type checks, builds, or compatibility checks passed
+      (`pnpm verify`: 1515 passed, 3 skipped; `cargo test method_allowlist`: 1 passed)
+- [ ] Atomic commit policy and commit-message checks passed
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `PROJECT_STATE.md` updated when applicable
+- [x] `DUTY_WATCH.md` handoff completed
+- [x] Related roadmap, ADR, changelog, migration, or reference docs updated
+- [x] Failed or unavailable checks recorded
 
 ### 2026-08-19, Desktop adoption decision modeling
 
