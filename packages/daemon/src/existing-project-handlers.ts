@@ -11,10 +11,6 @@ import type {
   ExistingProjectAdoptionDecisionsResponse,
   ExistingProjectAdoptionPlanRequest,
   ExistingProjectAdoptionPlanResponse,
-  ExistingProjectAdoptionPrepareRequest,
-  ExistingProjectAdoptionPrepareResponse,
-  ExistingProjectAdoptionRevalidateRequest,
-  ExistingProjectAdoptionRevalidateResponse,
   ExistingProjectViewmodelPayload,
   ExistingProjectWorkspacePrepareRequest,
   ExistingProjectWorkspacePrepareResponse,
@@ -22,37 +18,33 @@ import type {
 import {
   EXISTING_PROJECT_ADOPTION_DECISIONS_METHOD,
   EXISTING_PROJECT_ADOPTION_PLAN_METHOD,
-  EXISTING_PROJECT_ADOPTION_PREPARE_METHOD,
-  EXISTING_PROJECT_ADOPTION_REVALIDATE_METHOD,
   EXISTING_PROJECT_WORKSPACE_PREPARE_METHOD,
   createExistingProjectAdoptionDecisionsResponse,
   createExistingProjectAdoptionPlanResponse,
-  createExistingProjectAdoptionPrepareResponse,
-  createExistingProjectAdoptionRevalidateResponse,
   createExistingProjectWorkspacePrepareResponse,
   isExistingProjectAdoptionDecisionsMethod,
   isExistingProjectAdoptionPlanMethod,
-  isExistingProjectAdoptionPrepareMethod,
-  isExistingProjectAdoptionRevalidateMethod,
   isExistingProjectDaemonMethod,
 } from "@intentloom/protocol";
 import type { DaemonCapability } from "@intentloom/protocol";
+import {
+  dispatchExistingProjectPreparedPlanRequest,
+  existingProjectPreparedPlanCapabilities,
+  isExistingProjectPreparedPlanRequest,
+  type ExistingProjectPreparedPlanDaemonOptions,
+} from "./existing-project-prepared-plan-handlers.js";
 
-type ExistingProjectRequest =
+type ExistingProjectCoreRequest =
   | ExistingProjectWorkspacePrepareRequest
   | ExistingProjectAdoptionPlanRequest
-  | ExistingProjectAdoptionDecisionsRequest
-  | ExistingProjectAdoptionPrepareRequest
-  | ExistingProjectAdoptionRevalidateRequest;
+  | ExistingProjectAdoptionDecisionsRequest;
 
-type ExistingProjectResponse =
+type ExistingProjectCoreResponse =
   | ExistingProjectWorkspacePrepareResponse
   | ExistingProjectAdoptionPlanResponse
-  | ExistingProjectAdoptionDecisionsResponse
-  | ExistingProjectAdoptionPrepareResponse
-  | ExistingProjectAdoptionRevalidateResponse;
+  | ExistingProjectAdoptionDecisionsResponse;
 
-export interface ExistingProjectDaemonOptions {
+export interface ExistingProjectDaemonOptions extends ExistingProjectPreparedPlanDaemonOptions {
   readonly existingProjectWorkspacePrepare?: (
     request: ExistingProjectWorkspacePrepareRequest,
   ) => Promise<
@@ -68,16 +60,6 @@ export interface ExistingProjectDaemonOptions {
   ) => Promise<
     Omit<ExistingProjectAdoptionDecisionsResponse["result"], "protocolVersion">
   >;
-  readonly existingProjectAdoptionPrepare?: (
-    request: ExistingProjectAdoptionPrepareRequest,
-  ) => Promise<
-    Omit<ExistingProjectAdoptionPrepareResponse["result"], "protocolVersion">
-  >;
-  readonly existingProjectAdoptionRevalidate?: (
-    request: ExistingProjectAdoptionRevalidateRequest,
-  ) => Promise<
-    Omit<ExistingProjectAdoptionRevalidateResponse["result"], "protocolVersion">
-  >;
 }
 
 function enabled(method: string, operation: string): DaemonCapability {
@@ -88,6 +70,7 @@ export function existingProjectCapabilities(
   options: ExistingProjectDaemonOptions,
 ): readonly DaemonCapability[] {
   return [
+    ...existingProjectPreparedPlanCapabilities(options),
     ...(options.existingProjectWorkspacePrepare
       ? [
           enabled(
@@ -112,154 +95,101 @@ export function existingProjectCapabilities(
           ),
         ]
       : []),
-    ...(options.existingProjectAdoptionPrepare
-      ? [
-          enabled(
-            EXISTING_PROJECT_ADOPTION_PREPARE_METHOD,
-            "existing-project.adoption.prepare",
-          ),
-        ]
-      : []),
-    ...(options.existingProjectAdoptionRevalidate
-      ? [
-          enabled(
-            EXISTING_PROJECT_ADOPTION_REVALIDATE_METHOD,
-            "existing-project.adoption.revalidate",
-          ),
-        ]
-      : []),
   ];
 }
 
-function isAdoptionDecisionsRequest(
-  request: ExistingProjectRequest,
+function isDecisionsRequest(
+  request: ExistingProjectCoreRequest,
 ): request is ExistingProjectAdoptionDecisionsRequest {
   return isExistingProjectAdoptionDecisionsMethod(request.method);
 }
 
-function isAdoptionPlanRequest(
-  request: ExistingProjectRequest,
+function isPlanRequest(
+  request: ExistingProjectCoreRequest,
 ): request is ExistingProjectAdoptionPlanRequest {
   return isExistingProjectAdoptionPlanMethod(request.method);
 }
 
-function isAdoptionPrepareRequest(
-  request: ExistingProjectRequest,
-): request is ExistingProjectAdoptionPrepareRequest {
-  return isExistingProjectAdoptionPrepareMethod(request.method);
-}
-
-function isAdoptionRevalidateRequest(
-  request: ExistingProjectRequest,
-): request is ExistingProjectAdoptionRevalidateRequest {
-  return isExistingProjectAdoptionRevalidateMethod(request.method);
-}
-
 export async function dispatchExistingProjectRequest(
-  request: ExistingProjectRequest,
+  request: { readonly method: string; readonly id: string | number },
   options: ExistingProjectDaemonOptions,
   canonicalProjectRoot: (root: string) => Promise<string>,
-): Promise<ExistingProjectResponse | null> {
-  if (isAdoptionPrepareRequest(request)) {
-    const prepare = options.existingProjectAdoptionPrepare;
-    if (!prepare) return null;
-    const root = await canonicalProjectRoot(request.params.root);
-    const payload = await prepare({
-      ...request,
-      params: {
-        protocolVersion: request.params.protocolVersion,
-        root,
-        previewIdentity: request.params.previewIdentity,
-        decisions: request.params.decisions,
-        ...(request.params.projectId !== undefined
-          ? { projectId: request.params.projectId }
-          : {}),
-      },
-    });
-    return createExistingProjectAdoptionPrepareResponse(
-      request.id,
-      payload.viewmodel,
+): Promise<ExistingProjectCoreResponse | PreparedPlanResponse | null> {
+  if (isExistingProjectPreparedPlanRequest(request)) {
+    return dispatchExistingProjectPreparedPlanRequest(
+      request,
+      options,
+      canonicalProjectRoot,
     );
   }
-  if (isAdoptionRevalidateRequest(request)) {
-    const revalidate = options.existingProjectAdoptionRevalidate;
-    if (!revalidate) return null;
-    const root = await canonicalProjectRoot(request.params.root);
-    const payload = await revalidate({
-      ...request,
-      params: {
-        protocolVersion: request.params.protocolVersion,
-        root,
-        preparedPlan: request.params.preparedPlan,
-      },
-    });
-    return createExistingProjectAdoptionRevalidateResponse(
-      request.id,
-      payload.viewmodel,
-    );
-  }
-  if (isAdoptionDecisionsRequest(request)) {
+  const typed = request as ExistingProjectCoreRequest;
+  if (isDecisionsRequest(typed)) {
     const validate = options.existingProjectAdoptionDecisions;
     if (!validate) return null;
-    const root = await canonicalProjectRoot(request.params.root);
+    const root = await canonicalProjectRoot(typed.params.root);
     const payload = await validate({
-      ...request,
+      ...typed,
       params: {
-        protocolVersion: request.params.protocolVersion,
+        protocolVersion: typed.params.protocolVersion,
         root,
-        previewIdentity: request.params.previewIdentity,
-        decisions: request.params.decisions,
-        ...(request.params.projectId !== undefined
-          ? { projectId: request.params.projectId }
+        previewIdentity: typed.params.previewIdentity,
+        decisions: typed.params.decisions,
+        ...(typed.params.projectId !== undefined
+          ? { projectId: typed.params.projectId }
           : {}),
       },
     });
     return createExistingProjectAdoptionDecisionsResponse(
-      request.id,
+      typed.id,
       payload.viewmodel,
     );
   }
-  if (isAdoptionPlanRequest(request)) {
+  if (isPlanRequest(typed)) {
     const plan = options.existingProjectAdoptionPlan;
     if (!plan) return null;
-    const root = await canonicalProjectRoot(request.params.root);
+    const root = await canonicalProjectRoot(typed.params.root);
     const payload = await plan({
-      ...request,
+      ...typed,
       params: {
-        protocolVersion: request.params.protocolVersion,
+        protocolVersion: typed.params.protocolVersion,
         root,
-        ...(request.params.projectId !== undefined
-          ? { projectId: request.params.projectId }
+        ...(typed.params.projectId !== undefined
+          ? { projectId: typed.params.projectId }
           : {}),
       },
     });
     return createExistingProjectAdoptionPlanResponse(
-      request.id,
+      typed.id,
       payload.viewmodel,
     );
   }
-  if (!isExistingProjectDaemonMethod(request.method)) return null;
+  if (!isExistingProjectDaemonMethod(typed.method)) return null;
   const prepare = options.existingProjectWorkspacePrepare;
   if (!prepare) return null;
-  const root = await canonicalProjectRoot(request.params.root);
+  const workspace = typed as ExistingProjectWorkspacePrepareRequest;
+  const root = await canonicalProjectRoot(workspace.params.root);
   const payload = await prepare({
-    ...request,
+    ...workspace,
     params: {
-      protocolVersion: request.params.protocolVersion,
+      protocolVersion: workspace.params.protocolVersion,
       root,
-      ...(request.params.projectId !== undefined
-        ? { projectId: request.params.projectId }
+      ...(workspace.params.projectId !== undefined
+        ? { projectId: workspace.params.projectId }
         : {}),
-      ...(request.params.scope !== undefined
-        ? { scope: request.params.scope }
+      ...(workspace.params.scope !== undefined
+        ? { scope: workspace.params.scope }
         : {}),
     },
   });
   return createExistingProjectWorkspacePrepareResponse(
-    request.id,
+    workspace.id,
     payload.viewmodel,
   );
 }
+
+type PreparedPlanResponse = Awaited<
+  ReturnType<typeof dispatchExistingProjectPreparedPlanRequest>
+>;
 
 export async function handleExistingProjectWorkspacePrepare(
   request: ExistingProjectWorkspacePrepareRequest,
@@ -322,12 +252,11 @@ export async function handleExistingProjectAdoptionDecisions(
 
 export function isExistingProjectRequest(request: {
   readonly method: string;
-}): request is ExistingProjectRequest {
+}): boolean {
   return (
     isExistingProjectDaemonMethod(request.method) ||
     isExistingProjectAdoptionPlanMethod(request.method) ||
     isExistingProjectAdoptionDecisionsMethod(request.method) ||
-    isExistingProjectAdoptionPrepareMethod(request.method) ||
-    isExistingProjectAdoptionRevalidateMethod(request.method)
+    isExistingProjectPreparedPlanRequest(request)
   );
 }

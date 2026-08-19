@@ -1,4 +1,5 @@
 import type {
+  ExistingProjectAdoptionApproveViewModel,
   ExistingProjectAdoptionPreparedPlan,
   ExistingProjectAdoptionPrepareViewModel,
   ExistingProjectAdoptionRevalidateViewModel,
@@ -18,6 +19,11 @@ export interface AdoptionPreparedPlanClient {
     preparedPlan: ExistingProjectAdoptionPreparedPlan,
     signal?: AbortSignal,
   ) => Promise<ExistingProjectAdoptionRevalidateViewModel>;
+  readonly existingProjectAdoptionApprove: (
+    root: string,
+    preparedPlan: ExistingProjectAdoptionPreparedPlan,
+    signal?: AbortSignal,
+  ) => Promise<ExistingProjectAdoptionApproveViewModel>;
 }
 
 function errorCode(error: unknown): string | null {
@@ -126,6 +132,62 @@ export async function revalidateAdoptionPlan(options: {
       errorMessage:
         error instanceof Error ? error.message : "Revalidate plan failed",
       invokedMethods: ["existingProjectAdoptionRevalidate"],
+    };
+  }
+}
+
+export function canApprovePreparedPlan(
+  revalidation: ExistingProjectAdoptionRevalidateViewModel | null,
+): boolean {
+  return revalidation?.status === "valid";
+}
+
+export async function approveAdoptionPlan(options: {
+  readonly root: string | null;
+  readonly plan: ExistingProjectAdoptionPreparedPlan | null;
+  readonly client: AdoptionPreparedPlanClient;
+  readonly signal?: AbortSignal;
+}): Promise<{
+  readonly status: "ready" | "denied" | "error" | "disconnected" | "idle";
+  readonly result: ExistingProjectAdoptionApproveViewModel | null;
+  readonly errorMessage: string | null;
+  readonly invokedMethods: readonly string[];
+}> {
+  if (!options.root || !options.plan) {
+    return {
+      status: "idle",
+      result: null,
+      errorMessage: null,
+      invokedMethods: [],
+    };
+  }
+  try {
+    const result = await options.client.existingProjectAdoptionApprove(
+      options.root,
+      options.plan,
+      options.signal,
+    );
+    if (result.applied || result.changesApplied !== 0) {
+      return {
+        status: "error",
+        result: null,
+        errorMessage: "Approval reported applied changes.",
+        invokedMethods: ["existingProjectAdoptionApprove"],
+      };
+    }
+    return {
+      status: result.status === "approved" ? "ready" : "denied",
+      result,
+      errorMessage: null,
+      invokedMethods: ["existingProjectAdoptionApprove"],
+    };
+  } catch (error: unknown) {
+    return {
+      status: errorCode(error) === "disconnected" ? "disconnected" : "error",
+      result: null,
+      errorMessage:
+        error instanceof Error ? error.message : "Approve plan failed",
+      invokedMethods: ["existingProjectAdoptionApprove"],
     };
   }
 }

@@ -592,8 +592,10 @@ choices are validated through
 `intentloom.existing-project.adoption.decisions.v1` without writing the
 project. Prepared adoption plan security envelope implemented:
 `prepare`/`revalidate` bind plan identity, digest, fingerprint, and expiry
-without approval or Apply. Approved Apply and transactional mutation are not
-implemented.
+without approval or Apply. Explicit adoption approval implemented:
+`intentloom.existing-project.adoption.approve.v1` returns `approved: true`
+with `applied: false` and does not write the project. Approved Apply and
+transactional mutation are not implemented.
 
 P1 defers real workspace dogfood to the maintainer
 ([2026-08-16-workspace-public-gate.md](docs/releases/dogfooding/2026-08-16-workspace-public-gate.md)).

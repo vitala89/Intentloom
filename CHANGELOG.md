@@ -7,6 +7,9 @@ All notable changes are documented here. This project follows Keep a Changelog p
 Changes listed here are merged after the current release-preparation scope and
 are not included in the current npm artifact until a later release.
 
+- Explicit adoption approval implemented:
+  `intentloom.existing-project.adoption.approve.v1` binds a local-interactive
+  approval receipt to one unexpired, revalidated prepared plan. No Apply.
 - Prepared adoption plan security envelope implemented:
   `intentloom.existing-project.adoption.prepare.v1` and
   `intentloom.existing-project.adoption.revalidate.v1` bind preview identity,

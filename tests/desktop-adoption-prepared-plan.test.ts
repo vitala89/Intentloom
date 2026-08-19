@@ -125,6 +125,9 @@ describe("desktop adoption prepared plan client", () => {
       "intentloom.existing-project.adoption.revalidate.v1",
     );
     expect(allowlist).toContain(
+      "intentloom.existing-project.adoption.approve.v1",
+    );
+    expect(allowlist).toContain(
       "intentloom.existing-project.adoption.apply.v1",
     );
     expect(allowlist).toContain("assert!(!is_foundation_method(");

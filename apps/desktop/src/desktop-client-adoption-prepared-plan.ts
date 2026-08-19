@@ -1,8 +1,11 @@
 import {
+  createExistingProjectAdoptionApproveRequest,
   createExistingProjectAdoptionPrepareRequest,
   createExistingProjectAdoptionRevalidateRequest,
+  parseExistingProjectAdoptionApproveViewModel,
   parseExistingProjectAdoptionPrepareViewModel,
   parseExistingProjectAdoptionRevalidateViewModel,
+  type ExistingProjectAdoptionApproveViewModel,
   type ExistingProjectAdoptionPreparedPlan,
   type ExistingProjectAdoptionPrepareViewModel,
   type ExistingProjectAdoptionRevalidateViewModel,
@@ -47,6 +50,21 @@ export function existingProjectAdoptionPreparedPlanDesktopMethods(
       );
       const viewmodel = await foundationRequest(request, signal);
       return parseExistingProjectAdoptionRevalidateViewModel(viewmodel);
+    },
+    async existingProjectAdoptionApprove(
+      root: string,
+      preparedPlan: ExistingProjectAdoptionPreparedPlan,
+      signal?: AbortSignal,
+    ): Promise<ExistingProjectAdoptionApproveViewModel> {
+      const request = createExistingProjectAdoptionApproveRequest(
+        "desktop-existing-project-adoption-approve",
+        root,
+        preparedPlan.preparedPlanId,
+        preparedPlan.planDigest,
+        preparedPlan,
+      );
+      const viewmodel = await foundationRequest(request, signal);
+      return parseExistingProjectAdoptionApproveViewModel(viewmodel);
     },
   };
 }

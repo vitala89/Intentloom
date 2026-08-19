@@ -6,6 +6,7 @@ import {
   type ExistingProjectAdoptionPlanViewModel,
   type ExistingProjectAdoptionPreparedPlan,
   type ExistingProjectAdoptionRevalidateViewModel,
+  type ExistingProjectAdoptionApproveViewModel,
 } from "@intentloom/protocol";
 import { Button } from "../design/components/core/Button.js";
 import { EmptyState } from "../design/components/states/EmptyState.js";
@@ -21,6 +22,7 @@ import {
   validateAdoptionDecisions,
 } from "./adoption-decision-controller.js";
 import {
+  approveAdoptionPlan,
   prepareAdoptionPlan,
   revalidateAdoptionPlan,
 } from "./adoption-prepared-plan-controller.js";
@@ -60,12 +62,15 @@ export function AdoptionPreviewPage({
     useState<ExistingProjectAdoptionPreparedPlan | null>(null);
   const [revalidation, setRevalidation] =
     useState<ExistingProjectAdoptionRevalidateViewModel | null>(null);
+  const [approval, setApproval] =
+    useState<ExistingProjectAdoptionApproveViewModel | null>(null);
 
   const resetDecisions = useCallback(() => {
     setSelections(new Map());
     setDecisionResult(null);
     setPreparedPlan(null);
     setRevalidation(null);
+    setApproval(null);
   }, []);
 
   const loadPreview = useCallback(async () => {
@@ -143,6 +148,7 @@ export function AdoptionPreviewPage({
     });
     setPreparedPlan(prepared.result?.plan ?? null);
     setRevalidation(null);
+    setApproval(null);
     if (prepared.errorMessage) setErrorMessage(prepared.errorMessage);
   }, [plan, root, selections]);
 
@@ -153,7 +159,18 @@ export function AdoptionPreviewPage({
       plan: preparedPlan,
     });
     setRevalidation(checked.result);
+    setApproval(null);
     if (checked.errorMessage) setErrorMessage(checked.errorMessage);
+  }, [preparedPlan, root]);
+
+  const approvePlan = useCallback(async () => {
+    const approved = await approveAdoptionPlan({
+      client: desktopClient,
+      root,
+      plan: preparedPlan,
+    });
+    setApproval(approved.result);
+    if (approved.errorMessage) setErrorMessage(approved.errorMessage);
   }, [preparedPlan, root]);
 
   if (status === "idle" || status === "loading" || !root) {
@@ -253,7 +270,9 @@ export function AdoptionPreviewPage({
       </div>
       <AdoptionProjectSummary plan={plan} selectedRoot={root} />
       <AdoptionPreparedPlanPanel
+        approval={approval}
         canPrepare={status === "ready" || status === "empty"}
+        onApprove={() => void approvePlan()}
         onPrepare={() => void preparePlan()}
         onRevalidate={() => void revalidatePlan()}
         plan={preparedPlan}

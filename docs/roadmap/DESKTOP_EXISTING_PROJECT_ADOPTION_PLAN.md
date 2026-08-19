@@ -418,6 +418,30 @@ be sealed into a read-only prepared plan with `preparedPlanId`, `planDigest`,
 `projectFingerprint`, `createdAt`, and `expiresAt`. Revalidation detects
 expiry, fingerprint/proposal drift, and tamper. No approval or Apply.
 
+### C4. Explicit adoption approval
+
+Explicit adoption approval implemented. `approveExistingProjectAdoptionPreparedPlan`
+and `intentloom.existing-project.adoption.approve.v1` revalidate the prepared
+plan, then return a local-interactive approval receipt bound to
+`preparedPlanId`, `planDigest`, `projectFingerprint`, and canonical root.
+Approval does not outlive `preparedPlan.expiresAt`. `approved: true`,
+`applied: false`, `changesApplied: 0`. No project writes.
+
+The receipt is returned to the caller. It is not persisted in the selected
+project. Future Apply must revalidate again and must not treat this receipt as
+mutation.
+
+Security mitigations in this slice:
+
+- Approve revalidates on the application/daemon path (UI "valid" is not trusted).
+- Root, digest, preparedPlanId, fingerprint, expiry, and unresolved decisions
+  fail closed.
+- Tauri allowlists `adoption.approve.v1` and still denies `adoption.apply.v1`
+  without a method-family wildcard.
+- Approval source is `local-interactive`; no fake user identity.
+- Residual risk: TOCTOU between approval and future Apply, and caller-held
+  duplicate receipts, remain for the Apply slice.
+
 ### D. Approved adoption apply
 
 Only after the existing Approved Apply threat-model requirements are satisfied, expose one explicit reviewed adoption transaction.
