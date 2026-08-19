@@ -5,3 +5,7 @@ export * from "./existing-project-fixtures.js";
 export * from "./existing-project-adoption-plan.js";
 export * from "./existing-project-adoption-preview-identity.js";
 export * from "./existing-project-adoption-decisions.js";
+export * from "./existing-project-adoption-project-fingerprint.js";
+export * from "./existing-project-adoption-prepared-plan-digest.js";
+export * from "./existing-project-adoption-prepared-plan.js";
+export * from "./existing-project-adoption-prepared-plan-revalidate.js";

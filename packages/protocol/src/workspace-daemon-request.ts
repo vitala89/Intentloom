@@ -32,6 +32,8 @@ import {
   EXISTING_PROJECT_WORKSPACE_PREPARE_METHOD,
   EXISTING_PROJECT_ADOPTION_PLAN_METHOD,
   EXISTING_PROJECT_ADOPTION_DECISIONS_METHOD,
+  EXISTING_PROJECT_ADOPTION_PREPARE_METHOD,
+  EXISTING_PROJECT_ADOPTION_REVALIDATE_METHOD,
   FEATURE_INTENT_WORKSPACE_PREPARE_METHOD,
   FEATURE_INTENT_WORKSPACE_ANALYZE_METHOD,
   BOUNDED_EXECUTION_WORKSPACE_PREPARE_METHOD,
@@ -155,6 +157,9 @@ export * from "./adoption-plan-daemon-rpc.js";
 export * from "./adoption-decision.js";
 export * from "./adoption-decision-parse.js";
 export * from "./adoption-decision-daemon-rpc.js";
+export * from "./adoption-prepared-plan.js";
+export * from "./adoption-prepared-plan-parse.js";
+export * from "./adoption-prepared-plan-daemon-rpc.js";
 export * from "./feature-intent-workspace.js";
 export * from "./feature-intent-daemon-rpc.js";
 export * from "./bounded-execution-workspace.js";
@@ -198,6 +203,8 @@ export const WORKSPACE_DAEMON_REQUEST_METHODS = [
   EXISTING_PROJECT_WORKSPACE_PREPARE_METHOD,
   EXISTING_PROJECT_ADOPTION_PLAN_METHOD,
   EXISTING_PROJECT_ADOPTION_DECISIONS_METHOD,
+  EXISTING_PROJECT_ADOPTION_PREPARE_METHOD,
+  EXISTING_PROJECT_ADOPTION_REVALIDATE_METHOD,
   FEATURE_INTENT_WORKSPACE_PREPARE_METHOD,
   FEATURE_INTENT_WORKSPACE_ANALYZE_METHOD,
   BOUNDED_EXECUTION_WORKSPACE_PREPARE_METHOD,

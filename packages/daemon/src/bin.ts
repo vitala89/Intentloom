@@ -60,6 +60,10 @@ import {
   handleExistingProjectWorkspacePrepare,
 } from "./existing-project-handlers.js";
 import {
+  handleExistingProjectAdoptionPrepare,
+  handleExistingProjectAdoptionRevalidate,
+} from "./existing-project-prepared-plan-handlers.js";
+import {
   handleFeatureIntentWorkspaceAnalyze,
   handleFeatureIntentWorkspacePrepare,
 } from "./feature-intent-handlers.js";
@@ -214,6 +218,8 @@ async function main(): Promise<void> {
     existingProjectWorkspacePrepare: handleExistingProjectWorkspacePrepare,
     existingProjectAdoptionPlan: handleExistingProjectAdoptionPlan,
     existingProjectAdoptionDecisions: handleExistingProjectAdoptionDecisions,
+    existingProjectAdoptionPrepare: handleExistingProjectAdoptionPrepare,
+    existingProjectAdoptionRevalidate: handleExistingProjectAdoptionRevalidate,
     featureIntentWorkspacePrepare: handleFeatureIntentWorkspacePrepare,
     featureIntentWorkspaceAnalyze: handleFeatureIntentWorkspaceAnalyze,
     boundedExecutionWorkspacePrepare: handleBoundedExecutionWorkspacePrepare,

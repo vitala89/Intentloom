@@ -11,6 +11,10 @@ import type {
   ExistingProjectAdoptionDecisionsResponse,
   ExistingProjectAdoptionPlanRequest,
   ExistingProjectAdoptionPlanResponse,
+  ExistingProjectAdoptionPrepareRequest,
+  ExistingProjectAdoptionPrepareResponse,
+  ExistingProjectAdoptionRevalidateRequest,
+  ExistingProjectAdoptionRevalidateResponse,
   ExistingProjectViewmodelPayload,
   ExistingProjectWorkspacePrepareRequest,
   ExistingProjectWorkspacePrepareResponse,
@@ -18,12 +22,18 @@ import type {
 import {
   EXISTING_PROJECT_ADOPTION_DECISIONS_METHOD,
   EXISTING_PROJECT_ADOPTION_PLAN_METHOD,
+  EXISTING_PROJECT_ADOPTION_PREPARE_METHOD,
+  EXISTING_PROJECT_ADOPTION_REVALIDATE_METHOD,
   EXISTING_PROJECT_WORKSPACE_PREPARE_METHOD,
   createExistingProjectAdoptionDecisionsResponse,
   createExistingProjectAdoptionPlanResponse,
+  createExistingProjectAdoptionPrepareResponse,
+  createExistingProjectAdoptionRevalidateResponse,
   createExistingProjectWorkspacePrepareResponse,
   isExistingProjectAdoptionDecisionsMethod,
   isExistingProjectAdoptionPlanMethod,
+  isExistingProjectAdoptionPrepareMethod,
+  isExistingProjectAdoptionRevalidateMethod,
   isExistingProjectDaemonMethod,
 } from "@intentloom/protocol";
 import type { DaemonCapability } from "@intentloom/protocol";
@@ -31,12 +41,16 @@ import type { DaemonCapability } from "@intentloom/protocol";
 type ExistingProjectRequest =
   | ExistingProjectWorkspacePrepareRequest
   | ExistingProjectAdoptionPlanRequest
-  | ExistingProjectAdoptionDecisionsRequest;
+  | ExistingProjectAdoptionDecisionsRequest
+  | ExistingProjectAdoptionPrepareRequest
+  | ExistingProjectAdoptionRevalidateRequest;
 
 type ExistingProjectResponse =
   | ExistingProjectWorkspacePrepareResponse
   | ExistingProjectAdoptionPlanResponse
-  | ExistingProjectAdoptionDecisionsResponse;
+  | ExistingProjectAdoptionDecisionsResponse
+  | ExistingProjectAdoptionPrepareResponse
+  | ExistingProjectAdoptionRevalidateResponse;
 
 export interface ExistingProjectDaemonOptions {
   readonly existingProjectWorkspacePrepare?: (
@@ -53,6 +67,16 @@ export interface ExistingProjectDaemonOptions {
     request: ExistingProjectAdoptionDecisionsRequest,
   ) => Promise<
     Omit<ExistingProjectAdoptionDecisionsResponse["result"], "protocolVersion">
+  >;
+  readonly existingProjectAdoptionPrepare?: (
+    request: ExistingProjectAdoptionPrepareRequest,
+  ) => Promise<
+    Omit<ExistingProjectAdoptionPrepareResponse["result"], "protocolVersion">
+  >;
+  readonly existingProjectAdoptionRevalidate?: (
+    request: ExistingProjectAdoptionRevalidateRequest,
+  ) => Promise<
+    Omit<ExistingProjectAdoptionRevalidateResponse["result"], "protocolVersion">
   >;
 }
 
@@ -88,6 +112,22 @@ export function existingProjectCapabilities(
           ),
         ]
       : []),
+    ...(options.existingProjectAdoptionPrepare
+      ? [
+          enabled(
+            EXISTING_PROJECT_ADOPTION_PREPARE_METHOD,
+            "existing-project.adoption.prepare",
+          ),
+        ]
+      : []),
+    ...(options.existingProjectAdoptionRevalidate
+      ? [
+          enabled(
+            EXISTING_PROJECT_ADOPTION_REVALIDATE_METHOD,
+            "existing-project.adoption.revalidate",
+          ),
+        ]
+      : []),
   ];
 }
 
@@ -103,11 +143,61 @@ function isAdoptionPlanRequest(
   return isExistingProjectAdoptionPlanMethod(request.method);
 }
 
+function isAdoptionPrepareRequest(
+  request: ExistingProjectRequest,
+): request is ExistingProjectAdoptionPrepareRequest {
+  return isExistingProjectAdoptionPrepareMethod(request.method);
+}
+
+function isAdoptionRevalidateRequest(
+  request: ExistingProjectRequest,
+): request is ExistingProjectAdoptionRevalidateRequest {
+  return isExistingProjectAdoptionRevalidateMethod(request.method);
+}
+
 export async function dispatchExistingProjectRequest(
   request: ExistingProjectRequest,
   options: ExistingProjectDaemonOptions,
   canonicalProjectRoot: (root: string) => Promise<string>,
 ): Promise<ExistingProjectResponse | null> {
+  if (isAdoptionPrepareRequest(request)) {
+    const prepare = options.existingProjectAdoptionPrepare;
+    if (!prepare) return null;
+    const root = await canonicalProjectRoot(request.params.root);
+    const payload = await prepare({
+      ...request,
+      params: {
+        protocolVersion: request.params.protocolVersion,
+        root,
+        previewIdentity: request.params.previewIdentity,
+        decisions: request.params.decisions,
+        ...(request.params.projectId !== undefined
+          ? { projectId: request.params.projectId }
+          : {}),
+      },
+    });
+    return createExistingProjectAdoptionPrepareResponse(
+      request.id,
+      payload.viewmodel,
+    );
+  }
+  if (isAdoptionRevalidateRequest(request)) {
+    const revalidate = options.existingProjectAdoptionRevalidate;
+    if (!revalidate) return null;
+    const root = await canonicalProjectRoot(request.params.root);
+    const payload = await revalidate({
+      ...request,
+      params: {
+        protocolVersion: request.params.protocolVersion,
+        root,
+        preparedPlan: request.params.preparedPlan,
+      },
+    });
+    return createExistingProjectAdoptionRevalidateResponse(
+      request.id,
+      payload.viewmodel,
+    );
+  }
   if (isAdoptionDecisionsRequest(request)) {
     const validate = options.existingProjectAdoptionDecisions;
     if (!validate) return null;
@@ -236,6 +326,8 @@ export function isExistingProjectRequest(request: {
   return (
     isExistingProjectDaemonMethod(request.method) ||
     isExistingProjectAdoptionPlanMethod(request.method) ||
-    isExistingProjectAdoptionDecisionsMethod(request.method)
+    isExistingProjectAdoptionDecisionsMethod(request.method) ||
+    isExistingProjectAdoptionPrepareMethod(request.method) ||
+    isExistingProjectAdoptionRevalidateMethod(request.method)
   );
 }

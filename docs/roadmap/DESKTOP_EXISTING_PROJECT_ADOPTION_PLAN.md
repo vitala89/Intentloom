@@ -409,8 +409,14 @@ via `documentationMappings`). `intentloom.existing-project.adoption.decisions.v1
 validates selections read-only against a preview identity. No Apply, mapping
 persistence, or project mutation.
 
-Replace is not offered. Prepared-plan identity, digest, fingerprint, expiry,
-and approval remain the next slice.
+Replace is not offered.
+
+### C3. Prepared adoption plan security envelope
+
+Prepared adoption plan security envelope implemented. Validated decisions can
+be sealed into a read-only prepared plan with `preparedPlanId`, `planDigest`,
+`projectFingerprint`, `createdAt`, and `expiresAt`. Revalidation detects
+expiry, fingerprint/proposal drift, and tamper. No approval or Apply.
 
 ### D. Approved adoption apply
 

@@ -590,8 +590,10 @@ Desktop now also has a **read-only adoption preview UI** (Slice C) and
 **Desktop adoption decision modeling implemented**: supported mapping
 choices are validated through
 `intentloom.existing-project.adoption.decisions.v1` without writing the
-project. Prepared-plan security envelope, Approved Apply, and transactional
-mutation are not implemented.
+project. Prepared adoption plan security envelope implemented:
+`prepare`/`revalidate` bind plan identity, digest, fingerprint, and expiry
+without approval or Apply. Approved Apply and transactional mutation are not
+implemented.
 
 P1 defers real workspace dogfood to the maintainer
 ([2026-08-16-workspace-public-gate.md](docs/releases/dogfooding/2026-08-16-workspace-public-gate.md)).
