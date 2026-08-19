@@ -252,7 +252,7 @@ describe("Desktop adoption decision modeling", () => {
     expect(Object.keys(methods)).toEqual(["existingProjectAdoptionDecisions"]);
   });
 
-  it("keeps the Tauri allowlist on decisions and excludes apply", () => {
+  it("keeps the Tauri allowlist on decisions and denies unknown mutate RPC", () => {
     const allowlist = readFileSync(
       join(desktopRoot, "src-tauri/src/method_allowlist.rs"),
       "utf8",
@@ -260,8 +260,11 @@ describe("Desktop adoption decision modeling", () => {
     expect(allowlist).toContain(
       "intentloom.existing-project.adoption.decisions.v1",
     );
+    expect(allowlist).toContain(
+      "intentloom.existing-project.adoption.apply.v1",
+    );
     expect(allowlist).toMatch(
-      /assert!\(\s*!is_foundation_method\(\s*"intentloom\.existing-project\.adoption\.apply\.v1"/,
+      /assert!\(\s*!is_foundation_method\(\s*"intentloom\.existing-project\.adoption\.mutate\.v1"/,
     );
   });
 });

@@ -10,3 +10,7 @@ export * from "./existing-project-adoption-prepared-plan-digest.js";
 export * from "./existing-project-adoption-prepared-plan.js";
 export * from "./existing-project-adoption-prepared-plan-revalidate.js";
 export * from "./existing-project-adoption-approval.js";
+export * from "./project-root-mutation-lock.js";
+export * from "./existing-project-adoption-apply-gates.js";
+export * from "./existing-project-adoption-apply-health.js";
+export * from "./existing-project-adoption-apply.js";

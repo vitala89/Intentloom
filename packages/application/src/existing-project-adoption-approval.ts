@@ -27,12 +27,13 @@ function approvalTokenFor(planDigest: string): string {
   return `approved:${planDigest}`;
 }
 
-function buildApproval(input: {
+export function unsignedExistingProjectAdoptionApproval(input: {
   readonly plan: ExistingProjectAdoptionPreparedPlan;
   readonly approvedAt: number;
-}): ExistingProjectAdoptionApproval {
+  readonly approvalId: string;
+}): Omit<ExistingProjectAdoptionApproval, "approvalDigest"> {
   const approvalValidUntil = input.plan.expiresAt;
-  const unsigned = {
+  return {
     schemaVersion:
       EXISTING_PROJECT_ADOPTION_APPROVAL_SCHEMA_VERSION as typeof EXISTING_PROJECT_ADOPTION_APPROVAL_SCHEMA_VERSION,
     readOnly: true as const,
@@ -40,11 +41,7 @@ function buildApproval(input: {
     approved: true as const,
     applied: false as const,
     changesApplied: 0 as const,
-    approvalId: deterministicId("adoption-approval", {
-      preparedPlanId: input.plan.preparedPlanId,
-      planDigest: input.plan.planDigest,
-      approvedAt: input.approvedAt,
-    }),
+    approvalId: input.approvalId,
     approvalSource: EXISTING_PROJECT_ADOPTION_APPROVAL_SOURCE,
     approvalToken: approvalTokenFor(input.plan.planDigest),
     root: input.plan.root,
@@ -56,8 +53,46 @@ function buildApproval(input: {
     approvalValidUntil,
     preparedPlanExpiresAt: input.plan.expiresAt,
   };
+}
+
+function buildApproval(input: {
+  readonly plan: ExistingProjectAdoptionPreparedPlan;
+  readonly approvedAt: number;
+}): ExistingProjectAdoptionApproval {
+  const unsigned = unsignedExistingProjectAdoptionApproval({
+    plan: input.plan,
+    approvedAt: input.approvedAt,
+    approvalId: deterministicId("adoption-approval", {
+      preparedPlanId: input.plan.preparedPlanId,
+      planDigest: input.plan.planDigest,
+      approvedAt: input.approvedAt,
+    }),
+  });
   return {
     ...unsigned,
+    approvalDigest: checksum(canonicalJson(unsigned)),
+  };
+}
+
+export function expectedExistingProjectAdoptionApprovalIntegrity(input: {
+  readonly plan: ExistingProjectAdoptionPreparedPlan;
+  readonly approval: ExistingProjectAdoptionApproval;
+}): {
+  readonly approvalId: string;
+  readonly approvalDigest: string;
+} {
+  const unsigned = unsignedExistingProjectAdoptionApproval({
+    plan: input.plan,
+    approvedAt: input.approval.approvedAt,
+    approvalId: input.approval.approvalId,
+  });
+  const expectedId = deterministicId("adoption-approval", {
+    preparedPlanId: input.plan.preparedPlanId,
+    planDigest: input.plan.planDigest,
+    approvedAt: input.approval.approvedAt,
+  });
+  return {
+    approvalId: expectedId,
     approvalDigest: checksum(canonicalJson(unsigned)),
   };
 }

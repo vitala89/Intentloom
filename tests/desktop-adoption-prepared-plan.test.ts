@@ -113,7 +113,7 @@ describe("desktop adoption prepared plan client", () => {
     expect(methods.join(" ")).not.toContain("apply");
   });
 
-  it("keeps apply denied in the Tauri allowlist", () => {
+  it("does not use a method-family wildcard in the Tauri allowlist", () => {
     const allowlist = readFileSync(
       join(desktopRoot, "src-tauri/src/method_allowlist.rs"),
       "utf8",

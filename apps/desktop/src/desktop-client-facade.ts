@@ -5,6 +5,7 @@ import { continuousLoopDesktopMethods } from "./desktop-client-continuous-loop.j
 import { existingProjectAdoptionPlanDesktopMethods } from "./desktop-client-adoption-plan.js";
 import { existingProjectAdoptionDecisionsDesktopMethods } from "./desktop-client-adoption-decisions.js";
 import { existingProjectAdoptionPreparedPlanDesktopMethods } from "./desktop-client-adoption-prepared-plan.js";
+import { existingProjectAdoptionApplyDesktopMethods } from "./desktop-client-adoption-apply.js";
 
 interface DesktopClientBase {
   foundationRequest(
@@ -27,5 +28,6 @@ export function composeDesktopClient<TBase extends DesktopClientBase>(
     ...existingProjectAdoptionPlanDesktopMethods(foundationRequest),
     ...existingProjectAdoptionDecisionsDesktopMethods(foundationRequest),
     ...existingProjectAdoptionPreparedPlanDesktopMethods(foundationRequest),
+    ...existingProjectAdoptionApplyDesktopMethods(foundationRequest),
   };
 }

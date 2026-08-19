@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Pre-Apply security review** on `docs/adoption-pre-apply-security-review`.
+Status: **bounded transactional existing-project Apply** on `feat/adoption-transactional-apply`.
 
-Active branch: `docs/adoption-pre-apply-security-review`
+Active branch: `feat/adoption-transactional-apply`
 
-Current objective: Evidence-backed security brief for approved plan → transactional Apply. No Apply implementation in this watch.
+Current objective: Land `intentloom.existing-project.adoption.apply.v1` with per-root lock, 20 pre-write gates, `adoptProject` mutation, handled rollback, and post-apply Doctor/Diff/readiness.
 
-Next first action: Implement bounded `intentloom.existing-project.adoption.apply.v1` per `docs/roadmap/DESKTOP_ADOPTION_PRE_APPLY_SECURITY_REVIEW.md`. Reuse `adoptProject` / `synchronizeGeneratedFiles`. Do not use `applyProjectAdoption`.
+Next first action: After this PR merges, Desktop adoption completion / hardening and real Vii dogfood of the full Desktop existing-project adoption flow. Do not start that dogfood in this watch.
 
 Known open items, in the order they should be handled:
 
@@ -95,6 +95,42 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-19, Bounded transactional existing-project Apply
+
+- **Status:** complete on branch; PR pending.
+- **Agent/tool:** Cursor
+- **Branch:** `feat/adoption-transactional-apply`
+- **Commits:** pending
+- **Pull request:** pending
+- **Objective:** First mutating Desktop existing-project adoption slice: apply an exact approved prepared plan through the canonical `adoptProject` / `synchronizeGeneratedFiles` engine.
+- **Completed:**
+  - Application `applyExistingProjectAdoptionPreparedPlan` with per-root lock, 20 pre-write gates, final revalidation, deferred cancel, handled rollback, post-apply Doctor/Diff/readiness.
+  - Protocol `intentloom.existing-project.adoption.apply.v1` (mutating); daemon capability `existing-project.adoption.apply`.
+  - Tauri allowlist: only that exact apply method; unknown adoption mutate RPC denied.
+  - Desktop Apply panel after approval, separate click, mutation warning, no auto-apply.
+- **Not completed:** crash-safe journaling (explicitly out of scope); real Vii dogfood of the full Desktop flow.
+- **Files or packages changed:** application apply/gates/lock/health, protocol apply types, daemon apply handler, Desktop apply controller/panel, Tauri allowlist, tests, roadmap, capability matrix, changelog, project state.
+- **Validation:** `pnpm typecheck`, `pnpm lint`, `pnpm format:check`, `pnpm test` (1536 passed, 3 skipped), `pnpm build`, `git diff --check`, and `cargo test method_allowlist` passed. `pnpm verify` passed. Security review (this watch): no second writer; apply requires typed plan+approval; 20 gates before first write; per-root lock; deferred cancel; handled rollback only; Tauri allowlist exact method plus mutate.v1 deny; no previousContent/secrets in results. Residual: external editor TOCTOU during write loop; crash torn tree without journal.
+- **Decisions and assumptions:** No second transaction engine. No `applyProjectAdoption`. Fingerprint drift after success is treated as already-applied when dry-sync needs no writes. Post-commit Doctor/Diff failure is `applied-needs-attention`, not automatic rollback. Crash during mutation is not recoverable.
+- **Risks or compatibility impact:** External non-Intentloom editors can still race inside the write loop. Process/daemon/OS crash can leave a torn tree. No durable journal.
+- **Open issues or blockers:** none for this slice once validation and PR land.
+- **Next first action:** After merge, Desktop adoption completion / hardening and real Vii dogfood of the full Desktop existing-project adoption flow. Do not start that dogfood in this watch.
+- **Evidence:** `docs/roadmap/DESKTOP_ADOPTION_PRE_APPLY_SECURITY_REVIEW.md`, `docs/roadmap/DESKTOP_EXISTING_PROJECT_ADOPTION_PLAN.md`.
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant tests, type checks, builds, or compatibility checks passed
+- [ ] Atomic commit policy and commit-message checks passed
+- [ ] Repository hooks installed or equivalent commands run
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `PROJECT_STATE.md` updated when applicable
+- [x] `DUTY_WATCH.md` handoff completed
+- [x] Related roadmap, ADR, changelog, migration, or reference docs updated
+- [x] Failed or unavailable checks recorded
 
 ### 2026-08-19, Pre-Apply adoption security review
 

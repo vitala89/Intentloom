@@ -28,6 +28,25 @@ function mappingFor(
   return { documentation: [mapping] };
 }
 
+export function mappingsFromSelectedAdoptionDecisions(
+  decisions: readonly SelectedAdoptionDecision[],
+): {
+  readonly projectOwnedMappings: readonly ProjectMapping[];
+  readonly documentationMappings: readonly ProjectMapping[];
+} {
+  const projectOwnedMappings: ProjectMapping[] = [];
+  const documentationMappings: ProjectMapping[] = [];
+  for (const decision of decisions) {
+    const mapped = mappingFor(decision);
+    if ("projectOwned" in mapped) {
+      projectOwnedMappings.push(...mapped.projectOwned);
+    } else {
+      documentationMappings.push(...mapped.documentation);
+    }
+  }
+  return { projectOwnedMappings, documentationMappings };
+}
+
 function duplicatePaths(
   decisions: readonly SelectedAdoptionDecision[],
 ): ReadonlySet<string> {
@@ -103,14 +122,9 @@ export async function validateExistingProjectAdoptionDecisions(
   const projectOwnedMappings: ProjectMapping[] = [];
   const documentationMappings: ProjectMapping[] = [];
   if (structurallyValid) {
-    for (const decision of options.decisions) {
-      const mapped = mappingFor(decision);
-      if ("projectOwned" in mapped) {
-        projectOwnedMappings.push(...mapped.projectOwned);
-      } else {
-        documentationMappings.push(...mapped.documentation);
-      }
-    }
+    const mapped = mappingsFromSelectedAdoptionDecisions(options.decisions);
+    projectOwnedMappings.push(...mapped.projectOwnedMappings);
+    documentationMappings.push(...mapped.documentationMappings);
   }
   const resolved =
     structurallyValid && options.decisions.length > 0

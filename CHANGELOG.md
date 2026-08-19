@@ -7,6 +7,12 @@ All notable changes are documented here. This project follows Keep a Changelog p
 Changes listed here are merged after the current release-preparation scope and
 are not included in the current npm artifact until a later release.
 
+- Bounded transactional existing-project adoption Apply implemented:
+  `intentloom.existing-project.adoption.apply.v1` mutates the selected project
+  only from a typed prepared plan plus local-interactive approval, reuses
+  `adoptProject` / `synchronizeGeneratedFiles`, and evaluates post-apply Doctor,
+  Diff, and readiness. Handled-error rollback only; not crash-safe.
+
 - Explicit adoption approval implemented:
   `intentloom.existing-project.adoption.approve.v1` binds a local-interactive
   approval receipt to one unexpired, revalidated prepared plan. No Apply.
