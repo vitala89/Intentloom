@@ -74,6 +74,11 @@ shows one real post-adoption development cycle on Vii with healthy doctor and
 empty diff. That evidence informs this plan. It does not implement Desktop
 adoption or close this follow-up.
 
+A 2026-08-19 Vii-derived disposable dogfood of the Desktop adoption RPC chain
+is recorded in
+[2026-08-19-vii-desktop-full-adoption.md](../releases/dogfooding/2026-08-19-vii-desktop-full-adoption.md).
+It does **not** close Slice F or the packaged Desktop exit criteria.
+
 ## User journey
 
 ### 1. Open Existing Project
@@ -470,6 +475,11 @@ back automatically.
 ### F. Cross-client dogfooding
 
 Prove parity across CLI, daemon, Desktop, and TUI where applicable using the same existing-project fixtures and a sanitized real-project record.
+
+**Status:** not complete. Daemon/protocol dogfood against a Vii pre-adoption
+clone is recorded; packaged Desktop UI selection/click-through is still
+required. See
+[2026-08-19-vii-desktop-full-adoption.md](../releases/dogfooding/2026-08-19-vii-desktop-full-adoption.md).
 
 ## Exit criteria
 
