@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { resolve } from "node:path";
 import {
   applyExistingProjectAdoptionPreparedPlan,
   createMemoryFileSystem,
@@ -133,7 +134,8 @@ describe("existing-project adoption apply", () => {
     );
     expect(rootMismatch.reasons).toContain("root-mismatch");
     const linked = createMemoryFileSystem(viiLikeTree());
-    linked.isSymbolicLink = async (path) => path === "/project";
+    linked.isSymbolicLink = async (path) =>
+      path === "/project" || path === resolve("/project");
     const symlinkRoot = await preparedApproved(
       createMemoryFileSystem(viiLikeTree()),
     );

@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { resolve } from "node:path";
 import {
   applyExistingProjectAdoptionPreparedPlan,
   createMemoryFileSystem,
@@ -80,7 +81,7 @@ describe("existing-project adoption apply lock", () => {
     });
     await gate;
     expect(order).toBe("abc");
-    expect(first.plan.root).toBe("/project");
+    expect(first.plan.root).toBe(resolve("/project"));
     expect(right.files.size).toBeGreaterThan(0);
   });
 
