@@ -4,6 +4,7 @@ import {
   nodeFileSystem,
   prepareExistingProjectAdoptionPreparedPlan,
   revalidateExistingProjectAdoptionPreparedPlan,
+  type ExistingProjectAdoptionGenerationOptions,
 } from "@intentloom/application";
 import type {
   ExistingProjectAdoptionApproveRequest,
@@ -176,6 +177,7 @@ export async function dispatchExistingProjectPreparedPlanRequest(
 
 export async function handleExistingProjectAdoptionPrepare(
   request: ExistingProjectAdoptionPrepareRequest,
+  generation: ExistingProjectAdoptionGenerationOptions = {},
 ): Promise<
   Omit<ExistingProjectAdoptionPrepareResponse["result"], "protocolVersion">
 > {
@@ -184,6 +186,7 @@ export async function handleExistingProjectAdoptionPrepare(
       root: resolve(request.params.root),
       previewIdentity: request.params.previewIdentity,
       decisions: request.params.decisions,
+      ...generation,
       ...(request.params.projectId !== undefined
         ? { projectId: request.params.projectId }
         : {}),
@@ -195,6 +198,7 @@ export async function handleExistingProjectAdoptionPrepare(
 
 export async function handleExistingProjectAdoptionRevalidate(
   request: ExistingProjectAdoptionRevalidateRequest,
+  generation: ExistingProjectAdoptionGenerationOptions = {},
 ): Promise<
   Omit<ExistingProjectAdoptionRevalidateResponse["result"], "protocolVersion">
 > {
@@ -202,6 +206,7 @@ export async function handleExistingProjectAdoptionRevalidate(
     {
       root: resolve(request.params.root),
       preparedPlan: request.params.preparedPlan,
+      ...generation,
     },
     nodeFileSystem,
   );
@@ -210,6 +215,7 @@ export async function handleExistingProjectAdoptionRevalidate(
 
 export async function handleExistingProjectAdoptionApprove(
   request: ExistingProjectAdoptionApproveRequest,
+  generation: ExistingProjectAdoptionGenerationOptions = {},
 ): Promise<
   Omit<ExistingProjectAdoptionApproveResponse["result"], "protocolVersion">
 > {
@@ -219,6 +225,7 @@ export async function handleExistingProjectAdoptionApprove(
       preparedPlanId: request.params.preparedPlanId,
       planDigest: request.params.planDigest,
       preparedPlan: request.params.preparedPlan,
+      ...generation,
     },
     nodeFileSystem,
   );

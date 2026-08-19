@@ -16,6 +16,11 @@ import {
   type TransactionOptions,
 } from "./index.js";
 import { mappingsFromSelectedAdoptionDecisions } from "./existing-project-adoption-decisions.js";
+import {
+  spreadExistingProjectAdoptionGeneration,
+  withExistingProjectAdoptionCatalog,
+  type ExistingProjectAdoptionGenerationOptions,
+} from "./existing-project-adoption-generation.js";
 import { evaluateExistingProjectAdoptionApplyGates } from "./existing-project-adoption-apply-gates.js";
 import {
   adoptionApplySafePaths,
@@ -23,7 +28,7 @@ import {
 } from "./existing-project-adoption-apply-health.js";
 import { withCanonicalProjectRootLock } from "./project-root-mutation-lock.js";
 
-export interface ApplyExistingProjectAdoptionPreparedPlanOptions {
+export interface ApplyExistingProjectAdoptionPreparedPlanOptions extends ExistingProjectAdoptionGenerationOptions {
   readonly root: string;
   readonly preparedPlanId: string;
   readonly planDigest: string;
@@ -51,6 +56,7 @@ function adoptOptions(
   root: string,
   plan: ExistingProjectAdoptionPreparedPlan,
   dryRun: boolean,
+  generation: ExistingProjectAdoptionGenerationOptions = {},
 ) {
   const mappings = mappingsFromSelectedAdoptionDecisions(plan.decisions);
   return {
@@ -59,6 +65,7 @@ function adoptOptions(
     adapters: adaptersFor(plan),
     dryRun,
     profileConfirmed: true as const,
+    ...spreadExistingProjectAdoptionGeneration(generation),
     ...(mappings.projectOwnedMappings.length > 0
       ? { projectOwnedMappings: mappings.projectOwnedMappings }
       : {}),
@@ -147,8 +154,10 @@ async function applyUnderLock(
   fs: FileSystem,
 ): Promise<ExistingProjectAdoptionApplyViewModel> {
   if (options.signal?.aborted) return denied(options, root, ["cancelled"]);
+  const generation = await withExistingProjectAdoptionCatalog(options);
+  const bound = { ...options, ...generation };
   const gateReasons = await evaluateExistingProjectAdoptionApplyGates(
-    options,
+    bound,
     fs,
   );
   if (options.signal?.aborted) return denied(options, root, ["cancelled"]);
@@ -164,7 +173,7 @@ async function applyUnderLock(
     return denied(options, root, gateReasons);
   }
   const dry = await syncProject(
-    adoptOptions(root, options.preparedPlan, true),
+    adoptOptions(root, options.preparedPlan, true, generation),
     fs,
   );
   if (!("dryRun" in dry) || dry.conflictFiles.length > 0) {
@@ -185,7 +194,7 @@ async function applyUnderLock(
   }
   if (!alreadyApplied) {
     const proposal = await adoptProject(
-      adoptOptions(root, options.preparedPlan, false),
+      adoptOptions(root, options.preparedPlan, false, generation),
       fs,
       options.transactionOptions ?? {},
     );
@@ -221,7 +230,7 @@ async function applyUnderLock(
   if (options.onAfterCommit) await options.onAfterCommit();
   const health = await evaluateExistingProjectAdoptionPostApplyHealth(
     root,
-    adoptOptions(root, options.preparedPlan, true),
+    adoptOptions(root, options.preparedPlan, true, generation),
     fs,
   );
   const cancelledAfterCommit = options.signal?.aborted === true;

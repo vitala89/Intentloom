@@ -9,11 +9,15 @@ import {
 } from "@intentloom/protocol";
 import type { FileSystem } from "./index.js";
 import { inspectProject } from "./index.js";
+import {
+  spreadExistingProjectAdoptionGeneration,
+  type ExistingProjectAdoptionGenerationOptions,
+} from "./existing-project-adoption-generation.js";
 import { adoptionPreparedPlanClock } from "./existing-project-adoption-prepared-plan.js";
 import { revalidateExistingProjectAdoptionPreparedPlan } from "./existing-project-adoption-prepared-plan-revalidate.js";
 import { expectedExistingProjectAdoptionApprovalIntegrity } from "./existing-project-adoption-approval.js";
 
-export interface ExistingProjectAdoptionApplyGateInput {
+export interface ExistingProjectAdoptionApplyGateInput extends ExistingProjectAdoptionGenerationOptions {
   readonly root: string;
   readonly preparedPlanId: string;
   readonly planDigest: string;
@@ -125,6 +129,7 @@ export async function evaluateExistingProjectAdoptionApplyGates(
     {
       root,
       preparedPlan: plan,
+      ...spreadExistingProjectAdoptionGeneration(input),
       ...(input.now !== undefined ? { now: input.now } : {}),
     },
     fs,

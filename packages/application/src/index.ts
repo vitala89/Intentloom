@@ -29,11 +29,12 @@ import {
   type RoleCandidate,
   type ValidationRequirement,
 } from "@intentloom/core/adoption";
-import type {
-  ArtifactValidationResult,
-  ArtifactValidator,
+import {
+  createArtifactValidator,
+  validateSkillSet,
+  type ArtifactValidationResult,
+  type ArtifactValidator,
 } from "@intentloom/validator";
-import { validateSkillSet } from "@intentloom/validator";
 import { collectExtensionHealthDoctorFindings } from "./extension-health.js";
 import { documentConcept } from "./document-concepts.js";
 import {
@@ -2036,6 +2037,14 @@ function portableGlob(pattern: string): boolean {
   );
 }
 
+async function catalogBoundValidator(
+  options: InitOptions,
+): Promise<ArtifactValidator | undefined> {
+  if (options.validator) return options.validator;
+  if (!options.catalogRoot) return undefined;
+  return createArtifactValidator(resolve(options.catalogRoot, "schemas"));
+}
+
 export async function doctorProject(
   options: InitOptions,
   fs: FileSystem,
@@ -2048,7 +2057,8 @@ export async function doctorProject(
     })),
   );
   const effectiveValidationResults = [...validationResults];
-  if (options.validator) {
+  const validator = await catalogBoundValidator(options);
+  if (validator) {
     const definitions = [
       {
         artifactType: "aif-config" as const,
@@ -2073,7 +2083,7 @@ export async function doctorProject(
           (result) => result.documentPath === definition.path,
         )
       ) {
-        const result = options.validator.validate({
+        const result = validator.validate({
           ...definition,
           documentPath: definition.path,
           source: await fs.read(inside(options.root, definition.path)),
@@ -2117,7 +2127,7 @@ export async function doctorProject(
       );
     return null;
   };
-  if (!options.validator) {
+  if (!validator) {
     for (const definition of [
       { path: configPath, format: "yaml" as const },
       { path: lockPath, format: "json" as const },

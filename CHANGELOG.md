@@ -7,6 +7,12 @@ All notable changes are documented here. This project follows Keep a Changelog p
 Changes listed here are merged after the current release-preparation scope and
 are not included in the current npm artifact until a later release.
 
+- Existing-project adoption now binds the daemon/CLI catalog into plan,
+  decide, prepare, revalidate, approve, Apply, and post-apply Doctor/Diff.
+  Apply no longer writes empty-catalog lock/source-map artifacts; generated
+  Cursor rules and Codex skills match canonical `adopt` / `doctor` / `diff`.
+  Desktop Existing-Project Adoption is still not marked complete.
+
 - Bounded transactional existing-project adoption Apply implemented:
   `intentloom.existing-project.adoption.apply.v1` mutates the selected project
   only from a typed prepared plan plus local-interactive approval, reuses

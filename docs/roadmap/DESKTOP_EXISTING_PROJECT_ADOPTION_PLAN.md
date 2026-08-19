@@ -467,10 +467,14 @@ No automatic Git operations.
 ### E. Post-apply verification and readiness UX
 
 Implemented on the Apply result: Doctor (read-only), Diff (read-only), and
-inspection readiness. Ready requires applied or already-applied, no Doctor
+inspection readiness, using the same catalog-bound `doctorProject` /
+`diffProject` inputs as canonical CLI. Ready requires applied or already-applied, no Doctor
 errors, no unmanaged generated Diff drift, and inspection `ready`. A committed
 transaction with health issues is `applied-needs-attention` and is not rolled
 back automatically.
+
+Existing-project plan/apply bind `--catalog-root` from the daemon process so
+desired generated state is not an empty-catalog subset of CLI `adopt`.
 
 ### F. Cross-client dogfooding
 

@@ -3,6 +3,7 @@ import {
   createMemoryFileSystem,
   prepareExistingProjectAdoptionPlan,
   prepareExistingProjectAdoptionPreparedPlan,
+  type ExistingProjectAdoptionGenerationOptions,
 } from "@intentloom/application";
 import type { ExistingProjectAdoptionApproval } from "@intentloom/protocol";
 
@@ -35,9 +36,10 @@ export function snapshot(files: Map<string, string>): string {
 export async function preparedApproved(
   fs: ReturnType<typeof createMemoryFileSystem>,
   now = 1_700_000_000_000,
+  generation: ExistingProjectAdoptionGenerationOptions = {},
 ) {
   const preview = await prepareExistingProjectAdoptionPlan(
-    { root: "/project", projectId: "vii-like" },
+    { root: "/project", projectId: "vii-like", ...generation },
     fs,
   );
   const prepared = await prepareExistingProjectAdoptionPreparedPlan(
@@ -47,6 +49,7 @@ export async function preparedApproved(
       previewIdentity: preview.previewIdentity,
       decisions: [{ path: "AGENTS.md", kind: "keep-project-owned" }],
       now: () => now,
+      ...generation,
     },
     fs,
   );
@@ -57,6 +60,7 @@ export async function preparedApproved(
       planDigest: prepared.plan!.planDigest,
       preparedPlan: prepared.plan!,
       now: () => now + 100,
+      ...generation,
     },
     fs,
   );

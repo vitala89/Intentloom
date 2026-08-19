@@ -7,6 +7,7 @@ import {
   type ExistingProjectAdoptionRevalidateViewModel,
 } from "@intentloom/protocol";
 import type { FileSystem } from "./index.js";
+import type { ExistingProjectAdoptionGenerationOptions } from "./existing-project-adoption-generation.js";
 import {
   adoptionPreparedPlanClock,
   adoptionPreparedPlanDecisionReasons,
@@ -19,7 +20,7 @@ import {
   digestInputFromPreparedPlan,
 } from "./existing-project-adoption-prepared-plan-digest.js";
 
-export interface RevalidateExistingProjectAdoptionPreparedPlanOptions {
+export interface RevalidateExistingProjectAdoptionPreparedPlanOptions extends ExistingProjectAdoptionGenerationOptions {
   readonly root: string;
   readonly preparedPlan: ExistingProjectAdoptionPreparedPlan;
   readonly now?: () => number;
@@ -85,6 +86,7 @@ export async function revalidateExistingProjectAdoptionPreparedPlan(
     plan.projectId,
     plan.decisions,
     fs,
+    options,
   );
   if (live.preview.projectId !== plan.projectId) {
     reasons.push("project-id-mismatch");

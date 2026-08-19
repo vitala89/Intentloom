@@ -3,9 +3,14 @@ import type { ExistingProjectAdoptionPlanViewModel } from "@intentloom/protocol"
 import { parseExistingProjectAdoptionPlanViewModel } from "@intentloom/protocol";
 import type { FileSystem, ProjectMapping } from "./index.js";
 import { adoptProject, inspectProject } from "./index.js";
+import {
+  spreadExistingProjectAdoptionGeneration,
+  withExistingProjectAdoptionCatalog,
+  type ExistingProjectAdoptionGenerationOptions,
+} from "./existing-project-adoption-generation.js";
 import { computeExistingProjectAdoptionPreviewIdentity } from "./existing-project-adoption-preview-identity.js";
 
-export interface PrepareExistingProjectAdoptionPlanOptions {
+export interface PrepareExistingProjectAdoptionPlanOptions extends ExistingProjectAdoptionGenerationOptions {
   readonly root: string;
   readonly projectId?: string;
   readonly projectOwnedMappings?: readonly ProjectMapping[];
@@ -24,6 +29,7 @@ export async function prepareExistingProjectAdoptionPlan(
   if (typeof root !== "string" || root.length === 0) {
     throw new Error("root must be a non-empty string");
   }
+  const generation = await withExistingProjectAdoptionCatalog(options);
   const inspection = await inspectProject(root, fs);
   const adapters = inspection.detectedAdapters.length
     ? inspection.detectedAdapters
@@ -34,6 +40,7 @@ export async function prepareExistingProjectAdoptionPlan(
       profile: inspection.profileDetection.selectedProfile,
       adapters: [...adapters],
       dryRun: true,
+      ...spreadExistingProjectAdoptionGeneration(generation),
       ...(options.projectOwnedMappings !== undefined
         ? { projectOwnedMappings: options.projectOwnedMappings }
         : {}),

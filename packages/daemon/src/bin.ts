@@ -218,12 +218,18 @@ async function main(): Promise<void> {
     foundationScaffoldApply: handleFoundationScaffoldApply,
     foundationScaffoldRollback: handleFoundationScaffoldRollback,
     existingProjectWorkspacePrepare: handleExistingProjectWorkspacePrepare,
-    existingProjectAdoptionPlan: handleExistingProjectAdoptionPlan,
-    existingProjectAdoptionDecisions: handleExistingProjectAdoptionDecisions,
-    existingProjectAdoptionPrepare: handleExistingProjectAdoptionPrepare,
-    existingProjectAdoptionRevalidate: handleExistingProjectAdoptionRevalidate,
-    existingProjectAdoptionApprove: handleExistingProjectAdoptionApprove,
-    existingProjectAdoptionApply: handleExistingProjectAdoptionApply,
+    existingProjectAdoptionPlan: (request) =>
+      handleExistingProjectAdoptionPlan(request, { catalogRoot }),
+    existingProjectAdoptionDecisions: (request) =>
+      handleExistingProjectAdoptionDecisions(request, { catalogRoot }),
+    existingProjectAdoptionPrepare: (request) =>
+      handleExistingProjectAdoptionPrepare(request, { catalogRoot }),
+    existingProjectAdoptionRevalidate: (request) =>
+      handleExistingProjectAdoptionRevalidate(request, { catalogRoot }),
+    existingProjectAdoptionApprove: (request) =>
+      handleExistingProjectAdoptionApprove(request, { catalogRoot }),
+    existingProjectAdoptionApply: (request) =>
+      handleExistingProjectAdoptionApply(request, { catalogRoot }),
     featureIntentWorkspacePrepare: handleFeatureIntentWorkspacePrepare,
     featureIntentWorkspaceAnalyze: handleFeatureIntentWorkspaceAnalyze,
     boundedExecutionWorkspacePrepare: handleBoundedExecutionWorkspacePrepare,

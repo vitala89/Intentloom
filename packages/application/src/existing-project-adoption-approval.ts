@@ -12,10 +12,14 @@ import {
 } from "@intentloom/protocol";
 import type { FileSystem } from "./index.js";
 import { canonicalJson } from "./canonical-json.js";
+import {
+  spreadExistingProjectAdoptionGeneration,
+  type ExistingProjectAdoptionGenerationOptions,
+} from "./existing-project-adoption-generation.js";
 import { adoptionPreparedPlanClock } from "./existing-project-adoption-prepared-plan.js";
 import { revalidateExistingProjectAdoptionPreparedPlan } from "./existing-project-adoption-prepared-plan-revalidate.js";
 
-export interface ApproveExistingProjectAdoptionPreparedPlanOptions {
+export interface ApproveExistingProjectAdoptionPreparedPlanOptions extends ExistingProjectAdoptionGenerationOptions {
   readonly root: string;
   readonly preparedPlanId: string;
   readonly planDigest: string;
@@ -119,6 +123,7 @@ export async function approveExistingProjectAdoptionPreparedPlan(
     {
       root,
       preparedPlan: plan,
+      ...spreadExistingProjectAdoptionGeneration(options),
       ...(options.now !== undefined ? { now: options.now } : {}),
     },
     fs,
