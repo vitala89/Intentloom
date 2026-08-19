@@ -1,6 +1,6 @@
 # Intentloom Project State
 
-Last verified: 2026-08-18
+Last verified: 2026-08-19
 
 This file records the durable current state of the project. It is not a
 chronological log. Session history and handoff details belong in
@@ -594,8 +594,11 @@ project. Prepared adoption plan security envelope implemented:
 `prepare`/`revalidate` bind plan identity, digest, fingerprint, and expiry
 without approval or Apply. Explicit adoption approval implemented:
 `intentloom.existing-project.adoption.approve.v1` returns `approved: true`
-with `applied: false` and does not write the project. Approved Apply and
-transactional mutation are not implemented.
+with `applied: false` and does not write the project. The pre-Apply security
+review
+([DESKTOP_ADOPTION_PRE_APPLY_SECURITY_REVIEW.md](docs/roadmap/DESKTOP_ADOPTION_PRE_APPLY_SECURITY_REVIEW.md))
+accepts bounded transactional Apply next, reusing `adoptProject` /
+`synchronizeGeneratedFiles`. Desktop Apply is still not implemented.
 
 P1 defers real workspace dogfood to the maintainer
 ([2026-08-16-workspace-public-gate.md](docs/releases/dogfooding/2026-08-16-workspace-public-gate.md)).
