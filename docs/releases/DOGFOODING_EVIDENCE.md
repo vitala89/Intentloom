@@ -42,3 +42,11 @@ Pass | Pass with follow-up | Blocked
 Do not include tokens, absolute local paths, private project content, generated
 file bodies, or unredacted repository history. A passing fixture or CI run is
 supporting evidence, but it does not replace this record from a real project.
+
+## Recent Vii records
+
+- [2026-08-17-vii-nx-existing-project.md](dogfooding/2026-08-17-vii-nx-existing-project.md)
+- [2026-08-18-vii-first-development-cycle.md](dogfooding/2026-08-18-vii-first-development-cycle.md)
+- [2026-08-19-vii-desktop-full-adoption.md](dogfooding/2026-08-19-vii-desktop-full-adoption.md)
+  (daemon/protocol dogfood of the Desktop adoption chain; packaged Desktop
+  click-through not complete)

@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **bounded transactional existing-project Apply** on `feat/adoption-transactional-apply`.
+Status: **Vii Desktop adoption dogfood (not complete)** on `test/desktop-existing-project-adoption-dogfood`.
 
-Active branch: `feat/adoption-transactional-apply`
+Active branch: `test/desktop-existing-project-adoption-dogfood`
 
-Current objective: Land `intentloom.existing-project.adoption.apply.v1` with per-root lock, 20 pre-write gates, `adoptProject` mutation, handled rollback, and post-apply Doctor/Diff/readiness.
+Current objective: Record real Vii-derived existing-project adoption evidence. Packaged Desktop click-through remains.
 
-Next first action: After this PR merges, Desktop adoption completion / hardening and real Vii dogfood of the full Desktop existing-project adoption flow. Do not start that dogfood in this watch.
+Next first action: Maintainer-operated packaged Desktop walkthrough of the recipe in `docs/releases/dogfooding/2026-08-19-vii-desktop-full-adoption.md`. Do not start an unrelated feature.
 
 Known open items, in the order they should be handled:
 
@@ -95,6 +95,38 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-19, Vii Desktop full existing-project adoption dogfood
+
+- **Status:** partial
+- **Agent/tool:** Cursor
+- **Branch:** `test/desktop-existing-project-adoption-dogfood`
+- **Commits:** pending
+- **Pull request:** pending
+- **Objective:** Dogfood the complete Desktop existing-project adoption flow against an isolated pre-adoption Vii clone and decide the completion gate.
+- **Completed:** Isolated clones at Vii `93e072c`; authenticated daemon path (Desktop request constructors) through preview, `keep-project-owned`, prepare, revalidate, approve, Apply (`applied` / Ready), replay `already-applied`, stale Apply `denied` with zero writes; project-owned checksums preserved; evidence record written. Source Vii working tree was not written by this watch.
+- **Not completed:** Packaged Desktop UI selection/click-through; crash-safe journal (out of scope); closing Apply Ready vs CLI doctor/diff disagreement; Codex `.agents/skills` parity with unmapped CLI `adopt --dry-run`.
+- **Files or packages changed:** dogfooding record, evidence index, project state, duty watch, adoption plan Slice F status, capability matrix note.
+- **Validation:** daemon RPC dogfood against disposable Vii; CLI inspect baseline; checksums; stale denial. No runtime code change. `git diff --check` on this docs diff.
+- **Decisions and assumptions:** Desktop Existing-Project Adoption is not marked complete without packaged Desktop click-through. Rollback remains test-evidenced from #345.
+- **Risks or compatibility impact:** none from this documentation watch. Residual TOCTOU and crash-torn tree unchanged.
+- **Open issues or blockers:** assistive access / display capture blocked GUI automation in this session.
+- **Next first action:** Maintainer packaged Desktop walkthrough using the disposable pre-adoption recipe in the evidence record.
+- **Evidence:** `docs/releases/dogfooding/2026-08-19-vii-desktop-full-adoption.md`
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant tests, type checks, builds, or compatibility checks passed
+- [ ] Atomic commit policy and commit-message checks passed
+- [ ] Repository hooks installed or equivalent commands run
+- [ ] `git diff --check` passed
+- [ ] Final diff reviewed
+- [x] `PROJECT_STATE.md` updated when durable state changed
+- [x] `DUTY_WATCH.md` updated with this entry
+- [x] Roadmap/docs updated when applicable
+- [ ] Changelog updated when applicable (no runtime change)
 
 ### 2026-08-19, Bounded transactional existing-project Apply
 
