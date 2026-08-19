@@ -444,7 +444,17 @@ Security mitigations in this slice:
 
 ### D. Approved adoption apply
 
-Only after the existing Approved Apply threat-model requirements are satisfied, expose one explicit reviewed adoption transaction.
+Pre-Apply security review is recorded in
+[DESKTOP_ADOPTION_PRE_APPLY_SECURITY_REVIEW.md](DESKTOP_ADOPTION_PRE_APPLY_SECURITY_REVIEW.md).
+
+Decision: **ready for bounded Apply implementation**. Reuse
+`adoptProject` / `synchronizeGeneratedFiles`. Do not call `applyProjectAdoption`.
+Do not invent a second transaction engine. Do not claim crash-safe recovery.
+
+Expose one explicit reviewed mutating RPC
+(`intentloom.existing-project.adoption.apply.v1`) only after that review's
+gates, per-root lock, deferred cancellation, and post-apply Doctor/Diff
+composition. Apply remains a separate user action from Approve.
 
 No automatic Git operations.
 

@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Explicit adoption approval** on `feat/adoption-explicit-approval`.
+Status: **Pre-Apply security review** on `docs/adoption-pre-apply-security-review`.
 
-Active branch: `feat/adoption-explicit-approval`
+Active branch: `docs/adoption-pre-apply-security-review`
 
-Current objective: Dedicated pre-Apply security review of approved plan → final revalidation → atomic transaction → rollback → post-apply doctor → post-apply diff. Do not implement Apply until that review is accepted.
+Current objective: Evidence-backed security brief for approved plan → transactional Apply. No Apply implementation in this watch.
 
-Next first action: Pre-Apply security review for transactional adoption Apply. Do not start Apply in this watch.
+Next first action: Implement bounded `intentloom.existing-project.adoption.apply.v1` per `docs/roadmap/DESKTOP_ADOPTION_PRE_APPLY_SECURITY_REVIEW.md`. Reuse `adoptProject` / `synchronizeGeneratedFiles`. Do not use `applyProjectAdoption`.
 
 Known open items, in the order they should be handled:
 
@@ -95,6 +95,41 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-19, Pre-Apply adoption security review
+
+- **Status:** complete on branch; PR pending.
+- **Agent/tool:** Cursor
+- **Branch:** `docs/adoption-pre-apply-security-review`
+- **Commits:** pending
+- **Pull request:** pending
+- **Objective:** Produce an evidence-backed security and architecture brief for transactional existing-project adoption Apply without implementing Apply.
+- **Completed:**
+  - Inventoried mutation primitives: `adoptProject` / `synchronizeGeneratedFiles` is the canonical engine; `applyProjectAdoption` is the wrong writer; Approved Apply is a coarser gate.
+  - Documented rollback (handled-error only), TOCTOU, replay, concurrency, crash non-claims, symlink/path, secrets, Doctor/Diff Ready semantics, threat and capability matrices.
+  - Decision A: ready for bounded Apply implementation. No separate security-prerequisite PR.
+- **Not completed:** transactional Apply RPC, Desktop Apply UX, Tauri apply allowlist enablement.
+- **Files or packages changed:** `docs/roadmap/DESKTOP_ADOPTION_PRE_APPLY_SECURITY_REVIEW.md`, adoption plan, capability matrix, `PROJECT_STATE.md`, Duty Watch.
+- **Validation:** `pnpm typecheck`, `pnpm lint`, `pnpm format:check`, and `git diff --check` passed. Full `pnpm verify` was started in the sandbox and failed on Unix-socket/temp `EPERM` (daemon tests), not on these docs. A follow-up unsandboxed `pnpm verify` was not obtained in this session.
+- **Decisions and assumptions:** Reuse the existing generated-file transaction. Per-root lock and idempotent already-applied belong in the Apply PR. Crash-safe journaling is not a blocker. Successful transaction plus failed Doctor/Diff is committed-needs-attention, not automatic rollback.
+- **Risks or compatibility impact:** None at runtime. Residual Apply risks (crash torn tree, non-CAS TOCTOU with external editors) are documented, not claimed solved.
+- **Open issues or blockers:** none for this review slice.
+- **Next first action:** Implement bounded existing-project adoption Apply as specified in `docs/roadmap/DESKTOP_ADOPTION_PRE_APPLY_SECURITY_REVIEW.md`.
+- **Evidence:** `docs/roadmap/DESKTOP_ADOPTION_PRE_APPLY_SECURITY_REVIEW.md`.
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [ ] Relevant tests, type checks, builds, or compatibility checks passed
+- [ ] Atomic commit policy and commit-message checks passed
+- [ ] Repository hooks installed or equivalent commands run
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `PROJECT_STATE.md` updated when applicable
+- [x] `DUTY_WATCH.md` handoff completed
+- [x] Related roadmap, ADR, changelog, migration, or reference docs updated
+- [x] Failed or unavailable checks recorded
 
 ### 2026-08-19, Explicit adoption approval
 
