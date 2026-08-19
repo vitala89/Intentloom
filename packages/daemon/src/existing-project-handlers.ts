@@ -5,6 +5,7 @@ import {
   prepareExistingProjectAdoptionPlan,
   prepareExistingProjectWorkspace,
   validateExistingProjectAdoptionDecisions,
+  withCanonicalProjectRootLock,
 } from "@intentloom/application";
 import type {
   ExistingProjectAdoptionDecisionsRequest,
@@ -22,8 +23,11 @@ import {
   createExistingProjectAdoptionDecisionsResponse,
   createExistingProjectAdoptionPlanResponse,
   createExistingProjectWorkspacePrepareResponse,
+  isExistingProjectAdoptionApproveMethod,
   isExistingProjectAdoptionDecisionsMethod,
   isExistingProjectAdoptionPlanMethod,
+  isExistingProjectAdoptionPrepareMethod,
+  isExistingProjectAdoptionRevalidateMethod,
   isExistingProjectDaemonMethod,
 } from "@intentloom/protocol";
 import type { DaemonCapability } from "@intentloom/protocol";
@@ -33,6 +37,12 @@ import {
   isExistingProjectPreparedPlanRequest,
   type ExistingProjectPreparedPlanDaemonOptions,
 } from "./existing-project-prepared-plan-handlers.js";
+import {
+  dispatchExistingProjectApplyRequest,
+  existingProjectApplyCapabilities,
+  isExistingProjectApplyRequest,
+  type ExistingProjectApplyDaemonOptions,
+} from "./existing-project-apply-handlers.js";
 
 type ExistingProjectCoreRequest =
   | ExistingProjectWorkspacePrepareRequest
@@ -44,7 +54,10 @@ type ExistingProjectCoreResponse =
   | ExistingProjectAdoptionPlanResponse
   | ExistingProjectAdoptionDecisionsResponse;
 
-export interface ExistingProjectDaemonOptions extends ExistingProjectPreparedPlanDaemonOptions {
+export interface ExistingProjectDaemonOptions
+  extends
+    ExistingProjectPreparedPlanDaemonOptions,
+    ExistingProjectApplyDaemonOptions {
   readonly existingProjectWorkspacePrepare?: (
     request: ExistingProjectWorkspacePrepareRequest,
   ) => Promise<
@@ -71,6 +84,7 @@ export function existingProjectCapabilities(
 ): readonly DaemonCapability[] {
   return [
     ...existingProjectPreparedPlanCapabilities(options),
+    ...existingProjectApplyCapabilities(options),
     ...(options.existingProjectWorkspacePrepare
       ? [
           enabled(
@@ -110,7 +124,67 @@ function isPlanRequest(
   return isExistingProjectAdoptionPlanMethod(request.method);
 }
 
+function existingProjectHandlerEnabled(
+  method: string,
+  options: ExistingProjectDaemonOptions,
+): boolean {
+  if (isExistingProjectApplyRequest({ method })) {
+    return Boolean(options.existingProjectAdoptionApply);
+  }
+  if (isExistingProjectAdoptionPrepareMethod(method)) {
+    return Boolean(options.existingProjectAdoptionPrepare);
+  }
+  if (isExistingProjectAdoptionRevalidateMethod(method)) {
+    return Boolean(options.existingProjectAdoptionRevalidate);
+  }
+  if (isExistingProjectAdoptionApproveMethod(method)) {
+    return Boolean(options.existingProjectAdoptionApprove);
+  }
+  if (isExistingProjectAdoptionDecisionsMethod(method)) {
+    return Boolean(options.existingProjectAdoptionDecisions);
+  }
+  if (isExistingProjectAdoptionPlanMethod(method)) {
+    return Boolean(options.existingProjectAdoptionPlan);
+  }
+  return Boolean(options.existingProjectWorkspacePrepare);
+}
+
 export async function dispatchExistingProjectRequest(
+  request: { readonly method: string; readonly id: string | number },
+  options: ExistingProjectDaemonOptions,
+  canonicalProjectRoot: (root: string) => Promise<string>,
+): Promise<
+  | ExistingProjectCoreResponse
+  | PreparedPlanResponse
+  | Awaited<ReturnType<typeof dispatchExistingProjectApplyRequest>>
+> {
+  if (isExistingProjectApplyRequest(request)) {
+    return dispatchExistingProjectApplyRequest(
+      request,
+      options,
+      canonicalProjectRoot,
+    );
+  }
+  const rootHolder = request as { params?: { root?: string } };
+  const requestedRoot = rootHolder.params?.root;
+  if (
+    typeof requestedRoot === "string" &&
+    requestedRoot.length > 0 &&
+    existingProjectHandlerEnabled(request.method, options)
+  ) {
+    const root = await canonicalProjectRoot(requestedRoot);
+    return withCanonicalProjectRootLock(root, () =>
+      dispatchExistingProjectUnlocked(request, options, async () => root),
+    );
+  }
+  return dispatchExistingProjectUnlocked(
+    request,
+    options,
+    canonicalProjectRoot,
+  );
+}
+
+async function dispatchExistingProjectUnlocked(
   request: { readonly method: string; readonly id: string | number },
   options: ExistingProjectDaemonOptions,
   canonicalProjectRoot: (root: string) => Promise<string>,
@@ -257,6 +331,7 @@ export function isExistingProjectRequest(request: {
     isExistingProjectDaemonMethod(request.method) ||
     isExistingProjectAdoptionPlanMethod(request.method) ||
     isExistingProjectAdoptionDecisionsMethod(request.method) ||
-    isExistingProjectPreparedPlanRequest(request)
+    isExistingProjectPreparedPlanRequest(request) ||
+    isExistingProjectApplyRequest(request)
   );
 }

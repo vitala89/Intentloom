@@ -7,6 +7,7 @@ import {
   type ExistingProjectAdoptionPreparedPlan,
   type ExistingProjectAdoptionRevalidateViewModel,
   type ExistingProjectAdoptionApproveViewModel,
+  type ExistingProjectAdoptionApplyViewModel,
 } from "@intentloom/protocol";
 import { Button } from "../design/components/core/Button.js";
 import { EmptyState } from "../design/components/states/EmptyState.js";
@@ -27,6 +28,8 @@ import {
   revalidateAdoptionPlan,
 } from "./adoption-prepared-plan-controller.js";
 import { AdoptionPreparedPlanPanel } from "./AdoptionPreparedPlanPanel.js";
+import { AdoptionApplyPanel } from "./AdoptionApplyPanel.js";
+import { applyApprovedAdoptionPlan } from "./adoption-apply-controller.js";
 import { renderAdoptionDecisionSummary } from "./adoption-decision-presentation.js";
 import {
   adoptionPreviewHasManualDecisions,
@@ -64,6 +67,9 @@ export function AdoptionPreviewPage({
     useState<ExistingProjectAdoptionRevalidateViewModel | null>(null);
   const [approval, setApproval] =
     useState<ExistingProjectAdoptionApproveViewModel | null>(null);
+  const [applyResult, setApplyResult] =
+    useState<ExistingProjectAdoptionApplyViewModel | null>(null);
+  const [applying, setApplying] = useState(false);
 
   const resetDecisions = useCallback(() => {
     setSelections(new Map());
@@ -71,6 +77,8 @@ export function AdoptionPreviewPage({
     setPreparedPlan(null);
     setRevalidation(null);
     setApproval(null);
+    setApplyResult(null);
+    setApplying(false);
   }, []);
 
   const loadPreview = useCallback(async () => {
@@ -149,6 +157,7 @@ export function AdoptionPreviewPage({
     setPreparedPlan(prepared.result?.plan ?? null);
     setRevalidation(null);
     setApproval(null);
+    setApplyResult(null);
     if (prepared.errorMessage) setErrorMessage(prepared.errorMessage);
   }, [plan, root, selections]);
 
@@ -160,6 +169,7 @@ export function AdoptionPreviewPage({
     });
     setRevalidation(checked.result);
     setApproval(null);
+    setApplyResult(null);
     if (checked.errorMessage) setErrorMessage(checked.errorMessage);
   }, [preparedPlan, root]);
 
@@ -170,8 +180,23 @@ export function AdoptionPreviewPage({
       plan: preparedPlan,
     });
     setApproval(approved.result);
+    setApplyResult(null);
     if (approved.errorMessage) setErrorMessage(approved.errorMessage);
   }, [preparedPlan, root]);
+
+  const applyPlan = useCallback(async () => {
+    if (applying) return;
+    setApplying(true);
+    const applied = await applyApprovedAdoptionPlan({
+      client: desktopClient,
+      root,
+      plan: preparedPlan,
+      approval: approval?.approval ?? null,
+    });
+    setApplyResult(applied.result);
+    setApplying(false);
+    if (applied.errorMessage) setErrorMessage(applied.errorMessage);
+  }, [applying, approval, preparedPlan, root]);
 
   if (status === "idle" || status === "loading" || !root) {
     const copy = ADOPTION_PREVIEW_STATUS_COPY.idle;
@@ -278,6 +303,16 @@ export function AdoptionPreviewPage({
         plan={preparedPlan}
         revalidation={revalidation}
       />
+      {approval?.status === "approved" ? (
+        <AdoptionApplyPanel
+          applying={applying}
+          approval={approval.approval}
+          onApply={() => void applyPlan()}
+          plan={preparedPlan}
+          result={applyResult}
+          revalidationStatus={revalidation?.status ?? null}
+        />
+      ) : null}
       <p aria-live="polite">
         {renderAdoptionDecisionSummary({
           decisionsPrepared,

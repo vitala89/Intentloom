@@ -59,6 +59,10 @@ export function adoptionPreviewFocusOrder(
     id: "adoption-approve-plan",
     label: "Approve prepared plan",
   });
+  targets.push({
+    id: "adoption-apply-plan",
+    label: "Apply approved plan",
+  });
   if (!plan) return targets;
   const decisions = plan.items.filter((item) => item.manualDecisionRequired);
   decisions.forEach((item, index) => {

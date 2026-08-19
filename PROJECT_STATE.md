@@ -597,8 +597,12 @@ without approval or Apply. Explicit adoption approval implemented:
 with `applied: false` and does not write the project. The pre-Apply security
 review
 ([DESKTOP_ADOPTION_PRE_APPLY_SECURITY_REVIEW.md](docs/roadmap/DESKTOP_ADOPTION_PRE_APPLY_SECURITY_REVIEW.md))
-accepts bounded transactional Apply next, reusing `adoptProject` /
-`synchronizeGeneratedFiles`. Desktop Apply is still not implemented.
+accepted bounded transactional Apply. Bounded transactional Apply is now
+implemented: `intentloom.existing-project.adoption.apply.v1` reuses
+`adoptProject` / `synchronizeGeneratedFiles`, with per-root locking, final
+revalidation, handled-error rollback, and post-apply Doctor/Diff/readiness.
+Crash-safe recovery is not claimed. Real Vii Desktop dogfood of the full
+adoption flow is the next slice and is not started here.
 
 P1 defers real workspace dogfood to the maintainer
 ([2026-08-16-workspace-public-gate.md](docs/releases/dogfooding/2026-08-16-workspace-public-gate.md)).

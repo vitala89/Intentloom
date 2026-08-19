@@ -444,23 +444,28 @@ Security mitigations in this slice:
 
 ### D. Approved adoption apply
 
-Pre-Apply security review is recorded in
-[DESKTOP_ADOPTION_PRE_APPLY_SECURITY_REVIEW.md](DESKTOP_ADOPTION_PRE_APPLY_SECURITY_REVIEW.md).
+Bounded transactional existing-project Apply is implemented.
+`applyExistingProjectAdoptionPreparedPlan` and
+`intentloom.existing-project.adoption.apply.v1` require the prepared plan and
+the local-interactive approval receipt, acquire a per-canonical-root mutation
+lock, revalidate live, then reuse `adoptProject` → `syncProject` →
+`synchronizeGeneratedFiles`. Handled runtime failures roll back. Post-apply
+Doctor, Diff, and inspection readiness are evaluated. Filesystem commit is not
+Ready by itself.
 
-Decision: **ready for bounded Apply implementation**. Reuse
-`adoptProject` / `synchronizeGeneratedFiles`. Do not call `applyProjectAdoption`.
-Do not invent a second transaction engine. Do not claim crash-safe recovery.
-
-Expose one explicit reviewed mutating RPC
-(`intentloom.existing-project.adoption.apply.v1`) only after that review's
-gates, per-root lock, deferred cancellation, and post-apply Doctor/Diff
-composition. Apply remains a separate user action from Approve.
+Prepared ≠ approved ≠ applied. Apply does not call `applyProjectAdoption`.
+Crash-safe recovery is not claimed. External non-Intentloom editors may still
+race during the write loop.
 
 No automatic Git operations.
 
 ### E. Post-apply verification and readiness UX
 
-Run Doctor and Diff, show health/warnings/drift, and transition to the project workspace only after deterministic verification.
+Implemented on the Apply result: Doctor (read-only), Diff (read-only), and
+inspection readiness. Ready requires applied or already-applied, no Doctor
+errors, no unmanaged generated Diff drift, and inspection `ready`. A committed
+transaction with health issues is `applied-needs-attention` and is not rolled
+back automatically.
 
 ### F. Cross-client dogfooding
 

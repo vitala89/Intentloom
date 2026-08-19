@@ -345,7 +345,7 @@ describe("Desktop read-only adoption preview", () => {
     expect(Object.keys(methods)).toEqual(["existingProjectAdoptionPlan"]);
   });
 
-  it("keeps the Tauri allowlist on preview and excludes apply", () => {
+  it("keeps the Tauri allowlist on preview and denies unknown mutate RPC", () => {
     const allowlist = readFileSync(
       join(desktopRoot, "src-tauri/src/method_allowlist.rs"),
       "utf8",
@@ -354,8 +354,11 @@ describe("Desktop read-only adoption preview", () => {
     expect(allowlist).toContain(
       "intentloom.existing-project.adoption.decisions.v1",
     );
+    expect(allowlist).toContain(
+      "intentloom.existing-project.adoption.apply.v1",
+    );
     expect(allowlist).toMatch(
-      /assert!\(\s*!is_foundation_method\(\s*"intentloom\.existing-project\.adoption\.apply\.v1"/,
+      /assert!\(\s*!is_foundation_method\(\s*"intentloom\.existing-project\.adoption\.mutate\.v1"/,
     );
     expect(workspaceViews.map((view) => view.label)).toContain(
       "Adoption preview",

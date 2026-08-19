@@ -1,4 +1,3 @@
-import { lstat, realpath } from "node:fs/promises";
 import {
   createConnection,
   createServer,
@@ -95,6 +94,10 @@ import {
   workspaceDaemonCapabilities,
   type WorkspaceDaemonOptions,
 } from "./workspace-daemon-dispatch.js";
+import {
+  canonicalProjectRoot,
+  runWithProjectRootLock,
+} from "./daemon-canonical-root.js";
 const maxMessageBytes = 1024 * 1024;
 const defaultMaxConnections = 16;
 const defaultRequestTimeoutMs = 30_000;
@@ -226,48 +229,6 @@ function localEndpoint(endpoint: string): boolean {
       ? endpoint.startsWith("\\\\.\\pipe\\")
       : isAbsolute(endpoint))
   );
-}
-
-class DaemonRootError extends Error {
-  constructor(
-    readonly clientErrorCode: "invalid_root" | "stale_root",
-    message: string,
-  ) {
-    super(message);
-    this.name = "DaemonRootError";
-  }
-}
-
-async function canonicalProjectRoot(root: string): Promise<string> {
-  if (!isAbsolute(root))
-    throw new DaemonRootError(
-      "invalid_root",
-      "project root must be an absolute path",
-    );
-  let metadata;
-  try {
-    metadata = await lstat(root);
-  } catch {
-    throw new DaemonRootError("invalid_root", "project root does not exist");
-  }
-  if (metadata.isSymbolicLink())
-    throw new DaemonRootError(
-      "stale_root",
-      "project root is a symbolic link and is not stable",
-    );
-  if (!metadata.isDirectory())
-    throw new DaemonRootError(
-      "invalid_root",
-      "project root is not a directory",
-    );
-  try {
-    return await realpath(root);
-  } catch {
-    throw new DaemonRootError(
-      "stale_root",
-      "project root could not be resolved",
-    );
-  }
 }
 
 function response(socket: Socket, value: object): void {
@@ -485,17 +446,20 @@ export async function startLocalDaemon(
               "unsupported method doctor",
               "unsupported_capability",
             );
-          const root = options.enforceCanonicalRoots
-            ? await canonicalProjectRoot(request.params.root)
-            : request.params.root;
           response(
             socket,
             createDoctorResponse(
               request.id,
-              await options.doctor({
-                ...request,
-                params: { ...request.params, root },
-              }),
+              await runWithProjectRootLock(
+                request.params.root,
+                options.enforceCanonicalRoots,
+                canonicalProjectRoot,
+                (root) =>
+                  options.doctor!({
+                    ...request,
+                    params: { ...request.params, root },
+                  }),
+              ),
             ),
           );
         } else if (request.method === INSPECT_METHOD) {
@@ -506,17 +470,20 @@ export async function startLocalDaemon(
               "unsupported method inspect",
               "unsupported_capability",
             );
-          const root = options.enforceCanonicalRoots
-            ? await canonicalProjectRoot(request.params.root)
-            : request.params.root;
           response(
             socket,
             createInspectResponse(
               request.id,
-              await options.inspect({
-                ...request,
-                params: { ...request.params, root },
-              }),
+              await runWithProjectRootLock(
+                request.params.root,
+                options.enforceCanonicalRoots,
+                canonicalProjectRoot,
+                (root) =>
+                  options.inspect!({
+                    ...request,
+                    params: { ...request.params, root },
+                  }),
+              ),
             ),
           );
         } else if (request.method === PROJECT_DIFF_METHOD) {
@@ -527,17 +494,20 @@ export async function startLocalDaemon(
               "unsupported method diff",
               "unsupported_capability",
             );
-          const root = options.enforceCanonicalRoots
-            ? await canonicalProjectRoot(request.params.root)
-            : request.params.root;
           response(
             socket,
             createProjectDiffResponse(
               request.id,
-              await options.diff({
-                ...request,
-                params: { ...request.params, root },
-              }),
+              await runWithProjectRootLock(
+                request.params.root,
+                options.enforceCanonicalRoots,
+                canonicalProjectRoot,
+                (root) =>
+                  options.diff!({
+                    ...request,
+                    params: { ...request.params, root },
+                  }),
+              ),
             ),
           );
         } else if (request.method === PROJECT_TIMELINE_METHOD) {
