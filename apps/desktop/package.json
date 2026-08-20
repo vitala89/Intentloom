@@ -9,7 +9,7 @@
   "scripts": {
     "dev": "vite --host 127.0.0.1 --port 1420",
     "build": "tsc -b && vite build",
-    "package": "tauri build --config src-tauri/tauri.packaging.conf.json",
+    "package": "node ../../scripts/desktop/package-desktop.mjs --tauri-only",
     "preview": "vite preview",
     "tauri": "tauri",
     "typecheck": "tsc -b --pretty false"

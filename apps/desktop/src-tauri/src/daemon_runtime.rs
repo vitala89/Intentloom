@@ -17,6 +17,7 @@ use crate::daemon_recovery::{
 use crate::daemon_transport::send_request;
 use crate::native_paths::{catalog_root, launch_spec};
 use crate::runtime_paths::RuntimePaths;
+use crate::sidecar_launch::{preflight_sidecar, sidecar_spawn_error};
 
 #[derive(Default)]
 struct RuntimeInner {
@@ -261,7 +262,9 @@ fn write_new_token(token_file: &Path) -> Result<String, BridgeError> {
 
 fn spawn_sidecar(app: &AppHandle, paths: &RuntimePaths) -> Result<Child, BridgeError> {
     let (program, arguments, working_directory) = launch_spec(app)?;
-    let mut command = Command::new(program);
+    let program_path = Path::new(&program);
+    preflight_sidecar(program_path, &working_directory)?;
+    let mut command = Command::new(&program);
     command
         .args(arguments)
         .arg("--endpoint")
@@ -270,13 +273,13 @@ fn spawn_sidecar(app: &AppHandle, paths: &RuntimePaths) -> Result<Child, BridgeE
         .arg(&paths.token_file)
         .arg("--catalog-root")
         .arg(catalog_root(app)?)
-        .current_dir(working_directory)
+        .current_dir(&working_directory)
         .stdin(Stdio::null())
         .stdout(Stdio::null())
         .stderr(Stdio::null());
     command
         .spawn()
-        .map_err(|error| BridgeError::new("disconnected", error.to_string()))
+        .map_err(|error| sidecar_spawn_error(program_path, &working_directory, error))
 }
 
 fn wait_until_ready(
