@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Post-apply catalog consistency fix** on `fix/adoption-post-apply-consistency`.
+Status: **Adopted-tree Apply collision fix** on `fix/adoption-apply-immediate-stale`.
 
-Active branch: `fix/adoption-post-apply-consistency`
+Active branch: `fix/adoption-apply-immediate-stale`
 
-Current objective: Bind canonical catalog generation into existing-project adoption so Apply, doctor, and diff agree. Packaged Desktop re-dogfood remains after merge.
+Current objective: Stop existing-project Apply from denying a freshly approved plan when generated files already exist and differ. Packaged Desktop re-dogfood remains after merge. Do not mark Desktop Existing-Project Adoption complete.
 
-Next first action: After this PR is green and merged, maintainer packaged Desktop walkthrough of a fresh Vii clone at `93e072c`, then `intentloom doctor` and `intentloom diff --json`. Do not mark Desktop Existing-Project Adoption complete in this PR.
+Next first action: After this PR is green, maintainer packaged Desktop walkthrough of a fresh Vii clone at `93e072c` (and of an already-adopted disposable tree), then `intentloom doctor` and `intentloom diff --json`.
 
 Known open items, in the order they should be handled:
 
@@ -95,6 +95,38 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-20, existing-project Apply collision on adopted trees
+
+- **Status:** complete on branch; PR pending
+- **Agent/tool:** Cursor
+- **Branch:** `fix/adoption-apply-immediate-stale`
+- **Commits:** pending
+- **Pull request:** pending
+- **Objective:** Find why packaged Desktop denied Apply immediately after Approve and fix the smallest defect without weakening stale protection.
+- **Completed:** Real-equivalent regression showed Prepare/Revalidate/Approve valid with empty fingerprint gates; Apply denied `collision` because `syncProject` treats differing `.aif/config.yaml` and checksum-drifted AIF-owned `.mdc` files as conflicts. Desktop labeled every `denied` result as stale/expired. Approved Apply now overwrites those planned generated outputs when `profileConfirmed` is set. Fingerprint, digest, expiry, AGENTS.md stale, and zero-write stale denial remain. Desktop labels distinguish stale, expired, and other denials.
+- **Not completed:** Packaged Desktop re-dogfood; product completion gate.
+- **Files or packages changed:** `generated-metadata-compare.ts`, `packages/application/src/index.ts` (+3 lines, quality exception), adoption Apply Desktop label, tests, changelog, project state, duty watch.
+- **Validation:** `pnpm verify` passed (1545 tests, 3 skipped). `git diff --check` passed. No Tauri allowlist change.
+- **Decisions and assumptions:** The denial was `collision`, not stale/expired. The already-adopted tree contributed because generated files already existed and differed. Do not relax fingerprint equality. Do not mark Desktop Existing-Project Adoption complete. PR #347 is already merged; this is a follow-up branch.
+- **Risks or compatibility impact:** CLI `adopt`/`sync` without `profileConfirmed` still conflict on protected metadata and modified owned files. Oversized application index grew by 3 lines.
+- **Open issues or blockers:** maintainer packaged Desktop click-through after merge.
+- **Next first action:** commit, push, open PR against main, wait for CI. Do not merge until the maintainer asks; original #347 follow-up said do not merge yet.
+- **Evidence:** `tests/existing-project-adoption-apply-immediate-stale.test.ts`
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant tests, type checks, builds, or compatibility checks passed
+- [ ] Atomic commit policy and commit-message checks passed
+- [ ] Repository hooks installed or equivalent commands run
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `PROJECT_STATE.md` updated when durable state changed
+- [x] `DUTY_WATCH.md` updated with this entry
+- [x] Related roadmap, ADR, changelog, migration, or reference docs updated
+- [ ] Failed or unavailable checks recorded
 
 ### 2026-08-19, existing-project post-apply catalog consistency
 

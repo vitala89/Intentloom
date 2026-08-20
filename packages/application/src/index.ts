@@ -1921,6 +1921,7 @@ async function plan(
         sync,
         ownedChecksum: owned.get(file.path)?.checksum,
         checksum,
+        approvedOverwrite: options.profileConfirmed === true,
       });
       if (change) changes.push(change);
     }
@@ -2862,7 +2863,9 @@ export async function adoptProject(
     mappingDiagnostics.length > 0 ||
     validationDiagnostics.length > 0 ||
     items.some(
-      (item) => item.manualDecisionRequired || item.action === "conflict",
+      (item) =>
+        item.manualDecisionRequired ||
+        (item.action === "conflict" && options.profileConfirmed !== true),
     );
   let applied = false;
   let transactionOutcome: AdoptionTransactionOutcome | null = null;

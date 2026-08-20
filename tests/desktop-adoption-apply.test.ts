@@ -184,10 +184,29 @@ describe("desktop adoption apply", () => {
       applyOutcomeLabel({
         ...applied.result!,
         status: "denied",
+        reasons: ["stale-fingerprint"],
         applied: false,
         ready: false,
       }),
-    ).toMatch(/stale or expired/);
+    ).toBe("Plan became stale: stale-fingerprint");
+    expect(
+      applyOutcomeLabel({
+        ...applied.result!,
+        status: "denied",
+        reasons: ["expired"],
+        applied: false,
+        ready: false,
+      }),
+    ).toBe("Plan expired");
+    expect(
+      applyOutcomeLabel({
+        ...applied.result!,
+        status: "denied",
+        reasons: ["collision"],
+        applied: false,
+        ready: false,
+      }),
+    ).toBe("Rejected: collision");
     const allowlist = readFileSync(
       join(desktopRoot, "src-tauri/src/method_allowlist.rs"),
       "utf8",

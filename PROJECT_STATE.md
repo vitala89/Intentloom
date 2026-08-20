@@ -607,7 +607,12 @@ clone (`93e072c`). That run wrote empty-catalog artifacts because existing-proje
 adoption did not pass `catalogRoot`; CLI doctor/diff then disagreed with Apply
 Ready. A later consistency fix binds the daemon catalog into the existing-project
 plan/apply path so generated lock, source-map, adapter outputs, and Codex skills
-match canonical CLI generation. Packaged Desktop click-through after that fix
+match canonical CLI generation. After that catalog binding, packaged Desktop
+could still deny Apply on an already-ready tree because `syncProject` treated
+differing `.aif` metadata and checksum-drifted AIF-owned outputs as collisions,
+while the UI labeled every denial as stale or expired. Approved Apply now
+overwrites those planned generated outputs without relaxing fingerprint,
+digest, or expiry gates. Packaged Desktop click-through after that fix
 is still required, so Desktop Existing-Project Adoption is **not** marked
 complete. See
 [2026-08-19-vii-desktop-full-adoption.md](docs/releases/dogfooding/2026-08-19-vii-desktop-full-adoption.md).
