@@ -4,6 +4,7 @@ import { fileURLToPath } from "node:url";
 import { tmpdir } from "node:os";
 import { spawnSync } from "node:child_process";
 import { buildSeaExecutable } from "./build-sea-executable.mjs";
+import { prepareTauriSidecar } from "./prepare-tauri-sidecar.mjs";
 import { probeSidecar } from "./sea-runtime.mjs";
 import {
   assertPackagingSidecar,
@@ -23,8 +24,12 @@ function run(command, commandArgs, options = {}) {
     cwd: repositoryRoot,
     encoding: "utf8",
     stdio: "inherit",
+    shell: process.platform === "win32",
     ...options,
   });
+  if (result.error) {
+    throw new Error(`${command} failed to start: ${result.error.message}`);
+  }
   if (result.status !== 0) {
     throw new Error(`${command} ${commandArgs.join(" ")} failed (${result.status})`);
   }
@@ -58,7 +63,10 @@ async function prepareCurrentSidecar() {
     throw new Error("generated SEA sidecar did not answer protocol v1");
   }
   process.env.INTENTLOOM_DESKTOP_SIDECAR = built.executable;
-  run("pnpm", ["desktop:prepare-sidecar"]);
+  await prepareTauriSidecar({
+    repositoryRoot,
+    sourcePath: built.executable,
+  });
   const ready = await assertPackagingSidecar({ repositoryRoot, daemonBundlePath: daemonBundle });
   return { outputRoot, built, probe, ready };
 }
