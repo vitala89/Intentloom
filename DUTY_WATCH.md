@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Desktop daemon stale-endpoint recovery** on `fix/desktop-daemon-stale-endpoint-recovery`.
+Status: **Desktop packaged sidecar build** on `fix/desktop-packaged-sidecar-build`.
 
-Active branch: `fix/desktop-daemon-stale-endpoint-recovery`
+Active branch: `fix/desktop-packaged-sidecar-build`
 
-Current objective: Recover packaged Desktop from a leftover or stale private daemon endpoint so Doctor and Diff can reach the canonical engines. Do not mark Desktop Existing-Project Adoption complete.
+Current objective: Make local packaged Desktop builds deterministic and self-contained so Connect daemon does not fail with `os error 2` from a Node shebang sidecar. Do not mark Desktop Existing-Project Adoption complete.
 
-Next first action: After CI is green, maintainer packaged Desktop walkthrough on `/Users/eugenekasap/WebstormProjects/intentloom-dogfood/vii-desktop-final`: daemon recovery, Doctor, Refresh Doctor, Diff, CLI parity, Cancel, then a separate evidence PR may mark adoption complete.
+Next first action: After CI is green, maintainer rebuilds with `pnpm desktop:package`, installs the new `.app`, and walkthroughs Connect/Doctor/Diff on `/Users/eugenekasap/WebstormProjects/intentloom-dogfood/vii-desktop-final`.
 
 Known open items, in the order they should be handled:
 
@@ -95,6 +95,38 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-21, Desktop packaged sidecar build
+
+- **Status:** complete on branch; PR pending
+- **Agent/tool:** Cursor
+- **Branch:** `fix/desktop-packaged-sidecar-build`
+- **Commits:** pending
+- **Pull request:** pending
+- **Objective:** Prove the packaged Desktop `os error 2` launch failure and make local/CI packaging generate a current self-contained SEA sidecar instead of silently bundling a stale Node script.
+- **Completed:** Reproduced the 2026-08-21 `.app`. Packaged `Contents/Resources/resources/intentloomd` was a 403,014-byte `#!/usr/bin/env node` script. macOS `posix_spawn` of that script returns `No such file or directory (os error 2)`. Canonical command is `pnpm desktop:package`. Newly packaged Mach-O sidecar is 111,009,856 bytes, hash `147e814e733f59d7d2429fb3d4cc73e9c6898e114492750ef5fcf111f4576152`, probes protocol v1, catalog at `_up_/_up_/_up_/catalog`. #350 recovery and #349 Doctor/Diff tests remain green.
+- **Not completed:** Maintainer packaged Desktop click-through; product completion gate.
+- **Files or packages changed:** Desktop packaging scripts, SEA workflow, sidecar launch diagnostics, changelog, project state, duty watch, packaging tests.
+- **Validation:** `pnpm verify` passed (1565 tests, 3 skipped). `cargo test` 19 passed. `cargo clippy --all-targets -- -D warnings` passed. `pnpm desktop:package` produced `apps/desktop/src-tauri/target/release/bundle/macos/Intentloom.app` with a Mach-O arm64 sidecar and a successful packaged daemon Doctor probe.
+- **Decisions and assumptions:** Canonical maintainer command is `pnpm desktop:package`. Low-level `desktop:prepare-sidecar` remains. `pnpm --filter @intentloom/desktop package` is Tauri-only and fail-closed without a current stamp. Do not mark Desktop Existing-Project Adoption complete.
+- **Risks or compatibility impact:** Local packaging now requires Node SEA/postject and takes as long as a full sidecar generate plus Tauri build.
+- **Open issues or blockers:** maintainer packaged Desktop click-through after merge.
+- **Next first action:** Commit, push, open PR, wait for CI, merge when green.
+- **Evidence:** `scripts/desktop/package-desktop.mjs`, `scripts/desktop/sidecar-contract.mjs`, `tests/desktop-sidecar-packaging.test.ts`
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant tests, type checks, builds, or compatibility checks passed
+- [ ] Atomic commit policy and commit-message checks passed
+- [ ] Repository hooks installed or equivalent commands run
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `PROJECT_STATE.md` updated when durable state changed
+- [x] `DUTY_WATCH.md` updated with this entry
+- [x] Related roadmap, ADR, changelog, migration, or reference docs updated
+- [ ] Failed or unavailable checks recorded
 
 ### 2026-08-20, Desktop daemon stale-endpoint recovery
 

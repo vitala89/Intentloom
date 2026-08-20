@@ -19,6 +19,7 @@
     "validate:diff": "node scripts/validate-diff.mjs",
     "hooks:install": "node scripts/install-hooks.mjs",
     "desktop:prepare-sidecar": "node scripts/desktop/prepare-tauri-sidecar.mjs",
+    "desktop:package": "node scripts/desktop/package-desktop.mjs",
     "pack:cli": "pnpm --filter ./packages/cli pack --pack-destination ./artifacts",
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",

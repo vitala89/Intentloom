@@ -7,6 +7,13 @@ All notable changes are documented here. This project follows Keep a Changelog p
 Changes listed here are merged after the current release-preparation scope and
 are not included in the current npm artifact until a later release.
 
+- Local `pnpm desktop:package` now builds a current self-contained SEA sidecar,
+  refuses to reuse a stale Node-script `intentloomd` resource, packages Desktop,
+  and probes the bundled daemon. `pnpm --filter @intentloom/desktop package` no
+  longer silently ships a shebang script that fails at launch with
+  `No such file or directory (os error 2)`. Desktop Existing-Project Adoption
+  is still not marked complete.
+
 - Packaged Desktop recovers from a stale or leftover private daemon endpoint
   instead of looping on `disconnected` / "an existing daemon endpoint did not
   respond". Live daemons are reused; authentication failures are not stolen;

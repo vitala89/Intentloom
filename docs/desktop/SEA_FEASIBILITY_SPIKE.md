@@ -46,6 +46,9 @@ health response.
 
 The repeatable harness is
 [`scripts/desktop/sea-feasibility.mjs`](../../scripts/desktop/sea-feasibility.mjs).
+The canonical maintainer packaging command is `pnpm desktop:package`, which
+runs this SEA generation, stamps the sidecar, packages Desktop, and probes the
+bundled daemon so a stale `#!/usr/bin/env node` resource cannot be shipped.
 It expects the existing compiled artifact at
 `packages/daemon/dist/intentloomd.cjs` and accepts:
 

@@ -1,6 +1,6 @@
 # Intentloom Project State
 
-Last verified: 2026-08-20
+Last verified: 2026-08-21
 
 This file records the durable current state of the project. It is not a
 chronological log. Session history and handoff details belong in
@@ -619,9 +619,15 @@ because `ensure_daemon` reused a leftover private endpoint and remapped any
 probe failure to "an existing daemon endpoint did not respond", so Retry
 could not start the packaged sidecar. Desktop now classifies live, stale,
 unowned leftover, and dead-owned-child endpoints and recovers the private
-runtime socket when that is safe. Packaged Desktop re-verification of daemon
-recovery, Doctor, Diff, and Cancel is still required, so Desktop
-Existing-Project Adoption is **not** marked complete. See
+runtime socket when that is safe (PR #350). After that recovery, packaged
+Desktop still failed Connect with `No such file or directory (os error 2)`
+because `pnpm --filter @intentloom/desktop package` bundled a stale
+`#!/usr/bin/env node` script as `resources/intentloomd` instead of a
+self-contained SEA Mach-O. Canonical packaging is now `pnpm desktop:package`,
+which generates, stamps, and probes the current sidecar and refuses to reuse an
+unstamped script. Packaged Desktop re-verification of Connect, Doctor, Diff,
+and Cancel is still required, so Desktop Existing-Project Adoption is **not**
+marked complete. See
 [2026-08-19-vii-desktop-full-adoption.md](docs/releases/dogfooding/2026-08-19-vii-desktop-full-adoption.md).
 
 P1 defers real workspace dogfood to the maintainer

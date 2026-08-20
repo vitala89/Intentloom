@@ -6,6 +6,7 @@ mod daemon_transport;
 mod method_allowlist;
 mod native_paths;
 mod runtime_paths;
+mod sidecar_launch;
 
 use commands::{
     get_daemon_info, inspect_project, invoke_foundation_request, invoke_inception_request,

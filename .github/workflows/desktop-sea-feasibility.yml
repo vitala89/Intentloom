@@ -8,9 +8,8 @@ on:
       - "packages/application/**"
       - "packages/daemon/**"
       - "packages/protocol/**"
+      - "scripts/desktop/**"
       - "scripts/build-daemon.mjs"
-      - "scripts/desktop/sea-feasibility.mjs"
-      - "scripts/desktop/prepare-tauri-sidecar.mjs"
       - "apps/desktop/**"
       - "pnpm-lock.yaml"
       - "package.json"
@@ -98,14 +97,14 @@ jobs:
           (cd "$RUNNER_TEMP" && tar -xzf postject-1.0.0-alpha.6.tgz -C postject)
           echo "POSTJECT_API=$RUNNER_TEMP/postject/package/dist/api.js" >> "$GITHUB_ENV"
 
-      # ── Run SEA feasibility spike ──────────────────────────────────────────
-      - name: Run self-contained daemon feasibility spike
+      # ── Generate SEA sidecar, package Desktop, and probe the bundle ────────
+      - name: Package Desktop with current SEA sidecar
         id: sea-spike
         shell: bash
         env:
           INTENTLOOM_SEA_OUTPUT_DIR: ${{ runner.temp }}/intentloom-sea
-        run: |
-          node scripts/desktop/sea-feasibility.mjs | tee "$RUNNER_TEMP/sea-result.json"
+          INTENTLOOM_DESKTOP_PACKAGE_RESULT: ${{ runner.temp }}/sea-result.json
+        run: pnpm desktop:package --skip-build
 
       - name: Assert doctor response from SEA daemon
         shell: bash
@@ -117,45 +116,30 @@ jobs:
           test "$PROTOCOL" = "1"
           test "$GRACEFUL" = "true"
           test "$REMOVED"  = "true"
-
-      # ── Prepare fixed Tauri sidecar resource ──────────────────────────────
-      - name: Prepare fixed Tauri sidecar resource
-        shell: bash
-        env:
-          INTENTLOOM_DESKTOP_SIDECAR: >-
-            ${{ runner.temp }}/intentloom-sea/intentloomd-sea${{ runner.os == 'Windows' && '.exe' || '' }}
-        run: pnpm desktop:prepare-sidecar
-
-      # ── Verify sidecar resource boundary ──────────────────────────────────
-      - name: Verify Tauri sidecar resource boundary
-        shell: bash
-        run: |
           test -f "apps/desktop/src-tauri/resources/intentloomd${{ runner.os == 'Windows' && '.exe' || '' }}"
-          test -f apps/desktop/src-tauri/tauri.packaging.conf.json
-          echo "Sidecar resource boundary verified"
+          test -f apps/desktop/src-tauri/resources/.sidecar-stamp.json
 
-      # ── Tauri bundle (Linux: .deb, macOS: .app) ───────────────────────────
-      - name: Tauri bundle (${{ matrix.bundle-format }})
-        if: matrix.tauri-bundle
-        shell: bash
-        run: |
-          pnpm --filter @intentloom/desktop exec tauri build \
-            --config src-tauri/tauri.packaging.conf.json \
-            --bundles ${{ matrix.bundle-format }}
-
-      - name: Verify bundle artifact exists (Linux)
+      - name: Verify Linux .deb bundle
         if: runner.os == 'Linux'
         shell: bash
         run: |
           ls -lh apps/desktop/src-tauri/target/release/bundle/deb/*.deb
           echo "Linux .deb bundle verified"
 
-      - name: Verify bundle artifact exists (macOS)
+      - name: Verify macOS .app sidecar and packaged probe
         if: runner.os == 'macOS'
         shell: bash
         run: |
-          ls -lhd apps/desktop/src-tauri/target/release/bundle/macos/Intentloom.app
-          echo "macOS .app bundle verified"
+          APP=$(jq -r '.packaged.appPath' "$RUNNER_TEMP/sea-result.json")
+          PACKAGED_PROTOCOL=$(jq -r '.packaged.probe.doctor.protocolVersion' "$RUNNER_TEMP/sea-result.json")
+          GENERATED=$(jq -r '.executable.sha256' "$RUNNER_TEMP/sea-result.json")
+          BUNDLED=$(jq -r '.packaged.layout.sidecar.sha256' "$RUNNER_TEMP/sea-result.json")
+          test -d "$APP"
+          test -x "$APP/Contents/Resources/resources/intentloomd"
+          test -d "$APP/Contents/Resources/_up_/_up_/_up_/catalog"
+          test "$PACKAGED_PROTOCOL" = "1"
+          test "$GENERATED" = "$BUNDLED"
+          echo "macOS .app sidecar probe verified"
 
       # ── Upload SEA result JSON ─────────────────────────────────────────────
       - name: Upload SEA result

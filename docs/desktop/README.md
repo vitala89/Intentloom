@@ -93,9 +93,13 @@ token, and IPC transport concerns. It must not reimplement project inspection,
 doctor, diff, timeline, evidence, conformance, ownership, approval, or
 transaction rules.
 
-Packaging requires a platform-matched self-contained daemon artifact. Prepare
-it with `INTENTLOOM_DESKTOP_SIDECAR=/absolute/path/to/intentloomd-sea` and
-`pnpm desktop:prepare-sidecar`, then run
-`pnpm --filter @intentloom/desktop package`. Development `cargo check` keeps
-bundling disabled and never substitutes a system Node runtime for a packaged
-sidecar.
+Packaging uses one maintainer command: `pnpm desktop:package`. That builds the
+current daemon, generates a self-contained SEA sidecar, rejects scripts and
+stale `src-tauri/resources/intentloomd` copies, copies a stamped sidecar into
+the Tauri resource path, packages Desktop, and probes the bundled daemon.
+`pnpm desktop:prepare-sidecar` remains the low-level copy step for CI internals
+and requires `INTENTLOOM_DESKTOP_SIDECAR` to already point at a validated SEA
+executable. `pnpm --filter @intentloom/desktop package` only runs the Tauri
+bundle after that stamp exists; it refuses to reuse an unstamped Node script.
+Development `cargo check` keeps bundling disabled and never substitutes a
+system Node runtime for a packaged sidecar.
