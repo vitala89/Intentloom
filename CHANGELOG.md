@@ -7,6 +7,12 @@ All notable changes are documented here. This project follows Keep a Changelog p
 Changes listed here are merged after the current release-preparation scope and
 are not included in the current npm artifact until a later release.
 
+- Packaged Desktop recovers from a stale or leftover private daemon endpoint
+  instead of looping on `disconnected` / "an existing daemon endpoint did not
+  respond". Live daemons are reused; authentication failures are not stolen;
+  Doctor/Diff semantics from #349 are unchanged. Desktop Existing-Project
+  Adoption is still not marked complete.
+
 - Existing-project Apply no longer denies an approved, unexpired plan as a
   collision merely because `.aif` metadata or AIF-owned generated files already
   exist and differ from the catalog-bound desired state. Fingerprint, digest,
