@@ -12,6 +12,8 @@ import type {
 } from "@intentloom/protocol";
 import { WorkspaceContent } from "./WorkspaceContent.js";
 import { inspectStatusForError } from "./desktop-bridge-status.js";
+import { deriveIsOperationLoading } from "./desktop-operation-lifecycle.js";
+import { useDesktopConnect } from "./use-desktop-connect.js";
 import { useDesktopDoctor } from "./use-desktop-doctor.js";
 import {
   connectedDaemonLabel,
@@ -45,6 +47,14 @@ export default function App() {
     operationRef.current = controller;
     return controller.signal;
   }, []);
+  const [isConnecting, setIsConnecting] = useState(false);
+  const [diff, setDiff] = useState<ProjectDiffResult | null>(null);
+  const [diffStatus, setDiffStatus] = useState<WorkspaceInspectStatus>("idle");
+  const [diffError, setDiffError] = useState<string | null>(null);
+  const [timeline, setTimeline] = useState<ProjectTimelineResult | null>(null);
+  const [timelineStatus, setTimelineStatus] =
+    useState<WorkspaceTimelineStatus>("idle");
+  const [timelineError, setTimelineError] = useState<string | null>(null);
   const {
     doctor,
     doctorStatus,
@@ -57,19 +67,33 @@ export default function App() {
     root,
     activeView,
     daemonInfo,
+    isConnecting,
     startOperation,
     setConnection,
     setMessage,
   });
-  const [diff, setDiff] = useState<ProjectDiffResult | null>(null);
-  const [diffStatus, setDiffStatus] = useState<WorkspaceInspectStatus>("idle");
-  const [diffError, setDiffError] = useState<string | null>(null);
-  const [timeline, setTimeline] = useState<ProjectTimelineResult | null>(null);
-  const [timelineStatus, setTimelineStatus] =
-    useState<WorkspaceTimelineStatus>("idle");
-  const [timelineError, setTimelineError] = useState<string | null>(null);
-  const [isConnecting, setIsConnecting] = useState(false);
-  const [retryCount, setRetryCount] = useState(0);
+  const { connectDaemon, retryCount } = useDesktopConnect({
+    root,
+    doctorRoot,
+    doctor,
+    isConnecting,
+    setIsConnecting,
+    startOperation,
+    loadDoctor,
+    resetDoctor,
+    setConnection,
+    setMessage,
+    setDaemonInfo,
+    setInspect,
+    setInspectStatus,
+    setInspectError,
+    setDiff,
+    setDiffStatus,
+    setDiffError,
+    setTimeline,
+    setTimelineStatus,
+    setTimelineError,
+  });
   const [confirmSwitch, setConfirmSwitch] = useState(false);
   const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
   const [activeApprovedPlan, _setActiveApprovedPlan] =
@@ -85,12 +109,13 @@ export default function App() {
   const commandPaletteTriggerRef = useRef<HTMLButtonElement | null>(null);
 
   // Derived loading state — true whenever any daemon operation is in-flight
-  const isOperationLoading =
-    isConnecting ||
-    inspectStatus === "loading" ||
-    doctorStatus === "loading" ||
-    diffStatus === "loading" ||
-    timelineStatus === "loading";
+  const isOperationLoading = deriveIsOperationLoading({
+    isConnecting,
+    inspectStatus,
+    doctorStatus,
+    diffStatus,
+    timelineStatus,
+  });
 
   // Derived: which views currently hold loaded data
   const loadedViews: string[] = [];
@@ -247,90 +272,6 @@ export default function App() {
       if (error instanceof DesktopBridgeError) {
         setTimelineError(error.message);
       }
-    }
-  }
-
-  async function connectDaemon() {
-    if (isConnecting) return;
-    const signal = startOperation();
-    setConnection("Connecting…");
-    setMessage(null);
-    setIsConnecting(true);
-    setInspectError(null);
-    if (root) {
-      setInspect(null);
-      setInspectStatus("loading");
-      resetDoctor();
-      setDiff(null);
-      setDiffStatus("idle");
-      setDiffError(null);
-      setTimeline(null);
-      setTimelineStatus("idle");
-      setTimelineError(null);
-    }
-    try {
-      const info = await desktopClient.daemonInfo(signal);
-      if (signal.aborted) return;
-      setDaemonInfo(info);
-      setRetryCount(0);
-      if (info.compatibility.status === "incompatible") {
-        setInspectStatus(root ? "protocol-mismatch" : "idle");
-        setConnection("Protocol mismatch");
-        setMessage(
-          info.compatibility.reason ??
-            "The local daemon is not compatible with this Desktop client.",
-        );
-        return;
-      }
-      if (root) {
-        setConnection("Reading project…");
-        const projectInspect = await desktopClient.inspectProject(root, signal);
-        if (signal.aborted) return;
-        setInspect(projectInspect);
-        setInspectStatus("ready");
-        if (doctorRoot !== root || doctor === null) {
-          await loadDoctor(signal);
-        }
-      }
-      setConnection(`Daemon ${info.daemonVersion}`);
-    } catch (error) {
-      if (signal.aborted) return;
-      const nextInspectStatus = root ? inspectStatusForError(error) : "idle";
-      setInspectStatus(nextInspectStatus);
-      if (error instanceof DesktopBridgeError) {
-        setInspectError(error.message);
-      }
-      const isTransientDisconnect =
-        error instanceof DesktopBridgeError &&
-        (error.code === "disconnected" ||
-          error.code === "native_bridge_unavailable");
-      if (isTransientDisconnect && retryCount < 1) {
-        // Single automatic retry after 1500ms for transient disconnections
-        setRetryCount((c) => c + 1);
-        setConnection("Reconnecting…");
-        setMessage("Daemon not ready — retrying in 1.5s…");
-        setIsConnecting(false);
-        setTimeout(() => {
-          void connectDaemon();
-        }, 1500);
-        return;
-      }
-      setConnection(
-        nextInspectStatus === "stale" || nextInspectStatus === "invalid-root"
-          ? nextInspectStatus === "stale"
-            ? "Project root changed"
-            : "Project root unavailable"
-          : nextInspectStatus === "protocol-mismatch"
-            ? "Protocol mismatch"
-            : "Disconnected",
-      );
-      setMessage(
-        error instanceof DesktopBridgeError
-          ? error.message
-          : "The local daemon could not be reached.",
-      );
-    } finally {
-      setIsConnecting(false);
     }
   }
 

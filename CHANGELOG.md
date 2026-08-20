@@ -7,6 +7,12 @@ All notable changes are documented here. This project follows Keep a Changelog p
 Changes listed here are merged after the current release-preparation scope and
 are not included in the current npm artifact until a later release.
 
+- Desktop no longer leaves the global Cancel control visible after initial
+  Connect/Inspect/Doctor when Doctor is already ready. Auto Doctor load now
+  defers while Connect owns the pipeline, and aborted Connect inspect loading
+  is terminalized instead of staying stuck at `"loading"`. Desktop
+  Existing-Project Adoption is still not marked complete.
+
 - Local `pnpm desktop:package` now builds a current self-contained SEA sidecar,
   refuses to reuse a stale Node-script `intentloomd` resource, packages Desktop,
   and probes the bundled daemon. `pnpm --filter @intentloom/desktop package` no

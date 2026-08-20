@@ -9,13 +9,31 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Desktop packaged sidecar build** on `fix/desktop-packaged-sidecar-build`.
+Status: **Desktop Cancel loading lifecycle** on `fix/desktop-cancel-loading-lifecycle`.
 
-Active branch: `fix/desktop-packaged-sidecar-build`
+Active branch: `fix/desktop-cancel-loading-lifecycle`
 
-Current objective: Make local packaged Desktop builds deterministic and self-contained so Connect daemon does not fail with `os error 2` from a Node shebang sidecar. Do not mark Desktop Existing-Project Adoption complete.
+Current objective: Fix stale global Cancel visibility after initial Connect/Inspect/Doctor load without changing Doctor/Diff semantics or marking Desktop Existing-Project Adoption complete.
 
-Next first action: After CI is green, maintainer rebuilds with `pnpm desktop:package`, installs the new `.app`, and walkthroughs Connect/Doctor/Diff on `/Users/eugenekasap/WebstormProjects/intentloom-dogfood/vii-desktop-final`.
+Next first action: After CI is green, maintainer re-checks packaged Desktop Connect → Doctor initial load on `/Users/eugenekasap/WebstormProjects/intentloom-dogfood/vii-desktop-final` and confirms Cancel hides when Doctor is ready.
+
+### 2026-08-21, Desktop Cancel loading lifecycle
+
+- **Status:** complete on branch; PR pending
+- **Agent/tool:** Cursor
+- **Branch:** `fix/desktop-cancel-loading-lifecycle`
+- **Commits:** pending
+- **Pull request:** pending
+- **Objective:** Fix stale global Cancel after initial Connect/Inspect/Doctor when Doctor is already ready.
+- **Root cause:** On Doctor view during Connect, `useDesktopDoctor` auto-load called `startOperation()`, aborting Connect mid-inspect. `connectDaemon` returned early without terminalizing `inspectStatus`, leaving it at `"loading"` while Doctor was `"ready"`.
+- **Completed:** Guard auto-load during `isConnecting`; terminalize aborted Connect inspect loading in `finally`; extracted lifecycle helpers and regression tests.
+- **Not completed:** Maintainer packaged re-check; product completion gate.
+- **Files or packages changed:** `apps/desktop/src/App.tsx`, `use-desktop-doctor.ts`, `desktop-operation-lifecycle.ts`, `tests/desktop-operation-lifecycle.test.ts`, changelog, project state, duty watch.
+- **Validation:** `pnpm verify` passed (1578 tests, 3 skipped).
+- **Decisions and assumptions:** Do not hide Cancel cosmetically. Do not mark Desktop Existing-Project Adoption complete in this PR.
+- **Open issues or blockers:** maintainer packaged Cancel re-check after merge.
+- **Next first action:** Commit, push, open PR, wait for CI, merge when green.
+- **Evidence:** `apps/desktop/src/desktop-operation-lifecycle.ts`, `tests/desktop-operation-lifecycle.test.ts`
 
 Known open items, in the order they should be handled:
 

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import type { DaemonInfoResult, DoctorResult } from "@intentloom/protocol";
 import { desktopClient, DesktopBridgeError } from "./desktop-client.js";
 import { inspectStatusForError } from "./desktop-bridge-status.js";
+import { shouldAutoLoadDoctor } from "./desktop-operation-lifecycle.js";
 import type {
   WorkspaceInspectStatus,
   WorkspaceView,
@@ -11,6 +12,7 @@ export interface UseDesktopDoctorOptions {
   readonly root: string | null;
   readonly activeView: WorkspaceView;
   readonly daemonInfo: DaemonInfoResult | null;
+  readonly isConnecting: boolean;
   readonly startOperation: () => AbortSignal;
   readonly setConnection: (value: string) => void;
   readonly setMessage: (value: string | null) => void;
@@ -20,6 +22,7 @@ export function useDesktopDoctor({
   root,
   activeView,
   daemonInfo,
+  isConnecting,
   startOperation,
   setConnection,
   setMessage,
@@ -101,16 +104,19 @@ export function useDesktopDoctor({
 
   useEffect(() => {
     if (
-      activeView === "Doctor" &&
-      root !== null &&
-      daemonInfo !== null &&
-      doctorStatus === "idle" &&
-      doctor === null
+      shouldAutoLoadDoctor({
+        activeView,
+        root,
+        daemonInfo,
+        doctorStatus,
+        doctor,
+        isConnecting,
+      })
     ) {
       void loadDoctor();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeView, root, daemonInfo, doctorStatus, doctor]);
+  }, [activeView, root, daemonInfo, doctorStatus, doctor, isConnecting]);
 
   return {
     doctor,
