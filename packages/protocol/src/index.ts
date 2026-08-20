@@ -126,8 +126,8 @@ export type ProjectTimelineResponse = JsonRpcSuccess<ProjectTimelineResult>;
 export interface DoctorParams {
   readonly protocolVersion: typeof PROTOCOL_VERSION;
   readonly root: string;
-  readonly profile: string;
-  readonly adapters: readonly string[];
+  readonly profile?: string;
+  readonly adapters?: readonly string[];
 }
 export interface DoctorFinding {
   readonly code: string;
@@ -396,6 +396,25 @@ function stringValue(value: unknown, field: string): string {
   );
 }
 
+function optionalString(value: unknown): string | undefined {
+  if (value === undefined) return undefined;
+  if (typeof value === "string" && value.length > 0) return value;
+  throw new ProtocolValidationError(
+    -32602,
+    "profile must be a non-empty string",
+  );
+}
+
+function optionalStringArray(value: unknown): readonly string[] | undefined {
+  if (value === undefined) return undefined;
+  if (Array.isArray(value) && value.every((entry) => typeof entry === "string"))
+    return value;
+  throw new ProtocolValidationError(
+    -32602,
+    "adapters must be an array of strings",
+  );
+}
+
 function stringArray(value: unknown, field: string): readonly string[] {
   if (Array.isArray(value) && value.every((entry) => typeof entry === "string"))
     return value;
@@ -403,6 +422,25 @@ function stringArray(value: unknown, field: string): readonly string[] {
     -32602,
     `${field} must be an array of strings`,
   );
+}
+
+function projectHealthParams(params: Record<string, unknown>): {
+  readonly root: string;
+  readonly profile?: string;
+  readonly adapters?: readonly string[];
+} {
+  const resolved: {
+    root: string;
+    profile?: string;
+    adapters?: readonly string[];
+  } = {
+    root: stringValue(params.root, "root"),
+  };
+  const profile = optionalString(params.profile);
+  if (profile !== undefined) resolved.profile = profile;
+  const adapters = optionalStringArray(params.adapters);
+  if (adapters !== undefined) resolved.adapters = adapters;
+  return resolved;
 }
 
 function positiveInteger(value: unknown, field: string): number {
@@ -468,8 +506,10 @@ export function createDoctorRequest(
     params: {
       protocolVersion: PROTOCOL_VERSION,
       root: params.root,
-      profile: params.profile,
-      adapters: [...params.adapters],
+      ...(params.profile !== undefined ? { profile: params.profile } : {}),
+      ...(params.adapters !== undefined
+        ? { adapters: [...params.adapters] }
+        : {}),
     },
   };
 }
@@ -505,8 +545,10 @@ export function createProjectDiffRequest(
     params: {
       protocolVersion: PROTOCOL_VERSION,
       root: params.root,
-      profile: params.profile,
-      adapters: [...params.adapters],
+      ...(params.profile !== undefined ? { profile: params.profile } : {}),
+      ...(params.adapters !== undefined
+        ? { adapters: [...params.adapters] }
+        : {}),
     },
   };
 }
@@ -726,11 +768,7 @@ export function parseDoctorRequest(value: unknown): DoctorRequest {
     throw new ProtocolValidationError(-32602, "params must be an object");
   if (value.params.protocolVersion !== PROTOCOL_VERSION)
     throw new ProtocolValidationError(-32602, "unsupported protocol version");
-  return createDoctorRequest(id, {
-    root: stringValue(value.params.root, "root"),
-    profile: stringValue(value.params.profile, "profile"),
-    adapters: stringArray(value.params.adapters, "adapters"),
-  });
+  return createDoctorRequest(id, projectHealthParams(value.params));
 }
 
 export function parseDaemonRequest(value: unknown): DaemonRequest {
@@ -784,11 +822,7 @@ export function parseDaemonRequest(value: unknown): DaemonRequest {
   }
 
   if (value.method === DOCTOR_METHOD) {
-    return createDoctorRequest(id, {
-      root: stringValue(value.params.root, "root"),
-      profile: stringValue(value.params.profile, "profile"),
-      adapters: stringArray(value.params.adapters, "adapters"),
-    });
+    return createDoctorRequest(id, projectHealthParams(value.params));
   }
   if (value.method === INSPECT_METHOD) {
     return createInspectRequest(id, {
@@ -796,11 +830,7 @@ export function parseDaemonRequest(value: unknown): DaemonRequest {
     });
   }
   if (value.method === PROJECT_DIFF_METHOD) {
-    return createProjectDiffRequest(id, {
-      root: stringValue(value.params.root, "root"),
-      profile: stringValue(value.params.profile, "profile"),
-      adapters: stringArray(value.params.adapters, "adapters"),
-    });
+    return createProjectDiffRequest(id, projectHealthParams(value.params));
   }
   if (value.method === PROJECT_TIMELINE_METHOD) {
     return createProjectTimelineRequest(id, {

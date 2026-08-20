@@ -2,13 +2,15 @@
 import { readFile, stat } from "node:fs/promises";
 import { resolve } from "node:path";
 import {
-  diffProject,
-  doctorProject,
   inspectProject,
   nodeFileSystem,
   timelineProject,
 } from "../../application/dist/index.js";
 import { startLocalDaemon } from "./index.js";
+import {
+  handleProjectDiffRequest,
+  handleProjectDoctorRequest,
+} from "./project-health-handlers.js";
 import {
   handleQualityCatalog,
   handleQualityCheckers,
@@ -104,24 +106,7 @@ async function main(): Promise<void> {
     sessionToken,
     daemonVersion: process.env.INTENTLOOM_DAEMON_VERSION ?? "development",
     enforceCanonicalRoots: true,
-    diff: async (request) => {
-      const result = await diffProject(
-        {
-          root: request.params.root,
-          profile: request.params.profile,
-          adapters: request.params.adapters as never,
-          dryRun: true,
-          catalogRoot,
-        },
-        nodeFileSystem,
-      );
-      return {
-        operationVersion: 1,
-        root: request.params.root,
-        changes: result.changes,
-        diagnostics: result.diagnostics,
-      };
-    },
+    diff: async (request) => handleProjectDiffRequest(request, catalogRoot),
     inspect: async (request) => {
       await inspectProject(resolve(request.params.root), nodeFileSystem);
       return {
@@ -129,35 +114,7 @@ async function main(): Promise<void> {
         root: resolve(request.params.root),
       };
     },
-    doctor: async (request) => {
-      const report = await doctorProject(
-        {
-          root: resolve(request.params.root),
-          profile: request.params.profile,
-          adapters: request.params.adapters as never,
-          dryRun: true,
-          catalogRoot,
-        },
-        nodeFileSystem,
-      );
-      return {
-        findings: report.findings.map(
-          ({ code, severity, category, path, message }) => ({
-            code,
-            severity,
-            category,
-            path,
-            message,
-          }),
-        ),
-        diagnostics: report.diagnostics,
-        exitCode: report.findings.some(
-          (finding) => finding.severity === "error",
-        )
-          ? 3
-          : 0,
-      };
-    },
+    doctor: async (request) => handleProjectDoctorRequest(request, catalogRoot),
     timeline: async (request) => {
       const result = await timelineProject({
         root: request.params.root,

@@ -12,6 +12,7 @@ export interface DoctorViewProps {
   errorMessage: string | null;
   onSelectProject: () => void;
   onConnect: () => void;
+  onRefreshDoctor: () => void;
 }
 
 function findingKey(finding: DoctorFinding, index: number) {
@@ -25,6 +26,7 @@ export function DoctorView({
   errorMessage,
   onSelectProject,
   onConnect,
+  onRefreshDoctor,
 }: DoctorViewProps) {
   const [severityFilter, setSeverityFilter] = useState<
     "all" | DoctorFinding["severity"]
@@ -32,7 +34,7 @@ export function DoctorView({
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [selectedIndex, setSelectedIndex] = useState(0);
 
-  if (status !== "ready" || !result) {
+  if ((status !== "ready" && status !== "loading") || !result) {
     const stateCopy: Record<
       Exclude<InspectStatus, "ready" | "loading">,
       { title: string; description: string; action: string }
@@ -138,7 +140,11 @@ export function DoctorView({
   }
 
   return (
-    <section className="doctor-page" aria-labelledby="doctor-title">
+    <section
+      className={`doctor-page${status === "loading" ? " doctor-page-loading" : ""}`}
+      aria-labelledby="doctor-title"
+      aria-busy={status === "loading"}
+    >
       <div className="section-heading doctor-heading">
         <div>
           <span className="eyebrow">Validated diagnostics</span>
@@ -151,6 +157,15 @@ export function DoctorView({
           }
           size="sm"
         />
+        <Button
+          type="button"
+          variant="secondary"
+          onClick={onRefreshDoctor}
+          disabled={status === "loading" || root === null}
+          aria-label="Refresh Doctor"
+        >
+          {status === "loading" ? "Refreshing…" : "Refresh Doctor"}
+        </Button>
       </div>
 
       <div className="doctor-summary" aria-label="Doctor summary">

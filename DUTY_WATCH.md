@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Adopted-tree Apply collision fix** on `fix/adoption-apply-immediate-stale`.
+Status: **Desktop Doctor canonical health parity** on `fix/desktop-doctor-canonical-health`.
 
-Active branch: `fix/adoption-apply-immediate-stale`
+Active branch: `fix/desktop-doctor-canonical-health`
 
-Current objective: Stop existing-project Apply from denying a freshly approved plan when generated files already exist and differ. Packaged Desktop re-dogfood remains after merge. Do not mark Desktop Existing-Project Adoption complete.
+Current objective: Align Desktop Doctor and Diff with canonical CLI/daemon health for the selected project root. Add Refresh Doctor UX. Do not mark Desktop Existing-Project Adoption complete until maintainer packaged Desktop re-dogfood confirms parity.
 
-Next first action: After this PR is green, maintainer packaged Desktop walkthrough of a fresh Vii clone at `93e072c` (and of an already-adopted disposable tree), then `intentloom doctor` and `intentloom diff --json`.
+Next first action: After PR is green, maintainer packaged Desktop walkthrough on `/Users/eugenekasap/WebstormProjects/intentloom-dogfood/vii-desktop-final` (or fresh disposable clone): open Doctor, click Refresh Doctor, compare with `intentloom doctor` and `intentloom diff --json`.
 
 Known open items, in the order they should be handled:
 
@@ -8492,3 +8492,12 @@ repos/vitala89/Intentloom/branches/main/protection` and `.../rulesets`
 - **Open issues:** Portable adoption and migration remained follow-up work.
 - **Next action:** Define portable Duty Watch adoption for existing projects.
 - **Evidence:** merged PR #51 and repository history.
+
+### 2026-08-20 — Desktop Doctor canonical health parity (`fix/desktop-doctor-canonical-health`)
+
+- **Scope:** Stop Desktop Doctor from hardcoding `profile: generic` and empty adapters; forward typed doctor/diff requests through the Tauri bridge; resolve profile/adapters/catalog/validator from project config in daemon; add Refresh Doctor UX and root-scoped doctor lifecycle.
+- **Root cause:** Rust `run_doctor` discarded the Desktop request and rebuilt daemon params with hardcoded generic profile and empty adapters; Desktop also cached doctor results from pre-adoption connect without refresh.
+- **Files changed:** application resolver, daemon project-health handlers, protocol optional doctor/diff params, desktop client/App/DoctorView, Tauri bridge, regression tests.
+- **Validation:** `pnpm verify` green; `cargo test method_allowlist` green; `tests/desktop-doctor-canonical-health.test.ts` added.
+- **Next action:** Maintainer packaged Desktop re-dogfood on adopted disposable Vii tree; compare Doctor/Diff with CLI; then mark adoption complete if parity holds.
+- **Do not mark complete yet:** Real packaged Desktop verification still required.

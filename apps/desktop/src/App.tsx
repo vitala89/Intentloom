@@ -34,6 +34,10 @@ export default function App() {
     useState<WorkspaceInspectStatus>("idle");
   const [inspectError, setInspectError] = useState<string | null>(null);
   const [doctor, setDoctor] = useState<DoctorResult | null>(null);
+  const [doctorStatus, setDoctorStatus] =
+    useState<WorkspaceInspectStatus>("idle");
+  const [doctorError, setDoctorError] = useState<string | null>(null);
+  const [doctorRoot, setDoctorRoot] = useState<string | null>(null);
   const [diff, setDiff] = useState<ProjectDiffResult | null>(null);
   const [diffStatus, setDiffStatus] = useState<WorkspaceInspectStatus>("idle");
   const [diffError, setDiffError] = useState<string | null>(null);
@@ -63,6 +67,7 @@ export default function App() {
   const isOperationLoading =
     isConnecting ||
     inspectStatus === "loading" ||
+    doctorStatus === "loading" ||
     diffStatus === "loading" ||
     timelineStatus === "loading";
 
@@ -100,6 +105,28 @@ export default function App() {
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, []);
 
+  useEffect(() => {
+    if (root !== null && doctorRoot !== null && root !== doctorRoot) {
+      setDoctor(null);
+      setDoctorStatus("idle");
+      setDoctorError(null);
+      setDoctorRoot(null);
+    }
+  }, [root, doctorRoot]);
+
+  useEffect(() => {
+    if (
+      activeView === "Doctor" &&
+      root !== null &&
+      daemonInfo !== null &&
+      doctorStatus === "idle" &&
+      doctor === null
+    ) {
+      void loadDoctor();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeView, root, daemonInfo, doctorStatus, doctor]);
+
   /**
    * Start a new cancellable operation.
    * Aborts any prior in-flight operation and returns a fresh AbortSignal.
@@ -120,6 +147,7 @@ export default function App() {
     operationRef.current = null;
     setIsConnecting(false);
     if (inspectStatus === "loading") setInspectStatus("idle");
+    if (doctorStatus === "loading") setDoctorStatus("idle");
     if (diffStatus === "loading") setDiffStatus("idle");
     if (timelineStatus === "loading") setTimelineStatus("idle");
     setConnection(root ? "Cancelled" : "Not connected");
@@ -150,6 +178,9 @@ export default function App() {
         setInspectStatus("idle");
         setInspectError(null);
         setDoctor(null);
+        setDoctorStatus("idle");
+        setDoctorError(null);
+        setDoctorRoot(null);
         setDiff(null);
         setDiffStatus("idle");
         setDiffError(null);
@@ -168,6 +199,60 @@ export default function App() {
     }
   }
 
+  async function loadDoctor(existingSignal?: AbortSignal) {
+    if (!root) {
+      setDoctorStatus("idle");
+      return;
+    }
+    if (doctorStatus === "loading" && existingSignal === undefined) return;
+    const signal = existingSignal ?? startOperation();
+    setMessage(null);
+    setDoctorError(null);
+    setDoctorStatus("loading");
+    if (existingSignal === undefined) {
+      setConnection("Running Doctor…");
+    }
+    try {
+      const result = await desktopClient.doctorProject(root, signal);
+      if (signal.aborted) return;
+      setDoctor(result);
+      setDoctorRoot(root);
+      setDoctorStatus("ready");
+      if (existingSignal === undefined) {
+        setConnection(
+          daemonInfo
+            ? `Daemon ${daemonInfo.daemonVersion}`
+            : "Daemon connected",
+        );
+      }
+    } catch (error) {
+      if (signal.aborted) return;
+      const nextStatus = inspectStatusForError(error);
+      setDoctorStatus(nextStatus);
+      setDoctor(null);
+      setDoctorRoot(null);
+      if (error instanceof DesktopBridgeError) {
+        setDoctorError(error.message);
+      }
+      if (existingSignal === undefined) {
+        setConnection(
+          nextStatus === "stale" || nextStatus === "invalid-root"
+            ? nextStatus === "stale"
+              ? "Project root changed"
+              : "Project root unavailable"
+            : nextStatus === "protocol-mismatch"
+              ? "Protocol mismatch"
+              : "Disconnected",
+        );
+        setMessage(
+          error instanceof DesktopBridgeError
+            ? error.message
+            : "The project Doctor result could not be loaded.",
+        );
+      }
+    }
+  }
+
   async function loadDiff() {
     if (!root) {
       setDiffStatus("idle");
@@ -180,10 +265,7 @@ export default function App() {
     setDiffStatus("loading");
     setConnection("Loading diff…");
     try {
-      const result = await desktopClient.projectDiff(
-        { root, profile: "generic", adapters: [] },
-        signal,
-      );
+      const result = await desktopClient.projectDiff({ root }, signal);
       if (signal.aborted) return;
       setDiff(result);
       setDiffStatus("ready");
@@ -281,6 +363,9 @@ export default function App() {
       setInspect(null);
       setInspectStatus("loading");
       setDoctor(null);
+      setDoctorStatus("idle");
+      setDoctorError(null);
+      setDoctorRoot(null);
       setDiff(null);
       setDiffStatus("idle");
       setDiffError(null);
@@ -304,14 +389,13 @@ export default function App() {
       }
       if (root) {
         setConnection("Reading project…");
-        const [projectInspect, projectDoctor] = await Promise.all([
-          desktopClient.inspectProject(root, signal),
-          desktopClient.doctorProject(root, signal),
-        ]);
+        const projectInspect = await desktopClient.inspectProject(root, signal);
         if (signal.aborted) return;
         setInspect(projectInspect);
-        setDoctor(projectDoctor);
         setInspectStatus("ready");
+        if (doctorRoot !== root || doctor === null) {
+          await loadDoctor(signal);
+        }
       }
       setConnection(`Daemon ${info.daemonVersion}`);
     } catch (error) {
@@ -504,6 +588,8 @@ export default function App() {
             inspectStatus={inspectStatus}
             inspectError={inspectError}
             doctor={doctor}
+            doctorStatus={doctorStatus}
+            doctorError={doctorError}
             diff={diff}
             diffStatus={diffStatus}
             diffError={diffError}
@@ -554,6 +640,7 @@ export default function App() {
             }}
             onConnectDaemon={() => void connectDaemon()}
             onRequestProjectSelect={requestProjectSelect}
+            onLoadDoctor={() => void loadDoctor()}
             onLoadDiff={() => void loadDiff()}
             onLoadTimeline={() => void loadTimeline()}
             onOpenAdoptionPreview={() => setActiveView("Adoption preview")}

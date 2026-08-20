@@ -131,18 +131,14 @@ const desktopClientBase = {
     root: string,
     signal?: AbortSignal,
   ): Promise<DoctorResult> {
-    const request = createDoctorRequest("desktop-doctor", {
-      root,
-      profile: "generic",
-      adapters: [],
-    });
+    const request = createDoctorRequest("desktop-doctor", { root });
     return parseDoctorResponse(
       await call("run_doctor", { root, request }, signal),
     ).result;
   },
 
   async projectDiff(
-    params: Omit<ProjectDiffParams, "protocolVersion">,
+    params: Pick<ProjectDiffParams, "root">,
     signal?: AbortSignal,
   ) {
     const request = createProjectDiffRequest("desktop-diff", params);

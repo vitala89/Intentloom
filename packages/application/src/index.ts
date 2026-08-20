@@ -564,6 +564,11 @@ export {
   engineeringProfiles,
 } from "./project-profile-detection.js";
 export { ignoredScanPath } from "./project-scan-exclusions.js";
+export { resolveProjectDoctorInit } from "./resolve-project-doctor-init.js";
+export type {
+  ResolveProjectDoctorInitOptions,
+  ResolvedProjectDoctorInit,
+} from "./resolve-project-doctor-init.js";
 
 export type ProjectInspectionCapability = "project.files.read";
 export type InspectionReadiness =

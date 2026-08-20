@@ -8,8 +8,8 @@ import type {
 export interface ProjectDiffParams {
   readonly protocolVersion: typeof PROTOCOL_VERSION;
   readonly root: string;
-  readonly profile: string;
-  readonly adapters: readonly string[];
+  readonly profile?: string;
+  readonly adapters?: readonly string[];
 }
 
 export interface ProjectDiffChange {

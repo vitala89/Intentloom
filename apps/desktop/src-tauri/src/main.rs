@@ -603,20 +603,16 @@ async fn run_doctor(
     let state = state.inner().clone();
     run_blocking(move || {
         request_method(&request, "intentloom.project.doctor.v1")?;
-        let root = canonical_project_root(&root)?;
-        let request = json!({
-            "jsonrpc": "2.0",
-            "id": "desktop-doctor",
-            "method": "intentloom.project.doctor.v1",
-            "params": {
-                "protocolVersion": PROTOCOL_VERSION,
-                "root": root,
-                "profile": "generic",
-                "adapters": []
-            }
-        });
+        let canonical_root = canonical_project_root(&root)?;
+        let mut daemon_request = request;
+        if let Some(params) = daemon_request
+            .get_mut("params")
+            .and_then(Value::as_object_mut)
+        {
+            params.insert("root".to_owned(), Value::String(canonical_root));
+        }
         state
-            .ensure_daemon(&app, &request)
+            .ensure_daemon(&app, &daemon_request)
             .map(|(_, response)| response)
     })
     .await
