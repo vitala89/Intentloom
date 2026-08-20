@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Desktop Doctor canonical health parity** on `fix/desktop-doctor-canonical-health`.
+Status: **Desktop daemon stale-endpoint recovery** on `fix/desktop-daemon-stale-endpoint-recovery`.
 
-Active branch: `fix/desktop-doctor-canonical-health`
+Active branch: `fix/desktop-daemon-stale-endpoint-recovery`
 
-Current objective: Align Desktop Doctor and Diff with canonical CLI/daemon health for the selected project root. Add Refresh Doctor UX. Do not mark Desktop Existing-Project Adoption complete until maintainer packaged Desktop re-dogfood confirms parity.
+Current objective: Recover packaged Desktop from a leftover or stale private daemon endpoint so Doctor and Diff can reach the canonical engines. Do not mark Desktop Existing-Project Adoption complete.
 
-Next first action: After PR is green, maintainer packaged Desktop walkthrough on `/Users/eugenekasap/WebstormProjects/intentloom-dogfood/vii-desktop-final` (or fresh disposable clone): open Doctor, click Refresh Doctor, compare with `intentloom doctor` and `intentloom diff --json`.
+Next first action: After CI is green, maintainer packaged Desktop walkthrough on `/Users/eugenekasap/WebstormProjects/intentloom-dogfood/vii-desktop-final`: daemon recovery, Doctor, Refresh Doctor, Diff, CLI parity, Cancel, then a separate evidence PR may mark adoption complete.
 
 Known open items, in the order they should be handled:
 
@@ -95,6 +95,38 @@ Copy the template from `docs/templates/DUTY_WATCH_ENTRY.md` and place the newest
 entry directly below this section.
 
 ## Watch entries
+
+### 2026-08-20, Desktop daemon stale-endpoint recovery
+
+- **Status:** complete on branch; PR pending
+- **Agent/tool:** Cursor
+- **Branch:** `fix/desktop-daemon-stale-endpoint-recovery`
+- **Commits:** pending
+- **Pull request:** pending
+- **Objective:** Prove the packaged Desktop Doctor/Diff `disconnected` failure and recover the daemon lifecycle without weakening the local security boundary or changing Doctor/Diff semantics.
+- **Completed:** First failing layer is `DaemonRuntime::ensure_daemon` existing-endpoint reuse. Current machine state was a live leftover debug `node` daemon (PPID 1) on `~/Library/Application Support/dev.intentloom.desktop/runtime/daemon.sock`, not a silent stale inode. Doctor/Diff against that leftover returned `bounded_validation_failed` (`profile must be a non-empty string`); the bridge remapped every probe `Err` to `disconnected` / "an existing daemon endpoint did not respond", so Retry never launched the packaged sidecar. Recovery now reuses a live success, recovers connect-refused stale sockets, replaces an unowned session-authenticated leftover at the private endpoint, reclaims a dead owned child, and keeps authentication/temporary failures. Lifecycle extracted from oversized `main.rs`.
+- **Not completed:** Maintainer packaged Desktop re-verification; product completion gate.
+- **Files or packages changed:** Desktop Tauri daemon lifecycle modules, Cancel idle helper, canonical Doctor/Diff consumer tests unchanged in meaning, changelog, project state, duty watch, main.rs quality exception removed after extraction.
+- **Validation:** `cargo test` 15 passed; `cargo clippy --all-targets -- -D warnings` passed. `pnpm verify` passed (1557 tests, 3 skipped). `git diff --check` passed. Packaged sidecar/catalog lookup matches `Intentloom.app` layout (`resources/intentloomd`, `_up_/_up_/_up_/catalog`).
+- **Decisions and assumptions:** Do not kill a live daemon on authentication failure. Unowned leftover at the Desktop-private endpoint that already accepted the session token may be replaced so packaged `intentloomd` can start. Do not mark Desktop Existing-Project Adoption complete.
+- **Risks or compatibility impact:** Replacing an unowned leftover can leak the previous process after unlink. Two concurrent Desktop instances still have a spawn race. Packaged app must be rebuilt so the sidecar includes optional Doctor/Diff profile params from #349.
+- **Open issues or blockers:** maintainer packaged Desktop click-through after merge.
+- **Next first action:** `pnpm verify`, commit, push, open PR, wait for CI, merge when green.
+- **Evidence:** `apps/desktop/src-tauri/src/daemon_recovery.rs`, `tests/desktop-daemon-recovery-state.test.ts`, `tests/desktop-doctor-canonical-health.test.ts`
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant tests, type checks, builds, or compatibility checks passed
+- [ ] Atomic commit policy and commit-message checks passed
+- [ ] Repository hooks installed or equivalent commands run
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `PROJECT_STATE.md` updated when durable state changed
+- [x] `DUTY_WATCH.md` updated with this entry
+- [x] Related roadmap, ADR, changelog, migration, or reference docs updated
+- [ ] Failed or unavailable checks recorded
 
 ### 2026-08-20, existing-project Apply collision on adopted trees
 

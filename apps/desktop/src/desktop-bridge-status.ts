@@ -11,3 +11,13 @@ export function inspectStatusForError(error: unknown): WorkspaceInspectStatus {
   if (error.code === "protocol_incompatible") return "protocol-mismatch";
   return "error";
 }
+
+export function statusAfterClientCancel<T extends string>(
+  status: T,
+): T | "idle" {
+  return status === "loading" ? "idle" : status;
+}
+
+export function isCancelControlVisible(isOperationLoading: boolean): boolean {
+  return isOperationLoading;
+}

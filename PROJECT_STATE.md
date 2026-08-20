@@ -1,6 +1,6 @@
 # Intentloom Project State
 
-Last verified: 2026-08-19
+Last verified: 2026-08-20
 
 This file records the durable current state of the project. It is not a
 chronological log. Session history and handoff details belong in
@@ -612,9 +612,16 @@ could still deny Apply on an already-ready tree because `syncProject` treated
 differing `.aif` metadata and checksum-drifted AIF-owned outputs as collisions,
 while the UI labeled every denial as stale or expired. Approved Apply now
 overwrites those planned generated outputs without relaxing fingerprint,
-digest, or expiry gates. Packaged Desktop click-through after that fix
-is still required, so Desktop Existing-Project Adoption is **not** marked
-complete. See
+digest, or expiry gates. Desktop Doctor now resolves project
+profile/adapters/catalog in daemon rather than hardcoding generic semantics
+(PR #349). Packaged Desktop then failed Doctor/Diff with `disconnected`
+because `ensure_daemon` reused a leftover private endpoint and remapped any
+probe failure to "an existing daemon endpoint did not respond", so Retry
+could not start the packaged sidecar. Desktop now classifies live, stale,
+unowned leftover, and dead-owned-child endpoints and recovers the private
+runtime socket when that is safe. Packaged Desktop re-verification of daemon
+recovery, Doctor, Diff, and Cancel is still required, so Desktop
+Existing-Project Adoption is **not** marked complete. See
 [2026-08-19-vii-desktop-full-adoption.md](docs/releases/dogfooding/2026-08-19-vii-desktop-full-adoption.md).
 
 P1 defers real workspace dogfood to the maintainer
