@@ -12,6 +12,10 @@ import type {
 } from "@intentloom/protocol";
 import { WorkspaceContent } from "./WorkspaceContent.js";
 import { inspectStatusForError } from "./desktop-bridge-status.js";
+import {
+  deriveIsOperationLoading,
+  terminalizeConnectAbortInspectStatus,
+} from "./desktop-operation-lifecycle.js";
 import { useDesktopDoctor } from "./use-desktop-doctor.js";
 import {
   connectedDaemonLabel,
@@ -45,6 +49,8 @@ export default function App() {
     operationRef.current = controller;
     return controller.signal;
   }, []);
+  const [isConnecting, setIsConnecting] = useState(false);
+  const [retryCount, setRetryCount] = useState(0);
   const {
     doctor,
     doctorStatus,
@@ -57,6 +63,7 @@ export default function App() {
     root,
     activeView,
     daemonInfo,
+    isConnecting,
     startOperation,
     setConnection,
     setMessage,
@@ -68,8 +75,6 @@ export default function App() {
   const [timelineStatus, setTimelineStatus] =
     useState<WorkspaceTimelineStatus>("idle");
   const [timelineError, setTimelineError] = useState<string | null>(null);
-  const [isConnecting, setIsConnecting] = useState(false);
-  const [retryCount, setRetryCount] = useState(0);
   const [confirmSwitch, setConfirmSwitch] = useState(false);
   const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
   const [activeApprovedPlan, _setActiveApprovedPlan] =
@@ -85,12 +90,13 @@ export default function App() {
   const commandPaletteTriggerRef = useRef<HTMLButtonElement | null>(null);
 
   // Derived loading state — true whenever any daemon operation is in-flight
-  const isOperationLoading =
-    isConnecting ||
-    inspectStatus === "loading" ||
-    doctorStatus === "loading" ||
-    diffStatus === "loading" ||
-    timelineStatus === "loading";
+  const isOperationLoading = deriveIsOperationLoading({
+    isConnecting,
+    inspectStatus,
+    doctorStatus,
+    diffStatus,
+    timelineStatus,
+  });
 
   // Derived: which views currently hold loaded data
   const loadedViews: string[] = [];
@@ -331,6 +337,11 @@ export default function App() {
       );
     } finally {
       setIsConnecting(false);
+      if (signal.aborted) {
+        setInspectStatus((current) =>
+          terminalizeConnectAbortInspectStatus(current, true),
+        );
+      }
     }
   }
 
