@@ -33,6 +33,7 @@ import type { ApprovedApplyRequest, ApprovedApplyExecutionResult } from "./appro
 import type { CapabilityClassification, DaemonCapability, DaemonLimits, DaemonInfoResult, DaemonInfoRequest, DaemonInfoResponse } from "./daemon.js";
 // prettier-ignore
 import type { ProjectDiffParams, ProjectDiffChange, ProjectDiffResult, ProjectDiffRequest, ProjectDiffResponse } from "./diff.js";
+import { projectHealthParams } from "./project-health-params.js";
 
 import type {
   QualityCatalogRequest,
@@ -126,8 +127,8 @@ export type ProjectTimelineResponse = JsonRpcSuccess<ProjectTimelineResult>;
 export interface DoctorParams {
   readonly protocolVersion: typeof PROTOCOL_VERSION;
   readonly root: string;
-  readonly profile: string;
-  readonly adapters: readonly string[];
+  readonly profile?: string;
+  readonly adapters?: readonly string[];
 }
 export interface DoctorFinding {
   readonly code: string;
@@ -468,8 +469,10 @@ export function createDoctorRequest(
     params: {
       protocolVersion: PROTOCOL_VERSION,
       root: params.root,
-      profile: params.profile,
-      adapters: [...params.adapters],
+      ...(params.profile !== undefined ? { profile: params.profile } : {}),
+      ...(params.adapters !== undefined
+        ? { adapters: [...params.adapters] }
+        : {}),
     },
   };
 }
@@ -505,8 +508,10 @@ export function createProjectDiffRequest(
     params: {
       protocolVersion: PROTOCOL_VERSION,
       root: params.root,
-      profile: params.profile,
-      adapters: [...params.adapters],
+      ...(params.profile !== undefined ? { profile: params.profile } : {}),
+      ...(params.adapters !== undefined
+        ? { adapters: [...params.adapters] }
+        : {}),
     },
   };
 }
@@ -726,11 +731,7 @@ export function parseDoctorRequest(value: unknown): DoctorRequest {
     throw new ProtocolValidationError(-32602, "params must be an object");
   if (value.params.protocolVersion !== PROTOCOL_VERSION)
     throw new ProtocolValidationError(-32602, "unsupported protocol version");
-  return createDoctorRequest(id, {
-    root: stringValue(value.params.root, "root"),
-    profile: stringValue(value.params.profile, "profile"),
-    adapters: stringArray(value.params.adapters, "adapters"),
-  });
+  return createDoctorRequest(id, projectHealthParams(value.params));
 }
 
 export function parseDaemonRequest(value: unknown): DaemonRequest {
@@ -784,11 +785,7 @@ export function parseDaemonRequest(value: unknown): DaemonRequest {
   }
 
   if (value.method === DOCTOR_METHOD) {
-    return createDoctorRequest(id, {
-      root: stringValue(value.params.root, "root"),
-      profile: stringValue(value.params.profile, "profile"),
-      adapters: stringArray(value.params.adapters, "adapters"),
-    });
+    return createDoctorRequest(id, projectHealthParams(value.params));
   }
   if (value.method === INSPECT_METHOD) {
     return createInspectRequest(id, {
@@ -796,11 +793,7 @@ export function parseDaemonRequest(value: unknown): DaemonRequest {
     });
   }
   if (value.method === PROJECT_DIFF_METHOD) {
-    return createProjectDiffRequest(id, {
-      root: stringValue(value.params.root, "root"),
-      profile: stringValue(value.params.profile, "profile"),
-      adapters: stringArray(value.params.adapters, "adapters"),
-    });
+    return createProjectDiffRequest(id, projectHealthParams(value.params));
   }
   if (value.method === PROJECT_TIMELINE_METHOD) {
     return createProjectTimelineRequest(id, {

@@ -39,6 +39,8 @@ export interface WorkspaceContentProps {
   readonly inspectStatus: WorkspaceInspectStatus;
   readonly inspectError: string | null;
   readonly doctor: DoctorResult | null;
+  readonly doctorStatus: WorkspaceInspectStatus;
+  readonly doctorError: string | null;
   readonly diff: ProjectDiffResult | null;
   readonly diffStatus: WorkspaceInspectStatus;
   readonly diffError: string | null;
@@ -63,6 +65,7 @@ export interface WorkspaceContentProps {
   readonly onRequestProjectSelect: (
     triggerEl?: HTMLButtonElement | null,
   ) => void;
+  readonly onLoadDoctor: () => void;
   readonly onLoadDiff: () => void;
   readonly onLoadTimeline: () => void;
   readonly onOpenAdoptionPreview: () => void;
@@ -79,6 +82,8 @@ export function WorkspaceContent({
   inspectStatus,
   inspectError,
   doctor,
+  doctorStatus,
+  doctorError,
   diff,
   diffStatus,
   diffError,
@@ -101,6 +106,7 @@ export function WorkspaceContent({
   onApprovePlan,
   onConnectDaemon,
   onRequestProjectSelect,
+  onLoadDoctor,
   onLoadDiff,
   onLoadTimeline,
   onOpenAdoptionPreview,
@@ -177,12 +183,13 @@ export function WorkspaceContent({
   if (activeView === "Doctor") {
     return (
       <DoctorView
-        errorMessage={inspectError}
+        errorMessage={doctorError ?? inspectError}
         onConnect={onConnectDaemon}
+        onRefreshDoctor={onLoadDoctor}
         onSelectProject={() => onRequestProjectSelect()}
         result={doctor}
         root={root}
-        status={inspectStatus}
+        status={doctorStatus}
       />
     );
   }
