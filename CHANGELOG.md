@@ -7,6 +7,13 @@ All notable changes are documented here. This project follows Keep a Changelog p
 Changes listed here are merged after the current release-preparation scope and
 are not included in the current npm artifact until a later release.
 
+- Existing-project Apply no longer denies an approved, unexpired plan as a
+  collision merely because `.aif` metadata or AIF-owned generated files already
+  exist and differ from the catalog-bound desired state. Fingerprint, digest,
+  and expiry gates are unchanged. Desktop now distinguishes stale, expired, and
+  other Apply denials. Desktop Existing-Project Adoption is still not marked
+  complete.
+
 - Existing-project adoption now binds the daemon/CLI catalog into plan,
   decide, prepare, revalidate, approve, Apply, and post-apply Doctor/Diff.
   Apply no longer writes empty-catalog lock/source-map artifacts; generated

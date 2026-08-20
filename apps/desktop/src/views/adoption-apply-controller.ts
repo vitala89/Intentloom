@@ -83,7 +83,25 @@ export function applyOutcomeLabel(
     return "Incomplete recovery required";
   }
   if (result.status === "denied") {
-    return "Rejected because the plan became stale or expired";
+    if (
+      result.reasons.includes("expired") ||
+      result.reasons.includes("expired-approval")
+    ) {
+      return "Plan expired";
+    }
+    const stale = result.reasons.find(
+      (reason) =>
+        reason === "stale-fingerprint" ||
+        reason === "stale-digest" ||
+        reason === "stale-preview" ||
+        reason === "proposal-changed" ||
+        reason === "decisions-changed",
+    );
+    if (stale !== undefined) return `Plan became stale: ${stale}`;
+    if (result.reasons.length > 0) {
+      return `Rejected: ${result.reasons.join(", ")}`;
+    }
+    return "Rejected";
   }
   return result.status;
 }

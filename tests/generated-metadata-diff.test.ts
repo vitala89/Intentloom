@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   compareGeneratedArtifact,
   isMetadataJsonPath,
+  planExistingGeneratedChange,
 } from "../packages/application/src/generated-metadata-compare.js";
 import {
   createMemoryFileSystem,
@@ -189,5 +190,45 @@ describe("generated metadata JSON comparison", () => {
         ],
       }),
     );
+  });
+
+  it("approved overwrite turns differing generated files into updates", () => {
+    expect(
+      planExistingGeneratedChange({
+        path: ".aif/config.yaml",
+        existing: "old\n",
+        desired: "new\n",
+        sync: true,
+        ownedChecksum: undefined,
+        checksum: (value) => value,
+        approvedOverwrite: true,
+      }),
+    ).toEqual({
+      path: ".aif/config.yaml",
+      kind: "update",
+      reason: "approved adoption replaces generated output",
+      content: "new\n",
+    });
+    expect(
+      planExistingGeneratedChange({
+        path: ".cursor/rules/intentloom-core.mdc",
+        existing: "old\n",
+        desired: "new\n",
+        sync: true,
+        ownedChecksum: "other",
+        checksum: (value) => value,
+        approvedOverwrite: true,
+      })?.kind,
+    ).toBe("update");
+    expect(
+      planExistingGeneratedChange({
+        path: ".aif/config.yaml",
+        existing: "old\n",
+        desired: "new\n",
+        sync: true,
+        ownedChecksum: undefined,
+        checksum: (value) => value,
+      })?.kind,
+    ).toBe("conflict");
   });
 });

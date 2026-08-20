@@ -64,6 +64,7 @@ export function planExistingGeneratedChange(input: {
   readonly sync: boolean;
   readonly ownedChecksum: string | undefined;
   readonly checksum: (value: string) => string;
+  readonly approvedOverwrite?: boolean;
 }): GeneratedPlanChange | undefined {
   const comparison = compareGeneratedArtifact(
     input.path,
@@ -71,6 +72,14 @@ export function planExistingGeneratedChange(input: {
     input.desired,
   );
   if (comparison.equal) return undefined;
+  if (input.approvedOverwrite === true) {
+    return {
+      path: input.path,
+      kind: "update",
+      reason: "approved adoption replaces generated output",
+      content: input.desired,
+    };
+  }
   if (input.sync && !protectedMetadataPaths.has(input.path)) {
     if (!input.ownedChecksum)
       return {

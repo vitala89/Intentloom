@@ -2,6 +2,17 @@
   "version": 1,
   "exceptions": [
     {
+      "path": "packages/application/src/index.ts",
+      "rule": "existing-oversized-growth",
+      "baseLines": 7148,
+      "headLines": 7151,
+      "reason": "Existing-project Apply must pass profileConfirmed into generated-file planning so approved adoption can update already-present .aif metadata and AIF-owned outputs instead of treating them as sync collisions.",
+      "owner": "Application maintainers",
+      "scope": "Existing-project adoption Apply collision on adopted trees",
+      "reviewTrigger": "Extract plan() / adoptProject item blocking from application index.ts before the next behavior change touching this file.",
+      "expires": "2026-10-20"
+    },
+    {
       "path": "apps/desktop/src/App.tsx",
       "rule": "existing-oversized-growth",
       "baseLines": 2241,
