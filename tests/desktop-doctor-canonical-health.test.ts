@@ -6,8 +6,8 @@ import {
   diffProject,
   doctorProject,
   initProject,
-  resolveProjectDoctorInit,
 } from "@intentloom/application";
+import { resolveProjectDoctorInit } from "../packages/application/src/resolve-project-doctor-init.js";
 import {
   createDoctorRequest,
   createProjectDiffRequest,

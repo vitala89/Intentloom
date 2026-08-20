@@ -33,6 +33,7 @@ import type { ApprovedApplyRequest, ApprovedApplyExecutionResult } from "./appro
 import type { CapabilityClassification, DaemonCapability, DaemonLimits, DaemonInfoResult, DaemonInfoRequest, DaemonInfoResponse } from "./daemon.js";
 // prettier-ignore
 import type { ProjectDiffParams, ProjectDiffChange, ProjectDiffResult, ProjectDiffRequest, ProjectDiffResponse } from "./diff.js";
+import { projectHealthParams } from "./project-health-params.js";
 
 import type {
   QualityCatalogRequest,
@@ -396,25 +397,6 @@ function stringValue(value: unknown, field: string): string {
   );
 }
 
-function optionalString(value: unknown): string | undefined {
-  if (value === undefined) return undefined;
-  if (typeof value === "string" && value.length > 0) return value;
-  throw new ProtocolValidationError(
-    -32602,
-    "profile must be a non-empty string",
-  );
-}
-
-function optionalStringArray(value: unknown): readonly string[] | undefined {
-  if (value === undefined) return undefined;
-  if (Array.isArray(value) && value.every((entry) => typeof entry === "string"))
-    return value;
-  throw new ProtocolValidationError(
-    -32602,
-    "adapters must be an array of strings",
-  );
-}
-
 function stringArray(value: unknown, field: string): readonly string[] {
   if (Array.isArray(value) && value.every((entry) => typeof entry === "string"))
     return value;
@@ -422,25 +404,6 @@ function stringArray(value: unknown, field: string): readonly string[] {
     -32602,
     `${field} must be an array of strings`,
   );
-}
-
-function projectHealthParams(params: Record<string, unknown>): {
-  readonly root: string;
-  readonly profile?: string;
-  readonly adapters?: readonly string[];
-} {
-  const resolved: {
-    root: string;
-    profile?: string;
-    adapters?: readonly string[];
-  } = {
-    root: stringValue(params.root, "root"),
-  };
-  const profile = optionalString(params.profile);
-  if (profile !== undefined) resolved.profile = profile;
-  const adapters = optionalStringArray(params.adapters);
-  if (adapters !== undefined) resolved.adapters = adapters;
-  return resolved;
 }
 
 function positiveInteger(value: unknown, field: string): number {

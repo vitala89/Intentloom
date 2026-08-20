@@ -3,10 +3,10 @@ import {
   diffProject,
   doctorProject,
   nodeFileSystem,
-  resolveProjectDoctorInit,
   type DoctorPlan,
   type FileSystem,
 } from "@intentloom/application";
+import { resolveProjectDoctorInit } from "../../application/dist/resolve-project-doctor-init.js";
 import { createArtifactValidator } from "@intentloom/validator";
 import type {
   DoctorRequest,

@@ -6,13 +6,18 @@ import type {
   ApprovedApplyExecutionResult,
   ApprovedApplyPlan,
   DaemonInfoResult,
-  DoctorResult,
   InspectResult,
   ProjectDiffResult,
   ProjectTimelineResult,
 } from "@intentloom/protocol";
 import { WorkspaceContent } from "./WorkspaceContent.js";
 import { inspectStatusForError } from "./desktop-bridge-status.js";
+import { useDesktopDoctor } from "./use-desktop-doctor.js";
+import {
+  connectedDaemonLabel,
+  loadProjectDiff,
+  loadProjectTimeline,
+} from "./desktop-workspace-loaders.js";
 import { CommandPaletteModal } from "./views/CommandPaletteModal.js";
 import { buildWorkspaceCommandOptions } from "./workspace-command-options.js";
 import {
@@ -33,11 +38,29 @@ export default function App() {
   const [inspectStatus, setInspectStatus] =
     useState<WorkspaceInspectStatus>("idle");
   const [inspectError, setInspectError] = useState<string | null>(null);
-  const [doctor, setDoctor] = useState<DoctorResult | null>(null);
-  const [doctorStatus, setDoctorStatus] =
-    useState<WorkspaceInspectStatus>("idle");
-  const [doctorError, setDoctorError] = useState<string | null>(null);
-  const [doctorRoot, setDoctorRoot] = useState<string | null>(null);
+  const operationRef = useRef<AbortController | null>(null);
+  const startOperation = useCallback((): AbortSignal => {
+    operationRef.current?.abort();
+    const controller = new AbortController();
+    operationRef.current = controller;
+    return controller.signal;
+  }, []);
+  const {
+    doctor,
+    doctorStatus,
+    doctorError,
+    doctorRoot,
+    resetDoctor,
+    loadDoctor,
+    setDoctorStatus,
+  } = useDesktopDoctor({
+    root,
+    activeView,
+    daemonInfo,
+    startOperation,
+    setConnection,
+    setMessage,
+  });
   const [diff, setDiff] = useState<ProjectDiffResult | null>(null);
   const [diffStatus, setDiffStatus] = useState<WorkspaceInspectStatus>("idle");
   const [diffError, setDiffError] = useState<string | null>(null);
@@ -60,8 +83,6 @@ export default function App() {
   const confirmTriggerRef = useRef<HTMLButtonElement | null>(null);
   // Ref to the element that triggered the Command Palette
   const commandPaletteTriggerRef = useRef<HTMLButtonElement | null>(null);
-  // Ref to the AbortController for the current in-flight daemon operation
-  const operationRef = useRef<AbortController | null>(null);
 
   // Derived loading state — true whenever any daemon operation is in-flight
   const isOperationLoading =
@@ -105,39 +126,6 @@ export default function App() {
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, []);
 
-  useEffect(() => {
-    if (root !== null && doctorRoot !== null && root !== doctorRoot) {
-      setDoctor(null);
-      setDoctorStatus("idle");
-      setDoctorError(null);
-      setDoctorRoot(null);
-    }
-  }, [root, doctorRoot]);
-
-  useEffect(() => {
-    if (
-      activeView === "Doctor" &&
-      root !== null &&
-      daemonInfo !== null &&
-      doctorStatus === "idle" &&
-      doctor === null
-    ) {
-      void loadDoctor();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeView, root, daemonInfo, doctorStatus, doctor]);
-
-  /**
-   * Start a new cancellable operation.
-   * Aborts any prior in-flight operation and returns a fresh AbortSignal.
-   */
-  function startOperation(): AbortSignal {
-    operationRef.current?.abort();
-    const controller = new AbortController();
-    operationRef.current = controller;
-    return controller.signal;
-  }
-
   /**
    * Cancel the current in-flight operation (if any).
    * Called by the Cancel button in the topbar.
@@ -177,10 +165,7 @@ export default function App() {
         setInspect(null);
         setInspectStatus("idle");
         setInspectError(null);
-        setDoctor(null);
-        setDoctorStatus("idle");
-        setDoctorError(null);
-        setDoctorRoot(null);
+        resetDoctor();
         setDiff(null);
         setDiffStatus("idle");
         setDiffError(null);
@@ -199,60 +184,6 @@ export default function App() {
     }
   }
 
-  async function loadDoctor(existingSignal?: AbortSignal) {
-    if (!root) {
-      setDoctorStatus("idle");
-      return;
-    }
-    if (doctorStatus === "loading" && existingSignal === undefined) return;
-    const signal = existingSignal ?? startOperation();
-    setMessage(null);
-    setDoctorError(null);
-    setDoctorStatus("loading");
-    if (existingSignal === undefined) {
-      setConnection("Running Doctor…");
-    }
-    try {
-      const result = await desktopClient.doctorProject(root, signal);
-      if (signal.aborted) return;
-      setDoctor(result);
-      setDoctorRoot(root);
-      setDoctorStatus("ready");
-      if (existingSignal === undefined) {
-        setConnection(
-          daemonInfo
-            ? `Daemon ${daemonInfo.daemonVersion}`
-            : "Daemon connected",
-        );
-      }
-    } catch (error) {
-      if (signal.aborted) return;
-      const nextStatus = inspectStatusForError(error);
-      setDoctorStatus(nextStatus);
-      setDoctor(null);
-      setDoctorRoot(null);
-      if (error instanceof DesktopBridgeError) {
-        setDoctorError(error.message);
-      }
-      if (existingSignal === undefined) {
-        setConnection(
-          nextStatus === "stale" || nextStatus === "invalid-root"
-            ? nextStatus === "stale"
-              ? "Project root changed"
-              : "Project root unavailable"
-            : nextStatus === "protocol-mismatch"
-              ? "Protocol mismatch"
-              : "Disconnected",
-        );
-        setMessage(
-          error instanceof DesktopBridgeError
-            ? error.message
-            : "The project Doctor result could not be loaded.",
-        );
-      }
-    }
-  }
-
   async function loadDiff() {
     if (!root) {
       setDiffStatus("idle");
@@ -265,34 +196,23 @@ export default function App() {
     setDiffStatus("loading");
     setConnection("Loading diff…");
     try {
-      const result = await desktopClient.projectDiff({ root }, signal);
-      if (signal.aborted) return;
+      const result = await loadProjectDiff({
+        root,
+        signal,
+        daemonInfo,
+        setConnection,
+        setMessage,
+      });
+      if (signal.aborted || result === null) return;
       setDiff(result);
       setDiffStatus("ready");
-      setConnection(
-        daemonInfo ? `Daemon ${daemonInfo.daemonVersion}` : "Daemon connected",
-      );
+      setConnection(connectedDaemonLabel(daemonInfo));
     } catch (error) {
       if (signal.aborted) return;
-      const nextDiffStatus = inspectStatusForError(error);
-      setDiffStatus(nextDiffStatus);
+      setDiffStatus(inspectStatusForError(error));
       if (error instanceof DesktopBridgeError) {
         setDiffError(error.message);
       }
-      setConnection(
-        nextDiffStatus === "stale" || nextDiffStatus === "invalid-root"
-          ? nextDiffStatus === "stale"
-            ? "Project root changed"
-            : "Project root unavailable"
-          : nextDiffStatus === "protocol-mismatch"
-            ? "Protocol mismatch"
-            : "Disconnected",
-      );
-      setMessage(
-        error instanceof DesktopBridgeError
-          ? error.message
-          : "The project diff could not be loaded.",
-      );
     }
   }
 
@@ -308,47 +228,25 @@ export default function App() {
     setTimelineStatus("loading");
     setConnection("Loading timeline…");
     try {
-      const result = await desktopClient.projectTimeline(
-        {
-          root,
-          caseId: "desktop-release",
-          limit: 50,
-          timeoutMs: 5_000,
-          maxOutputBytes: 512 * 1024,
-        },
+      const loaded = await loadProjectTimeline({
+        root,
         signal,
-      );
+        daemonInfo,
+        setConnection,
+        setMessage,
+      });
       if (signal.aborted) return;
-      if (result.events.length === 0) {
-        setTimelineStatus("empty");
-      } else {
-        setTimeline(result);
-        setTimelineStatus("ready");
+      setTimeline(loaded.result);
+      setTimelineStatus(loaded.status);
+      if (loaded.status === "ready") {
+        setConnection(connectedDaemonLabel(daemonInfo));
       }
-      setConnection(
-        daemonInfo ? `Daemon ${daemonInfo.daemonVersion}` : "Daemon connected",
-      );
     } catch (error) {
       if (signal.aborted) return;
-      const nextStatus = inspectStatusForError(error);
-      setTimelineStatus(nextStatus);
+      setTimelineStatus(inspectStatusForError(error));
       if (error instanceof DesktopBridgeError) {
         setTimelineError(error.message);
       }
-      setConnection(
-        nextStatus === "stale" || nextStatus === "invalid-root"
-          ? nextStatus === "stale"
-            ? "Project root changed"
-            : "Project root unavailable"
-          : nextStatus === "protocol-mismatch"
-            ? "Protocol mismatch"
-            : "Disconnected",
-      );
-      setMessage(
-        error instanceof DesktopBridgeError
-          ? error.message
-          : "The project timeline could not be loaded.",
-      );
     }
   }
 
@@ -362,10 +260,7 @@ export default function App() {
     if (root) {
       setInspect(null);
       setInspectStatus("loading");
-      setDoctor(null);
-      setDoctorStatus("idle");
-      setDoctorError(null);
-      setDoctorRoot(null);
+      resetDoctor();
       setDiff(null);
       setDiffStatus("idle");
       setDiffError(null);
