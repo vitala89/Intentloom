@@ -1,4 +1,4 @@
-import { ProtocolValidationError } from "./jsonrpc.js";
+import { ProtocolValidationError } from "./protocol-validation-error.js";
 
 function stringValue(value: unknown, field: string): string {
   if (typeof value === "string" && value.length > 0) return value;
