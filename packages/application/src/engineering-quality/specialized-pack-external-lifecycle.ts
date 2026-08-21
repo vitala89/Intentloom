@@ -1,4 +1,3 @@
-import { createHash } from "node:crypto";
 import type {
   ExtensionAdoptionPlan,
   ExtensionManifest,
@@ -16,6 +15,15 @@ import {
   evaluateSpecializedPackCompatibility,
   evaluateSpecializedPackTrustState,
 } from "./specialized-pack-manifest-engine.js";
+import {
+  computeExternalSpecializedPackDigest,
+  type ExternalSpecializedPackActivation,
+} from "./specialized-pack-external-lock.js";
+
+export {
+  computeExternalSpecializedPackDigest,
+  type ExternalSpecializedPackActivation,
+} from "./specialized-pack-external-lock.js";
 
 const FORBIDDEN_PERMISSION_MARKERS = [
   "network",
@@ -46,23 +54,6 @@ export interface ExternalSpecializedPackPreview {
   readonly extensionPlan: ExtensionAdoptionPlan;
   readonly compatible: boolean;
   readonly diagnostics: readonly string[];
-}
-
-export interface ExternalSpecializedPackActivation {
-  readonly status: "activated";
-  readonly reviewerId: string;
-  readonly source: ExternalQualityPackSource;
-  readonly digest: string;
-  readonly manifest: QualitySpecializedPackManifest;
-  readonly trustState: QualitySpecializedPackTrustState;
-}
-
-export function computeExternalSpecializedPackDigest(
-  manifest: QualitySpecializedPackManifest,
-): string {
-  return `sha256:${createHash("sha256")
-    .update(JSON.stringify(manifest))
-    .digest("hex")}`;
 }
 
 export function previewExternalSpecializedPack(

@@ -581,9 +581,9 @@ MCP must not install or execute a pack.
 6. Expose equivalent CLI, daemon, MCP, Desktop, and TUI results.
 7. Add deterministic checks only where evidence and tooling are stable.
 8. Add reviewed external packs through the managed extension lifecycle.
-   Met by `previewExternalSpecializedPack` /
-   `activateExternalSpecializedPack` and
-   `tests/engineering-quality-specialized-pack-s8.test.ts`.
+   S8a met by `previewExternalSpecializedPack` /
+   `activateExternalSpecializedPack` (PR #319). S8b adds canonical digest and
+   `prepareExternalSpecializedPackLockEntry` for extension-lock entries.
 
 ## Acceptance criteria
 
