@@ -7,6 +7,7 @@ use tauri::AppHandle;
 use tauri::Manager;
 
 use crate::bridge::BridgeError;
+#[cfg(debug_assertions)]
 use crate::native_paths::debug_repository_root;
 #[cfg(not(debug_assertions))]
 use crate::native_paths::packaged_sidecar_candidates;
