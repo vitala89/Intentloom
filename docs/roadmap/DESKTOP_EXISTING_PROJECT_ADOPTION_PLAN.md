@@ -1,6 +1,7 @@
 # Desktop Existing-Project Adoption Plan
 
-Status: proposed post-v0.6 product follow-up.
+Status: proposed post-v0.6 product follow-up — **complete on `main` at `a9ad998`
+(PR #353)**.
 
 Primary outcome: a Desktop user can select an existing repository, review exactly what Intentloom would add or map, resolve ownership conflicts explicitly, approve one prepared adoption plan, apply it transactionally through the shared application boundary, and finish with verified `Doctor` and `Diff` results.
 
@@ -480,10 +481,12 @@ desired generated state is not an empty-catalog subset of CLI `adopt`.
 
 Prove parity across CLI, daemon, Desktop, and TUI where applicable using the same existing-project fixtures and a sanitized real-project record.
 
-**Status:** not complete. Daemon/protocol dogfood against a Vii pre-adoption
-clone is recorded; packaged Desktop UI selection/click-through is still
-required. See
+**Status:** complete. Daemon/protocol dogfood against a Vii pre-adoption clone
+is recorded in
 [2026-08-19-vii-desktop-full-adoption.md](../releases/dogfooding/2026-08-19-vii-desktop-full-adoption.md).
+Final maintainer packaged/dev Desktop verification on adopted
+`vii-desktop-final` is recorded in
+[2026-08-21-vii-desktop-adoption-completion.md](../releases/dogfooding/2026-08-21-vii-desktop-adoption-completion.md).
 
 ## Exit criteria
 

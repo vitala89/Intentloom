@@ -9,13 +9,44 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Desktop dev daemon launch** on `fix/desktop-dev-daemon-launch`.
+Status: **Desktop Existing-Project Adoption complete** on `main` at `a9ad998`
+(PR #353).
 
-Active branch: `fix/desktop-dev-daemon-launch`
+Active branch: `docs/complete-desktop-existing-project-adoption`
 
-Current objective: Restore `tauri dev` Connect by separating debug Node launch from packaged SEA sidecar preflight without weakening #351 validation.
+Current objective: Record final maintainer evidence and mark Desktop
+Existing-Project Adoption complete in canonical project state.
 
-Next first action: After CI is green, maintainer verifies `pnpm --filter @intentloom/desktop tauri dev` Connect/Doctor/Diff on `vii-desktop-final`, then performs the short packaged Cancel re-check from #352.
+Next first action: Merge completion PR when CI is green; resume P3 S8 or the
+next maintainer-chosen roadmap increment.
+
+### 2026-08-21, Desktop Existing-Project Adoption completion
+
+- **Status:** complete on branch; PR pending
+- **Agent/tool:** Cursor
+- **Branch:** `docs/complete-desktop-existing-project-adoption`
+- **Commits:** pending
+- **Pull request:** pending
+- **Objective:** Record final maintainer packaged/dev Desktop verification and
+  mark Desktop Existing-Project Adoption complete without changing runtime
+  behavior.
+- **Completed:** Verified merge SHAs for PRs #337–#353. Added final dogfood
+  record
+  `docs/releases/dogfooding/2026-08-21-vii-desktop-adoption-completion.md`.
+  Updated `PROJECT_STATE.md`, `CHANGELOG.md`, adoption plan status, capability
+  matrix evidence, and `DOGFOODING_EVIDENCE.md`. Preserved historical interim
+  NOT COMPLETE wording in the 2026-08-19 record.
+- **Not completed:** PR merge.
+- **Files or packages changed:** project state, duty watch, changelog, adoption
+  plan, capability matrix, dogfooding evidence and completion record.
+- **Validation:** `pnpm verify` pending.
+- **Decisions and assumptions:** Documentation/state only. No Doctor, Diff,
+  daemon lifecycle, packaging, Apply, or security behavior changes. Residual
+  risks remain documented separately from milestone completion.
+- **Open issues or blockers:** CI on completion PR.
+- **Next first action:** Commit, push, open PR, merge when green.
+- **Evidence:**
+  `docs/releases/dogfooding/2026-08-21-vii-desktop-adoption-completion.md`
 
 ### 2026-08-21, Desktop dev daemon launch
 

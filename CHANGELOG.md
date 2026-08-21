@@ -7,42 +7,47 @@ All notable changes are documented here. This project follows Keep a Changelog p
 Changes listed here are merged after the current release-preparation scope and
 are not included in the current npm artifact until a later release.
 
+- **Desktop Existing-Project Adoption: COMPLETE.** Maintainer verification on
+  adopted disposable Vii `vii-desktop-final` passed packaged Connect, Doctor,
+  Refresh Doctor, Diff, root switching, Cancel lifecycle, and `tauri dev`
+  Connect/Doctor/Diff after PRs #337–#353. First Apply on pre-adoption Vii
+  `93e072c` wrote 25 changes (`Ready`); second Apply returned `Already applied`
+  with 0 changes. Canonical CLI doctor/diff agree on the adopted tree. Security
+  invariants preserved; crash journal, external-editor TOCTOU, and documented
+  daemon spawn residuals remain accepted follow-ups. Evidence:
+  `docs/releases/dogfooding/2026-08-21-vii-desktop-adoption-completion.md`.
+
 - Desktop dev mode (`tauri dev`) again launches the daemon through
   `node packages/daemon/dist/intentloomd.cjs` instead of applying packaged SEA
   sidecar preflight to the `"node"` PATH program. Packaged #351 validation is
-  unchanged. Desktop Existing-Project Adoption is still not marked complete.
+  unchanged.
 
 - Desktop no longer leaves the global Cancel control visible after initial
   Connect/Inspect/Doctor when Doctor is already ready. Auto Doctor load now
   defers while Connect owns the pipeline, and aborted Connect inspect loading
-  is terminalized instead of staying stuck at `"loading"`. Desktop
-  Existing-Project Adoption is still not marked complete.
+  is terminalized instead of staying stuck at `"loading"`.
 
 - Local `pnpm desktop:package` now builds a current self-contained SEA sidecar,
   refuses to reuse a stale Node-script `intentloomd` resource, packages Desktop,
   and probes the bundled daemon. `pnpm --filter @intentloom/desktop package` no
   longer silently ships a shebang script that fails at launch with
-  `No such file or directory (os error 2)`. Desktop Existing-Project Adoption
-  is still not marked complete.
+  `No such file or directory (os error 2)`.
 
 - Packaged Desktop recovers from a stale or leftover private daemon endpoint
   instead of looping on `disconnected` / "an existing daemon endpoint did not
   respond". Live daemons are reused; authentication failures are not stolen;
-  Doctor/Diff semantics from #349 are unchanged. Desktop Existing-Project
-  Adoption is still not marked complete.
+  Doctor/Diff semantics from #349 are unchanged.
 
 - Existing-project Apply no longer denies an approved, unexpired plan as a
   collision merely because `.aif` metadata or AIF-owned generated files already
   exist and differ from the catalog-bound desired state. Fingerprint, digest,
   and expiry gates are unchanged. Desktop now distinguishes stale, expired, and
-  other Apply denials. Desktop Existing-Project Adoption is still not marked
-  complete.
+  other Apply denials.
 
 - Existing-project adoption now binds the daemon/CLI catalog into plan,
   decide, prepare, revalidate, approve, Apply, and post-apply Doctor/Diff.
   Apply no longer writes empty-catalog lock/source-map artifacts; generated
   Cursor rules and Codex skills match canonical `adopt` / `doctor` / `diff`.
-  Desktop Existing-Project Adoption is still not marked complete.
 
 - Bounded transactional existing-project adoption Apply implemented:
   `intentloom.existing-project.adoption.apply.v1` mutates the selected project

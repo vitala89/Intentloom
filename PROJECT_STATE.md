@@ -1,6 +1,6 @@
 # Intentloom Project State
 
-Last verified: 2026-08-21
+Last verified: 2026-08-21 (Desktop Existing-Project Adoption completion)
 
 This file records the durable current state of the project. It is not a
 chronological log. Session history and handoff details belong in
@@ -254,13 +254,15 @@ before a new release or implementation milestone is declared complete.
 
 ## Active focus
 
-1. Engineering Workspace **W0–W12** are complete on current `origin/main` at
-   `89b6c1d` (N2 PR #318; N1 PR #317; P1 PR #316; P0 PR #315). The
-   implementation plan ends at W12. Do not invent a W13.
+1. Engineering Workspace **W0–W12** are complete on current `origin/main`.
+   **Desktop Existing-Project Adoption: COMPLETE** (PRs #337–#353; final
+   maintainer evidence
+   [2026-08-21-vii-desktop-adoption-completion.md](docs/releases/dogfooding/2026-08-21-vii-desktop-adoption-completion.md)).
+   Do not invent a W13.
 2. **P3 S8** is on `feat/specialized-packs-s8-external-lifecycle`: reviewed
    external specialized packs through the existing extension adoption
    preview, with pin/digest and human activation. No auto-install. Do not
-   start P4, N3, C7, or Desktop model calls from this focus.
+   start P4, N3, or C7 from this focus unless a separate brief says so.
 3. The next **published** version is **undecided**. Maintainer options, not a
    pick: stay unpublished on npm until an explicit publish brief; later `1.0.x`
    metadata/docs release; `1.1.0` (or another minor) after a real release-gate
@@ -582,54 +584,38 @@ Maintainer options (pick later, in a publish brief):
 - later `1.0.x` metadata/docs release;
 - `1.1.0` (or another minor) after a real release-gate brief.
 
-Desktop Existing-Project Adoption is a post-v0.6 follow-up
-([DESKTOP_EXISTING_PROJECT_ADOPTION_PLAN.md](docs/roadmap/DESKTOP_EXISTING_PROJECT_ADOPTION_PLAN.md)).
-The first shared-contract slice is the read-only daemon/protocol operation
-`intentloom.existing-project.adoption.plan.v1`, reusing `adoptProject({ dryRun: true })`.
-Desktop now also has a **read-only adoption preview UI** (Slice C) and
-**Desktop adoption decision modeling implemented**: supported mapping
-choices are validated through
-`intentloom.existing-project.adoption.decisions.v1` without writing the
-project. Prepared adoption plan security envelope implemented:
-`prepare`/`revalidate` bind plan identity, digest, fingerprint, and expiry
-without approval or Apply. Explicit adoption approval implemented:
-`intentloom.existing-project.adoption.approve.v1` returns `approved: true`
-with `applied: false` and does not write the project. The pre-Apply security
-review
-([DESKTOP_ADOPTION_PRE_APPLY_SECURITY_REVIEW.md](docs/roadmap/DESKTOP_ADOPTION_PRE_APPLY_SECURITY_REVIEW.md))
-accepted bounded transactional Apply. Bounded transactional Apply is now
-implemented: `intentloom.existing-project.adoption.apply.v1` reuses
-`adoptProject` / `synchronizeGeneratedFiles`, with per-root locking, final
-revalidation, handled-error rollback, and post-apply Doctor/Diff/readiness.
-Crash-safe recovery is not claimed. Real Vii Desktop dogfood of the full
-adoption flow was attempted on 2026-08-19 against an isolated pre-adoption
-clone (`93e072c`). That run wrote empty-catalog artifacts because existing-project
-adoption did not pass `catalogRoot`; CLI doctor/diff then disagreed with Apply
-Ready. A later consistency fix binds the daemon catalog into the existing-project
-plan/apply path so generated lock, source-map, adapter outputs, and Codex skills
-match canonical CLI generation. After that catalog binding, packaged Desktop
-could still deny Apply on an already-ready tree because `syncProject` treated
-differing `.aif` metadata and checksum-drifted AIF-owned outputs as collisions,
-while the UI labeled every denial as stale or expired. Approved Apply now
-overwrites those planned generated outputs without relaxing fingerprint,
-digest, or expiry gates. Desktop Doctor now resolves project
-profile/adapters/catalog in daemon rather than hardcoding generic semantics
-(PR #349). Packaged Desktop then failed Doctor/Diff with `disconnected`
-because `ensure_daemon` reused a leftover private endpoint and remapped any
-probe failure to "an existing daemon endpoint did not respond", so Retry
-could not start the packaged sidecar. Desktop now classifies live, stale,
-unowned leftover, and dead-owned-child endpoints and recovers the private
-runtime socket when that is safe (PR #350). After that recovery, packaged
-Desktop still failed Connect with `No such file or directory (os error 2)`
-because `pnpm --filter @intentloom/desktop package` bundled a stale
-`#!/usr/bin/env node` script as `resources/intentloomd` instead of a
-self-contained SEA Mach-O. Canonical packaging is now `pnpm desktop:package`,
-which generates, stamps, and probes the current sidecar and refuses to reuse an
-unstamped script. Maintainer packaged Desktop verification on adopted Vii now
-passes Connect, Doctor, Diff, and root-switch; #352 fixed stale Cancel after
-initial Doctor load (merged PR #352). Maintainer `tauri dev` re-check and a
-short packaged Cancel confirmation remain before marking Desktop
-Existing-Project Adoption complete. See
+**Desktop Existing-Project Adoption: COMPLETE.**
+
+Implementation merged through PRs #337 (`f98122a`), #339 (`75345ab`), #340
+(`ad20ed2`), #342 (`0da48de`), #343 (`ecf09c8`), #344 (`dcf1c4e`), #345
+(`0385e63`), #346 (`fa26b9f`), #347 (`6dbc571`), #348 (`79afa86`), #349
+(`24924c3`), #350 (`acb262d`), #351 (`e7fab31`), #352 (`a2a4be4`), and #353
+(`a9ad998`). Plan:
+[DESKTOP_EXISTING_PROJECT_ADOPTION_PLAN.md](docs/roadmap/DESKTOP_EXISTING_PROJECT_ADOPTION_PLAN.md).
+Security review:
+[DESKTOP_ADOPTION_PRE_APPLY_SECURITY_REVIEW.md](docs/roadmap/DESKTOP_ADOPTION_PRE_APPLY_SECURITY_REVIEW.md).
+
+The full lifecycle is implemented and evidence-backed: existing project
+selection, Inspect, Adoption Preview, project-owned decisions, Prepare,
+Revalidate, Approve, Apply, catalog-bound generation, replay/idempotency,
+Doctor, Diff, daemon lifecycle, packaged SEA sidecar, root switching,
+operation cancellation lifecycle, and dev-mode daemon launch.
+
+First Apply on disposable Vii pre-adoption SHA `93e072c` wrote 25 changes
+(`Ready`), including 21 Codex skills, `.aif` config/metadata, and Cursor rules;
+second Apply on the unchanged tree returned `Already applied` with 0 changes.
+Final maintainer verification on adopted `vii-desktop-final` passed packaged
+Connect, Doctor (0 errors, profile `typescript`, `installation-healthy`),
+Refresh Doctor, Diff (0 changes/conflicts/security errors), root switching,
+Cancel lifecycle, and `tauri dev` Connect/Doctor/Diff. Canonical CLI
+doctor/diff agree on the adopted tree.
+
+Crash-safe recovery, external-editor TOCTOU, leftover daemon processes after
+some recovery paths, and documented spawn races remain accepted residuals; they
+do not block this milestone. Portable adoption, migrations, future provider
+support, and enterprise flows remain separate roadmap work. See
+[2026-08-21-vii-desktop-adoption-completion.md](docs/releases/dogfooding/2026-08-21-vii-desktop-adoption-completion.md)
+and the historical interim record
 [2026-08-19-vii-desktop-full-adoption.md](docs/releases/dogfooding/2026-08-19-vii-desktop-full-adoption.md).
 
 P1 defers real workspace dogfood to the maintainer

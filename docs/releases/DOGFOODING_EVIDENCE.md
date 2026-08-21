@@ -48,5 +48,8 @@ supporting evidence, but it does not replace this record from a real project.
 - [2026-08-17-vii-nx-existing-project.md](dogfooding/2026-08-17-vii-nx-existing-project.md)
 - [2026-08-18-vii-first-development-cycle.md](dogfooding/2026-08-18-vii-first-development-cycle.md)
 - [2026-08-19-vii-desktop-full-adoption.md](dogfooding/2026-08-19-vii-desktop-full-adoption.md)
-  (daemon/protocol dogfood of the Desktop adoption chain; packaged Desktop
-  click-through not complete)
+  (daemon/protocol dogfood of the Desktop adoption chain; interim NOT COMPLETE
+  at that date)
+- [2026-08-21-vii-desktop-adoption-completion.md](dogfooding/2026-08-21-vii-desktop-adoption-completion.md)
+  (final maintainer packaged/dev verification; **Desktop Existing-Project
+  Adoption: COMPLETE**)
