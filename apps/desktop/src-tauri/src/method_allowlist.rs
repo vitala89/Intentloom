@@ -12,6 +12,10 @@ pub fn is_inception_method(method: &str) -> bool {
     )
 }
 
+pub fn is_specialized_pack_preview_method(method: &str) -> bool {
+    method == "intentloom.specialized-packs.external.preview.v1"
+}
+
 pub fn is_foundation_method(method: &str) -> bool {
     matches!(
         method,
@@ -90,6 +94,12 @@ mod tests {
         ));
         assert!(!is_inception_method(
             "intentloom.continuous-loop.workspace.prepare.v1"
+        ));
+        assert!(super::is_specialized_pack_preview_method(
+            "intentloom.specialized-packs.external.preview.v1"
+        ));
+        assert!(!super::is_specialized_pack_preview_method(
+            "intentloom.specialized-packs.external.activate.v1"
         ));
     }
 }

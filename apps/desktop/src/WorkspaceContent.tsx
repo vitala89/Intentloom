@@ -20,6 +20,7 @@ import { AdoptionPreviewPage } from "./views/AdoptionPreviewPage.js";
 import { FeatureIntentView } from "./views/FeatureIntentView.js";
 import { BoundedExecutionView } from "./views/BoundedExecutionView.js";
 import { ContinuousLoopView } from "./views/ContinuousLoopView.js";
+import { ExternalSpecializedPackPreviewPage } from "./views/ExternalSpecializedPackPreviewPage.js";
 import { OverviewView } from "./views/OverviewView.js";
 import { SettingsView } from "./views/SettingsView.js";
 import { TimelineView } from "./views/TimelineView.js";
@@ -69,6 +70,8 @@ export interface WorkspaceContentProps {
   readonly onLoadDiff: () => void;
   readonly onLoadTimeline: () => void;
   readonly onOpenAdoptionPreview: () => void;
+  readonly onOpenExternalSpecializedPackPreview: () => void;
+  readonly onOpenDoctorView: () => void;
   readonly onThemeToggle: (theme: "dark" | "light") => void;
 }
 
@@ -110,6 +113,8 @@ export function WorkspaceContent({
   onLoadDiff,
   onLoadTimeline,
   onOpenAdoptionPreview,
+  onOpenExternalSpecializedPackPreview,
+  onOpenDoctorView,
   onThemeToggle,
 }: WorkspaceContentProps) {
   if (activeView === "New project") {
@@ -185,6 +190,9 @@ export function WorkspaceContent({
       <DoctorView
         errorMessage={doctorError ?? inspectError}
         onConnect={onConnectDaemon}
+        onOpenExternalSpecializedPackPreview={
+          onOpenExternalSpecializedPackPreview
+        }
         onRefreshDoctor={onLoadDoctor}
         onSelectProject={() => onRequestProjectSelect()}
         result={doctor}
@@ -216,6 +224,16 @@ export function WorkspaceContent({
         result={timeline}
         root={root}
         status={timelineStatus}
+      />
+    );
+  }
+
+  if (activeView === "External specialized pack review") {
+    return (
+      <ExternalSpecializedPackPreviewPage
+        onOpenDoctor={onOpenDoctorView}
+        onSelectProject={() => onRequestProjectSelect()}
+        root={root}
       />
     );
   }

@@ -9,10 +9,26 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **P3 S8e complete** — merged in PR #359 (`70e997d`). S8a #319
-(`907e6ad`), S8b #355 (`ef8d838`), S8c #356 (`da78b73`), S8d #357 (`71d0876`).
-**S8 overall: IN PROGRESS.** Next: Desktop/TUI/MCP external surfaces remain
-deferred until an explicit brief; do not start P4 from this watch.
+Status: **P3 S8f1 in progress** — branch
+`feat/specialized-packs-s8f1-desktop-external-preview`. S8a–S8e merged. **S8f2**
+Desktop approval/activation pending. **S8 overall: IN PROGRESS.** Do not start P4.
+
+### 2026-08-22, P3 S8f1 Desktop read-only external specialized-pack preview
+
+- **Status:** in progress on branch; PR pending
+- **Branch:** `feat/specialized-packs-s8f1-desktop-external-preview`
+- **Starting main SHA:** `e9e83d2` (S8e state/docs #360)
+- **Objective:** Desktop read-only external specialized-pack preview/review via
+  existing daemon preview RPC; Command Palette + Doctor contextual entry; no
+  approval, activation, file picker, network, or MCP.
+- **Completed:** Desktop preview page, controller, protocol viewmodel parser,
+  preview-only Tauri bridge, Doctor link, focused tests.
+- **Not completed:** S8f2 approve/activate; overall S8 completion; manual
+  maintainer `tauri dev` click-through.
+- **Pull request:** pending
+- **Validation:** `pnpm verify` pending on PR CI.
+- **Next first action:** Merge S8f1 PR, then start S8f2 on
+  `feat/specialized-packs-s8f2-desktop-external-activate`.
 
 ### 2026-08-21, P3 S8e Doctor diagnostics for external specialized-pack pins
 

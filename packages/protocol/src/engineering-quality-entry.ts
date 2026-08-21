@@ -18,6 +18,7 @@ export * from "./engineering-quality/daemon-rpc.js";
 export * from "./engineering-quality/specialized-daemon-rpc.js";
 export * from "./engineering-quality/specialized-pack-external-daemon-rpc.js";
 export * from "./engineering-quality/specialized-pack-external-daemon-parse.js";
+export * from "./engineering-quality/specialized-pack-external-viewmodel.js";
 export * from "./engineering-quality/specialized-disciplines.js";
 export * from "./engineering-quality/specialized-pack-manifest.js";
 export * from "./engineering-quality/specialized-aliases.js";

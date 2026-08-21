@@ -7,6 +7,11 @@ All notable changes are documented here. This project follows Keep a Changelog p
 Changes listed here are merged after the current release-preparation scope and
 are not included in the current npm artifact until a later release.
 
+- Desktop adds read-only external specialized-pack preview/review (S8f1).
+  Command Palette and Doctor contextual entry open a paste-JSON review panel
+  backed by `intentloom.specialized-packs.external.preview.v1`. No approval,
+  activation, file picker, network fetch, or MCP mutation in this slice.
+
 - Doctor reports read-only health for active external specialized-pack pins in
   `.aif/extension-lock.json` (S8e). Error-severity specialized-pack findings
   suppress `installation-healthy`. Git and package locators are not fetched;

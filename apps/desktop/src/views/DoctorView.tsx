@@ -4,6 +4,7 @@ import type { InspectStatus } from "./InspectView.js";
 import { StatusChip } from "../design/components/status/StatusChip.js";
 import { EmptyState } from "../design/components/states/EmptyState.js";
 import { Button } from "../design/components/core/Button.js";
+import { hasExternalSpecializedPackDoctorFindings } from "./specialized-pack-external-doctor.js";
 
 export interface DoctorViewProps {
   root: string | null;
@@ -13,6 +14,7 @@ export interface DoctorViewProps {
   onSelectProject: () => void;
   onConnect: () => void;
   onRefreshDoctor: () => void;
+  onOpenExternalSpecializedPackPreview?: () => void;
 }
 
 function findingKey(finding: DoctorFinding, index: number) {
@@ -27,6 +29,7 @@ export function DoctorView({
   onSelectProject,
   onConnect,
   onRefreshDoctor,
+  onOpenExternalSpecializedPackPreview,
 }: DoctorViewProps) {
   const [severityFilter, setSeverityFilter] = useState<
     "all" | DoctorFinding["severity"]
@@ -173,6 +176,16 @@ export function DoctorView({
         <span className="doctor-count warning">{warningCount} warnings</span>
         <span className="doctor-count info">{infoCount} info</span>
         <span className="doctor-exit">Exit code {result.exitCode}</span>
+        {hasExternalSpecializedPackDoctorFindings(result.findings) &&
+        onOpenExternalSpecializedPackPreview ? (
+          <Button
+            type="button"
+            variant="secondary"
+            onClick={onOpenExternalSpecializedPackPreview}
+          >
+            Review external specialized pack
+          </Button>
+        ) : null}
       </div>
 
       <div className="doctor-toolbar" aria-label="Doctor filters">

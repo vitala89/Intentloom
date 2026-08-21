@@ -113,6 +113,13 @@ export function buildWorkspaceCommandOptions(
       action: () => deps.setActiveView("Settings"),
     },
     {
+      id: "action-external-specialized-pack-preview",
+      category: "Actions",
+      label: "Review external specialized pack…",
+      icon: "⎘",
+      action: () => deps.setActiveView("External specialized pack review"),
+    },
+    {
       id: "action-select-root",
       category: "Actions",
       label: "Select local project root...",

@@ -110,7 +110,11 @@ without mutation or network access. Local `kind: local` locators may be
 verified against project-scoped manifests; git/package locators remain
 metadata only.
 
-**S8f+ status:** pending (Desktop/TUI/MCP external lifecycle surfaces deferred).
+**S8f1 status:** in progress on branch
+`feat/specialized-packs-s8f1-desktop-external-preview`. Desktop read-only
+external specialized-pack preview/review via existing daemon preview RPC.
+
+**S8f2+ status:** pending (Desktop approval/activation; TUI/MCP deferred).
 Overall S8 remains in progress.
 
 ### P4 — File-budget extracts

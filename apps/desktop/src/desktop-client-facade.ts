@@ -7,6 +7,8 @@ import { existingProjectAdoptionDecisionsDesktopMethods } from "./desktop-client
 import { existingProjectAdoptionPreparedPlanDesktopMethods } from "./desktop-client-adoption-prepared-plan.js";
 import { existingProjectAdoptionApplyDesktopMethods } from "./desktop-client-adoption-apply.js";
 
+import { specializedPackExternalDesktopMethods } from "./desktop-client-specialized-pack-external.js";
+
 interface DesktopClientBase {
   foundationRequest(
     request: object,
@@ -29,5 +31,6 @@ export function composeDesktopClient<TBase extends DesktopClientBase>(
     ...existingProjectAdoptionDecisionsDesktopMethods(foundationRequest),
     ...existingProjectAdoptionPreparedPlanDesktopMethods(foundationRequest),
     ...existingProjectAdoptionApplyDesktopMethods(foundationRequest),
+    ...specializedPackExternalDesktopMethods(),
   };
 }

@@ -480,6 +480,13 @@ export default function App() {
             onLoadDiff={() => void loadDiff()}
             onLoadTimeline={() => void loadTimeline()}
             onOpenAdoptionPreview={() => setActiveView("Adoption preview")}
+            onOpenDoctorView={() => {
+              setActiveView("Doctor");
+              void loadDoctor();
+            }}
+            onOpenExternalSpecializedPackPreview={() =>
+              setActiveView("External specialized pack review")
+            }
             onThemeToggle={setTheme}
           />
         </div>
