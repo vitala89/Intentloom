@@ -93,11 +93,15 @@ the review through `resolveExtensionAdoptionProposal`, and keeps the pack
 `untrusted-external` until `activateExternalSpecializedPack`. No auto-install,
 no network fetch.
 
-**S8b status:** active. Canonical manifest digest and deterministic
-`prepareExternalSpecializedPackLockEntry` for `.aif/extension-lock.json`
-(reuse existing `ExtensionLockEntry`; no new schema family).
+**S8b status:** complete on `main` via PR #355 (`ef8d838`). Canonical manifest
+digest and deterministic `prepareExternalSpecializedPackLockEntry` for
+`.aif/extension-lock.json` (reuse existing `ExtensionLockEntry`; no new schema
+family).
 
-**S8c+ status:** pending (lock apply, CLI/daemon, Doctor).
+**S8c status:** active. Transactional apply via
+`applyExternalSpecializedPackActivation` reusing `applyExtensionAdoptionPlan`.
+
+**S8d+ status:** pending (CLI/daemon/MCP/Desktop/TUI, Doctor).
 
 ### P4 — File-budget extracts
 

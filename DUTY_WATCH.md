@@ -9,19 +9,36 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **P3 S8b external specialized-pack lock preparation** on branch
-`feat/specialized-packs-s8b-external-lock` from `main` @ `255a924`.
+Status: **P3 S8c external specialized-pack extension-lock apply** on branch
+`feat/specialized-packs-s8c-extension-lock-apply` from `main` @ `ef8d838`.
 
-S8a merged in PR #319 (`907e6ad`). Do not reuse stale branch
-`feat/specialized-packs-s8-external-lifecycle`.
+S8a merged in PR #319 (`907e6ad`). S8b merged in PR #355 (`ef8d838`). Do not
+reuse stale branches `feat/specialized-packs-s8-external-lifecycle` or
+`feat/specialized-packs-s8b-external-lock`.
 
-Current objective: Canonical manifest digest and deterministic extension-lock
-entry preparation (pure application; no filesystem writes).
+Current objective: Transactional apply of approved external specialized packs to
+`.aif/extension-lock.json` via existing extension adoption apply.
 
-Next first action: Merge S8b PR when CI is green; continue with S8c extension
-lock apply.
+Next first action: Merge S8c PR when CI is green; continue with S8d client
+surfaces.
 
-### 2026-08-21, Desktop Existing-Project Adoption completion
+### 2026-08-21, P3 S8c external specialized-pack extension-lock apply
+
+- **Status:** complete on branch; PR pending
+- **Branch:** `feat/specialized-packs-s8c-extension-lock-apply`
+- **Objective:** Transactional apply of approved external specialized packs to
+  `.aif/extension-lock.json` via existing extension adoption apply.
+- **Completed:** Added `prepareExternalSpecializedPackActivationPlan` and
+  `applyExternalSpecializedPackActivation`; reused `applyExtensionAdoptionPlan`,
+  `extensionLockEntryFingerprint`, `restoreExtensionUpdateSnapshots`, and
+  `withCanonicalProjectRootLock`; added approval/identity binding, idempotent
+  apply, conflict detection, symlink/root safety, and rollback; extended
+  activation with `declaredLicense`; added
+  `tests/engineering-quality-specialized-pack-s8-apply.test.ts` (12 tests).
+- **Not completed:** PR merge; S8d+ client surfaces.
+- **Validation:** `pnpm verify` passed (1599 tests, 3 skipped).
+- **Next first action:** Push branch, open PR, merge when CI is green.
+
 
 - **Status:** complete on branch; PR pending
 - **Agent/tool:** Cursor
