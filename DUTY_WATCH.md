@@ -9,16 +9,17 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Desktop Existing-Project Adoption complete** on `main` at `a9ad998`
-(PR #353).
+Status: **P3 S8b external specialized-pack lock preparation** on branch
+`feat/specialized-packs-s8b-external-lock` from `main` @ `255a924`.
 
-Active branch: `docs/complete-desktop-existing-project-adoption`
+S8a merged in PR #319 (`907e6ad`). Do not reuse stale branch
+`feat/specialized-packs-s8-external-lifecycle`.
 
-Current objective: Record final maintainer evidence and mark Desktop
-Existing-Project Adoption complete in canonical project state.
+Current objective: Canonical manifest digest and deterministic extension-lock
+entry preparation (pure application; no filesystem writes).
 
-Next first action: Merge completion PR when CI is green; resume P3 S8 or the
-next maintainer-chosen roadmap increment.
+Next first action: Merge S8b PR when CI is green; continue with S8c extension
+lock apply.
 
 ### 2026-08-21, Desktop Existing-Project Adoption completion
 

@@ -2,8 +2,10 @@
 
 ## Status
 
-P0–P2 are merged (PR #315–#318). P3 S8 external specialized-pack
-lifecycle is in progress on `feat/specialized-packs-s8-external-lifecycle`.
+P0–P2 are merged (PR #315–#318). P3 S8a external specialized-pack preview and
+activation merged in PR #319 (`907e6ad`). S8b lock-entry preparation is the
+active increment on `feat/specialized-packs-s8b-external-lock`. Do not reuse
+stale branch `feat/specialized-packs-s8-external-lifecycle`.
 P4 is not started. This document still does not authorize a publish, tag,
 new package, hosted-provider credentials, or a W13 workspace phase.
 
@@ -21,19 +23,19 @@ product.
 
 ## What is already done
 
-| Track                         | Evidence on main                      | Residual                                |
-| ----------------------------- | ------------------------------------- | --------------------------------------- |
-| Engineering Workspace W0–W12  | PR #286–#313                          | No W13                                  |
-| Quality Packs Q1–Q18          | PR #257–#275                          | Marketplace stays fail-closed           |
-| Specialized packs S1–S7       | PR #277–#284                          | S8 external packs                       |
-| Managed extensions E1–E8      | PR #218–#248                          | No HTTP MCP install in npm `1.0.2`      |
-| Assessments A1–A22            | PROJECT_STATE baseline                | Live `assessProject` still caller-owned |
-| Harness H0–H9                 | PR #213–#244                          | Real adapters + runner deferred         |
-| Skills C1–C6                  | catalog + ADR-0051                    | C7 future                               |
-| Desktop v0.6 + W clients      | ADR-0042 + W1–W12 panels              | Not in published `1.0.2`                |
-| Memory M1–M4 / Security S1–S5 | `0.4.0-beta.1` line                   | Later expansions need threat review     |
-| Learning L1–L8                | `0.4.0-beta.1` line                   | Later candidates future                 |
-| Neutron foundations           | CLI `neutron`, workspace sync records | N1–N9 runtime not executed              |
+| Track                         | Evidence on main                      | Residual                                   |
+| ----------------------------- | ------------------------------------- | ------------------------------------------ |
+| Engineering Workspace W0–W12  | PR #286–#313                          | No W13                                     |
+| Quality Packs Q1–Q18          | PR #257–#275                          | Marketplace stays fail-closed              |
+| Specialized packs S1–S7       | PR #277–#284                          | S8a merged #319; S8b+ external persistence |
+| Managed extensions E1–E8      | PR #218–#248                          | No HTTP MCP install in npm `1.0.2`         |
+| Assessments A1–A22            | PROJECT_STATE baseline                | Live `assessProject` still caller-owned    |
+| Harness H0–H9                 | PR #213–#244                          | Real adapters + runner deferred            |
+| Skills C1–C6                  | catalog + ADR-0051                    | C7 future                                  |
+| Desktop v0.6 + W clients      | ADR-0042 + W1–W12 panels              | Not in published `1.0.2`                   |
+| Memory M1–M4 / Security S1–S5 | `0.4.0-beta.1` line                   | Later expansions need threat review        |
+| Learning L1–L8                | `0.4.0-beta.1` line                   | Later candidates future                    |
+| Neutron foundations           | CLI `neutron`, workspace sync records | N1–N9 runtime not executed                 |
 
 ## Gaps that are not a new W-phase
 
@@ -85,11 +87,17 @@ inspect loop is implemented for Ollama on loopback.
 
 ### P3 — S8 external specialized packs
 
-**Status:** complete on this branch. `previewExternalSpecializedPack` pins
-a caller-supplied payload, exposes provenance/permissions/trust, routes
+**S8a status:** complete on `main` via PR #319. `previewExternalSpecializedPack`
+pins a caller-supplied payload, exposes provenance/permissions/trust, routes
 the review through `resolveExtensionAdoptionProposal`, and keeps the pack
-`untrusted-external` until `activateExternalSpecializedPack`. No
-auto-install, no network fetch, no new schema family.
+`untrusted-external` until `activateExternalSpecializedPack`. No auto-install,
+no network fetch.
+
+**S8b status:** active. Canonical manifest digest and deterministic
+`prepareExternalSpecializedPackLockEntry` for `.aif/extension-lock.json`
+(reuse existing `ExtensionLockEntry`; no new schema family).
+
+**S8c+ status:** pending (lock apply, CLI/daemon, Doctor).
 
 ### P4 — File-budget extracts
 

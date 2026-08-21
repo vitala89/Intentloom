@@ -25,6 +25,7 @@ export * from "./executable-marketplace-engine.js";
 export * from "./specialized-disciplines-engine.js";
 export * from "./specialized-pack-manifest-engine.js";
 export * from "./specialized-pack-external-lifecycle.js";
+export * from "./specialized-pack-external-lock.js";
 export * from "./specialized-aliases-engine.js";
 export * from "./specialized-pack-detection-engine.js";
 export * from "./specialized-pack-check-engine.js";
