@@ -359,9 +359,9 @@ Blocked / future:
 - Any new Engineering Workspace week
 
 Next synchronization checkpoint:
-- P3 S8e Doctor diagnostics for external specialized-pack pins is the current
-  increment. Overall S8 stays in progress; Desktop/TUI/MCP lifecycle surfaces
-  remain deferred.
+- P3 S8e Doctor diagnostics for external specialized-pack pins is merged
+  (PR #359, `70e997d`). Overall S8 stays in progress; Desktop/TUI/MCP lifecycle
+  surfaces remain deferred.
 - Do not start N3 or P4 from this matrix. Desktop does not call models.
 ```
 

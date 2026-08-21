@@ -2,10 +2,9 @@
 
 ## Status
 
-P0–P2 are merged (PR #315–#318). P3 S8a–S8d are merged. S8e Doctor diagnostics
-are the current increment. P4 is not started. This document still does not
-authorize a publish, tag, new package, hosted-provider credentials, or a W13
-workspace phase.
+P0–P2 are merged (PR #315–#318). P3 S8a–S8e are merged. P4 is not started.
+This document still does not authorize a publish, tag, new package,
+hosted-provider credentials, or a W13 workspace phase.
 
 Verified against `origin/main` @ `89b6c1d` (PR #318 merged, 2026-08-16).
 
@@ -105,11 +104,11 @@ family).
 `intentloom.specialized-packs.external.activate.v1`) expose the S8a/S8c lifecycle
 without network fetch, pack byte copying, or MCP/Desktop/TUI mutation.
 
-**S8e status:** complete on branch
-`feat/specialized-packs-s8e-doctor-diagnostics`. Canonical Doctor inspects
-active external specialized-pack pins in `.aif/extension-lock.json` without
-mutation or network access. Local `kind: local` locators may be verified
-against project-scoped manifests; git/package locators remain metadata only.
+**S8e status:** complete on `main` via PR #359 (`70e997d`). Canonical Doctor
+inspects active external specialized-pack pins in `.aif/extension-lock.json`
+without mutation or network access. Local `kind: local` locators may be
+verified against project-scoped manifests; git/package locators remain
+metadata only.
 
 **S8f+ status:** pending (Desktop/TUI/MCP external lifecycle surfaces deferred).
 Overall S8 remains in progress.

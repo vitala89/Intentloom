@@ -9,16 +9,15 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **P3 S8e complete on branch** — Doctor diagnostics for active external
-specialized-pack pins. S8a #319 (`907e6ad`), S8b #355 (`ef8d838`), S8c #356
-(`da78b73`), S8d #357 (`71d0876`), S8d state #358 (`4c40483`). **S8 overall:
-IN PROGRESS.** Next: merge S8e when CI is green; Desktop/TUI/MCP remain
-deferred.
+Status: **P3 S8e complete** — merged in PR #359 (`70e997d`). S8a #319
+(`907e6ad`), S8b #355 (`ef8d838`), S8c #356 (`da78b73`), S8d #357 (`71d0876`).
+**S8 overall: IN PROGRESS.** Next: Desktop/TUI/MCP external surfaces remain
+deferred until an explicit brief; do not start P4 from this watch.
 
 ### 2026-08-21, P3 S8e Doctor diagnostics for external specialized-pack pins
 
-- **Status:** complete on branch; PR pending
-- **Branch:** `feat/specialized-packs-s8e-doctor-diagnostics`
+- **Status:** complete; merged PR #359 (`70e997d`)
+- **Branch:** `feat/specialized-packs-s8e-doctor-diagnostics` (merged)
 - **Starting main SHA:** `4c40483` (PR #358 squash-merge)
 - **Objective:** Extend canonical Doctor with read-only health for active
   external specialized-pack entries in `.aif/extension-lock.json`.
@@ -29,9 +28,11 @@ deferred.
   lifecycle.
 - **Not completed:** Desktop/TUI/MCP external activation surfaces; remote
   update/revocation; compatibility evaluation from lock-only data; overall S8.
-- **Pull request:** pending
-- **Validation:** `pnpm verify` passed (1637 tests, 3 skipped).
-- **Next first action:** Push, open PR, wait for required CI, merge when green.
+- **Pull request:** #359 (merged)
+- **Validation:** `pnpm verify` passed (1637 tests, 3 skipped); CI green.
+- **Next first action:** Do not start S8f until an explicit Desktop/TUI/MCP
+  brief. Recommended branch if authorized:
+  `feat/specialized-packs-s8f-desktop-tui-mcp-surfaces`.
 - **Evidence:** `packages/application/src/engineering-quality/specialized-pack-external-health.ts`
 
 ### 2026-08-21, P3 S8d external specialized-pack CLI + daemon surfaces
