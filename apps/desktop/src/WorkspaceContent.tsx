@@ -232,6 +232,8 @@ export function WorkspaceContent({
   if (activeView === "External specialized pack review") {
     return (
       <ExternalSpecializedPackPreviewPage
+        daemonConnected={daemonInfo !== null}
+        onLoadDoctor={onLoadDoctor}
         onOpenDoctor={workspaceViewActions.openDoctorView}
         onSelectProject={() => onRequestProjectSelect()}
         root={root}

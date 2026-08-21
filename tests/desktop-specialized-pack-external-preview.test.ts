@@ -14,7 +14,8 @@ import {
 } from "@intentloom/protocol";
 import { specializedPackExternalDesktopMethods } from "../apps/desktop/src/desktop-client-specialized-pack-external.js";
 import {
-  FORBIDDEN_EXTERNAL_SPECIALIZED_PACK_ACTION_IDS,
+  EXTERNAL_SPECIALIZED_PACK_ACTIVATE_ACTION_ID,
+  EXTERNAL_SPECIALIZED_PACK_APPROVE_ACTION_ID,
   loadExternalSpecializedPackPreview,
   renderExternalSpecializedPackPreviewFields,
   sanitizeUntrustedDisplayText,
@@ -236,12 +237,13 @@ describe("S8f1 Desktop external specialized pack preview", () => {
   });
 
   describe("UI capability boundaries", () => {
-    it("does not expose forbidden approve/activate action ids", () => {
-      expect(FORBIDDEN_EXTERNAL_SPECIALIZED_PACK_ACTION_IDS).toEqual([
+    it("does not expose command palette approve/activate shortcuts", () => {
+      expect(EXTERNAL_SPECIALIZED_PACK_APPROVE_ACTION_ID).toBe(
         "approve-external-specialized-pack",
+      );
+      expect(EXTERNAL_SPECIALIZED_PACK_ACTIVATE_ACTION_ID).toBe(
         "activate-external-specialized-pack",
-        "apply-external-specialized-pack",
-      ]);
+      );
       const commandOptions = buildWorkspaceCommandOptions({
         theme: "dark",
         setActiveView: () => undefined,
@@ -252,9 +254,8 @@ describe("S8f1 Desktop external specialized pack preview", () => {
         setTheme: () => undefined,
       });
       const ids = commandOptions.map((option) => option.id);
-      for (const forbidden of FORBIDDEN_EXTERNAL_SPECIALIZED_PACK_ACTION_IDS) {
-        expect(ids).not.toContain(forbidden);
-      }
+      expect(ids).not.toContain(EXTERNAL_SPECIALIZED_PACK_APPROVE_ACTION_ID);
+      expect(ids).not.toContain(EXTERNAL_SPECIALIZED_PACK_ACTIVATE_ACTION_ID);
     });
 
     it("does not add file-picker or network commands", () => {
@@ -263,14 +264,22 @@ describe("S8f1 Desktop external specialized pack preview", () => {
         "utf8",
       );
       expect(rustCommands).toContain("invoke_specialized_pack_preview_request");
+      expect(rustCommands).toContain(
+        "invoke_specialized_pack_activate_request",
+      );
       expect(rustCommands).not.toContain("pick_file");
       const pageSource = readFileSync(
+        join(desktopRoot, "src/views/ExternalSpecializedPackApprovalPanel.tsx"),
+        "utf8",
+      );
+      expect(pageSource).toContain("Approve for activation");
+      expect(pageSource).toContain("Activate approved pack");
+      expect(pageSource).not.toContain("dangerouslySetInnerHTML");
+      const previewPage = readFileSync(
         join(desktopRoot, "src/views/ExternalSpecializedPackPreviewPage.tsx"),
         "utf8",
       );
-      expect(pageSource).not.toMatch(/Approve|Activate|Apply/u);
-      expect(pageSource).not.toContain("dangerouslySetInnerHTML");
-      expect(pageSource).not.toMatch(/fetch\(/u);
+      expect(previewPage).not.toMatch(/fetch\(/u);
     });
 
     it("registers command palette entry without sidebar nav item", () => {
@@ -329,30 +338,36 @@ describe("S8f1 Desktop external specialized pack preview", () => {
   });
 
   describe("desktop client wrapper", () => {
-    it("uses preview-only Tauri invoke command", () => {
+    it("uses dedicated preview and activate Tauri invoke commands", () => {
       const clientSource = readFileSync(
         join(desktopRoot, "src/desktop-client-specialized-pack-external.ts"),
         "utf8",
       );
       expect(clientSource).toContain("invoke_specialized_pack_preview_request");
-      expect(clientSource).not.toContain("external.activate");
-      expect(Object.keys(specializedPackExternalDesktopMethods())).toEqual([
-        "specializedPacksExternalPreview",
-      ]);
+      expect(clientSource).toContain(
+        "invoke_specialized_pack_activate_request",
+      );
+      expect(
+        Object.keys(specializedPackExternalDesktopMethods()).sort(),
+      ).toEqual(
+        [
+          "specializedPacksExternalActivate",
+          "specializedPacksExternalPreview",
+        ].sort(),
+      );
     });
 
-    it("blocks activate RPC at Rust allowlist", () => {
+    it("allowlists preview and activate RPC at Rust boundary", () => {
       const allowlist = readFileSync(
         join(desktopRoot, "src-tauri/src/method_allowlist.rs"),
         "utf8",
       );
       expect(allowlist).toContain("specialized-packs.external.preview.v1");
-      expect(allowlist).toContain(
-        "assert!(!super::is_specialized_pack_preview_method(",
-      );
+      expect(allowlist).toContain("is_specialized_pack_activate_method");
       expect(allowlist).toContain(
         '"intentloom.specialized-packs.external.activate.v1"',
       );
+      expect(allowlist).toContain("assert!(!is_foundation_method(");
     });
   });
 });
