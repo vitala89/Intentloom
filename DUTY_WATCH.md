@@ -9,23 +9,27 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **P3 S8c external specialized-pack extension-lock apply** on branch
-`feat/specialized-packs-s8c-extension-lock-apply` from `main` @ `ef8d838`.
+Status: **P3 S8d active** — branch `feat/specialized-packs-s8d-cli-daemon-surfaces`
+from `main` @ `da78b734`. S8a #319 (`907e6ad`), S8b #355 (`ef8d838`), S8c #356
+(`da78b73`) merged. Next: **S8e** Doctor external-pin diagnostics after S8d merge.
 
-S8a merged in PR #319 (`907e6ad`). S8b merged in PR #355 (`ef8d838`). Do not
-reuse stale branches `feat/specialized-packs-s8-external-lifecycle` or
-`feat/specialized-packs-s8b-external-lock`.
+### 2026-08-21, P3 S8d external specialized-pack CLI + daemon surfaces
 
-Current objective: Transactional apply of approved external specialized packs to
-`.aif/extension-lock.json` via existing extension adoption apply.
-
-Next first action: Merge S8c PR when CI is green; continue with S8d client
-surfaces.
+- **Status:** active on branch; PR pending
+- **Branch:** `feat/specialized-packs-s8d-cli-daemon-surfaces`
+- **Objective:** Expose S8a preview and S8c apply through CLI and daemon RPC without
+  changing security or persistence semantics.
+- **Completed:** Added `intentloom specialized-packs external preview|activate`, daemon
+  preview/activate RPC contracts, strict protocol parsing, mutating capability
+  allowlisting, parity tests, and usage docs. MCP/Desktop/TUI deferred.
+- **Not completed:** PR merge; S8e Doctor diagnostics.
+- **Validation:** `pnpm verify` passed locally.
+- **Next first action:** Push branch, open PR, merge when CI is green; then start S8e
+  on `feat/specialized-packs-s8e-doctor-diagnostics`.
 
 ### 2026-08-21, P3 S8c external specialized-pack extension-lock apply
 
-- **Status:** complete on branch; PR pending
-- **Branch:** `feat/specialized-packs-s8c-extension-lock-apply`
+- **Status:** complete; merged PR #356 (`da78b73`)
 - **Objective:** Transactional apply of approved external specialized packs to
   `.aif/extension-lock.json` via existing extension adoption apply.
 - **Completed:** Added `prepareExternalSpecializedPackActivationPlan` and
@@ -35,9 +39,10 @@ surfaces.
   apply, conflict detection, symlink/root safety, and rollback; extended
   activation with `declaredLicense`; added
   `tests/engineering-quality-specialized-pack-s8-apply.test.ts` (12 tests).
-- **Not completed:** PR merge; S8d+ client surfaces.
+- **Not completed:** S8d+ client surfaces (superseded by S8d branch above).
+- **Pull request:** #356 (merged)
 - **Validation:** `pnpm verify` passed (1599 tests, 3 skipped).
-- **Next first action:** Push branch, open PR, merge when CI is green.
+- **Next first action:** Completed; S8d continues on dedicated branch.
 
 - **Status:** complete on branch; PR pending
 - **Agent/tool:** Cursor

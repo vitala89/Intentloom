@@ -1,5 +1,7 @@
 import {
   SPECIALIZED_PACKS_CHECKS_METHOD,
+  SPECIALIZED_PACKS_EXTERNAL_ACTIVATE_METHOD,
+  SPECIALIZED_PACKS_EXTERNAL_PREVIEW_METHOD,
   INCEPTION_SESSION_CREATE_METHOD,
   INCEPTION_SESSION_GET_METHOD,
   INCEPTION_QUESTIONS_LIST_METHOD,
@@ -46,6 +48,14 @@ import {
 import type { RequestId } from "./jsonrpc.js";
 import { createSpecializedPacksChecksRequest } from "./engineering-quality/specialized-daemon-rpc.js";
 import type { SpecializedPacksChecksRequest } from "./engineering-quality/specialized-daemon-rpc.js";
+import {
+  parseSpecializedPacksExternalActivateRequest,
+  parseSpecializedPacksExternalPreviewRequest,
+} from "./engineering-quality/specialized-pack-external-daemon-rpc.js";
+import type {
+  SpecializedPacksExternalActivateRequest,
+  SpecializedPacksExternalPreviewRequest,
+} from "./engineering-quality/specialized-pack-external-daemon-rpc.js";
 import {
   createInceptionSessionCreateRequest,
   createInceptionSessionGetRequest,
@@ -116,6 +126,8 @@ import {
 
 export type WorkspaceDaemonRequest =
   | SpecializedPacksChecksRequest
+  | SpecializedPacksExternalPreviewRequest
+  | SpecializedPacksExternalActivateRequest
   | InceptionSessionCreateRequest
   | InceptionSessionGetRequest
   | InceptionQuestionsListRequest
@@ -179,6 +191,8 @@ export { ProtocolValidationError } from "./protocol-validation-error.js";
 
 export const WORKSPACE_DAEMON_REQUEST_METHODS = [
   SPECIALIZED_PACKS_CHECKS_METHOD,
+  SPECIALIZED_PACKS_EXTERNAL_PREVIEW_METHOD,
+  SPECIALIZED_PACKS_EXTERNAL_ACTIVATE_METHOD,
   INCEPTION_SESSION_CREATE_METHOD,
   INCEPTION_SESSION_GET_METHOD,
   INCEPTION_QUESTIONS_LIST_METHOD,
@@ -235,6 +249,26 @@ export function parseWorkspaceDaemonRequest(
       id,
       stringValue(params.root, "root"),
     );
+  if (
+    value.method === SPECIALIZED_PACKS_EXTERNAL_PREVIEW_METHOD ||
+    value.method === SPECIALIZED_PACKS_EXTERNAL_ACTIVATE_METHOD
+  ) {
+    const root = stringValue(params.root, "root");
+    const externalPreview = parseSpecializedPacksExternalPreviewRequest(
+      typeof value.method === "string" ? value.method : "",
+      params,
+      id,
+      root,
+    );
+    if (externalPreview) return externalPreview;
+    const externalActivate = parseSpecializedPacksExternalActivateRequest(
+      typeof value.method === "string" ? value.method : "",
+      params,
+      id,
+      root,
+    );
+    if (externalActivate) return externalActivate;
+  }
   if (value.method === INCEPTION_SESSION_CREATE_METHOD)
     return createInceptionSessionCreateRequest(
       id,

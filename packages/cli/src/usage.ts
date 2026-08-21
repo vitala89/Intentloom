@@ -26,6 +26,8 @@ export const usage = [
   "       intentloom inception <start|get|questions|answer|summarize|conflicts|export|delete> [--root PATH] [--idea TEXT] [--session-id ID] [--pending-only] [--json-input JSON] [--json]",
   "       intentloom foundation <start|get|questions|answer|summarize|conflicts|readiness|discover-questions|discover-turn|blueprint-propose|blueprint-compare|blueprint-approve|blueprint-revoke|scaffold-prepare|scaffold-get|scaffold-compare|scaffold-validate|export|delete> [--root PATH] [--idea TEXT] [--workshop-id ID] [--inception-session-id ID] [--effort low|medium|high] [--turn-index N] [--model-profile NAME] [--tier minimal|recommended|extensible] [--left-tier TIER] [--right-tier TIER] [--approver NAME] [--plan-id ID] [--existing-paths a,b] [--pending-only] [--json-input JSON] [--json]",
   "       intentloom blueprint <propose|compare|approve|revoke> [--workshop-id ID] [--tier minimal|recommended|extensible] [--left-tier TIER] [--right-tier TIER] [--approver NAME] [--json]",
+  "       intentloom specialized-packs <list|detect|explain|compatibility|checks|external> [--root PATH] [--pack-id ID] [--pack-ids a,b] [--json]",
+  "       intentloom specialized-packs external <preview|activate> [--root PATH] [--manifest-file PATH|--manifest-json JSON] [--source-json JSON] [--declared-publisher NAME] [--declared-license SPDX] [--approval-file PATH|--approval-json JSON] [--json]",
   "       adoption mappings use --project-owned-mapping SOURCE=DESTINATION",
   "       or --documentation-mapping SOURCE=DESTINATION",
 ].join("\n");

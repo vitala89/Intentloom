@@ -24,6 +24,12 @@ import {
   isSpecializedPackRequest,
   specializedPackCapabilities,
 } from "./specialized-pack-handlers.js";
+import type { SpecializedPackExternalDaemonOptions } from "./specialized-pack-external-handlers.js";
+import {
+  dispatchSpecializedPackExternalRequest,
+  isSpecializedPackExternalRequest,
+  specializedPackExternalCapabilities,
+} from "./specialized-pack-external-handlers.js";
 import type { ExistingProjectDaemonOptions } from "./existing-project-handlers.js";
 import {
   dispatchExistingProjectRequest,
@@ -51,6 +57,7 @@ import {
 import type { DaemonCapability } from "@intentloom/protocol";
 
 export type WorkspaceDaemonOptions = SpecializedPackDaemonOptions &
+  SpecializedPackExternalDaemonOptions &
   InceptionDaemonOptions &
   FoundationDaemonOptions &
   FoundationScaffoldDaemonOptions &
@@ -64,6 +71,7 @@ export function workspaceDaemonCapabilities(
 ): readonly DaemonCapability[] {
   return [
     ...specializedPackCapabilities(options),
+    ...specializedPackExternalCapabilities(options),
     ...inceptionCapabilities(options),
     ...foundationCapabilities(options),
     ...foundationScaffoldCapabilities(options),
@@ -87,6 +95,24 @@ export async function dispatchWorkspaceDaemonRequest(
   ) => void,
   socket: Socket,
 ): Promise<boolean> {
+  if (isSpecializedPackExternalRequest(request)) {
+    const externalResponse = await dispatchSpecializedPackExternalRequest(
+      request,
+      options,
+      canonicalProjectRoot,
+    );
+    if (!externalResponse) {
+      failure(
+        socket,
+        -32601,
+        "unsupported specialized pack external method",
+        "unsupported_capability",
+      );
+      return true;
+    }
+    response(socket, externalResponse);
+    return true;
+  }
   if (isSpecializedPackRequest(request)) {
     const specializedResponse = await dispatchSpecializedPackRequest(
       request,

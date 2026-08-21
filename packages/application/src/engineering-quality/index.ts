@@ -34,3 +34,5 @@ export * from "./specialized-pack-catalog-engine.js";
 export * from "./first-party-specialized-pack-runtime.js";
 export * from "./specialized-pack-viewmodel.js";
 export * from "./cli-specialized-packs.js";
+export * from "./cli-specialized-packs-external.js";
+export * from "./specialized-pack-external-viewmodel.js";

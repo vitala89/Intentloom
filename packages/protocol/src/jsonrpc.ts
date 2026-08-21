@@ -36,6 +36,10 @@ export const SPECIALIZED_PACKS_DETECT_METHOD =
   "intentloom.specialized-packs.detect.v1" as const;
 export const SPECIALIZED_PACKS_CHECKS_METHOD =
   "intentloom.specialized-packs.checks.v1" as const;
+export const SPECIALIZED_PACKS_EXTERNAL_PREVIEW_METHOD =
+  "intentloom.specialized-packs.external.preview.v1" as const;
+export const SPECIALIZED_PACKS_EXTERNAL_ACTIVATE_METHOD =
+  "intentloom.specialized-packs.external.activate.v1" as const;
 export const INCEPTION_SESSION_CREATE_METHOD =
   "intentloom.inception.session.create.v1" as const;
 export const INCEPTION_SESSION_GET_METHOD =

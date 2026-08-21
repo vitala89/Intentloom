@@ -20,7 +20,12 @@ import {
 import {
   handleSpecializedPacksCatalog,
   handleSpecializedPacksDetect,
+  handleSpecializedPacksChecks,
 } from "./specialized-pack-handlers.js";
+import {
+  handleSpecializedPacksExternalActivate,
+  handleSpecializedPacksExternalPreview,
+} from "./specialized-pack-external-handlers.js";
 import {
   handleInceptionAnswerRecord,
   handleInceptionConflictsIdentify,
@@ -145,6 +150,12 @@ async function main(): Promise<void> {
       handleSpecializedPacksCatalog(request, request.params.root),
     specializedPacksDetect: (request) =>
       handleSpecializedPacksDetect(request, request.params.root),
+    specializedPacksChecks: (request) =>
+      handleSpecializedPacksChecks(request, request.params.root),
+    specializedPacksExternalPreview: (request) =>
+      handleSpecializedPacksExternalPreview(request, request.params.root),
+    specializedPacksExternalActivate: (request) =>
+      handleSpecializedPacksExternalActivate(request, request.params.root),
     inceptionSessionCreate: handleInceptionSessionCreate,
     inceptionSessionGet: handleInceptionSessionGet,
     inceptionQuestionsList: handleInceptionQuestionsList,

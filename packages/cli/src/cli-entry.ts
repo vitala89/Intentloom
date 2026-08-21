@@ -9,6 +9,7 @@ import {
   runFoundationCommand,
   runInceptionCommand,
 } from "./engineering-workspace-command.js";
+import { runSpecializedPacksCommand } from "./specialized-packs-command.js";
 
 export type { CliDependencies, CliExitCode, CliIo };
 
@@ -25,6 +26,9 @@ export async function runCliEntry(
   }
   if (args[0] === "blueprint") {
     return await runBlueprintCommand(args, io);
+  }
+  if (args[0] === "specialized-packs") {
+    return runSpecializedPacksCommand(args.slice(1), io);
   }
   return runCli(args, dependencies, io);
 }
