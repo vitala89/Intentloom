@@ -265,10 +265,9 @@ before a new release or implementation milestone is declared complete.
    canonical digest and `prepareExternalSpecializedPackLockEntry`. **S8c**
    merged in PR #356 (`da78b73`): transactional apply to
    `.aif/extension-lock.json`. **S8d** merged in PR #357 (`71d0876`): CLI + daemon
-   client surfaces. **S8e** Doctor diagnostics for active external specialized-pack
-   pins is implemented on `feat/specialized-packs-s8e-doctor-diagnostics`.
-   **S8 overall: IN PROGRESS.** Desktop/TUI/MCP external lifecycle surfaces remain
-   deferred.
+   client surfaces. **S8e** merged in PR #359 (`70e997d`): canonical Doctor
+   diagnostics for active external specialized-pack pins. **S8 overall:
+   IN PROGRESS.** Desktop/TUI/MCP external lifecycle surfaces remain deferred.
 3. The next **published** version is **undecided**. Maintainer options, not a
    pick: stay unpublished on npm until an explicit publish brief; later `1.0.x`
    metadata/docs release; `1.1.0` (or another minor) after a real release-gate
