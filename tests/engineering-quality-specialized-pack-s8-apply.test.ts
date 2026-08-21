@@ -97,6 +97,10 @@ function applyInput(
   };
 }
 
+function memoryPath(path: string): string {
+  return path.replaceAll("\\", "/").replace(/^[A-Za-z]:/u, "");
+}
+
 function projectFs(
   initial: Record<string, string> = {},
   options?: { failAfterWrites?: number; symlinkPaths?: readonly string[] },
@@ -105,11 +109,13 @@ function projectFs(
     { [projectRoot]: "", ...initial },
     options?.failAfterWrites,
   );
-  const symlinks = new Set(options?.symlinkPaths ?? []);
+  const symlinks = new Set(
+    (options?.symlinkPaths ?? []).map((path) => memoryPath(path)),
+  );
   return {
     ...base,
     async isSymbolicLink(path) {
-      return symlinks.has(path.replaceAll("\\", "/"));
+      return symlinks.has(memoryPath(path));
     },
   };
 }
