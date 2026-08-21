@@ -39,7 +39,6 @@ surfaces.
 - **Validation:** `pnpm verify` passed (1599 tests, 3 skipped).
 - **Next first action:** Push branch, open PR, merge when CI is green.
 
-
 - **Status:** complete on branch; PR pending
 - **Agent/tool:** Cursor
 - **Branch:** `docs/complete-desktop-existing-project-adoption`
