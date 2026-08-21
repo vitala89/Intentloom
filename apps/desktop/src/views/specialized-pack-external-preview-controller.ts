@@ -223,8 +223,7 @@ export function renderExternalSpecializedPackPreviewFields(
   ];
 }
 
-export const FORBIDDEN_EXTERNAL_SPECIALIZED_PACK_ACTION_IDS = [
-  "approve-external-specialized-pack",
-  "activate-external-specialized-pack",
-  "apply-external-specialized-pack",
-] as const;
+export const EXTERNAL_SPECIALIZED_PACK_APPROVE_ACTION_ID =
+  "approve-external-specialized-pack" as const;
+export const EXTERNAL_SPECIALIZED_PACK_ACTIVATE_ACTION_ID =
+  "activate-external-specialized-pack" as const;

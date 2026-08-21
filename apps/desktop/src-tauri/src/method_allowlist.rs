@@ -16,6 +16,10 @@ pub fn is_specialized_pack_preview_method(method: &str) -> bool {
     method == "intentloom.specialized-packs.external.preview.v1"
 }
 
+pub fn is_specialized_pack_activate_method(method: &str) -> bool {
+    method == "intentloom.specialized-packs.external.activate.v1"
+}
+
 pub fn is_foundation_method(method: &str) -> bool {
     matches!(
         method,
@@ -100,6 +104,18 @@ mod tests {
         ));
         assert!(!super::is_specialized_pack_preview_method(
             "intentloom.specialized-packs.external.activate.v1"
+        ));
+        assert!(super::is_specialized_pack_activate_method(
+            "intentloom.specialized-packs.external.activate.v1"
+        ));
+        assert!(!super::is_specialized_pack_activate_method(
+            "intentloom.specialized-packs.external.preview.v1"
+        ));
+        assert!(!is_foundation_method(
+            "intentloom.specialized-packs.external.activate.v1"
+        ));
+        assert!(!super::is_specialized_pack_activate_method(
+            "intentloom.project.approvedApply.v1"
         ));
     }
 }
