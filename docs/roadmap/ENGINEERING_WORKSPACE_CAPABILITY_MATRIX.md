@@ -359,7 +359,9 @@ Blocked / future:
 - Any new Engineering Workspace week
 
 Next synchronization checkpoint:
-- P3 S8 external specialized-pack lifecycle is the authorized increment.
+- P3 S8e Doctor diagnostics for external specialized-pack pins is the current
+  increment. Overall S8 stays in progress; Desktop/TUI/MCP lifecycle surfaces
+  remain deferred.
 - Do not start N3 or P4 from this matrix. Desktop does not call models.
 ```
 

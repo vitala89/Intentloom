@@ -7,6 +7,12 @@ import type {
 } from "@intentloom/protocol";
 import type { FileSystem } from "./propose-and-apply-extension-adoption.js";
 import { inspectExtensionHealthEntry } from "./extension-health-evaluator.js";
+import { extensionLockRelativePath } from "./extension-lock-path.js";
+import {
+  inspectExternalSpecializedPackHealth,
+  isExternalSpecializedPackCandidate,
+  isSpecializedPackSecurityFinding,
+} from "./engineering-quality/specialized-pack-external-health.js";
 
 const defaultMaxAgeMs = 24 * 60 * 60 * 1000;
 
@@ -88,17 +94,31 @@ export async function checkExtensionHealth(
   const evidence = new Map(
     (options.evidence ?? []).map((item) => [item.extensionId, item]),
   );
-  const findings = Object.values(lockfile.extensions)
-    .sort((left, right) => left.extensionId.localeCompare(right.extensionId))
-    .flatMap((entry) =>
-      inspectExtensionHealthEntry(
-        entry,
-        lockfilePath,
-        evidence.get(entry.extensionId),
-        Number.isFinite(now) ? now : Date.now(),
-        options.maxAgeMs ?? defaultMaxAgeMs,
+  let relativeLockPath = ".aif/extension-lock.json";
+  try {
+    relativeLockPath = extensionLockRelativePath(options.root, lockfilePath);
+  } catch {
+    relativeLockPath = ".aif/extension-lock.json";
+  }
+  const findings = [
+    ...Object.values(lockfile.extensions)
+      .sort((left, right) => left.extensionId.localeCompare(right.extensionId))
+      .filter((entry) => !isExternalSpecializedPackCandidate(entry))
+      .flatMap((entry) =>
+        inspectExtensionHealthEntry(
+          entry,
+          lockfilePath,
+          evidence.get(entry.extensionId),
+          Number.isFinite(now) ? now : Date.now(),
+          options.maxAgeMs ?? defaultMaxAgeMs,
+        ),
       ),
-    );
+    ...(await inspectExternalSpecializedPackHealth(lockfile, {
+      root: options.root,
+      lockPath: relativeLockPath,
+      fs,
+    })),
+  ];
   const status = findings.some((item) => item.severity === "error")
     ? "failed"
     : findings.some((item) => item.severity === "warning")
@@ -126,7 +146,8 @@ export async function collectExtensionHealthDoctorFindings(
       healthFinding.code.includes("entrypoint") ||
       healthFinding.code.includes("health-check") ||
       healthFinding.code.includes("license") ||
-      healthFinding.code.includes("notice");
+      healthFinding.code.includes("notice") ||
+      isSpecializedPackSecurityFinding(healthFinding.code);
     return {
       code: healthFinding.code,
       severity: healthFinding.severity,

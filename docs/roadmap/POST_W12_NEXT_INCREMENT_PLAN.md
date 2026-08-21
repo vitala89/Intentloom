@@ -2,12 +2,10 @@
 
 ## Status
 
-P0–P2 are merged (PR #315–#318). P3 S8a external specialized-pack preview and
-activation merged in PR #319 (`907e6ad`). S8b lock-entry preparation is the
-active increment on `feat/specialized-packs-s8b-external-lock`. Do not reuse
-stale branch `feat/specialized-packs-s8-external-lifecycle`.
-P4 is not started. This document still does not authorize a publish, tag,
-new package, hosted-provider credentials, or a W13 workspace phase.
+P0–P2 are merged (PR #315–#318). P3 S8a–S8d are merged. S8e Doctor diagnostics
+are the current increment. P4 is not started. This document still does not
+authorize a publish, tag, new package, hosted-provider credentials, or a W13
+workspace phase.
 
 Verified against `origin/main` @ `89b6c1d` (PR #318 merged, 2026-08-16).
 
@@ -107,7 +105,14 @@ family).
 `intentloom.specialized-packs.external.activate.v1`) expose the S8a/S8c lifecycle
 without network fetch, pack byte copying, or MCP/Desktop/TUI mutation.
 
-**S8e+ status:** pending (Doctor external-pin diagnostics; Desktop/TUI/MCP deferred).
+**S8e status:** complete on branch
+`feat/specialized-packs-s8e-doctor-diagnostics`. Canonical Doctor inspects
+active external specialized-pack pins in `.aif/extension-lock.json` without
+mutation or network access. Local `kind: local` locators may be verified
+against project-scoped manifests; git/package locators remain metadata only.
+
+**S8f+ status:** pending (Desktop/TUI/MCP external lifecycle surfaces deferred).
+Overall S8 remains in progress.
 
 ### P4 — File-budget extracts
 
@@ -127,9 +132,10 @@ inspect/timeline/conformance). Do not grow oversized production files.
 
 ## First authorized action
 
-P0–P3 are done on this branch. Do not start P4 file-budget extracts
+P0–P2 and S8a–S8e are done on this branch. Do not start P4 file-budget extracts
 without a new maintainer brief. Do not start N3–N9, Desktop model UI, or
-hosted adapters from this document.
+hosted adapters from this document. S8f Desktop/TUI/MCP external surfaces stay
+deferred until an explicit brief.
 
 ## Sources
 
