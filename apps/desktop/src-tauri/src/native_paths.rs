@@ -4,6 +4,7 @@ use tauri::{AppHandle, Manager};
 
 use crate::bridge::BridgeError;
 
+#[cfg_attr(debug_assertions, allow(dead_code))]
 pub fn packaged_sidecar_candidates(resource_directory: &Path) -> [PathBuf; 2] {
     let sidecar_name = if cfg!(windows) {
         "intentloomd.exe"
@@ -26,16 +27,6 @@ pub fn packaged_catalog_candidates(resource_directory: &Path) -> [PathBuf; 3] {
             .join("_up_")
             .join("catalog"),
     ]
-}
-
-pub fn launch_spec(app: &AppHandle) -> Result<(String, Vec<String>, PathBuf), BridgeError> {
-    #[cfg(debug_assertions)]
-    {
-        if let Some(spec) = debug_launch_spec() {
-            return Ok(spec);
-        }
-    }
-    packaged_launch_spec(app)
 }
 
 pub fn catalog_root(app: &AppHandle) -> Result<PathBuf, BridgeError> {
@@ -82,45 +73,9 @@ pub fn canonical_project_root(root: &str) -> Result<String, BridgeError> {
         .map_err(|_| BridgeError::new("stale_root", "project root changed during selection"))
 }
 
-fn packaged_launch_spec(app: &AppHandle) -> Result<(String, Vec<String>, PathBuf), BridgeError> {
-    let resource_directory = app
-        .path()
-        .resource_dir()
-        .map_err(|error| BridgeError::new("internal_failure", error.to_string()))?;
-    packaged_sidecar_candidates(&resource_directory)
-        .into_iter()
-        .find(|sidecar| sidecar.is_file())
-        .map(|sidecar| {
-            (
-                sidecar.to_string_lossy().into_owned(),
-                Vec::new(),
-                resource_directory,
-            )
-        })
-        .ok_or_else(|| {
-            BridgeError::new(
-                "unsupported_capability",
-                "a self-contained intentloomd sidecar is not packaged",
-            )
-        })
-}
-
 #[cfg(debug_assertions)]
-fn debug_repository_root() -> PathBuf {
+pub(crate) fn debug_repository_root() -> PathBuf {
     PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../..")
-}
-
-#[cfg(debug_assertions)]
-fn debug_launch_spec() -> Option<(String, Vec<String>, PathBuf)> {
-    let repository_root = debug_repository_root();
-    let daemon_script = repository_root.join("packages/daemon/dist/intentloomd.cjs");
-    daemon_script.is_file().then(|| {
-        (
-            "node".to_owned(),
-            vec![daemon_script.to_string_lossy().into_owned()],
-            repository_root,
-        )
-    })
 }
 
 #[cfg(test)]

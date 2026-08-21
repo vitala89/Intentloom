@@ -3,7 +3,7 @@ use std::io::Write;
 use std::path::Path;
 #[cfg(windows)]
 use std::path::PathBuf;
-use std::process::{Child, Command, Stdio};
+use std::process::{Child, Stdio};
 use std::sync::{Arc, Mutex};
 use std::time::Duration;
 
@@ -15,9 +15,11 @@ use crate::daemon_recovery::{
     next_action_after_probe, next_action_before_probe, ChildState, EnsureAction,
 };
 use crate::daemon_transport::send_request;
-use crate::native_paths::{catalog_root, launch_spec};
+use crate::daemon_launch::{
+    build_launch_command, launch_spawn_error, preflight_launch, resolve_launch_spec,
+};
+use crate::native_paths::catalog_root;
 use crate::runtime_paths::RuntimePaths;
-use crate::sidecar_launch::{preflight_sidecar, sidecar_spawn_error};
 
 #[derive(Default)]
 struct RuntimeInner {
@@ -261,25 +263,20 @@ fn write_new_token(token_file: &Path) -> Result<String, BridgeError> {
 }
 
 fn spawn_sidecar(app: &AppHandle, paths: &RuntimePaths) -> Result<Child, BridgeError> {
-    let (program, arguments, working_directory) = launch_spec(app)?;
-    let program_path = Path::new(&program);
-    preflight_sidecar(program_path, &working_directory)?;
-    let mut command = Command::new(&program);
+    let spec = resolve_launch_spec(app)?;
+    preflight_launch(&spec)?;
+    let mut command = build_launch_command(&spec);
     command
-        .args(arguments)
         .arg("--endpoint")
         .arg(&paths.endpoint)
         .arg("--token-file")
         .arg(&paths.token_file)
         .arg("--catalog-root")
         .arg(catalog_root(app)?)
-        .current_dir(&working_directory)
         .stdin(Stdio::null())
         .stdout(Stdio::null())
         .stderr(Stdio::null());
-    command
-        .spawn()
-        .map_err(|error| sidecar_spawn_error(program_path, &working_directory, error))
+    command.spawn().map_err(|error| launch_spawn_error(&spec, error))
 }
 
 fn wait_until_ready(

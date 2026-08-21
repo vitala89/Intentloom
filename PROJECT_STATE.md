@@ -626,10 +626,10 @@ because `pnpm --filter @intentloom/desktop package` bundled a stale
 self-contained SEA Mach-O. Canonical packaging is now `pnpm desktop:package`,
 which generates, stamps, and probes the current sidecar and refuses to reuse an
 unstamped script. Maintainer packaged Desktop verification on adopted Vii now
-passes Connect, Doctor, Diff, and root-switch; a stale Cancel after initial
-Doctor load is the remaining adoption blocker (fix in progress on
-`fix/desktop-cancel-loading-lifecycle`). Desktop Existing-Project Adoption is
-**not** marked complete. See
+passes Connect, Doctor, Diff, and root-switch; #352 fixed stale Cancel after
+initial Doctor load (merged PR #352). Maintainer `tauri dev` re-check and a
+short packaged Cancel confirmation remain before marking Desktop
+Existing-Project Adoption complete. See
 [2026-08-19-vii-desktop-full-adoption.md](docs/releases/dogfooding/2026-08-19-vii-desktop-full-adoption.md).
 
 P1 defers real workspace dogfood to the maintainer

@@ -4,6 +4,28 @@ use std::path::Path;
 
 use crate::bridge::BridgeError;
 
+pub fn preflight_debug_node(
+    working_directory: &Path,
+    daemon_script: &Path,
+) -> Result<(), BridgeError> {
+    if !working_directory.is_dir() {
+        return Err(BridgeError::new(
+            "disconnected",
+            format!(
+                "debug daemon working directory not found: {}",
+                working_directory.display()
+            ),
+        ));
+    }
+    if !daemon_script.is_file() {
+        return Err(BridgeError::new(
+            "disconnected",
+            "debug daemon bundle not found; run pnpm build",
+        ));
+    }
+    Ok(())
+}
+
 pub fn preflight_sidecar(program: &Path, working_directory: &Path) -> Result<(), BridgeError> {
     if !working_directory.is_dir() {
         return Err(BridgeError::new(

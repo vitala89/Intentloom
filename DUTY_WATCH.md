@@ -9,31 +9,31 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Desktop Cancel loading lifecycle** on `fix/desktop-cancel-loading-lifecycle`.
+Status: **Desktop dev daemon launch** on `fix/desktop-dev-daemon-launch`.
 
-Active branch: `fix/desktop-cancel-loading-lifecycle`
+Active branch: `fix/desktop-dev-daemon-launch`
 
-Current objective: Fix stale global Cancel visibility after initial Connect/Inspect/Doctor load without changing Doctor/Diff semantics or marking Desktop Existing-Project Adoption complete.
+Current objective: Restore `tauri dev` Connect by separating debug Node launch from packaged SEA sidecar preflight without weakening #351 validation.
 
-Next first action: After CI is green, maintainer re-checks packaged Desktop Connect → Doctor initial load on `/Users/eugenekasap/WebstormProjects/intentloom-dogfood/vii-desktop-final` and confirms Cancel hides when Doctor is ready.
+Next first action: After CI is green, maintainer verifies `pnpm --filter @intentloom/desktop tauri dev` Connect/Doctor/Diff on `vii-desktop-final`, then performs the short packaged Cancel re-check from #352.
 
-### 2026-08-21, Desktop Cancel loading lifecycle
+### 2026-08-21, Desktop dev daemon launch
 
 - **Status:** complete on branch; PR pending
 - **Agent/tool:** Cursor
-- **Branch:** `fix/desktop-cancel-loading-lifecycle`
+- **Branch:** `fix/desktop-dev-daemon-launch`
 - **Commits:** pending
 - **Pull request:** pending
-- **Objective:** Fix stale global Cancel after initial Connect/Inspect/Doctor when Doctor is already ready.
-- **Root cause:** On Doctor view during Connect, `useDesktopDoctor` auto-load called `startOperation()`, aborting Connect mid-inspect. `connectDaemon` returned early without terminalizing `inspectStatus`, leaving it at `"loading"` while Doctor was `"ready"`.
-- **Completed:** Guard auto-load during `isConnecting`; terminalize aborted Connect inspect loading in `finally`; extracted lifecycle helpers and regression tests.
-- **Not completed:** Maintainer packaged re-check; product completion gate.
-- **Files or packages changed:** `apps/desktop/src/App.tsx`, `use-desktop-doctor.ts`, `desktop-operation-lifecycle.ts`, `tests/desktop-operation-lifecycle.test.ts`, changelog, project state, duty watch.
-- **Validation:** `pnpm verify` passed (1578 tests, 3 skipped).
-- **Decisions and assumptions:** Do not hide Cancel cosmetically. Do not mark Desktop Existing-Project Adoption complete in this PR.
-- **Open issues or blockers:** maintainer packaged Cancel re-check after merge.
+- **Objective:** Fix `tauri dev` Connect reporting `packaged daemon executable not found` when `node packages/daemon/dist/intentloomd.cjs` is the intended launch path.
+- **Root cause:** #351 `preflight_sidecar()` ran unconditionally on `launch_spec()` program path; in dev mode `program == "node"` (PATH-resolved) fails `program.is_file()`.
+- **Completed:** Typed `DaemonLaunchSpec` (`DebugNode` vs `PackagedSidecar`); packaged preflight only for packaged mode; debug-specific validation and spawn diagnostics; Rust regression tests.
+- **Not completed:** Maintainer `tauri dev` click-through; packaged Cancel re-check; product completion gate.
+- **Files or packages changed:** `daemon_launch.rs`, `daemon_runtime.rs`, `native_paths.rs`, `sidecar_launch.rs`, `main.rs`, changelog, duty watch.
+- **Validation:** `pnpm verify` passed (1578 tests, 3 skipped); `cargo test` 24 passed; `cargo clippy --all-targets -- -D warnings` passed.
+- **Decisions and assumptions:** Do not weaken packaged SEA validation. Do not mark Desktop Existing-Project Adoption complete.
+- **Open issues or blockers:** maintainer dev + packaged re-check after merge.
 - **Next first action:** Commit, push, open PR, wait for CI, merge when green.
-- **Evidence:** `apps/desktop/src/desktop-operation-lifecycle.ts`, `tests/desktop-operation-lifecycle.test.ts`
+- **Evidence:** `apps/desktop/src-tauri/src/daemon_launch.rs`
 
 Known open items, in the order they should be handled:
 
