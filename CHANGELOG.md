@@ -7,6 +7,11 @@ All notable changes are documented here. This project follows Keep a Changelog p
 Changes listed here are merged after the current release-preparation scope and
 are not included in the current npm artifact until a later release.
 
+- Desktop dev mode (`tauri dev`) again launches the daemon through
+  `node packages/daemon/dist/intentloomd.cjs` instead of applying packaged SEA
+  sidecar preflight to the `"node"` PATH program. Packaged #351 validation is
+  unchanged. Desktop Existing-Project Adoption is still not marked complete.
+
 - Desktop no longer leaves the global Cancel control visible after initial
   Connect/Inspect/Doctor when Doctor is already ready. Auto Doctor load now
   defers while Connect owns the pipeline, and aborted Connect inspect loading

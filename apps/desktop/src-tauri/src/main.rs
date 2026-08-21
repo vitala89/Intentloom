@@ -1,5 +1,6 @@
 mod bridge;
 mod commands;
+mod daemon_launch;
 mod daemon_recovery;
 mod daemon_runtime;
 mod daemon_transport;
