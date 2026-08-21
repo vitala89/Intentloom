@@ -585,7 +585,10 @@ MCP must not install or execute a pack.
    `activateExternalSpecializedPack` (PR #319). S8b adds canonical digest and
    `prepareExternalSpecializedPackLockEntry` for extension-lock entries (PR
    #355). S8c adds `applyExternalSpecializedPackActivation` for transactional
-   project-owned lock apply.
+   project-owned lock apply (PR #356). S8d adds CLI and daemon preview/activate
+   surfaces (PR #357). S8e adds read-only Doctor health diagnostics for active
+   external specialized-pack pins. Desktop/TUI/MCP external lifecycle surfaces
+   remain deferred; overall S8 is not complete.
 
 ## Acceptance criteria
 

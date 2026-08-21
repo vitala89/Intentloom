@@ -265,8 +265,10 @@ before a new release or implementation milestone is declared complete.
    canonical digest and `prepareExternalSpecializedPackLockEntry`. **S8c**
    merged in PR #356 (`da78b73`): transactional apply to
    `.aif/extension-lock.json`. **S8d** merged in PR #357 (`71d0876`): CLI + daemon
-   client surfaces. **S8e+** pending (Doctor external-pin diagnostics;
-   Desktop/TUI/MCP deferred).
+   client surfaces. **S8e** Doctor diagnostics for active external specialized-pack
+   pins is implemented on `feat/specialized-packs-s8e-doctor-diagnostics`.
+   **S8 overall: IN PROGRESS.** Desktop/TUI/MCP external lifecycle surfaces remain
+   deferred.
 3. The next **published** version is **undecided**. Maintainer options, not a
    pick: stay unpublished on npm until an explicit publish brief; later `1.0.x`
    metadata/docs release; `1.1.0` (or another minor) after a real release-gate
@@ -624,8 +626,8 @@ and the historical interim record
 
 P1 defers real workspace dogfood to the maintainer
 ([2026-08-16-workspace-public-gate.md](docs/releases/dogfooding/2026-08-16-workspace-public-gate.md)).
-Named follow-ups after P1: Neutron N1 then N2 (P2, complete), S8a–S8d (merged),
-S8e+ (Doctor; Desktop/TUI/MCP deferred), file-budget extracts
+Named follow-ups after P1: Neutron N1 then N2 (P2, complete), S8a–S8e
+(Doctor diagnostics implemented; Desktop/TUI/MCP deferred), file-budget extracts
 (P4).
 
 The Desktop discovery/error and Diff/Timeline slices remain recorded in

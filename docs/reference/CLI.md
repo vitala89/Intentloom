@@ -123,6 +123,15 @@ states; it exits `3` for one or more project validation errors and `2` for CLI
 invocation errors. It never uses transaction codes `4` or `5`, writes files,
 creates `.aif`, repairs metadata, or refreshes stale output.
 
+Doctor also inspects project-owned external specialized-pack pins in
+`.aif/extension-lock.json` (`category: policy-pack`, `installationType:
+referenced`, specialized-pack manifest schema). Those checks are read-only: no
+network fetch, Git clone, registry lookup, lock rewrite, or pack installation.
+`installation-healthy` is omitted when an external specialized-pack finding has
+error severity. Git and package locators are metadata only. Local source
+locators (`./…` inside the project root) may be hashed against
+`computeExternalSpecializedPackDigest` when the file is present and path-safe.
+
 ## Transactional sync
 
 `intentloom sync` consumes the structured transaction result directly. It does not infer success from filesystem presence, lack of an exception, or a subsequent empty diff. Human and JSON output use the same mapped outcome and exit code.

@@ -9,9 +9,30 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **P3 S8d complete** — merged in PR #357 (`71d0876`). S8a #319
-(`907e6ad`), S8b #355 (`ef8d838`), S8c #356 (`da78b73`). Next: **S8e**
-Doctor external-pin diagnostics on `feat/specialized-packs-s8e-doctor-diagnostics`.
+Status: **P3 S8e complete on branch** — Doctor diagnostics for active external
+specialized-pack pins. S8a #319 (`907e6ad`), S8b #355 (`ef8d838`), S8c #356
+(`da78b73`), S8d #357 (`71d0876`), S8d state #358 (`4c40483`). **S8 overall:
+IN PROGRESS.** Next: merge S8e when CI is green; Desktop/TUI/MCP remain
+deferred.
+
+### 2026-08-21, P3 S8e Doctor diagnostics for external specialized-pack pins
+
+- **Status:** complete on branch; PR pending
+- **Branch:** `feat/specialized-packs-s8e-doctor-diagnostics`
+- **Starting main SHA:** `4c40483` (PR #358 squash-merge)
+- **Objective:** Extend canonical Doctor with read-only health for active
+  external specialized-pack entries in `.aif/extension-lock.json`.
+- **Completed:** Added `inspectExternalSpecializedPackHealth` into
+  `checkExtensionHealth` / `doctorProject`. Lock-only findings plus optional
+  local `kind: local` manifest digest/identity checks. CLI/daemon/Desktop share
+  the canonical Doctor result. No network, mutation, activation UI, or MCP
+  lifecycle.
+- **Not completed:** Desktop/TUI/MCP external activation surfaces; remote
+  update/revocation; compatibility evaluation from lock-only data; overall S8.
+- **Pull request:** pending
+- **Validation:** `pnpm verify` passed (1637 tests, 3 skipped).
+- **Next first action:** Push, open PR, wait for required CI, merge when green.
+- **Evidence:** `packages/application/src/engineering-quality/specialized-pack-external-health.ts`
 
 ### 2026-08-21, P3 S8d external specialized-pack CLI + daemon surfaces
 

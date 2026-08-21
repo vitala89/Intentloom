@@ -7,6 +7,12 @@ All notable changes are documented here. This project follows Keep a Changelog p
 Changes listed here are merged after the current release-preparation scope and
 are not included in the current npm artifact until a later release.
 
+- Doctor reports read-only health for active external specialized-pack pins in
+  `.aif/extension-lock.json` (S8e). Error-severity specialized-pack findings
+  suppress `installation-healthy`. Git and package locators are not fetched;
+  local `./` locators may be hashed when the path is project-scoped and
+  symlink-safe. No lock rewrite, activation UI, or MCP mutation.
+
 - **Desktop Existing-Project Adoption: COMPLETE.** Maintainer verification on
   adopted disposable Vii `vii-desktop-final` passed packaged Connect, Doctor,
   Refresh Doctor, Diff, root switching, Cancel lifecycle, and `tauri dev`
