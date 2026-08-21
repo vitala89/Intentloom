@@ -20,10 +20,12 @@ import { AdoptionPreviewPage } from "./views/AdoptionPreviewPage.js";
 import { FeatureIntentView } from "./views/FeatureIntentView.js";
 import { BoundedExecutionView } from "./views/BoundedExecutionView.js";
 import { ContinuousLoopView } from "./views/ContinuousLoopView.js";
+import { ExternalSpecializedPackPreviewPage } from "./views/ExternalSpecializedPackPreviewPage.js";
 import { OverviewView } from "./views/OverviewView.js";
 import { SettingsView } from "./views/SettingsView.js";
 import { TimelineView } from "./views/TimelineView.js";
 import type { WorkspaceView } from "./workspace-navigation.js";
+import { createWorkspaceViewActions } from "./desktop-workspace-view-actions.js";
 import type {
   WorkspaceInspectStatus,
   WorkspaceTimelineStatus,
@@ -68,7 +70,7 @@ export interface WorkspaceContentProps {
   readonly onLoadDoctor: () => void;
   readonly onLoadDiff: () => void;
   readonly onLoadTimeline: () => void;
-  readonly onOpenAdoptionPreview: () => void;
+  readonly setActiveView: (view: WorkspaceView) => void;
   readonly onThemeToggle: (theme: "dark" | "light") => void;
 }
 
@@ -109,9 +111,13 @@ export function WorkspaceContent({
   onLoadDoctor,
   onLoadDiff,
   onLoadTimeline,
-  onOpenAdoptionPreview,
+  setActiveView,
   onThemeToggle,
 }: WorkspaceContentProps) {
+  const workspaceViewActions = createWorkspaceViewActions({
+    setActiveView,
+    loadDoctor: onLoadDoctor,
+  });
   if (activeView === "New project") {
     return <NewProjectView />;
   }
@@ -119,7 +125,7 @@ export function WorkspaceContent({
   if (activeView === "Open existing project") {
     return (
       <OpenExistingProjectView
-        onOpenAdoptionPreview={onOpenAdoptionPreview}
+        onOpenAdoptionPreview={workspaceViewActions.openAdoptionPreview}
         onSelectProject={() => onRequestProjectSelect()}
         root={root}
       />
@@ -172,7 +178,7 @@ export function WorkspaceContent({
         errorMessage={inspectError}
         onConnect={onConnectDaemon}
         onSelectProject={() => onRequestProjectSelect()}
-        onOpenAdoptionPreview={onOpenAdoptionPreview}
+        onOpenAdoptionPreview={workspaceViewActions.openAdoptionPreview}
         result={inspect}
         root={root}
         status={inspectStatus}
@@ -185,6 +191,9 @@ export function WorkspaceContent({
       <DoctorView
         errorMessage={doctorError ?? inspectError}
         onConnect={onConnectDaemon}
+        onOpenExternalSpecializedPackPreview={
+          workspaceViewActions.openExternalSpecializedPackPreview
+        }
         onRefreshDoctor={onLoadDoctor}
         onSelectProject={() => onRequestProjectSelect()}
         result={doctor}
@@ -216,6 +225,16 @@ export function WorkspaceContent({
         result={timeline}
         root={root}
         status={timelineStatus}
+      />
+    );
+  }
+
+  if (activeView === "External specialized pack review") {
+    return (
+      <ExternalSpecializedPackPreviewPage
+        onOpenDoctor={workspaceViewActions.openDoctorView}
+        onSelectProject={() => onRequestProjectSelect()}
+        root={root}
       />
     );
   }
@@ -260,7 +279,7 @@ export function WorkspaceContent({
         message={message}
         onConnectDaemon={onConnectDaemon}
         onRequestProjectSelect={onRequestProjectSelect}
-        onOpenAdoptionPreview={onOpenAdoptionPreview}
+        onOpenAdoptionPreview={workspaceViewActions.openAdoptionPreview}
         retryCount={retryCount}
         root={root}
       />

@@ -587,8 +587,9 @@ MCP must not install or execute a pack.
    #355). S8c adds `applyExternalSpecializedPackActivation` for transactional
    project-owned lock apply (PR #356). S8d adds CLI and daemon preview/activate
    surfaces (PR #357). S8e adds read-only Doctor health diagnostics for active
-   external specialized-pack pins (PR #359). Desktop/TUI/MCP external lifecycle
-   surfaces remain deferred; overall S8 is not complete.
+   external specialized-pack pins (PR #359). S8f1 adds Desktop read-only
+   external preview/review (in progress). S8f2 Desktop approve/activate pending.
+   TUI/MCP external lifecycle surfaces remain deferred; overall S8 is not complete.
 
 ## Acceptance criteria
 

@@ -23,7 +23,8 @@ export type WorkspaceView =
   | "Doctor"
   | "Diff review"
   | "Timeline"
-  | "Settings";
+  | "Settings"
+  | "External specialized pack review";
 
 export const workspaceViews: Array<{ label: WorkspaceView; icon: string }> = [
   { label: "Overview", icon: "◈" },

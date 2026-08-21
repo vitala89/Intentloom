@@ -479,7 +479,7 @@ export default function App() {
             onLoadDoctor={() => void loadDoctor()}
             onLoadDiff={() => void loadDiff()}
             onLoadTimeline={() => void loadTimeline()}
-            onOpenAdoptionPreview={() => setActiveView("Adoption preview")}
+            setActiveView={setActiveView}
             onThemeToggle={setTheme}
           />
         </div>

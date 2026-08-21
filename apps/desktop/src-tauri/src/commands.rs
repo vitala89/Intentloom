@@ -4,7 +4,7 @@ use tauri_plugin_dialog::DialogExt;
 
 use crate::bridge::{BridgeError, MAX_REQUEST_BYTES, PROTOCOL_VERSION};
 use crate::daemon_runtime::DaemonRuntime;
-use crate::method_allowlist::{is_foundation_method, is_inception_method};
+use crate::method_allowlist::{is_foundation_method, is_inception_method, is_specialized_pack_preview_method};
 use crate::native_paths::canonical_project_root;
 
 async fn run_blocking<F, T>(work: F) -> Result<T, BridgeError>
@@ -199,6 +199,36 @@ pub async fn invoke_foundation_request(
             return Err(BridgeError::new(
                 "unsupported_capability",
                 "desktop command is not allowed for this foundation operation",
+            ));
+        }
+        state
+            .ensure_daemon(&app, &request)
+            .map(|(_, response)| response)
+    })
+    .await
+}
+
+#[tauri::command]
+pub async fn invoke_specialized_pack_preview_request(
+    app: AppHandle,
+    state: State<'_, DaemonRuntime>,
+    request: Value,
+) -> Result<Value, BridgeError> {
+    let state = state.inner().clone();
+    run_blocking(move || {
+        let method = request
+            .get("method")
+            .and_then(Value::as_str)
+            .ok_or_else(|| {
+                BridgeError::new(
+                    "unsupported_capability",
+                    "missing specialized pack preview method",
+                )
+            })?;
+        if !is_specialized_pack_preview_method(method) {
+            return Err(BridgeError::new(
+                "unsupported_capability",
+                "desktop command is not allowed for this specialized pack operation",
             ));
         }
         state
