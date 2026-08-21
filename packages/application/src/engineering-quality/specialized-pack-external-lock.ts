@@ -12,6 +12,7 @@ import { canonicalJson } from "../canonical-json.js";
 export interface ExternalSpecializedPackActivation {
   readonly status: "activated";
   readonly reviewerId: string;
+  readonly declaredLicense: string;
   readonly source: ExternalQualityPackSource;
   readonly digest: string;
   readonly manifest: QualitySpecializedPackManifest;

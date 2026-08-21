@@ -49,6 +49,7 @@ export interface ExternalSpecializedPackPreview {
   readonly status: "ready-for-review" | "rejected";
   readonly source: ExternalQualityPackSource;
   readonly digest: string;
+  readonly declaredLicense: string;
   readonly manifest: QualitySpecializedPackManifest;
   readonly trustState: QualitySpecializedPackTrustState;
   readonly extensionPlan: ExtensionAdoptionPlan;
@@ -94,6 +95,7 @@ export function previewExternalSpecializedPack(
     status,
     source,
     digest,
+    declaredLicense: input.declaredLicense,
     manifest,
     trustState,
     extensionPlan,
@@ -125,6 +127,7 @@ export function activateExternalSpecializedPack(
   return {
     status: "activated",
     reviewerId: decision.reviewerId,
+    declaredLicense: preview.declaredLicense,
     source: preview.source,
     digest: preview.digest,
     manifest: preview.manifest,

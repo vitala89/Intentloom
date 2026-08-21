@@ -261,9 +261,12 @@ before a new release or implementation milestone is declared complete.
    Do not invent a W13.
 2. **P3 S8 external specialized packs:** **S8a** merged in PR #319 (`907e6ad`):
    in-memory preview/activate, pin/digest review, human confirmation, no
-   auto-install, no network fetch. **S8b** (active): canonical digest + lock-entry
-   preparation on branch `feat/specialized-packs-s8b-external-lock`. Stale branch
-   `feat/specialized-packs-s8-external-lifecycle` must not be reused. Do not
+   auto-install, no network fetch. **S8b** merged in PR #355 (`ef8d838`):
+   canonical digest and `prepareExternalSpecializedPackLockEntry`. **S8c**
+   (active): transactional apply to `.aif/extension-lock.json` on branch
+   `feat/specialized-packs-s8c-extension-lock-apply`. Stale branches
+   `feat/specialized-packs-s8-external-lifecycle` and
+   `feat/specialized-packs-s8b-external-lock` must not be reused. Do not
    start P4, N3, or C7 from this focus unless a separate brief says so.
 3. The next **published** version is **undecided**. Maintainer options, not a
    pick: stay unpublished on npm until an explicit publish brief; later `1.0.x`
@@ -622,8 +625,9 @@ and the historical interim record
 
 P1 defers real workspace dogfood to the maintainer
 ([2026-08-16-workspace-public-gate.md](docs/releases/dogfooding/2026-08-16-workspace-public-gate.md)).
-Named follow-ups after P1: Neutron N1 then N2 (P2, complete), S8a (complete),
-S8b–S8e (external pack persistence and surfaces), file-budget extracts (P4).
+Named follow-ups after P1: Neutron N1 then N2 (P2, complete), S8a–S8c (S8a/S8b
+merged; S8c active), S8d+ (external pack client surfaces), file-budget extracts
+(P4).
 
 The Desktop discovery/error and Diff/Timeline slices remain recorded in
 [PHASE1_CONTRACTS.md](docs/desktop/PHASE1_CONTRACTS.md).

@@ -583,7 +583,9 @@ MCP must not install or execute a pack.
 8. Add reviewed external packs through the managed extension lifecycle.
    S8a met by `previewExternalSpecializedPack` /
    `activateExternalSpecializedPack` (PR #319). S8b adds canonical digest and
-   `prepareExternalSpecializedPackLockEntry` for extension-lock entries.
+   `prepareExternalSpecializedPackLockEntry` for extension-lock entries (PR
+   #355). S8c adds `applyExternalSpecializedPackActivation` for transactional
+   project-owned lock apply.
 
 ## Acceptance criteria
 
