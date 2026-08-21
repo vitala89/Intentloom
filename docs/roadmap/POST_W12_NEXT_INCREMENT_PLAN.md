@@ -101,8 +101,8 @@ family).
 **S8c status:** complete on `main` via PR #356 (`da78b73`). Transactional apply via
 `applyExternalSpecializedPackActivation` reusing `applyExtensionAdoptionPlan`.
 
-**S8d status:** active on branch `feat/specialized-packs-s8d-cli-daemon-surfaces`.
-CLI (`intentloom specialized-packs external preview|activate`) and daemon RPC
+**S8d status:** complete on `main` via PR #357 (`71d0876`). CLI
+(`intentloom specialized-packs external preview|activate`) and daemon RPC
 (`intentloom.specialized-packs.external.preview.v1`,
 `intentloom.specialized-packs.external.activate.v1`) expose the S8a/S8c lifecycle
 without network fetch, pack byte copying, or MCP/Desktop/TUI mutation.

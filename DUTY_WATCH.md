@@ -9,23 +9,23 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **P3 S8d active** — branch `feat/specialized-packs-s8d-cli-daemon-surfaces`
-from `main` @ `da78b734`. S8a #319 (`907e6ad`), S8b #355 (`ef8d838`), S8c #356
-(`da78b73`) merged. Next: **S8e** Doctor external-pin diagnostics after S8d merge.
+Status: **P3 S8d complete** — merged in PR #357 (`71d0876`). S8a #319
+(`907e6ad`), S8b #355 (`ef8d838`), S8c #356 (`da78b73`). Next: **S8e**
+Doctor external-pin diagnostics on `feat/specialized-packs-s8e-doctor-diagnostics`.
 
 ### 2026-08-21, P3 S8d external specialized-pack CLI + daemon surfaces
 
-- **Status:** active on branch; PR pending
-- **Branch:** `feat/specialized-packs-s8d-cli-daemon-surfaces`
+- **Status:** complete; merged PR #357 (`71d0876`)
+- **Branch:** `feat/specialized-packs-s8d-cli-daemon-surfaces` (merged)
 - **Objective:** Expose S8a preview and S8c apply through CLI and daemon RPC without
   changing security or persistence semantics.
 - **Completed:** Added `intentloom specialized-packs external preview|activate`, daemon
   preview/activate RPC contracts, strict protocol parsing, mutating capability
   allowlisting, parity tests, and usage docs. MCP/Desktop/TUI deferred.
-- **Not completed:** PR merge; S8e Doctor diagnostics.
-- **Validation:** `pnpm verify` passed locally.
-- **Next first action:** Push branch, open PR, merge when CI is green; then start S8e
-  on `feat/specialized-packs-s8e-doctor-diagnostics`.
+- **Not completed:** S8e Doctor diagnostics.
+- **Pull request:** #357 (merged)
+- **Validation:** `pnpm verify` passed (1616 tests, 3 skipped); CI green.
+- **Next first action:** Start S8e on `feat/specialized-packs-s8e-doctor-diagnostics`.
 
 ### 2026-08-21, P3 S8c external specialized-pack extension-lock apply
 
