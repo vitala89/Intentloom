@@ -98,10 +98,16 @@ digest and deterministic `prepareExternalSpecializedPackLockEntry` for
 `.aif/extension-lock.json` (reuse existing `ExtensionLockEntry`; no new schema
 family).
 
-**S8c status:** active. Transactional apply via
+**S8c status:** complete on `main` via PR #356 (`da78b73`). Transactional apply via
 `applyExternalSpecializedPackActivation` reusing `applyExtensionAdoptionPlan`.
 
-**S8d+ status:** pending (CLI/daemon/MCP/Desktop/TUI, Doctor).
+**S8d status:** active on branch `feat/specialized-packs-s8d-cli-daemon-surfaces`.
+CLI (`intentloom specialized-packs external preview|activate`) and daemon RPC
+(`intentloom.specialized-packs.external.preview.v1`,
+`intentloom.specialized-packs.external.activate.v1`) expose the S8a/S8c lifecycle
+without network fetch, pack byte copying, or MCP/Desktop/TUI mutation.
+
+**S8e+ status:** pending (Doctor external-pin diagnostics; Desktop/TUI/MCP deferred).
 
 ### P4 — File-budget extracts
 
