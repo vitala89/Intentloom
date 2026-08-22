@@ -359,10 +359,13 @@ Blocked / future:
 - Any new Engineering Workspace week
 
 Next synchronization checkpoint:
-- P3 S8e Doctor diagnostics for external specialized-pack pins is merged
-  (PR #359, `70e997d`). Overall S8 stays in progress; Desktop/TUI/MCP lifecycle
-  surfaces remain deferred.
-- Do not start N3 or P4 from this matrix. Desktop does not call models.
+- **P3 S8 External Specialized Pack Lifecycle: COMPLETE** (PRs #319,
+  #355–#357, #359, #361, #363; docs #360, #362). Desktop preview/approve/activate
+  and CLI/daemon/Doctor Path 3 surfaces are on `main`. TUI activation, MCP
+  mutation, update/replace, revocation, network fetching, and marketplace
+  remain deferred and are not S8 blockers.
+- P4 file-budget extracts may now receive a separate maintainer brief. Do not
+  start P4, N3, or Desktop model calls from this matrix.
 ```
 
 ---

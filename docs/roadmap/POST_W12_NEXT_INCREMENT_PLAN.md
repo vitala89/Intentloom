@@ -2,9 +2,12 @@
 
 ## Status
 
-P0–P2 are merged (PR #315–#318). P3 S8a–S8e are merged. P4 is not started.
-This document still does not authorize a publish, tag, new package,
-hosted-provider credentials, or a W13 workspace phase.
+P0–P3 are complete on `main`. **P3 S8 External Specialized Pack Lifecycle:
+COMPLETE** (PRs #319, #355, #356, #357, #359, #361, #363; docs follow-ups
+#360, #362). P4 is not started and is not authorized by this document; it may
+now receive a separate maintainer brief. This document still does not
+authorize a publish, tag, new package, hosted-provider credentials, or a W13
+workspace phase.
 
 Verified against `origin/main` @ `89b6c1d` (PR #318 merged, 2026-08-16).
 
@@ -20,19 +23,19 @@ product.
 
 ## What is already done
 
-| Track                         | Evidence on main                      | Residual                                   |
-| ----------------------------- | ------------------------------------- | ------------------------------------------ |
-| Engineering Workspace W0–W12  | PR #286–#313                          | No W13                                     |
-| Quality Packs Q1–Q18          | PR #257–#275                          | Marketplace stays fail-closed              |
-| Specialized packs S1–S7       | PR #277–#284                          | S8a merged #319; S8b+ external persistence |
-| Managed extensions E1–E8      | PR #218–#248                          | No HTTP MCP install in npm `1.0.2`         |
-| Assessments A1–A22            | PROJECT_STATE baseline                | Live `assessProject` still caller-owned    |
-| Harness H0–H9                 | PR #213–#244                          | Real adapters + runner deferred            |
-| Skills C1–C6                  | catalog + ADR-0051                    | C7 future                                  |
-| Desktop v0.6 + W clients      | ADR-0042 + W1–W12 panels              | Not in published `1.0.2`                   |
-| Memory M1–M4 / Security S1–S5 | `0.4.0-beta.1` line                   | Later expansions need threat review        |
-| Learning L1–L8                | `0.4.0-beta.1` line                   | Later candidates future                    |
-| Neutron foundations           | CLI `neutron`, workspace sync records | N1–N9 runtime not executed                 |
+| Track                         | Evidence on main                                | Residual                                                          |
+| ----------------------------- | ----------------------------------------------- | ----------------------------------------------------------------- |
+| Engineering Workspace W0–W12  | PR #286–#313                                    | No W13                                                            |
+| Quality Packs Q1–Q18          | PR #257–#275                                    | Marketplace stays fail-closed                                     |
+| Specialized packs S1–S8       | PR #277–#284, #319, #355–#357, #359, #361, #363 | S8 complete; network/update/marketplace/TUI/MCP mutation deferred |
+| Managed extensions E1–E8      | PR #218–#248                                    | No HTTP MCP install in npm `1.0.2`                                |
+| Assessments A1–A22            | PROJECT_STATE baseline                          | Live `assessProject` still caller-owned                           |
+| Harness H0–H9                 | PR #213–#244                                    | Real adapters + runner deferred                                   |
+| Skills C1–C6                  | catalog + ADR-0051                              | C7 future                                                         |
+| Desktop v0.6 + W clients      | ADR-0042 + W1–W12 panels                        | Not in published `1.0.2`                                          |
+| Memory M1–M4 / Security S1–S5 | `0.4.0-beta.1` line                             | Later expansions need threat review                               |
+| Learning L1–L8                | `0.4.0-beta.1` line                             | Later candidates future                                           |
+| Neutron foundations           | CLI `neutron`, workspace sync records           | N1–N9 runtime not executed                                        |
 
 ## Gaps that are not a new W-phase
 
@@ -45,8 +48,11 @@ product.
    `docs/releases/dogfooding/2026-08-16-workspace-public-gate.md`.
 3. **Neutron N1–N2.** After Desktop v0.6, `NEUTRON_RUNTIME_ROADMAP.md`
    sequences N1 contracts then one real model adapter.
-4. **S8.** Step 8 of `SPECIALIZED_ENGINEERING_PACKS_PLAN.md`: reviewed
-   external packs through the managed extension lifecycle.
+4. **S8.** COMPLETE. Step 8 of `SPECIALIZED_ENGINEERING_PACKS_PLAN.md` now
+   has reviewed external packs through the managed extension lifecycle on
+   CLI, daemon, Doctor, and Desktop. Update/replace, revocation, deactivation,
+   network fetching, marketplace, MCP mutation, and TUI activation remain
+   deferred and are not S8 blockers.
 5. **Quality debt.** `CLI_COMMAND_TS_DECOMPOSITION.md` and oversized
    `daemon` / `evidence-analysis` / `mcp-server` files. Extract on the next
    meaningful touch.
@@ -110,12 +116,19 @@ without mutation or network access. Local `kind: local` locators may be
 verified against project-scoped manifests; git/package locators remain
 metadata only.
 
-**S8f1 status:** in progress on branch
-`feat/specialized-packs-s8f1-desktop-external-preview`. Desktop read-only
+**S8f1 status:** complete on `main` via PR #361 (`8581df6`). Desktop read-only
 external specialized-pack preview/review via existing daemon preview RPC.
 
-**S8f2+ status:** pending (Desktop approval/activation; TUI/MCP deferred).
-Overall S8 remains in progress.
+**S8f2 status:** complete on `main` via PR #363 (`d1581b8`). Desktop explicit
+human approval and activation persist a referenced `.aif/extension-lock.json`
+pin. Maintainer Desktop `tauri dev` acceptance passed on a disposable project
+on 2026-08-22.
+
+**S8 overall status:** COMPLETE. Path 3 gate (S8a–S8e + S8f1 + S8f2 +
+maintainer manual acceptance) is satisfied. Deferred post-S8 work is not a
+P3 blocker: TUI activation, MCP mutation, optional MCP/TUI read-only parity,
+update/replace, revocation, deactivation, remote discovery, network fetching,
+and marketplace.
 
 ### P4 — File-budget extracts
 
@@ -135,10 +148,11 @@ inspect/timeline/conformance). Do not grow oversized production files.
 
 ## First authorized action
 
-P0–P2 and S8a–S8e are done on this branch. Do not start P4 file-budget extracts
-without a new maintainer brief. Do not start N3–N9, Desktop model UI, or
-hosted adapters from this document. S8f Desktop/TUI/MCP external surfaces stay
-deferred until an explicit brief.
+P0–P3 are complete on `main`. P4 file-budget extracts may now receive a
+separate maintainer brief; do not start P4 implementation from this document.
+Do not start N3–N9, Desktop model UI, hosted adapters, MCP mutation, TUI
+activation, or specialized-pack update/revocation/network/marketplace work
+from this document.
 
 ## Sources
 

@@ -7,6 +7,22 @@ All notable changes are documented here. This project follows Keep a Changelog p
 Changes listed here are merged after the current release-preparation scope and
 are not included in the current npm artifact until a later release.
 
+- **P3 S8 External Specialized Pack Lifecycle: COMPLETE.** External specialized
+  packs can be previewed, explicitly approved by a human, and activated through
+  CLI, daemon, and Desktop. Activation writes a referenced
+  `.aif/extension-lock.json` pin bound to canonical digest, source pin, and
+  locator; it does not copy pack bytes, auto-install, fetch the network, or
+  open a marketplace. Conflicts fail closed; identical replay is idempotent.
+  Maintainer Desktop `tauri dev` acceptance passed on a disposable project
+  (PRs #319, #355, #356, #357, #359, #361, #363; docs #360, #362). Evidence:
+  `docs/releases/dogfooding/2026-08-22-specialized-packs-s8-completion.md`.
+
+- Desktop adds explicit human approval and activation for reviewed external
+  specialized packs (S8f2). Approval is bound to the current preview digest,
+  pin, and locator; stale inputs and project-root switches clear reviewed
+  state. No Force/Replace/Upgrade, file picker, network fetch, MCP mutation,
+  or TUI activation in this slice.
+
 - Desktop adds read-only external specialized-pack preview/review (S8f1).
   Command Palette and Doctor contextual entry open a paste-JSON review panel
   backed by `intentloom.specialized-packs.external.preview.v1`. No approval,
