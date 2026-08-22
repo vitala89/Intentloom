@@ -9,8 +9,47 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **P3 S8f1 complete** — merged in PR #361 (`8581df6`). S8a–S8e merged. **S8f2**
-Desktop approval/activation pending. **S8 overall: IN PROGRESS.** Do not start P4.
+Status: **P3 S8 External Specialized Pack Lifecycle: COMPLETE.** S8a–S8e, S8f1,
+S8f2, and maintainer Desktop manual acceptance are complete. No known blocking
+regression. P4 may now receive a separate maintainer brief. Do not start P4
+from this watch.
+
+### 2026-08-22, P3 S8 External Specialized Pack Lifecycle closure
+
+- **Status:** complete on branch; PR pending
+- **Branch:** `docs/complete-specialized-packs-s8`
+- **Starting main SHA:** `d1581b8` (S8f2 implementation #363)
+- **Objective:** Record maintainer Desktop manual acceptance and close P3 S8
+  as complete without changing runtime behavior.
+- **Completed:** S8f2 implementation is already merged in PR #363 (`d1581b8`).
+  Maintainer verified Desktop `tauri dev` on disposable
+  `/Users/eugenekasap/WebstormProjects/intentloom-dogfood/s8f2-disposable`
+  (not the real Vii checkout): valid local pack preview, explicit human
+  approval, Applied referenced `.aif/extension-lock.json`, Already applied
+  idempotency, pin Conflict fail-closed with persistence safety, stale
+  approval protection, root-switch protection, unsafe `network.connect`
+  rejection, and Doctor with no S8 specialized-pack health errors. Canonical
+  state now records P3 S8 complete.
+- **Not completed:** P4 file-budget extracts; TUI activation; MCP mutation;
+  optional MCP/TUI read-only parity; update/replace; deactivation; revocation;
+  remote discovery; network fetching; marketplace; executable marketplace
+  support. These remain deferred and are not S8 completion blockers.
+- **Files or packages changed:** project state, duty watch, changelog,
+  specialized-pack and post-W12 roadmaps, capability-matrix checkpoint,
+  dogfooding evidence index, S8 completion record.
+- **Validation:** `pnpm verify` passed locally (1687 tests passed, 3 skipped);
+  `git diff --check` passed. No runtime, protocol, CLI, daemon, Desktop, or
+  test files changed.
+- **Decisions and assumptions:** Documentation/state only. Path 3 gate was
+  S8a–S8e + S8f1 + S8f2 + maintainer manual acceptance. Residual deferred
+  surfaces are not failed completion criteria.
+- **Open issues or blockers:** none for S8. No known blocking regression.
+- **Next first action:** Merge this docs/state PR when required CI is green.
+  After merge, the next named increment is a separate P4 maintainer brief.
+  Do not start P4, MCP, TUI, update, revocation, or network work from this
+  watch.
+- **Evidence:**
+  `docs/releases/dogfooding/2026-08-22-specialized-packs-s8-completion.md`
 
 ### 2026-08-22, P3 S8f1 Desktop read-only external specialized-pack preview
 

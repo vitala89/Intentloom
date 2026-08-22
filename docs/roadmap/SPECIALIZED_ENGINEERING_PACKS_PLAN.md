@@ -9,6 +9,12 @@ backend, or infrastructure profile.
 
 It does not add a valid schema, pack manifest, CLI command, or runtime contract.
 
+**S8 External Specialized Pack Lifecycle: COMPLETE** on `main` (PRs #319,
+#355, #356, #357, #359, #361, #363; docs follow-ups #360, #362). Network
+fetching, registry discovery, update/replace, revocation, deactivation,
+marketplace, executable marketplace content, MCP mutation, and TUI activation
+remain deferred and are not S8 completion blockers.
+
 ## Problem
 
 Software development contains too many job titles and specializations to encode
@@ -581,15 +587,44 @@ MCP must not install or execute a pack.
 6. Expose equivalent CLI, daemon, MCP, Desktop, and TUI results.
 7. Add deterministic checks only where evidence and tooling are stable.
 8. Add reviewed external packs through the managed extension lifecycle.
-   S8a met by `previewExternalSpecializedPack` /
-   `activateExternalSpecializedPack` (PR #319). S8b adds canonical digest and
-   `prepareExternalSpecializedPackLockEntry` for extension-lock entries (PR
-   #355). S8c adds `applyExternalSpecializedPackActivation` for transactional
-   project-owned lock apply (PR #356). S8d adds CLI and daemon preview/activate
-   surfaces (PR #357). S8e adds read-only Doctor health diagnostics for active
-   external specialized-pack pins (PR #359). S8f1 adds Desktop read-only
-   external preview/review (in progress). S8f2 Desktop approve/activate pending.
-   TUI/MCP external lifecycle surfaces remain deferred; overall S8 is not complete.
+   **S8 status: COMPLETE** under the approved Path 3 gate (S8a–S8e + S8f1
+   Desktop preview/review + S8f2 Desktop human approval/activation +
+   maintainer manual acceptance).
+
+   Completed in S8:
+
+   - external preview
+   - provenance, source, pin, and digest review
+   - trust gating (`untrusted-external` until human activation)
+   - explicit human approval bound to canonical digest, source pin, locator,
+     and the current reviewed preview
+   - project-owned extension lock preparation
+   - transactional referenced activation to `.aif/extension-lock.json`
+   - idempotency (`specialized-pack-lock-already-applied`)
+   - conflict detection (`specialized-pack-lock-update-required:pin`)
+   - CLI and daemon preview/activate surfaces
+   - Doctor diagnostics for active external specialized-pack pins
+   - Desktop preview/review
+   - Desktop human approval/activation
+   - stale-approval and root-switch protections
+   - fail-closed unsafe permission rejection
+
+   Deferred beyond S8 (not completion blockers):
+
+   - network fetching
+   - registry discovery
+   - update/replace lifecycle
+   - revocation
+   - deactivation
+   - marketplace browsing
+   - executable marketplace content
+   - MCP mutation
+   - optional MCP read-only preview
+   - TUI interactive activation
+   - optional TUI read-only parity enhancements
+
+   Evidence: PRs #319, #355, #356, #357, #359, #361, #363; docs follow-ups
+   #360, #362; maintainer Desktop acceptance 2026-08-22.
 
 ## Acceptance criteria
 

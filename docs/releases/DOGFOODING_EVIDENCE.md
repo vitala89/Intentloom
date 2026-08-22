@@ -53,3 +53,6 @@ supporting evidence, but it does not replace this record from a real project.
 - [2026-08-21-vii-desktop-adoption-completion.md](dogfooding/2026-08-21-vii-desktop-adoption-completion.md)
   (final maintainer packaged/dev verification; **Desktop Existing-Project
   Adoption: COMPLETE**)
+- [2026-08-22-specialized-packs-s8-completion.md](dogfooding/2026-08-22-specialized-packs-s8-completion.md)
+  (maintainer Desktop `tauri dev` acceptance; **P3 S8 External Specialized Pack
+  Lifecycle: COMPLETE**)

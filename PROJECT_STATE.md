@@ -1,6 +1,6 @@
 # Intentloom Project State
 
-Last verified: 2026-08-21 (Desktop Existing-Project Adoption completion)
+Last verified: 2026-08-22 (P3 S8 External Specialized Pack Lifecycle complete)
 
 This file records the durable current state of the project. It is not a
 chronological log. Session history and handoff details belong in
@@ -259,16 +259,20 @@ before a new release or implementation milestone is declared complete.
    maintainer evidence
    [2026-08-21-vii-desktop-adoption-completion.md](docs/releases/dogfooding/2026-08-21-vii-desktop-adoption-completion.md)).
    Do not invent a W13.
-2. **P3 S8 external specialized packs:** **S8a** merged in PR #319 (`907e6ad`):
-   in-memory preview/activate, pin/digest review, human confirmation, no
-   auto-install, no network fetch. **S8b** merged in PR #355 (`ef8d838`):
-   canonical digest and `prepareExternalSpecializedPackLockEntry`. **S8c**
-   merged in PR #356 (`da78b73`): transactional apply to
-   `.aif/extension-lock.json`. **S8d** merged in PR #357 (`71d0876`): CLI + daemon
-   client surfaces. **S8e** merged in PR #359 (`70e997d`): canonical Doctor
-   diagnostics for active external specialized-pack pins. **S8f1** merged in PR
-   #361 (`8581df6`): Desktop read-only external pack preview/review. **S8f2**
-   pending (Desktop approve + activate). **S8 overall: IN PROGRESS.**
+2. **P3 S8 External Specialized Pack Lifecycle: COMPLETE.** Evidence chain:
+   S8a PR #319 (`907e6ad`), S8b #355 (`ef8d838`), S8c #356 (`da78b73`), S8d
+   #357 (`71d0876`), S8e #359 (`70e997d`), S8f1 #361 (`8581df6`), S8f2 #363
+   (`d1581b8`), plus docs follow-ups #360 and #362. S8f2 Desktop human
+   approve/activate merged in #363; maintainer Desktop `tauri dev` acceptance
+   on a disposable dogfood project passed preview, explicit approval, Applied
+   referenced lock persistence, Already applied idempotency, pin Conflict
+   fail-closed, stale-approval and root-switch protections, unsafe capability
+   rejection, and Doctor health of the activated pin. No auto-install, network
+   fetch, marketplace, MCP mutation, or TUI activation. Deferred post-S8
+   surfaces are not completion blockers. Evidence:
+   [2026-08-22-specialized-packs-s8-completion.md](docs/releases/dogfooding/2026-08-22-specialized-packs-s8-completion.md).
+   P4 may now receive a separate maintainer brief; do not start P4 from this
+   state update.
 3. The next **published** version is **undecided**. Maintainer options, not a
    pick: stay unpublished on npm until an explicit publish brief; later `1.0.x`
    metadata/docs release; `1.1.0` (or another minor) after a real release-gate
@@ -626,9 +630,9 @@ and the historical interim record
 
 P1 defers real workspace dogfood to the maintainer
 ([2026-08-16-workspace-public-gate.md](docs/releases/dogfooding/2026-08-16-workspace-public-gate.md)).
-Named follow-ups after P1: Neutron N1 then N2 (P2, complete), S8a–S8e
-(Doctor diagnostics implemented; Desktop/TUI/MCP deferred), file-budget extracts
-(P4).
+Named follow-ups after P1: Neutron N1 then N2 (P2, complete), P3 S8
+(complete), file-budget extracts (P4, not started; may receive a separate
+maintainer brief).
 
 The Desktop discovery/error and Diff/Timeline slices remain recorded in
 [PHASE1_CONTRACTS.md](docs/desktop/PHASE1_CONTRACTS.md).
