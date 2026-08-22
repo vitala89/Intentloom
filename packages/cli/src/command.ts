@@ -113,13 +113,11 @@ import {
   type TransactionStage,
   type ProjectMapping,
 } from "@intentloom/application";
-import {
-  collectGitEvidence,
-  createReleaseTimeline,
-} from "@intentloom/evidence-git";
+import { collectGitEvidence } from "@intentloom/evidence-git";
 import { type ProviderCacheStore } from "@intentloom/evidence-provider";
 import { runCleanCommand } from "./clean-command.js";
 import { runInspectCommand } from "./inspect-command.js";
+import { runTimelineCommand } from "./timeline-command.js";
 import { runEvidenceCommand } from "./evidence-command.js";
 import { runHarnessCommand } from "./harness-command.js";
 import { usage } from "./usage.js";
@@ -218,7 +216,6 @@ const commands = new Set([
   "diff",
   "sync",
   "doctor",
-  "timeline",
   "evidence",
   "conformance",
   "summary",
@@ -243,7 +240,6 @@ const projectPathCommands = new Set([
   "diff",
   "sync",
   "doctor",
-  "timeline",
   "conformance",
   "ui",
   "neutron",
@@ -760,23 +756,6 @@ function formatGovernanceAdoptionPlan(plan: AdoptionPlan): string {
   return lines.join("\n");
 }
 
-function formatTimeline(
-  result: ReturnType<typeof createReleaseTimeline>,
-): string {
-  return [
-    `Case: ${result.caseId}`,
-    `Quality: ${result.quality}`,
-    `Events: ${result.events.length}`,
-    ...result.events.map(
-      (event) =>
-        `${new Date(event.timestamp * 1000).toISOString()} ${event.commitId} ${event.changedPaths.join(", ")}`,
-    ),
-    ...(result.findings.length > 0
-      ? [`Findings: ${result.findings.join(", ")}`]
-      : []),
-  ].join("\n");
-}
-
 function formatDaemonDoctor(result: DoctorResult): string {
   return result.findings
     .map(
@@ -1182,6 +1161,9 @@ export async function runCli(
     if (args[0] === "inspect") {
       return runInspectCommand(args, dependencies, io);
     }
+    if (args[0] === "timeline") {
+      return runTimelineCommand(args, {}, io);
+    }
     const parsed = parseArguments(args);
     const fileSystem = dependencies.fileSystem ?? nodeFileSystem;
     const root = parsed.values.get("--root") ?? cwd();
@@ -1210,19 +1192,6 @@ export async function runCli(
     const invalidMetadata = readsProject
       ? await validateExistingMetadata(root, fileSystem, validator)
       : [];
-    if (parsed.command === "timeline") {
-      const evidence = await collectGitEvidence({ root });
-      const timeline = createReleaseTimeline(
-        parsed.values.get("--case-id") ?? "release",
-        evidence,
-      );
-      io.stdout(
-        parsed.flags.has("--json")
-          ? JSON.stringify(timeline, null, 2)
-          : formatTimeline(timeline),
-      );
-      return timeline.quality === "unavailable" ? 3 : 0;
-    }
     if (parsed.command === "conformance") {
       const policyFile = parsed.values.get("--policy");
       const timelineFile = parsed.values.get("--timeline");

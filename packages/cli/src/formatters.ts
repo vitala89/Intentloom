@@ -4,6 +4,7 @@ import type {
   Plan,
 } from "@intentloom/application";
 import type { ProviderEvidenceResult } from "@intentloom/evidence-provider";
+import type { ReleaseTimeline } from "@intentloom/evidence-git";
 import type { CleanCacheResult } from "./clean-cache.js";
 import { analyzeReleaseEvidence } from "@intentloom/evidence-analysis";
 import { inspectProject } from "@intentloom/application";
@@ -110,5 +111,20 @@ export function formatInspection(
       (finding) =>
         `${finding.severity.padEnd(7)} ${finding.code} ${finding.path} — ${finding.message}`,
     ),
+  ].join("\n");
+}
+
+export function formatTimeline(result: ReleaseTimeline): string {
+  return [
+    `Case: ${result.caseId}`,
+    `Quality: ${result.quality}`,
+    `Events: ${result.events.length}`,
+    ...result.events.map(
+      (event) =>
+        `${new Date(event.timestamp * 1000).toISOString()} ${event.commitId} ${event.changedPaths.join(", ")}`,
+    ),
+    ...(result.findings.length > 0
+      ? [`Findings: ${result.findings.join(", ")}`]
+      : []),
   ].join("\n");
 }

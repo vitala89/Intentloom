@@ -9,8 +9,22 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **P4b inspect CLI extract** on branch
-`refactor/cli-inspect-command-extract`; PR pending.
+Status: **P4c timeline CLI extract** on branch
+`refactor/cli-timeline-command-extract`; PR pending.
+
+### 2026-08-22, P4c extract timeline CLI command from command.ts
+
+- **Status:** complete on branch; PR pending
+- **Branch:** `refactor/cli-timeline-command-extract`
+- **Starting main SHA:** `b2c3a3b` (P4b inspect extract #367)
+- **Objective:** Behavior-preserving extract of `timeline` parser/dispatch into
+  `timeline-command.ts` with early dispatch in `runCli`; no P4d+ work.
+- **Completed:** `timeline-command.ts`, early dispatch, legacy timeline removal
+  from `command.ts`, `formatTimeline` moved to `formatters.ts`, extended
+  `cli-timeline.test.ts`, roadmap update.
+- **Not completed:** conformance/doctor or any later P4 slice.
+- **Next first action:** Merge P4c PR when required CI is green; P4d
+  (`conformance`) remains next per roadmap.
 
 ### 2026-08-22, P4b extract inspect CLI command from command.ts
 
