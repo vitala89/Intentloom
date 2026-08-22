@@ -119,13 +119,12 @@ import {
   createReleaseTimeline,
 } from "@intentloom/evidence-git";
 import { type ProviderCacheStore } from "@intentloom/evidence-provider";
-import { cleanProviderCache } from "./clean-cache.js";
+import { runCleanCommand } from "./clean-command.js";
 import { runEvidenceCommand } from "./evidence-command.js";
 import { runHarnessCommand } from "./harness-command.js";
 import { usage } from "./usage.js";
 import {
   formatAdoptionProposal,
-  formatCleanCacheHuman,
   formatDoctor,
   formatInspection,
   formatPlan,
@@ -213,7 +212,6 @@ interface ProjectConfiguration {
 }
 
 const commands = new Set([
-  "clean",
   "init",
   "adopt",
   "update",
@@ -242,7 +240,6 @@ const commands = new Set([
   "neutron",
 ]);
 const projectPathCommands = new Set([
-  "clean",
   "adopt",
   "update",
   "diff",
@@ -497,24 +494,7 @@ function parseArguments(args: readonly string[]): ParsedArguments {
     );
   if (daemonEndpoint && command !== "doctor")
     throw new CliUsageError("daemon mode is only valid with doctor");
-  if (command === "clean") {
-    if (!flags.has("--cache"))
-      throw new CliUsageError("clean requires --cache");
-    const unexpectedFlag = [...flags].find(
-      (flag) => !["--cache", "--json"].includes(flag),
-    );
-    if (unexpectedFlag)
-      throw new CliUsageError(`clean does not support ${unexpectedFlag}`);
-    const unexpectedValue = [...values.keys()].find(
-      (flag) => !["--root", "--provider", "--project-key"].includes(flag),
-    );
-    if (unexpectedValue)
-      throw new CliUsageError(`clean does not support ${unexpectedValue}`);
-    if (values.has("--project-key") && !values.has("--provider"))
-      throw new CliUsageError("clean --project-key requires --provider");
-    if (values.has("--project-key") && !values.get("--project-key"))
-      throw new CliUsageError("clean --project-key cannot be empty");
-  } else if (flags.has("--cache")) {
+  if (flags.has("--cache")) {
     throw new CliUsageError("--cache is only valid with clean");
   }
   return { command, flags, values, mappingValues };
@@ -1199,34 +1179,12 @@ export async function runCli(
     if (args[0] === "evidence") {
       return await runEvidenceCommand(args, io);
     }
+    if (args[0] === "clean") {
+      return runCleanCommand(args, dependencies, io);
+    }
     const parsed = parseArguments(args);
     const fileSystem = dependencies.fileSystem ?? nodeFileSystem;
     const root = parsed.values.get("--root") ?? cwd();
-    if (parsed.command === "clean") {
-      const providerValue = parsed.values.get("--provider");
-      if (
-        providerValue !== undefined &&
-        providerValue !== "github" &&
-        providerValue !== "gitlab"
-      )
-        throw new CliUsageError("clean --provider must be github or gitlab");
-      const result = await cleanProviderCache({
-        projectRoot: root,
-        ...(providerValue ? { provider: providerValue } : {}),
-        ...(parsed.values.has("--project-key")
-          ? { projectKey: parsed.values.get("--project-key")! }
-          : {}),
-        ...(dependencies.providerCacheStore
-          ? { store: dependencies.providerCacheStore }
-          : {}),
-      });
-      io.stdout(
-        parsed.flags.has("--json")
-          ? JSON.stringify(result, null, 2)
-          : formatCleanCacheHuman(result),
-      );
-      return 0;
-    }
     const profileRoot = resolve(dependencies.catalogRoot, "../profiles");
     const knownProfiles = (await readdir(profileRoot))
       .filter((entry) => entry.endsWith(".json"))

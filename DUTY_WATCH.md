@@ -9,9 +9,24 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Governance effective-SLOC file budgets** on branch
-`chore/governance-effective-sloc-budget`; PR pending. P4 decomposition not
-started from this watch.
+Status: **P4a clean CLI extract** on branch
+`refactor/cli-clean-command-extract`; PR pending.
+
+### 2026-08-22, P4a extract clean CLI command from command.ts
+
+- **Status:** complete on branch; PR pending
+- **Branch:** `refactor/cli-clean-command-extract`
+- **Starting main SHA:** `5a70d99` (governance effective-SLOC budgets #365)
+- **Objective:** Behavior-preserving extract of `clean` parser/dispatch into
+  `clean-command.ts` with early dispatch in `runCli`; no P4b+ work.
+- **Completed:** `clean-command.ts`, early dispatch, legacy clean removal from
+  `command.ts` (~42 line net reduction), extended `cli-clean-cache.test.ts`,
+  roadmap update.
+- **Not completed:** inspect/timeline/conformance or any later P4 slice.
+- **Validation:** focused clean tests (10 passed); full `pnpm test` (1720 passed,
+  3 skipped); typecheck, lint, format, build green locally.
+- **Next first action:** Merge P4a PR when required CI is green; P4b
+  (`inspect` / `timeline` / `conformance`) remains next per roadmap.
 
 ### 2026-08-22, Governance effective-SLOC production file budgets
 
