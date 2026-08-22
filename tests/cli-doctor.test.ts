@@ -2,6 +2,7 @@ import { mkdtemp, mkdir, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { resolve } from "node:path";
+import { randomUUID } from "node:crypto";
 import { describe, expect, it } from "vitest";
 import {
   createMemoryFileSystem,
@@ -15,6 +16,12 @@ import { runCli } from "../packages/cli/src/command.js";
 import { runCliEntry } from "../packages/cli/src/cli-entry.js";
 
 const catalogRoot = resolve("catalog");
+
+function localTestEndpoint(suffix: string): string {
+  return process.platform === "win32"
+    ? `\\\\.\\pipe\\intentloom-cli-doctor-${suffix}-${process.pid}-${randomUUID()}`
+    : join(tmpdir(), `intentloom-cli-doctor-${suffix}-${randomUUID()}.sock`);
+}
 
 async function applicationDoctor(
   doctorRequest: ReturnType<typeof createDoctorRequest>,
@@ -256,16 +263,20 @@ describe("doctor CLI", () => {
 
   it("returns exit 2 when the daemon token file is missing", async () => {
     const errors: string[] = [];
+    const missingTokenFile = join(
+      tmpdir(),
+      `missing-doctor-token-${randomUUID()}`,
+    );
 
     const exitCode = await runCli(
       [
         "doctor",
         "--root",
-        "/project",
+        process.platform === "win32" ? "C:\\project" : "/project",
         "--daemon-endpoint",
-        "/tmp/intentloomd.sock",
+        localTestEndpoint("missing-token"),
         "--daemon-token-file",
-        "/tmp/missing-doctor-token",
+        missingTokenFile,
       ],
       { catalogRoot },
       { stdout: () => undefined, stderr: (message) => errors.push(message) },
@@ -287,7 +298,7 @@ describe("doctor CLI", () => {
         "--root",
         parent,
         "--daemon-endpoint",
-        join(parent, "daemon.sock"),
+        localTestEndpoint("short-token"),
         "--daemon-token-file",
         tokenFile,
       ],
@@ -302,7 +313,7 @@ describe("doctor CLI", () => {
   it("fails safely when the daemon token does not authenticate", async () => {
     const parent = await mkdtemp(join(tmpdir(), "intentloom-doctor-auth-"));
     const root = join(parent, "project");
-    const endpoint = join(parent, "daemon.sock");
+    const endpoint = localTestEndpoint("auth");
     const tokenFile = join(parent, "token");
     await mkdir(root);
     await writeFile(tokenFile, "w".repeat(32), { mode: 0o600 });
@@ -337,7 +348,7 @@ describe("doctor CLI", () => {
   it("uses daemon wire exitCode on success", async () => {
     const parent = await mkdtemp(join(tmpdir(), "intentloom-doctor-daemon-"));
     const root = join(parent, "project");
-    const endpoint = join(parent, "daemon.sock");
+    const endpoint = localTestEndpoint("success");
     const tokenFile = join(parent, "token");
     const token = "m".repeat(32);
     await mkdir(root);
