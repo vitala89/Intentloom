@@ -7,6 +7,7 @@ import {
   type ProviderCacheStore,
 } from "../packages/evidence-provider/src/index.js";
 import { runCli } from "../packages/cli/src/command.js";
+import { runCliEntry } from "../packages/cli/src/cli-entry.js";
 
 class MemoryProviderCacheStore implements ProviderCacheStore {
   readonly files = new Map<string, string>();
@@ -170,5 +171,130 @@ describe("clean cache CLI", () => {
     expect(errors.join("\n")).toContain(
       "clean --project-key requires --provider",
     );
+  });
+
+  it("returns human output for a successful purge", async () => {
+    const root = await mkdtemp(join(tmpdir(), "intentloom-clean-human-"));
+    try {
+      const output: string[] = [];
+
+      const exitCode = await runCli(
+        ["clean", "--cache", "--root", root],
+        { catalogRoot: resolve("catalog") },
+        { stdout: (message) => output.push(message), stderr: () => undefined },
+      );
+
+      expect(exitCode).toBe(0);
+      expect(output.join("\n")).toBe(
+        [
+          "Intentloom cache cleanup completed.",
+          "Cache: .aif/cache/providers",
+          "Scope: all providers",
+        ].join("\n"),
+      );
+    } finally {
+      await rm(root, { recursive: true, force: true });
+    }
+  });
+
+  it("rejects clean without --cache", async () => {
+    const errors: string[] = [];
+
+    const exitCode = await runCli(
+      ["clean", "--json"],
+      { catalogRoot: resolve("catalog") },
+      {
+        stdout: () => undefined,
+        stderr: (message) => errors.push(message),
+      },
+    );
+
+    expect(exitCode).toBe(2);
+    expect(errors.join("\n")).toContain("clean requires --cache");
+  });
+
+  it("accepts a positional project path without --root", async () => {
+    const root = await mkdtemp(join(tmpdir(), "intentloom-clean-positional-"));
+    try {
+      const output: string[] = [];
+
+      const exitCode = await runCli(
+        ["clean", "--cache", root, "--json"],
+        { catalogRoot: resolve("catalog") },
+        { stdout: (message) => output.push(message), stderr: () => undefined },
+      );
+
+      expect(exitCode).toBe(0);
+      expect(JSON.parse(output.join("\n"))).toMatchObject({
+        status: "purged",
+        cachePath: ".aif/cache/providers",
+        provider: null,
+        projectKey: null,
+      });
+    } finally {
+      await rm(root, { recursive: true, force: true });
+    }
+  });
+
+  it("rejects an invalid provider", async () => {
+    const errors: string[] = [];
+
+    const exitCode = await runCli(
+      ["clean", "--cache", "--provider", "bitbucket", "--json"],
+      { catalogRoot: resolve("catalog") },
+      {
+        stdout: () => undefined,
+        stderr: (message) => errors.push(message),
+      },
+    );
+
+    expect(exitCode).toBe(2);
+    expect(errors.join("\n")).toContain(
+      "clean --provider must be github or gitlab",
+    );
+  });
+
+  it("returns purged status for a missing cache directory", async () => {
+    const root = await mkdtemp(join(tmpdir(), "intentloom-clean-empty-"));
+    try {
+      const output: string[] = [];
+
+      const exitCode = await runCli(
+        ["clean", "--cache", "--root", root, "--json"],
+        { catalogRoot: resolve("catalog") },
+        { stdout: (message) => output.push(message), stderr: () => undefined },
+      );
+
+      expect(exitCode).toBe(0);
+      expect(JSON.parse(output.join("\n"))).toEqual({
+        status: "purged",
+        cachePath: ".aif/cache/providers",
+        provider: null,
+        projectKey: null,
+      });
+    } finally {
+      await rm(root, { recursive: true, force: true });
+    }
+  });
+
+  it("dispatches clean through runCliEntry", async () => {
+    const root = await mkdtemp(join(tmpdir(), "intentloom-clean-entry-"));
+    try {
+      const output: string[] = [];
+
+      const exitCode = await runCliEntry(
+        ["clean", "--cache", "--root", root, "--json"],
+        { catalogRoot: resolve("catalog") },
+        { stdout: (message) => output.push(message), stderr: () => undefined },
+      );
+
+      expect(exitCode).toBe(0);
+      expect(JSON.parse(output.join("\n"))).toMatchObject({
+        status: "purged",
+        cachePath: ".aif/cache/providers",
+      });
+    } finally {
+      await rm(root, { recursive: true, force: true });
+    }
   });
 });
