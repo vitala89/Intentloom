@@ -9,8 +9,22 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **P4c timeline CLI extract** on branch
-`refactor/cli-timeline-command-extract`; PR pending.
+Status: **P4d conformance CLI extract** on branch
+`refactor/cli-conformance-command-extract`; PR pending.
+
+### 2026-08-22, P4d extract conformance CLI command from command.ts
+
+- **Status:** complete on branch; PR pending
+- **Branch:** `refactor/cli-conformance-command-extract`
+- **Starting main SHA:** `3305d84` (P4c timeline extract #368)
+- **Objective:** Behavior-preserving extract of `conformance` parser/dispatch into
+  `conformance-command.ts` with early dispatch in `runCli`; no P4e+ work.
+- **Completed:** `conformance-command.ts`, early dispatch, legacy conformance removal
+  from `command.ts`, `formatEngineeringConformanceHuman` moved to `formatters.ts`,
+  extended `cli-conformance.test.ts`, roadmap update.
+- **Not completed:** doctor/ui or any later P4 slice.
+- **Next first action:** Merge P4d PR when required CI is green; P4e (`doctor`)
+  remains next per roadmap.
 
 ### 2026-08-22, P4c extract timeline CLI command from command.ts
 

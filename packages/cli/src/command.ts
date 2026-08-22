@@ -113,9 +113,9 @@ import {
   type TransactionStage,
   type ProjectMapping,
 } from "@intentloom/application";
-import { collectGitEvidence } from "@intentloom/evidence-git";
 import { type ProviderCacheStore } from "@intentloom/evidence-provider";
 import { runCleanCommand } from "./clean-command.js";
+import { runConformanceCommand } from "./conformance-command.js";
 import { runInspectCommand } from "./inspect-command.js";
 import { runTimelineCommand } from "./timeline-command.js";
 import { runEvidenceCommand } from "./evidence-command.js";
@@ -126,13 +126,6 @@ import {
   formatDoctor,
   formatPlan,
 } from "./formatters.js";
-import {
-  evaluateEngineeringConformance,
-  type EngineeringWorkflowCaseType,
-  type EngineeringWorkflowPolicy,
-  type EngineeringConformanceReport,
-  type GenericTimeline,
-} from "@intentloom/evidence-analysis";
 import {
   INTENTLOOM_VERSION,
   normalizeOutputPath,
@@ -217,7 +210,6 @@ const commands = new Set([
   "sync",
   "doctor",
   "evidence",
-  "conformance",
   "summary",
   "skill",
   "proposal",
@@ -240,7 +232,6 @@ const projectPathCommands = new Set([
   "diff",
   "sync",
   "doctor",
-  "conformance",
   "ui",
   "neutron",
 ]);
@@ -1053,79 +1044,6 @@ function formatValidationFailure(
   ].join("\n");
 }
 
-const defaultEngineeringPolicy: EngineeringWorkflowPolicy = {
-  schemaVersion: "1",
-  policyId: "policy:default-engineering-conformance",
-  description: "Default Intentloom engineering workflow policy",
-  rules: [
-    {
-      ruleId: "rule:require-commit-evidence",
-      caseType: "pull-request",
-      severity: "error",
-      title: "Commit Evidence Presence",
-      condition: {
-        type: "required-activity",
-        activity: "commit",
-      },
-      remediation: {
-        summary: "Pull request workflow timeline must contain commit evidence.",
-        actionableSteps: [
-          "Ensure local Git history contains commits on the topic branch.",
-        ],
-      },
-    },
-    {
-      ruleId: "rule:require-release-evidence",
-      caseType: "release",
-      severity: "error",
-      title: "Release Evidence Presence",
-      condition: {
-        type: "required-activity",
-        activity: "commit",
-      },
-      remediation: {
-        summary: "Release workflow timeline must contain commit evidence.",
-        actionableSteps: [
-          "Ensure Git tags and release commits exist in the repository.",
-        ],
-      },
-    },
-  ],
-};
-
-function formatEngineeringConformanceHuman(
-  report: EngineeringConformanceReport,
-): string {
-  const lines: string[] = [
-    `Intentloom Engineering Conformance Report [v${report.operationVersion}]`,
-    `Policy: ${report.policyId}`,
-    `Case: ${report.caseType} (${report.caseId})`,
-    `Summary: ${report.summary.passed}/${report.summary.totalRules} passed, ${report.summary.violations} violations, ${report.summary.missingEvidence} missing evidence, ${report.summary.ambiguousEvidence} ambiguous, ${report.summary.unsupported} unsupported`,
-    "",
-    "Findings:",
-  ];
-  for (const finding of report.findings) {
-    const icon =
-      finding.status === "pass"
-        ? "[PASS]"
-        : finding.status === "violation"
-          ? "[VIOLATION]"
-          : finding.status === "missing-evidence"
-            ? "[MISSING EVIDENCE]"
-            : `[${finding.status.toUpperCase()}]`;
-    lines.push(
-      `- ${icon} ${finding.title} (${finding.ruleId}) [Severity: ${finding.severity}]`,
-    );
-    if (finding.remediation) {
-      lines.push(`  Remediation: ${finding.remediation.summary}`);
-      for (const step of finding.remediation.actionableSteps) {
-        lines.push(`  - ${step}`);
-      }
-    }
-  }
-  return lines.join("\n");
-}
-
 export async function runCli(
   args: readonly string[],
   dependencies: CliDependencies,
@@ -1164,6 +1082,9 @@ export async function runCli(
     if (args[0] === "timeline") {
       return runTimelineCommand(args, {}, io);
     }
+    if (args[0] === "conformance") {
+      return runConformanceCommand(args, dependencies, io);
+    }
     const parsed = parseArguments(args);
     const fileSystem = dependencies.fileSystem ?? nodeFileSystem;
     const root = parsed.values.get("--root") ?? cwd();
@@ -1192,53 +1113,6 @@ export async function runCli(
     const invalidMetadata = readsProject
       ? await validateExistingMetadata(root, fileSystem, validator)
       : [];
-    if (parsed.command === "conformance") {
-      const policyFile = parsed.values.get("--policy");
-      const timelineFile = parsed.values.get("--timeline");
-      const caseId = parsed.values.get("--case-id") ?? "current";
-      const caseType =
-        (parsed.values.get("--case-type") as EngineeringWorkflowCaseType) ??
-        "pull-request";
-
-      let policy: EngineeringWorkflowPolicy;
-      if (policyFile) {
-        policy = JSON.parse(
-          await fileSystem.read(resolveWithin(root, policyFile)),
-        );
-      } else {
-        policy = defaultEngineeringPolicy;
-      }
-
-      let timeline: GenericTimeline;
-      if (timelineFile) {
-        timeline = JSON.parse(
-          await fileSystem.read(resolveWithin(root, timelineFile)),
-        );
-      } else {
-        const rawGit = await collectGitEvidence({ root });
-        timeline = {
-          caseType,
-          caseId,
-          events: rawGit.commits.map((c) => ({
-            activity: "commit",
-            source: "git",
-            sourceId: c.id,
-            timestamp: new Date(c.timestamp * 1000).toISOString(),
-            commitIds: [c.id],
-          })),
-        };
-      }
-
-      const report = evaluateEngineeringConformance(timeline, policy);
-      io.stdout(
-        parsed.flags.has("--json")
-          ? JSON.stringify(report, null, 2)
-          : formatEngineeringConformanceHuman(report),
-      );
-      return report.summary.violations > 0 || report.summary.missingEvidence > 0
-        ? 3
-        : 0;
-    }
     if (parsed.command === "summary") {
       const subcommand = args[1] ?? "list";
       if (subcommand === "list") {

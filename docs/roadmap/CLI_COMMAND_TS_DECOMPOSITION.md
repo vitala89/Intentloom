@@ -15,6 +15,7 @@ Existing oversized files must not grow. New CLI families ship as dedicated
 | Clean                       | `clean-command.ts`                                   | Early dispatch in `runCli`; runtime in `clean-cache.ts`; behavior preserved                    |
 | Inspect                     | `inspect-command.ts`                                 | Early dispatch in `runCli`; formatter in `formatters.ts`; behavior preserved                   |
 | Timeline                    | `timeline-command.ts`                                | Early dispatch in `runCli`; formatter in `formatters.ts`; behavior preserved                   |
+| Conformance                 | `conformance-command.ts`                             | Early dispatch in `runCli`; formatter in `formatters.ts`; behavior preserved                   |
 | Inception / Foundation (W5) | `engineering-workspace-command.ts`, `cli-entry.ts`   | Merged on `main` via PR #290; binary routing without growing `command.ts`                      |
 
 ## Priority order (remaining)
@@ -23,17 +24,15 @@ Extract one cohesive command family per PR. Prefer early dispatch so
 `parseArguments` never grows the monolith. Keep behavior and exit codes
 identical; reuse existing CLI tests.
 
-1. **`conformance`** — read-only evidence/git consumer; shares formatters with
-   timeline already extracted to `formatters.ts`.
-2. **`doctor`** — includes daemon doctor path; keep IPC boundary explicit.
-3. **`ui`** — interactive TUI state rendering.
-4. **`workspace`** — agent workspace conversation modes.
-5. **`neutron`** — subagent + sync.
-6. **`memory` / `session` / `security`** — large controlled-learning and security
+1. **`doctor`** — includes daemon doctor path; keep IPC boundary explicit.
+2. **`ui`** — interactive TUI state rendering.
+3. **`workspace`** — agent workspace conversation modes.
+4. **`neutron`** — subagent + sync.
+5. **`memory` / `session` / `security`** — large controlled-learning and security
    surfaces; extract as separate PRs (do not combine).
-7. **`adopt` / `update` / `sync` / `diff` / `plan` / `init`** — project mutation
+6. **`adopt` / `update` / `sync` / `diff` / `plan` / `init`** — project mutation
    and sync family; extract last because of shared transaction helpers.
-8. **`summary` / `skill` / `proposal` / `evaluate` / `checkpoint` / `profile` /
+7. **`summary` / `skill` / `proposal` / `evaluate` / `checkpoint` / `profile` /
    `delegate` / `rank` / `context`** — controlled-learning cluster; split by
    subdomain once shared helpers are isolated.
 
