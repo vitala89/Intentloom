@@ -9,10 +9,25 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **P3 S8 External Specialized Pack Lifecycle: COMPLETE.** S8a–S8e, S8f1,
-S8f2, and maintainer Desktop manual acceptance are complete. No known blocking
-regression. P4 may now receive a separate maintainer brief. Do not start P4
-from this watch.
+Status: **Governance effective-SLOC file budgets** on branch
+`chore/governance-effective-sloc-budget`; PR pending. P4 decomposition not
+started from this watch.
+
+### 2026-08-22, Governance effective-SLOC production file budgets
+
+- **Status:** complete on branch; PR pending
+- **Branch:** `chore/governance-effective-sloc-budget`
+- **Starting main SHA:** `83cb2c7` (P3 S8 closure #364)
+- **Objective:** Switch production-file budget governance from physical-line-only
+  checks to dual-metric effective code lines (primary) plus physical safety
+  guard (secondary), without changing runtime behavior or starting P4.
+- **Completed:** Token-aware metrics module, staged/diff validators, focused
+  tests, canonical docs, and grandfathered baseline metrics in
+  `quality-exceptions.json`.
+- **Not completed:** P4 `command.ts` decomposition or any runtime/product work.
+- **Validation:** `pnpm verify` passed locally (255 files, 1714 passed, 3 skipped).
+- **Next first action:** Merge governance PR when required CI is green; P4 remains
+  a separate maintainer brief.
 
 ### 2026-08-22, P3 S8 External Specialized Pack Lifecycle closure
 

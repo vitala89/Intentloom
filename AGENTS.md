@@ -72,9 +72,10 @@ current tests, formatted file size, and expected growth. Follow
 
 Mandatory defaults for hand-written code:
 
-- prefer production files at or below 250 lines;
-- begin refactoring review above 300 lines;
-- do not create or substantially expand a production file beyond 400 lines
+- prefer production files at or below 250 effective code lines;
+- begin refactoring review above 300 effective code lines;
+- do not create or substantially expand a production file beyond 400 effective
+  code lines or 700 physical lines
   without a documented, approved exception;
 - prefer functions at or below 40 lines and do not exceed 80 lines without an
   approved exception;
