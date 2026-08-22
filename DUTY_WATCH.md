@@ -9,8 +9,21 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **P4a clean CLI extract** on branch
-`refactor/cli-clean-command-extract`; PR pending.
+Status: **P4b inspect CLI extract** on branch
+`refactor/cli-inspect-command-extract`; PR pending.
+
+### 2026-08-22, P4b extract inspect CLI command from command.ts
+
+- **Status:** complete on branch; PR pending
+- **Branch:** `refactor/cli-inspect-command-extract`
+- **Starting main SHA:** `89cfee5` (P4a clean extract #366)
+- **Objective:** Behavior-preserving extract of `inspect` parser/dispatch into
+  `inspect-command.ts` with early dispatch in `runCli`; no P4c+ work.
+- **Completed:** `inspect-command.ts`, early dispatch, legacy inspect removal
+  from `command.ts`, extended `cli-inspect.test.ts`, roadmap update.
+- **Not completed:** timeline/conformance or any later P4 slice.
+- **Next first action:** Merge P4b PR when required CI is green; P4c
+  (`timeline` / `conformance`) remains next per roadmap.
 
 ### 2026-08-22, P4a extract clean CLI command from command.ts
 

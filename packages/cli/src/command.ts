@@ -15,7 +15,6 @@ import {
   doctorExitCode,
   doctorProject,
   initProject,
-  inspectProject,
   ignoredScanPath,
   nodeFileSystem,
   planFeature,
@@ -120,13 +119,13 @@ import {
 } from "@intentloom/evidence-git";
 import { type ProviderCacheStore } from "@intentloom/evidence-provider";
 import { runCleanCommand } from "./clean-command.js";
+import { runInspectCommand } from "./inspect-command.js";
 import { runEvidenceCommand } from "./evidence-command.js";
 import { runHarnessCommand } from "./harness-command.js";
 import { usage } from "./usage.js";
 import {
   formatAdoptionProposal,
   formatDoctor,
-  formatInspection,
   formatPlan,
 } from "./formatters.js";
 import {
@@ -219,7 +218,6 @@ const commands = new Set([
   "diff",
   "sync",
   "doctor",
-  "inspect",
   "timeline",
   "evidence",
   "conformance",
@@ -245,7 +243,6 @@ const projectPathCommands = new Set([
   "diff",
   "sync",
   "doctor",
-  "inspect",
   "timeline",
   "conformance",
   "ui",
@@ -1182,6 +1179,9 @@ export async function runCli(
     if (args[0] === "clean") {
       return runCleanCommand(args, dependencies, io);
     }
+    if (args[0] === "inspect") {
+      return runInspectCommand(args, dependencies, io);
+    }
     const parsed = parseArguments(args);
     const fileSystem = dependencies.fileSystem ?? nodeFileSystem;
     const root = parsed.values.get("--root") ?? cwd();
@@ -1210,17 +1210,6 @@ export async function runCli(
     const invalidMetadata = readsProject
       ? await validateExistingMetadata(root, fileSystem, validator)
       : [];
-    if (parsed.command === "inspect") {
-      const result = await inspectProject(root, fileSystem);
-      io.stdout(
-        parsed.flags.has("--json")
-          ? JSON.stringify(result, null, 2)
-          : formatInspection(result),
-      );
-      return result.findings.some((finding) => finding.severity === "error")
-        ? 3
-        : 0;
-    }
     if (parsed.command === "timeline") {
       const evidence = await collectGitEvidence({ root });
       const timeline = createReleaseTimeline(

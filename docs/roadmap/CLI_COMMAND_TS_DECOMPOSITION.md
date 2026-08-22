@@ -13,6 +13,7 @@ Existing oversized files must not grow. New CLI families ship as dedicated
 | Harness                     | `harness-command.ts`, `harness-benchmark-command.ts` | Early dispatch in `runCli`                                                                     |
 | Evidence                    | `evidence-command.ts`                                | Early dispatch; first extract required by `quality-exceptions.json` review trigger for PR #160 |
 | Clean                       | `clean-command.ts`                                   | Early dispatch in `runCli`; runtime in `clean-cache.ts`; behavior preserved                    |
+| Inspect                     | `inspect-command.ts`                                 | Early dispatch in `runCli`; formatter in `formatters.ts`; behavior preserved                   |
 | Inception / Foundation (W5) | `engineering-workspace-command.ts`, `cli-entry.ts`   | Merged on `main` via PR #290; binary routing without growing `command.ts`                      |
 
 ## Priority order (remaining)
@@ -21,8 +22,8 @@ Extract one cohesive command family per PR. Prefer early dispatch so
 `parseArguments` never grows the monolith. Keep behavior and exit codes
 identical; reuse existing CLI tests.
 
-1. **`inspect` / `timeline` / `conformance`** — read-only evidence/git consumers;
-   share formatters already in `command.ts`.
+1. **`timeline` / `conformance`** — read-only evidence/git consumers; share formatters
+   already in `command.ts`.
 2. **`doctor`** — includes daemon doctor path; keep IPC boundary explicit.
 3. **`ui`** — interactive TUI state rendering.
 4. **`workspace`** — agent workspace conversation modes.
