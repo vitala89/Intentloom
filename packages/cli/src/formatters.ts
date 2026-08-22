@@ -3,6 +3,7 @@ import type {
   DoctorPlan,
   Plan,
 } from "@intentloom/application";
+import type { DoctorResult } from "../../protocol/src/index.js";
 import type { ProviderEvidenceResult } from "@intentloom/evidence-provider";
 import type { ReleaseTimeline } from "@intentloom/evidence-git";
 import type { CleanCacheResult } from "./clean-cache.js";
@@ -97,6 +98,15 @@ export function formatDoctor(result: DoctorPlan): string {
             ? ` Remediation: ${finding.remediation.join(" ")}`
             : ""
         }`,
+    )
+    .join("\n");
+}
+
+export function formatDaemonDoctor(result: DoctorResult): string {
+  return result.findings
+    .map(
+      (finding) =>
+        `${finding.severity.padEnd(7)} ${finding.code} ${finding.path} — ${finding.message}`,
     )
     .join("\n");
 }
