@@ -1,21 +1,12 @@
 import { cwd } from "node:process";
 import { resolve } from "node:path";
-import { readFile, readdir } from "node:fs/promises";
-import { requestDaemonDoctor } from "../../daemon/src/index.js";
-import {
-  createDoctorRequest,
-  type DoctorResult,
-} from "../../protocol/src/index.js";
 import {
   ArtifactValidationFailure,
   adoptProject,
   detectProjectProfiles,
   destinationCollisionKey,
   diffProject,
-  doctorExitCode,
-  doctorProject,
   initProject,
-  ignoredScanPath,
   nodeFileSystem,
   planFeature,
   planProjectAdoption,
@@ -116,21 +107,26 @@ import {
 import { type ProviderCacheStore } from "@intentloom/evidence-provider";
 import { runCleanCommand } from "./clean-command.js";
 import { runConformanceCommand } from "./conformance-command.js";
+import { runDoctorCommand } from "./doctor-command.js";
 import { runInspectCommand } from "./inspect-command.js";
 import { runTimelineCommand } from "./timeline-command.js";
 import { runEvidenceCommand } from "./evidence-command.js";
 import { runHarnessCommand } from "./harness-command.js";
-import { usage } from "./usage.js";
 import {
-  formatAdoptionProposal,
-  formatDoctor,
-  formatPlan,
-} from "./formatters.js";
+  assertDaemonFlagsAllowed,
+  CliProjectValidationError,
+  CliUsageError,
+  createCliArtifactValidator,
+  parseAdapters,
+  projectConfiguration,
+  validateExistingMetadata,
+} from "./cli-project-metadata.js";
+import { usage } from "./usage.js";
+import { formatAdoptionProposal, formatPlan } from "./formatters.js";
 import {
   INTENTLOOM_VERSION,
   normalizeOutputPath,
   resolveWithin,
-  type AdapterName,
 } from "@intentloom/core";
 import {
   parseAdoptionPlan,
@@ -138,12 +134,8 @@ import {
   type AdoptionPlan,
 } from "@intentloom/core/adoption";
 import {
-  createArtifactValidator,
   SchemaCatalogError,
-  validateSkillSet,
-  type ArtifactType,
   type ArtifactValidationResult,
-  type ArtifactValidator,
 } from "@intentloom/validator";
 
 export type CliExitCode = 0 | 2 | 3 | 4 | 5;
@@ -180,25 +172,11 @@ export interface CliSyncOutcome {
   readonly exitCode: CliExitCode;
 }
 
-class CliUsageError extends Error {}
-class CliProjectValidationError extends Error {
-  constructor(readonly results: readonly ArtifactValidationResult[]) {
-    super("project artifact validation failed");
-  }
-}
-
 interface ParsedArguments {
   readonly command: string;
   readonly flags: ReadonlySet<string>;
   readonly values: ReadonlyMap<string, string>;
   readonly mappingValues: ReadonlyMap<string, readonly string[]>;
-}
-
-interface ProjectConfiguration {
-  readonly profile: string;
-  readonly adapters: readonly AdapterName[];
-  readonly projectOwnedMappings: readonly ProjectMapping[];
-  readonly documentationMappings: readonly ProjectMapping[];
 }
 
 const commands = new Set([
@@ -208,7 +186,6 @@ const commands = new Set([
   "plan",
   "diff",
   "sync",
-  "doctor",
   "evidence",
   "summary",
   "skill",
@@ -231,7 +208,6 @@ const projectPathCommands = new Set([
   "update",
   "diff",
   "sync",
-  "doctor",
   "ui",
   "neutron",
 ]);
@@ -299,7 +275,6 @@ const mappingValueFlags = new Set([
   "--project-owned-mapping",
   "--documentation-mapping",
 ]);
-const adapters = new Set<AdapterName>(["claude", "codex", "cursor", "copilot"]);
 
 function parseArguments(args: readonly string[]): ParsedArguments {
   const command = args[0] ?? "";
@@ -472,12 +447,7 @@ function parseArguments(args: readonly string[]): ParsedArguments {
     );
   const daemonEndpoint = values.has("--daemon-endpoint");
   const daemonTokenFile = values.has("--daemon-token-file");
-  if (daemonEndpoint !== daemonTokenFile)
-    throw new CliUsageError(
-      "--daemon-endpoint and --daemon-token-file must be used together",
-    );
-  if (daemonEndpoint && command !== "doctor")
-    throw new CliUsageError("daemon mode is only valid with doctor");
+  assertDaemonFlagsAllowed(command, daemonEndpoint, daemonTokenFile);
   if (flags.has("--cache")) {
     throw new CliUsageError("--cache is only valid with clean");
   }
@@ -747,256 +717,6 @@ function formatGovernanceAdoptionPlan(plan: AdoptionPlan): string {
   return lines.join("\n");
 }
 
-function formatDaemonDoctor(result: DoctorResult): string {
-  return result.findings
-    .map(
-      (finding) =>
-        `${finding.severity.padEnd(7)} ${finding.code} ${finding.path} — ${finding.message}`,
-    )
-    .join("\n");
-}
-
-function parseAdapters(value: string): AdapterName[] {
-  const parsed = value.split(",").filter(Boolean);
-  if (
-    parsed.length === 0 ||
-    parsed.some((adapter) => !adapters.has(adapter as AdapterName))
-  )
-    throw new CliUsageError("invalid --adapters value");
-  return parsed as AdapterName[];
-}
-
-async function projectConfiguration(
-  root: string,
-  fileSystem: FileSystem,
-  validator: ArtifactValidator,
-  required: boolean,
-): Promise<ProjectConfiguration> {
-  const path = resolve(root, ".aif/config.yaml");
-  if (!(await fileSystem.exists(path))) {
-    if (!required)
-      return {
-        profile: "generic",
-        adapters: ["claude", "codex", "cursor", "copilot"],
-        projectOwnedMappings: [],
-        documentationMappings: [],
-      };
-    throw new CliUsageError(
-      "sync requires an initialized project with .aif/config.yaml",
-    );
-  }
-  const validation = validator.validate({
-    artifactType: "aif-config",
-    documentPath: ".aif/config.yaml",
-    format: "yaml",
-    source: await fileSystem.read(path),
-  });
-  if (validation.status === "invalid")
-    throw new CliProjectValidationError([validation]);
-  const config = validation.document as Record<string, unknown>;
-  const mappings = (key: string): ProjectMapping[] =>
-    Array.isArray(config[key])
-      ? (config[key] as Record<string, unknown>[]).map((mapping) => ({
-          source: mapping.source as string,
-          destination: mapping.destination as string,
-        }))
-      : [];
-  return {
-    profile: config.profile as string,
-    adapters: config.adapters as AdapterName[],
-    projectOwnedMappings: mappings("projectOwnedMappings"),
-    documentationMappings: mappings("documentationMappings"),
-  };
-}
-
-const projectArtifacts: readonly {
-  artifactType: ArtifactType;
-  path: string;
-  format: "json" | "yaml";
-}[] = [
-  { artifactType: "aif-config", path: ".aif/config.yaml", format: "yaml" },
-  {
-    artifactType: "manifest-lock",
-    path: ".aif/manifest.lock.json",
-    format: "json",
-  },
-  { artifactType: "source-map", path: ".aif/source-map.json", format: "json" },
-];
-
-async function validateExistingMetadata(
-  root: string,
-  fileSystem: FileSystem,
-  validator: ArtifactValidator,
-): Promise<ArtifactValidationResult[]> {
-  const validated: ArtifactValidationResult[] = [];
-  for (const artifact of projectArtifacts) {
-    const absolute = resolve(root, artifact.path);
-    if (!(await fileSystem.exists(absolute))) continue;
-    const result = validator.validate({
-      artifactType: artifact.artifactType,
-      documentPath: artifact.path,
-      format: artifact.format,
-      source: await fileSystem.read(absolute),
-    });
-    validated.push(result);
-  }
-  const results = validated.filter((result) => result.status === "invalid");
-  if (results.length > 0) return results;
-  const manifest = validated.find(
-    (result) => result.artifactType === "manifest-lock",
-  );
-  const sourceMap = validated.find(
-    (result) => result.artifactType === "source-map",
-  );
-  if (manifest?.document && sourceMap?.document) {
-    const lock = manifest.document as Record<string, unknown>;
-    const map = sourceMap.document as Record<string, unknown>;
-    const identityKeys = [
-      "metadataFormatVersion",
-      "frameworkVersion",
-      "adapterOutputVersion",
-      "adapterId",
-      "canonicalSourceId",
-    ];
-    const lockRecords = new Map(
-      (lock.generated as Record<string, unknown>[]).map((record) => [
-        record.path,
-        record.checksum,
-      ]),
-    );
-    const mapRecords = new Map(
-      (map.files as Record<string, unknown>[]).map((record) => [
-        record.path,
-        record.checksum,
-      ]),
-    );
-    const inconsistent =
-      identityKeys.some((key) => lock[key] !== map[key]) ||
-      lockRecords.size !== mapRecords.size ||
-      [...lockRecords].some(
-        ([path, checksum]) => mapRecords.get(path) !== checksum,
-      );
-    if (inconsistent)
-      results.push({
-        status: "invalid",
-        artifactType: "source-map",
-        schemaId: sourceMap.schemaId,
-        schemaVersion: sourceMap.schemaVersion,
-        documentPath: sourceMap.documentPath,
-        structuralErrors: [],
-        semanticErrors: [
-          {
-            code: "metadata-relationship-inconsistent",
-            message:
-              "manifest and source map identity or checksum records differ",
-            fieldPath: "",
-          },
-        ],
-        warnings: [],
-      });
-  }
-  return results;
-}
-
-async function validateProjectSkills(
-  root: string,
-  fileSystem: FileSystem,
-  validator: ArtifactValidator,
-): Promise<ArtifactValidationResult[]> {
-  const entries = (await fileSystem.list(root))
-    .map((entry) => entry.replaceAll("\\", "/"))
-    .map((entry) =>
-      entry.startsWith(`${root}/`) ? entry.slice(root.length + 1) : entry,
-    )
-    .filter((entry) => !ignoredScanPath(entry))
-    .sort();
-  const ownedSkillPaths = new Set<string>();
-  const sourceMapPath = resolve(root, ".aif/source-map.json");
-  if (await fileSystem.exists(sourceMapPath))
-    try {
-      const sourceMap = JSON.parse(await fileSystem.read(sourceMapPath)) as {
-        files?: unknown;
-      };
-      if (Array.isArray(sourceMap.files))
-        for (const record of sourceMap.files)
-          if (
-            typeof record === "object" &&
-            record !== null &&
-            typeof (record as Record<string, unknown>).path === "string" &&
-            (record as Record<string, unknown>).ownership ===
-              "aif-owned-generated"
-          )
-            ownedSkillPaths.add(
-              (record as Record<string, unknown>).path as string,
-            );
-    } catch {
-      /* source-map validation reports malformed ownership metadata separately */
-    }
-  const documents = await Promise.all(
-    entries
-      .filter(
-        (entry) =>
-          entry.endsWith("/SKILL.md") &&
-          (entry.startsWith("skills/") || ownedSkillPaths.has(entry)),
-      )
-      .map(async (entry) => {
-        const absolute = entry.startsWith(root) ? entry : resolve(root, entry);
-        const path = absolute.startsWith(`${root}/`)
-          ? absolute.slice(root.length + 1)
-          : entry;
-        return { path, content: await fileSystem.read(absolute) };
-      }),
-  );
-  const validation = validateSkillSet(validator, documents);
-  const invalid = validation.results.filter(
-    (result) => result.status === "invalid",
-  );
-  if (validation.errors.length > 0)
-    invalid.push({
-      status: "invalid",
-      artifactType: "agent-skill",
-      schemaId: "urn:aif:schema:agent-skill:1",
-      schemaVersion: "1",
-      documentPath: documents[0]?.path ?? "SKILL.md",
-      structuralErrors: [],
-      semanticErrors: validation.errors,
-      warnings: [],
-    });
-  const planningKinds: readonly {
-    pattern: RegExp;
-    artifactType: ArtifactType;
-  }[] = [
-    {
-      pattern: /(?:feature-brief|\.feature)\.json$/u,
-      artifactType: "feature-brief",
-    },
-    {
-      pattern: /(?:context-pack|\.context)\.json$/u,
-      artifactType: "context-pack",
-    },
-    {
-      pattern: /(?:change-request|\.change)\.json$/u,
-      artifactType: "change-request",
-    },
-    {
-      pattern: /(?:technical-debt|\.debt)\.json$/u,
-      artifactType: "technical-debt",
-    },
-  ];
-  for (const entry of entries) {
-    const kind = planningKinds.find(({ pattern }) => pattern.test(entry));
-    if (!kind) continue;
-    const result = validator.validate({
-      artifactType: kind.artifactType,
-      documentPath: entry,
-      format: "json",
-      source: await fileSystem.read(resolve(root, entry)),
-    });
-    if (result.status === "invalid") invalid.push(result);
-  }
-  return invalid;
-}
-
 function validationErrors(results: readonly ArtifactValidationResult[]) {
   return results
     .flatMap((result) => [
@@ -1085,31 +805,16 @@ export async function runCli(
     if (args[0] === "conformance") {
       return runConformanceCommand(args, dependencies, io);
     }
+    if (args[0] === "doctor") {
+      return runDoctorCommand(args, dependencies, io);
+    }
     const parsed = parseArguments(args);
     const fileSystem = dependencies.fileSystem ?? nodeFileSystem;
     const root = parsed.values.get("--root") ?? cwd();
-    const profileRoot = resolve(dependencies.catalogRoot, "../profiles");
-    const knownProfiles = (await readdir(profileRoot))
-      .filter((entry) => entry.endsWith(".json"))
-      .map((entry) => entry.slice(0, -5))
-      .sort();
-    const knownWorkflows = (
-      await readdir(resolve(dependencies.catalogRoot, "workflows"))
-    )
-      .filter((entry) => entry.endsWith(".md"))
-      .map((entry) => entry.slice(0, -3))
-      .sort();
-    const validator = await createArtifactValidator(
-      resolve(dependencies.catalogRoot, "schemas"),
-      {
-        knownProfiles,
-        knownWorkflows,
-        supportedAdapters: [...adapters].sort(),
-      },
+    const validator = await createCliArtifactValidator(
+      dependencies.catalogRoot,
     );
-    const readsProject = ["sync", "adopt", "diff", "doctor"].includes(
-      parsed.command,
-    );
+    const readsProject = ["sync", "adopt", "diff"].includes(parsed.command);
     const invalidMetadata = readsProject
       ? await validateExistingMetadata(root, fileSystem, validator)
       : [];
@@ -2729,76 +2434,6 @@ export async function runCli(
         }
       }
     }
-    if (parsed.command === "doctor")
-      invalidMetadata.push(
-        ...(await validateProjectSkills(root, fileSystem, validator)),
-      );
-    if (parsed.command === "doctor") {
-      const configInvalid = invalidMetadata.some(
-        (result) => result.artifactType === "aif-config",
-      );
-      const configPresent = await fileSystem.exists(
-        resolve(root, ".aif/config.yaml"),
-      );
-      const storedDoctorConfig =
-        configPresent && !configInvalid
-          ? await projectConfiguration(root, fileSystem, validator, false)
-          : undefined;
-      const detection = await detectProjectProfiles(root, fileSystem);
-      const profile =
-        parsed.values.get("--profile") ??
-        storedDoctorConfig?.profile ??
-        detection.selectedProfile;
-      const adapterNames = parseAdapters(
-        parsed.values.get("--adapters") ??
-          storedDoctorConfig?.adapters.join(",") ??
-          "codex",
-      );
-      const projectOwnedMappings =
-        storedDoctorConfig?.projectOwnedMappings ?? [];
-      const documentationMappings =
-        storedDoctorConfig?.documentationMappings ?? [];
-      const daemonEndpoint = parsed.values.get("--daemon-endpoint");
-      if (daemonEndpoint !== undefined) {
-        const tokenFile = parsed.values.get("--daemon-token-file")!;
-        const sessionToken = (await readFile(tokenFile, "utf8")).trim();
-        const result = await requestDaemonDoctor({
-          endpoint: daemonEndpoint,
-          sessionToken,
-          request: createDoctorRequest(1, {
-            root,
-            profile,
-            adapters: adapterNames,
-          }),
-        });
-        io.stdout(
-          parsed.flags.has("--json")
-            ? JSON.stringify(result, null, 2)
-            : formatDaemonDoctor(result),
-        );
-        return result.exitCode;
-      }
-      const result = await doctorProject(
-        {
-          root,
-          profile,
-          adapters: adapterNames,
-          dryRun: true,
-          catalogRoot: dependencies.catalogRoot,
-          validator,
-          projectOwnedMappings,
-          documentationMappings,
-        },
-        fileSystem,
-        invalidMetadata,
-      );
-      io.stdout(
-        parsed.flags.has("--json")
-          ? JSON.stringify(result, null, 2)
-          : formatDoctor(result),
-      );
-      return doctorExitCode(result);
-    }
     if (parsed.command === "adopt" && parsed.flags.has("--plan")) {
       const plan = await planProjectAdoption({ root }, fileSystem);
       const outputText = parsed.flags.has("--json")
@@ -3079,8 +2714,7 @@ export async function runCli(
       const output = args.includes("--json")
         ? JSON.stringify(payload, null, 2)
         : `Intentloom schema catalog validation failed: ${error.schemaFile} [${error.code}]`;
-      if (args[0] === "doctor") io.stdout(output);
-      else io.stderr(output);
+      io.stderr(output);
       return 3;
     }
     if (

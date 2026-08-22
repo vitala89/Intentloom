@@ -9,8 +9,23 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **P4d conformance CLI extract** on branch
-`refactor/cli-conformance-command-extract`; PR pending.
+Status: **P4e doctor CLI extract** on branch
+`refactor/cli-doctor-command-extract`; PR pending.
+
+### 2026-08-23, P4e extract doctor CLI command from command.ts
+
+- **Status:** complete on branch; PR pending
+- **Branch:** `refactor/cli-doctor-command-extract`
+- **Starting main SHA:** `1cd2df20` (P4d conformance extract #369)
+- **Objective:** Behavior-preserving extract of `doctor` parser/dispatch (local +
+  daemon paths) into `doctor-command.ts` with early dispatch; co-extract shared
+  metadata helpers; no P4f+ work.
+- **Completed:** `doctor-command.ts`, `cli-project-metadata.ts`, early dispatch,
+  `formatDaemonDoctor` in `formatters.ts`, legacy doctor removal from
+  `command.ts`, `tests/cli-doctor.test.ts`, roadmap update.
+- **Not completed:** ui or any later P4 slice.
+- **Next first action:** Merge P4e PR when required CI is green; P4f (`ui`)
+  remains next per roadmap.
 
 ### 2026-08-22, P4d extract conformance CLI command from command.ts
 
