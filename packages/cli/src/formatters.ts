@@ -6,7 +6,10 @@ import type {
 import type { ProviderEvidenceResult } from "@intentloom/evidence-provider";
 import type { ReleaseTimeline } from "@intentloom/evidence-git";
 import type { CleanCacheResult } from "./clean-cache.js";
-import { analyzeReleaseEvidence } from "@intentloom/evidence-analysis";
+import {
+  analyzeReleaseEvidence,
+  type EngineeringConformanceReport,
+} from "@intentloom/evidence-analysis";
 import { inspectProject } from "@intentloom/application";
 
 export function formatProviderEvidence(result: ProviderEvidenceResult): string {
@@ -112,6 +115,39 @@ export function formatInspection(
         `${finding.severity.padEnd(7)} ${finding.code} ${finding.path} — ${finding.message}`,
     ),
   ].join("\n");
+}
+
+export function formatEngineeringConformanceHuman(
+  report: EngineeringConformanceReport,
+): string {
+  const lines: string[] = [
+    `Intentloom Engineering Conformance Report [v${report.operationVersion}]`,
+    `Policy: ${report.policyId}`,
+    `Case: ${report.caseType} (${report.caseId})`,
+    `Summary: ${report.summary.passed}/${report.summary.totalRules} passed, ${report.summary.violations} violations, ${report.summary.missingEvidence} missing evidence, ${report.summary.ambiguousEvidence} ambiguous, ${report.summary.unsupported} unsupported`,
+    "",
+    "Findings:",
+  ];
+  for (const finding of report.findings) {
+    const icon =
+      finding.status === "pass"
+        ? "[PASS]"
+        : finding.status === "violation"
+          ? "[VIOLATION]"
+          : finding.status === "missing-evidence"
+            ? "[MISSING EVIDENCE]"
+            : `[${finding.status.toUpperCase()}]`;
+    lines.push(
+      `- ${icon} ${finding.title} (${finding.ruleId}) [Severity: ${finding.severity}]`,
+    );
+    if (finding.remediation) {
+      lines.push(`  Remediation: ${finding.remediation.summary}`);
+      for (const step of finding.remediation.actionableSteps) {
+        lines.push(`  - ${step}`);
+      }
+    }
+  }
+  return lines.join("\n");
 }
 
 export function formatTimeline(result: ReleaseTimeline): string {
