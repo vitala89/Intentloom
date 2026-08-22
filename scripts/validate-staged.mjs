@@ -1,5 +1,9 @@
 import { execFileSync } from "node:child_process";
 import { hasQualityException } from "./quality-exceptions.mjs";
+import {
+  PRODUCTION_SOURCE_PATTERN,
+  evaluateProductionSourceChange,
+} from "./production-file-metrics.mjs";
 
 const root = execFileSync("git", ["rev-parse", "--show-toplevel"], {
   encoding: "utf8",
@@ -35,44 +39,37 @@ if (formatTargets.length > 0) {
   );
 }
 
-const sourcePattern =
-  /^(packages|apps)\/[^/]+\/src\/.*\.(ts|tsx|js|jsx|mjs|cjs|rs)$/;
 const errors = [];
 for (const file of staged.filter((candidate) =>
-  sourcePattern.test(candidate),
+  PRODUCTION_SOURCE_PATTERN.test(candidate),
 )) {
-  const stagedSource = execFileSync("git", ["show", `:${file}`], {
+  const headSource = execFileSync("git", ["show", `:${file}`], {
     encoding: "utf8",
     cwd: root,
   });
-  const stagedLines =
-    stagedSource.split("\n").length - (stagedSource.endsWith("\n") ? 1 : 0);
-  let previousLines = null;
+  let baseSource = null;
   try {
-    const previous = execFileSync("git", ["show", `HEAD:${file}`], {
+    baseSource = execFileSync("git", ["show", `HEAD:${file}`], {
       encoding: "utf8",
       cwd: root,
       stdio: ["ignore", "pipe", "ignore"],
     });
-    previousLines =
-      previous.split("\n").length - (previous.endsWith("\n") ? 1 : 0);
   } catch {
     // New files have no previous version.
   }
-  if (previousLines === null && stagedLines > 400) {
-    errors.push(
-      `${file}: new production file is ${stagedLines} lines; hard limit is 400`,
-    );
-  } else if (
-    previousLines !== null &&
-    previousLines > 400 &&
-    stagedLines > previousLines &&
-    !hasQualityException(file, previousLines, stagedLines)
-  ) {
-    errors.push(
-      `${file}: existing oversized file grew from ${previousLines} to ${stagedLines} lines`,
-    );
-  }
+  errors.push(
+    ...evaluateProductionSourceChange({
+      filePath: file,
+      baseSource,
+      headSource,
+      hasException: (metrics) =>
+        hasQualityException({
+          path: metrics.path,
+          baseMetrics: metrics.baseMetrics,
+          headMetrics: metrics.headMetrics,
+        }),
+    }),
+  );
 }
 
 if (errors.length > 0) {

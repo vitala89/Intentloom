@@ -1,5 +1,9 @@
 import { execFileSync } from "node:child_process";
 import { hasQualityException } from "./quality-exceptions.mjs";
+import {
+  PRODUCTION_SOURCE_PATTERN,
+  evaluateProductionSourceChange,
+} from "./production-file-metrics.mjs";
 
 const valueFor = (name) => {
   const index = process.argv.indexOf(name);
@@ -21,11 +25,9 @@ const changed = execFileSync("git", ["diff", "--name-only", "-z", range], {
 })
   .split("\0")
   .filter(Boolean);
-const sourcePattern =
-  /^(packages|apps)\/[^/]+\/src\/.*\.(ts|tsx|js|jsx|mjs|cjs|rs)$/;
 const errors = [];
 for (const file of changed.filter((candidate) =>
-  sourcePattern.test(candidate),
+  PRODUCTION_SOURCE_PATTERN.test(candidate),
 )) {
   let headSource;
   try {
@@ -36,33 +38,28 @@ for (const file of changed.filter((candidate) =>
   } catch {
     continue;
   }
-  const headLines =
-    headSource.split("\n").length - (headSource.endsWith("\n") ? 1 : 0);
-  let baseLines = null;
+  let baseSource = null;
   try {
-    const baseSource = execFileSync("git", ["show", `${base}:${file}`], {
+    baseSource = execFileSync("git", ["show", `${base}:${file}`], {
       encoding: "utf8",
       stdio: ["ignore", "pipe", "ignore"],
     });
-    baseLines =
-      baseSource.split("\n").length - (baseSource.endsWith("\n") ? 1 : 0);
   } catch {
     // New files are checked against the hard limit below.
   }
-  if (baseLines === null && headLines > 400) {
-    errors.push(
-      `${file}: new production file is ${headLines} lines; hard limit is 400`,
-    );
-  } else if (
-    baseLines !== null &&
-    baseLines > 400 &&
-    headLines > baseLines &&
-    !hasQualityException(file, baseLines, headLines)
-  ) {
-    errors.push(
-      `${file}: existing oversized file grew from ${baseLines} to ${headLines} lines`,
-    );
-  }
+  errors.push(
+    ...evaluateProductionSourceChange({
+      filePath: file,
+      baseSource,
+      headSource,
+      hasException: (metrics) =>
+        hasQualityException({
+          path: metrics.path,
+          baseMetrics: metrics.baseMetrics,
+          headMetrics: metrics.headMetrics,
+        }),
+    }),
+  );
 }
 
 if (errors.length > 0) {
