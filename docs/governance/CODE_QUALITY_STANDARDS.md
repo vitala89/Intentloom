@@ -45,15 +45,38 @@ Line limits are guardrails. Do not satisfy them by compressing code, removing
 useful names, combining statements, or moving unrelated behavior into a generic
 helper.
 
-Count formatted physical lines in hand-written files. Blank lines and comments
-still count because they affect review and navigation cost.
+Governance uses two complementary metrics for hand-written production source
+under `packages/*/src/**` and `apps/*/src/**` for `.ts`, `.tsx`, `.js`,
+`.jsx`, `.mjs`, `.cjs`, and `.rs`:
+
+### Effective source lines of code (primary)
+
+Effective code lines count lines that contain executable source tokens. They
+exclude blank lines, whitespace-only lines, and comment-only lines (including
+JSDoc/TSDoc and block comments). A line with code plus a trailing comment
+counts as code.
+
+The checker uses the TypeScript tokenizer for JavaScript/TypeScript/TSX and a
+bounded Rust lexical scanner for `.rs`.
+
+### Physical file lines (secondary safety guard)
+
+Physical lines count the full formatted file, including code, comments,
+documentation, and blank lines. This prevents unlimited documentation growth in
+a single file even when comment-only lines are excluded from the primary
+metric.
+
+Comments and documentation are encouraged where they add value. They do not
+count toward code-complexity budgets, but they also cannot make a file
+unbounded in total size.
 
 ### Hand-written production source
 
-- Preferred target: no more than **250 lines** per file.
-- Refactoring review begins above **300 lines**.
-- Hard limit for a new file: **400 lines**.
-- A new or substantially changed file must not exceed 400 lines without an
+- Preferred target: no more than **250 effective code lines** per file.
+- Refactoring review begins above **300 effective code lines**.
+- Hard limit for a new file: **400 effective code lines**.
+- Physical safety limit for a new file: **700 physical lines**.
+- A new or substantially changed file must not exceed either limit without an
   approved, documented exception.
 
 ### Tests
@@ -67,8 +90,10 @@ still count because they affect review and navigation cost.
 
 Existing files above a limit are legacy debt, not precedent.
 
-- Do not increase their formatted line count unless an approved exception
-  explains why extraction would make the change less safe.
+- Do not increase effective code lines in an already oversized file unless an
+  approved exception explains why extraction would make the change less safe.
+- Do not increase physical lines beyond the recorded baseline when the file is
+  already above the physical safety limit.
 - A meaningful feature change touching an oversized file must extract at least
   one cohesive responsibility, or record a concrete decomposition follow-up.
 - Prefer incremental, behavior-preserving extraction over a repository-wide

@@ -1,5 +1,63 @@
 {
-  "version": 1,
+  "version": 2,
+  "metrics": {
+    "primary": "effectiveCodeLines",
+    "secondary": "physicalLines",
+    "hardEffectiveCodeLines": 400,
+    "physicalSafetyLines": 700
+  },
+  "grandfatheredBaselines": [
+    {
+      "path": "packages/application/src/index.ts",
+      "effectiveCodeLines": 6764,
+      "physicalLines": 7151
+    },
+    {
+      "path": "packages/protocol/src/index.ts",
+      "effectiveCodeLines": 4280,
+      "physicalLines": 4578
+    },
+    {
+      "path": "packages/cli/src/command.ts",
+      "effectiveCodeLines": 3243,
+      "physicalLines": 3307
+    },
+    {
+      "path": "packages/daemon/src/index.ts",
+      "effectiveCodeLines": 1037,
+      "physicalLines": 1064
+    },
+    {
+      "path": "packages/validator/src/index.ts",
+      "effectiveCodeLines": 844,
+      "physicalLines": 878
+    },
+    {
+      "path": "packages/evidence-analysis/src/index.ts",
+      "effectiveCodeLines": 739,
+      "physicalLines": 777
+    },
+    {
+      "path": "packages/mcp-server/src/index.ts",
+      "effectiveCodeLines": 583,
+      "physicalLines": 613
+    },
+    {
+      "path": "packages/daemon/src/foundation-handlers.ts",
+      "effectiveCodeLines": 497,
+      "physicalLines": 518
+    },
+    {
+      "path": "packages/protocol/src/foundation-daemon-rpc.ts",
+      "effectiveCodeLines": 473,
+      "physicalLines": 525
+    },
+    {
+      "path": "apps/desktop/src/App.tsx",
+      "effectiveCodeLines": 465,
+      "physicalLines": 496
+    }
+  ],
   "exceptions": [
     {
       "path": "packages/application/src/index.ts",

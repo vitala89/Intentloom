@@ -7,12 +7,29 @@ const document = JSON.parse(
   ),
 );
 
-export function hasQualityException(path, baseLines, headLines) {
-  return document.exceptions.some(
-    (exception) =>
-      exception.path === path &&
-      exception.rule === "existing-oversized-growth" &&
-      exception.baseLines === baseLines &&
-      exception.headLines === headLines,
-  );
+export function hasQualityException({ path, baseMetrics, headMetrics }) {
+  return document.exceptions.some((exception) => {
+    if (exception.path !== path || exception.rule !== "existing-oversized-growth") {
+      return false;
+    }
+    if (
+      exception.baseEffectiveCodeLines !== undefined &&
+      exception.headEffectiveCodeLines !== undefined
+    ) {
+      const basePhysical =
+        exception.basePhysicalLines ?? exception.baseLines ?? baseMetrics.physicalLines;
+      const headPhysical =
+        exception.headPhysicalLines ?? exception.headLines ?? headMetrics.physicalLines;
+      return (
+        exception.baseEffectiveCodeLines === baseMetrics.effectiveCodeLines &&
+        exception.headEffectiveCodeLines === headMetrics.effectiveCodeLines &&
+        basePhysical === baseMetrics.physicalLines &&
+        headPhysical === headMetrics.physicalLines
+      );
+    }
+    return (
+      exception.baseLines === baseMetrics.physicalLines &&
+      exception.headLines === headMetrics.physicalLines
+    );
+  });
 }
