@@ -71,11 +71,6 @@ import {
   getSandboxCapabilityPolicy,
   evaluateProposalAgainstSandbox,
   runContinuousSecurityAudit,
-  spawnNeutronSubagentTask,
-  getNeutronSubagentTask,
-  listNeutronSubagentTasks,
-  syncLocalWorkspaceState,
-  type NeutronSubagentRole,
   type SecurityFindingSeverity,
   type SecurityFindingState,
   type SecurityAdapterCategory,
@@ -103,6 +98,7 @@ import { runInspectCommand } from "./inspect-command.js";
 import { runTimelineCommand } from "./timeline-command.js";
 import { runUiCommand } from "./ui-command.js";
 import { runWorkspaceCommand } from "./workspace-command.js";
+import { runNeutronCommand } from "./neutron-command.js";
 import { runEvidenceCommand } from "./evidence-command.js";
 import { runHarnessCommand } from "./harness-command.js";
 import {
@@ -192,15 +188,8 @@ const commands = new Set([
   "context",
   "session",
   "security",
-  "neutron",
 ]);
-const projectPathCommands = new Set([
-  "adopt",
-  "update",
-  "diff",
-  "sync",
-  "neutron",
-]);
+const projectPathCommands = new Set(["adopt", "update", "diff", "sync"]);
 const booleanFlags = new Set([
   "--cache",
   "--dry-run",
@@ -361,18 +350,15 @@ function parseArguments(args: readonly string[]): ParsedArguments {
     throw new CliUsageError(
       "security requires import, inspect, coverage, dismiss, accept-risk, list, scan, baseline, policy, sandbox, audit, or verify subcommand",
     );
-  if (command === "neutron" && !["subagent", "sync"].includes(args[1] ?? ""))
-    throw new CliUsageError("neutron requires subagent or sync subcommand");
   const flags = new Set<string>();
   const values = new Map<string, string>();
   const mappingValues = new Map<string, string[]>();
   for (
     let index =
-      (command === "security" &&
-        (args[1] === "baseline" || args[1] === "sandbox") &&
-        args[2] !== undefined &&
-        !args[2].startsWith("--")) ||
-      (command === "neutron" && args[1] === "subagent")
+      command === "security" &&
+      (args[1] === "baseline" || args[1] === "sandbox") &&
+      args[2] !== undefined &&
+      !args[2].startsWith("--")
         ? 3
         : command === "evidence" ||
             command === "summary" ||
@@ -385,7 +371,6 @@ function parseArguments(args: readonly string[]): ParsedArguments {
             command === "context" ||
             command === "session" ||
             command === "security" ||
-            (command === "neutron" && args[1] === "sync") ||
             (command === "rank" &&
               args[1] !== undefined &&
               !args[1].startsWith("--"))
@@ -793,6 +778,9 @@ export async function runCli(
     }
     if (args[0] === "workspace") {
       return await runWorkspaceCommand(args, dependencies, io);
+    }
+    if (args[0] === "neutron") {
+      return await runNeutronCommand(args, dependencies, io);
     }
     const parsed = parseArguments(args);
     const fileSystem = dependencies.fileSystem ?? nodeFileSystem;
@@ -2083,99 +2071,6 @@ export async function runCli(
         return (
           report.healthScore >= 80 && !hasFailedInvariant ? 0 : 3
         ) as CliExitCode;
-      }
-    }
-    if (parsed.command === "neutron") {
-      const section = args[1] ?? "";
-      const json = parsed.flags.has("--json");
-      if (section === "sync") {
-        const syncState = await syncLocalWorkspaceState({ root }, fileSystem);
-        if (json) {
-          io.stdout(JSON.stringify(syncState, null, 2));
-        } else {
-          const lines = [
-            `Neutron Workspace Sync (${syncState.projectId}):`,
-            `Readiness: ${syncState.readiness}`,
-            `Findings: ${syncState.findingsCount}`,
-            `Security Score: ${syncState.securityScore ?? "N/A"}`,
-            `Active Conversations: ${syncState.activeConversationsCount}`,
-            `Subagent Tasks: ${syncState.subagentTasksCount}`,
-          ];
-          io.stdout(lines.join("\n"));
-        }
-        return 0;
-      }
-      if (section === "subagent") {
-        const subaction = args[2] ?? "";
-        if (subaction === "spawn") {
-          const roleArg = (parsed.values.get("--role") ??
-            "research") as NeutronSubagentRole;
-          const taskInput =
-            parsed.values.get("--input") ??
-            parsed.values.get("--content") ??
-            "General research task";
-          const conversationId = parsed.values.get("--conversation-id");
-          const task = await spawnNeutronSubagentTask(
-            {
-              root,
-              projectId: "project-local",
-              role: roleArg,
-              taskInput,
-              ...(conversationId !== undefined ? { conversationId } : {}),
-            },
-            fileSystem,
-          );
-          if (json) {
-            io.stdout(JSON.stringify(task, null, 2));
-          } else {
-            io.stdout(
-              `Spawned Neutron subagent task ${task.id} (role: ${task.role}, status: ${task.status})`,
-            );
-          }
-          return 0;
-        }
-        if (subaction === "get") {
-          const taskId =
-            parsed.values.get("--task-id") ?? parsed.values.get("--id") ?? "";
-          const task = await getNeutronSubagentTask(
-            { root, taskId },
-            fileSystem,
-          );
-          if (!task) {
-            io.stderr(`Neutron subagent task ${taskId} not found\n`);
-            return 3;
-          }
-          if (json) {
-            io.stdout(JSON.stringify(task, null, 2));
-          } else {
-            io.stdout(
-              `Neutron subagent task ${task.id} [${task.role}]: ${task.status}\nOutput: ${task.resultOutput ?? "none"}`,
-            );
-          }
-          return 0;
-        }
-        if (subaction === "list") {
-          const conversationId = parsed.values.get("--conversation-id");
-          const tasks = await listNeutronSubagentTasks(
-            {
-              root,
-              ...(conversationId !== undefined ? { conversationId } : {}),
-            },
-            fileSystem,
-          );
-          if (json) {
-            io.stdout(JSON.stringify(tasks, null, 2));
-          } else {
-            const lines = [
-              `Neutron Subagent Tasks (${tasks.length}):`,
-              ...tasks.map(
-                (t) => `- ${t.id} [${t.role}] (${t.status}): ${t.taskInput}`,
-              ),
-            ];
-            io.stdout(lines.join("\n"));
-          }
-          return 0;
-        }
       }
     }
     if (parsed.command === "adopt" && parsed.flags.has("--plan")) {

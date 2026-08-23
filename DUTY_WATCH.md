@@ -9,13 +9,29 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **P4g workspace CLI extract** on branch
-`refactor/cli-workspace-command-extract`; PR pending.
+Status: **P4h neutron CLI extract** on branch
+`refactor/cli-neutron-command-extract`; PR pending.
+
+### 2026-08-23, P4h extract neutron CLI command from command.ts
+
+- **Status:** complete on branch; PR pending
+- **Branch:** `refactor/cli-neutron-command-extract`
+- **Starting main SHA:** `da9be2b9` (P4g workspace extract)
+- **Objective:** Behavior-preserving extract of top-level `neutron` parser/dispatch
+  into `neutron-parse.ts` + `neutron-command.ts` with early dispatch; preserve
+  asymmetric parser indexes, sync + subagent family, nested-action legacy
+  compatibility, schema catalog bootstrap ordering; no P4i+ work.
+- **Completed:** `neutron-parse.ts`, `neutron-command.ts`, early dispatch,
+  legacy neutron removal from `command.ts`, `tests/cli-neutron.test.ts`,
+  roadmap update.
+- **Not completed:** memory/session/security or any later P4 slice.
+- **Next first action:** Merge P4h PR when required CI is green; P4i
+  (`memory` / `session` / `security`) remains next per roadmap.
 
 ### 2026-08-23, P4g extract workspace CLI command from command.ts
 
-- **Status:** complete on branch; PR pending
-- **Branch:** `refactor/cli-workspace-command-extract`
+- **Status:** complete on `main` (merged)
+- **Branch:** `refactor/cli-workspace-command-extract` (merged)
 - **Starting main SHA:** `9e67ef01` (P4f ui extract #371)
 - **Objective:** Behavior-preserving extract of `workspace` parser/dispatch into
   `workspace-parse.ts` + `workspace-command.ts` with early dispatch; preserve

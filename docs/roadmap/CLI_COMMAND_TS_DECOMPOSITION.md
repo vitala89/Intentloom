@@ -19,6 +19,7 @@ Existing oversized files must not grow. New CLI families ship as dedicated
 | Doctor                      | `doctor-command.ts`, `cli-project-metadata.ts`       | Early dispatch in `runCli`; local + daemon paths; shared metadata helpers co-extracted          |
 | UI                          | `ui-command.ts`                                      | Early dispatch in `runCli`; legacy-compatible parser; schema catalog bootstrap preserved        |
 | Workspace                   | `workspace-command.ts`, `workspace-parse.ts`         | Early dispatch in `runCli`; two-module split; parser compatibility preserved; seven subcommands |
+| Neutron                     | `neutron-command.ts`, `neutron-parse.ts`             | Early dispatch in `runCli`; two-module split; asymmetric parser; sync + subagent family         |
 | Inception / Foundation (W5) | `engineering-workspace-command.ts`, `cli-entry.ts`   | Merged on `main` via PR #290; binary routing without growing `command.ts`                       |
 
 ## Priority order (remaining)
@@ -27,12 +28,11 @@ Extract one cohesive command family per PR. Prefer early dispatch so
 `parseArguments` never grows the monolith. Keep behavior and exit codes
 identical; reuse existing CLI tests.
 
-1. **`neutron`** — subagent + sync.
-2. **`memory` / `session` / `security`** — large controlled-learning and security
+1. **`memory` / `session` / `security`** — large controlled-learning and security
    surfaces; extract as separate PRs (do not combine).
-3. **`adopt` / `update` / `sync` / `diff` / `plan` / `init`** — project mutation
+2. **`adopt` / `update` / `sync` / `diff` / `plan` / `init`** — project mutation
    and sync family; extract last because of shared transaction helpers.
-4. **`summary` / `skill` / `proposal` / `evaluate` / `checkpoint` / `profile` /
+3. **`summary` / `skill` / `proposal` / `evaluate` / `checkpoint` / `profile` /
    `delegate` / `rank` / `context`** — controlled-learning cluster; split by
    subdomain once shared helpers are isolated.
 
