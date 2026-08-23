@@ -71,7 +71,6 @@ import {
   getSandboxCapabilityPolicy,
   evaluateProposalAgainstSandbox,
   runContinuousSecurityAudit,
-  getInteractiveWorkspaceState,
   startWorkspaceConversation,
   getWorkspaceConversation,
   appendWorkspaceMessage,
@@ -110,6 +109,7 @@ import { runConformanceCommand } from "./conformance-command.js";
 import { runDoctorCommand } from "./doctor-command.js";
 import { runInspectCommand } from "./inspect-command.js";
 import { runTimelineCommand } from "./timeline-command.js";
+import { runUiCommand } from "./ui-command.js";
 import { runEvidenceCommand } from "./evidence-command.js";
 import { runHarnessCommand } from "./harness-command.js";
 import {
@@ -199,7 +199,6 @@ const commands = new Set([
   "context",
   "session",
   "security",
-  "ui",
   "workspace",
   "neutron",
 ]);
@@ -208,7 +207,6 @@ const projectPathCommands = new Set([
   "update",
   "diff",
   "sync",
-  "ui",
   "neutron",
 ]);
 const booleanFlags = new Set([
@@ -807,6 +805,9 @@ export async function runCli(
     }
     if (args[0] === "doctor") {
       return runDoctorCommand(args, dependencies, io);
+    }
+    if (args[0] === "ui") {
+      return runUiCommand(args, dependencies, io);
     }
     const parsed = parseArguments(args);
     const fileSystem = dependencies.fileSystem ?? nodeFileSystem;
@@ -2098,97 +2099,6 @@ export async function runCli(
           report.healthScore >= 80 && !hasFailedInvariant ? 0 : 3
         ) as CliExitCode;
       }
-    }
-    if (parsed.command === "ui") {
-      const projectId = parsed.values.get("--project-id") ?? "project-local";
-      const requestedView = (parsed.values.get("--view") ?? "inspect") as
-        "inspect" | "doctor" | "diff" | "timeline" | "security" | "sessions";
-      const state = await getInteractiveWorkspaceState(
-        { root, projectId, activeView: requestedView },
-        fileSystem,
-      );
-      if (parsed.flags.has("--json")) {
-        io.stdout(JSON.stringify(state, null, 2));
-      } else {
-        const lines = [
-          `Intentloom Interactive Terminal UI - Workspace (${state.projectId})`,
-          `Root: ${state.root}`,
-          `Active View: ${state.activeView.toUpperCase()}  |  Read-only Mode`,
-          `─`.repeat(72),
-        ];
-
-        if (state.activeView === "inspect" && state.inspect) {
-          lines.push(`[INSPECT VIEW]`);
-          lines.push(
-            `  Selected Profile: ${state.inspect.profileDetection.selectedProfile}`,
-          );
-          lines.push(
-            `  Detected Adapters: ${state.inspect.detectedAdapters.join(", ") || "None"}`,
-          );
-          lines.push(
-            `  Instruction Paths: ${state.inspect.instructionPaths.join(", ") || "None"}`,
-          );
-          lines.push(`  Inspection Findings: ${state.inspect.findings.length}`);
-        } else if (
-          state.activeView === "doctor" ||
-          state.activeView === "health"
-        ) {
-          const errors = state.findings.filter(
-            (f) => f.severity === "error",
-          ).length;
-          const warnings = state.findings.filter(
-            (f) => f.severity === "warning",
-          ).length;
-          lines.push(
-            `[DOCTOR VIEW]  Errors: ${errors} | Warnings: ${warnings} | Total: ${state.findings.length}`,
-          );
-          if (state.findings.length === 0) {
-            lines.push(`  ✓ No health findings recorded for this project.`);
-          } else {
-            state.findings.slice(0, 10).forEach((f) => {
-              lines.push(
-                `  [${f.severity.toUpperCase()}] ${f.category}: ${f.message}`,
-              );
-              if (f.path) lines.push(`    Path: ${f.path}`);
-              if (f.remediation) lines.push(`    Fix:  ${f.remediation}`);
-            });
-          }
-        } else if (state.activeView === "diff" && state.diff) {
-          lines.push(
-            `[DIFF REVIEW]  Changes: ${state.diff.changes.length} file(s)`,
-          );
-          if (state.diff.changes.length === 0) {
-            lines.push(`  ✓ Clean working tree — no uncommitted changes.`);
-          } else {
-            state.diff.changes.forEach((c) => {
-              lines.push(`  [${c.kind.toUpperCase()}] ${c.path} (${c.reason})`);
-            });
-          }
-        } else if (state.activeView === "timeline" && state.timeline) {
-          lines.push(
-            `[TIMELINE]  Case ID: ${state.timeline.caseId} | Quality: ${state.timeline.quality}`,
-          );
-          if (state.timeline.events.length === 0) {
-            lines.push(`  No timeline events recorded.`);
-          } else {
-            state.timeline.events.slice(0, 10).forEach((e) => {
-              const time = new Date(e.timestamp).toISOString().slice(0, 19);
-              lines.push(`  ${time} | [${e.source}] ${e.commitId.slice(0, 9)}`);
-            });
-          }
-        } else {
-          lines.push(`[SUMMARY]`);
-          lines.push(`  Doctor Findings: ${state.findings.length}`);
-          lines.push(
-            `  Security Health: ${state.auditReport ? `${state.auditReport.healthScore}%` : "Not audited"}`,
-          );
-          lines.push(`  Agent Sessions:  ${state.sessions.length}`);
-        }
-        lines.push(`─`.repeat(72));
-        lines.push(`Generated At: ${state.generatedAt}`);
-        io.stdout(lines.join("\n"));
-      }
-      return 0;
     }
     if (parsed.command === "workspace") {
       const subcommand = args[1] ?? "";

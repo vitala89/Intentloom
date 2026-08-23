@@ -9,14 +9,27 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **P4e doctor CLI extract** on branch
-`refactor/cli-doctor-command-extract`; PR pending.
+Status: **P4f ui CLI extract** on branch
+`refactor/cli-ui-command-extract`; PR pending.
+
+### 2026-08-23, P4f extract ui CLI command from command.ts
+
+- **Status:** complete on branch; PR pending
+- **Branch:** `refactor/cli-ui-command-extract`
+- **Starting main SHA:** `a5875416` (P4e doctor extract #370)
+- **Objective:** Behavior-preserving extract of `ui` parser/dispatch into
+  `ui-command.ts` with early dispatch; preserve legacy parser compatibility,
+  schema catalog bootstrap, and text rendering; no P4g+ work.
+- **Completed:** `ui-command.ts`, early dispatch, legacy `ui` removal from
+  `command.ts`, `tests/cli-ui.test.ts`, roadmap update.
+- **Not completed:** workspace or any later P4 slice.
+- **Next first action:** Merge P4f PR when required CI is green; P4g (`workspace`)
+  remains next per roadmap.
 
 ### 2026-08-23, P4e extract doctor CLI command from command.ts
 
-- **Status:** complete on branch; PR pending
-- **Branch:** `refactor/cli-doctor-command-extract`
-- **Starting main SHA:** `1cd2df20` (P4d conformance extract #369)
+- **Status:** complete on `main` (#370)
+- **Branch:** `refactor/cli-doctor-command-extract` (merged)
 - **Objective:** Behavior-preserving extract of `doctor` parser/dispatch (local +
   daemon paths) into `doctor-command.ts` with early dispatch; co-extract shared
   metadata helpers; no P4f+ work.
