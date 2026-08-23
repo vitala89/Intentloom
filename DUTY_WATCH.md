@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **P4h neutron CLI extract** on branch
-`refactor/cli-neutron-command-extract`; PR pending.
+Status: **P4h neutron CLI extract** merged on `main` (#373).
 
 ### 2026-08-23, P4h extract neutron CLI command from command.ts
 
-- **Status:** complete on branch; PR pending
-- **Branch:** `refactor/cli-neutron-command-extract`
+- **Status:** complete on `main` (#373)
+- **Branch:** `refactor/cli-neutron-command-extract` (merged)
+- **Merge SHA:** `fc17793`
 - **Starting main SHA:** `da9be2b9` (P4g workspace extract)
 - **Objective:** Behavior-preserving extract of top-level `neutron` parser/dispatch
   into `neutron-parse.ts` + `neutron-command.ts` with early dispatch; preserve
@@ -25,8 +25,7 @@ Status: **P4h neutron CLI extract** on branch
   legacy neutron removal from `command.ts`, `tests/cli-neutron.test.ts`,
   roadmap update.
 - **Not completed:** memory/session/security or any later P4 slice.
-- **Next first action:** Merge P4h PR when required CI is green; P4i
-  (`memory` / `session` / `security`) remains next per roadmap.
+- **Next first action:** P4i (`memory` / `session` / `security`) per roadmap; pick one family for the next bounded PR.
 
 ### 2026-08-23, P4g extract workspace CLI command from command.ts
 
