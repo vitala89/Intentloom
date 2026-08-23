@@ -8,17 +8,18 @@ Existing oversized files must not grow. New CLI families ship as dedicated
 
 ## Done
 
-| Slice                       | Module                                               | Notes                                                                                          |
-| --------------------------- | ---------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
-| Harness                     | `harness-command.ts`, `harness-benchmark-command.ts` | Early dispatch in `runCli`                                                                     |
-| Evidence                    | `evidence-command.ts`                                | Early dispatch; first extract required by `quality-exceptions.json` review trigger for PR #160 |
-| Clean                       | `clean-command.ts`                                   | Early dispatch in `runCli`; runtime in `clean-cache.ts`; behavior preserved                    |
-| Inspect                     | `inspect-command.ts`                                 | Early dispatch in `runCli`; formatter in `formatters.ts`; behavior preserved                   |
-| Timeline                    | `timeline-command.ts`                                | Early dispatch in `runCli`; formatter in `formatters.ts`; behavior preserved                   |
-| Conformance                 | `conformance-command.ts`                             | Early dispatch in `runCli`; formatter in `formatters.ts`; behavior preserved                   |
-| Doctor                      | `doctor-command.ts`, `cli-project-metadata.ts`       | Early dispatch in `runCli`; local + daemon paths; shared metadata helpers co-extracted         |
-| UI                          | `ui-command.ts`                                      | Early dispatch in `runCli`; legacy-compatible parser; schema catalog bootstrap preserved       |
-| Inception / Foundation (W5) | `engineering-workspace-command.ts`, `cli-entry.ts`   | Merged on `main` via PR #290; binary routing without growing `command.ts`                      |
+| Slice                       | Module                                               | Notes                                                                                           |
+| --------------------------- | ---------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| Harness                     | `harness-command.ts`, `harness-benchmark-command.ts` | Early dispatch in `runCli`                                                                      |
+| Evidence                    | `evidence-command.ts`                                | Early dispatch; first extract required by `quality-exceptions.json` review trigger for PR #160  |
+| Clean                       | `clean-command.ts`                                   | Early dispatch in `runCli`; runtime in `clean-cache.ts`; behavior preserved                     |
+| Inspect                     | `inspect-command.ts`                                 | Early dispatch in `runCli`; formatter in `formatters.ts`; behavior preserved                    |
+| Timeline                    | `timeline-command.ts`                                | Early dispatch in `runCli`; formatter in `formatters.ts`; behavior preserved                    |
+| Conformance                 | `conformance-command.ts`                             | Early dispatch in `runCli`; formatter in `formatters.ts`; behavior preserved                    |
+| Doctor                      | `doctor-command.ts`, `cli-project-metadata.ts`       | Early dispatch in `runCli`; local + daemon paths; shared metadata helpers co-extracted          |
+| UI                          | `ui-command.ts`                                      | Early dispatch in `runCli`; legacy-compatible parser; schema catalog bootstrap preserved        |
+| Workspace                   | `workspace-command.ts`, `workspace-parse.ts`         | Early dispatch in `runCli`; two-module split; parser compatibility preserved; seven subcommands |
+| Inception / Foundation (W5) | `engineering-workspace-command.ts`, `cli-entry.ts`   | Merged on `main` via PR #290; binary routing without growing `command.ts`                       |
 
 ## Priority order (remaining)
 
@@ -26,13 +27,12 @@ Extract one cohesive command family per PR. Prefer early dispatch so
 `parseArguments` never grows the monolith. Keep behavior and exit codes
 identical; reuse existing CLI tests.
 
-1. **`workspace`** — agent workspace conversation modes.
-2. **`neutron`** — subagent + sync.
-3. **`memory` / `session` / `security`** — large controlled-learning and security
+1. **`neutron`** — subagent + sync.
+2. **`memory` / `session` / `security`** — large controlled-learning and security
    surfaces; extract as separate PRs (do not combine).
-4. **`adopt` / `update` / `sync` / `diff` / `plan` / `init`** — project mutation
+3. **`adopt` / `update` / `sync` / `diff` / `plan` / `init`** — project mutation
    and sync family; extract last because of shared transaction helpers.
-5. **`summary` / `skill` / `proposal` / `evaluate` / `checkpoint` / `profile` /
+4. **`summary` / `skill` / `proposal` / `evaluate` / `checkpoint` / `profile` /
    `delegate` / `rank` / `context`** — controlled-learning cluster; split by
    subdomain once shared helpers are isolated.
 

@@ -71,18 +71,10 @@ import {
   getSandboxCapabilityPolicy,
   evaluateProposalAgainstSandbox,
   runContinuousSecurityAudit,
-  startWorkspaceConversation,
-  getWorkspaceConversation,
-  appendWorkspaceMessage,
-  listWorkspaceConversations,
-  promoteWorkspaceConversationToProposal,
-  reviewWorkspaceProposal,
-  applyWorkspaceProposal,
   spawnNeutronSubagentTask,
   getNeutronSubagentTask,
   listNeutronSubagentTasks,
   syncLocalWorkspaceState,
-  type AgentWorkspaceMode,
   type NeutronSubagentRole,
   type SecurityFindingSeverity,
   type SecurityFindingState,
@@ -110,6 +102,7 @@ import { runDoctorCommand } from "./doctor-command.js";
 import { runInspectCommand } from "./inspect-command.js";
 import { runTimelineCommand } from "./timeline-command.js";
 import { runUiCommand } from "./ui-command.js";
+import { runWorkspaceCommand } from "./workspace-command.js";
 import { runEvidenceCommand } from "./evidence-command.js";
 import { runHarnessCommand } from "./harness-command.js";
 import {
@@ -199,7 +192,6 @@ const commands = new Set([
   "context",
   "session",
   "security",
-  "workspace",
   "neutron",
 ]);
 const projectPathCommands = new Set([
@@ -369,15 +361,6 @@ function parseArguments(args: readonly string[]): ParsedArguments {
     throw new CliUsageError(
       "security requires import, inspect, coverage, dismiss, accept-risk, list, scan, baseline, policy, sandbox, audit, or verify subcommand",
     );
-  if (
-    command === "workspace" &&
-    !["start", "get", "list", "append", "promote", "review", "apply"].includes(
-      args[1] ?? "",
-    )
-  )
-    throw new CliUsageError(
-      "workspace requires start, get, list, append, promote, review, or apply subcommand",
-    );
   if (command === "neutron" && !["subagent", "sync"].includes(args[1] ?? ""))
     throw new CliUsageError("neutron requires subagent or sync subcommand");
   const flags = new Set<string>();
@@ -402,7 +385,6 @@ function parseArguments(args: readonly string[]): ParsedArguments {
             command === "context" ||
             command === "session" ||
             command === "security" ||
-            command === "workspace" ||
             (command === "neutron" && args[1] === "sync") ||
             (command === "rank" &&
               args[1] !== undefined &&
@@ -808,6 +790,9 @@ export async function runCli(
     }
     if (args[0] === "ui") {
       return runUiCommand(args, dependencies, io);
+    }
+    if (args[0] === "workspace") {
+      return await runWorkspaceCommand(args, dependencies, io);
     }
     const parsed = parseArguments(args);
     const fileSystem = dependencies.fileSystem ?? nodeFileSystem;
@@ -2097,157 +2082,6 @@ export async function runCli(
         );
         return (
           report.healthScore >= 80 && !hasFailedInvariant ? 0 : 3
-        ) as CliExitCode;
-      }
-    }
-    if (parsed.command === "workspace") {
-      const subcommand = args[1] ?? "";
-      const json = parsed.flags.has("--json");
-      const projectId = parsed.values.get("--project-id") ?? "project-local";
-
-      if (subcommand === "start") {
-        const mode = (parsed.values.get("--mode") ??
-          "discuss") as AgentWorkspaceMode;
-        const conv = await startWorkspaceConversation(
-          { root, projectId, mode },
-          fileSystem,
-        );
-        if (json) {
-          io.stdout(JSON.stringify(conv, null, 2));
-        } else {
-          io.stdout(
-            `Started workspace conversation: ${conv.id} [mode=${conv.mode}]`,
-          );
-        }
-        return 0;
-      }
-      if (subcommand === "get") {
-        const conversationId = parsed.values.get("--conversation-id") ?? "";
-        const conv = await getWorkspaceConversation(
-          { root, conversationId },
-          fileSystem,
-        );
-        if (!conv) {
-          const err = `Workspace conversation ${conversationId} not found`;
-          if (json) io.stdout(JSON.stringify({ error: err }, null, 2));
-          else io.stderr(err);
-          return 3;
-        }
-        if (json) {
-          io.stdout(JSON.stringify(conv, null, 2));
-        } else {
-          const lines = [
-            `Conversation: ${conv.id} (Project: ${conv.projectId}, Mode: ${conv.mode})`,
-            `Messages (${conv.messages.length}):`,
-            ...conv.messages.map(
-              (m) => `[${m.role.toUpperCase()} ${m.timestamp}]: ${m.content}`,
-            ),
-          ];
-          io.stdout(lines.join("\n"));
-        }
-        return 0;
-      }
-      if (subcommand === "append") {
-        const conversationId = parsed.values.get("--conversation-id") ?? "";
-        const content = parsed.values.get("--content") ?? "";
-        const conv = await appendWorkspaceMessage(
-          { root, conversationId, role: "user", content },
-          fileSystem,
-        );
-        if (json) {
-          io.stdout(JSON.stringify(conv, null, 2));
-        } else {
-          io.stdout(
-            `Appended message to conversation ${conv.id} (total messages: ${conv.messages.length})`,
-          );
-        }
-        return 0;
-      }
-      if (subcommand === "list") {
-        const list = await listWorkspaceConversations({ root }, fileSystem);
-        if (json) {
-          io.stdout(JSON.stringify(list, null, 2));
-        } else {
-          const lines = [
-            `Workspace Conversations (${list.length}):`,
-            ...list.map(
-              (c) =>
-                `- ${c.id} [mode=${c.mode}, messages=${c.messages.length}, updated=${c.updatedAt}]`,
-            ),
-          ];
-          io.stdout(lines.join("\n"));
-        }
-        return 0;
-      }
-      if (subcommand === "promote") {
-        const conversationId = parsed.values.get("--conversation-id") ?? "";
-        const proposalId = parsed.values.get("--proposal-id");
-        const proposal = await promoteWorkspaceConversationToProposal(
-          {
-            root,
-            conversationId,
-            ...(proposalId !== undefined ? { proposalId } : {}),
-          },
-          fileSystem,
-        );
-        if (json) {
-          io.stdout(JSON.stringify(proposal, null, 2));
-        } else {
-          io.stdout(
-            `Promoted conversation ${conversationId} to proposal ${proposalId ?? "default"} (items: ${proposal.items.length})`,
-          );
-        }
-        return 0;
-      }
-      if (subcommand === "review") {
-        const proposalId = parsed.values.get("--proposal-id") ?? "";
-        const policyPath = parsed.values.get("--policy");
-        const review = await reviewWorkspaceProposal(
-          {
-            root,
-            proposalId,
-            ...(policyPath !== undefined ? { policyPath } : {}),
-          },
-          fileSystem,
-        );
-        if (json) {
-          io.stdout(JSON.stringify(review, null, 2));
-        } else {
-          const lines = [
-            `Workspace Proposal Review (${review.proposalId}):`,
-            `Items: ${review.itemsCount}`,
-            `Affected Paths: ${review.affectedPaths.join(", ") || "none"}`,
-            `Sandbox Evaluation: ${review.sandboxEvaluation.allowed ? "ALLOWED" : "BLOCKED"}`,
-            `Ready To Apply: ${review.readyToApply}`,
-          ];
-          io.stdout(lines.join("\n"));
-        }
-        return (review.readyToApply ? 0 : 3) as CliExitCode;
-      }
-      if (subcommand === "apply") {
-        const proposalId = parsed.values.get("--proposal-id") ?? "";
-        const approvedBy = parsed.values.get("--approved-by") ?? "";
-        const planFile = parsed.values.get("--plan-file");
-        const dryRun = parsed.flags.has("--dry-run");
-        const result = await applyWorkspaceProposal(
-          {
-            root,
-            proposalId,
-            approvedBy,
-            ...(planFile !== undefined ? { planFile } : {}),
-            dryRun,
-          },
-          fileSystem,
-        );
-        if (json) {
-          io.stdout(JSON.stringify(result, null, 2));
-        } else {
-          io.stdout(
-            `Applied workspace proposal ${proposalId} (status: ${result.applicationStatus ?? "applied"}, items: ${result.items.length})`,
-          );
-        }
-        return (
-          result.transactionOutcome?.status === "failed" ? 3 : 0
         ) as CliExitCode;
       }
     }
