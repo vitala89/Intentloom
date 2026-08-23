@@ -9,8 +9,24 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **P4f ui CLI extract** on branch
-`refactor/cli-ui-command-extract`; PR pending.
+Status: **P4g workspace CLI extract** on branch
+`refactor/cli-workspace-command-extract`; PR pending.
+
+### 2026-08-23, P4g extract workspace CLI command from command.ts
+
+- **Status:** complete on branch; PR pending
+- **Branch:** `refactor/cli-workspace-command-extract`
+- **Starting main SHA:** `9e67ef01` (P4f ui extract #371)
+- **Objective:** Behavior-preserving extract of `workspace` parser/dispatch into
+  `workspace-parse.ts` + `workspace-command.ts` with early dispatch; preserve
+  legacy parser compatibility, schema catalog bootstrap, positional rejection,
+  and all seven subcommands; no P4h+ work.
+- **Completed:** `workspace-parse.ts`, `workspace-command.ts`, early dispatch,
+  legacy workspace removal from `command.ts`, `tests/cli-workspace.test.ts`,
+  roadmap update.
+- **Not completed:** neutron or any later P4 slice.
+- **Next first action:** Merge P4g PR when required CI is green; P4h (`neutron`)
+  remains next per roadmap.
 
 ### 2026-08-23, P4f extract ui CLI command from command.ts
 
