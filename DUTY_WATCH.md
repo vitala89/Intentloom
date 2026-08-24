@@ -9,13 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **P4j session CLI extract** in progress on branch
-`refactor/cli-session-command-extract`.
+Status: **P4j session CLI extract** complete on `main` (#386).
 
 ### 2026-08-25, P4j extract session CLI command from command.ts
 
-- **Status:** complete on branch; PR pending
-- **Branch:** `refactor/cli-session-command-extract`
+- **Status:** complete on `main` (#386)
+- **Branch:** `refactor/cli-session-command-extract` (merged)
+- **Merge SHA:** `20b844d05363d9bbf7ff4310ac261f33718d6500`
 - **Starting main SHA:** `55179d7a87bebfa2d26e6a5a04b6ba9391f328e0` (P4i memory extract #385)
 - **Objective:** Behavior-preserving extract of top-level `session` parser/dispatch
   into `session-parse.ts` + `session-command.ts` with early dispatch; preserve
@@ -26,8 +26,7 @@ Status: **P4j session CLI extract** in progress on branch
   effective, −153 from 2101), `tests/cli-session.test.ts` (60 tests), roadmap
   update.
 - **Not completed:** security or any later P4 slice.
-- **Next first action:** Merge P4j PR when required CI is green; P4k (`security`)
-  remains next per roadmap.
+- **Next first action:** P4k (`security`) extract per roadmap; one bounded PR, no combined session work.
 
 ### 2026-08-25, P4i extract memory CLI command from command.ts
 
