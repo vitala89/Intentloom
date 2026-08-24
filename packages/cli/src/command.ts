@@ -40,12 +40,6 @@ import {
   listProfiles,
   delegateTaskRole,
   getBoundedProjectContext,
-  startAgentSession,
-  getAgentSession,
-  listAgentSessions,
-  closeAgentSession,
-  deleteAgentSession,
-  exportAgentSession,
   importSarifSecurityReport,
   getSecurityCoverageReport,
   dismissSecurityFinding,
@@ -61,7 +55,6 @@ import {
   type SecurityFindingSeverity,
   type SecurityFindingState,
   type SecurityAdapterCategory,
-  type AgentSessionState,
   type SkillLoadingLevel,
   type SkillProposalState,
   type SemanticRankingProvider,
@@ -87,6 +80,7 @@ import { runUiCommand } from "./ui-command.js";
 import { runWorkspaceCommand } from "./workspace-command.js";
 import { runNeutronCommand } from "./neutron-command.js";
 import { runMemoryCommand } from "./memory-command.js";
+import { runSessionCommand } from "./session-command.js";
 import { runEvidenceCommand } from "./evidence-command.js";
 import { runHarnessCommand } from "./harness-command.js";
 import {
@@ -173,7 +167,6 @@ const commands = new Set([
   "profile",
   "delegate",
   "context",
-  "session",
   "security",
 ]);
 const projectPathCommands = new Set(["adopt", "update", "diff", "sync"]);
@@ -291,15 +284,6 @@ function parseArguments(args: readonly string[]): ParsedArguments {
   if (command === "context" && args[1] !== "get")
     throw new CliUsageError("context requires get subcommand");
   if (
-    command === "session" &&
-    !["start", "close", "list", "get", "delete", "export"].includes(
-      args[1] ?? "",
-    )
-  )
-    throw new CliUsageError(
-      "session requires start, close, list, get, delete, or export subcommand",
-    );
-  if (
     command === "security" &&
     ![
       "import",
@@ -337,7 +321,6 @@ function parseArguments(args: readonly string[]): ParsedArguments {
             command === "checkpoint" ||
             command === "profile" ||
             command === "context" ||
-            command === "session" ||
             command === "security" ||
             (command === "rank" &&
               args[1] !== undefined &&
@@ -752,6 +735,9 @@ export async function runCli(
     }
     if (args[0] === "memory") {
       return await runMemoryCommand(args, dependencies, io);
+    }
+    if (args[0] === "session") {
+      return await runSessionCommand(args, dependencies, io);
     }
     const parsed = parseArguments(args);
     const fileSystem = dependencies.fileSystem ?? nodeFileSystem;
@@ -1398,146 +1384,6 @@ export async function runCli(
         io.stdout(lines.join("\n"));
       }
       return 0;
-    }
-    if (parsed.command === "session") {
-      const subcommand = args[1];
-      if (
-        !["start", "close", "list", "get", "delete", "export"].includes(
-          subcommand ?? "",
-        )
-      ) {
-        throw new CliUsageError(
-          "session requires start, close, list, get, delete, or export subcommand",
-        );
-      }
-      const sessionId =
-        parsed.values.get("--id") ??
-        (args[2] && !args[2].startsWith("--") ? args[2] : undefined);
-      const activeTask = parsed.values.get("--task") ?? "unspecified-task";
-      const projectId = parsed.values.get("--project-id") ?? "project-local";
-
-      if (subcommand === "start") {
-        const session = await startAgentSession(
-          {
-            root,
-            projectId,
-            activeTask,
-            ...(sessionId !== undefined ? { sessionId } : {}),
-          },
-          fileSystem,
-        );
-        if (parsed.flags.has("--json")) {
-          io.stdout(JSON.stringify(session, null, 2));
-        } else {
-          io.stdout(
-            `Started agent session ${session.sessionId} [${session.state}] for task: ${session.activeTask}`,
-          );
-        }
-        return 0;
-      }
-      if (subcommand === "close") {
-        if (!sessionId)
-          throw new CliUsageError(
-            "session close requires session ID (--id or positional argument)",
-          );
-        const session = await closeAgentSession(
-          sessionId,
-          { root },
-          fileSystem,
-        );
-        if (parsed.flags.has("--json")) {
-          io.stdout(JSON.stringify(session, null, 2));
-        } else {
-          io.stdout(
-            `Closed agent session ${session.sessionId} [${session.state}]`,
-          );
-        }
-        return 0;
-      }
-      if (subcommand === "list") {
-        const rawState = parsed.values.get("--state");
-        const state = rawState as AgentSessionState | undefined;
-        const sessions = await listAgentSessions(
-          {
-            root,
-            ...(state !== undefined ? { state } : {}),
-          },
-          fileSystem,
-        );
-        if (parsed.flags.has("--json")) {
-          io.stdout(JSON.stringify(sessions, null, 2));
-        } else {
-          const lines = [
-            `Agent Sessions (${sessions.length}):`,
-            ...sessions.map(
-              (s) => `- ${s.sessionId} [${s.state}] (${s.activeTask})`,
-            ),
-          ];
-          io.stdout(lines.join("\n"));
-        }
-        return 0;
-      }
-      if (subcommand === "get") {
-        if (!sessionId)
-          throw new CliUsageError(
-            "session get requires session ID (--id or positional argument)",
-          );
-        const session = await getAgentSession(sessionId, { root }, fileSystem);
-        if (!session) {
-          throw new Error(`agent session not found: ${sessionId}`);
-        }
-        if (parsed.flags.has("--json")) {
-          io.stdout(JSON.stringify(session, null, 2));
-        } else {
-          const lines = [
-            `Agent Session: ${session.sessionId}`,
-            `State: ${session.state}`,
-            `Task: ${session.activeTask}`,
-            `Created: ${session.createdAt}`,
-            `Updated: ${session.updatedAt}`,
-            ...(session.closedAt ? [`Closed: ${session.closedAt}`] : []),
-          ];
-          io.stdout(lines.join("\n"));
-        }
-        return 0;
-      }
-      if (subcommand === "delete") {
-        if (!sessionId)
-          throw new CliUsageError(
-            "session delete requires session ID (--id or positional argument)",
-          );
-        await deleteAgentSession(sessionId, { root }, fileSystem);
-        if (parsed.flags.has("--json")) {
-          io.stdout(JSON.stringify({ status: "deleted", sessionId }, null, 2));
-        } else {
-          io.stdout(`Deleted agent session: ${sessionId}`);
-        }
-        return 0;
-      }
-      if (subcommand === "export") {
-        if (!sessionId)
-          throw new CliUsageError(
-            "session export requires session ID (--id or positional argument)",
-          );
-        const targetPath = parsed.values.get("--output");
-        const result = await exportAgentSession(
-          sessionId,
-          {
-            root,
-            projectId,
-            ...(targetPath !== undefined ? { targetPath } : {}),
-          },
-          fileSystem,
-        );
-        if (parsed.flags.has("--json")) {
-          io.stdout(JSON.stringify(result, null, 2));
-        } else {
-          io.stdout(
-            `Exported agent session ${sessionId} for project ${projectId}${targetPath ? ` to ${targetPath}` : ""}`,
-          );
-        }
-        return 0;
-      }
     }
     if (parsed.command === "security") {
       const subcommand = args[1];
