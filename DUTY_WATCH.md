@@ -9,7 +9,24 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **P4h neutron CLI extract** merged on `main` (#373).
+Status: **P4i memory CLI extract** in progress on branch
+`refactor/cli-memory-command-extract`.
+
+### 2026-08-25, P4i extract memory CLI command from command.ts
+
+- **Status:** complete on branch; PR pending
+- **Branch:** `refactor/cli-memory-command-extract`
+- **Starting main SHA:** `70d0c829a57697f94b4ef53944cb77f0a84641ea`
+- **Objective:** Behavior-preserving extract of top-level `memory` parser/dispatch
+  into `memory-parse.ts` + `memory-command.ts` with early dispatch; preserve
+  twelve subcommands, legacy parser compatibility, schema catalog bootstrap
+  ordering, silent review-not-found exit 3, and JSON output quirks; no P4j+ work.
+- **Completed:** `memory-parse.ts`, `memory-command.ts`, early dispatch,
+  legacy memory removal from `command.ts`, `tests/cli-memory.test.ts`,
+  roadmap update.
+- **Not completed:** session/security or any later P4 slice.
+- **Next first action:** Merge P4i PR when required CI is green; P4j (`session` or
+  `security`) remains next per roadmap.
 
 ### 2026-08-23, P4h extract neutron CLI command from command.ts
 
