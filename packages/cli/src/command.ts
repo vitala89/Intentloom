@@ -23,8 +23,6 @@ import {
   updateSkillProposalState,
   evaluateSkillProposal,
   listSkillEvaluations,
-  listProceduralMemorySummary,
-  inspectProceduralMemory,
   prepareSkillMutationPlan,
   applySkillMutationPlan,
   createTaskCheckpoint,
@@ -42,17 +40,6 @@ import {
   listProfiles,
   delegateTaskRole,
   getBoundedProjectContext,
-  proposePersistentMemory,
-  getPersistentMemoryItem,
-  listPersistentMemoryItems,
-  acceptPersistentMemory,
-  forgetPersistentMemory,
-  exportPersistentMemory,
-  importPersistentMemory,
-  searchPersistentMemory,
-  renderPersistentMemoryContext,
-  rebuildPersistentMemoryIndex,
-  clearPersistentMemoryIndex,
   startAgentSession,
   getAgentSession,
   listAgentSessions,
@@ -99,6 +86,7 @@ import { runTimelineCommand } from "./timeline-command.js";
 import { runUiCommand } from "./ui-command.js";
 import { runWorkspaceCommand } from "./workspace-command.js";
 import { runNeutronCommand } from "./neutron-command.js";
+import { runMemoryCommand } from "./memory-command.js";
 import { runEvidenceCommand } from "./evidence-command.js";
 import { runHarnessCommand } from "./harness-command.js";
 import {
@@ -180,7 +168,6 @@ const commands = new Set([
   "skill",
   "proposal",
   "evaluate",
-  "memory",
   "checkpoint",
   "rank",
   "profile",
@@ -282,24 +269,6 @@ function parseArguments(args: readonly string[]): ParsedArguments {
   if (command === "evaluate" && !["run", "list"].includes(args[1] ?? ""))
     throw new CliUsageError("evaluate requires run or list subcommand");
   if (
-    command === "memory" &&
-    ![
-      "inspect",
-      "summary",
-      "propose",
-      "review",
-      "list",
-      "accept",
-      "forget",
-      "export",
-      "import",
-      "search",
-      "render",
-      "index",
-    ].includes(args[1] ?? "")
-  )
-    throw new CliUsageError("unsupported memory subcommand");
-  if (
     command === "checkpoint" &&
     ![
       "create",
@@ -365,7 +334,6 @@ function parseArguments(args: readonly string[]): ParsedArguments {
             command === "skill" ||
             command === "proposal" ||
             command === "evaluate" ||
-            command === "memory" ||
             command === "checkpoint" ||
             command === "profile" ||
             command === "context" ||
@@ -782,6 +750,9 @@ export async function runCli(
     if (args[0] === "neutron") {
       return await runNeutronCommand(args, dependencies, io);
     }
+    if (args[0] === "memory") {
+      return await runMemoryCommand(args, dependencies, io);
+    }
     const parsed = parseArguments(args);
     const fileSystem = dependencies.fileSystem ?? nodeFileSystem;
     const root = parsed.values.get("--root") ?? cwd();
@@ -1117,198 +1088,6 @@ export async function runCli(
         return 0;
       }
       throw new CliUsageError(`unsupported evaluate subcommand: ${subcommand}`);
-    }
-    if (parsed.command === "memory") {
-      const subcommand = args[1];
-      if (subcommand === "summary") {
-        const summary = await listProceduralMemorySummary({ root }, fileSystem);
-        io.stdout(
-          parsed.flags.has("--json")
-            ? JSON.stringify(summary, null, 2)
-            : `Procedural Memory Summary:\n- Total Proposals: ${summary.totalProposals}\n- Active Skills: ${summary.activeSkillsCount}\n- Evaluations: ${summary.totalEvaluations} (Pass Rate: ${summary.evaluationPassRate}%)\n- Lock Status: ${summary.extensionLockStatus}`,
-        );
-        return 0;
-      }
-      if (subcommand === "inspect") {
-        const inspection = await inspectProceduralMemory({ root }, fileSystem);
-        if (parsed.flags.has("--json")) {
-          io.stdout(JSON.stringify(inspection, null, 2));
-        } else {
-          const lines = [
-            `Procedural Memory Inspection:`,
-            `- Total Proposals: ${inspection.summary.totalProposals}`,
-            `- Active Skills: ${inspection.summary.activeSkillsCount}`,
-            `- Evaluation Pass Rate: ${inspection.summary.evaluationPassRate}%`,
-            `- Lock Status: ${inspection.summary.extensionLockStatus}`,
-            "",
-            `Issues (${inspection.issues.length}):`,
-            ...(inspection.issues.length > 0
-              ? inspection.issues.map((i) => `  - ${i}`)
-              : ["  - None"]),
-          ];
-          io.stdout(lines.join("\n"));
-        }
-        return 0;
-      }
-      if (subcommand === "list") {
-        const items = await listPersistentMemoryItems({ root }, fileSystem);
-        io.stdout(
-          parsed.flags.has("--json")
-            ? JSON.stringify(items, null, 2)
-            : items
-                .map(
-                  (item) =>
-                    `[${item.id}] ${item.lifecycleState} ${item.classification}`,
-                )
-                .join("\n"),
-        );
-        return 0;
-      }
-      if (subcommand === "review") {
-        const id = parsed.values.get("--id") ?? args[2];
-        if (!id) throw new CliUsageError("memory review requires --id <id>");
-        const item = await getPersistentMemoryItem(id, { root }, fileSystem);
-        if (!item) return 3;
-        io.stdout(
-          parsed.flags.has("--json")
-            ? JSON.stringify(item, null, 2)
-            : `[${item.id}] ${item.lifecycleState}\n${item.content}`,
-        );
-        return 0;
-      }
-      if (subcommand === "propose") {
-        const raw = parsed.values.get("--json-input");
-        if (!raw)
-          throw new CliUsageError(
-            "memory propose requires --json-input <json>",
-          );
-        const input = JSON.parse(raw);
-        const item = await proposePersistentMemory(input, { root }, fileSystem);
-        io.stdout(
-          parsed.flags.has("--json")
-            ? JSON.stringify(item, null, 2)
-            : `Proposed persistent memory [${item.id}]`,
-        );
-        return 0;
-      }
-      if (subcommand === "accept") {
-        const id = parsed.values.get("--id") ?? args[2];
-        const approvedBy = parsed.values.get("--approved-by");
-        const evidence = parsed.values.get("--evidence");
-        if (!id || !approvedBy || !evidence)
-          throw new CliUsageError(
-            "memory accept requires --id, --approved-by, and --evidence",
-          );
-        const item = await acceptPersistentMemory(
-          id,
-          { approvedBy, evidence },
-          { root },
-          fileSystem,
-        );
-        io.stdout(
-          parsed.flags.has("--json")
-            ? JSON.stringify(item, null, 2)
-            : `Accepted persistent memory [${item.id}]`,
-        );
-        return 0;
-      }
-      if (subcommand === "forget") {
-        const id = parsed.values.get("--id") ?? args[2];
-        if (!id) throw new CliUsageError("memory forget requires --id <id>");
-        const item = await forgetPersistentMemory(id, { root }, fileSystem);
-        io.stdout(
-          parsed.flags.has("--json")
-            ? JSON.stringify(item, null, 2)
-            : `Forgot persistent memory [${item.id}]`,
-        );
-        return 0;
-      }
-      if (subcommand === "export") {
-        const projectId = parsed.values.get("--project-id");
-        if (!projectId)
-          throw new CliUsageError("memory export requires --project-id <id>");
-        const bundle = await exportPersistentMemory(
-          { root, projectId },
-          fileSystem,
-        );
-        io.stdout(JSON.stringify(bundle, null, 2));
-        return 0;
-      }
-      if (subcommand === "import") {
-        const projectId = parsed.values.get("--project-id");
-        const raw = parsed.values.get("--json-input");
-        if (!projectId || !raw)
-          throw new CliUsageError(
-            "memory import requires --project-id and --json-input <json>",
-          );
-        const items = await importPersistentMemory(
-          JSON.parse(raw),
-          { root, projectId },
-          fileSystem,
-        );
-        io.stdout(
-          parsed.flags.has("--json")
-            ? JSON.stringify(items, null, 2)
-            : `Imported ${items.length} persistent memory proposals`,
-        );
-        return 0;
-      }
-      if (subcommand === "search" || subcommand === "render") {
-        const projectId = parsed.values.get("--project-id");
-        const query = parsed.values.get("--query");
-        if (!projectId || !query)
-          throw new CliUsageError(
-            `memory ${subcommand} requires --project-id and --query`,
-          );
-        if (subcommand === "search") {
-          io.stdout(
-            JSON.stringify(
-              await searchPersistentMemory(
-                query,
-                { root, projectId },
-                fileSystem,
-              ),
-              null,
-              2,
-            ),
-          );
-        } else {
-          const target = parsed.values.get("--target") as any;
-          if (!target)
-            throw new CliUsageError("memory render requires --target");
-          const result = await renderPersistentMemoryContext(
-            target,
-            query,
-            { root, projectId },
-            fileSystem,
-          );
-          io.stdout(
-            parsed.flags.has("--json")
-              ? JSON.stringify(result, null, 2)
-              : result.content,
-          );
-        }
-        return 0;
-      }
-      if (subcommand === "index") {
-        if (parsed.flags.has("--clear")) {
-          await clearPersistentMemoryIndex({ root }, fileSystem);
-          io.stdout("Cleared persistent memory index");
-          return 0;
-        }
-        const projectId = parsed.values.get("--project-id");
-        if (!projectId)
-          throw new CliUsageError("memory index requires --project-id");
-        io.stdout(
-          JSON.stringify(
-            await rebuildPersistentMemoryIndex({ root, projectId }, fileSystem),
-            null,
-            2,
-          ),
-        );
-        return 0;
-      }
-      throw new CliUsageError(`unsupported memory subcommand: ${subcommand}`);
     }
     if (parsed.command === "checkpoint") {
       const subcommand = args[1];
