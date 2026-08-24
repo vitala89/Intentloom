@@ -9,13 +9,30 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **P4i memory CLI extract** in progress on branch
-`refactor/cli-memory-command-extract`.
+Status: **P4j session CLI extract** in progress on branch
+`refactor/cli-session-command-extract`.
+
+### 2026-08-25, P4j extract session CLI command from command.ts
+
+- **Status:** complete on branch; PR pending
+- **Branch:** `refactor/cli-session-command-extract`
+- **Starting main SHA:** `55179d7a87bebfa2d26e6a5a04b6ba9391f328e0` (P4i memory extract #385)
+- **Objective:** Behavior-preserving extract of top-level `session` parser/dispatch
+  into `session-parse.ts` + `session-command.ts` with early dispatch; preserve
+  six subcommands, legacy parser compatibility, positional ID rejection, schema
+  catalog bootstrap ordering, delete-missing success, close re-entrancy; no P4k work.
+- **Completed:** `session-parse.ts` (129 effective), `session-command.ts` (163
+  effective), early dispatch, legacy session removal from `command.ts` (1948
+  effective, −153 from 2101), `tests/cli-session.test.ts` (60 tests), roadmap
+  update.
+- **Not completed:** security or any later P4 slice.
+- **Next first action:** Merge P4j PR when required CI is green; P4k (`security`)
+  remains next per roadmap.
 
 ### 2026-08-25, P4i extract memory CLI command from command.ts
 
-- **Status:** complete on branch; PR pending
-- **Branch:** `refactor/cli-memory-command-extract`
+- **Status:** complete on `main` (#385)
+- **Branch:** `refactor/cli-memory-command-extract` (merged)
 - **Starting main SHA:** `70d0c829a57697f94b4ef53944cb77f0a84641ea`
 - **Objective:** Behavior-preserving extract of top-level `memory` parser/dispatch
   into `memory-parse.ts` + `memory-command.ts` with early dispatch; preserve
