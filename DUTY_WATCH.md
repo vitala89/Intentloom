@@ -9,12 +9,13 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **P4l1 shared mutation CLI infrastructure** complete locally; PR pending.
+Status: **P4l1 shared mutation CLI infrastructure** complete on `main` (#390).
 
 ### 2026-08-26, P4l1 extract shared mutation command infrastructure
 
-- **Status:** complete locally; PR pending
-- **Branch:** `refactor/cli-mutation-shared-infrastructure`
+- **Status:** complete on `main` (#390)
+- **Branch:** `refactor/cli-mutation-shared-infrastructure` (merged)
+- **Merge SHA:** `cbc992af8e5bb4d94de275a2b1109522202b17ba`
 - **Starting main SHA:** `845f92a5e10e4f7917d4ca8db9a2e678e6316009` (post-P4k handoff #389)
 - **Objective:** Behavior-preserving extraction of shared mutation-family CLI
   infrastructure from `command.ts` into three modules; no command early dispatch;
