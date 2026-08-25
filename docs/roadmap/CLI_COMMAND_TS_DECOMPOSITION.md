@@ -33,11 +33,11 @@ identical; reuse existing CLI tests.
 
 ### P4l mutation family (in progress)
 
-| Slice | Module(s)                                                                 | Status      | Notes                                                                                                                       |
-| ----- | ------------------------------------------------------------------------- | ----------- | --------------------------------------------------------------------------------------------------------------------------- |
+| Slice | Module(s)                                                                            | Status       | Notes                                                                                                                                                                                    |
+| ----- | ------------------------------------------------------------------------------------ | ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | P4l1  | `mutation-outcome.ts`, `project-command-context.ts`, `governance-adoption-format.ts` | **complete** | Shared mutation/sync outcome mapping, project bootstrap context, governance plan formatting; no command early dispatch; `command.ts` still owns init/adopt/update/sync/diff/plan routing |
-| P4l2  | `diff-command.ts`, `diff-parse.ts` (planned)                             | not started | Next slice: extract `diff` only                                                                                           |
-| P4l3+ | init / adopt / sync / plan / update (planned)                             | not started | Per-command extraction after shared infrastructure                                                                          |
+| P4l2  | `diff-command.ts`, `diff-parse.ts` (planned)                                         | not started  | Next slice: extract `diff` only                                                                                                                                                          |
+| P4l3+ | init / adopt / sync / plan / update (planned)                                        | not started  | Per-command extraction after shared infrastructure                                                                                                                                       |
 
 1. **`diff`** — first command extract (P4l2); uses P4l1 shared modules.
 2. **`init` / `adopt` / `sync` / `plan` / `update`** — remaining mutation
