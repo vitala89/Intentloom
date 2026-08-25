@@ -1,10 +1,7 @@
 import { cwd } from "node:process";
-import { resolve } from "node:path";
 import {
   ArtifactValidationFailure,
   adoptProject,
-  detectProjectProfiles,
-  destinationCollisionKey,
   diffProject,
   initProject,
   nodeFileSystem,
@@ -48,12 +45,7 @@ import {
   type RetentionState,
   type FileSystem,
   type AdoptionProposal,
-  type Plan,
-  type SyncDryRunResult,
   type TransactionOptions,
-  type TransactionResult,
-  type TransactionStage,
-  type ProjectMapping,
 } from "@intentloom/application";
 import { type ProviderCacheStore } from "@intentloom/evidence-provider";
 import { runCleanCommand } from "./clean-command.js";
@@ -74,17 +66,24 @@ import {
   CliProjectValidationError,
   CliUsageError,
   createCliArtifactValidator,
-  parseAdapters,
-  projectConfiguration,
-  validateExistingMetadata,
 } from "./cli-project-metadata.js";
+import { formatGovernanceAdoptionPlan } from "./governance-adoption-format.js";
+import {
+  conflicts,
+  formatHumanOutcome,
+  formatJsonOutcome,
+  mapDryRunToCliOutcome,
+  mapTransactionResultToCliOutcome,
+} from "./mutation-outcome.js";
+import {
+  buildProjectMutationOptions,
+  loadInvalidProjectMetadata,
+  metadataBlocksMutationCommand,
+  type ProjectMutationCommand,
+} from "./project-command-context.js";
 import { usage } from "./usage.js";
 import { formatAdoptionProposal, formatPlan } from "./formatters.js";
-import {
-  INTENTLOOM_VERSION,
-  normalizeOutputPath,
-  resolveWithin,
-} from "@intentloom/core";
+import { INTENTLOOM_VERSION, resolveWithin } from "@intentloom/core";
 import {
   parseAdoptionPlan,
   stableStringify,
@@ -107,26 +106,6 @@ export interface CliDependencies {
   readonly fileSystem?: FileSystem;
   readonly providerCacheStore?: ProviderCacheStore;
   readonly transactionOptions?: TransactionOptions;
-}
-
-export interface CliSyncOutcome {
-  readonly status: "success" | "conflict" | "failed";
-  readonly dryRun: boolean;
-  readonly failedStage: TransactionStage | null;
-  readonly errorCode: string | null;
-  readonly rollbackAttempted: boolean;
-  readonly rollbackCompleted: boolean | null;
-  readonly rollbackFailures: readonly string[];
-  readonly rollbackErrorCode: string | null;
-  readonly created: readonly string[];
-  readonly updated: readonly string[];
-  readonly unchanged: readonly string[];
-  readonly conflicts: readonly string[];
-  readonly manifestUpdated: boolean;
-  readonly sourceMapUpdated: boolean;
-  readonly consistencyValidated: boolean;
-  readonly cleanupCompleted: boolean;
-  readonly exitCode: CliExitCode;
 }
 
 interface ParsedArguments {
@@ -327,269 +306,6 @@ function parseArguments(args: readonly string[]): ParsedArguments {
   return { command, flags, values, mappingValues };
 }
 
-function parseMappings(values: readonly string[]): ProjectMapping[] {
-  const mappings = values.map((value) => {
-    const separator = value.indexOf("=");
-    if (separator <= 0 || separator === value.length - 1)
-      throw new CliUsageError("mapping must use SOURCE=DESTINATION");
-    const source = value.slice(0, separator);
-    const destination = value.slice(separator + 1);
-    try {
-      if (
-        normalizeOutputPath(source) !== source ||
-        normalizeOutputPath(destination) !== destination
-      )
-        throw new Error("mapping path is not normalized");
-    } catch {
-      throw new CliUsageError(
-        "mapping paths must be normalized and project-relative",
-      );
-    }
-    return { source, destination };
-  });
-  return [
-    ...new Map(
-      mappings.map((mapping) => [
-        `${mapping.source}\0${mapping.destination}`,
-        mapping,
-      ]),
-    ).values(),
-  ].sort((left, right) =>
-    `${left.source}\0${left.destination}`.localeCompare(
-      `${right.source}\0${right.destination}`,
-    ),
-  );
-}
-
-function safePaths(paths: readonly string[]): string[] {
-  const safe: string[] = [];
-  for (const path of paths) {
-    try {
-      destinationCollisionKey(path);
-      safe.push(path);
-    } catch {
-      /* unsafe metadata input is represented by its classification, not its value */
-    }
-  }
-  return [...new Set(safe)].sort();
-}
-
-function safeErrorCode(value: string | undefined): string {
-  return value !== undefined && /^[a-z0-9][a-z0-9:-]*$/u.test(value)
-    ? value
-    : "transaction-failed";
-}
-
-function conflicts(result: Plan): string[] {
-  return safePaths(
-    result.changes
-      .filter((change) =>
-        ["conflict", "modified", "security-error"].includes(change.kind),
-      )
-      .map((change) => change.path),
-  );
-}
-
-export function mapTransactionResultToCliOutcome(
-  result: TransactionResult,
-): CliSyncOutcome {
-  const conflictPaths = conflicts(result);
-  const originalDiagnostic = result.diagnostics.find(
-    (diagnostic) => diagnostic !== "transaction-rollback-incomplete",
-  );
-  const errorCode =
-    result.status === "success"
-      ? null
-      : safeErrorCode(
-          result.postWriteValidation?.status === "invalid"
-            ? result.postWriteValidation.code
-            : originalDiagnostic,
-        );
-  const status =
-    result.status === "success"
-      ? "success"
-      : result.rollbackAttempted
-        ? "failed"
-        : "conflict";
-  const exitCode: CliExitCode =
-    status === "success"
-      ? 0
-      : status === "conflict"
-        ? 3
-        : result.rollbackCompleted
-          ? 4
-          : 5;
-  return {
-    status,
-    dryRun: false,
-    failedStage: result.failedStage ?? null,
-    errorCode,
-    rollbackAttempted: result.rollbackAttempted,
-    rollbackCompleted: result.rollbackAttempted
-      ? result.rollbackCompleted
-      : null,
-    rollbackFailures: safePaths(result.rollbackFailures),
-    rollbackErrorCode: result.rollbackCompleted
-      ? null
-      : "transaction-rollback-incomplete",
-    created: safePaths(result.createdFiles),
-    updated: safePaths(result.updatedFiles),
-    unchanged: safePaths(result.unchangedFiles),
-    conflicts: conflictPaths,
-    manifestUpdated: result.manifestUpdated,
-    sourceMapUpdated: result.sourceMapUpdated,
-    consistencyValidated: result.consistencyValidated,
-    cleanupCompleted: result.cleanupCompleted,
-    exitCode,
-  };
-}
-
-export function mapDryRunToCliOutcome(
-  result: SyncDryRunResult,
-): CliSyncOutcome {
-  const conflictPaths = safePaths(result.conflictFiles);
-  const hasConflict = conflictPaths.length > 0 || result.diagnostics.length > 0;
-  return {
-    status: hasConflict ? "conflict" : "success",
-    dryRun: true,
-    failedStage: null,
-    errorCode: hasConflict
-      ? safeErrorCode(result.diagnostics[0] ?? "sync-conflict")
-      : null,
-    rollbackAttempted: false,
-    rollbackCompleted: null,
-    rollbackFailures: [],
-    rollbackErrorCode: null,
-    created: safePaths(result.createdFiles),
-    updated: safePaths(result.updatedFiles),
-    unchanged: safePaths(result.unchangedFiles),
-    conflicts: conflictPaths,
-    manifestUpdated: false,
-    sourceMapUpdated: false,
-    consistencyValidated: false,
-    cleanupCompleted: false,
-    exitCode: hasConflict ? 3 : 0,
-  };
-}
-
-function yesNo(value: boolean): string {
-  return value ? "yes" : "no";
-}
-
-function counts(outcome: CliSyncOutcome): string[] {
-  return [
-    `Created: ${outcome.created.length}`,
-    `Updated: ${outcome.updated.length}`,
-    `Unchanged: ${outcome.unchanged.length}`,
-  ];
-}
-
-export function formatHumanOutcome(outcome: CliSyncOutcome): string {
-  if (outcome.dryRun) {
-    if (outcome.status === "conflict")
-      return [
-        "Intentloom sync dry run found conflicts.",
-        "",
-        `Reason: ${outcome.errorCode}`,
-        `Conflicts: ${outcome.conflicts.length}`,
-        ...outcome.conflicts.map((path) => `- ${path}`),
-        "Dry run — no files were changed.",
-      ].join("\n");
-    return [
-      "Intentloom sync dry run.",
-      "",
-      ...counts(outcome),
-      "Dry run — no files were changed.",
-    ].join("\n");
-  }
-  if (outcome.status === "success") {
-    const noChanges =
-      outcome.created.length === 0 &&
-      outcome.updated.length === 0 &&
-      !outcome.manifestUpdated &&
-      !outcome.sourceMapUpdated;
-    return [
-      noChanges
-        ? "Intentloom sync completed. No changes required."
-        : "Intentloom sync completed.",
-      "",
-      ...counts(outcome),
-      `Manifest updated: ${yesNo(outcome.manifestUpdated)}`,
-      `Source map updated: ${yesNo(outcome.sourceMapUpdated)}`,
-      `Consistency validation: ${outcome.consistencyValidated ? "passed" : "failed"}`,
-      `Cleanup: ${outcome.cleanupCompleted ? "passed" : "failed"}`,
-    ].join("\n");
-  }
-  if (outcome.status === "conflict")
-    return [
-      "Intentloom sync was not applied.",
-      "",
-      `Reason: ${outcome.errorCode}`,
-      `Conflicts: ${outcome.conflicts.length}`,
-      ...outcome.conflicts.map((path) => `- ${path}`),
-      "No project files were changed.",
-    ].join("\n");
-  if (outcome.rollbackCompleted)
-    return [
-      `Intentloom sync failed during: ${outcome.failedStage ?? "unknown"}`,
-      `Error: ${outcome.errorCode}`,
-      "Rollback: completed",
-      "Project state was restored.",
-    ].join("\n");
-  return [
-    `Intentloom sync failed during: ${outcome.failedStage ?? "unknown"}`,
-    `Error: ${outcome.errorCode}`,
-    "Rollback: incomplete",
-    `Rollback error: ${outcome.rollbackErrorCode}`,
-    "Manual inspection is required.",
-    ...outcome.rollbackFailures.map((path) => `- ${path}`),
-  ].join("\n");
-}
-
-export function formatJsonOutcome(outcome: CliSyncOutcome): string {
-  return JSON.stringify(outcome, null, 2);
-}
-
-function formatGovernanceAdoptionPlan(plan: AdoptionPlan): string {
-  const lines: string[] = [
-    `Adoption Plan: ${plan.packId} (v${plan.packVersion})`,
-    `Project ID: ${plan.projectId}`,
-    `Repository Hash: ${plan.repositoryHash}`,
-    `Automatic Apply Allowed: ${plan.automaticApplyAllowed ? "yes" : "no"}`,
-    "",
-    "Role Mappings:",
-  ];
-  if (plan.mappings.length === 0) {
-    lines.push("  (none)");
-  } else {
-    for (const mapping of plan.mappings) {
-      lines.push(
-        `  ${mapping.role.padEnd(30)} -> ${mapping.path} (${mapping.ownership})`,
-      );
-    }
-  }
-  lines.push("", "Findings:");
-  if (plan.findings.length === 0) {
-    lines.push("  (none)");
-  } else {
-    for (const finding of plan.findings) {
-      lines.push(
-        `  [${finding.status}] ${finding.code}: ${finding.summary} (${finding.paths.join(", ")})`,
-      );
-    }
-  }
-  lines.push("", "Operations:");
-  if (plan.operations.length === 0) {
-    lines.push("  (none)");
-  } else {
-    for (const op of plan.operations) {
-      const target = op.path ?? op.role ?? "workspace";
-      lines.push(`  [${op.kind}] ${target} (${op.approval}) — ${op.reason}`);
-    }
-  }
-  return lines.join("\n");
-}
-
 function validationErrors(results: readonly ArtifactValidationResult[]) {
   return results
     .flatMap((result) => [
@@ -705,10 +421,12 @@ export async function runCli(
     const validator = await createCliArtifactValidator(
       dependencies.catalogRoot,
     );
-    const readsProject = ["sync", "adopt", "diff"].includes(parsed.command);
-    const invalidMetadata = readsProject
-      ? await validateExistingMetadata(root, fileSystem, validator)
-      : [];
+    const invalidMetadata = await loadInvalidProjectMetadata(
+      parsed.command as ProjectMutationCommand,
+      root,
+      fileSystem,
+      validator,
+    );
     if (parsed.command === "summary") {
       const subcommand = args[1] ?? "list";
       if (subcommand === "list") {
@@ -1488,9 +1206,10 @@ export async function runCli(
       return 0;
     }
     if (
-      invalidMetadata.length > 0 &&
-      parsed.command !== "adopt" &&
-      parsed.command !== "update"
+      metadataBlocksMutationCommand(
+        parsed.command as ProjectMutationCommand,
+        invalidMetadata,
+      )
     ) {
       const output = formatValidationFailure(
         invalidMetadata,
@@ -1499,69 +1218,19 @@ export async function runCli(
       io.stderr(output);
       return 3;
     }
-    const invalidAdoptionConfig =
-      (parsed.command === "adopt" || parsed.command === "update") &&
-      invalidMetadata.some((result) => result.artifactType === "aif-config");
-    const storedConfig =
-      readsProject && !invalidAdoptionConfig
-        ? await projectConfiguration(
-            root,
-            fileSystem,
-            validator,
-            parsed.command === "sync",
-          )
-        : undefined;
-    const configPresent = readsProject
-      ? await fileSystem.exists(resolve(root, ".aif/config.yaml"))
-      : false;
-    const adoptionDetection =
-      parsed.command === "adopt"
-        ? await detectProjectProfiles(root, fileSystem)
-        : undefined;
-    const profile =
-      parsed.values.get("--profile") ??
-      (configPresent
-        ? storedConfig?.profile
-        : adoptionDetection?.selectedProfile) ??
-      "generic";
-    const adapterNames = parseAdapters(
-      parsed.values.get("--adapters") ??
-        (configPresent ? storedConfig?.adapters.join(",") : undefined) ??
-        (parsed.command === "adopt" ? "codex" : "claude,codex,cursor,copilot"),
-    );
-    const cliProjectOwnedMappings = parseMappings(
-      parsed.mappingValues.get("--project-owned-mapping") ?? [],
-    );
-    const cliDocumentationMappings = parseMappings(
-      parsed.mappingValues.get("--documentation-mapping") ?? [],
-    );
-    const projectOwnedMappings = parsed.mappingValues.has(
-      "--project-owned-mapping",
-    )
-      ? cliProjectOwnedMappings
-      : (storedConfig?.projectOwnedMappings ?? []);
-    const documentationMappings = parsed.mappingValues.has(
-      "--documentation-mapping",
-    )
-      ? cliDocumentationMappings
-      : (storedConfig?.documentationMappings ?? []);
-    const options = {
+    const options = await buildProjectMutationOptions({
+      command: parsed.command as ProjectMutationCommand,
       root,
-      profile,
-      adapters: adapterNames,
-      dryRun: parsed.flags.has("--dry-run"),
-      catalogRoot: dependencies.catalogRoot,
+      fileSystem,
       validator,
-      projectOwnedMappings,
-      documentationMappings,
-      ...(parsed.command === "adopt"
-        ? {
-            existingValidationResults: invalidMetadata,
-            profileConfirmed:
-              parsed.values.has("--profile") || storedConfig !== undefined,
-          }
-        : {}),
-    };
+      catalogRoot: dependencies.catalogRoot,
+      dryRun: parsed.flags.has("--dry-run"),
+      invalidMetadata,
+      profileFlag: parsed.values.get("--profile"),
+      profileFlagProvided: parsed.values.has("--profile"),
+      adaptersFlag: parsed.values.get("--adapters"),
+      mappingValues: parsed.mappingValues,
+    });
     if (parsed.command === "sync") {
       const result = await syncProject(
         { ...options, force: parsed.flags.has("--force") },
