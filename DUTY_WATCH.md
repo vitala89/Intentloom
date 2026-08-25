@@ -9,23 +9,29 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **P4k security CLI extract** complete on branch `refactor/cli-security-command-extract` (PR pending).
+Status: **P4k security CLI extract** complete on `main` (#388).
 
 ### 2026-08-25, P4k extract security CLI command from command.ts
 
-- **Status:** complete on branch; PR pending merge
-- **Branch:** `refactor/cli-security-command-extract`
+- **Status:** complete on `main` (#388)
+- **Branch:** `refactor/cli-security-command-extract` (merged)
+- **Merge SHA:** `502c0822438c813717ae21feb989e47c0da07a5d`
 - **Starting main SHA:** `13a50bed18e3edf630630e12c98690772a77cfcb` (post-P4j session extract)
 - **Objective:** Behavior-preserving extract of top-level `security` parser/dispatch into
   `security-parse.ts`, `security-command.ts`, `security-findings-command.ts`, and
   `security-operations-command.ts` with early dispatch; preserve twelve subcommands,
   baseline/sandbox index-3 parser topology, legacy exit 0/2/3 semantics, silent unknown
   sandbox action, baseline `--root` quirk; no adopt/update/sync/diff/plan/init work.
-- **Completed:** four-module cohesive split, early dispatch, legacy security removal from
-  `command.ts` (1611 effective, −337 from 1948), `tests/cli-security.test.ts` (62 tests),
-  roadmap update marking Security done.
-- **Not completed:** project mutation family (`adopt` / `update` / `sync` / `diff` / `plan` / `init`).
-- **Next first action:** Merge P4k PR when required CI is green; next roadmap family is project mutation (`adopt` / `update` / `sync` / `diff` / `plan` / `init`).
+- **Completed:** four-module cohesive split (`security-parse.ts`, `security-command.ts`,
+  `security-findings-command.ts`, `security-operations-command.ts`), early dispatch, legacy
+  security removal from `command.ts` (1644 physical / 1611 effective, −337 effective from
+  1948 P4j baseline), `tests/cli-security.test.ts` (62 focused cases), security slice
+  complete; memory/session/security P4 block complete.
+- **Not completed:** bounded boundary audit or extract of project mutation family
+  (`adopt` / `update` / `sync` / `diff` / `plan` / `init`).
+- **Next first action:** Bounded boundary audit of mutation family
+  (`adopt` / `update` / `sync` / `diff` / `plan` / `init`); do not start audit or
+  implementation until scoped in a separate maintainer brief.
 
 ### 2026-08-25, P4j extract session CLI command from command.ts
 
