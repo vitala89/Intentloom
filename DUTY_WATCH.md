@@ -9,7 +9,23 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **P4j session CLI extract** complete on `main` (#386).
+Status: **P4k security CLI extract** complete on branch `refactor/cli-security-command-extract` (PR pending).
+
+### 2026-08-25, P4k extract security CLI command from command.ts
+
+- **Status:** complete on branch; PR pending merge
+- **Branch:** `refactor/cli-security-command-extract`
+- **Starting main SHA:** `13a50bed18e3edf630630e12c98690772a77cfcb` (post-P4j session extract)
+- **Objective:** Behavior-preserving extract of top-level `security` parser/dispatch into
+  `security-parse.ts`, `security-command.ts`, `security-findings-command.ts`, and
+  `security-operations-command.ts` with early dispatch; preserve twelve subcommands,
+  baseline/sandbox index-3 parser topology, legacy exit 0/2/3 semantics, silent unknown
+  sandbox action, baseline `--root` quirk; no adopt/update/sync/diff/plan/init work.
+- **Completed:** four-module cohesive split, early dispatch, legacy security removal from
+  `command.ts` (1611 effective, −337 from 1948), `tests/cli-security.test.ts` (62 tests),
+  roadmap update marking Security done.
+- **Not completed:** project mutation family (`adopt` / `update` / `sync` / `diff` / `plan` / `init`).
+- **Next first action:** Merge P4k PR when required CI is green; next roadmap family is project mutation (`adopt` / `update` / `sync` / `diff` / `plan` / `init`).
 
 ### 2026-08-25, P4j extract session CLI command from command.ts
 
