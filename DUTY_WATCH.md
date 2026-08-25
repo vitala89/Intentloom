@@ -9,7 +9,37 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **P4k security CLI extract** complete on `main` (#388).
+Status: **P4l1 shared mutation CLI infrastructure** complete locally; PR pending.
+
+### 2026-08-26, P4l1 extract shared mutation command infrastructure
+
+- **Status:** complete locally; PR pending
+- **Branch:** `refactor/cli-mutation-shared-infrastructure`
+- **Starting main SHA:** `845f92a5e10e4f7917d4ca8db9a2e678e6316009` (post-P4k handoff #389)
+- **Objective:** Behavior-preserving extraction of shared mutation-family CLI
+  infrastructure from `command.ts` into three modules; no command early dispatch;
+  no init/adopt/update/sync/diff/plan extraction; preserve exit codes, stdout/stderr,
+  metadata blocking distinctions, config required/optional semantics, mappings, and
+  transaction outcome contracts.
+- **Modules created:**
+  - `packages/cli/src/mutation-outcome.ts` — sync/transaction outcome mapping and formatting
+  - `packages/cli/src/project-command-context.ts` — project metadata bootstrap and mutation options
+  - `packages/cli/src/governance-adoption-format.ts` — governance adoption plan human formatting
+- **Metrics (canonical `scripts/production-file-metrics.mjs`):**
+  - `command.ts` before: 1642 physical / 1609 effective
+  - `command.ts` after: 1311 physical / 1290 effective (−331 physical / −319 effective)
+  - `mutation-outcome.ts`: 217 physical / 206 effective
+  - `project-command-context.ts`: 187 physical / 178 effective
+  - `governance-adoption-format.ts`: 41 physical / 40 effective
+- **Tests:** `tests/mutation-outcome.test.ts` (18 cases); mutation CLI suites
+  (`cli-sync-process`, `cli-provider-sync`, `cli-schema-process`, `cli-adopt-plan`,
+  `cli-adopt-apply`, `cli-pack-update`, `transaction-consistency`); `pnpm verify`
+- **Decisions:** `parseMappings` moved with project bootstrap (init/adopt-only consumer);
+  `validationErrors` / `formatValidationFailure` deferred (still in `command.ts`);
+  `parseArguments` and all six mutation command dispatch paths remain in `command.ts`
+- **Not completed:** P4l2 `diff` command extraction; any early dispatch for mutation family
+- **Next first action:** P4l2 — bounded extract of `diff` command only; do not start
+  init/adopt/sync/plan/update in the same PR
 
 ### 2026-08-25, P4k extract security CLI command from command.ts
 
