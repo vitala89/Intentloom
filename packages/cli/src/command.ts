@@ -40,21 +40,6 @@ import {
   listProfiles,
   delegateTaskRole,
   getBoundedProjectContext,
-  importSarifSecurityReport,
-  getSecurityCoverageReport,
-  dismissSecurityFinding,
-  acceptSecurityRisk,
-  listSecurityFindings,
-  runLocalSecurityAdapters,
-  getSecurityPolicy,
-  updateSecurityBaseline,
-  checkSecurityPolicyAndBaseline,
-  getSandboxCapabilityPolicy,
-  evaluateProposalAgainstSandbox,
-  runContinuousSecurityAudit,
-  type SecurityFindingSeverity,
-  type SecurityFindingState,
-  type SecurityAdapterCategory,
   type SkillLoadingLevel,
   type SkillProposalState,
   type SemanticRankingProvider,
@@ -81,6 +66,7 @@ import { runWorkspaceCommand } from "./workspace-command.js";
 import { runNeutronCommand } from "./neutron-command.js";
 import { runMemoryCommand } from "./memory-command.js";
 import { runSessionCommand } from "./session-command.js";
+import { runSecurityCommand } from "./security-command.js";
 import { runEvidenceCommand } from "./evidence-command.js";
 import { runHarnessCommand } from "./harness-command.js";
 import {
@@ -167,7 +153,6 @@ const commands = new Set([
   "profile",
   "delegate",
   "context",
-  "security",
 ]);
 const projectPathCommands = new Set(["adopt", "update", "diff", "sync"]);
 const booleanFlags = new Set([
@@ -283,50 +268,22 @@ function parseArguments(args: readonly string[]): ParsedArguments {
     throw new CliUsageError("profile requires create, get, or list subcommand");
   if (command === "context" && args[1] !== "get")
     throw new CliUsageError("context requires get subcommand");
-  if (
-    command === "security" &&
-    ![
-      "import",
-      "inspect",
-      "coverage",
-      "dismiss",
-      "accept-risk",
-      "list",
-      "scan",
-      "baseline",
-      "policy",
-      "sandbox",
-      "audit",
-      "verify",
-    ].includes(args[1] ?? "")
-  )
-    throw new CliUsageError(
-      "security requires import, inspect, coverage, dismiss, accept-risk, list, scan, baseline, policy, sandbox, audit, or verify subcommand",
-    );
   const flags = new Set<string>();
   const values = new Map<string, string>();
   const mappingValues = new Map<string, string[]>();
   for (
     let index =
-      command === "security" &&
-      (args[1] === "baseline" || args[1] === "sandbox") &&
-      args[2] !== undefined &&
-      !args[2].startsWith("--")
-        ? 3
-        : command === "evidence" ||
-            command === "summary" ||
-            command === "skill" ||
-            command === "proposal" ||
-            command === "evaluate" ||
-            command === "checkpoint" ||
-            command === "profile" ||
-            command === "context" ||
-            command === "security" ||
-            (command === "rank" &&
-              args[1] !== undefined &&
-              !args[1].startsWith("--"))
-          ? 2
-          : 1;
+      command === "evidence" ||
+      command === "summary" ||
+      command === "skill" ||
+      command === "proposal" ||
+      command === "evaluate" ||
+      command === "checkpoint" ||
+      command === "profile" ||
+      command === "context" ||
+      (command === "rank" && args[1] !== undefined && !args[1].startsWith("--"))
+        ? 2
+        : 1;
     index < args.length;
     index += 1
   ) {
@@ -738,6 +695,9 @@ export async function runCli(
     }
     if (args[0] === "session") {
       return await runSessionCommand(args, dependencies, io);
+    }
+    if (args[0] === "security") {
+      return await runSecurityCommand(args, dependencies, io);
     }
     const parsed = parseArguments(args);
     const fileSystem = dependencies.fileSystem ?? nodeFileSystem;
@@ -1384,319 +1344,6 @@ export async function runCli(
         io.stdout(lines.join("\n"));
       }
       return 0;
-    }
-    if (parsed.command === "security") {
-      const subcommand = args[1];
-      if (
-        ![
-          "import",
-          "inspect",
-          "coverage",
-          "dismiss",
-          "accept-risk",
-          "list",
-          "scan",
-          "baseline",
-          "policy",
-          "sandbox",
-          "audit",
-          "verify",
-        ].includes(subcommand ?? "")
-      ) {
-        throw new CliUsageError(
-          "security requires import, inspect, coverage, dismiss, accept-risk, list, scan, baseline, policy, sandbox, audit, or verify subcommand",
-        );
-      }
-      const projectId = parsed.values.get("--project-id") ?? "project-local";
-
-      if (subcommand === "import") {
-        const filePath = parsed.values.get("--file");
-        if (!filePath) {
-          throw new CliUsageError("security import requires --file <path>");
-        }
-        const fullPath = resolveWithin(root, filePath);
-        if (!(await fileSystem.exists(fullPath))) {
-          throw new Error(`security report file not found: ${filePath}`);
-        }
-        const content = await fileSystem.read(fullPath);
-        const result = await importSarifSecurityReport(
-          content,
-          filePath,
-          { root },
-          fileSystem,
-        );
-        if (parsed.flags.has("--json")) {
-          io.stdout(JSON.stringify(result, null, 2));
-        } else {
-          io.stdout(
-            `Imported ${result.importedCount} security findings from ${filePath}`,
-          );
-        }
-        return 0;
-      }
-
-      if (subcommand === "coverage" || subcommand === "inspect") {
-        const report = await getSecurityCoverageReport(
-          { root, projectId },
-          fileSystem,
-        );
-        if (parsed.flags.has("--json")) {
-          io.stdout(JSON.stringify(report, null, 2));
-        } else {
-          const lines = [
-            `Security Posture Report for project ${report.projectId}:`,
-            `Total Findings: ${report.totalFindings}`,
-            `Scanners: ${report.scanners.join(", ") || "none"}`,
-            `Severities: critical=${report.findingsBySeverity.critical}, high=${report.findingsBySeverity.high}, medium=${report.findingsBySeverity.medium}, low=${report.findingsBySeverity.low}, info=${report.findingsBySeverity.info}`,
-            `States: open=${report.findingsByState.open}, verified=${report.findingsByState.verified}, dismissed=${report.findingsByState.dismissed}, accepted-risk=${report.findingsByState["accepted-risk"]}, remediated=${report.findingsByState.remediated}`,
-          ];
-          io.stdout(lines.join("\n"));
-        }
-        return 0;
-      }
-
-      if (subcommand === "dismiss") {
-        const id =
-          parsed.values.get("--id") ??
-          (args[2] && !args[2].startsWith("--") ? args[2] : undefined);
-        const reason =
-          parsed.values.get("--reason") ?? "Dismissed by maintainer";
-        if (!id) {
-          throw new CliUsageError(
-            "security dismiss requires finding ID (--id or positional argument)",
-          );
-        }
-        const updated = await dismissSecurityFinding(
-          id,
-          { root, reason },
-          fileSystem,
-        );
-        if (parsed.flags.has("--json")) {
-          io.stdout(JSON.stringify(updated, null, 2));
-        } else {
-          io.stdout(
-            `Dismissed security finding ${id}: ${updated.dismissalReason}`,
-          );
-        }
-        return 0;
-      }
-
-      if (subcommand === "accept-risk") {
-        const id =
-          parsed.values.get("--id") ??
-          (args[2] && !args[2].startsWith("--") ? args[2] : undefined);
-        const approvedBy = parsed.values.get("--approved-by") ?? "maintainer";
-        const reason = parsed.values.get("--reason") ?? "Accepted risk";
-        if (!id) {
-          throw new CliUsageError(
-            "security accept-risk requires finding ID (--id or positional argument)",
-          );
-        }
-        const updated = await acceptSecurityRisk(
-          id,
-          { root, approvedBy, reason },
-          fileSystem,
-        );
-        if (parsed.flags.has("--json")) {
-          io.stdout(JSON.stringify(updated, null, 2));
-        } else {
-          io.stdout(
-            `Accepted risk for security finding ${id} by ${approvedBy}`,
-          );
-        }
-        return 0;
-      }
-
-      if (subcommand === "list") {
-        const rawSeverity = parsed.values.get("--severity");
-        const rawState = parsed.values.get("--state");
-        const severity = rawSeverity as SecurityFindingSeverity | undefined;
-        const state = rawState as SecurityFindingState | undefined;
-
-        const findings = await listSecurityFindings(
-          {
-            root,
-            ...(severity !== undefined ? { severity } : {}),
-            ...(state !== undefined ? { state } : {}),
-          },
-          fileSystem,
-        );
-
-        if (parsed.flags.has("--json")) {
-          io.stdout(JSON.stringify(findings, null, 2));
-        } else {
-          const lines = [
-            `Security Findings (${findings.length}):`,
-            ...findings.map(
-              (f) =>
-                `- [${f.severity.toUpperCase()}] [${f.state}] ${f.id} (${f.title}): ${f.scanner}`,
-            ),
-          ];
-          io.stdout(lines.join("\n"));
-        }
-        return 0;
-      }
-
-      if (subcommand === "scan") {
-        const rawCategory = parsed.values.get("--category");
-        const categories = rawCategory
-          ? ([rawCategory] as SecurityAdapterCategory[])
-          : undefined;
-
-        const results = await runLocalSecurityAdapters(
-          {
-            root,
-            ...(categories !== undefined ? { categories } : {}),
-          },
-          fileSystem,
-        );
-        if (parsed.flags.has("--json")) {
-          io.stdout(JSON.stringify(results, null, 2));
-        } else {
-          const total = results.reduce((acc, r) => acc + r.totalCount, 0);
-          const lines = [
-            `Ran ${results.length} security adapters (${total} total findings discovered):`,
-            ...results.map(
-              (r) =>
-                `- [${r.adapter.category}] ${r.adapter.name}: ${r.totalCount} findings`,
-            ),
-          ];
-          io.stdout(lines.join("\n"));
-        }
-        return 0;
-      }
-
-      if (subcommand === "baseline") {
-        const action = args[2] ?? "check";
-        if (action === "update") {
-          const baseline = await updateSecurityBaseline(
-            { root, projectId },
-            fileSystem,
-          );
-          if (parsed.flags.has("--json")) {
-            io.stdout(JSON.stringify(baseline, null, 2));
-          } else {
-            io.stdout(
-              `Updated security baseline for ${projectId}: ${baseline.acceptedFindings.length} findings accepted (hash: ${baseline.baselineHash.slice(0, 8)})`,
-            );
-          }
-          return 0;
-        }
-        const result = await checkSecurityPolicyAndBaseline(
-          { root, projectId },
-          fileSystem,
-        );
-        if (parsed.flags.has("--json")) {
-          io.stdout(JSON.stringify(result, null, 2));
-        } else {
-          const lines = [
-            `Security Baseline & Policy Check for ${projectId}:`,
-            `New Findings: ${result.newFindings.length}`,
-            `Resolved Findings: ${result.resolvedFindings.length}`,
-            `Policy Violations: ${result.policyViolations.length}`,
-            `Exit Code: ${result.exitCode}`,
-          ];
-          io.stdout(lines.join("\n"));
-        }
-        return result.exitCode as CliExitCode;
-      }
-
-      if (subcommand === "policy") {
-        const policy = await getSecurityPolicy({ root, projectId }, fileSystem);
-        if (parsed.flags.has("--json")) {
-          io.stdout(JSON.stringify(policy, null, 2));
-        } else {
-          const lines = [
-            `Security Policy for ${policy.projectId}:`,
-            `Default Enforcement: ${policy.defaultEnforcement}`,
-            `Rules (${policy.rules.length}):`,
-            ...policy.rules.map((r) => `- ${r.target}: ${r.enforcement}`),
-          ];
-          io.stdout(lines.join("\n"));
-        }
-        return 0;
-      }
-
-      if (subcommand === "sandbox") {
-        const action = args[2] ?? "policy";
-        if (action === "policy" || action === "check") {
-          const policy = await getSandboxCapabilityPolicy(
-            { root, projectId },
-            fileSystem,
-          );
-          if (parsed.flags.has("--json")) {
-            io.stdout(JSON.stringify(policy, null, 2));
-          } else {
-            const lines = [
-              `Sandbox Capability Policy for ${policy.projectId}:`,
-              `Mode: ${policy.mode}`,
-              `Allow Network: ${policy.allowNetwork}`,
-              `Path Rules (${policy.pathRules.length}):`,
-              ...policy.pathRules.map(
-                (r) =>
-                  `- ${r.pathPrefix} (write: ${r.allowWrite}, delete: ${r.allowDelete})`,
-              ),
-              `Command Rules (${policy.commandRules.length}):`,
-              ...policy.commandRules.map((c) => `- ${c.commandPrefix}`),
-            ];
-            io.stdout(lines.join("\n"));
-          }
-          return 0;
-        }
-
-        if (action === "validate" || action === "eval") {
-          const targetPath = parsed.values.get("--path") ?? "src/app.ts";
-          const sampleProposal = {
-            actions: [{ type: "write", path: targetPath }],
-          };
-          const result = await evaluateProposalAgainstSandbox(
-            sampleProposal,
-            { root, projectId },
-            fileSystem,
-          );
-          if (parsed.flags.has("--json")) {
-            io.stdout(JSON.stringify(result, null, 2));
-          } else {
-            const lines = [
-              `Sandbox Evaluation for ${projectId}:`,
-              `Allowed: ${result.allowed}`,
-              `Violations (${result.violations.length}):`,
-              ...result.violations.map((v) => `- ${v}`),
-            ];
-            io.stdout(lines.join("\n"));
-          }
-          return (result.allowed ? 0 : 3) as CliExitCode;
-        }
-        return 0;
-      }
-
-      if (subcommand === "audit" || subcommand === "verify") {
-        const report = await runContinuousSecurityAudit(
-          { root, projectId },
-          fileSystem,
-        );
-        if (parsed.flags.has("--json")) {
-          io.stdout(JSON.stringify(report, null, 2));
-        } else {
-          const lines = [
-            `Continuous Security Audit & Verification for ${report.projectId}:`,
-            `Security Health Score: ${report.healthScore}%`,
-            `Audit Hash: ${report.auditHash.slice(0, 8)}`,
-            `Invariant Verification (${report.invariantChecks.length} checks):`,
-            ...report.invariantChecks.map(
-              (c) =>
-                `- [#${c.invariantId}] ${c.title}: ${c.status.toUpperCase()} (${c.details})`,
-            ),
-          ];
-          io.stdout(lines.join("\n"));
-        }
-        const hasFailedInvariant = report.invariantChecks.some(
-          (c) => c.status === "failed",
-        );
-        return (
-          report.healthScore >= 80 && !hasFailedInvariant ? 0 : 3
-        ) as CliExitCode;
-      }
     }
     if (parsed.command === "adopt" && parsed.flags.has("--plan")) {
       const plan = await planProjectAdoption({ root }, fileSystem);
