@@ -59,6 +59,7 @@ import { runMemoryCommand } from "./memory-command.js";
 import { runSessionCommand } from "./session-command.js";
 import { runSecurityCommand } from "./security-command.js";
 import { runDiffCommand } from "./diff-command.js";
+import { runPlanCommand } from "./plan-command.js";
 import { runEvidenceCommand } from "./evidence-command.js";
 import { runHarnessCommand } from "./harness-command.js";
 import {
@@ -117,7 +118,6 @@ const commands = new Set([
   "init",
   "adopt",
   "update",
-  "plan",
   "sync",
   "evidence",
   "summary",
@@ -367,6 +367,9 @@ export async function runCli(
     }
     if (args[0] === "diff") {
       return await runDiffCommand(args, dependencies, io);
+    }
+    if (args[0] === "plan") {
+      return await runPlanCommand(args, dependencies, io);
     }
     const parsed = parseArguments(args);
     const fileSystem = dependencies.fileSystem ?? nodeFileSystem;
