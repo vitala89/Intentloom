@@ -2,7 +2,6 @@ import { cwd } from "node:process";
 import {
   ArtifactValidationFailure,
   adoptProject,
-  diffProject,
   initProject,
   nodeFileSystem,
   planFeature,
@@ -59,6 +58,7 @@ import { runNeutronCommand } from "./neutron-command.js";
 import { runMemoryCommand } from "./memory-command.js";
 import { runSessionCommand } from "./session-command.js";
 import { runSecurityCommand } from "./security-command.js";
+import { runDiffCommand } from "./diff-command.js";
 import { runEvidenceCommand } from "./evidence-command.js";
 import { runHarnessCommand } from "./harness-command.js";
 import {
@@ -66,6 +66,7 @@ import {
   CliProjectValidationError,
   CliUsageError,
   createCliArtifactValidator,
+  formatValidationFailure,
 } from "./cli-project-metadata.js";
 import { formatGovernanceAdoptionPlan } from "./governance-adoption-format.js";
 import {
@@ -89,10 +90,7 @@ import {
   stableStringify,
   type AdoptionPlan,
 } from "@intentloom/core/adoption";
-import {
-  SchemaCatalogError,
-  type ArtifactValidationResult,
-} from "@intentloom/validator";
+import { SchemaCatalogError } from "@intentloom/validator";
 
 export type CliExitCode = 0 | 2 | 3 | 4 | 5;
 
@@ -120,7 +118,6 @@ const commands = new Set([
   "adopt",
   "update",
   "plan",
-  "diff",
   "sync",
   "evidence",
   "summary",
@@ -133,7 +130,7 @@ const commands = new Set([
   "delegate",
   "context",
 ]);
-const projectPathCommands = new Set(["adopt", "update", "diff", "sync"]);
+const projectPathCommands = new Set(["adopt", "update", "sync"]);
 const booleanFlags = new Set([
   "--cache",
   "--dry-run",
@@ -306,53 +303,6 @@ function parseArguments(args: readonly string[]): ParsedArguments {
   return { command, flags, values, mappingValues };
 }
 
-function validationErrors(results: readonly ArtifactValidationResult[]) {
-  return results
-    .flatMap((result) => [
-      ...result.structuralErrors.map((error) => ({
-        ...error,
-        phase: "structural" as const,
-        artifactType: result.artifactType,
-        schemaId: result.schemaId,
-        schemaVersion: result.schemaVersion,
-        documentPath: result.documentPath,
-      })),
-      ...result.semanticErrors.map((error) => ({
-        ...error,
-        phase: "semantic" as const,
-        artifactType: result.artifactType,
-        schemaId: result.schemaId,
-        schemaVersion: result.schemaVersion,
-        documentPath: result.documentPath,
-      })),
-    ])
-    .sort((left, right) =>
-      `${left.documentPath}:${left.phase}:${left.fieldPath}:${left.code}`.localeCompare(
-        `${right.documentPath}:${right.phase}:${right.fieldPath}:${right.code}`,
-      ),
-    );
-}
-
-function formatValidationFailure(
-  results: readonly ArtifactValidationResult[],
-  json: boolean,
-): string {
-  const errors = validationErrors(results);
-  if (json)
-    return JSON.stringify(
-      { status: "invalid", errorCode: "artifact-validation-failed", errors },
-      null,
-      2,
-    );
-  return [
-    "Intentloom project artifact validation failed.",
-    ...errors.map(
-      (error) =>
-        `${error.documentPath} (${error.artifactType}, schema ${error.schemaVersion ?? "unknown"}) ${error.fieldPath || "/"}: ${error.message} [${error.code}; ${error.phase}]`,
-    ),
-  ].join("\n");
-}
-
 export async function runCli(
   args: readonly string[],
   dependencies: CliDependencies,
@@ -414,6 +364,9 @@ export async function runCli(
     }
     if (args[0] === "security") {
       return await runSecurityCommand(args, dependencies, io);
+    }
+    if (args[0] === "diff") {
+      return await runDiffCommand(args, dependencies, io);
     }
     const parsed = parseArguments(args);
     const fileSystem = dependencies.fileSystem ?? nodeFileSystem;
@@ -1257,9 +1210,7 @@ export async function runCli(
               fileSystem,
               dependencies.transactionOptions,
             )
-          : parsed.command === "diff"
-            ? await diffProject(options, fileSystem)
-            : await planFeature(parsed.values.get("--task") ?? "", validator);
+          : await planFeature(parsed.values.get("--task") ?? "", validator);
     io.stdout(
       parsed.flags.has("--json")
         ? JSON.stringify(result, null, 2)
