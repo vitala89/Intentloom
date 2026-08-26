@@ -365,18 +365,12 @@ export async function runCli(
     if (args[0] === "security") {
       return await runSecurityCommand(args, dependencies, io);
     }
-    if (args[0] === "diff") {
-      return await runDiffCommand(args, dependencies, io);
-    }
-    if (args[0] === "plan") {
-      return await runPlanCommand(args, dependencies, io);
-    }
+    if (args[0] === "diff") return await runDiffCommand(args, dependencies, io);
+    if (args[0] === "plan") return await runPlanCommand(args, dependencies, io);
     const parsed = parseArguments(args);
     const fileSystem = dependencies.fileSystem ?? nodeFileSystem;
     const root = parsed.values.get("--root") ?? cwd();
-    const validator = await createCliArtifactValidator(
-      dependencies.catalogRoot,
-    );
+    const validator = await createCliArtifactValidator(dependencies.catalogRoot);
     const invalidMetadata = await loadInvalidProjectMetadata(
       parsed.command as ProjectMutationCommand,
       root,
