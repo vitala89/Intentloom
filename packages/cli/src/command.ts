@@ -370,7 +370,9 @@ export async function runCli(
     const parsed = parseArguments(args);
     const fileSystem = dependencies.fileSystem ?? nodeFileSystem;
     const root = parsed.values.get("--root") ?? cwd();
-    const validator = await createCliArtifactValidator(dependencies.catalogRoot);
+    const validator = await createCliArtifactValidator(
+      dependencies.catalogRoot,
+    );
     const invalidMetadata = await loadInvalidProjectMetadata(
       parsed.command as ProjectMutationCommand,
       root,
