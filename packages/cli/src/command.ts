@@ -2,7 +2,6 @@ import { cwd } from "node:process";
 import {
   ArtifactValidationFailure,
   adoptProject,
-  initProject,
   nodeFileSystem,
   planFeature,
   planProjectAdoption,
@@ -59,6 +58,7 @@ import { runMemoryCommand } from "./memory-command.js";
 import { runSessionCommand } from "./session-command.js";
 import { runSecurityCommand } from "./security-command.js";
 import { runDiffCommand } from "./diff-command.js";
+import { runInitCommand } from "./init-command.js";
 import { runPlanCommand } from "./plan-command.js";
 import { runEvidenceCommand } from "./evidence-command.js";
 import { runHarnessCommand } from "./harness-command.js";
@@ -115,7 +115,6 @@ interface ParsedArguments {
 }
 
 const commands = new Set([
-  "init",
   "adopt",
   "update",
   "sync",
@@ -367,6 +366,7 @@ export async function runCli(
     }
     if (args[0] === "diff") return await runDiffCommand(args, dependencies, io);
     if (args[0] === "plan") return await runPlanCommand(args, dependencies, io);
+    if (args[0] === "init") return await runInitCommand(args, dependencies, io);
     const parsed = parseArguments(args);
     const fileSystem = dependencies.fileSystem ?? nodeFileSystem;
     const root = parsed.values.get("--root") ?? cwd();
@@ -1201,15 +1201,13 @@ export async function runCli(
       return outcome.exitCode;
     }
     const result =
-      parsed.command === "init"
-        ? await initProject(options, fileSystem)
-        : parsed.command === "adopt"
-          ? await adoptProject(
-              options,
-              fileSystem,
-              dependencies.transactionOptions,
-            )
-          : await planFeature(parsed.values.get("--task") ?? "", validator);
+      parsed.command === "adopt"
+        ? await adoptProject(
+            options,
+            fileSystem,
+            dependencies.transactionOptions,
+          )
+        : await planFeature(parsed.values.get("--task") ?? "", validator);
     io.stdout(
       parsed.flags.has("--json")
         ? JSON.stringify(result, null, 2)

@@ -9,9 +9,39 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **P4l3 plan CLI extraction** complete on `main` (#394).
+Status: **P4l4 init CLI extraction** PR pending (`refactor/cli-init-command-extract`).
 
-### 2026-08-26, P4l3 extract plan CLI command from command.ts
+### 2026-08-27, P4l4 extract init CLI command from command.ts
+
+- **Status:** PR pending
+- **Branch:** `refactor/cli-init-command-extract`
+- **Starting main SHA:** `94318febf6d303a90c231807542b77b341f6955a` (post-P4l3 handoff #395)
+- **Objective:** Behavior-preserving extraction of top-level `init` CLI command into
+  `init-parse.ts` + `init-command.ts` with early dispatch; preserve parser
+  compatibility (index 1, no positional project path, mapping flags), P4l1
+  bootstrap/options (`buildProjectMutationOptions`, `parseMappings`), init
+  dry-run/conflict semantics, and bare `update` fallthrough; no adopt/sync/update
+  work.
+- **Modules created:**
+  - `packages/cli/src/init-parse.ts` — legacy-compatible init parser (index 1;
+    rejects positional project path; allows adoption mapping flags)
+  - `packages/cli/src/init-command.ts` — catalog bootstrap + `initProject` dispatch
+- **Metrics (canonical `scripts/production-file-metrics.mjs`):**
+  - `command.ts` before: 1261 physical / 1242 effective
+  - `command.ts` after: 1259 physical / 1240 effective (−2 physical / −2 effective)
+  - `init-parse.ts`: 118 physical / 112 effective
+  - `init-command.ts`: 75 physical / 71 effective
+- **Behavior notes:** init does not use `readsProjectMetadata`; invalid artifacts
+  may still surface as plan conflicts (e.g. `.aif/source-map.json` conflict exit 3)
+  without metadata-loader stderr; default adapters `claude,codex,cursor,copilot`;
+  conflicts via `conflicts(result)` (exit 0/3 only).
+- **Tests:** `tests/cli-init.test.ts` (34 cases); bare `update` legacy fallthrough
+  preserved; adopt mapping parity; related mutation suites; `pnpm verify`
+- **Not completed:** P4l5 `sync` extraction; adopt/update extraction
+- **Next first action:** merge P4l4 PR; then P4l5 — bounded extract of `sync`
+  command only; do not start adopt/update in the same PR
+
+### 2026-08-26, P4l3 plan CLI extraction
 
 - **Status:** complete on `main` (#394)
 - **Branch:** `refactor/cli-plan-command-extract` (merged)
