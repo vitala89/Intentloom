@@ -9,12 +9,14 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **P4l3 plan CLI extraction** complete on branch `refactor/cli-plan-command-extract` (PR pending).
+Status: **P4l3 plan CLI extraction** complete on `main` (#394).
 
 ### 2026-08-26, P4l3 extract plan CLI command from command.ts
 
-- **Status:** complete on branch (PR pending)
-- **Branch:** `refactor/cli-plan-command-extract`
+- **Status:** complete on `main` (#394)
+- **Branch:** `refactor/cli-plan-command-extract` (merged)
+- **Merge SHA:** `8f98c1202b9dc78df7a5db6bccafbfd9050afa98`
+- **PR:** https://github.com/vitala89/Intentloom/pull/394
 - **Starting main SHA:** `4c87d4d2a36ce0fdfabfff9c3bcb2b309fb1e12b` (post-P4l2 handoff #393)
 - **Objective:** Behavior-preserving extraction of top-level `plan` CLI command into
   `plan-parse.ts` + `plan-command.ts` with early dispatch; preserve parser
@@ -25,15 +27,15 @@ Status: **P4l3 plan CLI extraction** complete on branch `refactor/cli-plan-comma
   - `packages/cli/src/plan-parse.ts` — legacy-compatible plan parser (index 1;
     rejects positional project path)
   - `packages/cli/src/plan-command.ts` — catalog bootstrap + `planFeature` dispatch
-- **Metrics (canonical `scripts/production-file-metrics.mjs`):**
+- **Metrics (canonical `scripts/production-file-metrics.mjs`, merged main):**
   - `command.ts` before: 1262 physical / 1243 effective
-  - `command.ts` after: 1265 physical / 1246 effective (+3 physical / +3 effective;
-    early dispatch added; legacy `update` fallthrough retained)
+  - `command.ts` after: 1261 physical / 1242 effective (−1 physical / −1 effective;
+    early dispatch added; governance-safe compaction; legacy `update` fallthrough retained)
   - `plan-parse.ts`: 122 physical / 116 effective
   - `plan-command.ts`: 31 physical / 27 effective
-- **Tests:** `tests/cli-plan.test.ts` (23 cases); mutation suites
-  (`cli-diff`, `cli-schema-process`, `cli-pack-update`, `cli-adopt-plan`,
-  `cli-adopt-apply`, `cli-sync-process`); `pnpm verify`
+- **Tests:** `tests/cli-plan.test.ts` (23 cases); bare `update` legacy fallthrough
+  preserved; mutation suites (`cli-diff`, `cli-schema-process`, `cli-pack-update`,
+  `cli-adopt-plan`, `cli-adopt-apply`, `cli-sync-process`); `pnpm verify`
 - **Not completed:** P4l4 `init` extraction; adopt/sync/update extraction
 - **Next first action:** P4l4 — bounded extract of `init` command only; do not
   start adopt/sync/update in the same PR
