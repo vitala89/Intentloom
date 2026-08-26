@@ -9,7 +9,36 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **P4l1 shared mutation CLI infrastructure** complete on `main` (#390).
+Status: **P4l2 diff CLI extraction** complete pending merge (branch
+`refactor/cli-diff-command-extract`).
+
+### 2026-08-26, P4l2 extract diff CLI command from command.ts
+
+- **Status:** complete on branch; PR pending
+- **Branch:** `refactor/cli-diff-command-extract`
+- **Starting main SHA:** `f51f5a95705cb1431c9b361e6866f558dbd5d520` (post-P4l1 handoff #391)
+- **Objective:** Behavior-preserving extraction of top-level `diff` CLI command
+  family into `diff-parse.ts` + `diff-command.ts` with early dispatch; preserve
+  positional project path, parser compatibility, metadata blocking, optional
+  config, conflict exit semantics, and `--dry-run` accepted/ignored quirk; no
+  init/adopt/sync/plan/update work.
+- **Modules created:**
+  - `packages/cli/src/diff-parse.ts` — legacy-compatible diff parser (index 1)
+  - `packages/cli/src/diff-command.ts` — diff bootstrap + `diffProject` dispatch
+- **Shared helper moved:** `validationErrors` / `formatValidationFailure` →
+  `cli-project-metadata.ts` (consumed by `command.ts` and `diff-command.ts`)
+- **Metrics (canonical `scripts/production-file-metrics.mjs`):**
+  - `command.ts` before: 1311 physical / 1290 effective
+  - `command.ts` after: 1262 physical / 1243 effective (−49 physical / −47 effective)
+  - `diff-parse.ts`: 126 physical / 120 effective
+  - `diff-command.ts`: 75 physical / 71 effective
+  - `cli-project-metadata.ts` after: 253 physical / 241 effective (+46 effective vs P4l1 baseline)
+- **Tests:** `tests/cli-diff.test.ts` (23 cases); existing mutation suites
+  (`cli-provider-sync`, `cli-schema-process`, `cli-sync-process`,
+  `mutation-outcome`, `adoption-proposal`); `pnpm verify`
+- **Not completed:** P4l3 `plan` extraction; init/adopt/sync/update extraction
+- **Next first action:** P4l3 — bounded extract of `plan` command only; do not
+  start init/adopt/sync/update in the same PR
 
 ### 2026-08-26, P4l1 extract shared mutation command infrastructure
 

@@ -186,6 +186,53 @@ export async function validateExistingMetadata(
   return results;
 }
 
+function validationErrors(results: readonly ArtifactValidationResult[]) {
+  return results
+    .flatMap((result) => [
+      ...result.structuralErrors.map((error) => ({
+        ...error,
+        phase: "structural" as const,
+        artifactType: result.artifactType,
+        schemaId: result.schemaId,
+        schemaVersion: result.schemaVersion,
+        documentPath: result.documentPath,
+      })),
+      ...result.semanticErrors.map((error) => ({
+        ...error,
+        phase: "semantic" as const,
+        artifactType: result.artifactType,
+        schemaId: result.schemaId,
+        schemaVersion: result.schemaVersion,
+        documentPath: result.documentPath,
+      })),
+    ])
+    .sort((left, right) =>
+      `${left.documentPath}:${left.phase}:${left.fieldPath}:${left.code}`.localeCompare(
+        `${right.documentPath}:${right.phase}:${right.fieldPath}:${right.code}`,
+      ),
+    );
+}
+
+export function formatValidationFailure(
+  results: readonly ArtifactValidationResult[],
+  json: boolean,
+): string {
+  const errors = validationErrors(results);
+  if (json)
+    return JSON.stringify(
+      { status: "invalid", errorCode: "artifact-validation-failed", errors },
+      null,
+      2,
+    );
+  return [
+    "Intentloom project artifact validation failed.",
+    ...errors.map(
+      (error) =>
+        `${error.documentPath} (${error.artifactType}, schema ${error.schemaVersion ?? "unknown"}) ${error.fieldPath || "/"}: ${error.message} [${error.code}; ${error.phase}]`,
+    ),
+  ].join("\n");
+}
+
 export async function createCliArtifactValidator(
   catalogRoot: string,
 ): Promise<ArtifactValidator> {
