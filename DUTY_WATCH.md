@@ -9,13 +9,14 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **P4l2 diff CLI extraction** complete pending merge (branch
-`refactor/cli-diff-command-extract`).
+Status: **P4l2 diff CLI extraction** complete on `main` (#392).
 
 ### 2026-08-26, P4l2 extract diff CLI command from command.ts
 
-- **Status:** complete on branch; PR pending
-- **Branch:** `refactor/cli-diff-command-extract`
+- **Status:** complete on `main` (#392)
+- **Branch:** `refactor/cli-diff-command-extract` (merged)
+- **Merge SHA:** `58e1ae384075f7bac3516f073ea4f9b9f1b27344`
+- **PR:** https://github.com/vitala89/Intentloom/pull/392
 - **Starting main SHA:** `f51f5a95705cb1431c9b361e6866f558dbd5d520` (post-P4l1 handoff #391)
 - **Objective:** Behavior-preserving extraction of top-level `diff` CLI command
   family into `diff-parse.ts` + `diff-command.ts` with early dispatch; preserve
