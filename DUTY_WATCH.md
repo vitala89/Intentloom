@@ -9,12 +9,14 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **P4l4 init CLI extraction** PR pending (`refactor/cli-init-command-extract`).
+Status: **P4l4 init CLI extraction** complete on `main` (#396).
 
 ### 2026-08-27, P4l4 extract init CLI command from command.ts
 
-- **Status:** PR pending
-- **Branch:** `refactor/cli-init-command-extract`
+- **Status:** complete on `main` (#396)
+- **Branch:** `refactor/cli-init-command-extract` (merged)
+- **Merge SHA:** `145bbb4392429e855f2613cde9fc1412a30522c4`
+- **PR:** https://github.com/vitala89/Intentloom/pull/396
 - **Starting main SHA:** `94318febf6d303a90c231807542b77b341f6955a` (post-P4l3 handoff #395)
 - **Objective:** Behavior-preserving extraction of top-level `init` CLI command into
   `init-parse.ts` + `init-command.ts` with early dispatch; preserve parser
@@ -38,8 +40,8 @@ Status: **P4l4 init CLI extraction** PR pending (`refactor/cli-init-command-extr
 - **Tests:** `tests/cli-init.test.ts` (34 cases); bare `update` legacy fallthrough
   preserved; adopt mapping parity; related mutation suites; `pnpm verify`
 - **Not completed:** P4l5 `sync` extraction; adopt/update extraction
-- **Next first action:** merge P4l4 PR; then P4l5 — bounded extract of `sync`
-  command only; do not start adopt/update in the same PR
+- **Next first action:** P4l5 — bounded extract of `sync` command only; do not
+  start adopt/update in the same PR
 
 ### 2026-08-26, P4l3 plan CLI extraction
 
