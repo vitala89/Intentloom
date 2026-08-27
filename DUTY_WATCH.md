@@ -9,12 +9,14 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **P4l5 sync CLI extraction** PR pending (`refactor/cli-sync-command-extract`).
+Status: **P4l5 sync CLI extraction** complete on `main` (#398).
 
 ### 2026-08-27, P4l5 extract sync CLI command from command.ts
 
-- **Status:** PR pending
-- **Branch:** `refactor/cli-sync-command-extract`
+- **Status:** complete on `main` (#398)
+- **Branch:** `refactor/cli-sync-command-extract` (merged)
+- **Merge SHA:** `694b8df710ed25add3e7afca684150bc0b0b1c51`
+- **PR:** https://github.com/vitala89/Intentloom/pull/398
 - **Starting main SHA:** `b791996737075000cc76c723613a7605db99baf9` (post-P4l4 handoff #397)
 - **Objective:** Behavior-preserving extraction of top-level `sync` CLI command into
   `sync-parse.ts` + `sync-command.ts` with early dispatch; preserve parser
@@ -37,12 +39,13 @@ Status: **P4l5 sync CLI extraction** PR pending (`refactor/cli-sync-command-extr
   on stderr via `formatValidationFailure` (exit 3); missing `.aif/config.yaml`
   is a usage error (exit 2); `--force` is accepted and forwarded to `syncProject`
   without changing conflict/owned-file protection; transaction exits remain 0/3/4/5.
-- **Tests:** `tests/cli-sync.test.ts` (39 cases); bare `update` legacy fallthrough
-  preserved; init/plan/diff early dispatch unchanged; adopt mapping parity;
-  related mutation suites; `pnpm verify`
+- **Tests:** `tests/cli-sync.test.ts` (39 cases); `tests/cli-sync-process.test.ts`
+  (49 cases); bare `update` legacy fallthrough preserved; init/plan/diff early
+  dispatch unchanged; adopt mapping parity; related mutation suites; `pnpm verify`
+  (267 files, 2167 passed / 3 skipped)
 - **Not completed:** P4l6 `adopt` extraction; `update` extraction
-- **Next first action:** merge P4l5 PR; then P4l6 — bounded extract of `adopt`
-  command only; do not start update in the same PR
+- **Next first action:** P4l6 — bounded extract of `adopt` command only; do not
+  start update in the same PR
 
 ### 2026-08-27, P4l4 extract init CLI command from command.ts
 
