@@ -9,7 +9,40 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **P4l6 adopt CLI extraction** complete on `main` (#400).
+Status: **P4l7 update CLI extraction** complete on `main` (#402).
+
+### 2026-08-28, P4l7 extract update CLI command from command.ts
+
+- **Status:** complete on `main` (#402)
+- **Branch:** `refactor/cli-update-command-extract` (merged)
+- **Merge SHA:** `3bfdd026f4d1181947eb72ebfbe4c6d1d362d483`
+- **PR:** https://github.com/vitala89/Intentloom/pull/402
+- **Starting main SHA:** `b6378a5ce5e08e3c19b6280d0d811c96e7c94887` (post-P4l6 handoff #401)
+- **Objective:** Behavior-preserving extraction of top-level `update` CLI command into
+  `update-parse.ts` + `update-command.ts` with early dispatch; preserve parser
+  compatibility (index 1, positional project path), pack `--plan`/`--apply` semantics,
+  bare `update` legacy fallthrough to `planFeature("")`, P4l1 bootstrap/options, and
+  `--force`/mapping rejection parity; no controlled-learning cluster work.
+- **Modules created:**
+  - `packages/cli/src/update-parse.ts` — legacy-compatible update parser (index 1;
+    accepts positional project path; rejects `--force` and adoption mapping flags)
+  - `packages/cli/src/update-command.ts` — pack `--plan`/`--apply` and default
+    fallthrough dispatch through existing application APIs and P4l1 shared bootstrap
+- **Metrics (canonical `scripts/production-file-metrics.mjs`):**
+  - `command.ts` before: 1141 physical / 1122 effective
+  - `command.ts` after: 1006 physical / 987 effective (−135 physical / −135 effective)
+  - `update-parse.ts`: 126 physical / 120 effective
+  - `update-command.ts`: 152 physical / 145 effective
+- **Behavior notes:** update `--plan`/`--apply`/default paths unchanged; bare `update`
+  still falls through to `planFeature("")` → stderr `task identifier is required`, exit 2;
+  invalid metadata does not block update; apply exits remain 0/3/4; strict plan exit 3
+  preserved; `--force` remains sync-only; mapping flags remain init/adopt scoped.
+- **Tests:** `tests/cli-update.test.ts` (15 cases); `tests/cli-pack-update.test.ts`
+  (3 cases); init/plan/diff/sync/adopt early dispatch unchanged; related mutation suites;
+  `pnpm verify` (269 files, 2196 passed / 3 skipped)
+- **Not completed:** controlled-learning cluster extraction (`summary`/`skill`/etc.)
+- **Next first action:** Extract controlled-learning cluster one subdomain per PR per
+  `docs/roadmap/CLI_COMMAND_TS_DECOMPOSITION.md`; do not start in the same PR as mutation work
 
 ### 2026-08-27, P4l6 extract adopt CLI command from command.ts
 
