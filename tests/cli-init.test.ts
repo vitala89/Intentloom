@@ -114,8 +114,8 @@ describe("init CLI", () => {
     );
 
     expect(exitCode).toBe(0);
-    expect(fs.files.has(join(projectRoot, ".aif/config.yaml"))).toBe(true);
-    expect(fs.files.has(join(projectRoot, "AGENTS.md"))).toBe(true);
+    expect(await fs.exists(join(projectRoot, ".aif/config.yaml"))).toBe(true);
+    expect(await fs.exists(join(projectRoot, "AGENTS.md"))).toBe(true);
   });
 
   it("returns JSON plan objects with --json", async () => {
@@ -198,9 +198,8 @@ describe("init CLI", () => {
     );
 
     expect(exitCode).toBe(0);
-    expect(fs.files.get(join(projectRoot, ".aif/config.yaml"))).toContain(
-      "profile: generic",
-    );
+    const config = await fs.read(join(projectRoot, ".aif/config.yaml"));
+    expect(config).toContain("profile: generic");
   });
 
   it("uses init default adapters when --adapters is omitted", async () => {
@@ -216,21 +215,12 @@ describe("init CLI", () => {
     );
 
     expect(exitCode).toBe(0);
-    expect(fs.files.get(join(projectRoot, ".aif/config.yaml"))).toContain(
-      "adapters:",
-    );
-    expect(fs.files.get(join(projectRoot, ".aif/config.yaml"))).toContain(
-      "- claude",
-    );
-    expect(fs.files.get(join(projectRoot, ".aif/config.yaml"))).toContain(
-      "- codex",
-    );
-    expect(fs.files.get(join(projectRoot, ".aif/config.yaml"))).toContain(
-      "- cursor",
-    );
-    expect(fs.files.get(join(projectRoot, ".aif/config.yaml"))).toContain(
-      "- copilot",
-    );
+    const config = await fs.read(join(projectRoot, ".aif/config.yaml"));
+    expect(config).toContain("adapters:");
+    expect(config).toContain("- claude");
+    expect(config).toContain("- codex");
+    expect(config).toContain("- cursor");
+    expect(config).toContain("- copilot");
   });
 
   it("accepts --project-owned-mapping", async () => {
