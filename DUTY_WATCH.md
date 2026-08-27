@@ -9,7 +9,40 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **P4l5 sync CLI extraction** complete on `main` (#398).
+Status: **P4l6 adopt CLI extraction** complete on `main` (#400).
+
+### 2026-08-27, P4l6 extract adopt CLI command from command.ts
+
+- **Status:** complete on `main` (#400)
+- **Branch:** `refactor/cli-adopt-command-extract` (merged)
+- **Merge SHA:** `7d70e2c62cfb66de91c5fb7bbfe2853155c75bf8`
+- **PR:** https://github.com/vitala89/Intentloom/pull/400
+- **Starting main SHA:** `df9dffca3c7af1cbf0f8d747edb5dfe3eefefae1` (post-P4l5 handoff #399)
+- **Objective:** Behavior-preserving extraction of top-level `adopt` CLI command into
+  `adopt-parse.ts` + `adopt-command.ts` with early dispatch; preserve parser
+  compatibility (index 1, positional project path, mapping flags), plan/apply/default
+  adopt semantics, P4l1 bootstrap/options (`buildProjectMutationOptions`,
+  `parseMappings`), and bare `update` fallthrough; no update work.
+- **Modules created:**
+  - `packages/cli/src/adopt-parse.ts` — legacy-compatible adopt parser (index 1;
+    accepts positional project path; allows adoption mapping flags; rejects `--force`)
+  - `packages/cli/src/adopt-command.ts` — plan/apply/default adopt dispatch through
+    existing application APIs and P4l1 shared bootstrap
+- **Metrics (canonical `scripts/production-file-metrics.mjs`):**
+  - `command.ts` before: 1236 physical / 1217 effective
+  - `command.ts` after: 1141 physical / 1122 effective (−95 physical / −95 effective)
+  - `adopt-parse.ts`: 122 physical / 116 effective
+  - `adopt-command.ts`: 162 physical / 155 effective
+- **Behavior notes:** adopt `--plan`/`--apply`/default paths unchanged; mapping flags
+  preserved; invalid metadata does not block adopt (same as pre-extraction); transaction
+  exits remain 0/3/4/5; governance plan strict mode exit 3 preserved.
+- **Tests:** `tests/cli-adopt.test.ts` (14 cases); `tests/cli-adopt-plan.test.ts`
+  (4 cases); `tests/cli-adopt-apply.test.ts` (4 cases); init/plan/diff/sync early
+  dispatch unchanged; bare `update` legacy fallthrough preserved; `pnpm verify`
+  (268 files, 2181 passed / 3 skipped)
+- **Not completed:** P4l7 `update` extraction
+- **Next first action:** P4l7 — bounded extract of `update` command only; do not
+  start governance or adoption model work in the same PR
 
 ### 2026-08-27, P4l5 extract sync CLI command from command.ts
 
