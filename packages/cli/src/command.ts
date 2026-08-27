@@ -1,10 +1,8 @@
 import { cwd } from "node:process";
 import {
   ArtifactValidationFailure,
-  adoptProject,
   nodeFileSystem,
   planFeature,
-  planProjectAdoption,
   applyProjectAdoption,
   planPackUpdate,
   getTaskSummary,
@@ -41,7 +39,6 @@ import {
   type TrustClass,
   type RetentionState,
   type FileSystem,
-  type AdoptionProposal,
   type TransactionOptions,
 } from "@intentloom/application";
 import { type ProviderCacheStore } from "@intentloom/evidence-provider";
@@ -60,6 +57,7 @@ import { runDiffCommand } from "./diff-command.js";
 import { runInitCommand } from "./init-command.js";
 import { runPlanCommand } from "./plan-command.js";
 import { runSyncCommand } from "./sync-command.js";
+import { runAdoptCommand } from "./adopt-command.js";
 import { runEvidenceCommand } from "./evidence-command.js";
 import { runHarnessCommand } from "./harness-command.js";
 import {
@@ -78,7 +76,7 @@ import {
   type ProjectMutationCommand,
 } from "./project-command-context.js";
 import { usage } from "./usage.js";
-import { formatAdoptionProposal, formatPlan } from "./formatters.js";
+import { formatPlan } from "./formatters.js";
 import { INTENTLOOM_VERSION, resolveWithin } from "@intentloom/core";
 import {
   parseAdoptionPlan,
@@ -109,7 +107,6 @@ interface ParsedArguments {
 }
 
 const commands = new Set([
-  "adopt",
   "update",
   "evidence",
   "summary",
@@ -122,7 +119,7 @@ const commands = new Set([
   "delegate",
   "context",
 ]);
-const projectPathCommands = new Set(["adopt", "update"]);
+const projectPathCommands = new Set(["update"]);
 const booleanFlags = new Set([
   "--cache",
   "--dry-run",
@@ -282,7 +279,7 @@ function parseArguments(args: readonly string[]): ParsedArguments {
   }
   if (flags.has("--force"))
     throw new CliUsageError("--force is only valid with sync");
-  if (mappingValues.size > 0 && command !== "init" && command !== "adopt")
+  if (mappingValues.size > 0)
     throw new CliUsageError(
       "adoption mappings are only valid with init or adopt",
     );
@@ -361,6 +358,8 @@ export async function runCli(
     if (args[0] === "plan") return await runPlanCommand(args, dependencies, io);
     if (args[0] === "init") return await runInitCommand(args, dependencies, io);
     if (args[0] === "sync") return await runSyncCommand(args, dependencies, io);
+    if (args[0] === "adopt")
+      return await runAdoptCommand(args, dependencies, io);
     const parsed = parseArguments(args);
     const fileSystem = dependencies.fileSystem ?? nodeFileSystem;
     const root = parsed.values.get("--root") ?? cwd();
@@ -1009,77 +1008,6 @@ export async function runCli(
       }
       return 0;
     }
-    if (parsed.command === "adopt" && parsed.flags.has("--plan")) {
-      const plan = await planProjectAdoption({ root }, fileSystem);
-      const outputText = parsed.flags.has("--json")
-        ? stableStringify(plan)
-        : formatGovernanceAdoptionPlan(plan);
-      const outputPath = parsed.values.get("--output");
-      if (outputPath !== undefined) {
-        const targetPath = resolveWithin(root, outputPath);
-        await fileSystem.write(targetPath, outputText);
-      }
-      io.stdout(`${outputText}\n`);
-      if (
-        parsed.flags.has("--strict") &&
-        (!plan.automaticApplyAllowed ||
-          plan.findings.some(
-            (finding) =>
-              finding.status === "ambiguous" ||
-              finding.status === "conflicting",
-          ))
-      ) {
-        return 3;
-      }
-      return 0;
-    }
-    if (parsed.command === "adopt" && parsed.values.has("--apply")) {
-      const planFile = parsed.values.get("--apply")!;
-      const planPath = resolveWithin(root, planFile);
-      if (!(await fileSystem.exists(planPath))) {
-        io.stderr(`Adoption plan file not found: ${planFile}\n`);
-        return 3;
-      }
-      const rawPlan = await fileSystem.read(planPath);
-      let plan: AdoptionPlan;
-      try {
-        plan = parseAdoptionPlan(rawPlan);
-      } catch (err) {
-        io.stderr(
-          `Invalid adoption plan file: ${err instanceof Error ? err.message : String(err)}\n`,
-        );
-        return 3;
-      }
-      const applyResult = await applyProjectAdoption(
-        {
-          root,
-          plan,
-          dryRun: parsed.flags.has("--dry-run"),
-        },
-        fileSystem,
-      );
-      if (parsed.flags.has("--json")) {
-        io.stdout(`${JSON.stringify(applyResult, null, 2)}\n`);
-      } else {
-        io.stdout(
-          `Adoption apply status: ${applyResult.status}\n` +
-            `Applied operations: ${applyResult.appliedOperations.length}\n` +
-            `Created files: ${applyResult.createdFiles.length}\n` +
-            `Updated files: ${applyResult.updatedFiles.length}\n` +
-            (applyResult.error ? `Error: ${applyResult.error}\n` : ""),
-        );
-      }
-      if (
-        applyResult.status === "stale-hash" ||
-        applyResult.status === "failed"
-      ) {
-        return 3;
-      }
-      if (applyResult.status === "rolled-back") {
-        return 4;
-      }
-      return 0;
-    }
     if (parsed.command === "update" && parsed.flags.has("--plan")) {
       const plan = await planPackUpdate({ root }, fileSystem);
       const outputText = parsed.flags.has("--json")
@@ -1164,7 +1092,7 @@ export async function runCli(
       io.stderr(output);
       return 3;
     }
-    const options = await buildProjectMutationOptions({
+    await buildProjectMutationOptions({
       command: parsed.command as ProjectMutationCommand,
       root,
       fileSystem,
@@ -1177,37 +1105,17 @@ export async function runCli(
       adaptersFlag: parsed.values.get("--adapters"),
       mappingValues: parsed.mappingValues,
     });
-    const result =
-      parsed.command === "adopt"
-        ? await adoptProject(
-            options,
-            fileSystem,
-            dependencies.transactionOptions,
-          )
-        : await planFeature(parsed.values.get("--task") ?? "", validator);
+    const result = await planFeature(
+      parsed.values.get("--task") ?? "",
+      validator,
+    );
     io.stdout(
       parsed.flags.has("--json")
         ? JSON.stringify(result, null, 2)
         : typeof result === "string"
           ? result
-          : parsed.command === "adopt"
-            ? formatAdoptionProposal(result as AdoptionProposal)
-            : formatPlan(result),
+          : formatPlan(result),
     );
-    if (parsed.command === "adopt") {
-      const adoption = result as AdoptionProposal;
-      if (adoption.transactionOutcome?.status === "failed")
-        return adoption.transactionOutcome.rollbackCompleted ? 4 : 5;
-      return adoption.applicationStatus === "blocked" ||
-        adoption.applicationStatus === "failed-restored" ||
-        adoption.applicationStatus === "failed-incomplete" ||
-        adoption.diagnostics.length > 0 ||
-        adoption.items.some(
-          (item) => item.manualDecisionRequired || item.action === "conflict",
-        )
-        ? 3
-        : 0;
-    }
     return typeof result === "string" || conflicts(result).length === 0 ? 0 : 3;
   } catch (error) {
     if (error instanceof SchemaCatalogError) {
