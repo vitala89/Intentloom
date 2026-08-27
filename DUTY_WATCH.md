@@ -9,7 +9,40 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **P4l4 init CLI extraction** complete on `main` (#396).
+Status: **P4l5 sync CLI extraction** PR pending (`refactor/cli-sync-command-extract`).
+
+### 2026-08-27, P4l5 extract sync CLI command from command.ts
+
+- **Status:** PR pending
+- **Branch:** `refactor/cli-sync-command-extract`
+- **Starting main SHA:** `b791996737075000cc76c723613a7605db99baf9` (post-P4l4 handoff #397)
+- **Objective:** Behavior-preserving extraction of top-level `sync` CLI command into
+  `sync-parse.ts` + `sync-command.ts` with early dispatch; preserve parser
+  compatibility (index 1, positional project path, `--force` sync-only), P4l1
+  bootstrap/options (`buildProjectMutationOptions`, shared mutation outcome
+  mapping), required `.aif/config.yaml`, and bare `update` fallthrough; no
+  adopt/update work.
+- **Modules created:**
+  - `packages/cli/src/sync-parse.ts` — legacy-compatible sync parser (index 1;
+    accepts positional project path; allows `--force`; rejects adoption mapping
+    flags)
+  - `packages/cli/src/sync-command.ts` — catalog/metadata bootstrap + `syncProject`
+    dispatch through P4l1 outcome mapping
+- **Metrics (canonical `scripts/production-file-metrics.mjs`):**
+  - `command.ts` before: 1259 physical / 1240 effective
+  - `command.ts` after: 1236 physical / 1217 effective (−23 physical / −23 effective)
+  - `sync-parse.ts`: 124 physical / 118 effective
+  - `sync-command.ts`: 89 physical / 85 effective
+- **Behavior notes:** sync uses `readsProjectMetadata`; invalid artifacts block
+  on stderr via `formatValidationFailure` (exit 3); missing `.aif/config.yaml`
+  is a usage error (exit 2); `--force` is accepted and forwarded to `syncProject`
+  without changing conflict/owned-file protection; transaction exits remain 0/3/4/5.
+- **Tests:** `tests/cli-sync.test.ts` (39 cases); bare `update` legacy fallthrough
+  preserved; init/plan/diff early dispatch unchanged; adopt mapping parity;
+  related mutation suites; `pnpm verify`
+- **Not completed:** P4l6 `adopt` extraction; `update` extraction
+- **Next first action:** merge P4l5 PR; then P4l6 — bounded extract of `adopt`
+  command only; do not start update in the same PR
 
 ### 2026-08-27, P4l4 extract init CLI command from command.ts
 
