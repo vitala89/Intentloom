@@ -7,7 +7,6 @@ import {
   planProjectAdoption,
   applyProjectAdoption,
   planPackUpdate,
-  syncProject,
   getTaskSummary,
   listTaskSummaries,
   recordTaskSummary,
@@ -60,6 +59,7 @@ import { runSecurityCommand } from "./security-command.js";
 import { runDiffCommand } from "./diff-command.js";
 import { runInitCommand } from "./init-command.js";
 import { runPlanCommand } from "./plan-command.js";
+import { runSyncCommand } from "./sync-command.js";
 import { runEvidenceCommand } from "./evidence-command.js";
 import { runHarnessCommand } from "./harness-command.js";
 import {
@@ -70,13 +70,7 @@ import {
   formatValidationFailure,
 } from "./cli-project-metadata.js";
 import { formatGovernanceAdoptionPlan } from "./governance-adoption-format.js";
-import {
-  conflicts,
-  formatHumanOutcome,
-  formatJsonOutcome,
-  mapDryRunToCliOutcome,
-  mapTransactionResultToCliOutcome,
-} from "./mutation-outcome.js";
+import { conflicts } from "./mutation-outcome.js";
 import {
   buildProjectMutationOptions,
   loadInvalidProjectMetadata,
@@ -117,7 +111,6 @@ interface ParsedArguments {
 const commands = new Set([
   "adopt",
   "update",
-  "sync",
   "evidence",
   "summary",
   "skill",
@@ -129,7 +122,7 @@ const commands = new Set([
   "delegate",
   "context",
 ]);
-const projectPathCommands = new Set(["adopt", "update", "sync"]);
+const projectPathCommands = new Set(["adopt", "update"]);
 const booleanFlags = new Set([
   "--cache",
   "--dry-run",
@@ -287,7 +280,7 @@ function parseArguments(args: readonly string[]): ParsedArguments {
     } else values.set(token, value);
     index += 1;
   }
-  if (command !== "sync" && flags.has("--force"))
+  if (flags.has("--force"))
     throw new CliUsageError("--force is only valid with sync");
   if (mappingValues.size > 0 && command !== "init" && command !== "adopt")
     throw new CliUsageError(
@@ -367,6 +360,7 @@ export async function runCli(
     if (args[0] === "diff") return await runDiffCommand(args, dependencies, io);
     if (args[0] === "plan") return await runPlanCommand(args, dependencies, io);
     if (args[0] === "init") return await runInitCommand(args, dependencies, io);
+    if (args[0] === "sync") return await runSyncCommand(args, dependencies, io);
     const parsed = parseArguments(args);
     const fileSystem = dependencies.fileSystem ?? nodeFileSystem;
     const root = parsed.values.get("--root") ?? cwd();
@@ -1183,23 +1177,6 @@ export async function runCli(
       adaptersFlag: parsed.values.get("--adapters"),
       mappingValues: parsed.mappingValues,
     });
-    if (parsed.command === "sync") {
-      const result = await syncProject(
-        { ...options, force: parsed.flags.has("--force") },
-        fileSystem,
-        dependencies.transactionOptions,
-      );
-      const outcome =
-        "dryRun" in result
-          ? mapDryRunToCliOutcome(result)
-          : mapTransactionResultToCliOutcome(result);
-      io.stdout(
-        parsed.flags.has("--json")
-          ? formatJsonOutcome(outcome)
-          : formatHumanOutcome(outcome),
-      );
-      return outcome.exitCode;
-    }
     const result =
       parsed.command === "adopt"
         ? await adoptProject(
