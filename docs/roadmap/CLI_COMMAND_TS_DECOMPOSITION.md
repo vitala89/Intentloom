@@ -33,15 +33,16 @@ identical; reuse existing CLI tests.
 
 ### P4l mutation family (in progress)
 
-| Slice | Module(s)                                                                            | Status       | Notes                                                                                                                                                                                      |
-| ----- | ------------------------------------------------------------------------------------ | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| P4l1  | `mutation-outcome.ts`, `project-command-context.ts`, `governance-adoption-format.ts` | **complete** | Shared mutation/sync outcome mapping, project bootstrap context, governance plan formatting; no command early dispatch; `command.ts` still owns init/adopt/update/sync routing             |
-| P4l2  | `diff-command.ts`, `diff-parse.ts`                                                   | **complete** | Early dispatch for `diff`; positional project path preserved; uses P4l1 shared modules                                                                                                     |
-| P4l3  | `plan-command.ts`, `plan-parse.ts`                                                   | **complete** | Early dispatch for top-level `plan`; positional project path rejected; lightweight bootstrap (catalog validator + `planFeature` only); bare `update` fallthrough preserved in `command.ts` |
-| P4l4+ | init / adopt / sync / update (planned)                                               | not started  | Per-command extraction after plan                                                                                                                                                          |
+| Slice | Module(s)                                                                            | Status       | Notes                                                                                                                                                                                                  |
+| ----- | ------------------------------------------------------------------------------------ | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| P4l1  | `mutation-outcome.ts`, `project-command-context.ts`, `governance-adoption-format.ts` | **complete** | Shared mutation/sync outcome mapping, project bootstrap context, governance plan formatting; no command early dispatch; `command.ts` still owns init/adopt/update/sync routing                         |
+| P4l2  | `diff-command.ts`, `diff-parse.ts`                                                   | **complete** | Early dispatch for `diff`; positional project path preserved; uses P4l1 shared modules                                                                                                                 |
+| P4l3  | `plan-command.ts`, `plan-parse.ts`                                                   | **complete** | Early dispatch for top-level `plan`; positional project path rejected; lightweight bootstrap (catalog validator + `planFeature` only); bare `update` fallthrough preserved in `command.ts`             |
+| P4l4  | `init-command.ts`, `init-parse.ts`                                                   | **complete** | Early dispatch for top-level `init`; positional project path rejected; mapping flags preserved via P4l1 `parseMappings`; init metadata/bootstrap semantics unchanged; adopt/sync/update/plan untouched |
+| P4l5+ | adopt / sync / update (planned)                                                      | not started  | Per-command extraction after init                                                                                                                                                                      |
 
-1. **`init` / `adopt` / `sync` / `update`** — remaining mutation commands;
-   one family per PR after plan (P4l4 init is next).
+1. **`adopt` / `sync` / `update`** — remaining mutation commands;
+   one family per PR after init (P4l5 sync is next).
 2. **`summary` / `skill` / `proposal` / `evaluate` / `checkpoint` / `profile` /
    `delegate` / `rank` / `context`** — controlled-learning cluster; split by
    subdomain once shared helpers are isolated.
