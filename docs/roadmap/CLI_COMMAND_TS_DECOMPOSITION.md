@@ -42,11 +42,12 @@ identical; reuse existing CLI tests.
 | P4l5  | `sync-command.ts`, `sync-parse.ts`                                                   | **complete** | Early dispatch for top-level `sync`; positional project path preserved; `--force` remains sync-only; mapping flags rejected; P4l1 mutation outcome mapping reused; adopt/update/init/plan/diff untouched             |
 | P4l6  | `adopt-command.ts`, `adopt-parse.ts`                                                 | **complete** | Early dispatch for top-level `adopt`; positional project path preserved; mapping flags preserved via P4l1 `parseMappings`; plan/apply/default adopt semantics unchanged; update/init/plan/diff/sync untouched        |
 | P4l7  | `update-command.ts`, `update-parse.ts`                                               | **complete** | Early dispatch for top-level `update`; positional project path preserved; `--force` and mapping flags rejected; pack `--plan`/`--apply` and bare-update legacy fallthrough preserved; P4l1 mutation bootstrap reused |
-| P4l8+ | controlled-learning cluster (planned)                                                | not started  | Per-command extraction after update                                                                                                                                                                                  |
+| P4l8  | `summary-command.ts`, `summary-parse.ts`                                             | **complete** | Early dispatch for top-level `summary`; subcommands `list`/`get`/`record`; legacy parser index-2 compatibility preserved; task summary APIs unchanged; controlled-learning cluster siblings untouched              |
+| P4l9+ | controlled-learning cluster (planned)                                                | not started  | Per-command extraction after summary                                                                                                                                                                                 |
 
-1. **`summary` / `skill` / `proposal` / `evaluate` / `checkpoint` / `profile` /
-   `delegate` / `rank` / `context`** — controlled-learning cluster; split by
-   subdomain once shared helpers are isolated.
+1. **`skill` / `proposal` / `evaluate` / `checkpoint` / `profile` /
+   `delegate` / `rank` / `context`** — remaining controlled-learning cluster;
+   split by subdomain once shared helpers are isolated.
 
 ## Rules
 
