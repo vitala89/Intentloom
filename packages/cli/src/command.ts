@@ -2,7 +2,6 @@ import { cwd } from "node:process";
 import {
   ArtifactValidationFailure,
   nodeFileSystem,
-  discoverSkills,
   createSkillProposal,
   listSkillProposals,
   getSkillProposal,
@@ -26,7 +25,6 @@ import {
   listProfiles,
   delegateTaskRole,
   getBoundedProjectContext,
-  type SkillLoadingLevel,
   type SkillProposalState,
   type SemanticRankingProvider,
   type DelegatedAgentRole,
@@ -53,6 +51,7 @@ import { runSyncCommand } from "./sync-command.js";
 import { runAdoptCommand } from "./adopt-command.js";
 import { runUpdateCommand } from "./update-command.js";
 import { runSummaryCommand } from "./summary-command.js";
+import { runSkillCommand } from "./skill-command.js";
 import { runEvidenceCommand } from "./evidence-command.js";
 import { runHarnessCommand } from "./harness-command.js";
 import {
@@ -88,7 +87,6 @@ interface ParsedArguments {
 
 const commands = new Set([
   "evidence",
-  "skill",
   "proposal",
   "evaluate",
   "checkpoint",
@@ -170,8 +168,6 @@ function parseArguments(args: readonly string[]): ParsedArguments {
     !["fetch", "import", "analyze"].includes(args[1] ?? "")
   )
     throw new CliUsageError("evidence requires fetch, import, or analyze");
-  if (command === "skill" && args[1] !== "discover")
-    throw new CliUsageError("skill requires discover subcommand");
   if (
     command === "proposal" &&
     !["list", "get", "create", "approve", "plan", "apply"].includes(
@@ -211,7 +207,6 @@ function parseArguments(args: readonly string[]): ParsedArguments {
   for (
     let index =
       command === "evidence" ||
-      command === "skill" ||
       command === "proposal" ||
       command === "evaluate" ||
       command === "checkpoint" ||
@@ -331,67 +326,11 @@ export async function runCli(
       return await runUpdateCommand(args, dependencies, io);
     if (args[0] === "summary")
       return await runSummaryCommand(args, dependencies, io);
+    if (args[0] === "skill")
+      return await runSkillCommand(args, dependencies, io);
     const parsed = parseArguments(args);
     const fileSystem = dependencies.fileSystem ?? nodeFileSystem;
     const root = parsed.values.get("--root") ?? cwd();
-    if (parsed.command === "skill") {
-      const subcommand = args[1];
-      if (subcommand === "discover") {
-        const rawLevel = parsed.values.get("--level");
-        if (
-          rawLevel !== undefined &&
-          !["catalog", "contract", "procedure"].includes(rawLevel)
-        ) {
-          throw new CliUsageError(
-            "--level must be catalog, contract, or procedure",
-          );
-        }
-        const level = (rawLevel as SkillLoadingLevel | undefined) ?? "catalog";
-        const pack = parsed.values.get("--pack");
-        const role = parsed.values.get("--role");
-        const query = parsed.values.get("--query");
-        const rawTrust = parsed.values.get("--trust-class");
-        const trustClass = rawTrust as TrustClass | undefined;
-        const rawBudget = parsed.values.get("--max-budget");
-        const maxBudget = rawBudget ? parseInt(rawBudget, 10) : undefined;
-
-        const result = await discoverSkills(
-          {
-            root,
-            ...(dependencies.catalogRoot !== undefined
-              ? { catalogRoot: dependencies.catalogRoot }
-              : {}),
-            level,
-            ...(pack !== undefined ? { pack } : {}),
-            ...(role !== undefined ? { role } : {}),
-            ...(query !== undefined ? { query } : {}),
-            ...(trustClass !== undefined ? { trustClass } : {}),
-            ...(maxBudget !== undefined && !Number.isNaN(maxBudget)
-              ? { maxBudget }
-              : {}),
-          },
-          fileSystem,
-        );
-
-        if (parsed.flags.has("--json")) {
-          io.stdout(JSON.stringify(result, null, 2));
-        } else {
-          const lines = [
-            `Discovered ${result.skills.length} skills (Level: ${result.level})`,
-            `Total context budget: ${result.totalBudgetEstimate} tokens (Savings: ${result.budgetSavingsPercentage}% vs eager loading)`,
-            "",
-          ];
-          for (const s of result.skills) {
-            lines.push(
-              `- [${s.id}] ${s.name} (v${s.version}): ${s.description}`,
-            );
-          }
-          io.stdout(lines.join("\n"));
-        }
-        return 0;
-      }
-      throw new CliUsageError(`unsupported skill subcommand: ${subcommand}`);
-    }
     if (parsed.command === "proposal") {
       const subcommand = args[1];
       if (subcommand === "list") {
