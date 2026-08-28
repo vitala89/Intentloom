@@ -5,10 +5,8 @@ import {
   rankProceduralMemory,
   getSemanticRankingConfig,
   updateSemanticRankingConfig,
-  delegateTaskRole,
   getBoundedProjectContext,
   type SemanticRankingProvider,
-  type DelegatedAgentRole,
   type FileSystem,
   type TransactionOptions,
 } from "@intentloom/application";
@@ -36,6 +34,7 @@ import { runProposalCommand } from "./proposal-command.js";
 import { runEvaluateCommand } from "./evaluate-command.js";
 import { runCheckpointCommand } from "./checkpoint-command.js";
 import { runProfileCommand } from "./profile-command.js";
+import { runDelegateCommand } from "./delegate-command.js";
 import { runEvidenceCommand } from "./evidence-command.js";
 import { runHarnessCommand } from "./harness-command.js";
 import {
@@ -69,7 +68,7 @@ interface ParsedArguments {
   readonly mappingValues: ReadonlyMap<string, readonly string[]>;
 }
 
-const commands = new Set(["evidence", "rank", "delegate", "context"]);
+const commands = new Set(["evidence", "rank", "context"]);
 const booleanFlags = new Set([
   "--cache",
   "--dry-run",
@@ -276,35 +275,11 @@ export async function runCli(
       return await runCheckpointCommand(args, dependencies, io);
     if (args[0] === "profile")
       return await runProfileCommand(args, dependencies, io);
+    if (args[0] === "delegate")
+      return await runDelegateCommand(args, dependencies, io);
     const parsed = parseArguments(args);
     const fileSystem = dependencies.fileSystem ?? nodeFileSystem;
     const root = parsed.values.get("--root") ?? cwd();
-    if (parsed.command === "delegate") {
-      const profileName = parsed.values.get("--profile");
-      const role = parsed.values.get("--role");
-      const parentTaskId = parsed.values.get("--task-id");
-      if (!profileName || !role || !parentTaskId) {
-        throw new CliUsageError(
-          "delegate requires --profile <name>, --role <role>, and --task-id <id>",
-        );
-      }
-      const delegation = await delegateTaskRole(
-        {
-          schemaVersion: "1",
-          profileName,
-          role: role as DelegatedAgentRole,
-          parentTaskId,
-        },
-        { root },
-        fileSystem,
-      );
-      io.stdout(
-        parsed.flags.has("--json")
-          ? JSON.stringify(delegation, null, 2)
-          : `Delegated role [${delegation.grantedRole}] under profile [${profileName}] (ID: ${delegation.delegationId})`,
-      );
-      return 0;
-    }
     if (parsed.command === "rank") {
       const subcommand = args[1];
       if (subcommand === "config") {
