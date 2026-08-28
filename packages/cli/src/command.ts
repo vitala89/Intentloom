@@ -2,8 +2,6 @@ import { cwd } from "node:process";
 import {
   ArtifactValidationFailure,
   nodeFileSystem,
-  evaluateSkillProposal,
-  listSkillEvaluations,
   createTaskCheckpoint,
   pauseTask,
   cancelTask,
@@ -45,6 +43,7 @@ import { runUpdateCommand } from "./update-command.js";
 import { runSummaryCommand } from "./summary-command.js";
 import { runSkillCommand } from "./skill-command.js";
 import { runProposalCommand } from "./proposal-command.js";
+import { runEvaluateCommand } from "./evaluate-command.js";
 import { runEvidenceCommand } from "./evidence-command.js";
 import { runHarnessCommand } from "./harness-command.js";
 import {
@@ -80,7 +79,6 @@ interface ParsedArguments {
 
 const commands = new Set([
   "evidence",
-  "evaluate",
   "checkpoint",
   "rank",
   "profile",
@@ -160,8 +158,6 @@ function parseArguments(args: readonly string[]): ParsedArguments {
     !["fetch", "import", "analyze"].includes(args[1] ?? "")
   )
     throw new CliUsageError("evidence requires fetch, import, or analyze");
-  if (command === "evaluate" && !["run", "list"].includes(args[1] ?? ""))
-    throw new CliUsageError("evaluate requires run or list subcommand");
   if (
     command === "checkpoint" &&
     ![
@@ -190,7 +186,6 @@ function parseArguments(args: readonly string[]): ParsedArguments {
   for (
     let index =
       command === "evidence" ||
-      command === "evaluate" ||
       command === "checkpoint" ||
       command === "profile" ||
       command === "context" ||
@@ -312,54 +307,11 @@ export async function runCli(
       return await runSkillCommand(args, dependencies, io);
     if (args[0] === "proposal")
       return await runProposalCommand(args, dependencies, io);
+    if (args[0] === "evaluate")
+      return await runEvaluateCommand(args, dependencies, io);
     const parsed = parseArguments(args);
     const fileSystem = dependencies.fileSystem ?? nodeFileSystem;
     const root = parsed.values.get("--root") ?? cwd();
-    if (parsed.command === "evaluate") {
-      const subcommand = args[1];
-      if (subcommand === "run") {
-        const proposalId = parsed.values.get("--proposal-id") ?? args[2];
-        if (!proposalId) {
-          throw new CliUsageError("evaluate run requires --proposal-id <id>");
-        }
-        const caseId = parsed.values.get("--case-id");
-        const evalResult = await evaluateSkillProposal(
-          proposalId,
-          {
-            root,
-            ...(caseId !== undefined ? { caseId } : {}),
-          },
-          fileSystem,
-        );
-        io.stdout(
-          parsed.flags.has("--json")
-            ? JSON.stringify(evalResult, null, 2)
-            : `Evaluated proposal [${proposalId}]: outcome=${evalResult.outcome}, passed=${evalResult.passed}, securityPass=${evalResult.securityPass}`,
-        );
-        return 0;
-      }
-      if (subcommand === "list") {
-        const skillId = parsed.values.get("--skill-id");
-        const evaluations = await listSkillEvaluations(
-          {
-            root,
-            ...(skillId !== undefined ? { skillId } : {}),
-          },
-          fileSystem,
-        );
-        if (parsed.flags.has("--json")) {
-          io.stdout(JSON.stringify(evaluations, null, 2));
-        } else {
-          const lines = evaluations.map(
-            (e) =>
-              `- [${e.id}] skill=${e.skillId} outcome=${e.outcome} passed=${e.passed}`,
-          );
-          io.stdout(lines.join("\n"));
-        }
-        return 0;
-      }
-      throw new CliUsageError(`unsupported evaluate subcommand: ${subcommand}`);
-    }
     if (parsed.command === "checkpoint") {
       const subcommand = args[1];
       if (subcommand === "create") {
