@@ -2,9 +2,6 @@ import { cwd } from "node:process";
 import {
   ArtifactValidationFailure,
   nodeFileSystem,
-  getTaskSummary,
-  listTaskSummaries,
-  recordTaskSummary,
   discoverSkills,
   createSkillProposal,
   listSkillProposals,
@@ -34,7 +31,6 @@ import {
   type SemanticRankingProvider,
   type DelegatedAgentRole,
   type TrustClass,
-  type RetentionState,
   type FileSystem,
   type TransactionOptions,
 } from "@intentloom/application";
@@ -56,6 +52,7 @@ import { runPlanCommand } from "./plan-command.js";
 import { runSyncCommand } from "./sync-command.js";
 import { runAdoptCommand } from "./adopt-command.js";
 import { runUpdateCommand } from "./update-command.js";
+import { runSummaryCommand } from "./summary-command.js";
 import { runEvidenceCommand } from "./evidence-command.js";
 import { runHarnessCommand } from "./harness-command.js";
 import {
@@ -91,7 +88,6 @@ interface ParsedArguments {
 
 const commands = new Set([
   "evidence",
-  "summary",
   "skill",
   "proposal",
   "evaluate",
@@ -174,11 +170,6 @@ function parseArguments(args: readonly string[]): ParsedArguments {
     !["fetch", "import", "analyze"].includes(args[1] ?? "")
   )
     throw new CliUsageError("evidence requires fetch, import, or analyze");
-  if (
-    command === "summary" &&
-    !["list", "get", "record"].includes(args[1] ?? "")
-  )
-    throw new CliUsageError("summary requires list, get, or record subcommand");
   if (command === "skill" && args[1] !== "discover")
     throw new CliUsageError("skill requires discover subcommand");
   if (
@@ -220,7 +211,6 @@ function parseArguments(args: readonly string[]): ParsedArguments {
   for (
     let index =
       command === "evidence" ||
-      command === "summary" ||
       command === "skill" ||
       command === "proposal" ||
       command === "evaluate" ||
@@ -339,80 +329,11 @@ export async function runCli(
       return await runAdoptCommand(args, dependencies, io);
     if (args[0] === "update")
       return await runUpdateCommand(args, dependencies, io);
+    if (args[0] === "summary")
+      return await runSummaryCommand(args, dependencies, io);
     const parsed = parseArguments(args);
     const fileSystem = dependencies.fileSystem ?? nodeFileSystem;
     const root = parsed.values.get("--root") ?? cwd();
-    if (parsed.command === "summary") {
-      const subcommand = args[1] ?? "list";
-      if (subcommand === "list") {
-        const trustClass = parsed.values.get("--trust-class") as
-          TrustClass | undefined;
-        const retentionState = parsed.values.get("--retention-state") as
-          RetentionState | undefined;
-        const summaries = await listTaskSummaries(
-          {
-            root,
-            ...(trustClass ? { trustClass } : {}),
-            ...(retentionState ? { retentionState } : {}),
-          },
-          fileSystem,
-        );
-        io.stdout(
-          parsed.flags.has("--json")
-            ? JSON.stringify(summaries, null, 2)
-            : summaries.length === 0
-              ? "No task summaries recorded."
-              : summaries
-                  .map(
-                    (s) =>
-                      `[${s.id}] ${s.intent} (${s.validationOutcome}) [${s.trustClass}]`,
-                  )
-                  .join("\n"),
-        );
-        return 0;
-      }
-      if (subcommand === "get") {
-        const id = parsed.values.get("--id") ?? args[2];
-        if (!id) throw new CliUsageError("summary get requires --id <id>");
-        const summary = await getTaskSummary(id, { root }, fileSystem);
-        if (!summary) {
-          io.stderr(`Summary not found: ${id}\n`);
-          return 3;
-        }
-        io.stdout(
-          parsed.flags.has("--json")
-            ? JSON.stringify(summary, null, 2)
-            : `[${summary.id}] ${summary.intent}\nOutcome: ${summary.validationOutcome}\nTrust: ${summary.trustClass}\nCreated: ${summary.createdAt}`,
-        );
-        return 0;
-      }
-      if (subcommand === "record") {
-        const jsonInput = parsed.values.get("--json-input");
-        const jsonFile = parsed.values.get("--file");
-        let rawContent = jsonInput;
-        if (!rawContent && jsonFile) {
-          rawContent = await fileSystem.read(resolveWithin(root, jsonFile));
-        }
-        if (!rawContent) {
-          throw new CliUsageError(
-            "summary record requires --json-input <json> or --file <path>",
-          );
-        }
-        const parsedSummary = JSON.parse(rawContent);
-        const recorded = await recordTaskSummary(
-          parsedSummary,
-          { root },
-          fileSystem,
-        );
-        io.stdout(
-          parsed.flags.has("--json")
-            ? JSON.stringify(recorded, null, 2)
-            : `Recorded task summary [${recorded.id}]`,
-        );
-        return 0;
-      }
-      throw new CliUsageError(`unsupported summary subcommand: ${subcommand}`);
-    }
     if (parsed.command === "skill") {
       const subcommand = args[1];
       if (subcommand === "discover") {
