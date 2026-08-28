@@ -9,7 +9,45 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **P4l9 skill CLI extraction** complete on `main` (#406).
+Status: **P4l10 proposal CLI extraction** complete on `main` (#408).
+
+### 2026-08-28, P4l10 extract proposal CLI command from command.ts
+
+- **Status:** complete on `main` (#408)
+- **Branch:** `refactor/cli-proposal-command-extract` (merged)
+- **Merge SHA:** `e0613ca7abfdc8804cdbc6456f143bfa7ff9a376`
+- **PR:** https://github.com/vitala89/Intentloom/pull/408
+- **Starting main SHA:** `58c2a00a85bcec5e9644673732a735839e2e56f3` (post-P4l9 handoff #407)
+- **Objective:** Behavior-preserving extraction of the `proposal` controlled-learning subdomain
+  into `proposal-parse.ts` + `proposal-command.ts` with early dispatch; preserve parser
+  compatibility (index 2, subcommands `list`/`get`/`create`/`approve`/`plan`/`apply`),
+  skill proposal lifecycle, approval evidence, mutation plan/apply semantics, JSON/text
+  parity, and read/write boundaries; no sibling controlled-learning cluster work.
+- **Modules created:**
+  - `packages/cli/src/proposal-parse.ts` — legacy-compatible proposal parser (index 2;
+    requires `list`, `get`, `create`, `approve`, `plan`, or `apply`; rejects `--force`
+    and adoption mapping flags)
+  - `packages/cli/src/proposal-command.ts` — list/get/create/approve/plan/apply dispatch
+    through `listSkillProposals`, `getSkillProposal`, `createSkillProposal`,
+    `updateSkillProposalState`, `prepareSkillMutationPlan`, and `applySkillMutationPlan`
+- **Metrics (canonical `scripts/production-file-metrics.mjs`):**
+  - `command.ts` before: 866 physical / 849 effective
+  - `command.ts` after: 698 physical / 681 effective (−168 physical / −168 effective)
+  - `proposal-parse.ts`: 138 physical / 130 effective
+  - `proposal-command.ts`: 181 physical / 176 effective
+- **Behavior notes:** proposal list/get/create/approve/plan/apply unchanged; `--state` and
+  `--trust-class` list filters preserved; get/apply not-found exit 3; approve requires
+  `--evidence`; plan supports `--output`; positional id/plan-file fallbacks via `args[2]`
+  preserved; evaluate/checkpoint/profile/delegate/rank/context remain on monolith path.
+- **Tests:** `tests/cli-proposal.test.ts` (21 cases); `tests/controlled-learning-l3.test.ts`
+  and `tests/controlled-learning-l5.test.ts` (existing CLI integration); skill/summary/init/
+  plan/diff/sync/adopt/update early dispatch unchanged; `pnpm verify` (272 files, 2248 passed /
+  3 skipped)
+- **Not completed:** remaining controlled-learning subdomains (`evaluate`, `checkpoint`,
+  `profile`, `delegate`, `rank`, `context`)
+- **Next first action:** Extract `evaluate` command family only (P4l11) per
+  `docs/roadmap/CLI_COMMAND_TS_DECOMPOSITION.md`; do not start sibling subdomains in
+  the same PR
 
 ### 2026-08-28, P4l9 extract skill CLI command from command.ts
 
