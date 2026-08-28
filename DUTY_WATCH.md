@@ -9,7 +9,41 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **P4l8 summary CLI extraction** complete on `main` (#404).
+Status: **P4l9 skill CLI extraction** complete on `main` (#406).
+
+### 2026-08-28, P4l9 extract skill CLI command from command.ts
+
+- **Status:** complete on `main` (#406)
+- **Branch:** `refactor/cli-skill-command-extract` (merged)
+- **Merge SHA:** `b07721e01bc253982705c5d0bf92b1ed10167413`
+- **PR:** https://github.com/vitala89/Intentloom/pull/406
+- **Starting main SHA:** `d03f0d0f527bfb6bf3c852448cc720f690fa0fa8` (post-P4l8 handoff #405)
+- **Objective:** Behavior-preserving extraction of the `skill` controlled-learning subdomain
+  into `skill-parse.ts` + `skill-command.ts` with early dispatch; preserve parser
+  compatibility (index 2, subcommand `discover`), progressive skill discovery at
+  catalog/contract/procedure levels, filter flags, JSON/text parity, and read-only boundary;
+  no sibling controlled-learning cluster work.
+- **Modules created:**
+  - `packages/cli/src/skill-parse.ts` — legacy-compatible skill parser (index 2;
+    requires `discover`; rejects `--force` and adoption mapping flags)
+  - `packages/cli/src/skill-command.ts` — discover dispatch through `discoverSkills`
+- **Metrics (canonical `scripts/production-file-metrics.mjs`):**
+  - `command.ts` before: 927 physical / 908 effective
+  - `command.ts` after: 866 physical / 849 effective (−61 physical / −59 effective)
+  - `skill-parse.ts`: 129 physical / 121 effective
+  - `skill-command.ts`: 87 physical / 80 effective
+- **Behavior notes:** skill discover unchanged; `--level` default `catalog`; filters
+  `--pack`/`--role`/`--query`/`--trust-class`/`--max-budget` preserved; invalid level
+  and parser errors exit 2; mutation commands and unselected controlled-learning commands
+  remain on existing paths.
+- **Tests:** `tests/cli-skill.test.ts` (14 cases); `tests/controlled-learning-l2.test.ts`
+  (existing CLI integration); summary/init/plan/diff/sync/adopt/update early dispatch unchanged;
+  `pnpm verify` (271 files, 2227 passed / 3 skipped)
+- **Not completed:** remaining controlled-learning subdomains (`proposal`, `evaluate`,
+  `checkpoint`, `profile`, `delegate`, `rank`, `context`)
+- **Next first action:** Extract `proposal` command family only (P4l10) per
+  `docs/roadmap/CLI_COMMAND_TS_DECOMPOSITION.md`; do not start sibling subdomains in
+  the same PR
 
 ### 2026-08-28, P4l8 extract summary CLI command from command.ts
 
