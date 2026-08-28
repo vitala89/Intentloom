@@ -9,7 +9,78 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **P4l10 proposal CLI extraction** complete on `main` (#408).
+Status: **P4l12 checkpoint CLI extraction** complete on `main` (#413).
+
+### 2026-08-28, P4l12 extract checkpoint CLI command from command.ts
+
+- **Status:** complete on `main` (#413)
+- **Branch:** `refactor/cli-checkpoint-command-extract` (merged)
+- **Merge SHA:** `dae4937f75ace8706e3ae1a6d31f07245931c1d9`
+- **PR:** https://github.com/vitala89/Intentloom/pull/413
+- **Starting main SHA:** `d9d2e2c255bf04f50c97760defd20c10ae43e602` (post-P4l11 handoff #411)
+- **Objective:** Behavior-preserving extraction of the `checkpoint` controlled-learning subdomain
+  into `checkpoint-parse.ts` + `checkpoint-command.ts` with early dispatch after `evaluate`;
+  preserve parser compatibility (index 2, subcommands `create`/`pause`/`cancel`/`redirect`/
+  `resume`/`list`/`delete`), task checkpoint lifecycle transitions, persistence paths,
+  JSON/text parity, exit codes, and read/write boundaries; no sibling controlled-learning
+  cluster work.
+- **Modules created:**
+  - `packages/cli/src/checkpoint-parse.ts` — legacy-compatible checkpoint parser (index 2;
+    requires one of seven subcommands; rejects `--force` and adoption mapping flags)
+  - `packages/cli/src/checkpoint-command.ts` — create/pause/cancel/redirect/resume/list/delete
+    dispatch through `createTaskCheckpoint`, `pauseTask`, `cancelTask`, `redirectTask`,
+    `resumeTask`, `listTaskCheckpoints`, and `deleteTaskCheckpoint`
+- **Metrics (canonical `scripts/production-file-metrics.mjs`):**
+  - `command.ts` before: 650 physical / 633 effective
+  - `command.ts` after: 522 physical / 505 effective (−128 physical / −128 effective)
+  - `checkpoint-parse.ts`: 139 physical / 131 effective
+  - `checkpoint-command.ts`: 127 physical / 122 effective
+- **Behavior notes:** checkpoint create/pause/cancel/redirect/resume/list/delete unchanged;
+  `--task-id`/`--id`/`--new-intent` flags preserved; positional id fallbacks via `args[2]`
+  preserved; delete-not-found returns `{ deleted: false }` with exit 0; resume rejects
+  cancelled checkpoints with exit 2; profile/delegate/rank/context remain on monolith path.
+- **Tests:** `tests/cli-checkpoint.test.ts` (27 cases); `tests/controlled-learning-l6.test.ts`
+  (existing CLI integration); evaluate/proposal/skill/summary/init/plan/diff/sync/adopt/update
+  early dispatch unchanged; `pnpm verify` (274 files, 2294 passed / 3 skipped)
+- **Governance cleanup:** superseded non-compliant PR #412 (`cursor/cli-checkpoint-command-extract-680e`)
+  with compliant branch/PR #413; removed Cursor/tool attribution from PR body.
+- **Not completed:** remaining controlled-learning subdomains (`profile`, `delegate`, `rank`,
+  `context`)
+- **Next first action:** Extract `profile` command family only (P4l13) per
+  `docs/roadmap/CLI_COMMAND_TS_DECOMPOSITION.md`; do not start sibling subdomains in
+  the same PR
+
+### 2026-08-28, P4l11 extract evaluate CLI command from command.ts
+
+- **Status:** complete on `main` (#410)
+- **Branch:** `refactor/cli-evaluate-command-extract` (merged)
+- **Merge SHA:** `f6b7ced60d505e866df6b25d7b62f0d58dc4e582`
+- **PR:** https://github.com/vitala89/Intentloom/pull/410
+- **Starting main SHA:** `40a2f20cee9adb0016a7f29228a9522753fdd589` (post-P4l10 handoff #409)
+- **Objective:** Behavior-preserving extraction of the `evaluate` controlled-learning subdomain
+  into `evaluate-parse.ts` + `evaluate-command.ts` with early dispatch; preserve parser
+  compatibility (index 2, subcommands `run`/`list`), skill evaluation APIs, JSON/text parity,
+  and read-only boundary; no sibling controlled-learning cluster work.
+- **Modules created:**
+  - `packages/cli/src/evaluate-parse.ts` — legacy-compatible evaluate parser (index 2;
+    requires `run` or `list`; rejects `--force` and adoption mapping flags)
+  - `packages/cli/src/evaluate-command.ts` — run/list dispatch through skill evaluation APIs
+- **Metrics (canonical `scripts/production-file-metrics.mjs`):**
+  - `command.ts` before: 698 physical / 681 effective
+  - `command.ts` after: 650 physical / 633 effective (−48 physical / −48 effective)
+  - `evaluate-parse.ts`: 129 physical / 121 effective
+  - `evaluate-command.ts`: 74 physical / 69 effective
+- **Behavior notes:** evaluate run/list unchanged; `--skill`/`--pack`/`--level` filters preserved;
+  checkpoint/profile/delegate/rank/context remain on monolith path.
+- **Tests:** `tests/cli-evaluate.test.ts` (19 cases); existing controlled-learning suites;
+  `pnpm verify` (273 files, 2267 passed / 3 skipped)
+- **Handoff note:** PR #411 merged with no file changes; this entry backfills the missing watch
+  record.
+- **Not completed:** remaining controlled-learning subdomains (`checkpoint`, `profile`,
+  `delegate`, `rank`, `context`)
+- **Next first action:** Extract `checkpoint` command family only (P4l12) per
+  `docs/roadmap/CLI_COMMAND_TS_DECOMPOSITION.md`; do not start sibling subdomains in
+  the same PR
 
 ### 2026-08-28, P4l10 extract proposal CLI command from command.ts
 
