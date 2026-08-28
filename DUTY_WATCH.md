@@ -9,7 +9,43 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **P4l7 update CLI extraction** complete on `main` (#402).
+Status: **P4l8 summary CLI extraction** complete on `main` (#404).
+
+### 2026-08-28, P4l8 extract summary CLI command from command.ts
+
+- **Status:** complete on `main` (#404)
+- **Branch:** `refactor/cli-summary-command-extract` (merged)
+- **Merge SHA:** `bd50dce1f9656ec2025829563bd5660cbe2ad1d9`
+- **PR:** https://github.com/vitala89/Intentloom/pull/404
+- **Starting main SHA:** `e30fd832f284d792ccad178126cc3d81aefa7128` (post-P4l7 handoff #403)
+- **Objective:** Behavior-preserving extraction of the first controlled-learning subdomain
+  (`summary`) into `summary-parse.ts` + `summary-command.ts` with early dispatch;
+  preserve parser compatibility (index 2, subcommands `list`/`get`/`record`), task
+  summary list/get/record semantics, filters, not-found exit 3, and JSON/text parity;
+  no sibling controlled-learning cluster work.
+- **Modules created:**
+  - `packages/cli/src/summary-parse.ts` — legacy-compatible summary parser (index 2;
+    requires `list`, `get`, or `record`; rejects `--force` and adoption mapping flags)
+  - `packages/cli/src/summary-command.ts` — list/get/record dispatch through
+    `listTaskSummaries`, `getTaskSummary`, and `recordTaskSummary`
+- **Metrics (canonical `scripts/production-file-metrics.mjs`):**
+  - `command.ts` before: 1006 physical / 987 effective
+  - `command.ts` after: 927 physical / 908 effective (−79 physical / −79 effective)
+  - `summary-parse.ts`: 129 physical / 121 effective
+  - `summary-command.ts`: 104 physical / 99 effective
+- **Behavior notes:** summary list/get/record unchanged; `--trust-class` and
+  `--retention-state` filters preserved; get not-found exit 3; record via
+  `--json-input` or `--file`; positional id fallback via `args[2]` preserved;
+  empty list text `No task summaries recorded.` unchanged; mutation commands and
+  unselected controlled-learning commands remain on existing paths.
+- **Tests:** `tests/cli-summary.test.ts` (17 cases); `tests/controlled-learning-l1.test.ts`
+  (existing CLI integration); init/plan/diff/sync/adopt/update early dispatch unchanged;
+  `pnpm verify` (270 files, 2213 passed / 3 skipped)
+- **Not completed:** remaining controlled-learning subdomains (`skill`, `proposal`,
+  `evaluate`, `checkpoint`, `profile`, `delegate`, `rank`, `context`)
+- **Next first action:** Extract `skill` command family only (P4l9) per
+  `docs/roadmap/CLI_COMMAND_TS_DECOMPOSITION.md`; do not start sibling subdomains in
+  the same PR
 
 ### 2026-08-28, P4l7 extract update CLI command from command.ts
 
