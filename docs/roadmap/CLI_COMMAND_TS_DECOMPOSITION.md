@@ -45,9 +45,10 @@ identical; reuse existing CLI tests.
 | P4l8   | `summary-command.ts`, `summary-parse.ts`                                             | **complete** | Early dispatch for top-level `summary`; subcommands `list`/`get`/`record`; legacy parser index-2 compatibility preserved; task summary APIs unchanged; controlled-learning cluster siblings untouched                                       |
 | P4l9   | `skill-command.ts`, `skill-parse.ts`                                                 | **complete** | Early dispatch for top-level `skill`; subcommand `discover`; legacy parser index-2 compatibility preserved; progressive skill discovery APIs unchanged; controlled-learning cluster siblings untouched                                      |
 | P4l10  | `proposal-command.ts`, `proposal-parse.ts`                                           | **complete** | Early dispatch for top-level `proposal`; subcommands `list`/`get`/`create`/`approve`/`plan`/`apply`; legacy parser index-2 compatibility preserved; skill proposal lifecycle APIs unchanged; controlled-learning cluster siblings untouched |
-| P4l11+ | controlled-learning cluster (planned)                                                | not started  | Per-command extraction after proposal                                                                                                                                                                                                       |
+| P4l11  | `evaluate-command.ts`, `evaluate-parse.ts`                                           | **complete** | Early dispatch for top-level `evaluate`; subcommands `run`/`list`; legacy parser index-2 compatibility preserved; skill evaluation APIs unchanged; controlled-learning cluster siblings untouched                                           |
+| P4l12+ | controlled-learning cluster (planned)                                                | not started  | Per-command extraction after evaluate                                                                                                                                                                                                       |
 
-1. **`evaluate` / `checkpoint` / `profile` /
+1. **`checkpoint` / `profile` /
    `delegate` / `rank` / `context`** — remaining controlled-learning cluster;
    split by subdomain once shared helpers are isolated.
 
