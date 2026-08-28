@@ -6,6 +6,10 @@ import { runCliEntry } from "../packages/cli/src/cli-entry.js";
 
 const catalogRoot = resolve("catalog");
 
+function summaryProject(name: string): string {
+  return `/project/summary-${name}`;
+}
+
 const taskData = {
   id: "task-summary-cli",
   root: "/project",
@@ -22,7 +26,7 @@ const taskData = {
 
 describe("summary CLI extraction", () => {
   it("dispatches summary through runCliEntry", async () => {
-    const projectRoot = resolve("summary entry dispatch");
+    const projectRoot = summaryProject("entry-dispatch");
     const fileSystem = createMemoryFileSystem();
     const stdout: string[] = [];
 
@@ -155,7 +159,7 @@ describe("summary CLI extraction", () => {
   });
 
   it("records, lists, and gets summaries with JSON output", async () => {
-    const projectRoot = resolve("summary json parity");
+    const projectRoot = summaryProject("json-parity");
     const fileSystem = createMemoryFileSystem();
 
     const recordExit = await runCli(
@@ -208,7 +212,7 @@ describe("summary CLI extraction", () => {
   });
 
   it("renders empty list text output", async () => {
-    const projectRoot = resolve("summary empty list");
+    const projectRoot = summaryProject("empty-list");
     const stdout: string[] = [];
 
     const exitCode = await runCli(
@@ -222,7 +226,7 @@ describe("summary CLI extraction", () => {
   });
 
   it("returns exit 3 when summary is not found", async () => {
-    const projectRoot = resolve("summary missing");
+    const projectRoot = summaryProject("missing");
     const stderr: string[] = [];
 
     const exitCode = await runCli(
@@ -277,7 +281,7 @@ describe("summary CLI extraction", () => {
   });
 
   it("records summary from --file input", async () => {
-    const projectRoot = resolve("summary file input");
+    const projectRoot = summaryProject("file-input");
     const fileSystem = createMemoryFileSystem({
       [join(projectRoot, "input/summary.json")]: JSON.stringify(taskData),
     });
@@ -302,7 +306,7 @@ describe("summary CLI extraction", () => {
   });
 
   it("filters list output by trust-class and retention-state", async () => {
-    const projectRoot = resolve("summary filters");
+    const projectRoot = summaryProject("filters");
     const fileSystem = createMemoryFileSystem();
 
     await runCli(
