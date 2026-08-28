@@ -2,13 +2,6 @@ import { cwd } from "node:process";
 import {
   ArtifactValidationFailure,
   nodeFileSystem,
-  createTaskCheckpoint,
-  pauseTask,
-  cancelTask,
-  redirectTask,
-  resumeTask,
-  listTaskCheckpoints,
-  deleteTaskCheckpoint,
   rankProceduralMemory,
   getSemanticRankingConfig,
   updateSemanticRankingConfig,
@@ -44,6 +37,7 @@ import { runSummaryCommand } from "./summary-command.js";
 import { runSkillCommand } from "./skill-command.js";
 import { runProposalCommand } from "./proposal-command.js";
 import { runEvaluateCommand } from "./evaluate-command.js";
+import { runCheckpointCommand } from "./checkpoint-command.js";
 import { runEvidenceCommand } from "./evidence-command.js";
 import { runHarnessCommand } from "./harness-command.js";
 import {
@@ -79,7 +73,6 @@ interface ParsedArguments {
 
 const commands = new Set([
   "evidence",
-  "checkpoint",
   "rank",
   "profile",
   "delegate",
@@ -159,21 +152,6 @@ function parseArguments(args: readonly string[]): ParsedArguments {
   )
     throw new CliUsageError("evidence requires fetch, import, or analyze");
   if (
-    command === "checkpoint" &&
-    ![
-      "create",
-      "pause",
-      "cancel",
-      "redirect",
-      "resume",
-      "list",
-      "delete",
-    ].includes(args[1] ?? "")
-  )
-    throw new CliUsageError(
-      "checkpoint requires create, pause, cancel, redirect, resume, list, or delete subcommand",
-    );
-  if (
     command === "profile" &&
     !["create", "get", "list"].includes(args[1] ?? "")
   )
@@ -186,7 +164,6 @@ function parseArguments(args: readonly string[]): ParsedArguments {
   for (
     let index =
       command === "evidence" ||
-      command === "checkpoint" ||
       command === "profile" ||
       command === "context" ||
       (command === "rank" && args[1] !== undefined && !args[1].startsWith("--"))
@@ -309,116 +286,11 @@ export async function runCli(
       return await runProposalCommand(args, dependencies, io);
     if (args[0] === "evaluate")
       return await runEvaluateCommand(args, dependencies, io);
+    if (args[0] === "checkpoint")
+      return await runCheckpointCommand(args, dependencies, io);
     const parsed = parseArguments(args);
     const fileSystem = dependencies.fileSystem ?? nodeFileSystem;
     const root = parsed.values.get("--root") ?? cwd();
-    if (parsed.command === "checkpoint") {
-      const subcommand = args[1];
-      if (subcommand === "create") {
-        const taskId = parsed.values.get("--task-id") ?? args[2];
-        if (!taskId) {
-          throw new CliUsageError("checkpoint create requires --task-id <id>");
-        }
-        const created = await createTaskCheckpoint(
-          taskId,
-          { root },
-          fileSystem,
-        );
-        io.stdout(
-          parsed.flags.has("--json")
-            ? JSON.stringify(created, null, 2)
-            : `Created task checkpoint [${created.id}] for task [${taskId}]`,
-        );
-        return 0;
-      }
-      if (subcommand === "pause") {
-        const id = parsed.values.get("--id") ?? args[2];
-        if (!id) throw new CliUsageError("checkpoint pause requires --id <id>");
-        const paused = await pauseTask(id, { root }, fileSystem);
-        io.stdout(
-          parsed.flags.has("--json")
-            ? JSON.stringify(paused, null, 2)
-            : `Paused task checkpoint [${id}]`,
-        );
-        return 0;
-      }
-      if (subcommand === "cancel") {
-        const id = parsed.values.get("--id") ?? args[2];
-        if (!id)
-          throw new CliUsageError("checkpoint cancel requires --id <id>");
-        const cancelled = await cancelTask(id, { root }, fileSystem);
-        io.stdout(
-          parsed.flags.has("--json")
-            ? JSON.stringify(cancelled, null, 2)
-            : `Cancelled task checkpoint [${id}]`,
-        );
-        return 0;
-      }
-      if (subcommand === "redirect") {
-        const id = parsed.values.get("--id") ?? args[2];
-        const newIntent = parsed.values.get("--new-intent");
-        if (!id || !newIntent) {
-          throw new CliUsageError(
-            "checkpoint redirect requires --id <id> and --new-intent <intent>",
-          );
-        }
-        const redirected = await redirectTask(
-          id,
-          newIntent,
-          { root },
-          fileSystem,
-        );
-        io.stdout(
-          parsed.flags.has("--json")
-            ? JSON.stringify(redirected, null, 2)
-            : `Redirected task checkpoint [${id}] to: ${newIntent}`,
-        );
-        return 0;
-      }
-      if (subcommand === "resume") {
-        const id = parsed.values.get("--id") ?? args[2];
-        if (!id)
-          throw new CliUsageError("checkpoint resume requires --id <id>");
-        const resumed = await resumeTask(id, { root }, fileSystem);
-        io.stdout(
-          parsed.flags.has("--json")
-            ? JSON.stringify(resumed, null, 2)
-            : `Resumed task checkpoint [${id}] (invalidated ${resumed.invalidatedCount} stale plans)`,
-        );
-        return 0;
-      }
-      if (subcommand === "list") {
-        const taskId = parsed.values.get("--task-id");
-        const checkpoints = await listTaskCheckpoints(
-          { root, ...(taskId !== undefined ? { taskId } : {}) },
-          fileSystem,
-        );
-        if (parsed.flags.has("--json")) {
-          io.stdout(JSON.stringify(checkpoints, null, 2));
-        } else {
-          const lines = checkpoints.map(
-            (c) => `- [${c.id}] task=${c.taskId} state=${c.state}`,
-          );
-          io.stdout(lines.join("\n"));
-        }
-        return 0;
-      }
-      if (subcommand === "delete") {
-        const id = parsed.values.get("--id") ?? args[2];
-        if (!id)
-          throw new CliUsageError("checkpoint delete requires --id <id>");
-        const deleted = await deleteTaskCheckpoint(id, { root }, fileSystem);
-        io.stdout(
-          parsed.flags.has("--json")
-            ? JSON.stringify({ id, deleted })
-            : `Deleted checkpoint [${id}]: ${deleted}`,
-        );
-        return 0;
-      }
-      throw new CliUsageError(
-        `unsupported checkpoint subcommand: ${subcommand}`,
-      );
-    }
     if (parsed.command === "profile") {
       const subcommand = args[1];
       if (subcommand === "create") {
