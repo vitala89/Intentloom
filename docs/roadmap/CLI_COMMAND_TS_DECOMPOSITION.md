@@ -47,9 +47,10 @@ identical; reuse existing CLI tests.
 | P4l10  | `proposal-command.ts`, `proposal-parse.ts`                                           | **complete** | Early dispatch for top-level `proposal`; subcommands `list`/`get`/`create`/`approve`/`plan`/`apply`; legacy parser index-2 compatibility preserved; skill proposal lifecycle APIs unchanged; controlled-learning cluster siblings untouched                   |
 | P4l11  | `evaluate-command.ts`, `evaluate-parse.ts`                                           | **complete** | Early dispatch for top-level `evaluate`; subcommands `run`/`list`; legacy parser index-2 compatibility preserved; skill evaluation APIs unchanged; controlled-learning cluster siblings untouched                                                             |
 | P4l12  | `checkpoint-command.ts`, `checkpoint-parse.ts`                                       | **complete** | Early dispatch for top-level `checkpoint`; subcommands `create`/`pause`/`cancel`/`redirect`/`resume`/`list`/`delete`; legacy parser index-2 compatibility preserved; task checkpoint lifecycle APIs unchanged; controlled-learning cluster siblings untouched |
-| P4l13+ | controlled-learning cluster (planned)                                                | not started  | Per-command extraction after checkpoint                                                                                                                                                                                                                       |
+| P4l13  | `profile-command.ts`, `profile-parse.ts`                                             | **complete** | Early dispatch for top-level `profile`; subcommands `create`/`get`/`list`; legacy parser index-2 compatibility preserved; profile definition APIs unchanged; controlled-learning cluster siblings untouched                                                   |
+| P4l14+ | controlled-learning cluster (planned)                                                | not started  | Per-command extraction after profile                                                                                                                                                                                                                          |
 
-1. **`profile` / `delegate` / `rank` / `context`** — remaining controlled-learning cluster;
+1. **`delegate` / `rank` / `context`** — remaining controlled-learning cluster;
    split by subdomain once shared helpers are isolated.
 
 ## Rules

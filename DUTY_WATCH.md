@@ -9,7 +9,41 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **P4l12 checkpoint CLI extraction** complete on `main` (#413).
+Status: **P4l13 profile CLI extraction** complete on `main` (#415).
+
+### 2026-08-29, P4l13 extract profile CLI command from command.ts
+
+- **Status:** complete on `main` (#415)
+- **Branch:** `refactor/cli-profile-command-extract` (merged)
+- **Merge SHA:** `7426a90fc6b7f3d54356744fccaa273d2f460312`
+- **PR:** https://github.com/vitala89/Intentloom/pull/415
+- **Starting main SHA:** `978cd05647dbcb03e503b3d83639503a2b88a20c` (post-P4l12 handoff #414)
+- **Objective:** Behavior-preserving extraction of the `profile` controlled-learning subdomain
+  into `profile-parse.ts` + `profile-command.ts` with early dispatch after `checkpoint`;
+  preserve parser compatibility (index 2, subcommands `create`/`get`/`list`), profile
+  definition APIs, JSON/text parity, exit codes, and persistence boundaries; no sibling
+  controlled-learning cluster work.
+- **Modules created:**
+  - `packages/cli/src/profile-parse.ts` — legacy-compatible profile parser (index 2;
+    requires one of three subcommands; rejects `--force` and adoption mapping flags)
+  - `packages/cli/src/profile-command.ts` — create/get/list dispatch through `createProfile`,
+    `getProfile`, and `listProfiles`
+- **Metrics (canonical `scripts/production-file-metrics.mjs`):**
+  - `command.ts` before: 522 physical / 505 effective
+  - `command.ts` after: 443 physical / 426 effective (−79 physical / −79 effective)
+  - `profile-parse.ts`: 131 physical / 123 effective
+  - `profile-command.ts`: 97 physical / 92 effective
+- **Behavior notes:** profile create/get/list unchanged; `--name` flag preserved; positional
+  name fallbacks via `args[2]` preserved but unreachable via index-2 parser; profile-not-found
+  returns exit 2; delegate/rank/context remain on monolith path.
+- **Tests:** `tests/cli-profile.test.ts` (22 cases); `tests/controlled-learning-l8.test.ts`
+  (existing CLI integration); checkpoint/evaluate/proposal/skill/summary early dispatch
+  unchanged; `pnpm verify` (275 files, 2316 passed / 3 skipped); CI Compatibility/Governance/
+  CodeQL green on PR #415
+- **Not completed:** remaining controlled-learning subdomains (`delegate`, `rank`, `context`)
+- **Next first action:** Extract `delegate` command family only (P4l14) per
+  `docs/roadmap/CLI_COMMAND_TS_DECOMPOSITION.md`; do not start sibling subdomains in
+  the same PR
 
 ### 2026-08-28, P4l12 extract checkpoint CLI command from command.ts
 
