@@ -55,7 +55,7 @@ identical; reuse existing CLI tests.
 | P4l13 | `profile-command.ts`, `profile-parse.ts`                                             | **complete** | Early dispatch for top-level `profile`; subcommands `create`/`get`/`list`; legacy parser index-2 compatibility preserved; profile definition APIs unchanged; controlled-learning cluster siblings untouched                                                   |
 | P4l14 | `delegate-command.ts`, `delegate-parse.ts`                                           | **complete** | Early dispatch for top-level `delegate`; flag-only grammar preserved; role delegation APIs unchanged; controlled-learning cluster siblings untouched                                                                                                          |
 | P4l15 | `rank-command.ts`, `rank-parse.ts`                                                   | **complete** | Early dispatch for top-level `rank`; positional query and `config` subcommand preserved; semantic ranking config read/write and `rankProceduralMemory` execution unchanged; controlled-learning cluster siblings untouched (#419)                             |
-| P4l16 | `context-command.ts`, `context-parse.ts`                                             | **complete** | Final controlled-learning command extraction; `context get` grammar, `--root`/`--query`/`--max-tokens`/`--max-items`/`--json`, and `getBoundedProjectContext` application semantics preserved; post-extract `command.ts` 171 physical / 167 effective (#421) |
+| P4l16 | `context-command.ts`, `context-parse.ts`                                             | **complete** | Final controlled-learning command extraction; `context get` grammar, `--root`/`--query`/`--max-tokens`/`--max-items`/`--json`, and `getBoundedProjectContext` application semantics preserved; post-extract `command.ts` 171 physical / 167 effective (#421)  |
 
 ## Rules
 
@@ -83,12 +83,12 @@ Remaining responsibilities in `command.ts` only:
 
 Final metrics (`scripts/production-file-metrics.mjs`):
 
-| File | Physical | Effective |
-| ---- | -------- | --------- |
-| `command.ts` (before P4l16 @ `2df34a85`) | 339 | 328 |
-| `command.ts` (after P4l16 @ `ede3511`) | 171 | 167 |
-| `context-parse.ts` | 125 | 118 |
-| `context-command.ts` | 53 | 48 |
+| File                                     | Physical | Effective |
+| ---------------------------------------- | -------- | --------- |
+| `command.ts` (before P4l16 @ `2df34a85`) | 339      | 328       |
+| `command.ts` (after P4l16 @ `ede3511`)   | 171      | 167       |
+| `context-parse.ts`                       | 125      | 118       |
+| `context-command.ts`                     | 53       | 48        |
 
 No P4l17 or further `command.ts` extraction slices are planned in this roadmap.
 Other oversized production files (`packages/daemon/src/index.ts`,
