@@ -9,7 +9,41 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **P4l14 delegate CLI extraction** complete on `main` (#417).
+Status: **P4l15 rank CLI extraction** complete on `main` (#419).
+
+### 2026-08-29, P4l15 extract rank CLI command from command.ts
+
+- **Status:** complete on `main` (#419)
+- **Branch:** `refactor/cli-rank-command-extract` (merged)
+- **Merge SHA:** `39edc53afd4af4d4fa85ec183bddd7facfc18005`
+- **PR:** https://github.com/vitala89/Intentloom/pull/419
+- **Starting main SHA:** `8997b457c6a6ecafee2cd46ecfcbb70801b62daa` (post-P4l14 handoff #418)
+- **Objective:** Behavior-preserving extraction of the `rank` controlled-learning subdomain
+  into `rank-parse.ts` + `rank-command.ts` with early dispatch after `delegate`;
+  preserve index-2 positional/`config` grammar, semantic ranking config read/write,
+  procedural memory ranking, provider selection, JSON/text parity, exit codes; no sibling
+  controlled-learning cluster work.
+- **Modules created:**
+  - `packages/cli/src/rank-parse.ts` — legacy-compatible rank parser (index-2 when positional
+    or `config` at `args[1]`; rejects `--force`, adoption mapping flags, `--cache`, daemon flags)
+  - `packages/cli/src/rank-command.ts` — `config` get/enable/disable/provider update and
+    `rankProceduralMemory` dispatch
+- **Metrics (canonical `scripts/production-file-metrics.mjs`):**
+  - `command.ts` before: 418 physical / 401 effective
+  - `command.ts` after: 339 physical / 328 effective (−79 physical / −73 effective)
+  - `rank-parse.ts`: 126 physical / 120 effective
+  - `rank-command.ts`: 97 physical / 88 effective
+- **Behavior notes:** `rank [QUERY|config]` grammar unchanged; config persists to
+  `.aif/memory/semantic_config.json`; ranking execution read-only for canonical memory;
+  `context` remains on monolith path; **`command.ts` effective SLOC now ≤400 (328)**.
+- **Tests:** `tests/cli-rank.test.ts` (12 cases); `tests/controlled-learning-l7.test.ts`
+  (existing CLI integration); delegate/profile/checkpoint/evaluate/proposal/skill/summary
+  early dispatch unchanged; `pnpm verify` (277 files, 2349 passed / 3 skipped); CI
+  Compatibility/Governance/CodeQL green on PR #419
+- **Not completed:** remaining controlled-learning subdomain (`context`)
+- **Next first action:** Extract `context` command family only (P4l16) per
+  `docs/roadmap/CLI_COMMAND_TS_DECOMPOSITION.md`; do not start sibling subdomains in
+  the same PR
 
 ### 2026-08-29, P4l14 extract delegate CLI command from command.ts
 
