@@ -631,9 +631,13 @@ and the historical interim record
 P1 defers real workspace dogfood to the maintainer
 ([2026-08-16-workspace-public-gate.md](docs/releases/dogfooding/2026-08-16-workspace-public-gate.md)).
 Named follow-ups after P1: Neutron N1 then N2 (P2, complete), P3 S8
-(complete), file-budget CLI extracts P4a–P4k complete through `security`
-(`command.ts` now 1611 effective SLOC on `main` after P4k merge); next P4 slice
-is project mutation family (`adopt` / `update` / `sync` / `diff` / `plan` / `init`).
+(complete), CLI `command.ts` decomposition P4l1–P4l16 complete on `main`
+(`ede3511`, PR #421); post-P4l16 `command.ts` is 171 physical / 167 effective
+(thin router; exit condition satisfied per
+`docs/roadmap/CLI_COMMAND_TS_DECOMPOSITION.md`). Next bounded increment outside
+that sequence awaits an explicit maintainer brief (Neutron N3 per
+`NEUTRON_RUNTIME_ROADMAP.md`, or other post-P4 candidates in
+`POST_W12_NEXT_INCREMENT_PLAN.md`).
 
 The Desktop discovery/error and Diff/Timeline slices remain recorded in
 [PHASE1_CONTRACTS.md](docs/desktop/PHASE1_CONTRACTS.md).
