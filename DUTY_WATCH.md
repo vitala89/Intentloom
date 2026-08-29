@@ -9,7 +9,39 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **P4l13 profile CLI extraction** complete on `main` (#415).
+Status: **P4l14 delegate CLI extraction** complete on `main` (#417).
+
+### 2026-08-29, P4l14 extract delegate CLI command from command.ts
+
+- **Status:** complete on `main` (#417)
+- **Branch:** `refactor/cli-delegate-command-extract` (merged)
+- **Merge SHA:** `7c5d543bc1edc38def23e6b7ae60b012ca14cd3c`
+- **PR:** https://github.com/vitala89/Intentloom/pull/417
+- **Starting main SHA:** `6801f42449a6165576505dc943a28dce715d5247` (post-P4l13 handoff #416)
+- **Objective:** Behavior-preserving extraction of the `delegate` controlled-learning subdomain
+  into `delegate-parse.ts` + `delegate-command.ts` with early dispatch after `profile`;
+  preserve flag-only grammar (index 1, no subcommands), required `--profile`/`--role`/`--task-id`,
+  role delegation APIs, JSON/text parity, exit codes, and persistence boundaries; no sibling
+  controlled-learning cluster work.
+- **Modules created:**
+  - `packages/cli/src/delegate-parse.ts` — legacy-compatible delegate parser (index 1;
+    flag-only; rejects positional args, `--force`, and adoption mapping flags)
+  - `packages/cli/src/delegate-command.ts` — dispatch through `delegateTaskRole`
+- **Metrics (canonical `scripts/production-file-metrics.mjs`):**
+  - `command.ts` before: 443 physical / 426 effective
+  - `command.ts` after: 418 physical / 401 effective (−25 physical / −25 effective)
+  - `delegate-parse.ts`: 121 physical / 115 effective
+  - `delegate-command.ts`: 54 physical / 50 effective
+- **Behavior notes:** delegate flag grammar unchanged; profile-not-found returns exit 2;
+  rank/context remain on monolith path.
+- **Tests:** `tests/cli-delegate.test.ts` (13 cases); `tests/controlled-learning-l8.test.ts`
+  (existing CLI integration); profile/checkpoint/evaluate/proposal/skill/summary early dispatch
+  unchanged; `pnpm verify` (276 files, 2329 passed / 3 skipped); CI Compatibility/Governance/
+  CodeQL green on PR #417
+- **Not completed:** remaining controlled-learning subdomains (`rank`, `context`)
+- **Next first action:** Extract `rank` command family only (P4l15) per
+  `docs/roadmap/CLI_COMMAND_TS_DECOMPOSITION.md`; do not start sibling subdomains in
+  the same PR
 
 ### 2026-08-29, P4l13 extract profile CLI command from command.ts
 
