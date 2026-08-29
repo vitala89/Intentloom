@@ -49,10 +49,7 @@ identical; reuse existing CLI tests.
 | P4l12 | `checkpoint-command.ts`, `checkpoint-parse.ts`                                       | **complete** | Early dispatch for top-level `checkpoint`; subcommands `create`/`pause`/`cancel`/`redirect`/`resume`/`list`/`delete`; legacy parser index-2 compatibility preserved; task checkpoint lifecycle APIs unchanged; controlled-learning cluster siblings untouched |
 | P4l13 | `profile-command.ts`, `profile-parse.ts`                                             | **complete** | Early dispatch for top-level `profile`; subcommands `create`/`get`/`list`; legacy parser index-2 compatibility preserved; profile definition APIs unchanged; controlled-learning cluster siblings untouched                                                   |
 | P4l14 | `delegate-command.ts`, `delegate-parse.ts`                                           | **complete** | Early dispatch for top-level `delegate`; flag-only grammar preserved; role delegation APIs unchanged; controlled-learning cluster siblings untouched                                                                                                          |
-| P4l15 | `rank-command.ts`, `rank-parse.ts`                                                   | **complete** | Early dispatch for top-level `rank`; subcommands and positional queries preserved; semantic config and procedural memory ranking unchanged; `context` cluster sibling untouched; `command.ts` physically and effectively under 400 SLOC                       |
-| P4l16 | `context-command.ts` (planned)                                                       | not started  | Final controlled-learning command extraction; split by subdomain                                                                                                                                                                                              |
-
-1. **`context`** — remaining controlled-learning cluster;
+| P4l16 | `context-command.ts`, `context-parse.ts`                                             | **complete** | Final controlled-learning command extraction; context get grammar and bounded context application semantics preserved; command.ts remains under governance budget.                                                                                            |
 
 ## Rules
 
