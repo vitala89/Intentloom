@@ -50,6 +50,7 @@ Product and platform directions:
 - [Enterprise Coordination Principles](governance/ENTERPRISE_COORDINATION_PRINCIPLES.md)
 - [Neutron Model Strategy](concepts/NEUTRON_MODEL_STRATEGY.md)
 - [Neutron Runtime Roadmap](roadmap/NEUTRON_RUNTIME_ROADMAP.md)
+- [Neutron N3 Context Assembly Brief](roadmap/NEUTRON_N3_CONTEXT_ASSEMBLY_BRIEF.md)
 - [Persistent Agent Memory](concepts/PERSISTENT_AGENT_MEMORY.md)
 - [Controlled Agent Learning and Procedural Memory](concepts/CONTROLLED_AGENT_LEARNING_AND_PROCEDURAL_MEMORY.md)
 - [Security Analysis and Remediation](concepts/SECURITY_ANALYSIS_AND_REMEDIATION.md)

@@ -9,9 +9,37 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **CLI `command.ts` decomposition (P4l1–P4l16) complete** on `main`
-(#421). Controlled-learning cluster closed. Exit condition satisfied (171/167
-effective `command.ts` thin router).
+Status: **Neutron N3 Context assembly maintainer brief ready for review** on
+branch `docs/neutron-n3-context-assembly-brief`. CLI decomposition
+(P4l1–P4l16) complete on `main` (#421, #422). N3 implementation **not
+authorized**.
+
+### 2026-08-30, Neutron N3 context assembly maintainer brief
+
+- **Status:** complete on branch; PR pending
+- **Branch:** `docs/neutron-n3-context-assembly-brief` from `origin/main` @
+  `e44fdc7`
+- **Baseline:** PR #422 merged (`e44fdc7`); post-P4l16 reconciliation on
+  `main`; tree clean except untracked local helper/scratch files
+- **Objective:** Evidence-backed maintainer brief for Neutron N3 — Context
+  assembly per `NEUTRON_RUNTIME_ROADMAP.md` §N3; no runtime code
+- **Completed:**
+  - Documented N1/N2 baseline (contracts, Ollama inspect loop, boundaries)
+  - Defined N3 vs `getBoundedProjectContext` / `context get` distinction
+  - Mapped context sources, budget model, trust/provenance, failure classes
+  - Proposed Clean Architecture shape (`application/neutron-context-assembly`
+    subpath, no new package)
+  - Proposed bounded implementation slices 1–5 with test plan and acceptance
+    criteria
+  - Linked brief from `NEUTRON_RUNTIME_ROADMAP.md`, `docs/README.md`
+- **Not completed:** N3 implementation; schema optional-field approval; Slice 1
+  authorization
+- **Recommendation:** `READY FOR IMPLEMENTATION AUTHORIZATION` for Slices 1–2
+  after maintainer acknowledges optional `NeutronContextSource` field extension
+- **Next first action:** Review and merge the N3 brief PR. After merge,
+  **explicit maintainer authorization required for Neutron N3 Slice 1**
+  (contract + validator extension) before any runtime work. Do not start N4,
+  Desktop model UI, or P4l17.
 
 ### 2026-08-29, P4l16 extract context CLI command from command.ts
 
