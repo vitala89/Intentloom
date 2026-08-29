@@ -2,7 +2,12 @@
 
 ## Status
 
-`packages/cli/src/command.ts` is legacy debt at ~3300+ lines (hard limit 400).
+**COMPLETE (2026-08-29).** The controlled-learning extraction sequence P4l1–P4l16
+is merged on `main` (#419–#421). Post-P4l16 `command.ts` is a thin router at
+171 physical / 167 effective lines (canonical `scripts/production-file-metrics.mjs`).
+**CLI `command.ts` decomposition exit condition satisfied.**
+
+Historical note: `command.ts` was legacy debt at ~3300+ lines (hard limit 400).
 Existing oversized files must not grow. New CLI families ship as dedicated
 `*-command.ts` modules with early dispatch (same pattern as `harness`).
 
@@ -31,7 +36,7 @@ Extract one cohesive command family per PR. Prefer early dispatch so
 `parseArguments` never grows the monolith. Keep behavior and exit codes
 identical; reuse existing CLI tests.
 
-### P4l mutation family (in progress)
+### P4l mutation and controlled-learning family (complete)
 
 | Slice | Module(s)                                                                            | Status       | Notes                                                                                                                                                                                                                                                         |
 | ----- | ------------------------------------------------------------------------------------ | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -49,7 +54,8 @@ identical; reuse existing CLI tests.
 | P4l12 | `checkpoint-command.ts`, `checkpoint-parse.ts`                                       | **complete** | Early dispatch for top-level `checkpoint`; subcommands `create`/`pause`/`cancel`/`redirect`/`resume`/`list`/`delete`; legacy parser index-2 compatibility preserved; task checkpoint lifecycle APIs unchanged; controlled-learning cluster siblings untouched |
 | P4l13 | `profile-command.ts`, `profile-parse.ts`                                             | **complete** | Early dispatch for top-level `profile`; subcommands `create`/`get`/`list`; legacy parser index-2 compatibility preserved; profile definition APIs unchanged; controlled-learning cluster siblings untouched                                                   |
 | P4l14 | `delegate-command.ts`, `delegate-parse.ts`                                           | **complete** | Early dispatch for top-level `delegate`; flag-only grammar preserved; role delegation APIs unchanged; controlled-learning cluster siblings untouched                                                                                                          |
-| P4l16 | `context-command.ts`, `context-parse.ts`                                             | **complete** | Final controlled-learning command extraction; context get grammar and bounded context application semantics preserved; command.ts remains under governance budget.                                                                                            |
+| P4l15 | `rank-command.ts`, `rank-parse.ts`                                                   | **complete** | Early dispatch for top-level `rank`; positional query and `config` subcommand preserved; semantic ranking config read/write and `rankProceduralMemory` execution unchanged; controlled-learning cluster siblings untouched (#419)                             |
+| P4l16 | `context-command.ts`, `context-parse.ts`                                             | **complete** | Final controlled-learning command extraction; `context get` grammar, `--root`/`--query`/`--max-tokens`/`--max-items`/`--json`, and `getBoundedProjectContext` application semantics preserved; post-extract `command.ts` 171 physical / 167 effective (#421) |
 
 ## Rules
 
@@ -65,3 +71,26 @@ identical; reuse existing CLI tests.
 `command.ts` is a thin router (help/version, early dispatch table, shared parse
 helpers only) at or under 400 lines, or a remaining oversized core with a
 documented exception and no further growth.
+
+**Result (verified on `main` @ `ede3511`, post-P4l16 #421): satisfied.**
+
+Remaining responsibilities in `command.ts` only:
+
+- `--version` and help/usage routing
+- early dispatch table to extracted `*-command.ts` modules (harness through context)
+- shared top-level error translation (`SchemaCatalogError`, validation failures, usage errors)
+- shared CLI dependency / IO types (`CliExitCode`, `CliIo`, `CliDependencies`)
+
+Final metrics (`scripts/production-file-metrics.mjs`):
+
+| File | Physical | Effective |
+| ---- | -------- | --------- |
+| `command.ts` (before P4l16 @ `2df34a85`) | 339 | 328 |
+| `command.ts` (after P4l16 @ `ede3511`) | 171 | 167 |
+| `context-parse.ts` | 125 | 118 |
+| `context-command.ts` | 53 | 48 |
+
+No P4l17 or further `command.ts` extraction slices are planned in this roadmap.
+Other oversized production files (`packages/daemon/src/index.ts`,
+`packages/evidence-analysis/src/index.ts`, `packages/mcp-server/src/index.ts`)
+remain separate quality-debt follow-ups per `POST_W12_NEXT_INCREMENT_PLAN.md`.

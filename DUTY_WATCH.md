@@ -9,7 +9,59 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **P4l15 rank CLI extraction** complete on `main` (#419).
+Status: **CLI `command.ts` decomposition (P4l1–P4l16) complete** on `main`
+(#421). Controlled-learning cluster closed. Exit condition satisfied (171/167
+effective `command.ts` thin router).
+
+### 2026-08-29, P4l16 extract context CLI command from command.ts
+
+- **Status:** complete on `main` (#421)
+- **Branch:** `refactor/cli-context-command-extract` (merged)
+- **PR:** https://github.com/vitala89/Intentloom/pull/421
+- **Starting main SHA:** `2df34a85c0d3160a0d38d9c33093c5e315f372c4` (post-P4l15 handoff #420)
+- **Implementation head SHA:** `17f6f794e9d44b6d62e54b2d77914854c4338911`
+- **Merge SHA:** `ede3511c4b1091f9fa2daf6cd9d9de8052c5cf81`
+- **Objective:** Behavior-preserving extraction of the final controlled-learning
+  `context` subdomain into `context-parse.ts` + `context-command.ts` with early
+  dispatch after `rank`; preserve `context get` grammar, bounded context
+  application boundary, JSON/text parity, global guard rejections, and read-only
+  semantics; close the P4l controlled-learning cluster and satisfy the
+  `command.ts` decomposition exit condition.
+- **Modules created:**
+  - `packages/cli/src/context-parse.ts` — legacy-compatible parser (index 2;
+    requires `get` subcommand; rejects `--force`, adoption mapping flags, `--cache`,
+    daemon flags, unknown options, duplicate `--root`, unexpected positional tokens)
+  - `packages/cli/src/context-command.ts` — dispatch through
+    `getBoundedProjectContext` with `{ schemaVersion: "1", query, maxTokens, maxItems }`
+    and `{ root }` options
+- **Context surface:** `context get` with `--root`, `--query`, `--max-tokens`,
+  `--max-items`, `--json`
+- **Parser/output/application parity:** index-2 `get` topology preserved; request
+  payload and options forwarded unchanged to `getBoundedProjectContext`; text and
+  JSON output shapes preserved; exit codes 0/2/3 unchanged; global guards match
+  legacy errors; context remains read-only (no generic framework; no sibling
+  command altered; all prior early-dispatched commands remain reachable)
+- **Metrics (canonical `scripts/production-file-metrics.mjs`):**
+  - `command.ts` before P4l16: 339 physical / 328 effective
+  - `command.ts` after P4l16: 171 physical / 167 effective (−168 physical / −161 effective)
+  - `context-parse.ts`: 125 physical / 118 effective
+  - `context-command.ts`: 53 physical / 48 effective
+- **Tests:** `tests/cli-context.test.ts` (13 cases); `pnpm verify` on PR #421
+  (278 test files, 2354 passed); CI Compatibility/Governance/CodeQL/Harness
+  Benchmark green on PR #421
+- **Controlled-learning cluster:** P4l8–P4l16 complete; no remaining monolith
+  controlled-learning routing in `command.ts`
+- **Decomposition exit condition:** **CLI `command.ts` decomposition exit condition satisfied**
+  — thin router only, well under 400 effective lines
+- **Documentation discrepancy corrected:** PR #421 body incorrectly listed baseline
+  `39edc53a…` (P4l15 merge) instead of actual base `2df34a85…`; stale “PR is not
+  merged” footer replaced with merged status (see reconciliation PR)
+- **Not completed:** runtime changes in this reconciliation scope (docs/handoff only)
+- **Next first action:** Maintainer brief for **Neutron N3 — Context assembly**
+  per `docs/roadmap/NEUTRON_RUNTIME_ROADMAP.md` §N3 (sequential successor to merged
+  N1–N2); do not start N3 implementation until briefed (`POST_W12_NEXT_INCREMENT_PLAN.md`
+  and `ENGINEERING_WORKSPACE_CAPABILITY_MATRIX.md` defer N3–N9 without explicit
+  authorization). Do not invent P4l17 or resume CLI `command.ts` extraction.
 
 ### 2026-08-29, P4l15 extract rank CLI command from command.ts
 
