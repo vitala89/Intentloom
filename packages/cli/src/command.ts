@@ -1,8 +1,6 @@
-import { cwd } from "node:process";
 import {
   ArtifactValidationFailure,
   nodeFileSystem,
-  getBoundedProjectContext,
   type FileSystem,
   type TransactionOptions,
 } from "@intentloom/application";
@@ -32,10 +30,10 @@ import { runCheckpointCommand } from "./checkpoint-command.js";
 import { runProfileCommand } from "./profile-command.js";
 import { runDelegateCommand } from "./delegate-command.js";
 import { runRankCommand } from "./rank-command.js";
+import { runContextCommand } from "./context-command.js";
 import { runEvidenceCommand } from "./evidence-command.js";
 import { runHarnessCommand } from "./harness-command.js";
 import {
-  assertDaemonFlagsAllowed,
   CliProjectValidationError,
   CliUsageError,
   formatValidationFailure,
@@ -56,133 +54,6 @@ export interface CliDependencies {
   readonly fileSystem?: FileSystem;
   readonly providerCacheStore?: ProviderCacheStore;
   readonly transactionOptions?: TransactionOptions;
-}
-
-interface ParsedArguments {
-  readonly command: string;
-  readonly flags: ReadonlySet<string>;
-  readonly values: ReadonlyMap<string, string>;
-  readonly mappingValues: ReadonlyMap<string, readonly string[]>;
-}
-
-const commands = new Set(["evidence", "context"]);
-const booleanFlags = new Set([
-  "--cache",
-  "--dry-run",
-  "--force",
-  "--json",
-  "--plan",
-  "--strict",
-  "--enable",
-  "--disable",
-  "--clear",
-]);
-const valueFlags = new Set([
-  "--root",
-  "--profile",
-  "--adapters",
-  "--task",
-  "--daemon-endpoint",
-  "--daemon-token-file",
-  "--case-id",
-  "--provider",
-  "--file",
-  "--project-key",
-  "--policy",
-  "--timeline",
-  "--case-type",
-  "--output",
-  "--apply",
-  "--id",
-  "--trust-class",
-  "--retention-state",
-  "--json-input",
-  "--level",
-  "--pack",
-  "--role",
-  "--query",
-  "--max-budget",
-  "--state",
-  "--severity",
-  "--reason",
-  "--category",
-  "--evidence",
-  "--proposal-id",
-  "--skill-id",
-  "--action",
-  "--plan-file",
-  "--new-intent",
-  "--task-id",
-  "--name",
-  "--max-tokens",
-  "--max-items",
-  "--approved-by",
-  "--project-id",
-  "--target",
-  "--path",
-  "--conversation-id",
-  "--content",
-  "--mode",
-  "--input",
-  "--view",
-]);
-const mappingValueFlags = new Set([
-  "--project-owned-mapping",
-  "--documentation-mapping",
-]);
-
-function parseArguments(args: readonly string[]): ParsedArguments {
-  const command = args[0] ?? "";
-  if (!commands.has(command)) throw new CliUsageError(usage);
-  if (
-    command === "evidence" &&
-    !["fetch", "import", "analyze"].includes(args[1] ?? "")
-  )
-    throw new CliUsageError("evidence requires fetch, import, or analyze");
-  if (command === "context" && args[1] !== "get")
-    throw new CliUsageError("context requires get subcommand");
-  const flags = new Set<string>();
-  const values = new Map<string, string>();
-  const mappingValues = new Map<string, string[]>();
-  for (
-    let index = command === "evidence" || command === "context" ? 2 : 1;
-    index < args.length;
-    index += 1
-  ) {
-    const token = args[index]!;
-    if (booleanFlags.has(token)) {
-      flags.add(token);
-      continue;
-    }
-    if (!token.startsWith("--"))
-      throw new CliUsageError(`unexpected argument: ${token}`);
-    if (!valueFlags.has(token) && !mappingValueFlags.has(token))
-      throw new CliUsageError(`unknown option: ${token}`);
-    const value = args[index + 1];
-    if (value === undefined || value.startsWith("--"))
-      throw new CliUsageError(`missing value for ${token}`);
-    if (token === "--root" && values.has("--root"))
-      throw new CliUsageError("project path specified more than once");
-    if (mappingValueFlags.has(token)) {
-      const entries = mappingValues.get(token) ?? [];
-      entries.push(value);
-      mappingValues.set(token, entries);
-    } else values.set(token, value);
-    index += 1;
-  }
-  if (flags.has("--force"))
-    throw new CliUsageError("--force is only valid with sync");
-  if (mappingValues.size > 0)
-    throw new CliUsageError(
-      "adoption mappings are only valid with init or adopt",
-    );
-  const daemonEndpoint = values.has("--daemon-endpoint");
-  const daemonTokenFile = values.has("--daemon-token-file");
-  assertDaemonFlagsAllowed(command, daemonEndpoint, daemonTokenFile);
-  if (flags.has("--cache")) {
-    throw new CliUsageError("--cache is only valid with clean");
-  }
-  return { command, flags, values, mappingValues };
 }
 
 export async function runCli(
@@ -270,48 +141,9 @@ export async function runCli(
     if (args[0] === "delegate")
       return await runDelegateCommand(args, dependencies, io);
     if (args[0] === "rank") return await runRankCommand(args, dependencies, io);
-    const parsed = parseArguments(args);
-    const fileSystem = dependencies.fileSystem ?? nodeFileSystem;
-    const root = parsed.values.get("--root") ?? cwd();
-
-    if (parsed.command === "context") {
-      const subcommand = args[1];
-      if (subcommand !== "get") {
-        throw new CliUsageError("context requires get subcommand");
-      }
-      const query = parsed.values.get("--query");
-      const rawMaxTokens = parsed.values.get("--max-tokens");
-      const rawMaxItems = parsed.values.get("--max-items");
-
-      const maxTokens = rawMaxTokens ? parseInt(rawMaxTokens, 10) : undefined;
-      const maxItems = rawMaxItems ? parseInt(rawMaxItems, 10) : undefined;
-
-      const result = await getBoundedProjectContext(
-        {
-          schemaVersion: "1",
-          query,
-          maxTokens,
-          maxItems,
-        },
-        { root },
-        fileSystem,
-      );
-
-      if (parsed.flags.has("--json")) {
-        io.stdout(JSON.stringify(result, null, 2));
-      } else {
-        const lines = [
-          `Bounded Project Context (Root: ${result.root}, Tokens: ${result.totalTokens}, Excluded: ${result.excludedPathsCount})`,
-          ...result.items.map(
-            (item) =>
-              `- [${item.trustClass}] [${item.type}] ${item.path} (${item.tokenCount} tokens): ${item.summary}`,
-          ),
-        ];
-        io.stdout(lines.join("\n"));
-      }
-      return 0;
-    }
-    throw new CliUsageError(`unsupported command: ${parsed.command}`);
+    if (args[0] === "context")
+      return await runContextCommand(args, dependencies, io);
+    throw new CliUsageError(usage);
   } catch (error) {
     if (error instanceof SchemaCatalogError) {
       const payload = {
