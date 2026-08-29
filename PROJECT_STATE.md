@@ -634,10 +634,11 @@ Named follow-ups after P1: Neutron N1 then N2 (P2, complete), P3 S8
 (complete), CLI `command.ts` decomposition P4l1–P4l16 complete on `main`
 (`ede3511`, PR #421); post-P4l16 `command.ts` is 171 physical / 167 effective
 (thin router; exit condition satisfied per
-`docs/roadmap/CLI_COMMAND_TS_DECOMPOSITION.md`). Next bounded increment outside
-that sequence awaits an explicit maintainer brief (Neutron N3 per
-`NEUTRON_RUNTIME_ROADMAP.md`, or other post-P4 candidates in
-`POST_W12_NEXT_INCREMENT_PLAN.md`).
+`docs/roadmap/CLI_COMMAND_TS_DECOMPOSITION.md`). Neutron N3 maintainer brief is published at
+`docs/roadmap/NEUTRON_N3_CONTEXT_ASSEMBLY_BRIEF.md` (evidence baseline
+`e44fdc7`). N3 implementation is **not authorized** until Slice 1 is explicitly
+approved in `DUTY_WATCH.md`. Other post-P4 candidates remain in
+`POST_W12_NEXT_INCREMENT_PLAN.md`.
 
 The Desktop discovery/error and Diff/Timeline slices remain recorded in
 [PHASE1_CONTRACTS.md](docs/desktop/PHASE1_CONTRACTS.md).
