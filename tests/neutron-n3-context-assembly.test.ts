@@ -11,10 +11,7 @@ import {
   N3_WARNING_BUDGET,
   N3_WARNING_EMPTY_CONTEXT,
   N3_WARNING_EMPTY_SKILLS,
-  N3_WARNING_MEMORY,
-  N3_WARNING_PROFILE,
   N3_WARNING_SEMANTIC,
-  N3_WARNING_TASK,
 } from "../packages/application/src/neutron-context-assembly.js";
 import { NEUTRON_CONTEXT_ASSEMBLY_REQUEST_SCHEMA_URN } from "../packages/protocol/src/neutron-runtime.js";
 import {
@@ -347,61 +344,35 @@ describe("Neutron N3 Slice 2 context assembly", () => {
     ).toHaveLength(0);
   });
 
-  it("records explicit deferred Slice 3 behavior without fake sources", async () => {
+  it("records deferred semantic ranking without a provider call", async () => {
     const fs = createMemoryFileSystem(fixtureFiles("policy-first"));
     const result = await assembleNeutronContext(
-      request({
-        taskId: "task-inspect",
-        profileName: "default",
-        includeMemory: true,
-        semanticRanking: true,
-      }),
+      request({ semanticRanking: true }),
       { fs },
     );
-    expect(result.warnings).toEqual(
+    expect(result.warnings).toContain(N3_WARNING_SEMANTIC);
+    expect(result.bundle.sources).toEqual(
       expect.arrayContaining([
-        N3_WARNING_PROFILE,
-        N3_WARNING_TASK,
-        N3_WARNING_MEMORY,
-        N3_WARNING_SEMANTIC,
-      ]),
-    );
-    expect(
-      result.bundle.sources.filter((source) =>
-        source.sourceId.startsWith("deferred:"),
-      ),
-    ).toEqual(
-      expect.arrayContaining([
-        expect.objectContaining({
-          sourceId: "deferred:profile",
-          included: false,
-          exclusionReason: "deferred-slice-3",
-        }),
-        expect.objectContaining({
-          sourceId: "deferred:task",
-          included: false,
-          exclusionReason: "deferred-slice-3",
-        }),
-        expect.objectContaining({
-          sourceId: "deferred:memory",
-          included: false,
-          exclusionReason: "deferred-slice-3",
-        }),
         expect.objectContaining({
           sourceId: "deferred:semantic",
           included: false,
-          exclusionReason: "deferred-slice-3",
+          exclusionReason: "deferred",
         }),
       ]),
     );
     expect(
-      result.bundle.sources.some(
-        (source) => source.kind === "memory" && source.included,
+      result.bundle.sources.some((source) =>
+        source.sourceId.startsWith("deferred:profile"),
       ),
     ).toBe(false);
     expect(
-      result.bundle.sources.some(
-        (source) => source.kind === "task" && source.included,
+      result.bundle.sources.some((source) =>
+        source.sourceId.startsWith("deferred:task"),
+      ),
+    ).toBe(false);
+    expect(
+      result.bundle.sources.some((source) =>
+        source.sourceId.startsWith("deferred:memory"),
       ),
     ).toBe(false);
   });
