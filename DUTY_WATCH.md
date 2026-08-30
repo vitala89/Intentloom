@@ -9,16 +9,18 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Neutron N3 Context assembly maintainer brief ready for review** on
-branch `docs/neutron-n3-context-assembly-brief`. CLI decomposition
-(P4l1–P4l16) complete on `main` (#421, #422). N3 implementation **not
-authorized**.
+Status: **Neutron N3 Context assembly maintainer brief merged** on `main`
+(#423). CLI decomposition (P4l1–P4l16) complete (#421, #422). N3
+implementation **not authorized** until Slice 1 is explicitly approved.
 
 ### 2026-08-30, Neutron N3 context assembly maintainer brief
 
-- **Status:** complete on branch; PR pending
-- **Branch:** `docs/neutron-n3-context-assembly-brief` from `origin/main` @
-  `e44fdc7`
+- **Status:** complete on `main` (#423)
+- **Branch:** `docs/neutron-n3-context-assembly-brief` (merged)
+- **PR:** https://github.com/vitala89/Intentloom/pull/423
+- **Starting main SHA:** `e44fdc7e82cd51bc784fd8c37e8b45038571d2c9` (post-#422)
+- **Head SHA:** `a3fec51c4c07c5c77babe917b579c64c80b7b90b`
+- **Merge SHA:** `025c21f87babf96d00b81b9df451837e6ff97ae1`
 - **Baseline:** PR #422 merged (`e44fdc7`); post-P4l16 reconciliation on
   `main`; tree clean except untracked local helper/scratch files
 - **Objective:** Evidence-backed maintainer brief for Neutron N3 — Context
@@ -36,10 +38,10 @@ authorized**.
   authorization
 - **Recommendation:** `READY FOR IMPLEMENTATION AUTHORIZATION` for Slices 1–2
   after maintainer acknowledges optional `NeutronContextSource` field extension
-- **Next first action:** Review and merge the N3 brief PR. After merge,
-  **explicit maintainer authorization required for Neutron N3 Slice 1**
-  (contract + validator extension) before any runtime work. Do not start N4,
-  Desktop model UI, or P4l17.
+- **Next first action:** **Explicit maintainer authorization required for
+  Neutron N3 Slice 1** (contract + validator extension per
+  `docs/roadmap/NEUTRON_N3_CONTEXT_ASSEMBLY_BRIEF.md` §12) before any runtime
+  work. Do not start N4, Desktop model UI, or P4l17.
 
 ### 2026-08-29, P4l16 extract context CLI command from command.ts
 
