@@ -23,6 +23,7 @@ import {
   N3_WARNING_BUDGET,
   N3_WARNING_EMPTY_CONTEXT,
 } from "./neutron-context-collectors.js";
+import { collectSlice3StateCandidates } from "./neutron-context-state-collectors.js";
 
 export {
   N3_DEFAULT_MAX_ITEMS,
@@ -35,12 +36,20 @@ export {
   N3_WARNING_BUDGET,
   N3_WARNING_EMPTY_CONTEXT,
   N3_WARNING_EMPTY_SKILLS,
-  N3_WARNING_MEMORY,
-  N3_WARNING_PROFILE,
   N3_WARNING_SECRETS,
   N3_WARNING_SEMANTIC,
-  N3_WARNING_TASK,
 } from "./neutron-context-collectors.js";
+export {
+  N3_PROVENANCE_MEMORY,
+  N3_PROVENANCE_PROFILE,
+  N3_PROVENANCE_TASK_CHECKPOINT,
+  N3_PROVENANCE_TASK_SUMMARY,
+  N3_WARNING_MEMORY_EMPTY,
+  N3_WARNING_TASK_CHECKPOINT,
+  N3_WARNING_TASK_SUMMARY,
+  profileNotFoundError,
+  roleNotAllowedError,
+} from "./neutron-context-state-collectors.js";
 
 export interface AssembleNeutronContextOptions {
   readonly fs?: FileSystem;
@@ -60,9 +69,10 @@ export async function assembleNeutronContext(
   const fs = options.fs ?? nodeFileSystem;
   const maxTokens = request.maxTokens ?? N3_DEFAULT_MAX_TOKENS;
   const maxItems = request.maxItems ?? N3_DEFAULT_MAX_ITEMS;
-  const collected = await collectSlice2Candidates(request, fs);
+  const slice2 = await collectSlice2Candidates(request, fs);
+  const slice3 = await collectSlice3StateCandidates(request, fs);
   const allocation = allocateContextBudget(
-    collected.candidates,
+    [...slice2.candidates, ...slice3.candidates],
     maxTokens,
     maxItems,
   );
@@ -71,7 +81,7 @@ export async function assembleNeutronContext(
     .sort(compareAssemblyCandidates)
     .map((candidate) => toSource(candidate));
   const estimatedTokens = allocation.usedTokens;
-  const warnings = [...collected.warnings];
+  const warnings = [...slice3.warnings, ...slice2.warnings];
   if (allocation.included.length === 0) {
     warnings.push(N3_WARNING_EMPTY_CONTEXT);
   }

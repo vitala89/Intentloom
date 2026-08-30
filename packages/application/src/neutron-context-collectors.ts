@@ -30,11 +30,6 @@ export const N3_PROVENANCE_BOUNDED = "intentloom.context.bounded.v1";
 export const N3_PROVENANCE_SKILL = "intentloom.skill.discovery.v1";
 export const N3_PROVENANCE_DEFERRED = "intentloom.n3.deferred.v1";
 
-export const N3_WARNING_PROFILE = "profile integration deferred to Slice 3";
-export const N3_WARNING_TASK =
-  "task checkpoint/summary integration deferred to Slice 3";
-export const N3_WARNING_MEMORY =
-  "persistent memory integration deferred to Slice 3";
 export const N3_WARNING_SEMANTIC =
   "semantic ranking deferred; using deterministic local order";
 export const N3_WARNING_EMPTY_SKILLS = "no skills selected";
@@ -94,12 +89,9 @@ export async function collectSlice2Candidates(
     ...skills.decisions
       .filter((decision) => decision.status !== "selected")
       .map((decision) => mapSkillDecision(decision, skillLevel)),
-    ...deferredCandidates(request),
+    ...deferredSemantic(request),
   ];
 
-  if (request.profileName !== undefined) warnings.push(N3_WARNING_PROFILE);
-  if (request.taskId !== undefined) warnings.push(N3_WARNING_TASK);
-  if (memoryRequested(request)) warnings.push(N3_WARNING_MEMORY);
   if (request.semanticRanking === true) warnings.push(N3_WARNING_SEMANTIC);
   if (skills.skills.length === 0) warnings.push(N3_WARNING_EMPTY_SKILLS);
   if (bounded.excludedPathsCount > 0) warnings.push(N3_WARNING_SECRETS);
@@ -177,46 +169,22 @@ function mapSkillDecision(
   };
 }
 
-function deferredCandidates(
+function deferredSemantic(
   request: AssembleNeutronContextRequest,
 ): AssemblyCandidate[] {
-  const deferred: AssemblyCandidate[] = [];
-  if (request.profileName !== undefined) {
-    deferred.push(
-      deferredSource("deferred:profile", "policy", N3_PRIORITY.profile),
-    );
-  }
-  if (request.taskId !== undefined) {
-    deferred.push(deferredSource("deferred:task", "task", N3_PRIORITY.task));
-  }
-  if (memoryRequested(request)) {
-    deferred.push(
-      deferredSource("deferred:memory", "memory", N3_PRIORITY.memory),
-    );
-  }
-  if (request.semanticRanking === true) {
-    deferred.push(
-      deferredSource("deferred:semantic", "inspect", N3_PRIORITY.semantic),
-    );
-  }
-  return deferred;
-}
-
-function deferredSource(
-  sourceId: string,
-  kind: NeutronContextSource["kind"],
-  priority: number,
-): AssemblyCandidate {
-  return {
-    sourceId,
-    kind,
-    trustClass: "derived",
-    provenance: N3_PROVENANCE_DEFERRED,
-    tokenCost: 0,
-    priority,
-    sourceClass: "deferred",
-    exclusionReason: "deferred-slice-3",
-  };
+  if (request.semanticRanking !== true) return [];
+  return [
+    {
+      sourceId: "deferred:semantic",
+      kind: "inspect",
+      trustClass: "derived",
+      provenance: N3_PROVENANCE_DEFERRED,
+      tokenCost: 0,
+      priority: N3_PRIORITY.semantic,
+      sourceClass: "deferred",
+      exclusionReason: "deferred",
+    },
+  ];
 }
 
 function boundedKind(type: ContextSourceType): NeutronContextSource["kind"] {

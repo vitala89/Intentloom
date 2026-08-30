@@ -23,7 +23,14 @@ export const N3_PRIORITY = {
 } as const;
 
 export type AssemblyClass =
-  "policy" | "ownership" | "skill" | "bounded" | "deferred";
+  | "policy"
+  | "ownership"
+  | "profile"
+  | "task"
+  | "skill"
+  | "bounded"
+  | "memory"
+  | "deferred";
 
 export interface AssemblyCandidate {
   readonly sourceId: string;
@@ -33,6 +40,7 @@ export interface AssemblyCandidate {
   readonly tokenCost: number;
   readonly priority: number;
   readonly sourceClass: AssemblyClass;
+  readonly rank?: number;
   readonly path?: string;
   readonly contentDigest?: string;
   readonly loadingLevel?: NeutronSkillLoadingLevel;
@@ -51,6 +59,9 @@ export function compareAssemblyCandidates(
   right: AssemblyCandidate,
 ): number {
   if (left.priority !== right.priority) return left.priority - right.priority;
+  const leftRank = left.rank ?? 0;
+  const rightRank = right.rank ?? 0;
+  if (leftRank !== rightRank) return leftRank - rightRank;
   const leftKey = left.path ?? left.sourceId;
   const rightKey = right.path ?? right.sourceId;
   if (leftKey < rightKey) return -1;

@@ -2,11 +2,12 @@
 
 ## Status
 
-Planning artifact with **Slice 1 implemented** (contract + validator extension)
-and **Slice 2 implemented** (deterministic assembly core). Slice 3+ remain
-unauthorized until explicitly approved after Slice 2 merges.
+Planning artifact with **Slice 1 implemented** (contract + validator extension),
+**Slice 2 implemented** (deterministic assembly core), and **Slice 3
+implemented** (memory + task + profile integration). Slice 4+ remain
+unauthorized until explicitly approved after Slice 3 merges.
 
-Evidence baseline: `origin/main` @ `7d0684d` (post N3 Slice 1 handoff #426,
+Evidence baseline: `origin/main` @ `343dda5` (post N3 Slice 2 handoff #428,
 2026-08-30).
 
 ### Slice 1 implementation decisions (2026-08-30)
@@ -48,6 +49,24 @@ Evidence baseline: `origin/main` @ `7d0684d` (post N3 Slice 1 handoff #426,
 | Trust                            | Policy/ownership/project docs → `project`; skills → `catalog` (never elevated); deferred markers → `derived`                                                                                            |
 | Persistence / N2 / CLI / Desktop | None. Read-only return of the bundle. `mutationAllowed: false` / `networkMode: offline` unchanged                                                                                                       |
 | Remaining for Slice 3            | Persistent memory, task checkpoint/summary, profile resolution and role validation                                                                                                                      |
+
+### Slice 3 implementation decisions (2026-08-30)
+
+| Decision              | Resolution                                                                                                                                                                                                               |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Modules               | Slice 2 modules keep their roles. `neutron-context-state-collectors.ts` collects profile/task/memory; `neutron-context-state-excerpts.ts` owns stable excerpts and token/digest estimates. Budget gains optional `rank`. |
+| Reused APIs           | `getProfile`, `getTaskSummary`, `listTaskCheckpoints`, `searchPersistentMemory` with injected `FileSystem`. No `delegateTaskRole`, `rankProceduralMemory`, raw `.aif` parsing, or N2 hook.                               |
+| `includeMemory`       | `false` skips the query and emits no memory sources. `true` searches with `query ?? taskId`. Unset defaults to true when `query` or `taskId` is set (Slice 2 contract). Empty accepted results warn.                     |
+| Memory isolation      | `projectId` is passed explicitly. Only `lifecycleState: accepted` items from that project are eligible. Search ranking is preserved; score ties keep API `id` order.                                                     |
+| Memory trust / ids    | `sourceId` is `memory:<recordId>`. Trust maps record `trustClass` (`user-supplied` → `user`, `agent-generated` → `derived`, otherwise `project`). Provenance `intentloom.memory.persistent.v1`. No path.                 |
+| Task state            | When `taskId` is set: `getTaskSummary(taskId)` plus latest `listTaskCheckpoints({ taskId })` by `updatedAt` then `id`. Missing records warn and emit excluded `record-missing` markers. No lookup without `taskId`.      |
+| Checkpoint states     | `active` / `paused` / `cancelled` / `redirected` / `resumed` are read-only current state. `invalidatedPlans` stay in the excerpt. N3 never pauses, resumes, redirects, or validates plans.                               |
+| Profile / role        | `profileName` fetches that profile only. Missing profile throws `Profile not found: <name>`. Role is validated against `activeRoles` only when a profile is present; otherwise role remains a skill filter.              |
+| Capabilities          | Profile `allowedTools` / `allowedPaths` / `allowNetwork` / `maxBudget` are excerpt metadata. No capability grant, no delegation record, `mutationAllowed` unchanged.                                                     |
+| Priority              | Policy 1 → ownership 2 → profile 3 → task 4 → skills 5 → bounded 6 → memory 7 → semantic deferred 8. Shared `maxTokens` / `maxItems`. Token cost is `ceil(bytes/4)` of the stable excerpt.                               |
+| Deferred remainder    | Semantic ranking stays excluded `deferred:semantic` with reason `deferred`. No provider. Slice 4 is the N2 pre-turn hook.                                                                                                |
+| Protocol              | Same N1 bundle / usage URNs. No new protocol field.                                                                                                                                                                      |
+| Remaining for Slice 4 | Read-only N2 pre-turn hook that can consume the assembled bundle. No CLI/daemon/Desktop, N4, persistence, or model execution in Slice 3.                                                                                 |
 
 Authoritative roadmap gate: [`NEUTRON_RUNTIME_ROADMAP.md`](NEUTRON_RUNTIME_ROADMAP.md)
 §N3. Deferred without explicit authorization per

@@ -636,10 +636,11 @@ Named follow-ups after P1: Neutron N1 then N2 (P2, complete), P3 S8
 (thin router; exit condition satisfied per
 `docs/roadmap/CLI_COMMAND_TS_DECOMPOSITION.md`). Neutron N3 Slice 1 (contract +
 validator) and Slice 2 (deterministic `assembleNeutronContext` assembly core)
-are implemented; see
+are implemented; Slice 3 (memory + task + profile integration) is
+implemented; see
 `docs/roadmap/NEUTRON_N3_CONTEXT_ASSEMBLY_BRIEF.md`. N3 is **not complete**:
-Slice 3 (memory + task + profile integration) still requires explicit
-authorization in `DUTY_WATCH.md`. Other post-P4 candidates remain in
+Slice 4 (N2 pre-turn hook) still requires explicit authorization in
+`DUTY_WATCH.md`. Other post-P4 candidates remain in
 `POST_W12_NEXT_INCREMENT_PLAN.md`.
 
 The Desktop discovery/error and Diff/Timeline slices remain recorded in
