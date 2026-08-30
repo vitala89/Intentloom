@@ -2,10 +2,11 @@
 
 ## Status
 
-Planning artifact with **Slice 1 implemented** (contract + validator extension).
-Slice 2+ remain unauthorized until explicitly approved after Slice 1 merges.
+Planning artifact with **Slice 1 implemented** (contract + validator extension)
+and **Slice 2 implemented** (deterministic assembly core). Slice 3+ remain
+unauthorized until explicitly approved after Slice 2 merges.
 
-Evidence baseline: `origin/main` @ `539e223` (post PR #424 reconciliation,
+Evidence baseline: `origin/main` @ `7d0684d` (post N3 Slice 1 handoff #426,
 2026-08-30).
 
 ### Slice 1 implementation decisions (2026-08-30)
@@ -25,8 +26,28 @@ Evidence baseline: `origin/main` @ `539e223` (post PR #424 reconciliation,
 | Validator ownership         | `@intentloom/validator/neutron-runtime-n3` + extended `validateNeutronContextSource`                                               |
 | Remaining for Slice 2       | `assembleNeutronContext` orchestrator, collectors, budget algorithm                                                                |
 
-Implementation requires an explicit maintainer authorization for
-the first approved slice after this brief is reviewed.
+### Slice 2 implementation decisions (2026-08-30)
+
+| Decision                         | Resolution                                                                                                                                                                                              |
+| -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Application operation            | `assembleNeutronContext` on `@intentloom/application/neutron-context-assembly`                                                                                                                          |
+| Result wrapper                   | `AssembleNeutronContextResult` (`bundle`, `usage`, `warnings`) — application-only, no new protocol URN                                                                                                  |
+| Modules                          | `neutron-context-assembly.ts` (orchestrate + validate), `neutron-context-collectors.ts` (Slice 2 sources), `neutron-context-budget.ts` (priority + truncation)                                          |
+| Source scope                     | Canonical policy (`intent`/`adr`), ownership (`PROJECT_STATE.md` / `DUTY_WATCH.md` via M1), skills (`discoverSkills`), remaining bounded docs/evidence                                                  |
+| Reused APIs                      | `getBoundedProjectContext` and `discoverSkills` with injected `FileSystem`; collectors request a high candidate cap so N3 owns cross-source truncation                                                  |
+| Priority                         | Policy 1 → ownership 2 → skills 5 → bounded docs 6; deferred Slice 3 placeholders 3/4/7/8. Tie-break: normalized `path` then `sourceId` (code-point order)                                              |
+| Defaults                         | `maxTokens = 4000`, `maxItems = 20`, `skillLevel = catalog` (application-owned)                                                                                                                         |
+| Reserved slices                  | Soft floors: policy 25%, ownership 10%. Implemented as priority-first inclusion up to the global cap; canonical sources may exceed their ratio rather than fail                                         |
+| Token accounting                 | M1 `tokenCount` (`ceil(bytes/4)`) for project files; skill `contextCost` at the requested loading level                                                                                                 |
+| `sourceTypes`                    | Filters bounded-context classes only. Skills are a separate class and are still collected. Unknown strings remain validator-rejected                                                                    |
+| Deferred Slice 3 fields          | `profileName`, `taskId`, `includeMemory` (explicit or default-true when `query`/`taskId` set), and `semanticRanking: true` emit stable warnings plus excluded `deferred:*` sources (`deferred-slice-3`) |
+| `role` in Slice 2                | Passed through to `discoverSkills` as existing skill-metadata filter only. No `getProfile` / delegation / capability grant                                                                              |
+| Semantic ranking                 | Never calls a provider. Deterministic local order remains authoritative; warning + excluded `deferred:semantic` marker                                                                                  |
+| Secret paths                     | Reuse M1 secret filtering. Secret content never appears. `excludedSecretLikePaths` stays empty because M1 redacts paths and returns a count only; warning `secret-like paths excluded` when count > 0   |
+| Digests                          | `sha256:` + `checksum` over available excerpt bytes (M1 `summary`, skill `id` + description). No extra file reread                                                                                      |
+| Trust                            | Policy/ownership/project docs → `project`; skills → `catalog` (never elevated); deferred markers → `derived`                                                                                            |
+| Persistence / N2 / CLI / Desktop | None. Read-only return of the bundle. `mutationAllowed: false` / `networkMode: offline` unchanged                                                                                                       |
+| Remaining for Slice 3            | Persistent memory, task checkpoint/summary, profile resolution and role validation                                                                                                                      |
 
 Authoritative roadmap gate: [`NEUTRON_RUNTIME_ROADMAP.md`](NEUTRON_RUNTIME_ROADMAP.md)
 §N3. Deferred without explicit authorization per
@@ -53,17 +74,18 @@ Authoritative roadmap gate: [`NEUTRON_RUNTIME_ROADMAP.md`](NEUTRON_RUNTIME_ROADM
 
 ### Relevant current APIs
 
-| API                                     | Package                                   | Role today                        |
-| --------------------------------------- | ----------------------------------------- | --------------------------------- |
-| `prepareNeutronRuntimeContractSnapshot` | `@intentloom/application/neutron-runtime` | N1 root-bound contract validation |
-| `runNeutronN2ReadOnlyLoop`              | `@intentloom/application/neutron-n2-loop` | N2 inspect-only model loop        |
-| `getBoundedProjectContext`              | `@intentloom/application`                 | M1 path-scoped file retrieval     |
-| `discoverSkills`                        | `@intentloom/application`                 | Progressive skill selection       |
-| `searchPersistentMemory`                | `@intentloom/application`                 | Accepted memory keyword search    |
-| `rankProceduralMemory`                  | `@intentloom/application`                 | Procedural/semantic ranking       |
-| `getProfile` / `delegateTaskRole`       | `@intentloom/application`                 | Role capability clamping          |
-| `getTaskCheckpoint` / `getTaskSummary`  | `@intentloom/application`                 | Task-scoped state                 |
-| `validateNeutronContextBundle`          | `@intentloom/validator/neutron-runtime`   | N1 bundle shape enforcement       |
+| API                                     | Package                                            | Role today                        |
+| --------------------------------------- | -------------------------------------------------- | --------------------------------- |
+| `prepareNeutronRuntimeContractSnapshot` | `@intentloom/application/neutron-runtime`          | N1 root-bound contract validation |
+| `runNeutronN2ReadOnlyLoop`              | `@intentloom/application/neutron-n2`               | N2 inspect-only model loop        |
+| `assembleNeutronContext`                | `@intentloom/application/neutron-context-assembly` | N3 Slice 2 deterministic assembly |
+| `getBoundedProjectContext`              | `@intentloom/application`                          | M1 path-scoped file retrieval     |
+| `discoverSkills`                        | `@intentloom/application`                          | Progressive skill selection       |
+| `searchPersistentMemory`                | `@intentloom/application`                          | Accepted memory keyword search    |
+| `rankProceduralMemory`                  | `@intentloom/application`                          | Procedural/semantic ranking       |
+| `getProfile` / `delegateTaskRole`       | `@intentloom/application`                          | Role capability clamping          |
+| `getTaskCheckpoint` / `getTaskSummary`  | `@intentloom/application`                          | Task-scoped state                 |
+| `validateNeutronContextBundle`          | `@intentloom/validator/neutron-runtime`            | N1 bundle shape enforcement       |
 
 ### N1 baseline (implemented)
 
@@ -473,6 +495,7 @@ phases):
 
 | Item             | Detail                                                                       |
 | ---------------- | ---------------------------------------------------------------------------- |
+| **Status**       | Implemented — see Slice 2 implementation decisions above                     |
 | **Scope**        | `assembleNeutronContext` orchestrator, policy + bounded context + skills     |
 | **Packages**     | `application/neutron-context-assembly`, `application/neutron-context-budget` |
 | **Dependencies** | Slice 1                                                                      |

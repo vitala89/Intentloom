@@ -194,9 +194,11 @@ fake loopback `/api/chat` and `inspectProject`.
 ## N3. Context assembly
 
 **Maintainer brief:** [`NEUTRON_N3_CONTEXT_ASSEMBLY_BRIEF.md`](NEUTRON_N3_CONTEXT_ASSEMBLY_BRIEF.md)
-(evidence baseline `539e223`, 2026-08-30). **Slice 1** (contract + validator
-extension) is implemented; Slice 2 (deterministic assembly core) requires
-explicit authorization in `DUTY_WATCH.md` after Slice 1 merges.
+(evidence baseline `7d0684d`, 2026-08-30). **Slice 1** (contract + validator
+extension) and **Slice 2** (deterministic assembly core via
+`assembleNeutronContext`) are implemented. Slice 3 (memory + task + profile
+integration) requires explicit authorization in `DUTY_WATCH.md`. N3 is not
+complete until Slice 3+ exit gates land.
 
 Combine bounded project context, accepted memory, progressive skill discovery,
 canonical policy, current task data, and verified evidence into one budgeted
