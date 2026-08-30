@@ -9,9 +9,31 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Neutron N3 Slice 3 complete** on `main` (#429). Memory, task, and
-profile integration merged. Slice 4 (N2 pre-turn hook) requires explicit
-maintainer authorization. Do not start N4, Desktop model UI, or P4l17.
+Status: **Neutron N3 Slice 4 complete** on branch (pending PR). N3 context
+assembly feeds N2 read-only model turns. N4, Desktop model UI, CLI/daemon
+Slice 5 exposure, and P4l17 remain unauthorized.
+
+### 2026-08-31, Neutron N3 Slice 4 — N2 pre-turn context hook
+
+- **Status:** complete on branch (pending PR)
+- **Branch:** `feat/neutron-n3-n2-pre-turn-context`
+- **Starting main SHA:** `a2a821a2bd6e6a9afa80660d40e359098c3a2f1c` (post-#430)
+- **Objective:** Integrate `assembleNeutronContext` into
+  `runNeutronN2ReadOnlyLoop` as a pre-turn hook with deterministic trust-aware
+  projection, blocking failure gating, and preserved fingerprint guarantees
+- **Completed:**
+  - `prepareNeutronN2ModelPrompt` + `neutron-n3-prompt-context.ts` projection
+  - N2 loop invokes assembly once per loop before first model turn
+  - Blocking failures prevent Ollama invocation (tests prove gating)
+  - `tests/neutron-n3-n2-pre-turn.test.ts` (9 cases)
+  - N3 brief Slice 4 decision record; roadmap and `PROJECT_STATE.md` updated
+  - `pnpm verify` green locally (282 files, 2399 passed, 3 skipped)
+- **Not completed:** Slice 5 CLI/daemon, N4, Desktop model UI, P4l17
+- **Next first action:** **Explicit maintainer authorization required for
+  Neutron N4** — tool router and execution capabilities per
+  `docs/roadmap/NEUTRON_RUNTIME_ROADMAP.md` §N4. Optional N3 Slice 5
+  (CLI/daemon exposure) requires separate authorization if desired. Do not
+  start Desktop model UI or P4l17.
 
 ### 2026-08-30, Neutron N3 Slice 3 — memory task and profile integration
 

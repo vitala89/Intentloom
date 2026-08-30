@@ -123,6 +123,7 @@ function mapBoundedItem(item: ContextSource): AssemblyCandidate {
           ? N3_PRIORITY.ownership
           : N3_PRIORITY.bounded,
     sourceClass,
+    excerpt: item.summary,
     ...(path !== undefined ? { path } : {}),
     contentDigest: digestBytes(item.summary),
   };
@@ -138,6 +139,7 @@ function mapSkill(
       : loadingLevel === "contract"
         ? skill.contextCost.contractCost
         : skill.contextCost.procedureCost;
+  const excerpt = `${skill.id}\n${skill.description}`;
   return {
     sourceId: `skill:${skill.id}`,
     kind: "skill",
@@ -146,7 +148,8 @@ function mapSkill(
     tokenCost,
     priority: N3_PRIORITY.skill,
     sourceClass: "skill",
-    contentDigest: digestBytes(`${skill.id}\n${skill.description}`),
+    excerpt,
+    contentDigest: digestBytes(excerpt),
     loadingLevel,
   };
 }

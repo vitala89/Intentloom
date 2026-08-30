@@ -168,6 +168,7 @@ function mapProfile(profile: ProfileDefinition): AssemblyCandidate {
     tokenCost: estimateTokens(excerpt),
     priority: N3_PRIORITY.profile,
     sourceClass: "profile",
+    excerpt,
     contentDigest: digestExcerpt(excerpt),
   };
 }
@@ -182,6 +183,7 @@ function mapSummary(summary: TaskSummary): AssemblyCandidate {
     tokenCost: estimateTokens(excerpt),
     priority: N3_PRIORITY.task,
     sourceClass: "task",
+    excerpt,
     contentDigest: digestExcerpt(excerpt),
   };
 }
@@ -196,6 +198,7 @@ function mapCheckpoint(checkpoint: TaskCheckpoint): AssemblyCandidate {
     tokenCost: estimateTokens(excerpt),
     priority: N3_PRIORITY.task,
     sourceClass: "task",
+    excerpt,
     contentDigest: digestExcerpt(excerpt),
   };
 }
@@ -213,6 +216,7 @@ function mapMemory(
     priority: N3_PRIORITY.memory,
     sourceClass: "memory",
     rank,
+    excerpt: item.content,
     contentDigest: digestExcerpt(item.content),
   };
 }

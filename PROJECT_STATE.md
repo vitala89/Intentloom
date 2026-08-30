@@ -636,11 +636,13 @@ Named follow-ups after P1: Neutron N1 then N2 (P2, complete), P3 S8
 (thin router; exit condition satisfied per
 `docs/roadmap/CLI_COMMAND_TS_DECOMPOSITION.md`). Neutron N3 Slice 1 (contract +
 validator) and Slice 2 (deterministic `assembleNeutronContext` assembly core)
-are implemented; Slice 3 (memory + task + profile integration) is
-implemented; see
-`docs/roadmap/NEUTRON_N3_CONTEXT_ASSEMBLY_BRIEF.md`. N3 is **not complete**:
-Slice 4 (N2 pre-turn hook) still requires explicit authorization in
-`DUTY_WATCH.md`. Other post-P4 candidates remain in
+are implemented; Slice 4 (N2 pre-turn hook feeding `assembleNeutronContext`
+into `runNeutronN2ReadOnlyLoop`) is implemented; see
+`docs/roadmap/NEUTRON_N3_CONTEXT_ASSEMBLY_BRIEF.md`. **N3 runtime milestone
+is complete** for application/test integration. N3 context assembly now feeds
+N2 read-only model turns; remains read-only/offline with no N4 execution
+capabilities. Optional Slice 5 CLI/daemon exposure and N4 remain unauthorized
+per `DUTY_WATCH.md`. Other post-P4 candidates remain in
 `POST_W12_NEXT_INCREMENT_PLAN.md`.
 
 The Desktop discovery/error and Diff/Timeline slices remain recorded in
