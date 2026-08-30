@@ -9,10 +9,35 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Neutron N3 Slice 2 complete** on `main` (#427). Deterministic
-context assembly core merged. Slice 3 (memory + task + profile integration)
-requires explicit maintainer authorization. Do not start N4, Desktop model UI,
-or P4l17.
+Status: **Neutron N3 Slice 3 complete** on `main` (#429). Memory, task, and
+profile integration merged. Slice 4 (N2 pre-turn hook) requires explicit
+maintainer authorization. Do not start N4, Desktop model UI, or P4l17.
+
+### 2026-08-30, Neutron N3 Slice 3 — memory task and profile integration
+
+- **Status:** complete on `main` (#429)
+- **Branch:** `feat/neutron-n3-context-state-integration` (merged)
+- **PR:** https://github.com/vitala89/Intentloom/pull/429
+- **Starting main SHA:** `343dda58fed6a7dd80cdb868b618cde265689e15` (post-#428)
+- **Head SHA:** `7b847f069489160ac4fd65cdf19b784faf56b8a5`
+- **Merge SHA:** `cb6b529c514d9ea002a9d0d1b92db3dca316bbb2`
+- **Baseline:** PR #428 merged; tree clean except untracked local helper/scratch files
+- **Objective:** Neutron N3 Slice 3 — replace deferred memory/task/profile
+  placeholders with read-only integration through existing application APIs
+- **Completed:**
+  - `collectSlice3StateCandidates` reuses `searchPersistentMemory`,
+    `getTaskSummary`, `listTaskCheckpoints`, and `getProfile`
+  - Deferred Slice 3 markers removed; semantic ranking stays deferred
+  - Role validated against profile `activeRoles` only when a profile is present
+  - `tests/neutron-n3-context-state.test.ts` (13 cases)
+  - N3 brief and roadmap Slice 3 decision records; `PROJECT_STATE.md` updated
+  - `pnpm verify` green locally (281 files, 2390 passed, 3 skipped); CI
+    Compatibility/Governance/CodeQL/Harness Benchmark green on #429
+- **Not completed:** N2 pre-turn hook, CLI/daemon/Desktop, N4, Slice 4–5
+- **Next first action:** **Explicit maintainer authorization required for
+  Neutron N3 Slice 4** — N2 pre-turn hook per
+  `docs/roadmap/NEUTRON_N3_CONTEXT_ASSEMBLY_BRIEF.md` §12. Do not start N4,
+  Desktop model UI, or P4l17.
 
 ### 2026-08-30, Neutron N3 Slice 2 — deterministic assembly core
 
