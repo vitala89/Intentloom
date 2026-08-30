@@ -194,9 +194,9 @@ fake loopback `/api/chat` and `inspectProject`.
 ## N3. Context assembly
 
 **Maintainer brief:** [`NEUTRON_N3_CONTEXT_ASSEMBLY_BRIEF.md`](NEUTRON_N3_CONTEXT_ASSEMBLY_BRIEF.md)
-(evidence baseline `e44fdc7`, 2026-08-30). Implementation is not authorized
-until the brief is reviewed and Slice 1 is explicitly authorized in
-`DUTY_WATCH.md`.
+(evidence baseline `539e223`, 2026-08-30). **Slice 1** (contract + validator
+extension) is implemented; Slice 2 (deterministic assembly core) requires
+explicit authorization in `DUTY_WATCH.md` after Slice 1 merges.
 
 Combine bounded project context, accepted memory, progressive skill discovery,
 canonical policy, current task data, and verified evidence into one budgeted

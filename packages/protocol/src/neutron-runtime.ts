@@ -12,6 +12,8 @@ export const NEUTRON_SUBAGENT_RESULT_SCHEMA_URN =
   "urn:intentloom:schema:neutron-subagent-result:1" as const;
 export const NEUTRON_USAGE_BUDGET_SCHEMA_URN =
   "urn:intentloom:schema:neutron-usage-budget:1" as const;
+export const NEUTRON_CONTEXT_ASSEMBLY_REQUEST_SCHEMA_URN =
+  "urn:intentloom:schema:neutron-context-assembly-request:1" as const;
 export const NEUTRON_RUNTIME_EVENT_SCHEMA_URN =
   "urn:intentloom:schema:neutron-runtime-event:1" as const;
 
@@ -65,6 +67,35 @@ export const NEUTRON_EVENT_KINDS = [
 ] as const;
 export type NeutronEventKind = (typeof NEUTRON_EVENT_KINDS)[number];
 
+export const NEUTRON_SKILL_LOADING_LEVELS = [
+  "catalog",
+  "contract",
+  "procedure",
+] as const;
+export type NeutronSkillLoadingLevel =
+  (typeof NEUTRON_SKILL_LOADING_LEVELS)[number];
+
+export const NEUTRON_DELEGATED_AGENT_ROLES = [
+  "context-scout",
+  "feature-builder",
+  "test-engineer",
+  "reviewer",
+  "release-analyst",
+] as const;
+export type NeutronDelegatedAgentRole =
+  (typeof NEUTRON_DELEGATED_AGENT_ROLES)[number];
+
+export const NEUTRON_CONTEXT_SOURCE_TYPES = [
+  "intent",
+  "adr",
+  "documentation",
+  "ownership",
+  "evidence",
+  "provisional",
+] as const;
+export type NeutronContextSourceType =
+  (typeof NEUTRON_CONTEXT_SOURCE_TYPES)[number];
+
 export const NEUTRON_ERROR_CODES = [
   "validation-failed",
   "root-mismatch",
@@ -106,6 +137,28 @@ export interface NeutronContextSource {
   readonly provenance: string;
   readonly included: boolean;
   readonly exclusionReason?: string;
+  /** Project-relative normalized path when the source maps to a file. */
+  readonly path?: string;
+  /** SHA-256 digest of normalized excerpt bytes: `sha256:<64 lowercase hex>`. */
+  readonly contentDigest?: string;
+  readonly loadingLevel?: NeutronSkillLoadingLevel;
+}
+
+export interface AssembleNeutronContextRequest {
+  readonly schemaVersion: typeof NEUTRON_CONTEXT_ASSEMBLY_REQUEST_SCHEMA_URN;
+  readonly root: string;
+  readonly sessionId: string;
+  readonly projectId: string;
+  readonly taskId?: string;
+  readonly query?: string;
+  readonly profileName?: string;
+  readonly role?: NeutronDelegatedAgentRole;
+  readonly skillLevel?: NeutronSkillLoadingLevel;
+  readonly maxTokens?: number;
+  readonly maxItems?: number;
+  readonly sourceTypes?: readonly NeutronContextSourceType[];
+  readonly includeMemory?: boolean;
+  readonly semanticRanking?: boolean;
 }
 
 export interface NeutronContextBundle {

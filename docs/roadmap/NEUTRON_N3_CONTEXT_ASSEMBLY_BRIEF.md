@@ -2,12 +2,31 @@
 
 ## Status
 
-Planning artifact only. **No N3 runtime implementation is authorized by this
-document.** Implementation requires an explicit maintainer authorization for
-the first approved slice after this brief is reviewed.
+Planning artifact with **Slice 1 implemented** (contract + validator extension).
+Slice 2+ remain unauthorized until explicitly approved after Slice 1 merges.
 
-Evidence baseline: `origin/main` @ `e44fdc7` (post PR #422 reconciliation,
+Evidence baseline: `origin/main` @ `539e223` (post PR #424 reconciliation,
 2026-08-30).
+
+### Slice 1 implementation decisions (2026-08-30)
+
+| Decision                    | Resolution                                                                                                                         |
+| --------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| Assembly request URN        | `urn:intentloom:schema:neutron-context-assembly-request:1`                                                                         |
+| Protocol type               | `AssembleNeutronContextRequest` in `@intentloom/protocol/neutron-runtime`                                                          |
+| Required fields             | `root`, `sessionId`, `projectId`                                                                                                   |
+| Optional request fields     | `taskId`, `query`, `profileName`, `role`, `skillLevel`, `maxTokens`, `maxItems`, `sourceTypes`, `includeMemory`, `semanticRanking` |
+| Source provenance extension | Optional `path`, `contentDigest`, `loadingLevel` on `NeutronContextSource`                                                         |
+| `path` semantics            | Normalized project-relative via `normalizeStoredPath`; rejects absolute/escaping paths                                             |
+| `contentDigest` semantics   | `sha256:<64 lowercase hex>` over normalized excerpt bytes (field validated only; collectors populate in Slice 2+)                  |
+| `loadingLevel` semantics    | Optional `catalog` \| `contract` \| `procedure` for skill sources                                                                  |
+| Bundle / budget URNs        | Unchanged — `NeutronContextBundle` and `NeutronUsageBudget` remain N1 v1                                                           |
+| Version bump                | Additive optional fields only; no protocol version bump required                                                                   |
+| Validator ownership         | `@intentloom/validator/neutron-runtime-n3` + extended `validateNeutronContextSource`                                               |
+| Remaining for Slice 2       | `assembleNeutronContext` orchestrator, collectors, budget algorithm                                                                |
+
+Implementation requires an explicit maintainer authorization for
+the first approved slice after this brief is reviewed.
 
 Authoritative roadmap gate: [`NEUTRON_RUNTIME_ROADMAP.md`](NEUTRON_RUNTIME_ROADMAP.md)
 §N3. Deferred without explicit authorization per
