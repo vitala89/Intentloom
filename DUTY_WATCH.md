@@ -9,9 +9,36 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Neutron N3 Context assembly maintainer brief merged** on `main`
-(#423). CLI decomposition (P4l1–P4l16) complete (#421, #422). N3
-implementation **not authorized** until Slice 1 is explicitly approved.
+Status: **Neutron N3 Slice 1 complete** on `main` (#425). Context assembly
+contract + validator extension merged. Slice 2 (deterministic assembly core)
+requires explicit maintainer authorization before runtime orchestration.
+
+### 2026-08-30, Neutron N3 Slice 1 — context assembly contract
+
+- **Status:** complete on `main` (#425)
+- **Branch:** `feat/neutron-n3-context-contract` (merged)
+- **PR:** https://github.com/vitala89/Intentloom/pull/425
+- **Starting main SHA:** `539e22366da2081846379ecf40922cc188a8a48c` (post-#424)
+- **Head SHA:** `dbbfd51461c21022454e00d8505666e17e42c417`
+- **Merge SHA:** `4ea9506ee3d8766726ef61ede829af39396c5aea`
+- **Baseline:** PR #424 merged; tree clean except untracked local helper/scratch files
+- **Objective:** Neutron N3 Slice 1 — protocol request type, optional
+  `NeutronContextSource` provenance fields, validator extension, tests; no
+  assembly engine
+- **Completed:**
+  - `AssembleNeutronContextRequest` URN
+    `urn:intentloom:schema:neutron-context-assembly-request:1`
+  - Optional source fields: `path`, `contentDigest`, `loadingLevel`
+  - `validateAssembleNeutronContextRequest` in `@intentloom/validator/neutron-runtime-n3`
+  - `tests/neutron-n3-context-contract.test.ts` (14 cases)
+  - N3 brief and roadmap slice-1 decision records
+  - `pnpm verify` green locally; CI Compatibility/Governance/CodeQL green on #425
+- **Not completed:** assembly orchestrator, collectors, N2 hook, CLI/daemon/Desktop,
+  N4, Slice 3–5
+- **Next first action:** **Explicit maintainer authorization required for
+  Neutron N3 Slice 2** — deterministic assembly core per
+  `docs/roadmap/NEUTRON_N3_CONTEXT_ASSEMBLY_BRIEF.md` §12. Do not start N4,
+  Desktop model UI, or P4l17.
 
 ### 2026-08-30, Neutron N3 context assembly maintainer brief
 
