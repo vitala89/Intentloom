@@ -24,6 +24,7 @@ export {
   validateNeutronToolEnvelope,
   validateNeutronUsageBudget,
 } from "./neutron-runtime-records.js";
+export { validateAssembleNeutronContextRequest } from "./neutron-runtime-n3.js";
 
 export function validateNeutronRuntimeSession(
   value: unknown,

@@ -4,6 +4,7 @@ import {
   NEUTRON_EVENT_KINDS,
   NEUTRON_READ_ONLY_TOOLS,
   NEUTRON_RUNTIME_EVENT_SCHEMA_URN,
+  NEUTRON_SKILL_LOADING_LEVELS,
   NEUTRON_SUBAGENT_RESULT_SCHEMA_URN,
   NEUTRON_TASK_GRAPH_SCHEMA_URN,
   NEUTRON_TASK_STATES,
@@ -22,10 +23,12 @@ import {
   type NeutronUsageBudget,
 } from "../../protocol/src/neutron-runtime.js";
 import {
+  contentDigest,
   finiteInt,
   isObject,
   nonEmpty,
   oneOf,
+  projectRelativePath,
   strings,
 } from "./neutron-runtime-helpers.js";
 
@@ -45,21 +48,35 @@ function validateSource(value: unknown, index: number): NeutronContextSource {
   if (typeof value.included !== "boolean") {
     throw new Error(`context.sources[${index}].included must be a boolean`);
   }
+  const field = (name: string) => `context.sources[${index}].${name}`;
   return {
-    sourceId: nonEmpty(value.sourceId, `context.sources[${index}].sourceId`),
-    kind: oneOf(value.kind, kinds, `context.sources[${index}].kind`),
-    trustClass: oneOf(
-      value.trustClass,
-      trusts,
-      `context.sources[${index}].trustClass`,
-    ),
-    provenance: nonEmpty(
-      value.provenance,
-      `context.sources[${index}].provenance`,
-    ),
+    sourceId: nonEmpty(value.sourceId, field("sourceId")),
+    kind: oneOf(value.kind, kinds, field("kind")),
+    trustClass: oneOf(value.trustClass, trusts, field("trustClass")),
+    provenance: nonEmpty(value.provenance, field("provenance")),
     included: value.included,
     ...(typeof value.exclusionReason === "string"
       ? { exclusionReason: value.exclusionReason }
+      : {}),
+    ...(typeof value.path === "string"
+      ? { path: projectRelativePath(value.path, field("path")) }
+      : {}),
+    ...(typeof value.contentDigest === "string"
+      ? {
+          contentDigest: contentDigest(
+            value.contentDigest,
+            field("contentDigest"),
+          ),
+        }
+      : {}),
+    ...(typeof value.loadingLevel === "string"
+      ? {
+          loadingLevel: oneOf(
+            value.loadingLevel,
+            NEUTRON_SKILL_LOADING_LEVELS,
+            field("loadingLevel"),
+          ),
+        }
       : {}),
   };
 }
