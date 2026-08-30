@@ -9,9 +9,38 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Neutron N3 Slice 1 complete** on `main` (#425). Context assembly
-contract + validator extension merged. Slice 2 (deterministic assembly core)
-requires explicit maintainer authorization before runtime orchestration.
+Status: **Neutron N3 Slice 2 complete** on `main` (#427). Deterministic
+context assembly core merged. Slice 3 (memory + task + profile integration)
+requires explicit maintainer authorization. Do not start N4, Desktop model UI,
+or P4l17.
+
+### 2026-08-30, Neutron N3 Slice 2 — deterministic assembly core
+
+- **Status:** complete on `main` (#427)
+- **Branch:** `feat/neutron-n3-context-assembly-core` (merged)
+- **PR:** https://github.com/vitala89/Intentloom/pull/427
+- **Starting main SHA:** `7d0684d0242ec3028d4f45619808a4422406a0ed` (post-#426)
+- **Head SHA:** `40e926ecb6a0b6e38bfa6eec13de8134cc57aed8`
+- **Merge SHA:** `38558e4faf416e3845ce4d7ccbc7ae2bac75ace2`
+- **Baseline:** PR #426 merged; tree clean except untracked local helper/scratch files
+- **Objective:** Neutron N3 Slice 2 — `assembleNeutronContext` over policy,
+  ownership, bounded project context, and skills; no memory/task/profile/N2 hook
+- **Completed:**
+  - Application operation `assembleNeutronContext` on
+    `@intentloom/application/neutron-context-assembly`
+  - Collectors reuse `getBoundedProjectContext` and `discoverSkills`
+  - Deterministic priority/budget allocation with stable exclusions
+  - Deferred Slice 3 fields emit warnings + excluded `deferred:*` sources
+  - `tests/neutron-n3-context-assembly.test.ts` (9 cases)
+  - N3 brief and roadmap Slice 2 decision records; `PROJECT_STATE.md` updated
+  - `pnpm verify` green locally (280 files, 2377 passed, 3 skipped); CI
+    Compatibility/Governance/CodeQL green on #427
+- **Not completed:** memory/task/profile integration, N2 hook, CLI/daemon/Desktop,
+  N4, Slice 3–5
+- **Next first action:** **Explicit maintainer authorization required for
+  Neutron N3 Slice 3** — memory + task + profile integration per
+  `docs/roadmap/NEUTRON_N3_CONTEXT_ASSEMBLY_BRIEF.md` §12. Do not start N4,
+  Desktop model UI, or P4l17.
 
 ### 2026-08-30, Neutron N3 Slice 1 — context assembly contract
 
