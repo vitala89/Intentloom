@@ -42,6 +42,7 @@ export interface AssemblyCandidate {
   readonly sourceClass: AssemblyClass;
   readonly rank?: number;
   readonly path?: string;
+  readonly excerpt?: string;
   readonly contentDigest?: string;
   readonly loadingLevel?: NeutronSkillLoadingLevel;
   readonly exclusionReason?: string;

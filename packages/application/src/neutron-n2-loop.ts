@@ -14,6 +14,11 @@ import {
   validateNeutronN2AdapterCapability,
 } from "../../validator/src/neutron-runtime-n2.js";
 import type { ModelAdapter } from "./model-adapter.js";
+import type { AssembleNeutronContextResult } from "./neutron-context-assembly.js";
+import {
+  prepareNeutronN2ModelPrompt,
+  type NeutronN2ContextAssemblyOptions,
+} from "./neutron-n2-context-hook.js";
 
 const inFlightSessions = new Set<string>();
 
@@ -24,7 +29,7 @@ export interface NeutronN2ToolRunner {
   ): Promise<unknown>;
 }
 
-export interface RunNeutronN2ReadOnlyLoopInput {
+export interface RunNeutronN2ReadOnlyLoopInput extends NeutronN2ContextAssemblyOptions {
   readonly root: string;
   readonly sessionId: string;
   readonly projectId: string;
@@ -43,6 +48,10 @@ export interface NeutronN2LoopResult {
   readonly responseText: string;
   readonly projectFingerprintBefore: string;
   readonly projectFingerprintAfter: string;
+  readonly modelPrompt: string;
+  readonly contextAssembly?: AssembleNeutronContextResult;
+  readonly contextFramingTokens: number;
+  readonly modelInputTokensEstimate: number;
 }
 
 export async function runNeutronN2ReadOnlyLoop(
@@ -83,13 +92,44 @@ async function executeLoop(
     credentialIsolation: "outside-project-metadata",
   });
   const before = await input.fingerprintProject();
+  const prepared = await prepareNeutronN2ModelPrompt({
+    root: input.root,
+    sessionId: input.sessionId,
+    projectId: input.projectId,
+    prompt: input.prompt,
+    ...(input.contextQuery !== undefined
+      ? { contextQuery: input.contextQuery }
+      : {}),
+    ...(input.taskId !== undefined ? { taskId: input.taskId } : {}),
+    ...(input.profileName !== undefined
+      ? { profileName: input.profileName }
+      : {}),
+    ...(input.role !== undefined ? { role: input.role } : {}),
+    ...(input.skillLevel !== undefined ? { skillLevel: input.skillLevel } : {}),
+    ...(input.maxTokens !== undefined ? { maxTokens: input.maxTokens } : {}),
+    ...(input.maxItems !== undefined ? { maxItems: input.maxItems } : {}),
+    ...(input.sourceTypes !== undefined
+      ? { sourceTypes: input.sourceTypes }
+      : {}),
+    ...(input.includeMemory !== undefined
+      ? { includeMemory: input.includeMemory }
+      : {}),
+    ...(input.semanticRanking !== undefined
+      ? { semanticRanking: input.semanticRanking }
+      : {}),
+    ...(input.fs !== undefined ? { fs: input.fs } : {}),
+    ...(input.disableContextAssembly !== undefined
+      ? { disableContextAssembly: input.disableContextAssembly }
+      : {}),
+  });
+  const modelPrompt = prepared.modelPrompt;
   const turnOptions =
     input.signal === undefined ? {} : { signal: input.signal };
   const first = await input.adapter.executeTurn(
     {
       schemaVersion: 1,
       sessionId: input.sessionId,
-      messages: [{ role: "user", content: input.prompt }],
+      messages: [{ role: "user", content: modelPrompt }],
       tools: [
         {
           name: "inspect",
@@ -137,7 +177,7 @@ async function executeLoop(
       schemaVersion: 1,
       sessionId: input.sessionId,
       messages: [
-        { role: "user", content: input.prompt },
+        { role: "user", content: modelPrompt },
         { role: "assistant", content: first.responseText },
         {
           role: "tool",
@@ -188,6 +228,12 @@ async function executeLoop(
     responseText: second.responseText,
     projectFingerprintBefore: before,
     projectFingerprintAfter: after,
+    modelPrompt,
+    ...(prepared.assembly !== undefined
+      ? { contextAssembly: prepared.assembly }
+      : {}),
+    contextFramingTokens: prepared.framingTokens,
+    modelInputTokensEstimate: prepared.modelInputTokensEstimate,
   };
 }
 

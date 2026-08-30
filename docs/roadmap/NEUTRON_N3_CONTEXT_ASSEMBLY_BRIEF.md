@@ -3,12 +3,13 @@
 ## Status
 
 Planning artifact with **Slice 1 implemented** (contract + validator extension),
-**Slice 2 implemented** (deterministic assembly core), and **Slice 3
-implemented** (memory + task + profile integration). Slice 4+ remain
-unauthorized until explicitly approved after Slice 3 merges.
+**Slice 2 implemented** (deterministic assembly core), **Slice 3
+implemented** (memory + task + profile integration), and **Slice 4
+implemented** (N2 pre-turn hook). Optional Slice 5 (CLI/daemon exposure)
+remains unauthorized.
 
-Evidence baseline: `origin/main` @ `343dda5` (post N3 Slice 2 handoff #428,
-2026-08-30).
+Evidence baseline: `origin/main` @ `a2a821a` (post N3 Slice 3 handoff #430,
+2026-08-31).
 
 ### Slice 1 implementation decisions (2026-08-30)
 
@@ -67,6 +68,22 @@ Evidence baseline: `origin/main` @ `343dda5` (post N3 Slice 2 handoff #428,
 | Deferred remainder    | Semantic ranking stays excluded `deferred:semantic` with reason `deferred`. No provider. Slice 4 is the N2 pre-turn hook.                                                                                                |
 | Protocol              | Same N1 bundle / usage URNs. No new protocol field.                                                                                                                                                                      |
 | Remaining for Slice 4 | Read-only N2 pre-turn hook that can consume the assembled bundle. No CLI/daemon/Desktop, N4, persistence, or model execution in Slice 3.                                                                                 |
+
+### Slice 4 implementation decisions (2026-08-31)
+
+| Decision                | Resolution                                                                                                                                                                                                                                     |
+| ----------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Hook location           | `prepareNeutronN2ModelPrompt` in `neutron-n2-context-hook.ts`; `runNeutronN2ReadOnlyLoop` invokes it once before the first Ollama turn and reuses the same `modelPrompt` for the tool follow-up turn                                           |
+| Assembly timing         | One assembly per N2 loop invocation (not per adapter sub-turn). Inspect tool substeps do not reassemble                                                                                                                                        |
+| Request mapping         | `root`, `sessionId`, `projectId` from N2 input; optional `taskId`, `profileName`, `role`, `skillLevel`, `maxTokens`, `maxItems`, `sourceTypes`, `includeMemory`, `semanticRanking`, `contextQuery` → assembly `query` only when explicitly set |
+| User prompt             | Original N2 `prompt` is appended under `## User request`; not auto-mapped to assembly `query` (avoids filtering canonical policy out of bounded retrieval)                                                                                     |
+| Projection module       | `neutron-n3-prompt-context.ts` — trust-aware sections (policy → ownership → profile → task → skills → bounded → memory), stable `\n` framing, project-relative paths only, excluded sources omitted                                            |
+| Result extension        | Application-only: `NeutronN2LoopResult.contextAssembly`, `modelPrompt`, `contextFramingTokens`, `modelInputTokensEstimate`; `AssembleNeutronContextResult.projectionEntries`                                                                   |
+| Blocking failures       | Invalid assembly request, missing profile, role/profile mismatch, bundle validation failure — throw before any `ModelAdapter.executeTurn`; Ollama not invoked                                                                                  |
+| Warning/degraded        | Missing task, empty memory, semantic deferred — valid bundle; model turn proceeds; warnings preserved on result                                                                                                                                |
+| Opt-out                 | `disableContextAssembly: true` preserves pre-Slice-4 prompt-only N2 behavior for compatibility tests                                                                                                                                           |
+| Safety                  | Read-only inspect tool only; fingerprint before/after unchanged; no new tools; no capability grants; secrets excluded from projection; no persistence                                                                                          |
+| Remaining after Slice 4 | Optional Slice 5 CLI/daemon exposure only if a real caller exists; N4 tool router; N6 Desktop model UI — all unauthorized                                                                                                                      |
 
 Authoritative roadmap gate: [`NEUTRON_RUNTIME_ROADMAP.md`](NEUTRON_RUNTIME_ROADMAP.md)
 §N3. Deferred without explicit authorization per

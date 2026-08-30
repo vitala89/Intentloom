@@ -24,6 +24,10 @@ import {
   N3_WARNING_EMPTY_CONTEXT,
 } from "./neutron-context-collectors.js";
 import { collectSlice3StateCandidates } from "./neutron-context-state-collectors.js";
+import {
+  buildNeutronContextProjectionEntries,
+  type NeutronContextProjectionEntry,
+} from "./neutron-n3-prompt-context.js";
 
 export {
   N3_DEFAULT_MAX_ITEMS,
@@ -59,6 +63,7 @@ export interface AssembleNeutronContextResult {
   readonly bundle: NeutronContextBundle;
   readonly usage: NeutronUsageBudget;
   readonly warnings: readonly string[];
+  readonly projectionEntries: readonly NeutronContextProjectionEntry[];
 }
 
 export async function assembleNeutronContext(
@@ -104,8 +109,16 @@ export async function assembleNeutronContext(
     tokenBudget: maxTokens,
     limitExceeded: allocation.limitExceeded,
   });
+  const projectionEntries = buildNeutronContextProjectionEntries(
+    allocation.included,
+  );
 
-  return { bundle, usage, warnings: uniqueStable(warnings) };
+  return {
+    bundle,
+    usage,
+    warnings: uniqueStable(warnings),
+    projectionEntries,
+  };
 }
 
 function toSource(candidate: AssemblyCandidate): NeutronContextSource {
