@@ -9,17 +9,21 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Neutron N4 Slice 1 complete** on branch
-`feat/neutron-n4-tool-router-foundation` (PR pending). Capability-scoped tool
-router foundation with one read-only `inspect` tool proven end-to-end. N3
-runtime milestone remains complete. Broader N4 catalog, mutation routing,
-Desktop model UI, CLI/daemon Slice 5 exposure, and P4l17 remain unauthorized.
+Status: **Neutron N4 Slice 1 complete** on `main` (#439). Capability-scoped
+tool router foundation with one read-only `inspect` tool (`inspectProject`)
+proven end-to-end. Fail-closed root/session/capability/permission boundary is
+on `main`. N3 runtime milestone remains complete. Broader N4 catalog, mutation
+routing, Desktop model UI, CLI/daemon Slice 5 exposure, and P4l17 remain
+unauthorized.
 
 ### 2026-09-02, Neutron N4 Slice 1 — capability-scoped tool router foundation
 
-- **Status:** complete on branch (PR pending)
-- **Branch:** `feat/neutron-n4-tool-router-foundation`
+- **Status:** complete on `main` (#439)
+- **PR:** https://github.com/vitala89/Intentloom/pull/439
+- **Branch:** `feat/neutron-n4-tool-router-foundation` (merged)
 - **Starting main SHA:** `84a40bddbd0e499d840ecac06465352ffe9fc2b3`
+- **Implementation head SHA:** `b658cd83a418a3a2fdbd5f311c22795ede460f3b`
+- **Merge SHA:** `5d8c6e16427466e6b1627a0320f1d96a12c5dc43`
 - **Objective:** N4 Slice 1 — typed tool registration/validation,
   root/session/capability authorization, fail-closed routing, normalized errors,
   and one read-only `inspect` tool through existing `inspectProject`
@@ -28,9 +32,13 @@ Desktop model UI, CLI/daemon Slice 5 exposure, and P4l17 remain unauthorized.
     `neutron-tool-errors.ts`, `neutron-tool-router.ts`
   - Extended `NEUTRON_ERROR_CODES` with capability-denied, permission-denied,
     operation-failed
+  - First routed tool: `inspect` via application operation `inspectProject`
+  - Fail-closed authorization boundary complete (root/session/capability/permission)
   - `tests/neutron-n4-tool-router.test.ts` (14 cases) including N2→router→inspect E2E
   - Roadmap Slice 1 record and `PROJECT_STATE.md` update
   - `pnpm verify` green locally (283 files, 2413 passed, 3 skipped)
+  - Required CI green on #439: Compatibility, Governance, CodeQL, Dependency
+    Review, Harness Performance Benchmark, Desktop SEA Feasibility
 - **Not completed:** broader read-only catalog, mutation tools, generic shell,
   N5, Desktop model UI, N3 Slice 5 CLI/daemon, P4l17
 - **Next first action:** **Explicit maintainer authorization required for
