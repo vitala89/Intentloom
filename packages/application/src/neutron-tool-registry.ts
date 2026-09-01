@@ -6,10 +6,7 @@ import {
 import { NeutronToolRouterError, auditFields } from "./neutron-tool-errors.js";
 import { GOVERNANCE_TOOL_DEFINITIONS } from "./neutron-tool-definitions-governance.js";
 import { PROJECT_TOOL_DEFINITIONS } from "./neutron-tool-definitions-project.js";
-import {
-  NEUTRON_TOOL_MAX_RESULT_BYTES,
-  type NeutronToolDefinition,
-} from "./neutron-tool-input.js";
+import { type NeutronToolDefinition } from "./neutron-tool-input.js";
 
 export {
   NEUTRON_TOOL_DEFINITION_VERSION,

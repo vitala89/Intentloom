@@ -250,7 +250,7 @@ describe("Neutron N4 read-only catalog", () => {
       capabilities: caps(),
       dispatch: createNeutronReadOnlyDispatch({
         fs,
-        inspect: (root) => inspectProject(root, fs),
+        inspect: (inspectRoot) => inspectProject(inspectRoot, fs),
       }),
     });
     expect(result.envelope.result.ok).toBe(true);
@@ -276,7 +276,7 @@ describe("Neutron N4 read-only catalog", () => {
       capabilities: caps(),
       dispatch: createNeutronReadOnlyDispatch({
         fs,
-        inspect: (root) => inspectProject(root, fs),
+        inspect: (inspectRoot) => inspectProject(inspectRoot, fs),
       }),
     });
     const payload = JSON.parse(result.envelope.result.payloadJson ?? "{}") as {
@@ -301,7 +301,7 @@ describe("Neutron N4 read-only catalog", () => {
       capabilities: caps(),
       dispatch: createNeutronReadOnlyDispatch({
         fs,
-        inspect: (root) => inspectProject(root, fs),
+        inspect: (inspectRoot) => inspectProject(inspectRoot, fs),
         timelineRun: gitRun,
       }),
     });
@@ -329,7 +329,7 @@ describe("Neutron N4 read-only catalog", () => {
       capabilities: caps(),
       dispatch: createNeutronReadOnlyDispatch({
         fs,
-        inspect: (root) => inspectProject(root, fs),
+        inspect: (inspectRoot) => inspectProject(inspectRoot, fs),
       }),
     });
     const payload = JSON.parse(result.envelope.result.payloadJson ?? "{}") as {
@@ -368,7 +368,7 @@ describe("Neutron N4 read-only catalog", () => {
       capabilities: caps(),
       dispatch: createNeutronReadOnlyDispatch({
         fs,
-        inspect: (root) => inspectProject(root, fs),
+        inspect: (inspectRoot) => inspectProject(inspectRoot, fs),
       }),
     });
     const payload = JSON.parse(result.envelope.result.payloadJson ?? "{}") as {
