@@ -640,9 +640,10 @@ are implemented; Slice 4 (N2 pre-turn hook feeding `assembleNeutronContext`
 into `runNeutronN2ReadOnlyLoop`) is implemented; see
 `docs/roadmap/NEUTRON_N3_CONTEXT_ASSEMBLY_BRIEF.md`. **N3 runtime milestone
 is complete** for application/test integration. N3 context assembly now feeds
-N2 read-only model turns; remains read-only/offline with no N4 execution
-capabilities. Optional Slice 5 CLI/daemon exposure and N4 remain unauthorized
-per `DUTY_WATCH.md`. Other post-P4 candidates remain in
+N2 read-only model turns. **N4 Slice 1** adds the capability-scoped tool-router
+foundation with one read-only `inspect` tool; broader read-only catalog,
+mutation routing, and optional N3 Slice 5 CLI/daemon exposure remain
+unauthorized per `DUTY_WATCH.md`. Other post-P4 candidates remain in
 `POST_W12_NEXT_INCREMENT_PLAN.md`.
 
 The Desktop discovery/error and Diff/Timeline slices remain recorded in

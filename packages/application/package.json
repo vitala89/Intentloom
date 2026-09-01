@@ -23,6 +23,7 @@
     "./neutron-runtime": "./src/neutron-runtime-contracts.ts",
     "./neutron-n2": "./src/neutron-n2-loop.ts",
     "./neutron-context-assembly": "./src/neutron-context-assembly.ts",
+    "./neutron-n4": "./src/neutron-tool-router.ts",
     "./engineering-assessment": "./src/engineering-assessment.ts",
     "./engineering-quality": "./src/engineering-quality.ts"
   }

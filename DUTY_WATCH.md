@@ -9,10 +9,35 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Neutron N3 Slice 4 complete** on `main` (#431). N3 runtime milestone
-complete for application/test integration. N3 context assembly feeds N2
-read-only model turns. N4, Desktop model UI, CLI/daemon Slice 5 exposure, and
-P4l17 remain unauthorized.
+Status: **Neutron N4 Slice 1 complete** on branch
+`feat/neutron-n4-tool-router-foundation` (PR pending). Capability-scoped tool
+router foundation with one read-only `inspect` tool proven end-to-end. N3
+runtime milestone remains complete. Broader N4 catalog, mutation routing,
+Desktop model UI, CLI/daemon Slice 5 exposure, and P4l17 remain unauthorized.
+
+### 2026-09-02, Neutron N4 Slice 1 — capability-scoped tool router foundation
+
+- **Status:** complete on branch (PR pending)
+- **Branch:** `feat/neutron-n4-tool-router-foundation`
+- **Starting main SHA:** `84a40bddbd0e499d840ecac06465352ffe9fc2b3`
+- **Objective:** N4 Slice 1 — typed tool registration/validation,
+  root/session/capability authorization, fail-closed routing, normalized errors,
+  and one read-only `inspect` tool through existing `inspectProject`
+- **Completed:**
+  - `neutron-tool-registry.ts`, `neutron-tool-authorization.ts`,
+    `neutron-tool-errors.ts`, `neutron-tool-router.ts`
+  - Extended `NEUTRON_ERROR_CODES` with capability-denied, permission-denied,
+    operation-failed
+  - `tests/neutron-n4-tool-router.test.ts` (14 cases) including N2→router→inspect E2E
+  - Roadmap Slice 1 record and `PROJECT_STATE.md` update
+  - `pnpm verify` green locally (283 files, 2413 passed, 3 skipped)
+- **Not completed:** broader read-only catalog, mutation tools, generic shell,
+  N5, Desktop model UI, N3 Slice 5 CLI/daemon, P4l17
+- **Next first action:** **Explicit maintainer authorization required for
+  Neutron N4 Slice 2** — expand the read-only tool catalog (doctor, timeline,
+  conformance, memory search, diff, security inspection) behind the same router
+  boundary per `docs/roadmap/NEUTRON_RUNTIME_ROADMAP.md` §N4. Do not start
+  mutation routing, N5, Desktop model UI, optional N3 Slice 5, or P4l17.
 
 ### 2026-08-31, Neutron N3 Slice 4 — N2 pre-turn context hook
 
