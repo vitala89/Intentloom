@@ -62,21 +62,29 @@ function fingerprint(fs: { files: Map<string, string> }): string {
 describe("Neutron N4 tool router — Slice 1", () => {
   it("registers inspect as the first read-only routed tool", () => {
     const tools = listRegisteredNeutronTools();
-    expect(tools.map((tool) => tool.toolName)).toEqual(["inspect"]);
-    expect(tools[0]?.readOnly).toBe(true);
+    expect(tools.map((tool) => tool.toolName)).toEqual([
+      "inspect",
+      "doctor",
+      "memorySearch",
+      "timeline",
+      "conformance",
+      "securityAudit",
+      "projectDiff",
+    ]);
+    expect(tools.every((tool) => tool.readOnly)).toBe(true);
   });
 
   it("rejects an unknown tool without dispatch", async () => {
     const dispatch = vi.fn();
     const result = await routeNeutronToolInvocation({
-      invocation: invocation({ toolName: "doctor" }),
+      invocation: invocation({ toolName: "shell" }),
       session: session(),
       capabilities: READ_ONLY_CAPS,
       dispatch,
     });
     expect(result.operationExecuted).toBe(false);
     expect(result.envelope.result.ok).toBe(false);
-    expect(result.envelope.result.errorCode).toBe("unsupported-tool");
+    expect(result.envelope.result.errorCode).toBe("validation-failed");
     expect(dispatch).not.toHaveBeenCalled();
   });
 
@@ -284,7 +292,7 @@ describe("Neutron N4 tool router — Slice 1", () => {
 
   it("normalizes denial audit metadata for unsupported tools", async () => {
     const result = await routeNeutronToolInvocation({
-      invocation: invocation({ toolName: "doctor" }),
+      invocation: invocation({ toolName: "shell" }),
       session: session(),
       capabilities: READ_ONLY_CAPS,
       dispatch: vi.fn(),
@@ -296,8 +304,8 @@ describe("Neutron N4 tool router — Slice 1", () => {
       root: string;
       operationExecuted: boolean;
     };
-    expect(audit.toolName).toBe("doctor");
-    expect(audit.invocationId).toBe("inv-1");
+    expect(audit.toolName).toBe("unknown");
+    expect(audit.invocationId).toBe("invalid");
     expect(audit.sessionId).toBe("session-n4");
     expect(audit.root).toBe("/project");
     expect(audit.operationExecuted).toBe(false);

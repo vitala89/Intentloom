@@ -216,7 +216,7 @@ function assertReadOnlyTool(
         invocation,
         invocation.toolName,
         "mutation-forbidden",
-        "Mutation tools are not authorized in N4 Slice 1",
+        "Mutation tools are not authorized for Neutron N4",
       ),
     );
   }

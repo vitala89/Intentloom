@@ -8,6 +8,7 @@ import {
   type NeutronRuntimeSession,
   type NeutronToolEnvelope,
 } from "../../protocol/src/neutron-runtime.js";
+import { neutronToolAdapterDescriptors } from "./neutron-tool-registry.js";
 import {
   NEUTRON_N2_MAX_BODY_BYTES,
   NeutronN2Error,
@@ -130,17 +131,7 @@ async function executeLoop(
       schemaVersion: 1,
       sessionId: input.sessionId,
       messages: [{ role: "user", content: modelPrompt }],
-      tools: [
-        {
-          name: "inspect",
-          description: "Read-only project inspection",
-          parametersSchema: {
-            type: "object",
-            properties: { root: { type: "string" } },
-            required: ["root"],
-          },
-        },
-      ],
+      tools: [...neutronToolAdapterDescriptors()],
     },
     turnOptions,
   );
@@ -148,7 +139,7 @@ async function executeLoop(
   if (call === undefined) {
     throw new NeutronN2Error(
       "validation-failed",
-      "N2 loop requires an inspect tool call",
+      "N2 loop requires a registered read-only tool call",
     );
   }
   if (!isReadOnlyTool(call.name)) {
