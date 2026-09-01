@@ -200,7 +200,9 @@ extension) and **Slice 2** (deterministic assembly core via
 integration) and **Slice 4** (N2 pre-turn hook feeding assembled context into
 `runNeutronN2ReadOnlyLoop`) are implemented. **N3 runtime milestone is
 complete** for application/test surfaces. Optional Slice 5 (CLI/daemon
-exposure) requires separate authorization. N4 remains unauthorized.
+exposure) requires separate authorization. **N4 Slice 1** (tool-router
+foundation with one read-only `inspect` tool) is implemented; broader N4
+catalog and mutation routing remain unauthorized.
 
 Combine bounded project context, accepted memory, progressive skill discovery,
 canonical policy, current task data, and verified evidence into one budgeted
@@ -225,8 +227,18 @@ Initial tools remain read-only and may include project inspection, bounded
 context, memory search, doctor, diff, timeline, conformance, and security
 inspection where stable daemon contracts exist.
 
+**Slice 1 (implemented):** foundation router with typed tool registration,
+invocation validation, root/session/capability/permission checks,
+timeout/cancellation/expiry gating, normalized auditable errors, and one
+read-only `inspect` tool routed to existing `inspectProject`. Mutation tools,
+generic shell, and the broader read-only catalog remain deferred.
+
 Exit gate: unsupported, over-scoped, out-of-root, expired, cancelled, or
 schema-invalid requests fail closed and produce normalized auditable errors.
+
+**Next bounded slice:** expand the read-only tool catalog (doctor, timeline,
+conformance, memory search, diff, security inspection) behind the same router
+boundary; do not start mutation routing without separate authorization.
 
 ## N5. Executable task graph and subagents
 
