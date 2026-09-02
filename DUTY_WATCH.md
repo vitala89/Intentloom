@@ -9,19 +9,21 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Neutron N5 maintainer brief prepared** on branch
-`docs/neutron-n5-executable-task-graph-brief`. N4 read-only tool-router
-milestone is met on `main`. Maintainer decision: **N5 before mutation routing**.
+Status: **Neutron N5 maintainer brief complete** on `main` (#443). N4 read-only
+tool-router milestone is met. Maintainer decision: **N5 before mutation routing**.
 N5 implementation **not authorized** — explicit Slice 1 authorization required.
 Mutation routing, Desktop model UI, CLI/daemon Slice 5 exposure, and P4l17
 remain unauthorized.
 
-### 2026-09-03, Neutron N5 — executable task graph maintainer brief
+### 2026-09-03, Neutron N5 — executable task graph maintainer brief (merged)
 
-- **Status:** brief prepared; implementation not authorized
-- **Branch:** `docs/neutron-n5-executable-task-graph-brief`
+- **Status:** complete on `main` (#443)
+- **PR:** https://github.com/vitala89/Intentloom/pull/443
+- **Branch:** `docs/neutron-n5-executable-task-graph-brief` (merged)
 - **Starting main SHA:** `3b504d143146b95a1215529208d6ce75f565b2c2` (post-#442);
   preflight also recorded `d28baf570a70a60ab536c10228a0de3f51e41e5e` (#433 deps)
+- **Implementation head SHA:** `21a2929eb840333fe6ac81abe50c5814099f3370`
+- **Merge SHA:** `08e89f88f29ff9d56c26c133563d917a7f066f1c`
 - **Objective:** Evidence-backed N5 planning — deterministic task-graph scheduler
   composing N2/N3/N4 under read-only authority; no mutation routing
 - **Completed:**
