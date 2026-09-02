@@ -1,6 +1,5 @@
 import {
   NEUTRON_TOOL_ENVELOPE_SCHEMA_URN,
-  type NeutronReadOnlyTool,
   type NeutronRuntimeSession,
   type NeutronToolEnvelope,
   type NeutronToolInvocation,
@@ -18,15 +17,15 @@ import {
   NeutronToolRouterError,
   auditFields,
 } from "./neutron-tool-errors.js";
-import {
-  NEUTRON_TOOL_MAX_RESULT_BYTES,
-  requireNeutronToolDefinition,
-} from "./neutron-tool-registry.js";
+import { requireNeutronToolDefinition } from "./neutron-tool-registry.js";
+import type { NeutronToolDispatch } from "./neutron-tool-input.js";
 
-export type NeutronToolDispatch = (
-  toolName: NeutronReadOnlyTool,
-  args: Record<string, unknown>,
-) => Promise<unknown>;
+export type { NeutronToolDispatch } from "./neutron-tool-input.js";
+export {
+  createNeutronInspectDispatch,
+  createNeutronReadOnlyDispatch,
+} from "./neutron-tool-dispatch.js";
+export { NEUTRON_TOOL_MAX_RESULT_BYTES } from "./neutron-tool-input.js";
 
 export interface RouteNeutronToolInput {
   readonly invocation: unknown;
@@ -64,7 +63,7 @@ export async function routeNeutronToolInvocation(
   try {
     const definition = requireNeutronToolDefinition(invocation);
     authorizeNeutronToolInvocation(invocation, context, definition);
-    const args = definition.parseInput(invocation, input.session.root);
+    const args = definition.parseInput(invocation, input.session);
     const payload = await input.dispatch(definition.toolName, args);
     const payloadJson = JSON.stringify(payload);
     if (payloadJson.length > definition.maxResultBytes) {
@@ -137,20 +136,3 @@ function failMalformedInvocation(
     operationExecuted: false,
   };
 }
-
-export function createNeutronInspectDispatch(
-  inspect: (root: string) => Promise<unknown>,
-): NeutronToolDispatch {
-  return async (toolName, args) => {
-    if (toolName !== "inspect") {
-      throw new Error(`Unexpected tool ${toolName}`);
-    }
-    const root = args.root;
-    if (typeof root !== "string" || root.length === 0) {
-      throw new Error("inspect dispatch requires root");
-    }
-    return inspect(root);
-  };
-}
-
-export { NEUTRON_TOOL_MAX_RESULT_BYTES };

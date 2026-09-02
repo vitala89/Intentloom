@@ -9,12 +9,38 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Neutron N4 Slice 1 complete** on `main` (#439). Capability-scoped
-tool router foundation with one read-only `inspect` tool (`inspectProject`)
-proven end-to-end. Fail-closed root/session/capability/permission boundary is
-on `main`. N3 runtime milestone remains complete. Broader N4 catalog, mutation
-routing, Desktop model UI, CLI/daemon Slice 5 exposure, and P4l17 remain
-unauthorized.
+Status: **Neutron N4 Slice 2 complete** on branch
+`feat/neutron-n4-readonly-tool-catalog` (PR pending). Read-only tool catalog
+expanded behind the Slice 1 capability-scoped router. N4 read-only tool-router
+milestone is met. Mutation routing, N5, Desktop model UI, CLI/daemon Slice 5
+exposure, and P4l17 remain unauthorized.
+
+### 2026-09-02, Neutron N4 Slice 2 — expand read-only tool catalog
+
+- **Status:** complete on branch (PR pending)
+- **Branch:** `feat/neutron-n4-readonly-tool-catalog`
+- **Starting main SHA:** `7b102b7aeecedc080a6dc4d686cdc8e8d8618fce` (post-#440)
+- **Objective:** N4 Slice 2 — register doctor, memorySearch, timeline,
+  conformance, securityAudit, and projectDiff on the existing fail-closed
+  router without a second execution path
+- **Completed:**
+  - Registry split: `neutron-tool-input.ts`,
+    `neutron-tool-definitions-project.ts`,
+    `neutron-tool-definitions-governance.ts`, `neutron-tool-dispatch.ts`
+  - Existing `inspect` route unchanged; N2 advertises registered tools
+  - Tool-specific safety: doctor diagnosis only, diff not applied, conformance
+    report-only, memory search isolation, security inspection-only, timeline
+    read-only
+  - Tests: `tests/neutron-n4-tool-router.test.ts`,
+    `tests/neutron-n4-readonly-tools.test.ts`,
+    `tests/neutron-n4-memory-tool.test.ts`
+  - Roadmap Slice 2 record and `PROJECT_STATE.md` update
+- **Not completed:** mutation tools, generic shell, N5, Desktop model UI,
+  N3 Slice 5 CLI/daemon, P4l17
+- **Next first action:** **Explicit maintainer authorization required for
+  Neutron mutation routing or N5** per
+  `docs/roadmap/NEUTRON_RUNTIME_ROADMAP.md`. Do not start mutation routing, N5,
+  Desktop model UI, optional N3 Slice 5, or P4l17.
 
 ### 2026-09-02, Neutron N4 Slice 1 — capability-scoped tool router foundation
 
