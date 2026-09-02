@@ -9,10 +9,41 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Neutron N4 Slice 2 complete** on `main` (#441). Read-only tool catalog
-expanded behind the Slice 1 capability-scoped router. N4 read-only tool-router
-milestone is met. Mutation routing, N5, Desktop model UI, CLI/daemon Slice 5
-exposure, and P4l17 remain unauthorized.
+Status: **Neutron N5 maintainer brief prepared** on branch
+`docs/neutron-n5-executable-task-graph-brief`. N4 read-only tool-router
+milestone is met on `main`. Maintainer decision: **N5 before mutation routing**.
+N5 implementation **not authorized** — explicit Slice 1 authorization required.
+Mutation routing, Desktop model UI, CLI/daemon Slice 5 exposure, and P4l17
+remain unauthorized.
+
+### 2026-09-03, Neutron N5 — executable task graph maintainer brief
+
+- **Status:** brief prepared; implementation not authorized
+- **Branch:** `docs/neutron-n5-executable-task-graph-brief`
+- **Starting main SHA:** `3b504d143146b95a1215529208d6ce75f565b2c2` (post-#442);
+  preflight also recorded `d28baf570a70a60ab536c10228a0de3f51e41e5e` (#433 deps)
+- **Objective:** Evidence-backed N5 planning — deterministic task-graph scheduler
+  composing N2/N3/N4 under read-only authority; no mutation routing
+- **Completed:**
+  - `docs/roadmap/NEUTRON_N5_EXECUTABLE_TASK_GRAPH_BRIEF.md` — state machine,
+    dependency semantics, concurrency/lease/retry/cancel/budget models, package
+    decision (Option A: stay in application), five implementation slices, threat
+    analysis, acceptance criteria
+  - Linked from `docs/roadmap/NEUTRON_RUNTIME_ROADMAP.md` §N5 and `docs/README.md`
+  - `PROJECT_STATE.md` updated — N5 brief prepared, implementation unauthorized
+- **Decision:** **N5 before mutation routing.** **MUTATION ROUTING REMAINS
+  DEFERRED.**
+- **Package decision:** Continue N5 in `@intentloom/application` subpaths; defer
+  `packages/neutron-runtime` until N6 consumer justifies boundary
+- **First recommended implementation slice:** **Slice 1 — graph validation and
+  deterministic scheduling core** (`validateNeutronTaskGraphForExecution`,
+  `selectReadyNodes`, pure state transitions; no model execution)
+- **Not completed:** N5 runtime code, mutation routing, N6 Desktop, N3 Slice 5,
+  P4l17
+- **Next first action:** **Explicit maintainer authorization required for Neutron
+  N5 Slice 1** — graph validation and deterministic scheduling core per
+  `docs/roadmap/NEUTRON_N5_EXECUTABLE_TASK_GRAPH_BRIEF.md` §23. Do not start
+  Slice 2+, mutation routing, N6, optional N3 Slice 5, or P4l17.
 
 ### 2026-09-02, Neutron N4 Slice 2 — expand read-only tool catalog
 
