@@ -248,19 +248,19 @@ out-of-root, expired, cancelled, or schema-invalid requests fail closed and
 produce normalized auditable errors. Capability, root/session, result bounds,
 and fingerprint proofs cover the catalog.
 
-**Next bounded slice:** N5 executable task graph per maintainer brief; mutation
-routing requires separate authorization. Do not start N5 implementation without
-explicit Slice 1 authorization. Do not start Desktop model UI, optional N3 Slice
+**Next bounded slice:** N5 Slice 2 — single-worker node execution composing
+N3/N2/N4 per maintainer brief; requires explicit authorization. Mutation routing
+requires separate authorization. Do not start Desktop model UI, optional N3 Slice
 5, or P4l17.
 
 ## N5. Executable task graph and subagents
 
 **Maintainer brief:**
 [`NEUTRON_N5_EXECUTABLE_TASK_GRAPH_BRIEF.md`](NEUTRON_N5_EXECUTABLE_TASK_GRAPH_BRIEF.md)
-(evidence baseline `3b504d14`, 2026-09-03). **Planning complete**; **N5
-implementation not authorized**. Maintainer decision: **N5 before mutation
-routing**. First recommended slice: **Slice 1 — graph validation and
-deterministic scheduling core** (no model execution).
+(evidence baseline `957756e`, 2026-09-04). Maintainer decision: **N5 before mutation
+routing**. **Slice 1 implemented** — graph execution validation and deterministic
+scheduling core in `@intentloom/application/neutron-scheduler` (no model execution).
+**N5 runtime milestone incomplete.** Slice 2+ requires explicit authorization.
 
 Extend the existing Neutron subagent records from persisted orchestration
 foundation into a controlled execution scheduler with:
