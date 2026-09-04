@@ -9,11 +9,44 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Neutron N5 maintainer brief complete** on `main` (#443). N4 read-only
-tool-router milestone is met. Maintainer decision: **N5 before mutation routing**.
-N5 implementation **not authorized** — explicit Slice 1 authorization required.
-Mutation routing, Desktop model UI, CLI/daemon Slice 5 exposure, and P4l17
-remain unauthorized.
+Status: **Neutron N5 Slice 1 complete** on `main` (#445). Pure scheduler
+foundation in `@intentloom/application/neutron-scheduler` — execution graph
+validation, deterministic ready/waiting/blocked classification, capacity-aware
+selection, pure state transitions. **No model/subagent execution yet.** N5 runtime
+milestone incomplete. Maintainer decision: **N5 before mutation routing**.
+**MUTATION ROUTING REMAINS DEFERRED.** Slice 2+ requires explicit authorization.
+Mutation routing, Desktop model UI, CLI/daemon Slice 5 exposure, and P4l17 remain
+unauthorized.
+
+### 2026-09-04, Neutron N5 Slice 1 — deterministic scheduling core (merged)
+
+- **Status:** complete on `main` (#445)
+- **PR:** https://github.com/vitala89/Intentloom/pull/445
+- **Branch:** `feat/neutron-n5-scheduling-core` (merged)
+- **Starting main SHA:** `957756e12c6de488a943f49735816eb6ac2e498a` (legitimate
+  advancement over N5 handoff `279eacd` — Dependabot deps only)
+- **Implementation head SHA:** `06ef56b6dd2e19707e175210fb54fb56d5968df6`
+- **Merge SHA:** `62758dbedb89b0bb0ed5c7bffb20072a45359ac6`
+- **Objective:** N5 Slice 1 — pure scheduler foundation without model/tool
+  execution
+- **Completed:**
+  - `@intentloom/application/neutron-scheduler` — `validateNeutronTaskGraphForExecution`,
+    `planNeutronTaskScheduling`, `selectReadyNodes`, pure state transitions
+  - Execution invariants: unique IDs, dependency refs, cycle detection, valid
+    `parentId`; `parentId` not an execution dependency
+  - Deterministic ready selection by `taskId` code-point ascending; default
+    `maxConcurrency` 1, hard cap 4
+  - Tests: `tests/neutron-n5-task-graph.test.ts`, `tests/neutron-n5-scheduling.test.ts`
+  - Docs: N5 brief Slice 1 record, runtime roadmap §N5, `PROJECT_STATE.md`
+- **Decision:** **N5 before mutation routing.** **MUTATION ROUTING REMAINS
+  DEFERRED.**
+- **Not completed:** Slice 2 node execution (N3/N2/N4), leases, persistence,
+  retries, concurrency workers, cancellation runtime, mutation routing, N6,
+  N3 Slice 5, P4l17
+- **Next first action:** **Explicit maintainer authorization required for Neutron
+  N5 Slice 2** — single-worker node execution composing N3/N2/N4 per
+  `docs/roadmap/NEUTRON_N5_EXECUTABLE_TASK_GRAPH_BRIEF.md` §22. Do not start
+  Slice 3+, mutation routing, N6, optional N3 Slice 5, or P4l17.
 
 ### 2026-09-03, Neutron N5 — executable task graph maintainer brief (merged)
 
