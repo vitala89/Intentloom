@@ -36,6 +36,7 @@ export interface ExecuteNeutronTaskNodeInput {
   readonly signal?: AbortSignal;
   readonly maxTokens?: number;
   readonly maxItems?: number;
+  readonly allowConcurrentPeers?: boolean;
 }
 
 export async function runNeutronNodeModelLoop(

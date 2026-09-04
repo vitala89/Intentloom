@@ -7,9 +7,10 @@ execution validation, deterministic scheduling classification/selection, pure
 state transitions). **Slice 2 implemented** — `executeNeutronTaskNode` runs
 exactly one scheduler-selected ready node through N3 → N2 → N4 under a
 read-only capability clamp and returns an application-level result wrapping
-N1 `NeutronSubagentResult`. **N5 runtime milestone incomplete** — no
-leases, persistence, retries, bounded concurrency, or graph runner loop.
-**Slice 3+ not authorized** by this document alone.
+N1 `NeutronSubagentResult`. **Slice 3 implemented** — local-first leases and
+one bounded concurrent scheduling wave (`executeReadyNeutronTaskNodes`).
+**N5 runtime milestone incomplete** — no retries, cancellation recovery, or
+graph runner loop. **Slice 4+ not authorized** by this document alone.
 
 Mutation routing remains deferred.
 
@@ -858,9 +859,9 @@ Scheduling alone is **not** sufficient justification for mutation routing.
 
 ## 30. Recommendation
 
-**READY FOR N5 SLICE 3 AUTHORIZATION** — Slice 2 one-node execution is
-implemented; explicit maintainer authorization required before leases or
-bounded concurrency.
+**READY FOR N5 SLICE 4 AUTHORIZATION** — Slice 3 leases and one bounded
+scheduling wave are implemented; explicit maintainer authorization required
+before retries, cancellation recovery, or a graph runner loop.
 
 ---
 
@@ -886,3 +887,31 @@ only.
 | **No concurrency**       | one operation executes one requested ready node; capacity forced to 1; a running peer blocks start                                                                                                           |
 
 `delegateTaskRole` is not called: it writes delegation files. Clamp is pure.
+
+---
+
+## 32. Slice 3 implementation record
+
+Evidence baseline: `origin/main` @ `1165d044f461ddbaf90297aa74b1be13c11982ed`
+(N5 Slice 2 handoff #448). Explicit maintainer authorization covered Slice 3
+only.
+
+| Decision                 | Record                                                                                                                                                                                                  |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Batch API**            | `executeReadyNeutronTaskNodes` on `@intentloom/application/neutron-scheduler` — one scheduling wave, not a graph runner                                                                                 |
+| **Admission**            | Reuses Slice 1 `planNeutronTaskScheduling`; `taskId` code-point ascending; `availableCapacity = maxConcurrency - runningCount`; default 1, hard cap 4                                                   |
+| **Lease identity**       | `{sessionId}:{taskId}:{attempt}`; default attempt `1`; attempt is not incremented                                                                                                                       |
+| **Owner**                | Injectable `ownerId`; default `scheduler:{sessionId}`; renewal and release require the current owner                                                                                                    |
+| **TTL / heartbeat**      | Default TTL `min(nodeTimeoutMs, 120_000)` ms (120s when unset); renew every `ttl/3`; injected clock; no leftover timers after the wave                                                                  |
+| **Acquisition**          | Atomic-enough local acquire via in-process lock + `.aif/neutron/scheduler/leases/{urlencoded(leaseId)}.json`; active/released → `lease-held`; expired → `lease-expired` (no silent re-acquire or retry) |
+| **Release**              | Owner release on completion, failure, and cancellation; released records remain for audit                                                                                                               |
+| **Ordering**             | Acquire sequentially in admitted `taskId` order, then execute concurrently; outcomes sorted by `taskId` regardless of completion order                                                                  |
+| **Slice 2 reuse**        | Each admitted node calls `executeNeutronTaskNode` with `allowConcurrentPeers`; distinct N3/N2/N4 capability clamps; N2 in-flight key is `sessionId + taskId`                                            |
+| **State transitions**    | Lease acquired before `ready → running`; Slice 2 owns running → terminal; failed lease acquire does not mark the node running                                                                           |
+| **Persistence boundary** | Scheduler lease metadata under `.aif/neutron/scheduler/leases/` only; project source fingerprint must ignore that prefix                                                                                |
+| **No retry**             | Expired lease is fail-closed; caller decides; no attempt increment, backoff, or retry queue                                                                                                             |
+| **No graph runner**      | One call executes at most `availableCapacity` ready nodes and stops                                                                                                                                     |
+| **Mutation routing**     | Remains deferred                                                                                                                                                                                        |
+
+Clock, lease, heartbeat, and batch modules stay in `@intentloom/application`.
+No protocol version bump.

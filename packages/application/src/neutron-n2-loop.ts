@@ -23,6 +23,12 @@ import {
 
 const inFlightSessions = new Set<string>();
 
+function neutronN2InFlightKey(sessionId: string, taskId?: string): string {
+  return taskId === undefined || taskId.length === 0
+    ? sessionId
+    : `${sessionId}\u001f${taskId}`;
+}
+
 export interface NeutronN2ToolRunner {
   (
     toolName: NeutronReadOnlyTool,
@@ -64,17 +70,18 @@ export async function runNeutronN2ReadOnlyLoop(
       "root and sessionId are required",
     );
   }
-  if (inFlightSessions.has(input.sessionId)) {
+  const inFlightKey = neutronN2InFlightKey(input.sessionId, input.taskId);
+  if (inFlightSessions.has(inFlightKey)) {
     throw new NeutronN2Error(
       "validation-failed",
-      "N2 allows one in-flight turn per session",
+      "N2 allows one in-flight turn per session task",
     );
   }
-  inFlightSessions.add(input.sessionId);
+  inFlightSessions.add(inFlightKey);
   try {
     return await executeLoop(input);
   } finally {
-    inFlightSessions.delete(input.sessionId);
+    inFlightSessions.delete(inFlightKey);
   }
 }
 

@@ -8,6 +8,9 @@ export const NEUTRON_SCHEDULER_ERROR_CODES = [
   "invalid-parent",
   "invalid-transition",
   "invalid-concurrency",
+  "lease-held",
+  "lease-expired",
+  "invalid-owner",
 ] as const;
 
 export type NeutronSchedulerErrorCode =
@@ -19,6 +22,10 @@ export interface NeutronSchedulerErrorDetails {
   readonly cyclePath?: readonly string[];
   readonly fromState?: string;
   readonly toState?: string;
+  readonly leaseId?: string;
+  readonly ownerId?: string;
+  readonly sessionId?: string;
+  readonly attempt?: number;
 }
 
 export class NeutronSchedulerError extends Error {
