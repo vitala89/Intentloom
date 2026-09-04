@@ -35,8 +35,17 @@ export function neutronTaskLeasePath(
   attempt: number,
 ): string {
   const leaseId = neutronTaskLeaseId(sessionId, taskId, attempt);
-  const base = root.replace(/[\\/]+$/u, "").replaceAll("\\", "/");
-  return `${base}/${NEUTRON_SCHEDULER_LEASE_DIR}/${neutronTaskLeaseFileName(leaseId)}`;
+  return `${normalizeLeaseRoot(root)}/${NEUTRON_SCHEDULER_LEASE_DIR}/${neutronTaskLeaseFileName(leaseId)}`;
+}
+
+function normalizeLeaseRoot(root: string): string {
+  let end = root.length;
+  while (end > 0) {
+    const last = root[end - 1];
+    if (last !== "/" && last !== "\\") break;
+    end -= 1;
+  }
+  return root.slice(0, end).replaceAll("\\", "/");
 }
 
 export async function readNeutronTaskLease(input: {
