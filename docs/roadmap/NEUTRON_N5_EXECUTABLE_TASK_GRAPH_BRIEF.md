@@ -4,9 +4,12 @@
 
 **Slice 1 implemented** in `@intentloom/application/neutron-scheduler` (graph
 execution validation, deterministic scheduling classification/selection, pure
-state transitions). **N5 runtime milestone incomplete** — no model/subagent
-execution, leases, persistence, or concurrency workers yet. **Slice 2+ not
-authorized** by this document alone.
+state transitions). **Slice 2 implemented** — `executeNeutronTaskNode` runs
+exactly one scheduler-selected ready node through N3 → N2 → N4 under a
+read-only capability clamp and returns an application-level result wrapping
+N1 `NeutronSubagentResult`. **N5 runtime milestone incomplete** — no
+leases, persistence, retries, bounded concurrency, or graph runner loop.
+**Slice 3+ not authorized** by this document alone.
 
 Mutation routing remains deferred.
 
@@ -855,6 +858,31 @@ Scheduling alone is **not** sufficient justification for mutation routing.
 
 ## 30. Recommendation
 
-**READY FOR N5 SLICE 2 AUTHORIZATION** — Slice 1 scheduling core is implemented;
-explicit maintainer authorization required before node execution composing
-N3/N2/N4.
+**READY FOR N5 SLICE 3 AUTHORIZATION** — Slice 2 one-node execution is
+implemented; explicit maintainer authorization required before leases or
+bounded concurrency.
+
+---
+
+## 31. Slice 2 implementation record
+
+Evidence baseline: `origin/main` @ `6a5c17aee9f9ae04b38f6df4d497a8503d44f410`
+(N5 Slice 1 handoff #446). Explicit maintainer authorization covered Slice 2
+only.
+
+| Decision                 | Record                                                                                                                                                                                                       |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Execution API**        | `executeNeutronTaskNode` on `@intentloom/application/neutron-scheduler`                                                                                                                                      |
+| **Inputs**               | graph, taskId, active session, projectId, model adapter, filesystem, session capabilities, fingerprint, optional profile/signal/budget                                                                       |
+| **Outputs**              | in-memory result: updated graph/node, N1 `NeutronSubagentResult`, attempt `1`, capabilities, N3 context/usage, N4 tool envelope, N2 adapter, fingerprints, normalized error                                  |
+| **N3/N2/N4 composition** | N2 `runNeutronN2ReadOnlyLoop` calls `assembleNeutronContext` via the existing pre-turn hook; model tool calls go through `routeNeutronToolInvocation`                                                        |
+| **Node objective**       | N1 `expectedOutput` is the only evidence-backed intent field; it is the N2 prompt and N3 query                                                                                                               |
+| **Role / capability**    | `resolveNeutronNodeCapabilities` intersects session, optional profile grant, parent `requiredCapabilities`, node `requiredCapabilities`, and the N4 read-only catalog; `readOnly=true`, `allowNetwork=false` |
+| **State transitions**    | pending→ready when classified ready, then ready→running; success running→completed; failure running→failed; cancel→cancelled; timeout→timed-out                                                              |
+| **Result contract**      | N1 `NeutronSubagentResult` reused unchanged (`completed`/`failed`/`cancelled`; timed-out nodes map subagent status to `failed`); richer audit fields stay on the application wrapper (brief §29 #3)          |
+| **Errors**               | scheduling/not-runnable fail closed with `executed: false` and no provider call; post-start failures return `executed: true` with one attempt and a staged error                                             |
+| **No persistence**       | no `.aif/neutron/scheduler/` writes                                                                                                                                                                          |
+| **No retry**             | `attempt = 1`; provider/tool/context failures terminate the node                                                                                                                                             |
+| **No concurrency**       | one operation executes one requested ready node; capacity forced to 1; a running peer blocks start                                                                                                           |
+
+`delegateTaskRole` is not called: it writes delegation files. Clamp is pure.

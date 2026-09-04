@@ -29,3 +29,23 @@ export {
   compareNeutronTaskGraphNodes,
   validateNeutronTaskGraphForExecution,
 } from "./neutron-scheduler-validate.js";
+export {
+  resolveNeutronNodeCapabilities,
+  type ResolveNeutronNodeCapabilitiesInput,
+  type ResolvedNeutronNodeCapabilities,
+} from "./neutron-node-capabilities.js";
+export {
+  executeNeutronTaskNode,
+  type ExecuteNeutronTaskNodeInput,
+  type ExecuteNeutronTaskNodeResult,
+  type NeutronNodeExecutionRejected,
+  type NeutronNodeExecutionSuccess,
+} from "./neutron-node-execution.js";
+export {
+  NeutronNodeExecutionError,
+  NEUTRON_NODE_EXECUTION_ERROR_CODES,
+  NEUTRON_NODE_EXECUTION_STAGES,
+  type NeutronNodeExecutionErrorCode,
+  type NeutronNodeExecutionFailure,
+  type NeutronNodeExecutionStage,
+} from "./neutron-node-errors.js";

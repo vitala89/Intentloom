@@ -649,8 +649,11 @@ maintainer brief** is in
 N5 before mutation routing). **N5 Slice 1 implemented** — pure scheduler
 foundation in `@intentloom/application/neutron-scheduler` (execution graph
 validation, deterministic ready/waiting/blocked classification, capacity-aware
-selection, pure state transitions). **No model/subagent execution yet**; N5
-runtime milestone incomplete. Slice 2+ requires explicit authorization.
+selection, pure state transitions). **N5 Slice 2 implemented** — one-node
+execution through N3/N2/N4 (`executeNeutronTaskNode`); graph-wide/concurrent
+scheduler, leases, retries, and persistence are not available. **No
+autonomous multi-agent execution.** N5 runtime milestone incomplete. Slice 3+
+requires explicit authorization.
 Mutation routing, Desktop model UI, and optional N3 Slice 5 CLI/daemon exposure
 remain unauthorized per `DUTY_WATCH.md`. Other post-P4 candidates remain in
 `POST_W12_NEXT_INCREMENT_PLAN.md`.
