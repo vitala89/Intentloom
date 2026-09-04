@@ -2,12 +2,17 @@
 
 ## Status
 
-Planning artifact only. **N5 implementation is not authorized** by this document.
+**Slice 1 implemented** in `@intentloom/application/neutron-scheduler` (graph
+execution validation, deterministic scheduling classification/selection, pure
+state transitions). **N5 runtime milestone incomplete** — no model/subagent
+execution, leases, persistence, or concurrency workers yet. **Slice 2+ not
+authorized** by this document alone.
+
 Mutation routing remains deferred.
 
-Evidence baseline: `origin/main` @ `3b504d143146b95a1215529208d6ce75f565b2c2` (post N4
-Slice 2 handoff #442, 2026-09-02). Preflight also recorded legitimate advancement:
-`d28baf570a70a60ab536c10228a0de3f51e41e5e` (Dependabot `@types/react-dom` bump #433).
+Evidence baseline: `origin/main` @ `957756e12c6de488a943f49735816eb6ac2e498a`
+(2026-09-04; legitimate advancement over N5 handoff `279eacd` — Dependabot deps
+only). N5 handoff merge: `279eacd4fddcd1a08f51e1b32b19e79eb6e1a94c` (#444).
 
 Maintainer decision for this increment: **choose N5 before mutation routing**. N5 must
 prove controlled scheduling and subagent execution using current read-only authority
@@ -682,15 +687,18 @@ logic.
 
 ### Slice 1 — Graph validation and deterministic scheduling core
 
-| Item            | Detail                                                                                                 |
-| --------------- | ------------------------------------------------------------------------------------------------------ |
-| **Objective**   | Validate graphs; deterministic ready selection; pure state transitions                                 |
-| **Modules**     | `neutron-scheduler-validate.ts`, `neutron-scheduler-select.ts`, `neutron-scheduler-transitions.ts`     |
-| **Reused APIs** | `validateNeutronTaskGraph`, `NEUTRON_TASK_STATES`                                                      |
-| **Tests**       | `tests/neutron-n5-scheduler-graph.test.ts` — linear, diamond, independent, cycle, failed/cancelled dep |
-| **Risks**       | Confusion with L5 checkpoints — document separation                                                    |
-| **Non-goals**   | Model execution, concurrency >1, leases, persistence                                                   |
-| **Exit gate**   | Pure functions prove ready order and transitions on fixture graphs                                     |
+| Item            | Detail                                                                                                                                                                                                                                                                                                                 |
+| --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Status**      | **Implemented** on `@intentloom/application/neutron-scheduler`                                                                                                                                                                                                                                                         |
+| **Objective**   | Validate graphs; deterministic ready selection; pure state transitions                                                                                                                                                                                                                                                 |
+| **Modules**     | `neutron-scheduler-validate.ts`, `neutron-scheduler-select.ts`, `neutron-scheduler-transitions.ts`, `neutron-scheduler-errors.ts`, `neutron-scheduler-sort.ts`                                                                                                                                                         |
+| **APIs**        | `validateNeutronTaskGraphForExecution`, `planNeutronTaskScheduling`, `selectReadyNodes`, `validateNeutronTaskStateTransition`, `applyNeutronTaskStateTransition`                                                                                                                                                       |
+| **Reused APIs** | `validateNeutronTaskGraph`, `NEUTRON_TASK_STATES`                                                                                                                                                                                                                                                                      |
+| **Tests**       | `tests/neutron-n5-task-graph.test.ts`, `tests/neutron-n5-scheduling.test.ts`                                                                                                                                                                                                                                           |
+| **Decisions**   | `parentId` is provenance only; duplicate dependency IDs rejected; ready order is `taskId` code-point ascending; `priority` deferred; scheduling classification (`ready`/`waiting`/`blocked`) is separate from protocol node state; default `maxConcurrency` 1, hard cap 4; cycle paths reported in DFS discovery order |
+| **Risks**       | Confusion with L5 checkpoints — document separation                                                                                                                                                                                                                                                                    |
+| **Non-goals**   | Model execution, N3 assembly, N4 tool calls, persistence, leases, retry loops, concurrency workers                                                                                                                                                                                                                     |
+| **Exit gate**   | Pure functions prove ready order and transitions on fixture graphs (**met**)                                                                                                                                                                                                                                           |
 
 ### Slice 2 — Single-worker node execution (N3/N2/N4 composition)
 
@@ -837,7 +845,7 @@ Scheduling alone is **not** sufficient justification for mutation routing.
 
 | #   | Decision                                                          | Recommendation                                                    | Blocker for |
 | --- | ----------------------------------------------------------------- | ----------------------------------------------------------------- | ----------- |
-| 1   | Add `priority` field to scheduler metadata vs `taskId`-only order | Defer `priority`; use `taskId` order in Slice 1                   | Slice 1     |
+| 1   | Add `priority` field to scheduler metadata vs `taskId`-only order | **Deferred** — Slice 1 uses `taskId` code-point ascending only    | Slice 2+    |
 | 2   | Unify `NeutronSubagentTaskRecord` with graph node persistence     | Keep separate; link by `taskId` in Slice 2                        | Slice 2     |
 | 3   | Protocol bump for enriched `NeutronSubagentResult`                | Application wrapper first; protocol additive in Slice 5 if needed | Slice 5     |
 | 4   | Graph-level partial success policy                                | Default strict: any child fail → parent fail                      | Slice 5     |
@@ -847,5 +855,6 @@ Scheduling alone is **not** sufficient justification for mutation routing.
 
 ## 30. Recommendation
 
-**READY FOR N5 SLICE 1 AUTHORIZATION** — after this brief merges, pending explicit
-maintainer authorization for Slice 1 implementation only.
+**READY FOR N5 SLICE 2 AUTHORIZATION** — Slice 1 scheduling core is implemented;
+explicit maintainer authorization required before node execution composing
+N3/N2/N4.

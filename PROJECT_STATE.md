@@ -644,11 +644,15 @@ N2 read-only model turns. **N4 Slice 1** adds the capability-scoped tool-router
 foundation with one read-only `inspect` tool. **N4 Slice 2** expands the
 read-only catalog (`doctor`, `memorySearch`, `timeline`, `conformance`,
 `securityAudit`, `projectDiff`) behind the same fail-closed router. **N5
-maintainer brief** is prepared in
+maintainer brief** is in
 `docs/roadmap/NEUTRON_N5_EXECUTABLE_TASK_GRAPH_BRIEF.md` (maintainer decision:
-N5 before mutation routing). **N5 implementation is not authorized.** Mutation
-routing, Desktop model UI, and optional N3 Slice 5 CLI/daemon exposure remain
-unauthorized per `DUTY_WATCH.md`. Other post-P4 candidates remain in
+N5 before mutation routing). **N5 Slice 1 implemented** — pure scheduler
+foundation in `@intentloom/application/neutron-scheduler` (execution graph
+validation, deterministic ready/waiting/blocked classification, capacity-aware
+selection, pure state transitions). **No model/subagent execution yet**; N5
+runtime milestone incomplete. Slice 2+ requires explicit authorization.
+Mutation routing, Desktop model UI, and optional N3 Slice 5 CLI/daemon exposure
+remain unauthorized per `DUTY_WATCH.md`. Other post-P4 candidates remain in
 `POST_W12_NEXT_INCREMENT_PLAN.md`.
 
 The Desktop discovery/error and Diff/Timeline slices remain recorded in
