@@ -49,3 +49,42 @@ export {
   type NeutronNodeExecutionFailure,
   type NeutronNodeExecutionStage,
 } from "./neutron-node-errors.js";
+export {
+  createNeutronSchedulerClock,
+  systemNeutronSchedulerClock,
+  type ControllableNeutronSchedulerClock,
+  type NeutronSchedulerClock,
+} from "./neutron-scheduler-clock.js";
+export {
+  NEUTRON_LEASE_DEFAULT_TTL_MS,
+  NEUTRON_SCHEDULER_LEASE_DIR,
+  classifyNeutronTaskLease,
+  isNeutronSchedulerStatePath,
+  neutronLeaseHeartbeatIntervalMs,
+  neutronTaskLeaseId,
+  resolveNeutronLeaseAttempt,
+  resolveNeutronLeaseTtlMs,
+  type NeutronTaskLease,
+  type NeutronTaskLeaseStatus,
+} from "./neutron-scheduler-lease.js";
+export {
+  acquireNeutronTaskLease,
+  neutronTaskLeasePath,
+  readNeutronTaskLease,
+  releaseNeutronTaskLease,
+  renewNeutronTaskLease,
+  type NeutronTaskLeaseStoreInput,
+} from "./neutron-scheduler-lease-store.js";
+export {
+  startNeutronLeaseHeartbeat,
+  type NeutronLeaseHeartbeatHandle,
+  type NeutronLeaseHeartbeatScheduler,
+} from "./neutron-scheduler-heartbeat.js";
+export {
+  executeReadyNeutronTaskNodes,
+  type ExecuteReadyNeutronTaskNodesInput,
+  type ExecuteReadyNeutronTaskNodesResult,
+  type NeutronReadyNodeExecutionOutcome,
+  type NeutronReadyNodeLeaseFailure,
+  type NeutronReadyNodeOutcome,
+} from "./neutron-scheduler-batch.js";

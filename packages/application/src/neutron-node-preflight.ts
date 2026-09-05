@@ -32,6 +32,7 @@ export function assertNeutronNodePreflight(input: {
   readonly session: NeutronRuntimeSession;
   readonly projectId: string;
   readonly signal?: AbortSignal;
+  readonly allowConcurrentPeers?: boolean;
 }): NeutronNodePreflight {
   if (input.signal?.aborted === true) {
     throw new NeutronNodeExecutionError(
@@ -112,7 +113,7 @@ export function assertNeutronNodePreflight(input: {
     graph,
     maxConcurrency: 1,
   });
-  if (plan.runningCount > 0) {
+  if (plan.runningCount > 0 && input.allowConcurrentPeers !== true) {
     throw new NeutronNodeExecutionError(
       "node-not-runnable",
       "scheduling",
