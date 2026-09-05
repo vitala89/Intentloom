@@ -9,13 +9,39 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Neutron N5 Slice 2 complete** on `main` (#447). One-node execution
-`executeNeutronTaskNode` composes N3 → N2 → N4 under a read-only capability
-clamp. **No graph runner, leases, retries, or bounded concurrency.** N5 runtime
-milestone incomplete. Maintainer decision: **N5 before mutation routing**.
-**MUTATION ROUTING REMAINS DEFERRED.** Slice 3+ requires explicit authorization.
-Mutation routing, Desktop model UI, CLI/daemon Slice 5 exposure, and P4l17 remain
-unauthorized.
+Status: **Neutron N5 Slice 3 complete** on `main` (#449). Local-first leases and
+one bounded scheduling wave (`executeReadyNeutronTaskNodes`) compose Slice 1
+admission with Slice 2 node execution. **No graph runner, retries, or
+cancellation recovery.** N5 runtime milestone incomplete. Maintainer decision:
+**N5 before mutation routing**. **MUTATION ROUTING REMAINS DEFERRED.** Slice 4+
+requires explicit authorization. Mutation routing, Desktop model UI, CLI/daemon
+Slice 5 exposure, and P4l17 remain unauthorized.
+
+### 2026-09-05, Neutron N5 Slice 3 — leases and bounded concurrency (merged)
+
+- **Status:** complete on `main` (#449)
+- **PR:** https://github.com/vitala89/Intentloom/pull/449
+- **Branch:** `feat/neutron-n5-leases-concurrency` (merged)
+- **Starting main SHA:** `1165d044f461ddbaf90297aa74b1be13c11982ed` (post-#448)
+- **Implementation head SHA:** `c33c0b131fb96bd9d124cde72349ae536b55537f`
+- **Merge SHA:** `8e2883de4029bbc26265d8857ccc8dc541212d9b`
+- **Objective:** N5 Slice 3 — lease ownership and one deterministic bounded wave
+- **Completed:**
+  - Lease acquire/renew/release/expiry on `@intentloom/application/neutron-scheduler`
+  - Identity `{sessionId}:{taskId}:{attempt}`; default attempt `1`; no retry
+  - Persistence `.aif/neutron/scheduler/leases/`; injected clock; heartbeat cleanup
+  - `executeReadyNeutronTaskNodes` — one wave, default concurrency 1, hard cap 4
+  - Duplicate-execution prevention; per-node N3/N2/N4 isolation
+  - Tests: `tests/neutron-n5-leases.test.ts`, `tests/neutron-n5-concurrency.test.ts`
+  - Docs: N5 brief §32, runtime roadmap §N5, `PROJECT_STATE.md`
+- **Decision:** **N5 before mutation routing.** **MUTATION ROUTING REMAINS
+  DEFERRED.**
+- **Not completed:** Slice 4 retries/cancellation recovery, graph runner loop,
+  stale-state aggregation, mutation routing, N6, N3 Slice 5, P4l17
+- **Next first action:** **Explicit maintainer authorization required for Neutron
+  N5 Slice 4** — retry, cancellation, and timeout recovery per
+  `docs/roadmap/NEUTRON_N5_EXECUTABLE_TASK_GRAPH_BRIEF.md` §22. Do not start
+  Slice 5, mutation routing, N6, optional N3 Slice 5, or P4l17.
 
 ### 2026-09-05, Neutron N5 Slice 2 — single-node execution (merged)
 
