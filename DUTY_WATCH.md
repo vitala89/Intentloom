@@ -9,14 +9,41 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Neutron N5 Slice 4 complete** on `main` (#451). Bounded retry,
-cancellation propagation, timeout recovery, and stale-attempt protection sit
-on the existing one-wave lease scheduler. **No graph runner, final
-aggregation, or general stale-state framework.** N5 runtime milestone
-incomplete. Maintainer decision: **N5 before mutation routing**. **MUTATION
-ROUTING REMAINS DEFERRED.** Slice 5 requires explicit authorization. Mutation
-routing, Desktop model UI, CLI/daemon Slice 5 exposure, and P4l17 remain
-unauthorized.
+Status: **Neutron N5 Slice 5 complete** on `main` (#453). Deterministic
+graph aggregation, stale project/checkpoint/profile detection, and
+parent-child/attempt/tool/context provenance sit on the existing one-wave
+lease scheduler. **N5 runtime milestone complete** for the authorized
+read-only scheduler. **No graph runner loop.** Maintainer decision: **N5
+before mutation routing**. **MUTATION ROUTING REMAINS DEFERRED.** Mutation
+routing, N6 Desktop, optional N3 Slice 5, and P4l17 remain unauthorized.
+
+### 2026-09-07, Neutron N5 Slice 5 — aggregation, stale-state, and provenance (merged)
+
+- **Status:** complete on `main` (#453)
+- **PR:** https://github.com/vitala89/Intentloom/pull/453
+- **Branch:** `feat/neutron-n5-aggregation-stale-state` (merged)
+- **Starting main SHA:** `426858b5d687930ff9fbbe38861b8b83a24dedab` (post-#452)
+- **Implementation head SHA:** `a6819a49fe3cf1adbda93ea835d96fdf1decfc52`
+- **Merge SHA:** `7a6e07c27ffd35bb679803611ede3dfdfcf25a00`
+- **Objective:** N5 Slice 5 — deterministic aggregation, stale-state, provenance
+- **Completed:**
+  - `aggregateNeutronTaskGraphResults` with `taskId` code-point order
+  - Application `NeutronGraphExecutionResult`; no protocol bump
+  - Strict graph status (`stale`/`incomplete`/`cancelled`/`timed-out`/`failed`/`completed`); `partial` observational only
+  - `detectNeutronGraphStaleness` for project/checkpoint/profile; no automatic rerun
+  - `reconcileNeutronTaskGraphExecution` fail-closed reconciliation boundary
+  - Parent-child, attempt, capability, N3, and N4 digest provenance
+  - Tests: `tests/neutron-n5-aggregation.test.ts`,
+    `tests/neutron-n5-stale-state.test.ts`
+  - Docs: N5 brief §34, runtime roadmap §N5, `PROJECT_STATE.md`
+- **Decision:** **N5 before mutation routing.** **MUTATION ROUTING REMAINS
+  DEFERRED.** Assessment: mutation routing may be considered separately; this
+  is not authorization.
+- **Not completed:** mutation routing, N6, optional N3 Slice 5, P4l17, graph
+  runner loop
+- **Next first action:** **Explicit maintainer authorization required** to
+  commission a mutation-routing maintainer brief, or to choose N6 Desktop
+  instead. Do not start mutation routing, N6, optional N3 Slice 5, or P4l17.
 
 ### 2026-09-06, Neutron N5 Slice 4 — retry, cancellation, and timeout recovery (merged)
 
