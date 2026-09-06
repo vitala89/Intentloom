@@ -9,13 +9,42 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Neutron N5 Slice 3 complete** on `main` (#449). Local-first leases and
-one bounded scheduling wave (`executeReadyNeutronTaskNodes`) compose Slice 1
-admission with Slice 2 node execution. **No graph runner, retries, or
-cancellation recovery.** N5 runtime milestone incomplete. Maintainer decision:
-**N5 before mutation routing**. **MUTATION ROUTING REMAINS DEFERRED.** Slice 4+
-requires explicit authorization. Mutation routing, Desktop model UI, CLI/daemon
-Slice 5 exposure, and P4l17 remain unauthorized.
+Status: **Neutron N5 Slice 4 complete** on `main` (#451). Bounded retry,
+cancellation propagation, timeout recovery, and stale-attempt protection sit
+on the existing one-wave lease scheduler. **No graph runner, final
+aggregation, or general stale-state framework.** N5 runtime milestone
+incomplete. Maintainer decision: **N5 before mutation routing**. **MUTATION
+ROUTING REMAINS DEFERRED.** Slice 5 requires explicit authorization. Mutation
+routing, Desktop model UI, CLI/daemon Slice 5 exposure, and P4l17 remain
+unauthorized.
+
+### 2026-09-06, Neutron N5 Slice 4 — retry, cancellation, and timeout recovery (merged)
+
+- **Status:** complete on `main` (#451)
+- **PR:** https://github.com/vitala89/Intentloom/pull/451
+- **Branch:** `feat/neutron-n5-retry-cancellation` (merged)
+- **Starting main SHA:** `c06dbd4f6599e02265c46153dd4b96ba8e5fb0e1` (post-#450)
+- **Implementation head SHA:** `d39f3ba56bf34ac57f539bc39bc799db00ee89b9`
+- **Merge SHA:** `9006e5e890f7dda1e72be7ade74bfebc6b4d2033`
+- **Objective:** N5 Slice 4 — bounded retry, cancellation, timeout recovery
+- **Completed:**
+  - `classifyNeutronRetry` with typed retryability; max **2** attempts
+  - Distinct attempt-2 lease identity; application-level attempt evidence
+  - Session/node cancellation; no retry after cancel; no new admission
+  - Node timeout wrapper; expired-lease recovery onto attempt 2; lease-lost abort
+  - Stale-attempt protection; retry stays in the same concurrency slot
+  - Tests: `tests/neutron-n5-retry.test.ts`,
+    `tests/neutron-n5-cancellation-timeout.test.ts`
+  - Docs: N5 brief §33, runtime roadmap §N5, `PROJECT_STATE.md`
+- **Decision:** **N5 before mutation routing.** **MUTATION ROUTING REMAINS
+  DEFERRED.**
+- **Not completed:** Slice 5 aggregation/stale-state, graph runner loop,
+  mutation routing, N6, N3 Slice 5, P4l17
+- **Next first action:** **Explicit maintainer authorization required for Neutron
+  N5 Slice 5** — deterministic aggregation, stale-state detection, and
+  provenance completion per
+  `docs/roadmap/NEUTRON_N5_EXECUTABLE_TASK_GRAPH_BRIEF.md` §22. Do not start
+  mutation routing, N6, optional N3 Slice 5, or P4l17.
 
 ### 2026-09-05, Neutron N5 Slice 3 — leases and bounded concurrency (merged)
 
