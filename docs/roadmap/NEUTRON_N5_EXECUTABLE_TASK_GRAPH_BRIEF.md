@@ -9,8 +9,10 @@ exactly one scheduler-selected ready node through N3 → N2 → N4 under a
 read-only capability clamp and returns an application-level result wrapping
 N1 `NeutronSubagentResult`. **Slice 3 implemented** — local-first leases and
 one bounded concurrent scheduling wave (`executeReadyNeutronTaskNodes`).
-**N5 runtime milestone incomplete** — no retries, cancellation recovery, or
-graph runner loop. **Slice 4+ not authorized** by this document alone.
+**Slice 4 implemented** — bounded retry, cancellation propagation, timeout
+recovery, and stale-attempt protection on that wave. **N5 runtime milestone
+incomplete** — no final aggregation, general stale-state framework, or graph
+runner loop. **Slice 5 not authorized** by this document alone.
 
 Mutation routing remains deferred.
 
@@ -859,9 +861,10 @@ Scheduling alone is **not** sufficient justification for mutation routing.
 
 ## 30. Recommendation
 
-**READY FOR N5 SLICE 4 AUTHORIZATION** — Slice 3 leases and one bounded
-scheduling wave are implemented; explicit maintainer authorization required
-before retries, cancellation recovery, or a graph runner loop.
+**READY FOR N5 SLICE 5 AUTHORIZATION** — Slice 4 retry, cancellation, and
+timeout recovery are implemented; explicit maintainer authorization required
+before deterministic aggregation, general stale-state detection, or a graph
+runner loop.
 
 ---
 
@@ -915,3 +918,34 @@ only.
 
 Clock, lease, heartbeat, and batch modules stay in `@intentloom/application`.
 No protocol version bump.
+
+---
+
+## 33. Slice 4 implementation record
+
+Evidence baseline: `origin/main` @ `c06dbd4f6599e02265c46153dd4b96ba8e5fb0e1`
+(N5 Slice 3 handoff #450). Explicit maintainer authorization covered Slice 4
+only.
+
+| Decision             | Record                                                                                                                                                         |
+| -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Retry API**        | `classifyNeutronRetry` — typed error codes only; model cannot request retries                                                                                  |
+| **Max attempts**     | `2` total (attempt 1 + one retry). Absolute cap is also `2`                                                                                                    |
+| **Retryable**        | `operation-failed`, `timeout`, expired lease, lease-lost / renewal `invalid-owner`                                                                             |
+| **Non-retryable**    | validation, capability/permission denied, root mismatch, unsupported tool, cancellation, budget exceeded, malformed/context failures                           |
+| **Attempt identity** | Attempt 2 uses `{sessionId}:{taskId}:2`; attempt 1 lease is never reused                                                                                       |
+| **Evidence**         | Application-level `NeutronAttemptEvidence` on the wave outcome; N1 `NeutronSubagentResult` unchanged                                                           |
+| **Cancellation**     | Session signal or `session.state === "cancelled"` admits nothing; node `AbortSignal` is local; session signal cancels all running nodes; no retry after cancel |
+| **Timeout layers**   | Model/tool remain N2/N4; optional `nodeTimeoutMs` wrapper; lease TTL stays `min(nodeTimeoutMs, 120_000)`; no graph deadline                                    |
+| **Expired lease**    | Same-attempt re-acquire still `lease-expired`; recovery acquires attempt 2 only                                                                                |
+| **Renewal failure**  | Heartbeat `onError` aborts the attempt (`lease-lost`); retry policy decides                                                                                    |
+| **Stale-attempt**    | Authority invalidates attempt 1 before attempt 2; late success after timeout/lease-loss is rejected                                                            |
+| **Concurrency**      | Retry stays in the same wave slot; no extra worker; default 1 / hard cap 4 unchanged                                                                           |
+| **Capabilities**     | Attempt 2 recomputes clamp and intersects attempt-1 ceiling; never widens                                                                                      |
+| **Context / N4**     | Fresh N3 via Slice 2; each attempt still routes tools through N4                                                                                               |
+| **Persistence**      | Lease files only; no `.aif/neutron/scheduler/results/`                                                                                                         |
+| **No graph runner**  | One call remains one wave, with in-wave retries for admitted nodes only                                                                                        |
+| **Mutation routing** | Remains deferred                                                                                                                                               |
+
+Tests: `tests/neutron-n5-retry.test.ts`,
+`tests/neutron-n5-cancellation-timeout.test.ts`.

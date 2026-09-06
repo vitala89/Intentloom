@@ -23,21 +23,27 @@ export function startNeutronLeaseHeartbeat(input: {
   readonly intervalMs: number;
   readonly renew: () => void | Promise<void>;
   readonly schedule?: NeutronLeaseHeartbeatScheduler;
+  readonly onError?: (error: unknown) => void;
 }): NeutronLeaseHeartbeatHandle {
   let active = true;
   const schedule = input.schedule ?? defaultNeutronLeaseHeartbeatScheduler;
+  const stop = (): void => {
+    if (!active) return;
+    active = false;
+    handle.stop();
+  };
   const handle = schedule(input.intervalMs, () => {
     if (!active) return;
-    void Promise.resolve(input.renew()).catch(() => undefined);
+    void Promise.resolve(input.renew()).catch((error: unknown) => {
+      if (!active) return;
+      stop();
+      input.onError?.(error);
+    });
   });
   return {
     get active() {
       return active;
     },
-    stop() {
-      if (!active) return;
-      active = false;
-      handle.stop();
-    },
+    stop,
   };
 }
