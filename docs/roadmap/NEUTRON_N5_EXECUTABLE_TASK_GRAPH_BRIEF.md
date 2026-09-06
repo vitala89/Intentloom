@@ -10,9 +10,11 @@ read-only capability clamp and returns an application-level result wrapping
 N1 `NeutronSubagentResult`. **Slice 3 implemented** — local-first leases and
 one bounded concurrent scheduling wave (`executeReadyNeutronTaskNodes`).
 **Slice 4 implemented** — bounded retry, cancellation propagation, timeout
-recovery, and stale-attempt protection on that wave. **N5 runtime milestone
-incomplete** — no final aggregation, general stale-state framework, or graph
-runner loop. **Slice 5 not authorized** by this document alone.
+recovery, and stale-attempt protection on that wave. **Slice 5 implemented** —
+deterministic graph aggregation, stale project/checkpoint/profile detection,
+and parent-child/attempt/tool/context provenance on a one-wave reconciliation
+boundary. **N5 runtime milestone complete** for the authorized read-only
+scheduler. No graph runner loop. Mutation routing remains deferred.
 
 Mutation routing remains deferred.
 
@@ -737,11 +739,15 @@ logic.
 
 ### Slice 5 — Aggregation, stale-state, provenance enrichment
 
-| Item          | Detail                                                                           |
-| ------------- | -------------------------------------------------------------------------------- |
-| **Objective** | Deterministic parent aggregation; fingerprint stale gate; full provenance record |
-| **Tests**     | `tests/neutron-n5-scheduler-aggregate.test.ts`, stale fingerprint fixtures       |
-| **Exit gate** | Multi-node graph completes with stable aggregation; stale project rejected       |
+| Item          | Detail                                                                                                                                 |
+| ------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| **Status**    | **Implemented** on `@intentloom/application/neutron-scheduler`                                                                         |
+| **Objective** | Deterministic graph aggregation; fingerprint/checkpoint/profile stale gate; full provenance record                                     |
+| **Modules**   | `neutron-scheduler-graph-result.ts`, `neutron-scheduler-stale.ts`, `neutron-scheduler-provenance.ts`, `neutron-scheduler-aggregate.ts` |
+| **APIs**      | `aggregateNeutronTaskGraphResults`, `detectNeutronGraphStaleness`, `reconcileNeutronTaskGraphExecution`                                |
+| **Tests**     | `tests/neutron-n5-aggregation.test.ts`, `tests/neutron-n5-stale-state.test.ts`                                                         |
+| **Exit gate** | Multi-node graph completes with stable aggregation; stale project/checkpoint/profile rejected without rerun (**met**)                  |
+| **Non-goals** | Graph runner loop, result persistence, mutation routing, N6, N3 Slice 5, generic shell                                                 |
 
 ---
 
@@ -812,20 +818,22 @@ lines.
 
 ## 27. Acceptance criteria (N5 milestone)
 
-- [ ] Deterministic graph scheduling with stable ready order
-- [ ] Dependency correctness including failure/cancel propagation
-- [ ] Bounded concurrency with configurable cap (default 1, max 4)
-- [ ] No duplicate active lease for same node
-- [ ] Bounded retries with non-retryable taxonomy enforced
-- [ ] Cancellation propagates to N2 model turns and N4 tools
-- [ ] Timeout recovery per layered timeout model
-- [ ] Context/token budgets enforced and auditable
-- [ ] Child capability clamp ⊆ parent/session/profile/node
-- [ ] Parent-child provenance on every node result
-- [ ] Stable aggregation order by `taskId`
-- [ ] Stale-state rejection (fingerprint, profile, checkpoint)
-- [ ] Project fingerprint unchanged under read-only roles
-- [ ] `pnpm verify` green; cross-platform compatible
+- [x] Deterministic graph scheduling with stable ready order
+- [x] Dependency correctness including failure/cancel propagation
+- [x] Bounded concurrency with configurable cap (default 1, max 4)
+- [x] No duplicate active lease for same node
+- [x] Bounded retries with non-retryable taxonomy enforced
+- [x] Cancellation propagates to N2 model turns and N4 tools
+- [x] Timeout recovery per layered timeout model
+- [x] Context/token budgets enforced and auditable
+- [x] Child capability clamp ⊆ parent/session/profile/node
+- [x] Parent-child provenance on every node result
+- [x] Stable aggregation order by `taskId`
+- [x] Stale-state rejection (fingerprint, profile, checkpoint)
+- [x] Project fingerprint unchanged under read-only roles
+- [x] `pnpm verify` green; cross-platform compatible
+
+(`pnpm verify` on this Slice 5 branch: 294 files, 2551 passed, 3 skipped.)
 
 ---
 
@@ -849,22 +857,21 @@ Scheduling alone is **not** sufficient justification for mutation routing.
 
 ## 29. Open decisions
 
-| #   | Decision                                                          | Recommendation                                                    | Blocker for |
-| --- | ----------------------------------------------------------------- | ----------------------------------------------------------------- | ----------- |
-| 1   | Add `priority` field to scheduler metadata vs `taskId`-only order | **Deferred** — Slice 1 uses `taskId` code-point ascending only    | Slice 2+    |
-| 2   | Unify `NeutronSubagentTaskRecord` with graph node persistence     | Keep separate; link by `taskId` in Slice 2                        | Slice 2     |
-| 3   | Protocol bump for enriched `NeutronSubagentResult`                | Application wrapper first; protocol additive in Slice 5 if needed | Slice 5     |
-| 4   | Graph-level partial success policy                                | Default strict: any child fail → parent fail                      | Slice 5     |
-| 5   | When to introduce `packages/neutron-runtime`                      | Re-evaluate at N6 Desktop consumer                                | N6          |
+| #   | Decision                                                          | Recommendation                                                                        | Blocker for |
+| --- | ----------------------------------------------------------------- | ------------------------------------------------------------------------------------- | ----------- |
+| 1   | Add `priority` field to scheduler metadata vs `taskId`-only order | **Deferred** — Slice 1 uses `taskId` code-point ascending only                        | Slice 2+    |
+| 2   | Unify `NeutronSubagentTaskRecord` with graph node persistence     | Keep separate; link by `taskId` in Slice 2                                            | Slice 2     |
+| 3   | Protocol bump for enriched `NeutronSubagentResult`                | **Resolved in Slice 5** — application `NeutronGraphExecutionResult`; no protocol bump | —           |
+| 4   | Graph-level partial success policy                                | **Resolved in Slice 5** — strict graph status; `partial` is observational only        | —           |
+| 5   | When to introduce `packages/neutron-runtime`                      | Re-evaluate at N6 Desktop consumer                                                    | N6          |
 
 ---
 
 ## 30. Recommendation
 
-**READY FOR N5 SLICE 5 AUTHORIZATION** — Slice 4 retry, cancellation, and
-timeout recovery are implemented; explicit maintainer authorization required
-before deterministic aggregation, general stale-state detection, or a graph
-runner loop.
+**N5 RUNTIME MILESTONE COMPLETE** — Slice 5 aggregation, stale-state
+detection, and provenance completion are implemented. Mutation routing and N6
+still require separate maintainer authorization. No graph runner loop.
 
 ---
 
@@ -949,3 +956,35 @@ only.
 
 Tests: `tests/neutron-n5-retry.test.ts`,
 `tests/neutron-n5-cancellation-timeout.test.ts`.
+
+---
+
+## 34. Slice 5 implementation record
+
+Evidence baseline: `origin/main` @ `426858b5d687930ff9fbbe38861b8b83a24dedab`
+(N5 Slice 4 handoff #452). Explicit maintainer authorization covered Slice 5
+only.
+
+| Decision             | Record                                                                                                                                                                                                                   |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Aggregation API**  | `aggregateNeutronTaskGraphResults` — pure merge over graph nodes + optional wave outcomes                                                                                                                                |
+| **Stale API**        | `detectNeutronGraphStaleness` — project fingerprint, optional checkpoint authority, optional profile authority                                                                                                           |
+| **Reconcile API**    | `reconcileNeutronTaskGraphExecution` — detect then aggregate; fail-closed; **never reruns**                                                                                                                              |
+| **Graph contract**   | Application `NeutronGraphExecutionResult`. No protocol bump. N1 `NeutronSubagentResult` remains node-level                                                                                                               |
+| **Graph status**     | Precedence: `stale` → `incomplete` (pending/ready/running) → `cancelled` → `timed-out` → `failed` (includes blocked) → `completed`                                                                                       |
+| **Partial-success**  | Strict: `accepted` only when `status === "completed"`. `partial` is observational (`some completed` and not fully successful). Cancellation/timeout are not hidden behind sibling success                                |
+| **Ordering**         | Nodes by `taskId` code-point ascending. Attempts by attempt number ascending. Digests use canonical key order and omit observational timestamps                                                                          |
+| **Dependencies**     | Blocked descendants keep `blockingDependencyIds` and scheduling reasons. They are not executed and contribute no model usage                                                                                             |
+| **Attempts**         | Full Slice 4 attempt history retained. Authoritative output is the last non-`stale` attempt. Superseded late results remain audit evidence only                                                                          |
+| **Project stale**    | Baseline vs current source fingerprint. `.aif/neutron/scheduler/` lease metadata is excluded by existing `isNeutronSchedulerStatePath` fingerprint helpers                                                               |
+| **Checkpoint stale** | Compare `id`, `taskId`, `state`, `updatedAt`, `createdSnapshotChecksum` when the caller supplies checkpoint authority                                                                                                    |
+| **Profile stale**    | Compare profile name + capability fingerprint (`allowedTools`, roles, read-only/network/budget/paths). Created-at is not authority                                                                                       |
+| **Provenance**       | `graphId`, `parentId`, dependencies, role, requested vs effective capabilities, lease IDs, adapter, N3 source IDs/digests/warnings, N4 tool envelopes as digests, usage, `mutationAttempted: false`. No chain-of-thought |
+| **Usage**            | Sum existing `NeutronUsageBudget` fields across attempts. `budget-exceeded` is preserved as the node error code                                                                                                          |
+| **Persistence**      | None added. Lease files remain the only scheduler persistence                                                                                                                                                            |
+| **Read-only**        | Aggregation and stale detection never write source project bytes. No apply, shell, or mutation tools                                                                                                                     |
+| **No graph runner**  | Callers may invoke one or more existing waves, then reconcile. Slice 5 does not loop                                                                                                                                     |
+| **Mutation routing** | Remains deferred. N5 evidence is a prerequisite, not authorization                                                                                                                                                       |
+
+Tests: `tests/neutron-n5-aggregation.test.ts`,
+`tests/neutron-n5-stale-state.test.ts`.
