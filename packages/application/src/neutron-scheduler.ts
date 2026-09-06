@@ -30,6 +30,7 @@ export {
   validateNeutronTaskGraphForExecution,
 } from "./neutron-scheduler-validate.js";
 export {
+  clampNeutronCapabilitiesToCeiling,
   resolveNeutronNodeCapabilities,
   type ResolveNeutronNodeCapabilitiesInput,
   type ResolvedNeutronNodeCapabilities,
@@ -88,3 +89,29 @@ export {
   type NeutronReadyNodeLeaseFailure,
   type NeutronReadyNodeOutcome,
 } from "./neutron-scheduler-batch.js";
+export {
+  classifyNeutronRetry,
+  NEUTRON_RETRY_ABSOLUTE_MAX_ATTEMPTS,
+  NEUTRON_RETRY_MAX_ATTEMPTS,
+  resolveNeutronMaxAttempts,
+  type ClassifyNeutronRetryInput,
+  type NeutronRetryDecision,
+  type NeutronRetryReason,
+} from "./neutron-scheduler-retry.js";
+export {
+  composeNeutronAbortSignals,
+  isNeutronSessionCancelled,
+  neutronAbortKind,
+  type NeutronAbortKind,
+} from "./neutron-scheduler-cancellation.js";
+export {
+  NEUTRON_NODE_EXECUTION_TIMEOUT_MS,
+  startNeutronNodeTimeout,
+  type NeutronNodeTimeoutHandle,
+} from "./neutron-scheduler-timeout.js";
+export {
+  buildNeutronAttemptEvidence,
+  createNeutronAttemptAuthority,
+  type NeutronAttemptAuthority,
+  type NeutronAttemptEvidence,
+} from "./neutron-scheduler-attempt.js";

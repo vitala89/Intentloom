@@ -47,6 +47,24 @@ function intersectGrants(
   return catalogTools().filter((tool) => current.has(tool));
 }
 
+export function clampNeutronCapabilitiesToCeiling(
+  resolved: ResolvedNeutronNodeCapabilities,
+  ceiling: readonly string[] | undefined,
+): ResolvedNeutronNodeCapabilities {
+  if (ceiling === undefined) return resolved;
+  const allowedTools = resolved.allowedTools.filter((tool) =>
+    ceiling.includes(tool),
+  );
+  return {
+    denyAllTools: allowedTools.length === 0,
+    allowedTools,
+    capabilities: {
+      ...resolved.capabilities,
+      allowedTools,
+    },
+  };
+}
+
 export function resolveNeutronNodeCapabilities(
   input: ResolveNeutronNodeCapabilitiesInput,
 ): ResolvedNeutronNodeCapabilities {

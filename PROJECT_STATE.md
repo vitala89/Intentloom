@@ -652,9 +652,11 @@ validation, deterministic ready/waiting/blocked classification, capacity-aware
 selection, pure state transitions). **N5 Slice 2 implemented** — one-node
 execution through N3/N2/N4 (`executeNeutronTaskNode`). **N5 Slice 3
 implemented** — local-first leases and one bounded concurrent scheduling wave
-(`executeReadyNeutronTaskNodes`); no full graph runner, retries, or
-cancellation recovery. **No autonomous multi-agent execution.** N5 runtime
-milestone incomplete. Slice 4+ requires explicit authorization.
+(`executeReadyNeutronTaskNodes`). **N5 Slice 4 implemented** — bounded retry,
+cancellation propagation, timeout recovery, and stale-attempt protection;
+final aggregation/stale-state milestone still pending; no full graph runner.
+**No autonomous multi-agent execution.** N5 runtime milestone incomplete.
+Slice 5 requires explicit authorization.
 Mutation routing, Desktop model UI, and optional N3 Slice 5 CLI/daemon exposure
 remain unauthorized per `DUTY_WATCH.md`. Other post-P4 candidates remain in
 `POST_W12_NEXT_INCREMENT_PLAN.md`.

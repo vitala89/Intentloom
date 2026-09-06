@@ -11,6 +11,9 @@ export const NEUTRON_SCHEDULER_ERROR_CODES = [
   "lease-held",
   "lease-expired",
   "invalid-owner",
+  "lease-lost",
+  "stale-attempt",
+  "retry-exhausted",
 ] as const;
 
 export type NeutronSchedulerErrorCode =

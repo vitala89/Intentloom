@@ -10,6 +10,7 @@ import type {
 import type { AssembleNeutronContextResult } from "./neutron-context-assembly.js";
 import type { NeutronN2LoopResult } from "./neutron-n2-loop.js";
 import {
+  clampNeutronCapabilitiesToCeiling,
   resolveNeutronNodeCapabilities,
   type ResolvedNeutronNodeCapabilities,
 } from "./neutron-node-capabilities.js";
@@ -34,7 +35,7 @@ export type { ExecuteNeutronTaskNodeInput } from "./neutron-node-run.js";
 
 export interface NeutronNodeExecutionSuccess {
   readonly executed: true;
-  readonly attempt: 1;
+  readonly attempt: number;
   readonly graph: NeutronTaskGraph;
   readonly node: NeutronTaskNode;
   readonly parentId: string | null;
@@ -53,7 +54,7 @@ export interface NeutronNodeExecutionSuccess {
 
 export interface NeutronNodeExecutionRejected {
   readonly executed: false;
-  readonly attempt: 1;
+  readonly attempt: number;
   readonly graph: NeutronTaskGraph;
   readonly error: NeutronNodeExecutionFailure;
 }
@@ -70,21 +71,24 @@ export async function executeNeutronTaskNode(
   } catch (error) {
     return {
       executed: false,
-      attempt: 1,
+      attempt: input.attempt ?? 1,
       graph: input.graph,
       error: mapNeutronNodeFailure(error),
     };
   }
 
   const parent = parentRequiredCapabilities(preflight.graph, preflight.node);
-  const resolved = resolveNeutronNodeCapabilities({
-    sessionCapabilities: input.sessionCapabilities,
-    nodeRequiredCapabilities: preflight.node.requiredCapabilities,
-    ...(parent !== undefined ? { parentRequiredCapabilities: parent } : {}),
-    ...(input.profileAllowedTools !== undefined
-      ? { profileAllowedTools: input.profileAllowedTools }
-      : {}),
-  });
+  const resolved = clampNeutronCapabilitiesToCeiling(
+    resolveNeutronNodeCapabilities({
+      sessionCapabilities: input.sessionCapabilities,
+      nodeRequiredCapabilities: preflight.node.requiredCapabilities,
+      ...(parent !== undefined ? { parentRequiredCapabilities: parent } : {}),
+      ...(input.profileAllowedTools !== undefined
+        ? { profileAllowedTools: input.profileAllowedTools }
+        : {}),
+    }),
+    input.capabilityCeiling,
+  );
 
   const before = await input.fingerprintProject();
   let graph = startRunning(preflight.graph, input.taskId);
@@ -147,7 +151,7 @@ function success(
   const usage = mergeNeutronNodeUsage(input.session.sessionId, loop);
   return {
     executed: true,
-    attempt: 1,
+    attempt: input.attempt ?? 1,
     graph,
     node,
     parentId: node.parentId,
