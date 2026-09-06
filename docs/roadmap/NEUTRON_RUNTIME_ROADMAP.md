@@ -248,10 +248,10 @@ out-of-root, expired, cancelled, or schema-invalid requests fail closed and
 produce normalized auditable errors. Capability, root/session, result bounds,
 and fingerprint proofs cover the catalog.
 
-**Next bounded slice:** N5 Slice 5 — deterministic aggregation, stale-state
-detection, and provenance completion per maintainer brief; requires explicit
-authorization. Mutation routing requires separate authorization. Do not start
-Desktop model UI, optional N3 Slice 5, or P4l17.
+**N5 runtime milestone complete** after Slice 5 aggregation, stale-state
+detection, and provenance completion. Mutation routing requires separate
+authorization. Do not start Desktop model UI, optional N3 Slice 5, or P4l17
+without explicit maintainer authorization.
 
 ## N5. Executable task graph and subagents
 
@@ -269,7 +269,13 @@ bounded wave (default concurrency 1, hard cap 4).
 **Slice 4 implemented** — bounded retry (`maxAttempts` 2), cancellation
 propagation, layered timeout recovery, expired-lease recovery onto a new
 attempt, and stale-attempt protection. Still one wave; no graph runner.
-**N5 runtime milestone incomplete.** Slice 5+ requires explicit authorization.
+**Slice 5 implemented** — `aggregateNeutronTaskGraphResults`,
+`detectNeutronGraphStaleness`, and `reconcileNeutronTaskGraphExecution` provide
+deterministic graph outcomes, fail-closed stale project/checkpoint/profile
+detection, and parent-child/attempt/tool/context provenance. Still no graph
+runner loop.
+**N5 runtime milestone complete** for the authorized read-only scheduler.
+Mutation routing and N6 remain unauthorized.
 
 Extend the existing Neutron subagent records from persisted orchestration
 foundation into a controlled execution scheduler with:

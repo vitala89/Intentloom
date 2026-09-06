@@ -115,3 +115,37 @@ export {
   type NeutronAttemptAuthority,
   type NeutronAttemptEvidence,
 } from "./neutron-scheduler-attempt.js";
+export {
+  classifyNeutronGraphStatus,
+  digestNeutronGraphExecution,
+  neutronGraphExecutionId,
+  NEUTRON_GRAPH_STATUSES,
+  type NeutronGraphExecutionResult,
+  type NeutronGraphStatus,
+} from "./neutron-scheduler-graph-result.js";
+export {
+  detectNeutronGraphStaleness,
+  fingerprintNeutronProfileAuthority,
+  snapshotNeutronCheckpoint,
+  snapshotNeutronProfile,
+  NEUTRON_GRAPH_STALE_KINDS,
+  type NeutronCheckpointAuthority,
+  type NeutronGraphStaleBaseline,
+  type NeutronGraphStaleKind,
+  type NeutronGraphStaleMismatch,
+  type NeutronGraphStaleReport,
+  type NeutronGraphStaleSnapshot,
+  type NeutronProfileAuthority,
+} from "./neutron-scheduler-stale.js";
+export {
+  buildNeutronGraphNodeRecord,
+  type NeutronGraphContextEvidence,
+  type NeutronGraphNodeRecord,
+  type NeutronGraphToolEvidence,
+} from "./neutron-scheduler-provenance.js";
+export {
+  aggregateNeutronTaskGraphResults,
+  reconcileNeutronTaskGraphExecution,
+  type AggregateNeutronTaskGraphResultsInput,
+  type ReconcileNeutronTaskGraphExecutionInput,
+} from "./neutron-scheduler-aggregate.js";
