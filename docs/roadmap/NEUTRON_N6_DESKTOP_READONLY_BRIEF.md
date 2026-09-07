@@ -861,40 +861,57 @@ See §35.
 ### Slice 2 — context + tool activity
 
 **Objective:** Show N3 bundle summary and N4 tool rows from the same turn/graph
-snapshot.  
+snapshot.
+
 **Reuse:** context/tool types; existing Inspect/Doctor/Diff viewmodels for
-summaries.  
+summaries.
+
 **Files:** `NeutronActivityPanel`, `NeutronEvidencePanel` (context section),
-event bridge if needed for in-turn tools.  
-**Tests:** tool denied, secret paths listed not opened, model text ≠ tool card.  
-**Non-goals:** graph viz, Apply.  
+event bridge if needed for in-turn tools.
+
+**Tests:** tool denied, secret paths listed not opened, model text ≠ tool card.
+
+**Non-goals:** graph viz, Apply.
+
 **Exit:** user can see what was read and which tools ran.
 
 ### Slice 3 — task graph, subagents, retry, cancel
 
 **Objective:** Visualize `NeutronTaskGraph` / `NeutronGraphExecutionResult`;
-attempts; concurrency 1–4; cancel ack.  
-**Reuse:** N5 aggregate/stale/provenance.  
-**Files:** `NeutronTaskGraph`, graph RPC get/execute.  
-**Tests:** all node states, retry history, stale, cancel.  
-**Non-goals:** mutation proposal, auto-rerun.  
+attempts; concurrency 1–4; cancel ack.
+
+**Reuse:** N5 aggregate/stale/provenance.
+
+**Files:** `NeutronTaskGraph`, graph RPC get/execute.
+
+**Tests:** all node states, retry history, stale, cancel.
+
+**Non-goals:** mutation proposal, auto-rerun.
+
 **Exit:** graph states match protocol; no “thinking” state.
 
 ### Slice 4 — evidence / provenance / result UX
 
 **Objective:** Production-worthy result + evidence panel (usage, fingerprints,
-warnings).  
-**Reuse:** `ProvenanceDetail`, usage budget, graph `accepted`.  
-**Tests:** stale vs completed chrome; budget-exceeded.  
-**Non-goals:** Apply.  
+warnings).
+
+**Reuse:** `ProvenanceDetail`, usage budget, graph `accepted`.
+
+**Tests:** stale vs completed chrome; budget-exceeded.
+
+**Non-goals:** Apply.
+
 **Exit:** N6 read-only exit criteria in §38 except mutation-proposal display.
 
 ### Slice 5 — mutation proposal / review UI (after mutation contract gates)
 
 **Objective:** Render `NeutronMutationProposal` as **not authorized**; no
-Approve/Apply unless a **later** grant.  
-**Reuse:** Slice 1 contracts; DiffViewer for paths.  
-**Non-goals:** Mutation Slice 3 Apply.  
+Approve/Apply unless a **later** grant.
+
+**Reuse:** Slice 1 contracts; DiffViewer for paths.
+
+**Non-goals:** Mutation Slice 3 Apply.
+
 **Exit:** proposal visible; Apply impossible.
 
 Do not start Slice 5 from N6 Slice 1 authorization.
