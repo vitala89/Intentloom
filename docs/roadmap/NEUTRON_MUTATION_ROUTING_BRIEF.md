@@ -21,25 +21,25 @@ brief.
 
 ## 1. Current baseline
 
-| Item | Evidence |
-| --- | --- |
-| **Current `main` SHA** | `f2a363e2dc53b12390c09b2e1a6dd8815eb692a5` (`main` == `origin/main`) |
-| **N5 Slice 5** | PR #453 head `a6819a49fe3cf1adbda93ea835d96fdf1decfc52`, merge `7a6e07c` |
-| **N5 handoff** | PR #454 head `502629ffe7e5256a5fa4ad3b15b37c4760747240` |
-| **N1–N5** | Runtime contracts, model adapter, context assembly, read-only tool router, executable task graph |
-| **`mutationAllowed`** | N1 `NeutronRuntimeSession.mutationAllowed` is typed `false`; validator rejects any other value |
-| **N4 catalog** | `inspect`, `doctor`, `memorySearch`, `timeline`, `conformance`, `securityAudit`, `projectDiff` |
-| **Mutation implementation** | Unauthorized |
+| Item                        | Evidence                                                                                         |
+| --------------------------- | ------------------------------------------------------------------------------------------------ |
+| **Current `main` SHA**      | `f2a363e2dc53b12390c09b2e1a6dd8815eb692a5` (`main` == `origin/main`)                             |
+| **N5 Slice 5**              | PR #453 head `a6819a49fe3cf1adbda93ea835d96fdf1decfc52`, merge `7a6e07c`                         |
+| **N5 handoff**              | PR #454 head `502629ffe7e5256a5fa4ad3b15b37c4760747240`                                          |
+| **N1–N5**                   | Runtime contracts, model adapter, context assembly, read-only tool router, executable task graph |
+| **`mutationAllowed`**       | N1 `NeutronRuntimeSession.mutationAllowed` is typed `false`; validator rejects any other value   |
+| **N4 catalog**              | `inspect`, `doctor`, `memorySearch`, `timeline`, `conformance`, `securityAudit`, `projectDiff`   |
+| **Mutation implementation** | Unauthorized                                                                                     |
 
 ### Capability summary used by this brief
 
-| Surface | Role today |
-| --- | --- |
-| **N4** | Fail-closed read-only router. `definition.readOnly !== true` → `mutation-forbidden`. Capabilities must be `readOnly: true` and `allowNetwork: false`. |
-| **N5** | One-wave scheduler with leases, retry, cancellation, stale project/checkpoint/profile detection, provenance. No Apply. |
-| **ADR-0053** | Approved Apply gate + `executeApprovedApplyPlan` → `synchronizeGeneratedFiles`. |
-| **Daemon** | `intentloom.project.approvedApply.v1` exists; handler is optional and currently unwired in Desktop spawn. |
-| **Desktop** | `ApprovedApplyModal` can request `["atomic-commit-approval"]`; App apply path is a **client stub** that fabricates success and does not call the daemon. |
+| Surface      | Role today                                                                                                                                               |
+| ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **N4**       | Fail-closed read-only router. `definition.readOnly !== true` → `mutation-forbidden`. Capabilities must be `readOnly: true` and `allowNetwork: false`.    |
+| **N5**       | One-wave scheduler with leases, retry, cancellation, stale project/checkpoint/profile detection, provenance. No Apply.                                   |
+| **ADR-0053** | Approved Apply gate + `executeApprovedApplyPlan` → `synchronizeGeneratedFiles`.                                                                          |
+| **Daemon**   | `intentloom.project.approvedApply.v1` exists; handler is optional and currently unwired in Desktop spawn.                                                |
+| **Desktop**  | `ApprovedApplyModal` can request `["atomic-commit-approval"]`; App apply path is a **client stub** that fabricates success and does not call the daemon. |
 
 ---
 
@@ -77,14 +77,14 @@ engine.
 
 ### 3.1 Diff / proposal
 
-| Primitive | Location | Mutation? |
-| --- | --- | --- |
-| `diffProject` | `@intentloom/application`; N4 `projectDiff`; daemon `intentloom.project.diff.v1` | No. `applied: false`; contents omitted in N4. |
-| `inspectProject` / `doctorProject` | Application + N4 | No. Doctor `dryRun: true` in N4. |
-| Agent Workspace Plan | `promoteWorkspaceConversationToProposal` → `.aif/proposals/<id>.json` | No. |
-| Agent Workspace Review | `reviewWorkspaceProposal` | No. |
-| Existing-project adoption plan | `planProjectAdoption` / `adoptProject` proposal | No until apply. |
-| `ApprovedApplyPlan` | `packages/protocol/src/approved-apply.ts` | Schema only: `planDigest`, `projectStateDigest`, `targetRoot`, `changedPaths`, optional `expiresAt`. |
+| Primitive                          | Location                                                                         | Mutation?                                                                                            |
+| ---------------------------------- | -------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| `diffProject`                      | `@intentloom/application`; N4 `projectDiff`; daemon `intentloom.project.diff.v1` | No. `applied: false`; contents omitted in N4.                                                        |
+| `inspectProject` / `doctorProject` | Application + N4                                                                 | No. Doctor `dryRun: true` in N4.                                                                     |
+| Agent Workspace Plan               | `promoteWorkspaceConversationToProposal` → `.aif/proposals/<id>.json`            | No.                                                                                                  |
+| Agent Workspace Review             | `reviewWorkspaceProposal`                                                        | No.                                                                                                  |
+| Existing-project adoption plan     | `planProjectAdoption` / `adoptProject` proposal                                  | No until apply.                                                                                      |
+| `ApprovedApplyPlan`                | `packages/protocol/src/approved-apply.ts`                                        | Schema only: `planDigest`, `projectStateDigest`, `targetRoot`, `changedPaths`, optional `expiresAt`. |
 
 **Change representation for Neutron Apply:** `ApprovedApplyPlan` + the
 `GeneratedFile[]` payload consumed by `executeApprovedApplyPlan`. N4
@@ -92,13 +92,13 @@ engine.
 
 ### 3.2 Transaction / apply engines (do not replace)
 
-| Engine | API | What it writes | Use for Neutron? |
-| --- | --- | --- | --- |
-| **Generated-file transaction** | `synchronizeGeneratedFiles` | Planned generated/metadata bytes; collision/path checks; staged write; rollback on failure; post-write consistency | **Yes — inner writer** for Approved Apply |
-| **Approved Apply** | `evaluateApprovedApplyPlan` + `executeApprovedApplyPlan` | Gate then sync; rollback evidence of previous bytes | **Yes — canonical Neutron Apply** (ADR-0053) |
-| **Adoption apply** | `applyProjectAdoption` | Duty-watch/governance pack `create` ops + journal | **No.** Wrong artifact set ([desktop pre-apply review](DESKTOP_ADOPTION_PRE_APPLY_SECURITY_REVIEW.md)). |
-| **Workspace apply** | `applyWorkspaceProposal` | Requires non-empty `approvedBy`, then calls `adoptProject` | **Not** general file mutation. Human-approval *pattern* only. |
-| **Scaffold** | `applyProjectScaffold` / `rollbackProjectScaffold` | Inception/foundation scaffolds | **No.** |
+| Engine                         | API                                                      | What it writes                                                                                                     | Use for Neutron?                                                                                        |
+| ------------------------------ | -------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------- |
+| **Generated-file transaction** | `synchronizeGeneratedFiles`                              | Planned generated/metadata bytes; collision/path checks; staged write; rollback on failure; post-write consistency | **Yes — inner writer** for Approved Apply                                                               |
+| **Approved Apply**             | `evaluateApprovedApplyPlan` + `executeApprovedApplyPlan` | Gate then sync; rollback evidence of previous bytes                                                                | **Yes — canonical Neutron Apply** (ADR-0053)                                                            |
+| **Adoption apply**             | `applyProjectAdoption`                                   | Duty-watch/governance pack `create` ops + journal                                                                  | **No.** Wrong artifact set ([desktop pre-apply review](DESKTOP_ADOPTION_PRE_APPLY_SECURITY_REVIEW.md)). |
+| **Workspace apply**            | `applyWorkspaceProposal`                                 | Requires non-empty `approvedBy`, then calls `adoptProject`                                                         | **Not** general file mutation. Human-approval _pattern_ only.                                           |
+| **Scaffold**                   | `applyProjectScaffold` / `rollbackProjectScaffold`       | Inception/foundation scaffolds                                                                                     | **No.**                                                                                                 |
 
 Daemon method `intentloom.project.approvedApply.v1` already types
 `ApprovedApplyRequest` → `ApprovedApplyExecutionResult`. Rust allowlist
@@ -107,12 +107,12 @@ includes the method. Production Desktop does not currently inject
 
 ### 3.3 Approval infrastructure
 
-| Record | Binding | Gap for Neutron |
-| --- | --- | --- |
-| `ApprovedApplyRequest.grantedApprovals` | String list; gate requires `"atomic-commit-approval"` | **Spoofable** if the model or a tool argument supplies the list. Not a bound token. |
-| `ExistingProjectAdoptionApproval` | `approvalId`, `approvalDigest`, `approvalToken`, `root`, `planDigest`, `projectFingerprint`, `approvalValidUntil`, source `local-interactive` | Stronger pattern. `approved: true` is host-written, not model-written. Not wired to Neutron. |
-| Workspace `approvedBy` | Non-empty string | Identity string only; no digest/expiry/scope. |
-| Desktop modal | Host click injects `["atomic-commit-approval"]` | Correct *injection locus*; current App success path is fake. |
+| Record                                  | Binding                                                                                                                                       | Gap for Neutron                                                                              |
+| --------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| `ApprovedApplyRequest.grantedApprovals` | String list; gate requires `"atomic-commit-approval"`                                                                                         | **Spoofable** if the model or a tool argument supplies the list. Not a bound token.          |
+| `ExistingProjectAdoptionApproval`       | `approvalId`, `approvalDigest`, `approvalToken`, `root`, `planDigest`, `projectFingerprint`, `approvalValidUntil`, source `local-interactive` | Stronger pattern. `approved: true` is host-written, not model-written. Not wired to Neutron. |
+| Workspace `approvedBy`                  | Non-empty string                                                                                                                              | Identity string only; no digest/expiry/scope.                                                |
+| Desktop modal                           | Host click injects `["atomic-commit-approval"]`                                                                                               | Correct _injection locus_; current App success path is fake.                                 |
 
 **Reuse:** host-issued bound approval (adoption-approval shape) + Approved
 Apply plan/request/result. **Do not** accept model-controlled
@@ -120,25 +120,25 @@ Apply plan/request/result. **Do not** accept model-controlled
 
 ### 3.4 Evidence / verification / rollback
 
-| Primitive | Evidence |
-| --- | --- |
-| Sync transaction result | `status`, created/updated/unchanged paths, `rollbackCompleted`, `rollbackFailures`, post-write consistency (`docs/reference/GENERATED_FILES.md`) |
-| Approved Apply result | `applied`, `gateResult`, optional `rollbackEvidence` (`planDigest`, `targetRoot`, previous bytes or `null` for creates) |
-| N5 provenance | Parent/child, attempt, capability, N3, N4 digests (`neutron-scheduler-provenance.ts`) |
-| N5 stale | Project fingerprint, checkpoint authority, profile fingerprint (`detectNeutronGraphStaleness`); `rerunAttempted: false` |
-| Doctor / diff / conformance / security | Existing N4 read-only tools after Apply |
-| Desktop stub rollback | Placeholder `"// previous snapshot content"` — **not** evidence |
+| Primitive                              | Evidence                                                                                                                                         |
+| -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Sync transaction result                | `status`, created/updated/unchanged paths, `rollbackCompleted`, `rollbackFailures`, post-write consistency (`docs/reference/GENERATED_FILES.md`) |
+| Approved Apply result                  | `applied`, `gateResult`, optional `rollbackEvidence` (`planDigest`, `targetRoot`, previous bytes or `null` for creates)                          |
+| N5 provenance                          | Parent/child, attempt, capability, N3, N4 digests (`neutron-scheduler-provenance.ts`)                                                            |
+| N5 stale                               | Project fingerprint, checkpoint authority, profile fingerprint (`detectNeutronGraphStaleness`); `rerunAttempted: false`                          |
+| Doctor / diff / conformance / security | Existing N4 read-only tools after Apply                                                                                                          |
+| Desktop stub rollback                  | Placeholder `"// previous snapshot content"` — **not** evidence                                                                                  |
 
 ### 3.5 Path / sandbox
 
-| Control | Current strength |
-| --- | --- |
-| N4 `trustedRoot` | Session root equality; rejects `..` in tool `root`. No `realpath`. |
-| N4 session bind | Invocation `root`/`sessionId` must match session. |
-| Sync `noncanonicalPathPlan` | Rejects non-canonical generated paths before write. |
-| Sync pre-replace | Comment: revalidate to narrow symlink substitution races. |
-| Inspection | `inspection-root-symlink` diagnostic exists on inspect, not on N4 mutate (there is no N4 mutate). |
-| Extension lock / scaffold | `realpath` / reject symlinked roots. |
+| Control                     | Current strength                                                                                  |
+| --------------------------- | ------------------------------------------------------------------------------------------------- |
+| N4 `trustedRoot`            | Session root equality; rejects `..` in tool `root`. No `realpath`.                                |
+| N4 session bind             | Invocation `root`/`sessionId` must match session.                                                 |
+| Sync `noncanonicalPathPlan` | Rejects non-canonical generated paths before write.                                               |
+| Sync pre-replace            | Comment: revalidate to narrow symlink substitution races.                                         |
+| Inspection                  | `inspection-root-symlink` diagnostic exists on inspect, not on N4 mutate (there is no N4 mutate). |
+| Extension lock / scaffold   | `realpath` / reject symlinked roots.                                                              |
 
 Mutation raises the cost of N4’s string-equality root check. Slice work must
 reuse sync/canonicalization and add Neutron preflight `realpath` containment
@@ -189,19 +189,19 @@ Do not accept generic `approved: true` from model-controlled input.
 Host-issued after explicit human Approve. Fields (canonical names may match
 adoption approval where they already exist):
 
-| Bind | Why |
-| --- | --- |
-| `approvalId` / `approvalDigest` / `approvalToken` | Unforgeable host secret; digest covers the bound facts |
-| `root` / `projectId` / `sessionId` | Session and project containment |
-| `graphId` / `taskId` (optional but recommended) | N5 provenance |
-| `transactionId` / `planDigest` | Exact proposal |
-| `changedPaths` | Affected-file scope |
-| `expectedMutationType` | e.g. `approved-apply-generated-sync` |
-| `capabilityScope` | Profile/delegation clamp snapshot |
-| `projectStateDigest` / N5 project fingerprint | Baseline |
-| `checkpoint` / `profile` fingerprints when present | N5 stale dimensions |
-| `approvedAt` / `approvalValidUntil` | Expiry |
-| `approvingActor` / `approvalSource: local-interactive` | Human, not model |
+| Bind                                                   | Why                                                    |
+| ------------------------------------------------------ | ------------------------------------------------------ |
+| `approvalId` / `approvalDigest` / `approvalToken`      | Unforgeable host secret; digest covers the bound facts |
+| `root` / `projectId` / `sessionId`                     | Session and project containment                        |
+| `graphId` / `taskId` (optional but recommended)        | N5 provenance                                          |
+| `transactionId` / `planDigest`                         | Exact proposal                                         |
+| `changedPaths`                                         | Affected-file scope                                    |
+| `expectedMutationType`                                 | e.g. `approved-apply-generated-sync`                   |
+| `capabilityScope`                                      | Profile/delegation clamp snapshot                      |
+| `projectStateDigest` / N5 project fingerprint          | Baseline                                               |
+| `checkpoint` / `profile` fingerprints when present     | N5 stale dimensions                                    |
+| `approvedAt` / `approvalValidUntil`                    | Expiry                                                 |
+| `approvingActor` / `approvalSource: local-interactive` | Human, not model                                       |
 
 The Apply path receives this record from Desktop/CLI/daemon session state,
 **never** from tool `argumentsJson`.
@@ -278,14 +278,14 @@ object.
 
 Do not invent `executor`.
 
-| Role | Propose | Approve | Apply |
-| --- | --- | --- | --- |
-| `context-scout` | No | No | No |
-| `test-engineer` | No | No | No |
-| `release-analyst` | No | No | No |
-| `reviewer` | No (review artifact only) | No — human only for initial slices | No |
-| `feature-builder` | Yes, if profile/task grant proposal class | No | No |
-| Human / Desktop / CLI host | Materialize review | **Yes** | **Yes** (after approval) |
+| Role                       | Propose                                   | Approve                            | Apply                    |
+| -------------------------- | ----------------------------------------- | ---------------------------------- | ------------------------ |
+| `context-scout`            | No                                        | No                                 | No                       |
+| `test-engineer`            | No                                        | No                                 | No                       |
+| `release-analyst`          | No                                        | No                                 | No                       |
+| `reviewer`                 | No (review artifact only)                 | No — human only for initial slices | No                       |
+| `feature-builder`          | Yes, if profile/task grant proposal class | No                                 | No                       |
+| Human / Desktop / CLI host | Materialize review                        | **Yes**                            | **Yes** (after approval) |
 
 Read-only profiles (`readOnly: true`) cannot Apply. A child cannot gain
 proposal or Apply authority because a parent requested it.
@@ -368,7 +368,7 @@ the approved set.
 
 **Implementation gap:** `executeApprovedApplyPlan` does not check
 `filesToApply ⊆ plan.changedPaths`. `applyBoundedExecutionChange` checks
-`outsideApprovedPaths` *before* calling the engine. Neutron must enforce
+`outsideApprovedPaths` _before_ calling the engine. Neutron must enforce
 this in the mutation preflight (and should close the engine gap in the same
 implementation milestone).
 
@@ -417,12 +417,12 @@ any captured previous bytes.
 
 ### Cancellation
 
-| When | Required behavior |
-| --- | --- |
-| Before approval | Drop/cancel proposal; no write. |
-| After approval, before Apply | Invalidate approval; no write. |
-| During transaction | Follow sync cancellation/rollback; no detached background Apply. |
-| During verification | Mutation already committed; record verification failure; do not silently roll back unless the user requests authorized rollback. |
+| When                         | Required behavior                                                                                                                |
+| ---------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| Before approval              | Drop/cancel proposal; no write.                                                                                                  |
+| After approval, before Apply | Invalidate approval; no write.                                                                                                   |
+| During transaction           | Follow sync cancellation/rollback; no detached background Apply.                                                                 |
+| During verification          | Mutation already committed; record verification failure; do not silently roll back unless the user requests authorized rollback. |
 
 N5 session/node cancel already blocks new admission. Apply must observe the
 same `AbortSignal` / session `cancelled` state.
@@ -491,13 +491,13 @@ that an unauthorized write was acceptable. Policy stays outside the model.
 Prefer the existing sync + Approved Apply rollback evidence. Do not add a
 second backup system.
 
-| Question | Answer from current code |
-| --- | --- |
-| Snapshot before Apply? | Per-file previous bytes captured in `executeApprovedApplyPlan` *before* sync; plus sync’s own staging backups. |
-| Restore affected files? | Sync rollback on failure; `rollbackEvidence` on **success** for later human revert. |
-| Automatic rollback on mid-transaction failure? | Yes, via sync; incomplete rollback is evidenced, not silent. |
-| User rollback after successful Apply? | Evidence exists; no Neutron-authorized “rollback tool” yet. Future slice: host-only revert using `rollbackEvidence`, same approval class. |
-| Who authorizes rollback? | Human/host, same as Apply. Model cannot roll back to hide a write. |
+| Question                                       | Answer from current code                                                                                                                  |
+| ---------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| Snapshot before Apply?                         | Per-file previous bytes captured in `executeApprovedApplyPlan` _before_ sync; plus sync’s own staging backups.                            |
+| Restore affected files?                        | Sync rollback on failure; `rollbackEvidence` on **success** for later human revert.                                                       |
+| Automatic rollback on mid-transaction failure? | Yes, via sync; incomplete rollback is evidenced, not silent.                                                                              |
+| User rollback after successful Apply?          | Evidence exists; no Neutron-authorized “rollback tool” yet. Future slice: host-only revert using `rollbackEvidence`, same approval class. |
+| Who authorizes rollback?                       | Human/host, same as Apply. Model cannot roll back to hide a write.                                                                        |
 
 Close the gap where failed sync omits `rollbackEvidence` so operators can
 still see captured previous bytes.
@@ -508,17 +508,17 @@ still see captured previous bytes.
 
 Every mutation must answer:
 
-| Question | Source |
-| --- | --- |
-| Who approved? | Approval `approvingActor` / source |
-| Project / session / task? | Session + N5 node |
-| Model / provider? | N2 adapter capability on the proposing attempt |
-| Proposal digest / files / baseline? | Plan + fingerprints |
-| Transaction / capabilities? | Apply request + clamp snapshot |
-| When approved / applied? | Approval + execution timestamps |
-| What changed? | Sync path lists + rollback evidence |
-| Verification? | Typed post-apply results |
-| Rollback available/performed? | Evidence + transaction diagnostics |
+| Question                            | Source                                         |
+| ----------------------------------- | ---------------------------------------------- |
+| Who approved?                       | Approval `approvingActor` / source             |
+| Project / session / task?           | Session + N5 node                              |
+| Model / provider?                   | N2 adapter capability on the proposing attempt |
+| Proposal digest / files / baseline? | Plan + fingerprints                            |
+| Transaction / capabilities?         | Apply request + clamp snapshot                 |
+| When approved / applied?            | Approval + execution timestamps                |
+| What changed?                       | Sync path lists + rollback evidence            |
+| Verification?                       | Typed post-apply results                       |
+| Rollback available/performed?       | Evidence + transaction diagnostics             |
 
 No hidden reasoning. N5 provenance digests stay; Apply adds approval and
 transaction digests.
@@ -532,14 +532,14 @@ Existing daemon method is sufficient **transport** for Apply:
 
 Still required before Desktop N6 can render a real loop:
 
-| Artifact | Action |
-| --- | --- |
-| Neutron approval schema + validator | New (Slice 1) |
-| Proposal / review viewmodel | New or reuse adoption viewmodel fields |
-| Session `mutationAllowed` | Keep `false` for model snapshots; do not treat as Apply grant |
-| `NEUTRON_READ_ONLY_TOOLS` | Unchanged until the Apply tool slice |
-| Apply result | Reuse `ApprovedApplyExecutionResult` |
-| Paths | Project-relative only; no loose command strings |
+| Artifact                            | Action                                                        |
+| ----------------------------------- | ------------------------------------------------------------- |
+| Neutron approval schema + validator | New (Slice 1)                                                 |
+| Proposal / review viewmodel         | New or reuse adoption viewmodel fields                        |
+| Session `mutationAllowed`           | Keep `false` for model snapshots; do not treat as Apply grant |
+| `NEUTRON_READ_ONLY_TOOLS`           | Unchanged until the Apply tool slice                          |
+| Apply result                        | Reuse `ApprovedApplyExecutionResult`                          |
+| Paths                               | Project-relative only; no loose command strings               |
 
 Do not expose filesystem commands. Desktop must call the daemon, not a
 webview stub.
@@ -569,13 +569,13 @@ stub as a mutation path.
 N5 deferred the package until an N6 consumer or cross-package pressure.
 Re-evaluation:
 
-| Fact | Implication |
-| --- | --- |
-| 22 `neutron-scheduler-*.ts` modules | File-count trigger from the N5 brief is already exceeded |
-| Canonical Apply lives in `@intentloom/application` | `approved-apply-engine`, `synchronizeGeneratedFiles` |
-| Desktop must not import `@intentloom/application` | Already true; Desktop uses protocol + daemon |
-| Daemon already has Approved Apply RPC | No new package needed to carry mutation |
-| Creating a runtime package now | Large migration; mixes scheduler + transaction writer |
+| Fact                                               | Implication                                              |
+| -------------------------------------------------- | -------------------------------------------------------- |
+| 22 `neutron-scheduler-*.ts` modules                | File-count trigger from the N5 brief is already exceeded |
+| Canonical Apply lives in `@intentloom/application` | `approved-apply-engine`, `synchronizeGeneratedFiles`     |
+| Desktop must not import `@intentloom/application`  | Already true; Desktop uses protocol + daemon             |
+| Daemon already has Approved Apply RPC              | No new package needed to carry mutation                  |
+| Creating a runtime package now                     | Large migration; mixes scheduler + transaction writer    |
 
 **Decision: keep mutation routing in `@intentloom/application`**
 (`neutron-mutation-*.ts` modules + existing approved-apply files). **Do not**
@@ -589,27 +589,27 @@ not that justification.
 
 ## 21. Threat model
 
-| Threat | Mitigation |
-| --- | --- |
-| Prompt injection asks the model to write | No write tools; Apply not in model catalog; proposal ≠ approval |
-| Capability escalation | Intersect clamp; child cannot widen; read-only roles denied |
-| Approval spoofing | Host-issued token/digest; ignore model `grantedApprovals` / `approved` |
-| Approval replay | Consume approval; one-shot Apply |
-| Stale approval | Mandatory fingerprint + N5 stale + expiry |
-| Affected-file widening | Exact/subset path check before write; fail whole transaction |
-| Path traversal | N4 `..` + session root + sync noncanonical paths |
-| Symlink escape | `realpath` preflight; sync symlink revalidation |
-| Transaction tampering | Immutable plan digest; Apply by reference |
-| Partial write | Existing sync rollback; evidence on incomplete rollback |
-| Duplicate Apply | Consumed approval + changed baseline |
-| Retry after partial write | No automatic Apply retry; reconcile first |
-| Concurrent conflicting Apply | One active mutation per project |
-| Cancelled Apply continuing | Abort + session cancel; no background Apply |
-| Malicious model patch | Human review of exact paths/bytes; digest bind |
-| Dependency/script injection | No install/shell tools |
-| Secret exfiltration via mutation | N3 secret-like path exclusion; approval still required for any write |
-| Tampered verification | Typed existing ops only; host displays raw results |
-| Rollback failure | `transaction-rollback-incomplete` + listed paths; no success |
+| Threat                                   | Mitigation                                                             |
+| ---------------------------------------- | ---------------------------------------------------------------------- |
+| Prompt injection asks the model to write | No write tools; Apply not in model catalog; proposal ≠ approval        |
+| Capability escalation                    | Intersect clamp; child cannot widen; read-only roles denied            |
+| Approval spoofing                        | Host-issued token/digest; ignore model `grantedApprovals` / `approved` |
+| Approval replay                          | Consume approval; one-shot Apply                                       |
+| Stale approval                           | Mandatory fingerprint + N5 stale + expiry                              |
+| Affected-file widening                   | Exact/subset path check before write; fail whole transaction           |
+| Path traversal                           | N4 `..` + session root + sync noncanonical paths                       |
+| Symlink escape                           | `realpath` preflight; sync symlink revalidation                        |
+| Transaction tampering                    | Immutable plan digest; Apply by reference                              |
+| Partial write                            | Existing sync rollback; evidence on incomplete rollback                |
+| Duplicate Apply                          | Consumed approval + changed baseline                                   |
+| Retry after partial write                | No automatic Apply retry; reconcile first                              |
+| Concurrent conflicting Apply             | One active mutation per project                                        |
+| Cancelled Apply continuing               | Abort + session cancel; no background Apply                            |
+| Malicious model patch                    | Human review of exact paths/bytes; digest bind                         |
+| Dependency/script injection              | No install/shell tools                                                 |
+| Secret exfiltration via mutation         | N3 secret-like path exclusion; approval still required for any write   |
+| Tampered verification                    | Typed existing ops only; host displays raw results                     |
+| Rollback failure                         | `transaction-rollback-incomplete` + listed paths; no success           |
 
 ---
 
@@ -708,13 +708,13 @@ after tests pass.” Future policy automation needs a separate authorization.
 
 ## 27. Open decisions (non-blocking for Slice 1)
 
-| # | Decision | Recommendation | Blocker for |
-| --- | --- | --- | --- |
-| 1 | Flip `NeutronRuntimeSession.mutationAllowed` | Keep `false` on model-facing sessions; host approval is the grant | Slice 3 |
-| 2 | Persist proposals under `.aif/` vs in-memory review | In-memory / daemon-held until Slice 5 | Slice 5 |
-| 3 | `packages/neutron-runtime` | Keep in application; revisit at N6 | N6 |
-| 4 | User rollback tool after success | Host-only, Slice 4+ | Slice 4 |
-| 5 | Exact vs subset `changedPaths` | Exact set for Slice 3 | Slice 3 |
+| #   | Decision                                            | Recommendation                                                    | Blocker for |
+| --- | --------------------------------------------------- | ----------------------------------------------------------------- | ----------- |
+| 1   | Flip `NeutronRuntimeSession.mutationAllowed`        | Keep `false` on model-facing sessions; host approval is the grant | Slice 3     |
+| 2   | Persist proposals under `.aif/` vs in-memory review | In-memory / daemon-held until Slice 5                             | Slice 5     |
+| 3   | `packages/neutron-runtime`                          | Keep in application; revisit at N6                                | N6          |
+| 4   | User rollback tool after success                    | Host-only, Slice 4+                                               | Slice 4     |
+| 5   | Exact vs subset `changedPaths`                      | Exact set for Slice 3                                             | Slice 3     |
 
 ---
 
