@@ -2,16 +2,18 @@
 
 ## Status
 
-**Planning only.** This brief does not authorize implementation.
+**Slice 1 implemented** — protocol and validator contracts for a Neutron
+mutation proposal, host-issued bound approval, and Apply-preflight
+request/result. Session snapshots remain `mutationAllowed: false`. No N4
+mutation route. No Apply. Mutation routing is **not** complete.
 
-N1–N5 read-only runtime is complete on `main`. Mutation routing, write tools,
-generic shell, N6 Desktop Neutron Workspace, optional N3 Slice 5, and P4l17
-remain unauthorized until a later explicit maintainer grant.
+Slices 2–5, write tools, generic shell, N6 Desktop implementation, optional
+N3 Slice 5, and P4l17 remain unauthorized until a later explicit maintainer
+grant. N6 read-only may be commissioned separately after these contracts.
 
 Evidence baseline: `origin/main` @
-`f2a363e2dc53b12390c09b2e1a6dd8815eb692a5` (2026-09-07). N5 Slice 5 merge
-`7a6e07c27ffd35bb679803611ede3dfdfcf25a00` (#453). N5 handoff merge / current
-`main` `f2a363e2dc53b12390c09b2e1a6dd8815eb692a5` (#454).
+`59f9846283dc4e1d733b935d2d7e6a92ec2db2f3` (2026-09-07, mutation-routing
+brief handoff #456). Implementation started from that SHA.
 
 Authoritative roadmap gate:
 [`NEUTRON_RUNTIME_ROADMAP.md`](NEUTRON_RUNTIME_ROADMAP.md) §N5–§N6 and this
@@ -617,11 +619,11 @@ not that justification.
 
 Derived from gaps above. Docs-only this PR.
 
-### Slice 1 — contracts and validators only (first implementation slice)
+### Slice 1 — contracts and validators only (implemented)
 
 Neutron approval / proposal / Apply-preflight schemas and validators.
 Session snapshots remain `mutationAllowed: false`. No router mutation tool.
-No Apply. Unblocks N6 from inventing a second DTO.
+No Apply. Unblocks N6 from inventing a second DTO. See §30.
 
 ### Slice 2 — router authorization + approved-transaction preflight, no Apply
 
@@ -720,10 +722,10 @@ after tests pass.” Future policy automation needs a separate authorization.
 
 ## 28. Recommendation
 
-**READY FOR MUTATION ROUTING SLICE 1 AUTHORIZATION**
+**MUTATION SLICE 1 COMPLETE — SLICE 2 READY FOR AUTHORIZATION**
 
-Do not start Slice 2–5, N6, optional N3 Slice 5, generic shell, or P4l17
-without a new explicit grant.
+Do not start Slice 2–5 Apply, N6 implementation, optional N3 Slice 5,
+generic shell, or P4l17 without a new explicit grant.
 
 ---
 
@@ -737,3 +739,23 @@ without a new explicit grant.
 - Returning to P4l
 - Creating `packages/neutron-runtime`
 - Auto-approval policies
+
+---
+
+## 30. Slice 1 implementation record
+
+Authorized contracts-only slice. Ownership stays in `@intentloom/protocol`
+and `@intentloom/validator`. No `packages/neutron-runtime`.
+
+| Decision                        | Record                                                                                                                                                         |
+| ------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Proposal vs `ApprovedApplyPlan` | Envelope (`NeutronMutationProposal`) wrapping `ApprovedApplyPlan`. No second `changedPaths` / digest / root representation.                                    |
+| Bound approval                  | New `NeutronMutationApproval` using the adoption token/digest pattern (`approved:<proposalDigest>`, digest of unsigned facts). Not a `grantedApprovals` array. |
+| Mutation class                  | Narrow `approved-transaction-apply` only.                                                                                                                      |
+| `mutationAllowed`               | Unchanged literal `false` on `NeutronRuntimeSession`.                                                                                                          |
+| Digests                         | `sha256:<64 lowercase hex>` over code-point-canonical JSON. Paths: `normalizeStoredPath`, unique, code-point sort.                                             |
+| Preflight                       | Typed request/result only. Semantic evaluation (live fingerprint, consumption, symlink `realpath`, lock) is Slice 2.                                           |
+| Structural vs semantic          | Validators throw closed on schema/binding errors. Result `reasons` are reserved for later semantic decisions.                                                  |
+| Symlink                         | Structural path checks do **not** claim containment against symlink escape.                                                                                    |
+| N4 / Apply                      | No mutation tool. No `executeApprovedApplyPlan`.                                                                                                               |
+| N6 read-only                    | Contract gate satisfied for a **separate** brief. Not authorized here.                                                                                         |
