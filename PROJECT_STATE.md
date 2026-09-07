@@ -660,8 +660,12 @@ project/checkpoint/profile detection, and provenance completion
 no full graph runner.
 **No autonomous multi-agent execution.** N5 runtime milestone complete for
 the authorized read-only scheduler.
-Mutation routing, Desktop model UI, and optional N3 Slice 5 CLI/daemon exposure
-remain unauthorized per `DUTY_WATCH.md`. Other post-P4 candidates remain in
+The mutation-routing maintainer brief is
+`docs/roadmap/NEUTRON_MUTATION_ROUTING_BRIEF.md`. Mutation **implementation**
+is not authorized. N6 Desktop remains unauthorized unless the maintainer
+separately chooses it (read-only N6 may later proceed in parallel after
+mutation Slice 1 contracts). Optional N3 Slice 5 CLI/daemon exposure remains
+unauthorized per `DUTY_WATCH.md`. Other post-P4 candidates remain in
 `POST_W12_NEXT_INCREMENT_PLAN.md`.
 
 The Desktop discovery/error and Diff/Timeline slices remain recorded in

@@ -9,13 +9,38 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Neutron N5 Slice 5 complete** on `main` (#453). Deterministic
-graph aggregation, stale project/checkpoint/profile detection, and
-parent-child/attempt/tool/context provenance sit on the existing one-wave
-lease scheduler. **N5 runtime milestone complete** for the authorized
-read-only scheduler. **No graph runner loop.** Maintainer decision: **N5
-before mutation routing**. **MUTATION ROUTING REMAINS DEFERRED.** Mutation
-routing, N6 Desktop, optional N3 Slice 5, and P4l17 remain unauthorized.
+Status: **N5 complete** on `main` (#453 / #454). Mutation-routing
+**maintainer brief prepared**
+(`docs/roadmap/NEUTRON_MUTATION_ROUTING_BRIEF.md`). Mutation
+**implementation is not authorized.** N6 Desktop remains unauthorized unless
+the maintainer separately chooses it. Optional N3 Slice 5 and P4l17 remain
+unauthorized.
+
+### 2026-09-07, Neutron mutation-routing maintainer brief
+
+- **Status:** complete (docs only; not merged at handoff write)
+- **Branch:** `docs/neutron-mutation-routing-brief`
+- **Starting main SHA:** `f2a363e2dc53b12390c09b2e1a6dd8815eb692a5`
+- **Objective:** Architecture/security brief for explicit human-approved
+  transactional Apply without model write authority
+- **Completed:**
+  - Inventory of `diffProject`, Approved Apply (ADR-0053),
+    `synchronizeGeneratedFiles`, adoption/workspace approval, N4/N5,
+    daemon `intentloom.project.approvedApply.v1`, Desktop stub
+  - Authority model: proposal vs host-only Apply
+  - Bound approval (not model `grantedApprovals`)
+  - Stale/TOCTOU, clamp, threat model, slices
+  - `packages/neutron-runtime`: keep in application
+  - N6: read-only may begin in parallel after Slice 1 contracts
+- **Decision:** **READY FOR MUTATION ROUTING SLICE 1 AUTHORIZATION.**
+  First slice = contracts + validators only. No Apply, no write tools, no
+  shell, no N6 implementation.
+- **Not completed:** mutation implementation, N6, N3 Slice 5, P4l17
+- **Next first action:** **Explicit maintainer authorization required for
+  Neutron mutation-routing Slice 1** — protocol/validator contracts for
+  bound approval and proposal/Apply preflight per
+  `docs/roadmap/NEUTRON_MUTATION_ROUTING_BRIEF.md` §22–§23. Do not start
+  Slice 2–5 Apply, N6, optional N3 Slice 5, or P4l17.
 
 ### 2026-09-07, Neutron N5 Slice 5 — aggregation, stale-state, and provenance (merged)
 

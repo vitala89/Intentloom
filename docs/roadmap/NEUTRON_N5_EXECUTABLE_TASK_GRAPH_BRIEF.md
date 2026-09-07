@@ -14,9 +14,11 @@ recovery, and stale-attempt protection on that wave. **Slice 5 implemented** —
 deterministic graph aggregation, stale project/checkpoint/profile detection,
 and parent-child/attempt/tool/context provenance on a one-wave reconciliation
 boundary. **N5 runtime milestone complete** for the authorized read-only
-scheduler. No graph runner loop. Mutation routing remains deferred.
+scheduler. No graph runner loop.
 
-Mutation routing remains deferred.
+Mutation-routing **brief** is
+[`NEUTRON_MUTATION_ROUTING_BRIEF.md`](NEUTRON_MUTATION_ROUTING_BRIEF.md).
+Mutation **implementation** remains deferred.
 
 Evidence baseline: `origin/main` @ `957756e12c6de488a943f49735816eb6ac2e498a`
 (2026-09-04; legitimate advancement over N5 handoff `279eacd` — Dependabot deps
