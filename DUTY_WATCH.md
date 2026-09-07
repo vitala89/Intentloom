@@ -18,9 +18,12 @@ unauthorized.
 
 ### 2026-09-07, Neutron mutation-routing maintainer brief
 
-- **Status:** complete (docs only; not merged at handoff write)
-- **Branch:** `docs/neutron-mutation-routing-brief`
+- **Status:** complete on `main` (#455)
+- **PR:** https://github.com/vitala89/Intentloom/pull/455
+- **Branch:** `docs/neutron-mutation-routing-brief` (merged)
 - **Starting main SHA:** `f2a363e2dc53b12390c09b2e1a6dd8815eb692a5`
+- **Head SHA:** `8d85b01cfb91851410ed3856a935a431b5dc097d`
+- **Merge SHA / current main:** `85bfd743d3424a0c04dd5dc2c23b7136c1633abb`
 - **Objective:** Architecture/security brief for explicit human-approved
   transactional Apply without model write authority
 - **Completed:**
