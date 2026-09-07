@@ -665,11 +665,11 @@ The mutation-routing maintainer brief is
 implemented** — proposal, bound-approval, and Apply-preflight protocol
 contracts plus structural validators. No mutation routing execution, no
 Apply, no N4 write tool, and `NeutronRuntimeSession.mutationAllowed`
-remains literal `false`. N6 Desktop remains unauthorized unless the
-maintainer separately chooses a read-only workstream (contract gate for
-that brief is now satisfied). Optional N3 Slice 5 CLI/daemon exposure
-remains unauthorized per `DUTY_WATCH.md`. Other post-P4 candidates remain
-in `POST_W12_NEXT_INCREMENT_PLAN.md`.
+remains literal `false`. **N6 read-only maintainer brief prepared**
+(`docs/roadmap/NEUTRON_N6_DESKTOP_READONLY_BRIEF.md`). **N6 implementation
+is not authorized.** Optional N3 Slice 5 CLI/daemon exposure remains
+unauthorized per `DUTY_WATCH.md`. Other post-P4 candidates remain in
+`POST_W12_NEXT_INCREMENT_PLAN.md`.
 
 The Desktop discovery/error and Diff/Timeline slices remain recorded in
 [PHASE1_CONTRACTS.md](docs/desktop/PHASE1_CONTRACTS.md).

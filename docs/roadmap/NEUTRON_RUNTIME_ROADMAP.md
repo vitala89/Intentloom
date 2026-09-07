@@ -321,6 +321,13 @@ Apply or N6 from this roadmap entry alone.
 
 ## N6. Desktop Neutron Workspace
 
+**Maintainer brief (read-only, not authorized to implement):**
+[`NEUTRON_N6_DESKTOP_READONLY_BRIEF.md`](NEUTRON_N6_DESKTOP_READONLY_BRIEF.md)
+(evidence baseline `ee3ec5bb`, 2026-09-08). First recommended increment is
+**N6 Slice 1** (daemon Neutron session RPC + Desktop session shell). Keep
+runtime in `@intentloom/application`. Optional N3 Slice 5 is not required
+for N6. Mutation Apply remains a separate workstream.
+
 Integrate the runtime with the official Desktop application after the v0.6
 read-only project slice and shared client contracts are stable.
 
@@ -462,7 +469,9 @@ preventing an unfinished agent layer from expanding the v0.6 release scope.
 
 ## First implementation action
 
-N1–N5 are complete. Mutation-routing Slice 1 contracts exist. The next
-Neutron increment is **not** implied by this file: Slice 2 semantic
-preflight and N6 Desktop each require explicit maintainer authorization.
-See [`NEUTRON_MUTATION_ROUTING_BRIEF.md`](NEUTRON_MUTATION_ROUTING_BRIEF.md).
+N1–N5 are complete. Mutation-routing Slice 1 contracts exist. The N6
+read-only maintainer brief exists. The next Neutron increment is **not**
+implied by this file: **N6 Slice 1** (recommended next) and mutation
+Slice 2 each require explicit maintainer authorization. See
+[`NEUTRON_N6_DESKTOP_READONLY_BRIEF.md`](NEUTRON_N6_DESKTOP_READONLY_BRIEF.md)
+and [`NEUTRON_MUTATION_ROUTING_BRIEF.md`](NEUTRON_MUTATION_ROUTING_BRIEF.md).
