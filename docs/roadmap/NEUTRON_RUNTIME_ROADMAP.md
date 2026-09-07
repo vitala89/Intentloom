@@ -249,9 +249,11 @@ produce normalized auditable errors. Capability, root/session, result bounds,
 and fingerprint proofs cover the catalog.
 
 **N5 runtime milestone complete** after Slice 5 aggregation, stale-state
-detection, and provenance completion. Mutation routing requires separate
-authorization. Do not start Desktop model UI, optional N3 Slice 5, or P4l17
-without explicit maintainer authorization.
+detection, and provenance completion. The mutation-routing **maintainer
+brief** is
+[`NEUTRON_MUTATION_ROUTING_BRIEF.md`](NEUTRON_MUTATION_ROUTING_BRIEF.md).
+Mutation **implementation** remains unauthorized. Do not start Desktop model
+UI, optional N3 Slice 5, or P4l17 without explicit maintainer authorization.
 
 ## N5. Executable task graph and subagents
 
@@ -275,7 +277,8 @@ deterministic graph outcomes, fail-closed stale project/checkpoint/profile
 detection, and parent-child/attempt/tool/context provenance. Still no graph
 runner loop.
 **N5 runtime milestone complete** for the authorized read-only scheduler.
-Mutation routing and N6 remain unauthorized.
+Mutation-routing brief prepared; mutation implementation and N6 remain
+unauthorized.
 
 Extend the existing Neutron subagent records from persisted orchestration
 foundation into a controlled execution scheduler with:
@@ -296,6 +299,20 @@ Read-only roles remain unable to produce direct mutations.
 Exit gate: deterministic multi-task fixtures prove dependency handling,
 cancellation, timeout recovery, budget enforcement, provenance, and stable
 aggregation without hidden background mutation.
+
+## N5.5 Mutation routing (brief only)
+
+**Maintainer brief:**
+[`NEUTRON_MUTATION_ROUTING_BRIEF.md`](NEUTRON_MUTATION_ROUTING_BRIEF.md)
+(evidence baseline `f2a363e`, 2026-09-07).
+
+Design only: model/subagent → typed proposal → host-issued human approval →
+one N4 mutation-class route → `executeApprovedApplyPlan` →
+`synchronizeGeneratedFiles`. No generic write/shell. First implementation
+slice (unauthorized): contracts and validators only.
+
+N6 read-only Desktop **may** begin in parallel after that Slice 1 contract
+gate. Do not implement mutation or N6 from this roadmap entry alone.
 
 ## N6. Desktop Neutron Workspace
 
@@ -440,8 +457,7 @@ preventing an unfinished agent layer from expanding the v0.6 release scope.
 
 ## First implementation action
 
-After the Desktop v0.6 stack and client-contract baseline is accepted, create a
-new implementation branch for N1 and an ADR for the first provider adapter. The
-first runtime pull request should contain contracts, validators, deterministic
-fixtures, and documentation only. Provider execution follows in a separate,
-reviewable pull request after the contract diff is accepted.
+N1–N5 are complete. The next **authorized** Neutron increment is **not**
+implied by this file: mutation-routing Slice 1 (contracts/validators) and
+N6 Desktop each require explicit maintainer authorization. See
+[`NEUTRON_MUTATION_ROUTING_BRIEF.md`](NEUTRON_MUTATION_ROUTING_BRIEF.md).
