@@ -9,12 +9,42 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **N5 complete** on `main` (#453 / #454). Mutation-routing
-**maintainer brief prepared**
-(`docs/roadmap/NEUTRON_MUTATION_ROUTING_BRIEF.md`). Mutation
-**implementation is not authorized.** N6 Desktop remains unauthorized unless
-the maintainer separately chooses it. Optional N3 Slice 5 and P4l17 remain
-unauthorized.
+Status: **N5 complete**. Mutation-routing **Slice 1 contracts implemented**
+on `main` (#464 / this handoff). No mutation Apply, no N4 mutation route,
+`mutationAllowed` remains `false`. N6 read-only contract gate is satisfied
+but **N6 is not authorized**. Slice 2–5, optional N3 Slice 5, and P4l17
+remain unauthorized.
+
+### 2026-09-07, Neutron mutation-routing Slice 1 — contracts and validators (merged)
+
+- **Status:** complete on `main` (#464)
+- **PR:** https://github.com/vitala89/Intentloom/pull/464
+- **Branch:** `feat/neutron-mutation-contracts` (merged)
+- **Starting main SHA:** `59f9846283dc4e1d733b935d2d7e6a92ec2db2f3` (post-#456)
+- **Head SHA:** `6f2ec713e87576c1b43171925ec33206a965d373`
+- **Merge SHA / current main:** `431d1ed8fd99588cb3f5f864f30a47027dd2b090`
+- **Objective:** Slice 1 protocol/validator contracts for bound approval and
+  proposal/Apply preflight. Zero project mutation.
+- **Completed:**
+  - `NeutronMutationProposal` wraps `ApprovedApplyPlan`
+  - Host-issued `NeutronMutationApproval` (adoption token/digest pattern)
+  - Preflight request/result types and structural validators
+  - Frozen fixtures and `tests/neutron-mutation-contracts.test.ts`
+  - `mutationAllowed` unchanged (`false`); no N4 mutation tool; no Apply
+  - Docs: brief §30, runtime roadmap §N5.5, `PROJECT_STATE.md`
+- **Verification:** `pnpm verify` 295 files, 2571 passed, 3 skipped. CI
+  Governance, Compatibility (Ubuntu/macOS/Windows, Node 22/24), CodeQL green
+- **Decision:** **MUTATION SLICE 1 COMPLETE — SLICE 2 READY FOR
+  AUTHORIZATION.** **N6 READ-ONLY CONTRACT GATE SATISFIED** (assessment
+  only; not authorization).
+- **Not completed:** Slice 2 semantic preflight, N4 mutation route, Apply,
+  approval/replay store, project lock, N6, N3 Slice 5, P4l17
+- **Next first action:** **Explicit maintainer authorization required** for
+  one separately commissioned workstream: Neutron mutation-routing **Slice 2**
+  (router authorization + semantic Apply preflight, no Apply) per
+  `docs/roadmap/NEUTRON_MUTATION_ROUTING_BRIEF.md` §22, **or** a **N6
+  read-only** maintainer brief. Do not start Slice 2–5 Apply, N6
+  implementation, optional N3 Slice 5, or P4l17 without that grant.
 
 ### 2026-09-07, Neutron mutation-routing maintainer brief
 
