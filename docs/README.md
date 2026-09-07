@@ -53,6 +53,7 @@ Product and platform directions:
 - [Neutron N3 Context Assembly Brief](roadmap/NEUTRON_N3_CONTEXT_ASSEMBLY_BRIEF.md)
 - [Neutron N5 Executable Task Graph Brief](roadmap/NEUTRON_N5_EXECUTABLE_TASK_GRAPH_BRIEF.md)
 - [Neutron Mutation Routing Brief](roadmap/NEUTRON_MUTATION_ROUTING_BRIEF.md)
+- [Neutron N6 Desktop Read-Only Brief](roadmap/NEUTRON_N6_DESKTOP_READONLY_BRIEF.md)
 - [Persistent Agent Memory](concepts/PERSISTENT_AGENT_MEMORY.md)
 - [Controlled Agent Learning and Procedural Memory](concepts/CONTROLLED_AGENT_LEARNING_AND_PROCEDURAL_MEMORY.md)
 - [Security Analysis and Remediation](concepts/SECURITY_ANALYSIS_AND_REMEDIATION.md)

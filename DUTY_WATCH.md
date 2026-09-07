@@ -9,11 +9,37 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **N5 complete**. Mutation-routing **Slice 1 contracts implemented**
-on `main` (#464 / this handoff). No mutation Apply, no N4 mutation route,
-`mutationAllowed` remains `false`. N6 read-only contract gate is satisfied
-but **N6 is not authorized**. Slice 2–5, optional N3 Slice 5, and P4l17
-remain unauthorized.
+Status: **N5 complete**. Mutation-routing **Slice 1 contracts implemented**.
+**N6 read-only maintainer brief prepared** (this watch). N6 implementation
+is **not authorized**. `mutationAllowed` remains `false`. Mutation Slice
+2–5 Apply, optional N3 Slice 5, and P4l17 remain unauthorized.
+
+### 2026-09-08, Neutron N6 read-only Desktop maintainer brief
+
+- **Status:** complete on this branch (docs only; merge SHA pending)
+- **Branch:** `docs/neutron-n6-desktop-readonly-brief`
+- **Starting main SHA:** `ee3ec5bbfdb829cc94a0228aa17fd7cd6b0349d4`
+- **Objective:** Architecture/planning brief for a read-only Desktop Neutron
+  Workspace over authenticated daemon + N1–N5 types. Zero implementation.
+- **Completed:**
+  - Desktop/Tauri/Agent Workspace inventory and Apply-stub documentation
+  - Daemon RPC gap list; N1 session states; no streaming; no daemon push
+  - Layout: Neutron view inside existing Agent Workspace
+  - Runtime package: keep in `@intentloom/application`
+  - N3 Slice 5 not required for N6
+  - Slices 1–5; first slice = session RPC + Desktop shell
+  - Sequencing: N6 Slice 1 first
+  - Artifact: `docs/roadmap/NEUTRON_N6_DESKTOP_READONLY_BRIEF.md`
+- **Verification:** docs-only; `pnpm` markdown/format as required by hooks
+- **Decision:** **READY FOR N6 SLICE 1 AUTHORIZATION.** Do not start N6
+  implementation or Mutation Slice 2 from this brief.
+- **Not completed:** N6 implementation, Mutation Slice 2–5, N3 Slice 5, P4l17
+- **Next first action:** **Explicit maintainer authorization required for
+  Neutron N6 Slice 1** — daemon Neutron session RPC + Desktop read-only
+  session shell per
+  `docs/roadmap/NEUTRON_N6_DESKTOP_READONLY_BRIEF.md` §35. Do not start
+  N6 Slices 2–5, Mutation Slice 2–5 Apply, optional N3 Slice 5, or P4l17
+  without a separate grant.
 
 ### 2026-09-07, Neutron mutation-routing Slice 1 — contracts and validators (merged)
 
