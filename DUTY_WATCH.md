@@ -10,9 +10,66 @@ in a condition that the next watch can safely understand and continue.
 ## Current watch status
 
 Status: **N5 complete**. Mutation-routing **Slice 1 contracts implemented**.
-**N6 Slice 1 implemented** (daemon Neutron session RPC + Desktop read-only
-session shell). `mutationAllowed` remains literal `false`. N6 Slices 2–5,
-Mutation Slice 2–5 Apply, optional N3 Slice 5, and P4l17 remain unauthorized.
+**N6 Slice 1 implemented**. **N6 Slice 2 implemented** (context visibility +
+read-only tool activity). `mutationAllowed` remains literal `false`. N6
+Slices 3–5, Mutation Slice 2–5 Apply, optional N3 Slice 5, and P4l17 remain
+unauthorized.
+
+### 2026-09-09, Neutron N6 Slice 2 — context visibility + read-only tool activity (merged)
+
+- **Status:** complete on `main` (#470 / this handoff)
+- **Implementation PR:** https://github.com/vitala89/Intentloom/pull/470
+- **Implementation branch:** `feat/neutron-n6-context-tool-activity` (merged)
+- **Starting main / origin/main:** `b1da069a4806d72877f83368907953089c71a630`
+  (expected N6 Slice 2 baseline; tracked tree was clean; unrelated
+  `.commit-msg-*` / `.pr-body-*` / `.squash-msg-*` scratch preserved). Baseline
+  did not advance before implementation.
+- **Implementation head SHA:** `6a2645583efd2a030c5ee9ae311d9ac9cf504e94`
+- **Implementation merge SHA / current main:** `408a552f0b4440009170563f8ba9f01b6ba59efb`
+- **Objective:** Bounded N3 context summary and structured N4 read-only tool
+  activity on the completed `turn.execute` snapshot so Desktop can show what
+  was assembled and which tools actually ran.
+- **Architecture:** Desktop Neutron UI → typed `desktopClient` →
+  `invoke_neutron_request` → explicit Tauri allowlist → authenticated daemon →
+  versioned Neutron RPC → `@intentloom/application` session runtime wrapping
+  `runNeutronN2ReadOnlyLoop` + existing N3/N4. No `packages/neutron-runtime`.
+  RPC names unchanged; existing viewmodel extended.
+- **Context fields exposed:** `NeutronTurnContextSummary` —
+  `sessionId`, `root`, `itemCount`, `includedCount`, `excludedCount`,
+  `estimatedTokens`, `tokenBudget`, `contextTokens`, `limitExceeded`,
+  `excludedSecretLikePaths`, `sources[]` (`sourceId`, `kind`, `trustClass`,
+  `provenance`, `included`, optional `exclusionReason` / `path` /
+  `loadingLevel`). Canonical N3 kinds only.
+- **Not exposed:** assembled prompt, `modelPrompt`, `projectionEntries`,
+  excerpts, `contentDigest`, secret bodies, raw `payloadJson`, chain-of-thought.
+- **Secret redaction:** secret-like **paths** (e.g. `.env`) may cross protocol
+  and render as exclusion metadata; secret **bodies** do not. Desktop parse is
+  fail-closed.
+- **Tool activity fields:** `NeutronTurnToolActivity` — `invocationId`,
+  `toolName`, `status` (`completed` | `denied` | `failed`), `allowed`, `ok`,
+  `errorCode`, `capability`, bounded `inputSummary` / `resultSummary` (max 240
+  chars). Source is structured N4 envelopes, never model prose.
+- **Event bridge:** not added. Completed turn snapshot is sufficient.
+  Streaming remains unavailable.
+- **`mutationAllowed`:** literal `false`. No Apply, `ApprovedApplyModal`,
+  `approvedApply` RPC, shell, writeFile, or Desktop→provider path.
+- **File metrics (canonical `scripts/production-file-metrics.mjs`):**
+  `App.tsx` unchanged (496 phys / 465 eff); `desktop-client.ts` unchanged
+  (401 / 355); `WorkspaceContent.tsx` unchanged (300 / 284);
+  `desktop-client-neutron.ts` unchanged (84 / 79). New Desktop activity
+  modules all ≤191 effective. `neutron-session-runtime.ts` 293 / 279 (review
+  zone, under 300).
+- **Verification:** local `pnpm verify` — 300 files, 2592 passed, 3 skipped.
+  CI Governance, Compatibility (Ubuntu/macOS/Windows, Node 22/24), CodeQL
+  green on #470. Dependency Review not triggered (no lockfile change).
+- **Decision:** **N6 SLICE 2 COMPLETE.** The next Neutron increment is **not**
+  implied. Maintainer must separately authorize N6 Slice 3 (task graph /
+  subagents / retry / cancel visibility) **or** Mutation Routing Slice 2
+  (semantic preflight, no Apply).
+- **Not completed:** N6 Slices 3–5, Mutation Slice 2–5, Apply, optional N3
+  Slice 5, P4l17, streaming/event bridge
+- **Next first action:** **Explicit maintainer authorization required.** Do
+  not start N6 Slice 3 or Mutation Routing Slice 2 autonomously.
 
 ### 2026-09-08, Neutron N6 Slice 1 — Desktop read-only session shell (merged)
 
