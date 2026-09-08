@@ -12,7 +12,21 @@ import type {
   NeutronReadOnlyTool,
   NeutronRuntimeSession,
 } from "./neutron-runtime.js";
+import type {
+  NeutronTurnContextSummary,
+  NeutronTurnToolActivity,
+} from "./neutron-session-activity.js";
 import { ProtocolValidationError } from "./protocol-validation-error.js";
+
+export {
+  NEUTRON_TOOL_ACTIVITY_STATUSES,
+  NEUTRON_TURN_ACTIVITY_SUMMARY_MAX_CHARS,
+  NEUTRON_TURN_SECRET_PATH_LIMIT,
+  type NeutronToolActivityStatus,
+  type NeutronTurnContextSourceRow,
+  type NeutronTurnContextSummary,
+  type NeutronTurnToolActivity,
+} from "./neutron-session-activity.js";
 
 export {
   NEUTRON_ADAPTER_CAPABILITY_SCHEMA_URN,
@@ -39,6 +53,8 @@ export interface NeutronSessionViewmodel {
   readonly projectFingerprintBefore: string | null;
   readonly projectFingerprintAfter: string | null;
   readonly cancellationAcknowledged: boolean;
+  readonly contextSummary: NeutronTurnContextSummary | null;
+  readonly toolActivity: readonly NeutronTurnToolActivity[];
 }
 
 interface NeutronSessionResultPayload {

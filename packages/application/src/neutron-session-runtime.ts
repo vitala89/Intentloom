@@ -1,4 +1,5 @@
 import { randomUUID } from "node:crypto";
+import type { AgentRoleCapabilities } from "../../protocol/src/index.js";
 import {
   NEUTRON_ADAPTER_CAPABILITY_SCHEMA_URN,
   NEUTRON_RUNTIME_SESSION_SCHEMA_URN,
@@ -51,6 +52,7 @@ export interface NeutronSessionRuntimeOptions {
   readonly fingerprintProject?: (root: string) => Promise<string>;
   readonly now?: () => Date;
   readonly randomId?: () => string;
+  readonly capabilities?: AgentRoleCapabilities;
 }
 
 export interface NeutronSessionRuntime {
@@ -89,6 +91,8 @@ function emptyView(stored: StoredNeutronSession): NeutronSessionViewmodel {
     projectFingerprintBefore: stored.projectFingerprintBefore,
     projectFingerprintAfter: stored.projectFingerprintAfter,
     cancellationAcknowledged: false,
+    contextSummary: stored.contextSummary,
+    toolActivity: stored.toolActivity,
   };
 }
 
@@ -190,6 +194,8 @@ export function createNeutronSessionRuntime(
         errorMessage: null,
         projectFingerprintBefore: null,
         projectFingerprintAfter: null,
+        contextSummary: null,
+        toolActivity: [],
       };
       sessions.set(session.sessionId, stored);
       return emptyView(stored);
@@ -255,6 +261,9 @@ export function createNeutronSessionRuntime(
           fs,
           fingerprint,
           signal: controller.signal,
+          ...(options.capabilities !== undefined
+            ? { capabilities: options.capabilities }
+            : {}),
         });
         sessions.set(stored.session.sessionId, completed);
         return emptyView(completed);

@@ -1,17 +1,26 @@
+import type { AgentRoleCapabilities } from "../../protocol/src/index.js";
 import type {
   NeutronErrorCode,
   NeutronReadOnlyTool,
   NeutronRuntimeSession,
   NeutronSessionState,
+  NeutronToolEnvelope,
 } from "../../protocol/src/neutron-runtime.js";
 import type { NeutronAdapterCapability } from "../../protocol/src/neutron-runtime.js";
-import type { AgentRoleCapabilities } from "../../protocol/src/index.js";
+import type {
+  NeutronTurnContextSummary,
+  NeutronTurnToolActivity,
+} from "../../protocol/src/neutron-session-activity.js";
 import { validateNeutronRuntimeSession } from "../../validator/src/neutron-runtime.js";
 import { NeutronN2Error } from "../../validator/src/neutron-runtime-n2.js";
 import { inspectProject, type FileSystem } from "./index.js";
 import type { ModelAdapter } from "./model-adapter.js";
 import { runNeutronN2ReadOnlyLoop } from "./neutron-n2-loop.js";
 import { NeutronSessionOperationError } from "./neutron-session-errors.js";
+import {
+  projectNeutronContextSummary,
+  projectNeutronToolActivity,
+} from "./neutron-session-activity.js";
 import {
   createNeutronReadOnlyDispatch,
   routeNeutronToolInvocation,
@@ -43,6 +52,8 @@ export interface StoredNeutronSession {
   errorMessage: string | null;
   projectFingerprintBefore: string | null;
   projectFingerprintAfter: string | null;
+  contextSummary: NeutronTurnContextSummary | null;
+  toolActivity: readonly NeutronTurnToolActivity[];
   inFlight?:
     | {
         readonly controller: AbortController;
@@ -60,7 +71,10 @@ export async function runStoredNeutronTurn(input: {
   readonly fs: FileSystem;
   readonly fingerprint: (root: string) => Promise<string>;
   readonly signal: AbortSignal;
+  readonly capabilities?: AgentRoleCapabilities;
 }): Promise<StoredNeutronSession> {
+  const capabilities = input.capabilities ?? NEUTRON_SESSION_READ_ONLY_CAPS;
+  const envelopes: NeutronToolEnvelope[] = [];
   const dispatch = createNeutronReadOnlyDispatch({
     fs: input.fs,
     inspect: (root) => inspectProject(root, input.fs),
@@ -88,19 +102,21 @@ export async function runStoredNeutronTurn(input: {
           ...input.stored.session,
           state: "inspecting",
         },
-        capabilities: NEUTRON_SESSION_READ_ONLY_CAPS,
+        capabilities,
         dispatch,
         signal: input.signal,
       });
+      envelopes.push(routed.envelope);
       if (!routed.envelope.result.ok) {
-        throw new NeutronN2Error(
-          routed.envelope.result.errorCode ?? "operation-failed",
-          "read-only tool invocation failed",
-        );
+        return {
+          ok: false,
+          errorCode: routed.envelope.result.errorCode,
+        };
       }
       return JSON.parse(routed.envelope.result.payloadJson ?? "null");
     },
   });
+  const lastTool = envelopes.at(-1)?.invocation.toolName ?? null;
   return {
     ...input.stored,
     session: validateNeutronRuntimeSession({
@@ -111,11 +127,16 @@ export async function runStoredNeutronTurn(input: {
     adapter: input.stored.adapter,
     prompt: input.prompt,
     responseText: result.responseText,
-    toolName: result.tool.invocation.toolName,
+    toolName: lastTool,
     errorCode: null,
     errorMessage: null,
     projectFingerprintBefore: result.projectFingerprintBefore,
     projectFingerprintAfter: result.projectFingerprintAfter,
+    contextSummary:
+      result.contextAssembly === undefined
+        ? null
+        : projectNeutronContextSummary(result.contextAssembly),
+    toolActivity: projectNeutronToolActivity(envelopes),
     inFlight: undefined,
   };
 }
@@ -148,6 +169,8 @@ export function failedStoredSession(
     toolName: null,
     errorCode: code,
     errorMessage: error instanceof Error ? error.message : String(error),
+    contextSummary: null,
+    toolActivity: [],
     inFlight: undefined,
   };
 }

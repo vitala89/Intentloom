@@ -42,7 +42,6 @@ export function NeutronResult({
     <Card title="Latest result">
       <p>Prompt: {viewmodel.prompt ?? "—"}</p>
       <p>Response: {viewmodel.responseText ?? "—"}</p>
-      <p>Tool: {viewmodel.toolName ?? "—"}</p>
       <p>Streaming: {String(viewmodel.adapter.supportsStreaming)}</p>
       <p>Network: {viewmodel.adapter.networkMode}</p>
       <p>Data handling: {viewmodel.adapter.dataHandling}</p>

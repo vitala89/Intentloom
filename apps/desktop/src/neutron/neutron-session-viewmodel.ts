@@ -14,6 +14,10 @@ import {
   NEUTRON_SESSION_STATES,
 } from "@intentloom/protocol";
 import { DesktopBridgeError } from "../desktop-client.js";
+import {
+  parseNeutronContextSummary,
+  parseNeutronToolActivity,
+} from "./neutron-activity-viewmodel.js";
 
 export type NeutronUiPhase =
   "idle" | "connecting" | "submitting" | "cancelling";
@@ -137,6 +141,8 @@ export function parseNeutronDesktopViewmodel(
       "projectFingerprintAfter",
     ),
     cancellationAcknowledged: record.cancellationAcknowledged === true,
+    contextSummary: parseNeutronContextSummary(record.contextSummary),
+    toolActivity: parseNeutronToolActivity(record.toolActivity),
   };
 }
 

@@ -1,6 +1,7 @@
 import { Button } from "../design/components/core/Button.js";
 import { EmptyState } from "../design/components/states/EmptyState.js";
 import { Card } from "../design/components/layout/Card.js";
+import { NeutronActivityPanel } from "./NeutronActivityPanel.js";
 import { NeutronComposer } from "./NeutronComposer.js";
 import { NeutronResult } from "./NeutronResult.js";
 import { NeutronSessionHeader } from "./NeutronSessionHeader.js";
@@ -62,6 +63,7 @@ export function NeutronWorkspace({
         surface={surface}
         viewmodel={session.viewmodel}
       />
+      <NeutronActivityPanel viewmodel={session.viewmodel} />
       <NeutronComposer
         canCancel={canCancel}
         canRun={

@@ -55,6 +55,8 @@ function sessionPayload(responseText: string) {
     projectFingerprintBefore: "abc",
     projectFingerprintAfter: "abc",
     cancellationAcknowledged: false,
+    contextSummary: null,
+    toolActivity: [],
   };
 }
 

@@ -9,6 +9,10 @@ import {
 import { validateNeutronN2AdapterCapability } from "./neutron-runtime-n2.js";
 import { isObject } from "./neutron-runtime-helpers.js";
 import {
+  optionalContextSummary,
+  optionalToolActivity,
+} from "./neutron-session-activity.js";
+import {
   NEUTRON_ERROR_CODES,
   NEUTRON_READ_ONLY_TOOLS,
   type NeutronErrorCode,
@@ -80,6 +84,8 @@ export function validateNeutronSessionViewmodel(
       "projectFingerprintAfter",
     ),
     cancellationAcknowledged: value.cancellationAcknowledged === true,
+    contextSummary: optionalContextSummary(value.contextSummary),
+    toolActivity: optionalToolActivity(value.toolActivity),
   };
 }
 

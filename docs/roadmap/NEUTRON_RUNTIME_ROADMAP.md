@@ -324,9 +324,11 @@ Apply or N6 from this roadmap entry alone.
 **Maintainer brief:**
 [`NEUTRON_N6_DESKTOP_READONLY_BRIEF.md`](NEUTRON_N6_DESKTOP_READONLY_BRIEF.md).
 **N6 Slice 1 implemented** — daemon Neutron session RPC + Desktop read-only
-session shell. Runtime stays in `@intentloom/application`. Streaming is
-unavailable. `mutationAllowed` remains `false`. N6 Slices 2–5 and Mutation
-Slice 2 are **not authorized** by Slice 1.
+session shell. **N6 Slice 2 implemented** — bounded N3 context summary and
+structured N4 tool activity on the completed `turn.execute` snapshot. No event
+bridge. Runtime stays in `@intentloom/application`. Streaming is unavailable.
+`mutationAllowed` remains `false`. N6 Slices 3–5 and Mutation Slice 2 are
+**not authorized** by Slice 2.
 
 Integrate the runtime with the official Desktop application after the v0.6
 read-only project slice and shared client contracts are stable.
@@ -470,8 +472,8 @@ preventing an unfinished agent layer from expanding the v0.6 release scope.
 ## First implementation action
 
 N1–N5 are complete. Mutation-routing Slice 1 contracts exist. **N6 Slice 1
-is implemented.** The next Neutron increment is **not** implied by this
-file: N6 Slice 2 and mutation Slice 2 each require explicit maintainer
+and Slice 2 are implemented.** The next Neutron increment is **not** implied
+by this file: N6 Slice 3 and mutation Slice 2 each require explicit maintainer
 authorization. See
 [`NEUTRON_N6_DESKTOP_READONLY_BRIEF.md`](NEUTRON_N6_DESKTOP_READONLY_BRIEF.md)
 and [`NEUTRON_MUTATION_ROUTING_BRIEF.md`](NEUTRON_MUTATION_ROUTING_BRIEF.md).
