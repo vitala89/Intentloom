@@ -17,6 +17,7 @@ export type WorkspaceView =
   | "Feature intent"
   | "Bounded execution"
   | "Continuous loop"
+  | "Neutron"
   | "New project"
   | "Foundation workshop"
   | "Inspect"
@@ -33,6 +34,7 @@ export const workspaceViews: Array<{ label: WorkspaceView; icon: string }> = [
   { label: "Feature intent", icon: "◎" },
   { label: "Bounded execution", icon: "▷" },
   { label: "Continuous loop", icon: "↻" },
+  { label: "Neutron", icon: "⚛" },
   { label: "New project", icon: "✦" },
   { label: "Foundation workshop", icon: "◆" },
   { label: "Inspect", icon: "⌘" },

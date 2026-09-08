@@ -60,9 +60,19 @@ pub fn is_foundation_method(method: &str) -> bool {
     )
 }
 
+pub fn is_neutron_method(method: &str) -> bool {
+    matches!(
+        method,
+        "intentloom.neutron.session.create.v1"
+            | "intentloom.neutron.session.get.v1"
+            | "intentloom.neutron.session.cancel.v1"
+            | "intentloom.neutron.turn.execute.v1"
+    )
+}
+
 #[cfg(test)]
 mod tests {
-    use super::{is_foundation_method, is_inception_method};
+    use super::{is_foundation_method, is_inception_method, is_neutron_method};
 
     #[test]
     fn allows_continuous_loop_methods_without_wildcard() {
@@ -117,5 +127,14 @@ mod tests {
         assert!(!super::is_specialized_pack_activate_method(
             "intentloom.project.approvedApply.v1"
         ));
+        assert!(is_neutron_method("intentloom.neutron.session.create.v1"));
+        assert!(is_neutron_method("intentloom.neutron.turn.execute.v1"));
+        assert!(!is_neutron_method("intentloom.session.get.v1"));
+        assert!(!is_neutron_method("intentloom.project.approvedApply.v1"));
+        assert!(!is_neutron_method("intentloom.neutron.*"));
+        assert!(!is_foundation_method(
+            "intentloom.neutron.session.create.v1"
+        ));
+        assert!(!is_inception_method("intentloom.neutron.turn.execute.v1"));
     }
 }

@@ -20,6 +20,7 @@ import { AdoptionPreviewPage } from "./views/AdoptionPreviewPage.js";
 import { FeatureIntentView } from "./views/FeatureIntentView.js";
 import { BoundedExecutionView } from "./views/BoundedExecutionView.js";
 import { ContinuousLoopView } from "./views/ContinuousLoopView.js";
+import { NeutronWorkspace } from "./neutron/NeutronWorkspace.js";
 import { ExternalSpecializedPackPreviewPage } from "./views/ExternalSpecializedPackPreviewPage.js";
 import { OverviewView } from "./views/OverviewView.js";
 import { SettingsView } from "./views/SettingsView.js";
@@ -162,6 +163,15 @@ export function WorkspaceContent({
   if (activeView === "Continuous loop") {
     return (
       <ContinuousLoopView
+        onSelectProject={() => onRequestProjectSelect()}
+        root={root}
+      />
+    );
+  }
+
+  if (activeView === "Neutron") {
+    return (
+      <NeutronWorkspace
         onSelectProject={() => onRequestProjectSelect()}
         root={root}
       />

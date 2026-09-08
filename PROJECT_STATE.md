@@ -666,8 +666,10 @@ implemented** — proposal, bound-approval, and Apply-preflight protocol
 contracts plus structural validators. No mutation routing execution, no
 Apply, no N4 write tool, and `NeutronRuntimeSession.mutationAllowed`
 remains literal `false`. **N6 read-only maintainer brief prepared**
-(`docs/roadmap/NEUTRON_N6_DESKTOP_READONLY_BRIEF.md`). **N6 implementation
-is not authorized.** Optional N3 Slice 5 CLI/daemon exposure remains
+(`docs/roadmap/NEUTRON_N6_DESKTOP_READONLY_BRIEF.md`). **N6 Slice 1
+implemented** — daemon Neutron session RPC and Desktop read-only session
+shell. `mutationAllowed` remains literal `false`. N6 Slices 2–5 are not
+authorized. Optional N3 Slice 5 CLI/daemon exposure remains
 unauthorized per `DUTY_WATCH.md`. Other post-P4 candidates remain in
 `POST_W12_NEXT_INCREMENT_PLAN.md`.
 
