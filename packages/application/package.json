@@ -25,6 +25,7 @@
     "./neutron-context-assembly": "./src/neutron-context-assembly.ts",
     "./neutron-n4": "./src/neutron-tool-router.ts",
     "./neutron-scheduler": "./src/neutron-scheduler.ts",
+    "./neutron-session": "./src/neutron-session-runtime.ts",
     "./engineering-assessment": "./src/engineering-assessment.ts",
     "./engineering-quality": "./src/engineering-quality.ts"
   }

@@ -25,6 +25,8 @@ import { parseBoundedExecutionDaemonRequest } from "./bounded-execution-daemon-r
 import type { BoundedExecutionDaemonRequest } from "./bounded-execution-daemon-rpc.js";
 import { parseContinuousLoopDaemonRequest } from "./continuous-loop-daemon-rpc.js";
 import type { ContinuousLoopDaemonRequest } from "./continuous-loop-daemon-rpc.js";
+import { parseNeutronSessionDaemonRequest } from "./neutron-session-rpc.js";
+import type { NeutronDaemonRequest } from "./neutron-session-rpc.js";
 
 export type WorkspaceSliceDaemonRequest =
   | ExistingProjectWorkspacePrepareRequest
@@ -37,7 +39,8 @@ export type WorkspaceSliceDaemonRequest =
   | FeatureIntentDaemonRequest
   | BoundedExecutionDaemonRequest
   | ContinuousLoopDaemonRequest
-  | FoundationScaffoldDaemonRequest;
+  | FoundationScaffoldDaemonRequest
+  | NeutronDaemonRequest;
 
 export function parseWorkspaceSliceDaemonRequest(
   method: string,
@@ -55,6 +58,7 @@ export function parseWorkspaceSliceDaemonRequest(
     parseFeatureIntentDaemonRequest(method, params, id) ??
     parseBoundedExecutionDaemonRequest(method, params, id) ??
     parseContinuousLoopDaemonRequest(method, params, id) ??
-    parseFoundationScaffoldDaemonRequest(method, params, id)
+    parseFoundationScaffoldDaemonRequest(method, params, id) ??
+    parseNeutronSessionDaemonRequest(method, params, id)
   );
 }

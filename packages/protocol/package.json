@@ -11,6 +11,7 @@
     "./model-adapter": "./src/model-adapter.ts",
     "./neutron-runtime": "./src/neutron-runtime.ts",
     "./neutron-mutation": "./src/neutron-mutation.ts",
+    "./neutron-session": "./src/neutron-session-rpc.ts",
     "./engineering-assessment": "./src/engineering-assessment.ts",
     "./engineering-quality": "./src/engineering-quality.ts"
   }

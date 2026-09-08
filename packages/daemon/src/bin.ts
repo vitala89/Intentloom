@@ -84,6 +84,9 @@ import {
   handleContinuousLoopWorkspaceExecute,
   handleContinuousLoopWorkspacePrepare,
 } from "./continuous-loop-handlers.js";
+import { bindNeutronSessionHandlers } from "./neutron-session-handlers.js";
+import { createNeutronSessionRuntime } from "../../application/src/neutron-session-runtime.js";
+import { OllamaModelAdapter } from "../../application/src/ollama-model-adapter.js";
 
 function value(args: readonly string[], flag: string): string {
   const index = args.indexOf(flag);
@@ -204,6 +207,14 @@ async function main(): Promise<void> {
     boundedExecutionWorkspaceExecute: handleBoundedExecutionWorkspaceExecute,
     continuousLoopWorkspacePrepare: handleContinuousLoopWorkspacePrepare,
     continuousLoopWorkspaceExecute: handleContinuousLoopWorkspaceExecute,
+    ...bindNeutronSessionHandlers(
+      createNeutronSessionRuntime({
+        createAdapter: () =>
+          process.env.INTENTLOOM_NEUTRON_ADAPTER === "unconfigured"
+            ? null
+            : new OllamaModelAdapter(),
+      }),
+    ),
   });
   const stop = () => void daemon.close().then(() => process.exit(0));
   process.once("SIGINT", stop);

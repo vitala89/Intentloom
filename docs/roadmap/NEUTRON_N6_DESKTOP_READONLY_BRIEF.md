@@ -2,13 +2,15 @@
 
 ## Status
 
-**Docs-only brief.** N6 implementation is **not authorized**.
+**Slice 1 implemented** (daemon Neutron session RPC + Desktop read-only session
+shell). Slices 2–5 are **not authorized**. `mutationAllowed` remains `false`.
+Streaming and daemon event push remain unavailable.
 
 N1–N5 read-only runtime is complete in `@intentloom/application` and
 `@intentloom/protocol`. Mutation-routing **Slice 1 contracts** exist. Desktop
-v0.6 already ships an authenticated daemon adapter and Agent Workspace. No
-Neutron session RPC, no Desktop Neutron view, and no daemon event surface exist
-today.
+v0.6 already ships an authenticated daemon adapter and Agent Workspace. Slice 1
+adds named Neutron session RPCs and a Desktop Neutron view. Daemon event
+streaming remains unavailable.
 
 This brief designs the first official Desktop experience over those existing
 typed boundaries. The first N6 milestone remains **read-only**.
@@ -43,7 +45,7 @@ Related:
 | Progress                   | N1 events exist; daemon is request/response only — Slice 1 may complete on RPC return; later slices add a thin notify/poll bridge |
 | Apply                      | **Unavailable** for the entire N6 read-only milestone                                                                             |
 | Mutation / N6 sequencing   | **N6 Slice 1 first.** Mutation Slice 2 may later proceed in parallel under file ownership in §27                                  |
-| Next grant                 | **READY FOR N6 SLICE 1 AUTHORIZATION**                                                                                            |
+| Next grant                 | **Explicit maintainer authorization required** (do not assume N6 Slice 2)                                                         |
 
 ---
 
@@ -55,8 +57,8 @@ Related:
 | Tracked tree                    | Clean. Unrelated untracked `.commit-msg-*` / `.pr-body-*` scratch preserved |
 | Mutation Slice 1                | PR #464 merge `431d1ed8`; handoff #465 is current `main`                    |
 | `mutationAllowed`               | Literal `false` on `NeutronRuntimeSession`                                  |
-| Neutron daemon RPCs             | **None**                                                                    |
-| Desktop Neutron UI              | **None**                                                                    |
+| Neutron daemon RPCs             | Slice 1: create/get/cancel/turn.execute                                     |
+| Desktop Neutron UI              | Slice 1: Neutron workspace view (read-only session shell)                   |
 | Desktop Apply                   | `ApprovedApplyModal` is real UI; `App.tsx` **stubs** success without daemon |
 
 ---
@@ -802,7 +804,7 @@ Mutation Slice 2.
 
 ## 35. First N6 implementation milestone (exactly one)
 
-# N6 Slice 1 — Desktop read-only session shell + daemon contract exposure
+# N6 Slice 1 — Desktop read-only session shell + daemon contract exposure (implemented)
 
 ### Objective
 
@@ -996,4 +998,20 @@ optional N3 Slice 5, P4l17, `packages/neutron-runtime`, changing
 | -------------- | --------------------------------------------------- |
 | Brief baseline | `ee3ec5bbfdb829cc94a0228aa17fd7cd6b0349d4`          |
 | Artifact       | `docs/roadmap/NEUTRON_N6_DESKTOP_READONLY_BRIEF.md` |
-| Code changed   | None                                                |
+| Code changed   | None (brief-only record)                            |
+
+---
+
+## 42. Slice 1 implementation record
+
+| Item              | Value                                                                                                 |
+| ----------------- | ----------------------------------------------------------------------------------------------------- |
+| Baseline          | `d08ba9411c44128b39d5ddb279ccd14114103ad2`                                                            |
+| RPCs              | `intentloom.neutron.session.create.v1`, `.get.v1`, `.cancel.v1`, `intentloom.neutron.turn.execute.v1` |
+| Desktop           | Neutron view in existing Agent Workspace; `desktopClient` → `invoke_neutron_request` → daemon         |
+| Runtime           | `@intentloom/application/neutron-session` wrapping `runNeutronN2ReadOnlyLoop` plus existing N3/N4     |
+| `mutationAllowed` | Literal `false`                                                                                       |
+| Streaming         | Unavailable. No token stream and no daemon event push                                                 |
+| Cancellation      | Runtime-acknowledged through `session.cancel.v1` aborting the in-flight N2 `AbortSignal`              |
+| Apply             | Not invoked. Existing `ApprovedApplyModal` stub remains isolated                                      |
+| Next gate         | Explicit maintainer authorization required. Do not assume N6 Slice 2                                  |

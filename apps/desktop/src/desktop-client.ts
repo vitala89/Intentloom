@@ -29,6 +29,7 @@ import {
   type FoundationViewmodelPayload,
   type ExistingProjectViewmodelPayload,
   type InceptionViewmodelPayload,
+  type NeutronSessionViewmodelPayload,
   type InspectResult,
   type ProjectDiffParams,
   type ProjectDiffResult,
@@ -105,6 +106,27 @@ async function call<T>(
   }
 }
 
+async function invokeNamedViewmodel<T>(
+  command: string,
+  request: object,
+  label: string,
+  signal?: AbortSignal,
+): Promise<T> {
+  const response = await call<{ result?: { viewmodel?: unknown } }>(
+    command,
+    { request },
+    signal,
+  );
+  const viewmodel = response.result?.viewmodel;
+  if (typeof viewmodel !== "object" || viewmodel === null) {
+    throw new DesktopBridgeError(
+      `${label} response did not include a viewmodel`,
+      "bounded_validation_failed",
+    );
+  }
+  return viewmodel as T;
+}
+
 const desktopClientBase = {
   async selectProjectRoot(): Promise<string | null> {
     return call<string | null>("select_project_root", {});
@@ -161,19 +183,24 @@ const desktopClientBase = {
     request: object,
     signal?: AbortSignal,
   ): Promise<InceptionViewmodelPayload> {
-    const response = await call<{ result?: { viewmodel?: unknown } }>(
+    return invokeNamedViewmodel(
       "invoke_inception_request",
-      { request },
+      request,
+      "Inception",
       signal,
     );
-    const viewmodel = response.result?.viewmodel;
-    if (typeof viewmodel !== "object" || viewmodel === null) {
-      throw new DesktopBridgeError(
-        "Inception response did not include a viewmodel",
-        "bounded_validation_failed",
-      );
-    }
-    return viewmodel as InceptionViewmodelPayload;
+  },
+
+  async neutronRequest(
+    request: object,
+    signal?: AbortSignal,
+  ): Promise<NeutronSessionViewmodelPayload> {
+    return invokeNamedViewmodel(
+      "invoke_neutron_request",
+      request,
+      "Neutron",
+      signal,
+    );
   },
 
   async inceptionSessionCreate(
@@ -215,19 +242,12 @@ const desktopClientBase = {
     request: object,
     signal?: AbortSignal,
   ): Promise<FoundationViewmodelPayload> {
-    const response = await call<{ result?: { viewmodel?: unknown } }>(
+    return invokeNamedViewmodel(
       "invoke_foundation_request",
-      { request },
+      request,
+      "Foundation",
       signal,
     );
-    const viewmodel = response.result?.viewmodel;
-    if (typeof viewmodel !== "object" || viewmodel === null) {
-      throw new DesktopBridgeError(
-        "Foundation response did not include a viewmodel",
-        "bounded_validation_failed",
-      );
-    }
-    return viewmodel as FoundationViewmodelPayload;
   },
 
   async foundationWorkshopCreate(
