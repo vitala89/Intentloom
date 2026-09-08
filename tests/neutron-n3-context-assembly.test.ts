@@ -308,7 +308,9 @@ describe("Neutron N3 Slice 2 context assembly", () => {
           source.path === ".env" || source.path === "credentials.json",
       ),
     ).toBe(false);
-    expect(result.bundle.excludedSecretLikePaths).toEqual([]);
+    expect(result.bundle.excludedSecretLikePaths).toEqual(
+      expect.arrayContaining([".env", "credentials.json"]),
+    );
     expect(
       result.bundle.sources
         .filter((source) => source.path !== undefined)

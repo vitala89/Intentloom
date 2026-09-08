@@ -23,6 +23,7 @@ import {
   N3_WARNING_BUDGET,
   N3_WARNING_EMPTY_CONTEXT,
 } from "./neutron-context-collectors.js";
+import { listExcludedSecretLikePaths } from "./neutron-context-secret-paths.js";
 import { collectSlice3StateCandidates } from "./neutron-context-state-collectors.js";
 import {
   buildNeutronContextProjectionEntries,
@@ -92,13 +93,17 @@ export async function assembleNeutronContext(
   }
   if (allocation.limitExceeded) warnings.push(N3_WARNING_BUDGET);
 
+  const excludedSecretLikePaths = await listExcludedSecretLikePaths(
+    request.root,
+    fs,
+  );
   const bundle = validateNeutronContextBundle({
     schemaVersion: NEUTRON_CONTEXT_BUNDLE_SCHEMA_URN,
     root: request.root,
     sessionId: request.sessionId,
     estimatedTokens,
     sources,
-    excludedSecretLikePaths: [],
+    excludedSecretLikePaths,
   });
   const usage = validateNeutronUsageBudget({
     schemaVersion: NEUTRON_USAGE_BUDGET_SCHEMA_URN,

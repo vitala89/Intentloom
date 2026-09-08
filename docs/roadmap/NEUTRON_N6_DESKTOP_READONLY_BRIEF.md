@@ -2,9 +2,10 @@
 
 ## Status
 
-**Slice 1 implemented** (daemon Neutron session RPC + Desktop read-only session
-shell). Slices 2–5 are **not authorized**. `mutationAllowed` remains `false`.
-Streaming and daemon event push remain unavailable.
+**Slice 2 implemented** (context visibility + read-only tool activity). Slices
+3–5 are **not authorized**. `mutationAllowed` remains `false`. Streaming and
+daemon event push remain unavailable. No event bridge was added; Slice 2 uses
+the completed `turn.execute` snapshot.
 
 N1–N5 read-only runtime is complete in `@intentloom/application` and
 `@intentloom/protocol`. Mutation-routing **Slice 1 contracts** exist. Desktop
@@ -45,7 +46,7 @@ Related:
 | Progress                   | N1 events exist; daemon is request/response only — Slice 1 may complete on RPC return; later slices add a thin notify/poll bridge |
 | Apply                      | **Unavailable** for the entire N6 read-only milestone                                                                             |
 | Mutation / N6 sequencing   | **N6 Slice 1 first.** Mutation Slice 2 may later proceed in parallel under file ownership in §27                                  |
-| Next grant                 | **Explicit maintainer authorization required** (do not assume N6 Slice 2)                                                         |
+| Next grant                 | **Explicit maintainer authorization required** (do not assume N6 Slice 3 or Mutation Slice 2)                                     |
 
 ---
 
@@ -860,20 +861,32 @@ surfaces; then evidence polish; then proposal display after mutation gates).
 
 See §35.
 
-### Slice 2 — context + tool activity
+### Slice 2 — context + tool activity (implemented)
 
-**Objective:** Show N3 bundle summary and N4 tool rows from the same turn/graph
-snapshot.
+**Objective:** Show N3 bundle summary and N4 tool rows from the same completed
+`turn.execute` snapshot.
 
-**Reuse:** context/tool types; existing Inspect/Doctor/Diff viewmodels for
-summaries.
+**Delivered:**
 
-**Files:** `NeutronActivityPanel`, `NeutronEvidencePanel` (context section),
-event bridge if needed for in-turn tools.
+- Context projection: `NeutronTurnContextSummary` (item/included/excluded
+  counts, `estimatedTokens`, `tokenBudget`, `contextTokens`, `limitExceeded`,
+  `excludedSecretLikePaths`, source rows with kind/trust/path/inclusion/skill
+  level). No assembled prompt, no `projectionEntries`, no excerpts, no
+  `contentDigest`, no secret bodies.
+- Tool projection: `NeutronTurnToolActivity[]` from structured
+  `NeutronToolEnvelope` only (name, status completed/denied/failed, allowed,
+  ok, errorCode, capability, bounded input/result summaries).
+- Denied N4 invocations remain first-class `denied` outcomes; the session can
+  complete.
+- Desktop: `NeutronActivityPanel`, `NeutronContextSummary`,
+  `NeutronContextSources`, `NeutronToolActivity`. Model prose cannot create
+  tool cards.
+- Event bridge: **not added**. Completed turn snapshot is sufficient.
+- RPC names unchanged; `intentloom.neutron.turn.execute.v1` viewmodel extended.
 
 **Tests:** tool denied, secret paths listed not opened, model text ≠ tool card.
 
-**Non-goals:** graph viz, Apply.
+**Non-goals:** graph viz, Apply, streaming.
 
 **Exit:** user can see what was read and which tools ran.
 
@@ -1015,3 +1028,20 @@ optional N3 Slice 5, P4l17, `packages/neutron-runtime`, changing
 | Cancellation      | Runtime-acknowledged through `session.cancel.v1` aborting the in-flight N2 `AbortSignal`              |
 | Apply             | Not invoked. Existing `ApprovedApplyModal` stub remains isolated                                      |
 | Next gate         | Explicit maintainer authorization required. Do not assume N6 Slice 2                                  |
+
+---
+
+## 43. Slice 2 implementation record
+
+| Item              | Value                                                                                                                                 |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| RPCs              | Existing `intentloom.neutron.turn.execute.v1` (and create/get/cancel) viewmodel extended; method names unchanged                      |
+| Context fields    | `NeutronTurnContextSummary`: counts, estimatedTokens, tokenBudget, contextTokens, limitExceeded, excludedSecretLikePaths, source rows |
+| Tool fields       | `NeutronTurnToolActivity`: invocationId, toolName, status, allowed, ok, errorCode, capability, bounded input/result summaries         |
+| Secret redaction  | Secret-like paths may cross; excerpts, projection entries, modelPrompt, and secret bodies do not                                      |
+| Event bridge      | Not added. Completed turn snapshot is sufficient                                                                                      |
+| Streaming         | Still unavailable                                                                                                                     |
+| Graph             | Deferred to Slice 3                                                                                                                   |
+| `mutationAllowed` | Literal `false`                                                                                                                       |
+| Apply             | Not invoked. No Approved Apply path                                                                                                   |
+| Next gate         | Explicit maintainer authorization required. Do not assume N6 Slice 3 or Mutation Slice 2                                              |
