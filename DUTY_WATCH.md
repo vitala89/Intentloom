@@ -10,9 +10,45 @@ in a condition that the next watch can safely understand and continue.
 ## Current watch status
 
 Status: **N5 complete**. Mutation-routing **Slice 1 contracts implemented**.
-**N6 read-only maintainer brief prepared** (this watch). N6 implementation
-is **not authorized**. `mutationAllowed` remains `false`. Mutation Slice
-2–5 Apply, optional N3 Slice 5, and P4l17 remain unauthorized.
+**N6 Slice 1 implemented** (daemon Neutron session RPC + Desktop read-only
+session shell). `mutationAllowed` remains literal `false`. N6 Slices 2–5,
+Mutation Slice 2–5 Apply, optional N3 Slice 5, and P4l17 remain unauthorized.
+
+### 2026-09-08, Neutron N6 Slice 1 — Desktop read-only session shell (merged)
+
+- **Status:** complete on `main` (#468 / this handoff)
+- **Implementation PR:** https://github.com/vitala89/Intentloom/pull/468
+- **Implementation branch:** `feat/neutron-n6-desktop-session-shell` (merged)
+- **Starting main / origin/main:** `d08ba9411c44128b39d5ddb279ccd14114103ad2`
+  (N6 brief handoff #467). Tracked tree was clean; unrelated `.commit-msg-*`
+  / `.pr-body-*` scratch preserved.
+- **Implementation head SHA:** `21b50f3811694d09f21edb3d7fc7b49503da8b4f`
+- **Implementation merge SHA / current main:** `394dd7125712c30d23da112b5158e540b0d6a3d1`
+- **Objective:** Named authenticated Neutron session RPCs and a Neutron view
+  inside the existing Agent Workspace. One project-bound read-only turn.
+- **Completed:**
+  - RPCs: `intentloom.neutron.session.create.v1`, `.get.v1`, `.cancel.v1`,
+    `intentloom.neutron.turn.execute.v1` (does not overload `session.get.v1`)
+  - Path: Desktop Neutron view → `desktopClient` → `invoke_neutron_request` →
+    daemon allowlist → `@intentloom/application` session runtime wrapping
+    `runNeutronN2ReadOnlyLoop` + existing N3/N4
+  - Root/project binding; root change clears Desktop Neutron state
+  - Runtime-acknowledged cancel via in-flight N2 `AbortSignal`
+  - Adapter-unconfigured fails visibly (`INTENTLOOM_NEUTRON_ADAPTER=unconfigured`)
+  - `ApprovedApplyModal` / `intentloom.project.approvedApply.v1` isolated
+  - Project fingerprint unchanged through the daemon read-only turn fixture
+- **`mutationAllowed`:** literal `false`. No mutation tool, shell, Apply, or
+  Desktop→provider path. Streaming and daemon event push remain unavailable.
+- **Verification:** local `pnpm verify` — 297 files, 2582 passed, 3 skipped.
+  CI Governance, Compatibility (Ubuntu/macOS/Windows, Node 22/24), CodeQL,
+  Dependency Review green.
+- **Decision:** **N6 SLICE 1 COMPLETE.** The next Neutron increment is **not**
+  implied. Maintainer must separately authorize N6 Slice 2 (context + tool
+  activity) **or** Mutation Routing Slice 2 (semantic preflight, no Apply).
+- **Not completed:** N6 Slices 2–5, Mutation Slice 2–5, Apply, optional N3
+  Slice 5, P4l17, streaming/event bridge
+- **Next first action:** **Explicit maintainer authorization required.** Do
+  not start N6 Slice 2 or Mutation Routing Slice 2 autonomously.
 
 ### 2026-09-08, Neutron N6 read-only Desktop maintainer brief (merged)
 
