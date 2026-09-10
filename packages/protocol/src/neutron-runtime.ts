@@ -105,6 +105,9 @@ export const NEUTRON_ERROR_CODES = [
   "budget-exceeded",
   "adapter-unconfigured",
   "network-forbidden",
+  "capability-denied",
+  "permission-denied",
+  "operation-failed",
 ] as const;
 export type NeutronErrorCode = (typeof NEUTRON_ERROR_CODES)[number];
 

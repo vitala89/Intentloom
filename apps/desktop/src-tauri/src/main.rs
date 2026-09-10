@@ -10,8 +10,8 @@ mod runtime_paths;
 mod sidecar_launch;
 
 use commands::{
-    get_daemon_info, inspect_project, invoke_foundation_request,
-    invoke_inception_request, invoke_specialized_pack_activate_request,
+    get_daemon_info, inspect_project, invoke_foundation_request, invoke_inception_request,
+    invoke_neutron_request, invoke_specialized_pack_activate_request,
     invoke_specialized_pack_preview_request, load_project_timeline, preview_project_diff,
     run_doctor, select_project_root,
 };
@@ -32,6 +32,7 @@ fn main() {
             load_project_timeline,
             invoke_inception_request,
             invoke_foundation_request,
+            invoke_neutron_request,
             invoke_specialized_pack_preview_request,
             invoke_specialized_pack_activate_request,
         ])

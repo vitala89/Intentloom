@@ -640,9 +640,38 @@ are implemented; Slice 4 (N2 pre-turn hook feeding `assembleNeutronContext`
 into `runNeutronN2ReadOnlyLoop`) is implemented; see
 `docs/roadmap/NEUTRON_N3_CONTEXT_ASSEMBLY_BRIEF.md`. **N3 runtime milestone
 is complete** for application/test integration. N3 context assembly now feeds
-N2 read-only model turns; remains read-only/offline with no N4 execution
-capabilities. Optional Slice 5 CLI/daemon exposure and N4 remain unauthorized
-per `DUTY_WATCH.md`. Other post-P4 candidates remain in
+N2 read-only model turns. **N4 Slice 1** adds the capability-scoped tool-router
+foundation with one read-only `inspect` tool. **N4 Slice 2** expands the
+read-only catalog (`doctor`, `memorySearch`, `timeline`, `conformance`,
+`securityAudit`, `projectDiff`) behind the same fail-closed router. **N5
+maintainer brief** is in
+`docs/roadmap/NEUTRON_N5_EXECUTABLE_TASK_GRAPH_BRIEF.md` (maintainer decision:
+N5 before mutation routing). **N5 Slice 1 implemented** — pure scheduler
+foundation in `@intentloom/application/neutron-scheduler` (execution graph
+validation, deterministic ready/waiting/blocked classification, capacity-aware
+selection, pure state transitions). **N5 Slice 2 implemented** — one-node
+execution through N3/N2/N4 (`executeNeutronTaskNode`). **N5 Slice 3
+implemented** — local-first leases and one bounded concurrent scheduling wave
+(`executeReadyNeutronTaskNodes`). **N5 Slice 4 implemented** — bounded retry,
+cancellation propagation, timeout recovery, and stale-attempt protection.
+**N5 Slice 5 implemented** — deterministic graph aggregation, stale
+project/checkpoint/profile detection, and provenance completion
+(`aggregateNeutronTaskGraphResults`, `reconcileNeutronTaskGraphExecution`);
+no full graph runner.
+**No autonomous multi-agent execution.** N5 runtime milestone complete for
+the authorized read-only scheduler.
+The mutation-routing maintainer brief is
+`docs/roadmap/NEUTRON_MUTATION_ROUTING_BRIEF.md`. **Mutation Slice 1
+implemented** — proposal, bound-approval, and Apply-preflight protocol
+contracts plus structural validators. No mutation routing execution, no
+Apply, no N4 write tool, and `NeutronRuntimeSession.mutationAllowed`
+remains literal `false`. **N6 read-only maintainer brief prepared**
+(`docs/roadmap/NEUTRON_N6_DESKTOP_READONLY_BRIEF.md`). **N6 Slice 1 implemented** — daemon Neutron session RPC and Desktop read-only
+session shell. **N6 Slice 2 implemented** — bounded N3 context visibility and
+structured N4 read-only tool activity on the completed turn snapshot. No event
+bridge. `mutationAllowed` remains literal `false`. N6 Slices 3–5 are not
+authorized. Optional N3 Slice 5 CLI/daemon exposure remains
+unauthorized per `DUTY_WATCH.md`. Other post-P4 candidates remain in
 `POST_W12_NEXT_INCREMENT_PLAN.md`.
 
 The Desktop discovery/error and Diff/Timeline slices remain recorded in

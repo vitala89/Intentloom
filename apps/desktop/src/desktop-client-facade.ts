@@ -8,12 +8,18 @@ import { existingProjectAdoptionPreparedPlanDesktopMethods } from "./desktop-cli
 import { existingProjectAdoptionApplyDesktopMethods } from "./desktop-client-adoption-apply.js";
 
 import { specializedPackExternalDesktopMethods } from "./desktop-client-specialized-pack-external.js";
+import type { NeutronSessionViewmodelPayload } from "@intentloom/protocol";
+import { neutronDesktopMethods } from "./desktop-client-neutron.js";
 
 interface DesktopClientBase {
   foundationRequest(
     request: object,
     signal?: AbortSignal,
   ): Promise<Record<string, unknown>>;
+  neutronRequest(
+    request: object,
+    signal?: AbortSignal,
+  ): Promise<NeutronSessionViewmodelPayload>;
 }
 
 export function composeDesktopClient<TBase extends DesktopClientBase>(
@@ -21,6 +27,8 @@ export function composeDesktopClient<TBase extends DesktopClientBase>(
 ) {
   const foundationRequest = (request: object, signal?: AbortSignal) =>
     base.foundationRequest(request, signal);
+  const neutronRequest = (request: object, signal?: AbortSignal) =>
+    base.neutronRequest(request, signal);
   return {
     ...base,
     ...foundationScaffoldDesktopMethods(foundationRequest),
@@ -32,5 +40,6 @@ export function composeDesktopClient<TBase extends DesktopClientBase>(
     ...existingProjectAdoptionPreparedPlanDesktopMethods(foundationRequest),
     ...existingProjectAdoptionApplyDesktopMethods(foundationRequest),
     ...specializedPackExternalDesktopMethods(),
+    ...neutronDesktopMethods(neutronRequest),
   };
 }

@@ -8,6 +8,7 @@ import {
   type NeutronRuntimeSession,
   type NeutronToolEnvelope,
 } from "../../protocol/src/neutron-runtime.js";
+import { neutronToolAdapterDescriptors } from "./neutron-tool-registry.js";
 import {
   NEUTRON_N2_MAX_BODY_BYTES,
   NeutronN2Error,
@@ -21,6 +22,12 @@ import {
 } from "./neutron-n2-context-hook.js";
 
 const inFlightSessions = new Set<string>();
+
+function neutronN2InFlightKey(sessionId: string, taskId?: string): string {
+  return taskId === undefined || taskId.length === 0
+    ? sessionId
+    : `${sessionId}\u001f${taskId}`;
+}
 
 export interface NeutronN2ToolRunner {
   (
@@ -63,17 +70,18 @@ export async function runNeutronN2ReadOnlyLoop(
       "root and sessionId are required",
     );
   }
-  if (inFlightSessions.has(input.sessionId)) {
+  const inFlightKey = neutronN2InFlightKey(input.sessionId, input.taskId);
+  if (inFlightSessions.has(inFlightKey)) {
     throw new NeutronN2Error(
       "validation-failed",
-      "N2 allows one in-flight turn per session",
+      "N2 allows one in-flight turn per session task",
     );
   }
-  inFlightSessions.add(input.sessionId);
+  inFlightSessions.add(inFlightKey);
   try {
     return await executeLoop(input);
   } finally {
-    inFlightSessions.delete(input.sessionId);
+    inFlightSessions.delete(inFlightKey);
   }
 }
 
@@ -130,17 +138,7 @@ async function executeLoop(
       schemaVersion: 1,
       sessionId: input.sessionId,
       messages: [{ role: "user", content: modelPrompt }],
-      tools: [
-        {
-          name: "inspect",
-          description: "Read-only project inspection",
-          parametersSchema: {
-            type: "object",
-            properties: { root: { type: "string" } },
-            required: ["root"],
-          },
-        },
-      ],
+      tools: [...neutronToolAdapterDescriptors()],
     },
     turnOptions,
   );
@@ -148,7 +146,7 @@ async function executeLoop(
   if (call === undefined) {
     throw new NeutronN2Error(
       "validation-failed",
-      "N2 loop requires an inspect tool call",
+      "N2 loop requires a registered read-only tool call",
     );
   }
   if (!isReadOnlyTool(call.name)) {

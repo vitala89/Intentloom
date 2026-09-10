@@ -1,0 +1,45 @@
+{
+  "schemaVersion": "urn:intentloom:schema:neutron-mutation-preflight-request:1",
+  "proposal": {
+    "schemaVersion": "urn:intentloom:schema:neutron-mutation-proposal:1",
+    "proposalId": "proposal-fixture-1",
+    "sessionId": "session-fixture-1",
+    "projectId": "project-fixture-1",
+    "root": "/project",
+    "taskId": "task-fixture-1",
+    "graphId": "graph-fixture-1",
+    "mutationClass": "approved-transaction-apply",
+    "plan": {
+      "schemaVersion": 1,
+      "planDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "projectStateDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "targetRoot": "/project",
+      "changedPaths": ["src/a.ts", "src/z.ts"],
+      "expiresAt": 1800000000000
+    },
+    "proposalDigest": "sha256:851614b8752a4a8ff6b0f747ea811d6cf6ea8044b37ecee8be3f48a397343ea2"
+  },
+  "approval": {
+    "schemaVersion": "urn:intentloom:schema:neutron-mutation-approval:1",
+    "approvalId": "approval-fixture-1",
+    "approvalToken": "approved:sha256:851614b8752a4a8ff6b0f747ea811d6cf6ea8044b37ecee8be3f48a397343ea2",
+    "approvalSource": "local-interactive",
+    "approvingActor": "desktop-local-user",
+    "root": "/project",
+    "projectId": "project-fixture-1",
+    "sessionId": "session-fixture-1",
+    "taskId": "task-fixture-1",
+    "graphId": "graph-fixture-1",
+    "proposalId": "proposal-fixture-1",
+    "proposalDigest": "sha256:851614b8752a4a8ff6b0f747ea811d6cf6ea8044b37ecee8be3f48a397343ea2",
+    "planDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "projectStateDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "changedPaths": ["src/a.ts", "src/z.ts"],
+    "mutationClass": "approved-transaction-apply",
+    "approvedAt": 1700000000000,
+    "approvalValidUntil": 1800000000000,
+    "approvalDigest": "sha256:78a171cb2a9a2d35aab2a8b6f6709d072d4a732a0c7e005d46aca23f74e75f73"
+  },
+  "currentProjectStateDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "sessionState": "planning"
+}
