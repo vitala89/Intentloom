@@ -7,6 +7,15 @@ All notable changes are documented here. This project follows Keep a Changelog p
 Changes listed here are merged after the current release-preparation scope and
 are not included in the current npm artifact until a later release.
 
+- Neutron mutation routing Slice 2 adds host-side semantic preflight for
+  `approved-transaction-apply`. A bound `NeutronMutationApproval` is checked
+  against the current project state, exact affected paths, canonical root
+  containment (including symlink escape), expiry, cancellation, capability,
+  and an injected replay checker. Preflight never writes, never calls
+  `executeApprovedApplyPlan` / `synchronizeGeneratedFiles`, and does not
+  register an N4 mutation tool. `mutationAllowed` remains literal `false`.
+  Durable approval consumption and the project mutation lock remain Slice 3+.
+
 - Neutron Desktop N6 Slice 2 shows bounded N3 context summary and structured
   N4 read-only tool activity for the latest completed turn. Secret-like paths
   may be listed; secret bodies, assembled prompts, and model-prose tool cards

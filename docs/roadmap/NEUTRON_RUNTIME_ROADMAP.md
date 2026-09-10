@@ -250,9 +250,10 @@ and fingerprint proofs cover the catalog.
 
 **N5 runtime milestone complete** after Slice 5 aggregation, stale-state
 detection, and provenance completion. Mutation-routing **Slice 1
-implemented** (proposal, bound approval, and preflight contracts only).
-Do not start Slice 2–5 Apply, Desktop model UI, optional N3 Slice 5, or
-P4l17 without explicit maintainer authorization.
+implemented** (proposal, bound approval, and preflight contracts) and
+**Slice 2 implemented** (semantic authorization + approved-transaction
+preflight, no Apply). Do not start Slice 3–5 Apply, Desktop mutation UI,
+optional N3 Slice 5, or P4l17 without explicit maintainer authorization.
 
 ## N5. Executable task graph and subagents
 
@@ -276,8 +277,8 @@ deterministic graph outcomes, fail-closed stale project/checkpoint/profile
 detection, and parent-child/attempt/tool/context provenance. Still no graph
 runner loop.
 **N5 runtime milestone complete** for the authorized read-only scheduler.
-Mutation-routing Slice 1 contracts exist; mutation Apply and N6 remain
-unauthorized.
+Mutation-routing Slice 1 contracts and Slice 2 semantic preflight exist;
+mutation Apply and N6 Slices 3–5 remain unauthorized.
 
 Extend the existing Neutron subagent records from persisted orchestration
 foundation into a controlled execution scheduler with:
@@ -299,11 +300,11 @@ Exit gate: deterministic multi-task fixtures prove dependency handling,
 cancellation, timeout recovery, budget enforcement, provenance, and stable
 aggregation without hidden background mutation.
 
-## N5.5 Mutation routing (Slice 1 contracts only)
+## N5.5 Mutation routing (Slice 2 semantic preflight)
 
 **Maintainer brief:**
 [`NEUTRON_MUTATION_ROUTING_BRIEF.md`](NEUTRON_MUTATION_ROUTING_BRIEF.md)
-(Slice 1 baseline `59f98462`, 2026-09-07).
+(Slice 1 baseline `59f98462`, 2026-09-07; Slice 2 from latest `origin/main`).
 
 **Slice 1 implemented:** `NeutronMutationProposal` wraps
 `ApprovedApplyPlan`; host-issued `NeutronMutationApproval` binds digest,
@@ -311,9 +312,18 @@ token, root, session/task, paths, and baseline; preflight request/result
 types exist. Validators are structural only. `mutationAllowed` remains
 `false`. No N4 mutation route. No Apply.
 
-Later slices (unauthorized): router authorization + semantic preflight,
-single approved transaction Apply, verification/rollback evidence, N5
-proposal/review integration.
+**Slice 2 implemented:** host-side mutation authorization class and
+`preflightNeutronMutation` semantic evaluation. Fail-closed checks cover
+proposal/approval binding, digest, expiry, project-state digest, exact
+affected scope, canonical root + realpath/symlink containment, read-only
+capability denial, cancellation, and an injected replay checker. Preflight
+does not write, call `executeApprovedApplyPlan`, or register
+`applyApprovedTransaction`. Replay persistence and project mutation lock
+acquisition remain Slice 3+. Slice 3 must repeat critical checks immediately
+before the first write (TOCTOU).
+
+Later slices (unauthorized): single approved transaction Apply,
+verification/rollback evidence, N5 proposal/review integration.
 
 N6 read-only Desktop **may** begin in parallel after these contracts, but
 only under a separate maintainer authorization. Do not implement mutation
@@ -327,8 +337,8 @@ Apply or N6 from this roadmap entry alone.
 session shell. **N6 Slice 2 implemented** — bounded N3 context summary and
 structured N4 tool activity on the completed `turn.execute` snapshot. No event
 bridge. Runtime stays in `@intentloom/application`. Streaming is unavailable.
-`mutationAllowed` remains `false`. N6 Slices 3–5 and Mutation Slice 2 are
-**not authorized** by Slice 2.
+`mutationAllowed` remains `false`. N6 Slices 3–5 and Mutation Slices 3–5 are
+**not authorized** by N6 Slice 2.
 
 Integrate the runtime with the official Desktop application after the v0.6
 read-only project slice and shared client contracts are stable.
@@ -471,9 +481,9 @@ preventing an unfinished agent layer from expanding the v0.6 release scope.
 
 ## First implementation action
 
-N1–N5 are complete. Mutation-routing Slice 1 contracts exist. **N6 Slice 1
-and Slice 2 are implemented.** The next Neutron increment is **not** implied
-by this file: N6 Slice 3 and mutation Slice 2 each require explicit maintainer
-authorization. See
+N1–N5 are complete. Mutation-routing Slice 1 contracts and Slice 2
+semantic preflight exist. **N6 Slice 1 and Slice 2 are implemented.** The
+next Neutron increment is **not** implied by this file: N6 Slice 3 and
+Mutation Slice 3 each require explicit maintainer authorization. See
 [`NEUTRON_N6_DESKTOP_READONLY_BRIEF.md`](NEUTRON_N6_DESKTOP_READONLY_BRIEF.md)
 and [`NEUTRON_MUTATION_ROUTING_BRIEF.md`](NEUTRON_MUTATION_ROUTING_BRIEF.md).
