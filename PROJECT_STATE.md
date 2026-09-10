@@ -663,16 +663,20 @@ the authorized read-only scheduler.
 The mutation-routing maintainer brief is
 `docs/roadmap/NEUTRON_MUTATION_ROUTING_BRIEF.md`. **Mutation Slice 1
 implemented** — proposal, bound-approval, and Apply-preflight protocol
-contracts plus structural validators. No mutation routing execution, no
-Apply, no N4 write tool, and `NeutronRuntimeSession.mutationAllowed`
-remains literal `false`. **N6 read-only maintainer brief prepared**
+contracts plus structural validators. **Mutation Slice 2 implemented** —
+host-side semantic preflight for `approved-transaction-apply` (digest,
+root/project/session binding, project-state fingerprint, exact affected
+scope, realpath/symlink containment, expiry, cancellation, capability, and
+an injected replay-check boundary). No Apply, no N4 write tool, no durable
+consumption store, no project mutation lock acquisition, and
+`NeutronRuntimeSession.mutationAllowed` remains literal `false`. **N6
+read-only maintainer brief prepared**
 (`docs/roadmap/NEUTRON_N6_DESKTOP_READONLY_BRIEF.md`). **N6 Slice 1 implemented** — daemon Neutron session RPC and Desktop read-only
 session shell. **N6 Slice 2 implemented** — bounded N3 context visibility and
 structured N4 read-only tool activity on the completed turn snapshot. No event
-bridge. `mutationAllowed` remains literal `false`. N6 Slices 3–5 are not
-authorized. Optional N3 Slice 5 CLI/daemon exposure remains
-unauthorized per `DUTY_WATCH.md`. Other post-P4 candidates remain in
-`POST_W12_NEXT_INCREMENT_PLAN.md`.
+bridge. `mutationAllowed` remains literal `false`. N6 Slices 3–5, Mutation
+Slices 3–5, optional N3 Slice 5, and P4l17 are not authorized. Other
+post-P4 candidates remain in `POST_W12_NEXT_INCREMENT_PLAN.md`.
 
 The Desktop discovery/error and Diff/Timeline slices remain recorded in
 [PHASE1_CONTRACTS.md](docs/desktop/PHASE1_CONTRACTS.md).

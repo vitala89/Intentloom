@@ -2,18 +2,14 @@
 
 ## Status
 
-**Slice 1 implemented** — protocol and validator contracts for a Neutron
-mutation proposal, host-issued bound approval, and Apply-preflight
-request/result. Session snapshots remain `mutationAllowed: false`. No N4
-mutation route. No Apply. Mutation routing is **not** complete.
+**Slice 2 implemented** — host-side semantic authorization and
+approved-transaction preflight for `approved-transaction-apply`. Session
+snapshots remain `mutationAllowed: false`. No N4 mutation route. No Apply.
+Mutation routing is **not** complete.
 
-Slices 2–5, write tools, generic shell, N6 Desktop implementation, optional
-N3 Slice 5, and P4l17 remain unauthorized until a later explicit maintainer
-grant. N6 read-only may be commissioned separately after these contracts.
-
-Evidence baseline: `origin/main` @
-`59f9846283dc4e1d733b935d2d7e6a92ec2db2f3` (2026-09-07, mutation-routing
-brief handoff #456). Implementation started from that SHA.
+Slices 3–5 (Apply, rollback, post-Apply verification, N5 proposal
+integration), write tools, generic shell, N6 Slices 3–5, optional N3 Slice 5,
+and P4l17 remain unauthorized until a later explicit maintainer grant.
 
 Authoritative roadmap gate:
 [`NEUTRON_RUNTIME_ROADMAP.md`](NEUTRON_RUNTIME_ROADMAP.md) §N5–§N6 and this
@@ -31,7 +27,7 @@ brief.
 | **N1–N5**                   | Runtime contracts, model adapter, context assembly, read-only tool router, executable task graph |
 | **`mutationAllowed`**       | N1 `NeutronRuntimeSession.mutationAllowed` is typed `false`; validator rejects any other value   |
 | **N4 catalog**              | `inspect`, `doctor`, `memorySearch`, `timeline`, `conformance`, `securityAudit`, `projectDiff`   |
-| **Mutation implementation** | Unauthorized                                                                                     |
+| **Mutation implementation** | Slice 1 contracts + Slice 2 semantic preflight; Apply unauthorized                               |
 
 ### Capability summary used by this brief
 
@@ -615,9 +611,10 @@ not that justification.
 
 ---
 
-## 22. Implementation slices (not authorized)
+## 22. Implementation slices
 
-Derived from gaps above. Docs-only this PR.
+Derived from gaps above. Slices 1–2 are implemented. Slices 3–5 remain
+unauthorized.
 
 ### Slice 1 — contracts and validators only (implemented)
 
@@ -625,10 +622,10 @@ Neutron approval / proposal / Apply-preflight schemas and validators.
 Session snapshots remain `mutationAllowed: false`. No router mutation tool.
 No Apply. Unblocks N6 from inventing a second DTO. See §30.
 
-### Slice 2 — router authorization + approved-transaction preflight, no Apply
+### Slice 2 — router authorization + approved-transaction preflight, no Apply (implemented)
 
-Mutation permission class; preflight (stale, scope, root, approval) returns
-diagnostics only.
+Mutation permission class and `preflightNeutronMutation` return `eligible` or
+`rejected` diagnostics only. Zero project writes. See §31.
 
 ### Slice 3 — single approved transaction Apply
 
@@ -722,10 +719,11 @@ after tests pass.” Future policy automation needs a separate authorization.
 
 ## 28. Recommendation
 
-**MUTATION SLICE 1 COMPLETE — SLICE 2 READY FOR AUTHORIZATION**
+**MUTATION SLICE 2 COMPLETE — SLICE 3 NOT AUTHORIZED**
 
-Do not start Slice 2–5 Apply, N6 implementation, optional N3 Slice 5,
-generic shell, or P4l17 without a new explicit grant.
+Do not start Slice 3–5 Apply, N6 Slice 3, optional N3 Slice 5, generic
+shell, or P4l17 without a new explicit grant. Mutation Slice 3 has a
+higher security threshold and is not implied by Slice 2.
 
 ---
 
@@ -759,3 +757,26 @@ and `@intentloom/validator`. No `packages/neutron-runtime`.
 | Symlink                         | Structural path checks do **not** claim containment against symlink escape.                                                                                    |
 | N4 / Apply                      | No mutation tool. No `executeApprovedApplyPlan`.                                                                                                               |
 | N6 read-only                    | Contract gate satisfied for a **separate** brief. Not authorized here.                                                                                         |
+
+---
+
+## 31. Slice 2 implementation record
+
+Authorized semantic-preflight slice. Ownership stays in
+`@intentloom/application` (`neutron-mutation-*.ts`). Slice 1 protocol and
+validator contracts are reused. No `packages/neutron-runtime`. No daemon RPC.
+No Desktop UI.
+
+| Decision                    | Record                                                                                                                                                                                                                                                                                                          |
+| --------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Authorization               | Host-only `approved-transaction-apply` permission class. Model output, `approved: true`, `grantedApprovals`, and read-only/delegated roles cannot authorize. Successful preflight does not grant Apply or flip `mutationAllowed`.                                                                               |
+| Semantic checks             | Structural validity, mutation class, proposal/plan/project-state digests, host approval source `local-interactive`, token/digest binding, expiry via injected clock, root/project/session/task/graph binding, exact affected-path set, capability, cancellation, injected replay checker, realpath containment. |
+| `evaluateApprovedApplyPlan` | Not reused. That gate treats `grantedApprovals` as authorization, which Neutron forbids.                                                                                                                                                                                                                        |
+| Containment                 | Canonical `realpath` of the project root; nearest existing ancestor for missing targets; reject symlink escape, traversal, absolute paths, and filesystem errors. No lexical-only fallback.                                                                                                                     |
+| Path scope                  | Approval `changedPaths` cannot widen the canonical proposal/plan set. Extra approved paths → `approval-scope-mismatch`. Unapproved plan targets → `affected-path-mismatch`.                                                                                                                                     |
+| Replay                      | Injected `isApprovalConsumed` only. No durable consumption store.                                                                                                                                                                                                                                               |
+| Mutation lock               | Observational type only (`NeutronMutationLockObserver`). Slice 2 does not acquire a lock and does not claim concurrency safety.                                                                                                                                                                                 |
+| Zero-write                  | Eligible preflight leaves project fingerprint and target bytes unchanged. Modules do not import `executeApprovedApplyPlan` or `synchronizeGeneratedFiles`.                                                                                                                                                      |
+| TOCTOU                      | Slice 3 must repeat project-state digest, path containment, approval validity/consumption, exact affected scope, and project lock immediately before the first write.                                                                                                                                           |
+| `mutationAllowed`           | Unchanged literal `false`.                                                                                                                                                                                                                                                                                      |
+| N4                          | Read-only catalog unchanged. `classifyNeutronMutationRoute` reports `applyAuthorized: false`. No `applyApprovedTransaction` tool.                                                                                                                                                                               |
