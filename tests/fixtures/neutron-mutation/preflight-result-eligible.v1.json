@@ -1,0 +1,7 @@
+{
+  "schemaVersion": "urn:intentloom:schema:neutron-mutation-preflight-result:1",
+  "decision": "eligible",
+  "reasons": [],
+  "proposalDigest": "sha256:851614b8752a4a8ff6b0f747ea811d6cf6ea8044b37ecee8be3f48a397343ea2",
+  "approvalId": "approval-fixture-1"
+}

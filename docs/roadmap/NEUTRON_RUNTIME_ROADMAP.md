@@ -200,7 +200,10 @@ extension) and **Slice 2** (deterministic assembly core via
 integration) and **Slice 4** (N2 pre-turn hook feeding assembled context into
 `runNeutronN2ReadOnlyLoop`) are implemented. **N3 runtime milestone is
 complete** for application/test surfaces. Optional Slice 5 (CLI/daemon
-exposure) requires separate authorization. N4 remains unauthorized.
+exposure) requires separate authorization. **N4 Slice 1** (tool-router
+foundation with one read-only `inspect` tool) and **N4 Slice 2** (read-only
+catalog expansion behind the same router) are implemented. Mutation routing,
+N5, Desktop model UI, and optional N3 Slice 5 remain unauthorized.
 
 Combine bounded project context, accepted memory, progressive skill discovery,
 canonical policy, current task data, and verified evidence into one budgeted
@@ -225,10 +228,56 @@ Initial tools remain read-only and may include project inspection, bounded
 context, memory search, doctor, diff, timeline, conformance, and security
 inspection where stable daemon contracts exist.
 
-Exit gate: unsupported, over-scoped, out-of-root, expired, cancelled, or
-schema-invalid requests fail closed and produce normalized auditable errors.
+**Slice 1 (implemented):** foundation router with typed tool registration,
+invocation validation, root/session/capability/permission checks,
+timeout/cancellation/expiry gating, normalized auditable errors, and one
+read-only `inspect` tool routed to existing `inspectProject`. Mutation tools
+and generic shell remain deferred.
+
+**Slice 2 (implemented):** expand the read-only catalog behind the same
+`routeNeutronToolInvocation()` pipeline. Registered tools: `inspect`,
+`doctor`, `memorySearch`, `timeline`, `conformance`, `securityAudit`,
+`projectDiff`. Each tool is a registry definition/adapter over existing
+application operations (`inspectProject`, `doctorProject`,
+`searchPersistentMemory`, `timelineProject`,
+`evaluateProjectEngineeringConformance`, `listSecurityFindings`,
+`diffProject`). No mutation routing, no generic shell, no N5.
+
+The N4 read-only tool-router exit gate is met: unsupported, over-scoped,
+out-of-root, expired, cancelled, or schema-invalid requests fail closed and
+produce normalized auditable errors. Capability, root/session, result bounds,
+and fingerprint proofs cover the catalog.
+
+**N5 runtime milestone complete** after Slice 5 aggregation, stale-state
+detection, and provenance completion. Mutation-routing **Slice 1
+implemented** (proposal, bound approval, and preflight contracts only).
+Do not start Slice 2–5 Apply, Desktop model UI, optional N3 Slice 5, or
+P4l17 without explicit maintainer authorization.
 
 ## N5. Executable task graph and subagents
+
+**Maintainer brief:**
+[`NEUTRON_N5_EXECUTABLE_TASK_GRAPH_BRIEF.md`](NEUTRON_N5_EXECUTABLE_TASK_GRAPH_BRIEF.md)
+(evidence baseline `957756e`, 2026-09-04). Maintainer decision: **N5 before mutation
+routing**. **Slice 1 implemented** — graph execution validation and deterministic
+scheduling core in `@intentloom/application/neutron-scheduler`.
+**Slice 2 implemented** — `executeNeutronTaskNode` composes N3 context, the
+N2 read-only model loop, and N4 capability-scoped tools for exactly one ready
+node.
+**Slice 3 implemented** — local-first execution leases, injected clock,
+heartbeat renewal, and `executeReadyNeutronTaskNodes` for one deterministic
+bounded wave (default concurrency 1, hard cap 4).
+**Slice 4 implemented** — bounded retry (`maxAttempts` 2), cancellation
+propagation, layered timeout recovery, expired-lease recovery onto a new
+attempt, and stale-attempt protection. Still one wave; no graph runner.
+**Slice 5 implemented** — `aggregateNeutronTaskGraphResults`,
+`detectNeutronGraphStaleness`, and `reconcileNeutronTaskGraphExecution` provide
+deterministic graph outcomes, fail-closed stale project/checkpoint/profile
+detection, and parent-child/attempt/tool/context provenance. Still no graph
+runner loop.
+**N5 runtime milestone complete** for the authorized read-only scheduler.
+Mutation-routing Slice 1 contracts exist; mutation Apply and N6 remain
+unauthorized.
 
 Extend the existing Neutron subagent records from persisted orchestration
 foundation into a controlled execution scheduler with:
@@ -250,7 +299,36 @@ Exit gate: deterministic multi-task fixtures prove dependency handling,
 cancellation, timeout recovery, budget enforcement, provenance, and stable
 aggregation without hidden background mutation.
 
+## N5.5 Mutation routing (Slice 1 contracts only)
+
+**Maintainer brief:**
+[`NEUTRON_MUTATION_ROUTING_BRIEF.md`](NEUTRON_MUTATION_ROUTING_BRIEF.md)
+(Slice 1 baseline `59f98462`, 2026-09-07).
+
+**Slice 1 implemented:** `NeutronMutationProposal` wraps
+`ApprovedApplyPlan`; host-issued `NeutronMutationApproval` binds digest,
+token, root, session/task, paths, and baseline; preflight request/result
+types exist. Validators are structural only. `mutationAllowed` remains
+`false`. No N4 mutation route. No Apply.
+
+Later slices (unauthorized): router authorization + semantic preflight,
+single approved transaction Apply, verification/rollback evidence, N5
+proposal/review integration.
+
+N6 read-only Desktop **may** begin in parallel after these contracts, but
+only under a separate maintainer authorization. Do not implement mutation
+Apply or N6 from this roadmap entry alone.
+
 ## N6. Desktop Neutron Workspace
+
+**Maintainer brief:**
+[`NEUTRON_N6_DESKTOP_READONLY_BRIEF.md`](NEUTRON_N6_DESKTOP_READONLY_BRIEF.md).
+**N6 Slice 1 implemented** — daemon Neutron session RPC + Desktop read-only
+session shell. **N6 Slice 2 implemented** — bounded N3 context summary and
+structured N4 tool activity on the completed `turn.execute` snapshot. No event
+bridge. Runtime stays in `@intentloom/application`. Streaming is unavailable.
+`mutationAllowed` remains `false`. N6 Slices 3–5 and Mutation Slice 2 are
+**not authorized** by Slice 2.
 
 Integrate the runtime with the official Desktop application after the v0.6
 read-only project slice and shared client contracts are stable.
@@ -393,8 +471,9 @@ preventing an unfinished agent layer from expanding the v0.6 release scope.
 
 ## First implementation action
 
-After the Desktop v0.6 stack and client-contract baseline is accepted, create a
-new implementation branch for N1 and an ADR for the first provider adapter. The
-first runtime pull request should contain contracts, validators, deterministic
-fixtures, and documentation only. Provider execution follows in a separate,
-reviewable pull request after the contract diff is accepted.
+N1–N5 are complete. Mutation-routing Slice 1 contracts exist. **N6 Slice 1
+and Slice 2 are implemented.** The next Neutron increment is **not** implied
+by this file: N6 Slice 3 and mutation Slice 2 each require explicit maintainer
+authorization. See
+[`NEUTRON_N6_DESKTOP_READONLY_BRIEF.md`](NEUTRON_N6_DESKTOP_READONLY_BRIEF.md)
+and [`NEUTRON_MUTATION_ROUTING_BRIEF.md`](NEUTRON_MUTATION_ROUTING_BRIEF.md).

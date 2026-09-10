@@ -9,10 +9,429 @@ in a condition that the next watch can safely understand and continue.
 
 ## Current watch status
 
-Status: **Neutron N3 Slice 4 complete** on `main` (#431). N3 runtime milestone
-complete for application/test integration. N3 context assembly feeds N2
-read-only model turns. N4, Desktop model UI, CLI/daemon Slice 5 exposure, and
-P4l17 remain unauthorized.
+Status: **N5 complete**. Mutation-routing **Slice 1 contracts implemented**.
+**N6 Slice 1 implemented**. **N6 Slice 2 implemented** (context visibility +
+read-only tool activity). `mutationAllowed` remains literal `false`. N6
+Slices 3–5, Mutation Slice 2–5 Apply, optional N3 Slice 5, and P4l17 remain
+unauthorized.
+
+### 2026-09-09, Neutron N6 Slice 2 — context visibility + read-only tool activity (merged)
+
+- **Status:** complete on `main` (#470 / this handoff)
+- **Implementation PR:** https://github.com/vitala89/Intentloom/pull/470
+- **Implementation branch:** `feat/neutron-n6-context-tool-activity` (merged)
+- **Starting main / origin/main:** `b1da069a4806d72877f83368907953089c71a630`
+  (expected N6 Slice 2 baseline; tracked tree was clean; unrelated
+  `.commit-msg-*` / `.pr-body-*` / `.squash-msg-*` scratch preserved). Baseline
+  did not advance before implementation.
+- **Implementation head SHA:** `6a2645583efd2a030c5ee9ae311d9ac9cf504e94`
+- **Implementation merge SHA / current main:** `408a552f0b4440009170563f8ba9f01b6ba59efb`
+- **Objective:** Bounded N3 context summary and structured N4 read-only tool
+  activity on the completed `turn.execute` snapshot so Desktop can show what
+  was assembled and which tools actually ran.
+- **Architecture:** Desktop Neutron UI → typed `desktopClient` →
+  `invoke_neutron_request` → explicit Tauri allowlist → authenticated daemon →
+  versioned Neutron RPC → `@intentloom/application` session runtime wrapping
+  `runNeutronN2ReadOnlyLoop` + existing N3/N4. No `packages/neutron-runtime`.
+  RPC names unchanged; existing viewmodel extended.
+- **Context fields exposed:** `NeutronTurnContextSummary` —
+  `sessionId`, `root`, `itemCount`, `includedCount`, `excludedCount`,
+  `estimatedTokens`, `tokenBudget`, `contextTokens`, `limitExceeded`,
+  `excludedSecretLikePaths`, `sources[]` (`sourceId`, `kind`, `trustClass`,
+  `provenance`, `included`, optional `exclusionReason` / `path` /
+  `loadingLevel`). Canonical N3 kinds only.
+- **Not exposed:** assembled prompt, `modelPrompt`, `projectionEntries`,
+  excerpts, `contentDigest`, secret bodies, raw `payloadJson`, chain-of-thought.
+- **Secret redaction:** secret-like **paths** (e.g. `.env`) may cross protocol
+  and render as exclusion metadata; secret **bodies** do not. Desktop parse is
+  fail-closed.
+- **Tool activity fields:** `NeutronTurnToolActivity` — `invocationId`,
+  `toolName`, `status` (`completed` | `denied` | `failed`), `allowed`, `ok`,
+  `errorCode`, `capability`, bounded `inputSummary` / `resultSummary` (max 240
+  chars). Source is structured N4 envelopes, never model prose.
+- **Event bridge:** not added. Completed turn snapshot is sufficient.
+  Streaming remains unavailable.
+- **`mutationAllowed`:** literal `false`. No Apply, `ApprovedApplyModal`,
+  `approvedApply` RPC, shell, writeFile, or Desktop→provider path.
+- **File metrics (canonical `scripts/production-file-metrics.mjs`):**
+  `App.tsx` unchanged (496 phys / 465 eff); `desktop-client.ts` unchanged
+  (401 / 355); `WorkspaceContent.tsx` unchanged (300 / 284);
+  `desktop-client-neutron.ts` unchanged (84 / 79). New Desktop activity
+  modules all ≤191 effective. `neutron-session-runtime.ts` 293 / 279 (review
+  zone, under 300).
+- **Verification:** local `pnpm verify` — 300 files, 2592 passed, 3 skipped.
+  CI Governance, Compatibility (Ubuntu/macOS/Windows, Node 22/24), CodeQL
+  green on #470. Dependency Review not triggered (no lockfile change).
+- **Decision:** **N6 SLICE 2 COMPLETE.** The next Neutron increment is **not**
+  implied. Maintainer must separately authorize N6 Slice 3 (task graph /
+  subagents / retry / cancel visibility) **or** Mutation Routing Slice 2
+  (semantic preflight, no Apply).
+- **Not completed:** N6 Slices 3–5, Mutation Slice 2–5, Apply, optional N3
+  Slice 5, P4l17, streaming/event bridge
+- **Next first action:** **Explicit maintainer authorization required.** Do
+  not start N6 Slice 3 or Mutation Routing Slice 2 autonomously.
+
+### 2026-09-08, Neutron N6 Slice 1 — Desktop read-only session shell (merged)
+
+- **Status:** complete on `main` (#468 / this handoff)
+- **Implementation PR:** https://github.com/vitala89/Intentloom/pull/468
+- **Implementation branch:** `feat/neutron-n6-desktop-session-shell` (merged)
+- **Starting main / origin/main:** `d08ba9411c44128b39d5ddb279ccd14114103ad2`
+  (N6 brief handoff #467). Tracked tree was clean; unrelated `.commit-msg-*`
+  / `.pr-body-*` scratch preserved.
+- **Implementation head SHA:** `21b50f3811694d09f21edb3d7fc7b49503da8b4f`
+- **Implementation merge SHA / current main:** `394dd7125712c30d23da112b5158e540b0d6a3d1`
+- **Objective:** Named authenticated Neutron session RPCs and a Neutron view
+  inside the existing Agent Workspace. One project-bound read-only turn.
+- **Completed:**
+  - RPCs: `intentloom.neutron.session.create.v1`, `.get.v1`, `.cancel.v1`,
+    `intentloom.neutron.turn.execute.v1` (does not overload `session.get.v1`)
+  - Path: Desktop Neutron view → `desktopClient` → `invoke_neutron_request` →
+    daemon allowlist → `@intentloom/application` session runtime wrapping
+    `runNeutronN2ReadOnlyLoop` + existing N3/N4
+  - Root/project binding; root change clears Desktop Neutron state
+  - Runtime-acknowledged cancel via in-flight N2 `AbortSignal`
+  - Adapter-unconfigured fails visibly (`INTENTLOOM_NEUTRON_ADAPTER=unconfigured`)
+  - `ApprovedApplyModal` / `intentloom.project.approvedApply.v1` isolated
+  - Project fingerprint unchanged through the daemon read-only turn fixture
+- **`mutationAllowed`:** literal `false`. No mutation tool, shell, Apply, or
+  Desktop→provider path. Streaming and daemon event push remain unavailable.
+- **Verification:** local `pnpm verify` — 297 files, 2582 passed, 3 skipped.
+  CI Governance, Compatibility (Ubuntu/macOS/Windows, Node 22/24), CodeQL,
+  Dependency Review green.
+- **Decision:** **N6 SLICE 1 COMPLETE.** The next Neutron increment is **not**
+  implied. Maintainer must separately authorize N6 Slice 2 (context + tool
+  activity) **or** Mutation Routing Slice 2 (semantic preflight, no Apply).
+- **Not completed:** N6 Slices 2–5, Mutation Slice 2–5, Apply, optional N3
+  Slice 5, P4l17, streaming/event bridge
+- **Next first action:** **Explicit maintainer authorization required.** Do
+  not start N6 Slice 2 or Mutation Routing Slice 2 autonomously.
+
+### 2026-09-08, Neutron N6 read-only Desktop maintainer brief (merged)
+
+- **Status:** complete on `main` (#466 / this handoff)
+- **PR:** https://github.com/vitala89/Intentloom/pull/466
+- **Branch:** `docs/neutron-n6-desktop-readonly-brief` (merged)
+- **Starting main SHA:** `ee3ec5bbfdb829cc94a0228aa17fd7cd6b0349d4`
+- **Head SHA:** `6b62bb949c6ef635f2fba2947a44b89da9daa289`
+- **Merge SHA / current main:** `755075fb3a2f7551b0881c10c4f7734240316f3c`
+- **Objective:** Architecture/planning brief for a read-only Desktop Neutron
+  Workspace over authenticated daemon + N1–N5 types. Zero implementation.
+- **Completed:**
+  - Desktop/Tauri/Agent Workspace inventory and Apply-stub documentation
+  - Daemon RPC gap list; N1 session states; no streaming; no daemon push
+  - Layout: Neutron view inside existing Agent Workspace
+  - Runtime package: keep in `@intentloom/application`
+  - N3 Slice 5 not required for N6
+  - Slices 1–5; first slice = session RPC + Desktop shell
+  - Sequencing: N6 Slice 1 first
+  - Artifact: `docs/roadmap/NEUTRON_N6_DESKTOP_READONLY_BRIEF.md`
+- **Verification:** local `pnpm verify` 2571 passed, 3 skipped; CI Governance,
+  Compatibility (Ubuntu/macOS/Windows, Node 22/24), CodeQL green
+- **Decision:** **READY FOR N6 SLICE 1 AUTHORIZATION.** Do not start N6
+  implementation or Mutation Slice 2 from this brief.
+- **Not completed:** N6 implementation, Mutation Slice 2–5, N3 Slice 5, P4l17
+- **Next first action:** **Explicit maintainer authorization required for
+  Neutron N6 Slice 1** — daemon Neutron session RPC + Desktop read-only
+  session shell per
+  `docs/roadmap/NEUTRON_N6_DESKTOP_READONLY_BRIEF.md` §35. Do not start
+  N6 Slices 2–5, Mutation Slice 2–5 Apply, optional N3 Slice 5, or P4l17
+  without a separate grant.
+
+### 2026-09-07, Neutron mutation-routing Slice 1 — contracts and validators (merged)
+
+- **Status:** complete on `main` (#464)
+- **PR:** https://github.com/vitala89/Intentloom/pull/464
+- **Branch:** `feat/neutron-mutation-contracts` (merged)
+- **Starting main SHA:** `59f9846283dc4e1d733b935d2d7e6a92ec2db2f3` (post-#456)
+- **Head SHA:** `6f2ec713e87576c1b43171925ec33206a965d373`
+- **Merge SHA / current main:** `431d1ed8fd99588cb3f5f864f30a47027dd2b090`
+- **Objective:** Slice 1 protocol/validator contracts for bound approval and
+  proposal/Apply preflight. Zero project mutation.
+- **Completed:**
+  - `NeutronMutationProposal` wraps `ApprovedApplyPlan`
+  - Host-issued `NeutronMutationApproval` (adoption token/digest pattern)
+  - Preflight request/result types and structural validators
+  - Frozen fixtures and `tests/neutron-mutation-contracts.test.ts`
+  - `mutationAllowed` unchanged (`false`); no N4 mutation tool; no Apply
+  - Docs: brief §30, runtime roadmap §N5.5, `PROJECT_STATE.md`
+- **Verification:** `pnpm verify` 295 files, 2571 passed, 3 skipped. CI
+  Governance, Compatibility (Ubuntu/macOS/Windows, Node 22/24), CodeQL green
+- **Decision:** **MUTATION SLICE 1 COMPLETE — SLICE 2 READY FOR
+  AUTHORIZATION.** **N6 READ-ONLY CONTRACT GATE SATISFIED** (assessment
+  only; not authorization).
+- **Not completed:** Slice 2 semantic preflight, N4 mutation route, Apply,
+  approval/replay store, project lock, N6, N3 Slice 5, P4l17
+- **Next first action:** **Explicit maintainer authorization required** for
+  one separately commissioned workstream: Neutron mutation-routing **Slice 2**
+  (router authorization + semantic Apply preflight, no Apply) per
+  `docs/roadmap/NEUTRON_MUTATION_ROUTING_BRIEF.md` §22, **or** a **N6
+  read-only** maintainer brief. Do not start Slice 2–5 Apply, N6
+  implementation, optional N3 Slice 5, or P4l17 without that grant.
+
+### 2026-09-07, Neutron mutation-routing maintainer brief
+
+- **Status:** complete on `main` (#455)
+- **PR:** https://github.com/vitala89/Intentloom/pull/455
+- **Branch:** `docs/neutron-mutation-routing-brief` (merged)
+- **Starting main SHA:** `f2a363e2dc53b12390c09b2e1a6dd8815eb692a5`
+- **Head SHA:** `8d85b01cfb91851410ed3856a935a431b5dc097d`
+- **Merge SHA / current main:** `85bfd743d3424a0c04dd5dc2c23b7136c1633abb`
+- **Objective:** Architecture/security brief for explicit human-approved
+  transactional Apply without model write authority
+- **Completed:**
+  - Inventory of `diffProject`, Approved Apply (ADR-0053),
+    `synchronizeGeneratedFiles`, adoption/workspace approval, N4/N5,
+    daemon `intentloom.project.approvedApply.v1`, Desktop stub
+  - Authority model: proposal vs host-only Apply
+  - Bound approval (not model `grantedApprovals`)
+  - Stale/TOCTOU, clamp, threat model, slices
+  - `packages/neutron-runtime`: keep in application
+  - N6: read-only may begin in parallel after Slice 1 contracts
+- **Decision:** **READY FOR MUTATION ROUTING SLICE 1 AUTHORIZATION.**
+  First slice = contracts + validators only. No Apply, no write tools, no
+  shell, no N6 implementation.
+- **Not completed:** mutation implementation, N6, N3 Slice 5, P4l17
+- **Next first action:** **Explicit maintainer authorization required for
+  Neutron mutation-routing Slice 1** — protocol/validator contracts for
+  bound approval and proposal/Apply preflight per
+  `docs/roadmap/NEUTRON_MUTATION_ROUTING_BRIEF.md` §22–§23. Do not start
+  Slice 2–5 Apply, N6, optional N3 Slice 5, or P4l17.
+
+### 2026-09-07, Neutron N5 Slice 5 — aggregation, stale-state, and provenance (merged)
+
+- **Status:** complete on `main` (#453)
+- **PR:** https://github.com/vitala89/Intentloom/pull/453
+- **Branch:** `feat/neutron-n5-aggregation-stale-state` (merged)
+- **Starting main SHA:** `426858b5d687930ff9fbbe38861b8b83a24dedab` (post-#452)
+- **Implementation head SHA:** `a6819a49fe3cf1adbda93ea835d96fdf1decfc52`
+- **Merge SHA:** `7a6e07c27ffd35bb679803611ede3dfdfcf25a00`
+- **Objective:** N5 Slice 5 — deterministic aggregation, stale-state, provenance
+- **Completed:**
+  - `aggregateNeutronTaskGraphResults` with `taskId` code-point order
+  - Application `NeutronGraphExecutionResult`; no protocol bump
+  - Strict graph status (`stale`/`incomplete`/`cancelled`/`timed-out`/`failed`/`completed`); `partial` observational only
+  - `detectNeutronGraphStaleness` for project/checkpoint/profile; no automatic rerun
+  - `reconcileNeutronTaskGraphExecution` fail-closed reconciliation boundary
+  - Parent-child, attempt, capability, N3, and N4 digest provenance
+  - Tests: `tests/neutron-n5-aggregation.test.ts`,
+    `tests/neutron-n5-stale-state.test.ts`
+  - Docs: N5 brief §34, runtime roadmap §N5, `PROJECT_STATE.md`
+- **Decision:** **N5 before mutation routing.** **MUTATION ROUTING REMAINS
+  DEFERRED.** Assessment: mutation routing may be considered separately; this
+  is not authorization.
+- **Not completed:** mutation routing, N6, optional N3 Slice 5, P4l17, graph
+  runner loop
+- **Next first action:** **Explicit maintainer authorization required** to
+  commission a mutation-routing maintainer brief, or to choose N6 Desktop
+  instead. Do not start mutation routing, N6, optional N3 Slice 5, or P4l17.
+
+### 2026-09-06, Neutron N5 Slice 4 — retry, cancellation, and timeout recovery (merged)
+
+- **Status:** complete on `main` (#451)
+- **PR:** https://github.com/vitala89/Intentloom/pull/451
+- **Branch:** `feat/neutron-n5-retry-cancellation` (merged)
+- **Starting main SHA:** `c06dbd4f6599e02265c46153dd4b96ba8e5fb0e1` (post-#450)
+- **Implementation head SHA:** `d39f3ba56bf34ac57f539bc39bc799db00ee89b9`
+- **Merge SHA:** `9006e5e890f7dda1e72be7ade74bfebc6b4d2033`
+- **Objective:** N5 Slice 4 — bounded retry, cancellation, timeout recovery
+- **Completed:**
+  - `classifyNeutronRetry` with typed retryability; max **2** attempts
+  - Distinct attempt-2 lease identity; application-level attempt evidence
+  - Session/node cancellation; no retry after cancel; no new admission
+  - Node timeout wrapper; expired-lease recovery onto attempt 2; lease-lost abort
+  - Stale-attempt protection; retry stays in the same concurrency slot
+  - Tests: `tests/neutron-n5-retry.test.ts`,
+    `tests/neutron-n5-cancellation-timeout.test.ts`
+  - Docs: N5 brief §33, runtime roadmap §N5, `PROJECT_STATE.md`
+- **Decision:** **N5 before mutation routing.** **MUTATION ROUTING REMAINS
+  DEFERRED.**
+- **Not completed:** Slice 5 aggregation/stale-state, graph runner loop,
+  mutation routing, N6, N3 Slice 5, P4l17
+- **Next first action:** **Explicit maintainer authorization required for Neutron
+  N5 Slice 5** — deterministic aggregation, stale-state detection, and
+  provenance completion per
+  `docs/roadmap/NEUTRON_N5_EXECUTABLE_TASK_GRAPH_BRIEF.md` §22. Do not start
+  mutation routing, N6, optional N3 Slice 5, or P4l17.
+
+### 2026-09-05, Neutron N5 Slice 3 — leases and bounded concurrency (merged)
+
+- **Status:** complete on `main` (#449)
+- **PR:** https://github.com/vitala89/Intentloom/pull/449
+- **Branch:** `feat/neutron-n5-leases-concurrency` (merged)
+- **Starting main SHA:** `1165d044f461ddbaf90297aa74b1be13c11982ed` (post-#448)
+- **Implementation head SHA:** `c33c0b131fb96bd9d124cde72349ae536b55537f`
+- **Merge SHA:** `8e2883de4029bbc26265d8857ccc8dc541212d9b`
+- **Objective:** N5 Slice 3 — lease ownership and one deterministic bounded wave
+- **Completed:**
+  - Lease acquire/renew/release/expiry on `@intentloom/application/neutron-scheduler`
+  - Identity `{sessionId}:{taskId}:{attempt}`; default attempt `1`; no retry
+  - Persistence `.aif/neutron/scheduler/leases/`; injected clock; heartbeat cleanup
+  - `executeReadyNeutronTaskNodes` — one wave, default concurrency 1, hard cap 4
+  - Duplicate-execution prevention; per-node N3/N2/N4 isolation
+  - Tests: `tests/neutron-n5-leases.test.ts`, `tests/neutron-n5-concurrency.test.ts`
+  - Docs: N5 brief §32, runtime roadmap §N5, `PROJECT_STATE.md`
+- **Decision:** **N5 before mutation routing.** **MUTATION ROUTING REMAINS
+  DEFERRED.**
+- **Not completed:** Slice 4 retries/cancellation recovery, graph runner loop,
+  stale-state aggregation, mutation routing, N6, N3 Slice 5, P4l17
+- **Next first action:** **Explicit maintainer authorization required for Neutron
+  N5 Slice 4** — retry, cancellation, and timeout recovery per
+  `docs/roadmap/NEUTRON_N5_EXECUTABLE_TASK_GRAPH_BRIEF.md` §22. Do not start
+  Slice 5, mutation routing, N6, optional N3 Slice 5, or P4l17.
+
+### 2026-09-05, Neutron N5 Slice 2 — single-node execution (merged)
+
+- **Status:** complete on `main` (#447)
+- **PR:** https://github.com/vitala89/Intentloom/pull/447
+- **Branch:** `feat/neutron-n5-node-execution` (merged)
+- **Starting main SHA:** `6a5c17aee9f9ae04b38f6df4d497a8503d44f410`
+- **Implementation head SHA:** `41046a06da613e6e072b64fe2dc30a75ad93557c`
+- **Merge SHA:** `556fa65f1a0d50e24a4563b12e507b8421e7dbe9`
+- **Objective:** N5 Slice 2 — execute exactly one ready node through N3/N2/N4
+- **Completed:**
+  - `executeNeutronTaskNode` and `resolveNeutronNodeCapabilities` on
+    `@intentloom/application/neutron-scheduler`
+  - N3 via existing N2 pre-turn hook; N2 `runNeutronN2ReadOnlyLoop`; N4
+    `routeNeutronToolInvocation`
+  - Capability clamp: session ∩ profile ∩ parent ∩ node ∩ read-only catalog
+  - Structured result wrapping N1 `NeutronSubagentResult`; attempt `1`
+  - Fingerprint unchanged; no scheduler persistence
+  - Tests: `tests/neutron-n5-node-execution.test.ts`
+  - Docs: N5 brief §31, runtime roadmap §N5, `PROJECT_STATE.md`
+- **Decision:** **N5 before mutation routing.** **MUTATION ROUTING REMAINS
+  DEFERRED.**
+- **Not completed:** Slice 3 leases/bounded concurrency, persistence, retries,
+  graph runner loop, cancellation tree, mutation routing, N6, N3 Slice 5, P4l17
+- **Next first action:** **Explicit maintainer authorization required for Neutron
+  N5 Slice 3** — leases and bounded concurrency per
+  `docs/roadmap/NEUTRON_N5_EXECUTABLE_TASK_GRAPH_BRIEF.md` §22. Do not start
+  Slice 4+, mutation routing, N6, optional N3 Slice 5, or P4l17.
+
+### 2026-09-04, Neutron N5 Slice 1 — deterministic scheduling core (merged)
+
+- **Status:** complete on `main` (#445)
+- **PR:** https://github.com/vitala89/Intentloom/pull/445
+- **Branch:** `feat/neutron-n5-scheduling-core` (merged)
+- **Starting main SHA:** `957756e12c6de488a943f49735816eb6ac2e498a` (legitimate
+  advancement over N5 handoff `279eacd` — Dependabot deps only)
+- **Implementation head SHA:** `06ef56b6dd2e19707e175210fb54fb56d5968df6`
+- **Merge SHA:** `62758dbedb89b0bb0ed5c7bffb20072a45359ac6`
+- **Objective:** N5 Slice 1 — pure scheduler foundation without model/tool
+  execution
+- **Completed:**
+  - `@intentloom/application/neutron-scheduler` — `validateNeutronTaskGraphForExecution`,
+    `planNeutronTaskScheduling`, `selectReadyNodes`, pure state transitions
+  - Execution invariants: unique IDs, dependency refs, cycle detection, valid
+    `parentId`; `parentId` not an execution dependency
+  - Deterministic ready selection by `taskId` code-point ascending; default
+    `maxConcurrency` 1, hard cap 4
+  - Tests: `tests/neutron-n5-task-graph.test.ts`, `tests/neutron-n5-scheduling.test.ts`
+  - Docs: N5 brief Slice 1 record, runtime roadmap §N5, `PROJECT_STATE.md`
+- **Decision:** **N5 before mutation routing.** **MUTATION ROUTING REMAINS
+  DEFERRED.**
+- **Not completed:** Slice 2 node execution (N3/N2/N4), leases, persistence,
+  retries, concurrency workers, cancellation runtime, mutation routing, N6,
+  N3 Slice 5, P4l17
+- **Next first action:** **Explicit maintainer authorization required for Neutron
+  N5 Slice 2** — single-worker node execution composing N3/N2/N4 per
+  `docs/roadmap/NEUTRON_N5_EXECUTABLE_TASK_GRAPH_BRIEF.md` §22. Do not start
+  Slice 3+, mutation routing, N6, optional N3 Slice 5, or P4l17.
+
+### 2026-09-03, Neutron N5 — executable task graph maintainer brief (merged)
+
+- **Status:** complete on `main` (#443)
+- **PR:** https://github.com/vitala89/Intentloom/pull/443
+- **Branch:** `docs/neutron-n5-executable-task-graph-brief` (merged)
+- **Starting main SHA:** `3b504d143146b95a1215529208d6ce75f565b2c2` (post-#442);
+  preflight also recorded `d28baf570a70a60ab536c10228a0de3f51e41e5e` (#433 deps)
+- **Implementation head SHA:** `21a2929eb840333fe6ac81abe50c5814099f3370`
+- **Merge SHA:** `08e89f88f29ff9d56c26c133563d917a7f066f1c`
+- **Objective:** Evidence-backed N5 planning — deterministic task-graph scheduler
+  composing N2/N3/N4 under read-only authority; no mutation routing
+- **Completed:**
+  - `docs/roadmap/NEUTRON_N5_EXECUTABLE_TASK_GRAPH_BRIEF.md` — state machine,
+    dependency semantics, concurrency/lease/retry/cancel/budget models, package
+    decision (Option A: stay in application), five implementation slices, threat
+    analysis, acceptance criteria
+  - Linked from `docs/roadmap/NEUTRON_RUNTIME_ROADMAP.md` §N5 and `docs/README.md`
+  - `PROJECT_STATE.md` updated — N5 brief prepared, implementation unauthorized
+- **Decision:** **N5 before mutation routing.** **MUTATION ROUTING REMAINS
+  DEFERRED.**
+- **Package decision:** Continue N5 in `@intentloom/application` subpaths; defer
+  `packages/neutron-runtime` until N6 consumer justifies boundary
+- **First recommended implementation slice:** **Slice 1 — graph validation and
+  deterministic scheduling core** (`validateNeutronTaskGraphForExecution`,
+  `selectReadyNodes`, pure state transitions; no model execution)
+- **Not completed:** N5 runtime code, mutation routing, N6 Desktop, N3 Slice 5,
+  P4l17
+- **Next first action:** **Explicit maintainer authorization required for Neutron
+  N5 Slice 1** — graph validation and deterministic scheduling core per
+  `docs/roadmap/NEUTRON_N5_EXECUTABLE_TASK_GRAPH_BRIEF.md` §23. Do not start
+  Slice 2+, mutation routing, N6, optional N3 Slice 5, or P4l17.
+
+### 2026-09-02, Neutron N4 Slice 2 — expand read-only tool catalog
+
+- **Status:** complete on `main` (#441)
+- **PR:** https://github.com/vitala89/Intentloom/pull/441
+- **Branch:** `feat/neutron-n4-readonly-tool-catalog` (merged)
+- **Starting main SHA:** `7b102b7aeecedc080a6dc4d686cdc8e8d8618fce` (post-#440)
+- **Implementation head SHA:** `324ab0b9a23cca1873eb032e0ffa318b45ae6e98`
+- **Merge SHA:** `e19d50edf3d2bb013f129c838725472c7195dd7a`
+- **Objective:** N4 Slice 2 — register doctor, memorySearch, timeline,
+  conformance, securityAudit, and projectDiff on the existing fail-closed
+  router without a second execution path
+- **Completed:**
+  - Registry split: `neutron-tool-input.ts`,
+    `neutron-tool-definitions-project.ts`,
+    `neutron-tool-definitions-governance.ts`, `neutron-tool-dispatch.ts`
+  - Existing `inspect` route unchanged; N2 advertises registered tools
+  - Tool-specific safety: doctor diagnosis only, diff not applied, conformance
+    report-only, memory search isolation, security inspection-only, timeline
+    read-only
+  - Tests: `tests/neutron-n4-tool-router.test.ts`,
+    `tests/neutron-n4-readonly-tools.test.ts`,
+    `tests/neutron-n4-memory-tool.test.ts`
+  - Roadmap Slice 2 record and `PROJECT_STATE.md` update
+  - `pnpm verify` green locally (285 files, 2442 passed, 3 skipped)
+  - Required CI green on #441: Compatibility, Governance, CodeQL
+- **Not completed:** mutation tools, generic shell, N5, Desktop model UI,
+  N3 Slice 5 CLI/daemon, P4l17
+- **Next first action:** **Explicit maintainer authorization required for
+  Neutron mutation routing or N5** per
+  `docs/roadmap/NEUTRON_RUNTIME_ROADMAP.md`. Do not start mutation routing, N5,
+  Desktop model UI, optional N3 Slice 5, or P4l17.
+
+### 2026-09-02, Neutron N4 Slice 1 — capability-scoped tool router foundation
+
+- **Status:** complete on `main` (#439)
+- **PR:** https://github.com/vitala89/Intentloom/pull/439
+- **Branch:** `feat/neutron-n4-tool-router-foundation` (merged)
+- **Starting main SHA:** `84a40bddbd0e499d840ecac06465352ffe9fc2b3`
+- **Implementation head SHA:** `b658cd83a418a3a2fdbd5f311c22795ede460f3b`
+- **Merge SHA:** `5d8c6e16427466e6b1627a0320f1d96a12c5dc43`
+- **Objective:** N4 Slice 1 — typed tool registration/validation,
+  root/session/capability authorization, fail-closed routing, normalized errors,
+  and one read-only `inspect` tool through existing `inspectProject`
+- **Completed:**
+  - `neutron-tool-registry.ts`, `neutron-tool-authorization.ts`,
+    `neutron-tool-errors.ts`, `neutron-tool-router.ts`
+  - Extended `NEUTRON_ERROR_CODES` with capability-denied, permission-denied,
+    operation-failed
+  - First routed tool: `inspect` via application operation `inspectProject`
+  - Fail-closed authorization boundary complete (root/session/capability/permission)
+  - `tests/neutron-n4-tool-router.test.ts` (14 cases) including N2→router→inspect E2E
+  - Roadmap Slice 1 record and `PROJECT_STATE.md` update
+  - `pnpm verify` green locally (283 files, 2413 passed, 3 skipped)
+  - Required CI green on #439: Compatibility, Governance, CodeQL, Dependency
+    Review, Harness Performance Benchmark, Desktop SEA Feasibility
+- **Not completed:** broader read-only catalog, mutation tools, generic shell,
+  N5, Desktop model UI, N3 Slice 5 CLI/daemon, P4l17
+- **Next first action:** **Explicit maintainer authorization required for
+  Neutron N4 Slice 2** — expand the read-only tool catalog (doctor, timeline,
+  conformance, memory search, diff, security inspection) behind the same router
+  boundary per `docs/roadmap/NEUTRON_RUNTIME_ROADMAP.md` §N4. Do not start
+  mutation routing, N5, Desktop model UI, optional N3 Slice 5, or P4l17.
 
 ### 2026-08-31, Neutron N3 Slice 4 — N2 pre-turn context hook
 

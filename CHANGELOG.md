@@ -7,6 +7,12 @@ All notable changes are documented here. This project follows Keep a Changelog p
 Changes listed here are merged after the current release-preparation scope and
 are not included in the current npm artifact until a later release.
 
+- Neutron Desktop N6 Slice 2 shows bounded N3 context summary and structured
+  N4 read-only tool activity for the latest completed turn. Secret-like paths
+  may be listed; secret bodies, assembled prompts, and model-prose tool cards
+  are not. `mutationAllowed` remains false. No Apply, streaming, or event
+  bridge.
+
 - **P3 S8 External Specialized Pack Lifecycle: COMPLETE.** External specialized
   packs can be previewed, explicitly approved by a human, and activated through
   CLI, daemon, and Desktop. Activation writes a referenced

@@ -74,6 +74,14 @@ export function buildWorkspaceCommandOptions(
       action: () => deps.setActiveView("Continuous loop"),
     },
     {
+      id: "nav-neutron",
+      category: "Navigation",
+      label: "Go to Neutron",
+      icon: "⚛",
+      shortcut: "",
+      action: () => deps.setActiveView("Neutron"),
+    },
+    {
       id: "nav-inspect",
       category: "Navigation",
       label: "Go to Inspect",

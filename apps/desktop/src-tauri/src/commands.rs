@@ -5,8 +5,8 @@ use tauri_plugin_dialog::DialogExt;
 use crate::bridge::{BridgeError, MAX_REQUEST_BYTES, PROTOCOL_VERSION};
 use crate::daemon_runtime::DaemonRuntime;
 use crate::method_allowlist::{
-    is_foundation_method, is_inception_method, is_specialized_pack_activate_method,
-    is_specialized_pack_preview_method,
+    is_foundation_method, is_inception_method, is_neutron_method,
+    is_specialized_pack_activate_method, is_specialized_pack_preview_method,
 };
 use crate::native_paths::canonical_project_root;
 
@@ -262,6 +262,31 @@ pub async fn invoke_specialized_pack_preview_request(
             return Err(BridgeError::new(
                 "unsupported_capability",
                 "desktop command is not allowed for this specialized pack operation",
+            ));
+        }
+        state
+            .ensure_daemon(&app, &request)
+            .map(|(_, response)| response)
+    })
+    .await
+}
+
+#[tauri::command]
+pub async fn invoke_neutron_request(
+    app: AppHandle,
+    state: State<'_, DaemonRuntime>,
+    request: Value,
+) -> Result<Value, BridgeError> {
+    let state = state.inner().clone();
+    run_blocking(move || {
+        let method = request
+            .get("method")
+            .and_then(Value::as_str)
+            .ok_or_else(|| BridgeError::new("unsupported_capability", "missing neutron method"))?;
+        if !is_neutron_method(method) {
+            return Err(BridgeError::new(
+                "unsupported_capability",
+                "desktop command is not allowed for this neutron operation",
             ));
         }
         state

@@ -124,6 +124,14 @@ export const CONTINUOUS_LOOP_WORKSPACE_PREPARE_METHOD =
   "intentloom.continuous-loop.workspace.prepare.v1" as const;
 export const CONTINUOUS_LOOP_WORKSPACE_EXECUTE_METHOD =
   "intentloom.continuous-loop.workspace.execute.v1" as const;
+export const NEUTRON_SESSION_CREATE_METHOD =
+  "intentloom.neutron.session.create.v1" as const;
+export const NEUTRON_SESSION_GET_METHOD =
+  "intentloom.neutron.session.get.v1" as const;
+export const NEUTRON_SESSION_CANCEL_METHOD =
+  "intentloom.neutron.session.cancel.v1" as const;
+export const NEUTRON_TURN_EXECUTE_METHOD =
+  "intentloom.neutron.turn.execute.v1" as const;
 
 export type JsonPrimitive = boolean | null | number | string;
 export type JsonValue = JsonPrimitive | JsonObject | readonly JsonValue[];
