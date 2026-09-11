@@ -673,9 +673,14 @@ consumption store, no project mutation lock acquisition, and
 read-only maintainer brief prepared**
 (`docs/roadmap/NEUTRON_N6_DESKTOP_READONLY_BRIEF.md`). **N6 Slice 1 implemented** — daemon Neutron session RPC and Desktop read-only
 session shell. **N6 Slice 2 implemented** — bounded N3 context visibility and
-structured N4 read-only tool activity on the completed turn snapshot. No event
-bridge. `mutationAllowed` remains literal `false`. N6 Slices 3–5, Mutation
-Slices 3–5, optional N3 Slice 5, and P4l17 are not authorized. Other
+structured N4 read-only tool activity on the completed turn snapshot. **N6 Slice 3
+implemented** — Desktop visibility for canonical N5 executable task graphs
+(`intentloom.neutron.graph.get.v1` / `.execute.v1` / `.cancel.v1`): one latest
+graph per session, one scheduling wave, attempt history, concurrency 1–4,
+runtime-acknowledged cancellation, timeout distinct from failure, and stale
+project/checkpoint/profile with no auto-rerun. No event bridge. `mutationAllowed`
+remains literal `false`. N6 Slices 4–5, Mutation Slices 3–5, optional N3 Slice 5,
+and P4l17 are not authorized. Other
 post-P4 candidates remain in `POST_W12_NEXT_INCREMENT_PLAN.md`.
 
 The Desktop discovery/error and Diff/Timeline slices remain recorded in

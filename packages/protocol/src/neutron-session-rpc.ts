@@ -16,6 +16,7 @@ import type {
   NeutronTurnContextSummary,
   NeutronTurnToolActivity,
 } from "./neutron-session-activity.js";
+import type { NeutronGraphSnapshot } from "./neutron-graph.js";
 import { ProtocolValidationError } from "./protocol-validation-error.js";
 
 export {
@@ -34,10 +35,13 @@ export {
   NEUTRON_READ_ONLY_TOOLS,
   NEUTRON_RUNTIME_SESSION_SCHEMA_URN,
   NEUTRON_SESSION_STATES,
+  NEUTRON_TASK_STATES,
   type NeutronAdapterCapability,
   type NeutronErrorCode,
   type NeutronReadOnlyTool,
   type NeutronRuntimeSession,
+  type NeutronTaskNode,
+  type NeutronTaskState,
 } from "./neutron-runtime.js";
 
 export type NeutronSessionViewmodelPayload = NeutronSessionViewmodel;
@@ -55,6 +59,7 @@ export interface NeutronSessionViewmodel {
   readonly cancellationAcknowledged: boolean;
   readonly contextSummary: NeutronTurnContextSummary | null;
   readonly toolActivity: readonly NeutronTurnToolActivity[];
+  readonly graphSnapshot: NeutronGraphSnapshot | null;
 }
 
 interface NeutronSessionResultPayload {

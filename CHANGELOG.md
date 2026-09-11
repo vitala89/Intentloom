@@ -16,6 +16,12 @@ are not included in the current npm artifact until a later release.
   register an N4 mutation tool. `mutationAllowed` remains literal `false`.
   Durable approval consumption and the project mutation lock remain Slice 3+.
 
+- Neutron Desktop N6 Slice 3 shows canonical N5 task-graph identity, nodes,
+  dependencies, attempts (max 2), concurrency 1–4, cancellation acknowledgement,
+  timeout, and stale project/checkpoint/profile state. Graph execute runs one
+  scheduling wave. No event bridge, streaming, auto-rerun, Apply, or mutation
+  tool. `mutationAllowed` remains false. Latest graph per session only.
+
 - Neutron Desktop N6 Slice 2 shows bounded N3 context summary and structured
   N4 read-only tool activity for the latest completed turn. Secret-like paths
   may be listed; secret bodies, assembled prompts, and model-prose tool cards

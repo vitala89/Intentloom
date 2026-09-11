@@ -12,6 +12,7 @@ import {
   optionalContextSummary,
   optionalToolActivity,
 } from "./neutron-session-activity.js";
+import { optionalGraphSnapshot } from "./neutron-graph.js";
 import {
   NEUTRON_ERROR_CODES,
   NEUTRON_READ_ONLY_TOOLS,
@@ -86,6 +87,7 @@ export function validateNeutronSessionViewmodel(
     cancellationAcknowledged: value.cancellationAcknowledged === true,
     contextSummary: optionalContextSummary(value.contextSummary),
     toolActivity: optionalToolActivity(value.toolActivity),
+    graphSnapshot: optionalGraphSnapshot(value.graphSnapshot),
   };
 }
 

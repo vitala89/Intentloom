@@ -1,14 +1,8 @@
 import { randomUUID } from "node:crypto";
 import type { AgentRoleCapabilities } from "../../protocol/src/index.js";
-import {
-  NEUTRON_ADAPTER_CAPABILITY_SCHEMA_URN,
-  NEUTRON_RUNTIME_SESSION_SCHEMA_URN,
-  type NeutronAdapterCapability,
-  type NeutronSessionState,
-} from "../../protocol/src/neutron-runtime.js";
+import { NEUTRON_RUNTIME_SESSION_SCHEMA_URN } from "../../protocol/src/neutron-runtime.js";
 import type { NeutronSessionViewmodel } from "../../protocol/src/neutron-session-rpc.js";
 import { validateNeutronRuntimeSession } from "../../validator/src/neutron-runtime.js";
-import { validateNeutronN2AdapterCapability } from "../../validator/src/neutron-runtime-n2.js";
 import { nodeFileSystem, type FileSystem } from "./index.js";
 import type { ModelAdapter } from "./model-adapter.js";
 import {
@@ -22,29 +16,20 @@ import {
   runStoredNeutronTurn,
   type StoredNeutronSession,
 } from "./neutron-session-turn.js";
-
-const TERMINAL_STATES: readonly NeutronSessionState[] = [
-  "cancelled",
-  "timed-out",
-  "failed",
-  "completed",
-];
-
-function createDeferred(): {
-  readonly promise: Promise<void>;
-  readonly resolve: () => void;
-} {
-  const box: { resolve?: () => void } = {};
-  const promise = new Promise<void>((done) => {
-    box.resolve = done;
-  });
-  return {
-    promise,
-    resolve: () => {
-      box.resolve?.();
-    },
-  };
-}
+import {
+  cancelRuntimeGraph,
+  executeRuntimeGraph,
+  getRuntimeGraph,
+  type NeutronGraphRuntimeContext,
+} from "./neutron-session-runtime-graph.js";
+import {
+  TERMINAL_NEUTRON_SESSION_STATES as TERMINAL_STATES,
+  createNeutronDeferred as createDeferred,
+  emptyNeutronSessionView as emptyView,
+  neutronAdapterCapability as adapterCapability,
+} from "./neutron-session-runtime-helpers.js";
+import { storedGraphView } from "./neutron-session-graph.js";
+import type { NeutronTaskNode } from "../../protocol/src/neutron-runtime.js";
 
 export interface NeutronSessionRuntimeOptions {
   readonly createAdapter: () => ModelAdapter | null;
@@ -76,56 +61,27 @@ export interface NeutronSessionRuntime {
     readonly projectId: string;
     readonly prompt: string;
   }): Promise<NeutronSessionViewmodel>;
+  getGraph(input: {
+    readonly root: string;
+    readonly sessionId: string;
+    readonly projectId: string;
+    readonly graphId?: string;
+  }): Promise<NeutronSessionViewmodel>;
+  executeGraph(input: {
+    readonly root: string;
+    readonly sessionId: string;
+    readonly projectId: string;
+    readonly nodes: readonly NeutronTaskNode[];
+    readonly graphId?: string;
+    readonly maxConcurrency?: number;
+  }): Promise<NeutronSessionViewmodel>;
+  cancelGraph(input: {
+    readonly root: string;
+    readonly sessionId: string;
+    readonly projectId: string;
+    readonly graphId?: string;
+  }): Promise<NeutronSessionViewmodel>;
   clear(): void;
-}
-
-function emptyView(stored: StoredNeutronSession): NeutronSessionViewmodel {
-  return {
-    session: stored.session,
-    adapter: stored.adapter,
-    prompt: stored.prompt,
-    responseText: stored.responseText,
-    toolName: stored.toolName,
-    errorCode: stored.errorCode,
-    errorMessage: stored.errorMessage,
-    projectFingerprintBefore: stored.projectFingerprintBefore,
-    projectFingerprintAfter: stored.projectFingerprintAfter,
-    cancellationAcknowledged: false,
-    contextSummary: stored.contextSummary,
-    toolActivity: stored.toolActivity,
-  };
-}
-
-function adapterCapability(adapter: ModelAdapter): NeutronAdapterCapability {
-  const caps = adapter.getCapabilities();
-  if (caps.providerKind === "ollama") {
-    return validateNeutronN2AdapterCapability({
-      schemaVersion: NEUTRON_ADAPTER_CAPABILITY_SCHEMA_URN,
-      providerKind: "ollama",
-      modelId: caps.modelId,
-      supportsStreaming: false,
-      supportsToolCalls: caps.supportsToolCalls,
-      networkMode: "explicit-egress",
-      dataHandling: "ephemeral",
-      credentialIsolation: "outside-project-metadata",
-    });
-  }
-  if (caps.providerKind !== "deterministic-test") {
-    throw new NeutronSessionOperationError(
-      "adapter-unconfigured",
-      "Neutron provider is not configured",
-    );
-  }
-  return {
-    schemaVersion: NEUTRON_ADAPTER_CAPABILITY_SCHEMA_URN,
-    providerKind: "deterministic-test",
-    modelId: caps.modelId,
-    supportsStreaming: false,
-    supportsToolCalls: caps.supportsToolCalls,
-    networkMode: "offline",
-    dataHandling: "ephemeral",
-    credentialIsolation: "outside-project-metadata",
-  };
 }
 
 export function createNeutronSessionRuntime(
@@ -196,6 +152,7 @@ export function createNeutronSessionRuntime(
         projectFingerprintAfter: null,
         contextSummary: null,
         toolActivity: [],
+        graphSnapshot: null,
       };
       sessions.set(session.sessionId, stored);
       return emptyView(stored);
@@ -214,7 +171,9 @@ export function createNeutronSessionRuntime(
         if (latest === undefined) {
           throw unknownNeutronSessionError(input.sessionId);
         }
-        return { ...emptyView(latest), cancellationAcknowledged: true };
+        const acknowledged = storedGraphView(latest, true);
+        sessions.set(input.sessionId, acknowledged);
+        return { ...emptyView(acknowledged), cancellationAcknowledged: true };
       }
       if (TERMINAL_STATES.includes(stored.session.state)) {
         return emptyView(stored);
@@ -233,9 +192,7 @@ export function createNeutronSessionRuntime(
         throw neutronBindingError("neutron session is no longer active");
       }
       if (stored.inFlight !== undefined) {
-        throw neutronBindingError(
-          "neutron session already has an in-flight turn",
-        );
+        throw neutronBindingError("neutron session already has in-flight work");
       }
       const adapter = options.createAdapter();
       if (adapter === null) {
@@ -286,8 +243,45 @@ export function createNeutronSessionRuntime(
       }
     },
 
+    getGraph(input) {
+      return getRuntimeGraph(graphContext(), input);
+    },
+
+    executeGraph(input) {
+      return executeRuntimeGraph(graphContext(), input);
+    },
+
+    cancelGraph(input) {
+      return cancelRuntimeGraph(graphContext(), input);
+    },
+
     clear() {
       sessions.clear();
     },
   };
+
+  function graphContext(): NeutronGraphRuntimeContext {
+    return {
+      createAdapter: options.createAdapter,
+      emptyView,
+      fingerprint,
+      fs,
+      persist,
+      requireBound,
+      sessions,
+      ...(options.capabilities === undefined
+        ? {}
+        : { capabilities: options.capabilities }),
+      beginInFlight(stored: StoredNeutronSession) {
+        const controller = new AbortController();
+        const deferred = createDeferred();
+        stored.inFlight = {
+          controller,
+          done: deferred.promise,
+          settle: deferred.resolve,
+        };
+        return { controller, settle: deferred.resolve };
+      },
+    };
+  }
 }
