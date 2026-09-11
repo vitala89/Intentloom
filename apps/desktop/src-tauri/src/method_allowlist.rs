@@ -67,6 +67,9 @@ pub fn is_neutron_method(method: &str) -> bool {
             | "intentloom.neutron.session.get.v1"
             | "intentloom.neutron.session.cancel.v1"
             | "intentloom.neutron.turn.execute.v1"
+            | "intentloom.neutron.graph.get.v1"
+            | "intentloom.neutron.graph.execute.v1"
+            | "intentloom.neutron.graph.cancel.v1"
     )
 }
 
@@ -129,9 +132,13 @@ mod tests {
         ));
         assert!(is_neutron_method("intentloom.neutron.session.create.v1"));
         assert!(is_neutron_method("intentloom.neutron.turn.execute.v1"));
+        assert!(is_neutron_method("intentloom.neutron.graph.get.v1"));
+        assert!(is_neutron_method("intentloom.neutron.graph.execute.v1"));
+        assert!(is_neutron_method("intentloom.neutron.graph.cancel.v1"));
         assert!(!is_neutron_method("intentloom.session.get.v1"));
         assert!(!is_neutron_method("intentloom.project.approvedApply.v1"));
         assert!(!is_neutron_method("intentloom.neutron.*"));
+        assert!(!is_neutron_method("intentloom.neutron.graph.*"));
         assert!(!is_foundation_method(
             "intentloom.neutron.session.create.v1"
         ));

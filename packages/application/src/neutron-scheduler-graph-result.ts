@@ -6,22 +6,17 @@ import type {
   NeutronUsageBudget,
 } from "../../protocol/src/neutron-runtime.js";
 import {
+  NEUTRON_GRAPH_STATUSES,
+  type NeutronGraphStatus,
+} from "../../protocol/src/neutron-graph.js";
+import {
   compareNeutronTaskIds,
   sortNeutronTaskIds,
 } from "./neutron-scheduler-sort.js";
 import type { NeutronGraphNodeRecord } from "./neutron-scheduler-provenance.js";
 import type { NeutronGraphStaleReport } from "./neutron-scheduler-stale.js";
 
-export const NEUTRON_GRAPH_STATUSES = [
-  "completed",
-  "failed",
-  "cancelled",
-  "timed-out",
-  "incomplete",
-  "stale",
-] as const;
-
-export type NeutronGraphStatus = (typeof NEUTRON_GRAPH_STATUSES)[number];
+export { NEUTRON_GRAPH_STATUSES, type NeutronGraphStatus };
 
 export interface NeutronGraphExecutionResult {
   readonly graphId: string;

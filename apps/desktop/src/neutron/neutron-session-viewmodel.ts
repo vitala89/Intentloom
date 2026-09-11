@@ -18,6 +18,7 @@ import {
   parseNeutronContextSummary,
   parseNeutronToolActivity,
 } from "./neutron-activity-viewmodel.js";
+import { parseNeutronGraphSnapshot } from "./neutron-graph-viewmodel.js";
 
 export type NeutronUiPhase =
   "idle" | "connecting" | "submitting" | "cancelling";
@@ -143,6 +144,7 @@ export function parseNeutronDesktopViewmodel(
     cancellationAcknowledged: record.cancellationAcknowledged === true,
     contextSummary: parseNeutronContextSummary(record.contextSummary),
     toolActivity: parseNeutronToolActivity(record.toolActivity),
+    graphSnapshot: parseNeutronGraphSnapshot(record.graphSnapshot),
   };
 }
 

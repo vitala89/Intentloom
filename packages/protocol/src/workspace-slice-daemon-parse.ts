@@ -27,6 +27,8 @@ import { parseContinuousLoopDaemonRequest } from "./continuous-loop-daemon-rpc.j
 import type { ContinuousLoopDaemonRequest } from "./continuous-loop-daemon-rpc.js";
 import { parseNeutronSessionDaemonRequest } from "./neutron-session-rpc.js";
 import type { NeutronDaemonRequest } from "./neutron-session-rpc.js";
+import { parseNeutronGraphDaemonRequest } from "./neutron-graph-rpc.js";
+import type { NeutronGraphDaemonRequest } from "./neutron-graph-rpc.js";
 
 export type WorkspaceSliceDaemonRequest =
   | ExistingProjectWorkspacePrepareRequest
@@ -40,7 +42,8 @@ export type WorkspaceSliceDaemonRequest =
   | BoundedExecutionDaemonRequest
   | ContinuousLoopDaemonRequest
   | FoundationScaffoldDaemonRequest
-  | NeutronDaemonRequest;
+  | NeutronDaemonRequest
+  | NeutronGraphDaemonRequest;
 
 export function parseWorkspaceSliceDaemonRequest(
   method: string,
@@ -59,6 +62,7 @@ export function parseWorkspaceSliceDaemonRequest(
     parseBoundedExecutionDaemonRequest(method, params, id) ??
     parseContinuousLoopDaemonRequest(method, params, id) ??
     parseFoundationScaffoldDaemonRequest(method, params, id) ??
-    parseNeutronSessionDaemonRequest(method, params, id)
+    parseNeutronSessionDaemonRequest(method, params, id) ??
+    parseNeutronGraphDaemonRequest(method, params, id)
   );
 }

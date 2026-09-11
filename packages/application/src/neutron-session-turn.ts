@@ -11,6 +11,11 @@ import type {
   NeutronTurnContextSummary,
   NeutronTurnToolActivity,
 } from "../../protocol/src/neutron-session-activity.js";
+import type { NeutronGraphSnapshot } from "../../protocol/src/neutron-graph.js";
+import type { NeutronTaskGraph } from "../../protocol/src/neutron-runtime.js";
+import type { NeutronGraphStaleBaseline } from "./neutron-scheduler-stale.js";
+import type { NeutronSchedulingPlan } from "./neutron-scheduler-select.js";
+import type { NeutronReadyNodeOutcome } from "./neutron-scheduler-wave-types.js";
 import { validateNeutronRuntimeSession } from "../../validator/src/neutron-runtime.js";
 import { NeutronN2Error } from "../../validator/src/neutron-runtime-n2.js";
 import { inspectProject, type FileSystem } from "./index.js";
@@ -54,6 +59,16 @@ export interface StoredNeutronSession {
   projectFingerprintAfter: string | null;
   contextSummary: NeutronTurnContextSummary | null;
   toolActivity: readonly NeutronTurnToolActivity[];
+  graphSnapshot: NeutronGraphSnapshot | null;
+  storedGraph?:
+    | {
+        readonly snapshot: NeutronGraphSnapshot;
+        readonly graph: NeutronTaskGraph;
+        readonly outcomes: readonly NeutronReadyNodeOutcome[];
+        readonly plan: NeutronSchedulingPlan;
+        readonly baseline: NeutronGraphStaleBaseline;
+      }
+    | undefined;
   inFlight?:
     | {
         readonly controller: AbortController;
@@ -137,6 +152,8 @@ export async function runStoredNeutronTurn(input: {
         ? null
         : projectNeutronContextSummary(result.contextAssembly),
     toolActivity: projectNeutronToolActivity(envelopes),
+    graphSnapshot: input.stored.graphSnapshot,
+    storedGraph: input.stored.storedGraph,
     inFlight: undefined,
   };
 }
@@ -171,6 +188,8 @@ export function failedStoredSession(
     errorMessage: error instanceof Error ? error.message : String(error),
     contextSummary: null,
     toolActivity: [],
+    graphSnapshot: stored.graphSnapshot,
+    storedGraph: stored.storedGraph,
     inFlight: undefined,
   };
 }

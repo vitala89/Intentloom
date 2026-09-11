@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import type { NeutronSessionViewmodel } from "@intentloom/protocol";
 import { desktopClient, DesktopBridgeError } from "../desktop-client.js";
+import { neutronDesktopGraphNodes } from "./neutron-graph-input.js";
 import {
   classifyNeutronInfrastructureError,
   parseNeutronDesktopViewmodel,
@@ -15,7 +16,12 @@ export interface UseNeutronSessionResult {
   readonly setPrompt: (value: string) => void;
   readonly createSession: () => Promise<void>;
   readonly runTurn: () => Promise<void>;
+  readonly runGraph: () => Promise<void>;
   readonly cancelSession: () => Promise<void>;
+}
+
+function messageOf(error: unknown): string {
+  return error instanceof Error ? error.message : String(error);
 }
 
 export function useNeutronSession(
@@ -29,21 +35,21 @@ export function useNeutronSession(
     null,
   );
   const [prompt, setPrompt] = useState("");
+  const [op, setOp] = useState<"turn" | "graph" | null>(null);
 
   useEffect(() => {
     setViewmodel(null);
     setUiPhase("idle");
     setInfrastructureError(null);
     setPrompt("");
+    setOp(null);
   }, [root]);
 
   const captureError = useCallback((error: unknown) => {
     const bridge =
       error instanceof DesktopBridgeError
         ? error
-        : new DesktopBridgeError(
-            error instanceof Error ? error.message : String(error),
-          );
+        : new DesktopBridgeError(messageOf(error));
     if (classifyNeutronInfrastructureError(bridge)) {
       setInfrastructureError(bridge.message);
       return;
@@ -51,6 +57,17 @@ export function useNeutronSession(
     setInfrastructureError(null);
     throw bridge;
   }, []);
+
+  const recover = useCallback(
+    (error: unknown) => {
+      try {
+        captureError(error);
+      } catch (runtimeError) {
+        setInfrastructureError(messageOf(runtimeError));
+      }
+    },
+    [captureError],
+  );
 
   const createSession = useCallback(async () => {
     if (root === null) return;
@@ -62,23 +79,16 @@ export function useNeutronSession(
       setUiPhase("idle");
     } catch (error: unknown) {
       setUiPhase("idle");
-      try {
-        captureError(error);
-      } catch (runtimeError) {
-        const message =
-          runtimeError instanceof Error
-            ? runtimeError.message
-            : String(runtimeError);
-        setInfrastructureError(message);
-      }
+      recover(error);
     }
-  }, [root, captureError]);
+  }, [root, recover]);
 
   const runTurn = useCallback(async () => {
     if (root === null || viewmodel === null || prompt.trim().length === 0) {
       return;
     }
     setUiPhase("submitting");
+    setOp("turn");
     setInfrastructureError(null);
     try {
       const payload = await desktopClient.neutronTurnExecute(
@@ -88,45 +98,62 @@ export function useNeutronSession(
         prompt,
       );
       setViewmodel(parseNeutronDesktopViewmodel(payload));
-      setUiPhase("idle");
     } catch (error: unknown) {
+      recover(error);
+    } finally {
       setUiPhase("idle");
-      try {
-        captureError(error);
-      } catch (runtimeError) {
-        const message =
-          runtimeError instanceof Error
-            ? runtimeError.message
-            : String(runtimeError);
-        setInfrastructureError(message);
-      }
+      setOp(null);
     }
-  }, [root, viewmodel, prompt, captureError]);
+  }, [root, viewmodel, prompt, recover]);
+
+  const runGraph = useCallback(async () => {
+    if (root === null || viewmodel === null || prompt.trim().length === 0) {
+      return;
+    }
+    setUiPhase("submitting");
+    setOp("graph");
+    setInfrastructureError(null);
+    try {
+      const payload = await desktopClient.neutronGraphExecute(
+        root,
+        viewmodel.session.sessionId,
+        viewmodel.session.projectId,
+        neutronDesktopGraphNodes(prompt),
+      );
+      setViewmodel(parseNeutronDesktopViewmodel(payload));
+    } catch (error: unknown) {
+      recover(error);
+    } finally {
+      setUiPhase("idle");
+      setOp(null);
+    }
+  }, [root, viewmodel, prompt, recover]);
 
   const cancelSession = useCallback(async () => {
     if (root === null || viewmodel === null) return;
     setUiPhase("cancelling");
     try {
-      const payload = await desktopClient.neutronSessionCancel(
-        root,
-        viewmodel.session.sessionId,
-        viewmodel.session.projectId,
-      );
+      const payload =
+        op === "graph"
+          ? await desktopClient.neutronGraphCancel(
+              root,
+              viewmodel.session.sessionId,
+              viewmodel.session.projectId,
+              viewmodel.graphSnapshot?.graphId,
+            )
+          : await desktopClient.neutronSessionCancel(
+              root,
+              viewmodel.session.sessionId,
+              viewmodel.session.projectId,
+            );
       setViewmodel(parseNeutronDesktopViewmodel(payload));
     } catch (error: unknown) {
-      try {
-        captureError(error);
-      } catch (runtimeError) {
-        const message =
-          runtimeError instanceof Error
-            ? runtimeError.message
-            : String(runtimeError);
-        setInfrastructureError(message);
-      }
+      recover(error);
     } finally {
       setUiPhase("idle");
+      setOp(null);
     }
-  }, [root, viewmodel, captureError]);
+  }, [root, viewmodel, op, recover]);
 
   return {
     viewmodel,
@@ -136,6 +163,7 @@ export function useNeutronSession(
     setPrompt,
     createSession,
     runTurn,
+    runGraph,
     cancelSession,
   };
 }

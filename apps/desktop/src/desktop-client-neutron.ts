@@ -1,9 +1,13 @@
 import {
+  createNeutronGraphCancelRequest,
+  createNeutronGraphExecuteRequest,
+  createNeutronGraphGetRequest,
   createNeutronSessionCancelRequest,
   createNeutronSessionCreateRequest,
   createNeutronSessionGetRequest,
   createNeutronTurnExecuteRequest,
   type NeutronSessionViewmodelPayload,
+  type NeutronTaskNode,
 } from "@intentloom/protocol";
 
 type NeutronRequestFn = (
@@ -76,6 +80,68 @@ export function neutronDesktopMethods(neutronRequest: NeutronRequestFn) {
           sessionId,
           projectId,
           prompt,
+        ),
+        signal,
+      );
+    },
+
+    async neutronGraphGet(
+      root: string,
+      sessionId: string,
+      projectId: string,
+      graphId?: string,
+      signal?: AbortSignal,
+    ): Promise<NeutronSessionViewmodelPayload> {
+      return neutronRequest(
+        createNeutronGraphGetRequest(
+          "desktop-neutron-graph-get",
+          root,
+          sessionId,
+          projectId,
+          graphId,
+        ),
+        signal,
+      );
+    },
+
+    async neutronGraphExecute(
+      root: string,
+      sessionId: string,
+      projectId: string,
+      nodes: readonly NeutronTaskNode[],
+      options: {
+        readonly graphId?: string;
+        readonly maxConcurrency?: number;
+      } = {},
+      signal?: AbortSignal,
+    ): Promise<NeutronSessionViewmodelPayload> {
+      return neutronRequest(
+        createNeutronGraphExecuteRequest(
+          "desktop-neutron-graph-execute",
+          root,
+          sessionId,
+          projectId,
+          nodes,
+          options,
+        ),
+        signal,
+      );
+    },
+
+    async neutronGraphCancel(
+      root: string,
+      sessionId: string,
+      projectId: string,
+      graphId?: string,
+      signal?: AbortSignal,
+    ): Promise<NeutronSessionViewmodelPayload> {
+      return neutronRequest(
+        createNeutronGraphCancelRequest(
+          "desktop-neutron-graph-cancel",
+          root,
+          sessionId,
+          projectId,
+          graphId,
         ),
         signal,
       );

@@ -5,6 +5,8 @@ import { NeutronActivityPanel } from "./NeutronActivityPanel.js";
 import { NeutronComposer } from "./NeutronComposer.js";
 import { NeutronResult } from "./NeutronResult.js";
 import { NeutronSessionHeader } from "./NeutronSessionHeader.js";
+import { NeutronTaskGraphPanel } from "./NeutronTaskGraphPanel.js";
+import { authoritativeGraphSnapshot } from "./neutron-graph-viewmodel.js";
 import { neutronSurfaceKind } from "./neutron-session-viewmodel.js";
 import { useNeutronSession } from "./use-neutron-session.js";
 
@@ -63,6 +65,14 @@ export function NeutronWorkspace({
         surface={surface}
         viewmodel={session.viewmodel}
       />
+      {session.viewmodel !== null ? (
+        <NeutronTaskGraphPanel
+          snapshot={authoritativeGraphSnapshot({
+            responseText: session.viewmodel.responseText,
+            graphSnapshot: session.viewmodel.graphSnapshot,
+          })}
+        />
+      ) : null}
       <NeutronActivityPanel viewmodel={session.viewmodel} />
       <NeutronComposer
         canCancel={canCancel}
@@ -75,9 +85,16 @@ export function NeutronWorkspace({
           session.viewmodel.session.state !== "failed" &&
           session.viewmodel.session.state !== "timed-out"
         }
+        canRunGraph={
+          session.viewmodel !== null &&
+          session.prompt.trim().length > 0 &&
+          session.uiPhase === "idle" &&
+          session.viewmodel.session.state !== "cancelled"
+        }
         onCancel={() => void session.cancelSession()}
         onPromptChange={session.setPrompt}
         onRun={() => void session.runTurn()}
+        onRunGraph={() => void session.runGraph()}
         prompt={session.prompt}
         uiPhase={session.uiPhase}
       />

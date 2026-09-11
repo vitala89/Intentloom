@@ -132,6 +132,12 @@ export const NEUTRON_SESSION_CANCEL_METHOD =
   "intentloom.neutron.session.cancel.v1" as const;
 export const NEUTRON_TURN_EXECUTE_METHOD =
   "intentloom.neutron.turn.execute.v1" as const;
+export const NEUTRON_GRAPH_GET_METHOD =
+  "intentloom.neutron.graph.get.v1" as const;
+export const NEUTRON_GRAPH_EXECUTE_METHOD =
+  "intentloom.neutron.graph.execute.v1" as const;
+export const NEUTRON_GRAPH_CANCEL_METHOD =
+  "intentloom.neutron.graph.cancel.v1" as const;
 
 export type JsonPrimitive = boolean | null | number | string;
 export type JsonValue = JsonPrimitive | JsonObject | readonly JsonValue[];

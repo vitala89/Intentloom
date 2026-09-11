@@ -2,16 +2,18 @@
 
 ## Status
 
-**Slice 2 implemented** (context visibility + read-only tool activity). Slices
-3–5 are **not authorized**. `mutationAllowed` remains `false`. Streaming and
-daemon event push remain unavailable. No event bridge was added; Slice 2 uses
-the completed `turn.execute` snapshot.
+**Slice 3 implemented** (task graph + subagents + retry + cancellation
+visibility). Slices 4–5 are **not authorized**. `mutationAllowed` remains
+`false`. Streaming and daemon event push remain unavailable. No event bridge
+or polling loop was added; Slice 3 uses request/response graph get/execute/cancel
+snapshots. Latest graph per session only.
 
 N1–N5 read-only runtime is complete in `@intentloom/application` and
-`@intentloom/protocol`. Mutation-routing **Slice 1 contracts** exist. Desktop
-v0.6 already ships an authenticated daemon adapter and Agent Workspace. Slice 1
-adds named Neutron session RPCs and a Desktop Neutron view. Daemon event
-streaming remains unavailable.
+`@intentloom/protocol`. Mutation-routing Slice 1 contracts and Slice 2
+semantic preflight exist. Desktop v0.6 already ships an authenticated daemon
+adapter and Agent Workspace. Slice 1 adds named Neutron session RPCs and a
+Desktop Neutron view. Slice 2 adds context and tool activity. Slice 3 adds
+canonical N5 task-graph visibility. Daemon event streaming remains unavailable.
 
 This brief designs the first official Desktop experience over those existing
 typed boundaries. The first N6 milestone remains **read-only**.
@@ -46,7 +48,7 @@ Related:
 | Progress                   | N1 events exist; daemon is request/response only — Slice 1 may complete on RPC return; later slices add a thin notify/poll bridge |
 | Apply                      | **Unavailable** for the entire N6 read-only milestone                                                                             |
 | Mutation / N6 sequencing   | **N6 Slice 1 first.** Mutation Slice 2 may later proceed in parallel under file ownership in §27                                  |
-| Next grant                 | **Explicit maintainer authorization required** (do not assume N6 Slice 3 or Mutation Slice 2)                                     |
+| Next grant                 | **Explicit maintainer authorization required** (do not assume N6 Slice 4 or Mutation Slice 3)                                     |
 
 ---
 
@@ -892,6 +894,8 @@ See §35.
 
 ### Slice 3 — task graph, subagents, retry, cancel
 
+**Status:** implemented (see §44).
+
 **Objective:** Visualize `NeutronTaskGraph` / `NeutronGraphExecutionResult`;
 attempts; concurrency 1–4; cancel ack.
 
@@ -1041,7 +1045,26 @@ optional N3 Slice 5, P4l17, `packages/neutron-runtime`, changing
 | Secret redaction  | Secret-like paths may cross; excerpts, projection entries, modelPrompt, and secret bodies do not                                      |
 | Event bridge      | Not added. Completed turn snapshot is sufficient                                                                                      |
 | Streaming         | Still unavailable                                                                                                                     |
-| Graph             | Deferred to Slice 3                                                                                                                   |
+| Graph             | Slice 3: `intentloom.neutron.graph.get.v1` / `.execute.v1` / `.cancel.v1`; latest graph per session                                   |
 | `mutationAllowed` | Literal `false`                                                                                                                       |
 | Apply             | Not invoked. No Approved Apply path                                                                                                   |
-| Next gate         | Explicit maintainer authorization required. Do not assume N6 Slice 3 or Mutation Slice 2                                              |
+| Next gate         | Explicit maintainer authorization required. Do not assume N6 Slice 4 or Mutation Slice 3                                              |
+
+---
+
+## 44. Slice 3 implementation record
+
+| Item              | Value                                                                                                                                                             |
+| ----------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| RPCs              | `intentloom.neutron.graph.get.v1`, `intentloom.neutron.graph.execute.v1`, `intentloom.neutron.graph.cancel.v1` (named, authenticated, root/project/session bound) |
+| Lifecycle         | Latest graph per session. Execute runs **one N5 scheduling wave**, then get refreshes stale detection without re-running. No full autonomous graph runner.        |
+| Graph statuses    | Canonical N5 precedence: `stale` → `incomplete` → `cancelled` → `timed-out` → `failed` → `completed`. No `thinking`/`working`.                                    |
+| Nodes / attempts  | Canonical `NEUTRON_TASK_STATES`; attempts 1 and 2 both retained; max attempts **2**. Retry classification stays in N5.                                            |
+| Concurrency       | Default 1, hard maximum 4; values outside 1–4 fail closed (no protocol clamp).                                                                                    |
+| Cancellation      | Runtime-acknowledged via `graph.cancel.v1` aborting the in-flight N5 `AbortSignal`. Client Promise abort is not success.                                          |
+| Timeout           | Distinct `timed-out` node/graph status, not mapped to generic `failed`.                                                                                           |
+| Stale             | `detectNeutronGraphStaleness` kinds project/checkpoint/profile; `accepted: false`; `rerunAttempted: false`; no auto-rerun.                                        |
+| Event / polling   | **Not added.** Request/response snapshots are sufficient. No WebSocket, SSE, or hidden polling.                                                                   |
+| `mutationAllowed` | Literal `false`. No Apply, mutation tool, shell, or source writes. Fingerprint unchanged after execute.                                                           |
+| Provenance        | Bounded indicators only (ids, attempts, capabilities, provider/model, tool count, digest presence). Full evidence explorer is Slice 4.                            |
+| Next gate         | Explicit maintainer authorization required. Do not assume N6 Slice 4 or Mutation Slice 3.                                                                         |
