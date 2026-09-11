@@ -12,9 +12,78 @@ in a condition that the next watch can safely understand and continue.
 Status: **N5 complete**. Mutation-routing **Slice 1 contracts implemented**.
 **Mutation Slice 2 implemented** (semantic authorization + approved-transaction
 preflight, no Apply). **N6 Slice 1 implemented**. **N6 Slice 2 implemented**
-(context visibility + read-only tool activity). `mutationAllowed` remains
-literal `false`. N6 Slices 3–5, Mutation Slices 3–5 Apply, optional N3
+(context visibility + read-only tool activity). **N6 Slice 3 implemented**
+(task graph visibility / execute / cancel, no full graph runner). `mutationAllowed`
+remains literal `false`. N6 Slices 4–5, Mutation Slices 3–5 Apply, optional N3
 Slice 5, and P4l17 remain unauthorized.
+
+### 2026-09-12, Neutron N6 Slice 3 — task graph visibility (merged)
+
+- **Status:** **N6 SLICE 3 COMPLETE** on `main` (#474 / this handoff)
+- **Implementation PR:** https://github.com/vitala89/Intentloom/pull/474
+- **Implementation branch:** `feat/neutron-n6-task-graph` (merged)
+- **Starting main / origin/main:** `614b654085244f2d1ff725cdda3c23c2c2b64dc7`
+  (expected N6 Slice 3 baseline; tracked tree was clean; unrelated
+  `.commit-msg-*` / `.pr-body-*` / `.squash-msg-*` scratch preserved).
+- **Implementation head SHA:** `fa86850133722784aeb972880ebcffc80fb89382`
+- **Implementation merge SHA / current main:** `8389b73aa0e4d6e0dea2e91c9f90eb5c6c434c24`
+- **Objective:** Desktop visibility for canonical N5 executable task graphs —
+  graph identity, nodes, dependencies, attempts, retry history, concurrency,
+  runtime-acknowledged cancellation, timeout vs failure, and stale
+  project/checkpoint/profile — without auto-rerun, event bridge, Apply, or a
+  full autonomous graph runner.
+- **Architecture delivered:** Desktop Neutron UI → typed `desktopClient`
+  (`desktop-client-neutron.ts`) → `invoke_neutron_request` → explicit Tauri
+  allowlist → authenticated daemon → `intentloom.neutron.graph.get.v1` /
+  `intentloom.neutron.graph.execute.v1` / `intentloom.neutron.graph.cancel.v1`
+  → `@intentloom/application` session runtime wrapping existing N5
+  `executeReadyNeutronTaskNodes` / `reconcileNeutronTaskGraphExecution`. No
+  `packages/neutron-runtime`.
+- **Graph semantics:** latest graph per session; graph execute runs **one N5
+  scheduling wave** only; no full autonomous graph runner; no second scheduler.
+- **Graph statuses (canonical precedence):** `stale` → `incomplete` →
+  `cancelled` → `timed-out` → `failed` → `completed`.
+- **Nodes recorded:** `taskId`, parent/dependencies, canonical node state,
+  effective capabilities, attempts, result status, provider/model, bounded
+  provenance indicators. Model prose cannot fabricate graph nodes or status
+  (Desktop parse fail-closed).
+- **Retry:** maximum **2** total attempts; attempt 1 retained after attempt 2.
+- **Concurrency:** default **1**, max **4**; values **> 4** rejected fail-closed.
+- **Cancellation:** runtime acknowledged; no client-discard-as-success.
+- **Timeout:** `timed-out` distinct from `failed`.
+- **Stale:** project/checkpoint/profile kinds; `accepted: false`;
+  `rerunAttempted: false`; **no auto-rerun**.
+- **Read-only boundary:** `mutationAllowed` remains literal **`false`**. No
+  Apply, no mutation tool, no shell, no source writes, Neutron project
+  fingerprint unchanged on graph get/execute tests, no mutation UI.
+- **Event model:** no event bridge; no polling; request/response snapshots only.
+- **File metrics (canonical `scripts/production-file-metrics.mjs`):**
+  `App.tsx` unchanged (496 / 465); `WorkspaceContent.tsx` unchanged (300 /
+  284); `desktop-client.ts` unchanged (401 / 355); `desktop-client-neutron.ts`
+  150 / 142; new graph parse/UI modules ≤165 effective (`neutron-graph-parse.ts`
+  169 / 165, `neutron-graph-parse-node.ts` 162 / 159,
+  `NeutronTaskGraphPanel.tsx` 30 / 28); `neutron-session-runtime.ts` 287 / 273
+  (review zone, under 300); `neutron-session-graph.ts` 195 / 188;
+  `neutron-graph-projection.ts` 171 / 161; `neutron-graph-handlers.ts` 60 / 58.
+- **Verification:** focused tests
+  (`tests/neutron-n6-graph-projection.test.ts`,
+  `tests/daemon-neutron-graph.test.ts`, `tests/desktop-neutron-graph.test.ts`);
+  `cargo test method_allowlist` (named graph methods allowed;
+  `intentloom.neutron.graph.*` wildcard denied); local `pnpm verify` — **305
+  files / 2635 passed / 3 skipped**. CI Governance, Compatibility
+  (Ubuntu/macOS/Windows, Node 22/24), CodeQL, Dependency Review green on #474.
+- **Decision:** **N6 SLICE 3 COMPLETE.** The next Neutron increment is **not**
+  automatic. Explicit maintainer authorization is required for either **N6 Slice
+  4** (evidence / provenance / result UX) **or** **Mutation Routing Slice 3**
+  (single approved transaction Apply). Mutation Slice 3 remains a
+  higher-security write-capable threshold — do not authorize autonomously.
+- **Not completed / deferred:** N6 Slices 4–5; Mutation Routing Slices 3–5;
+  Apply; durable approval consumption; mutation lock acquisition; rollback;
+  post-Apply verification; optional N3 Slice 5; P4l17; event/polling bridge;
+  full autonomous graph runner.
+- **Next first action:** **Explicit maintainer authorization required.** Do not
+  start N6 Slice 4, Mutation Routing Slice 3, or any other Neutron increment
+  autonomously.
 
 ### 2026-09-11, Neutron Mutation Routing Slice 2 — semantic preflight (merged)
 
