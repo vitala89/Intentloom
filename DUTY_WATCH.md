@@ -10,10 +10,74 @@ in a condition that the next watch can safely understand and continue.
 ## Current watch status
 
 Status: **N5 complete**. Mutation-routing **Slice 1 contracts implemented**.
-**N6 Slice 1 implemented**. **N6 Slice 2 implemented** (context visibility +
-read-only tool activity). `mutationAllowed` remains literal `false`. N6
-Slices 3–5, Mutation Slice 2–5 Apply, optional N3 Slice 5, and P4l17 remain
-unauthorized.
+**Mutation Slice 2 implemented** (semantic authorization + approved-transaction
+preflight, no Apply). **N6 Slice 1 implemented**. **N6 Slice 2 implemented**
+(context visibility + read-only tool activity). `mutationAllowed` remains
+literal `false`. N6 Slices 3–5, Mutation Slices 3–5 Apply, optional N3
+Slice 5, and P4l17 remain unauthorized.
+
+### 2026-09-11, Neutron Mutation Routing Slice 2 — semantic preflight (merged)
+
+- **Status:** complete on `main` (#472 / this handoff)
+- **Implementation PR:** https://github.com/vitala89/Intentloom/pull/472
+- **Implementation branch:** `feat/neutron-mutation-preflight` (merged)
+- **Starting main:** `62cf8fbc7a5aee117878999873f8fcdf9a539e74` (expected
+  Slice 2 baseline). Tracked tree was clean; unrelated `.commit-msg-*` /
+  `.pr-body-*` / `.squash-msg-*` scratch preserved.
+- **Starting origin/main:** `8ac2b70f3f460194dde6bf5b2966de11677955d1`
+  (legitimate Dependabot-only advancement: CodeQL action, lucide-static,
+  `@types/react-dom`, vitest 5 lockfile, deploy-pages, tauri-plugin-dialog,
+  `@vitejs/plugin-react`). Implementation used actual latest `origin/main`.
+- **Implementation head SHA:** `420f47b18596171be4175754a95da2844f1a164d`
+- **Implementation merge SHA / current main:** `7e2d3e2c8716db2d32ddbb8bcbd6268426136434`
+- **Objective:** Host-side semantic authorization and approved-transaction
+  preflight for `approved-transaction-apply`. Deterministic `eligible` or
+  `rejected`. Zero project writes.
+- **Architecture:** `@intentloom/application` modules
+  `neutron-mutation-preflight`, `-parse`, `-authorization`, `-bindings`,
+  `-containment`, `-diagnostics`, `-replay`, `-lock`. Reuses Slice 1
+  protocol/validator contracts. No `packages/neutron-runtime`. No daemon
+  mutation RPC. No Desktop UI. N4 catalog unchanged.
+- **Authorization:** Host-only permission class. Model `approved: true`,
+  legacy `grantedApprovals`, and read-only/delegated roles cannot authorize.
+  Successful preflight does not grant Apply and does not set
+  `mutationAllowed`.
+- **Semantic checks:** structural proposal/approval, `local-interactive`
+  source, proposal/plan/project-state digests, expiry (injected clock),
+  canonical root/project/session/task/graph binding, exact affected-path
+  set, capability, cancellation, injected replay checker, realpath/symlink
+  containment (nearest existing ancestor; fail-closed on filesystem error).
+- **`evaluateApprovedApplyPlan`:** not reused (treats `grantedApprovals` as
+  authorization). `executeApprovedApplyPlan` and `synchronizeGeneratedFiles`
+  are not imported or called.
+- **Replay boundary:** injected `isApprovalConsumed` only. No durable
+  consumption store.
+- **Lock boundary:** observational `NeutronMutationLockObserver` type only.
+  Slice 2 does not acquire a lock and does not claim concurrency safety.
+- **Zero-write proof:** eligible preflight leaves Neutron project
+  fingerprint and target file bytes unchanged.
+- **TOCTOU:** Slice 3 must repeat project-state digest, containment,
+  approval validity/consumption, exact affected scope, and project lock
+  immediately before the first write.
+- **`mutationAllowed`:** literal `false`.
+- **File metrics (canonical `scripts/production-file-metrics.mjs`):**
+  preflight 235/222, parse 89/82, authorization 72/67, bindings 180/169,
+  containment 92/85, diagnostics 49/45, replay 22/16, lock 18/13. All ≤250
+  preferred. Did not grow application barrel, N4 router, validator/protocol
+  barrels, daemon dispatch, or Approved Apply engine.
+- **Verification:** local `pnpm verify` — 302 files, 2615 passed, 3 skipped.
+  CI Governance, Compatibility (Ubuntu/macOS/Windows, Node 22/24), CodeQL
+  green on #472. Dependency Review not triggered (no lockfile change).
+- **Decision:** **MUTATION ROUTING SLICE 2 COMPLETE.** The next Neutron
+  increment is **not** implied. Maintainer must separately authorize N6
+  Slice 3 (task graph / subagents / retry / cancel visibility) **or**
+  Mutation Routing Slice 3 (single approved transaction Apply). Slice 3 has
+  a higher security threshold.
+- **Not completed:** Mutation Slices 3–5, Apply, rollback, post-Apply
+  verification, durable replay consumption, transaction lock, N6 Slices
+  3–5, optional N3 Slice 5, P4l17
+- **Next first action:** **Explicit maintainer authorization required.** Do
+  not start Mutation Slice 3 or N6 Slice 3 autonomously.
 
 ### 2026-09-09, Neutron N6 Slice 2 — context visibility + read-only tool activity (merged)
 
