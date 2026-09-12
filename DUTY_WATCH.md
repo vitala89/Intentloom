@@ -26,7 +26,7 @@ Slice 5, and P4l17 remain unauthorized.
 - **Implementation branch:** `feat/neutron-n6-evidence-provenance` (merged)
 - **Starting main / origin/main:** `7ff44953330d60624e68ca77cc7f8e5668da5f47`
   (N6 Slice 4 baseline; tracked tree clean).
-- **Implementation head SHA:** `1f33191ded990ec024bf6d7f23a2efb6b133dc2` (fix
+- **Implementation head SHA:** `1f3319195c773604079a40cd272b6ab8aabf465b` (fix
   commit; feature tip before merge)
 - **Implementation merge SHA / current main:** `1ddab08fe472661f6a982dc1e8428303eec16011`
 - **Objective:** Production read-only Desktop result/evidence experience:
@@ -65,7 +65,7 @@ Slice 5, and P4l17 remain unauthorized.
 - **Secret protection:** Slice 2 redaction preserved; evidence paths do not
   reintroduce secret bodies.
 - **Model spoof tests:** Positive prose vs stale/`accepted: false`/`mutationAttempted:
-  false`; session completed without graph never shows “Runtime accepted”.
+false`; session completed without graph never shows “Runtime accepted”.
 - **Mutation boundary:** `mutationAllowed: false`; no Apply UI; no mutation tool.
 - **Event model:** Request/response snapshots only; no bridge/polling.
 - **Read-only fingerprint proof:** Existing graph execute fingerprint tests
