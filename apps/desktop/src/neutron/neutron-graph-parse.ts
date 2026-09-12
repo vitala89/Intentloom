@@ -9,6 +9,7 @@ import {
   NEUTRON_GRAPH_STATUSES,
   NEUTRON_GRAPH_STALE_KINDS,
 } from "@intentloom/protocol";
+import { NEUTRON_GRAPH_MAX_WARNINGS } from "@intentloom/protocol";
 import {
   failGraphParse,
   graphStrings,
@@ -67,11 +68,50 @@ export function parseNeutronGraphSnapshot(
       record.digestPresent,
       "graphSnapshot.digestPresent",
     ),
+    outputDigest:
+      record.outputDigest === null || record.outputDigest === undefined
+        ? null
+        : requiredGraphString(
+            record.outputDigest,
+            "graphSnapshot.outputDigest",
+          ),
+    usage: parseUsage(record.usage),
     concurrency: parseConcurrency(record.concurrency),
     nodeCounts: parseCounts(record.nodeCounts),
     nodes: record.nodes.map((node, index) => parseGraphNode(node, index)),
     stale: parseStale(record.stale),
-    warnings: graphStrings(record.warnings, "graphSnapshot.warnings"),
+    warnings: boundedWarnings(record.warnings),
+  };
+}
+
+function boundedWarnings(value: unknown): readonly string[] {
+  const items = graphStrings(value, "graphSnapshot.warnings");
+  if (items.length > NEUTRON_GRAPH_MAX_WARNINGS) {
+    failGraphParse(
+      `graphSnapshot.warnings exceeds ${NEUTRON_GRAPH_MAX_WARNINGS} entries`,
+    );
+  }
+  return items;
+}
+
+function parseUsage(value: unknown): NeutronGraphSnapshot["usage"] {
+  if (value === null || value === undefined) return null;
+  if (typeof value !== "object" || Array.isArray(value)) {
+    failGraphParse("graphSnapshot.usage must be an object");
+  }
+  const record = value as Record<string, unknown>;
+  return {
+    contextTokens: requiredGraphInt(
+      record.contextTokens,
+      "usage.contextTokens",
+    ),
+    inputTokens: requiredGraphInt(record.inputTokens, "usage.inputTokens"),
+    limitExceeded: requiredGraphBoolean(
+      record.limitExceeded,
+      "usage.limitExceeded",
+    ),
+    outputTokens: requiredGraphInt(record.outputTokens, "usage.outputTokens"),
+    tokenBudget: requiredGraphInt(record.tokenBudget, "usage.tokenBudget"),
   };
 }
 

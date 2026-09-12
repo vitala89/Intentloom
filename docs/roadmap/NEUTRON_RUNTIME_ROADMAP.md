@@ -340,8 +340,11 @@ implemented** — Desktop visibility over canonical N5 task graphs (get / one-wa
 execute / cancel), including nodes, attempts, retry history, concurrency 1–4,
 cancellation ack, timeout, and stale-state without auto-rerun. No event bridge.
 Runtime stays in `@intentloom/application`. Streaming is unavailable.
-`mutationAllowed` remains `false`. N6 Slices 4–5 and Mutation Slices 3–5 are
-**not authorized** by N6 Slice 3.
+`mutationAllowed` remains `false`. **N6 Slice 4 implemented** — authoritative
+Desktop result/evidence/provenance UX (structured outcome vs model prose,
+accepted/stale/budget/warnings, usage/fingerprints, bounded graph evidence
+fields). N6 Slice 5 and Mutation Slices 3–5 remain **not authorized** without
+explicit maintainer grant.
 
 Integrate the runtime with the official Desktop application after the v0.6
 read-only project slice and shared client contracts are stable.

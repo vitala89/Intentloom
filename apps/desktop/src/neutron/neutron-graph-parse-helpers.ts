@@ -35,6 +35,18 @@ export function graphStrings(value: unknown, field: string): readonly string[] {
   );
 }
 
+export function boundedGraphStrings(
+  value: unknown,
+  field: string,
+  limit: number,
+): readonly string[] {
+  const items = graphStrings(value, field);
+  if (items.length > limit) {
+    failGraphParse(`${field} exceeds ${limit} entries`);
+  }
+  return items;
+}
+
 export function oneOfGraph<T extends string>(
   value: unknown,
   allowed: readonly T[],

@@ -1,5 +1,6 @@
 import { Card } from "../design/components/layout/Card.js";
 import type { NeutronSessionViewmodel } from "@intentloom/protocol";
+import { NeutronEvidencePanel } from "./NeutronEvidencePanel.js";
 import type { NeutronSurfaceKind } from "./neutron-session-viewmodel.js";
 
 export interface NeutronResultProps {
@@ -29,22 +30,34 @@ export function NeutronResult({
   }
   if (surface === "runtime-error") {
     return (
-      <Card title="Runtime error">
-        <p role="alert">
-          {viewmodel.errorCode ?? "operation-failed"}:{" "}
-          {viewmodel.errorMessage ?? "Neutron turn failed"}
-        </p>
-        <p>Session state: {viewmodel.session.state}</p>
-      </Card>
+      <>
+        <Card title="Runtime error">
+          <p role="alert">
+            {viewmodel.errorCode ?? "operation-failed"}:{" "}
+            {viewmodel.errorMessage ?? "Neutron turn failed"}
+          </p>
+          <p>Session state: {viewmodel.session.state}</p>
+        </Card>
+        <NeutronEvidencePanel viewmodel={viewmodel} />
+      </>
     );
   }
   return (
-    <Card title="Latest result">
-      <p>Prompt: {viewmodel.prompt ?? "—"}</p>
-      <p>Response: {viewmodel.responseText ?? "—"}</p>
-      <p>Streaming: {String(viewmodel.adapter.supportsStreaming)}</p>
-      <p>Network: {viewmodel.adapter.networkMode}</p>
-      <p>Data handling: {viewmodel.adapter.dataHandling}</p>
-    </Card>
+    <>
+      <Card title="Result">
+        <section aria-label="Model and runtime output">
+          <h3 className="neutron-evidence-heading">Model / runtime output</h3>
+          <p>{viewmodel.prompt ?? "—"}</p>
+          <blockquote cite="model-response">
+            {viewmodel.responseText ?? "—"}
+          </blockquote>
+          <p className="neutron-evidence-note">
+            Output text above is not authoritative for acceptance, stale state,
+            or mutation status.
+          </p>
+        </section>
+      </Card>
+      <NeutronEvidencePanel viewmodel={viewmodel} />
+    </>
   );
 }

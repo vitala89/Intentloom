@@ -1,6 +1,9 @@
 import {
   NEUTRON_GRAPH_DEFAULT_CONCURRENCY,
   NEUTRON_GRAPH_HARD_MAX_CONCURRENCY,
+  NEUTRON_GRAPH_MAX_NODE_CONTEXT_SOURCE_IDS,
+  NEUTRON_GRAPH_MAX_NODE_TOOL_INVOCATIONS,
+  NEUTRON_GRAPH_MAX_WARNINGS,
   NEUTRON_GRAPH_SNAPSHOT_SCHEMA_URN,
   type NeutronGraphAttemptSnapshot,
   type NeutronGraphCapabilitySummary,
@@ -8,6 +11,8 @@ import {
   type NeutronGraphNodeSnapshot,
   type NeutronGraphSnapshot,
   type NeutronGraphStaleSnapshot,
+  type NeutronGraphToolInvocationSnapshot,
+  type NeutronGraphUsageSnapshot,
 } from "../../protocol/src/neutron-graph.js";
 import type { NeutronTaskState } from "../../protocol/src/neutron-runtime.js";
 import type { NeutronGraphExecutionResult } from "./neutron-scheduler-graph-result.js";
@@ -42,6 +47,8 @@ export function projectNeutronGraphSnapshot(input: {
     cancellationAcknowledged: input.cancellationAcknowledged === true,
     concurrency: projectConcurrency(input.plan),
     digestPresent: input.result.digest.length > 0,
+    outputDigest: input.result.digest.length > 0 ? input.result.digest : null,
+    usage: projectUsage(input.result.usage),
     graphId: input.result.graphId,
     mutationAttempted: false,
     nodeCounts: countNodes(nodes),
@@ -53,8 +60,27 @@ export function projectNeutronGraphSnapshot(input: {
     sessionId: input.result.sessionId,
     stale: projectStale(input.result.stale),
     status: input.result.status,
-    warnings: [...input.result.warnings],
+    warnings: boundStrings(input.result.warnings, NEUTRON_GRAPH_MAX_WARNINGS),
   };
+}
+
+function projectUsage(
+  usage: NeutronGraphExecutionResult["usage"],
+): NeutronGraphUsageSnapshot {
+  return {
+    contextTokens: usage.contextTokens,
+    inputTokens: usage.inputTokens,
+    limitExceeded: usage.limitExceeded,
+    outputTokens: usage.outputTokens,
+    tokenBudget: usage.tokenBudget,
+  };
+}
+
+function boundStrings(
+  values: readonly string[],
+  limit: number,
+): readonly string[] {
+  return [...values].slice(0, limit);
 }
 
 function projectConcurrency(
@@ -110,6 +136,23 @@ function projectNode(node: NeutronGraphNodeRecord): NeutronGraphNodeSnapshot {
     state: node.state,
     taskId: node.taskId,
     toolCount: node.tools.length,
+    contextSourceIds: boundStrings(
+      node.context?.sourceIds ?? [],
+      NEUTRON_GRAPH_MAX_NODE_CONTEXT_SOURCE_IDS,
+    ),
+    toolInvocations: node.tools
+      .slice(0, NEUTRON_GRAPH_MAX_NODE_TOOL_INVOCATIONS)
+      .map(projectToolInvocation),
+  };
+}
+
+function projectToolInvocation(
+  tool: NeutronGraphNodeRecord["tools"][number],
+): NeutronGraphToolInvocationSnapshot {
+  return {
+    invocationId: tool.invocationId,
+    payloadDigestPresent: tool.payloadDigest !== null,
+    toolName: tool.toolName,
   };
 }
 

@@ -22,6 +22,9 @@ export {
   NEUTRON_GRAPH_DEFAULT_CONCURRENCY,
   NEUTRON_GRAPH_HARD_MAX_CONCURRENCY,
   NEUTRON_GRAPH_MAX_ATTEMPTS,
+  NEUTRON_GRAPH_MAX_NODE_CONTEXT_SOURCE_IDS,
+  NEUTRON_GRAPH_MAX_NODE_TOOL_INVOCATIONS,
+  NEUTRON_GRAPH_MAX_WARNINGS,
   NEUTRON_GRAPH_RETRY_REASONS,
   NEUTRON_GRAPH_SNAPSHOT_SCHEMA_URN,
   NEUTRON_GRAPH_STATUSES,
@@ -39,6 +42,8 @@ export {
   type NeutronGraphStaleMismatch,
   type NeutronGraphStaleSnapshot,
   type NeutronGraphStatus,
+  type NeutronGraphToolInvocationSnapshot,
+  type NeutronGraphUsageSnapshot,
 } from "./neutron-graph.js";
 
 export type { NeutronGraphBoundParams } from "./neutron-graph-rpc-parse.js";

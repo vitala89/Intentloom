@@ -5,10 +5,14 @@ import type {
 } from "@intentloom/protocol";
 import {
   NEUTRON_GRAPH_ATTEMPT_STATES,
+  NEUTRON_GRAPH_MAX_NODE_CONTEXT_SOURCE_IDS,
+  NEUTRON_GRAPH_MAX_NODE_TOOL_INVOCATIONS,
   NEUTRON_GRAPH_RETRY_REASONS,
   NEUTRON_TASK_STATES,
+  type NeutronGraphToolInvocationSnapshot,
 } from "@intentloom/protocol";
 import {
+  boundedGraphStrings,
   failGraphParse,
   graphStrings,
   oneOfGraph,
@@ -94,7 +98,44 @@ export function parseGraphNode(
       record.errorCode === null
         ? null
         : requiredGraphString(record.errorCode, field("errorCode")),
+    contextSourceIds: boundedGraphStrings(
+      record.contextSourceIds,
+      field("contextSourceIds"),
+      NEUTRON_GRAPH_MAX_NODE_CONTEXT_SOURCE_IDS,
+    ),
+    toolInvocations: parseToolInvocations(record.toolInvocations, index),
   };
+}
+
+function parseToolInvocations(
+  value: unknown,
+  nodeIndex: number,
+): readonly NeutronGraphToolInvocationSnapshot[] {
+  const field = `nodes[${nodeIndex}].toolInvocations`;
+  if (!Array.isArray(value)) failGraphParse(`${field} must be an array`);
+  if (value.length > NEUTRON_GRAPH_MAX_NODE_TOOL_INVOCATIONS) {
+    failGraphParse(
+      `${field} exceeds ${NEUTRON_GRAPH_MAX_NODE_TOOL_INVOCATIONS} entries`,
+    );
+  }
+  return value.map((item, invocationIndex) => {
+    if (typeof item !== "object" || item === null || Array.isArray(item)) {
+      failGraphParse(`${field}[${invocationIndex}] must be an object`);
+    }
+    const record = item as Record<string, unknown>;
+    const prefix = `${field}[${invocationIndex}]`;
+    return {
+      invocationId: requiredGraphString(
+        record.invocationId,
+        `${prefix}.invocationId`,
+      ),
+      payloadDigestPresent: requiredGraphBoolean(
+        record.payloadDigestPresent,
+        `${prefix}.payloadDigestPresent`,
+      ),
+      toolName: requiredGraphString(record.toolName, `${prefix}.toolName`),
+    };
+  });
 }
 
 function parseAttempt(

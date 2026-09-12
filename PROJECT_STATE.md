@@ -679,8 +679,13 @@ implemented** — Desktop visibility for canonical N5 executable task graphs
 graph per session, one scheduling wave, attempt history, concurrency 1–4,
 runtime-acknowledged cancellation, timeout distinct from failure, and stale
 project/checkpoint/profile with no auto-rerun. No event bridge. `mutationAllowed`
-remains literal `false`. N6 Slices 4–5, Mutation Slices 3–5, optional N3 Slice 5,
-and P4l17 are not authorized. Other
+remains literal `false`. **N6 Slice 4 implemented** — Desktop authoritative
+result/evidence/provenance UX: structured graph/session outcome separate from
+model prose, accepted/stale/budget/warning semantics, usage and fingerprint
+projection, progressive evidence panel; graph snapshot extended with canonical
+usage/output digest and bounded node context/tool evidence. Read-only;
+`mutationAllowed` remains literal `false`. N6 Slice 5, Mutation Slices 3–5,
+optional N3 Slice 5, and P4l17 are not authorized. Other
 post-P4 candidates remain in `POST_W12_NEXT_INCREMENT_PLAN.md`.
 
 The Desktop discovery/error and Diff/Timeline slices remain recorded in

@@ -8,6 +8,8 @@ import {
   NEUTRON_GRAPH_ATTEMPT_STATES,
   NEUTRON_GRAPH_DEFAULT_CONCURRENCY,
   NEUTRON_GRAPH_HARD_MAX_CONCURRENCY,
+  NEUTRON_GRAPH_MAX_NODE_CONTEXT_SOURCE_IDS,
+  NEUTRON_GRAPH_MAX_NODE_TOOL_INVOCATIONS,
   NEUTRON_GRAPH_RETRY_REASONS,
   NEUTRON_GRAPH_STALE_KINDS,
   type NeutronGraphAttemptSnapshot,
@@ -17,6 +19,8 @@ import {
   type NeutronGraphNodeSnapshot,
   type NeutronGraphStaleMismatch,
   type NeutronGraphStaleSnapshot,
+  type NeutronGraphToolInvocationSnapshot,
+  type NeutronGraphUsageSnapshot,
 } from "../../protocol/src/neutron-graph.js";
 import {
   finiteInt,
@@ -78,6 +82,36 @@ function validateMismatch(
     kind: oneOf(value.kind, NEUTRON_GRAPH_STALE_KINDS, field("kind")),
     expected: nonEmpty(value.expected, field("expected")),
     current: nonEmpty(value.current, field("current")),
+  };
+}
+
+export function validateGraphUsage(value: unknown): NeutronGraphUsageSnapshot {
+  if (!isObject(value))
+    throw new Error("graphSnapshot.usage must be an object");
+  return {
+    contextTokens: finiteInt(value.contextTokens, "usage.contextTokens"),
+    inputTokens: finiteInt(value.inputTokens, "usage.inputTokens"),
+    limitExceeded: requireBoolean(value.limitExceeded, "usage.limitExceeded"),
+    outputTokens: finiteInt(value.outputTokens, "usage.outputTokens"),
+    tokenBudget: finiteInt(value.tokenBudget, "usage.tokenBudget"),
+  };
+}
+
+function validateToolInvocation(
+  value: unknown,
+  index: number,
+): NeutronGraphToolInvocationSnapshot {
+  if (!isObject(value)) {
+    throw new Error(`toolInvocations[${index}] must be an object`);
+  }
+  const field = (name: string) => `toolInvocations[${index}].${name}`;
+  return {
+    invocationId: nonEmpty(value.invocationId, field("invocationId")),
+    payloadDigestPresent: requireBoolean(
+      value.payloadDigestPresent,
+      field("payloadDigestPresent"),
+    ),
+    toolName: nonEmpty(value.toolName, field("toolName")),
   };
 }
 
@@ -192,7 +226,45 @@ export function validateGraphNode(
       field("mutationAttempted"),
     ),
     errorCode: errorCode(value.errorCode, field("errorCode")),
+    contextSourceIds: boundedStrings(
+      value.contextSourceIds,
+      field("contextSourceIds"),
+      NEUTRON_GRAPH_MAX_NODE_CONTEXT_SOURCE_IDS,
+    ),
+    toolInvocations: boundedObjects(
+      value.toolInvocations,
+      field("toolInvocations"),
+      NEUTRON_GRAPH_MAX_NODE_TOOL_INVOCATIONS,
+      validateToolInvocation,
+    ),
   };
+}
+
+function boundedStrings(
+  value: unknown,
+  field: string,
+  limit: number,
+): readonly string[] {
+  const items = strings(value, field);
+  if (items.length > limit) {
+    throw new Error(`${field} exceeds ${limit} entries`);
+  }
+  return items;
+}
+
+function boundedObjects<T>(
+  value: unknown,
+  field: string,
+  limit: number,
+  validate: (item: unknown, index: number) => T,
+): readonly T[] {
+  if (!Array.isArray(value)) {
+    throw new Error(`${field} must be an array`);
+  }
+  if (value.length > limit) {
+    throw new Error(`${field} exceeds ${limit} entries`);
+  }
+  return value.map((item, index) => validate(item, index));
 }
 
 function validateAttempt(

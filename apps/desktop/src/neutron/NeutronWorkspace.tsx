@@ -60,11 +60,6 @@ export function NeutronWorkspace({
           Create session
         </Button>
       </Card>
-      <NeutronResult
-        infrastructureError={session.infrastructureError}
-        surface={surface}
-        viewmodel={session.viewmodel}
-      />
       {session.viewmodel !== null ? (
         <NeutronTaskGraphPanel
           snapshot={authoritativeGraphSnapshot({
@@ -73,6 +68,11 @@ export function NeutronWorkspace({
           })}
         />
       ) : null}
+      <NeutronResult
+        infrastructureError={session.infrastructureError}
+        surface={surface}
+        viewmodel={session.viewmodel}
+      />
       <NeutronActivityPanel viewmodel={session.viewmodel} />
       <NeutronComposer
         canCancel={canCancel}
