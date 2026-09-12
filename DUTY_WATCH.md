@@ -13,9 +13,78 @@ Status: **N5 complete**. Mutation-routing **Slice 1 contracts implemented**.
 **Mutation Slice 2 implemented** (semantic authorization + approved-transaction
 preflight, no Apply). **N6 Slice 1 implemented**. **N6 Slice 2 implemented**
 (context visibility + read-only tool activity). **N6 Slice 3 implemented**
-(task graph visibility / execute / cancel, no full graph runner). `mutationAllowed`
-remains literal `false`. N6 Slices 4–5, Mutation Slices 3–5 Apply, optional N3
+(task graph visibility / execute / cancel, no full graph runner). **N6 Slice 4
+implemented** (evidence / provenance / authoritative result UX). `mutationAllowed`
+remains literal `false`. N6 Slice 5, Mutation Slices 3–5 Apply, optional N3
 Slice 5, and P4l17 remain unauthorized.
+
+### 2026-09-12, Neutron N6 Slice 4 — evidence and provenance UX (merged)
+
+- **Status:** **N6 SLICE 4 COMPLETE** on `main` (#477 / this handoff)
+- **Implementation PR:** https://github.com/vitala89/Intentloom/pull/477
+- **Superseded PR (closed, governance branch name):** https://github.com/vitala89/Intentloom/pull/476
+- **Implementation branch:** `feat/neutron-n6-evidence-provenance` (merged)
+- **Starting main / origin/main:** `7ff44953330d60624e68ca77cc7f8e5668da5f47`
+  (N6 Slice 4 baseline; tracked tree clean).
+- **Implementation head SHA:** `1f3319195c773604079a40cd272b6ab8aabf465b` (fix
+  commit; feature tip before merge)
+- **Implementation merge SHA / current main:** `1ddab08fe472661f6a982dc1e8428303eec16011`
+- **Objective:** Production read-only Desktop result/evidence experience:
+  authoritative structured outcome separate from model prose; usage/budget
+  warnings; fingerprints/digests; bounded provenance — without Apply, event
+  bridge, or Desktop-invented acceptance.
+- **Architecture delivered:** Existing session/graph viewmodel path unchanged
+  at RPC boundary. `@intentloom/application` `projectNeutronGraphSnapshot`
+  adds canonical `usage`, `outputDigest`, bounded node `contextSourceIds` /
+  `toolInvocations`. Desktop `projectNeutronEvidence()` derives UI evidence;
+  `authoritativeNeutronOutcome()` uses **`graph.accepted` only when
+  `graphSnapshot` exists**; session-only turns keep **`accepted: null`**
+  (acceptance unavailable — never inferred from `completed`, budget, or model
+  text).
+- **Authoritative result model:** Model/runtime output in `NeutronResult`;
+  structured outcome in `NeutronEvidencePanel` / `NeutronResultSummary`.
+  `modelProseClaimsSuccess` is test-only mismatch signal; UI uses a static
+  non-authoritative note when response text is present.
+- **Result statuses:** Graph canonical N5 statuses unchanged; session-only
+  labels (`Session completed`, etc.) without synthetic acceptance.
+- **`accepted` semantics:** Graph → `graphSnapshot.accepted`. Session-only →
+  `null` + copy “Runtime acceptance is unavailable for this session-only turn.”
+  Budget warnings (`budgetExceeded`, `contextSummary.limitExceeded`) are
+  independent of acceptance.
+- **Evidence projection (Desktop):** outcome, usage, fingerprints (project
+  before/after, graph output digest, stale mismatches), warnings, counts,
+  provider/model, graphId.
+- **Provenance:** Session/project/root/graphId, provider/model/network,
+  authoritative attempt per node, `mutationAttempted: false` (structured).
+- **Usage / budget:** Graph `NeutronGraphUsageSnapshot` or turn
+  `contextSummary` subset; budget exceeded as structured warning only.
+- **Fingerprints / digests:** Canonical values only; shortened display with full
+  value in `title`.
+- **Stale UX:** Unchanged Slice 3 stale kinds; `accepted: false` from graph;
+  no auto-rerun.
+- **Secret protection:** Slice 2 redaction preserved; evidence paths do not
+  reintroduce secret bodies.
+- **Model spoof tests:** Positive prose vs stale/`accepted: false`/`mutationAttempted:
+false`; session completed without graph never shows “Runtime accepted”.
+- **Mutation boundary:** `mutationAllowed: false`; no Apply UI; no mutation tool.
+- **Event model:** Request/response snapshots only; no bridge/polling.
+- **Read-only fingerprint proof:** Existing graph execute fingerprint tests
+  unchanged; viewmodel carries before/after fingerprints.
+- **File metrics:** `App.tsx`, `WorkspaceContent.tsx`, `desktop-client.ts`
+  unchanged; new Neutron evidence modules each ≤160 physical lines;
+  `neutron-graph-projection.ts` 214 physical (review zone).
+- **Verification:** `tests/desktop-neutron-evidence.test.ts` + N6 graph/session/
+  activity regressions; local `pnpm verify` — **306 files / 2647 passed / 3
+  skipped**. CI green on #477 (Governance, Compatibility, CodeQL, Desktop SEA).
+- **Decision:** **N6 SLICE 4 COMPLETE.** Next increment requires explicit
+  maintainer authorization: **N6 Slice 5** (mutation proposal display only) **or**
+  **Mutation Routing Slice 3** (approved transaction Apply — separate security
+  review).
+- **Not completed / deferred:** N6 Slice 5; Mutation Routing Slices 3–5; Apply;
+  durable approval consumption; mutation lock; rollback; post-Apply
+  verification; optional N3 Slice 5; P4l17; streaming/event bridge.
+- **Next first action:** **Explicit maintainer authorization required.** Do not
+  start N6 Slice 5 or Mutation Slice 3 without a new grant.
 
 ### 2026-09-12, Neutron N6 Slice 3 — task graph visibility (merged)
 
