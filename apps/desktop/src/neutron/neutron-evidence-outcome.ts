@@ -65,7 +65,7 @@ function sessionTerminalOutcome(
           ? "session-failed"
           : "session-failed";
   return {
-    accepted: false,
+    accepted: null,
     budgetExceeded: limitExceeded,
     kind,
     mutationAttempted: false,
@@ -106,10 +106,9 @@ function outcomeFromSessionState(
     };
   }
   if (state === "completed") {
-    const limitExceeded = viewmodel.contextSummary?.limitExceeded === true;
     return {
-      accepted: !limitExceeded,
-      budgetExceeded: limitExceeded,
+      accepted: null,
+      budgetExceeded: viewmodel.contextSummary?.limitExceeded === true,
       kind: "session-completed",
       mutationAttempted: false,
       partial: false,
@@ -134,8 +133,11 @@ export function outcomeStatusLabel(
     return "Failed";
   }
   if (outcome.kind === "incomplete") return "Incomplete";
-  if (outcome.kind === "completed" || outcome.kind === "session-completed") {
-    return outcome.accepted
+  if (outcome.kind === "session-completed") {
+    return "Session completed";
+  }
+  if (outcome.kind === "completed") {
+    return outcome.accepted === true
       ? "Completed (accepted)"
       : "Completed (not accepted)";
   }

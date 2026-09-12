@@ -1,9 +1,23 @@
 import type { NeutronSessionViewmodel } from "@intentloom/protocol";
 import {
+  authoritativeNeutronOutcome,
   modelProseClaimsSuccess,
   outcomeStatusLabel,
 } from "./neutron-evidence-outcome.js";
 import { projectNeutronEvidence } from "./neutron-evidence-projection.js";
+
+function acceptanceLine(
+  outcome: NonNullable<ReturnType<typeof authoritativeNeutronOutcome>>,
+): string {
+  if (outcome.accepted === true) return "Runtime accepted this result.";
+  if (outcome.accepted === false) {
+    return "Runtime did not accept this result.";
+  }
+  if (outcome.kind === "session-completed") {
+    return "Runtime acceptance is unavailable for this session-only turn.";
+  }
+  return "Runtime acceptance requires a canonical graph result.";
+}
 
 export function evidencePanelLines(
   viewmodel: NeutronSessionViewmodel,
@@ -12,11 +26,7 @@ export function evidencePanelLines(
   if (evidence === null) return [];
   const lines = [
     outcomeStatusLabel(evidence.outcome),
-    evidence.outcome.accepted === true
-      ? "Runtime accepted this result."
-      : evidence.outcome.accepted === false
-        ? "Runtime did not accept this result."
-        : "Acceptance applies after a completed graph or turn.",
+    acceptanceLine(evidence.outcome),
     `Mutation attempted: false`,
     ...evidence.warnings,
   ];

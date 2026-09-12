@@ -1,8 +1,5 @@
 import { StatusChip } from "../design/components/status/StatusChip.js";
-import {
-  modelProseClaimsSuccess,
-  outcomeStatusLabel,
-} from "./neutron-evidence-outcome.js";
+import { outcomeStatusLabel } from "./neutron-evidence-outcome.js";
 import type { NeutronEvidenceProjection } from "./neutron-evidence-projection.js";
 
 export interface NeutronResultSummaryProps {
@@ -30,16 +27,23 @@ function outcomeTone(
   return "neutral";
 }
 
+function acceptanceCopy(outcome: NeutronEvidenceProjection["outcome"]): string {
+  if (outcome.accepted === true) {
+    return "Runtime accepted this result.";
+  }
+  if (outcome.accepted === false) {
+    return "Runtime did not accept this result.";
+  }
+  if (outcome.kind === "session-completed") {
+    return "Runtime acceptance is unavailable for this session-only turn.";
+  }
+  return "Runtime acceptance requires a canonical graph result.";
+}
+
 export function NeutronResultSummary({
   evidence,
   responseText,
 }: NeutronResultSummaryProps) {
-  const proseClaimsSuccess = modelProseClaimsSuccess(responseText);
-  const showProseMismatch =
-    proseClaimsSuccess &&
-    (evidence.outcome.accepted !== true ||
-      evidence.outcome.kind === "stale" ||
-      evidence.outcome.budgetExceeded);
   return (
     <section aria-label="Authoritative outcome">
       <h3 className="neutron-evidence-heading">Outcome</h3>
@@ -47,13 +51,7 @@ export function NeutronResultSummary({
         label={outcomeStatusLabel(evidence.outcome)}
         tone={outcomeTone(evidence)}
       />
-      {evidence.outcome.accepted === true ? (
-        <p>Runtime accepted this result.</p>
-      ) : evidence.outcome.accepted === false ? (
-        <p role="status">Runtime did not accept this result.</p>
-      ) : (
-        <p>Acceptance applies after a completed graph or turn.</p>
-      )}
+      <p role="status">{acceptanceCopy(evidence.outcome)}</p>
       {evidence.outcome.partial ? (
         <p role="status">Graph outcome is partial (observational).</p>
       ) : null}
@@ -63,10 +61,10 @@ export function NeutronResultSummary({
           attempted.
         </p>
       ) : null}
-      {showProseMismatch ? (
+      {responseText !== null && responseText.trim().length > 0 ? (
         <p role="note">
           Model response text is shown separately and does not set runtime
-          status.
+          status, acceptance, or mutation evidence.
         </p>
       ) : null}
     </section>

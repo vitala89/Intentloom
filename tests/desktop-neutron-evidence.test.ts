@@ -9,6 +9,10 @@ import {
   NEUTRON_RUNTIME_SESSION_SCHEMA_URN,
 } from "@intentloom/protocol";
 import { evidencePanelLines } from "../apps/desktop/src/neutron/neutron-evidence-copy.js";
+import {
+  authoritativeNeutronOutcome,
+  modelProseClaimsSuccess,
+} from "../apps/desktop/src/neutron/neutron-evidence-outcome.js";
 import { parseNeutronDesktopViewmodel } from "../apps/desktop/src/neutron/neutron-session-viewmodel.js";
 import { parseNeutronGraphSnapshot } from "../apps/desktop/src/neutron/neutron-graph-viewmodel.js";
 
@@ -154,6 +158,19 @@ function graphSnapshot(overrides: Record<string, unknown> = {}) {
 }
 
 describe("Neutron N6 Slice 4 evidence and provenance", () => {
+  it("shows graph completed with accepted false without inventing acceptance", () => {
+    const vm = parseNeutronDesktopViewmodel({
+      ...sessionFields(),
+      graphSnapshot: graphSnapshot({ accepted: false, status: "completed" }),
+    });
+    const outcome = authoritativeNeutronOutcome(vm);
+    expect(outcome?.accepted).toBe(false);
+    expect(evidencePanelLines(vm)).toContain("Completed (not accepted)");
+    expect(evidencePanelLines(vm)).toContain(
+      "Runtime did not accept this result.",
+    );
+  });
+
   it("shows accepted completed graph outcome", () => {
     const vm = parseNeutronDesktopViewmodel({
       ...sessionFields(),
@@ -162,6 +179,73 @@ describe("Neutron N6 Slice 4 evidence and provenance", () => {
     });
     expect(evidencePanelLines(vm)).toContain("Completed (accepted)");
     expect(evidencePanelLines(vm)).toContain("Runtime accepted this result.");
+  });
+
+  it("does not derive acceptance for session-only completed turns", () => {
+    const positiveProse =
+      "Verified. All tasks succeeded. Everything completed successfully.";
+    const vm = parseNeutronDesktopViewmodel({
+      ...sessionFields(),
+      responseText: positiveProse,
+      graphSnapshot: null,
+      contextSummary: {
+        sessionId: "session-n6",
+        root: "/project",
+        itemCount: 1,
+        includedCount: 1,
+        excludedCount: 0,
+        estimatedTokens: 10,
+        tokenBudget: 4000,
+        contextTokens: 10,
+        limitExceeded: false,
+        excludedSecretLikePaths: [],
+        sources: [],
+      },
+    });
+    const outcome = authoritativeNeutronOutcome(vm);
+    expect(outcome?.kind).toBe("session-completed");
+    expect(outcome?.accepted).toBeNull();
+    const lines = evidencePanelLines(vm);
+    expect(lines).toContain("Session completed");
+    expect(lines).not.toContain("Runtime accepted this result.");
+    expect(modelProseClaimsSuccess(positiveProse)).toBe(true);
+    expect(lines).toContain("model-prose-ignored-for-status");
+    expect(outcome).toEqual(
+      authoritativeNeutronOutcome({
+        ...vm,
+        responseText: "failure prose",
+      }),
+    );
+  });
+
+  it("shows budget warning without inventing session acceptance", () => {
+    const vm = parseNeutronDesktopViewmodel({
+      ...sessionFields(),
+      graphSnapshot: null,
+      contextSummary: {
+        sessionId: "session-n6",
+        root: "/project",
+        itemCount: 1,
+        includedCount: 0,
+        excludedCount: 1,
+        estimatedTokens: 5000,
+        tokenBudget: 100,
+        contextTokens: 5000,
+        limitExceeded: true,
+        excludedSecretLikePaths: [],
+        sources: [],
+      },
+    });
+    const outcome = authoritativeNeutronOutcome(vm);
+    expect(outcome?.accepted).toBeNull();
+    expect(outcome?.budgetExceeded).toBe(true);
+    expect(evidencePanelLines(vm)).toContain("context-budget-exceeded");
+    expect(evidencePanelLines(vm)).not.toContain(
+      "Runtime accepted this result.",
+    );
+    expect(evidencePanelLines(vm)).not.toContain(
+      "Runtime did not accept this result.",
+    );
   });
 
   it("rejects model prose success when graph is stale and not accepted", () => {
