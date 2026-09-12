@@ -111,6 +111,8 @@ function node(overrides: Record<string, unknown> = {}) {
     modelId: "fixture-n6",
     mutationAttempted: false,
     errorCode: null,
+    contextSourceIds: [],
+    toolInvocations: [],
     ...overrides,
   };
 }
@@ -132,6 +134,14 @@ function snapshot(
     cancellationAcknowledged: false,
     budgetExceeded: false,
     digestPresent: true,
+    outputDigest: "sha256:graph-output-digest",
+    usage: {
+      inputTokens: 10,
+      outputTokens: 20,
+      contextTokens: 5,
+      tokenBudget: 1000,
+      limitExceeded: false,
+    },
     concurrency: {
       defaultConcurrency: 1,
       maxConcurrency: 1,

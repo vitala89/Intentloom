@@ -2,8 +2,8 @@
 
 ## Status
 
-**Slice 3 implemented** (task graph + subagents + retry + cancellation
-visibility). Slices 4–5 are **not authorized**. `mutationAllowed` remains
+**Slice 4 implemented** (evidence + provenance + authoritative result UX).
+Slice 5 is **not authorized**. `mutationAllowed` remains
 `false`. Streaming and daemon event push remain unavailable. No event bridge
 or polling loop was added; Slice 3 uses request/response graph get/execute/cancel
 snapshots. Latest graph per session only.
@@ -909,18 +909,28 @@ attempts; concurrency 1–4; cancel ack.
 
 **Exit:** graph states match protocol; no “thinking” state.
 
-### Slice 4 — evidence / provenance / result UX
+### Slice 4 — evidence / provenance / result UX (implemented)
 
 **Objective:** Production-worthy result + evidence panel (usage, fingerprints,
 warnings).
 
-**Reuse:** `ProvenanceDetail`, usage budget, graph `accepted`.
+**Delivered:**
 
-**Tests:** stale vs completed chrome; budget-exceeded.
+- Graph snapshot extensions: `usage`, `outputDigest`, bounded
+  `contextSourceIds` / `toolInvocations` per node (canonical N5 projection).
+- Desktop: `NeutronEvidencePanel`, outcome summary separated from model prose,
+  usage/budget/warnings/fingerprints/provenance with progressive disclosure.
+- Authoritative `accepted` from graph/session structured evidence only; model
+  prose cannot set success/verified/mutation status (spoof regression tests).
+- Secret redaction from Slice 2 preserved in evidence paths.
 
-**Non-goals:** Apply.
+**Tests:** `tests/desktop-neutron-evidence.test.ts`, graph projection usage
+fields, N6 session/activity/graph regressions.
 
-**Exit:** N6 read-only exit criteria in §38 except mutation-proposal display.
+**Non-goals:** Apply, mutation UI, event bridge.
+
+**Exit:** N6 read-only exit criteria in §38 except mutation-proposal display
+(Slice 5).
 
 ### Slice 5 — mutation proposal / review UI (after mutation contract gates)
 

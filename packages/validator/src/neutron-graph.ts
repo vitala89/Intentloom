@@ -12,6 +12,7 @@ import {
   validateGraphCounts,
   validateGraphNode,
   validateGraphStale,
+  validateGraphUsage,
 } from "./neutron-graph-fields.js";
 
 function requireBoolean(value: unknown, field: string): boolean {
@@ -71,6 +72,11 @@ export function validateNeutronGraphSnapshot(
       value.digestPresent,
       "graphSnapshot.digestPresent",
     ),
+    outputDigest:
+      value.outputDigest === null
+        ? null
+        : nonEmpty(value.outputDigest, "graphSnapshot.outputDigest"),
+    usage: value.usage === null ? null : validateGraphUsage(value.usage),
     concurrency: validateGraphConcurrency(value.concurrency),
     nodeCounts: validateGraphCounts(value.nodeCounts),
     nodes: value.nodes.map((node, index) => validateGraphNode(node, index)),

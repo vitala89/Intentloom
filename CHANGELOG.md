@@ -16,6 +16,14 @@ are not included in the current npm artifact until a later release.
   register an N4 mutation tool. `mutationAllowed` remains literal `false`.
   Durable approval consumption and the project mutation lock remain Slice 3+.
 
+- Neutron Desktop N6 Slice 4 separates model/runtime output from authoritative
+  structured outcome (accepted, stale, incomplete, cancelled, timed-out, failed).
+  Evidence panel shows canonical usage/budget, warnings, fingerprints/digests,
+  and bounded provenance from graph snapshot, context summary, and tool activity.
+  Model prose cannot fabricate accepted, verified, or mutation status. Graph
+  snapshot adds canonical usage, output digest, and bounded per-node context/tool
+  evidence. No Apply, event bridge, or mutation. `mutationAllowed` remains false.
+
 - Neutron Desktop N6 Slice 3 shows canonical N5 task-graph identity, nodes,
   dependencies, attempts (max 2), concurrency 1–4, cancellation acknowledgement,
   timeout, and stale project/checkpoint/profile state. Graph execute runs one

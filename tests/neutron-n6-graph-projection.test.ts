@@ -212,6 +212,20 @@ describe("Neutron N6 Slice 3 graph projection", () => {
     expect(stale.stale?.kinds).toEqual(["project", "checkpoint", "profile"]);
   });
 
+  it("projects usage, output digest, and bounded node evidence fields", () => {
+    const snapshot = snapshotFor([node("task-a")]);
+    expect(snapshot.usage).not.toBeNull();
+    expect(snapshot.usage?.tokenBudget).toBeGreaterThanOrEqual(0);
+    expect(
+      snapshot.outputDigest === null || snapshot.outputDigest.length > 0,
+    ).toBe(true);
+    expect(snapshot.digestPresent).toBe(snapshot.outputDigest !== null);
+    for (const item of snapshot.nodes) {
+      expect(Array.isArray(item.contextSourceIds)).toBe(true);
+      expect(Array.isArray(item.toolInvocations)).toBe(true);
+    }
+  });
+
   it("binds concurrency to the canonical 1-4 range", () => {
     const snapshot = snapshotFor([node("task-a")]);
     expect(snapshot.concurrency.defaultConcurrency).toBe(

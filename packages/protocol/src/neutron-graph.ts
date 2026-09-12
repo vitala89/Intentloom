@@ -55,6 +55,23 @@ export type NeutronGraphRetryReason =
 export const NEUTRON_GRAPH_DEFAULT_CONCURRENCY = 1 as const;
 export const NEUTRON_GRAPH_HARD_MAX_CONCURRENCY = 4 as const;
 export const NEUTRON_GRAPH_MAX_ATTEMPTS = 2 as const;
+export const NEUTRON_GRAPH_MAX_WARNINGS = 32 as const;
+export const NEUTRON_GRAPH_MAX_NODE_CONTEXT_SOURCE_IDS = 16 as const;
+export const NEUTRON_GRAPH_MAX_NODE_TOOL_INVOCATIONS = 8 as const;
+
+export interface NeutronGraphUsageSnapshot {
+  readonly inputTokens: number;
+  readonly outputTokens: number;
+  readonly contextTokens: number;
+  readonly tokenBudget: number;
+  readonly limitExceeded: boolean;
+}
+
+export interface NeutronGraphToolInvocationSnapshot {
+  readonly invocationId: string;
+  readonly toolName: string;
+  readonly payloadDigestPresent: boolean;
+}
 
 export interface NeutronGraphStaleMismatch {
   readonly kind: NeutronGraphStaleKind;
@@ -125,6 +142,8 @@ export interface NeutronGraphNodeSnapshot {
   readonly modelId: string | null;
   readonly mutationAttempted: false;
   readonly errorCode: NeutronErrorCode | string | null;
+  readonly contextSourceIds: readonly string[];
+  readonly toolInvocations: readonly NeutronGraphToolInvocationSnapshot[];
 }
 
 export interface NeutronGraphSnapshot {
@@ -141,6 +160,8 @@ export interface NeutronGraphSnapshot {
   readonly cancellationAcknowledged: boolean;
   readonly budgetExceeded: boolean;
   readonly digestPresent: boolean;
+  readonly outputDigest: string | null;
+  readonly usage: NeutronGraphUsageSnapshot | null;
   readonly concurrency: NeutronGraphConcurrency;
   readonly nodeCounts: NeutronGraphNodeCounts;
   readonly nodes: readonly NeutronGraphNodeSnapshot[];
