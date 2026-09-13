@@ -13,6 +13,7 @@ import {
   optionalToolActivity,
 } from "./neutron-session-activity.js";
 import { optionalGraphSnapshot } from "./neutron-graph.js";
+import { validateNeutronMutationProposal } from "./neutron-mutation.js";
 import {
   NEUTRON_ERROR_CODES,
   NEUTRON_READ_ONLY_TOOLS,
@@ -88,7 +89,13 @@ export function validateNeutronSessionViewmodel(
     contextSummary: optionalContextSummary(value.contextSummary),
     toolActivity: optionalToolActivity(value.toolActivity),
     graphSnapshot: optionalGraphSnapshot(value.graphSnapshot),
+    mutationProposal: optionalMutationProposal(value.mutationProposal),
   };
+}
+
+function optionalMutationProposal(value: unknown) {
+  if (value === null || value === undefined) return null;
+  return validateNeutronMutationProposal(value);
 }
 
 export function toNeutronSessionViewmodelPayload(

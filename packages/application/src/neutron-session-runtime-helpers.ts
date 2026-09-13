@@ -7,6 +7,7 @@ import type { NeutronSessionViewmodel } from "../../protocol/src/neutron-session
 import { validateNeutronN2AdapterCapability } from "../../validator/src/neutron-runtime-n2.js";
 import type { ModelAdapter } from "./model-adapter.js";
 import { NeutronSessionOperationError } from "./neutron-session-errors.js";
+import { resolveNeutronSessionMutationProposal } from "./neutron-session-mutation-proposal.js";
 import type { StoredNeutronSession } from "./neutron-session-turn.js";
 
 export const TERMINAL_NEUTRON_SESSION_STATES: readonly NeutronSessionState[] = [
@@ -49,6 +50,7 @@ export function emptyNeutronSessionView(
     contextSummary: stored.contextSummary,
     toolActivity: stored.toolActivity,
     graphSnapshot: stored.graphSnapshot,
+    mutationProposal: resolveNeutronSessionMutationProposal(stored),
   };
 }
 

@@ -17,6 +17,7 @@ import type {
   NeutronTurnToolActivity,
 } from "./neutron-session-activity.js";
 import type { NeutronGraphSnapshot } from "./neutron-graph.js";
+import type { NeutronMutationProposal } from "./neutron-mutation.js";
 import { ProtocolValidationError } from "./protocol-validation-error.js";
 
 export {
@@ -60,6 +61,7 @@ export interface NeutronSessionViewmodel {
   readonly contextSummary: NeutronTurnContextSummary | null;
   readonly toolActivity: readonly NeutronTurnToolActivity[];
   readonly graphSnapshot: NeutronGraphSnapshot | null;
+  readonly mutationProposal: NeutronMutationProposal | null;
 }
 
 interface NeutronSessionResultPayload {

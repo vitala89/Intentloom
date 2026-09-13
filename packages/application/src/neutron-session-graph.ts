@@ -24,6 +24,7 @@ import {
 } from "./neutron-session-turn.js";
 import { validateNeutronRuntimeSession } from "../../validator/src/neutron-runtime.js";
 import { validateNeutronGraphSnapshot } from "../../validator/src/neutron-graph.js";
+import { resolveNeutronMutationProposalFromGraphNodes } from "./neutron-session-mutation-proposal.js";
 
 export function unknownNeutronGraphError(
   graphId: string | undefined,
@@ -152,9 +153,16 @@ export async function executeStoredNeutronGraph(input: {
         result,
       }),
     );
+    const mutationProposal =
+      resolveNeutronMutationProposalFromGraphNodes({
+        graphId,
+        nodes: input.nodes,
+        session,
+      }) ?? input.stored.mutationProposal;
     return {
       ...input.stored,
       graphSnapshot: snapshot,
+      mutationProposal,
       projectFingerprintAfter: after,
       projectFingerprintBefore: before,
       session: validateNeutronRuntimeSession({

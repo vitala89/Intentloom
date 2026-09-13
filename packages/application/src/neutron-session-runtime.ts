@@ -153,6 +153,7 @@ export function createNeutronSessionRuntime(
         contextSummary: null,
         toolActivity: [],
         graphSnapshot: null,
+        mutationProposal: null,
       };
       sessions.set(session.sessionId, stored);
       return emptyView(stored);

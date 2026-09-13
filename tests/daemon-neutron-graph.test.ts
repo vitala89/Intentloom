@@ -19,6 +19,7 @@ import { createNeutronSessionRuntime } from "../packages/application/src/neutron
 import { fingerprintNeutronProjectRoot } from "../packages/application/src/neutron-session-fingerprint.js";
 import { startLocalDaemon } from "../packages/daemon/src/index.js";
 import { bindNeutronSessionHandlers } from "../packages/daemon/src/neutron-session-handlers.js";
+import { NEUTRON_STRUCTURED_MUTATION_PROPOSAL_PREFIX } from "../packages/application/src/neutron-session-mutation-proposal.js";
 import { NeutronN2Error } from "../packages/validator/src/neutron-runtime-n2.js";
 
 const daemons: { close(): Promise<void> }[] = [];
@@ -161,6 +162,71 @@ describe("Neutron N6 Slice 3 daemon graph RPC", () => {
         },
       }),
     ).toThrow(/unsupported protocol method/);
+  });
+
+  it("projects structured feature-builder proposals onto the session viewmodel", async () => {
+    const root = await projectRoot();
+    const directory = await mkdtemp(
+      join(tmpdir(), "intentloom-n6-graph-proposal-"),
+    );
+    const token = "p".repeat(32);
+    const runtime = createNeutronSessionRuntime({
+      createAdapter: () => fixtureAdapter(),
+    });
+    const daemon = await startLocalDaemon({
+      endpoint: daemonEndpoint(directory),
+      sessionToken: token,
+      enforceCanonicalRoots: false,
+      ...bindNeutronSessionHandlers(runtime),
+    });
+    daemons.push(daemon);
+    const created = viewmodel(
+      await rawRequest(
+        daemon.endpoint,
+        createNeutronSessionCreateRequest(1, root, "project-n6"),
+        token,
+      ),
+    );
+    const session = created.session as { sessionId: string; projectId: string };
+    const seed = `${NEUTRON_STRUCTURED_MUTATION_PROPOSAL_PREFIX}${JSON.stringify(
+      {
+        proposalId: "proposal-fixture-1",
+        planDigest:
+          "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        projectStateDigest:
+          "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        changedPaths: ["src/a.ts", "src/z.ts"],
+        expiresAt: 1_800_000_000_000,
+      },
+    )}`;
+    const executed = viewmodel(
+      await rawRequest(
+        daemon.endpoint,
+        createNeutronGraphExecuteRequest(
+          2,
+          root,
+          session.sessionId,
+          session.projectId,
+          [
+            {
+              ...readyNode("task-proposal"),
+              role: "feature-builder",
+              expectedOutput: seed,
+            },
+          ],
+        ),
+        token,
+      ),
+    );
+    const proposal = executed.mutationProposal as {
+      proposalId: string;
+      mutationClass: string;
+    } | null;
+    expect(proposal?.proposalId).toBe("proposal-fixture-1");
+    expect(proposal?.mutationClass).toBe("approved-transaction-apply");
+    expect(
+      (executed.session as { mutationAllowed: boolean }).mutationAllowed,
+    ).toBe(false);
   });
 
   it("executes one scheduling wave, gets the snapshot, and leaves the fingerprint unchanged", async () => {

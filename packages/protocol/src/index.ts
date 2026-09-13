@@ -4576,3 +4576,5 @@ export function validateWorkflowTransitionIntervalsReport(
     transitions,
   };
 }
+
+export type { NeutronMutationProposal } from "./neutron-mutation.js";
