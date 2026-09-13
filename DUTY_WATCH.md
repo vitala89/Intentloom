@@ -14,9 +14,46 @@ Status: **N5 complete**. Mutation-routing **Slice 1 contracts implemented**.
 preflight, no Apply). **N6 Slice 1 implemented**. **N6 Slice 2 implemented**
 (context visibility + read-only tool activity). **N6 Slice 3 implemented**
 (task graph visibility / execute / cancel, no full graph runner). **N6 Slice 4
-implemented** (evidence / provenance / authoritative result UX). `mutationAllowed`
-remains literal `false`. N6 Slice 5, Mutation Slices 3–5 Apply, optional N3
-Slice 5, and P4l17 remain unauthorized.
+implemented** (evidence / provenance / authoritative result UX). **N6 Slice 5
+implemented** (read-only mutation proposal / review UI). `mutationAllowed`
+remains literal `false`. Mutation Slices 3–5 Apply, optional N3 Slice 5, and
+P4l17 remain unauthorized.
+
+### 2026-09-13, Neutron N6 Slice 5 — mutation proposal review UI (merged)
+
+- **Status:** **N6 SLICE 5 COMPLETE** on `main` (#479 / this handoff)
+- **Implementation PR:** https://github.com/vitala89/Intentloom/pull/479
+- **Implementation branch:** `feat/neutron-n6-mutation-proposal-review` (merged)
+- **Starting main / origin/main:** `dd0a3477b3d11faa2dca43ee411bc3d812d64942`
+  (N6 Slice 4 handoff baseline; tracked tree clean).
+- **Implementation head SHA:** `4df3b914e81fa31106a06da22f181aea3a8431d5`
+- **Implementation merge SHA / current main:** `923251c66f95abf1f2add7d6d9e357d3fc6b4496`
+- **Objective:** Read-only Desktop review for canonical `NeutronMutationProposal`
+  (wraps `ApprovedApplyPlan`) with visible **Mutation not authorized** copy; no
+  Approve/Apply, no approval token UI, no writes, no model-prose-derived proposals.
+- **Architecture delivered:** Session viewmodel adds `mutationProposal: null |
+NeutronMutationProposal`. Application `neutron-session-mutation-proposal` binds
+  structured `feature-builder` graph `expectedOutput` (URN-prefixed JSON seed) into
+  validated proposals on graph execute; session turns do not invent proposals from
+  model text. Desktop `NeutronMutationProposalPanel` shows digests, mutation class,
+  and affected paths via `DiffViewer` (paths only). No `ApprovedApplyModal`, no
+  preflight Apply, no mutation tools.
+- **Security boundary:** `mutationAllowed: false`; forbidden authority fields
+  rejected at Desktop parse; spoof tests keep model prose from becoming proposals.
+- **Event model:** Unchanged request/response snapshots; no bridge/polling.
+- **Verification:** `tests/desktop-neutron-mutation-proposal.test.ts`,
+  `tests/neutron-n6-mutation-proposal-projection.test.ts`, daemon graph proposal
+  case; local `pnpm verify` — **308 files / 2655 passed / 3 skipped**. CI green
+  on #479 (Governance, Compatibility, CodeQL, Desktop SEA).
+- **Decision:** **N6 SLICE 5 COMPLETE.** N6 read-only exit gate satisfied for
+  mutation-proposal display. Next increment requires explicit maintainer
+  authorization: **Mutation Routing Slice 3** (approved transaction Apply) or
+  other deferred work — not assumed from this slice.
+- **Not completed / deferred:** Mutation Routing Slices 3–5 Apply; durable approval
+  consumption; mutation lock; rollback; post-Apply verification; optional N3 Slice
+  5; P4l17; streaming/event bridge.
+- **Next first action:** **Explicit maintainer authorization required.** Do not
+  start Mutation Slice 3 without a new grant.
 
 ### 2026-09-12, Neutron N6 Slice 4 — evidence and provenance UX (merged)
 

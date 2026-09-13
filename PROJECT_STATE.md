@@ -684,8 +684,11 @@ result/evidence/provenance UX: structured graph/session outcome separate from
 model prose, accepted/stale/budget/warning semantics, usage and fingerprint
 projection, progressive evidence panel; graph snapshot extended with canonical
 usage/output digest and bounded node context/tool evidence. Read-only;
-`mutationAllowed` remains literal `false`. N6 Slice 5, Mutation Slices 3–5,
-optional N3 Slice 5, and P4l17 are not authorized. Other
+`mutationAllowed` remains literal `false`. **N6 Slice 5 implemented** — Desktop
+read-only mutation proposal review: canonical `NeutronMutationProposal` on the
+session viewmodel, structured graph projection (not model prose), review panel
+with **Mutation not authorized**, path scope via `DiffViewer`, no Approve/Apply.
+Mutation Slices 3–5 Apply, optional N3 Slice 5, and P4l17 are not authorized. Other
 post-P4 candidates remain in `POST_W12_NEXT_INCREMENT_PLAN.md`.
 
 The Desktop discovery/error and Diff/Timeline slices remain recorded in
