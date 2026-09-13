@@ -1,4 +1,4 @@
-import type { NeutronMutationProposal } from "@intentloom/protocol";
+import type { NeutronMutationProposal } from "@intentloom/protocol/neutron-session";
 
 const NEUTRON_MUTATION_PROPOSAL_SCHEMA_URN =
   "urn:intentloom:schema:neutron-mutation-proposal:1" as const;

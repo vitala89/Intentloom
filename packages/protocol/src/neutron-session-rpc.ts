@@ -18,6 +18,7 @@ import type {
 } from "./neutron-session-activity.js";
 import type { NeutronGraphSnapshot } from "./neutron-graph.js";
 import type { NeutronMutationProposal } from "./neutron-mutation.js";
+export type { NeutronMutationProposal } from "./neutron-mutation.js";
 import { ProtocolValidationError } from "./protocol-validation-error.js";
 
 export {

@@ -1,5 +1,5 @@
 import { DiffViewer } from "../design/components/code/DiffViewer.js";
-import type { NeutronMutationProposal } from "@intentloom/protocol";
+import type { NeutronMutationProposal } from "@intentloom/protocol/neutron-session";
 
 export interface NeutronMutationProposalPathsProps {
   readonly proposal: NeutronMutationProposal;

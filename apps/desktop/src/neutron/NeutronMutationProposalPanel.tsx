@@ -1,4 +1,4 @@
-import type { NeutronMutationProposal } from "@intentloom/protocol";
+import type { NeutronMutationProposal } from "@intentloom/protocol/neutron-session";
 import { Card } from "../design/components/layout/Card.js";
 import { StatusChip } from "../design/components/status/StatusChip.js";
 import { shortenDigest } from "./neutron-digest-display.js";

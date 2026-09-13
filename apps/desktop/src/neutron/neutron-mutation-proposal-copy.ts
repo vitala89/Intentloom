@@ -1,4 +1,4 @@
-import type { NeutronMutationProposal } from "@intentloom/protocol";
+import type { NeutronMutationProposal } from "@intentloom/protocol/neutron-session";
 
 export const NEUTRON_MUTATION_NOT_AUTHORIZED_COPY =
   "Mutation not authorized" as const;
