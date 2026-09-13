@@ -54,6 +54,32 @@ NeutronMutationProposal`. Application `neutron-session-mutation-proposal` binds
   5; P4l17; streaming/event bridge.
 - **Next first action:** **Explicit maintainer authorization required.** Do not
   start Mutation Slice 3 without a new grant.
+- **Follow-up (binding hardening):** correction PR #481 merged after initial
+  Slice 5 land — see entry below.
+
+### 2026-09-13, Neutron N6 Slice 5 — proposal session binding hardening (merged)
+
+- **Status:** **N6 SLICE 5 COMPLETE** (binding validation added; no scope expansion)
+- **Correction PR:** https://github.com/vitala89/Intentloom/pull/481
+- **Correction branch:** `fix/neutron-n6-proposal-binding` (merged)
+- **Starting main / origin/main:** `dafd3e30ae60adf583da645b0caaffa386efeaa4`
+  (post #479/#480 Slice 5 handoff).
+- **Correction head SHA:** `dba43bb8ffc5f074cbbd92afd55f6a723b0281cd`
+- **Correction merge SHA / current main:** `c9cf66cb486776224cc539299444b2e6cb97362c`
+- **Problem closed:** Desktop parsed `mutationProposal` structurally but did not
+  prove identity against the current session (`sessionId`, `projectId`, `root`).
+- **Fix delivered:** `assertNeutronMutationProposalBinding` after session + proposal
+  parse; exact equality fail-closed via `DesktopBridgeError`. When
+  `graphSnapshot` exists and proposal carries `graphId`, require exact graph id
+  match. Desktop `changedPaths` boundary rejects absolute/traversal/empty/duplicate
+  paths (digest/canonical ordering remains upstream validator responsibility on
+  daemon payloads).
+- **Tests added:** session/project/root/graph mismatch regressions; changedPaths
+  boundary tests (`tests/desktop-neutron-mutation-proposal-paths.test.ts`).
+- **Verification:** local `pnpm verify` — **309 files / 2662 passed / 3 skipped**.
+  CI green on #481.
+- **Decision:** Slice 5 remains **COMPLETE** with binding hardening; do not start
+  Mutation Slice 3 without explicit authorization.
 
 ### 2026-09-12, Neutron N6 Slice 4 — evidence and provenance UX (merged)
 
