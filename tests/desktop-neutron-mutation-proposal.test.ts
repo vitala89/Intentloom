@@ -28,6 +28,20 @@ const proposalFixture = JSON.parse(
   ),
 );
 
+function boundProposal(overrides: Record<string, unknown> = {}) {
+  return {
+    ...proposalFixture,
+    sessionId: "session-n6",
+    projectId: "project-n6",
+    root: "/project",
+    plan: {
+      ...proposalFixture.plan,
+      targetRoot: "/project",
+    },
+    ...overrides,
+  };
+}
+
 function sessionFields(overrides: Record<string, unknown> = {}) {
   return {
     session: {
@@ -68,7 +82,7 @@ function sessionFields(overrides: Record<string, unknown> = {}) {
 describe("Neutron N6 Slice 5 mutation proposal review UI", () => {
   it("renders canonical proposal fields and not-authorized copy", () => {
     const viewmodel = parseNeutronDesktopViewmodel(
-      sessionFields({ mutationProposal: proposalFixture }),
+      sessionFields({ mutationProposal: boundProposal() }),
     );
     expect(viewmodel.mutationProposal?.proposalId).toBe("proposal-fixture-1");
     const lines = mutationProposalPanelLines(viewmodel.mutationProposal!);
@@ -94,6 +108,126 @@ describe("Neutron N6 Slice 5 mutation proposal review UI", () => {
         approvalToken: "forged",
       }),
     ).toThrow(/approvalToken/);
+  });
+
+  it("rejects proposal sessionId mismatch against the current session", () => {
+    expect(() =>
+      parseNeutronDesktopViewmodel(
+        sessionFields({
+          mutationProposal: boundProposal({ sessionId: "session-other" }),
+        }),
+      ),
+    ).toThrow(/sessionId must match the current session/);
+  });
+
+  it("rejects proposal projectId mismatch against the current session", () => {
+    expect(() =>
+      parseNeutronDesktopViewmodel(
+        sessionFields({
+          mutationProposal: boundProposal({ projectId: "project-other" }),
+        }),
+      ),
+    ).toThrow(/projectId must match the current session/);
+  });
+
+  it("rejects proposal root mismatch against the current session", () => {
+    expect(() =>
+      parseNeutronDesktopViewmodel(
+        sessionFields({
+          mutationProposal: boundProposal({
+            root: "/project-a",
+            plan: {
+              ...proposalFixture.plan,
+              targetRoot: "/project-a",
+            },
+          }),
+        }),
+      ),
+    ).toThrow(/root must match the current session/);
+  });
+
+  it("rejects proposal graphId mismatch when a graph snapshot is present", () => {
+    expect(() =>
+      parseNeutronDesktopViewmodel(
+        sessionFields({
+          mutationProposal: boundProposal({ graphId: "sha256:graph-other" }),
+          graphSnapshot: {
+            schemaVersion: "urn:intentloom:schema:neutron-graph-snapshot:1",
+            graphId: "sha256:graph-current",
+            sessionId: "session-n6",
+            root: "/project",
+            projectId: "project-n6",
+            status: "completed",
+            partial: false,
+            accepted: true,
+            mutationAttempted: false,
+            rerunAttempted: false,
+            cancellationAcknowledged: false,
+            budgetExceeded: false,
+            digestPresent: true,
+            outputDigest: null,
+            usage: null,
+            concurrency: {
+              defaultConcurrency: 1,
+              maxConcurrency: 1,
+              hardMaximum: 4,
+              runningCount: 0,
+              availableCapacity: 1,
+            },
+            nodeCounts: {
+              total: 0,
+              pending: 0,
+              ready: 0,
+              running: 0,
+              blocked: 0,
+              cancelled: 0,
+              timedOut: 0,
+              failed: 0,
+              completed: 0,
+            },
+            nodes: [],
+            stale: null,
+            warnings: [],
+          },
+        }),
+      ),
+    ).toThrow(/graphId must match the current graph snapshot/);
+  });
+
+  it("rejects unsafe changedPaths at the Desktop boundary", () => {
+    expect(() =>
+      parseNeutronMutationProposal(
+        boundProposal({
+          plan: {
+            ...proposalFixture.plan,
+            targetRoot: "/project",
+            changedPaths: ["/etc/passwd"],
+          },
+        }),
+      ),
+    ).toThrow(/safe project-relative path/);
+    expect(() =>
+      parseNeutronMutationProposal(
+        boundProposal({
+          plan: {
+            ...proposalFixture.plan,
+            targetRoot: "/project",
+            changedPaths: ["../outside.ts"],
+          },
+        }),
+      ),
+    ).toThrow(/safe project-relative path/);
+    expect(() =>
+      parseNeutronMutationProposal(
+        boundProposal({
+          plan: {
+            ...proposalFixture.plan,
+            targetRoot: "/project",
+            changedPaths: ["src/a.ts", "src/a.ts"],
+          },
+        }),
+      ),
+    ).toThrow(/duplicate paths/);
   });
 
   it("keeps Neutron workspace free of Apply wiring and mutation tools", () => {

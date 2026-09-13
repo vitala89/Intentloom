@@ -4,6 +4,7 @@ const NEUTRON_MUTATION_PROPOSAL_SCHEMA_URN =
   "urn:intentloom:schema:neutron-mutation-proposal:1" as const;
 const NEUTRON_MUTATION_CLASS = "approved-transaction-apply" as const;
 import { DesktopBridgeError } from "../desktop-client.js";
+import { parseNeutronMutationChangedPaths } from "./neutron-mutation-proposal-paths-parse.js";
 
 const FORBIDDEN_PROPOSAL_KEYS = [
   "approved",
@@ -87,8 +88,10 @@ export function parseNeutronMutationProposal(
       "bounded_validation_failed",
     );
   }
-  const changedPaths = changedPathsRaw.map((entry, index) =>
-    requiredString(entry, `plan.changedPaths[${index}]`),
+  const changedPaths = parseNeutronMutationChangedPaths(
+    changedPathsRaw.map((entry, index) =>
+      requiredString(entry, `plan.changedPaths[${index}]`),
+    ),
   );
   const root = requiredString(record.root, "root");
   const targetRoot = requiredString(planRecord.targetRoot, "plan.targetRoot");
