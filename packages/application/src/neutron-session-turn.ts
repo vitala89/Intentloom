@@ -12,6 +12,7 @@ import type {
   NeutronTurnToolActivity,
 } from "../../protocol/src/neutron-session-activity.js";
 import type { NeutronGraphSnapshot } from "../../protocol/src/neutron-graph.js";
+import type { NeutronMutationProposal } from "../../protocol/src/neutron-mutation.js";
 import type { NeutronTaskGraph } from "../../protocol/src/neutron-runtime.js";
 import type { NeutronGraphStaleBaseline } from "./neutron-scheduler-stale.js";
 import type { NeutronSchedulingPlan } from "./neutron-scheduler-select.js";
@@ -60,6 +61,7 @@ export interface StoredNeutronSession {
   contextSummary: NeutronTurnContextSummary | null;
   toolActivity: readonly NeutronTurnToolActivity[];
   graphSnapshot: NeutronGraphSnapshot | null;
+  mutationProposal: NeutronMutationProposal | null;
   storedGraph?:
     | {
         readonly snapshot: NeutronGraphSnapshot;
