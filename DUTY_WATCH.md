@@ -21,6 +21,7 @@ unauthorized.
 ### 2026-09-13, Neutron Mutation Slice 3 — security readiness review
 
 - **Status:** **NO-GO** (docs/security gate only; no Apply implementation)
+- **Review PR:** https://github.com/vitala89/Intentloom/pull/483
 - **Review branch:** `docs/neutron-mutation-slice3-security-review`
 - **Starting main / origin/main:** `34aed286cb81c2c8c034e2dc2fe70b4788e59fd4`
   (expected baseline; matches actual `origin/main`; tracked tree clean).
