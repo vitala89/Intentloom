@@ -19,6 +19,7 @@ import {
   parseNeutronToolActivity,
 } from "./neutron-activity-viewmodel.js";
 import { parseNeutronGraphSnapshot } from "./neutron-graph-viewmodel.js";
+import { assertNeutronMutationProposalBinding } from "./neutron-mutation-proposal-binding.js";
 import { parseNeutronMutationProposal } from "./neutron-mutation-proposal-viewmodel.js";
 
 export type NeutronUiPhase =
@@ -118,6 +119,17 @@ export function parseNeutronDesktopViewmodel(
   };
   const toolName = record.toolName;
   const errorCode = record.errorCode;
+  const graphSnapshot = parseNeutronGraphSnapshot(record.graphSnapshot);
+  const mutationProposal = parseNeutronMutationProposal(
+    record.mutationProposal,
+  );
+  if (mutationProposal !== null) {
+    assertNeutronMutationProposalBinding({
+      graphSnapshot,
+      proposal: mutationProposal,
+      session,
+    });
+  }
   return {
     session,
     adapter,
@@ -145,8 +157,8 @@ export function parseNeutronDesktopViewmodel(
     cancellationAcknowledged: record.cancellationAcknowledged === true,
     contextSummary: parseNeutronContextSummary(record.contextSummary),
     toolActivity: parseNeutronToolActivity(record.toolActivity),
-    graphSnapshot: parseNeutronGraphSnapshot(record.graphSnapshot),
-    mutationProposal: parseNeutronMutationProposal(record.mutationProposal),
+    graphSnapshot,
+    mutationProposal,
   };
 }
 
