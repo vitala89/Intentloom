@@ -7,9 +7,16 @@ approved-transaction preflight for `approved-transaction-apply`. Session
 snapshots remain `mutationAllowed: false`. No N4 mutation route. No Apply.
 Mutation routing is **not** complete.
 
+**Slice 3 security review: NO-GO.** Evidence-backed gate:
+[`NEUTRON_MUTATION_SLICE3_SECURITY_REVIEW.md`](NEUTRON_MUTATION_SLICE3_SECURITY_REVIEW.md).
+Do not start Slice 3 Apply. The next authorized increment, if granted, is
+**Slice 2.5** (content-bound review artifact + declared-path Apply contract),
+not production writes.
+
 Slices 3–5 (Apply, rollback, post-Apply verification, N5 proposal
-integration), write tools, generic shell, N6 Slices 3–5, optional N3 Slice 5,
-and P4l17 remain unauthorized until a later explicit maintainer grant.
+integration), write tools, generic shell, optional N3 Slice 5, and P4l17
+remain unauthorized until a later explicit maintainer grant. N6 Slices 1–5
+read-only Desktop are implemented separately.
 
 Authoritative roadmap gate:
 [`NEUTRON_RUNTIME_ROADMAP.md`](NEUTRON_RUNTIME_ROADMAP.md) §N5–§N6 and this
@@ -613,8 +620,9 @@ not that justification.
 
 ## 22. Implementation slices
 
-Derived from gaps above. Slices 1–2 are implemented. Slices 3–5 remain
-unauthorized.
+Derived from gaps above. Slices 1–2 are implemented. Slice 3 Apply is
+**NO-GO** until Slice 2.5. See
+[`NEUTRON_MUTATION_SLICE3_SECURITY_REVIEW.md`](NEUTRON_MUTATION_SLICE3_SECURITY_REVIEW.md).
 
 ### Slice 1 — contracts and validators only (implemented)
 
@@ -627,12 +635,19 @@ No Apply. Unblocks N6 from inventing a second DTO. See §30.
 Mutation permission class and `preflightNeutronMutation` return `eligible` or
 `rejected` diagnostics only. Zero project writes. See §31.
 
-### Slice 3 — single approved transaction Apply
+### Slice 2.5 — content-bound review artifact + declared-path Apply contract (not authorized)
 
-`applyApprovedTransaction` → `executeApprovedApplyPlan` →
-`synchronizeGeneratedFiles`. Host injects approval. Engine
-`changedPaths` enforcement + mandatory digest. Project mutation lock.
-No N5 automatic retry.
+Prerequisite for Slice 3. Bind exact per-path content digests into
+`proposalDigest` / computed `planDigest`. Canonical path-set helper. Host-held
+review artifact for bytes. Declared-path mode of the canonical writer so
+undeclared `.aif` metadata cannot widen scope. Tests for byte-swap fail-closed.
+No Apply RPC, no N4 write tool, `mutationAllowed` remains `false`.
+
+### Slice 3 — single approved transaction Apply (blocked)
+
+Host-triggered Apply only (not an N4 mutation tool). After Slice 2.5: lock,
+claim/consume, final pre-write checks, declared-path `executeApprovedApplyPlan`.
+No N5 automatic retry. Do not wrap the current engine unchanged.
 
 ### Slice 4 — verification + rollback evidence
 
@@ -719,11 +734,15 @@ after tests pass.” Future policy automation needs a separate authorization.
 
 ## 28. Recommendation
 
-**MUTATION SLICE 2 COMPLETE — SLICE 3 NOT AUTHORIZED**
+**MUTATION SLICE 2 COMPLETE — SLICE 3 SECURITY REVIEW NO-GO**
 
-Do not start Slice 3–5 Apply, N6 Slice 3, optional N3 Slice 5, generic
-shell, or P4l17 without a new explicit grant. Mutation Slice 3 has a
-higher security threshold and is not implied by Slice 2.
+Do not start Slice 3 Apply. The Slice 3 security review
+([`NEUTRON_MUTATION_SLICE3_SECURITY_REVIEW.md`](NEUTRON_MUTATION_SLICE3_SECURITY_REVIEW.md))
+proves payload bytes are not bound into `planDigest`/`proposalDigest` and
+that `synchronizeGeneratedFiles` widens the write set with undeclared `.aif`
+metadata. Next grant, if any: **Slice 2.5**, then a separate Slice 3 Apply
+grant. Do not start generic shell, optional N3 Slice 5, or P4l17 from this
+brief.
 
 ---
 

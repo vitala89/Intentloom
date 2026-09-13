@@ -688,8 +688,14 @@ usage/output digest and bounded node context/tool evidence. Read-only;
 read-only mutation proposal review: canonical `NeutronMutationProposal` on the
 session viewmodel, structured graph projection (not model prose), review panel
 with **Mutation not authorized**, path scope via `DiffViewer`, no Approve/Apply.
-Mutation Slices 3–5 Apply, optional N3 Slice 5, and P4l17 are not authorized. Other
-post-P4 candidates remain in `POST_W12_NEXT_INCREMENT_PLAN.md`.
+**Mutation Slice 3 security review: NO-GO**
+([`NEUTRON_MUTATION_SLICE3_SECURITY_REVIEW.md`](docs/roadmap/NEUTRON_MUTATION_SLICE3_SECURITY_REVIEW.md)):
+current `planDigest`/`proposalDigest` do not bind file bytes, and
+`synchronizeGeneratedFiles` appends undeclared `.aif` metadata. Do not start
+Slice 3 Apply. Next mutation increment if granted: Slice 2.5 (content-bound
+review artifact + declared-path Apply contract). Mutation Slices 3–5 Apply,
+optional N3 Slice 5, and P4l17 are not authorized. Other post-P4 candidates
+remain in `POST_W12_NEXT_INCREMENT_PLAN.md`.
 
 The Desktop discovery/error and Diff/Timeline slices remain recorded in
 [PHASE1_CONTRACTS.md](docs/desktop/PHASE1_CONTRACTS.md).

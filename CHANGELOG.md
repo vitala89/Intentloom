@@ -7,6 +7,15 @@ All notable changes are documented here. This project follows Keep a Changelog p
 Changes listed here are merged after the current release-preparation scope and
 are not included in the current npm artifact until a later release.
 
+- Neutron Mutation Slice 3 security review records a **NO-GO** for the first
+  approved-transaction Apply. Slice 1+2 and canonical Approved Apply do not
+  bind payload bytes into `planDigest`/`proposalDigest`, and
+  `synchronizeGeneratedFiles` can widen the write set with undeclared `.aif`
+  metadata. Next mutation increment if granted is Slice 2.5 (content-bound
+  review artifact + declared-path Apply contract), not production writes.
+  `mutationAllowed` remains false. See
+  `docs/roadmap/NEUTRON_MUTATION_SLICE3_SECURITY_REVIEW.md`.
+
 - Neutron mutation routing Slice 2 adds host-side semantic preflight for
   `approved-transaction-apply`. A bound `NeutronMutationApproval` is checked
   against the current project state, exact affected paths, canonical root
