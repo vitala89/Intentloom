@@ -13,14 +13,38 @@ Status: **N5 complete**. Mutation-routing **Slice 1 contracts implemented**.
 **Mutation Slice 2 implemented** (semantic authorization + approved-transaction
 preflight, no Apply). **N6 Slices 1–5 implemented** (read-only Desktop Neutron,
 including mutation proposal review). `mutationAllowed` remains literal
-`false`. **Mutation Slice 3 security review: NO-GO.** Do not start Apply.
-Next mutation increment if granted: Slice 2.5 (content-bound review artifact +
-declared-path Apply contract). Optional N3 Slice 5 and P4l17 remain
-unauthorized.
+`false`. **Mutation Slice 3 security review merged: NO-GO** (#483 →
+`2cf4dbf37715206cb30decb0120d05faf9629b7d` on `main`). Slice 3 Apply remains
+unauthorized. **Mutation Slice 2.5** is the next possible increment and requires
+a separate maintainer grant. Optional N3 Slice 5 and P4l17 remain unauthorized.
 
-### 2026-09-13, Neutron Mutation Slice 3 — security readiness review
+### 2026-09-14, Neutron Mutation Slice 3 — security review merge handoff
 
-- **Status:** **NO-GO** (docs/security gate only; no Apply implementation)
+- **Status:** handoff PR pending (docs only; no implementation)
+- **Starting main / origin/main:** `2cf4dbf37715206cb30decb0120d05faf9629b7d`
+  (post #483 merge; tracked tree clean).
+- **Security review PR:** https://github.com/vitala89/Intentloom/pull/483
+  (merged)
+- **Security review merge SHA / authoritative `main` tip for the review:**
+  `2cf4dbf37715206cb30decb0120d05faf9629b7d`
+- **Decision:** **MUTATION SLICE 3 SECURITY REVIEW: NO-GO**
+- **Critical blockers (unchanged):** approved plan does not bind exact reviewed
+  file bytes; `filesToApply` is not checked against approved `changedPaths`;
+  `synchronizeGeneratedFiles` appends undeclared `.aif/manifest.lock.json` and
+  `.aif/source-map.json`; inner `grantedApprovals` remains spoofable if reached
+  from model-controlled input; durable approval consumption and project
+  mutation lock acquisition remain unimplemented.
+- **Mutation authority:** `mutationAllowed` remains literal `false`. No Apply,
+  no write tool, no approval store, no lock implementation.
+- **Not authorized:** Mutation Slice 2.5 implementation; Mutation Slice 3
+  Apply; production mutation.
+- **Next first action:** **None from automation.** Await explicit maintainer
+  authorization for **Mutation Slice 2.5** (content-bound review artifact +
+  declared-path Apply contract).
+
+### 2026-09-13, Neutron Mutation Slice 3 — security readiness review (merged)
+
+- **Status:** **NO-GO** merged on `main` (#483; docs/security gate only)
 - **Review PR:** https://github.com/vitala89/Intentloom/pull/483
 - **Review branch:** `docs/neutron-mutation-slice3-security-review`
 - **Starting main / origin/main:** `34aed286cb81c2c8c034e2dc2fe70b4788e59fd4`
@@ -47,13 +71,12 @@ unauthorized.
   Apply success stub from Neutron.
 - **Document:**
   [`docs/roadmap/NEUTRON_MUTATION_SLICE3_SECURITY_REVIEW.md`](docs/roadmap/NEUTRON_MUTATION_SLICE3_SECURITY_REVIEW.md)
-- **Review merge SHA:** not recorded here — pre-merge branch tips change with
-  every commit on #483. Record the immutable squash/merge commit on `main` in
-  the post-merge handoff after #483 lands.
+- **Review merge SHA / current `main`:** `2cf4dbf37715206cb30decb0120d05faf9629b7d`
+  (immutable merge commit; do not cite pre-merge branch tips as authoritative).
 - **Verification:** local Prettier, `validate-diff`, `validate-commit-range`,
-  `git diff --check`, `pnpm docs:build` passed. Hosted CI on #483: 16/16
-  successful (Governance, Compatibility Ubuntu/macOS/Windows Node 22/24,
-  CodeQL). Merge pending at correction time.
+  `git diff --check`, `pnpm docs:build` passed. Final hosted CI on #483 before
+  merge: 16/16 successful (Governance, Compatibility Ubuntu/macOS/Windows Node
+  22/24, CodeQL).
 - **Not completed:** Slice 2.5 implementation; Slice 3 Apply; production
   mutation; N4 write tool; approval store; lock; Desktop Apply.
 - **Decision:** **MUTATION SLICE 3 SECURITY REVIEW: NO-GO.**
