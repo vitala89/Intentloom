@@ -20,7 +20,8 @@ a separate maintainer grant. Optional N3 Slice 5 and P4l17 remain unauthorized.
 
 ### 2026-09-14, Neutron Mutation Slice 3 — security review merge handoff
 
-- **Status:** handoff PR pending (docs only; no implementation)
+- **Status:** handoff PR open (docs only; no implementation)
+- **Handoff PR:** https://github.com/vitala89/Intentloom/pull/492
 - **Starting main / origin/main:** `2cf4dbf37715206cb30decb0120d05faf9629b7d`
   (post #483 merge; tracked tree clean).
 - **Security review PR:** https://github.com/vitala89/Intentloom/pull/483
