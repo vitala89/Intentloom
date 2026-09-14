@@ -11,13 +11,55 @@ in a condition that the next watch can safely understand and continue.
 
 Status: **N5 complete**. Mutation-routing **Slice 1 contracts implemented**.
 **Mutation Slice 2 implemented** (semantic authorization + approved-transaction
-preflight, no Apply). **N6 Slice 1 implemented**. **N6 Slice 2 implemented**
-(context visibility + read-only tool activity). **N6 Slice 3 implemented**
-(task graph visibility / execute / cancel, no full graph runner). **N6 Slice 4
-implemented** (evidence / provenance / authoritative result UX). **N6 Slice 5
-implemented** (read-only mutation proposal / review UI). `mutationAllowed`
-remains literal `false`. Mutation Slices 3–5 Apply, optional N3 Slice 5, and
-P4l17 remain unauthorized.
+preflight, no Apply). **N6 Slices 1–5 implemented** (read-only Desktop Neutron,
+including mutation proposal review). `mutationAllowed` remains literal
+`false`. **Mutation Slice 3 security review: NO-GO.** Do not start Apply.
+Next mutation increment if granted: Slice 2.5 (content-bound review artifact +
+declared-path Apply contract). Optional N3 Slice 5 and P4l17 remain
+unauthorized.
+
+### 2026-09-13, Neutron Mutation Slice 3 — security readiness review
+
+- **Status:** **NO-GO** (docs/security gate only; no Apply implementation)
+- **Review PR:** https://github.com/vitala89/Intentloom/pull/483
+- **Review branch:** `docs/neutron-mutation-slice3-security-review`
+- **Starting main / origin/main:** `34aed286cb81c2c8c034e2dc2fe70b4788e59fd4`
+  (expected baseline; matches actual `origin/main`; tracked tree clean).
+- **Objective:** Evidence-backed threat model and GO/NO-GO for Mutation
+  Routing Slice 3 (single approved transaction Apply) without writing
+  production Apply code, write tools, locks, approval stores, or
+  `mutationAllowed` changes.
+- **Authoritative sources:** Slice 1/2 protocol, validators, preflight,
+  containment, replay/lock types; ADR-0053 Approved Apply gate/engine;
+  `synchronizeGeneratedFiles`; N5 stale; N6 Slice 5 proposal review; Desktop
+  `ApprovedApplyModal` stub; adoption lock/fingerprint patterns; tests.
+- **Critical findings:** (1) `planDigest` is caller-supplied; `proposalDigest`
+  does not hash file bytes — Apply payload can be swapped after approval.
+  (2) `executeApprovedApplyPlan` does not compare `filesToApply` to
+  `changedPaths`; `synchronizeGeneratedFiles` always appends
+  `.aif/manifest.lock.json` and `.aif/source-map.json`. (3) Inner gate still
+  treats `grantedApprovals` as authorization. (4) Replay checker and mutation
+  lock are observational only.
+- **Decisions recorded:** Keep `mutationAllowed: false`. Prefer host-triggered
+  Apply, not an N4 mutation tool. Wrap Approved Apply only after a
+  declared-path engine mode exists. Durable claim/consume + exclusive
+  realpath lock remain Slice 3 subcomponents after 2.5. Isolate the Desktop
+  Apply success stub from Neutron.
+- **Document:**
+  [`docs/roadmap/NEUTRON_MUTATION_SLICE3_SECURITY_REVIEW.md`](docs/roadmap/NEUTRON_MUTATION_SLICE3_SECURITY_REVIEW.md)
+- **Review merge SHA:** not recorded here — pre-merge branch tips change with
+  every commit on #483. Record the immutable squash/merge commit on `main` in
+  the post-merge handoff after #483 lands.
+- **Verification:** local Prettier, `validate-diff`, `validate-commit-range`,
+  `git diff --check`, `pnpm docs:build` passed. Hosted CI on #483: 16/16
+  successful (Governance, Compatibility Ubuntu/macOS/Windows Node 22/24,
+  CodeQL). Merge pending at correction time.
+- **Not completed:** Slice 2.5 implementation; Slice 3 Apply; production
+  mutation; N4 write tool; approval store; lock; Desktop Apply.
+- **Decision:** **MUTATION SLICE 3 SECURITY REVIEW: NO-GO.**
+- **Next first action:** Maintainer grant for **Mutation Slice 2.5**
+  (content-bound review artifact + declared-path Apply contract) only. Do not
+  start Slice 3 Apply.
 
 ### 2026-09-13, Neutron N6 Slice 5 — mutation proposal review UI (merged)
 

@@ -322,7 +322,12 @@ does not write, call `executeApprovedApplyPlan`, or register
 acquisition remain Slice 3+. Slice 3 must repeat critical checks immediately
 before the first write (TOCTOU).
 
-Later slices (unauthorized): single approved transaction Apply,
+**Slice 3 security review: NO-GO**
+([`NEUTRON_MUTATION_SLICE3_SECURITY_REVIEW.md`](NEUTRON_MUTATION_SLICE3_SECURITY_REVIEW.md)).
+Do not start single approved transaction Apply. Prerequisite if granted:
+Slice 2.5 content-bound review artifact and declared-path Apply contract.
+
+Later slices (unauthorized): Slice 2.5, Slice 3 Apply,
 verification/rollback evidence, N5 proposal/review integration.
 
 N6 read-only Desktop **may** begin in parallel after these contracts, but
@@ -343,8 +348,11 @@ Runtime stays in `@intentloom/application`. Streaming is unavailable.
 `mutationAllowed` remains `false`. **N6 Slice 4 implemented** — authoritative
 Desktop result/evidence/provenance UX (structured outcome vs model prose,
 accepted/stale/budget/warnings, usage/fingerprints, bounded graph evidence
-fields). N6 Slice 5 and Mutation Slices 3–5 remain **not authorized** without
-explicit maintainer grant.
+fields). **N6 Slice 5 implemented** — read-only mutation proposal review
+(paths + digests; no Approve/Apply). Mutation Slice 3 Apply remains
+**NO-GO** pending
+[`NEUTRON_MUTATION_SLICE3_SECURITY_REVIEW.md`](NEUTRON_MUTATION_SLICE3_SECURITY_REVIEW.md).
+Slice 2.5 (content binding) is the next mutation increment if granted.
 
 Integrate the runtime with the official Desktop application after the v0.6
 read-only project slice and shared client contracts are stable.
