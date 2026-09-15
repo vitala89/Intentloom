@@ -688,14 +688,17 @@ usage/output digest and bounded node context/tool evidence. Read-only;
 read-only mutation proposal review: canonical `NeutronMutationProposal` on the
 session viewmodel, structured graph projection (not model prose), review panel
 with **Mutation not authorized**, path scope via `DiffViewer`, no Approve/Apply.
-**Mutation Slice 3 security review: NO-GO**
-([`NEUTRON_MUTATION_SLICE3_SECURITY_REVIEW.md`](docs/roadmap/NEUTRON_MUTATION_SLICE3_SECURITY_REVIEW.md)):
-current `planDigest`/`proposalDigest` do not bind file bytes, and
-`synchronizeGeneratedFiles` appends undeclared `.aif` metadata. Do not start
-Slice 3 Apply. Next mutation increment if granted: Slice 2.5 (content-bound
-review artifact + declared-path Apply contract). Mutation Slices 3–5 Apply,
-optional N3 Slice 5, and P4l17 are not authorized. Other post-P4 candidates
-remain in `POST_W12_NEXT_INCREMENT_PLAN.md`.
+**Mutation Slice 2.5 implemented** (merge `a75edad5a8501480fa74ed3eb7b40e9ffdcd3f33`,
+PR #494): content-bound `NeutronMutationReviewArtifact`, canonical content-bound
+`planDigest`, payload verification helper, exact path-set equality, and
+`declared-paths-only` generated-file sync mode (no implicit `.aif` metadata
+widening). Still zero production Apply; `mutationAllowed` remains literal
+`false`. **Mutation Slice 3 security review: NO-GO**
+([`NEUTRON_MUTATION_SLICE3_SECURITY_REVIEW.md`](docs/roadmap/NEUTRON_MUTATION_SLICE3_SECURITY_REVIEW.md))
+for Apply on pre-2.5 contracts; Slice 3 host Apply remains unauthorized until a
+new maintainer grant. Mutation Slices 3–5 Apply, optional N3 Slice 5, and P4l17
+are not authorized. Other post-P4 candidates remain in
+`POST_W12_NEXT_INCREMENT_PLAN.md`.
 
 The Desktop discovery/error and Diff/Timeline slices remain recorded in
 [PHASE1_CONTRACTS.md](docs/desktop/PHASE1_CONTRACTS.md).
