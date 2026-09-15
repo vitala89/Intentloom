@@ -21,6 +21,18 @@ export type {
   NeutronMutationReviewArtifact,
   NeutronMutationReviewFileBinding,
 } from "./neutron-mutation-review-artifact.js";
+export {
+  NEUTRON_MUTATION_APPLY_FAILURE_CODES,
+  NEUTRON_MUTATION_APPLY_RESULT_SCHEMA_URN,
+  NEUTRON_MUTATION_APPLY_STATUSES,
+  NEUTRON_MUTATION_TRANSACTION_STATES,
+} from "./neutron-mutation-apply.js";
+export type {
+  NeutronMutationApplyFailureCode,
+  NeutronMutationApplyResult,
+  NeutronMutationApplyStatus,
+  NeutronMutationTransactionState,
+} from "./neutron-mutation-apply.js";
 
 export const NEUTRON_MUTATION_PROPOSAL_SCHEMA_URN =
   "urn:intentloom:schema:neutron-mutation-proposal:1" as const;

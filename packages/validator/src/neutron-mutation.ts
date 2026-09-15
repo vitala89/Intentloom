@@ -44,6 +44,7 @@ export {
   materializeNeutronMutationReviewArtifact,
   validateNeutronMutationReviewArtifact,
 } from "./neutron-mutation-review-artifact.js";
+export { validateNeutronMutationApplyResult } from "./neutron-mutation-apply.js";
 export {
   digestContentBoundApplyPlan,
   digestGeneratedFileContent,
