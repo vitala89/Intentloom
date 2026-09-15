@@ -78,6 +78,9 @@ export function digestNeutronMutationApproval(
       mutationClass: approval.mutationClass,
       approvedAt: approval.approvedAt,
       approvalValidUntil: approval.approvalValidUntil,
+      ...(approval.reviewArtifactDigest !== undefined
+        ? { reviewArtifactDigest: approval.reviewArtifactDigest }
+        : {}),
     }),
   );
 }

@@ -35,6 +35,21 @@ export {
   compareNeutronMutationPaths,
 } from "./neutron-mutation-canonical.js";
 export {
+  assertExactNeutronMutationPathSet,
+  exactNeutronMutationPathSetsEqual,
+} from "./neutron-mutation-path-set.js";
+export {
+  assertCanonicalContentBoundPlanDigest,
+  buildNeutronMutationReviewArtifactFacts,
+  materializeNeutronMutationReviewArtifact,
+  validateNeutronMutationReviewArtifact,
+} from "./neutron-mutation-review-artifact.js";
+export {
+  digestContentBoundApplyPlan,
+  digestGeneratedFileContent,
+  digestNeutronMutationReviewArtifact,
+} from "./neutron-mutation-review-digest.js";
+export {
   digestNeutronMutationApproval,
   digestNeutronMutationProposal,
   expectedNeutronMutationApprovalToken,

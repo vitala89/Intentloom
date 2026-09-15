@@ -10,6 +10,17 @@ export type {
   NeutronMutationApproval,
   NeutronMutationApprovalSource,
 } from "./neutron-mutation-approval.js";
+export {
+  NEUTRON_MUTATION_REVIEW_ARTIFACT_SCHEMA_URN,
+  NEUTRON_MUTATION_REVIEW_MAX_AGGREGATE_CONTENT_BYTES,
+  NEUTRON_MUTATION_REVIEW_MAX_FILE_CONTENT_BYTES,
+  NEUTRON_MUTATION_REVIEW_MAX_FILES,
+  NEUTRON_MUTATION_REVIEW_MAX_PATH_LENGTH,
+} from "./neutron-mutation-review-artifact.js";
+export type {
+  NeutronMutationReviewArtifact,
+  NeutronMutationReviewFileBinding,
+} from "./neutron-mutation-review-artifact.js";
 
 export const NEUTRON_MUTATION_PROPOSAL_SCHEMA_URN =
   "urn:intentloom:schema:neutron-mutation-proposal:1" as const;

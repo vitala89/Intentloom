@@ -16,7 +16,7 @@ import {
 } from "@intentloom/evidence-analysis";
 import { INTENTLOOM_VERSION, checksum, loadCatalog } from "@intentloom/core";
 import { normalizeOutputPath, normalizeStoredPath } from "@intentloom/core";
-import { storedPathCollisionKey, type AdapterName } from "@intentloom/core";
+import { type AdapterName } from "@intentloom/core";
 import type { Catalog, GeneratedFile } from "@intentloom/core";
 import {
   deterministicId,
@@ -44,6 +44,14 @@ import {
   instructionRootKey,
 } from "./instruction-file-taxonomy.js";
 import { planExistingGeneratedChange } from "./generated-metadata-compare.js";
+import {
+  destinationCollisionKey,
+  findDestinationCollisions,
+} from "./destination-collisions.js";
+import {
+  isDeclaredPathsOnlySyncMode,
+  synchronizeDeclaredProjectPaths,
+} from "./generated-file-sync-declared.js";
 import {
   detectProjectProfiles,
   type DetectedProfile,
@@ -662,6 +670,7 @@ export interface PostWriteCorruptionContext {
   readonly fileSystem: FileSystem;
 }
 export interface TransactionOptions {
+  readonly syncMode?: import("./generated-file-sync-declared.js").GeneratedFileSyncMode;
   readonly failAt?: TransactionStage;
   readonly rollbackFailPaths?: readonly string[];
   readonly corruptAfterFinalization?: (
@@ -841,50 +850,18 @@ function inside(root: string, path: string): string {
   return target;
 }
 
-export function destinationCollisionKey(path: string): string {
-  try {
-    return storedPathCollisionKey(path);
-  } catch {
-    throw new Error("invalid or escaping destination");
-  }
-}
-
-export interface DestinationCollision {
-  readonly code: "destination-collision";
-  readonly key: string;
-  readonly paths: readonly string[];
-  readonly sources: readonly string[];
-}
-
-export function findDestinationCollisions(
-  inputs: readonly { path: string; sources: readonly string[] }[],
-): DestinationCollision[] {
-  const groups = new Map<
-    string,
-    { paths: Set<string>; sources: Set<string>; count: number }
-  >();
-  for (const input of inputs) {
-    const key = destinationCollisionKey(input.path);
-    const group = groups.get(key) ?? {
-      paths: new Set(),
-      sources: new Set(),
-      count: 0,
-    };
-    group.paths.add(input.path);
-    input.sources.forEach((source) => group.sources.add(source));
-    group.count += 1;
-    groups.set(key, group);
-  }
-  return [...groups.entries()]
-    .filter(([, group]) => group.count > 1)
-    .map(([key, group]) => ({
-      code: "destination-collision" as const,
-      key,
-      paths: [...group.paths].sort(),
-      sources: [...group.sources].sort(),
-    }))
-    .sort((left, right) => left.key.localeCompare(right.key));
-}
+export {
+  destinationCollisionKey,
+  findDestinationCollisions,
+  type DestinationCollision,
+} from "./destination-collisions.js";
+export {
+  GENERATED_FILE_SYNC_DECLARED_PATHS_ONLY,
+  isDeclaredPathsOnlySyncMode,
+  planSynchronizeGeneratedFilesWriteSet,
+  synchronizeDeclaredProjectPaths,
+  type GeneratedFileSyncMode,
+} from "./generated-file-sync-declared.js";
 
 function collisionPlan(files: readonly GeneratedFile[]): Plan | null {
   const collisions = findDestinationCollisions(files);
@@ -1420,6 +1397,9 @@ export async function synchronizeGeneratedFiles(
   options: TransactionOptions = {},
   validatedMetadata?: TransactionMetadata,
 ): Promise<TransactionResult> {
+  if (isDeclaredPathsOnlySyncMode(options.syncMode)) {
+    return synchronizeDeclaredProjectPaths(root, files, fs, options);
+  }
   const collision = collisionPlan(files);
   if (collision)
     return {
