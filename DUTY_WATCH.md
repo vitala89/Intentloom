@@ -22,14 +22,17 @@ remain unauthorized.
 
 ### 2026-09-16, Neutron Mutation Slice 3 — single approved transaction Apply handoff
 
-- **Status:** **merged** (implementation); this docs handoff follows
+- **Status:** **merged** (implementation + this docs handoff)
 - **Implementation PR:** https://github.com/vitala89/Intentloom/pull/497 (merged)
 - **Implementation merge SHA / authoritative `main` tip after implementation:**
   `816b0ccacafc62c8a1e13a4dbdb452a4cd70a392`
 - **Implementation head SHA:** `7d6cd9e315aac75855acd8a61ae2c31af53de955`
 - **Starting main / origin/main:** `5638f6c323288b23230084b299bc7903fa4334ca`
   (tracked tree clean; matches expected baseline).
-- **Handoff PR:** (this entry updated when handoff PR merges)
+- **Handoff PR:** https://github.com/vitala89/Intentloom/pull/498 (merged)
+- **Handoff head SHA:** `176510183e7a5163c5cdb92c4b8100408fa85e42`
+- **Handoff merge SHA / final main for Slice 3:**
+  `98bcfdc89840b5c0cd94898c89b140f43577fdc6`
 - **Scope delivered:** Host-only `applyApprovedNeutronMutation`. Content-bound
   Slice 2.5 review artifact is mandatory. Exclusive realpath project lock,
   atomic one-use approval claim, final pre-write validation, declared-path
