@@ -692,11 +692,17 @@ with **Mutation not authorized**, path scope via `DiffViewer`, no Approve/Apply.
 PR #494): content-bound `NeutronMutationReviewArtifact`, canonical content-bound
 `planDigest`, payload verification helper, exact path-set equality, and
 `declared-paths-only` generated-file sync mode (no implicit `.aif` metadata
-widening). Still zero production Apply; `mutationAllowed` remains literal
-`false`. **Mutation Slice 3 security review: NO-GO**
-([`NEUTRON_MUTATION_SLICE3_SECURITY_REVIEW.md`](docs/roadmap/NEUTRON_MUTATION_SLICE3_SECURITY_REVIEW.md))
-for Apply on pre-2.5 contracts; Slice 3 host Apply remains unauthorized until a
-new maintainer grant. Mutation Slices 3–5 Apply, optional N3 Slice 5, and P4l17
+widening). **Mutation Slice 3 implemented** (merge
+`816b0ccacafc62c8a1e13a4dbdb452a4cd70a392`, PR #497): host-only
+`applyApprovedNeutronMutation` claims a content-bound approval, takes an
+exclusive realpath project lock, revalidates immediately before the first
+write, and runs declared-path `executeApprovedApplyPlan` exactly once. Model
+`grantedApprovals` cannot authorize mutation. `NeutronRuntimeSession.mutationAllowed`
+remains literal `false`. N4 catalog remains read-only. The Slice 3 security
+review remains the historical NO-GO for Apply on pre-2.5 contracts
+([`NEUTRON_MUTATION_SLICE3_SECURITY_REVIEW.md`](docs/roadmap/NEUTRON_MUTATION_SLICE3_SECURITY_REVIEW.md)).
+Mutation Slice 4 verification/rollback evidence UX, Slice 5 N5 integration,
+Desktop Approve/Apply UX, any N4 mutation tool, optional N3 Slice 5, and P4l17
 are not authorized. Other post-P4 candidates remain in
 `POST_W12_NEXT_INCREMENT_PLAN.md`.
 

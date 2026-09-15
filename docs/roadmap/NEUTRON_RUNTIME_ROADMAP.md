@@ -250,9 +250,11 @@ and fingerprint proofs cover the catalog.
 
 **N5 runtime milestone complete** after Slice 5 aggregation, stale-state
 detection, and provenance completion. Mutation-routing **Slice 1
-implemented** (proposal, bound approval, and preflight contracts) and
+implemented** (proposal, bound approval, and preflight contracts),
 **Slice 2 implemented** (semantic authorization + approved-transaction
-preflight, no Apply). Do not start Slice 3–5 Apply, Desktop mutation UI,
+preflight), **Slice 2.5 implemented** (content-bound review artifact), and
+**Slice 3 implemented** (host-only single approved transaction Apply). Do
+not start Slice 4–5 verification/N5 integration, Desktop mutation UI,
 optional N3 Slice 5, or P4l17 without explicit maintainer authorization.
 
 ## N5. Executable task graph and subagents
@@ -277,8 +279,9 @@ deterministic graph outcomes, fail-closed stale project/checkpoint/profile
 detection, and parent-child/attempt/tool/context provenance. Still no graph
 runner loop.
 **N5 runtime milestone complete** for the authorized read-only scheduler.
-Mutation-routing Slice 1 contracts and Slice 2 semantic preflight exist;
-mutation Apply and N6 Slices 3–5 remain unauthorized.
+Mutation-routing Slice 1 contracts, Slice 2 semantic preflight, Slice 2.5
+content-bound review artifacts, and Slice 3 host-only Apply exist;
+Desktop Approve/Apply UX and N6 mutation tools remain unauthorized.
 
 Extend the existing Neutron subagent records from persisted orchestration
 foundation into a controlled execution scheduler with:
@@ -319,20 +322,26 @@ affected scope, canonical root + realpath/symlink containment, read-only
 capability denial, cancellation, and an injected replay checker. Preflight
 does not write, call `executeApprovedApplyPlan`, or register
 `applyApprovedTransaction`. Replay persistence and project mutation lock
-acquisition remain Slice 3+. Slice 3 must repeat critical checks immediately
-before the first write (TOCTOU).
+acquisition were deferred to Slice 3 and are implemented there. Slice 3
+repeats critical checks immediately before the first write (TOCTOU).
 
-**Slice 3 security review: NO-GO**
-([`NEUTRON_MUTATION_SLICE3_SECURITY_REVIEW.md`](NEUTRON_MUTATION_SLICE3_SECURITY_REVIEW.md)).
-Do not start single approved transaction Apply. Prerequisite if granted:
-Slice 2.5 content-bound review artifact and declared-path Apply contract.
+**Slice 3 implemented:** host-only `applyApprovedNeutronMutation`. Exclusive
+realpath project lock, atomic one-use claim, final pre-write validation,
+declared-path `executeApprovedApplyPlan`. Replay of an applied transaction
+returns the prior result. Model `grantedApprovals` cannot mutate.
+`mutationAllowed` remains `false`. No N4 mutation tool. No daemon Apply RPC.
+No Desktop Approve/Apply UX.
 
-Later slices (unauthorized): Slice 2.5, Slice 3 Apply,
-verification/rollback evidence, N5 proposal/review integration.
+**Slice 3 security review (historical NO-GO)**
+([`NEUTRON_MUTATION_SLICE3_SECURITY_REVIEW.md`](NEUTRON_MUTATION_SLICE3_SECURITY_REVIEW.md))
+documented why unmodified Slice 2 Apply was unsafe. Slice 2.5 and Slice 3
+closed those blockers. Later slices (unauthorized): Slice 4
+verification/rollback evidence UX, Slice 5 N5 proposal/review integration,
+Desktop Approve/Apply UX.
 
-N6 read-only Desktop **may** begin in parallel after these contracts, but
-only under a separate maintainer authorization. Do not implement mutation
-Apply or N6 from this roadmap entry alone.
+N6 read-only Desktop is implemented under its own brief. Do not start
+Slice 4, Desktop Approve/Apply UX, or an N4 mutation tool from this
+roadmap entry alone.
 
 ## N6. Desktop Neutron Workspace
 
@@ -349,10 +358,8 @@ Runtime stays in `@intentloom/application`. Streaming is unavailable.
 Desktop result/evidence/provenance UX (structured outcome vs model prose,
 accepted/stale/budget/warnings, usage/fingerprints, bounded graph evidence
 fields). **N6 Slice 5 implemented** — read-only mutation proposal review
-(paths + digests; no Approve/Apply). Mutation Slice 3 Apply remains
-**NO-GO** pending
-[`NEUTRON_MUTATION_SLICE3_SECURITY_REVIEW.md`](NEUTRON_MUTATION_SLICE3_SECURITY_REVIEW.md).
-Slice 2.5 (content binding) is the next mutation increment if granted.
+(paths + digests; no Approve/Apply). Mutation Slice 3 host Apply is
+implemented in application; Desktop Approve/Apply UX remains unauthorized.
 
 Integrate the runtime with the official Desktop application after the v0.6
 read-only project slice and shared client contracts are stable.
@@ -495,9 +502,9 @@ preventing an unfinished agent layer from expanding the v0.6 release scope.
 
 ## First implementation action
 
-N1–N5 are complete. Mutation-routing Slice 1 contracts and Slice 2
-semantic preflight exist. **N6 Slices 1–3 are implemented.** The
-next Neutron increment is **not** implied by this file: N6 Slice 4 and
-Mutation Slice 3 each require explicit maintainer authorization. See
+N1–N5 are complete. Mutation-routing Slices 1–3 exist. **N6 Slices 1–5 are
+implemented.** The next Neutron increment is **not** implied by this file:
+Mutation Slice 4 and Desktop Approve/Apply UX each require explicit
+maintainer authorization. See
 [`NEUTRON_N6_DESKTOP_READONLY_BRIEF.md`](NEUTRON_N6_DESKTOP_READONLY_BRIEF.md)
 and [`NEUTRON_MUTATION_ROUTING_BRIEF.md`](NEUTRON_MUTATION_ROUTING_BRIEF.md).

@@ -1,7 +1,12 @@
 # Neutron Mutation Slice 3 — Security Readiness Review
 
-Status: **NO-GO** for Mutation Routing Slice 3 (Single Approved Transaction
-Apply).
+Historical status (2026-09-13): **NO-GO** for Mutation Routing Slice 3
+(Single Approved Transaction Apply) on pre-2.5 contracts.
+
+Later: Slice 2.5 (PR #494) and Slice 3 Apply (PR #497, merge
+`816b0ccacafc62c8a1e13a4dbdb452a4cd70a392`) implemented the documented
+blockers. This review remains the evidence record of why unmodified Slice 2
+Apply was unsafe. Do not treat it as current Apply authorization state.
 
 Date: 2026-09-13.
 

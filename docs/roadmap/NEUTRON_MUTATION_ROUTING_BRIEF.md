@@ -4,18 +4,22 @@
 
 **Slice 2 implemented** — host-side semantic authorization and
 approved-transaction preflight for `approved-transaction-apply`. Session
-snapshots remain `mutationAllowed: false`. No N4 mutation route. No Apply.
-Mutation routing is **not** complete.
+snapshots remain `mutationAllowed: false`. No N4 mutation route.
 
 **Slice 2.5 implemented** (PR #494, merge `a75edad5a8501480fa74ed3eb7b40e9ffdcd3f33`).
-**Slice 3 security review: NO-GO** for Apply on pre-2.5 contracts:
-[`NEUTRON_MUTATION_SLICE3_SECURITY_REVIEW.md`](NEUTRON_MUTATION_SLICE3_SECURITY_REVIEW.md).
-Do not start Slice 3 Apply without a new maintainer grant.
+**Slice 3 implemented** (PR #497, merge `816b0ccacafc62c8a1e13a4dbdb452a4cd70a392`)
+— host-only single approved transaction Apply. Mutation routing is **not**
+complete: Slice 4 verification/rollback evidence UX and Slice 5 N5 integration
+remain unauthorized.
 
-Slices 3–5 (Apply, rollback, post-Apply verification, N5 proposal
-integration), write tools, generic shell, optional N3 Slice 5, and P4l17
-remain unauthorized until a later explicit maintainer grant. N6 Slices 1–5
-read-only Desktop are implemented separately.
+The Slice 3 security review remains the historical **NO-GO** for Apply on
+pre-2.5 contracts:
+[`NEUTRON_MUTATION_SLICE3_SECURITY_REVIEW.md`](NEUTRON_MUTATION_SLICE3_SECURITY_REVIEW.md).
+
+Slices 4–5 (rollback evidence, post-Apply verification, N5 proposal
+integration), write tools, generic shell, Desktop Approve/Apply UX, optional
+N3 Slice 5, and P4l17 remain unauthorized until a later explicit maintainer
+grant. N6 Slices 1–5 read-only Desktop are implemented separately.
 
 Authoritative roadmap gate:
 [`NEUTRON_RUNTIME_ROADMAP.md`](NEUTRON_RUNTIME_ROADMAP.md) §N5–§N6 and this
@@ -33,7 +37,7 @@ brief.
 | **N1–N5**                   | Runtime contracts, model adapter, context assembly, read-only tool router, executable task graph |
 | **`mutationAllowed`**       | N1 `NeutronRuntimeSession.mutationAllowed` is typed `false`; validator rejects any other value   |
 | **N4 catalog**              | `inspect`, `doctor`, `memorySearch`, `timeline`, `conformance`, `securityAudit`, `projectDiff`   |
-| **Mutation implementation** | Slice 1 contracts + Slice 2 semantic preflight; Apply unauthorized                               |
+| **Mutation implementation** | Slice 1–2.5 contracts/preflight/artifact + Slice 3 host-only Apply                               |
 
 ### Capability summary used by this brief
 
@@ -619,9 +623,10 @@ not that justification.
 
 ## 22. Implementation slices
 
-Derived from gaps above. Slices 1–2 are implemented. Slice 3 Apply is
-**NO-GO** until Slice 2.5. See
-[`NEUTRON_MUTATION_SLICE3_SECURITY_REVIEW.md`](NEUTRON_MUTATION_SLICE3_SECURITY_REVIEW.md).
+Derived from gaps above. Slices 1–3 are implemented. Slice 4 verification
+and Slice 5 N5 integration remain unauthorized. See
+[`NEUTRON_MUTATION_SLICE3_SECURITY_REVIEW.md`](NEUTRON_MUTATION_SLICE3_SECURITY_REVIEW.md)
+for the historical pre-2.5 Apply blockers.
 
 ### Slice 1 — contracts and validators only (implemented)
 
@@ -642,11 +647,11 @@ review artifact for bytes. Declared-path mode of the canonical writer so
 undeclared `.aif` metadata cannot widen scope. Tests for byte-swap fail-closed.
 No Apply RPC, no N4 write tool, `mutationAllowed` remains `false`.
 
-### Slice 3 — single approved transaction Apply (blocked)
+### Slice 3 — single approved transaction Apply (implemented)
 
 Host-triggered Apply only (not an N4 mutation tool). After Slice 2.5: lock,
 claim/consume, final pre-write checks, declared-path `executeApprovedApplyPlan`.
-No N5 automatic retry. Do not wrap the current engine unchanged.
+No N5 automatic retry. See §32.
 
 ### Slice 4 — verification + rollback evidence
 
@@ -733,15 +738,13 @@ after tests pass.” Future policy automation needs a separate authorization.
 
 ## 28. Recommendation
 
-**MUTATION SLICE 2 COMPLETE — SLICE 3 SECURITY REVIEW NO-GO**
+**MUTATION SLICE 3 COMPLETE — SLICE 4 UNAUTHORIZED**
 
-Do not start Slice 3 Apply. The Slice 3 security review
-([`NEUTRON_MUTATION_SLICE3_SECURITY_REVIEW.md`](NEUTRON_MUTATION_SLICE3_SECURITY_REVIEW.md))
-proves payload bytes are not bound into `planDigest`/`proposalDigest` and
-that `synchronizeGeneratedFiles` widens the write set with undeclared `.aif`
-metadata. Next grant, if any: **Slice 2.5**, then a separate Slice 3 Apply
-grant. Do not start generic shell, optional N3 Slice 5, or P4l17 from this
-brief.
+Slice 3 host Apply is implemented. Do not start Slice 4 verification/rollback
+evidence UX, Slice 5 N5 integration, Desktop Approve/Apply UX, an N4 mutation
+tool, autonomous execution, or automatic retries from this brief. The Slice 3
+security review remains the historical record of why unmodified Slice 2 Apply
+was unsafe.
 
 ---
 
@@ -798,3 +801,25 @@ No Desktop UI.
 | TOCTOU                      | Slice 3 must repeat project-state digest, path containment, approval validity/consumption, exact affected scope, and project lock immediately before the first write.                                                                                                                                           |
 | `mutationAllowed`           | Unchanged literal `false`.                                                                                                                                                                                                                                                                                      |
 | N4                          | Read-only catalog unchanged. `classifyNeutronMutationRoute` reports `applyAuthorized: false`. No `applyApprovedTransaction` tool.                                                                                                                                                                               |
+
+---
+
+## 32. Slice 3 implementation record
+
+Authorized host-only Apply slice. Ownership stays in
+`@intentloom/application` (`neutron-mutation-apply*.ts`). Slice 1–2.5
+contracts are reused. No `packages/neutron-runtime`. No daemon RPC. No
+Desktop Approve/Apply UI.
+
+| Decision                 | Record                                                                                                                                                                                                                                                                                                                                 |
+| ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Call path                | Host `applyApprovedNeutronMutation` → parse envelope → exclusive realpath lock → atomic claim → final pre-write validation → `executing` → trusted declared-path `executeApprovedApplyPlan` → persist terminal result → release lock.                                                                                                  |
+| Authorization            | Host kind + Slice 2.5 `reviewArtifactDigest` required. Envelope `grantedApprovals`, `approved`, and `mutationAllowed` are rejected. Inner `atomic-commit-approval` is injected only by the trusted adapter after host checks pass.                                                                                                     |
+| Claim / lock order       | Lock first, then claim. Stronger than claim-before-lock: a second project writer cannot claim while the lock is held. Cancel before claim leaves no durable state.                                                                                                                                                                     |
+| Approval lifecycle       | `issued` (absent) → `claimed` → `executing` → `applied`, or `failed-before-write` / `failed-needs-reconciliation`. In-process injectable store; default is a process-global memory map. No consumer-repo `.aif` JSON. Process crash leaves claims empty; in-flight work is unknown until reconcile.                                    |
+| Replay                   | Applied transaction identity (`transactionId`, `approvalId`, `reviewArtifactDigest`, `planDigest`) returns the prior terminal result without a second write. Consumed/applied/claimed approvals cannot be reused to mutate.                                                                                                            |
+| Mutation lock            | Exclusive in-process lock keyed by canonical project realpath. Bound to `transactionId`. Conflict fails closed with no wait. Released on every terminal path this process still owns.                                                                                                                                                  |
+| Writer                   | `syncMode: "declared-paths-only"`. Undeclared `.aif/manifest.lock.json` and `.aif/source-map.json` are not written.                                                                                                                                                                                                                    |
+| `applied: true`          | Only after canonical transaction success. Engine rollback evidence and previous file bodies are not copied into the Neutron result. Approval token is redacted from results, errors, and diagnostics.                                                                                                                                 |
+| `mutationAllowed` / N4   | Unchanged literal `false`. Seven read-only tools. No `applyApprovedTransaction` catalog entry.                                                                                                                                                                                                                                         |
+| Next unauthorized slices | Slice 4 verification + rollback evidence UX; Slice 5 N5 proposal/review integration; Desktop Approve/Apply UX; N4 mutation tool; autonomous retry.                                                                                                                                                                                     |

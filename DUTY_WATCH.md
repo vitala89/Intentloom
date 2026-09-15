@@ -11,13 +11,39 @@ in a condition that the next watch can safely understand and continue.
 
 Status: **N5 complete**. Mutation-routing **Slice 1 contracts implemented**.
 **Mutation Slice 2 implemented** (semantic authorization + approved-transaction
-preflight, no Apply). **Mutation Slice 2.5 implemented** (content-bound review
-artifact, declared-path sync contract, zero production Apply). **N6 Slices 1–5
-implemented** (read-only Desktop Neutron, including mutation proposal review).
-`mutationAllowed` remains literal `false`. **Mutation Slice 3 security review
-merged: NO-GO** (#483 → `2cf4dbf37715206cb30decb0120d05faf9629b7d` on `main`).
-Slice 3 Apply remains unauthorized until a separate maintainer grant after 2.5.
-Optional N3 Slice 5 and P4l17 remain unauthorized.
+preflight). **Mutation Slice 2.5 implemented** (content-bound review artifact,
+declared-path sync contract). **Mutation Slice 3 implemented** (host-only
+single approved transaction Apply). **N6 Slices 1–5 implemented** (read-only
+Desktop Neutron, including mutation proposal review). `mutationAllowed`
+remains literal `false`. N4 remains the seven read-only tools. Optional N3
+Slice 5, P4l17, Mutation Slice 4 verification/rollback evidence UX, Mutation
+Slice 5 N5 integration, Desktop Approve/Apply UX, and any N4 mutation tool
+remain unauthorized.
+
+### 2026-09-16, Neutron Mutation Slice 3 — single approved transaction Apply handoff
+
+- **Status:** **merged** (implementation); this docs handoff follows
+- **Implementation PR:** https://github.com/vitala89/Intentloom/pull/497 (merged)
+- **Implementation merge SHA / authoritative `main` tip after implementation:**
+  `816b0ccacafc62c8a1e13a4dbdb452a4cd70a392`
+- **Implementation head SHA:** `7d6cd9e315aac75855acd8a61ae2c31af53de955`
+- **Starting main / origin/main:** `5638f6c323288b23230084b299bc7903fa4334ca`
+  (tracked tree clean; matches expected baseline).
+- **Handoff PR:** (this entry updated when handoff PR merges)
+- **Scope delivered:** Host-only `applyApprovedNeutronMutation`. Content-bound
+  Slice 2.5 review artifact is mandatory. Exclusive realpath project lock,
+  atomic one-use approval claim, final pre-write validation, declared-path
+  `executeApprovedApplyPlan`, structured result, replay of applied
+  transactions without a second write. Model `approved: true` and caller
+  `grantedApprovals` cannot mutate. No daemon Apply RPC, no Desktop Apply UI,
+  no N4 mutation tool.
+- **Mutation authority:** Host-held approval + claimed transaction + host Apply
+  command. `mutationAllowed` remains literal `false`.
+- **Not authorized:** Mutation Slice 4 verification + rollback evidence UX;
+  Mutation Slice 5 N5 proposal/review integration; Desktop Approve/Apply UX;
+  any N4 mutation tool; autonomous mutation execution; automatic retries.
+- **Next first action:** **None from automation.** Await explicit maintainer
+  authorization for **Mutation Slice 4**.
 
 ### 2026-09-15, Neutron Mutation Slice 2.5 — content-bound review artifact handoff
 
