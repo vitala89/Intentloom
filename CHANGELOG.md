@@ -7,6 +7,13 @@ All notable changes are documented here. This project follows Keep a Changelog p
 Changes listed here are merged after the current release-preparation scope and
 are not included in the current npm artifact until a later release.
 
+- Neutron Mutation Slice 3 adds host-only approved-transaction Apply:
+  content-bound review artifact, one-use approval claim, exclusive project
+  lock, final pre-write validation, and declared-path `executeApprovedApplyPlan`.
+  Model tools, `grantedApprovals`, and `approved: true` cannot authorize writes.
+  `mutationAllowed` remains literal `false`. N4 stays read-only. No Desktop
+  Apply UI and no N4 mutation tool.
+
 - Neutron Mutation Slice 3 security review records a **NO-GO** for the first
   approved-transaction Apply. Slice 1+2 and canonical Approved Apply do not
   bind payload bytes into `planDigest`/`proposalDigest`, and

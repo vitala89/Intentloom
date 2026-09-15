@@ -6,16 +6,23 @@ import type {
 import { validateApprovedApplyExecutionResult } from "@intentloom/validator";
 import type { GeneratedFile } from "@intentloom/core";
 import { evaluateApprovedApplyPlan } from "./approved-apply-gate.js";
+import type { GeneratedFileSyncMode } from "./generated-file-sync-declared.js";
+import { isDeclaredPathsOnlySyncMode } from "./generated-file-sync-declared.js";
 import {
   synchronizeGeneratedFiles,
   nodeFileSystem,
   type FileSystem,
+  type TransactionOptions,
 } from "./index.js";
+import { exactNeutronMutationPathSetsEqual } from "../../validator/src/neutron-mutation-path-set.js";
 
 export interface ApprovedApplyEngineOptions {
   readonly now?: () => number;
   readonly currentProjectStateDigest?: string;
   readonly fs?: FileSystem;
+  readonly syncMode?: GeneratedFileSyncMode;
+  readonly failAt?: TransactionOptions["failAt"];
+  readonly rollbackFailPaths?: readonly string[];
 }
 
 export async function executeApprovedApplyPlan(
@@ -43,6 +50,22 @@ export async function executeApprovedApplyPlan(
       applied: false,
       gateResult,
       diagnostics: ["gate-evaluation-failed", ...gateResult.diagnostics],
+    });
+  }
+
+  if (
+    isDeclaredPathsOnlySyncMode(options.syncMode) &&
+    !exactNeutronMutationPathSetsEqual(
+      filesToApply.map((file) => file.path),
+      request.plan.changedPaths,
+    )
+  ) {
+    return validateApprovedApplyExecutionResult({
+      schemaVersion: 1,
+      targetResourceId: request.targetResourceId,
+      applied: false,
+      gateResult,
+      diagnostics: ["path-scope-mismatch"],
     });
   }
 
@@ -79,6 +102,7 @@ export async function executeApprovedApplyPlan(
     targetRoot,
     filesToApply,
     fs,
+    declaredPathSyncOptions(options),
   );
 
   if (syncResult.status !== "success") {
@@ -110,4 +134,16 @@ export async function executeApprovedApplyPlan(
     },
     diagnostics: [],
   });
+}
+
+function declaredPathSyncOptions(
+  options: ApprovedApplyEngineOptions,
+): TransactionOptions {
+  return {
+    ...(options.syncMode !== undefined ? { syncMode: options.syncMode } : {}),
+    ...(options.failAt !== undefined ? { failAt: options.failAt } : {}),
+    ...(options.rollbackFailPaths !== undefined
+      ? { rollbackFailPaths: options.rollbackFailPaths }
+      : {}),
+  };
 }
