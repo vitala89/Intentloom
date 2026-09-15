@@ -32,4 +32,6 @@ export interface NeutronMutationApproval {
   readonly mutationClass: NeutronMutationClass;
   readonly approvedAt: number;
   readonly approvalValidUntil: number;
+  /** When set, binds the exact reviewed immutable artifact digest (Slice 2.5+). */
+  readonly reviewArtifactDigest?: string;
 }

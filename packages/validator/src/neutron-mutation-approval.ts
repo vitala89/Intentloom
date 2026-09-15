@@ -68,6 +68,13 @@ export function validateNeutronMutationApproval(
   }
   const taskId = optionalId(value.taskId, "taskId");
   const graphId = optionalId(value.graphId, "graphId");
+  let reviewArtifactDigest: string | undefined;
+  if (value.reviewArtifactDigest !== undefined) {
+    reviewArtifactDigest = assertNeutronMutationDigest(
+      value.reviewArtifactDigest,
+      "reviewArtifactDigest",
+    );
+  }
   const unsigned = {
     schemaVersion: NEUTRON_MUTATION_APPROVAL_SCHEMA_URN,
     approvalId: nonEmpty(value.approvalId, "approvalId"),
@@ -98,6 +105,7 @@ export function validateNeutronMutationApproval(
     ),
     approvedAt,
     approvalValidUntil,
+    ...(reviewArtifactDigest !== undefined ? { reviewArtifactDigest } : {}),
   };
   const approvalDigest = assertNeutronMutationDigest(
     value.approvalDigest,
