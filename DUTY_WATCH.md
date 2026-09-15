@@ -11,12 +11,37 @@ in a condition that the next watch can safely understand and continue.
 
 Status: **N5 complete**. Mutation-routing **Slice 1 contracts implemented**.
 **Mutation Slice 2 implemented** (semantic authorization + approved-transaction
-preflight, no Apply). **N6 Slices 1–5 implemented** (read-only Desktop Neutron,
-including mutation proposal review). `mutationAllowed` remains literal
-`false`. **Mutation Slice 3 security review merged: NO-GO** (#483 →
-`2cf4dbf37715206cb30decb0120d05faf9629b7d` on `main`). Slice 3 Apply remains
-unauthorized. **Mutation Slice 2.5** is the next possible increment and requires
-a separate maintainer grant. Optional N3 Slice 5 and P4l17 remain unauthorized.
+preflight, no Apply). **Mutation Slice 2.5 implemented** (content-bound review
+artifact, declared-path sync contract, zero production Apply). **N6 Slices 1–5
+implemented** (read-only Desktop Neutron, including mutation proposal review).
+`mutationAllowed` remains literal `false`. **Mutation Slice 3 security review
+merged: NO-GO** (#483 → `2cf4dbf37715206cb30decb0120d05faf9629b7d` on `main`).
+Slice 3 Apply remains unauthorized until a separate maintainer grant after 2.5.
+Optional N3 Slice 5 and P4l17 remain unauthorized.
+
+### 2026-09-15, Neutron Mutation Slice 2.5 — content-bound review artifact handoff
+
+- **Status:** **merged** (implementation + this docs handoff)
+- **Implementation PR:** https://github.com/vitala89/Intentloom/pull/494 (merged)
+- **Implementation merge SHA / authoritative `main` tip after implementation:**
+  `a75edad5a8501480fa74ed3eb7b40e9ffdcd3f33`
+- **Starting main / origin/main:** `71cb525a20f30b4177fa769e060ddcf32ac014d3`
+  (tracked tree clean; matches expected baseline).
+- **Handoff PR:** (this entry updated when handoff PR merges)
+- **Scope delivered:** `NeutronMutationReviewArtifact` with canonical
+  content-bound `planDigest` and `artifactDigest`; exact path-set helper;
+  `verifyMutationPayloadAgainstReviewArtifact`; `syncMode:
+declared-paths-only` on `synchronizeGeneratedFiles` (no undeclared `.aif`
+  metadata writes); optional `reviewArtifactDigest` on host approval; focused
+  security tests. No production Apply, no Desktop Apply UI, no N4 mutation tool,
+  `mutationAllowed` unchanged.
+- **Mutation authority:** `mutationAllowed` remains literal `false`. No Apply RPC,
+  no durable approval consume, no project mutation lock.
+- **Not authorized:** Mutation Slice 3 Apply; production mutation; Desktop
+  Approve/Apply for Neutron.
+- **Next first action:** **None from automation.** Await explicit maintainer
+  authorization for **Mutation Slice 3** host Apply (after reviewing merged 2.5
+  evidence on `main`).
 
 ### 2026-09-14, Neutron Mutation Slice 3 — security review merge handoff
 

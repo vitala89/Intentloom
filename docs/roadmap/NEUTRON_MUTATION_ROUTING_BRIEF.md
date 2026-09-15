@@ -7,11 +7,10 @@ approved-transaction preflight for `approved-transaction-apply`. Session
 snapshots remain `mutationAllowed: false`. No N4 mutation route. No Apply.
 Mutation routing is **not** complete.
 
-**Slice 3 security review: NO-GO.** Evidence-backed gate:
+**Slice 2.5 implemented** (PR #494, merge `a75edad5a8501480fa74ed3eb7b40e9ffdcd3f33`).
+**Slice 3 security review: NO-GO** for Apply on pre-2.5 contracts:
 [`NEUTRON_MUTATION_SLICE3_SECURITY_REVIEW.md`](NEUTRON_MUTATION_SLICE3_SECURITY_REVIEW.md).
-Do not start Slice 3 Apply. The next authorized increment, if granted, is
-**Slice 2.5** (content-bound review artifact + declared-path Apply contract),
-not production writes.
+Do not start Slice 3 Apply without a new maintainer grant.
 
 Slices 3–5 (Apply, rollback, post-Apply verification, N5 proposal
 integration), write tools, generic shell, optional N3 Slice 5, and P4l17
@@ -635,7 +634,7 @@ No Apply. Unblocks N6 from inventing a second DTO. See §30.
 Mutation permission class and `preflightNeutronMutation` return `eligible` or
 `rejected` diagnostics only. Zero project writes. See §31.
 
-### Slice 2.5 — content-bound review artifact + declared-path Apply contract (not authorized)
+### Slice 2.5 — content-bound review artifact + declared-path Apply contract (implemented)
 
 Prerequisite for Slice 3. Bind exact per-path content digests into
 `proposalDigest` / computed `planDigest`. Canonical path-set helper. Host-held
