@@ -27,7 +27,8 @@ Optional N3 Slice 5 and P4l17 remain unauthorized.
   `a75edad5a8501480fa74ed3eb7b40e9ffdcd3f33`
 - **Starting main / origin/main:** `71cb525a20f30b4177fa769e060ddcf32ac014d3`
   (tracked tree clean; matches expected baseline).
-- **Handoff PR:** (this entry updated when handoff PR merges)
+- **Handoff PR:** https://github.com/vitala89/Intentloom/pull/495 (merged)
+- **Handoff merge SHA / post-handoff `main`:** `ca535a8e9d6dfa91871eb3ba516efd4da07e5cd9`
 - **Scope delivered:** `NeutronMutationReviewArtifact` with canonical
   content-bound `planDigest` and `artifactDigest`; exact path-set helper;
   `verifyMutationPayloadAgainstReviewArtifact`; `syncMode:
