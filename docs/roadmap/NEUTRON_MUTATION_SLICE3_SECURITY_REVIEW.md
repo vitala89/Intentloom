@@ -5,8 +5,12 @@ Historical status (2026-09-13): **NO-GO** for Mutation Routing Slice 3
 
 Later: Slice 2.5 (PR #494) and Slice 3 Apply (PR #497, merge
 `816b0ccacafc62c8a1e13a4dbdb452a4cd70a392`) implemented the documented
-blockers. This review remains the evidence record of why unmodified Slice 2
-Apply was unsafe. Do not treat it as current Apply authorization state.
+blockers. Slice 3.1 (PR #500, merge
+`cb93edb3f66d90d2522514ae4e9b0725796a0e46`) replaced Slice 3's in-process
+memory authority with a host-controlled durable store so restart cannot
+make a used approval look unused. This review remains the evidence record
+of why unmodified Slice 2 Apply was unsafe. Do not treat it as current
+Apply authorization state.
 
 Date: 2026-09-13.
 
@@ -405,6 +409,11 @@ with zero writes and still allow a second process to race.
 If durable storage is absent (today), that store is a **required Slice 3
 subcomponent**, not optional polish. Slice 2.5 does not need to implement it.
 
+Later: original Slice 3 shipped an in-process memory store as the production
+default. Slice 3.1 (PR #500) made durable claim/replay the production path
+(`durableStateDirectory` or an injected authoritative store). Corrupted
+storage fails closed and never treats an old approval as unused.
+
 Host issuance remains `approvalSource: local-interactive` only. Model cannot
 refresh expiry.
 
@@ -433,6 +442,12 @@ honesty as Desktop adoption): external editors during the write loop are
 undefined relative to the approved snapshot; post-apply doctor/diff surface
 drift. Cross-process coordination is out of scope until a later slice unless
 Slice 3 exposes a second writer.
+
+Later: Slice 3.1 adds a durable exclusive lock file when
+`durableStateDirectory` is set, because the host process model is not
+proven single-process. Process-local Map lock remains only for injected
+memory-store tests. An executing durable lock is not deleted automatically
+without reconciliation evidence.
 
 ---
 

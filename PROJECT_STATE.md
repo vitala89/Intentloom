@@ -697,7 +697,13 @@ widening). **Mutation Slice 3 implemented** (merge
 `applyApprovedNeutronMutation` claims a content-bound approval, takes an
 exclusive realpath project lock, revalidates immediately before the first
 write, and runs declared-path `executeApprovedApplyPlan` exactly once. Model
-`grantedApprovals` cannot authorize mutation. `NeutronRuntimeSession.mutationAllowed`
+`grantedApprovals` cannot authorize mutation. Original Slice 3 kept claim
+and transaction authority in process memory. **Mutation Slice 3.1
+implemented** (merge `cb93edb3f66d90d2522514ae4e9b0725796a0e46`, PR #500):
+production Apply requires an injected store or host
+`durableStateDirectory`; claimed/executing/applied/failed states survive
+restart; replay after restart cannot write again; corrupted durable state
+fails closed. `NeutronRuntimeSession.mutationAllowed`
 remains literal `false`. N4 catalog remains read-only. The Slice 3 security
 review remains the historical NO-GO for Apply on pre-2.5 contracts
 ([`NEUTRON_MUTATION_SLICE3_SECURITY_REVIEW.md`](docs/roadmap/NEUTRON_MUTATION_SLICE3_SECURITY_REVIEW.md)).

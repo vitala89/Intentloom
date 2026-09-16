@@ -253,8 +253,9 @@ detection, and provenance completion. Mutation-routing **Slice 1
 implemented** (proposal, bound approval, and preflight contracts),
 **Slice 2 implemented** (semantic authorization + approved-transaction
 preflight), **Slice 2.5 implemented** (content-bound review artifact), and
-**Slice 3 implemented** (host-only single approved transaction Apply). Do
-not start Slice 4–5 verification/N5 integration, Desktop mutation UI,
+**Slice 3 implemented** (host-only single approved transaction Apply).
+**Slice 3.1 implemented** (crash-safe durable approval/transaction state).
+Do not start Slice 4–5 verification/N5 integration, Desktop mutation UI,
 optional N3 Slice 5, or P4l17 without explicit maintainer authorization.
 
 ## N5. Executable task graph and subagents
@@ -280,7 +281,8 @@ detection, and parent-child/attempt/tool/context provenance. Still no graph
 runner loop.
 **N5 runtime milestone complete** for the authorized read-only scheduler.
 Mutation-routing Slice 1 contracts, Slice 2 semantic preflight, Slice 2.5
-content-bound review artifacts, and Slice 3 host-only Apply exist;
+content-bound review artifacts, Slice 3 host-only Apply, and Slice 3.1
+durable claim/replay exist;
 Desktop Approve/Apply UX and N6 mutation tools remain unauthorized.
 
 Extend the existing Neutron subagent records from persisted orchestration
@@ -328,7 +330,10 @@ repeats critical checks immediately before the first write (TOCTOU).
 **Slice 3 implemented:** host-only `applyApprovedNeutronMutation`. Exclusive
 realpath project lock, atomic one-use claim, final pre-write validation,
 declared-path `executeApprovedApplyPlan`. Replay of an applied transaction
-returns the prior result. Model `grantedApprovals` cannot mutate.
+returns the prior result. Original Slice 3 used in-process memory
+authority. **Slice 3.1** persists claim/executing/applied state under a
+host `durableStateDirectory` (or injected store) so restart cannot reuse a
+claimed approval. Model `grantedApprovals` cannot mutate.
 `mutationAllowed` remains `false`. No N4 mutation tool. No daemon Apply RPC.
 No Desktop Approve/Apply UX.
 
@@ -358,8 +363,9 @@ Runtime stays in `@intentloom/application`. Streaming is unavailable.
 Desktop result/evidence/provenance UX (structured outcome vs model prose,
 accepted/stale/budget/warnings, usage/fingerprints, bounded graph evidence
 fields). **N6 Slice 5 implemented** — read-only mutation proposal review
-(paths + digests; no Approve/Apply). Mutation Slice 3 host Apply is
-implemented in application; Desktop Approve/Apply UX remains unauthorized.
+(paths + digests; no Approve/Apply). Mutation Slice 3 host Apply and Slice
+3.1 durable approval state are implemented in application; Desktop
+Approve/Apply UX remains unauthorized.
 
 Integrate the runtime with the official Desktop application after the v0.6
 read-only project slice and shared client contracts are stable.
