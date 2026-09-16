@@ -13,12 +13,42 @@ Status: **N5 complete**. Mutation-routing **Slice 1 contracts implemented**.
 **Mutation Slice 2 implemented** (semantic authorization + approved-transaction
 preflight). **Mutation Slice 2.5 implemented** (content-bound review artifact,
 declared-path sync contract). **Mutation Slice 3 implemented** (host-only
-single approved transaction Apply). **N6 Slices 1–5 implemented** (read-only
-Desktop Neutron, including mutation proposal review). `mutationAllowed`
-remains literal `false`. N4 remains the seven read-only tools. Optional N3
-Slice 5, P4l17, Mutation Slice 4 verification/rollback evidence UX, Mutation
-Slice 5 N5 integration, Desktop Approve/Apply UX, and any N4 mutation tool
-remain unauthorized.
+single approved transaction Apply). **Mutation Slice 3.1 implemented**
+(crash-safe durable approval/transaction state). **N6 Slices 1–5 implemented**
+(read-only Desktop Neutron, including mutation proposal review).
+`mutationAllowed` remains literal `false`. N4 remains the seven read-only
+tools. Optional N3 Slice 5, P4l17, Mutation Slice 4 verification/rollback
+evidence UX, Mutation Slice 5 N5 integration, Desktop Approve/Apply UX, and
+any N4 mutation tool remain unauthorized.
+
+### 2026-09-16, Neutron Mutation Slice 3.1 — crash-safe durable approval state handoff
+
+- **Status:** **merged** (implementation); this docs handoff follows
+- **Implementation PR:** https://github.com/vitala89/Intentloom/pull/500 (merged)
+- **Implementation merge SHA / authoritative `main` tip after implementation:**
+  `cb93edb3f66d90d2522514ae4e9b0725796a0e46`
+- **Implementation head SHA:** `067381ed9c33e57d490f71455fb45e4caf627cf8`
+- **Starting main / origin/main:** `d8e4350f9c34db1b84dfd128af2cd595a0b6a901`
+  (tracked tree clean; matches expected baseline).
+- **Handoff PR:** (this entry updated when handoff PR merges)
+- **Scope delivered:** Production `applyApprovedNeutronMutation` no longer
+  defaults to an in-memory Map. Host must inject a store or
+  `durableStateDirectory`. Claim, executing, applied, failed-before-write,
+  and failed-needs-reconciliation survive process restart. Exclusive create
+  (`wx` + fsync) for claims; temp + fsync + rename for transitions. Durable
+  exclusive project lock when the host directory is set. Raw `approvalToken`
+  is not persisted. Memory store remains test-only.
+- **Correction vs Slice 3:** Original Slice 3 used in-process memory
+  authority. After restart a used approval could look unused. Slice 3.1
+  hardens one-use claim, replay, and reconciliation across restart. Do not
+  erase the Slice 3 record below.
+- **Mutation authority:** Host-held approval + durable claimed transaction +
+  host Apply command. `mutationAllowed` remains literal `false`.
+- **Not authorized:** Mutation Slice 4 verification + rollback evidence UX;
+  Mutation Slice 5 N5 proposal/review integration; Desktop Approve/Apply UX;
+  any N4 mutation tool; autonomous mutation execution; automatic retries.
+- **Next first action:** **None from automation.** Await explicit maintainer
+  authorization for **Mutation Slice 4**.
 
 ### 2026-09-16, Neutron Mutation Slice 3 — single approved transaction Apply handoff
 
