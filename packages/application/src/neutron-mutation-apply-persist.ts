@@ -37,19 +37,23 @@ export function rejectBeforeClaim(input: {
 export function rejectAfterClaim(
   request: ParsedNeutronMutationApplyRequest,
   failureCode:
-    "approval-already-claimed" | "approval-consumed" | "transaction-conflict",
+    | "approval-already-claimed"
+    | "approval-consumed"
+    | "transaction-conflict"
+    | "mutation-state-unknown",
   reconciliationRequired: boolean,
 ): NeutronMutationApplyResult {
+  const unknown = failureCode === "mutation-state-unknown";
   return buildNeutronMutationApplyResult({
     transactionId: request.transactionId,
     approvalId: request.approval.approvalId,
     reviewArtifactDigest: request.artifact.artifactDigest,
     planDigest: request.artifact.planDigest,
-    status: "rejected",
+    status: unknown ? "mutation-state-unknown" : "rejected",
     applied: false,
     changedPaths: request.artifact.changedPaths,
     rollbackCompleted: true,
-    reconciliationRequired,
+    reconciliationRequired: unknown || reconciliationRequired,
     failureCode,
     diagnostics: [failureCode],
   });

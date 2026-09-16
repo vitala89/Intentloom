@@ -25,12 +25,14 @@ export {
   NEUTRON_MUTATION_APPLY_FAILURE_CODES,
   NEUTRON_MUTATION_APPLY_RESULT_SCHEMA_URN,
   NEUTRON_MUTATION_APPLY_STATUSES,
+  NEUTRON_MUTATION_TRANSACTION_RECORD_SCHEMA_URN,
   NEUTRON_MUTATION_TRANSACTION_STATES,
 } from "./neutron-mutation-apply.js";
 export type {
   NeutronMutationApplyFailureCode,
   NeutronMutationApplyResult,
   NeutronMutationApplyStatus,
+  NeutronMutationDurableTransactionRecord,
   NeutronMutationTransactionState,
 } from "./neutron-mutation-apply.js";
 
