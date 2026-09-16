@@ -23,14 +23,17 @@ any N4 mutation tool remain unauthorized.
 
 ### 2026-09-16, Neutron Mutation Slice 3.1 — crash-safe durable approval state handoff
 
-- **Status:** **merged** (implementation); this docs handoff follows
+- **Status:** **merged** (implementation + this docs handoff)
 - **Implementation PR:** https://github.com/vitala89/Intentloom/pull/500 (merged)
 - **Implementation merge SHA / authoritative `main` tip after implementation:**
   `cb93edb3f66d90d2522514ae4e9b0725796a0e46`
 - **Implementation head SHA:** `067381ed9c33e57d490f71455fb45e4caf627cf8`
 - **Starting main / origin/main:** `d8e4350f9c34db1b84dfd128af2cd595a0b6a901`
   (tracked tree clean; matches expected baseline).
-- **Handoff PR:** (this entry updated when handoff PR merges)
+- **Handoff PR:** https://github.com/vitala89/Intentloom/pull/501 (merged)
+- **Handoff head SHA:** `d4880df36d4881d4762ab6642dc174f1fc5dc87a`
+- **Handoff merge SHA / final main for Slice 3.1:**
+  `238aeffadb7efc44d62a83c964bcff071318b533`
 - **Scope delivered:** Production `applyApprovedNeutronMutation` no longer
   defaults to an in-memory Map. Host must inject a store or
   `durableStateDirectory`. Claim, executing, applied, failed-before-write,
