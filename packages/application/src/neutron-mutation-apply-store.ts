@@ -33,6 +33,9 @@ export type NeutronMutationClaimOutcome =
   | {
       readonly kind: "in-flight";
       readonly record: NeutronMutationTransactionRecord;
+    }
+  | {
+      readonly kind: "storage-failed";
     };
 
 export interface NeutronMutationApprovalStore {
@@ -53,9 +56,11 @@ export interface NeutronMutationApprovalStore {
 
 const TERMINAL_CONSUMED = new Set<NeutronMutationTransactionState>([
   "applied",
+  "failed-before-write",
   "failed-needs-reconciliation",
 ]);
 
+/** Test-only process memory. Not production authority. */
 export function createMemoryNeutronMutationApprovalStore(): NeutronMutationApprovalStore {
   const records = new Map<string, NeutronMutationTransactionRecord>();
   const tails = new Map<string, Promise<void>>();
@@ -92,7 +97,7 @@ export function createMemoryNeutronMutationApprovalStore(): NeutronMutationAppro
   };
 }
 
-function classifyExistingClaim(
+export function classifyExistingClaim(
   existing: NeutronMutationTransactionRecord,
   incoming: NeutronMutationTransactionRecord,
 ): NeutronMutationClaimOutcome {

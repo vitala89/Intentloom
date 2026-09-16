@@ -1,10 +1,7 @@
 import type { NeutronMutationApplyResult } from "../../protocol/src/neutron-mutation-apply.js";
 import type { NeutronRuntimeSession } from "../../protocol/src/neutron-runtime.js";
 import { validateNeutronRuntimeSession } from "../../validator/src/neutron-runtime.js";
-import {
-  acquireNeutronMutationProjectLock,
-  releaseNeutronMutationProjectLock,
-} from "./neutron-mutation-apply-lock.js";
+import { createPersistentNeutronMutationApprovalStore } from "./neutron-mutation-apply-durable-store.js";
 import {
   parseNeutronMutationApplyEnvelope,
   type ParsedNeutronMutationApplyRequest,
@@ -20,13 +17,11 @@ import {
   redactApprovalToken,
 } from "./neutron-mutation-apply-result.js";
 import { runLockedApply } from "./neutron-mutation-apply-run.js";
-import { createMemoryNeutronMutationApprovalStore } from "./neutron-mutation-apply-store.js";
+import type { NeutronMutationApprovalStore } from "./neutron-mutation-apply-store.js";
 import type { NeutronMutationApplyInput } from "./neutron-mutation-apply-types.js";
 import { canonicalizeNeutronMutationRoot } from "./neutron-mutation-containment.js";
 
 export type { NeutronMutationApplyInput } from "./neutron-mutation-apply-types.js";
-
-const defaultStore = createMemoryNeutronMutationApprovalStore();
 
 export async function applyApprovedNeutronMutation(
   input: NeutronMutationApplyInput,
@@ -75,28 +70,31 @@ async function acquireAndApply(
   if (canonicalRoot === undefined) {
     return rejectBeforeClaim({ ...input, failureCode: "containment-failed" });
   }
-  const lock = acquireNeutronMutationProjectLock({
-    canonicalRoot,
-    transactionId: request.transactionId,
-  });
-  if (!lock.ok) {
-    return rejectBeforeClaim({ ...input, failureCode: "lock-conflict" });
-  }
-  try {
-    return await runLockedApply(
-      input,
-      request,
-      session,
-      actualRoot,
-      lock.key,
-      input.store ?? defaultStore,
-    );
-  } finally {
-    releaseNeutronMutationProjectLock({
-      key: lock.key,
-      transactionId: request.transactionId,
+  const store = resolveNeutronMutationApprovalStore(input);
+  if (store === undefined) {
+    return rejectBeforeClaim({
+      ...input,
+      failureCode: "mutation-state-unknown",
     });
   }
+  return runLockedApply(
+    input,
+    request,
+    session,
+    actualRoot,
+    canonicalRoot,
+    store,
+  );
+}
+
+function resolveNeutronMutationApprovalStore(
+  input: NeutronMutationApplyInput,
+): NeutronMutationApprovalStore | undefined {
+  if (input.store !== undefined) return input.store;
+  if (input.durableStateDirectory === undefined) return undefined;
+  return createPersistentNeutronMutationApprovalStore({
+    directory: input.durableStateDirectory,
+  });
 }
 
 function parseSession(session: NeutronRuntimeSession | undefined): {

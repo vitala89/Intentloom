@@ -27,6 +27,7 @@ export interface NeutronMutationApplyInput {
     readonly current: NeutronGraphStaleSnapshot;
   };
   readonly store?: NeutronMutationApprovalStore;
+  readonly durableStateDirectory?: string;
   readonly failAt?: TransactionStage;
   readonly rollbackFailPaths?: readonly string[];
   readonly roleCapabilities?: AgentRoleCapabilities;

@@ -46,6 +46,10 @@ export {
 } from "./neutron-mutation-review-artifact.js";
 export { validateNeutronMutationApplyResult } from "./neutron-mutation-apply.js";
 export {
+  digestNeutronMutationTransactionRecord,
+  validateNeutronMutationDurableTransactionRecord,
+} from "./neutron-mutation-transaction-record.js";
+export {
   digestContentBoundApplyPlan,
   digestGeneratedFileContent,
   digestNeutronMutationReviewArtifact,

@@ -7,6 +7,12 @@ All notable changes are documented here. This project follows Keep a Changelog p
 Changes listed here are merged after the current release-preparation scope and
 are not included in the current npm artifact until a later release.
 
+- Neutron Mutation Slice 3.1 persists approval/transaction state in a
+  host-controlled durable store (exclusive create + fsync/rename). Production
+  Apply no longer defaults to an in-memory Map. Crash/restart cannot make a
+  used approval look unused. Raw approval tokens are not persisted.
+  `mutationAllowed` remains literal `false`.
+
 - Neutron Mutation Slice 3 adds host-only approved-transaction Apply:
   content-bound review artifact, one-use approval claim, exclusive project
   lock, final pre-write validation, and declared-path `executeApprovedApplyPlan`.

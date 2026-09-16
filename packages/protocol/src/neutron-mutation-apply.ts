@@ -1,6 +1,9 @@
 export const NEUTRON_MUTATION_APPLY_RESULT_SCHEMA_URN =
   "urn:intentloom:schema:neutron-mutation-apply-result:1" as const;
 
+export const NEUTRON_MUTATION_TRANSACTION_RECORD_SCHEMA_URN =
+  "urn:intentloom:schema:neutron-mutation-transaction-record:1" as const;
+
 export const NEUTRON_MUTATION_TRANSACTION_STATES = [
   "claimed",
   "executing",
@@ -66,4 +69,23 @@ export interface NeutronMutationApplyResult {
   readonly reconciliationRequired: boolean;
   readonly failureCode?: NeutronMutationApplyFailureCode;
   readonly diagnostics: readonly string[];
+}
+
+/**
+ * Durable host transaction record. Must never include approvalToken,
+ * file bodies, model prompts, or other secrets.
+ */
+export interface NeutronMutationDurableTransactionRecord {
+  readonly schemaVersion: typeof NEUTRON_MUTATION_TRANSACTION_RECORD_SCHEMA_URN;
+  readonly recordDigest: string;
+  readonly transactionId: string;
+  readonly approvalId: string;
+  readonly approvalDigest: string;
+  readonly reviewArtifactDigest: string;
+  readonly planDigest: string;
+  readonly lockKey: string;
+  readonly state: NeutronMutationTransactionState;
+  readonly claimedAt: number;
+  readonly updatedAt: number;
+  readonly result?: NeutronMutationApplyResult;
 }
