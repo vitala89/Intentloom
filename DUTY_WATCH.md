@@ -24,14 +24,17 @@ host rollback execution / Undo, and any N4 mutation tool remain unauthorized.
 
 ### 2026-09-17, Neutron Mutation Slice 4 — post-Apply verification evidence handoff
 
-- **Status:** **merged** (implementation); this docs handoff follows
+- **Status:** **merged** (implementation + this docs handoff)
 - **Implementation PR:** https://github.com/vitala89/Intentloom/pull/503 (merged)
 - **Implementation merge SHA / authoritative `main` tip after implementation:**
   `b5c9a9556648382343bd90cc5e2c277d0775cf32`
 - **Implementation head SHA:** `9326a6acd1a6c72f0fd1caa7cabe3f8f7113aa78`
 - **Starting main / origin/main:** `a0a12541a190f3531fca45d3e5a6d4ad9562f875`
   (tracked tree clean; matches expected baseline).
-- **Handoff PR:** (this entry updated when handoff PR merges)
+- **Handoff PR:** https://github.com/vitala89/Intentloom/pull/504 (merged)
+- **Handoff head SHA:** `e138288975675f1cb8881bcc6aca2f48c9abe609`
+- **Handoff merge SHA / final main for Slice 4:**
+  `c2c7183cd6c31fa1bbdb8865c7e2164ac5a6eb9e`
 - **Scope delivered:** After canonical Apply, host-only independent
   verification reads committed bytes and observed paths, records pre/post
   observed project-state digests, and persists `NeutronMutationVerificationEvidence`.
