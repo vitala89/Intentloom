@@ -7,6 +7,7 @@ import {
   NEUTRON_STRUCTURED_MUTATION_PROPOSAL_PREFIX,
   bindStructuredNeutronMutationProposal,
   resolveNeutronMutationProposalFromGraphNodes,
+  selectSessionMutationProposal,
 } from "../packages/application/src/neutron-session-mutation-proposal.js";
 import { validateNeutronRuntimeSession } from "../packages/validator/src/neutron-runtime.js";
 
@@ -109,5 +110,87 @@ describe("Neutron N6 Slice 5 mutation proposal projection", () => {
       ],
     });
     expect(proposal?.taskId).toBe("task-fixture-1");
+  });
+
+  it("does not silently pick the first of multiple authoritative proposals", () => {
+    const left = bindStructuredNeutronMutationProposal({
+      expectedOutput: `${NEUTRON_STRUCTURED_MUTATION_PROPOSAL_PREFIX}${JSON.stringify(
+        {
+          proposalId: "proposal-a",
+          planDigest:
+            "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          projectStateDigest:
+            "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          changedPaths: ["src/a.ts"],
+          expiresAt: 1_800_000_000_000,
+        },
+      )}`,
+      graphId: "graph-1",
+      session: session(),
+      taskId: "task-a",
+    });
+    const right = bindStructuredNeutronMutationProposal({
+      expectedOutput: `${NEUTRON_STRUCTURED_MUTATION_PROPOSAL_PREFIX}${JSON.stringify(
+        {
+          proposalId: "proposal-z",
+          planDigest:
+            "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+          projectStateDigest:
+            "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+          changedPaths: ["src/z.ts"],
+          expiresAt: 1_800_000_000_000,
+        },
+      )}`,
+      graphId: "graph-1",
+      session: session(),
+      taskId: "task-z",
+    });
+    const selected = selectSessionMutationProposal({
+      authoritative: [left!, right!],
+      preview: left,
+    });
+    expect(selected.source).toBe("ambiguous");
+    expect(selected.proposal).toBeNull();
+  });
+
+  it("prefers a single authoritative proposal over expectedOutput preview", () => {
+    const preview = bindStructuredNeutronMutationProposal({
+      expectedOutput: `${NEUTRON_STRUCTURED_MUTATION_PROPOSAL_PREFIX}${JSON.stringify(
+        {
+          proposalId: "proposal-preview",
+          planDigest:
+            "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          projectStateDigest:
+            "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          changedPaths: ["src/a.ts"],
+          expiresAt: 1_800_000_000_000,
+        },
+      )}`,
+      graphId: "graph-1",
+      session: session(),
+      taskId: "task-preview",
+    });
+    const authoritative = bindStructuredNeutronMutationProposal({
+      expectedOutput: `${NEUTRON_STRUCTURED_MUTATION_PROPOSAL_PREFIX}${JSON.stringify(
+        {
+          proposalId: "proposal-auth",
+          planDigest:
+            "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+          projectStateDigest:
+            "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+          changedPaths: ["src/z.ts"],
+          expiresAt: 1_800_000_000_000,
+        },
+      )}`,
+      graphId: "graph-1",
+      session: session(),
+      taskId: "task-auth",
+    });
+    const selected = selectSessionMutationProposal({
+      authoritative: [authoritative!],
+      preview,
+    });
+    expect(selected.source).toBe("authoritative");
+    expect(selected.proposal?.proposalId).toBe("proposal-auth");
   });
 });

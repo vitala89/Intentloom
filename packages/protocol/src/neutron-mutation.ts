@@ -54,6 +54,27 @@ export type {
   NeutronMutationVerificationStatus,
   NeutronMutationWriteSetVerification,
 } from "./neutron-mutation-verification.js";
+export {
+  NEUTRON_MUTATION_PROPOSAL_CANDIDATE_SCHEMA_URN,
+  NEUTRON_MUTATION_PROPOSAL_CAPABILITY,
+  NEUTRON_MUTATION_PROPOSAL_ROLE,
+} from "./neutron-mutation-proposal-candidate.js";
+export type {
+  NeutronMutationProposalCandidate,
+  NeutronMutationProposalCandidateFile,
+} from "./neutron-mutation-proposal-candidate.js";
+export {
+  NEUTRON_GRAPH_MUTATION_APPLY_EVIDENCE_SCHEMA_URN,
+  NEUTRON_GRAPH_MUTATION_PROPOSAL_EVIDENCE_SCHEMA_URN,
+  NEUTRON_GRAPH_MUTATION_PROPOSAL_STATUSES,
+  NEUTRON_MUTATION_PROPOSAL_SOURCES,
+} from "./neutron-graph-mutation.js";
+export type {
+  NeutronGraphMutationApplyEvidence,
+  NeutronGraphMutationProposalEvidence,
+  NeutronGraphMutationProposalStatus,
+  NeutronMutationProposalSource,
+} from "./neutron-graph-mutation.js";
 
 export const NEUTRON_MUTATION_PROPOSAL_SCHEMA_URN =
   "urn:intentloom:schema:neutron-mutation-proposal:1" as const;

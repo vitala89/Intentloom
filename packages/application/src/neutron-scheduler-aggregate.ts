@@ -99,6 +99,10 @@ export function aggregateNeutronTaskGraphResults(
     status,
     usage,
     warnings,
+    mutationProposals: [],
+    mutationOutcomes: [],
+    pendingReviewCount: 0,
+    mutationProposalEvidenceDigest: null,
   };
 }
 

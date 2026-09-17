@@ -25,6 +25,8 @@ import {
 import { validateNeutronRuntimeSession } from "../../validator/src/neutron-runtime.js";
 import { validateNeutronGraphSnapshot } from "../../validator/src/neutron-graph.js";
 import { resolveNeutronMutationProposalFromGraphNodes } from "./neutron-session-mutation-proposal.js";
+import { bindExecutedGraphMutationState } from "./neutron-session-graph-mutation.js";
+import type { NeutronGraphMutationPayloadStore } from "./neutron-graph-mutation-store.js";
 
 export function unknownNeutronGraphError(
   graphId: string | undefined,
@@ -105,6 +107,9 @@ export async function executeStoredNeutronGraph(input: {
   readonly maxConcurrency?: number;
   readonly graphId?: string;
   readonly capabilities?: AgentRoleCapabilities;
+  readonly sessionProposalCapabilities?: readonly string[];
+  readonly mutationPayloadStore?: NeutronGraphMutationPayloadStore;
+  readonly now?: () => number;
 }): Promise<StoredNeutronSession> {
   const session = validateNeutronRuntimeSession({
     ...input.stored.session,
@@ -138,7 +143,7 @@ export async function executeStoredNeutronGraph(input: {
         : { maxConcurrency: input.maxConcurrency }),
     });
     const after = await input.fingerprint(session.root);
-    const result = reconcileNeutronTaskGraphExecution({
+    const reconciled = reconcileNeutronTaskGraphExecution({
       baseline: { projectFingerprint: before },
       current: { projectFingerprint: after },
       graph: wave.graph,
@@ -146,23 +151,46 @@ export async function executeStoredNeutronGraph(input: {
       outcomes: wave.outcomes,
       session,
     });
-    const snapshot = validateNeutronGraphSnapshot(
-      projectNeutronGraphSnapshot({
-        cancellationAcknowledged: input.signal.aborted,
-        plan: wave.plan,
-        result,
-      }),
-    );
-    const mutationProposal =
+    const preview =
       resolveNeutronMutationProposalFromGraphNodes({
         graphId,
         nodes: input.nodes,
         session,
       }) ?? input.stored.mutationProposal;
+    const bound = bindExecutedGraphMutationState({
+      graph: wave.graph,
+      graphId,
+      outcomes: wave.outcomes,
+      preview,
+      projectStateDigest: `sha256:${after}`,
+      result: reconciled,
+      session,
+      stored: input.stored,
+      ...(input.now === undefined ? {} : { now: input.now }),
+      ...(input.sessionProposalCapabilities === undefined
+        ? {}
+        : {
+            sessionProposalCapabilities: input.sessionProposalCapabilities,
+          }),
+      ...(input.mutationPayloadStore === undefined
+        ? {}
+        : { mutationPayloadStore: input.mutationPayloadStore }),
+    });
+    const snapshot = validateNeutronGraphSnapshot(
+      projectNeutronGraphSnapshot({
+        cancellationAcknowledged: input.signal.aborted,
+        plan: wave.plan,
+        result: bound.result,
+      }),
+    );
     return {
       ...input.stored,
       graphSnapshot: snapshot,
-      mutationProposal,
+      mutationProposal: bound.mutationProposal,
+      mutationProposalSource: bound.mutationProposalSource ?? null,
+      ...(bound.mutationPayloadStore === undefined
+        ? {}
+        : { mutationPayloadStore: bound.mutationPayloadStore }),
       projectFingerprintAfter: after,
       projectFingerprintBefore: before,
       session: validateNeutronRuntimeSession({

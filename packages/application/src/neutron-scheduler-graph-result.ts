@@ -1,4 +1,6 @@
 import { checksum } from "@intentloom/core";
+import type { NeutronGraphMutationApplyEvidence } from "../../protocol/src/neutron-graph-mutation.js";
+import type { NeutronGraphMutationProposalEvidence } from "../../protocol/src/neutron-graph-mutation.js";
 import type {
   NeutronRuntimeSession,
   NeutronTaskGraph,
@@ -34,6 +36,10 @@ export interface NeutronGraphExecutionResult {
   readonly digest: string;
   readonly stale: NeutronGraphStaleReport | null;
   readonly warnings: readonly string[];
+  readonly mutationProposals: readonly NeutronGraphMutationProposalEvidence[];
+  readonly mutationOutcomes: readonly NeutronGraphMutationApplyEvidence[];
+  readonly pendingReviewCount: number;
+  readonly mutationProposalEvidenceDigest: string | null;
 }
 
 const INCOMPLETE_STATES = new Set<NeutronTaskState>([
@@ -75,11 +81,16 @@ export function classifyNeutronGraphStatus(input: {
 
 export function digestNeutronGraphExecution(input: {
   readonly graphId: string;
-  readonly session: NeutronRuntimeSession;
+  readonly session: Pick<
+    NeutronRuntimeSession,
+    "projectId" | "root" | "sessionId"
+  >;
   readonly status: NeutronGraphStatus;
   readonly nodes: readonly NeutronGraphNodeRecord[];
   readonly usage: NeutronUsageBudget;
   readonly stale: NeutronGraphStaleReport | null;
+  readonly mutationProposals?: readonly NeutronGraphMutationProposalEvidence[];
+  readonly mutationOutcomes?: readonly NeutronGraphMutationApplyEvidence[];
 }): string {
   return `sha256:${checksum(
     stableSerialize({
@@ -99,8 +110,24 @@ export function digestNeutronGraphExecution(input: {
         sessionId: input.usage.sessionId,
         tokenBudget: input.usage.tokenBudget,
       },
+      ...emptyOrOmit(
+        "mutationProposals",
+        input.mutationProposals?.map(logicalProposal),
+      ),
+      ...emptyOrOmit(
+        "mutationOutcomes",
+        input.mutationOutcomes?.map(logicalApply),
+      ),
     }),
   )}`;
+}
+
+function emptyOrOmit(
+  key: string,
+  value: readonly unknown[] | undefined,
+): Record<string, unknown> {
+  if (value === undefined || value.length === 0) return {};
+  return { [key]: value };
 }
 
 export function stableSerialize(value: unknown): string {
@@ -129,6 +156,15 @@ function logicalStale(report: NeutronGraphStaleReport): unknown {
     })),
     rerunAttempted: report.rerunAttempted,
   };
+}
+
+function logicalProposal(item: NeutronGraphMutationProposalEvidence): unknown {
+  const { materializedAt: _at, ...logical } = item;
+  return logical;
+}
+
+function logicalApply(item: NeutronGraphMutationApplyEvidence): unknown {
+  return item;
 }
 
 function canonicalize(value: unknown): unknown {

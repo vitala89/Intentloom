@@ -149,3 +149,23 @@ export {
   type AggregateNeutronTaskGraphResultsInput,
   type ReconcileNeutronTaskGraphExecutionInput,
 } from "./neutron-scheduler-aggregate.js";
+export {
+  applyApprovedNeutronGraphMutation,
+  attachNeutronGraphMutationEvidence,
+  collectNeutronGraphMutationCandidates,
+  createMemoryNeutronGraphMutationPayloadStore,
+  materializeNeutronGraphMutationReview,
+  neutronNodeMayPropose,
+  NEUTRON_MUTATION_PROPOSAL_CAPABILITY,
+  NEUTRON_MUTATION_PROPOSAL_ROLE,
+} from "./neutron-graph-mutation.js";
+export type {
+  ApplyApprovedNeutronGraphMutationInput,
+  ApplyApprovedNeutronGraphMutationResult,
+  CollectNeutronGraphMutationCandidatesInput,
+  MaterializeNeutronGraphMutationReviewInput,
+  NeutronGraphMutationApplyFailureCode,
+  NeutronGraphMutationCandidateRecord,
+  NeutronGraphMutationPayloadStore,
+  NeutronGraphMutationReviewBundle,
+} from "./neutron-graph-mutation.js";

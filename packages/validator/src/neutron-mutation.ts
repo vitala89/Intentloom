@@ -62,6 +62,11 @@ export {
   expectedNeutronMutationApprovalToken,
 } from "./neutron-mutation-digest.js";
 export { validateNeutronMutationApproval } from "./neutron-mutation-approval.js";
+export {
+  assertCandidateAggregateBounds,
+  parseNeutronMutationProposalCandidate,
+  parseNeutronMutationProposalCandidateOutput,
+} from "./neutron-mutation-proposal-candidate.js";
 
 function rejectProposalAuthority(value: Record<string, unknown>): void {
   for (const key of PROPOSAL_AUTHORITY_KEYS) {

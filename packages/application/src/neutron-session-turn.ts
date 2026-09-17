@@ -13,7 +13,9 @@ import type {
 } from "../../protocol/src/neutron-session-activity.js";
 import type { NeutronGraphSnapshot } from "../../protocol/src/neutron-graph.js";
 import type { NeutronMutationProposal } from "../../protocol/src/neutron-mutation.js";
+import type { NeutronMutationProposalSource } from "../../protocol/src/neutron-graph-mutation.js";
 import type { NeutronTaskGraph } from "../../protocol/src/neutron-runtime.js";
+import type { NeutronGraphMutationPayloadStore } from "./neutron-graph-mutation-store.js";
 import type { NeutronGraphStaleBaseline } from "./neutron-scheduler-stale.js";
 import type { NeutronSchedulingPlan } from "./neutron-scheduler-select.js";
 import type { NeutronReadyNodeOutcome } from "./neutron-scheduler-wave-types.js";
@@ -62,6 +64,8 @@ export interface StoredNeutronSession {
   toolActivity: readonly NeutronTurnToolActivity[];
   graphSnapshot: NeutronGraphSnapshot | null;
   mutationProposal: NeutronMutationProposal | null;
+  mutationProposalSource?: NeutronMutationProposalSource | "ambiguous" | null;
+  mutationPayloadStore?: NeutronGraphMutationPayloadStore;
   storedGraph?:
     | {
         readonly snapshot: NeutronGraphSnapshot;

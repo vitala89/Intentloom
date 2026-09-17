@@ -25,9 +25,32 @@ export interface NeutronStructuredMutationProposalSeed {
 export function resolveNeutronSessionMutationProposal(
   stored: StoredNeutronSession,
 ): NeutronMutationProposal | null {
+  if (stored.mutationProposalSource === "ambiguous") return null;
   return stored.mutationProposal ?? null;
 }
 
+export function selectSessionMutationProposal(input: {
+  readonly authoritative: readonly NeutronMutationProposal[];
+  readonly preview: NeutronMutationProposal | null;
+}): {
+  readonly proposal: NeutronMutationProposal | null;
+  readonly source: "authoritative" | "preview" | "ambiguous" | null;
+} {
+  if (input.authoritative.length === 1) {
+    return { proposal: input.authoritative[0]!, source: "authoritative" };
+  }
+  if (input.authoritative.length > 1) {
+    return { proposal: null, source: "ambiguous" };
+  }
+  if (input.preview !== null) {
+    return { proposal: input.preview, source: "preview" };
+  }
+  return { proposal: null, source: null };
+}
+
+/**
+ * Read-only N6 preview from graph expectedOutput. Not Apply authority.
+ */
 export function resolveNeutronMutationProposalFromGraphNodes(input: {
   readonly session: NeutronRuntimeSession;
   readonly graphId: string;
