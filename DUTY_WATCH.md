@@ -14,12 +14,43 @@ Status: **N5 complete**. Mutation-routing **Slice 1 contracts implemented**.
 preflight). **Mutation Slice 2.5 implemented** (content-bound review artifact,
 declared-path sync contract). **Mutation Slice 3 implemented** (host-only
 single approved transaction Apply). **Mutation Slice 3.1 implemented**
-(crash-safe durable approval/transaction state). **N6 Slices 1–5 implemented**
-(read-only Desktop Neutron, including mutation proposal review).
-`mutationAllowed` remains literal `false`. N4 remains the seven read-only
-tools. Optional N3 Slice 5, P4l17, Mutation Slice 4 verification/rollback
-evidence UX, Mutation Slice 5 N5 integration, Desktop Approve/Apply UX, and
-any N4 mutation tool remain unauthorized.
+(crash-safe durable approval/transaction state). **Mutation Slice 4
+implemented** (independent post-Apply verification + sanitized rollback
+evidence). **N6 Slices 1–5 implemented** (read-only Desktop Neutron, including
+mutation proposal review). `mutationAllowed` remains literal `false`. N4
+remains the seven read-only tools. Optional N3 Slice 5, P4l17, Mutation
+Slice 5 N5 integration, Desktop Approve/Apply UX, Desktop verification UX,
+host rollback execution / Undo, and any N4 mutation tool remain unauthorized.
+
+### 2026-09-17, Neutron Mutation Slice 4 — post-Apply verification evidence handoff
+
+- **Status:** **merged** (implementation); this docs handoff follows
+- **Implementation PR:** https://github.com/vitala89/Intentloom/pull/503 (merged)
+- **Implementation merge SHA / authoritative `main` tip after implementation:**
+  `b5c9a9556648382343bd90cc5e2c277d0775cf32`
+- **Implementation head SHA:** `9326a6acd1a6c72f0fd1caa7cabe3f8f7113aa78`
+- **Starting main / origin/main:** `a0a12541a190f3531fca45d3e5a6d4ad9562f875`
+  (tracked tree clean; matches expected baseline).
+- **Handoff PR:** (this entry updated when handoff PR merges)
+- **Scope delivered:** After canonical Apply, host-only independent
+  verification reads committed bytes and observed paths, records pre/post
+  observed project-state digests, and persists `NeutronMutationVerificationEvidence`.
+  `applied` and verification status are distinct. Failed verification does
+  not rewrite `applied: false`, retry Apply, or auto-rollback. Failed
+  `executeApprovedApplyPlan` now keeps sanitized rollback evidence. Rollback
+  success is independently checked against the pre-Apply observed digest.
+  Incomplete rollback and crash-before-verification require reconciliation
+  or read-only verification resume. Durable applied records stay non-reusable.
+  Public evidence excludes `approvalToken` and raw file bodies.
+- **Mutation authority:** Unchanged. Host-held approval + durable claimed
+  transaction + host Apply command. Verification is read-only.
+  `mutationAllowed` remains literal `false`.
+- **Not authorized:** Mutation Slice 5 N5 proposal/review integration;
+  Desktop Approve/Apply UX; Desktop verification/rollback evidence UX;
+  host rollback execution / Undo; any N4 mutation tool; autonomous mutation
+  execution; automatic Apply retries.
+- **Next first action:** **None from automation.** Await explicit maintainer
+  authorization for **Mutation Slice 5**.
 
 ### 2026-09-16, Neutron Mutation Slice 3.1 — crash-safe durable approval state handoff
 

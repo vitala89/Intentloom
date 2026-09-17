@@ -7,6 +7,12 @@ All notable changes are documented here. This project follows Keep a Changelog p
 Changes listed here are merged after the current release-preparation scope and
 are not included in the current npm artifact until a later release.
 
+- Neutron Mutation Slice 4 records independent post-Apply verification and
+  sanitized rollback evidence. Canonical Apply success (`applied`) is distinct
+  from verification status. Failed sync now preserves rollback evidence.
+  Verification failure never retries Apply. `mutationAllowed` remains literal
+  `false`. N4 stays read-only. No Desktop Approve/Apply UX.
+
 - Neutron Mutation Slice 3.1 persists approval/transaction state in a
   host-controlled durable store (exclusive create + fsync/rename). Production
   Apply no longer defaults to an in-memory Map. Crash/restart cannot make a

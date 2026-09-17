@@ -703,14 +703,19 @@ implemented** (merge `cb93edb3f66d90d2522514ae4e9b0725796a0e46`, PR #500):
 production Apply requires an injected store or host
 `durableStateDirectory`; claimed/executing/applied/failed states survive
 restart; replay after restart cannot write again; corrupted durable state
-fails closed. `NeutronRuntimeSession.mutationAllowed`
-remains literal `false`. N4 catalog remains read-only. The Slice 3 security
-review remains the historical NO-GO for Apply on pre-2.5 contracts
+fails closed. **Mutation Slice 4 implemented** (merge
+`b5c9a9556648382343bd90cc5e2c277d0775cf32`, PR #503): independent post-Apply
+byte/path verification, observed project-state digests, sanitized rollback
+evidence on failed sync, and durable verification status. `applied` and
+`verified` stay distinct; verification failure never retries Apply.
+`NeutronRuntimeSession.mutationAllowed` remains literal `false`. N4 catalog
+remains read-only. The Slice 3 security review remains the historical NO-GO
+for Apply on pre-2.5 contracts
 ([`NEUTRON_MUTATION_SLICE3_SECURITY_REVIEW.md`](docs/roadmap/NEUTRON_MUTATION_SLICE3_SECURITY_REVIEW.md)).
-Mutation Slice 4 verification/rollback evidence UX, Slice 5 N5 integration,
-Desktop Approve/Apply UX, any N4 mutation tool, optional N3 Slice 5, and P4l17
-are not authorized. Other post-P4 candidates remain in
-`POST_W12_NEXT_INCREMENT_PLAN.md`.
+Mutation Slice 5 N5 integration, Desktop Approve/Apply UX, Desktop
+verification UX, host rollback execution / Undo, any N4 mutation tool,
+optional N3 Slice 5, and P4l17 are not authorized. Other post-P4 candidates
+remain in `POST_W12_NEXT_INCREMENT_PLAN.md`.
 
 The Desktop discovery/error and Diff/Timeline slices remain recorded in
 [PHASE1_CONTRACTS.md](docs/desktop/PHASE1_CONTRACTS.md).
