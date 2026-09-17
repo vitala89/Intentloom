@@ -256,7 +256,8 @@ preflight), **Slice 2.5 implemented** (content-bound review artifact), and
 **Slice 3 implemented** (host-only single approved transaction Apply).
 **Slice 3.1 implemented** (crash-safe durable approval/transaction state).
 **Slice 4 implemented** (independent post-Apply verification + sanitized
-rollback evidence). Do not start Slice 5 N5 integration, Desktop mutation UI,
+rollback evidence). **Slice 5 implemented** (N5 proposal/review integration;
+host-only graph-linked Apply composition). Do not start Desktop mutation UI,
 optional N3 Slice 5, or P4l17 without explicit maintainer authorization.
 
 ## N5. Executable task graph and subagents
@@ -284,6 +285,8 @@ runner loop.
 Mutation-routing Slice 1 contracts, Slice 2 semantic preflight, Slice 2.5
 content-bound review artifacts, Slice 3 host-only Apply, Slice 3.1
 durable claim/replay, and Slice 4 post-Apply verification evidence exist;
+Mutation Slice 5 attaches graph-linked proposal/review/Apply provenance
+without giving the scheduler Apply authority.
 Desktop Approve/Apply UX and N6 mutation tools remain unauthorized.
 
 Extend the existing Neutron subagent records from persisted orchestration
@@ -342,13 +345,14 @@ No Desktop Approve/Apply UX.
 ([`NEUTRON_MUTATION_SLICE3_SECURITY_REVIEW.md`](NEUTRON_MUTATION_SLICE3_SECURITY_REVIEW.md))
 documented why unmodified Slice 2 Apply was unsafe. Slice 2.5 and Slice 3
 closed those blockers. **Slice 4 implemented** (verification + rollback
-evidence). Later slices (unauthorized): Slice 5 N5 proposal/review
-integration, Desktop Approve/Apply UX, Desktop verification UX, host
-rollback execution / Undo.
+evidence). **Slice 5 implemented** (N5 proposal/review integration; host
+`applyApprovedNeutronGraphMutation` after separately issued approval).
+Later slices (unauthorized): Desktop Approve/Apply UX, Desktop verification
+UX, host rollback execution / Undo.
 
 N6 read-only Desktop is implemented under its own brief. Do not start
-Slice 5, Desktop Approve/Apply UX, or an N4 mutation tool from this
-roadmap entry alone.
+Desktop Approve/Apply UX or an N4 mutation tool from this roadmap entry
+alone.
 
 ## N6. Desktop Neutron Workspace
 
@@ -510,9 +514,8 @@ preventing an unfinished agent layer from expanding the v0.6 release scope.
 
 ## First implementation action
 
-N1–N5 are complete. Mutation-routing Slices 1–4 exist. **N6 Slices 1–5 are
+N1–N5 are complete. Mutation-routing Slices 1–5 exist. **N6 Slices 1–5 are
 implemented.** The next Neutron increment is **not** implied by this file:
-Mutation Slice 5 and Desktop Approve/Apply UX each require explicit
-maintainer authorization. See
+Desktop Approve/Apply UX requires explicit maintainer authorization. See
 [`NEUTRON_N6_DESKTOP_READONLY_BRIEF.md`](NEUTRON_N6_DESKTOP_READONLY_BRIEF.md)
 and [`NEUTRON_MUTATION_ROUTING_BRIEF.md`](NEUTRON_MUTATION_ROUTING_BRIEF.md).

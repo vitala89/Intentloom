@@ -12,18 +12,20 @@ snapshots remain `mutationAllowed: false`. No N4 mutation route.
 (PR #500, merge `cb93edb3f66d90d2522514ae4e9b0725796a0e46`) — crash-safe
 durable approval/transaction state. **Slice 4 implemented** (PR #503, merge
 `b5c9a9556648382343bd90cc5e2c277d0775cf32`) — independent post-Apply
-verification and sanitized rollback evidence. Mutation routing is **not**
-complete: Slice 5 N5 integration, Desktop Approve/Apply UX, Desktop
+verification and sanitized rollback evidence. **Slice 5 implemented**
+(PR #507, merge `0eb326986537f125abfefc573e6709824914b37c`) — N5
+proposal/review integration with host-only graph-linked Apply composition.
+Mutation routing is **not** complete: Desktop Approve/Apply UX, Desktop
 verification UX, and host rollback execution remain unauthorized.
 
 The Slice 3 security review remains the historical **NO-GO** for Apply on
 pre-2.5 contracts:
 [`NEUTRON_MUTATION_SLICE3_SECURITY_REVIEW.md`](NEUTRON_MUTATION_SLICE3_SECURITY_REVIEW.md).
 
-Slice 5 (N5 proposal integration), write tools, generic shell, Desktop
-Approve/Apply UX, Desktop verification UX, host rollback execution / Undo,
-optional N3 Slice 5, and P4l17 remain unauthorized until a later explicit
-maintainer grant. N6 Slices 1–5 read-only Desktop are implemented separately.
+Write tools, generic shell, Desktop Approve/Apply UX, Desktop verification
+UX, host rollback execution / Undo, optional N3 Slice 5, and P4l17 remain
+unauthorized until a later explicit maintainer grant. N6 Slices 1–5
+read-only Desktop are implemented separately.
 
 Authoritative roadmap gate:
 [`NEUTRON_RUNTIME_ROADMAP.md`](NEUTRON_RUNTIME_ROADMAP.md) §N5–§N6 and this
@@ -33,15 +35,15 @@ brief.
 
 ## 1. Current baseline
 
-| Item                        | Evidence                                                                                                                     |
-| --------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
-| **Current `main` SHA**      | `b5c9a9556648382343bd90cc5e2c277d0775cf32` (`main` == `origin/main` after Slice 4 implementation)                            |
-| **N5 Slice 5**              | PR #453 head `a6819a49fe3cf1adbda93ea835d96fdf1decfc52`, merge `7a6e07c`                                                     |
-| **N5 handoff**              | PR #454 head `502629ffe7e5256a5fa4ad3b15b37c4760747240`                                                                      |
-| **N1–N5**                   | Runtime contracts, model adapter, context assembly, read-only tool router, executable task graph                             |
-| **`mutationAllowed`**       | N1 `NeutronRuntimeSession.mutationAllowed` is typed `false`; validator rejects any other value                               |
-| **N4 catalog**              | `inspect`, `doctor`, `memorySearch`, `timeline`, `conformance`, `securityAudit`, `projectDiff`                               |
-| **Mutation implementation** | Slice 1–2.5 contracts/preflight/artifact + Slice 3 host-only Apply + Slice 3.1 durable claim + Slice 4 verification evidence |
+| Item                        | Evidence                                                                                                                                                              |
+| --------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Current `main` SHA**      | `0eb326986537f125abfefc573e6709824914b37c` (`main` == `origin/main` after Slice 5 implementation)                                                                     |
+| **N5 Slice 5**              | PR #453 head `a6819a49fe3cf1adbda93ea835d96fdf1decfc52`, merge `7a6e07c`                                                                                              |
+| **N5 handoff**              | PR #454 head `502629ffe7e5256a5fa4ad3b15b37c4760747240`                                                                                                               |
+| **N1–N5**                   | Runtime contracts, model adapter, context assembly, read-only tool router, executable task graph                                                                      |
+| **`mutationAllowed`**       | N1 `NeutronRuntimeSession.mutationAllowed` is typed `false`; validator rejects any other value                                                                        |
+| **N4 catalog**              | `inspect`, `doctor`, `memorySearch`, `timeline`, `conformance`, `securityAudit`, `projectDiff`                                                                        |
+| **Mutation implementation** | Slice 1–2.5 contracts/preflight/artifact + Slice 3 host-only Apply + Slice 3.1 durable claim + Slice 4 verification evidence + Slice 5 N5 proposal/review integration |
 
 ### Capability summary used by this brief
 
@@ -636,8 +638,9 @@ not that justification.
 
 ## 22. Implementation slices
 
-Derived from gaps above. Slices 1–4 are implemented. Slice 5 N5 integration
-remains unauthorized. See
+Derived from gaps above. Slices 1–5 are implemented. Desktop Approve/Apply
+UX, Desktop verification UX, and host rollback execution remain
+unauthorized. See
 [`NEUTRON_MUTATION_SLICE3_SECURITY_REVIEW.md`](NEUTRON_MUTATION_SLICE3_SECURITY_REVIEW.md)
 for the historical pre-2.5 Apply blockers.
 
@@ -683,10 +686,10 @@ Conformance/Security Audit are not Slice 4 health gates (`diffProject` does
 not prove reviewed-byte equality). Desktop verification UX is deferred.
 See §32.2.
 
-### Slice 5 — N5 proposal/review integration
+### Slice 5 — N5 proposal/review integration (implemented)
 
 Feature-builder proposal in graph results; stop at review; provenance
-includes approval/apply; no node-level Apply.
+includes approval/apply; no node-level Apply. See §32.3.
 
 ---
 
@@ -754,7 +757,7 @@ after tests pass.” Future policy automation needs a separate authorization.
 | #   | Decision                                            | Recommendation                                                       | Blocker for |
 | --- | --------------------------------------------------- | -------------------------------------------------------------------- | ----------- |
 | 1   | Flip `NeutronRuntimeSession.mutationAllowed`        | Keep `false` on model-facing sessions; host approval is the grant    | Slice 3     |
-| 2   | Persist proposals under `.aif/` vs in-memory review | In-memory / daemon-held until Slice 5                                | Slice 5     |
+| 2   | Persist proposals under `.aif/` vs in-memory review | Injectable host-held payload store; not model-path `.aif` files      | Slice 5     |
 | 3   | `packages/neutron-runtime`                          | Keep in application; revisit at N6                                   | N6          |
 | 4   | User rollback tool after success                    | Host-only revert remains unauthorized; Slice 4 shipped evidence only | later       |
 | 5   | Exact vs subset `changedPaths`                      | Exact set for Slice 3                                                | Slice 3     |
@@ -763,13 +766,13 @@ after tests pass.” Future policy automation needs a separate authorization.
 
 ## 28. Recommendation
 
-**MUTATION SLICE 4 COMPLETE — SLICE 5 UNAUTHORIZED**
+**MUTATION SLICE 5 COMPLETE — DESKTOP APPLY UNAUTHORIZED**
 
-Slice 4 verification and rollback evidence are implemented. Do not start
-Slice 5 N5 integration, Desktop Approve/Apply UX, Desktop verification UX,
-host rollback execution / Undo, an N4 mutation tool, autonomous execution, or
-automatic Apply retries from this brief. The Slice 3 security review remains
-the historical record of why unmodified Slice 2 Apply was unsafe.
+Slice 5 N5 proposal/review integration is implemented. Do not start Desktop
+Approve/Apply UX, Desktop verification UX, host rollback execution / Undo,
+an N4 mutation tool, autonomous execution, or automatic Apply retries from
+this brief. The Slice 3 security review remains the historical record of
+why unmodified Slice 2 Apply was unsafe.
 
 ---
 
@@ -847,7 +850,7 @@ Desktop Approve/Apply UI.
 | Writer                   | `syncMode: "declared-paths-only"`. Undeclared `.aif/manifest.lock.json` and `.aif/source-map.json` are not written.                                                                                                                                                                                 |
 | `applied: true`          | Only after canonical transaction success. Engine rollback evidence and previous file bodies are not copied into the Neutron result. Approval token is redacted from results, errors, and diagnostics.                                                                                               |
 | `mutationAllowed` / N4   | Unchanged literal `false`. Seven read-only tools. No `applyApprovedTransaction` catalog entry.                                                                                                                                                                                                      |
-| Next unauthorized slices | Slice 5 N5 proposal/review integration; Desktop Approve/Apply UX; Desktop verification UX; host rollback execution / Undo; N4 mutation tool; autonomous retry.                                                                                                                                      |
+| Next unauthorized slices | Desktop Approve/Apply UX; Desktop verification UX; host rollback execution / Undo; N4 mutation tool; autonomous retry.                                                                                                                                                                              |
 
 ### 32.1 Slice 3.1 durable authority
 
@@ -886,4 +889,23 @@ independent post-Apply verification. It does not expand mutation authority.
 | Retry                    | Read-only verification may resume. Apply never retries automatically.                                                                                                                                                                             |
 | Secrets                  | Serialized evidence excludes `approvalToken`, file bodies, previousContent, prompts, and model reasoning.                                                                                                                                         |
 | Desktop / N4 / N5        | No Desktop Approve/Apply or verification UX. N4 catalog unchanged. Slice 5 may later reference `transactionId` / `evidenceDigest`; this slice does not attach N5 provenance.                                                                      |
-| Next unauthorized slices | Unchanged from §32.                                                                                                                                                                                                                               |
+| Next unauthorized slices | Desktop Approve/Apply UX; Desktop verification UX; host rollback execution / Undo; N4 mutation tool; autonomous retry.                                                                                                                            |
+
+### 32.3 Slice 5 N5 proposal/review integration
+
+Slice 5 (PR #507, merge `0eb326986537f125abfefc573e6709824914b37c`) connects
+N5 graph execution to existing review/Apply without a second scheduler,
+Apply engine, or verification framework.
+
+| Decision                 | Record                                                                                                                                                                                                                                                                                   |
+| ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Candidate                | Strict `NeutronMutationProposalCandidate` (`urn:intentloom:schema:neutron-mutation-proposal-candidate:1`). Files + optional bounded sources only. Authority fields (`approved`, `approvalToken`, `planDigest`, `projectStateDigest`, …) are rejected. Arbitrary prose is not a proposal. |
+| Authoritative attempt    | Only the last live completed attempt of a permitted `feature-builder` node may materialize. Stale, failed, cancelled, and timed-out attempts cannot. `expectedOutput` seed is preview-only.                                                                                              |
+| Capability               | Additive `mutation-proposal`. Intersection of node, session, parent, profile, and ceiling grants. Does not mean Apply, write, or `mutationAllowed`. Unpermitted roles cannot propose.                                                                                                    |
+| Materialization          | Host `materializeNeutronGraphMutationReview` computes path/content/plan/proposal/artifact digests and stores exact `GeneratedFile[]` in an injectable host payload store.                                                                                                                |
+| Review boundary          | Graph/node `completed` is not approved/applied/verified. Scheduler never calls Apply. Default session execution does not auto-materialize unless the host grants `mutation-proposal`.                                                                                                    |
+| Graph-linked Apply       | Host `applyApprovedNeutronGraphMutation`: store lookup → `detectNeutronGraphStaleness` → existing `applyApprovedNeutronMutation` → Slice 4 verification. Stale project/checkpoint/profile rejects with no write.                                                                         |
+| Retry                    | N5 may retry a proposal node before materialization. After an authoritative artifact exists, a new attempt is a new proposal identity. Apply failure is not an N5 retry.                                                                                                                 |
+| Provenance               | Additive `NeutronGraphMutationProposalEvidence` / Apply evidence (ids, digests, paths, statuses). No file bodies, tokens, prompts, or reasoning. Node task state is not rewritten after later Apply.                                                                                     |
+| `mutationAllowed` / N4   | Unchanged literal `false`. Seven read-only tools. No `applyApprovedTransaction`.                                                                                                                                                                                                         |
+| Next unauthorized slices | Desktop Approve/Apply UX; Desktop verification UX; host rollback execution / Undo; N4 mutation tool; autonomous graph runner; automatic Apply retry.                                                                                                                                     |

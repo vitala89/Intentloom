@@ -14,7 +14,8 @@ recovery, and stale-attempt protection on that wave. **Slice 5 implemented** —
 deterministic graph aggregation, stale project/checkpoint/profile detection,
 and parent-child/attempt/tool/context provenance on a one-wave reconciliation
 boundary. **N5 runtime milestone complete** for the authorized read-only
-scheduler. No graph runner loop.
+scheduler. No graph runner loop. Mutation Slice 5 later attached
+graph-linked proposal/review evidence without giving N5 Apply authority.
 
 Mutation-routing **brief** is
 [`NEUTRON_MUTATION_ROUTING_BRIEF.md`](NEUTRON_MUTATION_ROUTING_BRIEF.md).
@@ -841,19 +842,13 @@ lines.
 
 ## 28. Mutation-routing decision
 
-**MUTATION ROUTING REMAINS DEFERRED.**
+**MUTATION ROUTING REMAINS OUTSIDE N5 APPLY AUTHORITY.**
 
-N5 must not design around write tools or Apply. Mutation routing requires separate
-maintainer authorization after N5 exit gate evidence exists:
-
-- Deterministic scheduler under test
-- Cancellation and capability clamp proven
-- Stale-state rejection proven
-- Task provenance and audit history complete
-- Bounded retries and no duplicate execution proven
-- Read-only fingerprint proofs on multi-node fixtures
-
-Scheduling alone is **not** sufficient justification for mutation routing.
+N5 must not Apply, retry mutation, or design around write tools. Mutation
+Slice 5 (PR #507, merge `0eb326986537f125abfefc573e6709824914b37c`) composes
+graph proposal/review evidence onto existing host Apply. Desktop
+Approve/Apply UX still requires separate maintainer authorization.
+Scheduling alone is **not** sufficient justification for mutation.
 
 ---
 
