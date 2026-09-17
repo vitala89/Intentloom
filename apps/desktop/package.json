@@ -19,12 +19,12 @@
     "@fontsource-variable/jetbrains-mono": "5.3.0",
     "@intentloom/protocol": "workspace:*",
     "@tauri-apps/api": "^2.11.0",
-    "react": "^19.2.0",
+    "react": "^19.3.0",
     "react-dom": "^19.2.0"
   },
   "devDependencies": {
     "@tauri-apps/cli": "^2.11.0",
-    "@types/react": "^19.2.18",
+    "@types/react": "^19.3.0",
     "@types/react-dom": "^19.2.7",
     "@vitejs/plugin-react": "^6.1.1",
     "lucide-static": "1.42.0",
