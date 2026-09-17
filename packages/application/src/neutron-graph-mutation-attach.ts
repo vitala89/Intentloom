@@ -53,7 +53,7 @@ function sortProposals(
   proposals: readonly NeutronGraphMutationProposalEvidence[],
 ): readonly NeutronGraphMutationProposalEvidence[] {
   const taskOrder = sortNeutronTaskIds(proposals.map((item) => item.taskId));
-  return [...proposals].toSorted((left, right) => {
+  return [...proposals].sort((left, right) => {
     const task =
       taskOrder.indexOf(left.taskId) - taskOrder.indexOf(right.taskId);
     if (task !== 0) return task;
@@ -65,7 +65,7 @@ function sortApplyOutcomes(
   outcomes: readonly NeutronGraphMutationApplyEvidence[],
 ): readonly NeutronGraphMutationApplyEvidence[] {
   const taskOrder = sortNeutronTaskIds(outcomes.map((item) => item.taskId));
-  return [...outcomes].toSorted((left, right) => {
+  return [...outcomes].sort((left, right) => {
     const task =
       taskOrder.indexOf(left.taskId) - taskOrder.indexOf(right.taskId);
     if (task !== 0) return task;

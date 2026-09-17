@@ -118,7 +118,7 @@ function lastLiveAttempt(
 ): NeutronAttemptEvidence | undefined {
   return [...attempts]
     .filter((attempt) => attempt.state !== "stale")
-    .toSorted((left, right) => left.attempt - right.attempt)
+    .sort((left, right) => left.attempt - right.attempt)
     .at(-1);
 }
 

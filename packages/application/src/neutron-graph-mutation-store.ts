@@ -32,7 +32,7 @@ export function createMemoryNeutronGraphMutationPayloadStore(): NeutronGraphMuta
       return records.get(proposalId);
     },
     list() {
-      return [...records.values()].toSorted((left, right) => {
+      return [...records.values()].sort((left, right) => {
         const task = compareNeutronTaskIds(
           left.evidence.taskId,
           right.evidence.taskId,
