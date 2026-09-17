@@ -110,6 +110,8 @@ export async function persistTerminal(
     readonly unchangedPaths?: readonly string[];
     readonly diagnostics: readonly string[];
     readonly state: NeutronMutationTransactionRecord["state"];
+    readonly verification?: NeutronMutationApplyResult["verification"];
+    readonly now?: number;
   },
 ): Promise<NeutronMutationApplyResult> {
   const result = buildNeutronMutationApplyResult({
@@ -129,13 +131,16 @@ export async function persistTerminal(
       ? { failureCode: outcome.failureCode }
       : {}),
     diagnostics: outcome.diagnostics,
+    ...(outcome.verification !== undefined
+      ? { verification: outcome.verification }
+      : {}),
   });
   await store.transition({
     approvalId: current.approvalId,
     expected: current.state,
     next: outcome.state,
     result,
-    updatedAt: Date.now(),
+    updatedAt: outcome.now ?? Date.now(),
   });
   return result;
 }

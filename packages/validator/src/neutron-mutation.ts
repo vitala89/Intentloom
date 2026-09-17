@@ -49,6 +49,8 @@ export {
   digestNeutronMutationTransactionRecord,
   validateNeutronMutationDurableTransactionRecord,
 } from "./neutron-mutation-transaction-record.js";
+export { validateNeutronMutationVerificationEvidence } from "./neutron-mutation-verification.js";
+export { digestNeutronMutationVerificationEvidence } from "./neutron-mutation-verification-digest.js";
 export {
   digestContentBoundApplyPlan,
   digestGeneratedFileContent,

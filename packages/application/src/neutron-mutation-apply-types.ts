@@ -30,6 +30,8 @@ export interface NeutronMutationApplyInput {
   readonly durableStateDirectory?: string;
   readonly failAt?: TransactionStage;
   readonly rollbackFailPaths?: readonly string[];
+  readonly afterWriteBeforeVerification?: () => Promise<void>;
+  readonly deferVerification?: boolean;
   readonly roleCapabilities?: AgentRoleCapabilities;
   readonly delegatedRole?: string;
 }
