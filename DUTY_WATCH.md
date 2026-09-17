@@ -34,7 +34,8 @@ remain unauthorized.
 - **Starting main / origin/main:** `8c3178ef8db6024352a013211c7bfae13fc068a6`
   (tracked tree clean; expected `dcbaad35fae94c352fc4a411b9063d3f189a20e4`
   had advanced by docs-only #506).
-- **Handoff PR:** pending this docs-only PR
+- **Handoff PR:** https://github.com/vitala89/Intentloom/pull/508
+- **Handoff head SHA:** `6324ca395407c3616e3485b433779cb7df915100`
 - **Handoff merge SHA / final main for Slice 5:** pending SHA-finalize after
   this handoff merges
 - **Scope delivered:** Authoritative completed N5 attempts may emit a strict
