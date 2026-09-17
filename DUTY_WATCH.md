@@ -26,7 +26,7 @@ remain unauthorized.
 
 ### 2026-09-17, Neutron Mutation Slice 5 — N5 proposal/review integration handoff
 
-- **Status:** implementation merged; this docs-only handoff
+- **Status:** **merged** (implementation + this docs handoff)
 - **Implementation PR:** https://github.com/vitala89/Intentloom/pull/507 (merged)
 - **Implementation merge SHA / authoritative `main` tip after implementation:**
   `0eb326986537f125abfefc573e6709824914b37c`
@@ -34,10 +34,10 @@ remain unauthorized.
 - **Starting main / origin/main:** `8c3178ef8db6024352a013211c7bfae13fc068a6`
   (tracked tree clean; expected `dcbaad35fae94c352fc4a411b9063d3f189a20e4`
   had advanced by docs-only #506).
-- **Handoff PR:** https://github.com/vitala89/Intentloom/pull/508
-- **Handoff head SHA:** `6324ca395407c3616e3485b433779cb7df915100`
-- **Handoff merge SHA / final main for Slice 5:** pending SHA-finalize after
-  this handoff merges
+- **Handoff PR:** https://github.com/vitala89/Intentloom/pull/508 (merged)
+- **Handoff head SHA:** `0dc356504e1db0b3751ac4233f33d832fce032e4`
+- **Handoff merge SHA / final main for Slice 5:**
+  `01344b4bac6b571de99151ece937da0c2fdfa395`
 - **Scope delivered:** Authoritative completed N5 attempts may emit a strict
   `NeutronMutationProposalCandidate`. Host materialization binds exact file
   bytes into `NeutronMutationProposal` / `NeutronMutationReviewArtifact` and
