@@ -156,6 +156,8 @@ export {
   createMemoryNeutronGraphMutationPayloadStore,
   materializeNeutronGraphMutationReview,
   neutronNodeMayPropose,
+  assertNeutronGraphMutationMaterializationCurrent,
+  neutronGraphMutationMaterializationIsCurrent,
   NEUTRON_MUTATION_PROPOSAL_CAPABILITY,
   NEUTRON_MUTATION_PROPOSAL_ROLE,
 } from "./neutron-graph-mutation.js";

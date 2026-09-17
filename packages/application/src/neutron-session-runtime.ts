@@ -38,6 +38,9 @@ export interface NeutronSessionRuntimeOptions {
   readonly now?: () => Date;
   readonly randomId?: () => string;
   readonly capabilities?: AgentRoleCapabilities;
+  readonly sessionProposalCapabilities?: readonly string[];
+  readonly profileProposalCapabilities?: readonly string[];
+  readonly capabilityCeiling?: readonly string[];
 }
 
 export interface NeutronSessionRuntime {
@@ -273,6 +276,19 @@ export function createNeutronSessionRuntime(
       ...(options.capabilities === undefined
         ? {}
         : { capabilities: options.capabilities }),
+      ...(options.sessionProposalCapabilities === undefined
+        ? {}
+        : {
+            sessionProposalCapabilities: options.sessionProposalCapabilities,
+          }),
+      ...(options.profileProposalCapabilities === undefined
+        ? {}
+        : {
+            profileProposalCapabilities: options.profileProposalCapabilities,
+          }),
+      ...(options.capabilityCeiling === undefined
+        ? {}
+        : { capabilityCeiling: options.capabilityCeiling }),
       beginInFlight(stored: StoredNeutronSession) {
         const controller = new AbortController();
         const deferred = createDeferred();

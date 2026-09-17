@@ -3,6 +3,11 @@ export {
   NEUTRON_MUTATION_PROPOSAL_CAPABILITY,
   NEUTRON_MUTATION_PROPOSAL_ROLE,
 } from "./neutron-mutation-proposal-capability.js";
+export {
+  assertNeutronGraphMutationMaterializationCurrent,
+  neutronGraphMutationMaterializationIsCurrent,
+  neutronGraphMutationProjectStateDigest,
+} from "./neutron-graph-mutation-current.js";
 export { collectNeutronGraphMutationCandidates } from "./neutron-graph-mutation-collect.js";
 export type {
   CollectNeutronGraphMutationCandidatesInput,

@@ -22,6 +22,9 @@ export interface NeutronGraphRuntimeContext {
   readonly fingerprint: (root: string) => Promise<string>;
   readonly createAdapter: () => ModelAdapter | null;
   readonly capabilities?: AgentRoleCapabilities;
+  readonly sessionProposalCapabilities?: readonly string[];
+  readonly profileProposalCapabilities?: readonly string[];
+  readonly capabilityCeiling?: readonly string[];
   readonly emptyView: (stored: StoredNeutronSession) => NeutronSessionViewmodel;
   readonly requireBound: (input: {
     readonly root: string;
@@ -138,6 +141,19 @@ export async function executeRuntimeGraph(
       ...(ctx.capabilities === undefined
         ? {}
         : { capabilities: ctx.capabilities }),
+      ...(ctx.sessionProposalCapabilities === undefined
+        ? {}
+        : {
+            sessionProposalCapabilities: ctx.sessionProposalCapabilities,
+          }),
+      ...(ctx.profileProposalCapabilities === undefined
+        ? {}
+        : {
+            profileProposalCapabilities: ctx.profileProposalCapabilities,
+          }),
+      ...(ctx.capabilityCeiling === undefined
+        ? {}
+        : { capabilityCeiling: ctx.capabilityCeiling }),
     });
     ctx.sessions.set(stored.session.sessionId, completed);
     return ctx.emptyView(completed);

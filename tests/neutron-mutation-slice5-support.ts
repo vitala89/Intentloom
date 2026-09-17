@@ -19,6 +19,8 @@ import type { NeutronReadyNodeOutcome } from "../packages/application/src/neutro
 import { validateNeutronRuntimeSession } from "../packages/validator/src/neutron-runtime.js";
 
 export const SLICE5_ROOT = "/tmp/neutron-slice5-project";
+export const SLICE5_FINGERPRINT =
+  "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
 export const SLICE5_SESSION = "session-slice5";
 export const SLICE5_PROJECT = "project-slice5";
 export const SLICE5_CONTENT_A = "export const a = 1;\n";
@@ -102,7 +104,7 @@ export function slice5Execution(input: {
   readonly role?: string;
   readonly root?: string;
 }): NeutronNodeExecutionSuccess {
-  const fingerprint = input.fingerprint ?? "fp-unchanged";
+  const fingerprint = input.fingerprint ?? SLICE5_FINGERPRINT;
   const state = input.state ?? "completed";
   return {
     adapter: { modelId: "fixture-slice5", providerKind: "ollama" },

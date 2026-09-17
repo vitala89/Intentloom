@@ -2,6 +2,7 @@ import type { NeutronRuntimeSession } from "../../protocol/src/neutron-runtime.j
 import type { NeutronTaskGraph } from "../../protocol/src/neutron-runtime.js";
 import { parseNeutronMutationProposalCandidateOutput } from "../../validator/src/neutron-mutation-proposal-candidate.js";
 import type { NeutronMutationProposalCandidate } from "../../protocol/src/neutron-mutation-proposal-candidate.js";
+import { neutronGraphMutationMaterializationIsCurrent } from "./neutron-graph-mutation-current.js";
 import {
   neutronNodeMayPropose,
   type NeutronMutationProposalPermissionInput,
@@ -9,6 +10,7 @@ import {
 import { digestNeutronNodeOutput } from "./neutron-node-result.js";
 import type { NeutronNodeExecutionSuccess } from "./neutron-node-execution.js";
 import type { NeutronAttemptEvidence } from "./neutron-scheduler-attempt.js";
+import type { NeutronGraphStaleReport } from "./neutron-scheduler-stale.js";
 import { sortNeutronTaskIds } from "./neutron-scheduler-sort.js";
 import type { NeutronReadyNodeOutcome } from "./neutron-scheduler-wave-types.js";
 
@@ -27,6 +29,8 @@ export interface CollectNeutronGraphMutationCandidatesInput {
   readonly session: NeutronRuntimeSession;
   readonly graphId: string;
   readonly outcomes: readonly NeutronReadyNodeOutcome[];
+  readonly currentProjectFingerprint: string;
+  readonly stale: NeutronGraphStaleReport | null;
   readonly permission: Omit<
     NeutronMutationProposalPermissionInput,
     "role" | "nodeRequiredCapabilities" | "parentRequiredCapabilities"
@@ -76,6 +80,15 @@ function candidateFromOutcome(
   }
   if (
     execution.projectFingerprintBefore !== execution.projectFingerprintAfter
+  ) {
+    return null;
+  }
+  if (
+    !neutronGraphMutationMaterializationIsCurrent({
+      attemptFingerprint: execution.projectFingerprintAfter,
+      currentFingerprint: input.currentProjectFingerprint,
+      stale: input.stale,
+    })
   ) {
     return null;
   }
