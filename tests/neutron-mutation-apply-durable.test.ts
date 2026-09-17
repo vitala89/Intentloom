@@ -240,7 +240,9 @@ describe("Neutron mutation Slice 3.1 durable approval store", () => {
     const first = await hostApply(prepared, {
       failAt: "post-write-consistency",
     });
-    expect(first.reconciliationRequired).toBe(true);
+    expect(first.applied).toBe(false);
+    expect(first.status).toBe("transaction-failed");
+    expect(first.verification?.rollback.verified).toBe(true);
     const second = await hostApply(prepared);
     expect(second.applied).toBe(false);
     expect(second.failureCode).toBe("approval-consumed");

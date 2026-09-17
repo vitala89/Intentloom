@@ -35,6 +35,25 @@ export type {
   NeutronMutationDurableTransactionRecord,
   NeutronMutationTransactionState,
 } from "./neutron-mutation-apply.js";
+export {
+  NEUTRON_HIDDEN_GENERATED_METADATA_PATHS,
+  NEUTRON_MUTATION_CHECK_STATUSES,
+  NEUTRON_MUTATION_PROJECT_STATE_CHANGES,
+  NEUTRON_MUTATION_VERIFICATION_EVIDENCE_SCHEMA_URN,
+  NEUTRON_MUTATION_VERIFICATION_STATUSES,
+} from "./neutron-mutation-verification.js";
+export type {
+  NeutronMutationByteCheck,
+  NeutronMutationByteVerification,
+  NeutronMutationCheckStatus,
+  NeutronMutationConsistencyVerification,
+  NeutronMutationPreviousContentDigest,
+  NeutronMutationProjectStateChange,
+  NeutronMutationRollbackProjection,
+  NeutronMutationVerificationEvidence,
+  NeutronMutationVerificationStatus,
+  NeutronMutationWriteSetVerification,
+} from "./neutron-mutation-verification.js";
 
 export const NEUTRON_MUTATION_PROPOSAL_SCHEMA_URN =
   "urn:intentloom:schema:neutron-mutation-proposal:1" as const;

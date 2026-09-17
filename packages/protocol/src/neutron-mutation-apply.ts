@@ -1,3 +1,8 @@
+import type {
+  NeutronMutationVerificationEvidence,
+  NeutronMutationVerificationStatus,
+} from "./neutron-mutation-verification.js";
+
 export const NEUTRON_MUTATION_APPLY_RESULT_SCHEMA_URN =
   "urn:intentloom:schema:neutron-mutation-apply-result:1" as const;
 
@@ -69,6 +74,9 @@ export interface NeutronMutationApplyResult {
   readonly reconciliationRequired: boolean;
   readonly failureCode?: NeutronMutationApplyFailureCode;
   readonly diagnostics: readonly string[];
+  readonly verificationStatus?: NeutronMutationVerificationStatus;
+  readonly verificationEvidenceDigest?: string;
+  readonly verification?: NeutronMutationVerificationEvidence;
 }
 
 /**

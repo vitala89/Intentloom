@@ -22,6 +22,7 @@ import type { NeutronMutationApplyInput } from "./neutron-mutation-apply-types.j
 import { canonicalizeNeutronMutationRoot } from "./neutron-mutation-containment.js";
 
 export type { NeutronMutationApplyInput } from "./neutron-mutation-apply-types.js";
+export { retryNeutronMutationVerification } from "./neutron-mutation-verification-retry.js";
 
 export async function applyApprovedNeutronMutation(
   input: NeutronMutationApplyInput,

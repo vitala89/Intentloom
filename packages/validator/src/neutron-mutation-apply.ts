@@ -5,6 +5,7 @@ import {
   type NeutronMutationApplyResult,
 } from "../../protocol/src/neutron-mutation-apply.js";
 import { assertNeutronMutationDigest } from "./neutron-mutation-canonical.js";
+import { validateNeutronMutationVerificationEvidence } from "./neutron-mutation-verification.js";
 import {
   isObject,
   nonEmpty,
@@ -45,6 +46,41 @@ export function validateNeutronMutationApplyResult(
   if (!applied && failureCode === undefined && status !== "replay-recovered") {
     throw new Error("unsuccessful apply result must include failureCode");
   }
+  const verification =
+    value.verification === undefined
+      ? undefined
+      : validateNeutronMutationVerificationEvidence(value.verification);
+  const verificationStatus =
+    value.verificationStatus === undefined
+      ? undefined
+      : oneOf(
+          value.verificationStatus,
+          [
+            "verified",
+            "verification-failed",
+            "verification-incomplete",
+            "reconciliation-required",
+          ] as const,
+          "verificationStatus",
+        );
+  const verificationEvidenceDigest =
+    value.verificationEvidenceDigest === undefined
+      ? undefined
+      : assertNeutronMutationDigest(
+          value.verificationEvidenceDigest,
+          "verificationEvidenceDigest",
+        );
+  bindVerificationFields({
+    applied,
+    reconciliationRequired: value.reconciliationRequired === true,
+    transactionId: nonEmpty(value.transactionId, "transactionId"),
+    approvalId: nonEmpty(value.approvalId, "approvalId"),
+    ...(verification !== undefined ? { verification } : {}),
+    ...(verificationStatus !== undefined ? { verificationStatus } : {}),
+    ...(verificationEvidenceDigest !== undefined
+      ? { verificationEvidenceDigest }
+      : {}),
+  });
   return {
     schemaVersion: NEUTRON_MUTATION_APPLY_RESULT_SCHEMA_URN,
     transactionId: nonEmpty(value.transactionId, "transactionId"),
@@ -64,6 +100,11 @@ export function validateNeutronMutationApplyResult(
     reconciliationRequired: value.reconciliationRequired === true,
     ...(failureCode !== undefined ? { failureCode } : {}),
     diagnostics: strings(value.diagnostics, "diagnostics"),
+    ...(verificationStatus !== undefined ? { verificationStatus } : {}),
+    ...(verificationEvidenceDigest !== undefined
+      ? { verificationEvidenceDigest }
+      : {}),
+    ...(verification !== undefined ? { verification } : {}),
   };
 }
 
@@ -76,5 +117,42 @@ function rejectSecretFields(value: Record<string, unknown>): void {
   }
   if (Object.hasOwn(value, "grantedApprovals")) {
     throw new Error("mutation apply result must not include grantedApprovals");
+  }
+}
+
+function bindVerificationFields(input: {
+  readonly applied: boolean;
+  readonly reconciliationRequired: boolean;
+  readonly verification?: NeutronMutationApplyResult["verification"];
+  readonly verificationStatus?: NeutronMutationApplyResult["verificationStatus"];
+  readonly verificationEvidenceDigest?: string;
+  readonly transactionId: string;
+  readonly approvalId: string;
+}): void {
+  const evidence = input.verification;
+  if (evidence === undefined) return;
+  if (evidence.applied !== input.applied) {
+    throw new Error("verification applied flag must match apply result");
+  }
+  if (evidence.transactionId !== input.transactionId) {
+    throw new Error("verification evidence is bound to another transaction");
+  }
+  if (evidence.approvalId !== input.approvalId) {
+    throw new Error("verification evidence is bound to another approval");
+  }
+  if (
+    input.verificationStatus !== undefined &&
+    input.verificationStatus !== evidence.status
+  ) {
+    throw new Error("verificationStatus must match nested evidence");
+  }
+  if (
+    input.verificationEvidenceDigest !== undefined &&
+    input.verificationEvidenceDigest !== evidence.evidenceDigest
+  ) {
+    throw new Error("verificationEvidenceDigest must match nested evidence");
+  }
+  if (evidence.reconciliationRequired !== input.reconciliationRequired) {
+    throw new Error("verification reconciliation flag must match apply result");
   }
 }

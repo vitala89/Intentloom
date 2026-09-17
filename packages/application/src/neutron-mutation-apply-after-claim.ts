@@ -17,7 +17,10 @@ import type {
   NeutronMutationTransactionRecord,
 } from "./neutron-mutation-apply-store.js";
 import type { NeutronMutationApplyInput } from "./neutron-mutation-apply-types.js";
+import { persistExecutionWithVerification } from "./neutron-mutation-apply-verify.js";
 import { validateNeutronMutationApplyPreWrite } from "./neutron-mutation-apply-validate.js";
+import { snapshotHiddenGeneratedMetadata } from "./neutron-mutation-verification-hidden.js";
+import { digestNeutronMutationObservedState } from "./neutron-mutation-verification-state.js";
 import { fingerprintNeutronProjectRoot } from "./neutron-session-fingerprint.js";
 
 export async function continueClaimedApplyWithLock(
@@ -144,6 +147,15 @@ async function finishExecutingApply(
   currentProjectStateDigest: string,
 ): Promise<NeutronMutationApplyResult> {
   try {
+    const hiddenMetadataExistedBefore = await snapshotHiddenGeneratedMetadata(
+      request.proposal.root,
+      input.fs,
+    );
+    const preApplyObservedDigest = await digestNeutronMutationObservedState({
+      root: request.proposal.root,
+      fs: input.fs,
+      paths: request.artifact.changedPaths,
+    });
     const execution = await executeTrustedDeclaredPathApply({
       transactionId: request.transactionId,
       plan: request.proposal.plan,
@@ -156,7 +168,15 @@ async function finishExecutingApply(
         ? { rollbackFailPaths: input.rollbackFailPaths }
         : {}),
     });
-    return persistExecution(store, executing, request, execution);
+    return persistExecutionWithVerification(
+      input,
+      request,
+      store,
+      executing,
+      execution,
+      preApplyObservedDigest,
+      hiddenMetadataExistedBefore,
+    );
   } catch (error) {
     return persistCaughtUnknown(store, executing, request, error);
   }
@@ -180,47 +200,6 @@ function persistCaughtUnknown(
         request.approval.approvalToken,
       ),
     ],
-    state: "failed-needs-reconciliation",
-  });
-}
-
-function persistExecution(
-  store: NeutronMutationApprovalStore,
-  executing: NeutronMutationTransactionRecord,
-  request: ParsedNeutronMutationApplyRequest,
-  execution: {
-    readonly applied: boolean;
-    readonly createdPaths: readonly string[];
-    readonly updatedPaths: readonly string[];
-    readonly unchangedPaths: readonly string[];
-    readonly rollbackCompleted: boolean;
-    readonly diagnostics: readonly string[];
-  },
-): Promise<NeutronMutationApplyResult> {
-  if (execution.applied) {
-    return persistTerminal(store, executing, request, {
-      status: "applied",
-      applied: true,
-      rollbackCompleted: true,
-      reconciliationRequired: false,
-      createdPaths: execution.createdPaths,
-      updatedPaths: execution.updatedPaths,
-      unchangedPaths: execution.unchangedPaths,
-      diagnostics: [],
-      state: "applied",
-    });
-  }
-  const incomplete = execution.rollbackCompleted === false;
-  return persistTerminal(store, executing, request, {
-    status: incomplete ? "rollback-incomplete" : "transaction-failed",
-    applied: false,
-    failureCode: incomplete ? "rollback-incomplete" : "transaction-failed",
-    rollbackCompleted: execution.rollbackCompleted,
-    reconciliationRequired: true,
-    createdPaths: execution.createdPaths,
-    updatedPaths: execution.updatedPaths,
-    unchangedPaths: execution.unchangedPaths,
-    diagnostics: execution.diagnostics,
     state: "failed-needs-reconciliation",
   });
 }

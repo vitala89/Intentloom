@@ -6,6 +6,10 @@ import {
   persistUnknown,
   rejectAfterClaim,
 } from "./neutron-mutation-apply-persist.js";
+import {
+  needsVerificationResume,
+  resumeReadOnlyVerification,
+} from "./neutron-mutation-apply-verify.js";
 import type {
   NeutronMutationApprovalStore,
   NeutronMutationClaimOutcome,
@@ -33,7 +37,7 @@ export async function runLockedApply(
     claimedAt: nowMs,
     updatedAt: nowMs,
   });
-  const resolved = await resolveClaim(store, request, claim);
+  const resolved = await resolveClaim(input, store, request, claim);
   if (resolved.kind === "result") return resolved.result;
   return continueClaimedApplyWithLock(
     input,
@@ -48,6 +52,7 @@ export async function runLockedApply(
 }
 
 async function resolveClaim(
+  input: NeutronMutationApplyInput,
   store: NeutronMutationApprovalStore,
   request: ParsedNeutronMutationApplyRequest,
   claim: NeutronMutationClaimOutcome,
@@ -65,6 +70,17 @@ async function resolveClaim(
     };
   }
   if (claim.kind === "replay" && claim.record.result !== undefined) {
+    if (needsVerificationResume(claim.record.result)) {
+      return {
+        kind: "result",
+        result: await resumeReadOnlyVerification(
+          input,
+          request,
+          store,
+          claim.record,
+        ),
+      };
+    }
     return { kind: "result", result: claim.record.result };
   }
   if (claim.kind === "conflict") {

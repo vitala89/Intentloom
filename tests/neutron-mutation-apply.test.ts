@@ -205,6 +205,16 @@ describe("Neutron mutation Slice 3 host Apply", () => {
   it("writes reviewed bytes exactly once without undeclared .aif metadata", async () => {
     const project = await prepareProject();
     const result = await hostApply(project);
+    if (result.applied !== true) {
+      throw new Error(
+        JSON.stringify({
+          status: result.status,
+          failureCode: result.failureCode,
+          diagnostics: result.diagnostics,
+          verificationStatus: result.verificationStatus,
+        }),
+      );
+    }
     expect(result.applied).toBe(true);
     expect(result.status).toBe("applied");
     expect(result.failureCode).toBeUndefined();
@@ -287,7 +297,9 @@ describe("Neutron mutation Slice 3 host Apply", () => {
     });
     expect(result.applied).toBe(false);
     expect(result.failureCode).toBe("transaction-failed");
-    expect(result.reconciliationRequired).toBe(true);
+    expect(result.verification?.rollback.verified).toBe(true);
+    expect(result.verification?.rollback.completed).toBe(true);
+    expect(result.reconciliationRequired).toBe(false);
     expect(await readFile(join(project.root, "src/a.ts"), "utf8")).toBe(
       "old a\n",
     );

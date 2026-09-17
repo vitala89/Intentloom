@@ -101,4 +101,55 @@ describe("executeApprovedApplyPlan", () => {
       "export const newFile = true;\n",
     );
   });
+
+  it("preserves rollback evidence when the transaction fails after capture", async () => {
+    const fs = createMemoryFileSystem({
+      "/project/file1.ts": "const old = 1;\n",
+    });
+    const request: ApprovedApplyRequest = {
+      schemaVersion: 1,
+      targetResourceId: "res-1",
+      grantedApprovals: ["atomic-commit-approval"],
+      plan: {
+        schemaVersion: 1,
+        planDigest: "sha256:plan1",
+        projectStateDigest: "sha256:state1",
+        targetRoot: "/project",
+        changedPaths: ["file1.ts", "file2.ts"],
+      },
+    };
+    const filesToApply: GeneratedFile[] = [
+      {
+        path: "file1.ts",
+        content: "const updated = 2;\n",
+        checksum: "sha256:file1",
+        sources: ["src/file1.ts"],
+      },
+      {
+        path: "file2.ts",
+        content: "export const created = true;\n",
+        checksum: "sha256:file2",
+        sources: ["src/file2.ts"],
+      },
+    ];
+    const result = await executeApprovedApplyPlan(request, filesToApply, {
+      fs,
+      failAt: "post-write-consistency",
+    });
+    expect(result.applied).toBe(false);
+    expect(result.rollbackEvidence).toBeDefined();
+    expect(
+      result.rollbackEvidence?.rollbackFiles.find(
+        (file) => file.path === "file1.ts",
+      )?.previousContent,
+    ).toBe("const old = 1;\n");
+    expect(
+      result.rollbackEvidence?.rollbackFiles.find(
+        (file) => file.path === "file2.ts",
+      )?.previousContent,
+    ).toBeNull();
+    expect(
+      result.diagnostics.some((item) => item.startsWith("failed-stage:")),
+    ).toBe(true);
+  });
 });

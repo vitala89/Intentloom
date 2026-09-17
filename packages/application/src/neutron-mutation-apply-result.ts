@@ -4,6 +4,7 @@ import {
   type NeutronMutationApplyResult,
   type NeutronMutationApplyStatus,
 } from "../../protocol/src/neutron-mutation-apply.js";
+import type { NeutronMutationVerificationEvidence } from "../../protocol/src/neutron-mutation-verification.js";
 import { validateNeutronMutationApplyResult } from "../../validator/src/neutron-mutation-apply.js";
 
 export function buildNeutronMutationApplyResult(input: {
@@ -21,6 +22,7 @@ export function buildNeutronMutationApplyResult(input: {
   readonly reconciliationRequired: boolean;
   readonly failureCode?: NeutronMutationApplyFailureCode;
   readonly diagnostics?: readonly string[];
+  readonly verification?: NeutronMutationVerificationEvidence;
 }): NeutronMutationApplyResult {
   return validateNeutronMutationApplyResult({
     schemaVersion: NEUTRON_MUTATION_APPLY_RESULT_SCHEMA_URN,
@@ -40,6 +42,13 @@ export function buildNeutronMutationApplyResult(input: {
       ? { failureCode: input.failureCode }
       : {}),
     diagnostics: input.diagnostics ?? [],
+    ...(input.verification !== undefined
+      ? {
+          verificationStatus: input.verification.status,
+          verificationEvidenceDigest: input.verification.evidenceDigest,
+          verification: input.verification,
+        }
+      : {}),
   });
 }
 

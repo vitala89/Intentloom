@@ -107,6 +107,12 @@ export async function executeApprovedApplyPlan(
 
   if (syncResult.status !== "success") {
     diagnostics.push(`transaction-failed:${syncResult.status}`);
+    if (syncResult.failedStage !== undefined) {
+      diagnostics.push(`failed-stage:${syncResult.failedStage}`);
+    }
+    if (syncResult.rollbackAttempted) {
+      diagnostics.push("rollback-attempted");
+    }
     if (syncResult.rollbackFailures && syncResult.rollbackFailures.length > 0) {
       diagnostics.push(
         `rollback-failures:${syncResult.rollbackFailures.join(",")}`,
@@ -117,6 +123,12 @@ export async function executeApprovedApplyPlan(
       targetResourceId: request.targetResourceId,
       applied: false,
       gateResult,
+      rollbackEvidence: {
+        schemaVersion: 1,
+        planDigest: request.plan.planDigest,
+        targetRoot,
+        rollbackFiles,
+      },
       diagnostics,
     });
   }

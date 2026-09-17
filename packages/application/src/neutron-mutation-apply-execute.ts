@@ -1,5 +1,6 @@
 import type { GeneratedFile } from "@intentloom/core";
 import type { ApprovedApplyPlan } from "../../protocol/src/approved-apply.js";
+import type { ApprovedApplyRollbackFile } from "../../protocol/src/approved-apply.js";
 import { NEUTRON_MUTATION_INNER_APPLY_APPROVAL } from "../../protocol/src/neutron-mutation.js";
 import { exactNeutronMutationPathSetsEqual } from "../../validator/src/neutron-mutation-path-set.js";
 import { executeApprovedApplyPlan } from "./approved-apply-engine.js";
@@ -23,7 +24,11 @@ export interface NeutronTrustedApplyExecution {
   readonly updatedPaths: readonly string[];
   readonly unchangedPaths: readonly string[];
   readonly rollbackCompleted: boolean;
+  readonly rollbackAttempted: boolean;
+  readonly rollbackFailures: readonly string[];
+  readonly failedStage?: string;
   readonly diagnostics: readonly string[];
+  readonly rollbackFiles: readonly ApprovedApplyRollbackFile[];
 }
 
 export async function executeTrustedDeclaredPathApply(
@@ -35,14 +40,7 @@ export async function executeTrustedDeclaredPathApply(
       input.plan.changedPaths,
     )
   ) {
-    return {
-      applied: false,
-      createdPaths: [],
-      updatedPaths: [],
-      unchangedPaths: [],
-      rollbackCompleted: true,
-      diagnostics: ["path-scope-mismatch"],
-    };
+    return emptyExecution(["path-scope-mismatch"]);
   }
   const planned = await classifyPlannedWrites(input);
   const result = await executeApprovedApplyPlan(
@@ -64,16 +62,52 @@ export async function executeTrustedDeclaredPathApply(
         : {}),
     },
   );
+  const rollbackFailures = parseRollbackFailures(result.diagnostics);
+  const stage = failedStage(result.diagnostics);
   return {
     applied: result.applied === true,
     ...planned,
-    rollbackCompleted: !result.diagnostics.some((item) =>
-      item.startsWith("rollback-failures:"),
-    ),
+    rollbackCompleted: rollbackFailures.length === 0,
+    rollbackAttempted: result.diagnostics.includes("rollback-attempted"),
+    rollbackFailures,
+    ...(stage !== undefined ? { failedStage: stage } : {}),
     diagnostics: result.diagnostics.filter(
       (item) => !item.includes("previousContent"),
     ),
+    rollbackFiles: result.rollbackEvidence?.rollbackFiles ?? [],
   };
+}
+
+function emptyExecution(
+  diagnostics: readonly string[],
+): NeutronTrustedApplyExecution {
+  return {
+    applied: false,
+    createdPaths: [],
+    updatedPaths: [],
+    unchangedPaths: [],
+    rollbackCompleted: true,
+    rollbackAttempted: false,
+    rollbackFailures: [],
+    diagnostics,
+    rollbackFiles: [],
+  };
+}
+
+function parseRollbackFailures(
+  diagnostics: readonly string[],
+): readonly string[] {
+  const match = diagnostics.find((item) =>
+    item.startsWith("rollback-failures:"),
+  );
+  if (match === undefined) return [];
+  const listed = match.slice("rollback-failures:".length);
+  return listed.length === 0 ? [] : listed.split(",");
+}
+
+function failedStage(diagnostics: readonly string[]): string | undefined {
+  const match = diagnostics.find((item) => item.startsWith("failed-stage:"));
+  return match === undefined ? undefined : match.slice("failed-stage:".length);
 }
 
 async function classifyPlannedWrites(input: {
