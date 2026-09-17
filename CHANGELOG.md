@@ -7,6 +7,16 @@ All notable changes are documented here. This project follows Keep a Changelog p
 Changes listed here are merged after the current release-preparation scope and
 are not included in the current npm artifact until a later release.
 
+- Neutron Mutation Slice 5 integrates N5 proposal generation with existing
+  review/Apply: an authoritative completed attempt may emit a strict
+  `mutation-proposal` candidate; the host materializes a content-bound
+  `NeutronMutationProposal` and review artifact, then stops. Graph-linked Apply
+  is host composition only (`applyApprovedNeutronGraphMutation`) after a
+  separately issued approval and stale revalidation. `expectedOutput` preview
+  remains non-authoritative. `mutationAttempted` stays false for proposal
+  nodes. `mutationAllowed` remains literal `false`. N4 stays the seven
+  read-only tools. No Desktop Approve/Apply UX.
+
 - Neutron Mutation Slice 4 records independent post-Apply verification and
   sanitized rollback evidence. Canonical Apply success (`applied`) is distinct
   from verification status. Failed sync now preserves rollback evidence.
