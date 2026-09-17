@@ -708,14 +708,21 @@ fails closed. **Mutation Slice 4 implemented** (merge
 byte/path verification, observed project-state digests, sanitized rollback
 evidence on failed sync, and durable verification status. `applied` and
 `verified` stay distinct; verification failure never retries Apply.
+**Mutation Slice 5 implemented** (merge
+`0eb326986537f125abfefc573e6709824914b37c`, PR #507): authoritative N5
+attempts may emit a strict `mutation-proposal` candidate; the host
+materializes a content-bound review artifact and stops. Graph-linked Apply
+is host composition only after a separately issued approval and stale
+revalidation. `expectedOutput` preview cannot authorize Apply. Proposal
+nodes keep `mutationAttempted: false`.
 `NeutronRuntimeSession.mutationAllowed` remains literal `false`. N4 catalog
 remains read-only. The Slice 3 security review remains the historical NO-GO
 for Apply on pre-2.5 contracts
 ([`NEUTRON_MUTATION_SLICE3_SECURITY_REVIEW.md`](docs/roadmap/NEUTRON_MUTATION_SLICE3_SECURITY_REVIEW.md)).
-Mutation Slice 5 N5 integration, Desktop Approve/Apply UX, Desktop
-verification UX, host rollback execution / Undo, any N4 mutation tool,
-optional N3 Slice 5, and P4l17 are not authorized. Other post-P4 candidates
-remain in `POST_W12_NEXT_INCREMENT_PLAN.md`.
+Desktop Approve/Apply UX, Desktop verification UX, host rollback execution /
+Undo, any N4 mutation tool, optional N3 Slice 5, and P4l17 are not
+authorized. Other post-P4 candidates remain in
+`POST_W12_NEXT_INCREMENT_PLAN.md`.
 
 The Desktop discovery/error and Diff/Timeline slices remain recorded in
 [PHASE1_CONTRACTS.md](docs/desktop/PHASE1_CONTRACTS.md).

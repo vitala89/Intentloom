@@ -943,6 +943,11 @@ Approve/Apply unless a **later** grant.
 
 **Exit:** proposal visible; Apply impossible.
 
+Mutation Slice 5 (PR #507) made N5 attempt output the authoritative proposal
+source. N6 `expectedOutput` binding remains **preview-only** and cannot
+authorize review artifacts or Apply. This brief still does not authorize
+Desktop Approve/Apply controls.
+
 Do not start Slice 5 from N6 Slice 1 authorization.
 
 ---

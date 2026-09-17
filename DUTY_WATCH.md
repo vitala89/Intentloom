@@ -16,11 +16,45 @@ declared-path sync contract). **Mutation Slice 3 implemented** (host-only
 single approved transaction Apply). **Mutation Slice 3.1 implemented**
 (crash-safe durable approval/transaction state). **Mutation Slice 4
 implemented** (independent post-Apply verification + sanitized rollback
-evidence). **N6 Slices 1–5 implemented** (read-only Desktop Neutron, including
-mutation proposal review). `mutationAllowed` remains literal `false`. N4
-remains the seven read-only tools. Optional N3 Slice 5, P4l17, Mutation
-Slice 5 N5 integration, Desktop Approve/Apply UX, Desktop verification UX,
-host rollback execution / Undo, and any N4 mutation tool remain unauthorized.
+evidence). **Mutation Slice 5 implemented** (N5 proposal/review integration;
+host-only graph-linked Apply composition). **N6 Slices 1–5 implemented**
+(read-only Desktop Neutron, including mutation proposal review).
+`mutationAllowed` remains literal `false`. N4 remains the seven read-only
+tools. Optional N3 Slice 5, P4l17, Desktop Approve/Apply UX, Desktop
+verification UX, host rollback execution / Undo, and any N4 mutation tool
+remain unauthorized.
+
+### 2026-09-17, Neutron Mutation Slice 5 — N5 proposal/review integration handoff
+
+- **Status:** implementation merged; this docs-only handoff
+- **Implementation PR:** https://github.com/vitala89/Intentloom/pull/507 (merged)
+- **Implementation merge SHA / authoritative `main` tip after implementation:**
+  `0eb326986537f125abfefc573e6709824914b37c`
+- **Implementation head SHA:** `b63944d70a1e7dcb6af760b7e86743aeccea19d2`
+- **Starting main / origin/main:** `8c3178ef8db6024352a013211c7bfae13fc068a6`
+  (tracked tree clean; expected `dcbaad35fae94c352fc4a411b9063d3f189a20e4`
+  had advanced by docs-only #506).
+- **Handoff PR:** pending this docs-only PR
+- **Handoff merge SHA / final main for Slice 5:** pending SHA-finalize after
+  this handoff merges
+- **Scope delivered:** Authoritative completed N5 attempts may emit a strict
+  `NeutronMutationProposalCandidate`. Host materialization binds exact file
+  bytes into `NeutronMutationProposal` / `NeutronMutationReviewArtifact` and
+  additive graph proposal evidence, then stops at human review. Graph-linked
+  Apply is host composition (`applyApprovedNeutronGraphMutation`) after a
+  separately issued approval and `detectNeutronGraphStaleness`. N5 never
+  Applies or retries mutation. `expectedOutput` preview remains
+  non-authoritative. `mutationAttempted` stays false for proposal nodes.
+- **Mutation authority:** Unchanged. Host-held approval + durable claimed
+  transaction + existing `applyApprovedNeutronMutation`. Slice 4 verification
+  is reused. `mutationAllowed` remains literal `false`.
+- **Not authorized:** Desktop Approve/Apply UX; Desktop verification/rollback
+  evidence UX; host rollback execution / Undo; any N4 mutation tool;
+  autonomous graph runner; autonomous mutation; automatic Apply retries;
+  optional N3 Slice 5; P4l17.
+- **Next first action:** **None from automation.** Await explicit maintainer
+  authorization for Desktop Neutron Approve/Apply UX or another listed
+  follow-up.
 
 ### 2026-09-17, Neutron Mutation Slice 4 — post-Apply verification evidence handoff
 
