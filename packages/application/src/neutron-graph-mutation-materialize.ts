@@ -10,7 +10,12 @@ import {
   validateNeutronMutationProposal,
 } from "../../validator/src/neutron-mutation.js";
 import { canonicalizeNeutronMutationPaths } from "../../validator/src/neutron-mutation-canonical.js";
+import {
+  assertNeutronGraphMutationMaterializationCurrent,
+  neutronGraphMutationProjectStateDigest,
+} from "./neutron-graph-mutation-current.js";
 import { buildNeutronGraphMutationProposalEvidence } from "./neutron-graph-mutation-evidence.js";
+import type { NeutronGraphStaleReport } from "./neutron-scheduler-stale.js";
 import {
   generatedFilesFromCandidate,
   hostNeutronGraphMutationArtifactId,
@@ -26,7 +31,8 @@ import type {
 export interface MaterializeNeutronGraphMutationReviewInput {
   readonly session: NeutronRuntimeSession;
   readonly record: NeutronGraphMutationCandidateRecord;
-  readonly projectStateDigest: string;
+  readonly currentProjectFingerprint: string;
+  readonly stale?: NeutronGraphStaleReport | null;
   readonly now: () => number;
   readonly store: NeutronGraphMutationPayloadStore;
   readonly expiresAt?: number;
@@ -44,6 +50,11 @@ export function materializeNeutronGraphMutationReview(
   if (execution.subagent.mutationAttempted !== false) {
     throw new Error("proposal generation must not set mutationAttempted");
   }
+  assertNeutronGraphMutationMaterializationCurrent({
+    attemptFingerprint: execution.projectFingerprintAfter,
+    currentFingerprint: input.currentProjectFingerprint,
+    stale: input.stale ?? null,
+  });
   const files = generatedFilesFromCandidate(input.record.candidate.files);
   const proposal = hostProposal(input, files);
   const artifact = materializeNeutronMutationReviewArtifact({
@@ -83,7 +94,9 @@ function hostProposal(
     contentDigest: digestGeneratedFileContent(file.content),
   }));
   const planDigest = digestContentBoundApplyPlan({
-    projectStateDigest: input.projectStateDigest,
+    projectStateDigest: neutronGraphMutationProjectStateDigest(
+      input.record.execution.projectFingerprintAfter,
+    ),
     targetRoot: input.session.root,
     fileBindings,
   });
@@ -107,7 +120,9 @@ function hostProposal(
     plan: {
       schemaVersion: 1 as const,
       planDigest,
-      projectStateDigest: input.projectStateDigest,
+      projectStateDigest: neutronGraphMutationProjectStateDigest(
+        input.record.execution.projectFingerprintAfter,
+      ),
       targetRoot: input.session.root,
       changedPaths: [...changedPaths],
       ...(input.expiresAt === undefined ? {} : { expiresAt: input.expiresAt }),

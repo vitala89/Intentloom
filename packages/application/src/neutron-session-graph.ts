@@ -108,6 +108,8 @@ export async function executeStoredNeutronGraph(input: {
   readonly graphId?: string;
   readonly capabilities?: AgentRoleCapabilities;
   readonly sessionProposalCapabilities?: readonly string[];
+  readonly profileProposalCapabilities?: readonly string[];
+  readonly capabilityCeiling?: readonly string[];
   readonly mutationPayloadStore?: NeutronGraphMutationPayloadStore;
   readonly now?: () => number;
 }): Promise<StoredNeutronSession> {
@@ -158,11 +160,11 @@ export async function executeStoredNeutronGraph(input: {
         session,
       }) ?? input.stored.mutationProposal;
     const bound = bindExecutedGraphMutationState({
+      currentProjectFingerprint: after,
       graph: wave.graph,
       graphId,
       outcomes: wave.outcomes,
       preview,
-      projectStateDigest: `sha256:${after}`,
       result: reconciled,
       session,
       stored: input.stored,
@@ -172,6 +174,14 @@ export async function executeStoredNeutronGraph(input: {
         : {
             sessionProposalCapabilities: input.sessionProposalCapabilities,
           }),
+      ...(input.profileProposalCapabilities === undefined
+        ? {}
+        : {
+            profileProposalCapabilities: input.profileProposalCapabilities,
+          }),
+      ...(input.capabilityCeiling === undefined
+        ? {}
+        : { capabilityCeiling: input.capabilityCeiling }),
       ...(input.mutationPayloadStore === undefined
         ? {}
         : { mutationPayloadStore: input.mutationPayloadStore }),

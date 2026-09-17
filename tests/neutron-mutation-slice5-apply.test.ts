@@ -247,8 +247,10 @@ describe("Neutron mutation Slice 5 host composition", () => {
     if (!executed.executed) return;
     const store = createMemoryNeutronGraphMutationPayloadStore();
     const records = collectNeutronGraphMutationCandidates({
+      currentProjectFingerprint: executed.projectFingerprintAfter,
       graph: executed.graph,
       graphId: "graph-slice5",
+      stale: null,
       outcomes: [
         {
           admitted: true,
@@ -287,8 +289,8 @@ describe("Neutron mutation Slice 5 host composition", () => {
     expect(records).toHaveLength(1);
     const digest = `sha256:${await fingerprintNeutronProjectRoot(project.root)}`;
     const bundle = materializeNeutronGraphMutationReview({
+      currentProjectFingerprint: executed.projectFingerprintAfter,
       now: () => SLICE5_NOW,
-      projectStateDigest: digest,
       record: records[0]!,
       session,
       store,
@@ -402,8 +404,10 @@ describe("Neutron mutation Slice 5 host composition", () => {
     if (!executed.executed) throw new Error("expected execution");
     const digest = `sha256:${await fingerprintNeutronProjectRoot(project.root)}`;
     const records = collectNeutronGraphMutationCandidates({
+      currentProjectFingerprint: executed.projectFingerprintAfter,
       graph: executed.graph,
       graphId: "graph-slice5",
+      stale: null,
       outcomes: [
         {
           admitted: true,
@@ -440,8 +444,8 @@ describe("Neutron mutation Slice 5 host composition", () => {
       session,
     });
     const bundle = materializeNeutronGraphMutationReview({
+      currentProjectFingerprint: executed.projectFingerprintAfter,
       now: () => SLICE5_NOW,
-      projectStateDigest: digest,
       record: records[0]!,
       session,
       store,
@@ -557,8 +561,10 @@ describe("Neutron mutation Slice 5 host composition", () => {
     const digest = `sha256:${await fingerprintNeutronProjectRoot(project.root)}`;
     const store = createMemoryNeutronGraphMutationPayloadStore();
     const records = collectNeutronGraphMutationCandidates({
+      currentProjectFingerprint: executed.projectFingerprintAfter,
       graph: executed.graph,
       graphId: "graph-slice5",
+      stale: null,
       outcomes: [
         {
           admitted: true,
@@ -595,8 +601,8 @@ describe("Neutron mutation Slice 5 host composition", () => {
       session,
     });
     const bundle = materializeNeutronGraphMutationReview({
+      currentProjectFingerprint: executed.projectFingerprintAfter,
       now: () => SLICE5_NOW,
-      projectStateDigest: digest,
       record: records[0]!,
       session,
       store,
@@ -650,8 +656,10 @@ describe("Neutron mutation Slice 5 host composition", () => {
     const digest = `sha256:${await fingerprintNeutronProjectRoot(project.root)}`;
     const store = createMemoryNeutronGraphMutationPayloadStore();
     const records = collectNeutronGraphMutationCandidates({
+      currentProjectFingerprint: executed.projectFingerprintAfter,
       graph: executed.graph,
       graphId: "graph-slice5",
+      stale: null,
       outcomes: [
         {
           admitted: true,
@@ -688,8 +696,8 @@ describe("Neutron mutation Slice 5 host composition", () => {
       session,
     });
     const bundle = materializeNeutronGraphMutationReview({
+      currentProjectFingerprint: executed.projectFingerprintAfter,
       now: () => SLICE5_NOW,
-      projectStateDigest: digest,
       record: records[0]!,
       session,
       store,

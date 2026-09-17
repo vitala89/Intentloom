@@ -11,6 +11,7 @@ import { digestContentBoundApplyPlan } from "../packages/validator/src/neutron-m
 import { digestGeneratedFileContent } from "../packages/validator/src/neutron-mutation.js";
 import {
   SLICE5_CONTENT_A,
+  SLICE5_FINGERPRINT,
   SLICE5_NOW,
   slice5CandidateOutput,
   slice5Execution,
@@ -29,11 +30,13 @@ function collect(input: {
   readonly outcomes: ReturnType<typeof slice5Outcome>[];
 }) {
   return collectNeutronGraphMutationCandidates({
+    currentProjectFingerprint: SLICE5_FINGERPRINT,
     graph: slice5Graph(input.nodes),
     graphId: "graph-slice5",
     outcomes: input.outcomes,
     permission: PERMISSION,
     session: slice5Session(),
+    stale: null,
   });
 }
 
@@ -146,11 +149,10 @@ describe("Neutron mutation Slice 5 graph candidates and provenance", () => {
         }),
       ],
     })[0]!;
-    const digest =
-      "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb";
+    const digest = `sha256:${SLICE5_FINGERPRINT}`;
     const bundle = materializeNeutronGraphMutationReview({
+      currentProjectFingerprint: SLICE5_FINGERPRINT,
       now: () => SLICE5_NOW,
-      projectStateDigest: digest,
       record,
       session: slice5Session(),
       store,
@@ -173,8 +175,8 @@ describe("Neutron mutation Slice 5 graph candidates and provenance", () => {
     expect(JSON.stringify(bundle.evidence)).not.toContain(SLICE5_CONTENT_A);
     expect(JSON.stringify(bundle.evidence)).not.toContain("approvalToken");
     const changed = materializeNeutronGraphMutationReview({
+      currentProjectFingerprint: SLICE5_FINGERPRINT,
       now: () => SLICE5_NOW,
-      projectStateDigest: digest,
       record: {
         ...record,
         candidate: {
@@ -215,9 +217,8 @@ describe("Neutron mutation Slice 5 graph candidates and provenance", () => {
       ],
     })[0]!;
     const bundle = materializeNeutronGraphMutationReview({
+      currentProjectFingerprint: SLICE5_FINGERPRINT,
       now: () => SLICE5_NOW,
-      projectStateDigest:
-        "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
       record,
       session: slice5Session(),
       store,
