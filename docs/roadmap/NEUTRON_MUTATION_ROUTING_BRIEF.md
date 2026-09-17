@@ -10,18 +10,20 @@ snapshots remain `mutationAllowed: false`. No N4 mutation route.
 **Slice 3 implemented** (PR #497, merge `816b0ccacafc62c8a1e13a4dbdb452a4cd70a392`)
 — host-only single approved transaction Apply. **Slice 3.1 implemented**
 (PR #500, merge `cb93edb3f66d90d2522514ae4e9b0725796a0e46`) — crash-safe
-durable approval/transaction state. Mutation routing is **not** complete:
-Slice 4 verification/rollback evidence UX and Slice 5 N5 integration remain
-unauthorized.
+durable approval/transaction state. **Slice 4 implemented** (PR #503, merge
+`b5c9a9556648382343bd90cc5e2c277d0775cf32`) — independent post-Apply
+verification and sanitized rollback evidence. Mutation routing is **not**
+complete: Slice 5 N5 integration, Desktop Approve/Apply UX, Desktop
+verification UX, and host rollback execution remain unauthorized.
 
 The Slice 3 security review remains the historical **NO-GO** for Apply on
 pre-2.5 contracts:
 [`NEUTRON_MUTATION_SLICE3_SECURITY_REVIEW.md`](NEUTRON_MUTATION_SLICE3_SECURITY_REVIEW.md).
 
-Slices 4–5 (rollback evidence, post-Apply verification, N5 proposal
-integration), write tools, generic shell, Desktop Approve/Apply UX, optional
-N3 Slice 5, and P4l17 remain unauthorized until a later explicit maintainer
-grant. N6 Slices 1–5 read-only Desktop are implemented separately.
+Slice 5 (N5 proposal integration), write tools, generic shell, Desktop
+Approve/Apply UX, Desktop verification UX, host rollback execution / Undo,
+optional N3 Slice 5, and P4l17 remain unauthorized until a later explicit
+maintainer grant. N6 Slices 1–5 read-only Desktop are implemented separately.
 
 Authoritative roadmap gate:
 [`NEUTRON_RUNTIME_ROADMAP.md`](NEUTRON_RUNTIME_ROADMAP.md) §N5–§N6 and this
@@ -31,15 +33,15 @@ brief.
 
 ## 1. Current baseline
 
-| Item                        | Evidence                                                                                            |
-| --------------------------- | --------------------------------------------------------------------------------------------------- |
-| **Current `main` SHA**      | `cb93edb3f66d90d2522514ae4e9b0725796a0e46` (`main` == `origin/main` after Slice 3.1 implementation) |
-| **N5 Slice 5**              | PR #453 head `a6819a49fe3cf1adbda93ea835d96fdf1decfc52`, merge `7a6e07c`                            |
-| **N5 handoff**              | PR #454 head `502629ffe7e5256a5fa4ad3b15b37c4760747240`                                             |
-| **N1–N5**                   | Runtime contracts, model adapter, context assembly, read-only tool router, executable task graph    |
-| **`mutationAllowed`**       | N1 `NeutronRuntimeSession.mutationAllowed` is typed `false`; validator rejects any other value      |
-| **N4 catalog**              | `inspect`, `doctor`, `memorySearch`, `timeline`, `conformance`, `securityAudit`, `projectDiff`      |
-| **Mutation implementation** | Slice 1–2.5 contracts/preflight/artifact + Slice 3 host-only Apply + Slice 3.1 durable claim        |
+| Item                        | Evidence                                                                                                                     |
+| --------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| **Current `main` SHA**      | `b5c9a9556648382343bd90cc5e2c277d0775cf32` (`main` == `origin/main` after Slice 4 implementation)                            |
+| **N5 Slice 5**              | PR #453 head `a6819a49fe3cf1adbda93ea835d96fdf1decfc52`, merge `7a6e07c`                                                     |
+| **N5 handoff**              | PR #454 head `502629ffe7e5256a5fa4ad3b15b37c4760747240`                                                                      |
+| **N1–N5**                   | Runtime contracts, model adapter, context assembly, read-only tool router, executable task graph                             |
+| **`mutationAllowed`**       | N1 `NeutronRuntimeSession.mutationAllowed` is typed `false`; validator rejects any other value                               |
+| **N4 catalog**              | `inspect`, `doctor`, `memorySearch`, `timeline`, `conformance`, `securityAudit`, `projectDiff`                               |
+| **Mutation implementation** | Slice 1–2.5 contracts/preflight/artifact + Slice 3 host-only Apply + Slice 3.1 durable claim + Slice 4 verification evidence |
 
 ### Capability summary used by this brief
 
@@ -416,8 +418,12 @@ docs):
   does not make `executeApprovedApplyPlan` itself a crash-atomic disk
   journal.
 - Desktop stub Apply atomicity (it does not write).
-- `executeApprovedApplyPlan` attaching rollback evidence on **failed** sync
-  (current code omits `rollbackEvidence` when `status !== "success"`).
+
+Slice 4 closed the failed-sync rollback-evidence gap:
+`executeApprovedApplyPlan` now attaches `rollbackEvidence` when
+synchronization fails. Neutron public evidence projects path/digest/status
+only (no raw previous bytes). Independent post-Apply verification still does
+not make the writer a crash-atomic disk journal.
 
 Initial Neutron Apply is **staged then commit** via the existing sync
 engine: atomic relative to that engine’s rollback, **best-effort** if
@@ -512,8 +518,10 @@ second backup system.
 | User rollback after successful Apply?          | Evidence exists; no Neutron-authorized “rollback tool” yet. Future slice: host-only revert using `rollbackEvidence`, same approval class. |
 | Who authorizes rollback?                       | Human/host, same as Apply. Model cannot roll back to hide a write.                                                                        |
 
-Close the gap where failed sync omits `rollbackEvidence` so operators can
-still see captured previous bytes.
+Slice 4 closed the failed-sync `rollbackEvidence` omission. Neutron operator
+evidence uses path, digest, existedBefore, restored, and rollback status — not
+raw previous file bodies. User rollback after successful Apply remains
+unauthorized.
 
 ---
 
@@ -628,8 +636,8 @@ not that justification.
 
 ## 22. Implementation slices
 
-Derived from gaps above. Slices 1–3 are implemented. Slice 4 verification
-and Slice 5 N5 integration remain unauthorized. See
+Derived from gaps above. Slices 1–4 are implemented. Slice 5 N5 integration
+remains unauthorized. See
 [`NEUTRON_MUTATION_SLICE3_SECURITY_REVIEW.md`](NEUTRON_MUTATION_SLICE3_SECURITY_REVIEW.md)
 for the historical pre-2.5 Apply blockers.
 
@@ -666,10 +674,14 @@ durable store. Claim, executing, applied, and failed-needs-reconciliation
 survive process restart. Same approval cannot become unused after crash.
 See §32.1.
 
-### Slice 4 — verification + rollback evidence
+### Slice 4 — verification + rollback evidence (implemented)
 
-Post-apply typed doctor/diff/fingerprint; failed-sync rollback evidence;
-consumed-approval persistence.
+Independent post-Apply byte/path verification, observed project-state
+digests, sanitized rollback evidence on failed sync, and durable verification
+status. `applied` and verification status stay distinct. Doctor/Diff/
+Conformance/Security Audit are not Slice 4 health gates (`diffProject` does
+not prove reviewed-byte equality). Desktop verification UX is deferred.
+See §32.2.
 
 ### Slice 5 — N5 proposal/review integration
 
@@ -739,25 +751,25 @@ after tests pass.” Future policy automation needs a separate authorization.
 
 ## 27. Open decisions (non-blocking for Slice 1)
 
-| #   | Decision                                            | Recommendation                                                    | Blocker for |
-| --- | --------------------------------------------------- | ----------------------------------------------------------------- | ----------- |
-| 1   | Flip `NeutronRuntimeSession.mutationAllowed`        | Keep `false` on model-facing sessions; host approval is the grant | Slice 3     |
-| 2   | Persist proposals under `.aif/` vs in-memory review | In-memory / daemon-held until Slice 5                             | Slice 5     |
-| 3   | `packages/neutron-runtime`                          | Keep in application; revisit at N6                                | N6          |
-| 4   | User rollback tool after success                    | Host-only, Slice 4+                                               | Slice 4     |
-| 5   | Exact vs subset `changedPaths`                      | Exact set for Slice 3                                             | Slice 3     |
+| #   | Decision                                            | Recommendation                                                       | Blocker for |
+| --- | --------------------------------------------------- | -------------------------------------------------------------------- | ----------- |
+| 1   | Flip `NeutronRuntimeSession.mutationAllowed`        | Keep `false` on model-facing sessions; host approval is the grant    | Slice 3     |
+| 2   | Persist proposals under `.aif/` vs in-memory review | In-memory / daemon-held until Slice 5                                | Slice 5     |
+| 3   | `packages/neutron-runtime`                          | Keep in application; revisit at N6                                   | N6          |
+| 4   | User rollback tool after success                    | Host-only revert remains unauthorized; Slice 4 shipped evidence only | later       |
+| 5   | Exact vs subset `changedPaths`                      | Exact set for Slice 3                                                | Slice 3     |
 
 ---
 
 ## 28. Recommendation
 
-**MUTATION SLICE 3.1 COMPLETE — SLICE 4 UNAUTHORIZED**
+**MUTATION SLICE 4 COMPLETE — SLICE 5 UNAUTHORIZED**
 
-Slice 3 host Apply is implemented. Slice 3.1 hardened claim/replay across
-restart. Do not start Slice 4 verification/rollback evidence UX, Slice 5 N5
-integration, Desktop Approve/Apply UX, an N4 mutation tool, autonomous
-execution, or automatic retries from this brief. The Slice 3 security review
-remains the historical record of why unmodified Slice 2 Apply was unsafe.
+Slice 4 verification and rollback evidence are implemented. Do not start
+Slice 5 N5 integration, Desktop Approve/Apply UX, Desktop verification UX,
+host rollback execution / Undo, an N4 mutation tool, autonomous execution, or
+automatic Apply retries from this brief. The Slice 3 security review remains
+the historical record of why unmodified Slice 2 Apply was unsafe.
 
 ---
 
@@ -835,7 +847,7 @@ Desktop Approve/Apply UI.
 | Writer                   | `syncMode: "declared-paths-only"`. Undeclared `.aif/manifest.lock.json` and `.aif/source-map.json` are not written.                                                                                                                                                                                 |
 | `applied: true`          | Only after canonical transaction success. Engine rollback evidence and previous file bodies are not copied into the Neutron result. Approval token is redacted from results, errors, and diagnostics.                                                                                               |
 | `mutationAllowed` / N4   | Unchanged literal `false`. Seven read-only tools. No `applyApprovedTransaction` catalog entry.                                                                                                                                                                                                      |
-| Next unauthorized slices | Slice 4 verification + rollback evidence UX; Slice 5 N5 proposal/review integration; Desktop Approve/Apply UX; N4 mutation tool; autonomous retry.                                                                                                                                                  |
+| Next unauthorized slices | Slice 5 N5 proposal/review integration; Desktop Approve/Apply UX; Desktop verification UX; host rollback execution / Undo; N4 mutation tool; autonomous retry.                                                                                                                                      |
 
 ### 32.1 Slice 3.1 durable authority
 
@@ -854,3 +866,24 @@ could look unused. Slice 3.1 (PR #500, merge
 | Mutation lock            | Durable exclusive lock file when `durableStateDirectory` is set (canonical realpath key, transaction ownership, fail-fast conflict). Process-local Map lock remains only for injected memory-store tests. The host process model is not proven single-process. |
 | Secrets                  | Durable records store ids and digests, not raw `approvalToken`, file bodies, or model prompts. Schema version is validated on load.                                                                                                                            |
 | Next unauthorized slices | Unchanged from §32.                                                                                                                                                                                                                                            |
+
+### 32.2 Slice 4 verification evidence
+
+Slice 4 (PR #503, merge `b5c9a9556648382343bd90cc5e2c277d0775cf32`) adds
+independent post-Apply verification. It does not expand mutation authority.
+
+| Decision                 | Record                                                                                                                                                                                                                                            |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Call path                | Canonical Apply → persist write outcome (`applied` or failed) with pending verification if needed → independent filesystem reads → persist terminal verification. Crash after Apply resumes read-only verification only.                          |
+| Status separation        | `applied` is the write outcome. Verification status is `verified`, `verification-failed`, `verification-incomplete`, or `reconciliation-required`. Writer success never implies `verified: true`. Committed writes never become `applied: false`. |
+| Byte verification        | Fresh read of each reviewed path; `digestGeneratedFileContent(actual) === reviewed contentDigest`.                                                                                                                                                |
+| Path verification        | Canonical `exactNeutronMutationPathSetsEqual` over approved vs accounted paths. Hidden `.aif/manifest.lock.json` and `.aif/source-map.json` must not appear unless approved.                                                                      |
+| Project state            | `digestNeutronMutationObservedState` over inspect fingerprint plus approved/hidden path content. Pre-Apply digest is captured before writes and reused for rollback checks.                                                                       |
+| Health checks            | Byte, write-set, observed digest, and transaction consistency only. Doctor / Diff / Conformance / Security Audit are not Slice 4 gates (`diffProject` does not prove reviewed-byte equality).                                                     |
+| Rollback evidence        | Failed `executeApprovedApplyPlan` keeps `rollbackEvidence`. Neutron projection: path, digest, existedBefore, restored, status. Raw previous bytes stay internal to the writer.                                                                    |
+| Rollback verification    | After failed write, `postRollbackProjectStateDigest === preApplyProjectStateDigest` independently verifies restoration. Incomplete rollback sets `reconciliationRequired`.                                                                        |
+| Durable state            | Verification fields live on the existing transaction record. Corrupt verification fails closed without erasing applied write outcome.                                                                                                             |
+| Retry                    | Read-only verification may resume. Apply never retries automatically.                                                                                                                                                                             |
+| Secrets                  | Serialized evidence excludes `approvalToken`, file bodies, previousContent, prompts, and model reasoning.                                                                                                                                         |
+| Desktop / N4 / N5        | No Desktop Approve/Apply or verification UX. N4 catalog unchanged. Slice 5 may later reference `transactionId` / `evidenceDigest`; this slice does not attach N5 provenance.                                                                      |
+| Next unauthorized slices | Unchanged from §32.                                                                                                                                                                                                                               |
