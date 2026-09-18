@@ -30,6 +30,8 @@ Related:
 - [`NEUTRON_N3_CONTEXT_ASSEMBLY_BRIEF.md`](NEUTRON_N3_CONTEXT_ASSEMBLY_BRIEF.md)
 - [`NEUTRON_N5_EXECUTABLE_TASK_GRAPH_BRIEF.md`](NEUTRON_N5_EXECUTABLE_TASK_GRAPH_BRIEF.md)
 - [`NEUTRON_MUTATION_ROUTING_BRIEF.md`](NEUTRON_MUTATION_ROUTING_BRIEF.md)
+- [`NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md`](NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md)
+  (design only; Desktop Approve/Apply implementation is not authorized)
 - [`ADR-0042`](../decisions/ADR-0042-desktop-stack-and-daemon-distribution.md)
 - [`ADR-0053`](../decisions/ADR-0053-approved-apply-transactional-mutation.md)
 - [`ADR-0055`](../decisions/ADR-0055-neutron-n2-first-model-adapter.md)
@@ -949,7 +951,9 @@ Slice 5.1 (PR #510) fail-closes stale authoritative materialization; Desktop
 still sees read-only proposal review only. N6 `expectedOutput` / proposal seed
 remains **preview-only** and cannot authorize review artifacts or Apply. No
 Approve, Apply, Undo, or approval token on Desktop. This brief still does not
-authorize Desktop Approve/Apply controls.
+authorize Desktop Approve/Apply controls. The separate design-only host-flow
+brief is
+[`NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md`](NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md).
 
 Do not start Slice 5 from N6 Slice 1 authorization.
 
