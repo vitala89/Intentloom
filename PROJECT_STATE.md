@@ -709,12 +709,19 @@ byte/path verification, observed project-state digests, sanitized rollback
 evidence on failed sync, and durable verification status. `applied` and
 `verified` stay distinct; verification failure never retries Apply.
 **Mutation Slice 5 implemented** (merge
-`0eb326986537f125abfefc573e6709824914b37c`, PR #507): authoritative N5
-attempts may emit a strict `mutation-proposal` candidate; the host
-materializes a content-bound review artifact and stops. Graph-linked Apply
-is host composition only after a separately issued approval and stale
-revalidation. `expectedOutput` preview cannot authorize Apply. Proposal
-nodes keep `mutationAttempted: false`.
+`0eb326986537f125abfefc573e6709824914b37c`, PR #507): N5 proposal/review
+integration — authoritative completed attempts may emit a strict
+`mutation-proposal` candidate; the host materializes a content-bound review
+artifact and stops at the review boundary. **Slice 5.1 hardened** (merge
+`b36d836c05591599f2526f0d3f5302e7edce8f5b`, PR #510): stale graph reports
+fail closed before authoritative proposal materialization (current project
+fingerprint gate; no silent rebind of candidate bytes across project states);
+production proposal capability now intersects node, parent, session, profile,
+and ceiling through the session runtime path. Authoritative materialization
+requires current project authority. `expectedOutput` preview remains
+non-authoritative. N5 does not Apply. Graph-linked Apply remains host
+composition only after separately issued approval and stale revalidation.
+Proposal nodes keep `mutationAttempted: false`.
 `NeutronRuntimeSession.mutationAllowed` remains literal `false`. N4 catalog
 remains read-only. The Slice 3 security review remains the historical NO-GO
 for Apply on pre-2.5 contracts

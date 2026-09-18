@@ -17,12 +17,57 @@ single approved transaction Apply). **Mutation Slice 3.1 implemented**
 (crash-safe durable approval/transaction state). **Mutation Slice 4
 implemented** (independent post-Apply verification + sanitized rollback
 evidence). **Mutation Slice 5 implemented** (N5 proposal/review integration;
-host-only graph-linked Apply composition). **N6 Slices 1–5 implemented**
-(read-only Desktop Neutron, including mutation proposal review).
-`mutationAllowed` remains literal `false`. N4 remains the seven read-only
-tools. Optional N3 Slice 5, P4l17, Desktop Approve/Apply UX, Desktop
-verification UX, host rollback execution / Undo, and any N4 mutation tool
-remain unauthorized.
+host-only graph-linked Apply composition), **security-corrected by Slice 5.1**
+(stale proposal fail-closed + end-to-end proposal capability clamp).
+**N6 Slices 1–5 implemented** (read-only Desktop Neutron, including mutation
+proposal review). `mutationAllowed` remains literal `false`. N4 remains the
+seven read-only tools. Optional N3 Slice 5, P4l17, Desktop Approve/Apply UX,
+Desktop verification UX, host rollback execution / Undo, and any N4 mutation
+tool remain unauthorized.
+
+### 2026-09-18, Neutron Mutation Slice 5.1 — stale proposal and capability clamp correction handoff
+
+- **Status:** **merged** (implementation correction; this docs handoff)
+- **Implementation PR:** https://github.com/vitala89/Intentloom/pull/510 (merged)
+- **Implementation head SHA:** `24717a1fb60e693986b407ff65ff023214fbf5d5`
+- **Implementation merge SHA / authoritative `main` tip after correction:**
+  `b36d836c05591599f2526f0d3f5302e7edce8f5b`
+- **Starting main / origin/main:** `c604c985c1476e17d281821f1fcd53e067957aaf`
+  (post Slice 5 finalize PR #509; tracked tree clean).
+- **Historical sequence (preserve):** Slice 5 implementation #507 → handoff
+  #508 → finalize #509 → post-merge security audit discovered two bounded gaps
+  → Slice 5.1 correction #510 → this handoff.
+- **Gap A (stale proposal materialization):** Original Slice 5 could
+  materialize an authoritative proposal after final graph reconciliation had
+  already reported a stale project. The post-wave fingerprint could become the
+  proposal’s baseline, effectively rebinding candidate bytes generated against
+  project state A onto newer project state B. Slice 5.1 requires: graph stale
+  report accepted; authoritative attempt fingerprint equals current project
+  fingerprint; proposal `projectStateDigest` comes from the authoritative
+  attempt fingerprint. **Result:** candidate A cannot be silently rebound to
+  project B. No authoritative proposal, review artifact, or payload-store entry
+  when stale. No automatic rebase, rerun, or regeneration.
+- **Gap B (proposal capability clamp):** `neutronNodeMayPropose` already
+  supported node, parent, session, profile, and ceiling capability intersection,
+  but original Slice 5 production session composition only threaded the session
+  proposal grant. Slice 5.1 threads configured proposal authority through
+  `createNeutronSessionRuntime` → `executeRuntimeGraph` →
+  `executeStoredNeutronGraph` → `bindExecutedGraphMutationState` →
+  `materializeStoredGraphMutationProposals` →
+  `collectNeutronGraphMutationCandidates` → `neutronNodeMayPropose`. Configured
+  profile and capability ceiling layers now participate in the production clamp.
+  Parent cannot widen child authority.
+- **Invariants unchanged:** `mutationAllowed === false`; proposal node
+  `mutationAttempted === false`; N4 seven-tool read-only catalog; Desktop
+  Neutron read-only mutation proposal review; human/host approval requirement;
+  existing `applyApprovedNeutronMutation`; existing Slice 4 verification; no
+  automatic Apply retry; no autonomous mutation; no generic shell.
+- **Not authorized:** Desktop Approve/Apply UX; Desktop verification/rollback
+  evidence UX; any N4 mutation tool; host rollback execution / Undo; autonomous
+  graph runner; autonomous mutation; automatic Apply retries; optional N3 Slice
+  5; P4l17; Local AI roadmap implementation unless separately authorized.
+- **Next first action:** **None from automation.** Await explicit maintainer
+  authorization. Do not decide here that Desktop Apply or N4 mutation is next.
 
 ### 2026-09-17, Neutron Mutation Slice 5 — N5 proposal/review integration handoff
 
@@ -56,6 +101,11 @@ remain unauthorized.
 - **Next first action:** **None from automation.** Await explicit maintainer
   authorization for Desktop Neutron Approve/Apply UX or another listed
   follow-up.
+- **Post-merge note:** A post-merge security audit found two bounded gaps
+  (stale proposal materialization; incomplete production capability threading).
+  **Slice 5.1** (PR #510) corrected them; see the 2026-09-18 Slice 5.1 entry
+  above. Finalize PR #509 recorded handoff SHAs; it did not claim those gaps
+  were closed.
 
 ### 2026-09-17, Neutron Mutation Slice 4 — post-Apply verification evidence handoff
 

@@ -943,10 +943,13 @@ Approve/Apply unless a **later** grant.
 
 **Exit:** proposal visible; Apply impossible.
 
-Mutation Slice 5 (PR #507) made N5 attempt output the authoritative proposal
-source. N6 `expectedOutput` binding remains **preview-only** and cannot
-authorize review artifacts or Apply. This brief still does not authorize
-Desktop Approve/Apply controls.
+Mutation Slice 5 (PR #507) connected authoritative proposals to host-materialized
+review artifacts from completed authoritative N5 attempts (not model prose).
+Slice 5.1 (PR #510) fail-closes stale authoritative materialization; Desktop
+still sees read-only proposal review only. N6 `expectedOutput` / proposal seed
+remains **preview-only** and cannot authorize review artifacts or Apply. No
+Approve, Apply, Undo, or approval token on Desktop. This brief still does not
+authorize Desktop Approve/Apply controls.
 
 Do not start Slice 5 from N6 Slice 1 authorization.
 

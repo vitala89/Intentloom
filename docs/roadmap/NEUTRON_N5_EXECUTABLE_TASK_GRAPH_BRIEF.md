@@ -846,9 +846,13 @@ lines.
 
 N5 must not Apply, retry mutation, or design around write tools. Mutation
 Slice 5 (PR #507, merge `0eb326986537f125abfefc573e6709824914b37c`) composes
-graph proposal/review evidence onto existing host Apply. Desktop
-Approve/Apply UX still requires separate maintainer authorization.
-Scheduling alone is **not** sufficient justification for mutation.
+graph proposal/review evidence onto existing host Apply; **Slice 5.1** (PR
+#510) hardened stale proposal materialization and production proposal-capability
+clamping. Additive to the scheduler: does **not** alter task states, lease
+semantics, retry semantics, the node `mutationAttempted` invariant, or
+read-only project execution. Host Apply remains outside scheduler node
+execution. Desktop Approve/Apply UX still requires separate maintainer
+authorization. Scheduling alone is **not** sufficient justification for mutation.
 
 ---
 
