@@ -358,9 +358,11 @@ production). Later slices (unauthorized): Desktop Approve/Apply UX, Desktop
 verification UX, host rollback execution / Undo. Next first action: none from
 automation — await explicit maintainer authorization.
 
-N6 read-only Desktop is implemented under its own brief. Do not start
-Desktop Approve/Apply UX or an N4 mutation tool from this roadmap entry
-alone.
+N6 read-only Desktop is implemented under its own brief. Desktop mutation
+host-flow design (not implementation) is
+[`NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md`](NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md).
+Do not start Desktop Approve/Apply UX or an N4 mutation tool from this
+roadmap entry alone.
 
 ## N6. Desktop Neutron Workspace
 
@@ -379,7 +381,10 @@ accepted/stale/budget/warnings, usage/fingerprints, bounded graph evidence
 fields). **N6 Slice 5 implemented** — read-only mutation proposal review
 (paths + digests; no Approve/Apply). Mutation Slice 3 host Apply and Slice
 3.1 durable approval state are implemented in application; Desktop
-Approve/Apply UX remains unauthorized.
+Approve/Apply UX remains unauthorized. The threat-reviewed host-flow design
+for a later Desktop mutation grant is
+[`NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md`](NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md)
+(**DESIGN ONLY**).
 
 Integrate the runtime with the official Desktop application after the v0.6
 read-only project slice and shared client contracts are stable.
@@ -525,5 +530,7 @@ preventing an unfinished agent layer from expanding the v0.6 release scope.
 N1–N5 are complete. Mutation-routing Slices 1–5 exist. **N6 Slices 1–5 are
 implemented.** The next Neutron increment is **not** implied by this file:
 Desktop Approve/Apply UX requires explicit maintainer authorization. See
-[`NEUTRON_N6_DESKTOP_READONLY_BRIEF.md`](NEUTRON_N6_DESKTOP_READONLY_BRIEF.md)
-and [`NEUTRON_MUTATION_ROUTING_BRIEF.md`](NEUTRON_MUTATION_ROUTING_BRIEF.md).
+[`NEUTRON_N6_DESKTOP_READONLY_BRIEF.md`](NEUTRON_N6_DESKTOP_READONLY_BRIEF.md),
+[`NEUTRON_MUTATION_ROUTING_BRIEF.md`](NEUTRON_MUTATION_ROUTING_BRIEF.md), and
+the design-only
+[`NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md`](NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md).
