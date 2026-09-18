@@ -257,8 +257,10 @@ preflight), **Slice 2.5 implemented** (content-bound review artifact), and
 **Slice 3.1 implemented** (crash-safe durable approval/transaction state).
 **Slice 4 implemented** (independent post-Apply verification + sanitized
 rollback evidence). **Slice 5 implemented** (N5 proposal/review integration;
-host-only graph-linked Apply composition). Do not start Desktop mutation UI,
-optional N3 Slice 5, or P4l17 without explicit maintainer authorization.
+host-only graph-linked Apply composition), **Slice 5.1 corrected** (PR #510:
+stale proposal fail-closed + production proposal capability clamp). Do not
+start Desktop mutation UI, optional N3 Slice 5, or P4l17 without explicit
+maintainer authorization.
 
 ## N5. Executable task graph and subagents
 
@@ -285,9 +287,12 @@ runner loop.
 Mutation-routing Slice 1 contracts, Slice 2 semantic preflight, Slice 2.5
 content-bound review artifacts, Slice 3 host-only Apply, Slice 3.1
 durable claim/replay, and Slice 4 post-Apply verification evidence exist;
-Mutation Slice 5 attaches graph-linked proposal/review/Apply provenance
-without giving the scheduler Apply authority.
-Desktop Approve/Apply UX and N6 mutation tools remain unauthorized.
+Mutation-routing Slice 5 (with Slice 5.1 correction) attaches graph-linked
+proposal/review/Apply provenance without giving the scheduler Apply authority.
+**N5 read-only scheduler completion** (aggregation/stale/provenance) is distinct
+from **mutation-routing N5 integration completion** (proposal/review + host
+Apply composition). Desktop Approve/Apply UX and N6 mutation Apply remain
+unauthorized.
 
 Extend the existing Neutron subagent records from persisted orchestration
 foundation into a controlled execution scheduler with:
@@ -347,8 +352,11 @@ documented why unmodified Slice 2 Apply was unsafe. Slice 2.5 and Slice 3
 closed those blockers. **Slice 4 implemented** (verification + rollback
 evidence). **Slice 5 implemented** (N5 proposal/review integration; host
 `applyApprovedNeutronGraphMutation` after separately issued approval).
-Later slices (unauthorized): Desktop Approve/Apply UX, Desktop verification
-UX, host rollback execution / Undo.
+**Slice 5.1 implemented** (fail-closed stale authoritative proposal
+materialization; session/profile/ceiling proposal capability threading in
+production). Later slices (unauthorized): Desktop Approve/Apply UX, Desktop
+verification UX, host rollback execution / Undo. Next first action: none from
+automation — await explicit maintainer authorization.
 
 N6 read-only Desktop is implemented under its own brief. Do not start
 Desktop Approve/Apply UX or an N4 mutation tool from this roadmap entry
