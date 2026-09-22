@@ -138,6 +138,10 @@ export const NEUTRON_GRAPH_EXECUTE_METHOD =
   "intentloom.neutron.graph.execute.v1" as const;
 export const NEUTRON_GRAPH_CANCEL_METHOD =
   "intentloom.neutron.graph.cancel.v1" as const;
+export const NEUTRON_MUTATION_REVIEW_LIST_METHOD =
+  "intentloom.neutron.mutation.review.list.v1" as const;
+export const NEUTRON_MUTATION_REVIEW_GET_METHOD =
+  "intentloom.neutron.mutation.review.get.v1" as const;
 
 export type JsonPrimitive = boolean | null | number | string;
 export type JsonValue = JsonPrimitive | JsonObject | readonly JsonValue[];

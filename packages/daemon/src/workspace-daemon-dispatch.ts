@@ -55,11 +55,8 @@ import {
   isContinuousLoopRequest,
 } from "./continuous-loop-handlers.js";
 import type { NeutronDaemonOptions } from "./neutron-session-handlers.js";
-import {
-  dispatchNeutronSessionRequest,
-  isNeutronSessionRequest,
-  neutronSessionCapabilities,
-} from "./neutron-session-handlers.js";
+import { neutronSessionCapabilities } from "./neutron-session-handlers.js";
+import { dispatchNeutronWorkspaceRequest } from "./neutron-workspace-dispatch.js";
 import type { DaemonCapability } from "@intentloom/protocol";
 
 export type WorkspaceDaemonOptions = SpecializedPackDaemonOptions &
@@ -259,23 +256,12 @@ export async function dispatchWorkspaceDaemonRequest(
     response(socket, continuousLoopResponse);
     return true;
   }
-  if (isNeutronSessionRequest(request)) {
-    const neutronResponse = await dispatchNeutronSessionRequest(
-      request,
-      options,
-      canonicalProjectRoot,
-    );
-    if (!neutronResponse) {
-      failure(
-        socket,
-        -32601,
-        "unsupported neutron method",
-        "unsupported_capability",
-      );
-      return true;
-    }
-    response(socket, neutronResponse);
-    return true;
-  }
-  return false;
+  return dispatchNeutronWorkspaceRequest(
+    request,
+    options,
+    canonicalProjectRoot,
+    response,
+    failure,
+    socket,
+  );
 }

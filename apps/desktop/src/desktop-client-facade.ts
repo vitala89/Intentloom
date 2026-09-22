@@ -10,6 +10,7 @@ import { existingProjectAdoptionApplyDesktopMethods } from "./desktop-client-ado
 import { specializedPackExternalDesktopMethods } from "./desktop-client-specialized-pack-external.js";
 import type { NeutronSessionViewmodelPayload } from "@intentloom/protocol";
 import { neutronDesktopMethods } from "./desktop-client-neutron.js";
+import { neutronMutationReviewDesktopMethods } from "./desktop-client-neutron-review.js";
 
 interface DesktopClientBase {
   foundationRequest(
@@ -41,5 +42,6 @@ export function composeDesktopClient<TBase extends DesktopClientBase>(
     ...existingProjectAdoptionApplyDesktopMethods(foundationRequest),
     ...specializedPackExternalDesktopMethods(),
     ...neutronDesktopMethods(neutronRequest),
+    ...neutronMutationReviewDesktopMethods(),
   };
 }

@@ -20,12 +20,58 @@ evidence). **Mutation Slice 5 implemented** (N5 proposal/review integration;
 host-only graph-linked Apply composition), **security-corrected by Slice 5.1**
 (stale proposal fail-closed + end-to-end proposal capability clamp).
 **N6 Slices 1–5 implemented** (read-only Desktop Neutron, including mutation
-proposal review). **Desktop mutation host flow: design-only brief prepared**
-([`NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md`](docs/roadmap/NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md));
-Approve/Apply implementation is **not authorized**. `mutationAllowed` remains
+proposal review). **Desktop mutation host flow D1 implemented on branch**
+`feat/neutron-desktop-mutation-review-transport` (authoritative read-only
+mutation review payload transport); **not merged**. Approve/Apply
+implementation remains **not authorized**. `mutationAllowed` remains
 literal `false`. N4 remains the seven read-only tools. Optional N3 Slice 5,
 P4l17, Desktop Approve/Apply UX, Desktop verification UX, host rollback
 execution / Undo, and any N4 mutation tool remain unauthorized.
+
+### 2026-09-22, Neutron Desktop Mutation Host Flow D1 — review payload transport
+
+- **Status:** **implementation complete on branch; awaiting maintainer review**
+  (do not merge autonomously).
+- **Scope:** D1 only. Authoritative read-only mutation review payload
+  transport. No D2 exact-diff UI, D3 approval intent, D4 Approve & Apply,
+  D5 status UX, DL legacy Apply cleanup, N4 mutation tool, or
+  `mutationAllowed` change.
+- **Starting main / origin/main:** `d8d312f2c9e2dac9f7375a2f79ab572d4e75bb7d`
+  (PR #512 Desktop mutation host security boundary merged; tracked tree
+  clean aside from this branch).
+- **Canonical brief:**
+  [`docs/roadmap/NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md`](docs/roadmap/NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md)
+- **RPC:** `intentloom.neutron.mutation.review.list.v1` (safe summaries;
+  no first-wins) and `intentloom.neutron.mutation.review.get.v1` (explicit
+  `proposalId`). Both classified `read-only`.
+- **Authoritative source:** existing in-memory
+  `NeutronGraphMutationPayloadStore` / `NeutronGraphMutationReviewBundle`.
+  Missing payload after restart fails closed (`review-unavailable` /
+  `session-mismatch`); no reconstruction from preview, model output, or
+  Desktop bodies.
+- **File metrics (canonical `scripts/production-file-metrics.mjs`):**
+  new review modules stay under 250 effective except none at 300+;
+  `neutron-mutation-review-project.ts` 193/187; `neutron-mutation-review-files.ts`
+  159/154; protocol RPC 241/223; validator split into rpc 91/89, view 166/164,
+  file 122/119, helpers 46/42. `neutron-session-runtime.ts` 329/314 (was
+  304/290; review operations extracted to
+  `neutron-session-runtime-review.ts`). `workspace-daemon-dispatch.ts`
+  reduced 281/278 → 267/264 by extracting `neutron-workspace-dispatch.ts`.
+- **Tauri:** dedicated `list_neutron_mutation_reviews` and
+  `get_neutron_mutation_review`; generic `invoke_neutron_request` still
+  excludes mutation review methods.
+- **Desktop client:** typed `listNeutronMutationReviews` /
+  `getNeutronMutationReview`. No Approve/Apply control. Legacy
+  `ApprovedApplyModal` is not used.
+- **Invariants:** `mutationAllowed === false`; N4 seven read-only tools;
+  no `approvalToken` / `grantedApprovals` / `previousContent` leakage;
+  project fingerprint unchanged; no Apply; no host approval issuance.
+- **Not authorized / deferred:** D2, D3, D4, D5, DL, Desktop verification
+  retry, Undo, host rollback execution, N4 mutation tool, automatic Apply
+  retry, autonomous graph runner, Local AI roadmap, optional N3 Slice 5,
+  P4l17.
+- **Next first action:** Maintainer review of the D1 implementation PR.
+  Do not start D2 from this handoff.
 
 ### 2026-09-18, Neutron N6 Desktop mutation host flow — security/architecture brief
 
