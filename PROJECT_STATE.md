@@ -728,8 +728,10 @@ for Apply on pre-2.5 contracts
 ([`NEUTRON_MUTATION_SLICE3_SECURITY_REVIEW.md`](docs/roadmap/NEUTRON_MUTATION_SLICE3_SECURITY_REVIEW.md)).
 Desktop Approve/Apply UX, Desktop verification UX, host rollback execution /
 Undo, any N4 mutation tool, optional N3 Slice 5, and P4l17 are not
-authorized. Other post-P4 candidates remain in
-`POST_W12_NEXT_INCREMENT_PLAN.md`.
+authorized. The Desktop mutation host-flow design brief is
+[`NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md`](docs/roadmap/NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md)
+(**DESIGN ONLY**; Approve/Apply implementation is **not authorized**). Other
+post-P4 candidates remain in `POST_W12_NEXT_INCREMENT_PLAN.md`.
 
 The Desktop discovery/error and Diff/Timeline slices remain recorded in
 [PHASE1_CONTRACTS.md](docs/desktop/PHASE1_CONTRACTS.md).

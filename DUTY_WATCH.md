@@ -20,10 +20,36 @@ evidence). **Mutation Slice 5 implemented** (N5 proposal/review integration;
 host-only graph-linked Apply composition), **security-corrected by Slice 5.1**
 (stale proposal fail-closed + end-to-end proposal capability clamp).
 **N6 Slices 1–5 implemented** (read-only Desktop Neutron, including mutation
-proposal review). `mutationAllowed` remains literal `false`. N4 remains the
-seven read-only tools. Optional N3 Slice 5, P4l17, Desktop Approve/Apply UX,
-Desktop verification UX, host rollback execution / Undo, and any N4 mutation
-tool remain unauthorized.
+proposal review). **Desktop mutation host flow: design-only brief prepared**
+([`NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md`](docs/roadmap/NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md));
+Approve/Apply implementation is **not authorized**. `mutationAllowed` remains
+literal `false`. N4 remains the seven read-only tools. Optional N3 Slice 5,
+P4l17, Desktop Approve/Apply UX, Desktop verification UX, host rollback
+execution / Undo, and any N4 mutation tool remain unauthorized.
+
+### 2026-09-18, Neutron N6 Desktop mutation host flow — security/architecture brief
+
+- **Status:** **docs only** (this watch). Implementation not started.
+- **Starting main / origin/main:** `1a8abac9dce73cbdddb12d035416691b6360cde6`
+  (PR #511 Slice 5.1 handoff merged; tracked tree clean).
+- **Canonical brief:**
+  [`docs/roadmap/NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md`](docs/roadmap/NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md)
+- **Scope delivered:** Maintainer-grade threat model and architecture for the
+  first safe Desktop mutation flow. Desktop remains presentation and intent
+  capture. Host issues `NeutronMutationApproval` during a combined
+  approveAndApply action. Exact reviewed bytes reach Desktop only through a
+  future read-only review RPC over the host payload store. Slice 3.1 durable
+  state, Slice 4 verification, and Slice 5.1 currentness are reused. N4 stays
+  read-only. `mutationAllowed` stays `false`. Undo stays out.
+- **Recommended first future slice (not authorized):** D1 read-only
+  authoritative mutation review payload transport. D4 Approve & Apply requires
+  D1–D3, durableStateDirectory wiring, and legacy fake Approved Apply cleanup
+  (DL).
+- **Not authorized:** production mutation UI; mutation RPC; Approve/Apply
+  buttons; N4 mutation tool; Undo; any `mutationAllowed` change; D1–D5/DL
+  implementation.
+- **Next first action:** **None from automation.** Maintainer review of the
+  brief. Do not start Desktop Approve/Apply from this handoff.
 
 ### 2026-09-18, Neutron Mutation Slice 5.1 — stale proposal and capability clamp correction handoff
 
