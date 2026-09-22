@@ -32,6 +32,9 @@ execution / Undo, and any N4 mutation tool remain unauthorized.
 
 - **Status:** **implementation complete on branch; awaiting maintainer review**
   (do not merge autonomously).
+- **Implementation PR:** https://github.com/vitala89/Intentloom/pull/516
+- **Implementation branch:** `feat/neutron-desktop-mutation-review-transport`
+- **Implementation head SHA:** `e652b7cfc38c93241ab9430a5efa34a4135be60e`
 - **Scope:** D1 only. Authoritative read-only mutation review payload
   transport. No D2 exact-diff UI, D3 approval intent, D4 Approve & Apply,
   D5 status UX, DL legacy Apply cleanup, N4 mutation tool, or
