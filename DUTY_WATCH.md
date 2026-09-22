@@ -73,6 +73,11 @@ execution / Undo, and any N4 mutation tool remain unauthorized.
   retry, Undo, host rollback execution, N4 mutation tool, automatic Apply
   retry, autonomous graph runner, Local AI roadmap, optional N3 Slice 5,
   P4l17.
+- **Verification:** focused D1 **20 passed / 5 files**; related Neutron
+  mutation/N6/Desktop **224 passed / 30 files**; local `pnpm verify` —
+  **325 files / 2778 passed / 3 skipped**. `git diff --check` clean.
+  Hosted `cargo test method_allowlist` could not run here (Cargo 1.83 lacks
+  `edition2024` for current crate index).
 - **Next first action:** Maintainer review of the D1 implementation PR.
   Do not start D2 from this handoff.
 
