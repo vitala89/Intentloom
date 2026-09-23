@@ -57,6 +57,10 @@ execution / Undo, and any N4 mutation tool remain unauthorized.
   fingerprint stability/change tests, symlink-parent materialization, resolver
   tests, and safe proposal-missing diagnostics (status/stale/node errorCode;
   no file bodies or secrets).
+- **Verification:** focused D1 + fingerprint + resolver **8 passed / 3 files**;
+  related Slice 5/5.1/N6/daemon/Desktop review **124 passed / 22 files**;
+  local `pnpm verify` — **327 files / 2784 passed / 3 skipped**.
+  `git diff --check` clean. Slice 5.1 currentness unchanged.
 - **Not authorized / deferred:** D2, D3, D4, D5, DL, Approve, Apply, N4
   mutation tool, `mutationAllowed` change, auto-merge.
 
