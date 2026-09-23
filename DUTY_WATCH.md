@@ -22,7 +22,7 @@ host-only graph-linked Apply composition), **security-corrected by Slice 5.1**
 **N6 Slices 1–5 implemented** (read-only Desktop Neutron, including mutation
 proposal review). **Desktop mutation host flow D1 implemented on branch**
 `feat/neutron-desktop-mutation-review-transport` (authoritative read-only
-mutation review payload transport); **CI correction in progress, not merged**. Approve/Apply
+mutation review payload transport); **Compatibility matrix green; not merged**. Approve/Apply
 implementation remains **not authorized**. `mutationAllowed` remains
 literal `false`. N4 remains the seven read-only tools. Optional N3 Slice 5,
 P4l17, Desktop Approve/Apply UX, Desktop verification UX, host rollback
@@ -30,15 +30,18 @@ execution / Undo, and any N4 mutation tool remain unauthorized.
 
 ### 2026-09-23, Neutron Desktop Mutation Host Flow D1 — Compatibility correction
 
-- **Status:** **CI correction on branch; awaiting Compatibility matrix**
+- **Status:** **implementation complete on branch; awaiting maintainer review**
   (do not merge autonomously).
 - **Implementation PR:** https://github.com/vitala89/Intentloom/pull/516
 - **Implementation branch:** `feat/neutron-desktop-mutation-review-transport`
 - **Failing head observed:** `0b6d8dc0e1b367160db55038e12609957ed23a38`
-- **Compatibility run:** `35739038759` — Ubuntu Node 22/24 passed; Windows
-  Node 22/24 and macOS Node 22/24 failed
-  `tests/daemon-neutron-mutation-review.test.ts` at
-  `mutationProposal?.proposalId` (`expected undefined to deeply equal Any<String>`).
+- **Correction head SHA:** `19b8ab27e5bfaab13b4ca7a5caeeedc02ba0aecd`
+- **Compatibility run:** `35907328047` (pull_request) — all six jobs SUCCESS:
+  Ubuntu Node 22, Ubuntu Node 24, macOS Node 22, macOS Node 24,
+  Windows Node 22, Windows Node 24. Previous failing run `35739038759`
+  had Ubuntu pass and macOS/Windows fail at
+  `tests/daemon-neutron-mutation-review.test.ts`
+  (`mutationProposal?.proposalId` expected undefined to equal Any<String>).
 - **Root cause (Case B+C, not A):** N2 compares inspect `root` to the daemon
   session root by exact string. D1's counting adapter echoed the pre-realpath
   `mkdtemp` path. Neutron workspace dispatch always called
@@ -61,6 +64,9 @@ execution / Undo, and any N4 mutation tool remain unauthorized.
   related Slice 5/5.1/N6/daemon/Desktop review **124 passed / 22 files**;
   local `pnpm verify` — **327 files / 2784 passed / 3 skipped**.
   `git diff --check` clean. Slice 5.1 currentness unchanged.
+- **Other CI on `19b8ab2`:** Governance `35907327871` SUCCESS; CodeQL
+  `35907327922` SUCCESS; Desktop SEA Feasibility `35907327856` SUCCESS;
+  Harness Performance Benchmark `35907327883` SUCCESS.
 - **Not authorized / deferred:** D2, D3, D4, D5, DL, Approve, Apply, N4
   mutation tool, `mutationAllowed` change, auto-merge.
 
