@@ -2,18 +2,23 @@
 
 ## Status
 
-**DESKTOP MUTATION HOST FLOW: DESIGN ONLY**
+**D1 — READ-ONLY AUTHORITATIVE MUTATION REVIEW TRANSPORT: IMPLEMENTED AND MERGED**
+
+**D2–D5, DL: NOT AUTHORIZED**
 
 **DESKTOP APPROVE/APPLY IMPLEMENTATION: NOT AUTHORIZED**
 
 This document is the canonical threat-reviewed design for the first safe
-Desktop mutation flow. It does **not** authorize production mutation UI,
-mutation RPC, Approve/Apply buttons, an N4 mutation tool, Undo, or any change
-to `mutationAllowed`.
+Desktop mutation flow. **D1** (read-only review payload transport) is
+implemented (PR #516, merge `ca87a2532d1e4965655f97d39efb21fc8ad36437`;
+implementation head `25d0f6391ebc3079a755c2cbe0f492ef868a6578`). It does **not**
+authorize D2–D5, DL, production mutation UI, mutating mutation RPC,
+Approve/Apply buttons, an N4 mutation tool, Undo, or any change to
+`mutationAllowed`.
 
 Evidence baseline: `origin/main` @
-`1a8abac9dce73cbdddb12d035416691b6360cde6` (2026-09-18; Mutation Slice 5.1
-handoff PR #511). Tracked tree clean at brief start. PR #511 is merged.
+`ca87a2532d1e4965655f97d39efb21fc8ad36437` (2026-09-23; D1 PR #516 merged).
+Tracked tree clean at handoff start.
 
 Authoritative implementation and tests remain truth. Related:
 
@@ -31,7 +36,7 @@ Authoritative implementation and tests remain truth. Related:
 
 | Decision                                    | Verdict                                                                                                                                                        |
 | ------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| First future implementation slice           | **D1 — read-only authoritative mutation review payload** from daemon to Desktop. No approval. No Apply.                                                        |
+| First future implementation slice           | **D2 — Desktop exact mutation review UI** (read-only over D1). **D1 implemented** (PR #516). No approval. No Apply.                                            |
 | Approval issuer                             | Trusted **daemon/application host** only. Desktop submits a typed human intent. Host re-fetches the review bundle and issues `NeutronMutationApproval` itself. |
 | Public RPC shape                            | **B — one host `approveAndApply` action**, plus read-only `review.get` and `status.get`. No separate public Approve RPC.                                       |
 | Desktop button copy (when later authorized) | **Approve & Apply**                                                                                                                                            |
@@ -41,7 +46,7 @@ Authoritative implementation and tests remain truth. Related:
 | N4 / `mutationAllowed`                      | Unchanged. Seven read-only tools. Literal `false`.                                                                                                             |
 | Undo                                        | Out of first Desktop mutation scope.                                                                                                                           |
 | Legacy fake Approved Apply                  | **Prerequisite cleanup (DL)** before D4. Neutron must never reuse fabricated `applied: true`.                                                                  |
-| This PR                                     | Design only. Do not start D1–D5 from this document.                                                                                                            |
+| This document                               | D1 merged. Do not start D2–D5 or DL from this document without explicit maintainer authorization.                                                              |
 
 ---
 
@@ -963,13 +968,36 @@ Neutron remains unable to reach it.
 
 ### D1 — Read-only review payload protocol + daemon endpoint
 
-Transport exact reviewed bytes from the host payload store to Desktop.
+**Implemented and merged** — PR #516 (`feat/neutron-desktop-mutation-review-transport`);
+starting main `d8d312f2c9e2dac9f7375a2f79ab572d4e75bb7d`; final head
+`25d0f6391ebc3079a755c2cbe0f492ef868a6578`; merge
+`ca87a2532d1e4965655f97d39efb21fc8ad36437`.
+
+Transport exact reviewed bytes from the host payload store to Desktop via
+`intentloom.neutron.mutation.review.list.v1` and
+`intentloom.neutron.mutation.review.get.v1` (read-only). Tauri:
+`list_neutron_mutation_reviews`, `get_neutron_mutation_review`. Desktop client:
+`listNeutronMutationReviews`, `getNeutronMutationReview`. Generic Neutron invoke
+does not gain arbitrary mutation-review dispatch. Proposed bytes only from
+`NeutronGraphMutationPayloadStore` / authoritative
+`NeutronGraphMutationReviewBundle` — never reconstructed from preview, model
+output, or Desktop bodies. In-memory payload store: daemon restart without
+payload fails closed (persistence not implemented). Compatibility correction:
+`resolveDaemonProjectRoot` honors `enforceCanonicalRoots === false` for Neutron
+session/review dispatch; production daemon remains
+`enforceCanonicalRoots: true`; Slice 5.1 `attemptFingerprint ===
+currentFingerprint` unchanged.
+
 No approval. No Apply.
 
 ### D2 — Desktop exact mutation review UI
 
 Render diffs/classification/digests/expiry/currentness. Still no approval
 or Apply. Explicit multi-proposal selection UX without enabling mutation.
+**Not authorized.** D2 must not add Approve, Apply, approval issuance,
+transaction mutation, D3 host approval intent, D4 approveAndApply, D5
+reconnect/status flow, DL cleanup, N4 mutation tool, or `mutationAllowed`
+change.
 
 ### D3 — Host approval-intent protocol + security tests
 
@@ -1115,44 +1143,44 @@ This file:
 
 Update pointers in `DUTY_WATCH.md`, `PROJECT_STATE.md`,
 `NEUTRON_RUNTIME_ROADMAP.md`, `NEUTRON_N6_DESKTOP_READONLY_BRIEF.md`, and
-`NEUTRON_MUTATION_ROUTING_BRIEF.md`. Do not mark implementation complete.
+`NEUTRON_MUTATION_ROUTING_BRIEF.md`. Mark **D1** complete; D2–D5 remain
+unauthorized.
 
 ---
 
 ## 47. Status wording (normative)
 
-Any implementation PR that cites this brief must repeat:
+Implementation and handoff PRs that cite this brief must repeat:
 
-**DESKTOP MUTATION HOST FLOW: DESIGN ONLY**
+**D1 IMPLEMENTED AND MERGED** (PR #516)
+
+**D2–D5, DL: NOT AUTHORIZED**
 
 **DESKTOP APPROVE/APPLY IMPLEMENTATION: NOT AUTHORIZED**
 
-until a later explicit maintainer grant names D1 (or another slice) as in
-scope.
+**`mutationAllowed` remains literal `false`. N4 remains seven read-only tools.**
 
 ---
 
 ## 48. Architecture decision
 
-After repository audit, the first implementation slice — **when separately
-authorized** — is:
+**D1 (implemented):** read-only authoritative mutation review payload transport
+from the authenticated daemon to Desktop (PR #516).
 
-**D1: read-only authoritative mutation review payload transport from the
-authenticated daemon to Desktop.**
+**Recommended next slice when separately authorized:** **D2** — Desktop exact
+mutation review UI (read-only; consumes D1; still no Approve/Apply).
 
-Rationale:
+Rationale for sequencing (unchanged):
 
-- Exact reviewed bytes already exist in the host payload store.
-- Desktop currently has paths and opaque digests only.
-- No review RPC exists.
-- Approval issuance does not exist as a host factory.
-- Daemon Apply RPC does not exist.
-- `durableStateDirectory` is unwired in Desktop spawn.
-- Combined approveAndApply is the safer later authority slice (D4), but it
-  is unsafe to ship without exact-byte review (D1/D2), host issuer tests
-  (D3), durable directory wiring, and legacy-stub cleanup (DL).
+- Exact reviewed bytes live in the host payload store; D1 exposes them without
+  widening mutation authority.
+- Combined approveAndApply remains the later authority slice (D4), unsafe
+  without D2 review UX, host issuer tests (D3), durable directory wiring, and
+  legacy-stub cleanup (DL).
+- Approval issuance, daemon Apply RPC, and Desktop `durableStateDirectory`
+  wiring remain future grants.
 
-This document does **not** authorize D1.
+This document does **not** authorize D2–D5 or DL.
 
 ---
 

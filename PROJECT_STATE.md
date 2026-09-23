@@ -728,9 +728,16 @@ for Apply on pre-2.5 contracts
 ([`NEUTRON_MUTATION_SLICE3_SECURITY_REVIEW.md`](docs/roadmap/NEUTRON_MUTATION_SLICE3_SECURITY_REVIEW.md)).
 Desktop Approve/Apply UX, Desktop verification UX, host rollback execution /
 Undo, any N4 mutation tool, optional N3 Slice 5, and P4l17 are not
-authorized. The Desktop mutation host-flow design brief is
-[`NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md`](docs/roadmap/NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md)
-(**DESIGN ONLY**; Approve/Apply implementation is **not authorized**). Other
+authorized. The Desktop mutation host-flow brief is
+[`NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md`](docs/roadmap/NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md).
+**D1 implemented and merged** (PR #516, merge
+`ca87a2532d1e4965655f97d39efb21fc8ad36437`): Desktop can retrieve
+authoritative exact mutation review content through trusted read-only transport
+(`intentloom.neutron.mutation.review.list.v1` /
+`intentloom.neutron.mutation.review.get.v1`; host payload store only). Mutation
+remains impossible from Neutron Desktop (`mutationAllowed` literal `false`; no
+Approve/Apply). **D2** exact review UX is the recommended next separately
+authorized slice — not started from docs or roadmap wording alone. Other
 post-P4 candidates remain in `POST_W12_NEXT_INCREMENT_PLAN.md`.
 
 The Desktop discovery/error and Diff/Timeline slices remain recorded in
