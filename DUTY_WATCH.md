@@ -20,9 +20,10 @@ evidence). **Mutation Slice 5 implemented** (N5 proposal/review integration;
 host-only graph-linked Apply composition), **security-corrected by Slice 5.1**
 (stale proposal fail-closed + end-to-end proposal capability clamp).
 **N6 Slices 1–5 implemented** (read-only Desktop Neutron, including mutation
-proposal review). **Desktop mutation host flow D1 implemented and merged**
-(PR #516; authoritative read-only mutation review payload transport). Exact
-review UX **D2 not started** and remains separately authorized. Approve/Apply
+proposal review). **Desktop mutation host flow D1 complete** (implementation PR #516 and handoff
+PR #517 merged; authoritative read-only mutation review payload transport).
+Exact review UX **D2 not started** and remains separately authorized.
+Approve/Apply
 implementation remains **not authorized**. `mutationAllowed` remains
 literal `false`. N4 remains the seven read-only tools. Optional N3 Slice 5,
 P4l17, Desktop Approve/Apply UX, Desktop verification UX, host rollback
@@ -30,8 +31,9 @@ execution / Undo, and any N4 mutation tool remain unauthorized.
 
 ### 2026-09-23, Neutron Desktop Mutation Host Flow D1 — post-merge docs handoff
 
-- **Status:** **docs only** (this watch). D1 implementation merged; D2–D5,
-  DL, Approve, Apply, and N4 mutation tool remain **not authorized**.
+- **Status:** **DESKTOP MUTATION D1 COMPLETE.** Handoff PR #517 merged;
+  handoff merge SHA recorded (finalize docs watch). D2–D5, DL, Approve, Apply,
+  and N4 mutation tool remain **not authorized**.
 - **Starting main / origin/main:** `ca87a2532d1e4965655f97d39efb21fc8ad36437`
   (PR #516 merged; tracked tree clean).
 - **Implementation PR:** https://github.com/vitala89/Intentloom/pull/516
@@ -43,6 +45,10 @@ execution / Undo, and any N4 mutation tool remain unauthorized.
   `ca87a2532d1e4965655f97d39efb21fc8ad36437`
 - **Handoff branch:** `docs/neutron-desktop-mutation-d1-handoff`
 - **Handoff PR:** https://github.com/vitala89/Intentloom/pull/517
+- **Handoff head SHA:**
+  `803adc40457706ed9e14b935145475dc2f4aaa5d`
+- **Handoff merge SHA / final main for D1:**
+  `2714a02fcd3eae0384b93720c9fc61eedf464207`
 - **Canonical brief:**
   [`docs/roadmap/NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md`](docs/roadmap/NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md)
 - **D1 delivered (read-only):** authoritative mutation review transport;
