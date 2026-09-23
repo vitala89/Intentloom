@@ -67,6 +67,10 @@ export {
   parseNeutronMutationProposalCandidate,
   parseNeutronMutationProposalCandidateOutput,
 } from "./neutron-mutation-proposal-candidate.js";
+export {
+  validateNeutronMutationReviewGetResult,
+  validateNeutronMutationReviewListResult,
+} from "./neutron-mutation-review-rpc.js";
 
 function rejectProposalAuthority(value: Record<string, unknown>): void {
   for (const key of PROPOSAL_AUTHORITY_KEYS) {

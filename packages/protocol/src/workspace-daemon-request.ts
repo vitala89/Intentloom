@@ -169,6 +169,7 @@ export * from "./continuous-loop-workspace.js";
 export * from "./continuous-loop-daemon-rpc.js";
 export * from "./neutron-session-rpc.js";
 export * from "./neutron-graph-rpc.js";
+export * from "./neutron-mutation-review-rpc.js";
 export * from "./workspace-slice-daemon-parse.js";
 export { ProtocolValidationError } from "./protocol-validation-error.js";
 export { WORKSPACE_DAEMON_REQUEST_METHODS } from "./workspace-daemon-methods.js";

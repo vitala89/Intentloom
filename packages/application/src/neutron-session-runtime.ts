@@ -30,6 +30,11 @@ import {
 } from "./neutron-session-runtime-helpers.js";
 import { storedGraphView } from "./neutron-session-graph.js";
 import type { NeutronTaskNode } from "../../protocol/src/neutron-runtime.js";
+import type {
+  NeutronMutationReviewGetResult,
+  NeutronMutationReviewListResult,
+} from "../../protocol/src/neutron-mutation-review-view.js";
+import { bindNeutronSessionReviewOperations } from "./neutron-session-runtime-review.js";
 
 export interface NeutronSessionRuntimeOptions {
   readonly createAdapter: () => ModelAdapter | null;
@@ -84,6 +89,19 @@ export interface NeutronSessionRuntime {
     readonly projectId: string;
     readonly graphId?: string;
   }): Promise<NeutronSessionViewmodel>;
+  listMutationReviews(input: {
+    readonly root: string;
+    readonly sessionId: string;
+    readonly projectId: string;
+    readonly graphId?: string;
+  }): Promise<NeutronMutationReviewListResult>;
+  getMutationReview(input: {
+    readonly root: string;
+    readonly sessionId: string;
+    readonly projectId: string;
+    readonly proposalId: string;
+    readonly graphId?: string;
+  }): Promise<NeutronMutationReviewGetResult>;
   clear(): void;
 }
 
@@ -258,6 +276,13 @@ export function createNeutronSessionRuntime(
     cancelGraph(input) {
       return cancelRuntimeGraph(graphContext(), input);
     },
+
+    ...bindNeutronSessionReviewOperations({
+      fingerprint,
+      fs,
+      now,
+      sessions,
+    }),
 
     clear() {
       sessions.clear();

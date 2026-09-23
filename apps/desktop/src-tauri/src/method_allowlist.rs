@@ -73,9 +73,20 @@ pub fn is_neutron_method(method: &str) -> bool {
     )
 }
 
+pub fn is_neutron_mutation_review_list_method(method: &str) -> bool {
+    method == "intentloom.neutron.mutation.review.list.v1"
+}
+
+pub fn is_neutron_mutation_review_get_method(method: &str) -> bool {
+    method == "intentloom.neutron.mutation.review.get.v1"
+}
+
 #[cfg(test)]
 mod tests {
-    use super::{is_foundation_method, is_inception_method, is_neutron_method};
+    use super::{
+        is_foundation_method, is_inception_method, is_neutron_method,
+        is_neutron_mutation_review_get_method, is_neutron_mutation_review_list_method,
+    };
 
     #[test]
     fn allows_continuous_loop_methods_without_wildcard() {
@@ -139,6 +150,21 @@ mod tests {
         assert!(!is_neutron_method("intentloom.project.approvedApply.v1"));
         assert!(!is_neutron_method("intentloom.neutron.*"));
         assert!(!is_neutron_method("intentloom.neutron.graph.*"));
+        assert!(!is_neutron_method(
+            "intentloom.neutron.mutation.review.get.v1"
+        ));
+        assert!(!is_neutron_method(
+            "intentloom.neutron.mutation.review.list.v1"
+        ));
+        assert!(is_neutron_mutation_review_list_method(
+            "intentloom.neutron.mutation.review.list.v1"
+        ));
+        assert!(is_neutron_mutation_review_get_method(
+            "intentloom.neutron.mutation.review.get.v1"
+        ));
+        assert!(!is_neutron_mutation_review_get_method(
+            "intentloom.neutron.mutation.approveAndApply.v1"
+        ));
         assert!(!is_foundation_method(
             "intentloom.neutron.session.create.v1"
         ));

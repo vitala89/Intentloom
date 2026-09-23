@@ -20,6 +20,15 @@ export type {
   NeutronGraphMutationPayloadStore,
   NeutronGraphMutationReviewBundle,
 } from "./neutron-graph-mutation-store.js";
+export {
+  getNeutronMutationReview,
+  listNeutronMutationReviews,
+} from "./neutron-mutation-review-project.js";
+export type { ProjectNeutronMutationReviewInput } from "./neutron-mutation-review-project.js";
+export {
+  neutronMutationReviewLeakKeys,
+  neutronMutationReviewLeaksSecret,
+} from "./neutron-mutation-review-leak.js";
 export { applyApprovedNeutronGraphMutation } from "./neutron-graph-mutation-apply.js";
 export type {
   ApplyApprovedNeutronGraphMutationInput,

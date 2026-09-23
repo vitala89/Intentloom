@@ -44,6 +44,15 @@ export async function canonicalProjectRoot(root: string): Promise<string> {
   }
 }
 
+export async function resolveDaemonProjectRoot(
+  root: string,
+  enforceCanonicalRoots: boolean | undefined,
+  canonicalize: (root: string) => Promise<string> = canonicalProjectRoot,
+): Promise<string> {
+  if (enforceCanonicalRoots === false) return root;
+  return canonicalize(root);
+}
+
 export async function runWithProjectRootLock<T>(
   root: string,
   enforceCanonicalRoots: boolean | undefined,

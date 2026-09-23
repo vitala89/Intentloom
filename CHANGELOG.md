@@ -7,6 +7,19 @@ All notable changes are documented here. This project follows Keep a Changelog p
 Changes listed here are merged after the current release-preparation scope and
 are not included in the current npm artifact until a later release.
 
+- Neutron Desktop Mutation Host Flow D1 exposes a strictly read-only path for
+  Desktop to retrieve the host-held authoritative mutation review payload
+  (`intentloom.neutron.mutation.review.list.v1` and
+  `intentloom.neutron.mutation.review.get.v1`). Exact proposed bytes come from
+  `NeutronGraphMutationPayloadStore`; current bytes are limited to declared
+  proposal paths. No Approve, Apply, approval issuance, mutation RPC, N4
+  mutation tool, or `mutationAllowed` change. N4 remains the seven read-only
+  tools. `mutationAllowed` remains literal `false`. Neutron workspace dispatch
+  honors `enforceCanonicalRoots === false` so session/tool roots stay the
+  client path on macOS (`/var` vs `/private/var`) and Windows; N2 still
+  injects the trusted session root when inspect omits `root`. Slice 5.1
+  currentness (`attemptFingerprint === currentFingerprint`) is unchanged.
+
 - Neutron Mutation Slice 5 integrates N5 proposal generation with existing
   review/Apply: an authoritative completed attempt may emit a strict
   `mutation-proposal` candidate; the host materializes a content-bound
