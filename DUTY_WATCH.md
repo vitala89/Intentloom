@@ -20,18 +20,95 @@ evidence). **Mutation Slice 5 implemented** (N5 proposal/review integration;
 host-only graph-linked Apply composition), **security-corrected by Slice 5.1**
 (stale proposal fail-closed + end-to-end proposal capability clamp).
 **N6 Slices 1–5 implemented** (read-only Desktop Neutron, including mutation
-proposal review). **Desktop mutation host flow D1 implemented on branch**
-`feat/neutron-desktop-mutation-review-transport` (authoritative read-only
-mutation review payload transport); **Compatibility matrix green; not merged**. Approve/Apply
+proposal review). **Desktop mutation host flow D1 implemented and merged**
+(PR #516; authoritative read-only mutation review payload transport). Exact
+review UX **D2 not started** and remains separately authorized. Approve/Apply
 implementation remains **not authorized**. `mutationAllowed` remains
 literal `false`. N4 remains the seven read-only tools. Optional N3 Slice 5,
 P4l17, Desktop Approve/Apply UX, Desktop verification UX, host rollback
 execution / Undo, and any N4 mutation tool remain unauthorized.
 
+### 2026-09-23, Neutron Desktop Mutation Host Flow D1 — post-merge docs handoff
+
+- **Status:** **docs only** (this watch). D1 implementation merged; D2–D5,
+  DL, Approve, Apply, and N4 mutation tool remain **not authorized**.
+- **Starting main / origin/main:** `ca87a2532d1e4965655f97d39efb21fc8ad36437`
+  (PR #516 merged; tracked tree clean).
+- **Implementation PR:** https://github.com/vitala89/Intentloom/pull/516
+- **Implementation branch:** `feat/neutron-desktop-mutation-review-transport`
+- **Starting implementation main:** `d8d312f2c9e2dac9f7375a2f79ab572d4e75bb7d`
+- **Final implementation head (pre-merge):**
+  `25d0f6391ebc3079a755c2cbe0f492ef868a6578`
+- **Implementation merge SHA / authoritative `main`:**
+  `ca87a2532d1e4965655f97d39efb21fc8ad36437`
+- **Handoff branch:** `docs/neutron-desktop-mutation-d1-handoff`
+- **Handoff PR:** https://github.com/vitala89/Intentloom/pull/517
+- **Canonical brief:**
+  [`docs/roadmap/NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md`](docs/roadmap/NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md)
+- **D1 delivered (read-only):** authoritative mutation review transport;
+  host-held `NeutronGraphMutationReviewBundle` / `NeutronGraphMutationPayloadStore`
+  as the only source of exact proposed bytes; bounded current bytes for exact
+  declared paths; deterministic proposal listing; explicit `proposalId` on get;
+  current / stale / expired / cancelled state; strict root / session / project /
+  graph binding; payload vs review artifact verification; in-memory store
+  restart fail-closed (no reconstruction from preview, model output, or Desktop
+  bodies). RPC:
+  `intentloom.neutron.mutation.review.list.v1` and
+  `intentloom.neutron.mutation.review.get.v1` (both read-only). Tauri:
+  `list_neutron_mutation_reviews`, `get_neutron_mutation_review`. Desktop client:
+  `listNeutronMutationReviews`, `getNeutronMutationReview`. Generic
+  `invoke_neutron_request` does **not** dispatch mutation-review methods.
+- **Exact bytes invariant:** proposed content comes only from the host payload
+  store and authoritative review bundle — not from `expectedOutput`, preview
+  proposal, model prose, changed paths, digests, a second model call, or
+  Desktop-supplied content.
+- **Compatibility incident (preserved):** initial D1 branch failed Compatibility
+  on macOS Node 22/24 and Windows Node 22/24 while Ubuntu passed (run
+  `35739038759`). Root cause: N2 inspect root binding uses exact string equality;
+  the D1 test adapter echoed the pre-realpath temp root while Neutron workspace
+  dispatch always canonicalized via `realpath` even when
+  `enforceCanonicalRoots: false` (Linux `/tmp` unchanged; macOS `/var` vs
+  `/private/var` and Windows realpath/casing diverged) → `root-mismatch`, no
+  authoritative proposal materialization.
+- **Compatibility correction:** `resolveDaemonProjectRoot` honors
+  `enforceCanonicalRoots === false` for Neutron session/review dispatch
+  (`undefined`/`true` still canonicalize; production daemon keeps
+  `enforceCanonicalRoots: true`). D1 inspect omits unnecessary client `root`;
+  N2 injects trusted session root. **Slice 5.1 currentness unchanged:**
+  `attemptFingerprint === currentFingerprint` still required; stale rejection
+  fail-closed; no candidate rebind; no platform stale bypass; no preview
+  fallback.
+- **Fingerprint regression coverage:** repeated fingerprint of unchanged project
+  is stable; inspection-visible project change changes fingerprint; symlink-parent
+  vs realpath spelling does not alter the semantic inspection fingerprint
+  (not claimed as universal content hash).
+- **Secret / path security:** review transport does not leak `approvalToken`,
+  `grantedApprovals`, `previousContent`, prompts, reasoning, or daemon session
+  token; secret-like paths omit bodies. No arbitrary filesystem browse — only
+  declared proposal paths; traversal, absolute paths, symlink escape, and
+  undeclared paths rejected; payload mismatch fails closed.
+- **Multiple proposals:** list may return multiple authoritative summaries; get
+  requires explicit `proposalId`; no array-first authoritative selection;
+  preview proposals are not authoritative review bundles.
+- **D1 did not add:** approval issuance, Approve, Apply, Approve & Apply,
+  mutation transaction RPC, N4 mutation tool, Desktop write path, model
+  mutation authority, automatic retry, Undo, or rollback execution.
+- **Final hosted CI on implementation head `25d0f639`:** Compatibility SUCCESS
+  Ubuntu Node 22/24, macOS Node 22/24, Windows Node 22/24 (runs
+  `35908391558`, `35908387271`); Governance `35908391341`; CodeQL
+  `35908391343`; Desktop SEA Feasibility `35908391704`; Harness Performance
+  Benchmark `35908391265`.
+- **Verification (this handoff):** `pnpm format:check`; `git diff --check`.
+- **Not authorized / deferred:** D2, D3, D4, D5, DL, Approve, Apply, Desktop
+  mutation authority, N4 mutation tool, Undo, rollback execution, automatic
+  Apply retry, Local AI roadmap, optional N3 Slice 5, P4l17.
+- **Next first action:** **None from automation.** Await explicit maintainer
+  authorization for **D2** (Desktop exact mutation review UI; read-only over D1).
+  Do not start D2 from this handoff.
+
 ### 2026-09-23, Neutron Desktop Mutation Host Flow D1 — Compatibility correction
 
-- **Status:** **implementation complete on branch; awaiting maintainer review**
-  (do not merge autonomously).
+- **Status:** **merged** (implementation correction; part of PR #516).
 - **Implementation PR:** https://github.com/vitala89/Intentloom/pull/516
 - **Implementation branch:** `feat/neutron-desktop-mutation-review-transport`
 - **Failing head observed:** `0b6d8dc0e1b367160db55038e12609957ed23a38`
@@ -72,8 +149,7 @@ execution / Undo, and any N4 mutation tool remain unauthorized.
 
 ### 2026-09-22, Neutron Desktop Mutation Host Flow D1 — review payload transport
 
-- **Status:** **implementation complete on branch; awaiting maintainer review**
-  (do not merge autonomously).
+- **Status:** **merged** (implementation; PR #516).
 - **Implementation PR:** https://github.com/vitala89/Intentloom/pull/516
 - **Implementation branch:** `feat/neutron-desktop-mutation-review-transport`
 - **Implementation head SHA:** `e652b7cfc38c93241ab9430a5efa34a4135be60e`
@@ -120,8 +196,9 @@ execution / Undo, and any N4 mutation tool remain unauthorized.
   **325 files / 2778 passed / 3 skipped**. `git diff --check` clean.
   Hosted `cargo test method_allowlist` could not run here (Cargo 1.83 lacks
   `edition2024` for current crate index).
-- **Next first action:** Maintainer review of the D1 implementation PR.
-  Do not start D2 from this handoff.
+- **Next first action (historical):** Maintainer review of PR #516 — **complete**
+  (merged `ca87a2532d1e4965655f97d39efb21fc8ad36437`). See 2026-09-23 post-merge
+  docs handoff above.
 
 ### 2026-09-18, Neutron N6 Desktop mutation host flow — security/architecture brief
 

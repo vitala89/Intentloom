@@ -2,11 +2,14 @@
 
 ## Status
 
-**Slice 4 implemented** (evidence + provenance + authoritative result UX).
-Slice 5 is **not authorized**. `mutationAllowed` remains
-`false`. Streaming and daemon event push remain unavailable. No event bridge
-or polling loop was added; Slice 3 uses request/response graph get/execute/cancel
-snapshots. Latest graph per session only.
+**N6 Slices 1–5 implemented** (read-only Desktop Neutron, including mutation
+proposal review). **Desktop mutation host flow D1 implemented and merged**
+(PR #516): authoritative read-only mutation review transport exists; **D2**
+exact review/diff UX is **not** implemented and remains separately authorized.
+`mutationAllowed` remains `false`. Streaming and daemon event push remain
+unavailable. No event bridge or polling loop was added; Slice 3 uses
+request/response graph get/execute/cancel snapshots. Latest graph per session
+only.
 
 N1–N5 read-only runtime is complete in `@intentloom/application` and
 `@intentloom/protocol`. Mutation-routing Slice 1 contracts and Slice 2
@@ -31,7 +34,7 @@ Related:
 - [`NEUTRON_N5_EXECUTABLE_TASK_GRAPH_BRIEF.md`](NEUTRON_N5_EXECUTABLE_TASK_GRAPH_BRIEF.md)
 - [`NEUTRON_MUTATION_ROUTING_BRIEF.md`](NEUTRON_MUTATION_ROUTING_BRIEF.md)
 - [`NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md`](NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md)
-  (design only; Desktop Approve/Apply implementation is not authorized)
+  (D1 transport merged PR #516; D2–D5/DL and Desktop Approve/Apply not authorized)
 - [`ADR-0042`](../decisions/ADR-0042-desktop-stack-and-daemon-distribution.md)
 - [`ADR-0053`](../decisions/ADR-0053-approved-apply-transactional-mutation.md)
 - [`ADR-0055`](../decisions/ADR-0055-neutron-n2-first-model-adapter.md)
@@ -949,10 +952,13 @@ Mutation Slice 5 (PR #507) connected authoritative proposals to host-materialize
 review artifacts from completed authoritative N5 attempts (not model prose).
 Slice 5.1 (PR #510) fail-closes stale authoritative materialization; Desktop
 still sees read-only proposal review only. N6 `expectedOutput` / proposal seed
-remains **preview-only** and cannot authorize review artifacts or Apply. No
-Approve, Apply, Undo, or approval token on Desktop. This brief still does not
-authorize Desktop Approve/Apply controls. The separate design-only host-flow
-brief is
+remains **preview-only** and cannot authorize review artifacts or Apply. **D1**
+(PR #516) adds read-only transport for exact proposed bytes and bounded current
+bytes from the host payload store (`list`/`get` RPC and dedicated Tauri/Desktop
+client methods); preview and model output are not reconstructed into review
+payloads. **D2** (exact diff/review UX over D1) is not implemented. No Approve,
+Apply, Undo, or approval token on Desktop. This brief still does not authorize
+Desktop Approve/Apply controls. Host-flow canon:
 [`NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md`](NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md).
 
 Do not start Slice 5 from N6 Slice 1 authorization.

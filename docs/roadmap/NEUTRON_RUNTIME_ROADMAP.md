@@ -359,9 +359,10 @@ verification UX, host rollback execution / Undo. Next first action: none from
 automation — await explicit maintainer authorization.
 
 N6 read-only Desktop is implemented under its own brief. Desktop mutation
-host-flow design (not implementation) is
+host flow: **D1 implemented and merged** (PR #516; read-only authoritative
+review transport). **D2–D5 and DL not authorized.** Canon:
 [`NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md`](NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md).
-Do not start Desktop Approve/Apply UX or an N4 mutation tool from this
+Do not start D2, Desktop Approve/Apply UX, or an N4 mutation tool from this
 roadmap entry alone.
 
 ## N6. Desktop Neutron Workspace
@@ -379,12 +380,13 @@ Runtime stays in `@intentloom/application`. Streaming is unavailable.
 Desktop result/evidence/provenance UX (structured outcome vs model prose,
 accepted/stale/budget/warnings, usage/fingerprints, bounded graph evidence
 fields). **N6 Slice 5 implemented** — read-only mutation proposal review
-(paths + digests; no Approve/Apply). Mutation Slice 3 host Apply and Slice
-3.1 durable approval state are implemented in application; Desktop
-Approve/Apply UX remains unauthorized. The threat-reviewed host-flow design
-for a later Desktop mutation grant is
+(paths + digests; no Approve/Apply). **Desktop mutation host D1 implemented**
+(PR #516) — authoritative read-only review payload transport; exact review UX
+**D2 not started**. Mutation Slice 3 host Apply and Slice 3.1 durable approval
+state are implemented in application; Desktop Approve/Apply UX remains
+unauthorized. Host-flow canon:
 [`NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md`](NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md)
-(**DESIGN ONLY**).
+(D1 merged; D2–D5 unauthorized).
 
 Integrate the runtime with the official Desktop application after the v0.6
 read-only project slice and shared client contracts are stable.
@@ -528,9 +530,10 @@ preventing an unfinished agent layer from expanding the v0.6 release scope.
 ## First implementation action
 
 N1–N5 are complete. Mutation-routing Slices 1–5 exist. **N6 Slices 1–5 are
-implemented.** The next Neutron increment is **not** implied by this file:
-Desktop Approve/Apply UX requires explicit maintainer authorization. See
+implemented.** **Desktop mutation host D1 is implemented and merged.** The next
+Neutron increment is **not** implied by this file: **D2** (exact review UI) and
+Desktop Approve/Apply UX require explicit maintainer authorization. Next first
+action: none from automation. See
 [`NEUTRON_N6_DESKTOP_READONLY_BRIEF.md`](NEUTRON_N6_DESKTOP_READONLY_BRIEF.md),
 [`NEUTRON_MUTATION_ROUTING_BRIEF.md`](NEUTRON_MUTATION_ROUTING_BRIEF.md), and
-the design-only
 [`NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md`](NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md).

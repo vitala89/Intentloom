@@ -29,8 +29,10 @@ pre-2.5 contracts:
 Write tools, generic shell, Desktop Approve/Apply UX, Desktop verification
 UX, host rollback execution / Undo, optional N3 Slice 5, and P4l17 remain
 unauthorized until a later explicit maintainer grant. N6 Slices 1–5
-read-only Desktop are implemented separately. The Desktop mutation host-flow
-design (not an implementation grant) is
+read-only Desktop are implemented separately. Desktop mutation host **D1**
+(read-only authoritative review transport; PR #516) is implemented; it does
+**not** expand mutation-routing write authority, Approve/Apply, or N4 tools.
+D2–D5/DL remain unauthorized. Canon:
 [`NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md`](NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md).
 
 Authoritative roadmap gate:
