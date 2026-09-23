@@ -3,16 +3,19 @@ import type { ClientErrorCode, DaemonRequest } from "@intentloom/protocol";
 import {
   dispatchNeutronSessionRequest,
   isNeutronSessionRequest,
+  type NeutronDaemonOptions,
 } from "./neutron-session-handlers.js";
 import {
   dispatchNeutronMutationReviewRequest,
   isNeutronMutationReviewRequest,
 } from "./neutron-mutation-review-handlers.js";
-import type { NeutronDaemonOptions } from "./neutron-session-handlers.js";
+import { resolveDaemonProjectRoot } from "./daemon-canonical-root.js";
 
 export async function dispatchNeutronWorkspaceRequest(
   request: DaemonRequest,
-  options: NeutronDaemonOptions,
+  options: NeutronDaemonOptions & {
+    readonly enforceCanonicalRoots?: boolean;
+  },
   canonicalProjectRoot: (root: string) => Promise<string>,
   response: (socket: Socket, value: object) => void,
   failure: (
@@ -23,11 +26,17 @@ export async function dispatchNeutronWorkspaceRequest(
   ) => void,
   socket: Socket,
 ): Promise<boolean> {
+  const resolveRoot = (root: string) =>
+    resolveDaemonProjectRoot(
+      root,
+      options.enforceCanonicalRoots,
+      canonicalProjectRoot,
+    );
   if (isNeutronMutationReviewRequest(request)) {
     const reviewResponse = await dispatchNeutronMutationReviewRequest(
       request,
       options,
-      canonicalProjectRoot,
+      resolveRoot,
     );
     if (!reviewResponse) {
       failure(
@@ -45,7 +54,7 @@ export async function dispatchNeutronWorkspaceRequest(
     const neutronResponse = await dispatchNeutronSessionRequest(
       request,
       options,
-      canonicalProjectRoot,
+      resolveRoot,
     );
     if (!neutronResponse) {
       failure(

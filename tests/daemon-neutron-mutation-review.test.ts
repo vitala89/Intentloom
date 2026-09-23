@@ -25,6 +25,7 @@ import {
 } from "./neutron-mutation-slice5-support.js";
 import {
   reviewProject,
+  reviewProjectUnderSymlinkParent,
   SLICE5_CONTENT_A,
 } from "./neutron-mutation-review-support.js";
 import { neutronMutationReviewLeakKeys } from "../packages/application/src/neutron-mutation-review-leak.js";
@@ -36,7 +37,10 @@ afterEach(async () => {
   await Promise.all(daemons.splice(0).map((daemon) => daemon.close()));
 });
 
-function countingAdapter(root: string, calls: { count: number }): ModelAdapter {
+function countingAdapter(
+  calls: { count: number },
+  inspectArgumentsJson = "{}",
+): ModelAdapter {
   return {
     getCapabilities: () => ({
       providerKind: "deterministic-test",
@@ -61,7 +65,7 @@ function countingAdapter(root: string, calls: { count: number }): ModelAdapter {
           stopReason: "tool_call",
           toolCalls: [
             {
-              argumentsJson: JSON.stringify({ root }),
+              argumentsJson: inspectArgumentsJson,
               id: "call-inspect",
               name: "inspect",
             },
@@ -84,8 +88,7 @@ function countingAdapter(root: string, calls: { count: number }): ModelAdapter {
 
 function throwingAdapter(): ModelAdapter {
   return {
-    getCapabilities: () =>
-      countingAdapter("/unused", { count: 0 }).getCapabilities(),
+    getCapabilities: () => countingAdapter({ count: 0 }).getCapabilities(),
     executeTurn: async () => {
       throw new Error("model must not be called during review retrieval");
     },
@@ -96,6 +99,53 @@ function endpoint(directory: string): string {
   return process.platform === "win32"
     ? `\\\\.\\pipe\\intentloom-d1-${process.pid}-${randomUUID()}`
     : join(directory, "daemon.sock");
+}
+
+function mutationReviewMaterializationDiagnostics(executed: {
+  readonly result?: {
+    readonly viewmodel?: {
+      readonly errorCode?: string | null;
+      readonly mutationProposal?: { readonly proposalId?: string } | null;
+      readonly projectFingerprintBefore?: string | null;
+      readonly projectFingerprintAfter?: string | null;
+      readonly graphSnapshot?: {
+        readonly status?: string;
+        readonly accepted?: boolean;
+        readonly stale?: {
+          readonly accepted?: boolean;
+          readonly kinds?: readonly string[];
+        } | null;
+        readonly nodes?: readonly {
+          readonly taskId?: string;
+          readonly state?: string;
+          readonly errorCode?: string | null;
+        }[];
+      } | null;
+    };
+  };
+}): string {
+  const viewmodel = executed.result?.viewmodel;
+  const graph = viewmodel?.graphSnapshot;
+  return JSON.stringify({
+    errorCode: viewmodel?.errorCode ?? null,
+    hasProposal: typeof viewmodel?.mutationProposal?.proposalId === "string",
+    fingerprintsEqual:
+      viewmodel?.projectFingerprintBefore ===
+      viewmodel?.projectFingerprintAfter,
+    fingerprintBeforePresent:
+      typeof viewmodel?.projectFingerprintBefore === "string",
+    fingerprintAfterPresent:
+      typeof viewmodel?.projectFingerprintAfter === "string",
+    graphStatus: graph?.status ?? null,
+    graphAccepted: graph?.accepted ?? null,
+    staleAccepted: graph?.stale?.accepted ?? null,
+    staleKinds: graph?.stale?.kinds ?? [],
+    nodeStates: (graph?.nodes ?? []).map((node) => ({
+      taskId: node.taskId ?? null,
+      state: node.state ?? null,
+      errorCode: node.errorCode ?? null,
+    })),
+  });
 }
 
 function rawRequest(
@@ -123,7 +173,7 @@ describe("Neutron mutation review D1 daemon RPC", () => {
     const token = `d1-token-${"n".repeat(24)}`;
     const calls = { count: 0 };
     const runtime = createNeutronSessionRuntime({
-      createAdapter: () => countingAdapter(root, calls),
+      createAdapter: () => countingAdapter(calls),
       sessionProposalCapabilities: [NEUTRON_MUTATION_PROPOSAL_CAPABILITY],
     });
     const daemon = await startLocalDaemon({
@@ -155,7 +205,10 @@ describe("Neutron mutation review D1 daemon RPC", () => {
     };
     expect(executed.result.viewmodel.session.mutationAllowed).toBe(false);
     const proposalId = executed.result.viewmodel.mutationProposal?.proposalId;
-    expect(proposalId).toEqual(expect.any(String));
+    expect(
+      proposalId,
+      `authoritative mutation proposal missing: ${mutationReviewMaterializationDiagnostics(executed)}`,
+    ).toEqual(expect.any(String));
     const turnsAfterGraph = calls.count;
     expect(turnsAfterGraph).toBeGreaterThan(0);
     const listed = (await rawRequest(
@@ -232,7 +285,7 @@ describe("Neutron mutation review D1 daemon RPC", () => {
     const directory = await mkdtemp(join(tmpdir(), "intentloom-d1-restart-"));
     const token = "n".repeat(32);
     const first = createNeutronSessionRuntime({
-      createAdapter: () => countingAdapter(root, { count: 0 }),
+      createAdapter: () => countingAdapter({ count: 0 }),
       sessionProposalCapabilities: [NEUTRON_MUTATION_PROPOSAL_CAPABILITY],
     });
     const daemon = await startLocalDaemon({
@@ -282,5 +335,92 @@ describe("Neutron mutation review D1 daemon RPC", () => {
         ),
       ).method,
     ).toBe(NEUTRON_MUTATION_REVIEW_GET_METHOD);
+  });
+
+  it("materializes an authoritative proposal when inspect echoes a symlink-parent root", async () => {
+    const { root, realRoot } = await reviewProjectUnderSymlinkParent();
+    expect(root).not.toBe(realRoot);
+    const directory = await mkdtemp(join(tmpdir(), "intentloom-d1-symlink-"));
+    const token = `d1-token-${"s".repeat(24)}`;
+    const calls = { count: 0 };
+    const runtime = createNeutronSessionRuntime({
+      createAdapter: () => countingAdapter(calls, JSON.stringify({ root })),
+      sessionProposalCapabilities: [NEUTRON_MUTATION_PROPOSAL_CAPABILITY],
+    });
+    const daemon = await startLocalDaemon({
+      endpoint: endpoint(directory),
+      sessionToken: token,
+      enforceCanonicalRoots: false,
+      ...bindNeutronSessionHandlers(runtime),
+    });
+    daemons.push(daemon);
+    const created = (await rawRequest(
+      daemon.endpoint,
+      createNeutronSessionCreateRequest(1, root, "project-slice5"),
+      token,
+    )) as { result: { viewmodel: { session: { sessionId: string } } } };
+    const executed = (await rawRequest(
+      daemon.endpoint,
+      createNeutronGraphExecuteRequest(
+        2,
+        root,
+        created.result.viewmodel.session.sessionId,
+        "project-slice5",
+        [slice5Node("task-build", { state: "ready" })],
+      ),
+      token,
+    )) as {
+      result: {
+        viewmodel: {
+          mutationProposal: { proposalId: string } | null;
+          session: { mutationAllowed: boolean };
+        };
+      };
+    };
+    expect(executed.result.viewmodel.session.mutationAllowed).toBe(false);
+    const proposalId = executed.result.viewmodel.mutationProposal?.proposalId;
+    expect(
+      proposalId,
+      `authoritative mutation proposal missing: ${mutationReviewMaterializationDiagnostics(executed)}`,
+    ).toEqual(expect.any(String));
+    const listed = (await rawRequest(
+      daemon.endpoint,
+      createNeutronMutationReviewListRequest(
+        3,
+        root,
+        created.result.viewmodel.session.sessionId,
+        "project-slice5",
+      ),
+      token,
+    )) as { result: { outcome: string; reviews: { proposalId: string }[] } };
+    expect(listed.result.outcome).toBe("ok");
+    expect(listed.result.reviews).toHaveLength(1);
+    expect(listed.result.reviews[0]?.proposalId).toBe(proposalId);
+    const got = (await rawRequest(
+      daemon.endpoint,
+      createNeutronMutationReviewGetRequest(
+        4,
+        root,
+        created.result.viewmodel.session.sessionId,
+        "project-slice5",
+        proposalId!,
+      ),
+      token,
+    )) as {
+      result: {
+        outcome: string;
+        review?: {
+          files: { path: string; proposedContent?: string }[];
+          currentness: string;
+        };
+      };
+    };
+    expect(got.result.outcome).toBe("ok");
+    expect(
+      got.result.review?.files.find((file) => file.path === "src/a.ts")
+        ?.proposedContent,
+    ).toBe(SLICE5_CONTENT_A);
+    expect(got.result.review?.currentness).toBe("current");
+    expect(calls.count).toBeGreaterThan(0);
   });
 });

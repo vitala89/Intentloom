@@ -1,4 +1,4 @@
-import { mkdir, mkdtemp, writeFile } from "node:fs/promises";
+import { mkdir, mkdtemp, realpath, symlink, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import {
@@ -29,10 +29,10 @@ import {
 
 export const REVIEW_GRAPH_ID = "graph-slice5";
 
-export async function reviewProject(
+async function writeReviewProjectFiles(
+  root: string,
   files?: Record<string, string>,
-): Promise<string> {
-  const root = await mkdtemp(join(tmpdir(), "neutron-d1-review-"));
+): Promise<void> {
   await mkdir(join(root, "src"), { recursive: true });
   const contents = files ?? {
     "src/a.ts": "old a\n",
@@ -43,7 +43,29 @@ export async function reviewProject(
   }
   await writeFile(join(root, "package.json"), '{"name":"d1-review"}\n');
   await writeFile(join(root, "README.md"), "safe\n");
+}
+
+export async function reviewProject(
+  files?: Record<string, string>,
+): Promise<string> {
+  const root = await mkdtemp(join(tmpdir(), "neutron-d1-review-"));
+  await writeReviewProjectFiles(root, files);
   return root;
+}
+
+export async function reviewProjectUnderSymlinkParent(
+  files?: Record<string, string>,
+): Promise<{ readonly root: string; readonly realRoot: string }> {
+  const realParent = await mkdtemp(join(tmpdir(), "neutron-d1-real-"));
+  const linkParent = `${realParent}-link`;
+  await symlink(
+    realParent,
+    linkParent,
+    process.platform === "win32" ? "junction" : "dir",
+  );
+  const root = await mkdtemp(join(linkParent, "neutron-d1-review-"));
+  await writeReviewProjectFiles(root, files);
+  return { realRoot: await realpath(root), root };
 }
 
 export function reviewCandidate(

@@ -22,11 +22,43 @@ host-only graph-linked Apply composition), **security-corrected by Slice 5.1**
 **N6 Slices 1–5 implemented** (read-only Desktop Neutron, including mutation
 proposal review). **Desktop mutation host flow D1 implemented on branch**
 `feat/neutron-desktop-mutation-review-transport` (authoritative read-only
-mutation review payload transport); **not merged**. Approve/Apply
+mutation review payload transport); **CI correction in progress, not merged**. Approve/Apply
 implementation remains **not authorized**. `mutationAllowed` remains
 literal `false`. N4 remains the seven read-only tools. Optional N3 Slice 5,
 P4l17, Desktop Approve/Apply UX, Desktop verification UX, host rollback
 execution / Undo, and any N4 mutation tool remain unauthorized.
+
+### 2026-09-23, Neutron Desktop Mutation Host Flow D1 — Compatibility correction
+
+- **Status:** **CI correction on branch; awaiting Compatibility matrix**
+  (do not merge autonomously).
+- **Implementation PR:** https://github.com/vitala89/Intentloom/pull/516
+- **Implementation branch:** `feat/neutron-desktop-mutation-review-transport`
+- **Failing head observed:** `0b6d8dc0e1b367160db55038e12609957ed23a38`
+- **Compatibility run:** `35739038759` — Ubuntu Node 22/24 passed; Windows
+  Node 22/24 and macOS Node 22/24 failed
+  `tests/daemon-neutron-mutation-review.test.ts` at
+  `mutationProposal?.proposalId` (`expected undefined to deeply equal Any<String>`).
+- **Root cause (Case B+C, not A):** N2 compares inspect `root` to the daemon
+  session root by exact string. D1's counting adapter echoed the pre-realpath
+  `mkdtemp` path. Neutron workspace dispatch always called
+  `canonicalProjectRoot` (`realpath`) even when tests set
+  `enforceCanonicalRoots: false`. Linux `/tmp` realpath is identity, so Ubuntu
+  matched and materialized. macOS `/var/folders/...` vs `/private/var/folders/...`
+  (and Windows realpath/casing) produced `root-mismatch`, the node did not
+  complete, and no authoritative proposal was bound. `inspectProject` fingerprints
+  are sorted relative paths with no absolute root; Slice 5.1
+  `attemptFingerprint === currentFingerprint` was not the failing gate and is
+  unchanged.
+- **Correction:** `resolveDaemonProjectRoot` honors
+  `enforceCanonicalRoots === false` for Neutron session/review dispatch only
+  (`undefined`/`true` still canonicalize). D1 inspect omits client `root` so N2
+  injects the trusted session root (same as `daemon-neutron-graph`). Added
+  fingerprint stability/change tests, symlink-parent materialization, resolver
+  tests, and safe proposal-missing diagnostics (status/stale/node errorCode;
+  no file bodies or secrets).
+- **Not authorized / deferred:** D2, D3, D4, D5, DL, Approve, Apply, N4
+  mutation tool, `mutationAllowed` change, auto-merge.
 
 ### 2026-09-22, Neutron Desktop Mutation Host Flow D1 — review payload transport
 
