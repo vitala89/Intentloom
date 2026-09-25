@@ -22,12 +22,35 @@ host-only graph-linked Apply composition), **security-corrected by Slice 5.1**
 **N6 Slices 1–5 implemented** (read-only Desktop Neutron, including mutation
 proposal review). **Desktop mutation host flow D1 complete** (implementation PR #516 and handoff
 PR #517 merged; authoritative read-only mutation review payload transport).
-Exact review UX **D2 not started** and remains separately authorized.
+Exact review UX **D2 is implemented on a branch awaiting maintainer review**
+and is not merged. D2 does not grant mutation authority.
 Approve/Apply
 implementation remains **not authorized**. `mutationAllowed` remains
 literal `false`. N4 remains the seven read-only tools. Optional N3 Slice 5,
 P4l17, Desktop Approve/Apply UX, Desktop verification UX, host rollback
 execution / Undo, and any N4 mutation tool remain unauthorized.
+
+### 2026-09-25, Neutron Desktop Mutation Host Flow D2 — branch implementation
+
+- **Status:** **awaiting maintainer review.** Not merged. Not complete.
+- **Starting main:** `4ce587259080d8dee8e0ebe843fc7a02899d52cc`
+- **Branch:** `feat/neutron-desktop-mutation-review-ui`
+- **PR:** https://github.com/vitala89/Intentloom/pull/519
+- **Implementation head:** `759d910dab9261066283b3fd53923f0e0917cdac`
+- **EOF correction:** trailing newline presence stays visible in the review diff.
+- **CodeQL:** the D2 review UI test helper no longer uses incomplete HTML-tag
+  stripping. Still awaiting maintainer review. Not merged.
+- **Scope:** read-only Desktop exact mutation review UI over the D1 transport.
+  Explicit multi-proposal selection. No Approve, Apply, approval issuance,
+  mutation RPC, model call, or legacy `ApprovedApplyModal` reuse.
+- **Reused:** `intentloom.neutron.mutation.review.list.v1`,
+  `intentloom.neutron.mutation.review.get.v1`,
+  `list_neutron_mutation_reviews`, `get_neutron_mutation_review`,
+  `listNeutronMutationReviews`, `getNeutronMutationReview`.
+- **Deferred:** D3, D4, D5, DL, approval issuance, Approve/Apply,
+  durableStateDirectory, verification retry, Undo, rollback execution, N4
+  mutation tool, Local AI roadmap, optional N3 Slice 5, P4l17.
+- **Next first action:** Maintainer review. Do not merge from automation.
 
 ### 2026-09-23, Neutron Desktop Mutation Host Flow D1 — post-merge docs handoff
 

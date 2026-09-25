@@ -4,7 +4,7 @@
 
 **D1 — READ-ONLY AUTHORITATIVE MUTATION REVIEW TRANSPORT: IMPLEMENTED AND MERGED**
 
-**D2–D5, DL: NOT AUTHORIZED**
+**D2 exact review UI: branch awaiting maintainer review, not merged. D3–D5, DL: NOT AUTHORIZED**
 
 **DESKTOP APPROVE/APPLY IMPLEMENTATION: NOT AUTHORIZED**
 
@@ -994,7 +994,9 @@ No approval. No Apply.
 
 Render diffs/classification/digests/expiry/currentness. Still no approval
 or Apply. Explicit multi-proposal selection UX without enabling mutation.
-**Not authorized.** D2 must not add Approve, Apply, approval issuance,
+**Branch implementation awaiting maintainer review**
+(`feat/neutron-desktop-mutation-review-ui`). Not merged. D2 must not add
+Approve, Apply, approval issuance,
 transaction mutation, D3 host approval intent, D4 approveAndApply, D5
 reconnect/status flow, DL cleanup, N4 mutation tool, or `mutationAllowed`
 change.
@@ -1154,7 +1156,7 @@ Implementation and handoff PRs that cite this brief must repeat:
 
 **D1 IMPLEMENTED AND MERGED** (PR #516)
 
-**D2–D5, DL: NOT AUTHORIZED**
+**D2 exact review UI: branch awaiting maintainer review, not merged. D3–D5, DL: NOT AUTHORIZED**
 
 **DESKTOP APPROVE/APPLY IMPLEMENTATION: NOT AUTHORIZED**
 

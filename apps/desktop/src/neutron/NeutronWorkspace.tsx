@@ -6,6 +6,7 @@ import { NeutronComposer } from "./NeutronComposer.js";
 import { NeutronResult } from "./NeutronResult.js";
 import { NeutronSessionHeader } from "./NeutronSessionHeader.js";
 import { NeutronMutationProposalPanel } from "./NeutronMutationProposalPanel.js";
+import { NeutronMutationReviewPanel } from "./NeutronMutationReviewPanel.js";
 import { NeutronTaskGraphPanel } from "./NeutronTaskGraphPanel.js";
 import { authoritativeGraphSnapshot } from "./neutron-graph-viewmodel.js";
 import { neutronSurfaceKind } from "./neutron-session-viewmodel.js";
@@ -76,6 +77,21 @@ export function NeutronWorkspace({
       />
       <NeutronMutationProposalPanel
         proposal={session.viewmodel?.mutationProposal ?? null}
+      />
+      <NeutronMutationReviewPanel
+        active={session.viewmodel !== null}
+        scope={
+          session.viewmodel === null
+            ? null
+            : {
+                root,
+                sessionId: session.viewmodel.session.sessionId,
+                projectId: session.viewmodel.session.projectId,
+                ...(session.viewmodel.graphSnapshot === null
+                  ? {}
+                  : { graphId: session.viewmodel.graphSnapshot.graphId }),
+              }
+        }
       />
       <NeutronActivityPanel viewmodel={session.viewmodel} />
       <NeutronComposer
