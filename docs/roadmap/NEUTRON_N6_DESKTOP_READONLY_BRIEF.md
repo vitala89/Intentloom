@@ -4,8 +4,9 @@
 
 **N6 Slices 1–5 implemented** (read-only Desktop Neutron, including mutation
 proposal review). **Desktop mutation host flow D1 implemented and merged**
-(PR #516): authoritative read-only mutation review transport exists; **D2**
-exact review/diff UX is implemented on a branch awaiting maintainer review and is not merged.
+(PR #516): authoritative read-only mutation review transport exists; **D2
+implemented and merged** (PR #519): exact review/diff UX over D1. D3–D5 and
+DL remain unauthorized.
 `mutationAllowed` remains `false`. Streaming and daemon event push remain
 unavailable. No event bridge or polling loop was added; Slice 3 uses
 request/response graph get/execute/cancel snapshots. Latest graph per session
@@ -34,7 +35,7 @@ Related:
 - [`NEUTRON_N5_EXECUTABLE_TASK_GRAPH_BRIEF.md`](NEUTRON_N5_EXECUTABLE_TASK_GRAPH_BRIEF.md)
 - [`NEUTRON_MUTATION_ROUTING_BRIEF.md`](NEUTRON_MUTATION_ROUTING_BRIEF.md)
 - [`NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md`](NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md)
-  (D1 transport merged PR #516; D2–D5/DL and Desktop Approve/Apply not authorized)
+  (D1 transport merged PR #516; D2 exact review UX merged PR #519; D3–D5/DL and Desktop Approve/Apply not authorized)
 - [`ADR-0042`](../decisions/ADR-0042-desktop-stack-and-daemon-distribution.md)
 - [`ADR-0053`](../decisions/ADR-0053-approved-apply-transactional-mutation.md)
 - [`ADR-0055`](../decisions/ADR-0055-neutron-n2-first-model-adapter.md)
@@ -956,7 +957,8 @@ remains **preview-only** and cannot authorize review artifacts or Apply. **D1**
 (PR #516) adds read-only transport for exact proposed bytes and bounded current
 bytes from the host payload store (`list`/`get` RPC and dedicated Tauri/Desktop
 client methods); preview and model output are not reconstructed into review
-payloads. **D2** (exact diff/review UX over D1) is not implemented. No Approve,
+payloads. **D2** (PR #519) adds exact diff/review UX over D1, including
+explicit multi-proposal selection and EOF newline exactness. No Approve,
 Apply, Undo, or approval token on Desktop. This brief still does not authorize
 Desktop Approve/Apply controls. Host-flow canon:
 [`NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md`](NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md).

@@ -22,24 +22,125 @@ host-only graph-linked Apply composition), **security-corrected by Slice 5.1**
 **N6 Slices 1–5 implemented** (read-only Desktop Neutron, including mutation
 proposal review). **Desktop mutation host flow D1 complete** (implementation PR #516 and handoff
 PR #517 merged; authoritative read-only mutation review payload transport).
-Exact review UX **D2 is implemented on a branch awaiting maintainer review**
-and is not merged. D2 does not grant mutation authority.
-Approve/Apply
+**Desktop mutation host flow D2 complete** (implementation PR #519 merged;
+read-only Desktop exact mutation review UX over D1). Host Approval-Intent
+Protocol **D3 not started** and remains separately authorized. D2 does not
+grant mutation authority. Approve/Apply
 implementation remains **not authorized**. `mutationAllowed` remains
 literal `false`. N4 remains the seven read-only tools. Optional N3 Slice 5,
 P4l17, Desktop Approve/Apply UX, Desktop verification UX, host rollback
 execution / Undo, and any N4 mutation tool remain unauthorized.
 
+### 2026-09-25, Neutron Desktop Mutation Host Flow D2 — post-merge docs handoff
+
+- **Status:** **DESKTOP MUTATION D2 IMPLEMENTED AND MERGED.** Implementation PR
+  #519 merged. This handoff records merged state only. D3–D5, DL, Approve,
+  Apply, and N4 mutation tool remain **not authorized**.
+- **Starting main / origin/main:** `2d3dfed9296ee998a458379db81ac5c0e1fa9e67`
+  (PR #519 merged; tracked tree clean).
+- **Implementation PR:** https://github.com/vitala89/Intentloom/pull/519
+- **Implementation branch:** `feat/neutron-desktop-mutation-review-ui`
+- **Starting implementation main:** `4ce587259080d8dee8e0ebe843fc7a02899d52cc`
+- **Final implementation head (pre-merge):**
+  `74acec00d07afcf8c5a69e8ba667d091fcedbfa7`
+- **Implementation merge SHA / authoritative `main`:**
+  `2d3dfed9296ee998a458379db81ac5c0e1fa9e67`
+- **Merged at:** 2026-09-25
+- **Canonical brief:**
+  [`docs/roadmap/NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md`](docs/roadmap/NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md)
+- **D2 delivered (read-only):** Desktop exact mutation review UX over D1.
+  Authoritative proposal listing; explicit proposal selection (no multi-proposal
+  first-wins); exact D1 `proposalId` get semantics; file-by-file navigation;
+  current vs proposed diff; proposal metadata, mutation class, digests, and
+  expiry; host currentness rendered as current / stale / expired / cancelled;
+  secret-like path body suppression; bounded unavailable/error states; explicit
+  read-only refresh; root/session/project/graph scope reset; EOF newline
+  exactness; accessibility/keyboard selection patterns.
+- **Authoritative source invariant:** D2 does not construct mutation review
+  bytes. Current and proposed content come only from the D1 authoritative
+  review viewmodel. Reused RPC:
+  `intentloom.neutron.mutation.review.list.v1` and
+  `intentloom.neutron.mutation.review.get.v1`. Tauri:
+  `list_neutron_mutation_reviews`, `get_neutron_mutation_review`. Desktop
+  client: `listNeutronMutationReviews`, `getNeutronMutationReview`. Host source
+  remains `NeutronGraphMutationPayloadStore` /
+  `NeutronGraphMutationReviewBundle`. No second review transport or proposal
+  store.
+- **Multi-proposal:** if multiple authoritative proposals exist, none is
+  silently selected; no `[0]` / first-wins authority; the human must select;
+  detail retrieval uses explicit `proposalId`; proposal A content cannot
+  silently render as proposal B. If one proposal exists, Desktop may present it
+  directly while preserving explicit proposal identity.
+- **Currentness:** host currentness is authoritative. Desktop renders current /
+  stale / expired / cancelled. Desktop does not rebase, regenerate, convert
+  stale to current, extend expiry, automatically replace a candidate, or rerun
+  a model to repair a proposal. Candidate A cannot silently bind to later
+  project state B.
+- **EOF exactness (final corrected behavior):** exact review distinguishes
+  `"alpha"` from `"alpha\n"`, `"alpha\n"` from `"alpha\n\n"`, and `""` from
+  `"\n"`. Human-visible review also distinguishes newline at EOF, no newline at
+  EOF, multiple trailing newlines, empty file vs newline-only file, and
+  whitespace-sensitive content. Presentation uses metadata/marker
+  `No newline at end of file` without modifying authoritative D1 strings.
+- **EOF correction history:** the original D2 diff presentation collapsed
+  `"alpha"` and `"alpha\n"` into visually identical line arrays. Commit
+  `5ccd169dec03deba294f9ed907c7266db1823d1e` corrected that. Do not record only
+  the first branch head as final D2.
+- **CodeQL test-helper correction:** after the EOF correction, a test helper
+  triggered a CodeQL issue related to incomplete multi-character sanitization /
+  HTML-tag stripping. Commit
+  `74acec00d07afcf8c5a69e8ba667d091fcedbfa7` corrected the helper by walking
+  markup for visible button text. This did not change production mutation
+  review semantics or authority.
+- **Scope reset:** D2 clears or invalidates renderer review state when
+  authoritative root, session, project, or graph scope changes. Review state
+  must not carry across project/session boundaries.
+- **Secret / unavailable:** secret-like paths expose safe status only. No
+  secret body reconstruction. No `previousContent`, credentials, environment
+  values, approval token, daemon token, or reasoning trace. Missing
+  authoritative payload after restart remains fail-closed through D1. D2 does
+  not reconstruct it.
+- **Security invariants unchanged:** model output is not approval. D2 does not
+  issue approval. No Approve, Apply, Approve & Apply, mutation RPC, Desktop
+  project write, arbitrary renderer filesystem read, raw approval token,
+  `grantedApprovals`, approval object in the renderer, `ApprovedApplyModal`,
+  or N4 mutation tool. `mutationAllowed === false`. N4 remains seven read-only
+  tools. Opening, selecting, or refreshing exact review does not cause a
+  model/provider call.
+- **D2 did not add:** host approval issuer, approval intent schema, Approve,
+  Apply, Approve & Apply, public Approve RPC, mutation RPC, Desktop mutation
+  authority, approval token transport, `approveAndApply`,
+  `durableStateDirectory` wiring, result/status reconnect UX, verification
+  retry UX, Undo, or legacy fake Apply cleanup (DL).
+- **Final hosted CI on implementation head `74acec00`:** Compatibility SUCCESS
+  Ubuntu Node 22/24, macOS Node 22/24, Windows Node 22/24 (pull_request run
+  `36173069292`; push run `36173063840`); Governance `36173069339`; CodeQL
+  `36173069303`; Desktop SEA Feasibility `36173069306`.
+- **Local/full verification reported on PR #519:** `pnpm verify`; 328 test
+  files; 2803 passed; 3 skipped; typecheck, lint, format check, build, and
+  `git diff --check` pass.
+- **Verification (this handoff):** `pnpm format:check`; `git diff --check`.
+- **Not authorized / deferred:** D3, D4, D5, DL, Approve, Apply, Desktop
+  mutation authority, N4 mutation tool, Undo, rollback execution, automatic
+  Apply retry, Local AI roadmap, optional N3 Slice 5, P4l17.
+- **Next first action:** **None from automation.** Await explicit maintainer
+  authorization for **D3** (Host Approval-Intent Protocol + Security Tests).
+  Do not start D3 from this handoff.
+
 ### 2026-09-25, Neutron Desktop Mutation Host Flow D2 — branch implementation
 
-- **Status:** **awaiting maintainer review.** Not merged. Not complete.
+- **Status:** **merged** (implementation; PR #519). First recorded branch head
+  `759d910dab9261066283b3fd53923f0e0917cdac` is not the final D2 head.
 - **Starting main:** `4ce587259080d8dee8e0ebe843fc7a02899d52cc`
 - **Branch:** `feat/neutron-desktop-mutation-review-ui`
 - **PR:** https://github.com/vitala89/Intentloom/pull/519
-- **Implementation head:** `759d910dab9261066283b3fd53923f0e0917cdac`
-- **EOF correction:** trailing newline presence stays visible in the review diff.
-- **CodeQL:** the D2 review UI test helper no longer uses incomplete HTML-tag
-  stripping. Still awaiting maintainer review. Not merged.
+- **EOF correction:** `5ccd169dec03deba294f9ed907c7266db1823d1e` — trailing
+  newline presence stays visible in the review diff.
+- **CodeQL:** `74acec00d07afcf8c5a69e8ba667d091fcedbfa7` — the D2 review UI
+  test helper no longer uses incomplete HTML-tag stripping. Production review
+  semantics unchanged.
+- **Final implementation head:** `74acec00d07afcf8c5a69e8ba667d091fcedbfa7`
+- **Merge SHA:** `2d3dfed9296ee998a458379db81ac5c0e1fa9e67`
 - **Scope:** read-only Desktop exact mutation review UI over the D1 transport.
   Explicit multi-proposal selection. No Approve, Apply, approval issuance,
   mutation RPC, model call, or legacy `ApprovedApplyModal` reuse.
@@ -50,7 +151,6 @@ execution / Undo, and any N4 mutation tool remain unauthorized.
 - **Deferred:** D3, D4, D5, DL, approval issuance, Approve/Apply,
   durableStateDirectory, verification retry, Undo, rollback execution, N4
   mutation tool, Local AI roadmap, optional N3 Slice 5, P4l17.
-- **Next first action:** Maintainer review. Do not merge from automation.
 
 ### 2026-09-23, Neutron Desktop Mutation Host Flow D1 — post-merge docs handoff
 
