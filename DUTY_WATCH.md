@@ -37,7 +37,9 @@ execution / Undo, and any N4 mutation tool remain unauthorized.
 - **Branch:** `feat/neutron-desktop-mutation-review-ui`
 - **PR:** https://github.com/vitala89/Intentloom/pull/519
 - **Implementation head:** `759d910dab9261066283b3fd53923f0e0917cdac`
-- **EOF correction:** trailing newline presence stays visible in the review diff. Still awaiting maintainer review. Not merged.
+- **EOF correction:** trailing newline presence stays visible in the review diff.
+- **CodeQL:** the D2 review UI test helper no longer uses incomplete HTML-tag
+  stripping. Still awaiting maintainer review. Not merged.
 - **Scope:** read-only Desktop exact mutation review UI over the D1 transport.
   Explicit multi-proposal selection. No Approve, Apply, approval issuance,
   mutation RPC, model call, or legacy `ApprovedApplyModal` reuse.

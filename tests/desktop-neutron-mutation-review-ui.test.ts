@@ -142,9 +142,25 @@ function markup(state: NeutronMutationReviewUiState): string {
 }
 
 function buttonLabels(html: string): string[] {
-  return [...html.matchAll(/<button\b[^>]*>(.*?)<\/button>/gs)].map(
-    (match) => match[1]?.replace(/<[^>]+>/g, "") ?? "",
+  return [...html.matchAll(/<button\b[^>]*>([\s\S]*?)<\/button>/g)].map(
+    (match) => visibleButtonText(match[1] ?? ""),
   );
+}
+
+function visibleButtonText(innerHtml: string): string {
+  const parts: string[] = [];
+  let index = 0;
+  while (index < innerHtml.length) {
+    if (innerHtml.charAt(index) === "<") {
+      const end = innerHtml.indexOf(">", index);
+      if (end === -1) break;
+      index = end + 1;
+      continue;
+    }
+    parts.push(innerHtml.charAt(index));
+    index += 1;
+  }
+  return parts.join("");
 }
 
 describe("Neutron D2 exact mutation review UI", () => {
