@@ -48,7 +48,10 @@ export function NeutronMutationReviewDiff({
             <span style={{ flex: 1 }}>Current</span>
             <span style={{ flex: 1 }}>Proposed</span>
           </div>
-          <p>Removed lines are marked removed. Added lines are marked added.</p>
+          <p>
+            Removed lines are marked removed. Added lines are marked added. A
+            missing end-of-file newline is marked in the diff.
+          </p>
           <DiffViewer hunks={[...diff.hunks]} mode="split" />
         </div>
       ) : null}

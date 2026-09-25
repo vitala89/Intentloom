@@ -18,11 +18,24 @@ interface LineEdit {
   readonly text: string;
 }
 
-export function reviewTextLines(text: string): readonly string[] {
-  if (text.length === 0) return [];
+export const NO_NEWLINE_AT_END_OF_FILE = "No newline at end of file";
+
+export interface ReviewTextSplit {
+  readonly lines: readonly string[];
+  readonly finalNewline: boolean;
+}
+
+/** Splits on `\n` without trimming. A final newline is recorded separately so it is not dropped. */
+export function splitReviewText(text: string): ReviewTextSplit {
+  if (text.length === 0) return { lines: [], finalNewline: false };
+  const finalNewline = text.endsWith("\n");
   const lines = text.split("\n");
-  if (text.endsWith("\n")) lines.pop();
-  return lines;
+  if (finalNewline) lines.pop();
+  return { lines, finalNewline };
+}
+
+export function reviewTextLines(text: string): readonly string[] {
+  return splitReviewText(text).lines;
 }
 
 export function exactReviewFileDiff(
@@ -40,18 +53,37 @@ export function exactReviewFileDiff(
   ) {
     return { hunks: [], reason: "binary" };
   }
-  const currentLines = reviewTextLines(current ?? "");
-  const proposedLines = reviewTextLines(proposed);
+  const currentSplit = splitReviewText(current ?? "");
+  const proposedSplit = splitReviewText(proposed);
   if (
-    currentLines.length + proposedLines.length >
+    currentSplit.lines.length + proposedSplit.lines.length >
     MUTATION_REVIEW_PRESENTATION_LINE_CAP
   ) {
     return { hunks: [], reason: "truncated" };
   }
   return {
-    hunks: [toHunk(diffReviewLines(currentLines, proposedLines))],
+    hunks: [
+      toHunk([
+        ...diffReviewLines(currentSplit.lines, proposedSplit.lines),
+        ...endOfFileEdits(
+          currentSplit.finalNewline,
+          proposedSplit.finalNewline,
+        ),
+      ]),
+    ],
     reason: "exact",
   };
+}
+
+function endOfFileEdits(
+  currentFinalNewline: boolean,
+  proposedFinalNewline: boolean,
+): readonly LineEdit[] {
+  if (currentFinalNewline === proposedFinalNewline) return [];
+  if (!currentFinalNewline) {
+    return [{ kind: "del", text: NO_NEWLINE_AT_END_OF_FILE }];
+  }
+  return [{ kind: "add", text: NO_NEWLINE_AT_END_OF_FILE }];
 }
 
 function containsNul(text: string): boolean {

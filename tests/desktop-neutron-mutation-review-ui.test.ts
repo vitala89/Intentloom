@@ -16,7 +16,11 @@ import {
   type NeutronMutationReviewView,
 } from "@intentloom/protocol";
 import { NeutronMutationReviewView as MutationReviewView } from "../apps/desktop/src/neutron/NeutronMutationReviewPanel.js";
-import { diffReviewLines } from "../apps/desktop/src/neutron/neutron-mutation-review-diff.js";
+import {
+  NO_NEWLINE_AT_END_OF_FILE,
+  diffReviewLines,
+  exactReviewFileDiff,
+} from "../apps/desktop/src/neutron/neutron-mutation-review-diff.js";
 import { orchestrateMutationReviewLoad } from "../apps/desktop/src/neutron/neutron-mutation-review-load.js";
 import {
   initialMutationReviewUiState,
@@ -386,6 +390,100 @@ describe("Neutron D2 exact mutation review UI", () => {
       expect(source).not.toContain("approveAndApply");
       expect(source).not.toContain("approvalToken");
     }
+  });
+});
+
+function reviewMarkup(
+  currentContent: string | undefined,
+  proposedContent: string,
+): string {
+  return markup({
+    ...initialMutationReviewUiState(),
+    listPhase: "ready",
+    listOutcome: "ok",
+    summaries: [summary("proposal-a")],
+    selectedProposalId: "proposal-a",
+    reviewPhase: "ready",
+    reviewOutcome: "ok",
+    selectedPath: "src/a.ts",
+    review: reviewView(
+      "proposal-a",
+      fileView({
+        ...(currentContent === undefined ? {} : { currentContent }),
+        proposedContent,
+      }),
+    ),
+  });
+}
+
+describe("Neutron D2 end-of-file newline presentation", () => {
+  it("shows a newline removed from the proposed side", () => {
+    const html = reviewMarkup("alpha\n", "alpha");
+    expect(html).toContain("alpha");
+    expect(html).toContain(NO_NEWLINE_AT_END_OF_FILE);
+    expect(html).toContain("added line");
+  });
+
+  it("shows a newline added on the proposed side", () => {
+    const html = reviewMarkup("alpha", "alpha\n");
+    expect(html).toContain(NO_NEWLINE_AT_END_OF_FILE);
+    expect(html).toContain("removed line");
+  });
+
+  it("does not invent an end-of-file difference when both end with a newline", () => {
+    const html = reviewMarkup("alpha\n", "alpha\n");
+    expect(html).not.toContain(NO_NEWLINE_AT_END_OF_FILE);
+    expect(
+      exactReviewFileDiff(
+        fileView({
+          currentContent: "alpha\n",
+          proposedContent: "alpha\n",
+        }),
+      ).hunks[0]?.lines.every((line) => line.kind === "context"),
+    ).toBe(true);
+  });
+
+  it("does not invent an end-of-file difference when neither ends with a newline", () => {
+    const html = reviewMarkup("alpha", "alpha");
+    expect(html).not.toContain(NO_NEWLINE_AT_END_OF_FILE);
+  });
+
+  it("keeps leading spaces and shows the end-of-file newline change", () => {
+    const html = reviewMarkup("  alpha\n", "  alpha");
+    expect(html).toContain("  alpha");
+    expect(html).toContain(NO_NEWLINE_AT_END_OF_FILE);
+  });
+
+  it("keeps an extra trailing newline as a visible line change", () => {
+    const diff = exactReviewFileDiff(
+      fileView({
+        currentContent: "alpha\n",
+        proposedContent: "alpha\n\n",
+      }),
+    );
+    expect(diff.hunks[0]?.lines).toEqual([
+      expect.objectContaining({ kind: "context", content: "alpha" }),
+      expect.objectContaining({ kind: "add", content: "" }),
+    ]);
+    expect(reviewMarkup("alpha\n", "alpha\n\n")).toContain("added line");
+    expect(reviewMarkup("alpha\n", "alpha\n\n")).not.toContain(
+      NO_NEWLINE_AT_END_OF_FILE,
+    );
+    const triple = exactReviewFileDiff(
+      fileView({
+        currentContent: "alpha\n",
+        proposedContent: "alpha\n\n\n",
+      }),
+    );
+    expect(
+      triple.hunks[0]?.lines.filter((line) => line.content === ""),
+    ).toHaveLength(2);
+  });
+
+  it("distinguishes an empty file from a newline-only file", () => {
+    const html = reviewMarkup("", "\n");
+    expect(html).toContain(NO_NEWLINE_AT_END_OF_FILE);
+    expect(html).toContain("added line");
   });
 });
 
