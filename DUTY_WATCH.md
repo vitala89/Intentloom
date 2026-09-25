@@ -46,6 +46,8 @@ execution / Undo, and any N4 mutation tool remain unauthorized.
 - **Implementation merge SHA / authoritative `main`:**
   `2d3dfed9296ee998a458379db81ac5c0e1fa9e67`
 - **Merged at:** 2026-09-25
+- **Handoff branch:** `docs/neutron-desktop-mutation-d2-handoff`
+- **Handoff PR:** https://github.com/vitala89/Intentloom/pull/520
 - **Canonical brief:**
   [`docs/roadmap/NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md`](docs/roadmap/NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md)
 - **D2 delivered (read-only):** Desktop exact mutation review UX over D1.
