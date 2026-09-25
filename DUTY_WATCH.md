@@ -35,6 +35,8 @@ execution / Undo, and any N4 mutation tool remain unauthorized.
 - **Status:** **awaiting maintainer review.** Not merged. Not complete.
 - **Starting main:** `4ce587259080d8dee8e0ebe843fc7a02899d52cc`
 - **Branch:** `feat/neutron-desktop-mutation-review-ui`
+- **PR:** https://github.com/vitala89/Intentloom/pull/519
+- **Head:** `759d910dab9261066283b3fd53923f0e0917cdac` (implementation commit; PR link commit follows)
 - **Scope:** read-only Desktop exact mutation review UI over the D1 transport.
   Explicit multi-proposal selection. No Approve, Apply, approval issuance,
   mutation RPC, model call, or legacy `ApprovedApplyModal` reuse.
