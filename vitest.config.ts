@@ -52,6 +52,21 @@ export default defineConfig({
       "@intentloom/cli": fileURLToPath(
         new URL("./packages/cli/src/index.ts", import.meta.url),
       ),
+      react: fileURLToPath(
+        new URL("./apps/desktop/node_modules/react", import.meta.url),
+      ),
+      "react/jsx-runtime": fileURLToPath(
+        new URL(
+          "./apps/desktop/node_modules/react/jsx-runtime.js",
+          import.meta.url,
+        ),
+      ),
+      "react-dom/server": fileURLToPath(
+        new URL(
+          "./apps/desktop/node_modules/react-dom/server.node.js",
+          import.meta.url,
+        ),
+      ),
     },
   },
   test: {

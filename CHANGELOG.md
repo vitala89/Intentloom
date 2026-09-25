@@ -7,6 +7,13 @@ All notable changes are documented here. This project follows Keep a Changelog p
 Changes listed here are merged after the current release-preparation scope and
 are not included in the current npm artifact until a later release.
 
+- Neutron Desktop Mutation Host Flow D2 adds a read-only Desktop exact mutation
+  review UI over the D1 list/get transport. The human selects an authoritative
+  proposal explicitly when more than one exists. Current and proposed bytes
+  render only from the D1 viewmodel. Stale, expired, and cancelled reviews stay
+  non-actionable. No Approve, Apply, approval issuance, mutation RPC, N4
+  mutation tool, or `mutationAllowed` change.
+
 - Neutron Desktop Mutation Host Flow D1 exposes a strictly read-only path for
   Desktop to retrieve the host-held authoritative mutation review payload
   (`intentloom.neutron.mutation.review.list.v1` and

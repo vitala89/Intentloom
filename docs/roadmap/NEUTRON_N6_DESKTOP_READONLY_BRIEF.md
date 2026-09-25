@@ -5,7 +5,7 @@
 **N6 Slices 1–5 implemented** (read-only Desktop Neutron, including mutation
 proposal review). **Desktop mutation host flow D1 implemented and merged**
 (PR #516): authoritative read-only mutation review transport exists; **D2**
-exact review/diff UX is **not** implemented and remains separately authorized.
+exact review/diff UX is implemented on a branch awaiting maintainer review and is not merged.
 `mutationAllowed` remains `false`. Streaming and daemon event push remain
 unavailable. No event bridge or polling loop was added; Slice 3 uses
 request/response graph get/execute/cancel snapshots. Latest graph per session

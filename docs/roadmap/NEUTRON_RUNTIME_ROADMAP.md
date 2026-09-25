@@ -382,7 +382,7 @@ accepted/stale/budget/warnings, usage/fingerprints, bounded graph evidence
 fields). **N6 Slice 5 implemented** — read-only mutation proposal review
 (paths + digests; no Approve/Apply). **Desktop mutation host D1 implemented**
 (PR #516) — authoritative read-only review payload transport; exact review UX
-**D2 not started**. Mutation Slice 3 host Apply and Slice 3.1 durable approval
+**D2 review UI is on a branch awaiting maintainer review and is not merged**. Mutation Slice 3 host Apply and Slice 3.1 durable approval
 state are implemented in application; Desktop Approve/Apply UX remains
 unauthorized. Host-flow canon:
 [`NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md`](NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md)
