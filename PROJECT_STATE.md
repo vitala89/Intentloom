@@ -742,8 +742,8 @@ over D1 — explicit proposal selection, file-by-file current vs proposed diff,
 currentness, secret-like path suppression, and EOF newline exactness. Mutation
 remains impossible from Neutron Desktop (`mutationAllowed` literal `false`; no
 Approve/Apply). **D3** Host Approval-Intent Protocol + Security Tests is
-implemented on branch `feat/neutron-mutation-approval-intent` awaiting
-maintainer review. It is not merged and does not add a production Approve
+implemented on branch `feat/neutron-mutation-approval-intent` (PR #522)
+awaiting maintainer review. It is not merged and does not add a production Approve
 control, a public Approve RPC, or D4 `approveAndApply`. Other
 post-P4 candidates remain in `POST_W12_NEXT_INCREMENT_PLAN.md`.
 

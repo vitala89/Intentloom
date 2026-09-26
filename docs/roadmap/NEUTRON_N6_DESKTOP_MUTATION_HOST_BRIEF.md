@@ -1027,8 +1027,8 @@ unauthorized.
 
 ### D3 — Host approval-intent protocol + security tests
 
-**Implemented on branch `feat/neutron-mutation-approval-intent`, awaiting
-maintainer review.** Not merged. Not complete. Internal host issuer + intent
+**Implemented on branch `feat/neutron-mutation-approval-intent` (PR #522),
+awaiting maintainer review.** Not merged. Not complete. Internal host issuer + intent
 schema + adversarial tests. No production Desktop button. No public
 Approve-only RPC. Apply may be exercised in tests through existing host
 functions. D4 is not authorized by this implementation.

@@ -39,6 +39,8 @@ rollback execution / Undo, and any N4 mutation tool remain unauthorized.
 - **Starting main:** `163bfd31ee8c3c8acf388b274bfd70ba3440616e`
   (PR #521 merged; tracked tree clean).
 - **Branch:** `feat/neutron-mutation-approval-intent`
+- **Pull request:** https://github.com/vitala89/Intentloom/pull/522
+  (not merged).
 - **Scope:** typed `NeutronMutationApprovalIntent` and internal host issuer
   `issueNeutronMutationApprovalFromIntent`, composed on
   `NeutronSessionRuntime.issueMutationApproval`. Adversarial tests. No
