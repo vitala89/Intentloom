@@ -33,9 +33,9 @@ execution / Undo, and any N4 mutation tool remain unauthorized.
 
 ### 2026-09-25, Neutron Desktop Mutation Host Flow D2 — post-merge docs handoff
 
-- **Status:** **DESKTOP MUTATION D2 IMPLEMENTED AND MERGED.** Implementation PR
-  #519 merged. This handoff records merged state only. D3–D5, DL, Approve,
-  Apply, and N4 mutation tool remain **not authorized**.
+- **Status:** **DESKTOP MUTATION D2 COMPLETE.** Implementation PR #519 merged;
+  handoff PR #520 merged; handoff merge SHA recorded (finalize docs watch).
+  D3–D5, DL, Approve, Apply, and N4 mutation tool remain **not authorized**.
 - **Starting main / origin/main:** `2d3dfed9296ee998a458379db81ac5c0e1fa9e67`
   (PR #519 merged; tracked tree clean).
 - **Implementation PR:** https://github.com/vitala89/Intentloom/pull/519
@@ -48,6 +48,10 @@ execution / Undo, and any N4 mutation tool remain unauthorized.
 - **Merged at:** 2026-09-25
 - **Handoff branch:** `docs/neutron-desktop-mutation-d2-handoff`
 - **Handoff PR:** https://github.com/vitala89/Intentloom/pull/520
+- **Handoff head SHA:**
+  `68692b70b4950038b312d63f576b514b5fcd7f78`
+- **Handoff merge SHA / final main for D2:**
+  `42b8c98f4591f5f23e38448b91e0b9f38fa3b827`
 - **Canonical brief:**
   [`docs/roadmap/NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md`](docs/roadmap/NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md)
 - **D2 delivered (read-only):** Desktop exact mutation review UX over D1.
