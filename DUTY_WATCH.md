@@ -24,12 +24,48 @@ proposal review). **Desktop mutation host flow D1 complete** (implementation PR 
 PR #517 merged; authoritative read-only mutation review payload transport).
 **Desktop mutation host flow D2 complete** (implementation PR #519 merged;
 read-only Desktop exact mutation review UX over D1). Host Approval-Intent
-Protocol **D3 not started** and remains separately authorized. D2 does not
-grant mutation authority. Approve/Apply
-implementation remains **not authorized**. `mutationAllowed` remains
-literal `false`. N4 remains the seven read-only tools. Optional N3 Slice 5,
-P4l17, Desktop Approve/Apply UX, Desktop verification UX, host rollback
-execution / Undo, and any N4 mutation tool remain unauthorized.
+Protocol **D3 is implemented on a branch awaiting maintainer review** and is
+not merged. D3 does not grant production Desktop mutation authority.
+Approve/Apply implementation remains **not authorized**. `mutationAllowed`
+remains literal `false`. N4 remains the seven read-only tools. Optional N3
+Slice 5, P4l17, Desktop Approve/Apply UX, Desktop verification UX, host
+rollback execution / Undo, and any N4 mutation tool remain unauthorized.
+
+### 2026-09-26, Neutron Desktop Mutation Host Flow D3 — branch implementation
+
+- **Status:** **awaiting maintainer review.** Not merged. Not complete.
+  D4, D5, DL, production Approve/Apply, and an N4 mutation tool remain
+  **not authorized**.
+- **Starting main:** `163bfd31ee8c3c8acf388b274bfd70ba3440616e`
+  (PR #521 merged; tracked tree clean).
+- **Branch:** `feat/neutron-mutation-approval-intent`
+- **Scope:** typed `NeutronMutationApprovalIntent` and internal host issuer
+  `issueNeutronMutationApprovalFromIntent`, composed on
+  `NeutronSessionRuntime.issueMutationApproval`. Adversarial tests. No
+  production Desktop mutating control, no public Approve RPC, no D4
+  `approveAndApply`.
+- **Intent:** protocol version, `request-host-approval`, root, sessionId,
+  projectId, graphId, proposalId. No digests, bodies, tokens, expiry, actor,
+  mutation class, or grant flags. A valid intent is not approval.
+- **Issuer:** re-resolves `NeutronGraphMutationPayloadStore` /
+  `NeutronGraphMutationReviewBundle`, reuses D1 session/bundle binding,
+  payload verification, and review currentness, then constructs canonical
+  `NeutronMutationApproval` (`local-interactive`,
+  `desktop-local-interactive`, `approved:<proposalDigest>`). Approval id is
+  stable for the authoritative artifact. Raw token stays in-process.
+  `publicNeutronMutationApprovalIssueFacts` omits it.
+- **Currentness:** stale, expired, and cancelled fail closed. No rebind, no
+  regeneration, no expiry extension from caller input. Lifetime is the
+  existing 30-minute host bound, capped by plan `expiresAt` when present.
+- **Reused:** D1 review binding and payload verification, Slice 2.5 artifact
+  digests, Slice 3 `applyApprovedNeutronMutation` /
+  `applyApprovedNeutronGraphMutation` in isolated tests only, Slice 3.1
+  one-use claim (no second approval database).
+- **Deferred:** D4, D5, DL, production Desktop Approve/Apply,
+  durableStateDirectory Desktop wiring, reconnect/status UX, verification
+  retry, Undo, rollback execution, N4 mutation tool, Local AI roadmap,
+  optional N3 Slice 5, P4l17.
+- **Next first action:** Maintainer review. Do not merge from automation.
 
 ### 2026-09-25, Neutron Desktop Mutation Host Flow D2 — post-merge docs handoff
 

@@ -30,6 +30,18 @@ export {
   neutronMutationReviewLeaksSecret,
 } from "./neutron-mutation-review-leak.js";
 export { applyApprovedNeutronGraphMutation } from "./neutron-graph-mutation-apply.js";
+export {
+  issueNeutronMutationApprovalFromIntent,
+  publicNeutronMutationApprovalIssueFacts,
+  NEUTRON_MUTATION_APPROVAL_MAX_LIFETIME_MS,
+  NEUTRON_MUTATION_HOST_APPROVING_ACTOR,
+} from "./neutron-mutation-approval-issue.js";
+export type {
+  IssueNeutronMutationApprovalInput,
+  IssueNeutronMutationApprovalResult,
+  NeutronMutationApprovalIssueOutcome,
+  PublicNeutronMutationApprovalIssueFacts,
+} from "./neutron-mutation-approval-issue.js";
 export type {
   ApplyApprovedNeutronGraphMutationInput,
   ApplyApprovedNeutronGraphMutationResult,

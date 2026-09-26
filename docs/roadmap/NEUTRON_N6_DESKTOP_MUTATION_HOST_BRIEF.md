@@ -6,7 +6,9 @@
 
 **DESKTOP MUTATION D2 IMPLEMENTED AND MERGED**
 
-**D3–D5, DL: NOT AUTHORIZED**
+**D3 IMPLEMENTED ON BRANCH AWAITING MAINTAINER REVIEW** (not merged)
+
+**D4–D5, DL: NOT AUTHORIZED**
 
 **DESKTOP APPROVE/APPLY IMPLEMENTATION: NOT AUTHORIZED**
 
@@ -17,7 +19,7 @@ implementation head `25d0f6391ebc3079a755c2cbe0f492ef868a6578`). **D2**
 (Desktop exact mutation review UI) is implemented (PR #519, merge
 `2d3dfed9296ee998a458379db81ac5c0e1fa9e67`; implementation head
 `74acec00d07afcf8c5a69e8ba667d091fcedbfa7`). It does **not**
-authorize D3–D5, DL, production mutation UI, mutating mutation RPC,
+authorize D4–D5, DL, production mutation UI, mutating mutation RPC,
 Approve/Apply buttons, an N4 mutation tool, Undo, or any change to
 `mutationAllowed`.
 
@@ -39,19 +41,19 @@ Authoritative implementation and tests remain truth. Related:
 
 ## 0. Maintainer recommendation (not an implementation grant)
 
-| Decision                                    | Verdict                                                                                                                                                        |
-| ------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| First future implementation slice           | **D3 — Host Approval-Intent Protocol + Security Tests**. **D1** and **D2** implemented (PR #516, PR #519). No production Approve/Apply.                        |
-| Approval issuer                             | Trusted **daemon/application host** only. Desktop submits a typed human intent. Host re-fetches the review bundle and issues `NeutronMutationApproval` itself. |
-| Public RPC shape                            | **B — one host `approveAndApply` action**, plus read-only `review.get` and `status.get`. No separate public Approve RPC.                                       |
-| Desktop button copy (when later authorized) | **Approve & Apply**                                                                                                                                            |
-| `approvalToken`                             | Never leaves the host/application boundary. Desktop may receive `approvalId` / status / expiry only.                                                           |
-| Durable authority                           | Reuse Slice 3.1 store and project lock. Do not add a Desktop approval database.                                                                                |
-| Apply engine                                | Reuse `applyApprovedNeutronGraphMutation` → `applyApprovedNeutronMutation` → declared-path Approved Apply → Slice 4 verification.                              |
-| N4 / `mutationAllowed`                      | Unchanged. Seven read-only tools. Literal `false`.                                                                                                             |
-| Undo                                        | Out of first Desktop mutation scope.                                                                                                                           |
-| Legacy fake Approved Apply                  | **Prerequisite cleanup (DL)** before D4. Neutron must never reuse fabricated `applied: true`.                                                                  |
-| This document                               | D1 and D2 merged. Do not start D3–D5 or DL from this document without explicit maintainer authorization.                                                       |
+| Decision                                    | Verdict                                                                                                                                                                       |
+| ------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| First future implementation slice           | **D4 — Approve & Apply**, after maintainer review of **D3**. **D1** and **D2** merged (PR #516, PR #519). **D3** is on a branch awaiting review. No production Approve/Apply. |
+| Approval issuer                             | Trusted **daemon/application host** only. Desktop submits a typed human intent. Host re-fetches the review bundle and issues `NeutronMutationApproval` itself.                |
+| Public RPC shape                            | **B — one host `approveAndApply` action**, plus read-only `review.get` and `status.get`. No separate public Approve RPC.                                                      |
+| Desktop button copy (when later authorized) | **Approve & Apply**                                                                                                                                                           |
+| `approvalToken`                             | Never leaves the host/application boundary. Desktop may receive `approvalId` / status / expiry only.                                                                          |
+| Durable authority                           | Reuse Slice 3.1 store and project lock. Do not add a Desktop approval database.                                                                                               |
+| Apply engine                                | Reuse `applyApprovedNeutronGraphMutation` → `applyApprovedNeutronMutation` → declared-path Approved Apply → Slice 4 verification.                                             |
+| N4 / `mutationAllowed`                      | Unchanged. Seven read-only tools. Literal `false`.                                                                                                                            |
+| Undo                                        | Out of first Desktop mutation scope.                                                                                                                                          |
+| Legacy fake Approved Apply                  | **Prerequisite cleanup (DL)** before D4. Neutron must never reuse fabricated `applied: true`.                                                                                 |
+| This document                               | D1 and D2 merged. D3 branch work is awaiting review. Do not start D4–D5 or DL from this document without explicit maintainer authorization.                                   |
 
 ---
 
@@ -1025,9 +1027,11 @@ unauthorized.
 
 ### D3 — Host approval-intent protocol + security tests
 
-Internal host issuer + intent schema + adversarial tests. No production
-Desktop button. No public Approve-only RPC. Apply may be exercised in tests
-through existing host functions.
+**Implemented on branch `feat/neutron-mutation-approval-intent`, awaiting
+maintainer review.** Not merged. Not complete. Internal host issuer + intent
+schema + adversarial tests. No production Desktop button. No public
+Approve-only RPC. Apply may be exercised in tests through existing host
+functions. D4 is not authorized by this implementation.
 
 ### D4 — Approve & Apply host operation
 
@@ -1167,8 +1171,8 @@ This file:
 
 Update pointers in `DUTY_WATCH.md`, `PROJECT_STATE.md`,
 `NEUTRON_RUNTIME_ROADMAP.md`, `NEUTRON_N6_DESKTOP_READONLY_BRIEF.md`, and
-`NEUTRON_MUTATION_ROUTING_BRIEF.md`. Mark **D1** and **D2** complete; D3–D5
-remain unauthorized.
+`NEUTRON_MUTATION_ROUTING_BRIEF.md`. Mark **D1** and **D2** complete. D3
+branch status is recorded in the status section; D4–D5 remain unauthorized.
 
 ---
 
@@ -1180,7 +1184,9 @@ Implementation and handoff PRs that cite this brief must repeat:
 
 **DESKTOP MUTATION D2 IMPLEMENTED AND MERGED** (PR #519)
 
-**D3–D5, DL: NOT AUTHORIZED**
+**D3 IMPLEMENTED ON BRANCH AWAITING MAINTAINER REVIEW** (not merged)
+
+**D4–D5, DL: NOT AUTHORIZED**
 
 **DESKTOP APPROVE/APPLY IMPLEMENTATION: NOT AUTHORIZED**
 
@@ -1196,8 +1202,11 @@ from the authenticated daemon to Desktop (PR #516).
 **D2 (implemented):** Desktop exact mutation review UI over D1 (PR #519).
 Read-only. No Approve/Apply.
 
-**Recommended next slice when separately authorized:** **D3** — Host
-Approval-Intent Protocol + Security Tests.
+**D3 (branch, awaiting maintainer review):** host approval-intent protocol
+and security tests. Not merged. No production Approve/Apply.
+
+**Recommended next slice when separately authorized:** **D4** — Approve &
+Apply host operation, including DL.
 
 Rationale for sequencing (unchanged):
 
@@ -1209,7 +1218,8 @@ Rationale for sequencing (unchanged):
 - Approval issuance, daemon Apply RPC, and Desktop `durableStateDirectory`
   wiring remain future grants.
 
-This document does **not** authorize D3–D5 or DL.
+This document does **not** authorize D4–D5 or DL. D3 on the implementation
+branch is awaiting maintainer review and is not merged.
 
 ---
 
