@@ -361,9 +361,10 @@ automation — await explicit maintainer authorization.
 N6 read-only Desktop is implemented under its own brief. Desktop mutation
 host flow: **D1 implemented and merged** (PR #516; read-only authoritative
 review transport). **D2 implemented and merged** (PR #519; exact review UX).
-**D3–D5 and DL not authorized.** Canon:
+**D3 is implemented on a branch awaiting maintainer review** and is not
+merged. **D4–D5 and DL are not authorized.** Canon:
 [`NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md`](NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md).
-Do not start D3, Desktop Approve/Apply UX, or an N4 mutation tool from this
+Do not start D4, Desktop Approve/Apply UX, or an N4 mutation tool from this
 roadmap entry alone.
 
 ## N6. Desktop Neutron Workspace
@@ -387,7 +388,8 @@ fields). **N6 Slice 5 implemented** — read-only mutation proposal review
 state are implemented in application; Desktop Approve/Apply UX remains
 unauthorized. Host-flow canon:
 [`NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md`](NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md)
-(D1 and D2 merged; D3–D5 unauthorized).
+(D1 and D2 merged; D3 awaiting maintainer review and not merged; D4–D5
+unauthorized).
 
 Integrate the runtime with the official Desktop application after the v0.6
 read-only project slice and shared client contracts are stable.
@@ -532,10 +534,11 @@ preventing an unfinished agent layer from expanding the v0.6 release scope.
 
 N1–N5 are complete. Mutation-routing Slices 1–5 exist. **N6 Slices 1–5 are
 implemented.** **Desktop mutation host D1 and D2 are implemented and merged.**
-The next Neutron increment is **not** implied by this file: **D3** (Host
-Approval-Intent Protocol + Security Tests) and Desktop Approve/Apply UX
-require explicit maintainer authorization. Next first action: none from
-automation. See
+The next Neutron increment is **not** implied by this file. **D3** (Host
+Approval-Intent Protocol + Security Tests) is on a branch awaiting maintainer
+review and is not merged. Desktop Approve/Apply UX (D4) still requires
+explicit maintainer authorization. Next first action: none from automation.
+See
 [`NEUTRON_N6_DESKTOP_READONLY_BRIEF.md`](NEUTRON_N6_DESKTOP_READONLY_BRIEF.md),
 [`NEUTRON_MUTATION_ROUTING_BRIEF.md`](NEUTRON_MUTATION_ROUTING_BRIEF.md), and
 [`NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md`](NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md).

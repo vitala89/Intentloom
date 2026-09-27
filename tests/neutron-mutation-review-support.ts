@@ -82,6 +82,7 @@ export function materializeReviewBundle(input: {
   readonly fingerprint?: string;
   readonly candidate?: NeutronMutationProposalCandidate;
   readonly taskId?: string;
+  readonly expiresAt?: number;
   readonly store?: ReturnType<
     typeof createMemoryNeutronGraphMutationPayloadStore
   >;
@@ -121,6 +122,7 @@ export function materializeReviewBundle(input: {
     record: records[0]!,
     session: slice5Session(input.root),
     store,
+    ...(input.expiresAt === undefined ? {} : { expiresAt: input.expiresAt }),
   });
   return { bundle, store };
 }

@@ -62,6 +62,7 @@ export {
   expectedNeutronMutationApprovalToken,
 } from "./neutron-mutation-digest.js";
 export { validateNeutronMutationApproval } from "./neutron-mutation-approval.js";
+export { validateNeutronMutationApprovalIntent } from "./neutron-mutation-approval-intent.js";
 export {
   assertCandidateAggregateBounds,
   parseNeutronMutationProposalCandidate,
