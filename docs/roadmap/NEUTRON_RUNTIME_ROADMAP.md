@@ -362,7 +362,8 @@ N6 read-only Desktop is implemented under its own brief. Desktop mutation
 host flow: **D1 implemented and merged** (PR #516; read-only authoritative
 review transport). **D2 implemented and merged** (PR #519; exact review UX).
 **D3 implemented and merged** (PR #522; host approval-intent + in-process
-issuer). **D4–D5 and DL are not authorized.** Canon:
+issuer). **DL implemented and merged** (PR #525; legacy fake Desktop Apply
+removed). **D4–D5 are not authorized.** Canon:
 [`NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md`](NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md).
 Do not start D4, Desktop Approve/Apply UX, or an N4 mutation tool from this
 roadmap entry alone.
@@ -388,7 +389,7 @@ fields). **N6 Slice 5 implemented** — read-only mutation proposal review
 state are implemented in application; Desktop Approve/Apply UX remains
 unauthorized. Host-flow canon:
 [`NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md`](NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md)
-(D1, D2, and D3 merged; D4–D5 and DL unauthorized).
+(D1, D2, D3, and DL merged; D4–D5 unauthorized).
 
 Integrate the runtime with the official Desktop application after the v0.6
 read-only project slice and shared client contracts are stable.
@@ -532,12 +533,13 @@ preventing an unfinished agent layer from expanding the v0.6 release scope.
 ## First implementation action
 
 N1–N5 are complete. Mutation-routing Slices 1–5 exist. **N6 Slices 1–5 are
-implemented.** **Desktop mutation host D1, D2, and D3 are implemented and merged.**
-The next architectural stage is **D4 — Approve & Apply Host Operation**, but
-it is **not** implied or authorized by this file. D4 requires explicit
-maintainer authorization plus **DL** (legacy fake Approved Apply cleanup) and
-`durableStateDirectory` Desktop wiring. Next first action: none from
-automation.
+implemented.** **Desktop mutation host D1, D2, D3, and DL are implemented and
+merged.**
+The next bounded prerequisite before **D4 — Approve & Apply Host Operation**
+is Desktop `durableStateDirectory` wiring (Slice 3.1). D4 is **not** implied
+or authorized by this file. D4 requires explicit maintainer authorization
+after that wiring. Next first action: none from automation — await explicit
+maintainer authorization for `durableStateDirectory` Desktop wiring (not D4).
 See
 [`NEUTRON_N6_DESKTOP_READONLY_BRIEF.md`](NEUTRON_N6_DESKTOP_READONLY_BRIEF.md),
 [`NEUTRON_MUTATION_ROUTING_BRIEF.md`](NEUTRON_MUTATION_ROUTING_BRIEF.md), and
