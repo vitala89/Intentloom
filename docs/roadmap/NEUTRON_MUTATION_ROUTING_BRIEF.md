@@ -32,9 +32,10 @@ unauthorized until a later explicit maintainer grant. N6 Slices 1–5
 read-only Desktop are implemented separately. Desktop mutation host **D1**
 (read-only authoritative review transport; PR #516) is implemented; it does
 **not** expand mutation-routing write authority, Approve/Apply, or N4 tools.
-**D2 implemented and merged** (PR #519; exact review UX). **D3** host
-approval-intent is implemented on a branch awaiting maintainer review and is
-not merged. D4–D5/DL remain unauthorized. Canon:
+**D2 implemented and merged** (PR #519; exact review UX). **D3 implemented
+and merged** (PR #522; typed approval intent + in-process host issuer; no
+public Approve RPC; no Desktop mutation authority). D4–D5/DL remain
+unauthorized. Canon:
 [`NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md`](NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md).
 
 Authoritative roadmap gate:

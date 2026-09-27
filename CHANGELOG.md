@@ -7,6 +7,20 @@ All notable changes are documented here. This project follows Keep a Changelog p
 Changes listed here are merged after the current release-preparation scope and
 are not included in the current npm artifact until a later release.
 
+- Neutron Desktop Mutation Host Flow D3 adds a typed
+  `NeutronMutationApprovalIntent` (`request-host-approval`) and an internal
+  host issuer that constructs canonical `NeutronMutationApproval` from
+  authoritative review state only (`issueNeutronMutationApprovalFromIntent`,
+  `NeutronSessionRuntime.issueMutationApproval`). Strict validation rejects
+  caller-supplied tokens, digests, bodies, grant flags, and lifetime fields.
+  Approval lifetime is host-bound (30 minutes maximum, capped by plan expiry).
+  Tests cover adversarial spoofing, currentness fail-closed behavior, exact
+  `proposalId` resolution, duplicate intent semantics, canonical Apply
+  integration, and absence of model calls or public Approve RPC. No production
+  Desktop Approve/Apply control, no `intentloom.neutron.mutation.approve.v1`,
+  no `approveAndApply`, no second approval database, and no change to
+  `mutationAllowed` or N4 tool surface.
+
 - Neutron Desktop Mutation Host Flow D2 adds a read-only Desktop exact mutation
   review UI over the D1 list/get transport. The human selects an authoritative
   proposal explicitly when more than one exists. Current and proposed bytes
