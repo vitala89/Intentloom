@@ -28,8 +28,8 @@ flow D3 complete** (implementation PR #522 and handoff PR #523 merged; host
 approval-intent protocol + security tests). D3 does not grant production
 Desktop mutation authority.
 Approve/Apply implementation remains **not authorized**. **Desktop mutation
-host flow DL complete** (implementation PR #525 merged; legacy fake Approved
-Apply production composition removed). D4, D5, production Approve/Apply,
+host flow DL complete** (implementation PR #525 and handoff PR #526 merged;
+legacy fake Approved Apply production composition removed). D4, D5, production Approve/Apply,
 `approveAndApply`, `durableStateDirectory` Desktop wiring, and an N4 mutation
 tool remain **not authorized**. `mutationAllowed` remains literal `false`. N4
 remains the seven read-only tools. Optional N3 Slice 5, P4l17, Desktop
@@ -39,9 +39,9 @@ and any N4 mutation tool remain unauthorized.
 ### 2026-09-27, Neutron Desktop Mutation Host Flow DL — post-merge documentation handoff
 
 - **Status:** **DESKTOP MUTATION DL COMPLETE.** Implementation PR #525 merged;
-  handoff PR pending maintainer review. D4, D5, production Approve/Apply,
-  `durableStateDirectory` Desktop wiring, and an N4 mutation tool remain
-  **not authorized**.
+  handoff PR #526 merged; handoff merge SHA recorded (finalize docs watch).
+  D4, D5, production Approve/Apply, `durableStateDirectory` Desktop wiring,
+  and an N4 mutation tool remain **not authorized**.
 - **Starting main / origin/main:**
   `21c7bbfb4daa389382fafd191b470b64cfed2b20` (PR #525 merged; tracked tree
   clean at handoff start).
@@ -55,6 +55,11 @@ and any N4 mutation tool remain unauthorized.
   `21c7bbfb4daa389382fafd191b470b64cfed2b20`
 - **Merged at:** 2026-09-27
 - **Handoff branch:** `docs/neutron-desktop-mutation-dl-handoff`
+- **Handoff PR:** https://github.com/vitala89/Intentloom/pull/526
+- **Handoff head SHA:**
+  `31edb654a64996f16a2ee0ec3102c6c019465744`
+- **Handoff merge SHA / final main for DL handoff:**
+  `0f8dd9e6a9d828286fd53ee9a7781ad52e8e8576`
 - **Canonical brief:**
   [`docs/roadmap/NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md`](docs/roadmap/NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md)
 - **DL delivered:** removed dead production Desktop fake Approved Apply
