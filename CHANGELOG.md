@@ -7,6 +7,14 @@ All notable changes are documented here. This project follows Keep a Changelog p
 Changes listed here are merged after the current release-preparation scope and
 are not included in the current npm artifact until a later release.
 
+- Desktop Mutation Host Flow DL removes the unused legacy Approved Apply
+  modal and the `App.tsx` stub that fabricated `applied: true` plus synthetic
+  `previousContent` after a timeout. No production Desktop path can present
+  that fake success as a real Apply. Daemon
+  `intentloom.project.approvedApply.v1` is unchanged and remains unwired from
+  Desktop spawn. No `approveAndApply`, no Neutron mutation RPC, no change to
+  `mutationAllowed` or the N4 read-only tool catalog. D4 remains unauthorized.
+
 - Neutron Desktop Mutation Host Flow D3 adds a typed
   `NeutronMutationApprovalIntent` (`request-host-approval`) and an internal
   host issuer that constructs canonical `NeutronMutationApproval` from

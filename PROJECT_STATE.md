@@ -749,7 +749,10 @@ Approve/Apply). **D3 implemented and merged** (PR #522, merge
 `NeutronSessionRuntime.issueMutationApproval`), adversarial tests, and
 isolated canonical Apply tests. D3 does not add production Desktop Approve/Apply,
 a public Approve RPC, D4 `approveAndApply`, or an N4 mutation tool.
-**D4–D5 and DL remain not authorized.** Other
+**DL is implemented on branch `fix/desktop-legacy-approved-apply-isolation`
+awaiting maintainer review** (legacy fake Approved Apply path removed; no
+fabricated `applied: true`). DL is not merged and does not authorize D4.
+**D4–D5 remain not authorized.** Other
 post-P4 candidates remain in `POST_W12_NEXT_INCREMENT_PLAN.md`.
 
 The Desktop discovery/error and Diff/Timeline slices remain recorded in
