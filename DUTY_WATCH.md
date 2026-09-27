@@ -50,7 +50,8 @@ rollback execution / Undo, and any N4 mutation tool remain unauthorized.
 - **Merged at:** 2026-09-27
 - **Handoff branch:** `docs/neutron-desktop-mutation-d3-handoff`
 - **Handoff PR:** https://github.com/vitala89/Intentloom/pull/523
-- **Handoff head SHA:** `fe628833e1726f6f80676f1816d8308d88dd3c46`
+- **Handoff finalize:** exact handoff head and handoff merge SHA recorded after
+  PR #523 merges (post-merge finalize Duty Watch entry; same pattern as D1/D2).
 - **Canonical brief:**
   [`docs/roadmap/NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md`](docs/roadmap/NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md)
 - **D3 delivered (host-only):** typed `NeutronMutationApprovalIntent` with
