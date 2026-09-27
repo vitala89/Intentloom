@@ -23,9 +23,10 @@ host-only graph-linked Apply composition), **security-corrected by Slice 5.1**
 proposal review). **Desktop mutation host flow D1 complete** (implementation PR #516 and handoff
 PR #517 merged; authoritative read-only mutation review payload transport).
 **Desktop mutation host flow D2 complete** (implementation PR #519 merged;
-read-only Desktop exact mutation review UX over D1). **D3 complete**
-(implementation PR #522 merged; host approval-intent protocol + security
-tests). D3 does not grant production Desktop mutation authority.
+read-only Desktop exact mutation review UX over D1). **Desktop mutation host
+flow D3 complete** (implementation PR #522 and handoff PR #523 merged; host
+approval-intent protocol + security tests). D3 does not grant production
+Desktop mutation authority.
 Approve/Apply implementation remains **not authorized**. `mutationAllowed`
 remains literal `false`. N4 remains the seven read-only tools. Optional N3
 Slice 5, P4l17, Desktop Approve/Apply UX, Desktop verification UX, host
@@ -33,12 +34,13 @@ rollback execution / Undo, and any N4 mutation tool remain unauthorized.
 
 ### 2026-09-27, Neutron Desktop Mutation Host Flow D3 — post-merge documentation handoff
 
-- **Status:** **DESKTOP MUTATION D3 COMPLETE** (implementation merged; docs
-  handoff on branch awaiting maintainer review). D4, D5, DL, production
-  Approve/Apply, and an N4 mutation tool remain **not authorized**.
+- **Status:** **DESKTOP MUTATION D3 COMPLETE.** Implementation PR #522 merged;
+  handoff PR #523 merged; handoff merge SHA recorded (finalize docs watch).
+  D4, D5, DL, production Approve/Apply, and an N4 mutation tool remain
+  **not authorized**.
 - **Starting main / origin/main:**
   `f629c2ef8b4c8cb962bf502eec07c1bad20dfc3a` (PR #522 merged; tracked tree
-  clean).
+  clean at handoff start).
 - **Implementation PR:** https://github.com/vitala89/Intentloom/pull/522
 - **Implementation branch:** `feat/neutron-mutation-approval-intent`
 - **Starting implementation main:**
@@ -50,8 +52,10 @@ rollback execution / Undo, and any N4 mutation tool remain unauthorized.
 - **Merged at:** 2026-09-27
 - **Handoff branch:** `docs/neutron-desktop-mutation-d3-handoff`
 - **Handoff PR:** https://github.com/vitala89/Intentloom/pull/523
-- **Handoff finalize:** exact handoff head and handoff merge SHA recorded after
-  PR #523 merges (post-merge finalize Duty Watch entry; same pattern as D1/D2).
+- **Handoff head SHA:**
+  `b52650cc9a9c7acf812ba658f5352d0cf0d22424`
+- **Handoff merge SHA / final main for D3 handoff:**
+  `df726fb48a17798a4a44b67eac8fec1f1127c253`
 - **Canonical brief:**
   [`docs/roadmap/NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md`](docs/roadmap/NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md)
 - **D3 delivered (host-only):** typed `NeutronMutationApprovalIntent` with
@@ -82,8 +86,8 @@ rollback execution / Undo, and any N4 mutation tool remain unauthorized.
   Apply), `durableStateDirectory` Desktop wiring, reconnect/status UX,
   verification retry, Undo, N4 mutation tool, Local AI, optional N3 Slice 5,
   P4l17.
-- **Next first action:** Maintainer review of docs handoff PR. Do not start
-  D4, DL, or Desktop mutation authority from this handoff.
+- **Next first action:** None from automation. Do not start D4, DL, or Desktop
+  mutation authority without explicit maintainer authorization.
 
 ### 2026-09-26, Neutron Desktop Mutation Host Flow D3 — implementation (merged)
 
