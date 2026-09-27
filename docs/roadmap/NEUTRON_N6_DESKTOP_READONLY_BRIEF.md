@@ -7,7 +7,8 @@ proposal review). **Desktop mutation host flow D1 implemented and merged**
 (PR #516): authoritative read-only mutation review transport exists; **D2
 implemented and merged** (PR #519): exact review/diff UX over D1; **D3
 implemented and merged** (PR #522): host approval-intent protocol and
-in-process issuer (no production Desktop Approve/Apply). D4–D5 and DL remain
+in-process issuer (no production Desktop Approve/Apply). **DL implemented and
+merged** (PR #525; legacy fake Approved Apply removed). D4–D5 remain
 unauthorized.
 `mutationAllowed` remains `false`. Streaming and daemon event push remain
 unavailable. No event bridge or polling loop was added; Slice 3 uses
@@ -37,7 +38,7 @@ Related:
 - [`NEUTRON_N5_EXECUTABLE_TASK_GRAPH_BRIEF.md`](NEUTRON_N5_EXECUTABLE_TASK_GRAPH_BRIEF.md)
 - [`NEUTRON_MUTATION_ROUTING_BRIEF.md`](NEUTRON_MUTATION_ROUTING_BRIEF.md)
 - [`NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md`](NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md)
-  (D1 transport merged PR #516; D2 exact review UX merged PR #519; D3 host approval-intent merged PR #522; D4–D5/DL and Desktop Approve/Apply not authorized)
+  (D1 transport merged PR #516; D2 exact review UX merged PR #519; D3 host approval-intent merged PR #522; DL merged PR #525; D4–D5 and Desktop Approve/Apply not authorized)
 - [`ADR-0042`](../decisions/ADR-0042-desktop-stack-and-daemon-distribution.md)
 - [`ADR-0053`](../decisions/ADR-0053-approved-apply-transactional-mutation.md)
 - [`ADR-0055`](../decisions/ADR-0055-neutron-n2-first-model-adapter.md)

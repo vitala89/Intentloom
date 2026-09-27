@@ -34,7 +34,8 @@ read-only Desktop are implemented separately. Desktop mutation host **D1**
 **not** expand mutation-routing write authority, Approve/Apply, or N4 tools.
 **D2 implemented and merged** (PR #519; exact review UX). **D3 implemented
 and merged** (PR #522; typed approval intent + in-process host issuer; no
-public Approve RPC; no Desktop mutation authority). D4–D5/DL remain
+public Approve RPC; no Desktop mutation authority). **DL implemented and
+merged** (PR #525; legacy fake Desktop Approved Apply removed). D4–D5 remain
 unauthorized. Canon:
 [`NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md`](NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md).
 
@@ -58,13 +59,13 @@ brief.
 
 ### Capability summary used by this brief
 
-| Surface      | Role today                                                                                                                                               |
-| ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **N4**       | Fail-closed read-only router. `definition.readOnly !== true` → `mutation-forbidden`. Capabilities must be `readOnly: true` and `allowNetwork: false`.    |
-| **N5**       | One-wave scheduler with leases, retry, cancellation, stale project/checkpoint/profile detection, provenance. No Apply.                                   |
-| **ADR-0053** | Approved Apply gate + `executeApprovedApplyPlan` → `synchronizeGeneratedFiles`.                                                                          |
-| **Daemon**   | `intentloom.project.approvedApply.v1` exists; handler is optional and currently unwired in Desktop spawn.                                                |
-| **Desktop**  | Legacy fake Approved Apply path **removed** (DL on branch, not merged). Daemon `intentloom.project.approvedApply.v1` remains unwired from Desktop spawn. |
+| Surface      | Role today                                                                                                                                                                                             |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **N4**       | Fail-closed read-only router. `definition.readOnly !== true` → `mutation-forbidden`. Capabilities must be `readOnly: true` and `allowNetwork: false`.                                                  |
+| **N5**       | One-wave scheduler with leases, retry, cancellation, stale project/checkpoint/profile detection, provenance. No Apply.                                                                                 |
+| **ADR-0053** | Approved Apply gate + `executeApprovedApplyPlan` → `synchronizeGeneratedFiles`.                                                                                                                        |
+| **Daemon**   | `intentloom.project.approvedApply.v1` exists; handler is optional and currently unwired in Desktop spawn.                                                                                              |
+| **Desktop**  | Legacy fake Approved Apply path **removed** (DL merged PR #525). Daemon `intentloom.project.approvedApply.v1` remains unwired from Desktop spawn. No production Desktop path fabricates Apply success. |
 
 ---
 

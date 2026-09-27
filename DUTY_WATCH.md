@@ -27,23 +27,85 @@ read-only Desktop exact mutation review UX over D1). **Desktop mutation host
 flow D3 complete** (implementation PR #522 and handoff PR #523 merged; host
 approval-intent protocol + security tests). D3 does not grant production
 Desktop mutation authority.
-Approve/Apply implementation remains **not authorized**. Legacy fake Desktop
-Approved Apply cleanup (**DL**) is implemented on a branch awaiting
-maintainer review and is not merged. `mutationAllowed` remains literal
-`false`. N4 remains the seven read-only tools. Optional N3 Slice 5, P4l17,
-Desktop Approve/Apply UX, Desktop verification UX, host rollback execution /
-Undo, and any N4 mutation tool remain unauthorized.
+Approve/Apply implementation remains **not authorized**. **Desktop mutation
+host flow DL complete** (implementation PR #525 merged; legacy fake Approved
+Apply production composition removed). D4, D5, production Approve/Apply,
+`approveAndApply`, `durableStateDirectory` Desktop wiring, and an N4 mutation
+tool remain **not authorized**. `mutationAllowed` remains literal `false`. N4
+remains the seven read-only tools. Optional N3 Slice 5, P4l17, Desktop
+Approve/Apply UX, Desktop verification UX, host rollback execution / Undo,
+and any N4 mutation tool remain unauthorized.
+
+### 2026-09-27, Neutron Desktop Mutation Host Flow DL — post-merge documentation handoff
+
+- **Status:** **DESKTOP MUTATION DL COMPLETE.** Implementation PR #525 merged;
+  handoff PR pending maintainer review. D4, D5, production Approve/Apply,
+  `durableStateDirectory` Desktop wiring, and an N4 mutation tool remain
+  **not authorized**.
+- **Starting main / origin/main:**
+  `21c7bbfb4daa389382fafd191b470b64cfed2b20` (PR #525 merged; tracked tree
+  clean at handoff start).
+- **Implementation PR:** https://github.com/vitala89/Intentloom/pull/525
+- **Implementation branch:** `fix/desktop-legacy-approved-apply-isolation`
+- **Starting implementation main:**
+  `ea03f6e3e5cf441eeb25e87f673d6c1e2dc45256`
+- **Final implementation head:**
+  `d66bb641ec62b1d6ec5eb57d0258f58b2166abc7`
+- **Implementation merge SHA / authoritative `main`:**
+  `21c7bbfb4daa389382fafd191b470b64cfed2b20`
+- **Merged at:** 2026-09-27
+- **Handoff branch:** `docs/neutron-desktop-mutation-dl-handoff`
+- **Canonical brief:**
+  [`docs/roadmap/NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md`](docs/roadmap/NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md)
+- **DL delivered:** removed dead production Desktop fake Approved Apply
+  composition (`ApprovedApplyModal.tsx` deleted; `App.tsx` legacy Apply-plan
+  state, `onApprovePlan`, 600 ms timeout, fabricated `applied: true`,
+  synthetic `previousContent`, and fake success copy removed; `WorkspaceContent`
+  no longer mounts legacy modal or injects `["atomic-commit-approval"]`).
+  Option A — removal: `activeApprovedPlan` setter was unused and the modal was
+  never opened through a supported production path.
+- **Security outcome:** Desktop cannot fabricate mutation success from local UI
+  state (click, timeout, modal state, or client-side grant string). D4 host
+  Apply is not implemented.
+- **Unchanged:** daemon `intentloom.project.approvedApply.v1` (not activated,
+  not wired into Desktop spawn); canonical Neutron Apply (`applyApprovedNeutronMutation`,
+  `applyApprovedNeutronGraphMutation`); Slices 1–5.1; D1–D3; `mutationAllowed:
+false`; N4 seven read-only tools.
+- **Not added:** `approveAndApply`, public mutation RPC, Tauri mutation command,
+  Desktop Neutron Approve & Apply, renderer approval submission, real Desktop
+  Apply, `durableStateDirectory` Desktop wiring, D5 status/reconnect/Undo.
+- **Tests:** `tests/desktop-legacy-approved-apply-isolation.test.ts` (modal
+  removed; no fabricated success; no synthetic rollback; no legacy control;
+  Neutron/desktop-client isolation; no canonical Apply or
+  `intentloom.project.approvedApply.v1`; no `approveAndApply`;
+  `mutationAllowed` false; N4 seven read-only tools).
+- **File budgets (effective code lines, verified on merge):** `App.tsx`
+  465 → 422; `WorkspaceContent.tsx` 284 → 261; `ApprovedApplyModal.tsx`
+  181 → deleted. No governed production file grew.
+- **Hosted CI (final implementation head `d66bb641…`):** Compatibility
+  [36346378551](https://github.com/vitala89/Intentloom/actions/runs/36346378551),
+  Governance [36346378576](https://github.com/vitala89/Intentloom/actions/runs/36346378576),
+  CodeQL [36346378562](https://github.com/vitala89/Intentloom/actions/runs/36346378562),
+  Desktop SEA Feasibility
+  [36346378629](https://github.com/vitala89/Intentloom/actions/runs/36346378629)
+  — all success (PR #525 checks).
+- **Prerequisites before D4:** D1, D2, D3, and DL **done**;
+  `durableStateDirectory` Desktop wiring **not done**; D4 authorization **not
+  granted**.
+- **Next first action:** None from automation. Await explicit maintainer
+  authorization for Desktop `durableStateDirectory` wiring prerequisite (not
+  D4). Do not start D4 from this handoff.
 
 ### 2026-09-27, Neutron Desktop Mutation Host Flow DL — branch implementation
 
-- **Status:** **awaiting maintainer review.** Not merged. Not complete.
-  D4, D5, production Approve/Apply, `approveAndApply`, durableStateDirectory
-  Desktop wiring, and an N4 mutation tool remain **not authorized**.
+- **Status:** **IMPLEMENTED AND MERGED** (2026-09-27). Superseded for
+  current state by the 2026-09-27 post-merge handoff entry above.
 - **Starting main:** `ea03f6e3e5cf441eeb25e87f673d6c1e2dc45256`
   (PR #524 merged; tracked tree clean).
 - **Branch:** `fix/desktop-legacy-approved-apply-isolation`
 - **Pull request:** https://github.com/vitala89/Intentloom/pull/525
-  (not merged).
+  (merged).
+- **Merge SHA:** `21c7bbfb4daa389382fafd191b470b64cfed2b20`
 - **Scope:** remove the dead Desktop fake Approved Apply path. Production
   `App.tsx` no longer fabricates `applied: true`, `previousContent`,
   verification success, or rollback evidence after a timeout.
@@ -67,14 +129,13 @@ Undo, and any N4 mutation tool remain unauthorized.
 - **Deferred:** D4 Approve & Apply; durableStateDirectory Desktop wiring;
   D5 status/reconnect; verification retry; Undo; rollback execution; N4
   mutation tool; Local AI; optional N3 Slice 5; P4l17.
-- **Next first action:** Maintainer review. Do not merge from automation.
 
 ### 2026-09-27, Neutron Desktop Mutation Host Flow D3 — post-merge documentation handoff
 
 - **Status:** **DESKTOP MUTATION D3 COMPLETE.** Implementation PR #522 merged;
   handoff PR #523 merged; handoff merge SHA recorded (finalize docs watch).
-  D4, D5, DL, production Approve/Apply, and an N4 mutation tool remain
-  **not authorized**.
+  D4, D5, production Approve/Apply, and an N4 mutation tool remain **not
+  authorized**. **DL is merged** (PR #525); see DL post-merge handoff above.
 - **Starting main / origin/main:**
   `f629c2ef8b4c8cb962bf502eec07c1bad20dfc3a` (PR #522 merged; tracked tree
   clean at handoff start).
@@ -119,12 +180,13 @@ Undo, and any N4 mutation tool remain unauthorized.
 - **Hosted CI (final implementation head `e36a74b8…`):** Compatibility,
   Governance, CodeQL, Desktop SEA Feasibility, Harness Performance
   Benchmark — all success (PR #522 checks).
-- **Not authorized / deferred:** D4, D5, DL (required before real D4 Desktop
-  Apply), `durableStateDirectory` Desktop wiring, reconnect/status UX,
+- **Not authorized / deferred:** D4, D5, `durableStateDirectory` Desktop
+  wiring (required before real D4 Desktop Apply), reconnect/status UX,
   verification retry, Undo, N4 mutation tool, Local AI, optional N3 Slice 5,
   P4l17.
-- **Next first action:** None from automation. Do not start D4, DL, or Desktop
-  mutation authority without explicit maintainer authorization.
+- **Next first action:** None from automation. Do not start D4 or Desktop
+  mutation authority without explicit maintainer authorization and completed
+  `durableStateDirectory` wiring.
 
 ### 2026-09-26, Neutron Desktop Mutation Host Flow D3 — implementation (merged)
 
