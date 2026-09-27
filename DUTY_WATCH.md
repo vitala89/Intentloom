@@ -27,10 +27,45 @@ read-only Desktop exact mutation review UX over D1). **Desktop mutation host
 flow D3 complete** (implementation PR #522 and handoff PR #523 merged; host
 approval-intent protocol + security tests). D3 does not grant production
 Desktop mutation authority.
-Approve/Apply implementation remains **not authorized**. `mutationAllowed`
-remains literal `false`. N4 remains the seven read-only tools. Optional N3
-Slice 5, P4l17, Desktop Approve/Apply UX, Desktop verification UX, host
-rollback execution / Undo, and any N4 mutation tool remain unauthorized.
+Approve/Apply implementation remains **not authorized**. Legacy fake Desktop
+Approved Apply cleanup (**DL**) is implemented on a branch awaiting
+maintainer review and is not merged. `mutationAllowed` remains literal
+`false`. N4 remains the seven read-only tools. Optional N3 Slice 5, P4l17,
+Desktop Approve/Apply UX, Desktop verification UX, host rollback execution /
+Undo, and any N4 mutation tool remain unauthorized.
+
+### 2026-09-27, Neutron Desktop Mutation Host Flow DL — branch implementation
+
+- **Status:** **awaiting maintainer review.** Not merged. Not complete.
+  D4, D5, production Approve/Apply, `approveAndApply`, durableStateDirectory
+  Desktop wiring, and an N4 mutation tool remain **not authorized**.
+- **Starting main:** `ea03f6e3e5cf441eeb25e87f673d6c1e2dc45256`
+  (PR #524 merged; tracked tree clean).
+- **Branch:** `fix/desktop-legacy-approved-apply-isolation`
+- **Scope:** remove the dead Desktop fake Approved Apply path. Production
+  `App.tsx` no longer fabricates `applied: true`, `previousContent`,
+  verification success, or rollback evidence after a timeout.
+  `ApprovedApplyModal` is deleted. `WorkspaceContent` no longer mounts it
+  or injects `["atomic-commit-approval"]`. Neutron views cannot import or
+  compose the removed path.
+- **Resolution:** Option A — **removed**. The setter for
+  `activeApprovedPlan` was unused, the modal never opened, and no supported
+  feature required the stub. Fail-closed by absence: Desktop cannot present
+  fake Apply success and cannot perform real mutation from this path.
+- **Unchanged:** daemon `intentloom.project.approvedApply.v1` (still unwired
+  from Desktop spawn); canonical Neutron Apply engine; D1–D3; Slice 1–5.1;
+  `mutationAllowed: false`; N4 seven read-only tools.
+- **Not added:** `approveAndApply`, mutation RPC, host Apply RPC, Tauri
+  mutation command, Desktop Approve & Apply for Neutron, approval-intent
+  submission from the renderer, durableStateDirectory wiring, D5
+  status/reconnect/Undo.
+- **Tests:** `tests/desktop-legacy-approved-apply-isolation.test.ts` plus
+  existing Neutron isolation, D1 review, D2 exact review UI, and D3
+  approval-intent suites.
+- **Deferred:** D4 Approve & Apply; durableStateDirectory Desktop wiring;
+  D5 status/reconnect; verification retry; Undo; rollback execution; N4
+  mutation tool; Local AI; optional N3 Slice 5; P4l17.
+- **Next first action:** Maintainer review. Do not merge from automation.
 
 ### 2026-09-27, Neutron Desktop Mutation Host Flow D3 — post-merge documentation handoff
 

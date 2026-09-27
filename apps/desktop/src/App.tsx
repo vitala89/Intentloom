@@ -3,8 +3,6 @@ import { desktopClient, DesktopBridgeError } from "./desktop-client.js";
 import { Logo } from "./design/components/brand/Logo.js";
 import { Wordmark } from "./design/components/brand/Wordmark.js";
 import type {
-  ApprovedApplyExecutionResult,
-  ApprovedApplyPlan,
   DaemonInfoResult,
   InspectResult,
   ProjectDiffResult,
@@ -96,13 +94,6 @@ export default function App() {
   });
   const [confirmSwitch, setConfirmSwitch] = useState(false);
   const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
-  const [activeApprovedPlan, _setActiveApprovedPlan] =
-    useState<ApprovedApplyPlan | null>(null);
-  const [isApprovedApplyModalOpen, setIsApprovedApplyModalOpen] =
-    useState(false);
-  const [isApplyingPlan, setIsApplyingPlan] = useState(false);
-  const [approvedApplyExecutionResult, setApprovedApplyExecutionResult] =
-    useState<ApprovedApplyExecutionResult | null>(null);
   // Ref to the element that triggered the confirm overlay, for focus return
   const confirmTriggerRef = useRef<HTMLButtonElement | null>(null);
   // Ref to the element that triggered the Command Palette
@@ -438,42 +429,8 @@ export default function App() {
             confirmSwitch={confirmSwitch}
             loadedViews={loadedViews}
             confirmTriggerRef={confirmTriggerRef}
-            activeApprovedPlan={activeApprovedPlan}
-            isApprovedApplyModalOpen={isApprovedApplyModalOpen}
-            isApplyingPlan={isApplyingPlan}
-            approvedApplyExecutionResult={approvedApplyExecutionResult}
             onConfirmChange={handleConfirmChange}
             onCancelChange={handleCancelChange}
-            onCloseApprovedApplyModal={() => setIsApprovedApplyModalOpen(false)}
-            onApprovePlan={() => {
-              if (!activeApprovedPlan || !root) return;
-              setIsApplyingPlan(true);
-              setTimeout(() => {
-                setIsApplyingPlan(false);
-                setApprovedApplyExecutionResult({
-                  schemaVersion: 1,
-                  targetResourceId: root,
-                  applied: true,
-                  gateResult: {
-                    schemaVersion: 1,
-                    targetResourceId: root,
-                    passed: true,
-                    diagnostics: [],
-                    safeNextAction: "action-applied-successfully",
-                  },
-                  rollbackEvidence: {
-                    schemaVersion: 1,
-                    planDigest: activeApprovedPlan.planDigest,
-                    targetRoot: root,
-                    rollbackFiles: activeApprovedPlan.changedPaths.map((p) => ({
-                      path: p,
-                      previousContent: "// previous snapshot content",
-                    })),
-                  },
-                  diagnostics: [],
-                });
-              }, 600);
-            }}
             onConnectDaemon={() => void connectDaemon()}
             onRequestProjectSelect={requestProjectSelect}
             onLoadDoctor={() => void loadDoctor()}

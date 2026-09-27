@@ -1,7 +1,5 @@
 import type { RefObject } from "react";
 import type {
-  ApprovedApplyExecutionResult,
-  ApprovedApplyPlan,
   DaemonInfoResult,
   DoctorResult,
   InspectResult,
@@ -9,7 +7,6 @@ import type {
   ProjectTimelineResult,
 } from "@intentloom/protocol";
 import { ConfirmRootChange } from "./ConfirmRootChange.js";
-import { ApprovedApplyModal } from "./ApprovedApplyModal.js";
 import { DiffView } from "./views/DiffView.js";
 import { DoctorView } from "./views/DoctorView.js";
 import { InspectView } from "./views/InspectView.js";
@@ -56,14 +53,8 @@ export interface WorkspaceContentProps {
   readonly confirmSwitch: boolean;
   readonly loadedViews: readonly string[];
   readonly confirmTriggerRef: RefObject<HTMLButtonElement | null>;
-  readonly activeApprovedPlan: ApprovedApplyPlan | null;
-  readonly isApprovedApplyModalOpen: boolean;
-  readonly isApplyingPlan: boolean;
-  readonly approvedApplyExecutionResult: ApprovedApplyExecutionResult | null;
   readonly onConfirmChange: () => void;
   readonly onCancelChange: () => void;
-  readonly onCloseApprovedApplyModal: () => void;
-  readonly onApprovePlan: (grantedApprovals: readonly string[]) => void;
   readonly onConnectDaemon: () => void;
   readonly onRequestProjectSelect: (
     triggerEl?: HTMLButtonElement | null,
@@ -99,14 +90,8 @@ export function WorkspaceContent({
   confirmSwitch,
   loadedViews,
   confirmTriggerRef,
-  activeApprovedPlan,
-  isApprovedApplyModalOpen,
-  isApplyingPlan,
-  approvedApplyExecutionResult,
   onConfirmChange,
   onCancelChange,
-  onCloseApprovedApplyModal,
-  onApprovePlan,
   onConnectDaemon,
   onRequestProjectSelect,
   onLoadDoctor,
@@ -274,14 +259,6 @@ export function WorkspaceContent({
           triggerRef={confirmTriggerRef}
         />
       ) : null}
-      <ApprovedApplyModal
-        plan={activeApprovedPlan}
-        isOpen={isApprovedApplyModalOpen}
-        onClose={onCloseApprovedApplyModal}
-        isApplying={isApplyingPlan}
-        executionResult={approvedApplyExecutionResult}
-        onApprove={onApprovePlan}
-      />
       <OverviewView
         connection={connection}
         daemonInfo={daemonInfo}

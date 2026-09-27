@@ -64,7 +64,7 @@ brief.
 | **N5**       | One-wave scheduler with leases, retry, cancellation, stale project/checkpoint/profile detection, provenance. No Apply.                                   |
 | **ADR-0053** | Approved Apply gate + `executeApprovedApplyPlan` → `synchronizeGeneratedFiles`.                                                                          |
 | **Daemon**   | `intentloom.project.approvedApply.v1` exists; handler is optional and currently unwired in Desktop spawn.                                                |
-| **Desktop**  | `ApprovedApplyModal` can request `["atomic-commit-approval"]`; App apply path is a **client stub** that fabricates success and does not call the daemon. |
+| **Desktop**  | Legacy fake Approved Apply path **removed** (DL on branch, not merged). Daemon `intentloom.project.approvedApply.v1` remains unwired from Desktop spawn. |
 
 ---
 
