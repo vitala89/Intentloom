@@ -42,6 +42,8 @@ Undo, and any N4 mutation tool remain unauthorized.
 - **Starting main:** `ea03f6e3e5cf441eeb25e87f673d6c1e2dc45256`
   (PR #524 merged; tracked tree clean).
 - **Branch:** `fix/desktop-legacy-approved-apply-isolation`
+- **Pull request:** https://github.com/vitala89/Intentloom/pull/525
+  (not merged).
 - **Scope:** remove the dead Desktop fake Approved Apply path. Production
   `App.tsx` no longer fabricates `applied: true`, `previousContent`,
   verification success, or rollback evidence after a timeout.
