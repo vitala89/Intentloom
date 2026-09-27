@@ -741,10 +741,15 @@ authoritative exact mutation review content through trusted read-only transport
 over D1 — explicit proposal selection, file-by-file current vs proposed diff,
 currentness, secret-like path suppression, and EOF newline exactness. Mutation
 remains impossible from Neutron Desktop (`mutationAllowed` literal `false`; no
-Approve/Apply). **D3** Host Approval-Intent Protocol + Security Tests is
-implemented on branch `feat/neutron-mutation-approval-intent` (PR #522)
-awaiting maintainer review. It is not merged and does not add a production Approve
-control, a public Approve RPC, or D4 `approveAndApply`. Other
+Approve/Apply). **D3 implemented and merged** (PR #522, merge
+`f629c2ef8b4c8cb962bf502eec07c1bad20dfc3a`; final implementation head
+`e36a74b8bc09698b70621da31e37f7c09f6b6917`): typed
+`NeutronMutationApprovalIntent`, strict validation, internal host issuer
+(`issueNeutronMutationApprovalFromIntent` /
+`NeutronSessionRuntime.issueMutationApproval`), adversarial tests, and
+isolated canonical Apply tests. D3 does not add production Desktop Approve/Apply,
+a public Approve RPC, D4 `approveAndApply`, or an N4 mutation tool.
+**D4–D5 and DL remain not authorized.** Other
 post-P4 candidates remain in `POST_W12_NEXT_INCREMENT_PLAN.md`.
 
 The Desktop discovery/error and Diff/Timeline slices remain recorded in

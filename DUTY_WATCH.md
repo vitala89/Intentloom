@@ -23,24 +23,77 @@ host-only graph-linked Apply composition), **security-corrected by Slice 5.1**
 proposal review). **Desktop mutation host flow D1 complete** (implementation PR #516 and handoff
 PR #517 merged; authoritative read-only mutation review payload transport).
 **Desktop mutation host flow D2 complete** (implementation PR #519 merged;
-read-only Desktop exact mutation review UX over D1). Host Approval-Intent
-Protocol **D3 is implemented on a branch awaiting maintainer review** and is
-not merged. D3 does not grant production Desktop mutation authority.
+read-only Desktop exact mutation review UX over D1). **D3 complete**
+(implementation PR #522 merged; host approval-intent protocol + security
+tests). D3 does not grant production Desktop mutation authority.
 Approve/Apply implementation remains **not authorized**. `mutationAllowed`
 remains literal `false`. N4 remains the seven read-only tools. Optional N3
 Slice 5, P4l17, Desktop Approve/Apply UX, Desktop verification UX, host
 rollback execution / Undo, and any N4 mutation tool remain unauthorized.
 
-### 2026-09-26, Neutron Desktop Mutation Host Flow D3 — branch implementation
+### 2026-09-27, Neutron Desktop Mutation Host Flow D3 — post-merge documentation handoff
 
-- **Status:** **awaiting maintainer review.** Not merged. Not complete.
-  D4, D5, DL, production Approve/Apply, and an N4 mutation tool remain
-  **not authorized**.
+- **Status:** **DESKTOP MUTATION D3 COMPLETE** (implementation merged; docs
+  handoff on branch awaiting maintainer review). D4, D5, DL, production
+  Approve/Apply, and an N4 mutation tool remain **not authorized**.
+- **Starting main / origin/main:**
+  `f629c2ef8b4c8cb962bf502eec07c1bad20dfc3a` (PR #522 merged; tracked tree
+  clean).
+- **Implementation PR:** https://github.com/vitala89/Intentloom/pull/522
+- **Implementation branch:** `feat/neutron-mutation-approval-intent`
+- **Starting implementation main:**
+  `163bfd31ee8c3c8acf388b274bfd70ba3440616e`
+- **Final implementation head:**
+  `e36a74b8bc09698b70621da31e37f7c09f6b6917`
+- **Implementation merge SHA / authoritative `main`:**
+  `f629c2ef8b4c8cb962bf502eec07c1bad20dfc3a`
+- **Merged at:** 2026-09-27
+- **Handoff branch:** `docs/neutron-desktop-mutation-d3-handoff`
+- **Handoff PR:** https://github.com/vitala89/Intentloom/pull/523
+- **Handoff head SHA:** `fe628833e1726f6f80676f1816d8308d88dd3c46`
+- **Canonical brief:**
+  [`docs/roadmap/NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md`](docs/roadmap/NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md)
+- **D3 delivered (host-only):** typed `NeutronMutationApprovalIntent` with
+  strict validation; internal issuer
+  `issueNeutronMutationApprovalFromIntent`; production composition via
+  `NeutronSessionRuntime.issueMutationApproval`; authoritative
+  proposal/review bundle resolution; canonical `NeutronMutationApproval`
+  construction; adversarial tests; isolated canonical Apply integration
+  tests. No production Desktop Approve/Apply, no public Approve RPC, no
+  `approveAndApply`, no second approval DB, no model call.
+- **Intent boundary:** identity fields only (`schemaVersion`,
+  `protocolVersion`, `action: request-host-approval`, `root`, `sessionId`,
+  `projectId`, `graphId`, `proposalId`). Authority-bearing keys rejected.
+  Valid intent is not approval.
+- **Issuer:** re-resolves payload store and review bundle; D1 binding;
+  payload verification; Slice 5/5.1 currentness; host-assigned
+  `local-interactive` / `desktop-local-interactive`; token
+  `approved:<proposalDigest>` in-process only;
+  `publicNeutronMutationApprovalIssueFacts` omits raw token.
+- **Lifetime:** host-bound 30 minutes maximum, capped by plan `expiresAt`
+  when earlier; caller cannot choose lifetime.
+- **Duplicate intent:** same authoritative artifact may reuse stable
+  approval identity; Slice 3.1 one-use claim remains authoritative on Apply.
+- **Hosted CI (final implementation head `e36a74b8…`):** Compatibility,
+  Governance, CodeQL, Desktop SEA Feasibility, Harness Performance
+  Benchmark — all success (PR #522 checks).
+- **Not authorized / deferred:** D4, D5, DL (required before real D4 Desktop
+  Apply), `durableStateDirectory` Desktop wiring, reconnect/status UX,
+  verification retry, Undo, N4 mutation tool, Local AI, optional N3 Slice 5,
+  P4l17.
+- **Next first action:** Maintainer review of docs handoff PR. Do not start
+  D4, DL, or Desktop mutation authority from this handoff.
+
+### 2026-09-26, Neutron Desktop Mutation Host Flow D3 — implementation (merged)
+
+- **Status:** **IMPLEMENTED AND MERGED** (2026-09-27). Superseded for
+  current state by the 2026-09-27 post-merge handoff entry above.
 - **Starting main:** `163bfd31ee8c3c8acf388b274bfd70ba3440616e`
   (PR #521 merged; tracked tree clean).
 - **Branch:** `feat/neutron-mutation-approval-intent`
 - **Pull request:** https://github.com/vitala89/Intentloom/pull/522
-  (not merged).
+  (merged).
+- **Merge SHA:** `f629c2ef8b4c8cb962bf502eec07c1bad20dfc3a`
 - **Scope:** typed `NeutronMutationApprovalIntent` and internal host issuer
   `issueNeutronMutationApprovalFromIntent`, composed on
   `NeutronSessionRuntime.issueMutationApproval`. Adversarial tests. No
