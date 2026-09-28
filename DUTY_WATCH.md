@@ -45,9 +45,9 @@ remain unauthorized.
   `0442141cb163c0487100f7aa6716a6faf809f75e` (DL handoff finalize PR #527;
   tracked tree clean).
 - **Branch:** `feat/desktop-neutron-durable-state-wiring`
-- **CI-verified head:** `952ca605b16c7c1a71bcdc35b2c9763bb170de7e`
 - **Pull request:** https://github.com/vitala89/Intentloom/pull/528
-  (not merged).
+  (not merged). Do not record a mutable branch head as the final
+  implementation SHA in this entry.
 - **Scope:** trusted Desktop-owned host configuration for Slice 3.1
   `durableStateDirectory`. Tauri derives
   `<app_data>/neutron-mutation-state` (0700 on Unix), passes
@@ -73,18 +73,10 @@ remain unauthorized.
   `cargo fmt --check` still fails only on pre-existing
   `apps/desktop/src-tauri/src/daemon_launch.rs` (unrelated, not
   reformatted).
-- **Hosted CI:** SUCCESS on `952ca60` — 25/25 checks, 0 failed, 0
-  pending. Compatibility
-  [36362052230](https://github.com/vitala89/Intentloom/actions/runs/36362052230)
-  and
-  [36362055825](https://github.com/vitala89/Intentloom/actions/runs/36362055825);
-  Governance
-  [36362055833](https://github.com/vitala89/Intentloom/actions/runs/36362055833);
-  CodeQL
-  [36362055848](https://github.com/vitala89/Intentloom/actions/runs/36362055848);
-  Desktop SEA Feasibility
-  [36362055814](https://github.com/vitala89/Intentloom/actions/runs/36362055814).
-  Not merged. Not D4.
+- **Hosted CI:** must be green on the final PR head before maintainer
+  merge. Exact final implementation head, merge SHA, and authoritative CI
+  evidence will be recorded in the post-merge handoff. Do not treat a
+  mutable branch head or earlier workflow run IDs as final evidence.
 - **Next first action:** Maintainer review. Do not merge from automation.
   Do not start D4 from this branch.
 
