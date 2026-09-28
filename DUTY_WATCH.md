@@ -30,24 +30,140 @@ Desktop mutation authority.
 Approve/Apply implementation remains **not authorized**. **Desktop mutation
 host flow DL complete** (implementation PR #525 and handoff PR #526 merged;
 legacy fake Approved Apply production composition removed). **Desktop
-durableStateDirectory wiring is implemented on branch awaiting maintainer
-review** (not merged; not D4). D4, D5, production Approve/Apply,
+mutation durable host state prerequisite implemented and merged**
+(implementation PR #528). D4, D5, production Approve/Apply,
 `approveAndApply`, and an N4 mutation tool remain **not authorized**.
 `mutationAllowed` remains literal `false`. N4 remains the seven read-only
 tools. Optional N3 Slice 5, P4l17, Desktop Approve/Apply UX, Desktop
 verification UX, host rollback execution / Undo, and any N4 mutation tool
-remain unauthorized.
+remain unauthorized. All documented prerequisites for considering D4 are
+merged. D4 Approve & Apply Host Operation is the next architectural stage
+and still requires explicit maintainer authorization. No implementation
+from automation.
+
+### 2026-09-28, Desktop Neutron durable mutation-state — post-merge documentation handoff
+
+- **Status:** **DESKTOP MUTATION DURABLE HOST STATE PREREQUISITE IMPLEMENTED AND MERGED.**
+  Implementation PR #528 merged. Not D4. Not D5.
+- **Starting main / origin/main at handoff:**
+  `be1f0201e968846765f7efa731560886a8b50032` (PR #528 squash-merged; tracked
+  tree clean).
+- **Implementation PR:** https://github.com/vitala89/Intentloom/pull/528
+- **Implementation branch:** `feat/desktop-neutron-durable-state-wiring`
+- **Starting implementation main:**
+  `0442141cb163c0487100f7aa6716a6faf809f75e`
+- **Final implementation head:**
+  `a3eb8c96b5012283107eb361c14fecd69025e22e`
+- **Implementation merge SHA / resulting `main`:**
+  `be1f0201e968846765f7efa731560886a8b50032`
+  (squash; parent `0442141cb163c0487100f7aa6716a6faf809f75e`)
+- **Merged at:** 2026-09-28
+- **Handoff branch:** `docs/neutron-desktop-durable-state-handoff`
+- **Handoff PR:** https://github.com/vitala89/Intentloom/pull/532
+  (open for maintainer review; not merged). This entry does not cite a
+  mutable docs-branch SHA. A later finalize watch may record the handoff
+  merge SHA after maintainer merge.
+- **Canonical brief:**
+  [`docs/roadmap/NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md`](docs/roadmap/NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md)
+- **Delivered:** the Desktop native host derives a stable application-private
+  mutation state directory at `<app_data>/neutron-mutation-state`
+  (`app.path().app_data_dir()` joined with `neutron-mutation-state`, sibling
+  of the existing `runtime/` token and endpoint tree). The directory is
+  application-host owned, stable across Desktop restart (same app-data
+  path), stable across daemon restart/recovery, outside project source, and
+  not renderer-controlled, model-controlled, RPC-controlled, or
+  proposal-controlled.
+- **Permissions:** on Unix the Desktop host restricts the directory to
+  `0700` (`restrict_directory`) and the daemon `chmod`s it to `0700` when
+  the platform is not Windows. Existing runtime/token permissions are
+  unchanged (Unix token file remains `0600`). This handoff does not claim
+  a Windows ACL beyond the implementation: Windows skips those mode bits.
+- **Launch contract:** trusted Desktop and SEA daemon launches supply
+  `--neutron-mutation-state-dir` beside `--endpoint`, `--token-file`, and
+  `--catalog-root`. Desktop-owned launch composition rejects a blank path.
+  The daemon validates the path (`ensureDurableStateDirectory`). Merged
+  tests fail closed for an empty or whitespace path, a missing flag value,
+  and a regular-file path. Create and chmod failures in that function also
+  reject the path as unusable; this handoff does not claim a separate
+  permission-denied directory test. The flag stays optional for non-Desktop
+  daemon launches. This is host configuration for Slice 3.1 state, not
+  generic filesystem authority.
+- **Daemon composition:** startup propagates the trusted directory into
+  `createNeutronSessionRuntime` as `durableStateDirectory`. The runtime
+  keeps it on in-process `hostDurableState()`. It is not session-viewmodel
+  visible, not RPC-visible, not renderer-visible, and not model-visible.
+- **Slice 3.1 reuse:** no new durable mutation mechanism, approval
+  database, or project lock. Future D4 reuses existing Slice 3.1 persistent
+  approval state, one-use claim/replay protection, the durable project
+  lock, and canonical mutation transaction state. Production Desktop/daemon
+  composition does not add a memory-store fallback.
+- **Restart evidence (merged tests):** the same app-data path is derived on
+  repeat; relaunch arguments reuse that directory; removing the owned
+  endpoint does not delete durable state; a daemon relaunch with the same
+  `--neutron-mutation-state-dir` keeps a marker file after endpoint
+  cleanup; the derived directory is outside a fixture project root
+  (`runtime_paths.rs` tests;
+  `tests/daemon-bin.test.ts` relaunch case;
+  `tests/desktop-neutron-durable-state-wiring.test.ts`;
+  `tests/daemon-startup-config.test.ts`;
+  `tests/neutron-session-durable-state-wiring.test.ts`).
+- **Failure evidence:** empty or whitespace path, a missing flag value, and
+  a regular-file path fail closed in the merged startup and daemon-bin
+  tests. Host composition without a directory fails closed
+  (`neutron-mutation-state-unavailable`). Whitespace host configuration
+  fails closed (`neutron-mutation-state-unusable`). No broader
+  permission-denied directory case is claimed than those tests.
+- **Not added:** real Apply, `approveAndApply`, public Approve RPC,
+  mutating Neutron RPC, Desktop Approve & Apply button, renderer approval
+  submission, or a canonical Apply call from the Desktop/daemon production
+  path. D4 and D5 remain separately unauthorized. No `status.get`,
+  reconnect result recovery, applied-vs-verified UX, verification retry,
+  Undo, or rollback execution UI.
+- **Unchanged:** `mutationAllowed` remains literal `false`. N4 remains
+  `inspect`, `doctor`, `memorySearch`, `timeline`, `conformance`,
+  `securityAudit`, and `projectDiff`.
+- **Security invariants preserved:** model output is not approval; success
+  is not approval; retry is not approval; the renderer cannot create
+  approval authority; the raw approval token remains host-only; the
+  authoritative reviewed artifact remains the future Apply source; no
+  model call is inserted between a future human approval and Apply; no
+  second approval database; no second mutation engine; durable replay
+  state is the existing Slice 3.1 store (this prerequisite only supplies
+  its directory); the durable project lock remains canonical; Desktop does
+  not fabricate Apply success.
+- **Hosted CI (final implementation head
+  `a3eb8c96b5012283107eb361c14fecd69025e22e`, pull_request, all success):**
+  Governance
+  [36475183529](https://github.com/vitala89/Intentloom/actions/runs/36475183529),
+  Compatibility
+  [36475183541](https://github.com/vitala89/Intentloom/actions/runs/36475183541),
+  CodeQL
+  [36475183608](https://github.com/vitala89/Intentloom/actions/runs/36475183608),
+  Desktop SEA Feasibility
+  [36475183509](https://github.com/vitala89/Intentloom/actions/runs/36475183509),
+  Harness Performance Benchmark
+  [36475183565](https://github.com/vitala89/Intentloom/actions/runs/36475183565).
+  The same head also has push Compatibility
+  [36475179403](https://github.com/vitala89/Intentloom/actions/runs/36475179403)
+  success. These run IDs are for that head, not for this docs branch.
+- **Prerequisite matrix:** D1, D2, D3, DL, and the Desktop
+  `durableStateDirectory` prerequisite are **done / merged**. D4 and D5
+  are **not authorized**.
+- **Next first action:** None from automation. D4 Approve & Apply Host
+  Operation is the next architectural stage and requires explicit
+  maintainer authorization. Do not start D4 or D5 from this handoff.
 
 ### 2026-09-27, Desktop Neutron durable mutation-state wiring — branch implementation
 
-- **Status:** **DESKTOP MUTATION DURABLE HOST STATE PREREQUISITE IMPLEMENTED ON BRANCH AWAITING MAINTAINER REVIEW.** Not merged. Not complete. Not D4.
+- **Status:** **IMPLEMENTED AND MERGED** (2026-09-28). Superseded for
+  current state by the 2026-09-28 post-merge handoff entry above. Not D4.
 - **Starting main / origin/main:**
   `0442141cb163c0487100f7aa6716a6faf809f75e` (DL handoff finalize PR #527;
   tracked tree clean).
 - **Branch:** `feat/desktop-neutron-durable-state-wiring`
 - **Pull request:** https://github.com/vitala89/Intentloom/pull/528
-  (not merged). Do not record a mutable branch head as the final
-  implementation SHA in this entry.
+  (merged). Final implementation head and merge SHA are in the post-merge
+  handoff above.
 - **Scope:** trusted Desktop-owned host configuration for Slice 3.1
   `durableStateDirectory`. Tauri derives
   `<app_data>/neutron-mutation-state` (0700 on Unix), passes
@@ -73,12 +189,10 @@ remain unauthorized.
   `cargo fmt --check` still fails only on pre-existing
   `apps/desktop/src-tauri/src/daemon_launch.rs` (unrelated, not
   reformatted).
-- **Hosted CI:** must be green on the final PR head before maintainer
-  merge. Exact final implementation head, merge SHA, and authoritative CI
-  evidence will be recorded in the post-merge handoff. Do not treat a
-  mutable branch head or earlier workflow run IDs as final evidence.
-- **Next first action:** Maintainer review. Do not merge from automation.
-  Do not start D4 from this branch.
+- **Hosted CI:** recorded on the post-merge handoff above for final head
+  `a3eb8c96b5012283107eb361c14fecd69025e22e`.
+- **Next first action:** Superseded. See the post-merge handoff. Do not
+  start D4 from this entry.
 
 ### 2026-09-27, Neutron Desktop Mutation Host Flow DL — post-merge documentation handoff
 

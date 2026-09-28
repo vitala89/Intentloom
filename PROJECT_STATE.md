@@ -756,10 +756,18 @@ Apply production composition removed (`ApprovedApplyModal` deleted; no
 fabricated `applied: true`, timeout fake mutation, or synthetic rollback
 evidence from Desktop UI). Daemon `intentloom.project.approvedApply.v1`
 remains unwired from Desktop spawn. DL does not authorize D4.
-**Desktop `durableStateDirectory` wiring is implemented on branch
-`feat/desktop-neutron-durable-state-wiring` awaiting maintainer review**
-(not merged; not D4). **D4–D5 remain not authorized.** Other
-post-P4 candidates remain in `POST_W12_NEXT_INCREMENT_PLAN.md`.
+**Desktop `durableStateDirectory` prerequisite implemented and merged**
+(PR #528, merge `be1f0201e968846765f7efa731560886a8b50032`; final
+implementation head `a3eb8c96b5012283107eb361c14fecd69025e22e`): the
+Desktop host derives `<app_data>/neutron-mutation-state`, restricts it to
+`0700` on Unix, and passes `--neutron-mutation-state-dir` on trusted
+Desktop/SEA daemon launches. The daemon validates that path and stores it
+on `createNeutronSessionRuntime` for future Slice 3.1 composition. No new
+approval store or lock. Not D4. **D4–D5 remain not authorized.** All
+documented prerequisites for considering D4 are merged. D4 Approve & Apply
+Host Operation is the next architectural stage and still requires explicit
+maintainer authorization. Other post-P4 candidates remain in
+`POST_W12_NEXT_INCREMENT_PLAN.md`.
 
 The Desktop discovery/error and Diff/Timeline slices remain recorded in
 [PHASE1_CONTRACTS.md](docs/desktop/PHASE1_CONTRACTS.md).

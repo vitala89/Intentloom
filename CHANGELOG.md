@@ -7,6 +7,15 @@ All notable changes are documented here. This project follows Keep a Changelog p
 Changes listed here are merged after the current release-preparation scope and
 are not included in the current npm artifact until a later release.
 
+- Desktop durable mutation-state prerequisite wires a host-owned directory
+  at `<app_data>/neutron-mutation-state` into trusted Desktop and SEA daemon
+  launches (`--neutron-mutation-state-dir`). Unix mode is `0700`. The daemon
+  validates the path and keeps it on the Neutron session runtime for future
+  Slice 3.1 approval, replay, and lock state. No second store or lock. No
+  Apply, `approveAndApply`, mutation RPC, or Desktop Approve & Apply
+  control. `mutationAllowed` remains literal `false`. N4 remains the seven
+  read-only tools. D4 remains unauthorized.
+
 - Desktop Mutation Host Flow DL removes the unused legacy Approved Apply
   modal and the `App.tsx` stub that fabricated `applied: true` plus synthetic
   `previousContent` after a timeout. No production Desktop path can present

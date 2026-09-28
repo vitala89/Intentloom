@@ -36,8 +36,10 @@ read-only Desktop are implemented separately. Desktop mutation host **D1**
 and merged** (PR #522; typed approval intent + in-process host issuer; no
 public Approve RPC; no Desktop mutation authority). **DL implemented and
 merged** (PR #525; legacy fake Desktop Approved Apply removed). **Desktop
-`durableStateDirectory` wiring is on a review branch** (not merged; not D4).
-D4–D5 remain unauthorized. Canon:
+`durableStateDirectory` wiring is implemented and merged** (PR #528; not
+D4). D4–D5 remain unauthorized. All documented prerequisites for
+considering D4 are merged. D4 still requires explicit maintainer
+authorization. Canon:
 [`NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md`](NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md).
 
 Authoritative roadmap gate:

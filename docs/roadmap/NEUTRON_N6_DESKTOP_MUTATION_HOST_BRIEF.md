@@ -10,7 +10,7 @@
 
 **DL IMPLEMENTED AND MERGED** (PR #525)
 
-**DESKTOP MUTATION DURABLE HOST STATE PREREQUISITE IMPLEMENTED ON BRANCH AWAITING MAINTAINER REVIEW**
+**DESKTOP MUTATION DURABLE HOST STATE PREREQUISITE IMPLEMENTED AND MERGED** (PR #528)
 
 **D4–D5: NOT AUTHORIZED**
 
@@ -30,12 +30,13 @@ approval issuance only; it does **not** authorize D4–D5, production
 mutation UI, mutating mutation RPC, Approve/Apply buttons, an N4 mutation
 tool, Undo, or any change to `mutationAllowed`. **DL** (legacy fake
 Approved Apply removal) is implemented and merged (PR #525). **Desktop
-`durableStateDirectory` wiring** is implemented on branch
-`feat/desktop-neutron-durable-state-wiring` awaiting maintainer review; it
-is not D4 and does not authorize Approve/Apply.
+`durableStateDirectory` wiring** is implemented and merged (PR #528, merge
+`be1f0201e968846765f7efa731560886a8b50032`; implementation head
+`a3eb8c96b5012283107eb361c14fecd69025e22e`). It is not D4 and does not
+authorize Approve/Apply.
 
 Evidence baseline: `origin/main` @
-`0442141cb163c0487100f7aa6716a6faf809f75e` (2026-09-27; DL handoff finalize).
+`be1f0201e968846765f7efa731560886a8b50032` (2026-09-28; PR #528 merged).
 Tracked tree clean at handoff start.
 
 Authoritative implementation and tests remain truth. Related:
@@ -52,19 +53,19 @@ Authoritative implementation and tests remain truth. Related:
 
 ## 0. Maintainer recommendation (not an implementation grant)
 
-| Decision                                    | Verdict                                                                                                                                                                                                                                                              |
-| ------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| First future implementation slice           | **D4 — Approve & Apply**, after explicit maintainer authorization. **D1**, **D2**, **D3**, and **DL** merged (PR #516, PR #519, PR #522, PR #525). **Desktop `durableStateDirectory` wiring is on a review branch** (not merged). No production Approve/Apply today. |
-| Approval issuer                             | Trusted **daemon/application host** only. Desktop submits a typed human intent. Host re-fetches the review bundle and issues `NeutronMutationApproval` itself.                                                                                                       |
-| Public RPC shape                            | **B — one host `approveAndApply` action**, plus read-only `review.get` and `status.get`. No separate public Approve RPC.                                                                                                                                             |
-| Desktop button copy (when later authorized) | **Approve & Apply**                                                                                                                                                                                                                                                  |
-| `approvalToken`                             | Never leaves the host/application boundary. Desktop may receive `approvalId` / status / expiry only.                                                                                                                                                                 |
-| Durable authority                           | Reuse Slice 3.1 store and project lock. Do not add a Desktop approval database.                                                                                                                                                                                      |
-| Apply engine                                | Reuse `applyApprovedNeutronGraphMutation` → `applyApprovedNeutronMutation` → declared-path Approved Apply → Slice 4 verification.                                                                                                                                    |
-| N4 / `mutationAllowed`                      | Unchanged. Seven read-only tools. Literal `false`.                                                                                                                                                                                                                   |
-| Undo                                        | Out of first Desktop mutation scope.                                                                                                                                                                                                                                 |
-| Legacy fake Approved Apply                  | **DL implemented and merged** (PR #525). Fabricated `applied: true` and synthetic rollback evidence are removed from production Desktop. Neutron must never reuse a fake Apply path.                                                                                 |
-| This document                               | D1, D2, D3, and DL merged. Desktop durable-state wiring is on a review branch. Do not start D4–D5 from this document without explicit maintainer authorization and a merged durable-state prerequisite.                                                              |
+| Decision                                    | Verdict                                                                                                                                                                                                                                              |
+| ------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| First future implementation slice           | **D4 — Approve & Apply**, after explicit maintainer authorization. **D1**, **D2**, **D3**, **DL**, and the Desktop `durableStateDirectory` prerequisite are merged (PR #516, PR #519, PR #522, PR #525, PR #528). No production Approve/Apply today. |
+| Approval issuer                             | Trusted **daemon/application host** only. Desktop submits a typed human intent. Host re-fetches the review bundle and issues `NeutronMutationApproval` itself.                                                                                       |
+| Public RPC shape                            | **B — one host `approveAndApply` action**, plus read-only `review.get` and `status.get`. No separate public Approve RPC.                                                                                                                             |
+| Desktop button copy (when later authorized) | **Approve & Apply**                                                                                                                                                                                                                                  |
+| `approvalToken`                             | Never leaves the host/application boundary. Desktop may receive `approvalId` / status / expiry only.                                                                                                                                                 |
+| Durable authority                           | Reuse Slice 3.1 store and project lock. Do not add a Desktop approval database.                                                                                                                                                                      |
+| Apply engine                                | Reuse `applyApprovedNeutronGraphMutation` → `applyApprovedNeutronMutation` → declared-path Approved Apply → Slice 4 verification.                                                                                                                    |
+| N4 / `mutationAllowed`                      | Unchanged. Seven read-only tools. Literal `false`.                                                                                                                                                                                                   |
+| Undo                                        | Out of first Desktop mutation scope.                                                                                                                                                                                                                 |
+| Legacy fake Approved Apply                  | **DL implemented and merged** (PR #525). Fabricated `applied: true` and synthetic rollback evidence are removed from production Desktop. Neutron must never reuse a fake Apply path.                                                                 |
+| This document                               | D1, D2, D3, DL, and the Desktop durable-state prerequisite are merged. Do not start D4–D5 from this document without explicit maintainer authorization.                                                                                              |
 
 ---
 
@@ -623,8 +624,10 @@ is test-only.
 directory (application-private `neutron-mutation-state` beside the existing
 runtime token/socket — not project source, not `.aif` generated adapters).
 Lifecycle: created with the Desktop app-data tree, not deleted when the
-daemon endpoint is reclaimed, not world-writable. **Wiring is implemented
-on branch awaiting maintainer review.** It is not D4.
+daemon endpoint is reclaimed, not world-writable on Unix (`0700`). **Wiring
+is implemented and merged** (PR #528). It is not D4. No second approval
+database and no second lock. Future D4 reuses Slice 3.1. Production
+Desktop composition does not fall back to a memory store.
 
 Durable records store ids, digests, states, and sanitized results. No token,
 no file bodies, no prompts.
@@ -800,7 +803,7 @@ Existing controls to reuse:
 **Prerequisites before D4 (identify, do not implement here):**
 
 1. Wire `durableStateDirectory` in Desktop daemon spawn
-   (implemented on branch, not merged).
+   (**implemented and merged**, PR #528).
 2. Classify `approveAndApply` as `mutating`; review/status as `read-only`.
 3. Reject externally supplied approval records.
 4. Redact tokens from results, logs, and errors (existing
@@ -1074,7 +1077,8 @@ Desktop button. No `intentloom.neutron.mutation.approve.v1`. No
 
 Daemon mutating RPC using existing graph mutation Apply. First real Desktop
 mutation authority. Requires merged DL (done), `durableStateDirectory` Desktop
-wiring (not done), explicit D4 authorization, and D1 bundle lookup.
+wiring (done, PR #528), explicit D4 authorization (not granted), and D1
+bundle lookup. This brief does not authorize D4.
 
 ### D5 — Authoritative result / verification / reconnect UX
 
@@ -1119,7 +1123,7 @@ No Undo. Retry verification may be designed but remains separately gated.
 | Outputs    | Host approval object in-process; public results still token-free                                                                        |
 | Tests      | Section 43 adversarial cases that do not require Desktop chrome                                                                         |
 | Exit       | **Complete (D3 merged).** Issuer rejects spoofed model/renderer fields; tests cover section 43 items that do not require Desktop chrome |
-| Next grant | Explicit maintainer authorization for D4 after `durableStateDirectory` Desktop wiring (DL merged)                                       |
+| Next grant | Explicit maintainer authorization for D4. DL and Desktop `durableStateDirectory` wiring are merged. D4 is not authorized by this brief  |
 
 ### D4
 
@@ -1147,13 +1151,13 @@ No Undo. Retry verification may be designed but remains separately gated.
 
 ### DL
 
-| Gate       | Rule                                                                        |
-| ---------- | --------------------------------------------------------------------------- |
-| Allowed    | Remove fabricated Approved Apply success from production Desktop            |
-| Forbidden  | Wiring Neutron to a stub; adding real Apply; leaving fake success reachable |
-| Exit       | No Desktop path fabricates `applied: true` without an authoritative host    |
-| Status     | **Implemented and merged** (PR #525)                                        |
-| Next grant | Complete; D4 still requires `durableStateDirectory` wiring + authorization  |
+| Gate       | Rule                                                                                         |
+| ---------- | -------------------------------------------------------------------------------------------- |
+| Allowed    | Remove fabricated Approved Apply success from production Desktop                             |
+| Forbidden  | Wiring Neutron to a stub; adding real Apply; leaving fake success reachable                  |
+| Exit       | No Desktop path fabricates `applied: true` without an authoritative host                     |
+| Status     | **Implemented and merged** (PR #525)                                                         |
+| Next grant | Complete; D4 still requires explicit authorization. Durable-state wiring is merged (PR #528) |
 
 ---
 
@@ -1201,8 +1205,9 @@ This file:
 
 Update pointers in `DUTY_WATCH.md`, `PROJECT_STATE.md`,
 `NEUTRON_RUNTIME_ROADMAP.md`, `NEUTRON_N6_DESKTOP_READONLY_BRIEF.md`, and
-`NEUTRON_MUTATION_ROUTING_BRIEF.md`. Mark **D1**, **D2**, **D3**, and **DL**
-complete; D4–D5 remain unauthorized until separately granted.
+`NEUTRON_MUTATION_ROUTING_BRIEF.md`. Mark **D1**, **D2**, **D3**, **DL**, and
+the Desktop durable-state prerequisite complete; D4–D5 remain unauthorized
+until separately granted.
 
 ---
 
@@ -1218,7 +1223,7 @@ Implementation and handoff PRs that cite this brief must repeat:
 
 **DL IMPLEMENTED AND MERGED** (PR #525)
 
-**DESKTOP MUTATION DURABLE HOST STATE PREREQUISITE IMPLEMENTED ON BRANCH AWAITING MAINTAINER REVIEW**
+**DESKTOP MUTATION DURABLE HOST STATE PREREQUISITE IMPLEMENTED AND MERGED** (PR #528)
 
 **D4–D5: NOT AUTHORIZED**
 
@@ -1243,25 +1248,30 @@ tests. In-process issuer only. No production Approve/Apply.
 production Desktop. Does not add real Apply or wire
 `intentloom.project.approvedApply.v1`.
 
-**Desktop durable-state prerequisite (on branch, not merged):** trusted
-Desktop-owned `--neutron-mutation-state-dir` / `durableStateDirectory`
-wiring for future Slice 3.1 host Apply. Not D4.
+**Desktop durable-state prerequisite (implemented and merged, PR #528):**
+trusted Desktop-owned `--neutron-mutation-state-dir` /
+`durableStateDirectory` wiring for future Slice 3.1 host Apply. The native
+host derives `<app_data>/neutron-mutation-state` (Unix `0700`; no Windows
+ACL claim beyond the code). The daemon validates the path and passes it
+into `createNeutronSessionRuntime`. The directory is not public. Not D4.
+No second store or lock.
 
 **Recommended next slice when separately authorized:** **D4** — Approve &
-Apply host operation. Prerequisites: merged D3 (done), merged DL (done), and
-maintainer-merged Desktop `durableStateDirectory` wiring.
+Apply host operation. Prerequisites now merged: D1, D2, D3, DL, and Desktop
+`durableStateDirectory` wiring. D4 still requires explicit maintainer
+authorization. All documented prerequisites for considering D4 are merged.
+This document does not start D4.
 
 Rationale for sequencing (unchanged):
 
 - Exact reviewed bytes live in the host payload store; D1 exposes them and D2
   presents them without widening mutation authority.
 - D3 proves the host issuer cannot be spoofed through intent fields; combined
-  approveAndApply remains the later authority slice (D4), unsafe without
-  durable directory wiring on Desktop spawn.
+  approveAndApply remains the later authority slice (D4).
 - Public daemon Apply RPC and Desktop mutation controls remain future grants.
 
 This document does **not** authorize D4–D5. The durable-state prerequisite
-is implemented on a branch awaiting maintainer review and is not merged.
+is merged and is not itself Approve & Apply.
 
 ---
 
