@@ -30,6 +30,8 @@ export {
   neutronMutationReviewLeaksSecret,
 } from "./neutron-mutation-review-leak.js";
 export { applyApprovedNeutronGraphMutation } from "./neutron-graph-mutation-apply.js";
+export { approveAndApplyNeutronGraphMutation } from "./neutron-mutation-approve-apply.js";
+export type { ApproveAndApplyNeutronGraphMutationInput } from "./neutron-mutation-approve-apply.js";
 export {
   issueNeutronMutationApprovalFromIntent,
   publicNeutronMutationApprovalIssueFacts,

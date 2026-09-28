@@ -354,9 +354,10 @@ evidence). **Slice 5 implemented** (N5 proposal/review integration; host
 `applyApprovedNeutronGraphMutation` after separately issued approval).
 **Slice 5.1 implemented** (fail-closed stale authoritative proposal
 materialization; session/profile/ceiling proposal capability threading in
-production). Later slices (unauthorized): Desktop Approve/Apply UX, Desktop
-verification UX, host rollback execution / Undo. Next first action: none from
-automation — await explicit maintainer authorization.
+production). Later slices (unauthorized): Desktop verification retry UX,
+host rollback execution / Undo. D4 Approve & Apply is implemented on a
+review branch and is not merged. Next first action: maintainer review of
+D4. Do not start D5.
 
 N6 read-only Desktop is implemented under its own brief. Desktop mutation
 host flow: **D1 implemented and merged** (PR #516; read-only authoritative
@@ -364,9 +365,10 @@ review transport). **D2 implemented and merged** (PR #519; exact review UX).
 **D3 implemented and merged** (PR #522; host approval-intent + in-process
 issuer). **DL implemented and merged** (PR #525; legacy fake Desktop Apply
 removed). **Desktop `durableStateDirectory` wiring is implemented and
-merged** (PR #528; not D4). **D4–D5 are not authorized.** Canon:
+merged** (PR #528; not D4). **D4 IMPLEMENTED ON BRANCH AWAITING MAINTAINER REVIEW.** D5 is not
+authorized. Canon:
 [`NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md`](NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md).
-Do not start D4, Desktop Approve/Apply UX, or an N4 mutation tool from this
+Do not start D5, verification retry, Undo, or an N4 mutation tool from this
 roadmap entry alone.
 
 ## N6. Desktop Neutron Workspace
@@ -539,10 +541,9 @@ implemented.** **Desktop mutation host D1, D2, D3, and DL are implemented and
 merged.** Desktop `durableStateDirectory` wiring is implemented and merged
 (PR #528, merge `be1f0201e968846765f7efa731560886a8b50032`; implementation
 head `a3eb8c96b5012283107eb361c14fecd69025e22e`). All documented
-prerequisites for considering D4 are merged. D4 Approve & Apply Host
-Operation is the next architectural stage and is **not** implied or
-authorized by this file. Next first action: none from automation — await
-explicit maintainer authorization for D4. Do not start D4 from this file.
+prerequisites for considering D4 are merged. **D4 IMPLEMENTED ON BRANCH
+AWAITING MAINTAINER REVIEW.** Not merged. D5 remains unauthorized. Do not
+start D5 from this file.
 See
 [`NEUTRON_N6_DESKTOP_READONLY_BRIEF.md`](NEUTRON_N6_DESKTOP_READONLY_BRIEF.md),
 [`NEUTRON_MUTATION_ROUTING_BRIEF.md`](NEUTRON_MUTATION_ROUTING_BRIEF.md), and

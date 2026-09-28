@@ -151,6 +151,7 @@ export {
 } from "./neutron-scheduler-aggregate.js";
 export {
   applyApprovedNeutronGraphMutation,
+  approveAndApplyNeutronGraphMutation,
   attachNeutronGraphMutationEvidence,
   collectNeutronGraphMutationCandidates,
   createMemoryNeutronGraphMutationPayloadStore,

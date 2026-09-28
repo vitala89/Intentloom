@@ -10,8 +10,9 @@ implemented and merged** (PR #522): host approval-intent protocol and
 in-process issuer (no production Desktop Approve/Apply). **DL implemented and
 merged** (PR #525; legacy fake Approved Apply removed). Desktop
 `durableStateDirectory` wiring is implemented and merged (PR #528; not D4).
-D4–D5 remain unauthorized. D4 is the next architectural stage and still
-requires explicit maintainer authorization.
+**D4 IMPLEMENTED ON BRANCH AWAITING MAINTAINER REVIEW**
+(`feat/neutron-desktop-approve-and-apply`). Not merged. D5 remains
+unauthorized.
 `mutationAllowed` remains `false`. Streaming and daemon event push remain
 unavailable. No event bridge or polling loop was added; Slice 3 uses
 request/response graph get/execute/cancel snapshots. Latest graph per session

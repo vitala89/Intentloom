@@ -4,6 +4,7 @@ import { Button } from "../design/components/core/Button.js";
 import { Card } from "../design/components/layout/Card.js";
 import { EmptyState } from "../design/components/states/EmptyState.js";
 import { StatusChip } from "../design/components/status/StatusChip.js";
+import { NeutronApproveApplyAction } from "./NeutronApproveApplyControl.js";
 import { NeutronMutationReviewDiff } from "./NeutronMutationReviewDiff.js";
 import { NeutronMutationReviewFiles } from "./NeutronMutationReviewFiles.js";
 import { NeutronMutationReviewSelector } from "./NeutronMutationReviewSelector.js";
@@ -56,11 +57,12 @@ export function NeutronMutationReviewPanel({
         </Button>
       }
     >
-      <StatusChip label="Inspection only" tone="neutral" />
+      <StatusChip label="Exact review" tone="neutral" />
       <p>{MUTATION_REVIEW_INSPECTION_COPY}</p>
       <NeutronMutationReviewView
         state={review.state}
         file={file}
+        scope={scope}
         headingRef={(node) => {
           headingRef.current = node;
         }}
@@ -79,6 +81,7 @@ export function NeutronMutationReviewView({
   onSelectProposal,
   onSelectFile,
   onClose,
+  scope = null,
 }: {
   readonly state: NeutronMutationReviewUiState;
   readonly file: NeutronMutationReviewFileView | null;
@@ -86,6 +89,7 @@ export function NeutronMutationReviewView({
   readonly onSelectProposal: (proposalId: string) => void;
   readonly onSelectFile: (path: string) => void;
   readonly onClose: () => void;
+  readonly scope?: NeutronMutationReviewScope | null;
 }) {
   if (state.listPhase === "loading" || state.listPhase === "idle") {
     return <p role="status">Loading mutation reviews.</p>;
@@ -125,6 +129,15 @@ export function NeutronMutationReviewView({
             onSelect={onSelectFile}
           />
           <NeutronMutationReviewDiff file={file} />
+          {scope === null || state.review === null ? null : (
+            <NeutronApproveApplyAction
+              review={state.review}
+              reviewReady={
+                state.reviewPhase === "ready" && state.listPhase === "ready"
+              }
+              scope={scope}
+            />
+          )}
           <Button variant="ghost" onClick={onClose}>
             Close review
           </Button>

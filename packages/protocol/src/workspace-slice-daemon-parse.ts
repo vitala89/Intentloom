@@ -31,6 +31,8 @@ import { parseNeutronGraphDaemonRequest } from "./neutron-graph-rpc.js";
 import type { NeutronGraphDaemonRequest } from "./neutron-graph-rpc.js";
 import { parseNeutronMutationReviewDaemonRequest } from "./neutron-mutation-review-rpc.js";
 import type { NeutronMutationReviewDaemonRequest } from "./neutron-mutation-review-rpc.js";
+import { parseNeutronMutationApproveAndApplyDaemonRequest } from "./neutron-mutation-approve-apply-rpc.js";
+import type { NeutronMutationApproveAndApplyRequest } from "./neutron-mutation-approve-apply-rpc.js";
 
 export type WorkspaceSliceDaemonRequest =
   | ExistingProjectWorkspacePrepareRequest
@@ -46,7 +48,8 @@ export type WorkspaceSliceDaemonRequest =
   | FoundationScaffoldDaemonRequest
   | NeutronDaemonRequest
   | NeutronGraphDaemonRequest
-  | NeutronMutationReviewDaemonRequest;
+  | NeutronMutationReviewDaemonRequest
+  | NeutronMutationApproveAndApplyRequest;
 
 export function parseWorkspaceSliceDaemonRequest(
   method: string,
@@ -67,6 +70,7 @@ export function parseWorkspaceSliceDaemonRequest(
     parseFoundationScaffoldDaemonRequest(method, params, id) ??
     parseNeutronSessionDaemonRequest(method, params, id) ??
     parseNeutronGraphDaemonRequest(method, params, id) ??
-    parseNeutronMutationReviewDaemonRequest(method, params, id)
+    parseNeutronMutationReviewDaemonRequest(method, params, id) ??
+    parseNeutronMutationApproveAndApplyDaemonRequest(method, params, id)
   );
 }

@@ -4,7 +4,7 @@ import type {
 } from "@intentloom/protocol";
 
 export const MUTATION_REVIEW_INSPECTION_COPY =
-  "Inspection only. Mutation is not authorized." as const;
+  "Exact host review. Writes happen only through Approve & Apply when this review is current." as const;
 
 export const MUTATION_REVIEW_STALE_COPY =
   "Project state changed after this proposal was generated." as const;

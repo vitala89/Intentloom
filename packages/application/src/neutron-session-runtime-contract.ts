@@ -8,6 +8,7 @@ import type { NeutronSessionViewmodel } from "../../protocol/src/neutron-session
 import type { FileSystem } from "./index.js";
 import type { ModelAdapter } from "./model-adapter.js";
 import type { IssueNeutronMutationApprovalResult } from "./neutron-mutation-approval-issue.js";
+import type { NeutronMutationApproveAndApplyResult } from "../../protocol/src/neutron-mutation-approve-apply-result.js";
 import type { NeutronHostDurableState } from "./neutron-host-durable-state.js";
 
 export interface NeutronSessionRuntimeOptions {
@@ -88,6 +89,13 @@ export interface NeutronSessionRuntime {
   issueMutationApproval(
     intent: unknown,
   ): Promise<IssueNeutronMutationApprovalResult>;
+  /**
+   * Combined host Approve & Apply. Not a public approval RPC. The approval
+   * token stays inside this process.
+   */
+  approveAndApplyNeutronMutation(
+    intent: unknown,
+  ): Promise<NeutronMutationApproveAndApplyResult>;
   /**
    * Host-only durable mutation-state configuration. Not an RPC and not part
    * of session viewmodels.

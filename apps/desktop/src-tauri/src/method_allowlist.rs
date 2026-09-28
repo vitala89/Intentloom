@@ -81,11 +81,16 @@ pub fn is_neutron_mutation_review_get_method(method: &str) -> bool {
     method == "intentloom.neutron.mutation.review.get.v1"
 }
 
+pub fn is_neutron_mutation_approve_and_apply_method(method: &str) -> bool {
+    method == "intentloom.neutron.mutation.approveAndApply.v1"
+}
+
 #[cfg(test)]
 mod tests {
     use super::{
         is_foundation_method, is_inception_method, is_neutron_method,
-        is_neutron_mutation_review_get_method, is_neutron_mutation_review_list_method,
+        is_neutron_mutation_approve_and_apply_method, is_neutron_mutation_review_get_method,
+        is_neutron_mutation_review_list_method,
     };
 
     #[test]
@@ -162,7 +167,22 @@ mod tests {
         assert!(is_neutron_mutation_review_get_method(
             "intentloom.neutron.mutation.review.get.v1"
         ));
+        assert!(!is_neutron_method(
+            "intentloom.neutron.mutation.approveAndApply.v1"
+        ));
         assert!(!is_neutron_mutation_review_get_method(
+            "intentloom.neutron.mutation.approveAndApply.v1"
+        ));
+        assert!(is_neutron_mutation_approve_and_apply_method(
+            "intentloom.neutron.mutation.approveAndApply.v1"
+        ));
+        assert!(!is_neutron_mutation_approve_and_apply_method(
+            "intentloom.neutron.mutation.approve.v1"
+        ));
+        assert!(!is_neutron_mutation_approve_and_apply_method(
+            "intentloom.project.approvedApply.v1"
+        ));
+        assert!(!is_foundation_method(
             "intentloom.neutron.mutation.approveAndApply.v1"
         ));
         assert!(!is_foundation_method(

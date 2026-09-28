@@ -31,9 +31,17 @@ import {
   neutronMutationReviewCapabilities,
   type NeutronMutationReviewDaemonOptions,
 } from "./neutron-mutation-review-handlers.js";
+import {
+  bindNeutronMutationApproveAndApplyHandlers,
+  neutronMutationApproveAndApplyCapabilities,
+  type NeutronMutationApproveAndApplyDaemonOptions,
+} from "./neutron-mutation-approve-apply-handlers.js";
 
 export interface NeutronDaemonOptions
-  extends NeutronGraphDaemonOptions, NeutronMutationReviewDaemonOptions {
+  extends
+    NeutronGraphDaemonOptions,
+    NeutronMutationReviewDaemonOptions,
+    NeutronMutationApproveAndApplyDaemonOptions {
   readonly neutronSessionCreate?: (
     request: NeutronSessionCreateRequest,
   ) => Promise<Omit<NeutronSessionCreateResponse["result"], "protocolVersion">>;
@@ -89,7 +97,11 @@ export function neutronSessionCapabilities(
       enabled(NEUTRON_GRAPH_CANCEL_METHOD, "neutron.graph.cancel"),
     );
   }
-  return [...capabilities, ...neutronMutationReviewCapabilities(options)];
+  return [
+    ...capabilities,
+    ...neutronMutationReviewCapabilities(options),
+    ...neutronMutationApproveAndApplyCapabilities(options),
+  ];
 }
 
 export function bindNeutronSessionHandlers(
@@ -128,6 +140,7 @@ export function bindNeutronSessionHandlers(
     }),
     ...bindNeutronGraphHandlers(runtime),
     ...bindNeutronMutationReviewHandlers(runtime),
+    ...bindNeutronMutationApproveAndApplyHandlers(runtime),
   };
 }
 

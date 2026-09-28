@@ -11,7 +11,7 @@ use crate::method_allowlist::{
 };
 use crate::native_paths::canonical_project_root;
 
-async fn run_blocking<F, T>(work: F) -> Result<T, BridgeError>
+pub(crate) async fn run_blocking<F, T>(work: F) -> Result<T, BridgeError>
 where
     F: FnOnce() -> Result<T, BridgeError> + Send + 'static,
     T: Send + 'static,
@@ -21,7 +21,7 @@ where
         .map_err(|error| BridgeError::new("internal_failure", error.to_string()))?
 }
 
-fn request_method(request: &Value, expected: &str) -> Result<(), BridgeError> {
+pub(crate) fn request_method(request: &Value, expected: &str) -> Result<(), BridgeError> {
     let serialized = serde_json::to_vec(request)
         .map_err(|error| BridgeError::new("bounded_validation_failed", error.to_string()))?;
     if serialized.len() > MAX_REQUEST_BYTES {
