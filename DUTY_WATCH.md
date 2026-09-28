@@ -45,6 +45,7 @@ remain unauthorized.
   `0442141cb163c0487100f7aa6716a6faf809f75e` (DL handoff finalize PR #527;
   tracked tree clean).
 - **Branch:** `feat/desktop-neutron-durable-state-wiring`
+- **Head SHA:** `ebe147a0bfe658805fc4e6d74ea08f9b567f0261`
 - **Pull request:** https://github.com/vitala89/Intentloom/pull/528
   (not merged).
 - **Scope:** trusted Desktop-owned host configuration for Slice 3.1
@@ -60,6 +61,20 @@ remain unauthorized.
 - **Not added:** `intentloom.neutron.mutation.approveAndApply.v1`, public
   Approve RPC, `applyApprovedNeutronMutation` from Desktop/daemon
   production composition, renderer path selection.
+- **File metrics (canonical `scripts/production-file-metrics.mjs` vs
+  `origin/main`):** `bin.ts` 226 → 212 effective; new
+  `daemon-startup-config.ts` 100 / `neutron-host-durable-state.ts` 23;
+  `neutron-session-runtime.ts` 253 → 258; contract 80 → 83;
+  `daemon_runtime.rs` 319 → 303; `runtime_paths.rs` 7 → 124;
+  `daemon_transport.rs` 263 → 265. No governed file crossed 400
+  effective or grew while already oversized.
+- **Local verification (implementation session):** `pnpm verify` —
+  333 files / 2835 passed / 3 skipped; `git diff --check` clean.
+  `cargo fmt --check` still fails only on pre-existing
+  `apps/desktop/src-tauri/src/daemon_launch.rs` (unrelated, not
+  reformatted).
+- **Hosted CI:** still running on PR #528 at handoff (no failed required
+  checks observed; do not treat as complete).
 - **Next first action:** Maintainer review. Do not merge from automation.
   Do not start D4 from this branch.
 
