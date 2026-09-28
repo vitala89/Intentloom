@@ -45,6 +45,8 @@ remain unauthorized.
   `0442141cb163c0487100f7aa6716a6faf809f75e` (DL handoff finalize PR #527;
   tracked tree clean).
 - **Branch:** `feat/desktop-neutron-durable-state-wiring`
+- **Pull request:** https://github.com/vitala89/Intentloom/pull/528
+  (not merged).
 - **Scope:** trusted Desktop-owned host configuration for Slice 3.1
   `durableStateDirectory`. Tauri derives
   `<app_data>/neutron-mutation-state` (0700 on Unix), passes
