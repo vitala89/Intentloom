@@ -59,9 +59,10 @@ from automation.
   (squash; parent `0442141cb163c0487100f7aa6716a6faf809f75e`)
 - **Merged at:** 2026-09-28
 - **Handoff branch:** `docs/neutron-desktop-durable-state-handoff`
-- **Handoff head:** not recorded here. This entry does not cite a mutable
-  docs-branch SHA. A later finalize watch may record the handoff merge SHA
-  after maintainer merge.
+- **Handoff PR:** https://github.com/vitala89/Intentloom/pull/532
+  (open for maintainer review; not merged). This entry does not cite a
+  mutable docs-branch SHA. A later finalize watch may record the handoff
+  merge SHA after maintainer merge.
 - **Canonical brief:**
   [`docs/roadmap/NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md`](docs/roadmap/NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md)
 - **Delivered:** the Desktop native host derives a stable application-private
