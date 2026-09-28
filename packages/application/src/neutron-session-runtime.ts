@@ -28,6 +28,7 @@ import {
 import { storedGraphView } from "./neutron-session-graph.js";
 import { bindNeutronSessionReviewOperations } from "./neutron-session-runtime-review.js";
 import { bindNeutronSessionApprovalOperations } from "./neutron-session-runtime-approval.js";
+import { neutronHostDurableStateFromOptions } from "./neutron-host-durable-state.js";
 import type {
   NeutronSessionRuntime,
   NeutronSessionRuntimeOptions,
@@ -48,6 +49,7 @@ export function createNeutronSessionRuntime(
   const fingerprint =
     options.fingerprintProject ??
     ((root: string) => fingerprintNeutronProjectRoot(root, fs));
+  const hostDurableState = neutronHostDurableStateFromOptions(options);
 
   function requireBound(input: {
     readonly root: string;
@@ -222,6 +224,10 @@ export function createNeutronSessionRuntime(
       now,
       sessions,
     }),
+
+    hostDurableState() {
+      return hostDurableState;
+    },
 
     clear() {
       sessions.clear();

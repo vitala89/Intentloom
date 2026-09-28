@@ -29,12 +29,37 @@ approval-intent protocol + security tests). D3 does not grant production
 Desktop mutation authority.
 Approve/Apply implementation remains **not authorized**. **Desktop mutation
 host flow DL complete** (implementation PR #525 and handoff PR #526 merged;
-legacy fake Approved Apply production composition removed). D4, D5, production Approve/Apply,
-`approveAndApply`, `durableStateDirectory` Desktop wiring, and an N4 mutation
-tool remain **not authorized**. `mutationAllowed` remains literal `false`. N4
-remains the seven read-only tools. Optional N3 Slice 5, P4l17, Desktop
-Approve/Apply UX, Desktop verification UX, host rollback execution / Undo,
-and any N4 mutation tool remain unauthorized.
+legacy fake Approved Apply production composition removed). **Desktop
+durableStateDirectory wiring is implemented on branch awaiting maintainer
+review** (not merged; not D4). D4, D5, production Approve/Apply,
+`approveAndApply`, and an N4 mutation tool remain **not authorized**.
+`mutationAllowed` remains literal `false`. N4 remains the seven read-only
+tools. Optional N3 Slice 5, P4l17, Desktop Approve/Apply UX, Desktop
+verification UX, host rollback execution / Undo, and any N4 mutation tool
+remain unauthorized.
+
+### 2026-09-27, Desktop Neutron durable mutation-state wiring — branch implementation
+
+- **Status:** **DESKTOP MUTATION DURABLE HOST STATE PREREQUISITE IMPLEMENTED ON BRANCH AWAITING MAINTAINER REVIEW.** Not merged. Not complete. Not D4.
+- **Starting main / origin/main:**
+  `0442141cb163c0487100f7aa6716a6faf809f75e` (DL handoff finalize PR #527;
+  tracked tree clean).
+- **Branch:** `feat/desktop-neutron-durable-state-wiring`
+- **Scope:** trusted Desktop-owned host configuration for Slice 3.1
+  `durableStateDirectory`. Tauri derives
+  `<app_data>/neutron-mutation-state` (0700 on Unix), passes
+  `--neutron-mutation-state-dir` on every Desktop/SEA daemon launch, and
+  the daemon stores that path on `NeutronSessionRuntime` for future host
+  mutation composition. Daemon recovery still removes only the ephemeral
+  endpoint.
+- **Unchanged:** no Approve & Apply, no mutation RPC, no Desktop mutation
+  button, no D5, no new store/lock, `mutationAllowed: false`, N4 seven
+  read-only tools, raw approval token still host-only.
+- **Not added:** `intentloom.neutron.mutation.approveAndApply.v1`, public
+  Approve RPC, `applyApprovedNeutronMutation` from Desktop/daemon
+  production composition, renderer path selection.
+- **Next first action:** Maintainer review. Do not merge from automation.
+  Do not start D4 from this branch.
 
 ### 2026-09-27, Neutron Desktop Mutation Host Flow DL — post-merge documentation handoff
 

@@ -756,8 +756,9 @@ Apply production composition removed (`ApprovedApplyModal` deleted; no
 fabricated `applied: true`, timeout fake mutation, or synthetic rollback
 evidence from Desktop UI). Daemon `intentloom.project.approvedApply.v1`
 remains unwired from Desktop spawn. DL does not authorize D4.
-**`durableStateDirectory` Desktop wiring is not done.** **D4–D5 remain not
-authorized.** Other
+**Desktop `durableStateDirectory` wiring is implemented on branch
+`feat/desktop-neutron-durable-state-wiring` awaiting maintainer review**
+(not merged; not D4). **D4–D5 remain not authorized.** Other
 post-P4 candidates remain in `POST_W12_NEXT_INCREMENT_PLAN.md`.
 
 The Desktop discovery/error and Diff/Timeline slices remain recorded in

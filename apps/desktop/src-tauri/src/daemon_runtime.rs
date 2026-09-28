@@ -11,15 +11,18 @@ use serde_json::Value;
 use tauri::{AppHandle, Manager};
 
 use crate::bridge::BridgeError;
+use crate::daemon_launch::{
+    build_launch_command, launch_spawn_error, preflight_launch, resolve_launch_spec,
+};
 use crate::daemon_recovery::{
     next_action_after_probe, next_action_before_probe, ChildState, EnsureAction,
 };
 use crate::daemon_transport::send_request;
-use crate::daemon_launch::{
-    build_launch_command, launch_spawn_error, preflight_launch, resolve_launch_spec,
-};
 use crate::native_paths::catalog_root;
-use crate::runtime_paths::RuntimePaths;
+use crate::runtime_paths::{
+    desktop_owned_daemon_args, endpoint_exists, neutron_mutation_state_dir, remove_owned_endpoint,
+    RuntimePaths,
+};
 
 #[derive(Default)]
 struct RuntimeInner {
@@ -203,6 +206,10 @@ fn create_runtime_paths(app: &AppHandle) -> Result<RuntimePaths, BridgeError> {
     restrict_directory(&directory)?;
     let token_file = directory.join("session.token");
     let token = load_or_create_token(&token_file)?;
+    let mutation_state_dir = neutron_mutation_state_dir(&app_data);
+    fs::create_dir_all(&mutation_state_dir)
+        .map_err(|error| BridgeError::new("internal_failure", error.to_string()))?;
+    restrict_directory(&mutation_state_dir)?;
     #[cfg(unix)]
     let endpoint = directory.join("daemon.sock");
     #[cfg(windows)]
@@ -211,6 +218,7 @@ fn create_runtime_paths(app: &AppHandle) -> Result<RuntimePaths, BridgeError> {
         endpoint,
         token_file,
         token,
+        neutron_mutation_state_dir: mutation_state_dir,
     })
 }
 
@@ -267,16 +275,13 @@ fn spawn_sidecar(app: &AppHandle, paths: &RuntimePaths) -> Result<Child, BridgeE
     preflight_launch(&spec)?;
     let mut command = build_launch_command(&spec);
     command
-        .arg("--endpoint")
-        .arg(&paths.endpoint)
-        .arg("--token-file")
-        .arg(&paths.token_file)
-        .arg("--catalog-root")
-        .arg(catalog_root(app)?)
+        .args(desktop_owned_daemon_args(paths, &catalog_root(app)?))
         .stdin(Stdio::null())
         .stdout(Stdio::null())
         .stderr(Stdio::null());
-    command.spawn().map_err(|error| launch_spawn_error(&spec, error))
+    command
+        .spawn()
+        .map_err(|error| launch_spawn_error(&spec, error))
 }
 
 fn wait_until_ready(
@@ -320,27 +325,4 @@ fn restrict_file(path: &Path) -> Result<(), BridgeError> {
             .map_err(|error| BridgeError::new("internal_failure", error.to_string()))?;
     }
     Ok(())
-}
-
-pub fn endpoint_exists(endpoint: &Path) -> bool {
-    #[cfg(unix)]
-    {
-        endpoint.exists()
-    }
-    #[cfg(windows)]
-    {
-        let _ = endpoint;
-        false
-    }
-}
-
-pub fn remove_owned_endpoint(endpoint: &Path) {
-    #[cfg(unix)]
-    {
-        let _ = fs::remove_file(endpoint);
-    }
-    #[cfg(windows)]
-    {
-        let _ = endpoint;
-    }
 }

@@ -8,6 +8,7 @@ import type { NeutronSessionViewmodel } from "../../protocol/src/neutron-session
 import type { FileSystem } from "./index.js";
 import type { ModelAdapter } from "./model-adapter.js";
 import type { IssueNeutronMutationApprovalResult } from "./neutron-mutation-approval-issue.js";
+import type { NeutronHostDurableState } from "./neutron-host-durable-state.js";
 
 export interface NeutronSessionRuntimeOptions {
   readonly createAdapter: () => ModelAdapter | null;
@@ -19,6 +20,11 @@ export interface NeutronSessionRuntimeOptions {
   readonly sessionProposalCapabilities?: readonly string[];
   readonly profileProposalCapabilities?: readonly string[];
   readonly capabilityCeiling?: readonly string[];
+  /**
+   * Host-controlled Slice 3.1 durable mutation-state directory.
+   * Never renderer-, model-, or project-supplied.
+   */
+  readonly durableStateDirectory?: string;
 }
 
 export interface NeutronSessionRuntime {
@@ -82,5 +88,10 @@ export interface NeutronSessionRuntime {
   issueMutationApproval(
     intent: unknown,
   ): Promise<IssueNeutronMutationApprovalResult>;
+  /**
+   * Host-only durable mutation-state configuration. Not an RPC and not part
+   * of session viewmodels.
+   */
+  hostDurableState(): NeutronHostDurableState | undefined;
   clear(): void;
 }
