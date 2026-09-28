@@ -363,8 +363,8 @@ host flow: **D1 implemented and merged** (PR #516; read-only authoritative
 review transport). **D2 implemented and merged** (PR #519; exact review UX).
 **D3 implemented and merged** (PR #522; host approval-intent + in-process
 issuer). **DL implemented and merged** (PR #525; legacy fake Desktop Apply
-removed). **Desktop `durableStateDirectory` wiring is implemented on
-branch awaiting maintainer review** (not D4). **D4–D5 are not authorized.** Canon:
+removed). **Desktop `durableStateDirectory` wiring is implemented and
+merged** (PR #528; not D4). **D4–D5 are not authorized.** Canon:
 [`NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md`](NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md).
 Do not start D4, Desktop Approve/Apply UX, or an N4 mutation tool from this
 roadmap entry alone.
@@ -390,8 +390,8 @@ fields). **N6 Slice 5 implemented** — read-only mutation proposal review
 state are implemented in application; Desktop Approve/Apply UX remains
 unauthorized. Host-flow canon:
 [`NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md`](NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md)
-(D1, D2, D3, and DL merged; durable-state wiring on a review branch;
-D4–D5 unauthorized).
+(D1, D2, D3, DL, and Desktop durable-state wiring merged; D4–D5
+unauthorized).
 
 Integrate the runtime with the official Desktop application after the v0.6
 read-only project slice and shared client contracts are stable.
@@ -536,11 +536,13 @@ preventing an unfinished agent layer from expanding the v0.6 release scope.
 
 N1–N5 are complete. Mutation-routing Slices 1–5 exist. **N6 Slices 1–5 are
 implemented.** **Desktop mutation host D1, D2, D3, and DL are implemented and
-merged.**
-Desktop `durableStateDirectory` wiring is implemented on branch
-`feat/desktop-neutron-durable-state-wiring` awaiting maintainer review. D4
-is **not** implied or authorized by this file. Next first action: maintainer
-review of the durable-state prerequisite — do not start D4 from this file.
+merged.** Desktop `durableStateDirectory` wiring is implemented and merged
+(PR #528, merge `be1f0201e968846765f7efa731560886a8b50032`; implementation
+head `a3eb8c96b5012283107eb361c14fecd69025e22e`). All documented
+prerequisites for considering D4 are merged. D4 Approve & Apply Host
+Operation is the next architectural stage and is **not** implied or
+authorized by this file. Next first action: none from automation — await
+explicit maintainer authorization for D4. Do not start D4 from this file.
 See
 [`NEUTRON_N6_DESKTOP_READONLY_BRIEF.md`](NEUTRON_N6_DESKTOP_READONLY_BRIEF.md),
 [`NEUTRON_MUTATION_ROUTING_BRIEF.md`](NEUTRON_MUTATION_ROUTING_BRIEF.md), and

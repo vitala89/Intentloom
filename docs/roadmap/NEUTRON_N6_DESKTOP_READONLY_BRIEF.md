@@ -9,8 +9,9 @@ implemented and merged** (PR #519): exact review/diff UX over D1; **D3
 implemented and merged** (PR #522): host approval-intent protocol and
 in-process issuer (no production Desktop Approve/Apply). **DL implemented and
 merged** (PR #525; legacy fake Approved Apply removed). Desktop
-`durableStateDirectory` wiring is on a review branch (not D4). D4–D5 remain
-unauthorized.
+`durableStateDirectory` wiring is implemented and merged (PR #528; not D4).
+D4–D5 remain unauthorized. D4 is the next architectural stage and still
+requires explicit maintainer authorization.
 `mutationAllowed` remains `false`. Streaming and daemon event push remain
 unavailable. No event bridge or polling loop was added; Slice 3 uses
 request/response graph get/execute/cancel snapshots. Latest graph per session
