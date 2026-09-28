@@ -45,7 +45,7 @@ remain unauthorized.
   `0442141cb163c0487100f7aa6716a6faf809f75e` (DL handoff finalize PR #527;
   tracked tree clean).
 - **Branch:** `feat/desktop-neutron-durable-state-wiring`
-- **Head SHA:** `ebe147a0bfe658805fc4e6d74ea08f9b567f0261`
+- **CI-verified head:** `952ca605b16c7c1a71bcdc35b2c9763bb170de7e`
 - **Pull request:** https://github.com/vitala89/Intentloom/pull/528
   (not merged).
 - **Scope:** trusted Desktop-owned host configuration for Slice 3.1
@@ -73,8 +73,18 @@ remain unauthorized.
   `cargo fmt --check` still fails only on pre-existing
   `apps/desktop/src-tauri/src/daemon_launch.rs` (unrelated, not
   reformatted).
-- **Hosted CI:** still running on PR #528 at handoff (no failed required
-  checks observed; do not treat as complete).
+- **Hosted CI:** SUCCESS on `952ca60` — 25/25 checks, 0 failed, 0
+  pending. Compatibility
+  [36362052230](https://github.com/vitala89/Intentloom/actions/runs/36362052230)
+  and
+  [36362055825](https://github.com/vitala89/Intentloom/actions/runs/36362055825);
+  Governance
+  [36362055833](https://github.com/vitala89/Intentloom/actions/runs/36362055833);
+  CodeQL
+  [36362055848](https://github.com/vitala89/Intentloom/actions/runs/36362055848);
+  Desktop SEA Feasibility
+  [36362055814](https://github.com/vitala89/Intentloom/actions/runs/36362055814).
+  Not merged. Not D4.
 - **Next first action:** Maintainer review. Do not merge from automation.
   Do not start D4 from this branch.
 
