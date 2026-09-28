@@ -764,8 +764,8 @@ Desktop host derives `<app_data>/neutron-mutation-state`, restricts it to
 Desktop/SEA daemon launches. The daemon validates that path and stores it
 on `createNeutronSessionRuntime` for future Slice 3.1 composition. No new
 approval store or lock. **D4 IMPLEMENTED ON BRANCH AWAITING MAINTAINER
-REVIEW** (`feat/neutron-desktop-approve-and-apply`). Not merged. The branch
-head is not a merged SHA. D4 adds
+REVIEW** (PR #534, `feat/neutron-desktop-approve-and-apply`). Not merged.
+The branch head is not a merged SHA. D4 adds
 `intentloom.neutron.mutation.approveAndApply.v1`: the Desktop renderer sends
 only human intent identifiers; the trusted host re-fetches the D1 review
 bundle, issues the D3 approval in-process, and immediately calls canonical

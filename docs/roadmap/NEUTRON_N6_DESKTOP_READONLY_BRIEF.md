@@ -11,7 +11,7 @@ in-process issuer (no production Desktop Approve/Apply). **DL implemented and
 merged** (PR #525; legacy fake Approved Apply removed). Desktop
 `durableStateDirectory` wiring is implemented and merged (PR #528; not D4).
 **D4 IMPLEMENTED ON BRANCH AWAITING MAINTAINER REVIEW**
-(`feat/neutron-desktop-approve-and-apply`). Not merged. D5 remains
+(PR #534, `feat/neutron-desktop-approve-and-apply`). Not merged. D5 remains
 unauthorized.
 `mutationAllowed` remains `false`. Streaming and daemon event push remain
 unavailable. No event bridge or polling loop was added; Slice 3 uses

@@ -18,8 +18,8 @@ are not included in the current npm artifact until a later release.
   Approve RPC and no separate Apply-by-token RPC. `mutationAllowed` remains
   literal `false`. N4 remains the seven read-only tools. D5 status,
   reconnect, verification retry, and Undo are not included. This slice is
-  on `feat/neutron-desktop-approve-and-apply` awaiting maintainer review
-  and is not merged.
+  on `feat/neutron-desktop-approve-and-apply` (PR #534) awaiting maintainer
+  review and is not merged.
 
 - Desktop durable mutation-state prerequisite wires a host-owned directory
   at `<app_data>/neutron-mutation-state` into trusted Desktop and SEA daemon

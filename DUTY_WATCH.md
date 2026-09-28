@@ -31,8 +31,9 @@ Desktop mutation authority.
 handoff PR #526 merged; legacy fake Approved Apply production composition
 removed). **Desktop mutation durable host state prerequisite complete**
 (implementation PR #528 and handoff PR #532 merged). **D4 IMPLEMENTED ON
-BRANCH AWAITING MAINTAINER REVIEW** (`feat/neutron-desktop-approve-and-apply`).
-Not merged. The branch head is not a merged SHA. D5 remains **unauthorized**.
+BRANCH AWAITING MAINTAINER REVIEW** (PR #534,
+`feat/neutron-desktop-approve-and-apply`). Not merged. The branch head is
+not a merged SHA. D5 remains **unauthorized**.
 `mutationAllowed` remains literal `false`. N4 remains the seven read-only
 tools. Optional N3 Slice 5, P4l17, Desktop verification retry, reconnect
 status UX, host rollback execution / Undo, and any N4 mutation tool remain
@@ -44,6 +45,7 @@ unauthorized. Do not start D5.
   merged. D5 remains unauthorized.
 - **Starting main:** `67c0a58d850d9d566177fd920bc8b3fd8da654c4` (PR #533).
 - **Branch:** `feat/neutron-desktop-approve-and-apply`
+- **Pull request:** #534 (open, not merged)
 - **Objective:** one trusted-host Approve & Apply operation. The renderer
   sends only human intent identifiers. The host re-fetches the D1 bundle,
   issues a D3 approval in-process, and immediately calls canonical graph

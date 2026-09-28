@@ -12,7 +12,7 @@
 
 **DESKTOP MUTATION DURABLE HOST STATE PREREQUISITE IMPLEMENTED AND MERGED** (PR #528)
 
-**D4 IMPLEMENTED ON BRANCH AWAITING MAINTAINER REVIEW**
+**D4 IMPLEMENTED ON BRANCH AWAITING MAINTAINER REVIEW** (PR #534)
 
 **D5: NOT AUTHORIZED**
 
@@ -55,7 +55,7 @@ Authoritative implementation and tests remain truth. Related:
 
 | Decision                                    | Verdict                                                                                                                                                                              |
 | ------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| First future implementation slice           | **D4 — Approve & Apply** is implemented on `feat/neutron-desktop-approve-and-apply` and is awaiting maintainer review. Not merged. **D5 remains unauthorized.**                      |
+| First future implementation slice           | **D4 — Approve & Apply** is implemented on `feat/neutron-desktop-approve-and-apply` (PR #534) and is awaiting maintainer review. Not merged. **D5 remains unauthorized.**             |
 | Approval issuer                             | Trusted **daemon/application host** only. Desktop submits a typed human intent. Host re-fetches the review bundle and issues `NeutronMutationApproval` itself.                       |
 | Public RPC shape                            | **B — one host `approveAndApply` action**, plus read-only `review.get` and `status.get`. No separate public Approve RPC.                                                             |
 | Desktop button copy (when later authorized) | **Approve & Apply**                                                                                                                                                                  |
@@ -1075,7 +1075,7 @@ Desktop button. No `intentloom.neutron.mutation.approve.v1`. No
 
 ### D4 — Approve & Apply host operation
 
-**D4 IMPLEMENTED ON BRANCH AWAITING MAINTAINER REVIEW.** Not merged. Daemon
+**D4 IMPLEMENTED ON BRANCH AWAITING MAINTAINER REVIEW** (PR #534). Not merged. Daemon
 mutating RPC `intentloom.neutron.mutation.approveAndApply.v1` uses the
 existing graph mutation Apply path. The renderer sends human intent
 identifiers only. The host issues the D3 approval in-process and calls
@@ -1208,7 +1208,7 @@ Update pointers in `DUTY_WATCH.md`, `PROJECT_STATE.md`,
 `NEUTRON_RUNTIME_ROADMAP.md`, `NEUTRON_N6_DESKTOP_READONLY_BRIEF.md`, and
 `NEUTRON_MUTATION_ROUTING_BRIEF.md`. Mark **D1**, **D2**, **D3**, **DL**, and
 the Desktop durable-state prerequisite complete. **D4 IMPLEMENTED ON BRANCH
-AWAITING MAINTAINER REVIEW.** D5 remains unauthorized.
+AWAITING MAINTAINER REVIEW** (PR #534). D5 remains unauthorized.
 
 ---
 
@@ -1226,7 +1226,7 @@ Implementation and handoff PRs that cite this brief must repeat:
 
 **DESKTOP MUTATION DURABLE HOST STATE PREREQUISITE IMPLEMENTED AND MERGED** (PR #528)
 
-**D4 IMPLEMENTED ON BRANCH AWAITING MAINTAINER REVIEW**
+**D4 IMPLEMENTED ON BRANCH AWAITING MAINTAINER REVIEW** (PR #534)
 
 **D5: NOT AUTHORIZED**
 
@@ -1257,7 +1257,7 @@ ACL claim beyond the code). The daemon validates the path and passes it
 into `createNeutronSessionRuntime`. The directory is not public. Not D4.
 No second store or lock.
 
-**D4 IMPLEMENTED ON BRANCH AWAITING MAINTAINER REVIEW.** Not merged.
+**D4 IMPLEMENTED ON BRANCH AWAITING MAINTAINER REVIEW** (PR #534). Not merged.
 Prerequisites merged before this slice: D1, D2, D3, DL, and Desktop
 `durableStateDirectory` wiring. D5 remains unauthorized. This document does
 not start D5.
