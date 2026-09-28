@@ -215,6 +215,7 @@ mod tests {
             endpoint: path.clone(),
             token_file: path.with_extension("token"),
             token: "a".repeat(32),
+            neutron_mutation_state_dir: path.with_extension("mutation-state"),
         };
         let probe = send_request(&paths, &json!({"jsonrpc":"2.0"})).expect_err("stale request");
         assert_eq!(probe.outcome, ProbeOutcome::StaleConnect);
@@ -239,6 +240,7 @@ mod tests {
             endpoint: path.clone(),
             token_file: path.with_extension("token"),
             token: "a".repeat(32),
+            neutron_mutation_state_dir: path.with_extension("mutation-state"),
         };
         let response = send_request(
             &paths,

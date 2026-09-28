@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-import { readFile, stat } from "node:fs/promises";
 import { resolve } from "node:path";
 import {
   inspectProject,
@@ -85,33 +84,16 @@ import {
   handleContinuousLoopWorkspacePrepare,
 } from "./continuous-loop-handlers.js";
 import { bindNeutronSessionHandlers } from "./neutron-session-handlers.js";
+import { resolveDaemonStartupConfig } from "./daemon-startup-config.js";
 import { createNeutronSessionRuntime } from "../../application/src/neutron-session-runtime.js";
 import { OllamaModelAdapter } from "../../application/src/ollama-model-adapter.js";
 
-function value(args: readonly string[], flag: string): string {
-  const index = args.indexOf(flag);
-  const candidate = index < 0 ? undefined : args[index + 1];
-  if (candidate === undefined || candidate.startsWith("--"))
-    throw new Error(`missing ${flag}`);
-  return candidate;
-}
-
 async function main(): Promise<void> {
-  const args = process.argv.slice(2);
-  const endpoint = value(args, "--endpoint");
-  const tokenFile = value(args, "--token-file");
-  const catalogRoot = value(args, "--catalog-root");
-  const tokenStats = await stat(tokenFile);
-  if (!tokenStats.isFile())
-    throw new Error("token file must be a regular file");
-  if (process.platform !== "win32" && (tokenStats.mode & 0o077) !== 0)
-    throw new Error(
-      "token file must not be accessible to group or other users",
-    );
-  const sessionToken = (await readFile(tokenFile, "utf8")).trim();
+  const startup = await resolveDaemonStartupConfig(process.argv.slice(2));
+  const catalogRoot = startup.catalogRoot;
   const daemon = await startLocalDaemon({
-    endpoint,
-    sessionToken,
+    endpoint: startup.endpoint,
+    sessionToken: startup.sessionToken,
     daemonVersion: process.env.INTENTLOOM_DAEMON_VERSION ?? "development",
     enforceCanonicalRoots: true,
     diff: async (request) => handleProjectDiffRequest(request, catalogRoot),
@@ -213,6 +195,9 @@ async function main(): Promise<void> {
           process.env.INTENTLOOM_NEUTRON_ADAPTER === "unconfigured"
             ? null
             : new OllamaModelAdapter(),
+        ...(startup.durableStateDirectory === undefined
+          ? {}
+          : { durableStateDirectory: startup.durableStateDirectory }),
       }),
     ),
   });

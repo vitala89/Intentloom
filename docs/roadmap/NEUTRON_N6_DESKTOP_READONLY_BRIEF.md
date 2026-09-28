@@ -8,7 +8,8 @@ proposal review). **Desktop mutation host flow D1 implemented and merged**
 implemented and merged** (PR #519): exact review/diff UX over D1; **D3
 implemented and merged** (PR #522): host approval-intent protocol and
 in-process issuer (no production Desktop Approve/Apply). **DL implemented and
-merged** (PR #525; legacy fake Approved Apply removed). D4–D5 remain
+merged** (PR #525; legacy fake Approved Apply removed). Desktop
+`durableStateDirectory` wiring is on a review branch (not D4). D4–D5 remain
 unauthorized.
 `mutationAllowed` remains `false`. Streaming and daemon event push remain
 unavailable. No event bridge or polling loop was added; Slice 3 uses

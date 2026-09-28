@@ -3,6 +3,7 @@ import { spawn, spawnSync } from "node:child_process";
 import { join } from "node:path";
 import { stat, unlink, writeFile, mkdir } from "node:fs/promises";
 import { createDoctorRequest } from "../../packages/protocol/dist/index.js";
+import { desktopOwnedDaemonLaunchArgs } from "./daemon-launch-args.mjs";
 
 export function commandPath(command) {
   const lookup = process.platform === "win32" ? "where.exe" : "which";
@@ -38,13 +39,20 @@ export async function probeSidecar(executable, options) {
   await writeFile(join(probeRoot, "README.md"), "# intentloom sidecar probe\n");
   const tokenFile = join(outputRoot, "probe-session-token");
   await writeFile(tokenFile, `${token}\n`, { mode: 0o600 });
+  const neutronMutationStateDir = join(outputRoot, "neutron-mutation-state");
+  await mkdir(neutronMutationStateDir, { recursive: true, mode: 0o700 });
   const endpoint =
     process.platform === "win32"
       ? `\\\\.\\pipe\\intentloomd-sea-${process.pid}-${Date.now()}`
       : join(outputRoot, "intentloomd.sock");
   const child = spawn(
     executable,
-    ["--endpoint", endpoint, "--token-file", tokenFile, "--catalog-root", catalogRoot],
+    desktopOwnedDaemonLaunchArgs({
+      endpoint,
+      tokenFile,
+      catalogRoot,
+      neutronMutationStateDir,
+    }),
     { cwd, stdio: ["ignore", "ignore", "pipe"], windowsHide: true },
   );
   child.stderrText = "";
@@ -142,7 +150,8 @@ async function waitForExit(child) {
     }, 5_000);
     child.once("exit", () => {
       clearTimeout(timer);
-      if (!forced) resolveExit({ graceful: true, forced: false, exitEvent: true });
+      if (!forced)
+        resolveExit({ graceful: true, forced: false, exitEvent: true });
     });
   });
 }
