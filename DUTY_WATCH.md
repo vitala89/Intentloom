@@ -29,22 +29,24 @@ approval-intent protocol + security tests). D3 does not grant production
 Desktop mutation authority.
 Approve/Apply implementation remains **not authorized**. **Desktop mutation
 host flow DL complete** (implementation PR #525 and handoff PR #526 merged;
-legacy fake Approved Apply production composition removed). **Desktop
-mutation durable host state prerequisite implemented and merged**
-(implementation PR #528). D4, D5, production Approve/Apply,
-`approveAndApply`, and an N4 mutation tool remain **not authorized**.
-`mutationAllowed` remains literal `false`. N4 remains the seven read-only
-tools. Optional N3 Slice 5, P4l17, Desktop Approve/Apply UX, Desktop
-verification UX, host rollback execution / Undo, and any N4 mutation tool
-remain unauthorized. All documented prerequisites for considering D4 are
-merged. D4 Approve & Apply Host Operation is the next architectural stage
-and still requires explicit maintainer authorization. No implementation
-from automation.
+legacy fake Approved Apply production composition removed). **Desktop mutation durable host state prerequisite complete**
+(implementation PR #528 and handoff PR #532 merged). D4 and D5 are **not
+yet implemented**. Production Approve/Apply, `approveAndApply`, and an N4
+mutation tool remain **not authorized**. `mutationAllowed` remains literal
+`false`. N4 remains the seven read-only tools. Optional N3 Slice 5,
+P4l17, Desktop Approve/Apply UX, Desktop verification UX, host rollback
+execution / Undo, and any N4 mutation tool remain unauthorized. All documented
+prerequisites for D4 are merged. D4 Approve & Apply Host Operation is the
+next architectural stage and still requires explicit maintainer
+authorization. This finalize does not authorize D4 implementation. Next
+first action: none from automation. Await explicit maintainer authorization
+for D4. Do not start D4 or D5.
 
 ### 2026-09-28, Desktop Neutron durable mutation-state — post-merge documentation handoff
 
-- **Status:** **DESKTOP MUTATION DURABLE HOST STATE PREREQUISITE IMPLEMENTED AND MERGED.**
-  Implementation PR #528 merged. Not D4. Not D5.
+- **Status:** **DESKTOP MUTATION DURABLE HOST STATE PREREQUISITE COMPLETE.**
+  Implementation PR #528 merged; handoff PR #532 merged; handoff merge SHA
+  recorded. Not D4. Not D5. This finalize does not authorize D4.
 - **Starting main / origin/main at handoff:**
   `be1f0201e968846765f7efa731560886a8b50032` (PR #528 squash-merged; tracked
   tree clean).
@@ -60,9 +62,11 @@ from automation.
 - **Merged at:** 2026-09-28
 - **Handoff branch:** `docs/neutron-desktop-durable-state-handoff`
 - **Handoff PR:** https://github.com/vitala89/Intentloom/pull/532
-  (open for maintainer review; not merged). This entry does not cite a
-  mutable docs-branch SHA. A later finalize watch may record the handoff
-  merge SHA after maintainer merge.
+  (merged).
+- **Handoff head SHA:**
+  `6406e4c888b3f94aaec73d1cf2fb080da1958400`
+- **Handoff merge SHA / final main:**
+  `b4241b0e89f12ee8903a52f11e17de7853aa90f9`
 - **Canonical brief:**
   [`docs/roadmap/NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md`](docs/roadmap/NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md)
 - **Delivered:** the Desktop native host derives a stable application-private
@@ -148,10 +152,13 @@ from automation.
   success. These run IDs are for that head, not for this docs branch.
 - **Prerequisite matrix:** D1, D2, D3, DL, and the Desktop
   `durableStateDirectory` prerequisite are **done / merged**. D4 and D5
-  are **not authorized**.
-- **Next first action:** None from automation. D4 Approve & Apply Host
-  Operation is the next architectural stage and requires explicit
-  maintainer authorization. Do not start D4 or D5 from this handoff.
+  are **not yet implemented**. All documented prerequisites for D4 are
+  merged. D4 Approve & Apply Host Operation is the next architectural
+  stage and still requires explicit maintainer authorization. This
+  finalize does not authorize D4 implementation.
+- **Next first action:** None from automation. Await explicit maintainer
+  authorization for D4 Approve & Apply Host Operation. Do not start D4
+  or D5 from this finalize.
 
 ### 2026-09-27, Desktop Neutron durable mutation-state wiring — branch implementation
 
