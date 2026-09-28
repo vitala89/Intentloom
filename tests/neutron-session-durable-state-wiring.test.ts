@@ -63,7 +63,7 @@ describe("Neutron session host durable-state wiring", () => {
     expect(JSON.stringify(view)).not.toContain("durableStateDirectory");
     expect(view.session.mutationAllowed).toBe(false);
     const handlers = bindNeutronSessionHandlers(created);
-    expect(JSON.stringify(Object.keys(handlers).sort())).not.toContain(
+    expect(Object.keys(handlers).join(",")).not.toContain(
       "durableStateDirectory",
     );
     expect(handlers).not.toHaveProperty("hostDurableState");

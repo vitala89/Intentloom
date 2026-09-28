@@ -47,9 +47,9 @@ describe("daemon startup durable mutation-state config", () => {
     expect(config.durableStateDirectory).toBe(stateDir);
     const details = await stat(stateDir);
     expect(details.isDirectory()).toBe(true);
-    if (process.platform !== "win32") {
-      expect(details.mode & 0o777).toBe(0o700);
-    }
+    expect(
+      process.platform === "win32" || (details.mode & 0o777) === 0o700,
+    ).toBe(true);
   });
 
   it("fails closed for empty, file, and missing flag values", async () => {
