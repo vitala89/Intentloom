@@ -46,6 +46,9 @@ unauthorized. Do not start D5.
 - **Starting main:** `67c0a58d850d9d566177fd920bc8b3fd8da654c4` (PR #533).
 - **Branch:** `feat/neutron-desktop-approve-and-apply`
 - **Pull request:** #534 (open, not merged)
+- **CI:** Compatibility failed on `pnpm format:check` for one table cell
+  in `NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md`. Formatting corrected on
+  this branch.
 - **Objective:** one trusted-host Approve & Apply operation. The renderer
   sends only human intent identifiers. The host re-fetches the D1 bundle,
   issues a D3 approval in-process, and immediately calls canonical graph

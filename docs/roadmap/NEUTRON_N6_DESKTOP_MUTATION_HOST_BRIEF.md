@@ -55,7 +55,7 @@ Authoritative implementation and tests remain truth. Related:
 
 | Decision                                    | Verdict                                                                                                                                                                              |
 | ------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| First future implementation slice           | **D4 — Approve & Apply** is implemented on `feat/neutron-desktop-approve-and-apply` (PR #534) and is awaiting maintainer review. Not merged. **D5 remains unauthorized.**             |
+| First future implementation slice           | **D4 — Approve & Apply** is implemented on `feat/neutron-desktop-approve-and-apply` (PR #534) and is awaiting maintainer review. Not merged. **D5 remains unauthorized.**            |
 | Approval issuer                             | Trusted **daemon/application host** only. Desktop submits a typed human intent. Host re-fetches the review bundle and issues `NeutronMutationApproval` itself.                       |
 | Public RPC shape                            | **B — one host `approveAndApply` action**, plus read-only `review.get` and `status.get`. No separate public Approve RPC.                                                             |
 | Desktop button copy (when later authorized) | **Approve & Apply**                                                                                                                                                                  |
