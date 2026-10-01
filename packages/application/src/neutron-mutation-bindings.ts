@@ -16,11 +16,13 @@ import {
   type NeutronMutationPathFilesystem,
 } from "./neutron-mutation-containment.js";
 
+/** Completed sessions still hold the reviewed proposal for host Apply. */
 const ACTIVE_SESSION_STATES = [
   "created",
   "discussing",
   "inspecting",
   "planning",
+  "completed",
 ] as const;
 
 export function evaluateMutationExpiry(

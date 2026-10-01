@@ -495,23 +495,23 @@ describe("Neutron mutation D3 approval intent", () => {
       "projectDiff",
     ]);
     expect(NEUTRON_READ_ONLY_TOOLS).toHaveLength(7);
-    for (const method of [
+    expect(WORKSPACE_DAEMON_REQUEST_METHODS).not.toContain(
       "intentloom.neutron.mutation.approve.v1",
+    );
+    expect(WORKSPACE_DAEMON_REQUEST_METHODS).toContain(
       "intentloom.neutron.mutation.approveAndApply.v1",
-    ]) {
-      expect(WORKSPACE_DAEMON_REQUEST_METHODS).not.toContain(method);
-      expect(
-        parseWorkspaceDaemonRequest(
-          {
-            id: 1,
-            jsonrpc: "2.0",
-            method,
-            params: { protocolVersion: PROTOCOL_VERSION },
-          },
-          1,
-        ),
-      ).toBeNull();
-    }
+    );
+    expect(
+      parseWorkspaceDaemonRequest(
+        {
+          id: 1,
+          jsonrpc: "2.0",
+          method: "intentloom.neutron.mutation.approve.v1",
+          params: { protocolVersion: PROTOCOL_VERSION },
+        },
+        1,
+      ),
+    ).toBeNull();
     expect(NEUTRON_MUTATION_APPROVAL_INTENT_ACTION).toBe(
       "request-host-approval",
     );

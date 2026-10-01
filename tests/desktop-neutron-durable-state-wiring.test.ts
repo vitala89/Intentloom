@@ -81,9 +81,14 @@ describe("Desktop Neutron durable-state host wiring", () => {
       expect(source).not.toContain(NEUTRON_MUTATION_STATE_DIR_FLAG);
       expect(source).not.toContain("durableStateDirectory");
       expect(source).not.toContain("neutron-mutation-state");
-      expect(source).not.toContain("approveAndApply");
       expect(source).not.toContain("applyApprovedNeutronMutation");
     }
+    const methodOwners = files.filter((file) =>
+      readFileSync(file, "utf8").includes("approveAndApply"),
+    );
+    expect(methodOwners.every((file) => file.includes("approve-apply"))).toBe(
+      true,
+    );
   });
 
   it("does not add mutation RPC, Apply, or an N4 mutation tool", () => {
@@ -100,7 +105,9 @@ describe("Desktop Neutron durable-state host wiring", () => {
       join(root, "packages/protocol/src/jsonrpc.ts"),
       "utf8",
     );
-    expect(protocol).not.toContain("approveAndApply");
-    expect(protocol).not.toContain("mutation.approveAndApply");
+    expect(protocol).toContain(
+      "intentloom.neutron.mutation.approveAndApply.v1",
+    );
+    expect(protocol).not.toContain("intentloom.neutron.mutation.approve.v1");
   });
 });

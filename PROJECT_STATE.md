@@ -763,10 +763,15 @@ Desktop host derives `<app_data>/neutron-mutation-state`, restricts it to
 `0700` on Unix, and passes `--neutron-mutation-state-dir` on trusted
 Desktop/SEA daemon launches. The daemon validates that path and stores it
 on `createNeutronSessionRuntime` for future Slice 3.1 composition. No new
-approval store or lock. Not D4. **D4–D5 remain not authorized.** All
-documented prerequisites for considering D4 are merged. D4 Approve & Apply
-Host Operation is the next architectural stage and still requires explicit
-maintainer authorization. Other post-P4 candidates remain in
+approval store or lock. **D4 IMPLEMENTED ON BRANCH AWAITING MAINTAINER
+REVIEW** (PR #534, `feat/neutron-desktop-approve-and-apply`). Not merged.
+The branch head is not a merged SHA. D4 adds
+`intentloom.neutron.mutation.approveAndApply.v1`: the Desktop renderer sends
+only human intent identifiers; the trusted host re-fetches the D1 review
+bundle, issues the D3 approval in-process, and immediately calls canonical
+graph Apply with the host `durableStateDirectory`. **D5 remains
+unauthorized.** `mutationAllowed` remains literal `false`. N4 remains the
+seven read-only tools. Other post-P4 candidates remain in
 `POST_W12_NEXT_INCREMENT_PLAN.md`.
 
 The Desktop discovery/error and Diff/Timeline slices remain recorded in

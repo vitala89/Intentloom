@@ -27,20 +27,38 @@ read-only Desktop exact mutation review UX over D1). **Desktop mutation host
 flow D3 complete** (implementation PR #522 and handoff PR #523 merged; host
 approval-intent protocol + security tests). D3 does not grant production
 Desktop mutation authority.
-Approve/Apply implementation remains **not authorized**. **Desktop mutation
-host flow DL complete** (implementation PR #525 and handoff PR #526 merged;
-legacy fake Approved Apply production composition removed). **Desktop mutation durable host state prerequisite complete**
-(implementation PR #528 and handoff PR #532 merged). D4 and D5 are **not
-yet implemented**. Production Approve/Apply, `approveAndApply`, and an N4
-mutation tool remain **not authorized**. `mutationAllowed` remains literal
-`false`. N4 remains the seven read-only tools. Optional N3 Slice 5,
-P4l17, Desktop Approve/Apply UX, Desktop verification UX, host rollback
-execution / Undo, and any N4 mutation tool remain unauthorized. All documented
-prerequisites for D4 are merged. D4 Approve & Apply Host Operation is the
-next architectural stage and still requires explicit maintainer
-authorization. This finalize does not authorize D4 implementation. Next
-first action: none from automation. Await explicit maintainer authorization
-for D4. Do not start D4 or D5.
+**Desktop mutation host flow DL complete** (implementation PR #525 and
+handoff PR #526 merged; legacy fake Approved Apply production composition
+removed). **Desktop mutation durable host state prerequisite complete**
+(implementation PR #528 and handoff PR #532 merged). **D4 IMPLEMENTED ON
+BRANCH AWAITING MAINTAINER REVIEW** (PR #534,
+`feat/neutron-desktop-approve-and-apply`). Not merged. The branch head is
+not a merged SHA. D5 remains **unauthorized**.
+`mutationAllowed` remains literal `false`. N4 remains the seven read-only
+tools. Optional N3 Slice 5, P4l17, Desktop verification retry, reconnect
+status UX, host rollback execution / Undo, and any N4 mutation tool remain
+unauthorized. Do not start D5.
+
+### 2026-09-28, Neutron Desktop Approve & Apply — D4 awaiting review
+
+- **Status:** **D4 IMPLEMENTED ON BRANCH AWAITING MAINTAINER REVIEW.** Not
+  merged. D5 remains unauthorized.
+- **Starting main:** `67c0a58d850d9d566177fd920bc8b3fd8da654c4` (PR #533).
+- **Branch:** `feat/neutron-desktop-approve-and-apply`
+- **Pull request:** #534 (open, not merged)
+- **CI:** Compatibility failed on `pnpm format:check` for one table cell
+  in `NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md`. Formatting corrected on
+  this branch.
+- **Objective:** one trusted-host Approve & Apply operation. The renderer
+  sends only human intent identifiers. The host re-fetches the D1 bundle,
+  issues a D3 approval in-process, and immediately calls canonical graph
+  Apply with the host `durableStateDirectory`.
+- **Public method:** `intentloom.neutron.mutation.approveAndApply.v1`
+- **Not done:** D5 `status.get`, reconnect UX, verification retry, Undo,
+  rollback execution UI, N4 mutation tool, Local AI, optional N3 Slice 5,
+  P4l17. Do not merge this branch from automation.
+- **Invariant:** `mutationAllowed` remains literal `false`. N4 remains the
+  seven read-only tools. Raw `approvalToken` does not leave the host.
 
 ### 2026-09-28, Desktop Neutron durable mutation-state — post-merge documentation handoff
 

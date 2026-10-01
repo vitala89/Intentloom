@@ -6,6 +6,7 @@ mod daemon_runtime;
 mod daemon_transport;
 mod method_allowlist;
 mod native_paths;
+mod neutron_approve_apply;
 mod runtime_paths;
 mod sidecar_launch;
 
@@ -16,6 +17,7 @@ use commands::{
     preview_project_diff, run_doctor, select_project_root,
 };
 use daemon_runtime::DaemonRuntime;
+use neutron_approve_apply::approve_and_apply_neutron_mutation;
 
 fn main() {
     let runtime = DaemonRuntime::default();
@@ -35,6 +37,7 @@ fn main() {
             invoke_neutron_request,
             list_neutron_mutation_reviews,
             get_neutron_mutation_review,
+            approve_and_apply_neutron_mutation,
             invoke_specialized_pack_preview_request,
             invoke_specialized_pack_activate_request,
         ])

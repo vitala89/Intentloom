@@ -18,7 +18,6 @@ const FORBIDDEN_APPLY_AUTHORITY = [
   "onApprovePlan",
   "applyApprovedNeutronMutation",
   "applyApprovedNeutronGraphMutation",
-  "approveAndApply",
   APPROVED_APPLY_METHOD,
 ] as const;
 
@@ -37,10 +36,14 @@ function collectSourceFiles(dir: string): string[] {
   return files;
 }
 
-function assertNoForbiddenApplyAuthority(source: string): void {
+function assertNoForbiddenApplyAuthority(source: string, path = ""): void {
   for (const symbol of FORBIDDEN_APPLY_AUTHORITY) {
     expect(source).not.toContain(symbol);
   }
+  const outsideDedicatedModule = path.includes("approve-apply")
+    ? source.replaceAll("approveAndApply", "")
+    : source;
+  expect(outsideDedicatedModule).not.toContain("approveAndApply");
 }
 
 describe("Desktop legacy Approved Apply isolation (DL)", () => {
@@ -92,7 +95,7 @@ describe("Desktop legacy Approved Apply isolation (DL)", () => {
       expect(source).not.toContain("previousContent");
       expect(source).not.toContain("atomic-commit-approval");
       expect(source).not.toContain("applied: true");
-      assertNoForbiddenApplyAuthority(source);
+      assertNoForbiddenApplyAuthority(source, file);
     }
   });
 
@@ -103,7 +106,7 @@ describe("Desktop legacy Approved Apply isolation (DL)", () => {
     expect(clientFiles.length).toBeGreaterThan(0);
     for (const file of clientFiles) {
       const source = readFileSync(file, "utf8");
-      assertNoForbiddenApplyAuthority(source);
+      assertNoForbiddenApplyAuthority(source, file);
     }
   });
 

@@ -100,5 +100,6 @@ describe("Neutron mutation review D1 Desktop bridge", () => {
     );
     expect(neutronMethods).not.toContain("mutation.review");
     expect(neutronMethods).not.toContain("approvedApply");
+    expect(neutronMethods).not.toContain("approveAndApply");
   });
 });

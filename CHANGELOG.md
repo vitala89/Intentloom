@@ -7,6 +7,20 @@ All notable changes are documented here. This project follows Keep a Changelog p
 Changes listed here are merged after the current release-preparation scope and
 are not included in the current npm artifact until a later release.
 
+- Neutron Desktop D4 adds the combined host operation
+  `intentloom.neutron.mutation.approveAndApply.v1` and an Approve & Apply
+  control on the exact mutation review. The renderer sends only root,
+  session, project, graph, and proposal identifiers. The trusted host
+  re-fetches the authoritative review bundle, issues the D3 approval
+  in-process, and immediately calls canonical graph Apply with the host
+  durable state directory. Public results keep `applied` and verification
+  status distinct and do not include `approvalToken`. There is no public
+  Approve RPC and no separate Apply-by-token RPC. `mutationAllowed` remains
+  literal `false`. N4 remains the seven read-only tools. D5 status,
+  reconnect, verification retry, and Undo are not included. This slice is
+  on `feat/neutron-desktop-approve-and-apply` (PR #534) awaiting maintainer
+  review and is not merged.
+
 - Desktop durable mutation-state prerequisite wires a host-owned directory
   at `<app_data>/neutron-mutation-state` into trusted Desktop and SEA daemon
   launches (`--neutron-mutation-state-dir`). Unix mode is `0700`. The daemon
