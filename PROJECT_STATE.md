@@ -762,17 +762,25 @@ implementation head `a3eb8c96b5012283107eb361c14fecd69025e22e`): the
 Desktop host derives `<app_data>/neutron-mutation-state`, restricts it to
 `0700` on Unix, and passes `--neutron-mutation-state-dir` on trusted
 Desktop/SEA daemon launches. The daemon validates that path and stores it
-on `createNeutronSessionRuntime` for future Slice 3.1 composition. No new
-approval store or lock. **D4 IMPLEMENTED ON BRANCH AWAITING MAINTAINER
-REVIEW** (PR #534, `feat/neutron-desktop-approve-and-apply`). Not merged.
-The branch head is not a merged SHA. D4 adds
-`intentloom.neutron.mutation.approveAndApply.v1`: the Desktop renderer sends
-only human intent identifiers; the trusted host re-fetches the D1 review
-bundle, issues the D3 approval in-process, and immediately calls canonical
-graph Apply with the host `durableStateDirectory`. **D5 remains
-unauthorized.** `mutationAllowed` remains literal `false`. N4 remains the
-seven read-only tools. Other post-P4 candidates remain in
-`POST_W12_NEXT_INCREMENT_PLAN.md`.
+on `createNeutronSessionRuntime` for Slice 3.1 composition. No new
+approval store or lock. **D4 implemented and merged** (PR #534, merge
+`0da5612e45d99454eb765cb370a058187ef47f94`; implementation branch
+`feat/neutron-desktop-approve-and-apply`; starting main
+`67c0a58d850d9d566177fd920bc8b3fd8da654c4`; final implementation head
+`42d8810308326bb69e29ac499962626fe42ea393`). Production Desktop now has one
+bounded host Approve & Apply operation,
+`intentloom.neutron.mutation.approveAndApply.v1`. The renderer sends only
+`root`, `sessionId`, `projectId`, `graphId`, and `proposalId`. The trusted
+host resolves the authoritative D1 review bundle, constructs the D3 approval
+in-process, and calls canonical graph Apply with the host
+`durableStateDirectory`, Slice 3 / 3.1 durable claim, replay protection, and
+project lock, then Slice 4 verification. The raw `approvalToken` stays
+host-only. There is no public Approve-only RPC and no Apply-by-token RPC.
+The mutating method is a dedicated Tauri command, not
+`invoke_neutron_request`. Model authority is unchanged:
+`mutationAllowed` remains literal `false`, and N4 remains the seven
+read-only tools. **D5 is not started and is not authorized.** Other post-P4
+candidates remain in `POST_W12_NEXT_INCREMENT_PLAN.md`.
 
 The Desktop discovery/error and Diff/Timeline slices remain recorded in
 [PHASE1_CONTRACTS.md](docs/desktop/PHASE1_CONTRACTS.md).

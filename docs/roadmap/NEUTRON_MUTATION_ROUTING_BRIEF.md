@@ -19,14 +19,15 @@ proposal/review integration with host-only graph-linked Apply composition.
 `b36d836c05591599f2526f0d3f5302e7edce8f5b`) — fail-closed stale proposal
 materialization and end-to-end proposal capability clamping in production
 session composition. Mutation-routing Slice 5 proposal/review integration is
-**security-corrected / complete** for authorized scope; Desktop Approve/Apply
-UX, Desktop verification UX, and host rollback execution remain unauthorized.
+**security-corrected / complete** for authorized scope. Desktop host Approve &
+Apply is the separately merged D4 operation. Desktop verification retry,
+reconnect UX, and host rollback execution remain unauthorized.
 
 The Slice 3 security review remains the historical **NO-GO** for Apply on
 pre-2.5 contracts:
 [`NEUTRON_MUTATION_SLICE3_SECURITY_REVIEW.md`](NEUTRON_MUTATION_SLICE3_SECURITY_REVIEW.md).
 
-Write tools, generic shell, Desktop Approve/Apply UX, Desktop verification
+Write tools, generic shell, Desktop verification retry UX, reconnect status
 UX, host rollback execution / Undo, optional N3 Slice 5, and P4l17 remain
 unauthorized until a later explicit maintainer grant. N6 Slices 1–5
 read-only Desktop are implemented separately. Desktop mutation host **D1**
@@ -36,9 +37,11 @@ read-only Desktop are implemented separately. Desktop mutation host **D1**
 and merged** (PR #522; typed approval intent + in-process host issuer; no
 public Approve RPC; no Desktop mutation authority). **DL implemented and
 merged** (PR #525; legacy fake Desktop Approved Apply removed). **Desktop
-`durableStateDirectory` wiring is implemented and merged** (PR #528; not
-D4). **D4 IMPLEMENTED ON BRANCH AWAITING MAINTAINER REVIEW.** Not merged.
-D5 remains unauthorized. Canon:
+`durableStateDirectory` wiring is implemented and merged** (PR #528; that
+prerequisite is not itself D4). **D4 implemented and merged** (PR #534;
+`intentloom.neutron.mutation.approveAndApply.v1`; dedicated Tauri command;
+renderer sends identity fields only; `mutationAllowed` remains literal
+`false`). D5 remains not implemented and not authorized. Canon:
 [`NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md`](NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md).
 
 Authoritative roadmap gate:
@@ -652,9 +655,9 @@ not that justification.
 
 ## 22. Implementation slices
 
-Derived from gaps above. Slices 1–5 are implemented. Desktop Approve/Apply
-UX, Desktop verification UX, and host rollback execution remain
-unauthorized. Design-only Desktop host-flow brief:
+Derived from gaps above. Slices 1–5 are implemented. Desktop host Approve &
+Apply is merged as D4. Desktop verification retry, reconnect UX, and host
+rollback execution remain unauthorized. Desktop host-flow brief:
 [`NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md`](NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md).
 See
 [`NEUTRON_MUTATION_SLICE3_SECURITY_REVIEW.md`](NEUTRON_MUTATION_SLICE3_SECURITY_REVIEW.md)
