@@ -31,10 +31,10 @@ Desktop mutation authority.
 handoff PR #526 merged; legacy fake Approved Apply production composition
 removed). **Desktop mutation durable host state prerequisite complete**
 (implementation PR #528 and handoff PR #532 merged). **DESKTOP MUTATION D4
-IMPLEMENTED AND MERGED** (implementation PR #534, merge
-`0da5612e45d99454eb765cb370a058187ef47f94`). This documentation handoff is
-not itself merged until maintainer review. D5 remains **not started and
-not authorized**.
+COMPLETE** (implementation PR #534, merge
+`0da5612e45d99454eb765cb370a058187ef47f94`; handoff PR #535, merge
+`a7504ca09550d395a7180f863776dd83b10e3c49`). D5 remains **not implemented
+and not authorized**.
 `mutationAllowed` remains literal `false`. N4 remains the seven read-only
 tools. Optional N3 Slice 5, P4l17, Desktop verification retry, reconnect
 status UX, host rollback execution / Undo, and any N4 mutation tool remain
@@ -43,9 +43,9 @@ authorization.
 
 ### 2026-10-01, Desktop Neutron Approve & Apply — D4 post-merge documentation handoff
 
-- **Status:** **DESKTOP MUTATION D4 IMPLEMENTED AND MERGED.** Implementation
-  is on `main`. This docs handoff is not handoff-complete until the docs PR
-  is reviewed and merged. D5 is not started and is not authorized.
+- **Status:** **DESKTOP MUTATION D4 COMPLETE.** Implementation merged;
+  documentation handoff merged; handoff SHAs recorded. D5 is not implemented
+  and is not authorized. This finalize does not authorize D5.
 - **Starting main for this handoff:**
   `0da5612e45d99454eb765cb370a058187ef47f94` (implementation merge of PR
   #534; tracked tree clean).
@@ -58,7 +58,17 @@ authorization.
   (branch head; not the merge SHA)
 - **Implementation merge SHA / resulting `main`:**
   `0da5612e45d99454eb765cb370a058187ef47f94`
-- **Merged at:** 2026-10-01
+- **Implementation merged at:** 2026-10-01
+- **Handoff PR:** https://github.com/vitala89/Intentloom/pull/535
+- **Handoff branch:** `docs/neutron-desktop-mutation-d4-handoff`
+- **Handoff starting main:**
+  `0da5612e45d99454eb765cb370a058187ef47f94`
+- **Handoff head SHA:**
+  `9f91d11f5a5ba6bc4831cbfc5059b0d793da7b7f`
+  (branch head; not the handoff merge SHA)
+- **Handoff merge SHA / resulting `main`:**
+  `a7504ca09550d395a7180f863776dd83b10e3c49`
+- **Handoff merged at:** 2026-10-01
 - **Canonical brief:**
   [`docs/roadmap/NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md`](docs/roadmap/NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md)
 - **Public operation:** `intentloom.neutron.mutation.approveAndApply.v1`
@@ -144,8 +154,8 @@ authorization.
   refactors, provider work, and unrelated Desktop refactors were not started.
   D5 is the next architectural candidate and still requires explicit
   maintainer authorization. This handoff does not authorize D5.
-- **Next first action:** None from automation. Leave the docs PR open for
-  maintainer review. Do not merge from automation. Do not start D5.
+- **Next first action:** None from automation. D5 requires separate explicit
+  maintainer authorization. Do not start D5.
 
 ### 2026-09-28, Neutron Desktop Approve & Apply — branch implementation
 
