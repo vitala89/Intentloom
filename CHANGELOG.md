@@ -9,17 +9,20 @@ are not included in the current npm artifact until a later release.
 
 - Neutron Desktop D4 adds the combined host operation
   `intentloom.neutron.mutation.approveAndApply.v1` and an Approve & Apply
-  control on the exact mutation review. The renderer sends only root,
-  session, project, graph, and proposal identifiers. The trusted host
-  re-fetches the authoritative review bundle, issues the D3 approval
+  control on the exact mutation review. Merged in PR #534 (implementation
+  branch `feat/neutron-desktop-approve-and-apply`; starting main
+  `67c0a58d850d9d566177fd920bc8b3fd8da654c4`; implementation head
+  `42d8810308326bb69e29ac499962626fe42ea393`; merge
+  `0da5612e45d99454eb765cb370a058187ef47f94`, 2026-10-01). The renderer sends
+  only root, session, project, graph, and proposal identifiers. The trusted
+  host re-fetches the authoritative review bundle, issues the D3 approval
   in-process, and immediately calls canonical graph Apply with the host
   durable state directory. Public results keep `applied` and verification
   status distinct and do not include `approvalToken`. There is no public
   Approve RPC and no separate Apply-by-token RPC. `mutationAllowed` remains
   literal `false`. N4 remains the seven read-only tools. D5 status,
-  reconnect, verification retry, and Undo are not included. This slice is
-  on `feat/neutron-desktop-approve-and-apply` (PR #534) awaiting maintainer
-  review and is not merged.
+  reconnect, verification retry, and Undo are not included and are not
+  authorized by this entry.
 
 - Desktop durable mutation-state prerequisite wires a host-owned directory
   at `<app_data>/neutron-mutation-state` into trusted Desktop and SEA daemon
@@ -28,7 +31,7 @@ are not included in the current npm artifact until a later release.
   Slice 3.1 approval, replay, and lock state. No second store or lock. No
   Apply, `approveAndApply`, mutation RPC, or Desktop Approve & Apply
   control. `mutationAllowed` remains literal `false`. N4 remains the seven
-  read-only tools. D4 remains unauthorized.
+  read-only tools. That prerequisite did not itself authorize D4.
 
 - Desktop Mutation Host Flow DL removes the unused legacy Approved Apply
   modal and the `App.tsx` stub that fabricated `applied: true` plus synthetic
@@ -36,7 +39,8 @@ are not included in the current npm artifact until a later release.
   that fake success as a real Apply. Daemon
   `intentloom.project.approvedApply.v1` is unchanged and remains unwired from
   Desktop spawn. No `approveAndApply`, no Neutron mutation RPC, no change to
-  `mutationAllowed` or the N4 read-only tool catalog. D4 remains unauthorized.
+  `mutationAllowed` or the N4 read-only tool catalog. DL did not itself
+  authorize D4.
 
 - Neutron Desktop Mutation Host Flow D3 adds a typed
   `NeutronMutationApprovalIntent` (`request-host-approval`) and an internal

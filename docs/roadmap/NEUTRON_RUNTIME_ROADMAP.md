@@ -291,7 +291,8 @@ Mutation-routing Slice 5 (with Slice 5.1 correction) attaches graph-linked
 proposal/review/Apply provenance without giving the scheduler Apply authority.
 **N5 read-only scheduler completion** (aggregation/stale/provenance) is distinct
 from **mutation-routing N5 integration completion** (proposal/review + host
-Apply composition). Desktop Approve/Apply UX and N6 mutation Apply remain
+Apply composition). At N5 completion, Desktop Approve/Apply was still a
+separate grant. That grant is now the merged D4 host operation. D5 remains
 unauthorized.
 
 Extend the existing Neutron subagent records from persisted orchestration
@@ -355,9 +356,8 @@ evidence). **Slice 5 implemented** (N5 proposal/review integration; host
 **Slice 5.1 implemented** (fail-closed stale authoritative proposal
 materialization; session/profile/ceiling proposal capability threading in
 production). Later slices (unauthorized): Desktop verification retry UX,
-host rollback execution / Undo. D4 Approve & Apply is implemented on a
-review branch and is not merged. Next first action: maintainer review of
-D4. Do not start D5.
+host rollback execution / Undo. D4 Approve & Apply is implemented and merged
+(PR #534). D5 is not started. Do not start D5.
 
 N6 read-only Desktop is implemented under its own brief. Desktop mutation
 host flow: **D1 implemented and merged** (PR #516; read-only authoritative
@@ -365,8 +365,8 @@ review transport). **D2 implemented and merged** (PR #519; exact review UX).
 **D3 implemented and merged** (PR #522; host approval-intent + in-process
 issuer). **DL implemented and merged** (PR #525; legacy fake Desktop Apply
 removed). **Desktop `durableStateDirectory` wiring is implemented and
-merged** (PR #528; not D4). **D4 IMPLEMENTED ON BRANCH AWAITING MAINTAINER REVIEW.** D5 is not
-authorized. Canon:
+merged** (PR #528; that prerequisite is not itself D4). **D4 IMPLEMENTED AND
+MERGED** (PR #534). D5 is not implemented and is not authorized. Canon:
 [`NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md`](NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md).
 Do not start D5, verification retry, Undo, or an N4 mutation tool from this
 roadmap entry alone.
@@ -389,11 +389,11 @@ fields). **N6 Slice 5 implemented** — read-only mutation proposal review
 (paths + digests; no Approve/Apply). **Desktop mutation host D1 implemented**
 (PR #516) — authoritative read-only review payload transport; exact review UX
 **D2 implemented and merged** (PR #519). Mutation Slice 3 host Apply and Slice 3.1 durable approval
-state are implemented in application; Desktop Approve/Apply UX remains
-unauthorized. Host-flow canon:
+state are implemented in application. Desktop host Approve & Apply is merged
+as D4. Host-flow canon:
 [`NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md`](NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md)
-(D1, D2, D3, DL, and Desktop durable-state wiring merged; D4–D5
-unauthorized).
+(D1, D2, D3, DL, Desktop durable-state wiring, and D4 merged; D5 not
+authorized).
 
 Integrate the runtime with the official Desktop application after the v0.6
 read-only project slice and shared client contracts are stable.
@@ -541,9 +541,10 @@ implemented.** **Desktop mutation host D1, D2, D3, and DL are implemented and
 merged.** Desktop `durableStateDirectory` wiring is implemented and merged
 (PR #528, merge `be1f0201e968846765f7efa731560886a8b50032`; implementation
 head `a3eb8c96b5012283107eb361c14fecd69025e22e`). All documented
-prerequisites for considering D4 are merged. **D4 IMPLEMENTED ON BRANCH
-AWAITING MAINTAINER REVIEW.** Not merged. D5 remains unauthorized. Do not
-start D5 from this file.
+prerequisites for D4 are merged. **D4 IMPLEMENTED AND MERGED** (PR #534,
+merge `0da5612e45d99454eb765cb370a058187ef47f94`; implementation head
+`42d8810308326bb69e29ac499962626fe42ea393`). D5 remains a future candidate
+and is not authorized. Do not start D5 from this file.
 See
 [`NEUTRON_N6_DESKTOP_READONLY_BRIEF.md`](NEUTRON_N6_DESKTOP_READONLY_BRIEF.md),
 [`NEUTRON_MUTATION_ROUTING_BRIEF.md`](NEUTRON_MUTATION_ROUTING_BRIEF.md), and

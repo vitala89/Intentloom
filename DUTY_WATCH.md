@@ -30,25 +30,135 @@ Desktop mutation authority.
 **Desktop mutation host flow DL complete** (implementation PR #525 and
 handoff PR #526 merged; legacy fake Approved Apply production composition
 removed). **Desktop mutation durable host state prerequisite complete**
-(implementation PR #528 and handoff PR #532 merged). **D4 IMPLEMENTED ON
-BRANCH AWAITING MAINTAINER REVIEW** (PR #534,
-`feat/neutron-desktop-approve-and-apply`). Not merged. The branch head is
-not a merged SHA. D5 remains **unauthorized**.
+(implementation PR #528 and handoff PR #532 merged). **DESKTOP MUTATION D4
+IMPLEMENTED AND MERGED** (implementation PR #534, merge
+`0da5612e45d99454eb765cb370a058187ef47f94`). This documentation handoff is
+not itself merged until maintainer review. D5 remains **not started and
+not authorized**.
 `mutationAllowed` remains literal `false`. N4 remains the seven read-only
 tools. Optional N3 Slice 5, P4l17, Desktop verification retry, reconnect
 status UX, host rollback execution / Undo, and any N4 mutation tool remain
-unauthorized. Do not start D5.
+unauthorized. Do not start D5. The next action requires explicit maintainer
+authorization.
 
-### 2026-09-28, Neutron Desktop Approve & Apply — D4 awaiting review
+### 2026-10-01, Desktop Neutron Approve & Apply — D4 post-merge documentation handoff
 
-- **Status:** **D4 IMPLEMENTED ON BRANCH AWAITING MAINTAINER REVIEW.** Not
-  merged. D5 remains unauthorized.
+- **Status:** **DESKTOP MUTATION D4 IMPLEMENTED AND MERGED.** Implementation
+  is on `main`. This docs handoff is not handoff-complete until the docs PR
+  is reviewed and merged. D5 is not started and is not authorized.
+- **Starting main for this handoff:**
+  `0da5612e45d99454eb765cb370a058187ef47f94` (implementation merge of PR
+  #534; tracked tree clean).
+- **Implementation PR:** https://github.com/vitala89/Intentloom/pull/534
+- **Implementation branch:** `feat/neutron-desktop-approve-and-apply`
+- **Starting implementation main:**
+  `67c0a58d850d9d566177fd920bc8b3fd8da654c4`
+- **Final implementation head:**
+  `42d8810308326bb69e29ac499962626fe42ea393`
+  (branch head; not the merge SHA)
+- **Implementation merge SHA / resulting `main`:**
+  `0da5612e45d99454eb765cb370a058187ef47f94`
+- **Merged at:** 2026-10-01
+- **Canonical brief:**
+  [`docs/roadmap/NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md`](docs/roadmap/NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md)
+- **Public operation:** `intentloom.neutron.mutation.approveAndApply.v1`
+- **Trusted flow:** Desktop exact review → explicit human Approve & Apply →
+  dedicated Desktop/Tauri mutation bridge → authenticated daemon → trusted
+  Neutron application host → resolve authoritative D1 review bundle →
+  construct D3 approval in-process → canonical graph Apply → Slice 3 / 3.1
+  transaction, durable claim, replay protection, and project lock → Slice 4
+  verification → sanitized public result.
+- **Renderer inputs:** only `root`, `sessionId`, `projectId`, `graphId`, and
+  `proposalId`. The renderer does not supply mutation authority.
+- **Host-only approval:** the renderer does not create a
+  `NeutronMutationApproval`. Approval is constructed in the trusted host
+  from the authoritative proposal/review state.
+- **Raw `approvalToken`:** host-only. It is not renderer-visible,
+  protocol-visible, Desktop-visible, or returned in the public result.
+  Public result validation rejects authority/content-bearing fields,
+  including the approval token. Diagnostics are sanitized/redacted.
+- **No public Approve-only RPC:** there is no
+  `intentloom.neutron.mutation.approve.v1`. D4 exposes only the combined
+  `intentloom.neutron.mutation.approveAndApply.v1`.
+- **No Apply-by-token RPC:** Desktop cannot obtain an approval token and
+  later send it to a public Apply endpoint. Approval and Apply stay inside
+  one trusted-host operation.
+- **Generic Neutron bridge:** the mutating method is not on
+  `invoke_neutron_request`. It uses the dedicated Tauri command
+  `approve_and_apply_neutron_mutation`.
+- **Authoritative payload:** the renderer cannot supply proposed file bytes,
+  changed paths, review artifact digest, plan digest, approval fields, grant
+  flags, or transaction authority. Apply uses the host-held proposal payload
+  store and content-bound review artifact.
+- **Proposal selection:** an explicit `proposalId` is required. There is no
+  implicit first-proposal selection.
+- **Staleness:** eligibility/currentness checks run before approval, and
+  canonical project-state revalidation runs immediately before the first
+  write. A stale project fails closed. There is no silent rebind to a new
+  project state.
+- **Durable mutation state:** D4 consumes the trusted host
+  `durableStateDirectory` from the merged Desktop durable-state
+  prerequisite and reuses Slice 3.1 durable approval claim, one-use/replay
+  state, transaction state, and the cross-process project lock. No new
+  approval database, mutation-state implementation, or second lock was
+  introduced. Missing durable host state fails closed.
+- **Duplicate and concurrent calls (merged D4 tests):** a duplicate request
+  does not write twice; concurrent requests cannot both perform the
+  mutation; an existing project mutation lock blocks another Apply;
+  replay/one-use semantics stay on the canonical durable mutation state.
+- **Applied vs verified:** `applied != verified`. A successful write followed
+  by verification failure is still reported as applied. Verification failure
+  does not turn the operation into "not applied", reopen approval, or
+  trigger automatic Apply retry.
+- **No model call after human approval:** once the user triggers Approve &
+  Apply, the D4 path does not invoke a model/provider before Apply.
+- **`mutationAllowed`:** remains literal `false`. D4 does not grant models
+  mutation authority.
+- **N4:** remains exactly `inspect`, `doctor`, `memorySearch`, `timeline`,
+  `conformance`, `securityAudit`, and `projectDiff`. No N4 mutation tool.
+- **Desktop UX:** the exact mutation review has an explicit Approve & Apply
+  action, enabled only for an eligible/current review. Result copy keeps
+  applied + verified, applied + verification failed, applied +
+  reconciliation required/incomplete verification, and rejected before write
+  distinct. D5 reconnect/status functionality is not implemented.
+- **Hosted CI (final implementation head
+  `42d8810308326bb69e29ac499962626fe42ea393`, pull_request, all success):**
+  Governance
+  [36629814853](https://github.com/vitala89/Intentloom/actions/runs/36629814853),
+  CodeQL
+  [36629814913](https://github.com/vitala89/Intentloom/actions/runs/36629814913),
+  Compatibility
+  [36629814855](https://github.com/vitala89/Intentloom/actions/runs/36629814855),
+  Desktop SEA Feasibility
+  [36629814865](https://github.com/vitala89/Intentloom/actions/runs/36629814865),
+  Harness Performance Benchmark
+  [36629814838](https://github.com/vitala89/Intentloom/actions/runs/36629814838).
+  The same head also has push Compatibility
+  [36629805784](https://github.com/vitala89/Intentloom/actions/runs/36629805784)
+  success. These run IDs belong to the implementation head, not to this
+  docs handoff branch.
+- **Not done / not authorized:** D5 mutation status/reconnect RPC,
+  `status.get`, reconnect result recovery UX, verification retry UI, Undo,
+  rollback execution UI, rollback command, additional mutation controls, and
+  any N4 mutation tool. Local AI, optional N3 Slice 5, P4l17, general CLI
+  refactors, provider work, and unrelated Desktop refactors were not started.
+  D5 is the next architectural candidate and still requires explicit
+  maintainer authorization. This handoff does not authorize D5.
+- **Next first action:** None from automation. Leave the docs PR open for
+  maintainer review. Do not merge from automation. Do not start D5.
+
+### 2026-09-28, Neutron Desktop Approve & Apply — branch implementation
+
+- **Status:** **IMPLEMENTED AND MERGED** (2026-10-01). Superseded for
+  current state by the 2026-10-01 post-merge handoff entry above. Not D5.
+  D5 remains unauthorized.
 - **Starting main:** `67c0a58d850d9d566177fd920bc8b3fd8da654c4` (PR #533).
 - **Branch:** `feat/neutron-desktop-approve-and-apply`
-- **Pull request:** #534 (open, not merged)
-- **CI:** Compatibility failed on `pnpm format:check` for one table cell
-  in `NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md`. Formatting corrected on
-  this branch.
+- **Pull request:** #534 (merged 2026-10-01). SHAs and final CI are in the
+  post-merge handoff above.
+- **CI:** An intermediate Compatibility run failed on `pnpm format:check`
+  for one table cell in `NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md`.
+  Formatting was corrected on the implementation branch before merge.
 - **Objective:** one trusted-host Approve & Apply operation. The renderer
   sends only human intent identifiers. The host re-fetches the D1 bundle,
   issues a D3 approval in-process, and immediately calls canonical graph
@@ -56,7 +166,8 @@ unauthorized. Do not start D5.
 - **Public method:** `intentloom.neutron.mutation.approveAndApply.v1`
 - **Not done:** D5 `status.get`, reconnect UX, verification retry, Undo,
   rollback execution UI, N4 mutation tool, Local AI, optional N3 Slice 5,
-  P4l17. Do not merge this branch from automation.
+  P4l17. The implementation branch was later merged by the maintainer; this
+  superseded entry does not authorize D5.
 - **Invariant:** `mutationAllowed` remains literal `false`. N4 remains the
   seven read-only tools. Raw `approvalToken` does not leave the host.
 
