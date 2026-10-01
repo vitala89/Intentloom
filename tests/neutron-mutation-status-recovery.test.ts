@@ -13,6 +13,7 @@ import {
   parseNeutronMutationStatusQuery,
   parseWorkspaceDaemonRequest,
 } from "@intentloom/protocol";
+import { checksum } from "@intentloom/core";
 import { nodeFileSystem } from "../packages/application/src/index.js";
 import { acquireNeutronMutationApplyLock } from "../packages/application/src/neutron-mutation-apply-durable-lock.js";
 import { createPersistentNeutronMutationApprovalStore } from "../packages/application/src/neutron-mutation-apply-durable-store.js";
@@ -22,7 +23,10 @@ import { createNeutronSessionRuntime } from "../packages/application/src/neutron
 import { fingerprintNeutronProjectRoot } from "../packages/application/src/neutron-session-fingerprint.js";
 import { approveAndApplyNeutronGraphMutation } from "../packages/application/src/neutron-scheduler.js";
 import { NeutronMutationStatusReadCancelled } from "../packages/application/src/neutron-mutation-status-read.js";
-import { rememberNeutronMutationStatus } from "../packages/application/src/neutron-mutation-status-index.js";
+import {
+  rememberNeutronMutationStatus,
+  statusIndexPath,
+} from "../packages/application/src/neutron-mutation-status-index.js";
 import { publicNeutronMutationStatus } from "../packages/application/src/neutron-mutation-status-public.js";
 import { NEUTRON_READ_ONLY_TOOLS } from "../packages/protocol/src/neutron-runtime.js";
 import {
@@ -30,6 +34,7 @@ import {
   NEUTRON_MUTATION_APPROVAL_INTENT_SCHEMA_URN,
 } from "../packages/protocol/src/neutron-mutation-approval-intent.js";
 import { NEUTRON_MUTATION_APPLY_RESULT_SCHEMA_URN } from "../packages/protocol/src/neutron-mutation-apply.js";
+import { canonicalNeutronMutationJson } from "../packages/validator/src/neutron-mutation-canonical.js";
 import { expectedNeutronMutationApprovalToken } from "../packages/validator/src/neutron-mutation-digest.js";
 import { neutronSessionCapabilities as daemonCapabilities } from "../packages/daemon/src/neutron-session-handlers.js";
 import { bindNeutronSessionHandlers as bindDaemonHandlers } from "../packages/daemon/src/neutron-session-handlers.js";
@@ -292,6 +297,51 @@ describe("Desktop mutation D5 status recovery", () => {
     expect(() =>
       parseNeutronMutationStatusQuery({ ...readyQuery, unexpected: true }),
     ).toThrow(/unexpected/);
+  });
+
+  it("rejects a valid pointer stored under another identity path", async () => {
+    const ready = await prepared();
+    await approve(ready);
+    const before = await readFile(join(ready.root, "src/a.ts"), "utf8");
+    const pointer = JSON.parse(
+      await readFile(await indexFile(ready.durable), "utf8"),
+    ) as {
+      recordDigest: string;
+    };
+    expect(pointer.recordDigest).toMatch(/^sha256:[0-9a-f]{64}$/u);
+    const other = identityOf(query(ready), { proposalId: "other-proposal" });
+    await writeFile(
+      statusIndexPath(ready.durable, other),
+      `${JSON.stringify(pointer)}\n`,
+    );
+    await expect(
+      restarted(ready.durable).getNeutronMutationStatus({
+        ...query(ready),
+        proposalId: other.proposalId,
+      }),
+    ).rejects.toThrow(/durable-status-corrupt/);
+    expect(await readFile(join(ready.root, "src/a.ts"), "utf8")).toBe(before);
+    expect(statusSource()).not.toContain("applyApprovedNeutronMutation");
+  });
+
+  it("rejects a pointer whose transactionId does not match the approval record", async () => {
+    const ready = await prepared();
+    await approve(ready);
+    const before = await readFile(join(ready.root, "src/a.ts"), "utf8");
+    const path = await indexFile(ready.durable);
+    const pointer = JSON.parse(await readFile(path, "utf8")) as Record<
+      string,
+      string
+    >;
+    const unsigned = { ...pointer, transactionId: "other-transaction" };
+    delete unsigned.recordDigest;
+    const forged = {
+      ...unsigned,
+      recordDigest: `sha256:${checksum(canonicalNeutronMutationJson(unsigned))}`,
+    };
+    await writeFile(path, `${JSON.stringify(forged)}\n`);
+    await expect(recover(ready)).rejects.toThrow(/durable-status-corrupt/);
+    expect(await readFile(join(ready.root, "src/a.ts"), "utf8")).toBe(before);
   });
 
   it("fails closed when the index or transaction record is corrupt", async () => {
@@ -613,6 +663,25 @@ function intent(root: string, proposalId: string) {
     root,
     schemaVersion: NEUTRON_MUTATION_APPROVAL_INTENT_SCHEMA_URN,
     sessionId: session.sessionId,
+  };
+}
+
+function identityOf(
+  queryValue: ReturnType<typeof query>,
+  override: Partial<{
+    readonly root: string;
+    readonly sessionId: string;
+    readonly projectId: string;
+    readonly graphId: string;
+    readonly proposalId: string;
+  }> = {},
+) {
+  return {
+    graphId: override.graphId ?? queryValue.graphId,
+    projectId: override.projectId ?? queryValue.projectId,
+    proposalId: override.proposalId ?? queryValue.proposalId,
+    root: override.root ?? queryValue.root,
+    sessionId: override.sessionId ?? queryValue.sessionId,
   };
 }
 

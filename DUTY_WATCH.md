@@ -59,7 +59,10 @@ maintainer review of D5 Slice 1. Do not auto-merge.
 - **Durable lookup:** existing Slice 3.1 approval records remain authority.
   A metadata-only `proposal-index` inside the same `durableStateDirectory`
   points at `approvalId` / `transactionId`. It stores no file bodies and no
-  raw approval token. Corrupt index or record fails closed.
+  raw approval token. A pointer is accepted only when its stored identity
+  matches the lookup identity and its `approvalId` / `transactionId` match
+  the canonical transaction record. A self-digest alone is not enough.
+  Corrupt or cross-bound index state fails closed (`durable-status-corrupt`).
 - **Invariant:** status read does not call Apply, does not issue approval,
   and does not acquire the project mutation write lock. `mutationAllowed`
   remains literal `false`. N4 remains the seven read-only tools.

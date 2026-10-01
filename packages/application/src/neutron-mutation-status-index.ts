@@ -79,7 +79,10 @@ export async function readNeutronMutationStatusPointer(
   directory: string,
   identity: NeutronMutationStatusIdentity,
 ): Promise<NeutronMutationStatusPointer | undefined> {
-  return readPointer(statusIndexPath(directory, identity));
+  const pointer = await readPointer(statusIndexPath(directory, identity));
+  if (pointer === undefined) return undefined;
+  assertPointerMatchesIdentity(pointer, identity);
+  return pointer;
 }
 
 export function statusIndexPath(
@@ -154,6 +157,21 @@ function pointerFor(
 
 function encodePointer(pointer: NeutronMutationStatusPointer): string {
   return `${JSON.stringify(pointer)}\n`;
+}
+
+function assertPointerMatchesIdentity(
+  pointer: NeutronMutationStatusPointer,
+  identity: NeutronMutationStatusIdentity,
+): void {
+  if (
+    pointer.root !== identity.root ||
+    pointer.sessionId !== identity.sessionId ||
+    pointer.projectId !== identity.projectId ||
+    pointer.graphId !== identity.graphId ||
+    pointer.proposalId !== identity.proposalId
+  ) {
+    throw new NeutronMutationStatusIndexError("durable-status-corrupt");
+  }
 }
 
 function decodePointer(raw: string): NeutronMutationStatusPointer {

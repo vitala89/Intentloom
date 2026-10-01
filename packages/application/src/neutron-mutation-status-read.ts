@@ -64,18 +64,28 @@ export async function readNeutronMutationStatus(
       transactionId: input.transactionId,
     });
   }
-  const record = await loadRecord(input.directory, pointer.approvalId);
+  const record = await loadBoundRecord(input.directory, pointer);
   return publicNeutronMutationStatus({
     proposalId: input.proposalId,
     record,
   });
 }
 
-async function loadRecord(directory: string, approvalId: string) {
+async function loadBoundRecord(
+  directory: string,
+  pointer: {
+    readonly approvalId: string;
+    readonly transactionId: string;
+  },
+) {
   try {
     const store = createPersistentNeutronMutationApprovalStore({ directory });
-    const record = await store.getByApproval(approvalId);
-    if (record === undefined) {
+    const record = await store.getByApproval(pointer.approvalId);
+    if (
+      record === undefined ||
+      record.approvalId !== pointer.approvalId ||
+      record.transactionId !== pointer.transactionId
+    ) {
       throw new NeutronMutationStatusIndexError("durable-status-corrupt");
     }
     return record;
