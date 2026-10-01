@@ -357,7 +357,8 @@ evidence). **Slice 5 implemented** (N5 proposal/review integration; host
 materialization; session/profile/ceiling proposal capability threading in
 production). Later slices (unauthorized): Desktop verification retry UX,
 host rollback execution / Undo. D4 Approve & Apply is implemented and merged
-(PR #534). D5 is not started. Do not start D5.
+(PR #534). D5 Slice 1 status recovery is on a review branch and is not D5
+complete. Do not start reconnect UX, verification retry, or Undo.
 
 N6 read-only Desktop is implemented under its own brief. Desktop mutation
 host flow: **D1 implemented and merged** (PR #516; read-only authoritative
@@ -366,10 +367,12 @@ review transport). **D2 implemented and merged** (PR #519; exact review UX).
 issuer). **DL implemented and merged** (PR #525; legacy fake Desktop Apply
 removed). **Desktop `durableStateDirectory` wiring is implemented and
 merged** (PR #528; that prerequisite is not itself D4). **D4 IMPLEMENTED AND
-MERGED** (PR #534). D5 is not implemented and is not authorized. Canon:
+MERGED** (PR #534). D5 Slice 1 is on a review branch and is not D5
+complete. Reconnect UX, verification retry, and Undo are not authorized.
+Canon:
 [`NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md`](NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md).
-Do not start D5, verification retry, Undo, or an N4 mutation tool from this
-roadmap entry alone.
+Do not start reconnect UX, verification retry, Undo, or an N4 mutation tool
+from this roadmap entry alone.
 
 ## N6. Desktop Neutron Workspace
 
@@ -543,8 +546,9 @@ merged.** Desktop `durableStateDirectory` wiring is implemented and merged
 head `a3eb8c96b5012283107eb361c14fecd69025e22e`). All documented
 prerequisites for D4 are merged. **D4 IMPLEMENTED AND MERGED** (PR #534,
 merge `0da5612e45d99454eb765cb370a058187ef47f94`; implementation head
-`42d8810308326bb69e29ac499962626fe42ea393`). D5 remains a future candidate
-and is not authorized. Do not start D5 from this file.
+`42d8810308326bb69e29ac499962626fe42ea393`). D5 Slice 1 is on a review
+branch and is not D5 complete. Do not start reconnect UX, verification
+retry, or Undo from this file.
 See
 [`NEUTRON_N6_DESKTOP_READONLY_BRIEF.md`](NEUTRON_N6_DESKTOP_READONLY_BRIEF.md),
 [`NEUTRON_MUTATION_ROUTING_BRIEF.md`](NEUTRON_MUTATION_ROUTING_BRIEF.md), and

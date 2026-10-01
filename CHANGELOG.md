@@ -7,6 +7,17 @@ All notable changes are documented here. This project follows Keep a Changelog p
 Changes listed here are merged after the current release-preparation scope and
 are not included in the current npm artifact until a later release.
 
+- Neutron Desktop D5 Slice 1 adds read-only
+  `intentloom.neutron.mutation.status.get.v1` on
+  `feat/neutron-desktop-mutation-status-recovery`, awaiting maintainer
+  review. It is not merged and it is not D5 complete. After a lost D4
+  response, a fresh host with the same durable state directory reports the
+  canonical transaction outcome without calling Apply again. A proposal
+  index inside that directory stores metadata only. `applied` stays
+  independent of verification. Reconnect UX, verification retry, Undo, and
+  any N4 mutation tool are not included. `mutationAllowed` remains literal
+  `false`.
+
 - Neutron Desktop D4 adds the combined host operation
   `intentloom.neutron.mutation.approveAndApply.v1` and an Approve & Apply
   control on the exact mutation review. Merged in PR #534 (implementation

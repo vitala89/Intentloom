@@ -13,6 +13,10 @@ import {
   dispatchNeutronMutationApproveAndApplyRequest,
   isNeutronMutationApproveAndApplyRequest,
 } from "./neutron-mutation-approve-apply-handlers.js";
+import {
+  dispatchNeutronMutationStatusRequest,
+  isNeutronMutationStatusRequest,
+} from "./neutron-mutation-status-handlers.js";
 import { resolveDaemonProjectRoot } from "./daemon-canonical-root.js";
 
 export async function dispatchNeutronWorkspaceRequest(
@@ -36,6 +40,24 @@ export async function dispatchNeutronWorkspaceRequest(
       options.enforceCanonicalRoots,
       canonicalProjectRoot,
     );
+  if (isNeutronMutationStatusRequest(request)) {
+    const statusResponse = await dispatchNeutronMutationStatusRequest(
+      request,
+      options,
+      resolveRoot,
+    );
+    if (!statusResponse) {
+      failure(
+        socket,
+        -32601,
+        "unsupported neutron mutation status method",
+        "unsupported_capability",
+      );
+      return true;
+    }
+    response(socket, statusResponse);
+    return true;
+  }
   if (isNeutronMutationApproveAndApplyRequest(request)) {
     const applyResponse = await dispatchNeutronMutationApproveAndApplyRequest(
       request,
