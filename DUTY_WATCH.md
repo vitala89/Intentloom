@@ -41,6 +41,31 @@ status UX, host rollback execution / Undo, and any N4 mutation tool remain
 unauthorized. Do not start D5. The next action requires explicit maintainer
 authorization.
 
+### 2026-10-02, pragmatic domain modeling governance
+
+- **Status:** complete on branch; awaiting review and merge.
+- **Starting main:** `d62b10a67051fc0f5f1ccb4d8a863c69bca0b1c8`.
+- **Branch:** `docs/domain-modeling`.
+- **Objective:** make Intentloom's own domain-modeling rules explicit without a
+  repository-wide rewrite or ceremonial DDD.
+- **Completed:** added `docs/governance/DOMAIN_MODELING.md` with pragmatic DDD,
+  ubiquitous language, bounded-context guidance, dependency direction, tactical
+  pattern decision rules, evidence-based DDD criteria, incremental-adoption
+  rules, and an agent/review checklist. Updated mandatory agent entry points,
+  engineering principles, and workflow so the guidance is always loaded for
+  relevant work.
+- **Important decision:** DDD is a modeling discipline, not a requirement that
+  every module contain Entities, Aggregates, Repositories, Domain Services, or
+  Domain Events. Folder names and pattern names are not evidence of DDD.
+- **Compatibility:** documentation/governance only. No runtime, public protocol,
+  CLI, daemon, Desktop, persistence, package, or release behavior changes.
+- **Validation:** GitHub diff review and CI required on the pull request. No
+  runtime tests are required by the scope itself.
+- **Not done:** no code reorganization, package movement, public contract rename,
+  formal bounded-context package split, or architecture-profile runtime work.
+- **Next first action:** review the pull request and its CI; merge only if the
+  governance wording matches the intended architecture policy.
+
 ### 2026-10-01, Desktop Neutron Approve & Apply — D4 post-merge documentation handoff
 
 - **Status:** **DESKTOP MUTATION D4 COMPLETE.** Implementation merged;
