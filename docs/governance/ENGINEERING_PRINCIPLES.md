@@ -118,7 +118,22 @@ unnecessary layers. SOLID and Clean Architecture are used to reveal real
 responsibilities and boundaries, while principle 12 continues to prohibit
 premature abstraction.
 
-## 17. Configurable engineering, invariant safety
+## 17. Pragmatic domain modeling
+
+Intentloom uses pragmatic Domain-Driven Design together with Clean Architecture.
+Repository code, tests, documentation, protocols, and clients should share one
+ubiquitous language for the same domain concepts. Bounded contexts represent
+real semantic, ownership, lifecycle, or invariant boundaries, not folder names.
+
+Entities, Value Objects, Aggregates, Repositories, Domain Services, and Domain
+Events are optional modeling tools. They are introduced only when a demonstrated
+domain need justifies them. Their absence is not an architectural defect, and
+their presence is not evidence that a module follows DDD.
+
+Canonical rules, examples, context guidance, and the agent checklist live in
+`DOMAIN_MODELING.md`.
+
+## 18. Configurable engineering, invariant safety
 
 Intentloom may allow users to choose quality profiles, scoped architecture
 strategies, code budgets, testing requirements, legacy migration behavior,

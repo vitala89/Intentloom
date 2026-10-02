@@ -4,6 +4,7 @@ This file is the default instruction entry for repository agents. Before every
 task, read `AGENT_START_HERE.md`, `PROJECT_STATE.md`, the latest entry in
 `DUTY_WATCH.md`, `docs/governance/ENGINEERING_PRINCIPLES.md`,
 `docs/governance/CODE_QUALITY_STANDARDS.md`,
+`docs/governance/DOMAIN_MODELING.md`,
 `docs/governance/REACT_BEST_PRACTICES.md`, and
 `docs/governance/AI_AGENT_WORKFLOW.md`.
 
@@ -87,6 +88,10 @@ Mandatory defaults for hand-written code:
   fixes when safely expressible;
 - preserve Clean Architecture dependency direction and keep side effects behind
   narrow typed boundaries;
+- use the repository's pragmatic DDD rules and ubiquitous language from
+  `docs/governance/DOMAIN_MODELING.md`; do not add Entities, Aggregates,
+  Repositories, Domain Services, or Domain Events without a demonstrated
+  modeling need;
 - use SOLID, DRY, KISS, YAGNI, and composition as judgment tools, not as a reason
   to add unused layers or interfaces.
 

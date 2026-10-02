@@ -12,8 +12,9 @@ Read, in order:
 3. `DUTY_WATCH.md`
 4. `docs/governance/ENGINEERING_PRINCIPLES.md`
 5. `docs/governance/CODE_QUALITY_STANDARDS.md`
-6. `docs/governance/AI_AGENT_WORKFLOW.md`
-7. The relevant specification, ADRs, roadmap documents, package documentation,
+6. `docs/governance/DOMAIN_MODELING.md`
+7. `docs/governance/AI_AGENT_WORKFLOW.md`
+8. The relevant specification, ADRs, roadmap documents, package documentation,
    and code for the requested task
 
 Do not begin implementation from the user prompt alone.
@@ -28,7 +29,8 @@ Before changing files, state internally or in the task plan:
 - which architectural boundaries it may affect;
 - the current size and responsibilities of touched implementation files;
 - planned extraction points for any oversized file;
-- the relevant domain guidance and required tests;
+- the relevant domain guidance, ubiquitous language, owning bounded context,
+  and required tests;
 - which validations and documentation updates will be required;
 - whether grilling applies (new design, competing approaches, architecture, or
   Ambiguity = 2) per `docs/governance/MATT_POCOCK_SKILLS_ADOPTION.md`.
