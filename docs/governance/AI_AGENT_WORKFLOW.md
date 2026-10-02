@@ -11,7 +11,8 @@ Before implementation:
 2. Read `AGENT_START_HERE.md`.
 3. Read `PROJECT_STATE.md`.
 4. Read the latest entry in `DUTY_WATCH.md`.
-5. Read `ENGINEERING_PRINCIPLES.md`, `CODE_QUALITY_STANDARDS.md`, and relevant
+5. Read `ENGINEERING_PRINCIPLES.md`, `CODE_QUALITY_STANDARDS.md`,
+   `DOMAIN_MODELING.md`, and relevant
    specifications, ADRs, roadmaps, code, tests, and Git history.
 6. Identify the current milestone, requested outcome, affected boundaries,
    risks, required validation, and applicable domain guidance.
@@ -39,6 +40,8 @@ Create a scoped plan that states:
 - intended outcome;
 - files or packages likely affected;
 - architectural contracts involved;
+- owning bounded context, relevant ubiquitous-language terms, and domain
+  invariants when domain behavior is affected;
 - current formatted size and responsibilities of touched implementation files;
 - expected file growth and planned extraction points;
 - relevant TypeScript, Angular, Rust, Tauri, backend, security, accessibility,
@@ -73,6 +76,9 @@ module decomposition until after adding behavior to an already oversized file.
   direction toward stable contracts.
 - Use SOLID and Clean Architecture to reduce coupling and clarify responsibility,
   not to create abstractions without a demonstrated consumer or boundary.
+- Apply pragmatic DDD from `DOMAIN_MODELING.md`: preserve ubiquitous language,
+  model real context boundaries, and do not introduce tactical DDD patterns
+  without a demonstrated invariant or lifecycle need.
 - Do not silently install dependencies, enable telemetry, contact external
   services, publish, merge, or release without authorization.
 
