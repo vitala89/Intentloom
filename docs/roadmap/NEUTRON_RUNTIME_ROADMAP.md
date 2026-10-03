@@ -293,8 +293,9 @@ proposal/review/Apply provenance without giving the scheduler Apply authority.
 from **mutation-routing N5 integration completion** (proposal/review + host
 Apply composition). At N5 completion, Desktop Approve/Apply was still a
 separate grant. That grant is now the merged D4 host operation. D5 Slice 1
-status recovery is merged (PR #537). D5 as a whole, including Slice 2
-reconnect UX, remains unauthorized.
+status recovery is merged (PR #537). D5 Slice 2 reconnect UX is implemented
+on branch awaiting maintainer review. D5 as a whole remains incomplete.
+Verification retry and Undo remain unauthorized.
 
 Extend the existing Neutron subagent records from persisted orchestration
 foundation into a controlled execution scheduler with:
@@ -358,9 +359,9 @@ evidence). **Slice 5 implemented** (N5 proposal/review integration; host
 materialization; session/profile/ceiling proposal capability threading in
 production). Later slices (unauthorized): Desktop verification retry UX,
 host rollback execution / Undo. D4 Approve & Apply is implemented and merged
-(PR #534). D5 Slice 1 status recovery is implemented and merged (PR #537)
-and is not D5 complete. Do not start reconnect UX, verification retry, or
-Undo.
+(PR #534). D5 Slice 1 status recovery is implemented and merged (PR #537).
+D5 Slice 2 reconnect UX is implemented on branch awaiting maintainer review.
+It is not D5 complete. Do not start verification retry or Undo.
 
 N6 read-only Desktop is implemented under its own brief. Desktop mutation
 host flow: **D1 implemented and merged** (PR #516; read-only authoritative
@@ -369,13 +370,13 @@ review transport). **D2 implemented and merged** (PR #519; exact review UX).
 issuer). **DL implemented and merged** (PR #525; legacy fake Desktop Apply
 removed). **Desktop `durableStateDirectory` wiring is implemented and
 merged** (PR #528; that prerequisite is not itself D4). **D4 IMPLEMENTED AND
-MERGED** (PR #534). **D5 Slice 1 IMPLEMENTED AND MERGED** (PR #537). It is
-not D5 complete. Reconnect UX, verification retry, and Undo are not
-authorized.
+MERGED** (PR #534). **D5 Slice 1 IMPLEMENTED AND MERGED** (PR #537). **D5 Slice 2 reconnect UX
+is implemented on branch awaiting maintainer review.** It is not D5
+complete. Verification retry and Undo are not authorized.
 Canon:
 [`NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md`](NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md).
-Do not start reconnect UX, verification retry, Undo, or an N4 mutation tool
-from this roadmap entry alone.
+Do not start verification retry, Undo, or an N4 mutation tool from this
+roadmap entry alone.
 
 ## N6. Desktop Neutron Workspace
 
@@ -399,7 +400,7 @@ state are implemented in application. Desktop host Approve & Apply is merged
 as D4. Host-flow canon:
 [`NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md`](NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md)
 (D1, D2, D3, DL, Desktop durable-state wiring, D4, and D5 Slice 1 merged;
-D5 Slice 2 not authorized).
+D5 Slice 2 implemented on branch awaiting maintainer review; not D5 complete).
 
 Integrate the runtime with the official Desktop application after the v0.6
 read-only project slice and shared client contracts are stable.
@@ -552,8 +553,8 @@ merge `0da5612e45d99454eb765cb370a058187ef47f94`; implementation head
 `42d8810308326bb69e29ac499962626fe42ea393`). **D5 Slice 1 IMPLEMENTED AND
 MERGED** (PR #537, merge `866c96ab6fd1a1265dfc46a8840117baaaebd0b6`; final
 audited head `c366d9f7d8d27f2a6f92b328ee775e1ceab53381`). It is not D5
-complete. Do not start D5 Slice 2 reconnect UX, verification retry, or Undo
-from this file.
+complete. D5 Slice 2 reconnect UX is implemented on branch awaiting
+maintainer review. Do not start verification retry or Undo from this file.
 See
 [`NEUTRON_N6_DESKTOP_READONLY_BRIEF.md`](NEUTRON_N6_DESKTOP_READONLY_BRIEF.md),
 [`NEUTRON_MUTATION_ROUTING_BRIEF.md`](NEUTRON_MUTATION_ROUTING_BRIEF.md), and

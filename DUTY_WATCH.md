@@ -36,13 +36,37 @@ COMPLETE** (implementation PR #534, merge
 `a7504ca09550d395a7180f863776dd83b10e3c49`; finalize PR #536, merge
 `d62b10a67051fc0f5f1ccb4d8a863c69bca0b1c8`). **D5 SLICE 1 IMPLEMENTED AND
 MERGED** (implementation PR #537, merge
-`866c96ab6fd1a1265dfc46a8840117baaaebd0b6`). Not D5 complete. This
-documentation handoff is awaiting maintainer review and is not merged.
-`mutationAllowed` remains literal `false`. N4 remains the seven read-only
-tools. D5 Slice 2 (Desktop reconnect and authoritative status recovery UX),
-verification retry, host rollback execution / Undo, optional N3 Slice 5,
-P4l17, and any N4 mutation or status tool remain unauthorized. Do not start
-Slice 2 from this handoff. Do not auto-merge.
+`866c96ab6fd1a1265dfc46a8840117baaaebd0b6`; handoff PR #539, merge
+`6b8c64e06a8d7e546bfa0566592f33790f5a7fb4`). **D5 SLICE 2 IMPLEMENTED ON
+BRANCH AWAITING MAINTAINER REVIEW**. Not D5 complete. `mutationAllowed`
+remains literal `false`. N4 remains the seven read-only tools. Verification
+retry, host rollback execution / Undo, optional N3 Slice 5, P4l17, and any
+N4 mutation or status tool remain unauthorized. Do not auto-merge.
+
+### 2026-10-03, Desktop Neutron reconnect status recovery — D5 Slice 2 implementation
+
+- **Status:** **D5 SLICE 2 IMPLEMENTED ON BRANCH AWAITING MAINTAINER REVIEW.**
+  Not D5 complete. Do not auto-merge. Do not start verification retry or Undo.
+- **Branch:** `feat/neutron-desktop-mutation-reconnect-recovery`
+- **Starting main:** `6b8c64e06a8d7e546bfa0566592f33790f5a7fb4` (PR #539 merge).
+  Slice 1 implementation merge remains
+  `866c96ab6fd1a1265dfc46a8840117baaaebd0b6`.
+- **UX:** a lost or disconnected Approve & Apply response is an uncertain
+  presentation state, not a failed mutation. Desktop keeps the safe lookup
+  identity (`root`, `sessionId`, `projectId`, `graphId`, `proposalId`, and
+  `transactionId` only when that response actually arrived). After the
+  existing daemon connection is authenticated again for that same scope, it
+  issues one read-only `status.get`. Explicit Refresh status uses the same
+  read. Neither path calls Apply, issues approval, or calls a model.
+- **Scope:** a root, project, or session change drops the unresolved identity
+  and does not query it against the new scope.
+- **Presentation:** applied stays distinct from verified, verification-failed,
+  verification-incomplete, and reconciliation-required. `unknown` is not
+  “not applied”. `durable-state-unavailable` does not retry Apply. A
+  `durable-status-corrupt` error stays an integrity failure. Claimed and
+  executing states stay non-terminal and keep Approve & Apply disabled.
+- **Not done:** verification retry, Undo, rollback execution, a mutation
+  history browser, and any N4 mutation or status tool. D5 is not complete.
 
 ### 2026-10-03, Desktop Neutron mutation status recovery — D5 Slice 1 post-merge handoff
 

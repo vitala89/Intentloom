@@ -8,17 +8,12 @@ import {
 } from "@intentloom/protocol";
 import { NeutronApproveApplyControl } from "../apps/desktop/src/neutron/NeutronApproveApplyControl.js";
 import { NeutronMutationReviewView as MutationReviewView } from "../apps/desktop/src/neutron/NeutronMutationReviewPanel.js";
-import {
-  initialMutationReviewUiState,
-  type NeutronMutationReviewScope,
-} from "../apps/desktop/src/neutron/neutron-mutation-review-state.js";
-
-const SCOPE: NeutronMutationReviewScope = {
-  graphId: "graph-1",
-  projectId: "project-1",
-  root: "/project",
-  sessionId: "session-1",
-};
+import { idleRecoveryModel } from "../apps/desktop/src/neutron/neutron-mutation-recovery-model.js";
+import { beginPending } from "../apps/desktop/src/neutron/neutron-mutation-recovery-model.js";
+import { recordDirectResult } from "../apps/desktop/src/neutron/neutron-mutation-recovery-model.js";
+import { recoveryIdentity } from "../apps/desktop/src/neutron/neutron-mutation-recovery-model.js";
+import { projectMutationRecoveryView } from "../apps/desktop/src/neutron/neutron-mutation-recovery-view.js";
+import { initialMutationReviewUiState } from "../apps/desktop/src/neutron/neutron-mutation-review-state.js";
 
 describe("Desktop Approve & Apply control", () => {
   it("enables the mutation button only for a current review", () => {
@@ -66,7 +61,6 @@ describe("Desktop Approve & Apply control", () => {
         onClose: () => undefined,
         onSelectFile: () => undefined,
         onSelectProposal: () => undefined,
-        scope: SCOPE,
         state: {
           ...initialMutationReviewUiState(),
           listOutcome: "ok",
@@ -87,15 +81,33 @@ function markup(
     readonly result?: NeutronMutationApproveAndApplyResult;
   },
 ): string {
+  let model = idleRecoveryModel();
+  if (input.pending || input.settled) {
+    model = beginPending(
+      model,
+      recoveryIdentity({
+        graphId: "graph-1",
+        projectId: "project-1",
+        proposalId: "proposal-1",
+        root: "/project",
+        sessionId: "session-1",
+      }),
+    );
+  }
+  if (input.result !== undefined) {
+    model = recordDirectResult(model, model.generation, input.result);
+  }
   return renderToStaticMarkup(
     createElement(NeutronApproveApplyControl, {
-      currentness,
-      error: null,
+      onRefresh: () => undefined,
       onSubmit: () => undefined,
-      pending: input.pending,
-      result: input.result ?? null,
-      reviewReady: true,
-      settled: input.settled,
+      view: projectMutationRecoveryView({
+        currentness,
+        daemonReady: false,
+        model,
+        proposalId: "proposal-1",
+        reviewReady: true,
+      }),
     }),
   );
 }

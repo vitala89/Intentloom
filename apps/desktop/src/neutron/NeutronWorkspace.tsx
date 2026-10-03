@@ -14,11 +14,13 @@ import { useNeutronSession } from "./use-neutron-session.js";
 
 export interface NeutronWorkspaceProps {
   readonly root: string | null;
+  readonly daemonReady?: boolean;
   readonly onSelectProject: () => void;
 }
 
 export function NeutronWorkspace({
   root,
+  daemonReady = false,
   onSelectProject,
 }: NeutronWorkspaceProps) {
   const session = useNeutronSession(root);
@@ -80,6 +82,7 @@ export function NeutronWorkspace({
       />
       <NeutronMutationReviewPanel
         active={session.viewmodel !== null}
+        daemonReady={daemonReady}
         scope={
           session.viewmodel === null
             ? null
