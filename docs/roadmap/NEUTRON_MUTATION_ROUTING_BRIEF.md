@@ -41,8 +41,12 @@ merged** (PR #525; legacy fake Desktop Approved Apply removed). **Desktop
 prerequisite is not itself D4). **D4 implemented and merged** (PR #534;
 `intentloom.neutron.mutation.approveAndApply.v1`; dedicated Tauri command;
 renderer sends identity fields only; `mutationAllowed` remains literal
-`false`). D5 Slice 1 status recovery is on a review branch and is not D5
-complete. Reconnect UX, verification retry, and Undo remain unauthorized.
+`false`). **D5 Slice 1 implemented and merged** (PR #537, merge
+`866c96ab6fd1a1265dfc46a8840117baaaebd0b6`; final audited head
+`c366d9f7d8d27f2a6f92b328ee775e1ceab53381`): read-only
+`intentloom.neutron.mutation.status.get.v1` recovers the durable Slice 3.1
+outcome after a lost D4 response. It is not D5 complete. D5 Slice 2
+reconnect UX, verification retry, and Undo remain unauthorized.
 Canon:
 [`NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md`](NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md).
 

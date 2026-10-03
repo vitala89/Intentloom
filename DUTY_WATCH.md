@@ -34,45 +34,138 @@ removed). **Desktop mutation durable host state prerequisite complete**
 COMPLETE** (implementation PR #534, merge
 `0da5612e45d99454eb765cb370a058187ef47f94`; handoff PR #535, merge
 `a7504ca09550d395a7180f863776dd83b10e3c49`; finalize PR #536, merge
-`d62b10a67051fc0f5f1ccb4d8a863c69bca0b1c8`). **D5 SLICE 1 IMPLEMENTED ON
-BRANCH AWAITING MAINTAINER REVIEW**
-(`feat/neutron-desktop-mutation-status-recovery`). Not merged. Not D5
-complete.
+`d62b10a67051fc0f5f1ccb4d8a863c69bca0b1c8`). **D5 SLICE 1 IMPLEMENTED AND
+MERGED** (implementation PR #537, merge
+`866c96ab6fd1a1265dfc46a8840117baaaebd0b6`). Not D5 complete. This
+documentation handoff is awaiting maintainer review and is not merged.
 `mutationAllowed` remains literal `false`. N4 remains the seven read-only
-tools. Optional N3 Slice 5, P4l17, Desktop verification retry, reconnect
-status UX, host rollback execution / Undo, and any N4 mutation tool remain
-unauthorized. Do not start those from this branch. The next action is
-maintainer review of D5 Slice 1. Do not auto-merge.
+tools. D5 Slice 2 (Desktop reconnect and authoritative status recovery UX),
+verification retry, host rollback execution / Undo, optional N3 Slice 5,
+P4l17, and any N4 mutation or status tool remain unauthorized. Do not start
+Slice 2 from this handoff. Do not auto-merge.
 
-### 2026-10-01, Desktop Neutron mutation status recovery — D5 Slice 1 awaiting review
+### 2026-10-03, Desktop Neutron mutation status recovery — D5 Slice 1 post-merge handoff
 
-- **Status:** **D5 SLICE 1 IMPLEMENTED ON BRANCH AWAITING MAINTAINER REVIEW.**
-  Not merged. Not D5 complete. Reconnect UX, verification retry, and Undo
-  remain unauthorized.
-- **Starting main:** `d62b10a67051fc0f5f1ccb4d8a863c69bca0b1c8` (PR #536
-  merge). Tracked tree was clean. PR #536 was merged before this work.
-- **Branch:** `feat/neutron-desktop-mutation-status-recovery`
+- **Status:** **D5 SLICE 1 IMPLEMENTED AND MERGED.** Not D5 complete. This
+  handoff records the merge and remains awaiting maintainer review until
+  the docs pull request merges. Do not auto-merge.
+- **Implementation PR:** https://github.com/vitala89/Intentloom/pull/537
+- **Implementation branch:** `feat/neutron-desktop-mutation-status-recovery`
+- **Starting implementation main:**
+  `d62b10a67051fc0f5f1ccb4d8a863c69bca0b1c8` (PR #536 merge)
+- **Initial implementation head (before the identity-binding correction):**
+  `0793cdc1624049dd477be07bc85d9fb6c5039816`
+- **Final audited implementation head:**
+  `c366d9f7d8d27f2a6f92b328ee775e1ceab53381`
+  (branch head; not the merge SHA)
+- **Implementation merge SHA / resulting `main`:**
+  `866c96ab6fd1a1265dfc46a8840117baaaebd0b6`
+  (squash onto `ca81714f52335ee97732906607307050a0250002`). Production
+  files at that merge match the audited head. Rust files were unchanged by
+  the identity-binding correction.
+- **Implementation merged at:** 2026-10-03T23:05:31Z
+- **Handoff branch:** `docs/neutron-desktop-mutation-d5-slice1-handoff`
+- **Handoff starting main:**
+  `866c96ab6fd1a1265dfc46a8840117baaaebd0b6`
 - **Public method:** `intentloom.neutron.mutation.status.get.v1`
-  (read-only). Request identity is `root`, `sessionId`, `projectId`,
-  `graphId`, and `proposalId`. Optional `transactionId` is lookup narrowing
-  only. The renderer does not send `approvalToken`.
-- **Durable lookup:** existing Slice 3.1 approval records remain authority.
-  A metadata-only `proposal-index` inside the same `durableStateDirectory`
-  points at `approvalId` / `transactionId`. It stores no file bodies and no
-  raw approval token. A pointer is accepted only when its stored identity
-  matches the lookup identity and its `approvalId` / `transactionId` match
-  the canonical transaction record. A self-digest alone is not enough.
-  Corrupt or cross-bound index state fails closed (`durable-status-corrupt`).
-- **Invariant:** status read does not call Apply, does not issue approval,
-  and does not acquire the project mutation write lock. `mutationAllowed`
-  remains literal `false`. N4 remains the seven read-only tools.
-- **Not done:** reconnect UI, polling, verification retry, Undo, rollback
-  execution, N4 mutation tool, Local AI, optional N3 Slice 5, P4l17. Do not
-  merge this branch from automation.
+  (daemon classification `read-only`). Dedicated Desktop/Tauri command
+  `get_neutron_mutation_status`. It is not on `invoke_neutron_request` and
+  it is not an N4 tool.
+- **Canonical recovery:** D4 Apply persists the Slice 3.1 transaction
+  result; the Desktop response may be lost or the host may restart; a fresh
+  runtime with the same `durableStateDirectory` calls `status.get` and
+  reports that durable truth. The recovery path performs zero second Apply.
+- **Request identity:** `root`, `sessionId`, `projectId`, `graphId`, and
+  `proposalId`. Optional `transactionId` narrows the lookup only and is not
+  mutation authority. The renderer does not send `approvalToken`.
+- **Durable lookup:** existing Slice 3.1 transaction records remain
+  authoritative. A metadata-only `proposal-index` inside the same trusted
+  `durableStateDirectory` points at `approvalId` and `transactionId` and
+  stores identity metadata. It is a bounded lookup into that canonical
+  store, not a second transaction database. It does not contain the raw
+  approval token, file bodies, proposed content, previous content, or model
+  prompt/reasoning.
+- **Identity-binding correction (part of the final head
+  `c366d9f7d8d27f2a6f92b328ee775e1ceab53381`):** a proposal-index pointer is
+  accepted only when its embedded identity exactly matches the requested
+  `root`, `sessionId`, `projectId`, `graphId`, and `proposalId`. A
+  self-integrity SHA digest is not host authentication. A validly encoded
+  pointer placed under another identity path fails closed as
+  `durable-status-corrupt`. The pointer `approvalId` must bind to the loaded
+  canonical record, and the pointer `transactionId` must equal that record's
+  `transactionId`. A mismatch fails closed as `durable-status-corrupt`.
+- **Read-only invariant:** status recovery does not issue approval, claim
+  approval, create a token, call `approveAndApplyNeutronGraphMutation`,
+  `applyApprovedNeutronGraphMutation`, `applyApprovedNeutronMutation`, or
+  `executeApprovedApplyPlan`, write project source, retry Apply, acquire
+  mutation write authority, or invoke a provider/model.
+- **Result contract:** lookup outcomes are `unknown`, `recorded`,
+  `root-mismatch`, `project-mismatch`, `session-mismatch`, `graph-mismatch`,
+  `transaction-mismatch`, and `durable-state-unavailable`. A recorded result
+  reports canonical `transactionState` (`claimed`, `executing`, `applied`,
+  `failed-before-write`, `failed-needs-reconciliation`), Apply `status`
+  (`applied`, `rejected`, `cancelled-before-write`, `replay-recovered`,
+  `transaction-failed`, `rollback-incomplete`, `mutation-state-unknown`),
+  and `verificationStatus` (`verified`, `verification-failed`,
+  `verification-incomplete`, `reconciliation-required`) when the durable
+  record has them. `applied` stays independent of verification. A
+  verification failure after a successful write remains `applied: true`.
+- **Historical truth:** if the mutation was applied and verified, and a
+  later external edit changes the project, status recovery still reports
+  the historical durable transaction truth. It does not claim the current
+  tree still matches, and it does not rewrite that historical status from
+  later filesystem edits.
+- **Fail closed:** a missing index or record is bounded `unknown` where
+  that is the contract. Missing durable state is
+  `durable-state-unavailable`. A corrupted index, a corrupted durable
+  transaction record, an identity mismatch, and a pointer/canonical
+  transaction mismatch fail closed as `durable-status-corrupt`. A requested
+  `transactionId` that does not match the pointer is `transaction-mismatch`.
+  A live session bound to a different root, project, session, or graph is
+  the matching closed mismatch outcome. Corruption is not reported as
+  success or as ordinary `unknown`.
+- **N4 / model authority:** `mutationAllowed` remains literal `false`. N4
+  remains exactly `inspect`, `doctor`, `memorySearch`, `timeline`,
+  `conformance`, `securityAudit`, and `projectDiff`. No mutation or status
+  tool was added to N4.
+- **Hosted CI (final implementation head
+  `c366d9f7d8d27f2a6f92b328ee775e1ceab53381`, pull_request, all success):**
+  Governance
+  [36932196828](https://github.com/vitala89/Intentloom/actions/runs/36932196828),
+  CodeQL
+  [36932196837](https://github.com/vitala89/Intentloom/actions/runs/36932196837),
+  Compatibility
+  [36932196819](https://github.com/vitala89/Intentloom/actions/runs/36932196819),
+  Desktop SEA Feasibility
+  [36932196838](https://github.com/vitala89/Intentloom/actions/runs/36932196838),
+  Harness Performance Benchmark
+  [36932196822](https://github.com/vitala89/Intentloom/actions/runs/36932196822).
+  These runs belong to the implementation head, not this docs branch.
+- **Implementation verification report:** `pnpm verify` passed on the final
+  head (2873 tests). Production metrics: status index 250 effective / 271
+  physical; status read 90 effective / 100 physical. The implementation
+  report also recorded `rustfmt --check` on the slice Rust files and did not
+  claim a local full `cargo test` (`gdk-3.0` was absent). Do not treat that
+  local gap as a cargo coverage claim.
+- **Not done / not authorized:** D5 Slice 2 — Desktop reconnect and
+  authoritative status recovery UX. That includes reconnect UI, automatic
+  status recovery UI, polling, a response-loss banner, verification retry,
+  a Retry verification button, Undo, rollback execution, a rollback command,
+  a mutation history browser, an N4 mutation or status tool, and Apply
+  retry. Slice 2 requires explicit maintainer authorization. This handoff
+  does not grant it.
+
+### 2026-10-01, Desktop Neutron mutation status recovery — D5 Slice 1 implementation
+
+- **Status:** superseded by the 2026-10-03 merge record above. The
+  implementation branch was `feat/neutron-desktop-mutation-status-recovery`.
+  Final audited head `c366d9f7d8d27f2a6f92b328ee775e1ceab53381` merged as
+  PR #537 (`866c96ab6fd1a1265dfc46a8840117baaaebd0b6`).
 
 ### 2026-10-02, pragmatic domain modeling governance
 
-- **Status:** complete on branch; awaiting review and merge.
+- **Status:** merged as PR #538, merge
+  `ca81714f52335ee97732906607307050a0250002`, before the D5 Slice 1 squash.
 - **Starting main:** `d62b10a67051fc0f5f1ccb4d8a863c69bca0b1c8`.
 - **Branch:** `docs/domain-modeling`.
 - **Objective:** make Intentloom's own domain-modeling rules explicit without a
@@ -92,8 +185,7 @@ maintainer review of D5 Slice 1. Do not auto-merge.
   runtime tests are required by the scope itself.
 - **Not done:** no code reorganization, package movement, public contract rename,
   formal bounded-context package split, or architecture-profile runtime work.
-- **Next first action:** review the pull request and its CI; merge only if the
-  governance wording matches the intended architecture policy.
+- **Next first action:** none for this entry. PR #538 is merged.
 
 ### 2026-10-01, Desktop Neutron Approve & Apply — D4 post-merge documentation handoff
 
