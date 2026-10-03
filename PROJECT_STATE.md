@@ -779,7 +779,10 @@ host-only. There is no public Approve-only RPC and no Apply-by-token RPC.
 The mutating method is a dedicated Tauri command, not
 `invoke_neutron_request`. Model authority is unchanged:
 `mutationAllowed` remains literal `false`, and N4 remains the seven
-read-only tools. **D5 is not started and is not authorized.** Other post-P4
+read-only tools. **D5 Slice 1** (read-only durable status recovery) is
+implemented on `feat/neutron-desktop-mutation-status-recovery` and is
+awaiting maintainer review. It is not merged and it is not D5 complete.
+Reconnect UX, verification retry, and Undo remain unauthorized. Other post-P4
 candidates remain in `POST_W12_NEXT_INCREMENT_PLAN.md`.
 
 The Desktop discovery/error and Diff/Timeline slices remain recorded in

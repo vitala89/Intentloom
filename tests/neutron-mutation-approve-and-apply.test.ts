@@ -354,7 +354,7 @@ describe("Neutron Desktop D4 approve and apply", () => {
     expect(WORKSPACE_DAEMON_REQUEST_METHODS).not.toContain(
       "intentloom.neutron.mutation.approve.v1",
     );
-    expect(WORKSPACE_DAEMON_REQUEST_METHODS).not.toContain(
+    expect(WORKSPACE_DAEMON_REQUEST_METHODS).toContain(
       "intentloom.neutron.mutation.status.get.v1",
     );
     expect(

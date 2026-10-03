@@ -14,7 +14,9 @@ prerequisite is not itself D4). **DESKTOP MUTATION D4 IMPLEMENTED AND
 MERGED** (PR #534, `feat/neutron-desktop-approve-and-apply`, merge
 `0da5612e45d99454eb765cb370a058187ef47f94`). D4 is a separately authorized
 host Approve & Apply flow. It does not change this brief's historical N6
-read-only milestone. D5 remains not implemented and not authorized.
+read-only milestone. D5 Slice 1 status recovery is on a review branch and is
+not D5 complete. Reconnect UX, verification retry, and Undo remain
+unauthorized.
 `mutationAllowed` remains `false`. Streaming and daemon event push remain
 unavailable. No event bridge or polling loop was added; Slice 3 uses
 request/response graph get/execute/cancel snapshots. Latest graph per session

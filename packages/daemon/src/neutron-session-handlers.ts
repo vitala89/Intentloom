@@ -36,12 +36,18 @@ import {
   neutronMutationApproveAndApplyCapabilities,
   type NeutronMutationApproveAndApplyDaemonOptions,
 } from "./neutron-mutation-approve-apply-handlers.js";
+import {
+  bindNeutronMutationStatusHandlers,
+  neutronMutationStatusCapabilities,
+  type NeutronMutationStatusDaemonOptions,
+} from "./neutron-mutation-status-handlers.js";
 
 export interface NeutronDaemonOptions
   extends
     NeutronGraphDaemonOptions,
     NeutronMutationReviewDaemonOptions,
-    NeutronMutationApproveAndApplyDaemonOptions {
+    NeutronMutationApproveAndApplyDaemonOptions,
+    NeutronMutationStatusDaemonOptions {
   readonly neutronSessionCreate?: (
     request: NeutronSessionCreateRequest,
   ) => Promise<Omit<NeutronSessionCreateResponse["result"], "protocolVersion">>;
@@ -101,6 +107,7 @@ export function neutronSessionCapabilities(
     ...capabilities,
     ...neutronMutationReviewCapabilities(options),
     ...neutronMutationApproveAndApplyCapabilities(options),
+    ...neutronMutationStatusCapabilities(options),
   ];
 }
 
@@ -141,6 +148,7 @@ export function bindNeutronSessionHandlers(
     ...bindNeutronGraphHandlers(runtime),
     ...bindNeutronMutationReviewHandlers(runtime),
     ...bindNeutronMutationApproveAndApplyHandlers(runtime),
+    ...bindNeutronMutationStatusHandlers(runtime),
   };
 }
 

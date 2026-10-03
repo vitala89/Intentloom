@@ -12,6 +12,7 @@ import type { NeutronSessionViewmodelPayload } from "@intentloom/protocol";
 import { neutronDesktopMethods } from "./desktop-client-neutron.js";
 import { neutronMutationReviewDesktopMethods } from "./desktop-client-neutron-review.js";
 import { neutronApproveApplyDesktopMethods } from "./desktop-client-neutron-approve-apply.js";
+import { neutronMutationStatusDesktopMethods } from "./desktop-client-neutron-status.js";
 
 interface DesktopClientBase {
   foundationRequest(
@@ -45,5 +46,6 @@ export function composeDesktopClient<TBase extends DesktopClientBase>(
     ...neutronDesktopMethods(neutronRequest),
     ...neutronMutationReviewDesktopMethods(),
     ...neutronApproveApplyDesktopMethods(),
+    ...neutronMutationStatusDesktopMethods(),
   };
 }

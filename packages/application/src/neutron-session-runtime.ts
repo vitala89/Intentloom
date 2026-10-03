@@ -29,6 +29,7 @@ import { storedGraphView } from "./neutron-session-graph.js";
 import { bindNeutronSessionReviewOperations } from "./neutron-session-runtime-review.js";
 import { bindNeutronSessionApprovalOperations } from "./neutron-session-runtime-approval.js";
 import { bindNeutronSessionApproveApplyOperations } from "./neutron-session-runtime-approve-apply.js";
+import { bindNeutronSessionStatusOperations } from "./neutron-session-runtime-status.js";
 import { neutronHostDurableStateFromOptions } from "./neutron-host-durable-state.js";
 import type {
   NeutronSessionRuntime,
@@ -231,6 +232,11 @@ export function createNeutronSessionRuntime(
       fingerprint,
       fs,
       now,
+      sessions,
+    }),
+
+    ...bindNeutronSessionStatusOperations({
+      durableStateDirectory: hostDurableState?.durableStateDirectory,
       sessions,
     }),
 

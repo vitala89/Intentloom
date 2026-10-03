@@ -33,13 +33,42 @@ removed). **Desktop mutation durable host state prerequisite complete**
 (implementation PR #528 and handoff PR #532 merged). **DESKTOP MUTATION D4
 COMPLETE** (implementation PR #534, merge
 `0da5612e45d99454eb765cb370a058187ef47f94`; handoff PR #535, merge
-`a7504ca09550d395a7180f863776dd83b10e3c49`). D5 remains **not implemented
-and not authorized**.
+`a7504ca09550d395a7180f863776dd83b10e3c49`; finalize PR #536, merge
+`d62b10a67051fc0f5f1ccb4d8a863c69bca0b1c8`). **D5 SLICE 1 IMPLEMENTED ON
+BRANCH AWAITING MAINTAINER REVIEW**
+(`feat/neutron-desktop-mutation-status-recovery`). Not merged. Not D5
+complete.
 `mutationAllowed` remains literal `false`. N4 remains the seven read-only
 tools. Optional N3 Slice 5, P4l17, Desktop verification retry, reconnect
 status UX, host rollback execution / Undo, and any N4 mutation tool remain
-unauthorized. Do not start D5. The next action requires explicit maintainer
-authorization.
+unauthorized. Do not start those from this branch. The next action is
+maintainer review of D5 Slice 1. Do not auto-merge.
+
+### 2026-10-01, Desktop Neutron mutation status recovery — D5 Slice 1 awaiting review
+
+- **Status:** **D5 SLICE 1 IMPLEMENTED ON BRANCH AWAITING MAINTAINER REVIEW.**
+  Not merged. Not D5 complete. Reconnect UX, verification retry, and Undo
+  remain unauthorized.
+- **Starting main:** `d62b10a67051fc0f5f1ccb4d8a863c69bca0b1c8` (PR #536
+  merge). Tracked tree was clean. PR #536 was merged before this work.
+- **Branch:** `feat/neutron-desktop-mutation-status-recovery`
+- **Public method:** `intentloom.neutron.mutation.status.get.v1`
+  (read-only). Request identity is `root`, `sessionId`, `projectId`,
+  `graphId`, and `proposalId`. Optional `transactionId` is lookup narrowing
+  only. The renderer does not send `approvalToken`.
+- **Durable lookup:** existing Slice 3.1 approval records remain authority.
+  A metadata-only `proposal-index` inside the same `durableStateDirectory`
+  points at `approvalId` / `transactionId`. It stores no file bodies and no
+  raw approval token. A pointer is accepted only when its stored identity
+  matches the lookup identity and its `approvalId` / `transactionId` match
+  the canonical transaction record. A self-digest alone is not enough.
+  Corrupt or cross-bound index state fails closed (`durable-status-corrupt`).
+- **Invariant:** status read does not call Apply, does not issue approval,
+  and does not acquire the project mutation write lock. `mutationAllowed`
+  remains literal `false`. N4 remains the seven read-only tools.
+- **Not done:** reconnect UI, polling, verification retry, Undo, rollback
+  execution, N4 mutation tool, Local AI, optional N3 Slice 5, P4l17. Do not
+  merge this branch from automation.
 
 ### 2026-10-02, pragmatic domain modeling governance
 

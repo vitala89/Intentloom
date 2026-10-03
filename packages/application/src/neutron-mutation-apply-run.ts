@@ -16,6 +16,11 @@ import type {
   NeutronMutationTransactionRecord,
 } from "./neutron-mutation-apply-store.js";
 import type { NeutronMutationApplyInput } from "./neutron-mutation-apply-types.js";
+import { NeutronMutationStatusIndexError } from "./neutron-mutation-status-index.js";
+import {
+  linkNeutronMutationStatus,
+  linkNeutronMutationStatusQuietly,
+} from "./neutron-mutation-status-link.js";
 
 export async function runLockedApply(
   input: NeutronMutationApplyInput,
@@ -37,9 +42,30 @@ export async function runLockedApply(
     claimedAt: nowMs,
     updatedAt: nowMs,
   });
+  if (claim.kind === "claimed") {
+    try {
+      await linkNeutronMutationStatus({
+        directory: input.durableStateDirectory,
+        request,
+        session,
+        approvalId: claim.record.approvalId,
+        transactionId: claim.record.transactionId,
+      });
+    } catch (error) {
+      if (error instanceof NeutronMutationStatusIndexError) {
+        return rejectAfterClaim(request, "mutation-state-unknown", true);
+      }
+      throw error;
+    }
+  }
   const resolved = await resolveClaim(input, store, request, claim);
-  if (resolved.kind === "result") return resolved.result;
-  return continueClaimedApplyWithLock(
+  if (resolved.kind === "result") {
+    if (claim.kind !== "storage-failed") {
+      await linkResolvedStatus(input, request, session, claim.record);
+    }
+    return resolved.result;
+  }
+  const result = await continueClaimedApplyWithLock(
     input,
     request,
     session,
@@ -49,6 +75,23 @@ export async function runLockedApply(
     resolved.record,
     nowMs,
   );
+  await linkResolvedStatus(input, request, session, resolved.record);
+  return result;
+}
+
+async function linkResolvedStatus(
+  input: NeutronMutationApplyInput,
+  request: ParsedNeutronMutationApplyRequest,
+  session: NeutronRuntimeSession | undefined,
+  record: NeutronMutationTransactionRecord,
+): Promise<void> {
+  await linkNeutronMutationStatusQuietly({
+    directory: input.durableStateDirectory,
+    request,
+    session,
+    approvalId: record.approvalId,
+    transactionId: record.transactionId,
+  });
 }
 
 async function resolveClaim(

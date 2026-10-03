@@ -9,6 +9,8 @@ import type { FileSystem } from "./index.js";
 import type { ModelAdapter } from "./model-adapter.js";
 import type { IssueNeutronMutationApprovalResult } from "./neutron-mutation-approval-issue.js";
 import type { NeutronMutationApproveAndApplyResult } from "../../protocol/src/neutron-mutation-approve-apply-result.js";
+import type { NeutronMutationStatusQuery } from "../../protocol/src/neutron-mutation-status-rpc.js";
+import type { NeutronMutationStatusResult } from "../../protocol/src/neutron-mutation-status-result.js";
 import type { NeutronHostDurableState } from "./neutron-host-durable-state.js";
 
 export interface NeutronSessionRuntimeOptions {
@@ -96,6 +98,13 @@ export interface NeutronSessionRuntime {
   approveAndApplyNeutronMutation(
     intent: unknown,
   ): Promise<NeutronMutationApproveAndApplyResult>;
+  /**
+   * Read-only recovery of durable mutation truth. Not approval and not Apply.
+   */
+  getNeutronMutationStatus(
+    query: NeutronMutationStatusQuery,
+    signal?: AbortSignal,
+  ): Promise<NeutronMutationStatusResult>;
   /**
    * Host-only durable mutation-state configuration. Not an RPC and not part
    * of session viewmodels.
