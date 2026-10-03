@@ -47,6 +47,7 @@ N4 mutation or status tool remain unauthorized. Do not auto-merge.
 
 - **Status:** **D5 SLICE 2 IMPLEMENTED ON BRANCH AWAITING MAINTAINER REVIEW.**
   Not D5 complete. Do not auto-merge. Do not start verification retry or Undo.
+- **Pull request:** https://github.com/vitala89/Intentloom/pull/540
 - **Branch:** `feat/neutron-desktop-mutation-reconnect-recovery`
 - **Starting main:** `6b8c64e06a8d7e546bfa0566592f33790f5a7fb4` (PR #539 merge).
   Slice 1 implementation merge remains
