@@ -8,14 +8,20 @@ Changes listed here are merged after the current release-preparation scope and
 are not included in the current npm artifact until a later release.
 
 - Neutron Desktop D5 Slice 1 adds read-only
-  `intentloom.neutron.mutation.status.get.v1` on
-  `feat/neutron-desktop-mutation-status-recovery`, awaiting maintainer
-  review. It is not merged and it is not D5 complete. After a lost D4
-  response, a fresh host with the same durable state directory reports the
-  canonical transaction outcome without calling Apply again. A proposal
-  index inside that directory stores metadata only. `applied` stays
-  independent of verification. Reconnect UX, verification retry, Undo, and
-  any N4 mutation tool are not included. `mutationAllowed` remains literal
+  `intentloom.neutron.mutation.status.get.v1`. Merged in PR #537
+  (implementation branch `feat/neutron-desktop-mutation-status-recovery`;
+  starting main `d62b10a67051fc0f5f1ccb4d8a863c69bca0b1c8`; initial head
+  `0793cdc1624049dd477be07bc85d9fb6c5039816`; final audited head
+  `c366d9f7d8d27f2a6f92b328ee775e1ceab53381`; merge
+  `866c96ab6fd1a1265dfc46a8840117baaaebd0b6`, 2026-10-03). It is not D5
+  complete. After a lost D4 response, a fresh host with the same durable
+  state directory reports the canonical transaction outcome without calling
+  Apply again. A metadata-only proposal index inside that directory points
+  at the existing Slice 3.1 record. A pointer is accepted only when its
+  embedded identity matches the lookup, and its approval and transaction
+  ids match the canonical record. `applied` stays independent of
+  verification. Reconnect UX, verification retry, Undo, and any N4 mutation
+  or status tool are not included. `mutationAllowed` remains literal
   `false`.
 
 - Neutron Desktop D4 adds the combined host operation

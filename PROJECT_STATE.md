@@ -779,11 +779,18 @@ host-only. There is no public Approve-only RPC and no Apply-by-token RPC.
 The mutating method is a dedicated Tauri command, not
 `invoke_neutron_request`. Model authority is unchanged:
 `mutationAllowed` remains literal `false`, and N4 remains the seven
-read-only tools. **D5 Slice 1** (read-only durable status recovery) is
-implemented on `feat/neutron-desktop-mutation-status-recovery` and is
-awaiting maintainer review. It is not merged and it is not D5 complete.
-Reconnect UX, verification retry, and Undo remain unauthorized. Other post-P4
-candidates remain in `POST_W12_NEXT_INCREMENT_PLAN.md`.
+read-only tools. **D5 Slice 1 implemented and merged** (PR #537, merge
+`866c96ab6fd1a1265dfc46a8840117baaaebd0b6`; implementation branch
+`feat/neutron-desktop-mutation-status-recovery`; starting main
+`d62b10a67051fc0f5f1ccb4d8a863c69bca0b1c8`; initial head
+`0793cdc1624049dd477be07bc85d9fb6c5039816`; final audited head
+`c366d9f7d8d27f2a6f92b328ee775e1ceab53381`). Read-only
+`intentloom.neutron.mutation.status.get.v1` recovers the Slice 3.1 durable
+transaction outcome after a lost D4 response, through a metadata-only
+`proposal-index` in the existing `durableStateDirectory`. It is not D5
+complete. D5 Slice 2 reconnect UX, verification retry, and Undo remain
+unauthorized. Other post-P4 candidates remain in
+`POST_W12_NEXT_INCREMENT_PLAN.md`.
 
 The Desktop discovery/error and Diff/Timeline slices remain recorded in
 [PHASE1_CONTRACTS.md](docs/desktop/PHASE1_CONTRACTS.md).

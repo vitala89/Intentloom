@@ -14,9 +14,10 @@ prerequisite is not itself D4). **DESKTOP MUTATION D4 IMPLEMENTED AND
 MERGED** (PR #534, `feat/neutron-desktop-approve-and-apply`, merge
 `0da5612e45d99454eb765cb370a058187ef47f94`). D4 is a separately authorized
 host Approve & Apply flow. It does not change this brief's historical N6
-read-only milestone. D5 Slice 1 status recovery is on a review branch and is
-not D5 complete. Reconnect UX, verification retry, and Undo remain
-unauthorized.
+read-only milestone. **D5 Slice 1 implemented and merged** (PR #537, merge
+`866c96ab6fd1a1265dfc46a8840117baaaebd0b6`): read-only
+`intentloom.neutron.mutation.status.get.v1`. It is not D5 complete.
+Reconnect UX, verification retry, and Undo remain unauthorized.
 `mutationAllowed` remains `false`. Streaming and daemon event push remain
 unavailable. No event bridge or polling loop was added; Slice 3 uses
 request/response graph get/execute/cancel snapshots. Latest graph per session
@@ -45,7 +46,7 @@ Related:
 - [`NEUTRON_N5_EXECUTABLE_TASK_GRAPH_BRIEF.md`](NEUTRON_N5_EXECUTABLE_TASK_GRAPH_BRIEF.md)
 - [`NEUTRON_MUTATION_ROUTING_BRIEF.md`](NEUTRON_MUTATION_ROUTING_BRIEF.md)
 - [`NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md`](NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md)
-  (D1 transport merged PR #516; D2 exact review UX merged PR #519; D3 host approval-intent merged PR #522; DL merged PR #525; durable-state prerequisite merged PR #528; D4 host Approve & Apply merged PR #534; D5 not authorized)
+  (D1 transport merged PR #516; D2 exact review UX merged PR #519; D3 host approval-intent merged PR #522; DL merged PR #525; durable-state prerequisite merged PR #528; D4 host Approve & Apply merged PR #534; D5 Slice 1 status recovery merged PR #537; D5 Slice 2 not authorized)
 - [`ADR-0042`](../decisions/ADR-0042-desktop-stack-and-daemon-distribution.md)
 - [`ADR-0053`](../decisions/ADR-0053-approved-apply-transactional-mutation.md)
 - [`ADR-0055`](../decisions/ADR-0055-neutron-n2-first-model-adapter.md)
