@@ -10,8 +10,11 @@ export const RECOVERY_PHASES = [
   "uncertain",
   "recovering",
   "authoritative",
+  "verifying",
   "integrity",
 ] as const;
+
+export type VerificationRetryNotice = "succeeded" | "failed" | "incomplete";
 
 export type NeutronMutationRecoveryPhase = (typeof RECOVERY_PHASES)[number];
 
@@ -33,6 +36,7 @@ export interface NeutronMutationRecoveryModel {
   readonly isolatedNotice: boolean;
   readonly generation: number;
   readonly resume: "uncertain" | "authoritative" | "integrity" | null;
+  readonly verificationNotice: VerificationRetryNotice | null;
 }
 
 export function idleRecoveryModel(): NeutronMutationRecoveryModel {
@@ -44,6 +48,7 @@ export function idleRecoveryModel(): NeutronMutationRecoveryModel {
     isolatedNotice: false,
     generation: 0,
     resume: null,
+    verificationNotice: null,
   };
 }
 
@@ -119,6 +124,7 @@ export function beginPending(
     isolatedNotice: false,
     generation: model.generation + 1,
     resume: null,
+    verificationNotice: null,
   };
 }
 
@@ -135,6 +141,7 @@ export function recordDirectResult(
     status: null,
     resume: null,
     identity: withTransaction(model.identity, direct.transactionId),
+    verificationNotice: null,
   };
 }
 
@@ -156,6 +163,7 @@ export function markUncertain(
     direct: null,
     status: null,
     resume: null,
+    verificationNotice: null,
   };
 }
 
@@ -196,6 +204,7 @@ export function recordStatusResult(
     direct: null,
     status,
     resume: null,
+    verificationNotice: null,
   };
 }
 
@@ -211,6 +220,7 @@ export function markIntegrity(
     direct: null,
     status: null,
     resume: null,
+    verificationNotice: null,
   };
 }
 
@@ -248,6 +258,7 @@ export function isolateRecovery(
     isolatedNotice: !isTerminalRecovery(model) || model.phase === "integrity",
     generation: model.generation + 1,
     resume: null,
+    verificationNotice: null,
   };
 }
 

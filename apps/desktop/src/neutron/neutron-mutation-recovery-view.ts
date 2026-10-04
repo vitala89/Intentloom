@@ -7,8 +7,13 @@ import {
   MUTATION_OTHER_UNRESOLVED_COPY,
   MUTATION_RESULT_UNKNOWN_COPY,
   MUTATION_STATUS_RECOVERING_COPY,
+  VERIFICATION_RETRY_FAILED_COPY,
+  VERIFICATION_RETRY_INCOMPLETE_COPY,
+  VERIFICATION_RETRY_PENDING_COPY,
+  VERIFICATION_RETRY_SUCCEEDED_COPY,
   mutationStatusPresentation,
 } from "./neutron-mutation-recovery-copy.js";
+import { verificationRetryEligible } from "./neutron-mutation-verification-retry-model.js";
 import {
   blocksAnotherApply,
   type NeutronMutationRecoveryModel,
@@ -20,6 +25,8 @@ export interface MutationRecoveryView {
   readonly alertCopy: string | null;
   readonly refreshVisible: boolean;
   readonly refreshDisabled: boolean;
+  readonly retryVisible: boolean;
+  readonly retryDisabled: boolean;
   readonly isolatedNotice: string | null;
 }
 
@@ -65,6 +72,8 @@ function blockedByOther(input: {
     alertCopy: null,
     refreshVisible: false,
     refreshDisabled: true,
+    retryVisible: false,
+    retryDisabled: true,
     isolatedNotice: null,
   };
 }
@@ -90,6 +99,7 @@ function projectOwned(input: {
   if (phase === "uncertain") return uncertainView(input.daemonReady);
   if (phase === "recovering") return recoveringView();
   if (phase === "integrity") return integrityView(input.daemonReady);
+  if (phase === "verifying") return verifyingView();
   return authoritativeView(input);
 }
 
@@ -109,6 +119,8 @@ function idleView(input: {
     alertCopy: null,
     refreshVisible: false,
     refreshDisabled: true,
+    retryVisible: false,
+    retryDisabled: true,
     isolatedNotice: null,
   };
 }
@@ -120,6 +132,8 @@ function uncertainView(daemonReady: boolean): MutationRecoveryView {
     alertCopy: null,
     refreshVisible: daemonReady,
     refreshDisabled: false,
+    retryVisible: false,
+    retryDisabled: true,
     isolatedNotice: null,
   };
 }
@@ -131,6 +145,8 @@ function recoveringView(): MutationRecoveryView {
     alertCopy: null,
     refreshVisible: true,
     refreshDisabled: true,
+    retryVisible: false,
+    retryDisabled: true,
     isolatedNotice: null,
   };
 }
@@ -142,6 +158,21 @@ function integrityView(daemonReady: boolean): MutationRecoveryView {
     alertCopy: MUTATION_INTEGRITY_COPY,
     refreshVisible: daemonReady,
     refreshDisabled: false,
+    retryVisible: false,
+    retryDisabled: true,
+    isolatedNotice: null,
+  };
+}
+
+function verifyingView(): MutationRecoveryView {
+  return {
+    applyDisabled: true,
+    statusCopy: VERIFICATION_RETRY_PENDING_COPY,
+    alertCopy: null,
+    refreshVisible: false,
+    refreshDisabled: true,
+    retryVisible: true,
+    retryDisabled: true,
     isolatedNotice: null,
   };
 }
@@ -158,6 +189,8 @@ function authoritativeView(input: {
     alertCopy: presented.role === "alert" ? presented.text : null,
     refreshVisible: refreshable && input.daemonReady,
     refreshDisabled: false,
+    retryVisible: verificationRetryEligible(input.model) && input.daemonReady,
+    retryDisabled: false,
     isolatedNotice: null,
   };
 }
@@ -166,6 +199,8 @@ function presentAuthoritative(model: NeutronMutationRecoveryModel): {
   readonly role: "status" | "alert";
   readonly text: string;
 } {
+  const notice = verificationNoticeCopy(model.verificationNotice);
+  if (notice !== null) return { role: "status", text: notice };
   if (model.direct !== null) {
     return { role: "status", text: approveApplyResultCopy(model.direct) };
   }
@@ -173,6 +208,15 @@ function presentAuthoritative(model: NeutronMutationRecoveryModel): {
     return { role: "status", text: "The host reported a mutation result." };
   }
   return mutationStatusPresentation(model.status);
+}
+
+function verificationNoticeCopy(
+  notice: NeutronMutationRecoveryModel["verificationNotice"],
+): string | null {
+  if (notice === "succeeded") return VERIFICATION_RETRY_SUCCEEDED_COPY;
+  if (notice === "failed") return VERIFICATION_RETRY_FAILED_COPY;
+  if (notice === "incomplete") return VERIFICATION_RETRY_INCOMPLETE_COPY;
+  return null;
 }
 
 function canRefresh(model: NeutronMutationRecoveryModel): boolean {
@@ -191,6 +235,8 @@ function statusView(statusCopy: string | null): MutationRecoveryView {
     alertCopy: null,
     refreshVisible: false,
     refreshDisabled: true,
+    retryVisible: false,
+    retryDisabled: true,
     isolatedNotice: null,
   };
 }

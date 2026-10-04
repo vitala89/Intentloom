@@ -10,6 +10,7 @@ import { invoke } from "@tauri-apps/api/core";
 import { DesktopBridgeError } from "./desktop-client.js";
 import type { NeutronMutationRecoveryPorts } from "./neutron/neutron-mutation-recovery-controller.js";
 import { neutronMutationStatusDesktopMethods } from "./desktop-client-neutron-status.js";
+import { neutronMutationVerificationRetryDesktopMethods } from "./desktop-client-neutron-verification-retry.js";
 
 const APPROVE_APPLY_COMMAND = "approve_and_apply_neutron_mutation" as const;
 
@@ -65,6 +66,7 @@ function approveApplyBridgeError(error: unknown): DesktopBridgeError {
 export function neutronMutationRecoveryDesktopPorts(): NeutronMutationRecoveryPorts {
   const apply = neutronApproveApplyDesktopMethods();
   const status = neutronMutationStatusDesktopMethods();
+  const retry = neutronMutationVerificationRetryDesktopMethods();
   return {
     getStatus: (identity) =>
       status.getNeutronMutationStatus(
@@ -74,6 +76,16 @@ export function neutronMutationRecoveryDesktopPorts(): NeutronMutationRecoveryPo
         identity.graphId,
         identity.proposalId,
         identity.transactionId,
+      ),
+    retryVerification: (identity, signal) =>
+      retry.retryNeutronMutationVerification(
+        identity.root,
+        identity.sessionId,
+        identity.projectId,
+        identity.graphId,
+        identity.proposalId,
+        identity.transactionId,
+        signal,
       ),
     submitMutation: (identity) =>
       apply.approveAndApplyNeutronMutation(

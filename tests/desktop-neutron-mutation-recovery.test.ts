@@ -380,6 +380,9 @@ describe("Desktop mutation reconnect status recovery", () => {
         await approve(ready);
         throw new Error("response lost");
       },
+      retryVerification: async () => {
+        throw new Error("verification retry is not part of status recovery");
+      },
       getStatus: (identity) => {
         calls.status += 1;
         expect(identity.transactionId).toBeUndefined();
@@ -459,6 +462,9 @@ function fake(input: {
         if (input.loseResponse === true) throw new Error("disconnected");
         return input.direct ?? appliedResult("verified");
       },
+      retryVerification: async () => {
+        throw new Error("verification retry is not part of status recovery");
+      },
       getStatus: async (identity) => {
         calls.status += 1;
         calls.identities.push(
@@ -519,6 +525,7 @@ function viewText(
   return renderToStaticMarkup(
     createElement(NeutronApproveApplyControl, {
       onRefresh: () => undefined,
+      onRetry: () => undefined,
       onSubmit: () => undefined,
       view: projectMutationRecoveryView({
         currentness: "current",

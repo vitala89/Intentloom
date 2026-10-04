@@ -100,6 +100,7 @@ function markup(
   return renderToStaticMarkup(
     createElement(NeutronApproveApplyControl, {
       onRefresh: () => undefined,
+      onRetry: () => undefined,
       onSubmit: () => undefined,
       view: projectMutationRecoveryView({
         currentness,

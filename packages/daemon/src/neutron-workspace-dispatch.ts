@@ -17,6 +17,10 @@ import {
   dispatchNeutronMutationStatusRequest,
   isNeutronMutationStatusRequest,
 } from "./neutron-mutation-status-handlers.js";
+import {
+  dispatchNeutronMutationVerificationRetryRequest,
+  isNeutronMutationVerificationRetryRequest,
+} from "./neutron-mutation-verification-retry-handlers.js";
 import { resolveDaemonProjectRoot } from "./daemon-canonical-root.js";
 
 export async function dispatchNeutronWorkspaceRequest(
@@ -40,6 +44,24 @@ export async function dispatchNeutronWorkspaceRequest(
       options.enforceCanonicalRoots,
       canonicalProjectRoot,
     );
+  if (isNeutronMutationVerificationRetryRequest(request)) {
+    const retryResponse = await dispatchNeutronMutationVerificationRetryRequest(
+      request,
+      options,
+      resolveRoot,
+    );
+    if (!retryResponse) {
+      failure(
+        socket,
+        -32601,
+        "unsupported neutron mutation verification retry method",
+        "unsupported_capability",
+      );
+      return true;
+    }
+    response(socket, retryResponse);
+    return true;
+  }
   if (isNeutronMutationStatusRequest(request)) {
     const statusResponse = await dispatchNeutronMutationStatusRequest(
       request,

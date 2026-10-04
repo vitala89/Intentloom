@@ -90,6 +90,9 @@ export function NeutronMutationReviewPanel({
               onRefresh={() => {
                 void recovery.refresh();
               }}
+              onRetry={() => {
+                void recovery.retryVerification();
+              }}
               onSubmit={(request) => {
                 void recovery.submit(request);
               }}
