@@ -41,13 +41,19 @@ import {
   neutronMutationStatusCapabilities,
   type NeutronMutationStatusDaemonOptions,
 } from "./neutron-mutation-status-handlers.js";
+import {
+  bindNeutronMutationVerificationRetryHandlers,
+  neutronMutationVerificationRetryCapabilities,
+  type NeutronMutationVerificationRetryDaemonOptions,
+} from "./neutron-mutation-verification-retry-handlers.js";
 
 export interface NeutronDaemonOptions
   extends
     NeutronGraphDaemonOptions,
     NeutronMutationReviewDaemonOptions,
     NeutronMutationApproveAndApplyDaemonOptions,
-    NeutronMutationStatusDaemonOptions {
+    NeutronMutationStatusDaemonOptions,
+    NeutronMutationVerificationRetryDaemonOptions {
   readonly neutronSessionCreate?: (
     request: NeutronSessionCreateRequest,
   ) => Promise<Omit<NeutronSessionCreateResponse["result"], "protocolVersion">>;
@@ -108,6 +114,7 @@ export function neutronSessionCapabilities(
     ...neutronMutationReviewCapabilities(options),
     ...neutronMutationApproveAndApplyCapabilities(options),
     ...neutronMutationStatusCapabilities(options),
+    ...neutronMutationVerificationRetryCapabilities(options),
   ];
 }
 
@@ -149,6 +156,7 @@ export function bindNeutronSessionHandlers(
     ...bindNeutronMutationReviewHandlers(runtime),
     ...bindNeutronMutationApproveAndApplyHandlers(runtime),
     ...bindNeutronMutationStatusHandlers(runtime),
+    ...bindNeutronMutationVerificationRetryHandlers(runtime),
   };
 }
 

@@ -174,6 +174,8 @@ export * from "./neutron-mutation-approve-apply-rpc.js";
 export * from "./neutron-mutation-approve-apply-result.js";
 export * from "./neutron-mutation-status-rpc.js";
 export * from "./neutron-mutation-status-result.js";
+export * from "./neutron-mutation-verification-retry-rpc.js";
+export * from "./neutron-mutation-verification-retry-result.js";
 export * from "./workspace-slice-daemon-parse.js";
 export { ProtocolValidationError } from "./protocol-validation-error.js";
 export { WORKSPACE_DAEMON_REQUEST_METHODS } from "./workspace-daemon-methods.js";

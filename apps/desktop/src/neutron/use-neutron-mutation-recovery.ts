@@ -20,6 +20,8 @@ export function useNeutronMutationRecovery(input: {
     request: NeutronMutationSubmitInput,
   ) => Promise<NeutronMutationRecoveryModel>;
   readonly refresh: () => Promise<NeutronMutationRecoveryModel>;
+  readonly retryVerification: () => Promise<NeutronMutationRecoveryModel>;
+  readonly cancelVerification: () => void;
 } {
   const controllerRef = useRef<NeutronMutationRecoveryController | null>(null);
   if (controllerRef.current === null) {
@@ -78,5 +80,16 @@ export function useNeutronMutationRecovery(input: {
       }),
     [controller, publish],
   );
-  return { model, refresh, submit };
+  const retryVerification = useCallback(
+    () =>
+      controller.retryVerification().then((next) => {
+        publish(next);
+        return next;
+      }),
+    [controller, publish],
+  );
+  const cancelVerification = useCallback(() => {
+    controller.cancelVerification();
+  }, [controller]);
+  return { cancelVerification, model, refresh, retryVerification, submit };
 }

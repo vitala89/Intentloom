@@ -8,6 +8,7 @@ mod method_allowlist;
 mod native_paths;
 mod neutron_approve_apply;
 mod neutron_mutation_status;
+mod neutron_mutation_verification_retry;
 mod runtime_paths;
 mod sidecar_launch;
 
@@ -20,6 +21,7 @@ use commands::{
 use daemon_runtime::DaemonRuntime;
 use neutron_approve_apply::approve_and_apply_neutron_mutation;
 use neutron_mutation_status::get_neutron_mutation_status;
+use neutron_mutation_verification_retry::retry_neutron_mutation_verification;
 
 fn main() {
     let runtime = DaemonRuntime::default();
@@ -41,6 +43,7 @@ fn main() {
             get_neutron_mutation_review,
             approve_and_apply_neutron_mutation,
             get_neutron_mutation_status,
+            retry_neutron_mutation_verification,
             invoke_specialized_pack_preview_request,
             invoke_specialized_pack_activate_request,
         ])

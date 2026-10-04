@@ -30,6 +30,7 @@ import { bindNeutronSessionReviewOperations } from "./neutron-session-runtime-re
 import { bindNeutronSessionApprovalOperations } from "./neutron-session-runtime-approval.js";
 import { bindNeutronSessionApproveApplyOperations } from "./neutron-session-runtime-approve-apply.js";
 import { bindNeutronSessionStatusOperations } from "./neutron-session-runtime-status.js";
+import { bindNeutronSessionVerificationRetryOperations } from "./neutron-session-runtime-verification-retry.js";
 import { neutronHostDurableStateFromOptions } from "./neutron-host-durable-state.js";
 import type {
   NeutronSessionRuntime,
@@ -237,6 +238,13 @@ export function createNeutronSessionRuntime(
 
     ...bindNeutronSessionStatusOperations({
       durableStateDirectory: hostDurableState?.durableStateDirectory,
+      sessions,
+    }),
+
+    ...bindNeutronSessionVerificationRetryOperations({
+      durableStateDirectory: hostDurableState?.durableStateDirectory,
+      fs,
+      now,
       sessions,
     }),
 

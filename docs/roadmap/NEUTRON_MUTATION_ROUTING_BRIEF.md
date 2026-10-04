@@ -20,17 +20,18 @@ proposal/review integration with host-only graph-linked Apply composition.
 materialization and end-to-end proposal capability clamping in production
 session composition. Mutation-routing Slice 5 proposal/review integration is
 **security-corrected / complete** for authorized scope. Desktop host Approve &
-Apply is the separately merged D4 operation. D5 Slice 2 reconnect UX is
-implemented on branch awaiting maintainer review. Desktop verification
-retry and host rollback execution remain unauthorized.
+Apply is the separately merged D4 operation. **DESKTOP MUTATION D5 COMPLETE**
+(PR #540). Post-D5 verification retry is verification-only. Host rollback
+execution remains unauthorized.
 
 The Slice 3 security review remains the historical **NO-GO** for Apply on
 pre-2.5 contracts:
 [`NEUTRON_MUTATION_SLICE3_SECURITY_REVIEW.md`](NEUTRON_MUTATION_SLICE3_SECURITY_REVIEW.md).
 
-Write tools, generic shell, Desktop verification retry UX, host rollback
-execution / Undo, optional N3 Slice 5, and P4l17 remain
-unauthorized until a later explicit maintainer grant. N6 Slices 1–5
+Write tools, generic shell, host rollback execution / Undo, optional N3
+Slice 5, and P4l17 remain unauthorized until a later explicit maintainer
+grant. Post-D5 verification retry is the separate verification-only
+operation and is not Apply. N6 Slices 1–5
 read-only Desktop are implemented separately. Desktop mutation host **D1**
 (read-only authoritative review transport; PR #516) is implemented; it does
 **not** expand mutation-routing write authority, Approve/Apply, or N4 tools.
@@ -46,9 +47,9 @@ renderer sends identity fields only; `mutationAllowed` remains literal
 `866c96ab6fd1a1265dfc46a8840117baaaebd0b6`; final audited head
 `c366d9f7d8d27f2a6f92b328ee775e1ceab53381`): read-only
 `intentloom.neutron.mutation.status.get.v1` recovers the durable Slice 3.1
-outcome after a lost D4 response. D5 Slice 2 reconnect UX is implemented
-on branch awaiting maintainer review. It is not D5 complete. Verification
-retry and Undo remain unauthorized.
+outcome after a lost D4 response. **DESKTOP MUTATION D5 COMPLETE** (Slice 2
+PR #540). Post-D5 verification retry is verification-only. Undo remains
+unauthorized.
 Canon:
 [`NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md`](NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md).
 
@@ -664,8 +665,8 @@ not that justification.
 ## 22. Implementation slices
 
 Derived from gaps above. Slices 1–5 are implemented. Desktop host Approve &
-Apply is merged as D4. D5 Slice 2 reconnect UX is implemented on branch
-awaiting maintainer review. Desktop verification retry and host rollback
+Apply is merged as D4. **DESKTOP MUTATION D5 COMPLETE** (PR #540). Post-D5
+verification retry is verification-only. Host rollback
 execution remain unauthorized. Desktop host-flow brief:
 [`NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md`](NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md).
 See

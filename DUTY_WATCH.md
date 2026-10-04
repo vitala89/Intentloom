@@ -37,11 +37,42 @@ COMPLETE** (implementation PR #534, merge
 `d62b10a67051fc0f5f1ccb4d8a863c69bca0b1c8`). **D5 SLICE 1 IMPLEMENTED AND
 MERGED** (implementation PR #537, merge
 `866c96ab6fd1a1265dfc46a8840117baaaebd0b6`; handoff PR #539, merge
-`6b8c64e06a8d7e546bfa0566592f33790f5a7fb4`). **D5 SLICE 2 IMPLEMENTED ON
-BRANCH AWAITING MAINTAINER REVIEW**. Not D5 complete. `mutationAllowed`
-remains literal `false`. N4 remains the seven read-only tools. Verification
-retry, host rollback execution / Undo, optional N3 Slice 5, P4l17, and any
-N4 mutation or status tool remain unauthorized. Do not auto-merge.
+`6b8c64e06a8d7e546bfa0566592f33790f5a7fb4`). **DESKTOP MUTATION D5 COMPLETE** (Slice 2 PR #540, merge
+`bb9255a79229d9a64d611ce644c0f75caaec74bf`; final audited head
+`a0c029f62c30008dde416f5f93847fca45279e0d`). Post-D5 verification recovery
+is implemented on branch `feat/neutron-mutation-verification-retry` and is
+awaiting maintainer review. It retries Slice 4 verification only.
+`mutationAllowed` remains literal `false`. N4 remains the seven read-only
+tools. Undo, rollback execution, optional N3 Slice 5, P4l17, and any N4
+mutation or verification tool remain unauthorized. Do not auto-merge.
+
+### 2026-10-04, Post-D5 verification recovery — verification-only retry
+
+- **Status:** **POST-D5 VERIFICATION RECOVERY V1 IMPLEMENTED ON BRANCH
+  AWAITING MAINTAINER REVIEW.** D5 is complete. Do not auto-merge. Do not
+  start Undo.
+- **Branch:** `feat/neutron-mutation-verification-retry`
+- **Starting main:** `bb9255a79229d9a64d611ce644c0f75caaec74bf` (PR #540
+  merge). Local checkout before fast-forward was
+  `6b8c64e06a8d7e546bfa0566592f33790f5a7fb4`.
+- **D5:** Slice 2 exit criteria are on main: read-only `status.get`,
+  response-lost recovery, reconnect UX, applied versus verified,
+  reconciliation presentation, and no Apply retry.
+- **Operation:** `intentloom.neutron.mutation.verification.retry.v1`
+  (`neutron.mutation.verification.retry`, capability `read-only`). Dedicated
+  Desktop command `retry_neutron_mutation_verification`. It is not on
+  `invoke_neutron_request` and it is not an N4 tool. It updates durable
+  verification metadata and has zero project-write authority. The taxonomy
+  has no class between `read-only` and project-write `mutating`.
+- **Eligibility:** canonical record `state=applied`, `applied: true`, and
+  verification `verification-failed` or `verification-incomplete`.
+  `reconciliation-required`, verified, claimed, executing,
+  failed-before-write, unknown, and corrupt state fail closed.
+- **Lookup:** the D5 proposal-index and Slice 3.1 record. Identity is
+  `root`, `sessionId`, `projectId`, `graphId`, `proposalId`, and optional
+  `transactionId`. Unknown keys are rejected.
+- **Not done:** Undo, rollback execution, Apply retry, a new approval, an
+  N4 verification tool, Local AI, N3 Slice 5, and P4l17.
 
 ### 2026-10-03, Desktop Neutron reconnect status recovery — D5 Slice 2 implementation
 

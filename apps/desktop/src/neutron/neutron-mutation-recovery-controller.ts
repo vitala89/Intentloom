@@ -1,5 +1,6 @@
 import type { NeutronMutationApproveAndApplyResult } from "@intentloom/protocol";
 import type { NeutronMutationStatusResult } from "@intentloom/protocol";
+import type { NeutronMutationVerificationRetryResult } from "@intentloom/protocol";
 import type { NeutronMutationReviewScope } from "./neutron-mutation-review-state.js";
 import { isIntegrityStatusError } from "./neutron-mutation-recovery-copy.js";
 import {
@@ -18,6 +19,12 @@ import {
   type NeutronMutationRecoveryIdentity,
   type NeutronMutationRecoveryModel,
 } from "./neutron-mutation-recovery-model.js";
+import {
+  beginVerifying,
+  markVerificationIntegrity,
+  recordVerificationRetry,
+  restoreAfterVerificationRetry,
+} from "./neutron-mutation-verification-retry-model.js";
 
 export interface NeutronMutationRecoveryPorts {
   submitMutation(
@@ -26,6 +33,10 @@ export interface NeutronMutationRecoveryPorts {
   getStatus(
     identity: NeutronMutationRecoveryIdentity,
   ): Promise<NeutronMutationStatusResult>;
+  retryVerification(
+    identity: NeutronMutationRecoveryIdentity,
+    signal?: AbortSignal,
+  ): Promise<NeutronMutationVerificationRetryResult>;
 }
 
 export interface NeutronMutationSubmitInput {
@@ -48,6 +59,8 @@ export interface NeutronMutationRecoveryController {
     input: NeutronMutationSubmitInput,
   ) => Promise<NeutronMutationRecoveryModel>;
   readonly refresh: () => Promise<NeutronMutationRecoveryModel>;
+  readonly retryVerification: () => Promise<NeutronMutationRecoveryModel>;
+  readonly cancelVerification: () => void;
 }
 
 interface RecoverySession {
@@ -56,6 +69,7 @@ interface RecoverySession {
   daemonReady: boolean;
   reconnectWhilePending: boolean;
   ports: NeutronMutationRecoveryPorts;
+  retryAbort: AbortController | null;
 }
 
 export function createNeutronMutationRecovery(
@@ -68,6 +82,7 @@ export function createNeutronMutationRecovery(
     daemonReady: options.daemonReady === true,
     reconnectWhilePending: false,
     ports,
+    retryAbort: null,
   };
   let tail: Promise<void> = Promise.resolve();
   const enqueue = (task: () => Promise<void>) => {
@@ -84,6 +99,10 @@ export function createNeutronMutationRecovery(
     setDaemonReady: (ready) => enqueue(() => noteDaemonReady(session, ready)),
     submit: (input) => enqueue(() => submitMutation(session, input)),
     refresh: () => enqueue(() => readStatus(session, false)),
+    retryVerification: () => enqueue(() => retryVerification(session)),
+    cancelVerification: () => {
+      session.retryAbort?.abort();
+    },
   };
 }
 
@@ -158,6 +177,36 @@ async function readStatus(
     session.model = isIntegrityStatusError(error)
       ? markIntegrity(session.model, generation)
       : restoreAfterStatusTransport(session.model, generation);
+  }
+}
+
+async function retryVerification(session: RecoverySession): Promise<void> {
+  const identity = session.model.identity;
+  if (
+    identity === null ||
+    !session.daemonReady ||
+    !recoveryScopeMatches(identity, session.scope)
+  ) {
+    return;
+  }
+  const next = beginVerifying(session.model);
+  if (next === null) return;
+  session.model = next;
+  const generation = session.model.generation;
+  const abort = new AbortController();
+  session.retryAbort = abort;
+  try {
+    const result = await session.ports.retryVerification(
+      identity,
+      abort.signal,
+    );
+    session.model = recordVerificationRetry(session.model, generation, result);
+  } catch (error) {
+    session.model = isIntegrityStatusError(error)
+      ? markVerificationIntegrity(session.model, generation)
+      : restoreAfterVerificationRetry(session.model, generation);
+  } finally {
+    if (session.retryAbort === abort) session.retryAbort = null;
   }
 }
 

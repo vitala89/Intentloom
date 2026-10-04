@@ -17,7 +17,7 @@ export function bindNeutronSessionStatusOperations(input: {
 } {
   return {
     async getNeutronMutationStatus(query, signal) {
-      const mismatch = liveBindingOutcome(input.sessions, query);
+      const mismatch = neutronMutationLiveBindingOutcome(input.sessions, query);
       if (mismatch !== undefined) return mismatch;
       return readNeutronMutationStatus({
         directory: input.durableStateDirectory,
@@ -35,7 +35,7 @@ export function bindNeutronSessionStatusOperations(input: {
   };
 }
 
-function liveBindingOutcome(
+export function neutronMutationLiveBindingOutcome(
   sessions: Map<string, StoredNeutronSession>,
   query: NeutronMutationStatusQuery,
 ): NeutronMutationStatusResult | undefined {
