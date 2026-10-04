@@ -17,6 +17,7 @@ import { AdoptionPreviewPage } from "./views/AdoptionPreviewPage.js";
 import { FeatureIntentView } from "./views/FeatureIntentView.js";
 import { BoundedExecutionView } from "./views/BoundedExecutionView.js";
 import { ContinuousLoopView } from "./views/ContinuousLoopView.js";
+import { desktopDaemonAuthenticated } from "./desktop-daemon-ready.js";
 import { NeutronWorkspace } from "./neutron/NeutronWorkspace.js";
 import { ExternalSpecializedPackPreviewPage } from "./views/ExternalSpecializedPackPreviewPage.js";
 import { OverviewView } from "./views/OverviewView.js";
@@ -157,6 +158,12 @@ export function WorkspaceContent({
   if (activeView === "Neutron") {
     return (
       <NeutronWorkspace
+        daemonReady={desktopDaemonAuthenticated({
+          connection,
+          daemonInfo,
+          inspectStatus,
+          isConnecting,
+        })}
         onSelectProject={() => onRequestProjectSelect()}
         root={root}
       />

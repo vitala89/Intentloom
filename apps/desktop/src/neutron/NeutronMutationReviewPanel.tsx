@@ -1,10 +1,14 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
 import type { NeutronMutationReviewFileView } from "@intentloom/protocol";
 import { Button } from "../design/components/core/Button.js";
 import { Card } from "../design/components/layout/Card.js";
 import { EmptyState } from "../design/components/states/EmptyState.js";
 import { StatusChip } from "../design/components/status/StatusChip.js";
-import { NeutronApproveApplyAction } from "./NeutronApproveApplyControl.js";
+import {
+  NeutronMutationReviewApply,
+  mutationRecoveryScopeNotice,
+} from "./NeutronApproveApplyControl.js";
+import { useNeutronMutationRecovery } from "./use-neutron-mutation-recovery.js";
 import { NeutronMutationReviewDiff } from "./NeutronMutationReviewDiff.js";
 import { NeutronMutationReviewFiles } from "./NeutronMutationReviewFiles.js";
 import { NeutronMutationReviewSelector } from "./NeutronMutationReviewSelector.js";
@@ -25,15 +29,18 @@ import { useNeutronMutationReview } from "./use-neutron-mutation-review.js";
 
 export interface NeutronMutationReviewPanelProps {
   readonly active: boolean;
+  readonly daemonReady?: boolean;
   readonly scope: NeutronMutationReviewScope | null;
   readonly port?: NeutronMutationReviewPort;
 }
 
 export function NeutronMutationReviewPanel({
   active,
+  daemonReady = false,
   scope,
   port,
 }: NeutronMutationReviewPanelProps) {
+  const recovery = useNeutronMutationRecovery({ daemonReady, scope });
   const review = useNeutronMutationReview({
     active,
     scope,
@@ -59,16 +66,36 @@ export function NeutronMutationReviewPanel({
     >
       <StatusChip label="Exact review" tone="neutral" />
       <p>{MUTATION_REVIEW_INSPECTION_COPY}</p>
+      <RecoveryScopeNotice model={recovery.model} />
       <NeutronMutationReviewView
         state={review.state}
         file={file}
-        scope={scope}
         headingRef={(node) => {
           headingRef.current = node;
         }}
         onSelectProposal={review.selectProposal}
         onSelectFile={review.selectFile}
         onClose={review.closeReview}
+        apply={
+          scope === null || review.state.review === null ? null : (
+            <NeutronMutationReviewApply
+              daemonReady={daemonReady}
+              model={recovery.model}
+              review={review.state.review}
+              reviewReady={
+                review.state.reviewPhase === "ready" &&
+                review.state.listPhase === "ready"
+              }
+              scope={scope}
+              onRefresh={() => {
+                void recovery.refresh();
+              }}
+              onSubmit={(request) => {
+                void recovery.submit(request);
+              }}
+            />
+          )
+        }
       />
     </Card>
   );
@@ -81,7 +108,7 @@ export function NeutronMutationReviewView({
   onSelectProposal,
   onSelectFile,
   onClose,
-  scope = null,
+  apply = null,
 }: {
   readonly state: NeutronMutationReviewUiState;
   readonly file: NeutronMutationReviewFileView | null;
@@ -89,7 +116,7 @@ export function NeutronMutationReviewView({
   readonly onSelectProposal: (proposalId: string) => void;
   readonly onSelectFile: (path: string) => void;
   readonly onClose: () => void;
-  readonly scope?: NeutronMutationReviewScope | null;
+  readonly apply?: ReactNode;
 }) {
   if (state.listPhase === "loading" || state.listPhase === "idle") {
     return <p role="status">Loading mutation reviews.</p>;
@@ -129,15 +156,7 @@ export function NeutronMutationReviewView({
             onSelect={onSelectFile}
           />
           <NeutronMutationReviewDiff file={file} />
-          {scope === null || state.review === null ? null : (
-            <NeutronApproveApplyAction
-              review={state.review}
-              reviewReady={
-                state.reviewPhase === "ready" && state.listPhase === "ready"
-              }
-              scope={scope}
-            />
-          )}
+          {apply}
           <Button variant="ghost" onClick={onClose}>
             Close review
           </Button>
@@ -145,6 +164,16 @@ export function NeutronMutationReviewView({
       )}
     </div>
   );
+}
+
+function RecoveryScopeNotice({
+  model,
+}: {
+  readonly model: Parameters<typeof mutationRecoveryScopeNotice>[0];
+}) {
+  const notice = mutationRecoveryScopeNotice(model);
+  if (notice === null) return null;
+  return <p role="status">{notice}</p>;
 }
 
 function AwaitingReview({

@@ -787,8 +787,13 @@ read-only tools. **D5 Slice 1 implemented and merged** (PR #537, merge
 `c366d9f7d8d27f2a6f92b328ee775e1ceab53381`). Read-only
 `intentloom.neutron.mutation.status.get.v1` recovers the Slice 3.1 durable
 transaction outcome after a lost D4 response, through a metadata-only
-`proposal-index` in the existing `durableStateDirectory`. It is not D5
-complete. D5 Slice 2 reconnect UX, verification retry, and Undo remain
+`proposal-index` in the existing `durableStateDirectory`. **D5 Slice 2
+implemented on branch `feat/neutron-desktop-mutation-reconnect-recovery`,
+awaiting maintainer review** (starting main
+`6b8c64e06a8d7e546bfa0566592f33790f5a7fb4`, PR #539 merge). Desktop treats a
+lost Approve & Apply response as uncertain, then reads `status.get` once
+after the same-scope daemon connection is authenticated again. It does not
+retry Apply. It is not D5 complete. Verification retry and Undo remain
 unauthorized. Other post-P4 candidates remain in
 `POST_W12_NEXT_INCREMENT_PLAN.md`.
 

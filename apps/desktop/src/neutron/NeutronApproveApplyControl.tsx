@@ -1,76 +1,70 @@
-import type { NeutronMutationApproveAndApplyResult } from "@intentloom/protocol";
 import type { NeutronMutationReviewView } from "@intentloom/protocol";
 import { Button } from "../design/components/core/Button.js";
-import {
-  APPROVE_APPLY_LABEL,
-  approveApplyDisabledReason,
-  approveApplyResultCopy,
-} from "./neutron-approve-apply-copy.js";
+import { APPROVE_APPLY_LABEL } from "./neutron-approve-apply-copy.js";
+import { MUTATION_STATUS_REFRESH_LABEL } from "./neutron-mutation-recovery-copy.js";
 import type { NeutronMutationReviewScope } from "./neutron-mutation-review-state.js";
 import {
-  useNeutronApproveApply,
-  type NeutronApproveApplyPort,
-} from "./use-neutron-approve-apply.js";
+  isolatedRecoveryNotice,
+  projectMutationRecoveryView,
+  type MutationRecoveryView,
+} from "./neutron-mutation-recovery-view.js";
+import type { NeutronMutationRecoveryModel } from "./neutron-mutation-recovery-model.js";
+import type { NeutronMutationSubmitInput } from "./neutron-mutation-recovery-controller.js";
 
-export function NeutronApproveApplyAction({
-  scope,
+export function NeutronMutationReviewApply({
+  daemonReady,
+  model,
   review,
   reviewReady,
-  port,
+  scope,
+  onRefresh,
+  onSubmit,
 }: {
-  readonly scope: NeutronMutationReviewScope;
+  readonly daemonReady: boolean;
+  readonly model: NeutronMutationRecoveryModel;
   readonly review: NeutronMutationReviewView;
   readonly reviewReady: boolean;
-  readonly port?: NeutronApproveApplyPort;
+  readonly scope: NeutronMutationReviewScope;
+  readonly onRefresh: () => void;
+  readonly onSubmit: (input: NeutronMutationSubmitInput) => void;
 }) {
-  const action = useNeutronApproveApply({
-    graphId: review.graphId,
+  const view = projectMutationRecoveryView({
+    currentness: review.currentness,
+    daemonReady,
+    model,
     proposalId: review.proposalId,
-    scope,
-    ...(port === undefined ? {} : { port }),
+    reviewReady,
   });
   return (
     <NeutronApproveApplyControl
-      currentness={review.currentness}
-      error={action.error}
-      pending={action.pending}
-      result={action.result}
-      reviewReady={reviewReady}
-      settled={action.settled}
+      view={view}
+      onRefresh={onRefresh}
       onSubmit={() => {
-        void action.submit();
+        onSubmit({
+          graphId: review.graphId,
+          projectId: scope.projectId,
+          proposalId: review.proposalId,
+          root: scope.root,
+          sessionId: scope.sessionId,
+        });
       }}
     />
   );
 }
 
 export function NeutronApproveApplyControl({
-  currentness,
-  reviewReady,
-  pending,
-  settled,
-  result,
-  error,
+  view,
   onSubmit,
+  onRefresh,
 }: {
-  readonly currentness: NeutronMutationReviewView["currentness"] | null;
-  readonly reviewReady: boolean;
-  readonly pending: boolean;
-  readonly settled: boolean;
-  readonly result: NeutronMutationApproveAndApplyResult | null;
-  readonly error: string | null;
+  readonly view: MutationRecoveryView;
   readonly onSubmit: () => void;
+  readonly onRefresh: () => void;
 }) {
-  const reason = approveApplyDisabledReason({
-    currentness,
-    pending,
-    reviewReady,
-    settled,
-  });
   return (
     <div>
       <Button
-        disabled={reason !== null}
+        disabled={view.applyDisabled}
         mutation
         type="button"
         variant="danger"
@@ -78,11 +72,27 @@ export function NeutronApproveApplyControl({
       >
         {APPROVE_APPLY_LABEL}
       </Button>
-      {reason === null ? null : <p role="status">{reason}</p>}
-      {result === null ? null : (
-        <p role="status">{approveApplyResultCopy(result)}</p>
+      {view.statusCopy === null ? null : <p role="status">{view.statusCopy}</p>}
+      {view.alertCopy === null ? null : <p role="alert">{view.alertCopy}</p>}
+      {view.refreshVisible ? (
+        <Button
+          disabled={view.refreshDisabled}
+          type="button"
+          variant="secondary"
+          onClick={onRefresh}
+        >
+          {MUTATION_STATUS_REFRESH_LABEL}
+        </Button>
+      ) : null}
+      {view.isolatedNotice === null ? null : (
+        <p role="status">{view.isolatedNotice}</p>
       )}
-      {error === null ? null : <p role="alert">{error}</p>}
     </div>
   );
+}
+
+export function mutationRecoveryScopeNotice(
+  model: NeutronMutationRecoveryModel,
+): string | null {
+  return isolatedRecoveryNotice(model);
 }

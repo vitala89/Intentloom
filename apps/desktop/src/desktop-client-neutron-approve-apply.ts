@@ -8,6 +8,8 @@ import {
 } from "@intentloom/protocol";
 import { invoke } from "@tauri-apps/api/core";
 import { DesktopBridgeError } from "./desktop-client.js";
+import type { NeutronMutationRecoveryPorts } from "./neutron/neutron-mutation-recovery-controller.js";
+import { neutronMutationStatusDesktopMethods } from "./desktop-client-neutron-status.js";
 
 const APPROVE_APPLY_COMMAND = "approve_and_apply_neutron_mutation" as const;
 
@@ -58,6 +60,30 @@ function approveApplyBridgeError(error: unknown): DesktopBridgeError {
   }
   const message = error instanceof Error ? error.message : String(error);
   return new DesktopBridgeError(message);
+}
+
+export function neutronMutationRecoveryDesktopPorts(): NeutronMutationRecoveryPorts {
+  const apply = neutronApproveApplyDesktopMethods();
+  const status = neutronMutationStatusDesktopMethods();
+  return {
+    getStatus: (identity) =>
+      status.getNeutronMutationStatus(
+        identity.root,
+        identity.sessionId,
+        identity.projectId,
+        identity.graphId,
+        identity.proposalId,
+        identity.transactionId,
+      ),
+    submitMutation: (identity) =>
+      apply.approveAndApplyNeutronMutation(
+        identity.root,
+        identity.sessionId,
+        identity.projectId,
+        identity.graphId,
+        identity.proposalId,
+      ),
+  };
 }
 
 export function neutronApproveApplyDesktopMethods(
