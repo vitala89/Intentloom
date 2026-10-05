@@ -146,6 +146,8 @@ export const NEUTRON_MUTATION_APPROVE_AND_APPLY_METHOD =
   "intentloom.neutron.mutation.approveAndApply.v1" as const;
 export const NEUTRON_MUTATION_STATUS_GET_METHOD =
   "intentloom.neutron.mutation.status.get.v1" as const;
+export const NEUTRON_MUTATION_VERIFICATION_RETRY_METHOD =
+  "intentloom.neutron.mutation.verification.retry.v1" as const;
 
 export type JsonPrimitive = boolean | null | number | string;
 export type JsonValue = JsonPrimitive | JsonObject | readonly JsonValue[];

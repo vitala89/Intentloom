@@ -16,10 +16,14 @@
 
 **D5 SLICE 1 — AUTHORITATIVE STATUS RECOVERY: IMPLEMENTED AND MERGED** (PR #537)
 
-**D5 SLICE 2 — DESKTOP RECONNECT AND AUTHORITATIVE STATUS RECOVERY UX: IMPLEMENTED ON BRANCH AWAITING MAINTAINER REVIEW**
+**D5 SLICE 2 — DESKTOP RECONNECT AND AUTHORITATIVE STATUS RECOVERY UX: IMPLEMENTED AND MERGED** (PR #540)
 
-D5 is **not complete**. Verification retry, Undo, and rollback execution
-remain **not implemented and not authorized**.
+**DESKTOP MUTATION D5 COMPLETE**
+
+Verification retry is a separate post-D5 capability,
+`intentloom.neutron.mutation.verification.retry.v1`. It re-runs Slice 4
+verification for an already applied transaction and does not Apply, approve,
+or Undo. Undo and rollback execution remain unauthorized.
 
 This document is the canonical threat-reviewed design for the first safe
 Desktop mutation flow. **D1** (read-only review payload transport) is
@@ -50,9 +54,11 @@ implemented and merged (PR #537, merge
 `d62b10a67051fc0f5f1ccb4d8a863c69bca0b1c8`; initial head
 `0793cdc1624049dd477be07bc85d9fb6c5039816`; final audited head
 `c366d9f7d8d27f2a6f92b328ee775e1ceab53381`, which is not the merge SHA). It
-is not D5 complete. D5 Slice 2 reconnect UX is implemented on branch
-`feat/neutron-desktop-mutation-reconnect-recovery` and is awaiting
-maintainer review. Verification retry and Undo remain unauthorized.
+**D5 is complete.** Slice 2 reconnect UX is merged (PR #540, merge
+`bb9255a79229d9a64d611ce644c0f75caaec74bf`; final audited head
+`a0c029f62c30008dde416f5f93847fca45279e0d`). Post-D5 verification retry is
+a separate operation and does not change the D5 security model. Undo remains
+unauthorized.
 
 Evidence baseline: `origin/main` @
 `be1f0201e968846765f7efa731560886a8b50032` (2026-09-28; PR #528 merged).
@@ -72,19 +78,19 @@ Authoritative implementation and tests remain truth. Related:
 
 ## 0. Maintainer recommendation (not an implementation grant)
 
-| Decision                   | Verdict                                                                                                                                                                                                                              |
-| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Current mutation slice     | **D4 merged** (PR #534). **D5 Slice 1** status recovery is merged (PR #537). **D5 Slice 2** reconnect UX is implemented on branch awaiting maintainer review. It is not D5 complete. Verification retry and Undo are not authorized. |
-| Approval issuer            | Trusted **daemon/application host** only. Desktop submits a typed human intent. Host re-fetches the review bundle and issues `NeutronMutationApproval` itself.                                                                       |
-| Public RPC shape           | **B — one host `approveAndApply` action** (merged) plus read-only `review.get` (merged) and read-only `status.get` (D5 Slice 1, merged). No separate public Approve RPC.                                                             |
-| Desktop button copy        | **Approve & Apply** is implemented on the exact mutation review and is enabled only for an eligible/current review.                                                                                                                  |
-| `approvalToken`            | Host-only. Public result validation rejects `approvalToken` and other authority/content-bearing fields. Diagnostics are redacted.                                                                                                    |
-| Durable authority          | Reuse Slice 3.1 store and project lock. Do not add a Desktop approval database.                                                                                                                                                      |
-| Apply engine               | Reuse `applyApprovedNeutronGraphMutation` → `applyApprovedNeutronMutation` → declared-path Approved Apply → Slice 4 verification.                                                                                                    |
-| N4 / `mutationAllowed`     | Unchanged. Seven read-only tools. Literal `false`.                                                                                                                                                                                   |
-| Undo                       | Out of first Desktop mutation scope.                                                                                                                                                                                                 |
-| Legacy fake Approved Apply | **DL implemented and merged** (PR #525). Fabricated `applied: true` and synthetic rollback evidence are removed from production Desktop. Neutron must never reuse a fake Apply path.                                                 |
-| This document              | D1–D4 and D5 Slice 1 are merged. D5 Slice 2 is implemented on branch awaiting maintainer review. It is not D5 complete. Do not start verification retry or Undo from this document.                                                  |
+| Decision                   | Verdict                                                                                                                                                                                                                                      |
+| -------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Current mutation slice     | **D4 merged** (PR #534). **D5 complete** (Slice 1 PR #537, Slice 2 PR #540). Post-D5 verification retry is a separate verification-only operation. Undo is not authorized.                                                                   |
+| Approval issuer            | Trusted **daemon/application host** only. Desktop submits a typed human intent. Host re-fetches the review bundle and issues `NeutronMutationApproval` itself.                                                                               |
+| Public RPC shape           | **B — one host `approveAndApply` action** (merged) plus read-only `review.get`, read-only `status.get`, and post-D5 `verification.retry` (durable verification metadata only; zero project-write authority). No separate public Approve RPC. |
+| Desktop button copy        | **Approve & Apply** is implemented on the exact mutation review and is enabled only for an eligible/current review.                                                                                                                          |
+| `approvalToken`            | Host-only. Public result validation rejects `approvalToken` and other authority/content-bearing fields. Diagnostics are redacted.                                                                                                            |
+| Durable authority          | Reuse Slice 3.1 store and project lock. Do not add a Desktop approval database.                                                                                                                                                              |
+| Apply engine               | Reuse `applyApprovedNeutronGraphMutation` → `applyApprovedNeutronMutation` → declared-path Approved Apply → Slice 4 verification.                                                                                                            |
+| N4 / `mutationAllowed`     | Unchanged. Seven read-only tools. Literal `false`.                                                                                                                                                                                           |
+| Undo                       | Out of first Desktop mutation scope.                                                                                                                                                                                                         |
+| Legacy fake Approved Apply | **DL implemented and merged** (PR #525). Fabricated `applied: true` and synthetic rollback evidence are removed from production Desktop. Neutron must never reuse a fake Apply path.                                                         |
+| This document              | D1–D5 are merged. Verification retry is the separate post-D5 slice in this implementation. Undo remains unauthorized.                                                                                                                        |
 
 ---
 
@@ -542,11 +548,12 @@ public results. Keep that rule on every new RPC and viewmodel.
 Naming follows current Neutron RPC style
 (`intentloom.neutron.<area>.<verb>.v1` in `packages/protocol/src/jsonrpc.ts`).
 
-| Conceptual method                                | Classification | Authority                                       |
-| ------------------------------------------------ | -------------- | ----------------------------------------------- |
-| `intentloom.neutron.mutation.review.get.v1`      | read-only      | Display exact reviewed bytes                    |
-| `intentloom.neutron.mutation.approveAndApply.v1` | mutating       | Host issues approval, claims, Applies, verifies |
-| `intentloom.neutron.mutation.status.get.v1`      | read-only      | Durable/authoritative recovery                  |
+| Conceptual method                                   | Classification | Authority                                                          |
+| --------------------------------------------------- | -------------- | ------------------------------------------------------------------ |
+| `intentloom.neutron.mutation.review.get.v1`         | read-only      | Display exact reviewed bytes                                       |
+| `intentloom.neutron.mutation.approveAndApply.v1`    | mutating       | Host issues approval, claims, Applies, verifies                    |
+| `intentloom.neutron.mutation.status.get.v1`         | read-only      | Durable/authoritative recovery                                     |
+| `intentloom.neutron.mutation.verification.retry.v1` | read-only      | Re-run Slice 4 verification for an applied transaction. Not Apply. |
 
 Names are design targets. Implementation may keep these exact strings.
 
@@ -792,11 +799,12 @@ exact match of seven session/graph methods. No wildcards. Capabilities:
 
 Recommended dedicated commands:
 
-| Tauri command                        | RPC                  | State                                                                                                                                |
-| ------------------------------------ | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| `get_neutron_mutation_review`        | `review.get.v1`      | Implemented with D1                                                                                                                  |
-| `approve_and_apply_neutron_mutation` | `approveAndApply.v1` | Implemented with D4; not on `invoke_neutron_request`                                                                                 |
-| `get_neutron_mutation_status`        | `status.get.v1`      | D5 Slice 1 merged (PR #537). Read-only. Desktop reconnect UX is Slice 2, awaiting maintainer review. Not on `invoke_neutron_request` |
+| Tauri command                         | RPC                     | State                                                       |
+| ------------------------------------- | ----------------------- | ----------------------------------------------------------- |
+| `get_neutron_mutation_review`         | `review.get.v1`         | Implemented with D1                                         |
+| `approve_and_apply_neutron_mutation`  | `approveAndApply.v1`    | Implemented with D4; not on `invoke_neutron_request`        |
+| `get_neutron_mutation_status`         | `status.get.v1`         | D5 merged. Read-only. Not on `invoke_neutron_request`       |
+| `retry_neutron_mutation_verification` | `verification.retry.v1` | Post-D5. Verification only. Not on `invoke_neutron_request` |
 
 `desktopClient` grows typed methods that construct params internally. The
 renderer does not pass a free-form `request: object` for mutation.
@@ -1155,11 +1163,12 @@ required or incomplete verification, and rejected before write distinct.
 
 ### D5 — Authoritative result / verification / reconnect UX
 
-**Slice 1 implemented and merged** (PR #537, merge
+**D5 complete.** Slice 1 merged (PR #537, merge
 `866c96ab6fd1a1265dfc46a8840117baaaebd0b6`; final audited head
-`c366d9f7d8d27f2a6f92b328ee775e1ceab53381`). Not D5 complete. Slice 2
-reconnect UX is implemented on branch awaiting maintainer review. This
-section does not authorize verification retry or Undo.
+`c366d9f7d8d27f2a6f92b328ee775e1ceab53381`). Slice 2 merged (PR #540, merge
+`bb9255a79229d9a64d611ce644c0f75caaec74bf`; final audited head
+`a0c029f62c30008dde416f5f93847fca45279e0d`). Verification retry is not part
+of D5. Undo remains unauthorized.
 
 Slice 1 adds read-only `intentloom.neutron.mutation.status.get.v1` on a
 dedicated Desktop/Tauri command (`get_neutron_mutation_status`). Daemon
@@ -1196,17 +1205,29 @@ Apply, write project source, retry Apply, take the mutation write lock, or
 invoke a provider. `mutationAllowed` remains literal `false`. N4 remains
 the seven read-only tools. No mutation or status tool was added to N4.
 
-**D5 Slice 2** is implemented on branch
-`feat/neutron-desktop-mutation-reconnect-recovery` and is awaiting
-maintainer review. A lost Approve & Apply response stays an uncertain
-presentation state. After the existing daemon connection is authenticated
-again for the same root, session, project, and graph, Desktop calls
-read-only `status.get` once and renders that host result. Explicit Refresh
-status uses the same read. There is no polling loop, no second Apply, no new
-approval, and no model call. A scope change drops the unresolved identity.
-Still not implemented, and not authorized: verification retry, a Retry
-verification button, Undo, rollback execution, a rollback command, a
-mutation history browser, an N4 mutation or status tool, and Apply retry.
+**D5 Slice 2** is merged (PR #540). A lost Approve & Apply response stays an
+uncertain presentation state. After the existing daemon connection is
+authenticated again for the same root, session, project, and graph, Desktop
+calls read-only `status.get` once and renders that host result. Explicit
+Refresh status uses the same read. There is no polling loop, no second
+Apply, no new approval, and no model call. A scope change drops the
+unresolved identity.
+
+**Post-D5 verification recovery** is
+`intentloom.neutron.mutation.verification.retry.v1` on
+`retry_neutron_mutation_verification`. The trusted host reloads the same
+proposal-index and Slice 3.1 record, and only when `applied` is true and
+verification is `verification-failed` or `verification-incomplete` it runs
+the existing Slice 4 verifier and replaces verification metadata. Historical
+`applied: true` stays true. `reconciliation-required` is not retryable.
+The capability class is `read-only` because the taxonomy has no third class
+and this operation has zero project-write authority; the operation name is
+distinct from Apply. Persistence re-reads the Slice 3.1 record under the
+approval-record gate and compare-and-sets its digest, so a stale
+cross-process retry cannot replace a newer verified result. A process-local
+queue is not that safety boundary. Still unauthorized: Undo, rollback
+execution, a mutation history browser, an N4 mutation or verification tool,
+and Apply retry.
 
 ---
 
@@ -1262,15 +1283,15 @@ mutation history browser, an N4 mutation or status tool, and Apply retry.
 
 ### D5
 
-| Gate           | Rule                                                                                                                                                                                                                  |
-| -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Allowed        | Result/evidence/status recovery UX; optional design of Retry verification                                                                                                                                             |
-| Forbidden      | Retry Apply, Undo, collapsing statuses                                                                                                                                                                                |
-| Inputs         | D4 result + `status.get`                                                                                                                                                                                              |
-| Outputs        | Applied vs verified vs reconciliation copy                                                                                                                                                                            |
-| Tests          | Response-lost-after-Apply, verification mismatch labeling                                                                                                                                                             |
-| Exit           | Slice 1 merged (PR #537): read-only `status.get` recovers durable truth. Slice 2 reconnect UX is implemented on branch awaiting maintainer review. D5 is not complete. Verification retry and Undo are not authorized |
-| Next candidate | Separate Undo / verification-retry / N4 decisions, only after D5 is explicitly authorized. This row does not authorize them                                                                                           |
+| Gate           | Rule                                                                                                                                                                              |
+| -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Allowed        | Result/evidence/status recovery UX; optional design of Retry verification                                                                                                         |
+| Forbidden      | Retry Apply, Undo, collapsing statuses                                                                                                                                            |
+| Inputs         | D4 result + `status.get`                                                                                                                                                          |
+| Outputs        | Applied vs verified vs reconciliation copy                                                                                                                                        |
+| Tests          | Response-lost-after-Apply, verification mismatch labeling                                                                                                                         |
+| Exit           | **Complete.** Slice 1 (PR #537) recovers durable truth. Slice 2 (PR #540) recovers it after reconnect. Verification retry is a separate post-D5 operation. Undo is not authorized |
+| Next candidate | Undo / rollback execution, only under a new explicit grant                                                                                                                        |
 
 ### DL
 
@@ -1312,12 +1333,13 @@ PR #537) covers response-lost recovery, applied versus verification,
 identity-bound index rejection, canonical pointer mismatch, and historical
 status after a later external edit.
 
-**D5 Slice 2** (this branch, awaiting maintainer review) covers reconnect
-UX for the current unresolved operation: uncertain transport presentation,
-one `status.get` after authenticated reconnect, and explicit Refresh status.
-**Remain unauthorized:** verification retry UI, Undo, rollback execution UI,
-a mutation history browser, and two-window Desktop chrome walkthroughs
-beyond the focused UI tests.
+**D5 Slice 2 merged** (PR #540, `tests/desktop-neutron-mutation-recovery.test.ts`)
+covers reconnect UX: uncertain transport presentation, one `status.get` after
+authenticated reconnect, and explicit Refresh status. **Post-D5 verification
+retry** is covered by `tests/neutron-mutation-verification-retry.test.ts`.
+**Remain unauthorized:** Undo, rollback execution UI, a mutation history
+browser, and two-window Desktop chrome walkthroughs beyond the focused UI
+tests.
 
 **DL tests** (`tests/desktop-legacy-approved-apply-isolation.test.ts`, merged
 with PR #525)
@@ -1348,9 +1370,9 @@ This file:
 Update pointers in `DUTY_WATCH.md`, `PROJECT_STATE.md`,
 `NEUTRON_RUNTIME_ROADMAP.md`, `NEUTRON_N6_DESKTOP_READONLY_BRIEF.md`, and
 `NEUTRON_MUTATION_ROUTING_BRIEF.md`. Mark **D1**, **D2**, **D3**, **DL**, and
-the Desktop durable-state prerequisite, **D4** (PR #534), and **D5 Slice 1**
-(PR #537) complete and merged. Slice 1 is not D5 complete. Reconnect UX,
-verification retry, and Undo remain unauthorized.
+the Desktop durable-state prerequisite, **D4** (PR #534), and **D5**
+(Slice 1 PR #537, Slice 2 PR #540) complete and merged. Undo remains
+unauthorized. Verification retry is the separate post-D5 operation.
 
 ---
 
@@ -1370,7 +1392,7 @@ Implementation and handoff PRs that cite this brief must repeat:
 
 **DESKTOP MUTATION D4 IMPLEMENTED AND MERGED** (PR #534)
 
-**D5 SLICE 1 IMPLEMENTED AND MERGED — NOT D5 COMPLETE** (PR #537)
+**DESKTOP MUTATION D5 COMPLETE** (Slice 1 PR #537, Slice 2 PR #540)
 
 **`mutationAllowed` remains literal `false`. N4 remains seven read-only tools.**
 
@@ -1401,10 +1423,8 @@ No second store or lock.
 
 **D4 (implemented and merged, PR #534):** one trusted-host Approve & Apply
 operation. Prerequisites merged before this slice: D1, D2, D3, DL, and
-Desktop `durableStateDirectory` wiring. D5 Slice 1 is implemented and
-merged (PR #537). D5 Slice 2 reconnect UX is implemented on branch awaiting
-maintainer review and is not D5 complete. This document does not authorize
-verification retry or Undo.
+Desktop `durableStateDirectory` wiring. **D5 is complete** (Slice 1 PR #537,
+Slice 2 PR #540). This document does not authorize Undo.
 
 Rationale for sequencing (unchanged):
 
@@ -1412,12 +1432,12 @@ Rationale for sequencing (unchanged):
   presents them without widening mutation authority.
 - D3 proves the host issuer cannot be spoofed through intent fields; combined
   approveAndApply is the later authority slice, now merged as D4.
-- Verification retry, Undo, and any N4 mutation tool remain future grants.
-  Slice 1 status recovery is the merged foundation. Slice 2 reconnect UX is
-  implemented on branch awaiting maintainer review.
+- Undo and any N4 mutation tool remain future grants. Slice 1 status
+  recovery and Slice 2 reconnect UX are merged. Verification retry is the
+  separate post-D5 operation.
 
-Slice 1 is the merged read-only status recovery. Slice 2 is the Desktop
-reconnect presentation on branch awaiting maintainer review. The
+Slice 1 is the merged read-only status recovery. Slice 2 is the merged
+Desktop reconnect presentation (PR #540). The
 durable-state prerequisite is merged and is not itself Approve & Apply. D4
 is the merged host operation.
 

@@ -18,6 +18,7 @@ export interface ApproveAndApplyNeutronGraphMutationInput extends IssueNeutronMu
   readonly failAt?: TransactionStage;
   readonly rollbackFailPaths?: readonly string[];
   readonly afterWriteBeforeVerification?: () => Promise<void>;
+  readonly deferVerification?: boolean;
 }
 
 /**
@@ -64,6 +65,9 @@ export async function approveAndApplyNeutronGraphMutation(
       ...(input.afterWriteBeforeVerification === undefined
         ? {}
         : { afterWriteBeforeVerification: input.afterWriteBeforeVerification }),
+      ...(input.deferVerification === undefined
+        ? {}
+        : { deferVerification: input.deferVerification }),
       ...(input.evaluateProjectStateDigest === undefined
         ? {}
         : { evaluateProjectStateDigest: input.evaluateProjectStateDigest }),

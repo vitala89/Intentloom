@@ -11,6 +11,8 @@ import type { IssueNeutronMutationApprovalResult } from "./neutron-mutation-appr
 import type { NeutronMutationApproveAndApplyResult } from "../../protocol/src/neutron-mutation-approve-apply-result.js";
 import type { NeutronMutationStatusQuery } from "../../protocol/src/neutron-mutation-status-rpc.js";
 import type { NeutronMutationStatusResult } from "../../protocol/src/neutron-mutation-status-result.js";
+import type { NeutronMutationVerificationRetryQuery } from "../../protocol/src/neutron-mutation-verification-retry-rpc.js";
+import type { NeutronMutationVerificationRetryResult } from "../../protocol/src/neutron-mutation-verification-retry-result.js";
 import type { NeutronHostDurableState } from "./neutron-host-durable-state.js";
 
 export interface NeutronSessionRuntimeOptions {
@@ -105,6 +107,14 @@ export interface NeutronSessionRuntime {
     query: NeutronMutationStatusQuery,
     signal?: AbortSignal,
   ): Promise<NeutronMutationStatusResult>;
+  /**
+   * Verification-only recovery for an already applied transaction.
+   * Updates durable verification metadata. Does not approve or Apply.
+   */
+  retryNeutronMutationVerification(
+    query: NeutronMutationVerificationRetryQuery,
+    signal?: AbortSignal,
+  ): Promise<NeutronMutationVerificationRetryResult>;
   /**
    * Host-only durable mutation-state configuration. Not an RPC and not part
    * of session viewmodels.

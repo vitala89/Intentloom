@@ -1,4 +1,3 @@
-import type { NeutronMutationTransactionState } from "../../protocol/src/neutron-mutation-apply.js";
 import {
   acquireDirectoryGate,
   exclusiveCreateUtf8File,
@@ -14,9 +13,11 @@ import {
 } from "./neutron-mutation-apply-durable-record.js";
 import {
   classifyExistingClaim,
+  verificationSnapshotCurrent,
   type NeutronMutationApprovalStore,
   type NeutronMutationClaimOutcome,
   type NeutronMutationTransactionRecord,
+  type NeutronMutationTransitionInput,
 } from "./neutron-mutation-apply-store.js";
 
 export function createPersistentNeutronMutationApprovalStore(options: {
@@ -66,16 +67,13 @@ async function classifyLoadedClaim(
 async function replaceIfExpected(
   directory: string,
   path: string,
-  input: {
-    readonly approvalId: string;
-    readonly expected: NeutronMutationTransactionState;
-    readonly next: NeutronMutationTransactionState;
-    readonly result?: NeutronMutationTransactionRecord["result"];
-    readonly updatedAt: number;
-  },
+  input: NeutronMutationTransitionInput,
 ): Promise<NeutronMutationTransactionRecord | undefined> {
   const loaded = await loadRecord(directory, input.approvalId);
-  if (loaded.kind !== "ok" || loaded.record.state !== input.expected) {
+  if (
+    loaded.kind !== "ok" ||
+    !verificationSnapshotCurrent(loaded.record, input)
+  ) {
     return undefined;
   }
   const next: NeutronMutationTransactionRecord = {

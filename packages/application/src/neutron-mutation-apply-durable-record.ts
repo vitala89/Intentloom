@@ -19,10 +19,10 @@ export function durableApprovalGatePath(recordPath: string): string {
   return `${recordPath}.gate`;
 }
 
-export function encodeDurableTransactionRecord(
+export function unsignedDurableTransactionRecord(
   record: NeutronMutationTransactionRecord,
-): string {
-  const unsigned = {
+) {
+  return {
     schemaVersion: NEUTRON_MUTATION_TRANSACTION_RECORD_SCHEMA_URN,
     transactionId: record.transactionId,
     approvalId: record.approvalId,
@@ -35,6 +35,21 @@ export function encodeDurableTransactionRecord(
     updatedAt: record.updatedAt,
     ...(record.result !== undefined ? { result: record.result } : {}),
   };
+}
+
+/** Slice 3.1 version of the canonical record. Changes when verification does. */
+export function durableTransactionRecordDigest(
+  record: NeutronMutationTransactionRecord,
+): string {
+  return digestNeutronMutationTransactionRecord(
+    unsignedDurableTransactionRecord(record),
+  );
+}
+
+export function encodeDurableTransactionRecord(
+  record: NeutronMutationTransactionRecord,
+): string {
+  const unsigned = unsignedDurableTransactionRecord(record);
   return `${JSON.stringify({
     ...unsigned,
     recordDigest: digestNeutronMutationTransactionRecord(unsigned),

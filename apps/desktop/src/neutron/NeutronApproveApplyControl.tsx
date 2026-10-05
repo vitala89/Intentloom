@@ -1,7 +1,10 @@
 import type { NeutronMutationReviewView } from "@intentloom/protocol";
 import { Button } from "../design/components/core/Button.js";
 import { APPROVE_APPLY_LABEL } from "./neutron-approve-apply-copy.js";
-import { MUTATION_STATUS_REFRESH_LABEL } from "./neutron-mutation-recovery-copy.js";
+import {
+  MUTATION_STATUS_REFRESH_LABEL,
+  VERIFICATION_RETRY_LABEL,
+} from "./neutron-mutation-recovery-copy.js";
 import type { NeutronMutationReviewScope } from "./neutron-mutation-review-state.js";
 import {
   isolatedRecoveryNotice,
@@ -18,6 +21,7 @@ export function NeutronMutationReviewApply({
   reviewReady,
   scope,
   onRefresh,
+  onRetry,
   onSubmit,
 }: {
   readonly daemonReady: boolean;
@@ -26,6 +30,7 @@ export function NeutronMutationReviewApply({
   readonly reviewReady: boolean;
   readonly scope: NeutronMutationReviewScope;
   readonly onRefresh: () => void;
+  readonly onRetry: () => void;
   readonly onSubmit: (input: NeutronMutationSubmitInput) => void;
 }) {
   const view = projectMutationRecoveryView({
@@ -39,6 +44,7 @@ export function NeutronMutationReviewApply({
     <NeutronApproveApplyControl
       view={view}
       onRefresh={onRefresh}
+      onRetry={onRetry}
       onSubmit={() => {
         onSubmit({
           graphId: review.graphId,
@@ -56,10 +62,12 @@ export function NeutronApproveApplyControl({
   view,
   onSubmit,
   onRefresh,
+  onRetry,
 }: {
   readonly view: MutationRecoveryView;
   readonly onSubmit: () => void;
   readonly onRefresh: () => void;
+  readonly onRetry: () => void;
 }) {
   return (
     <div>
@@ -74,6 +82,16 @@ export function NeutronApproveApplyControl({
       </Button>
       {view.statusCopy === null ? null : <p role="status">{view.statusCopy}</p>}
       {view.alertCopy === null ? null : <p role="alert">{view.alertCopy}</p>}
+      {view.retryVisible ? (
+        <Button
+          disabled={view.retryDisabled}
+          type="button"
+          variant="secondary"
+          onClick={onRetry}
+        >
+          {VERIFICATION_RETRY_LABEL}
+        </Button>
+      ) : null}
       {view.refreshVisible ? (
         <Button
           disabled={view.refreshDisabled}

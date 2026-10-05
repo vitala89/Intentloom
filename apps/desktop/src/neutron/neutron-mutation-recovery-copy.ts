@@ -42,6 +42,20 @@ export const MUTATION_APPLIED_RECONCILIATION_COPY =
 export const MUTATION_FAILED_BEFORE_WRITE_COPY =
   "No mutation was applied for this transaction." as const;
 
+export const VERIFICATION_RETRY_LABEL = "Retry verification" as const;
+
+export const VERIFICATION_RETRY_PENDING_COPY =
+  "Verifying applied mutation..." as const;
+
+export const VERIFICATION_RETRY_SUCCEEDED_COPY =
+  "Mutation was already applied. Verification now succeeded." as const;
+
+export const VERIFICATION_RETRY_FAILED_COPY =
+  "Mutation remains applied. Verification still fails." as const;
+
+export const VERIFICATION_RETRY_INCOMPLETE_COPY =
+  "Mutation remains applied. Verification is still incomplete." as const;
+
 const MISMATCH_COPY = {
   "root-mismatch":
     "Recovery stopped. The host root does not match this mutation.",
