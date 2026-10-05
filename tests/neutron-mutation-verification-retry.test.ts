@@ -246,6 +246,70 @@ describe("post-D5 verification-only retry", () => {
     expect(JSON.stringify(again)).not.toContain("durableStateDirectory");
   });
 
+  it("does not let a stale cross-process retry overwrite verified", async () => {
+    const writes = { count: 0 };
+    const turns = { count: 0 };
+    const ready = await prepared(countingFs(writes));
+    const runtime = runtimeFor(ready, turns);
+    expect(typeof runtime.retryNeutronMutationVerification).toBe("function");
+    await approveFailed(ready);
+    const afterApply = writes.count;
+    const approvals = await approvalCount(ready.durable);
+    const before = decodeDurableTransactionRecord(
+      await readFile(await approvalFile(ready.durable), "utf8"),
+    );
+    await writeFile(join(ready.root, "src/a.ts"), SLICE5_CONTENT_A);
+    let readers = 0;
+    let openBoth: (() => void) | undefined;
+    const bothSnapshotted = new Promise<void>((resolve) => {
+      openBoth = resolve;
+    });
+    let releaseFollower: (() => void) | undefined;
+    const followerTurn = new Promise<void>((resolve) => {
+      releaseFollower = resolve;
+    });
+    const race = (role: "leader" | "follower") =>
+      retryAppliedNeutronMutationVerification({
+        afterEligibleSnapshot: async () => {
+          readers += 1;
+          if (readers === 2) openBoth?.();
+          await bothSnapshotted;
+          if (role === "follower") {
+            await followerTurn;
+            await writeFile(join(ready.root, "src/a.ts"), "stale-tamper\n");
+          }
+        },
+        directory: ready.durable,
+        fs: ready.fs,
+        now: () => SLICE5_NOW,
+        processGate: new Map(),
+        query: retryQuery(ready),
+      });
+    const leader = race("leader");
+    const follower = race("follower");
+    const leaderResult = await leader;
+    expect(leaderResult).toMatchObject({
+      applied: true,
+      outcome: "recorded",
+      verificationStatus: "verified",
+    });
+    releaseFollower?.();
+    expect((await follower).outcome).toBe("not-eligible");
+    const after = decodeDurableTransactionRecord(
+      await readFile(await approvalFile(ready.durable), "utf8"),
+    );
+    expect(after.state).toBe("applied");
+    expect(after.transactionId).toBe(before.transactionId);
+    expect(after.claimedAt).toBe(before.claimedAt);
+    expect(after.result).toMatchObject({
+      applied: true,
+      verificationStatus: "verified",
+    });
+    expect(writes.count).toBe(afterApply);
+    expect(await approvalCount(ready.durable)).toBe(approvals);
+    expect(turns.count).toBe(0);
+  });
+
   it("serializes concurrent retries and leaves one applied transaction", async () => {
     const writes = { count: 0 };
     const ready = await prepared(countingFs(writes));

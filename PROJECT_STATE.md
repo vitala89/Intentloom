@@ -795,7 +795,8 @@ same-scope daemon connection is authenticated again. It does not retry
 Apply. Post-D5 verification retry
 (`intentloom.neutron.mutation.verification.retry.v1`) re-runs Slice 4
 verification for an already applied transaction and does not Apply, approve,
-or Undo. Undo remains unauthorized. Other post-P4 candidates remain in
+or Undo. Its durable write compare-and-sets the Slice 3.1 record digest, so
+a stale cross-process retry cannot replace a newer verified result. Undo remains unauthorized. Other post-P4 candidates remain in
 `POST_W12_NEXT_INCREMENT_PLAN.md`.
 
 The Desktop discovery/error and Diff/Timeline slices remain recorded in

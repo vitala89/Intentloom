@@ -1222,9 +1222,12 @@ the existing Slice 4 verifier and replaces verification metadata. Historical
 `applied: true` stays true. `reconciliation-required` is not retryable.
 The capability class is `read-only` because the taxonomy has no third class
 and this operation has zero project-write authority; the operation name is
-distinct from Apply. Still unauthorized: Undo, rollback execution, a
-mutation history browser, an N4 mutation or verification tool, and Apply
-retry.
+distinct from Apply. Persistence re-reads the Slice 3.1 record under the
+approval-record gate and compare-and-sets its digest, so a stale
+cross-process retry cannot replace a newer verified result. A process-local
+queue is not that safety boundary. Still unauthorized: Undo, rollback
+execution, a mutation history browser, an N4 mutation or verification tool,
+and Apply retry.
 
 ---
 

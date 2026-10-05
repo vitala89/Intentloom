@@ -4,6 +4,7 @@ import {
   type NeutronMutationVerificationRetryResult,
 } from "../../protocol/src/neutron-mutation-verification-retry-result.js";
 import type { FileSystem } from "./index.js";
+import { durableTransactionRecordDigest } from "./neutron-mutation-apply-durable-record.js";
 import { buildNeutronMutationApplyResult } from "./neutron-mutation-apply-result.js";
 import { createPersistentNeutronMutationApprovalStore } from "./neutron-mutation-apply-durable-store.js";
 import type { NeutronMutationTransactionRecord } from "./neutron-mutation-apply-store.js";
@@ -31,13 +32,22 @@ export interface NeutronMutationVerificationRetryInput {
   readonly fs: FileSystem;
   readonly signal?: AbortSignal;
   readonly now?: () => number;
+  /**
+   * Same-process queue. Independent processes pass distinct maps. Correctness
+   * does not depend on sharing one map.
+   */
+  readonly processGate?: Map<string, Promise<void>>;
+  /** Runs after the eligible snapshot is taken and before verification. */
+  readonly afterEligibleSnapshot?: (
+    record: NeutronMutationTransactionRecord,
+  ) => Promise<void>;
 }
 
 /**
  * Re-runs Slice 4 verification for an already applied transaction.
- * Same-process callers serialize per approval id. The durable transition
- * uses the existing approval gate and atomic replacement. Project content
- * is only read. There is no project lock and no Apply.
+ * A process-local queue is only an optimization. Persistence re-reads the
+ * canonical record under the approval-record gate and compare-and-sets the
+ * Slice 3.1 digest of the eligible snapshot. Project content is only read.
  */
 export async function retryAppliedNeutronMutationVerification(
   input: NeutronMutationVerificationRetryInput,
@@ -65,7 +75,7 @@ export async function retryAppliedNeutronMutationVerification(
         })
       : observed;
   }
-  return withRetryGate(observed.approvalId, () =>
+  return withRetryGate(input.processGate ?? tails, observed.approvalId, () =>
     verifyAndPersist(input, observed.approvalId ?? ""),
   );
 }
@@ -88,6 +98,8 @@ async function verifyAndPersist(
       transactionId: record.transactionId,
     });
   }
+  await input.afterEligibleSnapshot?.(record);
+  throwIfCancelled(input.signal);
   const verified = await verifyCurrentTree(input, record);
   throwIfCancelled(input.signal);
   const stored = await persistVerification(input, record, verified);
@@ -178,6 +190,8 @@ async function persistVerification(
   return store.transition({
     approvalId: record.approvalId,
     expected: "applied",
+    expectedRecordDigest: durableTransactionRecordDigest(record),
+    expectedTransactionId: record.transactionId,
     next: "applied",
     result,
     updatedAt: input.now?.() ?? Date.now(),
@@ -205,6 +219,7 @@ function throwIfCancelled(signal: AbortSignal | undefined): void {
 }
 
 async function withRetryGate<T>(
+  queue: Map<string, Promise<void>>,
   approvalId: string,
   operation: () => Promise<T>,
 ): Promise<T> {
@@ -212,8 +227,8 @@ async function withRetryGate<T>(
   const current = new Promise<void>((ok) => {
     box.done = ok;
   });
-  const previous = tails.get(approvalId) ?? Promise.resolve();
-  tails.set(
+  const previous = queue.get(approvalId) ?? Promise.resolve();
+  queue.set(
     approvalId,
     previous.then(() => current),
   );

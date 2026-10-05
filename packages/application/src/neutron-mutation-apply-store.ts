@@ -2,6 +2,8 @@ import type {
   NeutronMutationApplyResult,
   NeutronMutationTransactionState,
 } from "../../protocol/src/neutron-mutation-apply.js";
+import { durableTransactionRecordDigest } from "./neutron-mutation-apply-durable-record.js";
+import { neutronMutationVerificationRetryEligible } from "./neutron-mutation-verification-retry-eligibility.js";
 
 export interface NeutronMutationTransactionRecord {
   readonly transactionId: string;
@@ -38,6 +40,21 @@ export type NeutronMutationClaimOutcome =
       readonly kind: "storage-failed";
     };
 
+export interface NeutronMutationTransitionInput {
+  readonly approvalId: string;
+  readonly expected: NeutronMutationTransactionState;
+  readonly next: NeutronMutationTransactionState;
+  readonly result?: NeutronMutationApplyResult;
+  readonly updatedAt: number;
+  /**
+   * When set, the write compare-and-sets the Slice 3.1 record digest.
+   * Transaction state alone stays true after a verification update, so a
+   * stale cross-process retry must also match this digest.
+   */
+  readonly expectedRecordDigest?: string;
+  readonly expectedTransactionId?: string;
+}
+
 export interface NeutronMutationApprovalStore {
   getByApproval(
     approvalId: string,
@@ -45,13 +62,9 @@ export interface NeutronMutationApprovalStore {
   claim(
     record: NeutronMutationTransactionRecord,
   ): Promise<NeutronMutationClaimOutcome>;
-  transition(input: {
-    readonly approvalId: string;
-    readonly expected: NeutronMutationTransactionState;
-    readonly next: NeutronMutationTransactionState;
-    readonly result?: NeutronMutationApplyResult;
-    readonly updatedAt: number;
-  }): Promise<NeutronMutationTransactionRecord | undefined>;
+  transition(
+    input: NeutronMutationTransitionInput,
+  ): Promise<NeutronMutationTransactionRecord | undefined>;
 }
 
 const TERMINAL_CONSUMED = new Set<NeutronMutationTransactionState>([
@@ -81,7 +94,10 @@ export function createMemoryNeutronMutationApprovalStore(): NeutronMutationAppro
     async transition(input) {
       return withApprovalGate(tails, input.approvalId, async () => {
         const existing = records.get(input.approvalId);
-        if (existing === undefined || existing.state !== input.expected) {
+        if (
+          existing === undefined ||
+          !verificationSnapshotCurrent(existing, input)
+        ) {
           return undefined;
         }
         const next: NeutronMutationTransactionRecord = {
@@ -95,6 +111,28 @@ export function createMemoryNeutronMutationApprovalStore(): NeutronMutationAppro
       });
     },
   };
+}
+
+/**
+ * Apply transitions compare transaction state only. Verification retry also
+ * requires the re-read record to still be retry-eligible and to match the
+ * snapshot digest captured before verification.
+ */
+export function verificationSnapshotCurrent(
+  record: NeutronMutationTransactionRecord,
+  input: NeutronMutationTransitionInput,
+): boolean {
+  if (record.state !== input.expected) return false;
+  if (input.expectedRecordDigest === undefined) return true;
+  if (record.approvalId !== input.approvalId) return false;
+  if (
+    input.expectedTransactionId !== undefined &&
+    record.transactionId !== input.expectedTransactionId
+  ) {
+    return false;
+  }
+  if (!neutronMutationVerificationRetryEligible(record)) return false;
+  return durableTransactionRecordDigest(record) === input.expectedRecordDigest;
 }
 
 export function classifyExistingClaim(

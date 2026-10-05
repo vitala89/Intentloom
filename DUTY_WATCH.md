@@ -41,10 +41,28 @@ MERGED** (implementation PR #537, merge
 `bb9255a79229d9a64d611ce644c0f75caaec74bf`; final audited head
 `a0c029f62c30008dde416f5f93847fca45279e0d`). Post-D5 verification recovery
 is implemented on branch `feat/neutron-mutation-verification-retry` and is
-awaiting maintainer review. It retries Slice 4 verification only.
+awaiting maintainer review. It retries Slice 4 verification only. The
+durable write compare-and-sets the Slice 3.1 record digest, so a stale
+cross-process retry cannot replace a newer verified result.
 `mutationAllowed` remains literal `false`. N4 remains the seven read-only
 tools. Undo, rollback execution, optional N3 Slice 5, P4l17, and any N4
 mutation or verification tool remain unauthorized. Do not auto-merge.
+
+### 2026-10-05, Post-D5 verification recovery — cross-process retry race
+
+- **Status:** **PR #541 CROSS-PROCESS VERIFICATION RETRY RACE HARDENED,
+  AWAITING MAINTAINER REVIEW.** Do not merge. Do not start Undo.
+- **Branch:** `feat/neutron-mutation-verification-retry` (existing PR #541).
+- **Audited head before this correction:**
+  `b18ea1c8f4ea7312acbdd8ba76fbbc5c581e45a8`.
+- **Fix:** verification retry still may use a process-local queue, but the
+  durable approval-record gate re-reads the canonical record and
+  compare-and-sets `expectedRecordDigest` plus retry eligibility. A later
+  process that snapshotted `verification-failed` cannot persist over a
+  newer `verified` record. The losing writer returns `not-eligible`.
+- **Unchanged:** eligibility, reconciliation closed, no approval, no Apply,
+  no project writes, no Undo, no rollback execution, no N4 tool,
+  `mutationAllowed` literal `false`, public sanitization.
 
 ### 2026-10-04, Post-D5 verification recovery — verification-only retry
 
