@@ -63,6 +63,9 @@ mutation or verification tool remain unauthorized. Do not auto-merge.
 - **Unchanged:** eligibility, reconciliation closed, no approval, no Apply,
   no project writes, no Undo, no rollback execution, no N4 tool,
   `mutationAllowed` literal `false`, public sanitization.
+- **CI:** Compatibility on the pull request failed after merging `main` at
+  `6a66ec2`. `react` was `19.3.0` and `react-dom` was `19.2.8`. Both are
+  now `19.3.0`.
 
 ### 2026-10-04, Post-D5 verification recovery — verification-only retry
 
