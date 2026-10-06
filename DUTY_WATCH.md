@@ -39,14 +39,43 @@ MERGED** (implementation PR #537, merge
 `866c96ab6fd1a1265dfc46a8840117baaaebd0b6`; handoff PR #539, merge
 `6b8c64e06a8d7e546bfa0566592f33790f5a7fb4`). **DESKTOP MUTATION D5 COMPLETE** (Slice 2 PR #540, merge
 `bb9255a79229d9a64d611ce644c0f75caaec74bf`; final audited head
-`a0c029f62c30008dde416f5f93847fca45279e0d`). Post-D5 verification recovery
-is implemented on branch `feat/neutron-mutation-verification-retry` and is
-awaiting maintainer review. It retries Slice 4 verification only. The
-durable write compare-and-sets the Slice 3.1 record digest, so a stale
-cross-process retry cannot replace a newer verified result.
+`a0c029f62c30008dde416f5f93847fca45279e0d`). **Post-D5 verification
+recovery V1 is complete** (PR #541, merge
+`988954db7eb1fec49df6279ea53af40c65cefa3a`). It retries Slice 4
+verification only. The durable write compare-and-sets the Slice 3.1
+record digest, so a stale cross-process retry cannot replace a newer
+verified result. Cross-process CAS hardening is complete.
+**Undo U1 host rollback preflight is implemented** on
+`feat/neutron-mutation-undo-preflight` and is awaiting maintainer review.
+U1 does not execute Undo, restore files, or persist pre-Apply bytes.
+Updated-file transactions stay non-eligible (`undo-source-unavailable`)
+because exact previous bytes do not survive a successful Apply.
 `mutationAllowed` remains literal `false`. N4 remains the seven read-only
-tools. Undo, rollback execution, optional N3 Slice 5, P4l17, and any N4
+tools. U2 snapshot persistence, U3 Undo execution, U4 post-Undo
+verification, U5 Desktop Undo, optional N3 Slice 5, P4l17, and any N4
 mutation or verification tool remain unauthorized. Do not auto-merge.
+
+### 2026-10-06, Undo U1 — host rollback eligibility preflight
+
+- **Status:** **UNDO U1 HOST ROLLBACK PREFLIGHT IMPLEMENTED ON BRANCH
+  AWAITING MAINTAINER REVIEW.** Do not merge. Do not execute Undo.
+- **Branch:** `feat/neutron-mutation-undo-preflight`
+- **Starting main:** `988954db7eb1fec49df6279ea53af40c65cefa3a` (PR #541
+  merge). Post-D5 verification recovery V1 is complete, including
+  cross-process CAS hardening.
+- **Operation:** application `preflightNeutronMutationUndo`. Identity-only
+  `NeutronMutationUndoIntent`. No public Undo RPC. No Desktop control.
+  No project writes.
+- **Finding:** `executeApprovedApplyPlan` captures previous bytes only in
+  ephemeral `rollbackEvidence`. The Slice 3.1 record keeps digests
+  (`previousContentDigests`, post-Apply `expectedContentDigest`). Updated
+  paths are `undo-source-unavailable`. A verified created path is eligible
+  for a future delete only while current bytes still match that digest.
+  `reconciliation-required` is closed. Historical `applied: true` is not
+  rewritten.
+- **Not done:** U2 trusted pre-Apply snapshots for new mutations, U3
+  host-only Undo authorization and execution, U4 post-Undo verification,
+  U5 Desktop Undo. Original Apply approval is not reusable.
 
 ### 2026-10-05, Post-D5 verification recovery — cross-process retry race
 

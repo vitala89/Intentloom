@@ -548,8 +548,19 @@ second backup system.
 
 Slice 4 closed the failed-sync `rollbackEvidence` omission. Neutron operator
 evidence uses path, digest, existedBefore, restored, and rollback status — not
-raw previous file bodies. User rollback after successful Apply remains
-unauthorized.
+raw previous file bodies.
+
+U1 host preflight confirmed the boundary for a later user Undo, which is a
+different operation from failed-Apply recovery. Previous file bodies exist
+only inside the ephemeral Apply `rollbackEvidence`. After a successful Apply
+the Slice 3.1 record keeps digests, not those bytes. An updated path is
+therefore not eligible (`undo-source-unavailable`). A verified created path
+can be eligible for a future delete while the current bytes still match the
+stored post-Apply digest. U1 does not persist snapshots, does not execute
+Undo, and does not rewrite historical `applied: true`. U2 would persist a
+trusted pre-Apply snapshot for new mutations only. U3 would add a separate
+host Undo authorization and execute one transaction. Those slices are not
+authorized.
 
 ---
 
