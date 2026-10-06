@@ -18,6 +18,7 @@ import { exactNeutronMutationPathSetsEqual } from "../../validator/src/neutron-m
 import {
   assertApprovedApplyBaselineCurrent,
   captureApprovedApplyBaseline,
+  filesystemGuardingBaseline,
 } from "./approved-apply-baseline.js";
 
 export interface ApprovedApplyEngineOptions {
@@ -92,10 +93,14 @@ export async function executeApprovedApplyPlan(
     await assertApprovedApplyBaselineCurrent(targetRoot, rollbackFiles, fs);
   }
 
+  const syncFs =
+    options.baseline === undefined
+      ? fs
+      : filesystemGuardingBaseline(fs, targetRoot, rollbackFiles);
   const syncResult = await synchronizeGeneratedFiles(
     targetRoot,
     filesToApply,
-    fs,
+    syncFs,
     declaredPathSyncOptions(options),
   );
 

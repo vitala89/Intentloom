@@ -1,4 +1,5 @@
 import { checksum, normalizeStoredPath, resolveWithin } from "@intentloom/core";
+import { ApplyBlockedBeforeWrite } from "./approved-apply-baseline.js";
 import type { GeneratedFile } from "@intentloom/core";
 import { dirname, relative, resolve, sep } from "node:path";
 import { findDestinationCollisions } from "./destination-collisions.js";
@@ -222,6 +223,7 @@ export async function synchronizeDeclaredProjectPaths(
   const backups = new Map<string, string>();
   const created: string[] = [];
   let stage: TransactionStage = "generated-stage";
+  let wrote = false;
   let postWriteValidation: PostWriteValidationResult | undefined;
   const inject = (candidate: TransactionStage) => {
     stage = candidate;
@@ -238,6 +240,7 @@ export async function synchronizeDeclaredProjectPaths(
       else created.push(path);
       await fs.mkdir(dirname(path));
       await fs.write(path, file.content);
+      wrote = true;
     }
     inject("post-write-consistency");
     postWriteValidation = await validateDeclaredPathBytes({
@@ -265,6 +268,7 @@ export async function synchronizeDeclaredProjectPaths(
       postWriteValidation,
     };
   } catch (error) {
+    if (error instanceof ApplyBlockedBeforeWrite && !wrote) throw error;
     const rollbackFailures: string[] = [];
     const injectedRollbackFailures = new Set(options.rollbackFailPaths ?? []);
     for (const [path, content] of backups) {

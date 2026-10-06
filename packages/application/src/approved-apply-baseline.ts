@@ -1,4 +1,4 @@
-import { dirname, resolve } from "node:path";
+import { dirname, relative, resolve } from "node:path";
 import type { ApprovedApplyRollbackFile } from "../../protocol/src/approved-apply.js";
 import type { FileSystem } from "./index.js";
 
@@ -35,6 +35,32 @@ export async function captureApprovedApplyBaseline(
   return rollbackFiles;
 }
 
+/**
+ * Rechecks the captured baseline on the filesystem sync is about to use.
+ * A mismatch throws before `FileSystem.write`.
+ */
+export function filesystemGuardingBaseline(
+  fs: FileSystem,
+  root: string,
+  baseline: readonly ApprovedApplyRollbackFile[],
+): FileSystem {
+  const expected = new Map(
+    baseline.map((file) => [file.path, file.previousContent] as const),
+  );
+  const released = new Set<string>();
+  const projectPath = (path: string) =>
+    relative(resolve(root), path).replaceAll("\\", "/");
+  return {
+    ...fs,
+    exists: (path) =>
+      guardedExists(fs, expected, released, projectPath(path), path),
+    read: (path) =>
+      guardedRead(fs, expected, released, projectPath(path), path),
+    write: (path, content) =>
+      guardedWrite(fs, expected, released, projectPath(path), path, content),
+  };
+}
+
 /** Byte and symlink recheck immediately before the first project write. */
 export async function assertApprovedApplyBaselineCurrent(
   root: string,
@@ -50,6 +76,64 @@ export async function assertApprovedApplyBaselineCurrent(
     }
     await assertFileMatchesBaseline(root, file, fs);
   }
+}
+
+async function guardedExists(
+  fs: FileSystem,
+  expected: ReadonlyMap<string, string | null>,
+  released: ReadonlySet<string>,
+  projectPath: string,
+  path: string,
+): Promise<boolean> {
+  const exists = await fs.exists(path);
+  if (!expected.has(projectPath) || released.has(projectPath)) return exists;
+  const prior = expected.get(projectPath) ?? null;
+  if (prior === null ? exists : !exists) throw changed();
+  return exists;
+}
+
+async function guardedRead(
+  fs: FileSystem,
+  expected: ReadonlyMap<string, string | null>,
+  released: ReadonlySet<string>,
+  projectPath: string,
+  path: string,
+): Promise<string> {
+  if (
+    expected.has(projectPath) &&
+    !released.has(projectPath) &&
+    (await fs.isSymbolicLink(path))
+  ) {
+    throw changed();
+  }
+  const text = await fs.read(path);
+  if (
+    expected.has(projectPath) &&
+    !released.has(projectPath) &&
+    text !== expected.get(projectPath)
+  ) {
+    throw changed();
+  }
+  return text;
+}
+
+async function guardedWrite(
+  fs: FileSystem,
+  expected: ReadonlyMap<string, string | null>,
+  released: Set<string>,
+  projectPath: string,
+  path: string,
+  content: string,
+): Promise<void> {
+  if (expected.has(projectPath) && !released.has(projectPath)) {
+    if (await fs.isSymbolicLink(path)) throw changed();
+    const exists = await fs.exists(path);
+    const prior = expected.get(projectPath) ?? null;
+    const actual = exists ? await fs.read(path) : null;
+    if (actual !== prior) throw changed();
+  }
+  await fs.write(path, content);
+  if (expected.has(projectPath)) released.add(projectPath);
 }
 
 async function readLegacyBaselineFile(
