@@ -64,6 +64,7 @@ remain unauthorized. Do not auto-merge.
 - **Status:** **UNDO U2 TRUSTED SNAPSHOT PERSISTENCE IMPLEMENTED ON BRANCH
   AWAITING MAINTAINER REVIEW.** Do not merge. Do not execute Undo.
 - **Branch:** `feat/neutron-mutation-undo-snapshots`
+- **Implementation commit:** `2ba7d6f41db6fc1f7c022f0ee8e8edf0dada9622`
 - **Starting main:** `2c2121ef6b633ff27d22bffc4d134b01e6ebb362` (PR #545
   merge). Audited U1 tree `cd03ff4c9a1763f82a70730c759c4f8990c5f416` matches
   that merge.
