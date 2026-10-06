@@ -62,7 +62,7 @@ const FORBIDDEN_CALLS = [
 ] as const;
 
 describe("neutron mutation undo preflight", () => {
-  it("examines a verified update without writes or eligibility", async () => {
+  it("examines a new verified update without writes and reports eligibility", async () => {
     const writes = { count: 0 };
     const ready = await prepared(countingFs(writes));
     const transactionId = await applied(ready);
@@ -74,12 +74,21 @@ describe("neutron mutation undo preflight", () => {
       approvalReusable: false,
       executionAuthorized: false,
       historicalApplied: true,
-      outcome: "undo-source-unavailable",
+      outcome: "eligible",
       transactionId,
+      unchangedPathCount: 1,
       updatedPathCount: 1,
     });
-    expect(result.paths).toBeUndefined();
+    expect(result.paths).toEqual([
+      {
+        effect: "restore-updated",
+        expectedContentDigest: expect.stringMatching(/^sha256:[0-9a-f]{64}$/u),
+        path: "src/a.ts",
+        preApplyDigest: expect.stringMatching(/^sha256:[0-9a-f]{64}$/u),
+      },
+    ]);
     expect(JSON.stringify(result)).not.toContain("previousContent");
+    expect(JSON.stringify(result)).not.toContain("old a");
     expect(writes.count).toBe(afterApply);
     expect(await readFile(await approvalFile(ready.durable), "utf8")).toBe(
       before,

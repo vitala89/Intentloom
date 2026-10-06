@@ -18,6 +18,7 @@ import {
   readNeutronMutationStatusPointer,
 } from "./neutron-mutation-status-index.js";
 import { inspectNeutronMutationUndoCurrent } from "./neutron-mutation-undo-current.js";
+import { assessNeutronMutationUndoSnapshot } from "./neutron-mutation-undo-snapshot-validate.js";
 import {
   classifyNeutronMutationUndoRecord,
   combineNeutronMutationUndoFindings,
@@ -49,6 +50,7 @@ export async function preflightNeutronMutationUndo(
     intent,
     located.record,
     readOnlyProjectFs(input.fs),
+    input.directory,
   );
 }
 
@@ -56,6 +58,7 @@ async function decideUndoPreflight(
   intent: NeutronMutationUndoIntent,
   record: NeutronMutationTransactionRecord,
   fs: FileSystem,
+  directory: string,
 ): Promise<NeutronMutationUndoPreflightResult> {
   if (evidenceBoundElsewhere(record, intent)) {
     return project(intent, record, "integrity-failure");
@@ -69,13 +72,26 @@ async function decideUndoPreflight(
     fs,
     inspection: decision.inspection,
   });
+  const evidence = record.result?.verification;
+  const snapshot = await assessNeutronMutationUndoSnapshot({
+    directory,
+    record,
+    root: intent.root,
+    proposalId: intent.proposalId,
+    createdPaths: decision.inspection.createdPaths,
+    updatedPaths: decision.inspection.updatedPaths,
+    unchangedPaths: decision.inspection.unchangedPaths,
+    approvedPaths: evidence?.approvedChangedPaths ?? [],
+    expectedDigests: decision.inspection.expectedDigests,
+    preApplyProjectStateDigest: evidence?.preApplyProjectStateDigest,
+  });
   const outcome = combineNeutronMutationUndoFindings({
     inspection: decision.inspection,
     current,
+    snapshot: snapshot.kind,
   });
-  const paths =
-    outcome === "eligible" ? eligibleUndoPaths(decision.inspection) : undefined;
-  if (outcome === "eligible" && paths === undefined) {
+  const paths = undoPaths(outcome, snapshot, decision.inspection);
+  if (outcome === "eligible" && (paths === undefined || paths.length === 0)) {
     return project(intent, record, "undo-source-unavailable");
   }
   return project(intent, record, outcome, paths);
@@ -141,6 +157,16 @@ function evidenceBoundElsewhere(
     evidence.projectId !== intent.projectId ||
     evidence.transactionId !== intent.transactionId
   );
+}
+
+function undoPaths(
+  outcome: NeutronMutationUndoOutcome,
+  snapshot: Awaited<ReturnType<typeof assessNeutronMutationUndoSnapshot>>,
+  inspection: NeutronMutationUndoInspection,
+): readonly NeutronMutationUndoPathProjection[] | undefined {
+  if (outcome !== "eligible") return undefined;
+  if (snapshot.kind === "valid") return snapshot.paths;
+  return eligibleUndoPaths(inspection);
 }
 
 function eligibleUndoPaths(

@@ -1,3 +1,4 @@
+import type { NeutronMutationUndoRestorationClaim } from "./neutron-mutation-undo-snapshot.js";
 import type {
   NeutronMutationVerificationEvidence,
   NeutronMutationVerificationStatus,
@@ -50,6 +51,7 @@ export const NEUTRON_MUTATION_APPLY_FAILURE_CODES = [
   "rollback-incomplete",
   "mutation-state-unknown",
   "replay-rejected",
+  "restoration-snapshot-failed",
 ] as const;
 export type NeutronMutationApplyFailureCode =
   (typeof NEUTRON_MUTATION_APPLY_FAILURE_CODES)[number];
@@ -96,4 +98,9 @@ export interface NeutronMutationDurableTransactionRecord {
   readonly claimedAt: number;
   readonly updatedAt: number;
   readonly result?: NeutronMutationApplyResult;
+  /**
+   * Present only for transactions that persisted a trusted U2 snapshot.
+   * Absence means a pre-U2 record. Bytes are not stored here.
+   */
+  readonly undoRestoration?: NeutronMutationUndoRestorationClaim;
 }

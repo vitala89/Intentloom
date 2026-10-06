@@ -1,4 +1,5 @@
 import type { NeutronMutationApplyResult } from "../../protocol/src/neutron-mutation-apply.js";
+import type { NeutronMutationUndoRestorationClaim } from "../../protocol/src/neutron-mutation-undo-snapshot.js";
 import { buildNeutronMutationApplyResult } from "./neutron-mutation-apply-result.js";
 import type { ParsedNeutronMutationApplyRequest } from "./neutron-mutation-apply-parse.js";
 import type {
@@ -112,6 +113,7 @@ export async function persistTerminal(
     readonly state: NeutronMutationTransactionRecord["state"];
     readonly verification?: NeutronMutationApplyResult["verification"];
     readonly now?: number;
+    readonly undoRestoration?: NeutronMutationUndoRestorationClaim;
   },
 ): Promise<NeutronMutationApplyResult> {
   const result = buildNeutronMutationApplyResult({
@@ -141,6 +143,9 @@ export async function persistTerminal(
     next: outcome.state,
     result,
     updatedAt: outcome.now ?? Date.now(),
+    ...(outcome.undoRestoration !== undefined
+      ? { undoRestoration: outcome.undoRestoration }
+      : {}),
   });
   return result;
 }

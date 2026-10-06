@@ -2,6 +2,7 @@ import type {
   NeutronMutationApplyResult,
   NeutronMutationTransactionState,
 } from "../../protocol/src/neutron-mutation-apply.js";
+import type { NeutronMutationUndoRestorationClaim } from "../../protocol/src/neutron-mutation-undo-snapshot.js";
 import { durableTransactionRecordDigest } from "./neutron-mutation-apply-durable-record.js";
 import { neutronMutationVerificationRetryEligible } from "./neutron-mutation-verification-retry-eligibility.js";
 
@@ -16,6 +17,7 @@ export interface NeutronMutationTransactionRecord {
   readonly claimedAt: number;
   readonly updatedAt: number;
   readonly result?: NeutronMutationApplyResult;
+  readonly undoRestoration?: NeutronMutationUndoRestorationClaim;
 }
 
 export type NeutronMutationClaimOutcome =
@@ -53,6 +55,7 @@ export interface NeutronMutationTransitionInput {
    */
   readonly expectedRecordDigest?: string;
   readonly expectedTransactionId?: string;
+  readonly undoRestoration?: NeutronMutationUndoRestorationClaim;
 }
 
 export interface NeutronMutationApprovalStore {
@@ -105,6 +108,9 @@ export function createMemoryNeutronMutationApprovalStore(): NeutronMutationAppro
           state: input.next,
           updatedAt: input.updatedAt,
           ...(input.result !== undefined ? { result: input.result } : {}),
+          ...(input.undoRestoration !== undefined
+            ? { undoRestoration: input.undoRestoration }
+            : {}),
         };
         records.set(input.approvalId, next);
         return next;

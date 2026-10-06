@@ -34,4 +34,6 @@ export interface NeutronMutationApplyInput {
   readonly deferVerification?: boolean;
   readonly roleCapabilities?: AgentRoleCapabilities;
   readonly delegatedRole?: string;
+  /** Test fault for snapshot persistence. Production callers leave this unset. */
+  readonly undoSnapshotFault?: "persist" | "validate";
 }

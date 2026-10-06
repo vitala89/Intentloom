@@ -45,15 +45,53 @@ recovery V1 is complete** (PR #541, merge
 verification only. The durable write compare-and-sets the Slice 3.1
 record digest, so a stale cross-process retry cannot replace a newer
 verified result. Cross-process CAS hardening is complete.
-**Undo U1 host rollback preflight is implemented** on
-`feat/neutron-mutation-undo-preflight` and is awaiting maintainer review.
-U1 does not execute Undo, restore files, or persist pre-Apply bytes.
-Updated-file transactions stay non-eligible (`undo-source-unavailable`)
-because exact previous bytes do not survive a successful Apply.
+**Undo U1 host rollback preflight is merged** (PR #545, merge
+`2c2121ef6b633ff27d22bffc4d134b01e6ebb362`; audited tree
+`cd03ff4c9a1763f82a70730c759c4f8990c5f416`). U1 does not execute Undo.
+**Undo U2 trusted pre-Apply snapshot persistence is implemented** on
+`feat/neutron-mutation-undo-snapshots` and is awaiting maintainer review.
+U2 persists exact pre-Apply bytes for new mutations in the host-private
+durable directory before the first project write. It does not execute
+Undo. Pre-U2 updated paths stay `undo-source-unavailable`. Snapshots are
+plaintext at rest under `undo-snapshots/`; U2 does not encrypt them.
 `mutationAllowed` remains literal `false`. N4 remains the seven read-only
-tools. U2 snapshot persistence, U3 Undo execution, U4 post-Undo
-verification, U5 Desktop Undo, optional N3 Slice 5, P4l17, and any N4
-mutation or verification tool remain unauthorized. Do not auto-merge.
+tools. U3 Undo execution, U4 post-Undo verification, U5 Desktop Undo,
+optional N3 Slice 5, P4l17, and any N4 mutation or verification tool
+remain unauthorized. Do not auto-merge.
+
+### 2026-10-06, Undo U2 — trusted pre-Apply snapshot persistence
+
+- **Status:** **UNDO U2 TRUSTED SNAPSHOT PERSISTENCE IMPLEMENTED ON BRANCH
+  AWAITING MAINTAINER REVIEW.** Do not merge. Do not execute Undo.
+- **Branch:** `feat/neutron-mutation-undo-snapshots`
+- **Starting main:** `2c2121ef6b633ff27d22bffc4d134b01e6ebb362` (PR #545
+  merge). Audited U1 tree `cd03ff4c9a1763f82a70730c759c4f8990c5f416` matches
+  that merge.
+- **Store:** `durableStateDirectory/undo-snapshots/<sha256(transactionId)>/`.
+  `manifest.json` binds the transaction. Payload objects are
+  `payloads/<content-digest>` and hold exact previous text for updated
+  paths only. Created paths record absence and have no body. Unchanged
+  paths are not stored. The path is derived from the transaction id. There
+  is no public list API.
+- **Binding:** transaction id, approval id, proposal id, review artifact
+  digest, plan digest, proposal root, canonical lock key, approved path
+  set, and the pre-Apply observed project digest. Facts come from the
+  canonical Apply request and the Slice 3.1 record.
+- **Order:** canonical preflight and claim, then capture, durable prepare,
+  validate, recheck bytes, then the existing declared-path write. Snapshot
+  failure or a changed file returns before the first project write.
+- **Claim:** a successful Apply adds `undoRestoration` (manifest digest
+  only) on the Slice 3.1 record. Bytes are not in the record, protocol
+  result, Desktop state, proposal index, logs, or model context. Digests
+  are content checksums, not a MAC. At-rest encryption is not provided.
+- **U1:** a new verified transaction becomes `eligible` only when the
+  snapshot validates for every created and updated path and current bytes
+  still match. One bad updated path fails the whole transaction.
+  `approvalReusable` and `executionAuthorized` stay false. Pre-U2 records
+  have no claim and stay `undo-source-unavailable` for updated paths.
+- **Not done:** U3 host Undo authorization and execution, U4 post-Undo
+  verification, U5 Desktop Undo. Failed Apply still uses sync rollback.
+  Original Apply approval is not reusable. No retention deletion in U2.
 
 ### 2026-10-06, Undo U1 — host rollback eligibility preflight
 

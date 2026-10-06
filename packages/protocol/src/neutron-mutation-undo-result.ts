@@ -12,8 +12,9 @@ const DIGEST_PATTERN = /^sha256:[0-9a-f]{64}$/u;
 
 export interface NeutronMutationUndoPathProjection {
   readonly path: string;
-  readonly effect: "remove-created";
+  readonly effect: "remove-created" | "restore-updated";
   readonly expectedContentDigest: string;
+  readonly preApplyDigest?: string;
 }
 
 /**
@@ -143,33 +144,42 @@ function validatePaths(
 
 function validatePath(entry: unknown): NeutronMutationUndoPathProjection {
   const path = object(entry, "undo path");
-  const keys = Object.keys(path);
-  if (
-    keys.length !== 3 ||
-    !keys.includes("path") ||
-    !keys.includes("effect") ||
-    !keys.includes("expectedContentDigest")
-  ) {
+  const effect = path.effect;
+  if (effect !== "remove-created" && effect !== "restore-updated") {
+    throw new ProtocolValidationError(-32602, "undo path effect is invalid");
+  }
+  const keys = Object.keys(path).sort();
+  const expectedKeys =
+    effect === "remove-created"
+      ? ["effect", "expectedContentDigest", "path"]
+      : ["effect", "expectedContentDigest", "path", "preApplyDigest"];
+  if (keys.join() !== expectedKeys.join()) {
     throw new ProtocolValidationError(-32602, "undo path shape is invalid");
   }
-  if (path.effect !== "remove-created") {
-    throw new ProtocolValidationError(
-      -32602,
-      "undo path effect must be remove-created",
-    );
-  }
-  const digest = path.expectedContentDigest;
-  if (typeof digest !== "string" || !DIGEST_PATTERN.test(digest)) {
-    throw new ProtocolValidationError(
-      -32602,
-      "expectedContentDigest is invalid",
-    );
+  const digest = digestField(
+    path.expectedContentDigest,
+    "expectedContentDigest",
+  );
+  if (effect === "remove-created") {
+    return {
+      path: boundedString(path.path, "path"),
+      effect,
+      expectedContentDigest: digest,
+    };
   }
   return {
     path: boundedString(path.path, "path"),
-    effect: "remove-created",
+    effect,
     expectedContentDigest: digest,
+    preApplyDigest: digestField(path.preApplyDigest, "preApplyDigest"),
   };
+}
+
+function digestField(value: unknown, field: string): string {
+  if (typeof value !== "string" || !DIGEST_PATTERN.test(value)) {
+    throw new ProtocolValidationError(-32602, `${field} is invalid`);
+  }
+  return value;
 }
 
 function oneOf(value: unknown): NeutronMutationUndoOutcome {

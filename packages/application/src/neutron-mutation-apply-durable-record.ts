@@ -1,6 +1,7 @@
 import { createHash } from "node:crypto";
 import { join } from "node:path";
 import { NEUTRON_MUTATION_TRANSACTION_RECORD_SCHEMA_URN } from "../../protocol/src/neutron-mutation-apply.js";
+import type { NeutronMutationUndoRestorationClaim } from "../../protocol/src/neutron-mutation-undo-snapshot.js";
 import {
   digestNeutronMutationTransactionRecord,
   validateNeutronMutationDurableTransactionRecord,
@@ -22,6 +23,7 @@ export function durableApprovalGatePath(recordPath: string): string {
 export function unsignedDurableTransactionRecord(
   record: NeutronMutationTransactionRecord,
 ) {
+  const undoRestoration = restorationClaim(record);
   return {
     schemaVersion: NEUTRON_MUTATION_TRANSACTION_RECORD_SCHEMA_URN,
     transactionId: record.transactionId,
@@ -34,7 +36,14 @@ export function unsignedDurableTransactionRecord(
     claimedAt: record.claimedAt,
     updatedAt: record.updatedAt,
     ...(record.result !== undefined ? { result: record.result } : {}),
+    ...(undoRestoration !== undefined ? { undoRestoration } : {}),
   };
+}
+
+function restorationClaim(
+  record: NeutronMutationTransactionRecord,
+): NeutronMutationUndoRestorationClaim | undefined {
+  return record.undoRestoration;
 }
 
 /** Slice 3.1 version of the canonical record. Changes when verification does. */
@@ -72,5 +81,8 @@ export function decodeDurableTransactionRecord(
     claimedAt: durable.claimedAt,
     updatedAt: durable.updatedAt,
     ...(durable.result !== undefined ? { result: durable.result } : {}),
+    ...(durable.undoRestoration !== undefined
+      ? { undoRestoration: durable.undoRestoration }
+      : {}),
   };
 }

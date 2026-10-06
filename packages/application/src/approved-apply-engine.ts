@@ -15,6 +15,10 @@ import {
   type TransactionOptions,
 } from "./index.js";
 import { exactNeutronMutationPathSetsEqual } from "../../validator/src/neutron-mutation-path-set.js";
+import {
+  assertApprovedApplyBaselineCurrent,
+  captureApprovedApplyBaseline,
+} from "./approved-apply-baseline.js";
 
 export interface ApprovedApplyEngineOptions {
   readonly now?: () => number;
@@ -23,6 +27,11 @@ export interface ApprovedApplyEngineOptions {
   readonly syncMode?: GeneratedFileSyncMode;
   readonly failAt?: TransactionOptions["failAt"];
   readonly rollbackFailPaths?: readonly string[];
+  /**
+   * Pre-captured rollback baseline. When set, Apply does not read a second
+   * baseline and refuses to write if the project bytes changed.
+   */
+  readonly baseline?: readonly ApprovedApplyRollbackFile[];
 }
 
 export async function executeApprovedApplyPlan(
@@ -72,30 +81,15 @@ export async function executeApprovedApplyPlan(
   const fs = options.fs ?? nodeFileSystem;
   const targetRoot = request.plan.targetRoot;
   const diagnostics: string[] = [];
-
-  const rollbackFiles: ApprovedApplyRollbackFile[] = [];
-  for (const file of filesToApply) {
-    const filePath = file.path;
-    const fullPath = `${targetRoot}/${filePath}`;
-    try {
-      if (await fs.exists(fullPath)) {
-        const existingContent = await fs.read(fullPath);
-        rollbackFiles.push({
-          path: filePath,
-          previousContent: existingContent,
-        });
-      } else {
-        rollbackFiles.push({
-          path: filePath,
-          previousContent: null,
-        });
-      }
-    } catch {
-      rollbackFiles.push({
-        path: filePath,
-        previousContent: null,
-      });
-    }
+  const rollbackFiles =
+    options.baseline ??
+    (await captureApprovedApplyBaseline(
+      targetRoot,
+      filesToApply.map((file) => file.path),
+      fs,
+    ));
+  if (options.baseline !== undefined) {
+    await assertApprovedApplyBaselineCurrent(targetRoot, rollbackFiles, fs);
   }
 
   const syncResult = await synchronizeGeneratedFiles(

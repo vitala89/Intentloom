@@ -5,11 +5,9 @@ import type { NeutronMutationTransactionRecord } from "./neutron-mutation-apply-
 
 /**
  * User Undo is a later human action. It is not Slice 4 transaction rollback.
- * Exact pre-Apply bytes are not in the durable record: Apply keeps them only
- * in the ephemeral `rollbackEvidence`, then persists digests. U1 therefore
- * cannot mark an updated path eligible. A verified created path can be a
- * future delete only when the host record proves prior absence and the
- * current bytes still match the post-Apply digest.
+ * Pre-U2 records keep digests only, so an updated path stays unavailable.
+ * U2 records carry a restoration claim. Eligibility still requires the
+ * trusted snapshot to validate, and it does not execute Undo.
  * This function does not write and does not clear `applied`.
  */
 export interface NeutronMutationUndoInspection {
@@ -62,18 +60,21 @@ export function classifyNeutronMutationUndoRecord(
 export function combineNeutronMutationUndoFindings(input: {
   readonly inspection: NeutronMutationUndoInspection;
   readonly current: "match" | "stale" | "escape" | "unprovable";
+  readonly snapshot: "absent" | "valid" | "corrupt";
 }): NeutronMutationUndoOutcome {
   if (input.current === "escape") return "integrity-failure";
+  if (input.snapshot === "corrupt") return "integrity-failure";
   if (input.current === "stale") return "stale-current-state";
   if (input.current === "unprovable") return "undo-source-unavailable";
   if (!input.inspection.verified) return "undo-source-unavailable";
-  if (input.inspection.updatedPaths.length > 0) {
+  const hasUpdate = input.inspection.updatedPaths.length > 0;
+  const hasCreate = input.inspection.createdPaths.length > 0;
+  if (!hasUpdate && !hasCreate) return "unsupported-transaction";
+  if (hasUpdate && input.snapshot !== "valid") {
     return "undo-source-unavailable";
   }
+  if (input.snapshot === "valid") return "eligible";
   if (!input.inspection.createsProvenAbsent) return "undo-source-unavailable";
-  if (input.inspection.createdPaths.length === 0) {
-    return "unsupported-transaction";
-  }
   return "eligible";
 }
 

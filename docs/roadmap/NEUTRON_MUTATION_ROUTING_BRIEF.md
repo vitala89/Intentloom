@@ -48,8 +48,10 @@ renderer sends identity fields only; `mutationAllowed` remains literal
 `c366d9f7d8d27f2a6f92b328ee775e1ceab53381`): read-only
 `intentloom.neutron.mutation.status.get.v1` recovers the durable Slice 3.1
 outcome after a lost D4 response. **DESKTOP MUTATION D5 COMPLETE** (Slice 2
-PR #540). Post-D5 verification retry is verification-only. Undo remains
-unauthorized.
+PR #540). Post-D5 verification retry is verification-only. Undo U1
+preflight is merged (PR #545). Undo U2 snapshot persistence is on
+`feat/neutron-mutation-undo-snapshots` awaiting review and does not execute
+Undo. U3+ remain unauthorized.
 Canon:
 [`NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md`](NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md).
 
@@ -550,17 +552,24 @@ Slice 4 closed the failed-sync `rollbackEvidence` omission. Neutron operator
 evidence uses path, digest, existedBefore, restored, and rollback status — not
 raw previous file bodies.
 
-U1 host preflight confirmed the boundary for a later user Undo, which is a
-different operation from failed-Apply recovery. Previous file bodies exist
-only inside the ephemeral Apply `rollbackEvidence`. After a successful Apply
-the Slice 3.1 record keeps digests, not those bytes. An updated path is
-therefore not eligible (`undo-source-unavailable`). A verified created path
-can be eligible for a future delete while the current bytes still match the
-stored post-Apply digest. U1 does not persist snapshots, does not execute
-Undo, and does not rewrite historical `applied: true`. U2 would persist a
-trusted pre-Apply snapshot for new mutations only. U3 would add a separate
-host Undo authorization and execute one transaction. Those slices are not
-authorized.
+U1 host preflight is merged (PR #545, merge
+`2c2121ef6b633ff27d22bffc4d134b01e6ebb362`). It confirmed that user Undo is
+a different operation from failed-Apply recovery. Historical Apply kept
+previous bytes only in ephemeral `rollbackEvidence`. After success the
+Slice 3.1 record kept digests, so a pre-U2 updated path stays
+`undo-source-unavailable`. U2, on `feat/neutron-mutation-undo-snapshots`
+awaiting maintainer review, persists a host-private snapshot before the
+first project write for new mutations. The manifest binds the canonical
+transaction. Payload files hold exact previous text for updated paths.
+Created paths record absence without a body. Unchanged paths are omitted.
+The bytes are not in the public protocol, Desktop state, proposal index,
+logs, or model context. Digests are content checksums, not a MAC, and U2
+does not encrypt snapshots at rest. A new verified transaction can become
+U1 `eligible` when that snapshot validates and current bytes still match.
+`approvalReusable` and `executionAuthorized` stay false. U2 does not
+execute Undo. U3 would add separate host Undo authorization and execute
+one transaction. U3, U4, and U5 are not authorized. Pre-U2 records are not
+rewritten.
 
 ---
 
