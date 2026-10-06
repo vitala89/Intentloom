@@ -792,11 +792,16 @@ transaction outcome after a lost D4 response, through a metadata-only
 `a0c029f62c30008dde416f5f93847fca45279e0d`). Desktop treats a lost Approve &
 Apply response as uncertain, then reads `status.get` once after the
 same-scope daemon connection is authenticated again. It does not retry
-Apply. Post-D5 verification retry
-(`intentloom.neutron.mutation.verification.retry.v1`) re-runs Slice 4
-verification for an already applied transaction and does not Apply, approve,
-or Undo. Its durable write compare-and-sets the Slice 3.1 record digest, so
-a stale cross-process retry cannot replace a newer verified result. Undo remains unauthorized. Other post-P4 candidates remain in
+Apply. **Post-D5 verification recovery V1 is complete** (PR #541, merge
+`988954db7eb1fec49df6279ea53af40c65cefa3a`). It re-runs Slice 4
+verification for an already applied transaction and does not Apply or
+approve. Its durable write compare-and-sets the Slice 3.1 record digest,
+so a stale cross-process retry cannot replace a newer verified result.
+**Undo U1 preflight is implemented** on
+`feat/neutron-mutation-undo-preflight` and is awaiting maintainer review.
+It does not execute Undo. Exact pre-Apply bytes are not durable after a
+successful Apply, so updated paths are non-eligible. U2+ remain
+unauthorized. Other post-P4 candidates remain in
 `POST_W12_NEXT_INCREMENT_PLAN.md`.
 
 The Desktop discovery/error and Diff/Timeline slices remain recorded in
