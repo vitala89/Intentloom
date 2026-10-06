@@ -12,6 +12,45 @@ Do not begin implementation from the user prompt alone. Verify current state
 against code, Git history, merged pull requests, releases, tests, and CI when
 important claims affect the task.
 
+## Architecture source of truth
+
+Before designing, implementing, refactoring, or materially editing a feature,
+resolve the repository's architecture instructions from the documentation that
+actually exists. Do not invent rules from remembered conventions or from a
+filename used in another project.
+
+The current canonical Intentloom documents are:
+
+- `docs/governance/ENGINEERING_PRINCIPLES.md` for system boundaries, dependency
+  direction, safety, ownership, and platform invariants;
+- `docs/governance/DOMAIN_MODELING.md` for pragmatic DDD, ubiquitous language,
+  bounded contexts, domain naming, and tactical-pattern decisions;
+- `docs/governance/CODE_QUALITY_STANDARDS.md` for code style, decomposition,
+  file/function budgets, testing, and frontend/backend/TypeScript/Rust/Tauri
+  guidance;
+- `docs/governance/REACT_BEST_PRACTICES.md` when React code is affected;
+- `docs/governance/AI_AGENT_WORKFLOW.md` and this file for agent development
+  rules;
+- relevant accepted ADRs, specifications, package documentation, and roadmap
+  documents for the affected scope.
+
+Names such as `DDD_ARCHITECTURE.md`, `UBIQUITOUS_LANGUAGE.md`,
+`ARCHITECTURE_GUIDELINES.md`, `BACKEND_ARCHITECTURE.md`,
+`FRONTEND_ARCHITECTURE.md`, `CODE_STYLE.md`, and
+`AGENT_DEVELOPMENT_RULES.md` are common aliases, not additional Intentloom
+sources of truth unless such files are explicitly added later. Their concerns
+are intentionally covered by the canonical documents above so competing copies
+cannot drift.
+
+For every non-trivial design or implementation task, the plan must identify the
+canonical documents that govern the affected scope and translate them into
+concrete constraints before code is changed. At minimum, record the affected
+architecture boundary, domain/context terminology when applicable, dependency
+direction, file/function budget, relevant technology guidance, and required
+tests. If the documentation does not answer a material architecture question,
+do not guess: inspect repository evidence and require an ADR or explicit
+maintainer decision when the choice changes a durable boundary.
+
 - Start from the specification and relevant ADRs before changing architecture.
 - Keep canonical behavior provider-neutral and tool-neutral.
 - Treat generated adapters as derivatives of `catalog/`; do not hand-edit
