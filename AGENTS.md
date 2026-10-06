@@ -12,6 +12,38 @@ Do not begin implementation from the user prompt alone. Verify current state
 against code, Git history, merged pull requests, releases, tests, and CI when
 important claims affect the task.
 
+## Architecture source of truth
+
+Before designing, implementing, refactoring, or materially editing a feature,
+resolve the architecture instructions from repository documentation. Do not
+invent rules from memory or from filenames used in another project.
+
+Canonical Intentloom guidance is:
+
+- `ENGINEERING_PRINCIPLES.md`: architecture boundaries, dependency direction,
+  safety, ownership, and platform invariants;
+- `DOMAIN_MODELING.md`: pragmatic DDD, ubiquitous language, bounded contexts,
+  domain naming, and tactical-pattern decisions;
+- `CODE_QUALITY_STANDARDS.md`: code style, decomposition, file/function budgets,
+  testing, and frontend/backend/TypeScript/Rust/Tauri guidance;
+- `REACT_BEST_PRACTICES.md` when React code is affected;
+- `AGENTS.md` and `AI_AGENT_WORKFLOW.md`: agent development rules;
+- relevant accepted ADRs, specifications, package documentation, and roadmap
+  documents for the affected scope.
+
+`DDD_ARCHITECTURE.md`, `UBIQUITOUS_LANGUAGE.md`, `ARCHITECTURE_GUIDELINES.md`,
+`BACKEND_ARCHITECTURE.md`, `FRONTEND_ARCHITECTURE.md`, `CODE_STYLE.md`, and
+`AGENT_DEVELOPMENT_RULES.md` are not separate Intentloom sources of truth unless
+such files are explicitly added later. Their concerns are intentionally covered
+by the canonical documents above so duplicate instructions cannot drift.
+
+For every non-trivial design or implementation task, the plan must name the
+canonical guidance that applies and derive concrete constraints before code is
+changed: affected boundary, domain/context terminology when applicable,
+dependency direction, file/function budget, technology guidance, and tests. If
+canonical docs do not resolve a material durable architecture choice, do not
+guess; require an ADR or explicit maintainer decision.
+
 - Start from the specification and relevant ADRs before changing architecture.
 - Keep canonical behavior provider-neutral and tool-neutral.
 - Treat generated adapters as derivatives of `catalog/`; do not hand-edit
