@@ -12,11 +12,14 @@ Before implementation:
 3. Read `PROJECT_STATE.md`.
 4. Read the latest entry in `DUTY_WATCH.md`.
 5. Read `ENGINEERING_PRINCIPLES.md`, `CODE_QUALITY_STANDARDS.md`,
-   `DOMAIN_MODELING.md`, and relevant
-   specifications, ADRs, roadmaps, code, tests, and Git history.
-6. Identify the current milestone, requested outcome, affected boundaries,
+   `DOMAIN_MODELING.md`, and relevant specifications, ADRs, roadmaps,
+   technology-specific governance, code, tests, and Git history.
+6. Use the architecture source-of-truth map in `AGENTS.md` to resolve the
+   documents that govern the affected scope. Do not invent architecture,
+   naming, style, or size rules from memory or from filenames used elsewhere.
+7. Identify the current milestone, requested outcome, affected boundaries,
    risks, required validation, and applicable domain guidance.
-7. If the task is new design, a new feature with competing approaches,
+8. If the task is new design, a new feature with competing approaches,
    architecture, or triage Ambiguity = 2, run grilling
    (`.agents/skills/grilling/SKILL.md`) and wait for shared understanding
    before implementation. Skip it on bounded one-reading work. Hard bugs use
@@ -31,7 +34,9 @@ Compare documentation claims with repository evidence. If they conflict, treat
 code, tests, Git history, merged pull requests, releases, and current CI as
 evidence, then update stale documentation.
 
-Record uncertainty rather than inventing an answer.
+Record uncertainty rather than inventing an answer. If canonical architecture
+documents do not resolve a material durable design choice, obtain an ADR or
+explicit maintainer decision rather than silently choosing an architecture.
 
 ## 3. Plan the watch
 
@@ -39,16 +44,19 @@ Create a scoped plan that states:
 
 - intended outcome;
 - files or packages likely affected;
-- architectural contracts involved;
+- canonical architecture/governance documents consulted for this scope;
+- architectural contracts involved and required dependency direction;
 - owning bounded context, relevant ubiquitous-language terms, and domain
   invariants when domain behavior is affected;
 - current formatted size and responsibilities of touched implementation files;
-- expected file growth and planned extraction points;
-- relevant TypeScript, Angular, Rust, Tauri, backend, security, accessibility,
-  or testing guidance;
+- applicable file/function budgets, expected growth, and planned extraction
+  points;
+- relevant TypeScript, Angular, React, Rust, Tauri, frontend, backend, security,
+  accessibility, or testing guidance;
 - required unit, contract, integration, compatibility, process, or UI tests;
 - validation commands;
 - documentation and handoff updates;
+- unresolved architecture decisions requiring an ADR or maintainer decision;
 - whether a code-quality exception or human approval is required before
   mutation.
 
@@ -95,7 +103,8 @@ Run the strongest relevant checks available, including as applicable:
 - Rust `cargo fmt`, tests, and selected Clippy checks;
 - Tauri capability, permission, scope, IPC, and command-allowlist review;
 - `git diff --check`;
-- manual review of the final diff.
+- manual review of the final diff against the canonical architecture documents
+  identified in the task plan.
 
 Record commands and outcomes accurately. Failed or unavailable checks must be
 documented. A code-quality exception must include the measured value, limit,
@@ -122,6 +131,10 @@ Documentation is part of Definition of Done.
 
 Before creating the final commit or opening a pull request, confirm:
 
+- [ ] canonical architecture/governance documents for the changed scope were
+      identified and followed;
+- [ ] no material architecture, naming, style, or code-budget rule was invented
+      when repository guidance existed;
 - [ ] the project formatter completed successfully;
 - [ ] Markdown and lint checks passed when configured;
 - [ ] relevant tests, type checks, builds, or compatibility checks passed;
@@ -183,6 +196,7 @@ mix independent concerns merely because they are being reviewed together.
 The pull request must describe:
 
 - objective and scope;
+- canonical architecture/governance documents applied;
 - important decisions;
 - affected architecture and dependency direction;
 - file decomposition performed or intentionally deferred;
