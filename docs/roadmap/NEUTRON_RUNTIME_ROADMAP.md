@@ -296,9 +296,10 @@ separate grant. That grant is now the merged D4 host operation. D5 Slice 1
 status recovery is merged (PR #537). **DESKTOP MUTATION D5 COMPLETE**
 (Slice 2 PR #540). **Post-D5 verification recovery V1 is complete**
 (PR #541, merge `988954db7eb1fec49df6279ea53af40c65cefa3a`). Undo U1
-preflight is merged (PR #545). Undo U2 snapshot persistence is implemented
-on `feat/neutron-mutation-undo-snapshots` awaiting review. It does not
-execute Undo. U3+ remain unauthorized.
+preflight is merged (PR #545). Undo U2 snapshot persistence is merged
+(PR #547). Undo U3 host execution is implemented on
+`feat/neutron-mutation-undo-execution` awaiting maintainer review. It
+does not verify Undo or add Desktop Undo. U4 and U5 remain unauthorized.
 
 Extend the existing Neutron subagent records from persisted orchestration
 foundation into a controlled execution scheduler with:
@@ -364,8 +365,9 @@ production). Later slices (unauthorized): host rollback execution / Undo.
 D4 Approve & Apply is implemented and merged (PR #534). **DESKTOP MUTATION
 D5 COMPLETE** (Slice 1 PR #537, Slice 2 PR #540). **Post-D5 verification
 recovery V1 is complete** (PR #541). Undo U1 preflight is merged
-(PR #545). Undo U2 persists trusted snapshots and does not execute Undo.
-Do not execute Undo from this roadmap entry.
+(PR #545). Undo U2 snapshot persistence is merged (PR #547). Undo U3
+host execution is on `feat/neutron-mutation-undo-execution` awaiting
+maintainer review. Do not treat this roadmap entry as U4 or Desktop Undo.
 
 N6 read-only Desktop is implemented under its own brief. Desktop mutation
 host flow: **D1 implemented and merged** (PR #516; read-only authoritative
@@ -406,7 +408,8 @@ as D4. Host-flow canon:
 [`NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md`](NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md)
 (D1–D5 merged; D5 complete in PR #540. Post-D5 verification recovery V1
 is complete in PR #541. Undo U1 is merged in PR #545. Undo U2 snapshots
-do not execute Undo.)
+are merged in PR #547. Undo U3 execution is awaiting maintainer review
+and is not Desktop Undo.)
 
 Integrate the runtime with the official Desktop application after the v0.6
 read-only project slice and shared client contracts are stable.
@@ -563,8 +566,9 @@ merged** (PR #540, merge `bb9255a79229d9a64d611ce644c0f75caaec74bf`).
 **DESKTOP MUTATION D5 COMPLETE.** **Post-D5 verification recovery V1 is
 complete** (PR #541, merge `988954db7eb1fec49df6279ea53af40c65cefa3a`).
 Undo U1 host preflight is merged (PR #545). Undo U2 snapshot persistence
-is on `feat/neutron-mutation-undo-snapshots` awaiting maintainer review.
-Do not start U3 from this file.
+is merged (PR #547). Undo U3 host execution is on
+`feat/neutron-mutation-undo-execution` awaiting maintainer review.
+Do not start U4 from this file.
 See
 [`NEUTRON_N6_DESKTOP_READONLY_BRIEF.md`](NEUTRON_N6_DESKTOP_READONLY_BRIEF.md),
 [`NEUTRON_MUTATION_ROUTING_BRIEF.md`](NEUTRON_MUTATION_ROUTING_BRIEF.md), and

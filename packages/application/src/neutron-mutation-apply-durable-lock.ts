@@ -28,6 +28,7 @@ export async function acquireNeutronMutationApplyLock(input: {
     `${JSON.stringify({
       transactionId: input.transactionId,
       lockKey: key,
+      ownerPid: process.pid,
     })}\n`,
   );
   if (created === "created") {
@@ -60,15 +61,68 @@ function durableLockPath(directory: string, lockKey: string): string {
   return join(directory, "locks", `${digest}.lock`);
 }
 
+/**
+ * True when this transaction's lock file names a process that is still
+ * running. A crash leaves the file behind with a dead pid, so recovery can
+ * still reconcile `executing`. A concurrent caller in the live process must
+ * not.
+ */
+export async function neutronMutationApplyLockOwnedByLiveProcess(input: {
+  readonly canonicalRoot: string;
+  readonly transactionId: string;
+  readonly durableStateDirectory: string;
+}): Promise<boolean> {
+  const owner = await readLock(
+    durableLockPath(
+      input.durableStateDirectory,
+      neutronMutationLockKey(input.canonicalRoot),
+    ),
+  );
+  if (owner?.transactionId !== input.transactionId) return false;
+  return processAlive(owner.ownerPid);
+}
+
 async function readLockOwner(path: string): Promise<string | undefined> {
+  return (await readLock(path))?.transactionId;
+}
+
+async function readLock(
+  path: string,
+): Promise<
+  { transactionId: string; ownerPid: number | undefined } | undefined
+> {
   const raw = await readUtf8FileIfPresent(path);
   if (raw === undefined) return undefined;
   try {
     const parsed: unknown = JSON.parse(raw);
     if (typeof parsed !== "object" || parsed === null) return undefined;
     const transactionId = (parsed as { transactionId?: unknown }).transactionId;
-    return typeof transactionId === "string" ? transactionId : undefined;
+    const ownerPid = (parsed as { ownerPid?: unknown }).ownerPid;
+    if (typeof transactionId !== "string") return undefined;
+    return {
+      transactionId,
+      ownerPid: typeof ownerPid === "number" ? ownerPid : undefined,
+    };
   } catch {
     return undefined;
   }
+}
+
+function processAlive(pid: number | undefined): boolean {
+  if (pid === undefined || !Number.isInteger(pid) || pid <= 0) return false;
+  try {
+    process.kill(pid, 0);
+    return true;
+  } catch (error) {
+    return isErrno(error, "EPERM");
+  }
+}
+
+function isErrno(error: unknown, code: string): boolean {
+  return (
+    typeof error === "object" &&
+    error !== null &&
+    "code" in error &&
+    error.code === code
+  );
 }

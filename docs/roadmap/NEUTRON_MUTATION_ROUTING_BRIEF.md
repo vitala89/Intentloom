@@ -49,9 +49,10 @@ renderer sends identity fields only; `mutationAllowed` remains literal
 `intentloom.neutron.mutation.status.get.v1` recovers the durable Slice 3.1
 outcome after a lost D4 response. **DESKTOP MUTATION D5 COMPLETE** (Slice 2
 PR #540). Post-D5 verification retry is verification-only. Undo U1
-preflight is merged (PR #545). Undo U2 snapshot persistence is on
-`feat/neutron-mutation-undo-snapshots` awaiting review and does not execute
-Undo. U3+ remain unauthorized.
+preflight is merged (PR #545). Undo U2 snapshot persistence is merged
+(PR #547). Undo U3 host execution is on
+`feat/neutron-mutation-undo-execution` awaiting maintainer review.
+U4 and U5 remain unauthorized.
 Canon:
 [`NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md`](NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md).
 
@@ -567,9 +568,13 @@ logs, or model context. Digests are content checksums, not a MAC, and U2
 does not encrypt snapshots at rest. A new verified transaction can become
 U1 `eligible` when that snapshot validates and current bytes still match.
 `approvalReusable` and `executionAuthorized` stay false. U2 does not
-execute Undo. U3 would add separate host Undo authorization and execute
-one transaction. U3, U4, and U5 are not authorized. Pre-U2 records are not
-rewritten.
+execute Undo. U2 is merged (PR #547, merge
+`85ae255952680fbbcc2107e0e616a2ad70452061`). U3, on
+`feat/neutron-mutation-undo-execution` awaiting maintainer review, is a
+separate host Undo transaction. It does not reuse the original Apply
+approval and does not rewrite historical `applied: true`. A successful
+Undo is not U4 verification. U4 and U5 are not authorized. Pre-U2 records
+are not rewritten.
 
 ---
 

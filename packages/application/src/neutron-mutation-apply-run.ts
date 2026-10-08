@@ -1,6 +1,7 @@
 import type { NeutronMutationApplyResult } from "../../protocol/src/neutron-mutation-apply.js";
 import type { NeutronRuntimeSession } from "../../protocol/src/neutron-runtime.js";
 import { continueClaimedApplyWithLock } from "./neutron-mutation-apply-after-claim.js";
+import { neutronMutationApplyLockOwnedByLiveProcess } from "./neutron-mutation-apply-durable-lock.js";
 import type { ParsedNeutronMutationApplyRequest } from "./neutron-mutation-apply-parse.js";
 import {
   persistUnknown,
@@ -135,19 +136,36 @@ async function resolveClaim(
   if (claim.kind === "in-flight") {
     return {
       kind: "result",
-      result: await rejectInFlight(store, request, claim.record),
+      result: await rejectInFlight(input, store, request, claim.record),
     };
   }
   return { kind: "claimed", record: claim.record };
 }
 
 async function rejectInFlight(
+  input: NeutronMutationApplyInput,
   store: NeutronMutationApprovalStore,
   request: ParsedNeutronMutationApplyRequest,
   existing: NeutronMutationTransactionRecord,
 ): Promise<NeutronMutationApplyResult> {
-  if (existing.state === "executing") {
+  if (
+    existing.state === "executing" &&
+    !(await executingOwnerIsLive(input, existing))
+  ) {
     return persistUnknown(store, existing, request);
   }
   return rejectAfterClaim(request, "transaction-conflict", true);
+}
+
+async function executingOwnerIsLive(
+  input: NeutronMutationApplyInput,
+  existing: NeutronMutationTransactionRecord,
+): Promise<boolean> {
+  const directory = input.durableStateDirectory;
+  if (directory === undefined) return false;
+  return neutronMutationApplyLockOwnedByLiveProcess({
+    canonicalRoot: existing.lockKey,
+    transactionId: existing.transactionId,
+    durableStateDirectory: directory,
+  });
 }

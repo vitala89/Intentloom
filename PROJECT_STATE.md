@@ -799,13 +799,16 @@ approve. Its durable write compare-and-sets the Slice 3.1 record digest,
 so a stale cross-process retry cannot replace a newer verified result.
 **Undo U1 preflight is merged** (PR #545, merge
 `2c2121ef6b633ff27d22bffc4d134b01e6ebb362`). It does not execute Undo.
-**Undo U2 trusted snapshot persistence is implemented** on
-`feat/neutron-mutation-undo-snapshots` and is awaiting maintainer review.
-New successful mutations can store exact pre-Apply text in the host-private
-durable directory before the first project write. Pre-U2 updated paths stay
-non-undoable. U2 does not execute Undo, encrypt snapshots at rest, or add
-Desktop Undo. U3+ remain unauthorized. Other post-P4 candidates remain in
-`POST_W12_NEXT_INCREMENT_PLAN.md`.
+**Undo U2 trusted snapshot persistence is merged** (PR #547, merge
+`85ae255952680fbbcc2107e0e616a2ad70452061`). New successful mutations can
+store exact pre-Apply text in the host-private durable directory before
+the first project write. Pre-U2 updated paths stay non-undoable.
+**Undo U3 host-authorized execution is implemented** on
+`feat/neutron-mutation-undo-execution` and is awaiting maintainer review.
+It is a separate Undo transaction. The original Apply record stays
+historically applied. U3 does not verify the restored tree, encrypt
+snapshots, or add Desktop Undo. U4 and U5 remain unauthorized. Other
+post-P4 candidates remain in `POST_W12_NEXT_INCREMENT_PLAN.md`.
 
 The Desktop discovery/error and Diff/Timeline slices remain recorded in
 [PHASE1_CONTRACTS.md](docs/desktop/PHASE1_CONTRACTS.md).

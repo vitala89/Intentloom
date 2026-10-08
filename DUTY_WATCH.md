@@ -48,16 +48,48 @@ verified result. Cross-process CAS hardening is complete.
 **Undo U1 host rollback preflight is merged** (PR #545, merge
 `2c2121ef6b633ff27d22bffc4d134b01e6ebb362`; audited tree
 `cd03ff4c9a1763f82a70730c759c4f8990c5f416`). U1 does not execute Undo.
-**Undo U2 trusted pre-Apply snapshot persistence is implemented** on
-`feat/neutron-mutation-undo-snapshots` and is awaiting maintainer review.
-U2 persists exact pre-Apply bytes for new mutations in the host-private
-durable directory before the first project write. It does not execute
-Undo. Pre-U2 updated paths stay `undo-source-unavailable`. Snapshots are
-plaintext at rest under `undo-snapshots/`; U2 does not encrypt them.
-`mutationAllowed` remains literal `false`. N4 remains the seven read-only
-tools. U3 Undo execution, U4 post-Undo verification, U5 Desktop Undo,
+**Undo U2 trusted pre-Apply snapshot persistence is merged** (PR #547,
+merge `85ae255952680fbbcc2107e0e616a2ad70452061`; audited tree
+`e986d6d8580415cd918da63c38e0751fd9706035`). U2 persists exact pre-Apply
+bytes for new mutations in the host-private durable directory before the
+first project write. Pre-U2 updated paths stay `undo-source-unavailable`.
+Snapshots are plaintext at rest under `undo-snapshots/`; U2 does not
+encrypt them.
+**Undo U3 host-authorized transaction execution is implemented** on
+`feat/neutron-mutation-undo-execution` and is awaiting maintainer review.
+U3 is a new Undo transaction. It does not continue the original Apply,
+reuse its approval, or rewrite `applied: true`. A successful Undo is not
+verification. `mutationAllowed` remains literal `false`. N4 remains the
+seven read-only tools. U4 post-Undo verification, U5 Desktop Undo,
 optional N3 Slice 5, P4l17, and any N4 mutation or verification tool
 remain unauthorized. Do not auto-merge.
+
+### 2026-10-08, Undo U3 — host-authorized transaction execution
+
+- **Status:** **UNDO U3 HOST-AUTHORIZED TRANSACTION EXECUTION IMPLEMENTED
+  ON BRANCH AWAITING MAINTAINER REVIEW.** Do not merge. Do not start U4
+  or Desktop Undo.
+- **Branch:** `feat/neutron-mutation-undo-execution`
+- **Starting main:** `85ae255952680fbbcc2107e0e616a2ad70452061` (PR #547
+  merge). Audited U2 tree `e986d6d8580415cd918da63c38e0751fd9706035` matches
+  that merge.
+- **Operation:** application `approveAndUndoNeutronMutation`. Human intent
+  `NeutronMutationUndoRequest` with action `request-undo` and identity only.
+  The host re-runs U1/U2 eligibility, issues a host-only Undo approval,
+  and executes immediately. There is no public `executeUndo(token)`.
+- **Transaction:** a separate durable Undo record. The original Apply
+  record stays `applied: true`. The U2 snapshot is read and not modified.
+- **Failure:** no project write before the durable claim and the
+  immediate currentness check. A partial Undo attempts to restore the
+  pre-Undo bytes. Incomplete rollback sets `reconciliationRequired` and
+  does not retry.
+- **Replay:** a completed Undo returns the durable result on a later
+  intent or status read and does not write again.
+- **Windows CI:** a concurrent Apply that observes `executing` must not
+  mark that transaction unknown while the lock owner's process is still
+  alive. A dead owner pid still reconciles.
+- **Not done:** U4 independent post-Undo verification, U5 Desktop Undo,
+  an N4 Undo tool, autonomous Undo.
 
 ### 2026-10-06, Undo U2 — trusted pre-Apply snapshot persistence
 
