@@ -1,6 +1,6 @@
 import type { ExternalQualityPackActivationApproval } from "@intentloom/protocol";
-import { Button } from "../design/components/core/Button.js";
-import { Card } from "../design/components/layout/Card.js";
+import { Button } from "../../design/components/core/Button.js";
+import { Card } from "../../design/components/layout/Card.js";
 import { DESKTOP_EXTERNAL_SPECIALIZED_PACK_REVIEWER_ID } from "./specialized-pack-external-reviewer.js";
 
 export const EXTERNAL_SPECIALIZED_PACK_APPROVAL_INTENT =

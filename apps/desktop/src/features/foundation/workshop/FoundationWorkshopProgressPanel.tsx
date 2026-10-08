@@ -1,24 +1,24 @@
 import { useCallback, useState } from "react";
-import { Card } from "../design/components/layout/Card.js";
-import { Button } from "../design/components/core/Button.js";
-import { StatusChip } from "../design/components/status/StatusChip.js";
-import { desktopClient, DesktopBridgeError } from "../desktop-client.js";
+import { Card } from "../../../design/components/layout/Card.js";
+import { Button } from "../../../design/components/core/Button.js";
+import { StatusChip } from "../../../design/components/status/StatusChip.js";
+import { desktopClient, DesktopBridgeError } from "../../../desktop-client.js";
 import { FoundationDiscoveryPanel } from "./FoundationDiscoveryPanel.js";
-import { FoundationBlueprintPanel } from "./FoundationBlueprintPanel.js";
-import { FoundationScaffoldSection } from "./FoundationScaffoldSection.js";
+import { FoundationBlueprintPanel } from "../blueprint/FoundationBlueprintPanel.js";
+import { FoundationScaffoldSection } from "../scaffold/FoundationScaffoldSection.js";
 import { buildDiscoveryTurnProgress } from "./foundation-discovery-view-helpers.js";
 import type { FoundationDiscoveryTurnViewModel } from "./foundation-discovery-view-helpers.js";
 import {
   buildBlueprintApprovalProgress,
   buildBlueprintCompareProgress,
   buildBlueprintProposalProgress,
-} from "./foundation-blueprint-view-helpers.js";
+} from "../blueprint/foundation-blueprint-view-helpers.js";
 import type {
   FoundationBlueprintApprovalViewModel,
   FoundationBlueprintCompareViewModel,
   FoundationBlueprintProposalViewModel,
   FoundationBlueprintTier,
-} from "./foundation-blueprint-view-helpers.js";
+} from "../blueprint/foundation-blueprint-view-helpers.js";
 import type { FoundationWorkshopProgress } from "./foundation-workshop-view-helpers.js";
 import { foundationReadinessTone } from "./foundation-workshop-view-helpers.js";
 

@@ -4,10 +4,10 @@ import type {
   ExternalSpecializedPackApplyViewModel,
   ExternalSpecializedPackPreviewViewModel,
 } from "@intentloom/protocol";
-import { Button } from "../design/components/core/Button.js";
-import { EmptyState } from "../design/components/states/EmptyState.js";
-import { StatusChip } from "../design/components/status/StatusChip.js";
-import { desktopClient } from "../desktop-client.js";
+import { Button } from "../../design/components/core/Button.js";
+import { EmptyState } from "../../design/components/states/EmptyState.js";
+import { StatusChip } from "../../design/components/status/StatusChip.js";
+import { desktopClient } from "../../desktop-client.js";
 import { ExternalSpecializedPackActivateResultPanel } from "./ExternalSpecializedPackActivateResultPanel.js";
 import { ExternalSpecializedPackApprovalPanel } from "./ExternalSpecializedPackApprovalPanel.js";
 import { ExternalSpecializedPackPreviewForm } from "./ExternalSpecializedPackPreviewForm.js";

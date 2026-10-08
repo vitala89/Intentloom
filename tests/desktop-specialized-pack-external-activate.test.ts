@@ -24,15 +24,15 @@ import {
   activateExternalSpecializedPackFromApproval,
   canActivateExternalSpecializedPack,
   canApproveExternalSpecializedPack,
-} from "../apps/desktop/src/views/specialized-pack-external-activate-controller.js";
-import { buildExternalSpecializedPackActivationApproval } from "../apps/desktop/src/views/specialized-pack-external-approval.js";
-import { isExternalSpecializedPackReviewStale } from "../apps/desktop/src/views/specialized-pack-external-input-staleness.js";
-import { loadExternalSpecializedPackPreview } from "../apps/desktop/src/views/specialized-pack-external-preview-controller.js";
+} from "../apps/desktop/src/features/external-specialized-pack/specialized-pack-external-activate-controller.js";
+import { buildExternalSpecializedPackActivationApproval } from "../apps/desktop/src/features/external-specialized-pack/specialized-pack-external-approval.js";
+import { isExternalSpecializedPackReviewStale } from "../apps/desktop/src/features/external-specialized-pack/specialized-pack-external-input-staleness.js";
+import { loadExternalSpecializedPackPreview } from "../apps/desktop/src/features/external-specialized-pack/specialized-pack-external-preview-controller.js";
 import {
   EMPTY_EXTERNAL_SPECIALIZED_PACK_PREVIEW_INPUT,
   shouldClearExternalSpecializedPackPreview,
-} from "../apps/desktop/src/views/specialized-pack-external-preview-types.js";
-import { DESKTOP_EXTERNAL_SPECIALIZED_PACK_REVIEWER_ID } from "../apps/desktop/src/views/specialized-pack-external-reviewer.js";
+} from "../apps/desktop/src/features/external-specialized-pack/specialized-pack-external-preview-types.js";
+import { DESKTOP_EXTERNAL_SPECIALIZED_PACK_REVIEWER_ID } from "../apps/desktop/src/features/external-specialized-pack/specialized-pack-external-reviewer.js";
 import {
   externalManifest,
   previewInput,
@@ -517,7 +517,10 @@ describe("S8f2 Desktop external specialized pack approval and activation", () =>
   describe("rendering safeguards", () => {
     it("keeps approval UI ids explicit and manifest-independent", () => {
       const approvalPanel = readFileSync(
-        join(desktopRoot, "src/views/ExternalSpecializedPackApprovalPanel.tsx"),
+        join(
+          desktopRoot,
+          "src/features/external-specialized-pack/ExternalSpecializedPackApprovalPanel.tsx",
+        ),
         "utf8",
       );
       expect(approvalPanel).toContain('id="external-pack-approve"');

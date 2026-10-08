@@ -12,11 +12,11 @@ import {
   applyApprovedAdoptionPlan,
   applyOutcomeLabel,
   canApplyApprovedPlan,
-} from "../apps/desktop/src/views/adoption-apply-controller.js";
+} from "../apps/desktop/src/features/adoption/adoption-apply-controller.js";
 import {
   ADOPTION_APPLY_WARNING,
   renderAdoptionApplySummary,
-} from "../apps/desktop/src/views/AdoptionApplyPanel.js";
+} from "../apps/desktop/src/features/adoption/AdoptionApplyPanel.js";
 
 const desktopRoot = join(
   dirname(fileURLToPath(import.meta.url)),
@@ -125,15 +125,15 @@ describe("desktop adoption apply", () => {
     expect(applied.invokedMethods).toEqual(["existingProjectAdoptionApply"]);
     expect(foundationRequest).toHaveBeenCalledTimes(1);
     const panel = readFileSync(
-      join(desktopRoot, "src/views/AdoptionApplyPanel.tsx"),
+      join(desktopRoot, "src/features/adoption/AdoptionApplyPanel.tsx"),
       "utf8",
     );
     const page = readFileSync(
-      join(desktopRoot, "src/views/AdoptionPreviewPage.tsx"),
+      join(desktopRoot, "src/features/adoption/AdoptionPreviewPage.tsx"),
       "utf8",
     );
     const approvePanel = readFileSync(
-      join(desktopRoot, "src/views/AdoptionPreparedPlanPanel.tsx"),
+      join(desktopRoot, "src/features/adoption/AdoptionPreparedPlanPanel.tsx"),
       "utf8",
     );
     expect(panel).toContain(ADOPTION_APPLY_WARNING);

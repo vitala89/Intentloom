@@ -1,5 +1,5 @@
 import type { ExternalSpecializedPackPreviewViewModel } from "@intentloom/protocol";
-import { Card } from "../design/components/layout/Card.js";
+import { Card } from "../../design/components/layout/Card.js";
 import { renderExternalSpecializedPackPreviewFields } from "./specialized-pack-external-preview-controller.js";
 
 export function ExternalSpecializedPackPreviewResultPanel({

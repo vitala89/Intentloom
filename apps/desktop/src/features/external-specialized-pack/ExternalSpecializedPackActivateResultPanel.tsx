@@ -1,5 +1,5 @@
 import type { ExternalSpecializedPackApplyViewModel } from "@intentloom/protocol";
-import { Card } from "../design/components/layout/Card.js";
+import { Card } from "../../design/components/layout/Card.js";
 import { externalSpecializedPackActivationStatusLabel } from "./specialized-pack-external-activate-controller.js";
 import type { ExternalSpecializedPackActivationSurfaceState } from "./specialized-pack-external-activate-controller.js";
 

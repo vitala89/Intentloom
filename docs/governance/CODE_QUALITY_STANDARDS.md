@@ -152,7 +152,8 @@ security and architecture boundaries.
 - Model asynchronous states explicitly. Do not hide loading, error,
   cancellation, or stale-data behavior.
 - Prefer feature-oriented organization over folders that group every file only
-  by technical type.
+  by technical type. Desktop source placement is specified in
+  `REACT_BEST_PRACTICES.md`.
 
 ### Angular
 

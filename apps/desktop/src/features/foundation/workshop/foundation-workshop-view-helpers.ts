@@ -2,7 +2,7 @@ import type {
   FoundationViewmodelPayload,
   VersionedFoundationWorkshop,
 } from "@intentloom/protocol";
-import type { StatusTone } from "../design/components/status/StatusChip.js";
+import type { StatusTone } from "../../../design/components/status/StatusChip.js";
 
 export type FoundationClientSurfaceState =
   "empty" | "loading" | "ready" | "error" | "resume" | "deleted";

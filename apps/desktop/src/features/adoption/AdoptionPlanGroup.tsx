@@ -1,5 +1,5 @@
 import type { AdoptionPreviewItem } from "@intentloom/protocol";
-import { Card } from "../design/components/layout/Card.js";
+import { Card } from "../../design/components/layout/Card.js";
 import { AdoptionPlanItem } from "./AdoptionPlanItem.js";
 import type { AdoptionPlanGroupId } from "./adoption-preview-grouping.js";
 

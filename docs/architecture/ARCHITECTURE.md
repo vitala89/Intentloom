@@ -107,6 +107,18 @@ Interactive surfaces must not parse human-oriented CLI text or implement their o
 
 The terminal UI should remain a local Node.js-compatible presentation layer. The desktop should communicate through the standalone daemon and versioned protocol. A local or hosted web interface is a separate future decision because it adds browser lifecycle, ports, authentication, origin, transport, and network-security boundaries.
 
+### Desktop source layout
+
+Desktop remains a presentation adapter. Feature folders under
+`apps/desktop/src/features/` group product capability, presentation, and
+client-side interaction. They do not own business invariants. Placement
+rules, the `views/` ratchet, and later Neutron grouping live in
+[REACT_BEST_PRACTICES.md](../governance/REACT_BEST_PRACTICES.md).
+
+```text
+Desktop feature → desktop client / @intentloom/protocol → Tauri → daemon → application
+```
+
 ## Agent and Neutron boundary
 
 The future agent workspace introduces conversation, task state, provider adapters, context selection, and model orchestration, but it does not grant models independent authority over the project.

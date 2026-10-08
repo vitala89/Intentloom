@@ -1,6 +1,6 @@
-import { Button } from "../design/components/core/Button.js";
-import { Card } from "../design/components/layout/Card.js";
-import { EXTERNAL_QUALITY_PACK_SOURCE_KINDS } from "../desktop-client-specialized-pack-external.js";
+import { Button } from "../../design/components/core/Button.js";
+import { Card } from "../../design/components/layout/Card.js";
+import { EXTERNAL_QUALITY_PACK_SOURCE_KINDS } from "../../desktop-client-specialized-pack-external.js";
 import type { ExternalSpecializedPackPreviewInput } from "./specialized-pack-external-preview-types.js";
 
 export function ExternalSpecializedPackPreviewForm(props: {

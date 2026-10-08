@@ -55,14 +55,47 @@ bytes for new mutations in the host-private durable directory before the
 first project write. Pre-U2 updated paths stay `undo-source-unavailable`.
 Snapshots are plaintext at rest under `undo-snapshots/`; U2 does not
 encrypt them.
-**Undo U3 host-authorized transaction execution is implemented** on
-`feat/neutron-mutation-undo-execution` and is awaiting maintainer review.
-U3 is a new Undo transaction. It does not continue the original Apply,
-reuse its approval, or rewrite `applied: true`. A successful Undo is not
-verification. `mutationAllowed` remains literal `false`. N4 remains the
-seven read-only tools. U4 post-Undo verification, U5 Desktop Undo,
-optional N3 Slice 5, P4l17, and any N4 mutation or verification tool
-remain unauthorized. Do not auto-merge.
+**Undo U3 host-authorized transaction execution is merged** (PR #548,
+merge `053898f20be09f0dcaa603c869acc766c2cb60c4`). U3 is a new Undo
+transaction. It does not continue the original Apply, reuse its approval,
+or rewrite `applied: true`. A successful Undo is not verification.
+`mutationAllowed` remains literal `false`. N4 remains the seven read-only
+tools. Further product Undo work is paused for the Desktop architecture
+refactor. U4 post-Undo verification, U5 Desktop Undo, optional N3 Slice 5,
+P4l17, and any N4 mutation or verification tool remain unauthorized.
+**Desktop Architecture R1** (feature-oriented views) is implemented on
+`refactor/desktop-feature-architecture-r1` and is awaiting maintainer
+review. Do not merge. Do not start R2, R3, U4, or U5.
+
+### 2026-10-09, Desktop Architecture R1 — feature-oriented views
+
+- **Status:** **DESKTOP ARCHITECTURE R1 FEATURE-ORIENTED VIEWS REFACTOR
+  IMPLEMENTED ON BRANCH AWAITING MAINTAINER REVIEW.** Do not merge. Do not
+  start R2, workspace shell redesign, Undo U4, or Desktop Undo U5.
+- **Branch:** `refactor/desktop-feature-architecture-r1`
+- **Starting main:** `053898f20be09f0dcaa603c869acc766c2cb60c4` (PR #548
+  merge, host-authorized Undo transaction execution).
+- **Scope:** structural move only. Adoption, Foundation (Workshop including
+  Discovery, Blueprint, Scaffold), and External Specialized Pack left
+  `apps/desktop/src/views/` for `apps/desktop/src/features/`. Neutron stays
+  flat. The workspace shell only changes import paths for the three feature
+  entrypoints.
+- **Behavior:** unchanged. No protocol, daemon, or application contract
+  changes. No product Undo work.
+- **Guard:** `tests/desktop-feature-boundaries.test.ts` ratchets the
+  remaining `views/` root files. Placement rules live in
+  `docs/governance/REACT_BEST_PRACTICES.md`, with a dependency pointer in
+  `docs/architecture/ARCHITECTURE.md`. Open governance PR #546 was not
+  used as the base and was not edited.
+- **Validation:** focused Adoption, Foundation, and External Specialized
+  Pack Desktop tests passed (14 files, 101 tests) before the boundary
+  cycle check; `tests/desktop-feature-boundaries.test.ts` then passed
+  5 tests. `pnpm verify` passed unsandboxed: typecheck, lint, format
+  check, 342 files / 2974 passed / 3 skipped, build, and
+  `git diff --check`. A sandboxed `pnpm verify` failed on Unix-socket
+  and symlink `EPERM` and was discarded.
+- **Not done:** Neutron internal decomposition (R2), workspace shell
+  composition (R3), Undo U4, Desktop Undo U5.
 
 ### 2026-10-08, Undo U3 — host-authorized transaction execution
 

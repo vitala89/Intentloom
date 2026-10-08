@@ -12,7 +12,7 @@ import { existingProjectAdoptionPreparedPlanDesktopMethods } from "../apps/deskt
 import {
   prepareAdoptionPlan,
   revalidateAdoptionPlan,
-} from "../apps/desktop/src/views/adoption-prepared-plan-controller.js";
+} from "../apps/desktop/src/features/adoption/adoption-prepared-plan-controller.js";
 
 const desktopRoot = join(
   dirname(fileURLToPath(import.meta.url)),

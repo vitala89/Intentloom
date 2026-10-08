@@ -803,11 +803,17 @@ so a stale cross-process retry cannot replace a newer verified result.
 `85ae255952680fbbcc2107e0e616a2ad70452061`). New successful mutations can
 store exact pre-Apply text in the host-private durable directory before
 the first project write. Pre-U2 updated paths stay non-undoable.
-**Undo U3 host-authorized execution is implemented** on
-`feat/neutron-mutation-undo-execution` and is awaiting maintainer review.
-It is a separate Undo transaction. The original Apply record stays
-historically applied. U3 does not verify the restored tree, encrypt
-snapshots, or add Desktop Undo. U4 and U5 remain unauthorized. Other
+**Undo U3 host-authorized execution is merged** (PR #548, merge
+`053898f20be09f0dcaa603c869acc766c2cb60c4`). It is a separate Undo
+transaction. The original Apply record stays historically applied. U3
+does not verify the restored tree, encrypt snapshots, or add Desktop
+Undo. Further product Undo work is paused. U4 and U5 remain unauthorized.
+**Desktop Architecture R1** is the active increment on
+`refactor/desktop-feature-architecture-r1` and is awaiting maintainer
+review. It moves Adoption, Foundation, and External Specialized Pack from
+`apps/desktop/src/views/` into `apps/desktop/src/features/` without
+changing product behavior. Neutron stays in place for a later internal
+decomposition. Workspace shell composition is a later increment. Other
 post-P4 candidates remain in `POST_W12_NEXT_INCREMENT_PLAN.md`.
 
 The Desktop discovery/error and Diff/Timeline slices remain recorded in

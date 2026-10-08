@@ -9,10 +9,10 @@ import {
   type ExistingProjectAdoptionApproveViewModel,
   type ExistingProjectAdoptionApplyViewModel,
 } from "@intentloom/protocol";
-import { Button } from "../design/components/core/Button.js";
-import { EmptyState } from "../design/components/states/EmptyState.js";
-import { StatusChip } from "../design/components/status/StatusChip.js";
-import { desktopClient } from "../desktop-client.js";
+import { Button } from "../../design/components/core/Button.js";
+import { EmptyState } from "../../design/components/states/EmptyState.js";
+import { StatusChip } from "../../design/components/status/StatusChip.js";
+import { desktopClient } from "../../desktop-client.js";
 import {
   loadAdoptionPreview,
   type AdoptionPreviewSurfaceState,

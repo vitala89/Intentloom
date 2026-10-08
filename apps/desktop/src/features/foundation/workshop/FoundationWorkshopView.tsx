@@ -1,9 +1,9 @@
 import { useCallback, useState } from "react";
-import { Card } from "../design/components/layout/Card.js";
-import { Button } from "../design/components/core/Button.js";
-import { EmptyState } from "../design/components/states/EmptyState.js";
-import { TextInput } from "../design/components/forms/TextInput.js";
-import { desktopClient, DesktopBridgeError } from "../desktop-client.js";
+import { Card } from "../../../design/components/layout/Card.js";
+import { Button } from "../../../design/components/core/Button.js";
+import { EmptyState } from "../../../design/components/states/EmptyState.js";
+import { TextInput } from "../../../design/components/forms/TextInput.js";
+import { desktopClient, DesktopBridgeError } from "../../../desktop-client.js";
 import { FoundationWorkshopProgressPanel } from "./FoundationWorkshopProgressPanel.js";
 import {
   buildFoundationWorkshopProgress,

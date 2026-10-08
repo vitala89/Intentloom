@@ -3,8 +3,8 @@ import type {
   ExistingProjectAdoptionApproval,
   ExistingProjectAdoptionPreparedPlan,
 } from "@intentloom/protocol";
-import { Button } from "../design/components/core/Button.js";
-import { Card } from "../design/components/layout/Card.js";
+import { Button } from "../../design/components/core/Button.js";
+import { Card } from "../../design/components/layout/Card.js";
 import {
   applyOutcomeLabel,
   canApplyApprovedPlan,
