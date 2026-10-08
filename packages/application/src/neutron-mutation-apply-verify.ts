@@ -1,4 +1,5 @@
 import type { NeutronMutationApplyResult } from "../../protocol/src/neutron-mutation-apply.js";
+import type { NeutronMutationUndoRestorationClaim } from "../../protocol/src/neutron-mutation-undo-snapshot.js";
 import type { NeutronMutationRollbackProjection } from "../../protocol/src/neutron-mutation-verification.js";
 import type { NeutronTrustedApplyExecution } from "./neutron-mutation-apply-execute.js";
 import type { ParsedNeutronMutationApplyRequest } from "./neutron-mutation-apply-parse.js";
@@ -34,6 +35,7 @@ export async function persistExecutionWithVerification(
   execution: NeutronTrustedApplyExecution,
   preApplyProjectStateDigest: string,
   hiddenMetadataExistedBefore: Readonly<Record<string, boolean>>,
+  undoRestoration?: NeutronMutationUndoRestorationClaim,
 ): Promise<NeutronMutationApplyResult> {
   const rollback = projectNeutronMutationRollbackEvidence({
     attempted: execution.rollbackAttempted,
@@ -56,6 +58,7 @@ export async function persistExecutionWithVerification(
     execution,
     pending,
     input.now?.() ?? Date.now(),
+    undoRestoration,
   );
   const stored = await store.getByApproval(executing.approvalId);
   if (stored === undefined || input.deferVerification === true) {
@@ -178,6 +181,7 @@ function persistWriteOutcome(
   execution: NeutronTrustedApplyExecution,
   pending: ReturnType<typeof pendingEvidence>,
   now: number,
+  undoRestoration?: NeutronMutationUndoRestorationClaim,
 ): Promise<NeutronMutationApplyResult> {
   if (execution.applied) {
     return persistTerminal(store, executing, request, {
@@ -192,6 +196,7 @@ function persistWriteOutcome(
       state: "applied",
       verification: pending,
       now,
+      ...(undoRestoration !== undefined ? { undoRestoration } : {}),
     });
   }
   const incomplete = execution.rollbackCompleted === false;

@@ -81,6 +81,9 @@ async function replaceIfExpected(
     state: input.next,
     updatedAt: input.updatedAt,
     ...(input.result !== undefined ? { result: input.result } : {}),
+    ...(input.undoRestoration !== undefined
+      ? { undoRestoration: input.undoRestoration }
+      : {}),
   };
   await replaceUtf8FileAtomic(path, encodeDurableTransactionRecord(next));
   return next;

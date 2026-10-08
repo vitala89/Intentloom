@@ -4,7 +4,7 @@ import {
   acquireNeutronMutationApplyLock,
   releaseNeutronMutationApplyLock,
 } from "./neutron-mutation-apply-durable-lock.js";
-import { executeTrustedDeclaredPathApply } from "./neutron-mutation-apply-execute.js";
+import { applyWithTrustedUndoSnapshot } from "./neutron-mutation-undo-snapshot-apply.js";
 import type { ParsedNeutronMutationApplyRequest } from "./neutron-mutation-apply-parse.js";
 import {
   persistBeforeWrite,
@@ -17,7 +17,6 @@ import type {
   NeutronMutationTransactionRecord,
 } from "./neutron-mutation-apply-store.js";
 import type { NeutronMutationApplyInput } from "./neutron-mutation-apply-types.js";
-import { persistExecutionWithVerification } from "./neutron-mutation-apply-verify.js";
 import { validateNeutronMutationApplyPreWrite } from "./neutron-mutation-apply-validate.js";
 import { snapshotHiddenGeneratedMetadata } from "./neutron-mutation-verification-hidden.js";
 import { digestNeutronMutationObservedState } from "./neutron-mutation-verification-state.js";
@@ -156,27 +155,15 @@ async function finishExecutingApply(
       fs: input.fs,
       paths: request.artifact.changedPaths,
     });
-    const execution = await executeTrustedDeclaredPathApply({
-      transactionId: request.transactionId,
-      plan: request.proposal.plan,
-      files: request.files,
-      fs: input.fs,
-      currentProjectStateDigest,
-      ...(input.now !== undefined ? { now: input.now } : {}),
-      ...(input.failAt !== undefined ? { failAt: input.failAt } : {}),
-      ...(input.rollbackFailPaths !== undefined
-        ? { rollbackFailPaths: input.rollbackFailPaths }
-        : {}),
-    });
-    return persistExecutionWithVerification(
-      input,
+    return applyWithTrustedUndoSnapshot({
+      apply: input,
       request,
       store,
       executing,
-      execution,
-      preApplyObservedDigest,
+      preApplyProjectStateDigest: preApplyObservedDigest,
+      currentProjectStateDigest,
       hiddenMetadataExistedBefore,
-    );
+    });
   } catch (error) {
     return persistCaughtUnknown(store, executing, request, error);
   }

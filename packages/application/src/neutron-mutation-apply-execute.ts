@@ -16,6 +16,7 @@ export interface NeutronTrustedApplyExecutionInput {
   readonly now?: () => number;
   readonly failAt?: TransactionStage;
   readonly rollbackFailPaths?: readonly string[];
+  readonly baseline?: readonly ApprovedApplyRollbackFile[];
 }
 
 export interface NeutronTrustedApplyExecution {
@@ -42,7 +43,11 @@ export async function executeTrustedDeclaredPathApply(
   ) {
     return emptyExecution(["path-scope-mismatch"]);
   }
-  const planned = await classifyPlannedWrites(input);
+  const planned =
+    input.baseline === undefined
+      ? await classifyPlannedWrites(input)
+      : classifyFromBaseline(input.files, input.baseline);
+  if (planned === undefined) return emptyExecution(["path-scope-mismatch"]);
   const result = await executeApprovedApplyPlan(
     {
       schemaVersion: 1,
@@ -60,6 +65,7 @@ export async function executeTrustedDeclaredPathApply(
       ...(input.rollbackFailPaths !== undefined
         ? { rollbackFailPaths: input.rollbackFailPaths }
         : {}),
+      ...(input.baseline !== undefined ? { baseline: input.baseline } : {}),
     },
   );
   const rollbackFailures = parseRollbackFailures(result.diagnostics);
@@ -108,6 +114,32 @@ function parseRollbackFailures(
 function failedStage(diagnostics: readonly string[]): string | undefined {
   const match = diagnostics.find((item) => item.startsWith("failed-stage:"));
   return match === undefined ? undefined : match.slice("failed-stage:".length);
+}
+
+function classifyFromBaseline(
+  files: readonly GeneratedFile[],
+  baseline: readonly ApprovedApplyRollbackFile[],
+):
+  | {
+      readonly createdPaths: readonly string[];
+      readonly updatedPaths: readonly string[];
+      readonly unchangedPaths: readonly string[];
+    }
+  | undefined {
+  const previous = new Map(
+    baseline.map((file) => [file.path, file.previousContent] as const),
+  );
+  const createdPaths: string[] = [];
+  const updatedPaths: string[] = [];
+  const unchangedPaths: string[] = [];
+  for (const file of files) {
+    if (!previous.has(file.path)) return undefined;
+    const prior = previous.get(file.path);
+    if (prior === null) createdPaths.push(file.path);
+    else if (prior === file.content) unchangedPaths.push(file.path);
+    else updatedPaths.push(file.path);
+  }
+  return { createdPaths, updatedPaths, unchangedPaths };
 }
 
 async function classifyPlannedWrites(input: {

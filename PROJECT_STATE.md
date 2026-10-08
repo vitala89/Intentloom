@@ -797,11 +797,14 @@ Apply. **Post-D5 verification recovery V1 is complete** (PR #541, merge
 verification for an already applied transaction and does not Apply or
 approve. Its durable write compare-and-sets the Slice 3.1 record digest,
 so a stale cross-process retry cannot replace a newer verified result.
-**Undo U1 preflight is implemented** on
-`feat/neutron-mutation-undo-preflight` and is awaiting maintainer review.
-It does not execute Undo. Exact pre-Apply bytes are not durable after a
-successful Apply, so updated paths are non-eligible. U2+ remain
-unauthorized. Other post-P4 candidates remain in
+**Undo U1 preflight is merged** (PR #545, merge
+`2c2121ef6b633ff27d22bffc4d134b01e6ebb362`). It does not execute Undo.
+**Undo U2 trusted snapshot persistence is implemented** on
+`feat/neutron-mutation-undo-snapshots` and is awaiting maintainer review.
+New successful mutations can store exact pre-Apply text in the host-private
+durable directory before the first project write. Pre-U2 updated paths stay
+non-undoable. U2 does not execute Undo, encrypt snapshots at rest, or add
+Desktop Undo. U3+ remain unauthorized. Other post-P4 candidates remain in
 `POST_W12_NEXT_INCREMENT_PLAN.md`.
 
 The Desktop discovery/error and Diff/Timeline slices remain recorded in
