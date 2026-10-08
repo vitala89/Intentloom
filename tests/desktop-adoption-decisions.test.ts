@@ -16,12 +16,12 @@ import {
   clearStaleAdoptionDecisions,
   selectedDecisionsFromMap,
   validateAdoptionDecisions,
-} from "../apps/desktop/src/views/adoption-decision-controller.js";
+} from "../apps/desktop/src/features/adoption/adoption-decision-controller.js";
 import {
   renderAdoptionDecisionSummary,
   renderAdoptionDecisionText,
-} from "../apps/desktop/src/views/adoption-decision-presentation.js";
-import { adoptionPreviewFocusOrder } from "../apps/desktop/src/views/adoption-preview-presentation.js";
+} from "../apps/desktop/src/features/adoption/adoption-decision-presentation.js";
+import { adoptionPreviewFocusOrder } from "../apps/desktop/src/features/adoption/adoption-preview-presentation.js";
 
 const desktopRoot = join(
   dirname(fileURLToPath(import.meta.url)),

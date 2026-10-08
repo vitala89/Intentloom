@@ -1,5 +1,5 @@
-import { Card } from "../design/components/layout/Card.js";
-import { StatusChip } from "../design/components/status/StatusChip.js";
+import { Card } from "../../design/components/layout/Card.js";
+import { StatusChip } from "../../design/components/status/StatusChip.js";
 
 export interface AdoptionDiagnosticsProps {
   readonly diagnostics: readonly string[];

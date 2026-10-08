@@ -3,8 +3,8 @@ import type {
   ExistingProjectAdoptionPreparedPlan,
   ExistingProjectAdoptionRevalidateViewModel,
 } from "@intentloom/protocol";
-import { Button } from "../design/components/core/Button.js";
-import { Card } from "../design/components/layout/Card.js";
+import { Button } from "../../design/components/core/Button.js";
+import { Card } from "../../design/components/layout/Card.js";
 import { canApprovePreparedPlan } from "./adoption-prepared-plan-controller.js";
 
 export const ADOPTION_APPROVAL_INTENT =

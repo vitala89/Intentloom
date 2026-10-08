@@ -1,4 +1,4 @@
-import { Button } from "../design/components/core/Button.js";
+import { Button } from "../../../design/components/core/Button.js";
 import type {
   FoundationScaffoldApplyViewModel,
   FoundationScaffoldRollbackViewModel,

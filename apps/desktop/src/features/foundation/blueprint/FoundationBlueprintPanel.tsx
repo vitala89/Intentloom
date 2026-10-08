@@ -1,6 +1,6 @@
-import { Card } from "../design/components/layout/Card.js";
-import { Button } from "../design/components/core/Button.js";
-import { StatusChip } from "../design/components/status/StatusChip.js";
+import { Card } from "../../../design/components/layout/Card.js";
+import { Button } from "../../../design/components/core/Button.js";
+import { StatusChip } from "../../../design/components/status/StatusChip.js";
 import type {
   FoundationBlueprintApprovalViewModel,
   FoundationBlueprintCompareViewModel,

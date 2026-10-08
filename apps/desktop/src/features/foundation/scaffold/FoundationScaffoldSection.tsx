@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react";
-import { desktopClient, DesktopBridgeError } from "../desktop-client.js";
+import { desktopClient, DesktopBridgeError } from "../../../desktop-client.js";
 import { FoundationScaffoldPanel } from "./FoundationScaffoldPanel.js";
 import {
   buildScaffoldApplyProgress,

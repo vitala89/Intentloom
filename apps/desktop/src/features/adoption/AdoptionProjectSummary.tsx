@@ -1,7 +1,7 @@
 import type { ExistingProjectAdoptionPlanViewModel } from "@intentloom/protocol";
-import { Card } from "../design/components/layout/Card.js";
-import { FilePath } from "../design/components/code/FilePath.js";
-import { StatusChip } from "../design/components/status/StatusChip.js";
+import { Card } from "../../design/components/layout/Card.js";
+import { FilePath } from "../../design/components/code/FilePath.js";
+import { StatusChip } from "../../design/components/status/StatusChip.js";
 
 export interface AdoptionProjectSummaryProps {
   readonly selectedRoot: string;

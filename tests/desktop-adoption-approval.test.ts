@@ -15,14 +15,14 @@ import {
   canApprovePreparedPlan,
   prepareAdoptionPlan,
   revalidateAdoptionPlan,
-} from "../apps/desktop/src/views/adoption-prepared-plan-controller.js";
+} from "../apps/desktop/src/features/adoption/adoption-prepared-plan-controller.js";
 import {
   ADOPTION_APPROVAL_INTENT,
   ADOPTION_APPROVAL_NO_WRITE,
   ADOPTION_APPROVAL_WARNING,
   renderAdoptionApprovalSummary,
-} from "../apps/desktop/src/views/AdoptionPreparedPlanPanel.js";
-import { adoptionPreviewFocusOrder } from "../apps/desktop/src/views/adoption-preview-presentation.js";
+} from "../apps/desktop/src/features/adoption/AdoptionPreparedPlanPanel.js";
+import { adoptionPreviewFocusOrder } from "../apps/desktop/src/features/adoption/adoption-preview-presentation.js";
 
 const desktopRoot = join(
   dirname(fileURLToPath(import.meta.url)),
@@ -190,11 +190,11 @@ describe("desktop adoption approval", () => {
 
   it("keeps approval copy, keyboard target, and apply denied", () => {
     const panel = readFileSync(
-      join(desktopRoot, "src/views/AdoptionPreparedPlanPanel.tsx"),
+      join(desktopRoot, "src/features/adoption/AdoptionPreparedPlanPanel.tsx"),
       "utf8",
     );
     const page = readFileSync(
-      join(desktopRoot, "src/views/AdoptionPreviewPage.tsx"),
+      join(desktopRoot, "src/features/adoption/AdoptionPreviewPage.tsx"),
       "utf8",
     );
     expect(panel).toContain(ADOPTION_APPROVAL_INTENT);

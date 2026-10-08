@@ -19,12 +19,12 @@ import {
   loadExternalSpecializedPackPreview,
   renderExternalSpecializedPackPreviewFields,
   sanitizeUntrustedDisplayText,
-} from "../apps/desktop/src/views/specialized-pack-external-preview-controller.js";
+} from "../apps/desktop/src/features/external-specialized-pack/specialized-pack-external-preview-controller.js";
 import {
   EMPTY_EXTERNAL_SPECIALIZED_PACK_PREVIEW_INPUT,
   shouldClearExternalSpecializedPackPreview,
-} from "../apps/desktop/src/views/specialized-pack-external-preview-types.js";
-import { hasExternalSpecializedPackDoctorFindings } from "../apps/desktop/src/views/specialized-pack-external-doctor.js";
+} from "../apps/desktop/src/features/external-specialized-pack/specialized-pack-external-preview-types.js";
+import { hasExternalSpecializedPackDoctorFindings } from "../apps/desktop/src/features/external-specialized-pack/external-specialized-pack-doctor-integration.js";
 import { buildWorkspaceCommandOptions } from "../apps/desktop/src/workspace-command-options.js";
 import {
   externalManifest,
@@ -269,14 +269,20 @@ describe("S8f1 Desktop external specialized pack preview", () => {
       );
       expect(rustCommands).not.toContain("pick_file");
       const pageSource = readFileSync(
-        join(desktopRoot, "src/views/ExternalSpecializedPackApprovalPanel.tsx"),
+        join(
+          desktopRoot,
+          "src/features/external-specialized-pack/ExternalSpecializedPackApprovalPanel.tsx",
+        ),
         "utf8",
       );
       expect(pageSource).toContain("Approve for activation");
       expect(pageSource).toContain("Activate approved pack");
       expect(pageSource).not.toContain("dangerouslySetInnerHTML");
       const previewPage = readFileSync(
-        join(desktopRoot, "src/views/ExternalSpecializedPackPreviewPage.tsx"),
+        join(
+          desktopRoot,
+          "src/features/external-specialized-pack/ExternalSpecializedPackPreviewPage.tsx",
+        ),
         "utf8",
       );
       expect(previewPage).not.toMatch(/fetch\(/u);

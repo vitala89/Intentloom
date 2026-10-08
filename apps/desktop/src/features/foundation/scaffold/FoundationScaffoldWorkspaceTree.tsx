@@ -1,4 +1,4 @@
-import { StatusChip } from "../design/components/status/StatusChip.js";
+import { StatusChip } from "../../../design/components/status/StatusChip.js";
 import type { FoundationScaffoldWorkspaceSection } from "./foundation-scaffold-view-helpers.js";
 
 export interface FoundationScaffoldWorkspaceTreeProps {

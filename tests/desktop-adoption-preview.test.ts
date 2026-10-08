@@ -9,15 +9,15 @@ import {
   type ExistingProjectAdoptionPlanViewModel,
 } from "@intentloom/protocol";
 import { existingProjectAdoptionPlanDesktopMethods } from "../apps/desktop/src/desktop-client-adoption-plan.js";
-import { loadAdoptionPreview } from "../apps/desktop/src/views/adoption-preview-controller.js";
+import { loadAdoptionPreview } from "../apps/desktop/src/features/adoption/adoption-preview-controller.js";
 import {
   classifyAdoptionPlanItem,
   groupAdoptionPlanItems,
-} from "../apps/desktop/src/views/adoption-preview-grouping.js";
+} from "../apps/desktop/src/features/adoption/adoption-preview-grouping.js";
 import {
   adoptionPreviewFocusOrder,
   renderAdoptionPreviewText,
-} from "../apps/desktop/src/views/adoption-preview-presentation.js";
+} from "../apps/desktop/src/features/adoption/adoption-preview-presentation.js";
 import { workspaceViews } from "../apps/desktop/src/workspace-navigation.js";
 import { buildWorkspaceCommandOptions } from "../apps/desktop/src/workspace-command-options.js";
 

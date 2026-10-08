@@ -4,7 +4,7 @@ import type { InspectStatus } from "./InspectView.js";
 import { StatusChip } from "../design/components/status/StatusChip.js";
 import { EmptyState } from "../design/components/states/EmptyState.js";
 import { Button } from "../design/components/core/Button.js";
-import { hasExternalSpecializedPackDoctorFindings } from "./specialized-pack-external-doctor.js";
+import { hasExternalSpecializedPackDoctorFindings } from "../features/external-specialized-pack/external-specialized-pack-doctor-integration.js";
 
 export interface DoctorViewProps {
   root: string | null;

@@ -26,6 +26,12 @@ framework without a new ADR. Desktop is one Tauri app, not a shell of remotes.
   Domain rules stay in application/protocol/validator.
 - Generated adapters and `catalog/` derivatives are not hand-edited as truth.
 
+## Desktop feature layout
+
+Desktop feature placement is `docs/governance/REACT_BEST_PRACTICES.md`.
+New feature modules go in `apps/desktop/src/features/<feature>/`.
+Do not add them to `src/views/` or the root of `src/neutron/`.
+
 ## File budgets
 
 Prefer production files ≤250 lines. Do not grow a file past 400 without a
