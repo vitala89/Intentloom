@@ -12,7 +12,10 @@ import { describe, expect, it } from "vitest";
 import { checksum, type GeneratedFile } from "@intentloom/core";
 import { nodeFileSystem } from "../packages/application/src/index.js";
 import { applyApprovedNeutronMutation } from "../packages/application/src/neutron-mutation-apply.js";
-import { acquireNeutronMutationApplyLock } from "../packages/application/src/neutron-mutation-apply-durable-lock.js";
+import {
+  acquireNeutronMutationApplyLock,
+  releaseNeutronMutationApplyLock,
+} from "../packages/application/src/neutron-mutation-apply-durable-lock.js";
 import { durableApprovalRecordPath } from "../packages/application/src/neutron-mutation-apply-durable-record.js";
 import { createPersistentNeutronMutationApprovalStore } from "../packages/application/src/neutron-mutation-apply-durable-store.js";
 import { neutronMutationApplyLeaksToken } from "../packages/application/src/neutron-mutation-apply-result.js";
@@ -233,6 +236,57 @@ describe("Neutron mutation Slice 3.1 durable approval store", () => {
     const retry = await hostApply(prepared);
     expect(retry.applied).toBe(false);
     expect(retry.failureCode).toBe("approval-consumed");
+  });
+
+  it("does not reconcile executing while its lock owner is alive", async () => {
+    const prepared = await prepare();
+    const bound = bind(prepared.root, prepared.digest, payload());
+    const store = createPersistentNeutronMutationApprovalStore({
+      directory: prepared.stateDir,
+    });
+    const claimed = await store.claim({
+      transactionId: "txn-durable-1",
+      approvalId: bound.approval.approvalId,
+      approvalDigest: bound.approval.approvalDigest,
+      reviewArtifactDigest: bound.artifact.artifactDigest,
+      planDigest: bound.artifact.planDigest,
+      lockKey: prepared.root,
+      state: "claimed",
+      claimedAt: NOW,
+      updatedAt: NOW,
+    });
+    expect(claimed.kind).toBe("claimed");
+    await store.transition({
+      approvalId: bound.approval.approvalId,
+      expected: "claimed",
+      next: "executing",
+      updatedAt: NOW,
+    });
+    const held = await acquireNeutronMutationApplyLock({
+      canonicalRoot: prepared.root,
+      durableStateDirectory: prepared.stateDir,
+      transactionId: "txn-durable-1",
+    });
+    expect(held.ok).toBe(true);
+    const blocked = await hostApply(prepared);
+    expect(blocked.applied).toBe(false);
+    expect(blocked.failureCode).toBe("transaction-conflict");
+    expect(blocked.status).not.toBe("mutation-state-unknown");
+    expect((await store.getByApproval(bound.approval.approvalId))?.state).toBe(
+      "executing",
+    );
+    expect(await readFile(join(prepared.root, "src/a.ts"), "utf8")).toBe(
+      "old a\n",
+    );
+    if (!held.ok) return;
+    await releaseNeutronMutationApplyLock({
+      key: held.key,
+      transactionId: held.transactionId,
+      durableStateDirectory: prepared.stateDir,
+    });
+    const recovered = await hostApply(prepared);
+    expect(recovered.status).toBe("mutation-state-unknown");
+    expect(recovered.reconciliationRequired).toBe(true);
   });
 
   it("keeps failed-needs-reconciliation consumed after restart", async () => {

@@ -85,6 +85,9 @@ remain unauthorized. Do not auto-merge.
   does not retry.
 - **Replay:** a completed Undo returns the durable result on a later
   intent or status read and does not write again.
+- **Windows CI:** a concurrent Apply that observes `executing` must not
+  mark that transaction unknown while the lock owner's process is still
+  alive. A dead owner pid still reconciles.
 - **Not done:** U4 independent post-Undo verification, U5 Desktop Undo,
   an N4 Undo tool, autonomous Undo.
 
