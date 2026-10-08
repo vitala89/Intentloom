@@ -102,21 +102,25 @@ Dependency direction:
   `main.tsx`), `views/`, `neutron/`, or another feature.
 - `design/` must not import features or views.
 - Desktop client adapters must not import feature UI.
-- The shell imports feature entrypoints only:
-  `AdoptionPreviewPage`, `FoundationWorkshopView`, and
-  `ExternalSpecializedPackPreviewPage`.
+- Outside code may consume a feature only through an explicit public
+  entrypoint or integration module. Private controllers and helpers stay
+  inside the feature.
+- The shell render entrypoints are `AdoptionPreviewPage`,
+  `FoundationWorkshopView`, and `ExternalSpecializedPackPreviewPage`.
+- Doctor consumes External Specialized Pack only through
+  `external-specialized-pack-doctor-integration.ts`, which exports
+  `hasExternalSpecializedPackDoctorFindings`. That module is the feature's
+  doctor integration surface. It is not a shared helper.
+- An integration surface stays narrow and uses a domain name. Do not add
+  `utils`, `helpers`, `shared`, or a wildcard `index.ts` barrel to stand
+  in for a boundary.
+- Adding an exception in `tests/desktop-feature-boundaries.test.ts` is not
+  a substitute for declaring that public module. The test allowlist may
+  name shell entrypoints and integration modules only.
 - Business invariants stay in application and protocol. Desktop feature
   folders organize presentation and client-side interaction. Do not add
   Aggregate, Entity, Repository, Domain Service, or Value Object types in
   Desktop to mirror tactical DDD.
-
-Public entrypoints are the modules the shell renders. Do not add wildcard
-barrels. Controllers and helpers stay private by convention.
-
-The one current cross-boundary consumption is `views/DoctorView.tsx`
-importing `hasExternalSpecializedPackDoctorFindings` from External
-Specialized Pack. A new cross-boundary import needs the same explicit
-reason.
 
 `tests/desktop-feature-boundaries.test.ts` records the permitted `views/`
 root files and these import rules. A new file directly under `views/`

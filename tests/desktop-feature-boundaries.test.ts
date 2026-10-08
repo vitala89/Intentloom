@@ -48,8 +48,15 @@ const SHELL_FEATURE_ENTRYPOINTS = new Set([
   "features/external-specialized-pack/ExternalSpecializedPackPreviewPage",
 ]);
 
-const DOCTOR_FINDINGS_MODULE =
-  "features/external-specialized-pack/specialized-pack-external-doctor";
+/** Narrow, domain-named modules that outside code may import. */
+const FEATURE_INTEGRATION_SURFACES = new Set([
+  "features/external-specialized-pack/external-specialized-pack-doctor-integration",
+]);
+
+const PUBLIC_FEATURE_SURFACES = new Set([
+  ...SHELL_FEATURE_ENTRYPOINTS,
+  ...FEATURE_INTEGRATION_SURFACES,
+]);
 
 function toPosix(path: string): string {
   return path.split("\\").join("/");
@@ -235,17 +242,6 @@ function recordOutsideImportViolation(
     violations.push(`${relativePath} imports ${target}`);
     return;
   }
-  if (
-    relativePath === "views/DoctorView.tsx" &&
-    stem(target) === DOCTOR_FINDINGS_MODULE
-  ) {
-    return;
-  }
-  if (
-    relativePath === "WorkspaceContent.tsx" &&
-    SHELL_FEATURE_ENTRYPOINTS.has(stem(target))
-  ) {
-    return;
-  }
+  if (PUBLIC_FEATURE_SURFACES.has(stem(target))) return;
   violations.push(`${relativePath} imports ${target}`);
 }

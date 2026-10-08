@@ -24,7 +24,7 @@ import {
   EMPTY_EXTERNAL_SPECIALIZED_PACK_PREVIEW_INPUT,
   shouldClearExternalSpecializedPackPreview,
 } from "../apps/desktop/src/features/external-specialized-pack/specialized-pack-external-preview-types.js";
-import { hasExternalSpecializedPackDoctorFindings } from "../apps/desktop/src/features/external-specialized-pack/specialized-pack-external-doctor.js";
+import { hasExternalSpecializedPackDoctorFindings } from "../apps/desktop/src/features/external-specialized-pack/external-specialized-pack-doctor-integration.js";
 import { buildWorkspaceCommandOptions } from "../apps/desktop/src/workspace-command-options.js";
 import {
   externalManifest,
