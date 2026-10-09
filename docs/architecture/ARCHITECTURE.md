@@ -112,11 +112,14 @@ The terminal UI should remain a local Node.js-compatible presentation layer. The
 Desktop remains a presentation adapter. Feature folders under
 `apps/desktop/src/features/` group product capability, presentation, and
 client-side interaction. They do not own business invariants. Placement
-rules, the `views/` ratchet, and Neutron's semantic subfeatures live in
+rules, the `views/` ratchet, Neutron's semantic subfeatures, and shell
+composition live in
 [REACT_BEST_PRACTICES.md](../governance/REACT_BEST_PRACTICES.md).
+The shell composes public feature entrypoints in one window. It is not a
+URL router and it does not own feature behavior.
 
 ```text
-Desktop feature → desktop client / @intentloom/protocol → Tauri → daemon → application
+Desktop shell → feature entrypoint → desktop client / @intentloom/protocol → Tauri → daemon → application
 ```
 
 ## Agent and Neutron boundary

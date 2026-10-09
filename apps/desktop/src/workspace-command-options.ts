@@ -1,5 +1,8 @@
 import type { CommandOption } from "./views/CommandPaletteModal.js";
-import type { WorkspaceView } from "./workspace-navigation.js";
+import {
+  workspaceCommandEntries,
+  type WorkspaceView,
+} from "./workspace-navigation.js";
 
 export interface WorkspaceCommandOptionDeps {
   readonly theme: "dark" | "light";
@@ -16,117 +19,11 @@ export interface WorkspaceCommandOptionDeps {
 export function buildWorkspaceCommandOptions(
   deps: WorkspaceCommandOptionDeps,
 ): CommandOption[] {
+  const navigation = workspaceCommandEntries().map((entry) =>
+    navigationCommand(entry, deps.setActiveView),
+  );
   return [
-    {
-      id: "nav-overview",
-      category: "Navigation",
-      label: "Go to Overview",
-      icon: "◈",
-      shortcut: "1",
-      action: () => deps.setActiveView("Overview"),
-    },
-    {
-      id: "nav-new-project",
-      category: "Navigation",
-      label: "Go to New project",
-      icon: "✦",
-      shortcut: "2",
-      action: () => deps.setActiveView("New project"),
-    },
-    {
-      id: "nav-open-existing",
-      category: "Navigation",
-      label: "Go to Open existing project",
-      icon: "⌂",
-      shortcut: "",
-      action: () => deps.setActiveView("Open existing project"),
-    },
-    {
-      id: "nav-adoption-preview",
-      category: "Navigation",
-      label: "Go to Adoption preview",
-      icon: "▤",
-      shortcut: "",
-      action: () => deps.setActiveView("Adoption preview"),
-    },
-    {
-      id: "nav-feature-intent",
-      category: "Navigation",
-      label: "Go to Feature intent",
-      icon: "◎",
-      shortcut: "",
-      action: () => deps.setActiveView("Feature intent"),
-    },
-    {
-      id: "nav-bounded-execution",
-      category: "Navigation",
-      label: "Go to Bounded execution",
-      icon: "▷",
-      shortcut: "",
-      action: () => deps.setActiveView("Bounded execution"),
-    },
-    {
-      id: "nav-continuous-loop",
-      category: "Navigation",
-      label: "Go to Continuous loop",
-      icon: "↻",
-      shortcut: "",
-      action: () => deps.setActiveView("Continuous loop"),
-    },
-    {
-      id: "nav-neutron",
-      category: "Navigation",
-      label: "Go to Neutron",
-      icon: "⚛",
-      shortcut: "",
-      action: () => deps.setActiveView("Neutron"),
-    },
-    {
-      id: "nav-inspect",
-      category: "Navigation",
-      label: "Go to Inspect",
-      icon: "⌘",
-      shortcut: "3",
-      action: () => deps.setActiveView("Inspect"),
-    },
-    {
-      id: "nav-doctor",
-      category: "Navigation",
-      label: "Go to Doctor",
-      icon: "✚",
-      shortcut: "3",
-      action: () => deps.setActiveView("Doctor"),
-    },
-    {
-      id: "nav-diff",
-      category: "Navigation",
-      label: "Go to Diff Review",
-      icon: "⇄",
-      shortcut: "4",
-      action: () => deps.setActiveView("Diff review"),
-    },
-    {
-      id: "nav-timeline",
-      category: "Navigation",
-      label: "Go to Timeline",
-      icon: "◷",
-      shortcut: "5",
-      action: () => deps.setActiveView("Timeline"),
-    },
-    {
-      id: "nav-settings",
-      category: "Navigation",
-      label: "Go to Settings & Diagnostics",
-      icon: "⚙",
-      action: () => deps.setActiveView("Settings"),
-    },
-    {
-      id: "action-external-specialized-pack-preview",
-      category: "Actions",
-      label: "Review external specialized pack…",
-      icon: "⎘",
-      action: () => deps.setActiveView("External specialized pack review"),
-    },
+    ...navigation,
     {
       id: "action-select-root",
       category: "Actions",
@@ -164,4 +61,21 @@ export function buildWorkspaceCommandOptions(
         deps.setTheme((current) => (current === "dark" ? "light" : "dark")),
     },
   ];
+}
+
+function navigationCommand(
+  entry: ReturnType<typeof workspaceCommandEntries>[number],
+  setActiveView: (view: WorkspaceView) => void,
+): CommandOption {
+  const option: CommandOption = {
+    id: entry.commandId,
+    category: entry.category,
+    label: entry.label,
+    icon: entry.icon,
+    action: () => setActiveView(entry.view),
+  };
+  if (entry.shortcut !== undefined && entry.shortcut.length > 0) {
+    option.shortcut = entry.shortcut;
+  }
+  return option;
 }

@@ -41,7 +41,22 @@ const FORBIDDEN_FEATURE_PACKAGES = [
   "@intentloom/daemon",
 ];
 
-const SHELL_FILES = new Set(["App.tsx", "WorkspaceContent.tsx", "main.tsx"]);
+const SHELL_FILES = new Set([
+  "App.tsx",
+  "DesktopShell.tsx",
+  "WorkspaceContent.tsx",
+  "WorkspaceSidebar.tsx",
+  "WorkspaceTopbar.tsx",
+  "main.tsx",
+  "use-project-selection.ts",
+  "use-workspace-daemon-session.ts",
+  "use-workspace-operation.ts",
+  "use-workspace-project-reads.ts",
+  "use-workspace-status.ts",
+  "workspace-command-options.ts",
+  "workspace-composition.ts",
+  "workspace-view-registry.tsx",
+]);
 
 const SHELL_FEATURE_ENTRYPOINTS = new Set([
   "features/adoption/AdoptionPreviewPage",

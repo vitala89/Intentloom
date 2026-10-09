@@ -811,11 +811,13 @@ Undo. Further product Undo work is paused. U4 and U5 remain unauthorized.
 **Desktop Architecture R1** is merged (PR #549, merge
 `22fec52f84e952269fe104fd409c7742b2087ff2`). Adoption, Foundation, and
 External Specialized Pack live under `apps/desktop/src/features/`.
-**Desktop Architecture R2** organizes `apps/desktop/src/neutron/` into
-semantic subfeatures on `refactor/desktop-neutron-architecture-r2` and is
-awaiting maintainer review. It does not change Neutron behavior.
-Workspace shell composition (R3), Undo U4, and Desktop Undo U5 remain
-unauthorized. Other post-P4 candidates remain in
+**Desktop Architecture R2** is merged (PR #550, merge
+`0a9e56403617f67ed70d29255d39202f6c6efdc6`). Neutron source is organized
+into semantic subfeatures. It does not change Neutron behavior.
+**Desktop Architecture R3** simplifies Desktop shell and workspace
+composition on `refactor/desktop-shell-architecture-r3` and is awaiting
+maintainer review. It does not change product behavior. Undo U4 and
+Desktop Undo U5 remain unauthorized. Other post-P4 candidates remain in
 `POST_W12_NEXT_INCREMENT_PLAN.md`.
 
 The Desktop discovery/error and Diff/Timeline slices remain recorded in

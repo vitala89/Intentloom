@@ -65,9 +65,45 @@ refactor. U4 post-Undo verification, U5 Desktop Undo, optional N3 Slice 5,
 P4l17, and any N4 mutation or verification tool remain unauthorized.
 **Desktop Architecture R1** (feature-oriented views) is merged (PR #549,
 merge `22fec52f84e952269fe104fd409c7742b2087ff2`).
-**Desktop Architecture R2** (Neutron semantic decomposition) is implemented
-on `refactor/desktop-neutron-architecture-r2` and is awaiting maintainer
-review. Do not merge. Do not start R3, U4, or U5.
+**Desktop Architecture R2** (Neutron semantic decomposition) is merged
+(PR #550, merge `0a9e56403617f67ed70d29255d39202f6c6efdc6`).
+**Desktop Architecture R3** (shell and workspace composition) is implemented
+on `refactor/desktop-shell-architecture-r3` and is awaiting maintainer
+review. Do not merge. Do not start Undo U4 or Desktop Undo U5.
+
+### 2026-10-09, Desktop Architecture R3 — shell and workspace composition
+
+- **Status:** **DESKTOP ARCHITECTURE R3 SHELL AND WORKSPACE COMPOSITION
+  CLEANUP IMPLEMENTED ON BRANCH AWAITING MAINTAINER REVIEW.** Do not merge.
+  Do not start Undo U4 or Desktop Undo U5.
+- **Branch:** `refactor/desktop-shell-architecture-r3`
+- **Starting main:** `0a9e56403617f67ed70d29255d39202f6c6efdc6` (PR #550
+  merge, Desktop Architecture R2).
+- **Scope:** structural composition only. `App.tsx` wires project selection,
+  the single workspace operation, root-bound Inspect/Diff/Timeline reads, and
+  the existing Doctor and connect hooks. `DesktopShell` renders the sidebar,
+  topbar, and command palette. `WorkspaceContent` dispatches through a static
+  typed view registry. Navigation ids, icons, sidebar placement, and
+  command-palette navigation come from one catalog. User-visible labels are
+  unchanged. No router and no global client state framework.
+- **Behavior:** unchanged. No UI/UX, protocol, daemon, or application
+  contract changes. No Undo UI, U4, or U5. Neutron security boundaries are
+  unchanged.
+- **Guard:** `tests/desktop-shell-architecture.test.ts` ratchets file
+  budgets, exhaustive view dispatch, navigation identity, command derivation,
+  root reset, cancellation, shell import direction, and shell cycles. R1 and
+  R2 guards stay in `tests/desktop-feature-boundaries.test.ts` and
+  `tests/desktop-neutron-boundaries.test.ts`; both now treat the new shell
+  modules as shell. Placement rules live in
+  `docs/governance/REACT_BEST_PRACTICES.md`. Open governance PR #546 was
+  not used as the base and was not edited. It does not touch the same files.
+- **Validation:** focused shell, feature-boundary, Neutron-boundary, Neutron
+  session, adoption, external specialized pack, legacy Apply isolation,
+  operation lifecycle, theme, Doctor, command registry, approve/apply UI,
+  and daemon recovery tests passed (13 files, 101 tests). `pnpm verify`
+  passed: typecheck, lint, format check, 344 files / 2992 passed / 3
+  skipped, build, and `git diff --check`.
+- **Not done:** Undo U4, Desktop Undo U5.
 
 ### 2026-10-09, Desktop Architecture R2 — Neutron semantic decomposition
 

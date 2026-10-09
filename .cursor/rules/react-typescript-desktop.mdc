@@ -30,3 +30,7 @@ Canon: `docs/governance/REACT_BEST_PRACTICES.md` and ADR-0044.
 - New feature files in `src/views/` or the `src/neutron/` root. Place them
   in the owning feature or Neutron subfeature. See
   `docs/governance/REACT_BEST_PRACTICES.md`.
+- Product or feature logic in `App.tsx`. The shell composes public feature
+  entrypoints. Workspace dispatch belongs to the typed view registry, not a
+  new `if (activeView === ...)` branch.
+- A router or a global client state framework without an ADR.
