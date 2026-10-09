@@ -10,13 +10,13 @@ import {
   parseWorkspaceDaemonRequest,
 } from "@intentloom/protocol";
 import { nodeFileSystem } from "../packages/application/src/index.js";
-import { acquireNeutronMutationApplyLock } from "../packages/application/src/neutron-mutation-apply-durable-lock.js";
-import { neutronMutationApplyLeaksToken } from "../packages/application/src/neutron-mutation-apply-result.js";
+import { acquireNeutronMutationApplyLock } from "../packages/application/src/neutron/mutation/apply/neutron-mutation-apply-durable-lock.js";
+import { neutronMutationApplyLeaksToken } from "../packages/application/src/neutron/mutation/apply/neutron-mutation-apply-result.js";
 import type { ModelAdapter } from "../packages/application/src/model-adapter.js";
-import { NEUTRON_MUTATION_PROPOSAL_CAPABILITY } from "../packages/application/src/neutron-mutation-proposal-capability.js";
-import { createNeutronSessionRuntime } from "../packages/application/src/neutron-session-runtime.js";
-import { fingerprintNeutronProjectRoot } from "../packages/application/src/neutron-session-fingerprint.js";
-import { approveAndApplyNeutronGraphMutation } from "../packages/application/src/neutron-scheduler.js";
+import { NEUTRON_MUTATION_PROPOSAL_CAPABILITY } from "../packages/application/src/neutron/mutation/proposal/neutron-mutation-proposal-capability.js";
+import { createNeutronSessionRuntime } from "../packages/application/src/neutron/session/neutron-session-runtime.js";
+import { fingerprintNeutronProjectRoot } from "../packages/application/src/neutron/neutron-session-fingerprint.js";
+import { approveAndApplyNeutronGraphMutation } from "../packages/application/src/neutron/neutron-scheduler.js";
 import { NEUTRON_READ_ONLY_TOOLS } from "../packages/protocol/src/neutron-runtime.js";
 import {
   NEUTRON_MUTATION_APPROVAL_INTENT_ACTION,

@@ -3,9 +3,9 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { nodeFileSystem } from "../packages/application/src/index.js";
-import { hostNeutronGraphMutationProposalId } from "../packages/application/src/neutron-graph-mutation-identity.js";
-import { createMemoryNeutronMutationApprovalStore } from "../packages/application/src/neutron-mutation-apply-store.js";
-import { digestNeutronNodeOutput } from "../packages/application/src/neutron-node-result.js";
+import { hostNeutronGraphMutationProposalId } from "../packages/application/src/neutron/graph/neutron-graph-mutation-identity.js";
+import { createMemoryNeutronMutationApprovalStore } from "../packages/application/src/neutron/mutation/apply/neutron-mutation-apply-store.js";
+import { digestNeutronNodeOutput } from "../packages/application/src/neutron/scheduler/node/neutron-node-result.js";
 import {
   applyApprovedNeutronGraphMutation,
   assertNeutronGraphMutationMaterializationCurrent,
@@ -14,11 +14,11 @@ import {
   materializeNeutronGraphMutationReview,
   NEUTRON_MUTATION_PROPOSAL_CAPABILITY,
   neutronGraphMutationMaterializationIsCurrent,
-} from "../packages/application/src/neutron-scheduler.js";
-import { executeStoredNeutronGraph } from "../packages/application/src/neutron-session-graph.js";
-import { fingerprintNeutronProjectRoot } from "../packages/application/src/neutron-session-fingerprint.js";
-import { neutronAdapterCapability } from "../packages/application/src/neutron-session-runtime-helpers.js";
-import type { StoredNeutronSession } from "../packages/application/src/neutron-session-turn.js";
+} from "../packages/application/src/neutron/neutron-scheduler.js";
+import { executeStoredNeutronGraph } from "../packages/application/src/neutron/session/neutron-session-graph.js";
+import { fingerprintNeutronProjectRoot } from "../packages/application/src/neutron/neutron-session-fingerprint.js";
+import { neutronAdapterCapability } from "../packages/application/src/neutron/session/neutron-session-runtime-helpers.js";
+import type { StoredNeutronSession } from "../packages/application/src/neutron/session/neutron-session-turn.js";
 import type { ModelAdapter } from "../packages/application/src/model-adapter.js";
 import { NEUTRON_MUTATION_CLASS } from "../packages/protocol/src/neutron-mutation.js";
 import type {

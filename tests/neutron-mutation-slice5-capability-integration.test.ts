@@ -6,11 +6,11 @@ import { nodeFileSystem } from "../packages/application/src/index.js";
 import {
   createMemoryNeutronGraphMutationPayloadStore,
   NEUTRON_MUTATION_PROPOSAL_CAPABILITY,
-} from "../packages/application/src/neutron-scheduler.js";
-import { executeStoredNeutronGraph } from "../packages/application/src/neutron-session-graph.js";
-import { fingerprintNeutronProjectRoot } from "../packages/application/src/neutron-session-fingerprint.js";
-import { neutronAdapterCapability } from "../packages/application/src/neutron-session-runtime-helpers.js";
-import type { StoredNeutronSession } from "../packages/application/src/neutron-session-turn.js";
+} from "../packages/application/src/neutron/neutron-scheduler.js";
+import { executeStoredNeutronGraph } from "../packages/application/src/neutron/session/neutron-session-graph.js";
+import { fingerprintNeutronProjectRoot } from "../packages/application/src/neutron/neutron-session-fingerprint.js";
+import { neutronAdapterCapability } from "../packages/application/src/neutron/session/neutron-session-runtime-helpers.js";
+import type { StoredNeutronSession } from "../packages/application/src/neutron/session/neutron-session-turn.js";
 import type { ModelAdapter } from "../packages/application/src/model-adapter.js";
 import { NEUTRON_READ_ONLY_TOOLS } from "../packages/protocol/src/neutron-runtime.js";
 import type {

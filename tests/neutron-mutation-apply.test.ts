@@ -15,15 +15,15 @@ import {
   GENERATED_FILE_SYNC_DECLARED_PATHS_ONLY,
   nodeFileSystem,
 } from "../packages/application/src/index.js";
-import { applyApprovedNeutronMutation } from "../packages/application/src/neutron-mutation-apply.js";
+import { applyApprovedNeutronMutation } from "../packages/application/src/neutron/mutation/apply/neutron-mutation-apply.js";
 import {
   acquireNeutronMutationProjectLock,
   releaseNeutronMutationProjectLock,
-} from "../packages/application/src/neutron-mutation-apply-lock.js";
-import { createMemoryNeutronMutationApprovalStore } from "../packages/application/src/neutron-mutation-apply-store.js";
-import { classifyNeutronMutationRoute } from "../packages/application/src/neutron-mutation-authorization.js";
-import { fingerprintNeutronProjectRoot } from "../packages/application/src/neutron-session-fingerprint.js";
-import { listRegisteredNeutronTools } from "../packages/application/src/neutron-tool-registry.js";
+} from "../packages/application/src/neutron/mutation/apply/neutron-mutation-apply-lock.js";
+import { createMemoryNeutronMutationApprovalStore } from "../packages/application/src/neutron/mutation/apply/neutron-mutation-apply-store.js";
+import { classifyNeutronMutationRoute } from "../packages/application/src/neutron/mutation/apply/neutron-mutation-authorization.js";
+import { fingerprintNeutronProjectRoot } from "../packages/application/src/neutron/neutron-session-fingerprint.js";
+import { listRegisteredNeutronTools } from "../packages/application/src/neutron/tools/neutron-tool-registry.js";
 import {
   NEUTRON_MUTATION_APPROVAL_SCHEMA_URN,
   NEUTRON_MUTATION_APPROVAL_SOURCE,

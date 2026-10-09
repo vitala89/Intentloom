@@ -7,7 +7,7 @@ import {
 import {
   NeutronSchedulerError,
   validateNeutronTaskGraphForExecution,
-} from "../packages/application/src/neutron-scheduler.js";
+} from "../packages/application/src/neutron/neutron-scheduler.js";
 
 const ROOT = "/project";
 const SESSION = "session-1";

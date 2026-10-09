@@ -1,11 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { createMemoryNeutronGraphMutationPayloadStore } from "../packages/application/src/neutron-scheduler.js";
+import { createMemoryNeutronGraphMutationPayloadStore } from "../packages/application/src/neutron/neutron-scheduler.js";
 import {
   getNeutronMutationReview,
   listNeutronMutationReviews,
-} from "../packages/application/src/neutron-mutation-review-project.js";
-import { neutronMutationReviewLeakKeys } from "../packages/application/src/neutron-mutation-review-leak.js";
-import { fingerprintNeutronProjectRoot } from "../packages/application/src/neutron-session-fingerprint.js";
+} from "../packages/application/src/neutron/mutation/review/neutron-mutation-review-project.js";
+import { neutronMutationReviewLeakKeys } from "../packages/application/src/neutron/mutation/review/neutron-mutation-review-leak.js";
+import { fingerprintNeutronProjectRoot } from "../packages/application/src/neutron/neutron-session-fingerprint.js";
 import { digestGeneratedFileContent } from "../packages/validator/src/neutron-mutation.js";
 import { NEUTRON_READ_ONLY_TOOLS } from "../packages/protocol/src/neutron-runtime.js";
 import {

@@ -67,9 +67,44 @@ P4l17, and any N4 mutation or verification tool remain unauthorized.
 merge `22fec52f84e952269fe104fd409c7742b2087ff2`).
 **Desktop Architecture R2** (Neutron semantic decomposition) is merged
 (PR #550, merge `0a9e56403617f67ed70d29255d39202f6c6efdc6`).
-**Desktop Architecture R3** (shell and workspace composition) is implemented
-on `refactor/desktop-shell-architecture-r3` and is awaiting maintainer
-review. Do not merge. Do not start Undo U4 or Desktop Undo U5.
+**Desktop Architecture R3** (shell and workspace composition) is merged
+(PR #551, merge `01e0c7d5454c6c88aa50ae8778e0a700709fae9e`).
+**Backend Architecture R4A** (application Neutron semantic topology) is
+implemented on `refactor/application-neutron-topology-r4a` and is awaiting
+maintainer review. Do not merge. Do not start R4B, R4C, R4D, Undo U4, or
+Desktop Undo U5.
+
+### 2026-10-09, Backend Architecture R4A — application Neutron semantic topology
+
+- **Status:** **BACKEND ARCHITECTURE R4A APPLICATION NEUTRON SEMANTIC
+  TOPOLOGY IMPLEMENTED ON BRANCH AWAITING MAINTAINER REVIEW.** Do not
+  merge. Do not start R4B, Undo U4, or Desktop Undo U5.
+- **Branch:** `refactor/application-neutron-topology-r4a`
+- **Starting main:** `01e0c7d5454c6c88aa50ae8778e0a700709fae9e` (PR #551
+  merge, Desktop Architecture R3).
+- **Scope:** structural move only. Flat Neutron modules in
+  `packages/application/src/` now live under `neutron/session`,
+  `context`, `graph`, `scheduler` (node execution in `scheduler/node`),
+  `tools`, and `mutation/{proposal,review,approval,apply,status,verification,undo}`.
+  Package subpath names are unchanged. Open governance PR #546 was not
+  used as the base and was not edited.
+- **Behavior:** unchanged. No protocol, daemon behavior, Desktop, security,
+  or Undo behavior changes. U4 and U5 were not started.
+- **Guard:** `tests/application-neutron-topology.test.ts` ratchets the
+  directory topology, root modules, cross-subfeature imports, subfeature
+  cycles, the one known mutation file cycle, forbidden client dependencies,
+  and the Neutron package subpaths.
+- **Validation:** focused Neutron runtime, context, graph, scheduler, tools,
+  mutation, verification, Undo, durable-state, and topology tests passed
+  (66 files, 677 tests). `pnpm verify` passed: typecheck, lint, format
+  check, 345 files / 3002 passed / 3 skipped, build, and
+  `git diff --check`.
+- **Not done:** R4B, R4C, R4D, Undo U4, Desktop Undo U5.
+- **Windows guard:** Compatibility failed because Neutron membership used
+  `resolved.startsWith(`${neutronRoot}/`)`. Windows `resolve()` uses
+  backslashes, so the dependency graph was empty. Architecture ids now go
+  through `toPosix`, and filesystem containment uses `path.relative`. The
+  expected graph and the mutation file cycle are unchanged.
 
 ### 2026-10-09, Desktop Architecture R3 — shell and workspace composition
 

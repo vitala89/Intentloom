@@ -10,8 +10,8 @@ import {
   createMemoryNeutronGraphMutationPayloadStore,
   materializeNeutronGraphMutationReview,
   NEUTRON_MUTATION_PROPOSAL_CAPABILITY,
-} from "../packages/application/src/neutron-scheduler.js";
-import type { NeutronGraphMutationReviewBundle } from "../packages/application/src/neutron-graph-mutation-store.js";
+} from "../packages/application/src/neutron/neutron-scheduler.js";
+import type { NeutronGraphMutationReviewBundle } from "../packages/application/src/neutron/mutation/review/neutron-graph-mutation-store.js";
 import type { NeutronMutationProposalCandidate } from "../packages/protocol/src/neutron-mutation-proposal-candidate.js";
 import { NEUTRON_MUTATION_PROPOSAL_CANDIDATE_SCHEMA_URN } from "../packages/protocol/src/neutron-mutation-proposal-candidate.js";
 import {

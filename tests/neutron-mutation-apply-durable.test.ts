@@ -11,15 +11,15 @@ import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { checksum, type GeneratedFile } from "@intentloom/core";
 import { nodeFileSystem } from "../packages/application/src/index.js";
-import { applyApprovedNeutronMutation } from "../packages/application/src/neutron-mutation-apply.js";
+import { applyApprovedNeutronMutation } from "../packages/application/src/neutron/mutation/apply/neutron-mutation-apply.js";
 import {
   acquireNeutronMutationApplyLock,
   releaseNeutronMutationApplyLock,
-} from "../packages/application/src/neutron-mutation-apply-durable-lock.js";
-import { durableApprovalRecordPath } from "../packages/application/src/neutron-mutation-apply-durable-record.js";
-import { createPersistentNeutronMutationApprovalStore } from "../packages/application/src/neutron-mutation-apply-durable-store.js";
-import { neutronMutationApplyLeaksToken } from "../packages/application/src/neutron-mutation-apply-result.js";
-import { fingerprintNeutronProjectRoot } from "../packages/application/src/neutron-session-fingerprint.js";
+} from "../packages/application/src/neutron/mutation/apply/neutron-mutation-apply-durable-lock.js";
+import { durableApprovalRecordPath } from "../packages/application/src/neutron/mutation/apply/neutron-mutation-apply-durable-record.js";
+import { createPersistentNeutronMutationApprovalStore } from "../packages/application/src/neutron/mutation/apply/neutron-mutation-apply-durable-store.js";
+import { neutronMutationApplyLeaksToken } from "../packages/application/src/neutron/mutation/apply/neutron-mutation-apply-result.js";
+import { fingerprintNeutronProjectRoot } from "../packages/application/src/neutron/neutron-session-fingerprint.js";
 import {
   NEUTRON_MUTATION_APPROVAL_SCHEMA_URN,
   NEUTRON_MUTATION_APPROVAL_SOURCE,

@@ -1,14 +1,14 @@
 import { symlink, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import { createMemoryNeutronGraphMutationPayloadStore } from "../packages/application/src/neutron-scheduler.js";
-import { getNeutronMutationReview } from "../packages/application/src/neutron-mutation-review-project.js";
+import { createMemoryNeutronGraphMutationPayloadStore } from "../packages/application/src/neutron/neutron-scheduler.js";
+import { getNeutronMutationReview } from "../packages/application/src/neutron/mutation/review/neutron-mutation-review-project.js";
 import {
   neutronMutationReviewLeakKeys,
   neutronMutationReviewLeaksSecret,
-} from "../packages/application/src/neutron-mutation-review-leak.js";
-import { fingerprintNeutronProjectRoot } from "../packages/application/src/neutron-session-fingerprint.js";
-import { projectNeutronMutationReviewFiles } from "../packages/application/src/neutron-mutation-review-files.js";
+} from "../packages/application/src/neutron/mutation/review/neutron-mutation-review-leak.js";
+import { fingerprintNeutronProjectRoot } from "../packages/application/src/neutron/neutron-session-fingerprint.js";
+import { projectNeutronMutationReviewFiles } from "../packages/application/src/neutron/mutation/review/neutron-mutation-review-files.js";
 import { nodeFileSystem } from "../packages/application/src/index.js";
 import { NEUTRON_MUTATION_PROPOSAL_CANDIDATE_SCHEMA_URN } from "../packages/protocol/src/neutron-mutation-proposal-candidate.js";
 import {

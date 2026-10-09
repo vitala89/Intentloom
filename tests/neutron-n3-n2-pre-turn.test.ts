@@ -5,16 +5,16 @@ import {
   inspectProject,
   type FileSystem,
 } from "@intentloom/application";
-import { runNeutronN2ReadOnlyLoop } from "../packages/application/src/neutron-n2-loop.js";
+import { runNeutronN2ReadOnlyLoop } from "../packages/application/src/neutron/neutron-n2-loop.js";
 import {
   N3_PROJECTION_PREAMBLE,
   formatNeutronContextPrompt,
-} from "../packages/application/src/neutron-n3-prompt-context.js";
+} from "../packages/application/src/neutron/context/neutron-n3-prompt-context.js";
 import { OllamaModelAdapter } from "../packages/application/src/ollama-model-adapter.js";
 import {
   profileNotFoundError,
   roleNotAllowedError,
-} from "../packages/application/src/neutron-context-assembly.js";
+} from "../packages/application/src/neutron/context/neutron-context-assembly.js";
 
 const SKILL = `---
 name: sample-code-review

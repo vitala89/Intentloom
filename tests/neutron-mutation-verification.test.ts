@@ -7,10 +7,10 @@ import { nodeFileSystem } from "../packages/application/src/index.js";
 import {
   applyApprovedNeutronMutation,
   retryNeutronMutationVerification,
-} from "../packages/application/src/neutron-mutation-apply.js";
-import { createMemoryNeutronMutationApprovalStore } from "../packages/application/src/neutron-mutation-apply-store.js";
-import { neutronMutationApplyLeaksToken } from "../packages/application/src/neutron-mutation-apply-result.js";
-import { fingerprintNeutronProjectRoot } from "../packages/application/src/neutron-session-fingerprint.js";
+} from "../packages/application/src/neutron/mutation/apply/neutron-mutation-apply.js";
+import { createMemoryNeutronMutationApprovalStore } from "../packages/application/src/neutron/mutation/apply/neutron-mutation-apply-store.js";
+import { neutronMutationApplyLeaksToken } from "../packages/application/src/neutron/mutation/apply/neutron-mutation-apply-result.js";
+import { fingerprintNeutronProjectRoot } from "../packages/application/src/neutron/neutron-session-fingerprint.js";
 import {
   NEUTRON_MUTATION_APPROVAL_SCHEMA_URN,
   NEUTRON_MUTATION_APPROVAL_SOURCE,

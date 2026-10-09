@@ -12,10 +12,10 @@ import {
   type NeutronTaskNode,
 } from "../packages/protocol/src/neutron-runtime.js";
 import type { AgentRoleCapabilities } from "../packages/protocol/src/index.js";
-import type { NeutronNodeExecutionSuccess } from "../packages/application/src/neutron-node-execution.js";
-import { digestNeutronNodeOutput } from "../packages/application/src/neutron-node-result.js";
-import type { NeutronAttemptEvidence } from "../packages/application/src/neutron-scheduler-attempt.js";
-import type { NeutronReadyNodeOutcome } from "../packages/application/src/neutron-scheduler-wave-types.js";
+import type { NeutronNodeExecutionSuccess } from "../packages/application/src/neutron/scheduler/node/neutron-node-execution.js";
+import { digestNeutronNodeOutput } from "../packages/application/src/neutron/scheduler/node/neutron-node-result.js";
+import type { NeutronAttemptEvidence } from "../packages/application/src/neutron/scheduler/neutron-scheduler-attempt.js";
+import type { NeutronReadyNodeOutcome } from "../packages/application/src/neutron/scheduler/neutron-scheduler-wave-types.js";
 import { validateNeutronRuntimeSession } from "../packages/validator/src/neutron-runtime.js";
 
 export const SLICE5_ROOT = "/tmp/neutron-slice5-project";

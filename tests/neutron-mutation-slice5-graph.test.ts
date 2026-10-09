@@ -5,8 +5,8 @@ import {
   createMemoryNeutronGraphMutationPayloadStore,
   materializeNeutronGraphMutationReview,
   NEUTRON_MUTATION_PROPOSAL_CAPABILITY,
-} from "../packages/application/src/neutron-scheduler.js";
-import { aggregateNeutronTaskGraphResults } from "../packages/application/src/neutron-scheduler.js";
+} from "../packages/application/src/neutron/neutron-scheduler.js";
+import { aggregateNeutronTaskGraphResults } from "../packages/application/src/neutron/neutron-scheduler.js";
 import { digestContentBoundApplyPlan } from "../packages/validator/src/neutron-mutation.js";
 import { digestGeneratedFileContent } from "../packages/validator/src/neutron-mutation.js";
 import {

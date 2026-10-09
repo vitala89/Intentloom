@@ -814,10 +814,14 @@ External Specialized Pack live under `apps/desktop/src/features/`.
 **Desktop Architecture R2** is merged (PR #550, merge
 `0a9e56403617f67ed70d29255d39202f6c6efdc6`). Neutron source is organized
 into semantic subfeatures. It does not change Neutron behavior.
-**Desktop Architecture R3** simplifies Desktop shell and workspace
-composition on `refactor/desktop-shell-architecture-r3` and is awaiting
-maintainer review. It does not change product behavior. Undo U4 and
-Desktop Undo U5 remain unauthorized. Other post-P4 candidates remain in
+**Desktop Architecture R3** is merged (PR #551, merge
+`01e0c7d5454c6c88aa50ae8778e0a700709fae9e`). Shell and workspace
+composition stay behavior-preserving. **Backend Architecture R4A**
+organizes `packages/application/src/neutron/` by session, context, graph,
+scheduler (with node execution), tools, and mutation stages. It does not
+change Neutron behavior. R4B protocol topology, R4C validator/daemon
+topology, R4D repository hygiene, Undo U4, and Desktop Undo U5 remain
+unauthorized. Other post-P4 candidates remain in
 `POST_W12_NEXT_INCREMENT_PLAN.md`.
 
 The Desktop discovery/error and Diff/Timeline slices remain recorded in

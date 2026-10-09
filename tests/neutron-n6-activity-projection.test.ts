@@ -9,12 +9,12 @@ import {
   projectContextBundle,
   projectNeutronToolActivity,
   projectionContainsSecretBody,
-} from "../packages/application/src/neutron-session-activity.js";
+} from "../packages/application/src/neutron/session/neutron-session-activity.js";
 import {
   auditFields,
   buildNeutronToolFailureEnvelope,
   NeutronToolRouterError,
-} from "../packages/application/src/neutron-tool-errors.js";
+} from "../packages/application/src/neutron/tools/neutron-tool-errors.js";
 
 const SECRET_BODY = "SUPER_SECRET_VALUE=n6-slice2-body";
 

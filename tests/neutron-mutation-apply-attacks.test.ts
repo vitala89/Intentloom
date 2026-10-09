@@ -4,10 +4,10 @@ import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { checksum, type GeneratedFile } from "@intentloom/core";
 import { nodeFileSystem } from "../packages/application/src/index.js";
-import { applyApprovedNeutronMutation } from "../packages/application/src/neutron-mutation-apply.js";
-import { neutronMutationApplyLeaksToken } from "../packages/application/src/neutron-mutation-apply-result.js";
-import { createMemoryNeutronMutationApprovalStore } from "../packages/application/src/neutron-mutation-apply-store.js";
-import { fingerprintNeutronProjectRoot } from "../packages/application/src/neutron-session-fingerprint.js";
+import { applyApprovedNeutronMutation } from "../packages/application/src/neutron/mutation/apply/neutron-mutation-apply.js";
+import { neutronMutationApplyLeaksToken } from "../packages/application/src/neutron/mutation/apply/neutron-mutation-apply-result.js";
+import { createMemoryNeutronMutationApprovalStore } from "../packages/application/src/neutron/mutation/apply/neutron-mutation-apply-store.js";
+import { fingerprintNeutronProjectRoot } from "../packages/application/src/neutron/neutron-session-fingerprint.js";
 import {
   NEUTRON_MUTATION_APPROVAL_SCHEMA_URN,
   NEUTRON_MUTATION_APPROVAL_SOURCE,

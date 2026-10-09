@@ -13,20 +13,19 @@ The catalog is the sole source of reusable engineering meaning. The resolver sel
 ## Current repository structure
 
 ```text
+apps/
+  desktop/       Tauri presentation adapter
 packages/
   core/          Canonical model, resolver, schemas, rendering contracts
   adapters/      Shared adapter interfaces and target implementations
+  application/   Application and use-case boundary
   cli/           Public local command surface and process adapter
-  validator/     Structural validation and drift detection
-  application/   Private project-operation boundary
-  protocol/      Private versioned local wire contract
   daemon/        Private local-IPC process adapter
+  protocol/      Private versioned local wire contract
+  validator/     Structural validation and drift detection
 catalog/
   skills/ policies/ workflows/ templates/ schemas/
-adapters/
-  claude/ codex/ cursor/ copilot/
-profiles/ examples/ tests/
-docs/
+profiles/ examples/ tests/ docs/ scripts/
 ```
 
 All workspace packages are implemented. The public `intentloom` package bundles
@@ -143,6 +142,34 @@ reviewed plan → explicit approval → revalidation → transaction
 ```
 
 Neutron begins as an Intentloom-native runtime rather than a foundation model. The runtime owns provider-neutral context, policy, workflow, skill, planning, evidence, conformance, capability, approval, session, and evaluation behavior. Documentation must expose the underlying provider and model identity whenever third-party weights are used.
+
+### Application Neutron layout
+
+`@intentloom/application` remains the use-case layer. Neutron application code lives under `packages/application/src/neutron/` and is grouped by the product language: session, context, graph, scheduler, tools, and mutation. Folder names follow the ubiquitous language in [DOMAIN_MODELING.md](../governance/DOMAIN_MODELING.md). Node execution is `scheduler/node/` because preflight calls scheduler selection, validation, and transitions while the scheduler calls node execution. A sibling `node/` directory would cycle.
+
+```text
+packages/application/src/neutron/
+  session/                 Session runtime, turns, activity, review exposure
+  context/                 Context assembly, collectors, N2 hook, N3 prompt context
+  graph/                   Graph projection and graph-mutation orchestration
+  scheduler/               Scheduling policy, leases, retry, timeout, waves
+    node/                  Node capabilities, preflight, run, execution, result
+  tools/                   Read-only tool registry, router, and authorization
+  mutation/
+    proposal/              Proposal capability and digest bindings
+    review/                Authoritative review artifact, payload store, currentness
+    approval/              Host approval issue and approve-and-apply composition
+    apply/                 Approved Apply transaction, preflight, durable record
+    status/                Durable status lookup and link
+    verification/          Post-Apply verification and verification retry
+    undo/                  User Undo eligibility, snapshot, plan, and execution
+```
+
+The Neutron root keeps only package entrypoints and Neutron-wide modules: the N1 runtime contract, the N2 read-only loop, the project fingerprint shared by session and mutation, and the scheduler and graph-mutation composition barrels. There is no `neutron/index.ts` that re-exports the implementation. Package subpath names (`@intentloom/application/neutron-session` and the other Neutron exports) stay stable; their files live at the paths above.
+
+Mutation stages stay distinct. Proposal, review, approval, Apply, status, verification, and user Undo are separate directories. `verification/` includes internal rollback evidence from a failed Apply. `undo/` is user Undo. Undo does not rewrite original Apply history and is not that rollback. The graph Apply bridge, review payload store, materialization currentness, and graph mutation evidence live under `mutation/` because review and Apply own those contracts. Graph orchestration depends on them.
+
+Session, context, graph, scheduler (including node), tools, and mutation are the cycle boundary. Imports between those directories are an explicit allowlist and must stay acyclic. Mutation stages share one transaction record, so imports among `mutation/*` stay inside that one subfeature. Host durable state is the session host port: the session runtime accepts the directory and passes it into mutation operations.
 
 Potential future implementation packages may include private agent protocol, agent session, provider adapter, orchestration, benchmark, and evaluation modules. These modules must not access arbitrary files or execute a generic shell. Every project operation remains typed, root-bound, capability-bounded, and subject to application validation.
 

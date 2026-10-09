@@ -9,7 +9,7 @@ import {
   createNeutronMutationVerificationRetryResponse,
   isNeutronMutationVerificationRetryMethod,
 } from "@intentloom/protocol";
-import type { NeutronSessionRuntime } from "../../application/src/neutron-session-runtime.js";
+import type { NeutronSessionRuntime } from "../../application/src/neutron/session/neutron-session-runtime.js";
 
 export interface NeutronMutationVerificationRetryDaemonOptions {
   readonly neutronMutationVerificationRetry?: (

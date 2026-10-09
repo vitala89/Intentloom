@@ -14,8 +14,8 @@ import {
   renewNeutronTaskLease,
   resolveNeutronLeaseTtlMs,
   startNeutronLeaseHeartbeat,
-} from "../packages/application/src/neutron-scheduler.js";
-import { NeutronSchedulerError } from "../packages/application/src/neutron-scheduler-errors.js";
+} from "../packages/application/src/neutron/neutron-scheduler.js";
+import { NeutronSchedulerError } from "../packages/application/src/neutron/scheduler/neutron-scheduler-errors.js";
 
 const ROOT = "/project";
 const SESSION = "session-n5-3";

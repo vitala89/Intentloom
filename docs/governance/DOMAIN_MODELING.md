@@ -26,8 +26,12 @@ The goal is not to reproduce a textbook DDD structure mechanically.
 
 ## 2. Ubiquitous Language
 
-Repository code, tests, documentation, protocol contracts, and user-facing
-technical language should use the same term for the same domain concept.
+Repository code, tests, documentation, protocol contracts, folder names,
+module names, and user-facing technical language should use the same term for
+the same domain concept. Name a directory for the concept it owns, such as
+session, graph, scheduler, mutation, review, apply, or undo. Use a different
+technical term only where the boundary is actually transport, storage, or
+presentation.
 
 Prefer names that describe the Intentloom domain directly, for example:
 

@@ -15,7 +15,7 @@ import {
   reconcileNeutronTaskGraphExecution,
   snapshotNeutronCheckpoint,
   snapshotNeutronProfile,
-} from "../packages/application/src/neutron-scheduler.js";
+} from "../packages/application/src/neutron/neutron-scheduler.js";
 import type { ModelAdapter } from "../packages/application/src/model-adapter.js";
 import { validateModelAdapterCapabilities } from "../packages/validator/src/model-adapter.js";
 import type {

@@ -11,7 +11,7 @@ import {
   planNeutronTaskScheduling,
   selectReadyNodes,
   validateNeutronTaskStateTransition,
-} from "../packages/application/src/neutron-scheduler.js";
+} from "../packages/application/src/neutron/neutron-scheduler.js";
 
 const ROOT = "/project";
 const SESSION = "session-1";
@@ -234,7 +234,7 @@ describe("Neutron N5 scheduler safety boundary", () => {
     const source = await import("node:fs/promises").then((fs) =>
       fs.readFile(
         new URL(
-          "../packages/application/src/neutron-scheduler.ts",
+          "../packages/application/src/neutron/neutron-scheduler.ts",
           import.meta.url,
         ),
         "utf8",

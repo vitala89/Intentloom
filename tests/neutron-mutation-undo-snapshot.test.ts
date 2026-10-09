@@ -21,10 +21,10 @@ import type { FileSystem } from "../packages/application/src/index.js";
 import {
   decodeDurableTransactionRecord,
   encodeDurableTransactionRecord,
-} from "../packages/application/src/neutron-mutation-apply-durable-record.js";
-import { approveAndApplyNeutronGraphMutation } from "../packages/application/src/neutron-scheduler.js";
-import { readNeutronMutationStatus } from "../packages/application/src/neutron-mutation-status-read.js";
-import { prepareHostUndoSnapshot } from "../packages/application/src/neutron-mutation-undo-snapshot-capture.js";
+} from "../packages/application/src/neutron/mutation/apply/neutron-mutation-apply-durable-record.js";
+import { approveAndApplyNeutronGraphMutation } from "../packages/application/src/neutron/neutron-scheduler.js";
+import { readNeutronMutationStatus } from "../packages/application/src/neutron/mutation/status/neutron-mutation-status-read.js";
+import { prepareHostUndoSnapshot } from "../packages/application/src/neutron/mutation/undo/neutron-mutation-undo-snapshot-capture.js";
 import {
   encodeUndoSnapshotManifest,
   NEUTRON_MUTATION_UNDO_SNAPSHOT_SCHEMA_URN,
@@ -33,15 +33,15 @@ import {
   undoSnapshotGatePath,
   undoSnapshotManifestPath,
   undoSnapshotPayloadPath,
-} from "../packages/application/src/neutron-mutation-undo-snapshot-manifest.js";
+} from "../packages/application/src/neutron/mutation/undo/neutron-mutation-undo-snapshot-manifest.js";
 import {
   persistPreparedUndoSnapshot,
   readUndoSnapshotManifest,
   readUndoSnapshotPayload,
   UndoSnapshotStoreError,
-} from "../packages/application/src/neutron-mutation-undo-snapshot-store.js";
-import { preflightNeutronMutationUndo } from "../packages/application/src/neutron-mutation-undo-preflight.js";
-import { retryAppliedNeutronMutationVerification } from "../packages/application/src/neutron-mutation-verification-retry-run.js";
+} from "../packages/application/src/neutron/mutation/undo/neutron-mutation-undo-snapshot-store.js";
+import { preflightNeutronMutationUndo } from "../packages/application/src/neutron/mutation/undo/neutron-mutation-undo-preflight.js";
+import { retryAppliedNeutronMutationVerification } from "../packages/application/src/neutron/mutation/verification/neutron-mutation-verification-retry-run.js";
 import {
   NEUTRON_MUTATION_APPROVAL_INTENT_ACTION,
   NEUTRON_MUTATION_APPROVAL_INTENT_SCHEMA_URN,
@@ -50,7 +50,7 @@ import { NEUTRON_MUTATION_UNDO_INTENT_SCHEMA_URN } from "../packages/protocol/sr
 import { NEUTRON_MUTATION_VERIFICATION_RETRY_SCHEMA_URN } from "../packages/protocol/src/neutron-mutation-verification-retry-rpc.js";
 import { compareNeutronMutationPaths } from "../packages/validator/src/neutron-mutation-canonical.js";
 import { digestGeneratedFileContent } from "../packages/validator/src/neutron-mutation-review-digest.js";
-import { listRegisteredNeutronTools } from "../packages/application/src/neutron-tool-registry.js";
+import { listRegisteredNeutronTools } from "../packages/application/src/neutron/tools/neutron-tool-registry.js";
 import {
   REVIEW_GRAPH_ID,
   materializeReviewBundle,
@@ -63,7 +63,7 @@ import {
   slice5Session,
   SLICE5_NOW,
 } from "./neutron-mutation-slice5-support.js";
-import { fingerprintNeutronProjectRoot } from "../packages/application/src/neutron-session-fingerprint.js";
+import { fingerprintNeutronProjectRoot } from "../packages/application/src/neutron/neutron-session-fingerprint.js";
 
 const CREATED = "export const created = 1;\n";
 const OLD_A = "old a\n";
@@ -357,10 +357,10 @@ describe("trusted undo snapshot persistence", () => {
       expect(JSON.stringify(value)).not.toContain("previousContent");
     }
     const source = [
-      "packages/application/src/neutron-mutation-undo-snapshot-capture.ts",
-      "packages/application/src/neutron-mutation-undo-snapshot-store.ts",
-      "packages/application/src/neutron-mutation-undo-snapshot-apply.ts",
-      "packages/application/src/neutron-mutation-undo-preflight.ts",
+      "packages/application/src/neutron/mutation/undo/neutron-mutation-undo-snapshot-capture.ts",
+      "packages/application/src/neutron/mutation/undo/neutron-mutation-undo-snapshot-store.ts",
+      "packages/application/src/neutron/mutation/undo/neutron-mutation-undo-snapshot-apply.ts",
+      "packages/application/src/neutron/mutation/undo/neutron-mutation-undo-preflight.ts",
     ]
       .map((path) => readFileSync(join(repoRoot(), path), "utf8"))
       .join("\n");

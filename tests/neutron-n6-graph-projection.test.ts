@@ -14,14 +14,14 @@ import type {
   NeutronTaskState,
 } from "@intentloom/protocol";
 import { validateNeutronGraphSnapshot } from "../packages/validator/src/neutron-graph.js";
-import { projectNeutronGraphSnapshot } from "../packages/application/src/neutron-graph-projection.js";
+import { projectNeutronGraphSnapshot } from "../packages/application/src/neutron/graph/neutron-graph-projection.js";
 import {
   aggregateNeutronTaskGraphResults,
   classifyNeutronGraphStatus,
-} from "../packages/application/src/neutron-scheduler.js";
-import type { NeutronAttemptEvidence } from "../packages/application/src/neutron-scheduler-attempt.js";
-import type { NeutronReadyNodeOutcome } from "../packages/application/src/neutron-scheduler-wave-types.js";
-import { NeutronSchedulerError } from "../packages/application/src/neutron-scheduler-errors.js";
+} from "../packages/application/src/neutron/neutron-scheduler.js";
+import type { NeutronAttemptEvidence } from "../packages/application/src/neutron/scheduler/neutron-scheduler-attempt.js";
+import type { NeutronReadyNodeOutcome } from "../packages/application/src/neutron/scheduler/neutron-scheduler-wave-types.js";
+import { NeutronSchedulerError } from "../packages/application/src/neutron/scheduler/neutron-scheduler-errors.js";
 
 const ROOT = "/project";
 const SESSION = "session-n6-g";

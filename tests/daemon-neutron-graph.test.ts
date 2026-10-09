@@ -15,11 +15,11 @@ import {
 } from "@intentloom/protocol";
 import type { NeutronTaskNode } from "@intentloom/protocol";
 import type { ModelAdapter } from "../packages/application/src/model-adapter.js";
-import { createNeutronSessionRuntime } from "../packages/application/src/neutron-session-runtime.js";
-import { fingerprintNeutronProjectRoot } from "../packages/application/src/neutron-session-fingerprint.js";
+import { createNeutronSessionRuntime } from "../packages/application/src/neutron/session/neutron-session-runtime.js";
+import { fingerprintNeutronProjectRoot } from "../packages/application/src/neutron/neutron-session-fingerprint.js";
 import { startLocalDaemon } from "../packages/daemon/src/index.js";
 import { bindNeutronSessionHandlers } from "../packages/daemon/src/neutron-session-handlers.js";
-import { NEUTRON_STRUCTURED_MUTATION_PROPOSAL_PREFIX } from "../packages/application/src/neutron-session-mutation-proposal.js";
+import { NEUTRON_STRUCTURED_MUTATION_PROPOSAL_PREFIX } from "../packages/application/src/neutron/session/neutron-session-mutation-proposal.js";
 import { NeutronN2Error } from "../packages/validator/src/neutron-runtime-n2.js";
 
 const daemons: { close(): Promise<void> }[] = [];
