@@ -120,8 +120,10 @@ Dependency direction:
   `@intentloom/protocol`.
 - A feature must not import `@intentloom/application`, `@intentloom/core`,
   `@intentloom/daemon`, a provider SDK, or the filesystem.
-- A feature must not import the shell (`App.tsx`, `WorkspaceContent.tsx`,
-  `main.tsx`), `views/`, `neutron/`, or another feature.
+- A feature must not import the shell (`App.tsx`, `DesktopShell.tsx`,
+  `WorkspaceSidebar.tsx`, `WorkspaceTopbar.tsx`, `WorkspaceContent.tsx`,
+  `workspace-view-registry.tsx`, the workspace shell hooks, or `main.tsx`),
+  `views/`, `neutron/`, or another feature.
 - `design/` must not import features, views, or Neutron.
 - Desktop client adapters must not import feature UI. The approve/apply
   client may import `NeutronMutationRecoveryPorts` from
@@ -192,5 +194,63 @@ Before adding Neutron source:
    recovery both read them.
 5. Do not import another subfeature's private internals.
 
-Workspace shell composition is a separate increment. Do not add a router
-or a global client state framework in order to place a feature.
+## 6. Desktop shell composition
+
+The shell composes workspace views. It does not own feature behavior.
+`App.tsx` is the composition root: it wires focused controllers and renders
+`DesktopShell`. Do not add product logic, daemon calls, or feature branching
+to `App.tsx`.
+
+```text
+App
+  ↓
+DesktopShell
+  ↓
+WorkspaceSidebar / WorkspaceTopbar
+  ↓
+WorkspaceContent
+  ↓
+workspace view registry
+  ↓
+public feature entrypoints and the remaining views
+```
+
+- `DesktopShell`, `WorkspaceSidebar`, and `WorkspaceTopbar` are presentation.
+  They render the current view, project label, navigation catalog, command
+  palette trigger, cancel button, and theme toggle. They do not call the
+  daemon or decide feature behavior.
+- `WorkspaceContent` renders the active view through
+  `workspace-view-registry.tsx`. That registry is a static, typed map from
+  `WorkspaceView` to a render function. It imports only public feature
+  entrypoints (`AdoptionPreviewPage`, `FoundationWorkshopView`,
+  `ExternalSpecializedPackPreviewPage`), `NeutronWorkspace`, and the views
+  that still live in `views/`. It does not load modules by string, own remote
+  operations, or fall back to Overview for an unhandled view.
+- Do not add a new `if (activeView === ...)` branch in the shell. Add the
+  view to the navigation catalog and the registry together. A missing view
+  fails compilation because the registry must cover every `WorkspaceView`.
+- `workspace-navigation.ts` is the catalog for view id, icon, sidebar
+  placement, and command-palette navigation. The id strings are the
+  user-visible labels (`"Diff review"`, `"Neutron"`, and the rest). Do not
+  replace them with different product names or route URLs. Command-palette
+  navigation is derived from that catalog. Non-navigation actions stay
+  explicit in `workspace-command-options.ts`. Domain side effects, including
+  opening Doctor and loading Doctor, stay in
+  `desktop-workspace-view-actions.ts`.
+- Project selection (`use-project-selection.ts`) owns the selected root, the
+  loaded-view confirmation, native folder selection, and the root-bound
+  reset. Workspace operation state (`use-workspace-operation.ts`) owns the
+  single `AbortController`, connection-in-progress flag, and cancel
+  behavior. Inspect, Diff, and Timeline snapshots that reset with the root
+  live in `use-workspace-project-reads.ts`. Doctor state stays in
+  `useDesktopDoctor`. Daemon connection stays in `useDesktopConnect`.
+  `use-workspace-daemon-session.ts` only composes those two hooks.
+- The application remains one window with local React state. Do not add a
+  URL router, history navigation, or a global client state framework
+  (Redux, Zustand, MobX, React Query, XState, Jotai, Recoil, or a custom
+  event bus) without an ADR.
+- Do not introduce a broad React context for shell state. Pass grouped
+  values through composition. Do not replace `App.tsx` with one hook that
+  returns every field and callback.
+- Future shell code must not accumulate feature logic. A new feature exposes
+  a public entrypoint. The shell only composes it.

@@ -36,6 +36,13 @@ Neutron is one feature. New Neutron modules go in the owning subfeature
 `mutation/review`, `mutation/recovery`). Do not import another
 subfeature's private internals.
 
+## Desktop shell
+
+Shell composition is `docs/governance/REACT_BEST_PRACTICES.md`. `App.tsx`
+wires controllers and renders the shell. It does not own feature logic.
+Workspace dispatch is the typed view registry. Do not add a router or a
+global client state framework without an ADR.
+
 ## File budgets
 
 Prefer production files ≤250 lines. Do not grow a file past 400 without a
