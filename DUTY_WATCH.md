@@ -76,16 +76,55 @@ merged (PR #553, merge `2298fabb6214160d5456b7a0dda016558209386e`).
 **Backend Architecture R4C** (validator and daemon Neutron semantic
 topology) is implemented on
 `refactor/validator-daemon-neutron-topology-r4c` and is awaiting
-maintainer review. Compatibility on Ubuntu Node 24 failed because
-`intentloomd` installed its SIGTERM handler after the Unix socket was
-already bound; an immediate signal killed the process and left the
-socket. The handler is now installed before listen. Do not merge. Do
-not start R4D, Undo U4, or Desktop Undo U5.
+maintainer review. The branch is structural only. The Ubuntu Node 24
+startup SIGTERM race is a separate pre-existing bug and is not fixed
+on this branch. Do not merge. Do not start R4D, Undo U4, or Desktop
+Undo U5.
+
+### 2026-10-09, R4C scope repair — remove the daemon startup signal fix
+
+- **Status:** **PR #554 RESTORED TO STRUCTURAL-ONLY R4C SCOPE,
+  AWAITING MAINTAINER REVIEW.** Do not merge. Do not start R4D, Undo
+  U4, or Desktop Undo U5.
+- **Branch:** `refactor/validator-daemon-neutron-topology-r4c`
+- **Removed from #554:** commit
+  `617384928f24b5dfb820660e44ac1ab61eb0eab1` changed daemon
+  startup/shutdown. `bin.ts` again registers SIGINT/SIGTERM only after
+  `startLocalDaemon` returns, matching baseline
+  `2298fabb6214160d5456b7a0dda016558209386e`. `beforeListen` is gone.
+  `packages/daemon/src/local-daemon-endpoint.ts` is removed. It existed
+  only to hold that lifecycle change without growing `index.ts`.
+  `tests/daemon-bin.test.ts` is back to the baseline assertions.
+- **Preserved:** validator and daemon Neutron directory topology,
+  import updates, topology guards, and stable validator subpath names.
+  Inlining listen/close returns `packages/daemon/src/index.ts` to the
+  grandfathered 1037 effective / 1064 physical lines. The staged check
+  sees that as growth from the removed extraction (1023/1050). The
+  recorded exception is `existing-oversized-growth` for that exact
+  pair, expiring 2026-11-15. Compared with `main`, the file does not
+  grow.
+- **Known separate bug:** an immediate SIGTERM after the Unix socket
+  appears can still kill `intentloomd` before the handler is installed
+  and leave `daemon.sock` in place. Do not hide it and do not put the
+  fix back on this branch.
+- **Recommended follow-up, after #554 merges:** branch
+  `fix/daemon-startup-signal-race` from updated `main`, title
+  `fix(daemon): close startup signal shutdown race`. Re-apply the code
+  from `617384928f24b5dfb820660e44ac1ab61eb0eab1` (`bin.ts` signal
+  registration before bind, `index.ts` `beforeListen`, and the
+  daemon-bin regression that expects exit code 0 and `ENOENT`, then a
+  second bind on the same endpoint). Do not cherry-pick the doc hunks
+  that described the fix as part of R4C. `local-daemon-endpoint.ts`
+  is optional and was only a line-budget extraction.
+- **Not done:** the separate bugfix PR, R4D, Undo U4, Desktop Undo U5.
+- **Next:** maintainer review of structural R4C. Do not start the
+  daemon race fix from this handoff until #554 is merged.
 
 ### 2026-10-09, R4C Compatibility — install daemon shutdown before listen
 
-- **Status:** fixed on `refactor/validator-daemon-neutron-topology-r4c`.
-  Do not merge. Do not start R4D, Undo U4, or Desktop Undo U5.
+- **Status:** superseded. This behavior fix was committed on the R4C
+  branch and then removed so #554 stays structural only. Do not merge.
+  Do not start R4D, Undo U4, or Desktop Undo U5.
 - **Failure:** Compatibility `ubuntu-latest / Node 24` (run
   `37958708482`, job `113915735143`, Node v24.21.0) failed
   `tests/daemon-bin.test.ts` “relaunches with the same Desktop

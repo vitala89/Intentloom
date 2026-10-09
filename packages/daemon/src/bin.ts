@@ -91,21 +91,8 @@ import { OllamaModelAdapter } from "../../application/src/ollama-model-adapter.j
 async function main(): Promise<void> {
   const startup = await resolveDaemonStartupConfig(process.argv.slice(2));
   const catalogRoot = startup.catalogRoot;
-  let listeningDaemon: { close(): Promise<void> } | undefined;
-  const stop = () => {
-    if (listeningDaemon === undefined) {
-      process.exit(0);
-      return;
-    }
-    void listeningDaemon.close().then(() => process.exit(0));
-  };
-  await startLocalDaemon({
+  const daemon = await startLocalDaemon({
     endpoint: startup.endpoint,
-    beforeListen(instance) {
-      listeningDaemon = instance;
-      process.once("SIGINT", stop);
-      process.once("SIGTERM", stop);
-    },
     sessionToken: startup.sessionToken,
     daemonVersion: process.env.INTENTLOOM_DAEMON_VERSION ?? "development",
     enforceCanonicalRoots: true,
@@ -214,6 +201,9 @@ async function main(): Promise<void> {
       }),
     ),
   });
+  const stop = () => void daemon.close().then(() => process.exit(0));
+  process.once("SIGINT", stop);
+  process.once("SIGTERM", stop);
 }
 
 void main().catch((error: unknown) => {

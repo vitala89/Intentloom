@@ -366,6 +366,19 @@
       "scope": "Specialized Engineering Packs Phase S6",
       "reviewTrigger": "Extract daemon request parsing and response validation into protocol domain submodules before the next protocol feature.",
       "expires": "2026-10-31"
+    },
+    {
+      "path": "packages/daemon/src/index.ts",
+      "rule": "existing-oversized-growth",
+      "baseEffectiveCodeLines": 1023,
+      "headEffectiveCodeLines": 1037,
+      "basePhysicalLines": 1050,
+      "headPhysicalLines": 1064,
+      "reason": "R4C scope repair inlines the baseline listen and close path after removing the out-of-scope startup-signal extraction. The file returns to the grandfathered 1037/1064 size and does not add behavior.",
+      "owner": "Daemon maintainers",
+      "scope": "PR #554 structural R4C scope repair",
+      "reviewTrigger": "Extract the daemon request handler from startLocalDaemon before the next behavior change to this file.",
+      "expires": "2026-11-15"
     }
   ]
 }
