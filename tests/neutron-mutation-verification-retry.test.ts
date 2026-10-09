@@ -25,8 +25,8 @@ import { createNeutronSessionRuntime } from "../packages/application/src/neutron
 import { fingerprintNeutronProjectRoot } from "../packages/application/src/neutron/neutron-session-fingerprint.js";
 import { approveAndApplyNeutronGraphMutation } from "../packages/application/src/neutron/neutron-scheduler.js";
 import { retryAppliedNeutronMutationVerification } from "../packages/application/src/neutron/mutation/verification/neutron-mutation-verification-retry-run.js";
-import { neutronSessionCapabilities as daemonCapabilities } from "../packages/daemon/src/neutron-session-handlers.js";
-import { bindNeutronSessionHandlers as bindDaemonHandlers } from "../packages/daemon/src/neutron-session-handlers.js";
+import { neutronSessionCapabilities as daemonCapabilities } from "../packages/daemon/src/neutron/session/neutron-session-handlers.js";
+import { bindNeutronSessionHandlers as bindDaemonHandlers } from "../packages/daemon/src/neutron/session/neutron-session-handlers.js";
 import { NeutronApproveApplyControl } from "../apps/desktop/src/neutron/mutation/recovery/NeutronApproveApplyControl.js";
 import { createNeutronMutationRecovery } from "../apps/desktop/src/neutron/mutation/recovery/neutron-mutation-recovery-controller.js";
 import { projectMutationRecoveryView } from "../apps/desktop/src/neutron/mutation/recovery/neutron-mutation-recovery-view.js";
@@ -719,7 +719,7 @@ function retrySource(): string {
   const root = join(dirname(fileURLToPath(import.meta.url)), "..");
   return [
     "packages/application/src/neutron/mutation/verification/neutron-mutation-verification-retry-run.ts",
-    "packages/daemon/src/neutron-mutation-verification-retry-handlers.ts",
+    "packages/daemon/src/neutron/mutation/verification/neutron-mutation-verification-retry-handlers.ts",
     "apps/desktop/src/neutron/mutation/recovery/neutron-mutation-recovery-controller.ts",
   ]
     .map((path) => readFileSync(join(root, path), "utf8"))

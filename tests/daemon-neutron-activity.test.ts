@@ -12,7 +12,7 @@ import type { ModelAdapter } from "../packages/application/src/model-adapter.js"
 import { createNeutronSessionRuntime } from "../packages/application/src/neutron/session/neutron-session-runtime.js";
 import { NEUTRON_SESSION_READ_ONLY_CAPS } from "../packages/application/src/neutron/session/neutron-session-turn.js";
 import { startLocalDaemon } from "../packages/daemon/src/index.js";
-import { bindNeutronSessionHandlers } from "../packages/daemon/src/neutron-session-handlers.js";
+import { bindNeutronSessionHandlers } from "../packages/daemon/src/neutron/session/neutron-session-handlers.js";
 
 const SECRET_BODY = "N6_SLICE2_SECRET_BODY=do-not-cross";
 const daemons: { close(): Promise<void> }[] = [];

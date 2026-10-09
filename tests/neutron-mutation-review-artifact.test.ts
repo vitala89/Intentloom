@@ -21,7 +21,7 @@ import {
   NEUTRON_READ_ONLY_TOOLS,
   NEUTRON_RUNTIME_SESSION_SCHEMA_URN,
 } from "../packages/protocol/src/neutron/runtime/neutron-runtime.js";
-import { validateNeutronRuntimeSession } from "../packages/validator/src/neutron-runtime.js";
+import { validateNeutronRuntimeSession } from "../packages/validator/src/neutron/runtime/neutron-runtime.js";
 import {
   assertCanonicalContentBoundPlanDigest,
   digestContentBoundApplyPlan,
@@ -30,7 +30,7 @@ import {
   exactNeutronMutationPathSetsEqual,
   materializeNeutronMutationReviewArtifact,
   validateNeutronMutationReviewArtifact,
-} from "../packages/validator/src/neutron-mutation.js";
+} from "../packages/validator/src/neutron/mutation/neutron-mutation.js";
 
 function sampleFiles(): GeneratedFile[] {
   return [

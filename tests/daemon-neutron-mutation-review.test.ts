@@ -18,7 +18,7 @@ import { createNeutronSessionRuntime } from "../packages/application/src/neutron
 import { NEUTRON_MUTATION_PROPOSAL_CAPABILITY } from "../packages/application/src/neutron/mutation/proposal/neutron-mutation-proposal-capability.js";
 import { fingerprintNeutronProjectRoot } from "../packages/application/src/neutron/neutron-session-fingerprint.js";
 import { startLocalDaemon } from "../packages/daemon/src/index.js";
-import { bindNeutronSessionHandlers } from "../packages/daemon/src/neutron-session-handlers.js";
+import { bindNeutronSessionHandlers } from "../packages/daemon/src/neutron/session/neutron-session-handlers.js";
 import {
   slice5CandidateOutput,
   slice5Node,

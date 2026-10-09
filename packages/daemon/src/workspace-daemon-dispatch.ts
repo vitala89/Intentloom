@@ -54,9 +54,9 @@ import {
   dispatchContinuousLoopRequest,
   isContinuousLoopRequest,
 } from "./continuous-loop-handlers.js";
-import type { NeutronDaemonOptions } from "./neutron-session-handlers.js";
-import { neutronSessionCapabilities } from "./neutron-session-handlers.js";
-import { dispatchNeutronWorkspaceRequest } from "./neutron-workspace-dispatch.js";
+import type { NeutronDaemonOptions } from "./neutron/session/neutron-session-handlers.js";
+import { neutronSessionCapabilities } from "./neutron/session/neutron-session-handlers.js";
+import { dispatchNeutronWorkspaceRequest } from "./neutron/neutron-workspace-dispatch.js";
 import type { DaemonCapability } from "@intentloom/protocol";
 
 export type WorkspaceDaemonOptions = SpecializedPackDaemonOptions &

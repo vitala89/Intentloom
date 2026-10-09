@@ -7,8 +7,8 @@ import type {
 } from "../../../../../protocol/src/neutron/mutation/neutron-mutation.js";
 import type { NeutronMutationReviewArtifact } from "../../../../../protocol/src/neutron/mutation/review/neutron-mutation-review-artifact.js";
 import type { NeutronRuntimeSession } from "../../../../../protocol/src/neutron/runtime/neutron-runtime.js";
-import { exactNeutronMutationPathSetsEqual } from "../../../../../validator/src/neutron-mutation-path-set.js";
-import { assertCanonicalContentBoundPlanDigest } from "../../../../../validator/src/neutron-mutation-review-artifact.js";
+import { exactNeutronMutationPathSetsEqual } from "../../../../../validator/src/neutron/mutation/neutron-mutation-path-set.js";
+import { assertCanonicalContentBoundPlanDigest } from "../../../../../validator/src/neutron/mutation/review/neutron-mutation-review-artifact.js";
 import {
   resolveNeutronMutationAuthorization,
   type NeutronMutationAuthorizationInput,

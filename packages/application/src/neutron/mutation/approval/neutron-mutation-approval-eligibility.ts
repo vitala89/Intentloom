@@ -2,9 +2,9 @@ import { NEUTRON_MUTATION_CLASS } from "../../../../../protocol/src/neutron/muta
 import type { NeutronMutationReviewOutcome } from "../../../../../protocol/src/neutron/mutation/review/neutron-mutation-review-view.js";
 import type { NeutronMutationApprovalIntent } from "../../../../../protocol/src/neutron/mutation/approval/neutron-mutation-approval-intent.js";
 import type { NeutronRuntimeSession } from "../../../../../protocol/src/neutron/runtime/neutron-runtime.js";
-import { digestNeutronMutationProposal } from "../../../../../validator/src/neutron-mutation-digest.js";
-import { assertCanonicalContentBoundPlanDigest } from "../../../../../validator/src/neutron-mutation-review-artifact.js";
-import { exactNeutronMutationPathSetsEqual } from "../../../../../validator/src/neutron-mutation-path-set.js";
+import { digestNeutronMutationProposal } from "../../../../../validator/src/neutron/mutation/neutron-mutation-digest.js";
+import { assertCanonicalContentBoundPlanDigest } from "../../../../../validator/src/neutron/mutation/review/neutron-mutation-review-artifact.js";
+import { exactNeutronMutationPathSetsEqual } from "../../../../../validator/src/neutron/mutation/neutron-mutation-path-set.js";
 import {
   bindNeutronMutationReviewBundle,
   bindNeutronMutationReviewSession,

@@ -17,7 +17,7 @@ import { NEUTRON_CONTEXT_ASSEMBLY_REQUEST_SCHEMA_URN } from "../packages/protoco
 import {
   validateNeutronContextBundle,
   validateNeutronUsageBudget,
-} from "../packages/validator/src/neutron-runtime.js";
+} from "../packages/validator/src/neutron/runtime/neutron-runtime.js";
 
 const REVIEW_SKILL = `---
 name: sample-code-review

@@ -1,7 +1,7 @@
 import type { NeutronMutationApproval } from "../../../../../protocol/src/neutron/mutation/approval/neutron-mutation-approval.js";
 import { NEUTRON_MUTATION_APPROVAL_SOURCE } from "../../../../../protocol/src/neutron/mutation/approval/neutron-mutation-approval.js";
 import type { NeutronMutationApprovalIntent } from "../../../../../protocol/src/neutron/mutation/approval/neutron-mutation-approval-intent.js";
-import { validateNeutronMutationApprovalIntent } from "../../../../../validator/src/neutron-mutation-approval-intent.js";
+import { validateNeutronMutationApprovalIntent } from "../../../../../validator/src/neutron/mutation/approval/neutron-mutation-approval-intent.js";
 import { tryHostApproval } from "./neutron-mutation-approval-construct.js";
 import { resolveEligibleReviewBundle } from "./neutron-mutation-approval-eligibility.js";
 import {

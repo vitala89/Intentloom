@@ -13,7 +13,7 @@ import {
   NEUTRON_N2_MAX_BODY_BYTES,
   NeutronN2Error,
   validateNeutronN2AdapterCapability,
-} from "../../../validator/src/neutron-runtime-n2.js";
+} from "../../../validator/src/neutron/runtime/neutron-runtime-n2.js";
 import type { ModelAdapter } from "../model-adapter.js";
 import type { AssembleNeutronContextResult } from "./context/neutron-context-assembly.js";
 import {

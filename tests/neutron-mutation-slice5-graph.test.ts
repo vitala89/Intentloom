@@ -7,8 +7,8 @@ import {
   NEUTRON_MUTATION_PROPOSAL_CAPABILITY,
 } from "../packages/application/src/neutron/neutron-scheduler.js";
 import { aggregateNeutronTaskGraphResults } from "../packages/application/src/neutron/neutron-scheduler.js";
-import { digestContentBoundApplyPlan } from "../packages/validator/src/neutron-mutation.js";
-import { digestGeneratedFileContent } from "../packages/validator/src/neutron-mutation.js";
+import { digestContentBoundApplyPlan } from "../packages/validator/src/neutron/mutation/neutron-mutation.js";
+import { digestGeneratedFileContent } from "../packages/validator/src/neutron/mutation/neutron-mutation.js";
 import {
   SLICE5_CONTENT_A,
   SLICE5_FINGERPRINT,

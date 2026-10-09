@@ -1,4 +1,4 @@
-import { digestGeneratedFileContent } from "../../../../../validator/src/neutron-mutation-review-digest.js";
+import { digestGeneratedFileContent } from "../../../../../validator/src/neutron/mutation/review/neutron-mutation-review-digest.js";
 import type { FileSystem } from "../../../index.js";
 import { assertNeutronMutationPathContained } from "../apply/neutron-mutation-containment.js";
 import type { NeutronMutationUndoPlanFile } from "./neutron-mutation-undo-plan.js";

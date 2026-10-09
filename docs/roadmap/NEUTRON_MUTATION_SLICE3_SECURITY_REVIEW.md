@@ -63,12 +63,12 @@ could wrap Approved Apply unchanged is superseded by this review.
 
 ### 2.1 Neutron mutation contracts (Slice 1)
 
-| Primitive                 | Location                                                                               | What it binds today                                                                                         | Apply authority |
-| ------------------------- | -------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- | --------------- |
-| `NeutronMutationProposal` | `packages/protocol/src/neutron-mutation.ts`                                            | Identity + wrapped `ApprovedApplyPlan` (paths, opaque `planDigest`, baseline digest, root, optional expiry) | None            |
-| `proposalDigest`          | `digestNeutronMutationProposal` in `packages/validator/src/neutron-mutation-digest.ts` | Canonical JSON of proposal facts **including the opaque `planDigest` string**, not file bytes               | None            |
-| `NeutronMutationApproval` | `packages/protocol/src/neutron-mutation-approval.ts`                                   | Host record: token `approved:<proposalDigest>`, digest of unsigned facts, paths, baseline, expiry, source   | Host-held only  |
-| Preflight request/result  | same protocol module                                                                   | Structural envelope. No `filesToApply`. No consumption state                                                | None            |
+| Primitive                 | Location                                                                                                | What it binds today                                                                                         | Apply authority |
+| ------------------------- | ------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- | --------------- |
+| `NeutronMutationProposal` | `packages/protocol/src/neutron-mutation.ts`                                                             | Identity + wrapped `ApprovedApplyPlan` (paths, opaque `planDigest`, baseline digest, root, optional expiry) | None            |
+| `proposalDigest`          | `digestNeutronMutationProposal` in `packages/validator/src/neutron/mutation/neutron-mutation-digest.ts` | Canonical JSON of proposal facts **including the opaque `planDigest` string**, not file bytes               | None            |
+| `NeutronMutationApproval` | `packages/protocol/src/neutron-mutation-approval.ts`                                                    | Host record: token `approved:<proposalDigest>`, digest of unsigned facts, paths, baseline, expiry, source   | Host-held only  |
+| Preflight request/result  | same protocol module                                                                                    | Structural envelope. No `filesToApply`. No consumption state                                                | None            |
 
 Proposal validators reject `approved`, `mutationAllowed`, `grantedApprovals`,
 `approvalToken`, and related authority keys. Approval validators reject

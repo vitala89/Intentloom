@@ -1,6 +1,6 @@
 import type { ApprovedApplyRollbackFile } from "../../../../../protocol/src/approved-apply.js";
 import type { NeutronMutationRollbackProjection } from "../../../../../protocol/src/neutron/mutation/verification/neutron-mutation-verification.js";
-import { digestGeneratedFileContent } from "../../../../../validator/src/neutron-mutation-review-digest.js";
+import { digestGeneratedFileContent } from "../../../../../validator/src/neutron/mutation/review/neutron-mutation-review-digest.js";
 
 export function projectNeutronMutationRollbackEvidence(input: {
   readonly attempted: boolean;

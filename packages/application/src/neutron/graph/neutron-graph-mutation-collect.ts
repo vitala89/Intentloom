@@ -1,6 +1,6 @@
 import type { NeutronRuntimeSession } from "../../../../protocol/src/neutron/runtime/neutron-runtime.js";
 import type { NeutronTaskGraph } from "../../../../protocol/src/neutron/runtime/neutron-runtime.js";
-import { parseNeutronMutationProposalCandidateOutput } from "../../../../validator/src/neutron-mutation-proposal-candidate.js";
+import { parseNeutronMutationProposalCandidateOutput } from "../../../../validator/src/neutron/mutation/proposal/neutron-mutation-proposal-candidate.js";
 import type { NeutronMutationProposalCandidate } from "../../../../protocol/src/neutron/mutation/proposal/neutron-mutation-proposal-candidate.js";
 import { neutronGraphMutationMaterializationIsCurrent } from "../mutation/review/neutron-graph-mutation-current.js";
 import {

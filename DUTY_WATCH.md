@@ -72,9 +72,128 @@ merge `22fec52f84e952269fe104fd409c7742b2087ff2`).
 **Backend Architecture R4A** (application Neutron semantic topology) is
 merged (PR #552, merge `05b1a2c9f282b5e083485820d7e5b8afe2045581`).
 **Backend Architecture R4B** (protocol Neutron semantic topology) is
-implemented on `refactor/protocol-neutron-topology-r4b` and is awaiting
-maintainer review. Do not merge. Do not start R4C, R4D, Undo U4, or
-Desktop Undo U5.
+merged (PR #553, merge `2298fabb6214160d5456b7a0dda016558209386e`).
+**Backend Architecture R4C** (validator and daemon Neutron semantic
+topology) is implemented on
+`refactor/validator-daemon-neutron-topology-r4c` and is awaiting
+maintainer review. The branch is structural only. The Ubuntu Node 24
+startup SIGTERM race is a separate pre-existing bug and is not fixed
+on this branch. Do not merge. Do not start R4D, Undo U4, or Desktop
+Undo U5.
+
+### 2026-10-09, R4C scope repair — remove the daemon startup signal fix
+
+- **Status:** **PR #554 RESTORED TO STRUCTURAL-ONLY R4C SCOPE,
+  AWAITING MAINTAINER REVIEW.** Do not merge. Do not start R4D, Undo
+  U4, or Desktop Undo U5.
+- **Branch:** `refactor/validator-daemon-neutron-topology-r4c`
+- **Removed from #554:** commit
+  `617384928f24b5dfb820660e44ac1ab61eb0eab1` changed daemon
+  startup/shutdown. `bin.ts` again registers SIGINT/SIGTERM only after
+  `startLocalDaemon` returns, matching baseline
+  `2298fabb6214160d5456b7a0dda016558209386e`. `beforeListen` is gone.
+  `packages/daemon/src/local-daemon-endpoint.ts` is removed. It existed
+  only to hold that lifecycle change without growing `index.ts`.
+  `tests/daemon-bin.test.ts` is back to the baseline assertions.
+- **Preserved:** validator and daemon Neutron directory topology,
+  import updates, topology guards, and stable validator subpath names.
+  Inlining listen/close returns `packages/daemon/src/index.ts` to the
+  grandfathered 1037 effective / 1064 physical lines. The staged check
+  sees that as growth from the removed extraction (1023/1050). The
+  recorded exception is `existing-oversized-growth` for that exact
+  pair, expiring 2026-11-15. Compared with `main`, the file does not
+  grow.
+- **Known separate bug:** an immediate SIGTERM after the Unix socket
+  appears can still kill `intentloomd` before the handler is installed
+  and leave `daemon.sock` in place. Do not hide it and do not put the
+  fix back on this branch.
+- **Recommended follow-up, after #554 merges:** branch
+  `fix/daemon-startup-signal-race` from updated `main`, title
+  `fix(daemon): close startup signal shutdown race`. Re-apply the code
+  from `617384928f24b5dfb820660e44ac1ab61eb0eab1` (`bin.ts` signal
+  registration before bind, `index.ts` `beforeListen`, and the
+  daemon-bin regression that expects exit code 0 and `ENOENT`, then a
+  second bind on the same endpoint). Do not cherry-pick the doc hunks
+  that described the fix as part of R4C. `local-daemon-endpoint.ts`
+  is optional and was only a line-budget extraction.
+- **Not done:** the separate bugfix PR, R4D, Undo U4, Desktop Undo U5.
+- **Next:** maintainer review of structural R4C. Do not start the
+  daemon race fix from this handoff until #554 is merged.
+
+### 2026-10-09, R4C Compatibility — install daemon shutdown before listen
+
+- **Status:** superseded. This behavior fix was committed on the R4C
+  branch and then removed so #554 stays structural only. Do not merge.
+  Do not start R4D, Undo U4, or Desktop Undo U5.
+- **Failure:** Compatibility `ubuntu-latest / Node 24` (run
+  `37958708482`, job `113915735143`, Node v24.21.0) failed
+  `tests/daemon-bin.test.ts` “relaunches with the same Desktop
+  durable-state directory after endpoint cleanup”. After SIGTERM,
+  `stat(daemon.sock)` still returned a Unix socket (`mode` `0o140755`)
+  instead of `ENOENT`. The other Compatibility cells passed, including
+  Ubuntu Node 22.
+- **Cause:** `intentloomd` called `startLocalDaemon` and only then
+  registered SIGINT/SIGTERM. `server.listen` binds the socket before
+  that registration. A signal in that window uses the default action,
+  the process dies with SIGTERM, and the kernel does not unlink a Unix
+  socket. The relaunch test kills as soon as the socket appears, so it
+  hits the window under load. The earlier test in the same file sends
+  an RPC first, which gives the handler time to register. Reproduced
+  locally on Node v24.21.0: 2 of 30 immediate SIGTERM trials exited
+  with signal 15 and left the socket.
+- **Fix:** `beforeListen` runs after the close handle exists and before
+  `server.listen`. The binary registers SIGINT/SIGTERM there. ADR-0009
+  still requires shutdown to remove only the Unix socket the daemon
+  created, and still forbids unlinking an endpoint before bind.
+- **Validation:** Node v24.21.0 daemon-bin tests passed, including 20
+  immediate SIGTERM relaunch cycles. A separate 40-trial stress run
+  left no sockets and exited 0. Listener bind and close moved to
+  `packages/daemon/src/local-daemon-endpoint.ts` (48 effective lines).
+  `packages/daemon/src/index.ts` stays over the production budget and
+  shrank from 1037 to 1023 effective lines. Follow-up: split the
+  request handler out of `startLocalDaemon`.
+- **Next:** maintainer review of the R4C branch. Do not start R4D from
+  this handoff.
+
+### 2026-10-09, Backend Architecture R4C — validator and daemon Neutron semantic topology
+
+- **Status:** **BACKEND ARCHITECTURE R4C VALIDATOR AND DAEMON NEUTRON
+  SEMANTIC TOPOLOGY IMPLEMENTED ON BRANCH AWAITING MAINTAINER REVIEW.**
+  Do not merge. Do not start R4D, Undo U4, or Desktop Undo U5.
+- **Branch:** `refactor/validator-daemon-neutron-topology-r4c`
+- **Starting main:** `2298fabb6214160d5456b7a0dda016558209386e` (PR #553
+  merge, Backend Architecture R4B).
+- **Scope:** structural move only. The 26 flat Neutron modules in
+  `packages/validator/src/` now live under `neutron/runtime`, `session`,
+  `graph`, and
+  `mutation/{proposal,review,approval,apply,verification}`. Canonical
+  digest, path-set, and the durable transaction record stay at the
+  mutation root. The 7 flat Neutron modules in `packages/daemon/src/`
+  now live under `neutron/session`, `graph`,
+  `mutation/{review,approval,status,verification}`, with
+  `neutron-workspace-dispatch.ts` at the Neutron root. Public validator
+  subpath names are unchanged. Open governance PR #546 was not used as
+  the base and was not edited.
+- **Behavior:** unchanged. No schema, JSON-RPC method, wire-field,
+  validation, application, daemon, Desktop, or security behavior
+  changes. U4 and U5 were not started. R4A and R4B directory layouts
+  were not reorganized.
+- **Guards:** `tests/validator-neutron-topology.test.ts` and
+  `tests/daemon-neutron-topology.test.ts` ratchet semantic directories,
+  mutation stages, cross-subfeature imports, mutation-stage imports,
+  empty cycle sets, forbidden dependencies, POSIX architecture ids, and
+  stable validator package subpaths.
+- **Validation:** focused Neutron runtime, N2, N3, session, activity,
+  graph, mutation, review, approval, Apply, status, verification, daemon
+  dispatch, and topology tests passed (43 files, 374 passed, 1 skipped)
+  after the daemon bundle existed. `pnpm verify` passed: typecheck, lint,
+  format check, 348 files / 3033 passed / 3 skipped, build, and
+  `git diff --check`. Commit-range and diff validation passed.
+  Production budgets stayed within the hard limit. The largest moved
+  validator file is `neutron-graph-fields.ts` at 313 effective lines.
+- **Not done:** R4D, Undo U4, Desktop Undo U5.
+- **Next:** maintainer review of this branch. Do not start R4D from this
+  handoff.
 
 ### 2026-10-09, Backend Architecture R4B — protocol Neutron semantic topology
 

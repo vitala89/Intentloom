@@ -7,12 +7,12 @@ import {
   canonicalNeutronMutationJson,
   canonicalizeNeutronMutationPaths,
   neutronMutationContentDigest,
-} from "../../../../../validator/src/neutron-mutation-canonical.js";
+} from "../../../../../validator/src/neutron/mutation/neutron-mutation-canonical.js";
 import {
   digestNeutronMutationApproval,
   expectedNeutronMutationApprovalToken,
-} from "../../../../../validator/src/neutron-mutation-digest.js";
-import { validateNeutronMutationApproval } from "../../../../../validator/src/neutron-mutation-approval.js";
+} from "../../../../../validator/src/neutron/mutation/neutron-mutation-digest.js";
+import { validateNeutronMutationApproval } from "../../../../../validator/src/neutron/mutation/approval/neutron-mutation-approval.js";
 import type { NeutronGraphMutationReviewBundle } from "../review/neutron-graph-mutation-store.js";
 import {
   NEUTRON_MUTATION_APPROVAL_MAX_LIFETIME_MS,

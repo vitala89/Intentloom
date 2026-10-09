@@ -3,7 +3,7 @@ import {
   type NeutronMutationPreflightRejectionReason,
   type NeutronMutationPreflightResult,
 } from "../../../../../protocol/src/neutron/mutation/neutron-mutation.js";
-import { validateNeutronMutationPreflightResult } from "../../../../../validator/src/neutron-mutation.js";
+import { validateNeutronMutationPreflightResult } from "../../../../../validator/src/neutron/mutation/neutron-mutation.js";
 
 export interface NeutronMutationPreflightDiagnostics {
   readonly affectedPaths: readonly string[];

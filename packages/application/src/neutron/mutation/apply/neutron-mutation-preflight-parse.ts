@@ -3,8 +3,8 @@ import type {
   NeutronMutationPreflightRequest,
 } from "../../../../../protocol/src/neutron/mutation/neutron-mutation.js";
 import type { NeutronRuntimeSession } from "../../../../../protocol/src/neutron/runtime/neutron-runtime.js";
-import { validateNeutronRuntimeSession } from "../../../../../validator/src/neutron-runtime.js";
-import { validateNeutronMutationPreflightRequest } from "../../../../../validator/src/neutron-mutation.js";
+import { validateNeutronRuntimeSession } from "../../../../../validator/src/neutron/runtime/neutron-runtime.js";
+import { validateNeutronMutationPreflightRequest } from "../../../../../validator/src/neutron/mutation/neutron-mutation.js";
 import {
   buildNeutronMutationPreflightOutcome,
   type NeutronMutationPreflightOutcome,

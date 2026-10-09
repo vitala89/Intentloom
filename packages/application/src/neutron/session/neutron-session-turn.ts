@@ -19,8 +19,8 @@ import type { NeutronGraphMutationPayloadStore } from "../mutation/review/neutro
 import type { NeutronGraphStaleBaseline } from "../scheduler/neutron-scheduler-stale.js";
 import type { NeutronSchedulingPlan } from "../scheduler/neutron-scheduler-select.js";
 import type { NeutronReadyNodeOutcome } from "../scheduler/neutron-scheduler-wave-types.js";
-import { validateNeutronRuntimeSession } from "../../../../validator/src/neutron-runtime.js";
-import { NeutronN2Error } from "../../../../validator/src/neutron-runtime-n2.js";
+import { validateNeutronRuntimeSession } from "../../../../validator/src/neutron/runtime/neutron-runtime.js";
+import { NeutronN2Error } from "../../../../validator/src/neutron/runtime/neutron-runtime-n2.js";
 import { inspectProject, type FileSystem } from "../../index.js";
 import type { ModelAdapter } from "../../model-adapter.js";
 import { runNeutronN2ReadOnlyLoop } from "../neutron-n2-loop.js";

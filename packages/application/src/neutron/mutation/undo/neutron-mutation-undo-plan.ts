@@ -2,8 +2,8 @@ import {
   canonicalNeutronMutationJson,
   compareNeutronMutationPaths,
   neutronMutationContentDigest,
-} from "../../../../../validator/src/neutron-mutation-canonical.js";
-import { exactNeutronMutationPathSetsEqual } from "../../../../../validator/src/neutron-mutation-path-set.js";
+} from "../../../../../validator/src/neutron/mutation/neutron-mutation-canonical.js";
+import { exactNeutronMutationPathSetsEqual } from "../../../../../validator/src/neutron/mutation/neutron-mutation-path-set.js";
 import type { NeutronMutationUndoPathProjection } from "../../../../../protocol/src/neutron/mutation/undo/neutron-mutation-undo-result.js";
 import type { NeutronMutationTransactionRecord } from "../apply/neutron-mutation-apply-store.js";
 import {

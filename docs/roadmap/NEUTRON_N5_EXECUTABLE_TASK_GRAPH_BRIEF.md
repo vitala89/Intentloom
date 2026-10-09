@@ -61,7 +61,7 @@ Authoritative roadmap gate: [`NEUTRON_RUNTIME_ROADMAP.md`](NEUTRON_RUNTIME_ROADM
 ### 2.1 Task graph contracts (N1 — schema only, no scheduler)
 
 **Location:** `packages/protocol/src/neutron-runtime.ts`,
-`packages/validator/src/neutron-runtime-records.ts`
+`packages/validator/src/neutron/runtime/neutron-runtime-records.ts`
 
 | Field / concept                              | Current state                                                                                       |
 | -------------------------------------------- | --------------------------------------------------------------------------------------------------- |

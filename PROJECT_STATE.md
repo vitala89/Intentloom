@@ -823,10 +823,19 @@ scheduler (with node execution), tools, and mutation stages. It does not
 change Neutron behavior. **Backend Architecture R4B** organizes
 `packages/protocol/src/neutron/` by runtime, session, graph, and
 mutation lifecycle stages. Public protocol subpath names stay stable.
-Wire semantics stay the same. R4B is on
-`refactor/protocol-neutron-topology-r4b` and is awaiting maintainer
-review. R4C validator/daemon topology, R4D repository hygiene, Undo U4,
-and Desktop Undo U5 remain unauthorized. Other post-P4 candidates remain
+Wire semantics stay the same. R4B is merged (PR #553, merge
+`2298fabb6214160d5456b7a0dda016558209386e`). **Backend Architecture
+R4C** organizes `packages/validator/src/neutron/` and
+`packages/daemon/src/neutron/` by runtime, session, graph, and mutation
+lifecycle stages. Validator and daemon package subpath names stay
+stable. Validation, RPC results, and security behavior stay the same.
+R4C is on `refactor/validator-daemon-neutron-topology-r4c` and is
+awaiting maintainer review. The branch is structural only. Daemon
+startup and shutdown match the R4B baseline. A pre-existing Ubuntu
+Node 24 SIGTERM race during startup is excluded and belongs in a
+later `fix/daemon-startup-signal-race` branch after this PR merges.
+R4D repository hygiene, Undo U4, and Desktop Undo U5 remain
+unauthorized. Other post-P4 candidates remain
 in `POST_W12_NEXT_INCREMENT_PLAN.md`.
 
 The Desktop discovery/error and Diff/Timeline slices remain recorded in

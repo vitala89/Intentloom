@@ -13,7 +13,7 @@ import type {
   NeutronTaskNode,
   NeutronTaskState,
 } from "@intentloom/protocol";
-import { validateNeutronGraphSnapshot } from "../packages/validator/src/neutron-graph.js";
+import { validateNeutronGraphSnapshot } from "../packages/validator/src/neutron/graph/neutron-graph.js";
 import { projectNeutronGraphSnapshot } from "../packages/application/src/neutron/graph/neutron-graph-projection.js";
 import {
   aggregateNeutronTaskGraphResults,

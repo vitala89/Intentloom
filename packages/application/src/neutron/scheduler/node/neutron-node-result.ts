@@ -8,7 +8,7 @@ import {
   type NeutronTaskState,
   type NeutronUsageBudget,
 } from "../../../../../protocol/src/neutron/runtime/neutron-runtime.js";
-import { validateNeutronSubagentResult } from "../../../../../validator/src/neutron-runtime.js";
+import { validateNeutronSubagentResult } from "../../../../../validator/src/neutron/runtime/neutron-runtime.js";
 import { applyNeutronTaskStateTransition } from "../neutron-scheduler-transitions.js";
 import type { NeutronN2LoopResult } from "../../neutron-n2-loop.js";
 

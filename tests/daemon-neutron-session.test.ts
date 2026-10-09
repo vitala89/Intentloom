@@ -17,9 +17,9 @@ import {
 } from "@intentloom/protocol";
 import type { ModelAdapter } from "../packages/application/src/model-adapter.js";
 import { createNeutronSessionRuntime } from "../packages/application/src/neutron/session/neutron-session-runtime.js";
-import { NeutronN2Error } from "../packages/validator/src/neutron-runtime-n2.js";
+import { NeutronN2Error } from "../packages/validator/src/neutron/runtime/neutron-runtime-n2.js";
 import { startLocalDaemon } from "../packages/daemon/src/index.js";
-import { bindNeutronSessionHandlers } from "../packages/daemon/src/neutron-session-handlers.js";
+import { bindNeutronSessionHandlers } from "../packages/daemon/src/neutron/session/neutron-session-handlers.js";
 import { fingerprintNeutronProjectRoot } from "../packages/application/src/neutron/neutron-session-fingerprint.js";
 import { readFileSync } from "node:fs";
 
@@ -345,7 +345,7 @@ describe("Neutron N6 Slice 1 daemon session RPC", () => {
   it("does not dispatch approvedApply from neutron handlers", () => {
     const source = readFileSync(
       new URL(
-        "../packages/daemon/src/neutron-session-handlers.ts",
+        "../packages/daemon/src/neutron/session/neutron-session-handlers.ts",
         import.meta.url,
       ),
       "utf8",

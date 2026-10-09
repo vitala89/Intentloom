@@ -1,7 +1,7 @@
 import { NEUTRON_HIDDEN_GENERATED_METADATA_PATHS } from "../../../../../protocol/src/neutron/mutation/verification/neutron-mutation-verification.js";
 import type { NeutronMutationWriteSetVerification } from "../../../../../protocol/src/neutron/mutation/verification/neutron-mutation-verification.js";
-import { canonicalizeNeutronMutationPaths } from "../../../../../validator/src/neutron-mutation-canonical.js";
-import { exactNeutronMutationPathSetsEqual } from "../../../../../validator/src/neutron-mutation-path-set.js";
+import { canonicalizeNeutronMutationPaths } from "../../../../../validator/src/neutron/mutation/neutron-mutation-canonical.js";
+import { exactNeutronMutationPathSetsEqual } from "../../../../../validator/src/neutron/mutation/neutron-mutation-path-set.js";
 import type { FileSystem } from "../../../index.js";
 
 export async function verifyNeutronMutationWriteSet(input: {

@@ -9,8 +9,8 @@ import {
   type NeutronMutationVerificationStatus,
   type NeutronMutationWriteSetVerification,
 } from "../../../../../protocol/src/neutron/mutation/verification/neutron-mutation-verification.js";
-import { digestNeutronMutationVerificationEvidence } from "../../../../../validator/src/neutron-mutation-verification-digest.js";
-import { validateNeutronMutationVerificationEvidence } from "../../../../../validator/src/neutron-mutation-verification.js";
+import { digestNeutronMutationVerificationEvidence } from "../../../../../validator/src/neutron/mutation/verification/neutron-mutation-verification-digest.js";
+import { validateNeutronMutationVerificationEvidence } from "../../../../../validator/src/neutron/mutation/verification/neutron-mutation-verification.js";
 
 export interface NeutronMutationVerificationFacts {
   readonly transactionId: string;

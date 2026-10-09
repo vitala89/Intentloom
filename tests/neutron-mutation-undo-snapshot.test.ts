@@ -48,8 +48,8 @@ import {
 } from "../packages/protocol/src/neutron/mutation/approval/neutron-mutation-approval-intent.js";
 import { NEUTRON_MUTATION_UNDO_INTENT_SCHEMA_URN } from "../packages/protocol/src/neutron/mutation/undo/neutron-mutation-undo.js";
 import { NEUTRON_MUTATION_VERIFICATION_RETRY_SCHEMA_URN } from "../packages/protocol/src/neutron/mutation/verification/neutron-mutation-verification-retry-rpc.js";
-import { compareNeutronMutationPaths } from "../packages/validator/src/neutron-mutation-canonical.js";
-import { digestGeneratedFileContent } from "../packages/validator/src/neutron-mutation-review-digest.js";
+import { compareNeutronMutationPaths } from "../packages/validator/src/neutron/mutation/neutron-mutation-canonical.js";
+import { digestGeneratedFileContent } from "../packages/validator/src/neutron/mutation/review/neutron-mutation-review-digest.js";
 import { listRegisteredNeutronTools } from "../packages/application/src/neutron/tools/neutron-tool-registry.js";
 import {
   REVIEW_GRAPH_ID,

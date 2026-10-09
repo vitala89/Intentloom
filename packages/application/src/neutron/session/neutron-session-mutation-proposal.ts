@@ -8,7 +8,7 @@ import type { NeutronTaskNode } from "../../../../protocol/src/neutron/runtime/n
 import {
   digestNeutronMutationProposal,
   validateNeutronMutationProposal,
-} from "../../../../validator/src/neutron-mutation.js";
+} from "../../../../validator/src/neutron/mutation/neutron-mutation.js";
 import type { StoredNeutronSession } from "./neutron-session-turn.js";
 
 export const NEUTRON_STRUCTURED_MUTATION_PROPOSAL_PREFIX =

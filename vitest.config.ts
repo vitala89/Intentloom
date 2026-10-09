@@ -15,13 +15,13 @@ export default defineConfig({
       ),
       "@intentloom/validator/neutron-session": fileURLToPath(
         new URL(
-          "./packages/validator/src/neutron-session-rpc.ts",
+          "./packages/validator/src/neutron/session/neutron-session-rpc.ts",
           import.meta.url,
         ),
       ),
       "@intentloom/validator/neutron-runtime-n2": fileURLToPath(
         new URL(
-          "./packages/validator/src/neutron-runtime-n2.ts",
+          "./packages/validator/src/neutron/runtime/neutron-runtime-n2.ts",
           import.meta.url,
         ),
       ),

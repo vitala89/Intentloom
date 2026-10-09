@@ -4,7 +4,7 @@ import {
   type NeutronSessionState,
 } from "../../../../protocol/src/neutron/runtime/neutron-runtime.js";
 import type { NeutronSessionViewmodel } from "../../../../protocol/src/neutron/session/neutron-session-rpc.js";
-import { validateNeutronN2AdapterCapability } from "../../../../validator/src/neutron-runtime-n2.js";
+import { validateNeutronN2AdapterCapability } from "../../../../validator/src/neutron/runtime/neutron-runtime-n2.js";
 import type { ModelAdapter } from "../../model-adapter.js";
 import { NeutronSessionOperationError } from "./neutron-session-errors.js";
 import { resolveNeutronSessionMutationProposal } from "./neutron-session-mutation-proposal.js";

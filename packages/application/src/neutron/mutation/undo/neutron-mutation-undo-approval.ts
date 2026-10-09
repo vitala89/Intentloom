@@ -1,7 +1,7 @@
 import {
   canonicalNeutronMutationJson,
   neutronMutationContentDigest,
-} from "../../../../../validator/src/neutron-mutation-canonical.js";
+} from "../../../../../validator/src/neutron/mutation/neutron-mutation-canonical.js";
 import { NEUTRON_MUTATION_APPROVAL_MAX_LIFETIME_MS } from "../approval/neutron-mutation-approval-issue-types.js";
 
 export const NEUTRON_MUTATION_UNDO_CLASS = "undo" as const;

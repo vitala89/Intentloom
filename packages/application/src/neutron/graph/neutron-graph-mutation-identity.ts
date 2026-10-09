@@ -3,7 +3,7 @@ import type { NeutronMutationProposalCandidateFile } from "../../../../protocol/
 import {
   canonicalNeutronMutationJson,
   neutronMutationContentDigest,
-} from "../../../../validator/src/neutron-mutation-canonical.js";
+} from "../../../../validator/src/neutron/mutation/neutron-mutation-canonical.js";
 
 export function generatedFilesFromCandidate(
   files: readonly NeutronMutationProposalCandidateFile[],

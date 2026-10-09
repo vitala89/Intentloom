@@ -9,7 +9,7 @@ import {
   validateAssembleNeutronContextRequest,
   validateNeutronContextBundle,
   validateNeutronUsageBudget,
-} from "../../../../validator/src/neutron-runtime.js";
+} from "../../../../validator/src/neutron/runtime/neutron-runtime.js";
 import { nodeFileSystem, type FileSystem } from "../../index.js";
 import {
   allocateContextBudget,

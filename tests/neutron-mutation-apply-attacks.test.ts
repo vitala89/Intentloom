@@ -17,7 +17,7 @@ import {
   type NeutronMutationProposal,
 } from "../packages/protocol/src/neutron/mutation/neutron-mutation.js";
 import { NEUTRON_RUNTIME_SESSION_SCHEMA_URN } from "../packages/protocol/src/neutron/runtime/neutron-runtime.js";
-import { validateNeutronRuntimeSession } from "../packages/validator/src/neutron-runtime.js";
+import { validateNeutronRuntimeSession } from "../packages/validator/src/neutron/runtime/neutron-runtime.js";
 import {
   digestContentBoundApplyPlan,
   digestGeneratedFileContent,
@@ -25,7 +25,7 @@ import {
   digestNeutronMutationProposal,
   expectedNeutronMutationApprovalToken,
   materializeNeutronMutationReviewArtifact,
-} from "../packages/validator/src/neutron-mutation.js";
+} from "../packages/validator/src/neutron/mutation/neutron-mutation.js";
 
 const NOW = 1_750_000_000_000;
 

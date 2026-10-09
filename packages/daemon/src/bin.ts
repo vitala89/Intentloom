@@ -83,7 +83,7 @@ import {
   handleContinuousLoopWorkspaceExecute,
   handleContinuousLoopWorkspacePrepare,
 } from "./continuous-loop-handlers.js";
-import { bindNeutronSessionHandlers } from "./neutron-session-handlers.js";
+import { bindNeutronSessionHandlers } from "./neutron/session/neutron-session-handlers.js";
 import { resolveDaemonStartupConfig } from "./daemon-startup-config.js";
 import { createNeutronSessionRuntime } from "../../application/src/neutron/session/neutron-session-runtime.js";
 import { OllamaModelAdapter } from "../../application/src/ollama-model-adapter.js";

@@ -10,7 +10,7 @@ import { NEUTRON_SESSION_STATES } from "../../../../../protocol/src/neutron/runt
 import {
   digestNeutronMutationProposal,
   expectedNeutronMutationApprovalToken,
-} from "../../../../../validator/src/neutron-mutation.js";
+} from "../../../../../validator/src/neutron/mutation/neutron-mutation.js";
 import {
   canonicalizeNeutronMutationRoot,
   type NeutronMutationPathFilesystem,

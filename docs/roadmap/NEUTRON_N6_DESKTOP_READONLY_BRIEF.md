@@ -843,8 +843,8 @@ Desktop connect/root chrome, design-system components.
 ### Likely files
 
 - `packages/protocol/src/neutron-session-rpc.ts` (or equivalent wrappers)
-- `packages/validator/src/neutron-session-rpc.ts`
-- `packages/daemon/src/` Neutron handlers + tests
+- `packages/validator/src/neutron/session/neutron-session-rpc.ts`
+- `packages/daemon/src/neutron/` handlers + tests
 - `apps/desktop/src-tauri/src/method_allowlist.rs`, `commands.rs` (new arm only)
 - `apps/desktop/src/desktop-client-neutron.ts`
 - `apps/desktop/src/neutron/*`

@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto";
 import { NEUTRON_RUNTIME_SESSION_SCHEMA_URN } from "../../../../protocol/src/neutron/runtime/neutron-runtime.js";
-import { validateNeutronRuntimeSession } from "../../../../validator/src/neutron-runtime.js";
+import { validateNeutronRuntimeSession } from "../../../../validator/src/neutron/runtime/neutron-runtime.js";
 import { nodeFileSystem } from "../../index.js";
 import {
   neutronBindingError,
