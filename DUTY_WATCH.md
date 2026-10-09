@@ -63,9 +63,47 @@ or rewrite `applied: true`. A successful Undo is not verification.
 tools. Further product Undo work is paused for the Desktop architecture
 refactor. U4 post-Undo verification, U5 Desktop Undo, optional N3 Slice 5,
 P4l17, and any N4 mutation or verification tool remain unauthorized.
-**Desktop Architecture R1** (feature-oriented views) is implemented on
-`refactor/desktop-feature-architecture-r1` and is awaiting maintainer
-review. Do not merge. Do not start R2, R3, U4, or U5.
+**Desktop Architecture R1** (feature-oriented views) is merged (PR #549,
+merge `22fec52f84e952269fe104fd409c7742b2087ff2`).
+**Desktop Architecture R2** (Neutron semantic decomposition) is implemented
+on `refactor/desktop-neutron-architecture-r2` and is awaiting maintainer
+review. Do not merge. Do not start R3, U4, or U5.
+
+### 2026-10-09, Desktop Architecture R2 — Neutron semantic decomposition
+
+- **Status:** **DESKTOP ARCHITECTURE R2 NEUTRON SEMANTIC DECOMPOSITION
+  IMPLEMENTED ON BRANCH AWAITING MAINTAINER REVIEW.** Do not merge. Do not
+  start R3, Undo U4, or Desktop Undo U5.
+- **Branch:** `refactor/desktop-neutron-architecture-r2`
+- **Starting main:** `22fec52f84e952269fe104fd409c7742b2087ff2` (PR #549
+  merge, Desktop Architecture R1).
+- **Scope:** structural move only. Flat `apps/desktop/src/neutron/` is now
+  session, graph, activity, result (including evidence), and mutation
+  proposal, review, and recovery. Context presentation stays in activity.
+  Approve & Apply stays in mutation recovery. Shared mutation review state
+  and copy sit beside those subfeatures so review and recovery do not
+  cycle. The Neutron root is `NeutronWorkspace.tsx` and
+  `neutron-digest-display.ts`.
+- **Behavior:** unchanged. No protocol, daemon, or application contract
+  changes. No Undo UI, U4, or U5.
+- **Guard:** `tests/desktop-neutron-boundaries.test.ts` ratchets the
+  Neutron root, semantic subfeatures, public cross-subfeature imports, and
+  the recovery-port client surface. R1 feature guards stay in
+  `tests/desktop-feature-boundaries.test.ts`; that checker now resolves
+  `.js` import specifiers. Placement rules live in
+  `docs/governance/REACT_BEST_PRACTICES.md`. Open governance PR #546 was
+  not used as the base and was not edited.
+- **Shell:** `WorkspaceContent.tsx` still imports `NeutronWorkspace` at the
+  same path. No shell redesign.
+- **Validation:** focused Neutron session, graph, activity, evidence,
+  proposal, review, approve/apply, and recovery tests passed with the
+  architecture guards (13 files, 110 tests) before the review-path walk
+  fix; that fix plus both boundary files then passed (3 files, 31 tests).
+  `pnpm verify` passed unsandboxed: typecheck, lint, format check, 343
+  files / 2981 passed / 3 skipped, build, and `git diff --check`. A
+  sandboxed `pnpm verify` failed on Unix-socket and symlink `EPERM` and
+  was discarded.
+- **Not done:** workspace shell composition (R3), Undo U4, Desktop Undo U5.
 
 ### 2026-10-09, Desktop Architecture R1 — feature-oriented views
 

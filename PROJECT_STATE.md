@@ -808,13 +808,15 @@ the first project write. Pre-U2 updated paths stay non-undoable.
 transaction. The original Apply record stays historically applied. U3
 does not verify the restored tree, encrypt snapshots, or add Desktop
 Undo. Further product Undo work is paused. U4 and U5 remain unauthorized.
-**Desktop Architecture R1** is the active increment on
-`refactor/desktop-feature-architecture-r1` and is awaiting maintainer
-review. It moves Adoption, Foundation, and External Specialized Pack from
-`apps/desktop/src/views/` into `apps/desktop/src/features/` without
-changing product behavior. Neutron stays in place for a later internal
-decomposition. Workspace shell composition is a later increment. Other
-post-P4 candidates remain in `POST_W12_NEXT_INCREMENT_PLAN.md`.
+**Desktop Architecture R1** is merged (PR #549, merge
+`22fec52f84e952269fe104fd409c7742b2087ff2`). Adoption, Foundation, and
+External Specialized Pack live under `apps/desktop/src/features/`.
+**Desktop Architecture R2** organizes `apps/desktop/src/neutron/` into
+semantic subfeatures on `refactor/desktop-neutron-architecture-r2` and is
+awaiting maintainer review. It does not change Neutron behavior.
+Workspace shell composition (R3), Undo U4, and Desktop Undo U5 remain
+unauthorized. Other post-P4 candidates remain in
+`POST_W12_NEXT_INCREMENT_PLAN.md`.
 
 The Desktop discovery/error and Diff/Timeline slices remain recorded in
 [PHASE1_CONTRACTS.md](docs/desktop/PHASE1_CONTRACTS.md).

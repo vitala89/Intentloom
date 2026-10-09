@@ -75,9 +75,31 @@ Current boundaries:
 - `features/external-specialized-pack/` — External Specialized Pack preview,
   review, approval, activation, input staleness, and doctor integration.
   The preview page is the shell entrypoint.
-- `neutron/` — the existing Neutron feature boundary. Leave it flat until
-  the Neutron decomposition increment. Do not add new Neutron modules at
-  the `neutron/` root by default.
+- `neutron/` — one Desktop feature boundary for Neutron. The root holds
+  composition and the one Neutron-level presentation module recorded by
+  `tests/desktop-neutron-boundaries.test.ts`. Subfeatures follow lifecycle
+  and ubiquitous language, not technical type:
+
+  - `session/` — session header, composer, session hook, and the Desktop
+    session viewmodel.
+  - `graph/` — task-graph projection, including stale graph state and the
+    graph input the session submits.
+  - `activity/` — tool activity, plus context summary and context sources.
+    Context stays here: the activity panel composes it and it shares
+    activity copy. It has no separate lifecycle.
+  - `result/` — session result and evidence projection. Evidence is part of
+    this result surface, not a second feature.
+  - `mutation/proposal/` — mutation proposal presentation.
+  - `mutation/review/` — exact mutation review.
+  - `mutation/recovery/` — recovery and status presentation, including the
+    Approve & Apply control that renders that status. There is no separate
+    `apply/` directory.
+  - `mutation/neutron-mutation-review-state.ts` and
+    `mutation/neutron-mutation-review-copy.ts` — shared mutation review
+    state and copy read by both review and recovery.
+  - `neutron-digest-display.ts` — Neutron-root digest shortening used by
+    result, proposal, and review.
+
 - `views/` — temporary home for smaller surfaces (Inspect, Doctor, Diff,
   Timeline, Settings, Overview, New Project, Open Existing Project, Feature
   Intent, Bounded Execution, Continuous Loop) and the extension contribution
@@ -100,8 +122,11 @@ Dependency direction:
   `@intentloom/daemon`, a provider SDK, or the filesystem.
 - A feature must not import the shell (`App.tsx`, `WorkspaceContent.tsx`,
   `main.tsx`), `views/`, `neutron/`, or another feature.
-- `design/` must not import features or views.
-- Desktop client adapters must not import feature UI.
+- `design/` must not import features, views, or Neutron.
+- Desktop client adapters must not import feature UI. The approve/apply
+  client may import `NeutronMutationRecoveryPorts` from
+  `neutron/mutation/recovery/neutron-mutation-recovery-controller.ts`
+  only. That file is the Neutron recovery-port integration surface.
 - Outside code may consume a feature only through an explicit public
   entrypoint or integration module. Private controllers and helpers stay
   inside the feature.
@@ -114,9 +139,11 @@ Dependency direction:
 - An integration surface stays narrow and uses a domain name. Do not add
   `utils`, `helpers`, `shared`, or a wildcard `index.ts` barrel to stand
   in for a boundary.
-- Adding an exception in `tests/desktop-feature-boundaries.test.ts` is not
-  a substitute for declaring that public module. The test allowlist may
-  name shell entrypoints and integration modules only.
+- Adding an exception in `tests/desktop-feature-boundaries.test.ts` or
+  `tests/desktop-neutron-boundaries.test.ts` is not a substitute for
+  declaring that public module. The test allowlist may name shell
+  entrypoints, Neutron subfeature public surfaces, and integration
+  modules only.
 - Business invariants stay in application and protocol. Desktop feature
   folders organize presentation and client-side interaction. Do not add
   Aggregate, Entity, Repository, Domain Service, or Value Object types in
@@ -135,8 +162,35 @@ Before adding a new Desktop source file:
 5. Do not create a new shared abstraction without evidence of
    cross-feature reuse.
 
-Later increments are not authorized by this section. Neutron decomposition
-groups the current flat `neutron/` tree by session, graph, activity,
-context, result/evidence, mutation proposal, mutation review, and mutation
-recovery. Workspace shell composition is a separate increment. Do not add a
-router or a global client state framework in order to place a feature.
+Neutron dependency direction:
+
+```text
+NeutronWorkspace
+  ↓
+subfeature public surfaces
+  ↓
+local viewmodels and presentation helpers
+  ↓
+desktop client + @intentloom/protocol
+```
+
+`NeutronWorkspace` composes subfeatures and stays at the Neutron root. It
+does not own domain rules. A subfeature may import another subfeature only
+through a public surface named in
+`tests/desktop-neutron-boundaries.test.ts`. Private parsers and helpers
+stay in the owning subfeature. Do not add `utils`, `helpers`, `shared`, or
+an `index.ts` barrel to stand in for that boundary.
+
+Before adding Neutron source:
+
+1. Identify the semantic owner: session, graph, activity, result, mutation
+   proposal, mutation review, or mutation recovery.
+2. Place the module in that subfeature.
+3. Do not add a feature module at the `neutron/` root.
+4. Do not invent a shared helper without a real cross-subfeature consumer.
+   The mutation review state and copy modules exist because review and
+   recovery both read them.
+5. Do not import another subfeature's private internals.
+
+Workspace shell composition is a separate increment. Do not add a router
+or a global client state framework in order to place a feature.

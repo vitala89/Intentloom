@@ -8,13 +8,13 @@ import {
   NEUTRON_GRAPH_SNAPSHOT_SCHEMA_URN,
   NEUTRON_RUNTIME_SESSION_SCHEMA_URN,
 } from "@intentloom/protocol";
-import { evidencePanelLines } from "../apps/desktop/src/neutron/neutron-evidence-copy.js";
+import { evidencePanelLines } from "../apps/desktop/src/neutron/result/neutron-evidence-copy.js";
 import {
   authoritativeNeutronOutcome,
   modelProseClaimsSuccess,
-} from "../apps/desktop/src/neutron/neutron-evidence-outcome.js";
-import { parseNeutronDesktopViewmodel } from "../apps/desktop/src/neutron/neutron-session-viewmodel.js";
-import { parseNeutronGraphSnapshot } from "../apps/desktop/src/neutron/neutron-graph-viewmodel.js";
+} from "../apps/desktop/src/neutron/result/neutron-evidence-outcome.js";
+import { parseNeutronDesktopViewmodel } from "../apps/desktop/src/neutron/session/neutron-session-viewmodel.js";
+import { parseNeutronGraphSnapshot } from "../apps/desktop/src/neutron/graph/neutron-graph-viewmodel.js";
 
 const desktopRoot = join(
   dirname(fileURLToPath(import.meta.url)),
@@ -389,7 +389,7 @@ describe("Neutron N6 Slice 4 evidence and provenance", () => {
 
   it("clears evidence when root changes in session hook", () => {
     const hookSource = readFileSync(
-      join(desktopRoot, "src/neutron/use-neutron-session.ts"),
+      join(desktopRoot, "src/neutron/session/use-neutron-session.ts"),
       "utf8",
     );
     expect(hookSource).toContain("setViewmodel(null)");

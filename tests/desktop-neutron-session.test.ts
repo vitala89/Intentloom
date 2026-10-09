@@ -15,7 +15,7 @@ import {
   classifyNeutronInfrastructureError,
   neutronSurfaceKind,
   parseNeutronDesktopViewmodel,
-} from "../apps/desktop/src/neutron/neutron-session-viewmodel.js";
+} from "../apps/desktop/src/neutron/session/neutron-session-viewmodel.js";
 import {
   NEUTRON_ADAPTER_CAPABILITY_SCHEMA_URN,
   NEUTRON_RUNTIME_SESSION_SCHEMA_URN,
@@ -125,8 +125,8 @@ describe("Neutron N6 Slice 1 Desktop session shell", () => {
     const files = [
       "src/desktop-client-neutron.ts",
       "src/neutron/NeutronWorkspace.tsx",
-      "src/neutron/use-neutron-session.ts",
-      "src/neutron/NeutronResult.tsx",
+      "src/neutron/session/use-neutron-session.ts",
+      "src/neutron/result/NeutronResult.tsx",
     ];
     for (const relative of files) {
       const source = readFileSync(join(desktopRoot, relative), "utf8");

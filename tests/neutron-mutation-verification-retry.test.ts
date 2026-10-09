@@ -27,9 +27,9 @@ import { approveAndApplyNeutronGraphMutation } from "../packages/application/src
 import { retryAppliedNeutronMutationVerification } from "../packages/application/src/neutron-mutation-verification-retry-run.js";
 import { neutronSessionCapabilities as daemonCapabilities } from "../packages/daemon/src/neutron-session-handlers.js";
 import { bindNeutronSessionHandlers as bindDaemonHandlers } from "../packages/daemon/src/neutron-session-handlers.js";
-import { NeutronApproveApplyControl } from "../apps/desktop/src/neutron/NeutronApproveApplyControl.js";
-import { createNeutronMutationRecovery } from "../apps/desktop/src/neutron/neutron-mutation-recovery-controller.js";
-import { projectMutationRecoveryView } from "../apps/desktop/src/neutron/neutron-mutation-recovery-view.js";
+import { NeutronApproveApplyControl } from "../apps/desktop/src/neutron/mutation/recovery/NeutronApproveApplyControl.js";
+import { createNeutronMutationRecovery } from "../apps/desktop/src/neutron/mutation/recovery/neutron-mutation-recovery-controller.js";
+import { projectMutationRecoveryView } from "../apps/desktop/src/neutron/mutation/recovery/neutron-mutation-recovery-view.js";
 import {
   NEUTRON_MUTATION_APPROVAL_INTENT_ACTION,
   NEUTRON_MUTATION_APPROVAL_INTENT_SCHEMA_URN,
@@ -720,7 +720,7 @@ function retrySource(): string {
   return [
     "packages/application/src/neutron-mutation-verification-retry-run.ts",
     "packages/daemon/src/neutron-mutation-verification-retry-handlers.ts",
-    "apps/desktop/src/neutron/neutron-mutation-recovery-controller.ts",
+    "apps/desktop/src/neutron/mutation/recovery/neutron-mutation-recovery-controller.ts",
   ]
     .map((path) => readFileSync(join(root, path), "utf8"))
     .join("\n");

@@ -28,6 +28,7 @@ const PERMITTED_VIEW_ROOT_FILES = [
   "view-sandbox-protocol.ts",
 ];
 
+/** Neutron subfeatures are ratcheted in desktop-neutron-boundaries.test.ts. */
 const FEATURE_ROOTS = [
   "features/adoption/",
   "features/foundation/",
@@ -72,7 +73,7 @@ function walkSources(directory: string, files: string[] = []): string[] {
 }
 
 function stem(path: string): string {
-  return toPosix(path).replace(/\.tsx?$/, "");
+  return toPosix(path).replace(/\.(tsx?|js)$/, "");
 }
 
 function desktopRelative(path: string): string {
@@ -114,14 +115,6 @@ describe("desktop feature boundaries", () => {
     );
     expect(directories).toEqual([]);
     expect([...files].sort()).toEqual([...PERMITTED_VIEW_ROOT_FILES].sort());
-  });
-
-  it("keeps Neutron as the existing flat feature boundary", () => {
-    const entries = readdirSync(join(desktopSrc, "neutron"));
-    const directories = entries.filter((name) =>
-      statSync(join(desktopSrc, "neutron", name)).isDirectory(),
-    );
-    expect(directories).toEqual([]);
   });
 
   it("has no cycles inside feature modules", () => {

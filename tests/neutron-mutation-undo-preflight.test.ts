@@ -347,7 +347,10 @@ describe("neutron mutation undo preflight", () => {
     );
     expect(allowlist).not.toContain("mutation.undo");
     const control = readFileSync(
-      join(repo, "apps/desktop/src/neutron/NeutronApproveApplyControl.tsx"),
+      join(
+        repo,
+        "apps/desktop/src/neutron/mutation/recovery/NeutronApproveApplyControl.tsx",
+      ),
       "utf8",
     );
     expect(control).not.toContain("Undo");

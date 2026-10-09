@@ -112,7 +112,7 @@ The terminal UI should remain a local Node.js-compatible presentation layer. The
 Desktop remains a presentation adapter. Feature folders under
 `apps/desktop/src/features/` group product capability, presentation, and
 client-side interaction. They do not own business invariants. Placement
-rules, the `views/` ratchet, and later Neutron grouping live in
+rules, the `views/` ratchet, and Neutron's semantic subfeatures live in
 [REACT_BEST_PRACTICES.md](../governance/REACT_BEST_PRACTICES.md).
 
 ```text
