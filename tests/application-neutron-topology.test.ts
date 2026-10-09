@@ -1,5 +1,13 @@
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
-import { dirname, join, relative, resolve } from "node:path";
+import {
+  basename,
+  dirname,
+  isAbsolute,
+  join,
+  relative,
+  resolve,
+  sep,
+} from "node:path";
 import { describe, expect, it } from "vitest";
 
 const applicationSrc = join("packages", "application", "src");
@@ -133,7 +141,7 @@ describe("application Neutron topology", () => {
 
   it("has no dumping-ground module names", () => {
     const dumped = walkSources(neutronRoot)
-      .map((file) => file.slice(file.lastIndexOf("/") + 1))
+      .map((file) => basename(file))
       .filter((name) => DUMPING_GROUND_NAMES.has(name));
     expect(dumped).toEqual([]);
   });
@@ -202,7 +210,10 @@ describe("application Neutron topology", () => {
     for (const [subpath, symbol] of Object.entries(PACKAGE_EXPORTS)) {
       const target = manifest.exports[subpath] ?? "";
       expect(target.endsWith(".ts")).toBe(true);
-      const file = join("packages", "application", target.slice("./".length));
+      const file = nativePathFromPosix(
+        "packages/application",
+        target.slice("./".length),
+      );
       expect(existsSync(file)).toBe(true);
       expect(readFileSync(file, "utf8")).toContain(symbol);
     }
@@ -229,8 +240,19 @@ function flatNeutronFiles(): string[] {
     .toSorted();
 }
 
-function toPosix(path: string): string {
-  return path.split("\\").join("/");
+function toPosix(filePath: string): string {
+  return filePath.split(sep).join("/").split("\\").join("/");
+}
+
+function nativePathFromPosix(...posixSegments: readonly string[]): string {
+  const parts = posixSegments.flatMap((segment) => segment.split("/"));
+  return join(...parts.filter((part) => part.length > 0 && part !== "."));
+}
+
+function isInsideNeutron(candidate: string): boolean {
+  const rel = relative(neutronRoot, candidate);
+  if (rel === "" || isAbsolute(rel)) return false;
+  return rel !== ".." && !rel.startsWith(`..${sep}`);
 }
 
 function walkSources(directory: string, files: string[] = []): string[] {
@@ -274,10 +296,14 @@ function neutronImports(file: string): string[] {
   const imported: string[] = [];
   for (const specifier of importedSpecifiers(readFileSync(file, "utf8"))) {
     const resolved = resolveSpecifier(file, specifier);
-    if (!resolved?.startsWith(`${neutronRoot}/`)) continue;
+    if (resolved === null || !isInsideNeutron(resolved)) continue;
     imported.push(neutronRelative(resolved));
   }
   return imported.toSorted();
+}
+
+function isArchitectureRootModule(architectureId: string): boolean {
+  return basename(architectureId) === architectureId;
 }
 
 function crossSubfeatureEdges(): string[] {
@@ -299,7 +325,7 @@ function subfeatureRootImports(): string[] {
     const relativePath = neutronRelative(file);
     if (!subfeatureOf(relativePath)) continue;
     for (const target of neutronImports(file)) {
-      if (target.includes("/")) continue;
+      if (!isArchitectureRootModule(target)) continue;
       if (!SHARED_ROOT_MODULES.has(target)) {
         imports.push(`FORBIDDEN ${relativePath} => ${target}`);
       } else {
@@ -321,18 +347,29 @@ function subfeatureCycles(edges: readonly string[]): string[] {
   return directedCycles([...graph.keys()], (node) => graph.get(node) ?? []);
 }
 
+function neutronSourcePath(architectureId: string): string {
+  return join(neutronRoot, ...architectureId.split("/"));
+}
+
 function fileCycles(): string[][] {
-  const files = walkSources(neutronRoot);
+  const files = walkSources(neutronRoot).map((file) => neutronRelative(file));
   const known = new Set(files);
   const imports = new Map<string, string[]>();
-  for (const file of files) {
+  for (const architectureId of files) {
     imports.set(
-      file,
-      neutronImports(file)
-        .map((target) => join(neutronRoot, target))
-        .filter((dep) => known.has(dep)),
+      architectureId,
+      neutronImports(neutronSourcePath(architectureId)).filter((dep) =>
+        known.has(dep),
+      ),
     );
   }
+  return stronglyConnectedComponents(files, (node) => imports.get(node) ?? []);
+}
+
+function stronglyConnectedComponents(
+  nodes: readonly string[],
+  dependencies: (node: string) => readonly string[],
+): string[][] {
   const index = new Map<string, number>();
   const low = new Map<string, number>();
   const stack: string[] = [];
@@ -345,31 +382,41 @@ function fileCycles(): string[][] {
     next += 1;
     stack.push(node);
     onStack.add(node);
-    for (const dep of imports.get(node) ?? []) {
-      if (!index.has(dep)) {
-        strong(dep);
-        low.set(node, Math.min(low.get(node) ?? 0, low.get(dep) ?? 0));
-      } else if (onStack.has(dep)) {
-        low.set(node, Math.min(low.get(node) ?? 0, index.get(dep) ?? 0));
+    for (const dependency of dependencies(node)) {
+      if (!index.has(dependency)) {
+        strong(dependency);
+        low.set(node, Math.min(low.get(node) ?? 0, low.get(dependency) ?? 0));
+      } else if (onStack.has(dependency)) {
+        low.set(node, Math.min(low.get(node) ?? 0, index.get(dependency) ?? 0));
       }
     }
-    if (low.get(node) === index.get(node)) {
-      const component: string[] = [];
-      let cursor = "";
-      do {
-        cursor = stack.pop() ?? "";
-        onStack.delete(cursor);
-        component.push(neutronRelative(cursor));
-      } while (cursor !== node);
-      if (component.length > 1) components.push(component.toSorted());
-    }
+    collectFinishedComponent(node, index, low, stack, onStack, components);
   };
-  for (const file of files) {
-    if (!index.has(file)) strong(file);
+  for (const node of nodes) {
+    if (!index.has(node)) strong(node);
   }
   return components.toSorted((left, right) =>
     left.join().localeCompare(right.join()),
   );
+}
+
+function collectFinishedComponent(
+  node: string,
+  index: ReadonlyMap<string, number>,
+  low: ReadonlyMap<string, number>,
+  stack: string[],
+  onStack: Set<string>,
+  components: string[][],
+): void {
+  if (low.get(node) !== index.get(node)) return;
+  const component: string[] = [];
+  let cursor = "";
+  do {
+    cursor = stack.pop() ?? "";
+    onStack.delete(cursor);
+    component.push(cursor);
+  } while (cursor !== node);
+  if (component.length > 1) components.push(component.toSorted());
 }
 
 function directedCycles(

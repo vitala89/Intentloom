@@ -100,6 +100,11 @@ Desktop Undo U5.
   check, 345 files / 3002 passed / 3 skipped, build, and
   `git diff --check`.
 - **Not done:** R4B, R4C, R4D, Undo U4, Desktop Undo U5.
+- **Windows guard:** Compatibility failed because Neutron membership used
+  `resolved.startsWith(`${neutronRoot}/`)`. Windows `resolve()` uses
+  backslashes, so the dependency graph was empty. Architecture ids now go
+  through `toPosix`, and filesystem containment uses `path.relative`. The
+  expected graph and the mutation file cycle are unchanged.
 
 ### 2026-10-09, Desktop Architecture R3 — shell and workspace composition
 
