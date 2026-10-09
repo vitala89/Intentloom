@@ -4,12 +4,12 @@ import {
   parseNeutronMutationUndoIntent,
   type NeutronMutationUndoIntent,
   type NeutronMutationUndoOutcome,
-} from "../../../../../protocol/src/neutron-mutation-undo.js";
+} from "../../../../../protocol/src/neutron/mutation/undo/neutron-mutation-undo.js";
 import {
   validateNeutronMutationUndoPreflightResult,
   type NeutronMutationUndoPathProjection,
   type NeutronMutationUndoPreflightResult,
-} from "../../../../../protocol/src/neutron-mutation-undo-result.js";
+} from "../../../../../protocol/src/neutron/mutation/undo/neutron-mutation-undo-result.js";
 import type { FileSystem } from "../../../index.js";
 import { createPersistentNeutronMutationApprovalStore } from "../apply/neutron-mutation-apply-durable-store.js";
 import type { NeutronMutationTransactionRecord } from "../apply/neutron-mutation-apply-store.js";

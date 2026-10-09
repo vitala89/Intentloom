@@ -1,8 +1,8 @@
-import type { NeutronMutationApproval } from "../../../../../protocol/src/neutron-mutation-approval.js";
+import type { NeutronMutationApproval } from "../../../../../protocol/src/neutron/mutation/approval/neutron-mutation-approval.js";
 import {
   NEUTRON_MUTATION_APPROVAL_SCHEMA_URN,
   NEUTRON_MUTATION_APPROVAL_SOURCE,
-} from "../../../../../protocol/src/neutron-mutation-approval.js";
+} from "../../../../../protocol/src/neutron/mutation/approval/neutron-mutation-approval.js";
 import {
   canonicalNeutronMutationJson,
   canonicalizeNeutronMutationPaths,

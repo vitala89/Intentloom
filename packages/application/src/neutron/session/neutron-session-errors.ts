@@ -1,5 +1,5 @@
 import { ProtocolValidationError } from "../../../../protocol/src/protocol-validation-error.js";
-import type { NeutronErrorCode } from "../../../../protocol/src/neutron-runtime.js";
+import type { NeutronErrorCode } from "../../../../protocol/src/neutron/runtime/neutron-runtime.js";
 
 export class NeutronSessionOperationError extends Error {
   readonly clientErrorCode = "bounded_validation_failed" as const;

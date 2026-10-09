@@ -1,6 +1,6 @@
-import type { NeutronMutationApplyResult } from "../../../../../protocol/src/neutron-mutation-apply.js";
-import type { NeutronMutationUndoOutcome } from "../../../../../protocol/src/neutron-mutation-undo.js";
-import { NEUTRON_HIDDEN_GENERATED_METADATA_PATHS } from "../../../../../protocol/src/neutron-mutation-verification.js";
+import type { NeutronMutationApplyResult } from "../../../../../protocol/src/neutron/mutation/apply/neutron-mutation-apply.js";
+import type { NeutronMutationUndoOutcome } from "../../../../../protocol/src/neutron/mutation/undo/neutron-mutation-undo.js";
+import { NEUTRON_HIDDEN_GENERATED_METADATA_PATHS } from "../../../../../protocol/src/neutron/mutation/verification/neutron-mutation-verification.js";
 import type { NeutronMutationTransactionRecord } from "../apply/neutron-mutation-apply-store.js";
 
 /**

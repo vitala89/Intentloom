@@ -11,9 +11,9 @@ import type { NeutronMutationProposalPermissionInput } from "../mutation/proposa
 import type { NeutronGraphExecutionResult } from "../scheduler/neutron-scheduler-graph-result.js";
 import type { NeutronReadyNodeOutcome } from "../scheduler/neutron-scheduler-wave-types.js";
 import { selectSessionMutationProposal } from "./neutron-session-mutation-proposal.js";
-import type { NeutronMutationProposal } from "../../../../protocol/src/neutron-mutation.js";
-import type { NeutronRuntimeSession } from "../../../../protocol/src/neutron-runtime.js";
-import type { NeutronTaskGraph } from "../../../../protocol/src/neutron-runtime.js";
+import type { NeutronMutationProposal } from "../../../../protocol/src/neutron/mutation/neutron-mutation.js";
+import type { NeutronRuntimeSession } from "../../../../protocol/src/neutron/runtime/neutron-runtime.js";
+import type { NeutronTaskGraph } from "../../../../protocol/src/neutron/runtime/neutron-runtime.js";
 import type { StoredNeutronSession } from "./neutron-session-turn.js";
 
 type ProposalPermissionLayers = Omit<

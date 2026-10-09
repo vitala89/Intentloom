@@ -21,7 +21,7 @@ import {
   type NeutronTaskState,
   type NeutronToolEnvelope,
   type NeutronUsageBudget,
-} from "../../protocol/src/neutron-runtime.js";
+} from "../../protocol/src/neutron/runtime/neutron-runtime.js";
 import {
   contentDigest,
   finiteInt,

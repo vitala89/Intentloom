@@ -1,7 +1,7 @@
 import type {
   NeutronContextSource,
   NeutronSkillLoadingLevel,
-} from "../../../../protocol/src/neutron-runtime.js";
+} from "../../../../protocol/src/neutron/runtime/neutron-runtime.js";
 
 export const N3_DEFAULT_MAX_TOKENS = 4000;
 export const N3_DEFAULT_MAX_ITEMS = 20;

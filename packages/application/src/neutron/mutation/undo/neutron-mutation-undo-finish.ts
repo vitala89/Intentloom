@@ -1,4 +1,4 @@
-import type { NeutronMutationUndoExecutionResult } from "../../../../../protocol/src/neutron-mutation-undo-execution.js";
+import type { NeutronMutationUndoExecutionResult } from "../../../../../protocol/src/neutron/mutation/undo/neutron-mutation-undo-execution.js";
 import type { HostUndoApproval } from "./neutron-mutation-undo-approval.js";
 import { canonicalizeNeutronMutationRoot } from "../apply/neutron-mutation-containment.js";
 import { executeUndoPlan } from "./neutron-mutation-undo-execute.js";

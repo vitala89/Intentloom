@@ -70,9 +70,45 @@ merge `22fec52f84e952269fe104fd409c7742b2087ff2`).
 **Desktop Architecture R3** (shell and workspace composition) is merged
 (PR #551, merge `01e0c7d5454c6c88aa50ae8778e0a700709fae9e`).
 **Backend Architecture R4A** (application Neutron semantic topology) is
-implemented on `refactor/application-neutron-topology-r4a` and is awaiting
-maintainer review. Do not merge. Do not start R4B, R4C, R4D, Undo U4, or
+merged (PR #552, merge `05b1a2c9f282b5e083485820d7e5b8afe2045581`).
+**Backend Architecture R4B** (protocol Neutron semantic topology) is
+implemented on `refactor/protocol-neutron-topology-r4b` and is awaiting
+maintainer review. Do not merge. Do not start R4C, R4D, Undo U4, or
 Desktop Undo U5.
+
+### 2026-10-09, Backend Architecture R4B — protocol Neutron semantic topology
+
+- **Status:** **BACKEND ARCHITECTURE R4B PROTOCOL NEUTRON SEMANTIC
+  TOPOLOGY IMPLEMENTED ON BRANCH AWAITING MAINTAINER REVIEW.** Do not
+  merge. Do not start R4C, R4D, Undo U4, or Desktop Undo U5.
+- **Branch:** `refactor/protocol-neutron-topology-r4b`
+- **Starting main:** `05b1a2c9f282b5e083485820d7e5b8afe2045581` (PR #552
+  merge, Backend Architecture R4A).
+- **Scope:** structural move only. The 31 flat Neutron modules in
+  `packages/protocol/src/` now live under `neutron/runtime`, `session`,
+  `graph`, and
+  `mutation/{proposal,review,approval,apply,status,verification,undo}`.
+  `neutron-mutation.ts` and `neutron-graph-mutation.ts` stay at the
+  mutation root. Package subpath names are unchanged. Open governance
+  PR #546 was not used as the base and was not edited.
+- **Behavior:** unchanged. No schema, JSON-RPC method, wire-field,
+  validation, application, daemon, Desktop, or security behavior
+  changes. U4 and U5 were not started.
+- **Guard:** `tests/protocol-neutron-topology.test.ts` ratchets the
+  directory topology, mutation stages, cross-subfeature imports,
+  mutation-stage imports, subfeature cycles, the three known mutation
+  file cycles, forbidden dependencies, POSIX architecture ids, stable
+  package subpaths, package-root re-exports, and schema URNs.
+- **Validation:** focused protocol, runtime, session, activity, graph,
+  mutation, review, approval, Apply, status, verification, Undo,
+  Desktop, daemon, and topology tests passed (29 files, 305 tests).
+  Daemon socket tests were re-run outside the sandbox after an
+  environment permission failure. `pnpm verify` passed: typecheck, lint,
+  format check, 346 files / 3015 passed / 3 skipped, build, and
+  `git diff --check`.
+- **Not done:** R4C, R4D, Undo U4, Desktop Undo U5.
+- **Next:** R4C validator and daemon topology after maintainer review of
+  this branch. Do not start it from this handoff.
 
 ### 2026-10-09, Backend Architecture R4A — application Neutron semantic topology
 

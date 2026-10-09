@@ -5,7 +5,7 @@ import { prepareNeutronRuntimeContractSnapshot } from "../packages/application/s
 import {
   NEUTRON_RUNTIME_SESSION_SCHEMA_URN,
   type NeutronRuntimeContractSnapshot,
-} from "../packages/protocol/src/neutron-runtime.js";
+} from "../packages/protocol/src/neutron/runtime/neutron-runtime.js";
 
 function loadFixture(): NeutronRuntimeContractSnapshot {
   return JSON.parse(

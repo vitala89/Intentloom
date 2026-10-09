@@ -6,7 +6,7 @@ import type {
   NeutronTaskState,
   NeutronToolEnvelope,
   NeutronUsageBudget,
-} from "../../../../protocol/src/neutron-runtime.js";
+} from "../../../../protocol/src/neutron/runtime/neutron-runtime.js";
 import type { AssembleNeutronContextResult } from "../context/neutron-context-assembly.js";
 import type { NeutronNodeExecutionFailure } from "./node/neutron-node-errors.js";
 import type { NeutronNodeExecutionSuccess } from "./node/neutron-node-execution.js";

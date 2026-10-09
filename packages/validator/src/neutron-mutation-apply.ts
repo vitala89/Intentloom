@@ -3,7 +3,7 @@ import {
   NEUTRON_MUTATION_APPLY_RESULT_SCHEMA_URN,
   NEUTRON_MUTATION_APPLY_STATUSES,
   type NeutronMutationApplyResult,
-} from "../../protocol/src/neutron-mutation-apply.js";
+} from "../../protocol/src/neutron/mutation/apply/neutron-mutation-apply.js";
 import { assertNeutronMutationDigest } from "./neutron-mutation-canonical.js";
 import { validateNeutronMutationVerificationEvidence } from "./neutron-mutation-verification.js";
 import {

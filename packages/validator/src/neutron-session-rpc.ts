@@ -1,7 +1,7 @@
 import {
   type NeutronSessionViewmodel,
   type NeutronSessionViewmodelPayload,
-} from "../../protocol/src/neutron-session-rpc.js";
+} from "../../protocol/src/neutron/session/neutron-session-rpc.js";
 import {
   validateNeutronAdapterCapability,
   validateNeutronRuntimeSession,
@@ -19,7 +19,7 @@ import {
   NEUTRON_READ_ONLY_TOOLS,
   type NeutronErrorCode,
   type NeutronReadOnlyTool,
-} from "../../protocol/src/neutron-runtime.js";
+} from "../../protocol/src/neutron/runtime/neutron-runtime.js";
 
 function optionalString(value: unknown, field: string): string | null {
   if (value === null) return null;

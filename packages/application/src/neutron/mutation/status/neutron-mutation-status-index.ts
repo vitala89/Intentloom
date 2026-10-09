@@ -2,7 +2,7 @@ import { createHash } from "node:crypto";
 import { mkdir } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { checksum } from "@intentloom/core";
-import type { NeutronMutationTransactionState } from "../../../../../protocol/src/neutron-mutation-apply.js";
+import type { NeutronMutationTransactionState } from "../../../../../protocol/src/neutron/mutation/apply/neutron-mutation-apply.js";
 import { canonicalNeutronMutationJson } from "../../../../../validator/src/neutron-mutation-canonical.js";
 import {
   acquireDirectoryGate,

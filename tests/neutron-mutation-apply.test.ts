@@ -31,11 +31,11 @@ import {
   NEUTRON_MUTATION_PROPOSAL_SCHEMA_URN,
   type NeutronMutationApproval,
   type NeutronMutationProposal,
-} from "../packages/protocol/src/neutron-mutation.js";
+} from "../packages/protocol/src/neutron/mutation/neutron-mutation.js";
 import {
   NEUTRON_READ_ONLY_TOOLS,
   NEUTRON_RUNTIME_SESSION_SCHEMA_URN,
-} from "../packages/protocol/src/neutron-runtime.js";
+} from "../packages/protocol/src/neutron/runtime/neutron-runtime.js";
 import { validateNeutronRuntimeSession } from "../packages/validator/src/neutron-runtime.js";
 import {
   digestContentBoundApplyPlan,

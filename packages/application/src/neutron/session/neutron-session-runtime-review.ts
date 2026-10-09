@@ -1,7 +1,7 @@
 import type {
   NeutronMutationReviewGetResult,
   NeutronMutationReviewListResult,
-} from "../../../../protocol/src/neutron-mutation-review-view.js";
+} from "../../../../protocol/src/neutron/mutation/review/neutron-mutation-review-view.js";
 import type { FileSystem } from "../../index.js";
 import {
   getStoredNeutronMutationReview,

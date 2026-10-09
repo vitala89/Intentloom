@@ -17,11 +17,11 @@ import { NEUTRON_MUTATION_PROPOSAL_CAPABILITY } from "../packages/application/sr
 import { createNeutronSessionRuntime } from "../packages/application/src/neutron/session/neutron-session-runtime.js";
 import { fingerprintNeutronProjectRoot } from "../packages/application/src/neutron/neutron-session-fingerprint.js";
 import { approveAndApplyNeutronGraphMutation } from "../packages/application/src/neutron/neutron-scheduler.js";
-import { NEUTRON_READ_ONLY_TOOLS } from "../packages/protocol/src/neutron-runtime.js";
+import { NEUTRON_READ_ONLY_TOOLS } from "../packages/protocol/src/neutron/runtime/neutron-runtime.js";
 import {
   NEUTRON_MUTATION_APPROVAL_INTENT_ACTION,
   NEUTRON_MUTATION_APPROVAL_INTENT_SCHEMA_URN,
-} from "../packages/protocol/src/neutron-mutation-approval-intent.js";
+} from "../packages/protocol/src/neutron/mutation/approval/neutron-mutation-approval-intent.js";
 import { expectedNeutronMutationApprovalToken } from "../packages/validator/src/neutron-mutation-digest.js";
 import { validateNeutronRuntimeSession } from "../packages/validator/src/neutron-runtime.js";
 import { readFileSync } from "node:fs";

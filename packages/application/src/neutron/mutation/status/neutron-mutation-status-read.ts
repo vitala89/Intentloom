@@ -1,5 +1,5 @@
-import type { NeutronMutationStatusResult } from "../../../../../protocol/src/neutron-mutation-status-result.js";
-import { closedNeutronMutationStatus } from "../../../../../protocol/src/neutron-mutation-status-result.js";
+import type { NeutronMutationStatusResult } from "../../../../../protocol/src/neutron/mutation/status/neutron-mutation-status-result.js";
+import { closedNeutronMutationStatus } from "../../../../../protocol/src/neutron/mutation/status/neutron-mutation-status-result.js";
 import { createPersistentNeutronMutationApprovalStore } from "../apply/neutron-mutation-apply-durable-store.js";
 import {
   NeutronMutationStatusIndexError,

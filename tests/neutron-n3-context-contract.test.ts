@@ -5,7 +5,7 @@ import {
   NEUTRON_CONTEXT_ASSEMBLY_REQUEST_SCHEMA_URN,
   NEUTRON_CONTEXT_BUNDLE_SCHEMA_URN,
   type NeutronRuntimeContractSnapshot,
-} from "../packages/protocol/src/neutron-runtime.js";
+} from "../packages/protocol/src/neutron/runtime/neutron-runtime.js";
 import {
   validateAssembleNeutronContextRequest,
   validateNeutronContextBundle,

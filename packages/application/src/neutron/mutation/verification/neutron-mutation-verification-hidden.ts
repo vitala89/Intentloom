@@ -1,4 +1,4 @@
-import { NEUTRON_HIDDEN_GENERATED_METADATA_PATHS } from "../../../../../protocol/src/neutron-mutation-verification.js";
+import { NEUTRON_HIDDEN_GENERATED_METADATA_PATHS } from "../../../../../protocol/src/neutron/mutation/verification/neutron-mutation-verification.js";
 import type { FileSystem } from "../../../index.js";
 
 export async function snapshotHiddenGeneratedMetadata(

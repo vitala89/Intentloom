@@ -1,4 +1,4 @@
-import type { NeutronMutationVerificationStatus } from "../../../../../protocol/src/neutron-mutation-verification.js";
+import type { NeutronMutationVerificationStatus } from "../../../../../protocol/src/neutron/mutation/verification/neutron-mutation-verification.js";
 import type { NeutronMutationTransactionRecord } from "../apply/neutron-mutation-apply-store.js";
 
 /**

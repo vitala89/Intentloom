@@ -4,14 +4,14 @@ import type {
   NeutronErrorCode,
   NeutronToolEnvelope,
   NeutronUsageBudget,
-} from "../../../../protocol/src/neutron-runtime.js";
+} from "../../../../protocol/src/neutron/runtime/neutron-runtime.js";
 import {
   NEUTRON_TURN_ACTIVITY_SUMMARY_MAX_CHARS,
   type NeutronToolActivityStatus,
   type NeutronTurnContextSourceRow,
   type NeutronTurnContextSummary,
   type NeutronTurnToolActivity,
-} from "../../../../protocol/src/neutron-session-activity.js";
+} from "../../../../protocol/src/neutron/session/neutron-session-activity.js";
 import type { AssembleNeutronContextResult } from "../context/neutron-context-assembly.js";
 import { resolveNeutronToolDefinition } from "../tools/neutron-tool-registry.js";
 

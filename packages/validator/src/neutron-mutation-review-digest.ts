@@ -1,6 +1,6 @@
 import { checksum } from "@intentloom/core";
-import type { NeutronMutationReviewFileBinding } from "../../protocol/src/neutron-mutation-review-artifact.js";
-import { NEUTRON_MUTATION_REVIEW_ARTIFACT_SCHEMA_URN } from "../../protocol/src/neutron-mutation-review-artifact.js";
+import type { NeutronMutationReviewFileBinding } from "../../protocol/src/neutron/mutation/review/neutron-mutation-review-artifact.js";
+import { NEUTRON_MUTATION_REVIEW_ARTIFACT_SCHEMA_URN } from "../../protocol/src/neutron/mutation/review/neutron-mutation-review-artifact.js";
 import {
   assertNeutronMutationDigest,
   canonicalNeutronMutationJson,

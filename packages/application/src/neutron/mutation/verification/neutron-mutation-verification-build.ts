@@ -1,4 +1,4 @@
-import type { NeutronMutationReviewFileBinding } from "../../../../../protocol/src/neutron-mutation-review-artifact.js";
+import type { NeutronMutationReviewFileBinding } from "../../../../../protocol/src/neutron/mutation/review/neutron-mutation-review-artifact.js";
 import {
   NEUTRON_MUTATION_VERIFICATION_EVIDENCE_SCHEMA_URN,
   type NeutronMutationByteCheck,
@@ -8,7 +8,7 @@ import {
   type NeutronMutationVerificationEvidence,
   type NeutronMutationVerificationStatus,
   type NeutronMutationWriteSetVerification,
-} from "../../../../../protocol/src/neutron-mutation-verification.js";
+} from "../../../../../protocol/src/neutron/mutation/verification/neutron-mutation-verification.js";
 import { digestNeutronMutationVerificationEvidence } from "../../../../../validator/src/neutron-mutation-verification-digest.js";
 import { validateNeutronMutationVerificationEvidence } from "../../../../../validator/src/neutron-mutation-verification.js";
 

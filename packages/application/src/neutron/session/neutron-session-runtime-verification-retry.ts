@@ -1,5 +1,5 @@
-import type { NeutronMutationVerificationRetryQuery } from "../../../../protocol/src/neutron-mutation-verification-retry-rpc.js";
-import type { NeutronMutationVerificationRetryResult } from "../../../../protocol/src/neutron-mutation-verification-retry-result.js";
+import type { NeutronMutationVerificationRetryQuery } from "../../../../protocol/src/neutron/mutation/verification/neutron-mutation-verification-retry-rpc.js";
+import type { NeutronMutationVerificationRetryResult } from "../../../../protocol/src/neutron/mutation/verification/neutron-mutation-verification-retry-result.js";
 import type { FileSystem } from "../../index.js";
 import { nodeFileSystem } from "../../index.js";
 import type { StoredNeutronSession } from "./neutron-session-turn.js";

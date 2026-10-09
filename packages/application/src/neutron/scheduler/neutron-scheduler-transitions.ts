@@ -1,4 +1,4 @@
-import { type NeutronTaskState } from "../../../../protocol/src/neutron-runtime.js";
+import { type NeutronTaskState } from "../../../../protocol/src/neutron/runtime/neutron-runtime.js";
 import { NeutronSchedulerError } from "./neutron-scheduler-errors.js";
 
 const TERMINAL_STATES = new Set<NeutronTaskState>([

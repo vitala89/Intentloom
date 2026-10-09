@@ -2,11 +2,11 @@ import type { ApprovedApplyPlan } from "@intentloom/protocol";
 import {
   NEUTRON_MUTATION_PROPOSAL_SCHEMA_URN,
   type NeutronMutationProposal,
-} from "../../protocol/src/neutron-mutation.js";
+} from "../../protocol/src/neutron/mutation/neutron-mutation.js";
 import {
   NEUTRON_MUTATION_APPROVAL_SCHEMA_URN,
   type NeutronMutationApproval,
-} from "../../protocol/src/neutron-mutation-approval.js";
+} from "../../protocol/src/neutron/mutation/approval/neutron-mutation-approval.js";
 import {
   canonicalNeutronMutationJson,
   canonicalizeNeutronMutationPaths,

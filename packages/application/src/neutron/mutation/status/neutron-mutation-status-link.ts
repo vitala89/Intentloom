@@ -1,4 +1,4 @@
-import type { NeutronRuntimeSession } from "../../../../../protocol/src/neutron-runtime.js";
+import type { NeutronRuntimeSession } from "../../../../../protocol/src/neutron/runtime/neutron-runtime.js";
 import type { ParsedNeutronMutationApplyRequest } from "../apply/neutron-mutation-apply-parse.js";
 import {
   NeutronMutationStatusIndexError,

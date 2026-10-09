@@ -1,6 +1,6 @@
-import type { NeutronMutationReviewFileBinding } from "../../../../../protocol/src/neutron-mutation-review-artifact.js";
-import type { NeutronMutationRollbackProjection } from "../../../../../protocol/src/neutron-mutation-verification.js";
-import type { NeutronMutationVerificationEvidence } from "../../../../../protocol/src/neutron-mutation-verification.js";
+import type { NeutronMutationReviewFileBinding } from "../../../../../protocol/src/neutron/mutation/review/neutron-mutation-review-artifact.js";
+import type { NeutronMutationRollbackProjection } from "../../../../../protocol/src/neutron/mutation/verification/neutron-mutation-verification.js";
+import type { NeutronMutationVerificationEvidence } from "../../../../../protocol/src/neutron/mutation/verification/neutron-mutation-verification.js";
 import { verifyNeutronMutationCommittedBytes } from "./neutron-mutation-verification-bytes.js";
 import { buildNeutronMutationVerificationEvidence } from "./neutron-mutation-verification-build.js";
 import { verifyNeutronMutationWriteSet } from "./neutron-mutation-verification-paths.js";

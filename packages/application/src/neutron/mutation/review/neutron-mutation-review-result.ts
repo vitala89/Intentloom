@@ -5,7 +5,7 @@ import {
   type NeutronMutationReviewGetResult,
   type NeutronMutationReviewListResult,
   type NeutronMutationReviewOutcome,
-} from "../../../../../protocol/src/neutron-mutation-review-view.js";
+} from "../../../../../protocol/src/neutron/mutation/review/neutron-mutation-review-view.js";
 
 export function emptyNeutronMutationReviewList(
   outcome: NeutronMutationReviewOutcome,

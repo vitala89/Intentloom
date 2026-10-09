@@ -1,6 +1,6 @@
 import { relative } from "node:path";
 import { normalizeStoredPath } from "@intentloom/core";
-import { NEUTRON_TURN_SECRET_PATH_LIMIT } from "../../../../protocol/src/neutron-session-activity.js";
+import { NEUTRON_TURN_SECRET_PATH_LIMIT } from "../../../../protocol/src/neutron/session/neutron-session-activity.js";
 import type { FileSystem } from "../../index.js";
 
 const SECRET_NAME_PATTERN =

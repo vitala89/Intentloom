@@ -1,7 +1,7 @@
 import {
   type NeutronTaskGraph,
   type NeutronTaskNode,
-} from "../../../../protocol/src/neutron-runtime.js";
+} from "../../../../protocol/src/neutron/runtime/neutron-runtime.js";
 import { validateNeutronTaskGraph } from "../../../../validator/src/neutron-runtime.js";
 import { NeutronSchedulerError } from "./neutron-scheduler-errors.js";
 import {

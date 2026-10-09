@@ -4,7 +4,7 @@ import {
   NEUTRON_MUTATION_APPROVAL_INTENT_FIELDS,
   NEUTRON_MUTATION_APPROVAL_INTENT_SCHEMA_URN,
   type NeutronMutationApprovalIntent,
-} from "../../protocol/src/neutron-mutation-approval-intent.js";
+} from "../../protocol/src/neutron/mutation/approval/neutron-mutation-approval-intent.js";
 import { isObject, nonEmpty, oneOf } from "./neutron-runtime-helpers.js";
 
 const ALLOWED_FIELDS = new Set<string>(NEUTRON_MUTATION_APPROVAL_INTENT_FIELDS);

@@ -1,7 +1,7 @@
 import {
   NEUTRON_MUTATION_PROPOSAL_CAPABILITY,
   NEUTRON_MUTATION_PROPOSAL_ROLE,
-} from "../../../../../protocol/src/neutron-mutation-proposal-candidate.js";
+} from "../../../../../protocol/src/neutron/mutation/proposal/neutron-mutation-proposal-candidate.js";
 
 export { NEUTRON_MUTATION_PROPOSAL_CAPABILITY, NEUTRON_MUTATION_PROPOSAL_ROLE };
 

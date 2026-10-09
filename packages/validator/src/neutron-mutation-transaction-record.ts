@@ -2,11 +2,11 @@ import {
   NEUTRON_MUTATION_TRANSACTION_RECORD_SCHEMA_URN,
   NEUTRON_MUTATION_TRANSACTION_STATES,
   type NeutronMutationDurableTransactionRecord,
-} from "../../protocol/src/neutron-mutation-apply.js";
+} from "../../protocol/src/neutron/mutation/apply/neutron-mutation-apply.js";
 import {
   NEUTRON_MUTATION_UNDO_RESTORATION_SCHEMA_URN,
   type NeutronMutationUndoRestorationClaim,
-} from "../../protocol/src/neutron-mutation-undo-snapshot.js";
+} from "../../protocol/src/neutron/mutation/undo/neutron-mutation-undo-snapshot.js";
 import { checksum } from "@intentloom/core";
 import {
   assertNeutronMutationDigest,

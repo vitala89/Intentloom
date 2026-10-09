@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   NEUTRON_MUTATION_PROPOSAL_CANDIDATE_SCHEMA_URN,
   NEUTRON_MUTATION_REVIEW_MAX_FILES,
-} from "../packages/protocol/src/neutron-mutation.js";
+} from "../packages/protocol/src/neutron/mutation/neutron-mutation.js";
 import {
   parseNeutronMutationProposalCandidate,
   parseNeutronMutationProposalCandidateOutput,

@@ -1,14 +1,14 @@
-import { NEUTRON_MUTATION_CLASS } from "../../../../../protocol/src/neutron-mutation.js";
-import type { NeutronMutationApproval } from "../../../../../protocol/src/neutron-mutation.js";
+import { NEUTRON_MUTATION_CLASS } from "../../../../../protocol/src/neutron/mutation/neutron-mutation.js";
+import type { NeutronMutationApproval } from "../../../../../protocol/src/neutron/mutation/neutron-mutation.js";
 import { PROTOCOL_VERSION } from "../../../../../protocol/src/jsonrpc.js";
 import {
   NEUTRON_MUTATION_APPROVE_AND_APPLY_SCHEMA_URN,
   type NeutronMutationApproveAndApplyApprovalOutcome,
-} from "../../../../../protocol/src/neutron-mutation-approve-apply-rpc.js";
+} from "../../../../../protocol/src/neutron/mutation/approval/neutron-mutation-approve-apply-rpc.js";
 import {
   validateNeutronMutationApproveAndApplyResult,
   type NeutronMutationApproveAndApplyResult,
-} from "../../../../../protocol/src/neutron-mutation-approve-apply-result.js";
+} from "../../../../../protocol/src/neutron/mutation/approval/neutron-mutation-approve-apply-result.js";
 import { redactApprovalToken } from "../apply/neutron-mutation-apply-result.js";
 import type { ApplyApprovedNeutronGraphMutationResult } from "../apply/neutron-graph-mutation-apply.js";
 

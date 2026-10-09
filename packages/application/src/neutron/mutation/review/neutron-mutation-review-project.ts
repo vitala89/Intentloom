@@ -1,15 +1,15 @@
 import { PROTOCOL_VERSION } from "../../../../../protocol/src/jsonrpc.js";
-import { NEUTRON_MUTATION_REVIEW_VIEW_SCHEMA_URN } from "../../../../../protocol/src/neutron-mutation-review-view.js";
+import { NEUTRON_MUTATION_REVIEW_VIEW_SCHEMA_URN } from "../../../../../protocol/src/neutron/mutation/review/neutron-mutation-review-view.js";
 import type {
   NeutronMutationReviewGetResult,
   NeutronMutationReviewListResult,
   NeutronMutationReviewSummary,
   NeutronMutationReviewView,
-} from "../../../../../protocol/src/neutron-mutation-review-view.js";
-import { NEUTRON_MUTATION_REVIEW_GET_SCHEMA_URN } from "../../../../../protocol/src/neutron-mutation-review-view.js";
-import { NEUTRON_MUTATION_REVIEW_LIST_SCHEMA_URN } from "../../../../../protocol/src/neutron-mutation-review-view.js";
-import type { NeutronRuntimeSession } from "../../../../../protocol/src/neutron-runtime.js";
-import type { NeutronMutationProposal } from "../../../../../protocol/src/neutron-mutation.js";
+} from "../../../../../protocol/src/neutron/mutation/review/neutron-mutation-review-view.js";
+import { NEUTRON_MUTATION_REVIEW_GET_SCHEMA_URN } from "../../../../../protocol/src/neutron/mutation/review/neutron-mutation-review-view.js";
+import { NEUTRON_MUTATION_REVIEW_LIST_SCHEMA_URN } from "../../../../../protocol/src/neutron/mutation/review/neutron-mutation-review-view.js";
+import type { NeutronRuntimeSession } from "../../../../../protocol/src/neutron/runtime/neutron-runtime.js";
+import type { NeutronMutationProposal } from "../../../../../protocol/src/neutron/mutation/neutron-mutation.js";
 import {
   validateNeutronMutationReviewGetResult,
   validateNeutronMutationReviewListResult,

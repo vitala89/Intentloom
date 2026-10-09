@@ -2,7 +2,7 @@ import type { AgentRoleCapabilities } from "../../../../protocol/src/index.js";
 import {
   NEUTRON_TASK_GRAPH_SCHEMA_URN,
   type NeutronTaskNode,
-} from "../../../../protocol/src/neutron-runtime.js";
+} from "../../../../protocol/src/neutron/runtime/neutron-runtime.js";
 import { ProtocolValidationError } from "../../../../protocol/src/protocol-validation-error.js";
 import type { FileSystem } from "../../index.js";
 import { inspectProject } from "../../index.js";

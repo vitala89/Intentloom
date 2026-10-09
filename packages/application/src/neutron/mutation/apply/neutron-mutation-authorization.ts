@@ -3,7 +3,7 @@ import {
   NEUTRON_MUTATION_CLASS,
   type NeutronMutationClass,
   type NeutronMutationPreflightRejectionReason,
-} from "../../../../../protocol/src/neutron-mutation.js";
+} from "../../../../../protocol/src/neutron/mutation/neutron-mutation.js";
 
 export type NeutronMutationAuthorizationInput =
   | {

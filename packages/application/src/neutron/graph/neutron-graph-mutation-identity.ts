@@ -1,5 +1,5 @@
 import { checksum, type GeneratedFile } from "@intentloom/core";
-import type { NeutronMutationProposalCandidateFile } from "../../../../protocol/src/neutron-mutation-proposal-candidate.js";
+import type { NeutronMutationProposalCandidateFile } from "../../../../protocol/src/neutron/mutation/proposal/neutron-mutation-proposal-candidate.js";
 import {
   canonicalNeutronMutationJson,
   neutronMutationContentDigest,

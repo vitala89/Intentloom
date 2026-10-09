@@ -2,7 +2,7 @@ import {
   NEUTRON_READ_ONLY_TOOLS,
   type NeutronReadOnlyTool,
   type NeutronToolInvocation,
-} from "../../../../protocol/src/neutron-runtime.js";
+} from "../../../../protocol/src/neutron/runtime/neutron-runtime.js";
 import { NeutronToolRouterError, auditFields } from "./neutron-tool-errors.js";
 import { GOVERNANCE_TOOL_DEFINITIONS } from "./neutron-tool-definitions-governance.js";
 import { PROJECT_TOOL_DEFINITIONS } from "./neutron-tool-definitions-project.js";

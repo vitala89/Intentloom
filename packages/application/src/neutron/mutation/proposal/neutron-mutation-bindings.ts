@@ -4,9 +4,9 @@ import type {
   NeutronMutationPreflightRejectionReason,
   NeutronMutationPreflightRequest,
   NeutronMutationProposal,
-} from "../../../../../protocol/src/neutron-mutation.js";
-import type { NeutronRuntimeSession } from "../../../../../protocol/src/neutron-runtime.js";
-import { NEUTRON_SESSION_STATES } from "../../../../../protocol/src/neutron-runtime.js";
+} from "../../../../../protocol/src/neutron/mutation/neutron-mutation.js";
+import type { NeutronRuntimeSession } from "../../../../../protocol/src/neutron/runtime/neutron-runtime.js";
+import { NEUTRON_SESSION_STATES } from "../../../../../protocol/src/neutron/runtime/neutron-runtime.js";
 import {
   digestNeutronMutationProposal,
   expectedNeutronMutationApprovalToken,

@@ -16,7 +16,7 @@ import {
   profileNotFoundError,
   roleNotAllowedError,
 } from "../packages/application/src/neutron/context/neutron-context-assembly.js";
-import { NEUTRON_CONTEXT_ASSEMBLY_REQUEST_SCHEMA_URN } from "../packages/protocol/src/neutron-runtime.js";
+import { NEUTRON_CONTEXT_ASSEMBLY_REQUEST_SCHEMA_URN } from "../packages/protocol/src/neutron/runtime/neutron-runtime.js";
 import {
   validateNeutronContextBundle,
   validateNeutronUsageBudget,

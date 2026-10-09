@@ -3,7 +3,7 @@ import {
   type NeutronRuntimeSession,
   type NeutronToolEnvelope,
   type NeutronToolInvocation,
-} from "../../../../protocol/src/neutron-runtime.js";
+} from "../../../../protocol/src/neutron/runtime/neutron-runtime.js";
 import type { AgentRoleCapabilities } from "../../../../protocol/src/index.js";
 import { validateNeutronToolEnvelope } from "../../../../validator/src/neutron-runtime.js";
 import {

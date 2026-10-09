@@ -1,4 +1,4 @@
-import type { NeutronUsageBudget } from "../../../../protocol/src/neutron-runtime.js";
+import type { NeutronUsageBudget } from "../../../../protocol/src/neutron/runtime/neutron-runtime.js";
 import type { NeutronNodeExecutionFailure } from "./node/neutron-node-errors.js";
 import type { ExecuteNeutronTaskNodeResult } from "./node/neutron-node-execution.js";
 import type { NeutronTaskLease } from "./neutron-scheduler-lease.js";

@@ -1,4 +1,4 @@
-import type { NeutronTaskGraph } from "../../../../protocol/src/neutron-runtime.js";
+import type { NeutronTaskGraph } from "../../../../protocol/src/neutron/runtime/neutron-runtime.js";
 import { systemNeutronSchedulerClock } from "./neutron-scheduler-clock.js";
 import { isNeutronSessionCancelled } from "./neutron-scheduler-cancellation.js";
 import { NeutronSchedulerError } from "./neutron-scheduler-errors.js";

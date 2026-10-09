@@ -15,7 +15,7 @@ import {
   type NeutronMutationApproveAndApplyResult,
   type NeutronMutationStatusResult,
 } from "@intentloom/protocol";
-import { NEUTRON_READ_ONLY_TOOLS } from "../packages/protocol/src/neutron-runtime.js";
+import { NEUTRON_READ_ONLY_TOOLS } from "../packages/protocol/src/neutron/runtime/neutron-runtime.js";
 import { nodeFileSystem } from "../packages/application/src/index.js";
 import { createNeutronSessionRuntime } from "../packages/application/src/neutron/session/neutron-session-runtime.js";
 import { fingerprintNeutronProjectRoot } from "../packages/application/src/neutron/neutron-session-fingerprint.js";
@@ -23,7 +23,7 @@ import { approveAndApplyNeutronGraphMutation } from "../packages/application/src
 import {
   NEUTRON_MUTATION_APPROVAL_INTENT_ACTION,
   NEUTRON_MUTATION_APPROVAL_INTENT_SCHEMA_URN,
-} from "../packages/protocol/src/neutron-mutation-approval-intent.js";
+} from "../packages/protocol/src/neutron/mutation/approval/neutron-mutation-approval-intent.js";
 import { desktopDaemonAuthenticated } from "../apps/desktop/src/desktop-daemon-ready.js";
 import { NeutronApproveApplyControl } from "../apps/desktop/src/neutron/mutation/recovery/NeutronApproveApplyControl.js";
 import { createNeutronMutationRecovery } from "../apps/desktop/src/neutron/mutation/recovery/neutron-mutation-recovery-controller.js";

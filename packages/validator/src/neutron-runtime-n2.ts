@@ -2,7 +2,7 @@ import {
   NEUTRON_ADAPTER_CAPABILITY_SCHEMA_URN,
   type NeutronAdapterCapability,
   type NeutronErrorCode,
-} from "../../protocol/src/neutron-runtime.js";
+} from "../../protocol/src/neutron/runtime/neutron-runtime.js";
 import { isObject, nonEmpty } from "./neutron-runtime-helpers.js";
 
 export const NEUTRON_N2_LOOPBACK_HOSTS = [

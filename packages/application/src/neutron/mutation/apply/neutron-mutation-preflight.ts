@@ -2,8 +2,8 @@ import type { AgentRoleCapabilities } from "../../../../../protocol/src/index.js
 import type {
   NeutronMutationPreflightRejectionReason,
   NeutronMutationPreflightRequest,
-} from "../../../../../protocol/src/neutron-mutation.js";
-import type { NeutronRuntimeSession } from "../../../../../protocol/src/neutron-runtime.js";
+} from "../../../../../protocol/src/neutron/mutation/neutron-mutation.js";
+import type { NeutronRuntimeSession } from "../../../../../protocol/src/neutron/runtime/neutron-runtime.js";
 import {
   resolveNeutronMutationAuthorization,
   type NeutronMutationAuthorizationInput,

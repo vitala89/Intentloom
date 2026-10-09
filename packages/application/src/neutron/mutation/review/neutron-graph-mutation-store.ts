@@ -1,7 +1,7 @@
 import type { GeneratedFile } from "@intentloom/core";
-import type { NeutronMutationProposal } from "../../../../../protocol/src/neutron-mutation.js";
-import type { NeutronMutationReviewArtifact } from "../../../../../protocol/src/neutron-mutation-review-artifact.js";
-import type { NeutronGraphMutationProposalEvidence } from "../../../../../protocol/src/neutron-graph-mutation.js";
+import type { NeutronMutationProposal } from "../../../../../protocol/src/neutron/mutation/neutron-mutation.js";
+import type { NeutronMutationReviewArtifact } from "../../../../../protocol/src/neutron/mutation/review/neutron-mutation-review-artifact.js";
+import type { NeutronGraphMutationProposalEvidence } from "../../../../../protocol/src/neutron/mutation/neutron-graph-mutation.js";
 import { compareNeutronTaskIds } from "../../scheduler/neutron-scheduler-sort.js";
 
 export interface NeutronGraphMutationReviewBundle {

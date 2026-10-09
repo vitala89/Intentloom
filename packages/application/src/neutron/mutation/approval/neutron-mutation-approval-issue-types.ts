@@ -1,8 +1,8 @@
-import type { NeutronMutationApproval } from "../../../../../protocol/src/neutron-mutation-approval.js";
-import { NEUTRON_MUTATION_APPROVAL_SOURCE } from "../../../../../protocol/src/neutron-mutation-approval.js";
-import type { NeutronMutationProposal } from "../../../../../protocol/src/neutron-mutation.js";
-import type { NeutronMutationProposalSource } from "../../../../../protocol/src/neutron-graph-mutation.js";
-import type { NeutronRuntimeSession } from "../../../../../protocol/src/neutron-runtime.js";
+import type { NeutronMutationApproval } from "../../../../../protocol/src/neutron/mutation/approval/neutron-mutation-approval.js";
+import { NEUTRON_MUTATION_APPROVAL_SOURCE } from "../../../../../protocol/src/neutron/mutation/approval/neutron-mutation-approval.js";
+import type { NeutronMutationProposal } from "../../../../../protocol/src/neutron/mutation/neutron-mutation.js";
+import type { NeutronMutationProposalSource } from "../../../../../protocol/src/neutron/mutation/neutron-graph-mutation.js";
+import type { NeutronRuntimeSession } from "../../../../../protocol/src/neutron/runtime/neutron-runtime.js";
 import type { NeutronGraphMutationReviewBundle } from "../review/neutron-graph-mutation-store.js";
 import type { NeutronGraphMutationPayloadStore } from "../review/neutron-graph-mutation-store.js";
 import type {

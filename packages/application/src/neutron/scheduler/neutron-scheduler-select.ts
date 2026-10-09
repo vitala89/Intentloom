@@ -2,7 +2,7 @@ import {
   type NeutronTaskGraph,
   type NeutronTaskNode,
   type NeutronTaskState,
-} from "../../../../protocol/src/neutron-runtime.js";
+} from "../../../../protocol/src/neutron/runtime/neutron-runtime.js";
 import { NeutronSchedulerError } from "./neutron-scheduler-errors.js";
 import { sortNeutronTaskIds } from "./neutron-scheduler-sort.js";
 import { isNeutronTaskTerminalState } from "./neutron-scheduler-transitions.js";

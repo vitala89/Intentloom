@@ -13,7 +13,7 @@ import type {
   EngineeringWorkflowPolicy,
   GenericTimeline,
 } from "../../../../protocol/src/index.js";
-import type { NeutronReadOnlyTool } from "../../../../protocol/src/neutron-runtime.js";
+import type { NeutronReadOnlyTool } from "../../../../protocol/src/neutron/runtime/neutron-runtime.js";
 import {
   NEUTRON_TOOL_MAX_DIFF_CHANGES,
   NEUTRON_TOOL_MAX_FINDINGS,

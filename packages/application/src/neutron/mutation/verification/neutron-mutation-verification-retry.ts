@@ -1,4 +1,4 @@
-import type { NeutronMutationApplyResult } from "../../../../../protocol/src/neutron-mutation-apply.js";
+import type { NeutronMutationApplyResult } from "../../../../../protocol/src/neutron/mutation/apply/neutron-mutation-apply.js";
 import { parseNeutronMutationApplyEnvelope } from "../apply/neutron-mutation-apply-parse.js";
 import { rejectBeforeClaim } from "../apply/neutron-mutation-apply-persist.js";
 import { createPersistentNeutronMutationApprovalStore } from "../apply/neutron-mutation-apply-durable-store.js";

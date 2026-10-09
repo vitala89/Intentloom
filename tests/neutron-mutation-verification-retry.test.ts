@@ -33,7 +33,7 @@ import { projectMutationRecoveryView } from "../apps/desktop/src/neutron/mutatio
 import {
   NEUTRON_MUTATION_APPROVAL_INTENT_ACTION,
   NEUTRON_MUTATION_APPROVAL_INTENT_SCHEMA_URN,
-} from "../packages/protocol/src/neutron-mutation-approval-intent.js";
+} from "../packages/protocol/src/neutron/mutation/approval/neutron-mutation-approval-intent.js";
 import {
   REVIEW_GRAPH_ID,
   SLICE5_CONTENT_A,

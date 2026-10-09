@@ -1,4 +1,4 @@
-import type { NeutronRuntimeSession } from "../../../../protocol/src/neutron-runtime.js";
+import type { NeutronRuntimeSession } from "../../../../protocol/src/neutron/runtime/neutron-runtime.js";
 
 export type NeutronAbortKind = "cancelled" | "timeout" | "lease-lost";
 

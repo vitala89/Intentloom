@@ -22,12 +22,12 @@ import {
   NEUTRON_MUTATION_APPROVAL_SCHEMA_URN,
   NEUTRON_MUTATION_APPROVAL_SOURCE,
   NEUTRON_MUTATION_CLASS,
-} from "../packages/protocol/src/neutron-mutation.js";
+} from "../packages/protocol/src/neutron/mutation/neutron-mutation.js";
 import type {
   NeutronMutationApproval,
   NeutronMutationProposal,
-} from "../packages/protocol/src/neutron-mutation.js";
-import { NEUTRON_READ_ONLY_TOOLS } from "../packages/protocol/src/neutron-runtime.js";
+} from "../packages/protocol/src/neutron/mutation/neutron-mutation.js";
+import { NEUTRON_READ_ONLY_TOOLS } from "../packages/protocol/src/neutron/runtime/neutron-runtime.js";
 import {
   digestNeutronMutationApproval,
   expectedNeutronMutationApprovalToken,

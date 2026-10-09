@@ -5,7 +5,7 @@ import {
   type NeutronAdapterCapability,
   type NeutronRuntimeContractSnapshot,
   type NeutronRuntimeSession,
-} from "../../protocol/src/neutron-runtime.js";
+} from "../../protocol/src/neutron/runtime/neutron-runtime.js";
 import { isObject, nonEmpty, oneOf } from "./neutron-runtime-helpers.js";
 import {
   validateNeutronContextBundle,

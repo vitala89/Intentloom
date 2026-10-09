@@ -25,18 +25,18 @@ import { parseBoundedExecutionDaemonRequest } from "./bounded-execution-daemon-r
 import type { BoundedExecutionDaemonRequest } from "./bounded-execution-daemon-rpc.js";
 import { parseContinuousLoopDaemonRequest } from "./continuous-loop-daemon-rpc.js";
 import type { ContinuousLoopDaemonRequest } from "./continuous-loop-daemon-rpc.js";
-import { parseNeutronSessionDaemonRequest } from "./neutron-session-rpc.js";
-import type { NeutronDaemonRequest } from "./neutron-session-rpc.js";
-import { parseNeutronGraphDaemonRequest } from "./neutron-graph-rpc.js";
-import type { NeutronGraphDaemonRequest } from "./neutron-graph-rpc.js";
-import { parseNeutronMutationReviewDaemonRequest } from "./neutron-mutation-review-rpc.js";
-import type { NeutronMutationReviewDaemonRequest } from "./neutron-mutation-review-rpc.js";
-import { parseNeutronMutationApproveAndApplyDaemonRequest } from "./neutron-mutation-approve-apply-rpc.js";
-import type { NeutronMutationApproveAndApplyRequest } from "./neutron-mutation-approve-apply-rpc.js";
-import { parseNeutronMutationStatusGetDaemonRequest } from "./neutron-mutation-status-rpc.js";
-import type { NeutronMutationStatusGetRequest } from "./neutron-mutation-status-rpc.js";
-import { parseNeutronMutationVerificationRetryDaemonRequest } from "./neutron-mutation-verification-retry-rpc.js";
-import type { NeutronMutationVerificationRetryRequest } from "./neutron-mutation-verification-retry-rpc.js";
+import { parseNeutronSessionDaemonRequest } from "./neutron/session/neutron-session-rpc.js";
+import type { NeutronDaemonRequest } from "./neutron/session/neutron-session-rpc.js";
+import { parseNeutronGraphDaemonRequest } from "./neutron/graph/neutron-graph-rpc.js";
+import type { NeutronGraphDaemonRequest } from "./neutron/graph/neutron-graph-rpc.js";
+import { parseNeutronMutationReviewDaemonRequest } from "./neutron/mutation/review/neutron-mutation-review-rpc.js";
+import type { NeutronMutationReviewDaemonRequest } from "./neutron/mutation/review/neutron-mutation-review-rpc.js";
+import { parseNeutronMutationApproveAndApplyDaemonRequest } from "./neutron/mutation/approval/neutron-mutation-approve-apply-rpc.js";
+import type { NeutronMutationApproveAndApplyRequest } from "./neutron/mutation/approval/neutron-mutation-approve-apply-rpc.js";
+import { parseNeutronMutationStatusGetDaemonRequest } from "./neutron/mutation/status/neutron-mutation-status-rpc.js";
+import type { NeutronMutationStatusGetRequest } from "./neutron/mutation/status/neutron-mutation-status-rpc.js";
+import { parseNeutronMutationVerificationRetryDaemonRequest } from "./neutron/mutation/verification/neutron-mutation-verification-retry-rpc.js";
+import type { NeutronMutationVerificationRetryRequest } from "./neutron/mutation/verification/neutron-mutation-verification-retry-rpc.js";
 
 export type WorkspaceSliceDaemonRequest =
   | ExistingProjectWorkspacePrepareRequest

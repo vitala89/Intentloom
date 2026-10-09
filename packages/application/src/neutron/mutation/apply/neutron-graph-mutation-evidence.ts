@@ -1,14 +1,14 @@
 import type {
   NeutronGraphMutationApplyEvidence,
   NeutronGraphMutationProposalEvidence,
-} from "../../../../../protocol/src/neutron-graph-mutation.js";
+} from "../../../../../protocol/src/neutron/mutation/neutron-graph-mutation.js";
 import {
   NEUTRON_GRAPH_MUTATION_APPLY_EVIDENCE_SCHEMA_URN,
   NEUTRON_GRAPH_MUTATION_PROPOSAL_EVIDENCE_SCHEMA_URN,
-} from "../../../../../protocol/src/neutron-graph-mutation.js";
-import type { NeutronMutationProposal } from "../../../../../protocol/src/neutron-mutation.js";
-import type { NeutronMutationReviewArtifact } from "../../../../../protocol/src/neutron-mutation-review-artifact.js";
-import type { NeutronMutationApplyResult } from "../../../../../protocol/src/neutron-mutation-apply.js";
+} from "../../../../../protocol/src/neutron/mutation/neutron-graph-mutation.js";
+import type { NeutronMutationProposal } from "../../../../../protocol/src/neutron/mutation/neutron-mutation.js";
+import type { NeutronMutationReviewArtifact } from "../../../../../protocol/src/neutron/mutation/review/neutron-mutation-review-artifact.js";
+import type { NeutronMutationApplyResult } from "../../../../../protocol/src/neutron/mutation/apply/neutron-mutation-apply.js";
 import { canonicalNeutronMutationJson } from "../../../../../validator/src/neutron-mutation-canonical.js";
 import { neutronMutationContentDigest } from "../../../../../validator/src/neutron-mutation-canonical.js";
 

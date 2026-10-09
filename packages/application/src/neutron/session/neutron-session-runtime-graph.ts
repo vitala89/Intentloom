@@ -1,6 +1,6 @@
 import type { AgentRoleCapabilities } from "../../../../protocol/src/index.js";
-import type { NeutronTaskNode } from "../../../../protocol/src/neutron-runtime.js";
-import type { NeutronSessionViewmodel } from "../../../../protocol/src/neutron-session-rpc.js";
+import type { NeutronTaskNode } from "../../../../protocol/src/neutron/runtime/neutron-runtime.js";
+import type { NeutronSessionViewmodel } from "../../../../protocol/src/neutron/session/neutron-session-rpc.js";
 import type { FileSystem } from "../../index.js";
 import type { ModelAdapter } from "../../model-adapter.js";
 import {

@@ -1,5 +1,5 @@
-import type { NeutronMutationApplyResult } from "../../../../../protocol/src/neutron-mutation-apply.js";
-import type { NeutronMutationUndoRestorationClaim } from "../../../../../protocol/src/neutron-mutation-undo-snapshot.js";
+import type { NeutronMutationApplyResult } from "../../../../../protocol/src/neutron/mutation/apply/neutron-mutation-apply.js";
+import type { NeutronMutationUndoRestorationClaim } from "../../../../../protocol/src/neutron/mutation/undo/neutron-mutation-undo-snapshot.js";
 import { buildNeutronMutationApplyResult } from "./neutron-mutation-apply-result.js";
 import type { ParsedNeutronMutationApplyRequest } from "./neutron-mutation-apply-parse.js";
 import type {

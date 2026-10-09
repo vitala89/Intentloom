@@ -3,9 +3,9 @@ import {
   NEUTRON_MUTATION_REVIEW_VIEW_SCHEMA_URN,
   type NeutronMutationReviewSummary,
   type NeutronMutationReviewView,
-} from "../../protocol/src/neutron-mutation-review-view.js";
-import { NEUTRON_MUTATION_CLASS } from "../../protocol/src/neutron-mutation.js";
-import { NEUTRON_MUTATION_REVIEW_MAX_FILES } from "../../protocol/src/neutron-mutation-review-artifact.js";
+} from "../../protocol/src/neutron/mutation/review/neutron-mutation-review-view.js";
+import { NEUTRON_MUTATION_CLASS } from "../../protocol/src/neutron/mutation/neutron-mutation.js";
+import { NEUTRON_MUTATION_REVIEW_MAX_FILES } from "../../protocol/src/neutron/mutation/review/neutron-mutation-review-artifact.js";
 import {
   contentDigest,
   finiteInt,

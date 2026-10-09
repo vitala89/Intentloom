@@ -3,7 +3,7 @@ import {
   type NeutronRuntimeSession,
   type NeutronTaskGraph,
   type NeutronUsageBudget,
-} from "../../../../protocol/src/neutron-runtime.js";
+} from "../../../../protocol/src/neutron/runtime/neutron-runtime.js";
 import {
   classifyNeutronGraphStatus,
   digestNeutronGraphExecution,

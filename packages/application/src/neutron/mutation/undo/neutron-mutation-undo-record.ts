@@ -1,7 +1,7 @@
 import { createHash } from "node:crypto";
 import { join } from "node:path";
-import type { NeutronMutationUndoExecutionResult } from "../../../../../protocol/src/neutron-mutation-undo-execution.js";
-import { validateNeutronMutationUndoExecutionResult } from "../../../../../protocol/src/neutron-mutation-undo-execution.js";
+import type { NeutronMutationUndoExecutionResult } from "../../../../../protocol/src/neutron/mutation/undo/neutron-mutation-undo-execution.js";
+import { validateNeutronMutationUndoExecutionResult } from "../../../../../protocol/src/neutron/mutation/undo/neutron-mutation-undo-execution.js";
 
 export const NEUTRON_MUTATION_UNDO_TRANSACTION_SCHEMA_URN =
   "urn:intentloom:schema:neutron-mutation-undo-transaction:1" as const;

@@ -29,7 +29,7 @@ import {
   SLICE5_CONTENT_A,
 } from "./neutron-mutation-review-support.js";
 import { neutronMutationReviewLeakKeys } from "../packages/application/src/neutron/mutation/review/neutron-mutation-review-leak.js";
-import { NEUTRON_READ_ONLY_TOOLS } from "../packages/protocol/src/neutron-runtime.js";
+import { NEUTRON_READ_ONLY_TOOLS } from "../packages/protocol/src/neutron/runtime/neutron-runtime.js";
 
 const daemons: { close(): Promise<void> }[] = [];
 

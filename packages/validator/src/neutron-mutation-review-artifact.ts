@@ -1,7 +1,7 @@
 import { checksum } from "@intentloom/core";
 import type { GeneratedFile } from "@intentloom/core";
-import { NEUTRON_MUTATION_CLASS } from "../../protocol/src/neutron-mutation.js";
-import type { NeutronMutationProposal } from "../../protocol/src/neutron-mutation.js";
+import { NEUTRON_MUTATION_CLASS } from "../../protocol/src/neutron/mutation/neutron-mutation.js";
+import type { NeutronMutationProposal } from "../../protocol/src/neutron/mutation/neutron-mutation.js";
 import {
   NEUTRON_MUTATION_REVIEW_ARTIFACT_SCHEMA_URN,
   NEUTRON_MUTATION_REVIEW_MAX_AGGREGATE_CONTENT_BYTES,
@@ -10,7 +10,7 @@ import {
   NEUTRON_MUTATION_REVIEW_MAX_PATH_LENGTH,
   type NeutronMutationReviewArtifact,
   type NeutronMutationReviewFileBinding,
-} from "../../protocol/src/neutron-mutation-review-artifact.js";
+} from "../../protocol/src/neutron/mutation/review/neutron-mutation-review-artifact.js";
 import {
   assertNeutronMutationDigest,
   canonicalizeNeutronMutationPaths,

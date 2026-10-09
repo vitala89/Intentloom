@@ -1,6 +1,6 @@
-import type { NeutronMutationApplyResult } from "../../../../../protocol/src/neutron-mutation-apply.js";
-import type { NeutronMutationUndoRestorationClaim } from "../../../../../protocol/src/neutron-mutation-undo-snapshot.js";
-import type { NeutronMutationRollbackProjection } from "../../../../../protocol/src/neutron-mutation-verification.js";
+import type { NeutronMutationApplyResult } from "../../../../../protocol/src/neutron/mutation/apply/neutron-mutation-apply.js";
+import type { NeutronMutationUndoRestorationClaim } from "../../../../../protocol/src/neutron/mutation/undo/neutron-mutation-undo-snapshot.js";
+import type { NeutronMutationRollbackProjection } from "../../../../../protocol/src/neutron/mutation/verification/neutron-mutation-verification.js";
 import type { NeutronTrustedApplyExecution } from "./neutron-mutation-apply-execute.js";
 import type { ParsedNeutronMutationApplyRequest } from "./neutron-mutation-apply-parse.js";
 import {

@@ -1,5 +1,5 @@
-import type { NeutronMutationApprovalIntent } from "../../../../../protocol/src/neutron-mutation-approval-intent.js";
-import type { NeutronMutationApproveAndApplyResult } from "../../../../../protocol/src/neutron-mutation-approve-apply-result.js";
+import type { NeutronMutationApprovalIntent } from "../../../../../protocol/src/neutron/mutation/approval/neutron-mutation-approval-intent.js";
+import type { NeutronMutationApproveAndApplyResult } from "../../../../../protocol/src/neutron/mutation/approval/neutron-mutation-approve-apply-result.js";
 import type { FileSystem, TransactionStage } from "../../../index.js";
 import { applyApprovedNeutronGraphMutation } from "../apply/neutron-graph-mutation-apply.js";
 import { issueNeutronMutationApprovalFromIntent } from "./neutron-mutation-approval-issue.js";

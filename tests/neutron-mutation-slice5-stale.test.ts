@@ -20,7 +20,7 @@ import { fingerprintNeutronProjectRoot } from "../packages/application/src/neutr
 import { neutronAdapterCapability } from "../packages/application/src/neutron/session/neutron-session-runtime-helpers.js";
 import type { StoredNeutronSession } from "../packages/application/src/neutron/session/neutron-session-turn.js";
 import type { ModelAdapter } from "../packages/application/src/model-adapter.js";
-import { NEUTRON_MUTATION_CLASS } from "../packages/protocol/src/neutron-mutation.js";
+import { NEUTRON_MUTATION_CLASS } from "../packages/protocol/src/neutron/mutation/neutron-mutation.js";
 import type {
   ModelTurnRequest,
   ModelTurnResult,

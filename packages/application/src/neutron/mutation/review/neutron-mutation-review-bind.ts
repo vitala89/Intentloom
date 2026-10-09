@@ -1,5 +1,5 @@
-import type { NeutronRuntimeSession } from "../../../../../protocol/src/neutron-runtime.js";
-import type { NeutronMutationReviewOutcome } from "../../../../../protocol/src/neutron-mutation-review-view.js";
+import type { NeutronRuntimeSession } from "../../../../../protocol/src/neutron/runtime/neutron-runtime.js";
+import type { NeutronMutationReviewOutcome } from "../../../../../protocol/src/neutron/mutation/review/neutron-mutation-review-view.js";
 import type { NeutronGraphMutationReviewBundle } from "./neutron-graph-mutation-store.js";
 
 export interface NeutronMutationReviewBinding {

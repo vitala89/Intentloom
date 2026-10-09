@@ -1,6 +1,6 @@
 import type { GeneratedFile } from "@intentloom/core";
 import type { AgentRoleCapabilities } from "../../../../../protocol/src/index.js";
-import type { NeutronRuntimeSession } from "../../../../../protocol/src/neutron-runtime.js";
+import type { NeutronRuntimeSession } from "../../../../../protocol/src/neutron/runtime/neutron-runtime.js";
 import type { NeutronMutationAuthorizationInput } from "./neutron-mutation-authorization.js";
 import type { NeutronMutationApprovalStore } from "./neutron-mutation-apply-store.js";
 import type { FileSystem, TransactionStage } from "../../../index.js";

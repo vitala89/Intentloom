@@ -2,7 +2,7 @@ import type { AgentRoleCapabilities } from "../../../../protocol/src/index.js";
 import type {
   NeutronRuntimeSession,
   NeutronTaskGraph,
-} from "../../../../protocol/src/neutron-runtime.js";
+} from "../../../../protocol/src/neutron/runtime/neutron-runtime.js";
 import type { FileSystem } from "../../index.js";
 import type { ModelAdapter } from "../../model-adapter.js";
 import type {

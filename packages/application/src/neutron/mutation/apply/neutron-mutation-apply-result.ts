@@ -3,8 +3,8 @@ import {
   type NeutronMutationApplyFailureCode,
   type NeutronMutationApplyResult,
   type NeutronMutationApplyStatus,
-} from "../../../../../protocol/src/neutron-mutation-apply.js";
-import type { NeutronMutationVerificationEvidence } from "../../../../../protocol/src/neutron-mutation-verification.js";
+} from "../../../../../protocol/src/neutron/mutation/apply/neutron-mutation-apply.js";
+import type { NeutronMutationVerificationEvidence } from "../../../../../protocol/src/neutron/mutation/verification/neutron-mutation-verification.js";
 import { validateNeutronMutationApplyResult } from "../../../../../validator/src/neutron-mutation-apply.js";
 
 export function buildNeutronMutationApplyResult(input: {
