@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
-import { prepareNeutronRuntimeContractSnapshot } from "../packages/application/src/neutron-runtime-contracts.js";
+import { prepareNeutronRuntimeContractSnapshot } from "../packages/application/src/neutron/neutron-runtime-contracts.js";
 import {
   NEUTRON_RUNTIME_SESSION_SCHEMA_URN,
   type NeutronRuntimeContractSnapshot,

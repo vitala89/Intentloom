@@ -6,18 +6,18 @@ import {
   inspectProject,
   nodeFileSystem,
 } from "../packages/application/src/index.js";
-import { applyApprovedNeutronGraphMutation } from "../packages/application/src/neutron-scheduler.js";
+import { applyApprovedNeutronGraphMutation } from "../packages/application/src/neutron/neutron-scheduler.js";
 import {
   collectNeutronGraphMutationCandidates,
   createMemoryNeutronGraphMutationPayloadStore,
   executeNeutronTaskNode,
   materializeNeutronGraphMutationReview,
   NEUTRON_MUTATION_PROPOSAL_CAPABILITY,
-} from "../packages/application/src/neutron-scheduler.js";
-import { createMemoryNeutronMutationApprovalStore } from "../packages/application/src/neutron-mutation-apply-store.js";
-import { neutronMutationApplyLeaksToken } from "../packages/application/src/neutron-mutation-apply-result.js";
-import { fingerprintNeutronProjectRoot } from "../packages/application/src/neutron-session-fingerprint.js";
-import { listRegisteredNeutronTools } from "../packages/application/src/neutron-tool-registry.js";
+} from "../packages/application/src/neutron/neutron-scheduler.js";
+import { createMemoryNeutronMutationApprovalStore } from "../packages/application/src/neutron/mutation/apply/neutron-mutation-apply-store.js";
+import { neutronMutationApplyLeaksToken } from "../packages/application/src/neutron/mutation/apply/neutron-mutation-apply-result.js";
+import { fingerprintNeutronProjectRoot } from "../packages/application/src/neutron/neutron-session-fingerprint.js";
+import { listRegisteredNeutronTools } from "../packages/application/src/neutron/tools/neutron-tool-registry.js";
 import {
   NEUTRON_MUTATION_APPROVAL_SCHEMA_URN,
   NEUTRON_MUTATION_APPROVAL_SOURCE,
@@ -41,7 +41,7 @@ import type {
 import {
   NEUTRON_STRUCTURED_MUTATION_PROPOSAL_PREFIX,
   bindStructuredNeutronMutationProposal,
-} from "../packages/application/src/neutron-session-mutation-proposal.js";
+} from "../packages/application/src/neutron/session/neutron-session-mutation-proposal.js";
 import {
   SLICE5_CONTENT_A,
   SLICE5_CONTENT_Z,

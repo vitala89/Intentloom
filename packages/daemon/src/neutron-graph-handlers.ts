@@ -4,7 +4,7 @@ import type {
   NeutronGraphGetRequest,
   NeutronSessionCreateResponse,
 } from "@intentloom/protocol";
-import type { NeutronSessionRuntime } from "../../application/src/neutron-session-runtime.js";
+import type { NeutronSessionRuntime } from "../../application/src/neutron/session/neutron-session-runtime.js";
 
 export interface NeutronGraphDaemonOptions {
   readonly neutronGraphGet?: (

@@ -14,9 +14,9 @@ import {
   parseDaemonRequest,
 } from "@intentloom/protocol";
 import type { ModelAdapter } from "../packages/application/src/model-adapter.js";
-import { createNeutronSessionRuntime } from "../packages/application/src/neutron-session-runtime.js";
-import { NEUTRON_MUTATION_PROPOSAL_CAPABILITY } from "../packages/application/src/neutron-mutation-proposal-capability.js";
-import { fingerprintNeutronProjectRoot } from "../packages/application/src/neutron-session-fingerprint.js";
+import { createNeutronSessionRuntime } from "../packages/application/src/neutron/session/neutron-session-runtime.js";
+import { NEUTRON_MUTATION_PROPOSAL_CAPABILITY } from "../packages/application/src/neutron/mutation/proposal/neutron-mutation-proposal-capability.js";
+import { fingerprintNeutronProjectRoot } from "../packages/application/src/neutron/neutron-session-fingerprint.js";
 import { startLocalDaemon } from "../packages/daemon/src/index.js";
 import { bindNeutronSessionHandlers } from "../packages/daemon/src/neutron-session-handlers.js";
 import {
@@ -28,7 +28,7 @@ import {
   reviewProjectUnderSymlinkParent,
   SLICE5_CONTENT_A,
 } from "./neutron-mutation-review-support.js";
-import { neutronMutationReviewLeakKeys } from "../packages/application/src/neutron-mutation-review-leak.js";
+import { neutronMutationReviewLeakKeys } from "../packages/application/src/neutron/mutation/review/neutron-mutation-review-leak.js";
 import { NEUTRON_READ_ONLY_TOOLS } from "../packages/protocol/src/neutron-runtime.js";
 
 const daemons: { close(): Promise<void> }[] = [];

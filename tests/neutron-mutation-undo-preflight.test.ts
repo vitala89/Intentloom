@@ -21,14 +21,14 @@ import type { FileSystem } from "../packages/application/src/index.js";
 import {
   decodeDurableTransactionRecord,
   encodeDurableTransactionRecord,
-} from "../packages/application/src/neutron-mutation-apply-durable-record.js";
-import { buildNeutronMutationApplyResult } from "../packages/application/src/neutron-mutation-apply-result.js";
-import { fingerprintNeutronProjectRoot } from "../packages/application/src/neutron-session-fingerprint.js";
-import { approveAndApplyNeutronGraphMutation } from "../packages/application/src/neutron-scheduler.js";
-import { readNeutronMutationStatus } from "../packages/application/src/neutron-mutation-status-read.js";
-import { inspectNeutronMutationUndoCurrent } from "../packages/application/src/neutron-mutation-undo-current.js";
-import { preflightNeutronMutationUndo } from "../packages/application/src/neutron-mutation-undo-preflight.js";
-import { retryAppliedNeutronMutationVerification } from "../packages/application/src/neutron-mutation-verification-retry-run.js";
+} from "../packages/application/src/neutron/mutation/apply/neutron-mutation-apply-durable-record.js";
+import { buildNeutronMutationApplyResult } from "../packages/application/src/neutron/mutation/apply/neutron-mutation-apply-result.js";
+import { fingerprintNeutronProjectRoot } from "../packages/application/src/neutron/neutron-session-fingerprint.js";
+import { approveAndApplyNeutronGraphMutation } from "../packages/application/src/neutron/neutron-scheduler.js";
+import { readNeutronMutationStatus } from "../packages/application/src/neutron/mutation/status/neutron-mutation-status-read.js";
+import { inspectNeutronMutationUndoCurrent } from "../packages/application/src/neutron/mutation/undo/neutron-mutation-undo-current.js";
+import { preflightNeutronMutationUndo } from "../packages/application/src/neutron/mutation/undo/neutron-mutation-undo-preflight.js";
+import { retryAppliedNeutronMutationVerification } from "../packages/application/src/neutron/mutation/verification/neutron-mutation-verification-retry-run.js";
 import {
   NEUTRON_MUTATION_APPROVAL_INTENT_ACTION,
   NEUTRON_MUTATION_APPROVAL_INTENT_SCHEMA_URN,
@@ -363,9 +363,9 @@ function repoRoot(): string {
 
 function undoSource(): string {
   return [
-    "packages/application/src/neutron-mutation-undo-preflight.ts",
-    "packages/application/src/neutron-mutation-undo-eligibility.ts",
-    "packages/application/src/neutron-mutation-undo-current.ts",
+    "packages/application/src/neutron/mutation/undo/neutron-mutation-undo-preflight.ts",
+    "packages/application/src/neutron/mutation/undo/neutron-mutation-undo-eligibility.ts",
+    "packages/application/src/neutron/mutation/undo/neutron-mutation-undo-current.ts",
     "packages/protocol/src/neutron-mutation-undo.ts",
     "packages/protocol/src/neutron-mutation-undo-result.ts",
   ]

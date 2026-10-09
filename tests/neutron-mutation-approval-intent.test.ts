@@ -14,11 +14,11 @@ import {
 import { NEUTRON_READ_ONLY_TOOLS } from "../packages/protocol/src/neutron-runtime.js";
 import type { ModelAdapter } from "../packages/application/src/model-adapter.js";
 import { nodeFileSystem } from "../packages/application/src/index.js";
-import { createMemoryNeutronMutationApprovalStore } from "../packages/application/src/neutron-mutation-apply-store.js";
-import { neutronMutationApplyLeaksToken } from "../packages/application/src/neutron-mutation-apply-result.js";
-import { createNeutronSessionRuntime } from "../packages/application/src/neutron-session-runtime.js";
-import { NEUTRON_MUTATION_PROPOSAL_CAPABILITY } from "../packages/application/src/neutron-mutation-proposal-capability.js";
-import { fingerprintNeutronProjectRoot } from "../packages/application/src/neutron-session-fingerprint.js";
+import { createMemoryNeutronMutationApprovalStore } from "../packages/application/src/neutron/mutation/apply/neutron-mutation-apply-store.js";
+import { neutronMutationApplyLeaksToken } from "../packages/application/src/neutron/mutation/apply/neutron-mutation-apply-result.js";
+import { createNeutronSessionRuntime } from "../packages/application/src/neutron/session/neutron-session-runtime.js";
+import { NEUTRON_MUTATION_PROPOSAL_CAPABILITY } from "../packages/application/src/neutron/mutation/proposal/neutron-mutation-proposal-capability.js";
+import { fingerprintNeutronProjectRoot } from "../packages/application/src/neutron/neutron-session-fingerprint.js";
 import {
   NEUTRON_MUTATION_APPROVAL_MAX_LIFETIME_MS,
   NEUTRON_MUTATION_HOST_APPROVING_ACTOR,
@@ -28,8 +28,8 @@ import {
   publicNeutronMutationApprovalIssueFacts,
   type IssueNeutronMutationApprovalResult,
   type NeutronMutationApprovalIssueOutcome,
-} from "../packages/application/src/neutron-scheduler.js";
-import type { NeutronGraphMutationReviewBundle } from "../packages/application/src/neutron-graph-mutation-store.js";
+} from "../packages/application/src/neutron/neutron-scheduler.js";
+import type { NeutronGraphMutationReviewBundle } from "../packages/application/src/neutron/mutation/review/neutron-graph-mutation-store.js";
 import type { NeutronRuntimeSession } from "../packages/protocol/src/neutron-runtime.js";
 import { validateNeutronMutationApprovalIntent } from "../packages/validator/src/neutron-mutation.js";
 import { expectedNeutronMutationApprovalToken } from "../packages/validator/src/neutron-mutation-digest.js";

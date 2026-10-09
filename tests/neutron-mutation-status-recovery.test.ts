@@ -15,19 +15,19 @@ import {
 } from "@intentloom/protocol";
 import { checksum } from "@intentloom/core";
 import { nodeFileSystem } from "../packages/application/src/index.js";
-import { acquireNeutronMutationApplyLock } from "../packages/application/src/neutron-mutation-apply-durable-lock.js";
-import { createPersistentNeutronMutationApprovalStore } from "../packages/application/src/neutron-mutation-apply-durable-store.js";
+import { acquireNeutronMutationApplyLock } from "../packages/application/src/neutron/mutation/apply/neutron-mutation-apply-durable-lock.js";
+import { createPersistentNeutronMutationApprovalStore } from "../packages/application/src/neutron/mutation/apply/neutron-mutation-apply-durable-store.js";
 import type { ModelAdapter } from "../packages/application/src/model-adapter.js";
-import { NEUTRON_MUTATION_PROPOSAL_CAPABILITY } from "../packages/application/src/neutron-mutation-proposal-capability.js";
-import { createNeutronSessionRuntime } from "../packages/application/src/neutron-session-runtime.js";
-import { fingerprintNeutronProjectRoot } from "../packages/application/src/neutron-session-fingerprint.js";
-import { approveAndApplyNeutronGraphMutation } from "../packages/application/src/neutron-scheduler.js";
-import { NeutronMutationStatusReadCancelled } from "../packages/application/src/neutron-mutation-status-read.js";
+import { NEUTRON_MUTATION_PROPOSAL_CAPABILITY } from "../packages/application/src/neutron/mutation/proposal/neutron-mutation-proposal-capability.js";
+import { createNeutronSessionRuntime } from "../packages/application/src/neutron/session/neutron-session-runtime.js";
+import { fingerprintNeutronProjectRoot } from "../packages/application/src/neutron/neutron-session-fingerprint.js";
+import { approveAndApplyNeutronGraphMutation } from "../packages/application/src/neutron/neutron-scheduler.js";
+import { NeutronMutationStatusReadCancelled } from "../packages/application/src/neutron/mutation/status/neutron-mutation-status-read.js";
 import {
   rememberNeutronMutationStatus,
   statusIndexPath,
-} from "../packages/application/src/neutron-mutation-status-index.js";
-import { publicNeutronMutationStatus } from "../packages/application/src/neutron-mutation-status-public.js";
+} from "../packages/application/src/neutron/mutation/status/neutron-mutation-status-index.js";
+import { publicNeutronMutationStatus } from "../packages/application/src/neutron/mutation/status/neutron-mutation-status-public.js";
 import { NEUTRON_READ_ONLY_TOOLS } from "../packages/protocol/src/neutron-runtime.js";
 import {
   NEUTRON_MUTATION_APPROVAL_INTENT_ACTION,
@@ -737,7 +737,10 @@ function statusSource(): string {
   const root = join(dirname(fileURLToPath(import.meta.url)), "..");
   return [
     readFileSync(
-      join(root, "packages/application/src/neutron-mutation-status-read.ts"),
+      join(
+        root,
+        "packages/application/src/neutron/mutation/status/neutron-mutation-status-read.ts",
+      ),
       "utf8",
     ),
     readFileSync(

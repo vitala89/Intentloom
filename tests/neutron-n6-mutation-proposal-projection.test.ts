@@ -8,7 +8,7 @@ import {
   bindStructuredNeutronMutationProposal,
   resolveNeutronMutationProposalFromGraphNodes,
   selectSessionMutationProposal,
-} from "../packages/application/src/neutron-session-mutation-proposal.js";
+} from "../packages/application/src/neutron/session/neutron-session-mutation-proposal.js";
 import { validateNeutronRuntimeSession } from "../packages/validator/src/neutron-runtime.js";
 
 const fixtureRoot = join(

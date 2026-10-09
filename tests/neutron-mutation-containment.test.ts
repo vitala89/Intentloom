@@ -14,8 +14,8 @@ import {
   assertNeutronMutationPathContained,
   isCanonicalPathInsideRoot,
   type NeutronMutationPathFilesystem,
-} from "../packages/application/src/neutron-mutation-containment.js";
-import { preflightNeutronMutation } from "../packages/application/src/neutron-mutation-preflight.js";
+} from "../packages/application/src/neutron/mutation/apply/neutron-mutation-containment.js";
+import { preflightNeutronMutation } from "../packages/application/src/neutron/mutation/apply/neutron-mutation-preflight.js";
 import {
   NEUTRON_MUTATION_CLASS,
   type NeutronMutationApproval,

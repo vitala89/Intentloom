@@ -12,7 +12,7 @@ import {
   N3_WARNING_EMPTY_CONTEXT,
   N3_WARNING_EMPTY_SKILLS,
   N3_WARNING_SEMANTIC,
-} from "../packages/application/src/neutron-context-assembly.js";
+} from "../packages/application/src/neutron/context/neutron-context-assembly.js";
 import { NEUTRON_CONTEXT_ASSEMBLY_REQUEST_SCHEMA_URN } from "../packages/protocol/src/neutron-runtime.js";
 import {
   validateNeutronContextBundle,

@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   neutronNodeMayPropose,
   NEUTRON_MUTATION_PROPOSAL_CAPABILITY,
-} from "../packages/application/src/neutron-scheduler.js";
+} from "../packages/application/src/neutron/neutron-scheduler.js";
 
 describe("Neutron mutation Slice 5 proposal capability", () => {
   it("permits an explicit feature-builder grant", () => {

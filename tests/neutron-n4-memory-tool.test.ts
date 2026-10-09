@@ -8,7 +8,7 @@ import {
 import {
   createNeutronReadOnlyDispatch,
   routeNeutronToolInvocation,
-} from "../packages/application/src/neutron-tool-router.js";
+} from "../packages/application/src/neutron/tools/neutron-tool-router.js";
 import {
   NEUTRON_RUNTIME_SESSION_SCHEMA_URN,
   type NeutronRuntimeSession,

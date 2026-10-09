@@ -4,12 +4,12 @@ import { tmpdir } from "node:os";
 import { join, resolve, sep } from "node:path";
 import { readFileSync } from "node:fs";
 import { describe, expect, it, vi } from "vitest";
-import { listRegisteredNeutronTools } from "../packages/application/src/neutron-tool-registry.js";
-import { fingerprintNeutronProjectRoot } from "../packages/application/src/neutron-session-fingerprint.js";
-import { preflightNeutronMutation } from "../packages/application/src/neutron-mutation-preflight.js";
-import { neutronMutationOutcomeLeaksToken } from "../packages/application/src/neutron-mutation-diagnostics.js";
-import type { NeutronMutationPathFilesystem } from "../packages/application/src/neutron-mutation-containment.js";
-import { classifyNeutronMutationRoute } from "../packages/application/src/neutron-mutation-authorization.js";
+import { listRegisteredNeutronTools } from "../packages/application/src/neutron/tools/neutron-tool-registry.js";
+import { fingerprintNeutronProjectRoot } from "../packages/application/src/neutron/neutron-session-fingerprint.js";
+import { preflightNeutronMutation } from "../packages/application/src/neutron/mutation/apply/neutron-mutation-preflight.js";
+import { neutronMutationOutcomeLeaksToken } from "../packages/application/src/neutron/mutation/apply/neutron-mutation-diagnostics.js";
+import type { NeutronMutationPathFilesystem } from "../packages/application/src/neutron/mutation/apply/neutron-mutation-containment.js";
+import { classifyNeutronMutationRoute } from "../packages/application/src/neutron/mutation/apply/neutron-mutation-authorization.js";
 import * as approvedApplyEngine from "../packages/application/src/approved-apply-engine.js";
 import {
   NEUTRON_MUTATION_CLASS,
@@ -475,14 +475,14 @@ describe("Neutron mutation semantic preflight", () => {
     const after = await fingerprintNeutronProjectRoot(root);
     expect(after).toBe(before);
     const sources = [
-      "packages/application/src/neutron-mutation-preflight.ts",
-      "packages/application/src/neutron-mutation-authorization.ts",
-      "packages/application/src/neutron-mutation-bindings.ts",
-      "packages/application/src/neutron-mutation-containment.ts",
-      "packages/application/src/neutron-mutation-diagnostics.ts",
-      "packages/application/src/neutron-mutation-preflight-parse.ts",
-      "packages/application/src/neutron-mutation-replay.ts",
-      "packages/application/src/neutron-mutation-lock.ts",
+      "packages/application/src/neutron/mutation/apply/neutron-mutation-preflight.ts",
+      "packages/application/src/neutron/mutation/apply/neutron-mutation-authorization.ts",
+      "packages/application/src/neutron/mutation/proposal/neutron-mutation-bindings.ts",
+      "packages/application/src/neutron/mutation/apply/neutron-mutation-containment.ts",
+      "packages/application/src/neutron/mutation/apply/neutron-mutation-diagnostics.ts",
+      "packages/application/src/neutron/mutation/apply/neutron-mutation-preflight-parse.ts",
+      "packages/application/src/neutron/mutation/apply/neutron-mutation-replay.ts",
+      "packages/application/src/neutron/mutation/apply/neutron-mutation-lock.ts",
     ];
     for (const file of sources) {
       const text = readFileSync(file, "utf8");

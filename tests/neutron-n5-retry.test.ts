@@ -12,7 +12,7 @@ import {
   executeReadyNeutronTaskNodes,
   isNeutronSchedulerStatePath,
   NEUTRON_RETRY_MAX_ATTEMPTS,
-} from "../packages/application/src/neutron-scheduler.js";
+} from "../packages/application/src/neutron/neutron-scheduler.js";
 import type { ModelAdapter } from "../packages/application/src/model-adapter.js";
 import { NeutronN2Error } from "../packages/validator/src/neutron-runtime-n2.js";
 import { validateModelAdapterCapabilities } from "../packages/validator/src/model-adapter.js";

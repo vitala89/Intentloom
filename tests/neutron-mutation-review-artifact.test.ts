@@ -9,9 +9,9 @@ import {
   synchronizeGeneratedFiles,
   GENERATED_FILE_SYNC_DECLARED_PATHS_ONLY,
 } from "../packages/application/src/index.js";
-import { fingerprintNeutronProjectRoot } from "../packages/application/src/neutron-session-fingerprint.js";
-import { verifyMutationPayloadAgainstReviewArtifact } from "../packages/application/src/neutron-mutation-review-payload.js";
-import { listRegisteredNeutronTools } from "../packages/application/src/neutron-tool-registry.js";
+import { fingerprintNeutronProjectRoot } from "../packages/application/src/neutron/neutron-session-fingerprint.js";
+import { verifyMutationPayloadAgainstReviewArtifact } from "../packages/application/src/neutron/mutation/review/neutron-mutation-review-payload.js";
+import { listRegisteredNeutronTools } from "../packages/application/src/neutron/tools/neutron-tool-registry.js";
 import {
   NEUTRON_MUTATION_CLASS,
   NEUTRON_MUTATION_PROPOSAL_SCHEMA_URN,

@@ -4,7 +4,7 @@ import {
   createMemoryFileSystem,
   inspectProject,
 } from "../packages/application/src/index.js";
-import { runNeutronN2ReadOnlyLoop } from "../packages/application/src/neutron-n2-loop.js";
+import { runNeutronN2ReadOnlyLoop } from "../packages/application/src/neutron/neutron-n2-loop.js";
 import { OllamaModelAdapter } from "../packages/application/src/ollama-model-adapter.js";
 import { NeutronN2Error } from "../packages/validator/src/neutron-runtime-n2.js";
 import { discloseNeutronN2Network } from "../packages/validator/src/neutron-runtime-n2.js";

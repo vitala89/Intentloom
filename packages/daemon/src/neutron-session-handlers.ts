@@ -21,7 +21,7 @@ import {
   isNeutronGraphDaemonMethod,
   isNeutronSessionDaemonMethod,
 } from "@intentloom/protocol";
-import type { NeutronSessionRuntime } from "../../application/src/neutron-session-runtime.js";
+import type { NeutronSessionRuntime } from "../../application/src/neutron/session/neutron-session-runtime.js";
 import {
   bindNeutronGraphHandlers,
   type NeutronGraphDaemonOptions,

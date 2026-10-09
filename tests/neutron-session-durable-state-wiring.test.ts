@@ -2,10 +2,10 @@ import { mkdtemp, readFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import { createPersistentNeutronMutationApprovalStore } from "../packages/application/src/neutron-mutation-apply-durable-store.js";
-import { requireNeutronHostDurableState } from "../packages/application/src/neutron-host-durable-state.js";
+import { createPersistentNeutronMutationApprovalStore } from "../packages/application/src/neutron/mutation/apply/neutron-mutation-apply-durable-store.js";
+import { requireNeutronHostDurableState } from "../packages/application/src/neutron/session/neutron-host-durable-state.js";
 import type { ModelAdapter } from "../packages/application/src/model-adapter.js";
-import { createNeutronSessionRuntime } from "../packages/application/src/neutron-session-runtime.js";
+import { createNeutronSessionRuntime } from "../packages/application/src/neutron/session/neutron-session-runtime.js";
 import { bindNeutronSessionHandlers } from "../packages/daemon/src/neutron-session-handlers.js";
 
 function fixtureAdapter(): ModelAdapter {
@@ -83,7 +83,10 @@ describe("Neutron session host durable-state wiring", () => {
   it("does not introduce a memory-store fallback in production composition", async () => {
     const [bin, runtimeSource] = await Promise.all([
       readFile("packages/daemon/src/bin.ts", "utf8"),
-      readFile("packages/application/src/neutron-session-runtime.ts", "utf8"),
+      readFile(
+        "packages/application/src/neutron/session/neutron-session-runtime.ts",
+        "utf8",
+      ),
     ]);
     expect(bin).toContain(
       "durableStateDirectory: startup.durableStateDirectory",

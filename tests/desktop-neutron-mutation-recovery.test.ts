@@ -17,9 +17,9 @@ import {
 } from "@intentloom/protocol";
 import { NEUTRON_READ_ONLY_TOOLS } from "../packages/protocol/src/neutron-runtime.js";
 import { nodeFileSystem } from "../packages/application/src/index.js";
-import { createNeutronSessionRuntime } from "../packages/application/src/neutron-session-runtime.js";
-import { fingerprintNeutronProjectRoot } from "../packages/application/src/neutron-session-fingerprint.js";
-import { approveAndApplyNeutronGraphMutation } from "../packages/application/src/neutron-scheduler.js";
+import { createNeutronSessionRuntime } from "../packages/application/src/neutron/session/neutron-session-runtime.js";
+import { fingerprintNeutronProjectRoot } from "../packages/application/src/neutron/neutron-session-fingerprint.js";
+import { approveAndApplyNeutronGraphMutation } from "../packages/application/src/neutron/neutron-scheduler.js";
 import {
   NEUTRON_MUTATION_APPROVAL_INTENT_ACTION,
   NEUTRON_MUTATION_APPROVAL_INTENT_SCHEMA_URN,

@@ -20,11 +20,11 @@ import type { FileSystem } from "../packages/application/src/index.js";
 import {
   decodeDurableTransactionRecord,
   encodeDurableTransactionRecord,
-} from "../packages/application/src/neutron-mutation-apply-durable-record.js";
-import { createNeutronSessionRuntime } from "../packages/application/src/neutron-session-runtime.js";
-import { fingerprintNeutronProjectRoot } from "../packages/application/src/neutron-session-fingerprint.js";
-import { approveAndApplyNeutronGraphMutation } from "../packages/application/src/neutron-scheduler.js";
-import { retryAppliedNeutronMutationVerification } from "../packages/application/src/neutron-mutation-verification-retry-run.js";
+} from "../packages/application/src/neutron/mutation/apply/neutron-mutation-apply-durable-record.js";
+import { createNeutronSessionRuntime } from "../packages/application/src/neutron/session/neutron-session-runtime.js";
+import { fingerprintNeutronProjectRoot } from "../packages/application/src/neutron/neutron-session-fingerprint.js";
+import { approveAndApplyNeutronGraphMutation } from "../packages/application/src/neutron/neutron-scheduler.js";
+import { retryAppliedNeutronMutationVerification } from "../packages/application/src/neutron/mutation/verification/neutron-mutation-verification-retry-run.js";
 import { neutronSessionCapabilities as daemonCapabilities } from "../packages/daemon/src/neutron-session-handlers.js";
 import { bindNeutronSessionHandlers as bindDaemonHandlers } from "../packages/daemon/src/neutron-session-handlers.js";
 import { NeutronApproveApplyControl } from "../apps/desktop/src/neutron/mutation/recovery/NeutronApproveApplyControl.js";
@@ -569,7 +569,7 @@ function approveDeferred(ready: Awaited<ReturnType<typeof prepared>>) {
 
 async function approveLocked(ready: Awaited<ReturnType<typeof prepared>>) {
   const { acquireNeutronMutationApplyLock } =
-    await import("../packages/application/src/neutron-mutation-apply-durable-lock.js");
+    await import("../packages/application/src/neutron/mutation/apply/neutron-mutation-apply-durable-lock.js");
   const canonical = await nodeFileSystem.realpath(ready.root);
   await acquireNeutronMutationApplyLock({
     canonicalRoot: canonical,
@@ -718,7 +718,7 @@ async function approvalCount(directory: string): Promise<number> {
 function retrySource(): string {
   const root = join(dirname(fileURLToPath(import.meta.url)), "..");
   return [
-    "packages/application/src/neutron-mutation-verification-retry-run.ts",
+    "packages/application/src/neutron/mutation/verification/neutron-mutation-verification-retry-run.ts",
     "packages/daemon/src/neutron-mutation-verification-retry-handlers.ts",
     "apps/desktop/src/neutron/mutation/recovery/neutron-mutation-recovery-controller.ts",
   ]

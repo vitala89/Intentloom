@@ -33,7 +33,7 @@ export default defineConfig({
       ),
       "@intentloom/application/neutron-session": fileURLToPath(
         new URL(
-          "./packages/application/src/neutron-session-runtime.ts",
+          "./packages/application/src/neutron/session/neutron-session-runtime.ts",
           import.meta.url,
         ),
       ),

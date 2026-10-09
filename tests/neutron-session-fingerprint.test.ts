@@ -5,7 +5,7 @@ import {
   inspectProject,
   nodeFileSystem,
 } from "../packages/application/src/index.js";
-import { fingerprintNeutronProjectRoot } from "../packages/application/src/neutron-session-fingerprint.js";
+import { fingerprintNeutronProjectRoot } from "../packages/application/src/neutron/neutron-session-fingerprint.js";
 import {
   reviewProject,
   reviewProjectUnderSymlinkParent,

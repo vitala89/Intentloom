@@ -6,9 +6,9 @@ import {
 import {
   createNeutronInspectDispatch,
   routeNeutronToolInvocation,
-} from "../packages/application/src/neutron-tool-router.js";
-import { listRegisteredNeutronTools } from "../packages/application/src/neutron-tool-registry.js";
-import { runNeutronN2ReadOnlyLoop } from "../packages/application/src/neutron-n2-loop.js";
+} from "../packages/application/src/neutron/tools/neutron-tool-router.js";
+import { listRegisteredNeutronTools } from "../packages/application/src/neutron/tools/neutron-tool-registry.js";
+import { runNeutronN2ReadOnlyLoop } from "../packages/application/src/neutron/neutron-n2-loop.js";
 import {
   NEUTRON_RUNTIME_SESSION_SCHEMA_URN,
   type NeutronRuntimeSession,

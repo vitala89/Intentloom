@@ -19,30 +19,30 @@ import type { FileSystem } from "../packages/application/src/index.js";
 import {
   decodeDurableTransactionRecord,
   encodeDurableTransactionRecord,
-} from "../packages/application/src/neutron-mutation-apply-durable-record.js";
+} from "../packages/application/src/neutron/mutation/apply/neutron-mutation-apply-durable-record.js";
 import {
   acquireNeutronMutationApplyLock,
   releaseNeutronMutationApplyLock,
-} from "../packages/application/src/neutron-mutation-apply-durable-lock.js";
-import { approveAndApplyNeutronGraphMutation } from "../packages/application/src/neutron-scheduler.js";
-import { canonicalizeNeutronMutationRoot } from "../packages/application/src/neutron-mutation-containment.js";
-import { readNeutronMutationStatus } from "../packages/application/src/neutron-mutation-status-read.js";
+} from "../packages/application/src/neutron/mutation/apply/neutron-mutation-apply-durable-lock.js";
+import { approveAndApplyNeutronGraphMutation } from "../packages/application/src/neutron/neutron-scheduler.js";
+import { canonicalizeNeutronMutationRoot } from "../packages/application/src/neutron/mutation/apply/neutron-mutation-containment.js";
+import { readNeutronMutationStatus } from "../packages/application/src/neutron/mutation/status/neutron-mutation-status-read.js";
 import {
   isHostUndoApproval,
   issueHostUndoApproval,
-} from "../packages/application/src/neutron-mutation-undo-approval.js";
+} from "../packages/application/src/neutron/mutation/undo/neutron-mutation-undo-approval.js";
 import {
   approveAndUndoNeutronMutation,
   readNeutronMutationUndoExecution,
-} from "../packages/application/src/neutron-mutation-undo-run.js";
-import { preflightNeutronMutationUndo } from "../packages/application/src/neutron-mutation-undo-preflight.js";
+} from "../packages/application/src/neutron/mutation/undo/neutron-mutation-undo-run.js";
+import { preflightNeutronMutationUndo } from "../packages/application/src/neutron/mutation/undo/neutron-mutation-undo-preflight.js";
 import {
   undoSnapshotManifestPath,
   undoSnapshotPayloadPath,
-} from "../packages/application/src/neutron-mutation-undo-snapshot-manifest.js";
-import { readUndoSnapshotManifest } from "../packages/application/src/neutron-mutation-undo-snapshot-store.js";
-import { retryAppliedNeutronMutationVerification } from "../packages/application/src/neutron-mutation-verification-retry-run.js";
-import { listRegisteredNeutronTools } from "../packages/application/src/neutron-tool-registry.js";
+} from "../packages/application/src/neutron/mutation/undo/neutron-mutation-undo-snapshot-manifest.js";
+import { readUndoSnapshotManifest } from "../packages/application/src/neutron/mutation/undo/neutron-mutation-undo-snapshot-store.js";
+import { retryAppliedNeutronMutationVerification } from "../packages/application/src/neutron/mutation/verification/neutron-mutation-verification-retry-run.js";
+import { listRegisteredNeutronTools } from "../packages/application/src/neutron/tools/neutron-tool-registry.js";
 import {
   NEUTRON_MUTATION_APPROVAL_INTENT_ACTION,
   NEUTRON_MUTATION_APPROVAL_INTENT_SCHEMA_URN,
@@ -66,7 +66,7 @@ import {
   SLICE5_NOW,
   slice5Session,
 } from "./neutron-mutation-slice5-support.js";
-import { fingerprintNeutronProjectRoot } from "../packages/application/src/neutron-session-fingerprint.js";
+import { fingerprintNeutronProjectRoot } from "../packages/application/src/neutron/neutron-session-fingerprint.js";
 
 const CREATED = "export const created = 1;\n";
 const OLD_A = "old a\n";

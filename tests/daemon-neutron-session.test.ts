@@ -16,11 +16,11 @@ import {
   parseDaemonRequest,
 } from "@intentloom/protocol";
 import type { ModelAdapter } from "../packages/application/src/model-adapter.js";
-import { createNeutronSessionRuntime } from "../packages/application/src/neutron-session-runtime.js";
+import { createNeutronSessionRuntime } from "../packages/application/src/neutron/session/neutron-session-runtime.js";
 import { NeutronN2Error } from "../packages/validator/src/neutron-runtime-n2.js";
 import { startLocalDaemon } from "../packages/daemon/src/index.js";
 import { bindNeutronSessionHandlers } from "../packages/daemon/src/neutron-session-handlers.js";
-import { fingerprintNeutronProjectRoot } from "../packages/application/src/neutron-session-fingerprint.js";
+import { fingerprintNeutronProjectRoot } from "../packages/application/src/neutron/neutron-session-fingerprint.js";
 import { readFileSync } from "node:fs";
 
 const daemons: { close(): Promise<void> }[] = [];
