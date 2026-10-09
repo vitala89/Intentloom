@@ -107,9 +107,14 @@ Undo U5.
   mutation stages, cross-subfeature imports, mutation-stage imports,
   empty cycle sets, forbidden dependencies, POSIX architecture ids, and
   stable validator package subpaths.
-- **Validation:** topology guards passed (2 files, 18 tests). Focused
-  Neutron and daemon tests and `pnpm verify` are recorded when the gate
-  finishes.
+- **Validation:** focused Neutron runtime, N2, N3, session, activity,
+  graph, mutation, review, approval, Apply, status, verification, daemon
+  dispatch, and topology tests passed (43 files, 374 passed, 1 skipped)
+  after the daemon bundle existed. `pnpm verify` passed: typecheck, lint,
+  format check, 348 files / 3033 passed / 3 skipped, build, and
+  `git diff --check`. Commit-range and diff validation passed.
+  Production budgets stayed within the hard limit. The largest moved
+  validator file is `neutron-graph-fields.ts` at 313 effective lines.
 - **Not done:** R4D, Undo U4, Desktop Undo U5.
 - **Next:** maintainer review of this branch. Do not start R4D from this
   handoff.
