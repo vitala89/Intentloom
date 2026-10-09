@@ -76,8 +76,45 @@ merged (PR #553, merge `2298fabb6214160d5456b7a0dda016558209386e`).
 **Backend Architecture R4C** (validator and daemon Neutron semantic
 topology) is implemented on
 `refactor/validator-daemon-neutron-topology-r4c` and is awaiting
-maintainer review. Do not merge. Do not start R4D, Undo U4, or Desktop
-Undo U5.
+maintainer review. Compatibility on Ubuntu Node 24 failed because
+`intentloomd` installed its SIGTERM handler after the Unix socket was
+already bound; an immediate signal killed the process and left the
+socket. The handler is now installed before listen. Do not merge. Do
+not start R4D, Undo U4, or Desktop Undo U5.
+
+### 2026-10-09, R4C Compatibility — install daemon shutdown before listen
+
+- **Status:** fixed on `refactor/validator-daemon-neutron-topology-r4c`.
+  Do not merge. Do not start R4D, Undo U4, or Desktop Undo U5.
+- **Failure:** Compatibility `ubuntu-latest / Node 24` (run
+  `37958708482`, job `113915735143`, Node v24.21.0) failed
+  `tests/daemon-bin.test.ts` “relaunches with the same Desktop
+  durable-state directory after endpoint cleanup”. After SIGTERM,
+  `stat(daemon.sock)` still returned a Unix socket (`mode` `0o140755`)
+  instead of `ENOENT`. The other Compatibility cells passed, including
+  Ubuntu Node 22.
+- **Cause:** `intentloomd` called `startLocalDaemon` and only then
+  registered SIGINT/SIGTERM. `server.listen` binds the socket before
+  that registration. A signal in that window uses the default action,
+  the process dies with SIGTERM, and the kernel does not unlink a Unix
+  socket. The relaunch test kills as soon as the socket appears, so it
+  hits the window under load. The earlier test in the same file sends
+  an RPC first, which gives the handler time to register. Reproduced
+  locally on Node v24.21.0: 2 of 30 immediate SIGTERM trials exited
+  with signal 15 and left the socket.
+- **Fix:** `beforeListen` runs after the close handle exists and before
+  `server.listen`. The binary registers SIGINT/SIGTERM there. ADR-0009
+  still requires shutdown to remove only the Unix socket the daemon
+  created, and still forbids unlinking an endpoint before bind.
+- **Validation:** Node v24.21.0 daemon-bin tests passed, including 20
+  immediate SIGTERM relaunch cycles. A separate 40-trial stress run
+  left no sockets and exited 0. Listener bind and close moved to
+  `packages/daemon/src/local-daemon-endpoint.ts` (48 effective lines).
+  `packages/daemon/src/index.ts` stays over the production budget and
+  shrank from 1037 to 1023 effective lines. Follow-up: split the
+  request handler out of `startLocalDaemon`.
+- **Next:** maintainer review of the R4C branch. Do not start R4D from
+  this handoff.
 
 ### 2026-10-09, Backend Architecture R4C — validator and daemon Neutron semantic topology
 

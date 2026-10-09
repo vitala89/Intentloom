@@ -830,8 +830,10 @@ R4C** organizes `packages/validator/src/neutron/` and
 lifecycle stages. Validator and daemon package subpath names stay
 stable. Validation, RPC results, and security behavior stay the same.
 R4C is on `refactor/validator-daemon-neutron-topology-r4c` and is
-awaiting maintainer review. R4D repository hygiene, Undo U4, and
-Desktop Undo U5 remain unauthorized. Other post-P4 candidates remain
+awaiting maintainer review. `intentloomd` installs its signal shutdown
+before the endpoint is bound, so an immediate SIGTERM still removes the
+Unix socket. R4D repository hygiene, Undo U4, and Desktop Undo U5 remain
+unauthorized. Other post-P4 candidates remain
 in `POST_W12_NEXT_INCREMENT_PLAN.md`.
 
 The Desktop discovery/error and Diff/Timeline slices remain recorded in

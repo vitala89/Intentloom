@@ -1,13 +1,34 @@
-import { spawn } from "node:child_process";
+import { spawn, type ChildProcess } from "node:child_process";
+import { statSync } from "node:fs";
 import { chmod, mkdir, mkdtemp, stat, writeFile } from "node:fs/promises";
 import { createConnection } from "node:net";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
+import { startLocalDaemon } from "../packages/daemon/src/index.js";
 import { desktopOwnedDaemonLaunchArgs } from "../scripts/desktop/daemon-launch-args.mjs";
 
 const children: ReturnType<typeof spawn>[] = [];
 afterEach(() => children.splice(0).forEach((child) => child.kill("SIGTERM")));
+
+function daemonEndpoint(directory: string): string {
+  return process.platform === "win32"
+    ? `\\\\.\\pipe\\intentloom-before-listen-${process.pid}`
+    : join(directory, "daemon.sock");
+}
+
+async function waitForExit(child: ChildProcess): Promise<void> {
+  const exit =
+    child.exitCode !== null || child.signalCode !== null
+      ? { code: child.exitCode, signal: child.signalCode }
+      : await new Promise<{
+          code: number | null;
+          signal: NodeJS.Signals | null;
+        }>((resolveExit) =>
+          child.once("exit", (code, signal) => resolveExit({ code, signal })),
+        );
+  expect(exit).toEqual({ code: 0, signal: null });
+}
 
 async function waitForSocket(endpoint: string): Promise<void> {
   for (let attempt = 0; attempt < 20; attempt += 1) {
@@ -92,9 +113,7 @@ describe.skipIf(process.platform === "win32")("intentloomd binary", () => {
       result: { protocolVersion: 1 },
     });
     child.kill("SIGTERM");
-    await new Promise<void>((resolveExit) =>
-      child.once("exit", () => resolveExit()),
-    );
+    await waitForExit(child);
     await expect(stat(endpoint)).rejects.toThrow("ENOENT");
   });
 
@@ -121,9 +140,7 @@ describe.skipIf(process.platform === "win32")("intentloomd binary", () => {
     children.push(first);
     await waitForSocket(endpoint);
     first.kill("SIGTERM");
-    await new Promise<void>((resolveExit) =>
-      first.once("exit", () => resolveExit()),
-    );
+    await waitForExit(first);
     await expect(stat(endpoint)).rejects.toThrow("ENOENT");
     await expect(
       stat(join(neutronMutationStateDir, "marker")),
@@ -139,6 +156,34 @@ describe.skipIf(process.platform === "win32")("intentloomd binary", () => {
     await expect(
       stat(join(neutronMutationStateDir, "marker")),
     ).resolves.toMatchObject({ size: 5 });
+  });
+
+  it("removes the endpoint when SIGTERM arrives as soon as the socket is visible", async () => {
+    for (let attempt = 0; attempt < 20; attempt += 1) {
+      const directory = await mkdtemp(join(tmpdir(), "intentloomd-signal-"));
+      const tokenFile = join(directory, "token");
+      await writeFile(tokenFile, "d".repeat(32));
+      await chmod(tokenFile, 0o600);
+      const endpoint = join(directory, "daemon.sock");
+      const child = spawn(
+        process.execPath,
+        [
+          resolve("packages/daemon/dist/intentloomd.cjs"),
+          ...desktopOwnedDaemonLaunchArgs({
+            endpoint,
+            tokenFile,
+            catalogRoot: resolve("catalog"),
+            neutronMutationStateDir: join(directory, "neutron-mutation-state"),
+          }),
+        ],
+        { stdio: ["ignore", "ignore", "pipe"] },
+      );
+      children.push(child);
+      await waitForSocket(endpoint);
+      child.kill("SIGTERM");
+      await waitForExit(child);
+      await expect(stat(endpoint)).rejects.toThrow("ENOENT");
+    }
   });
 
   it("fails closed when the Desktop durable-state path is a regular file", async () => {
@@ -172,5 +217,44 @@ describe.skipIf(process.platform === "win32")("intentloomd binary", () => {
     expect(code).toBe(2);
     expect(stderr).toContain("neutron mutation state path is not a directory");
     expect(stderr).not.toContain("d".repeat(32));
+  });
+});
+
+describe("local daemon listen shutdown", () => {
+  it("runs beforeListen before the endpoint is bound", async () => {
+    const directory = await mkdtemp(join(tmpdir(), "intentloomd-before-"));
+    const endpoint = daemonEndpoint(directory);
+    let endpointVisible = false;
+    const daemon = await startLocalDaemon({
+      endpoint,
+      sessionToken: "d".repeat(32),
+      beforeListen(instance) {
+        expect(instance.endpoint).toBe(endpoint);
+        try {
+          statSync(endpoint);
+          endpointVisible = true;
+        } catch (error) {
+          const missing =
+            error instanceof Error &&
+            "code" in error &&
+            error.code === "ENOENT";
+          endpointVisible = !missing;
+        }
+      },
+    });
+    expect(endpointVisible).toBe(false);
+    const bound = process.platform === "win32" || statSync(endpoint).isSocket();
+    expect(bound).toBe(true);
+    await daemon.close();
+    let removed = process.platform === "win32";
+    if (process.platform !== "win32") {
+      try {
+        await stat(endpoint);
+      } catch (error) {
+        removed =
+          error instanceof Error && "code" in error && error.code === "ENOENT";
+      }
+    }
+    expect(removed).toBe(true);
   });
 });
