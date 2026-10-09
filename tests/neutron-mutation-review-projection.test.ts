@@ -6,7 +6,7 @@ import {
 } from "../packages/application/src/neutron/mutation/review/neutron-mutation-review-project.js";
 import { neutronMutationReviewLeakKeys } from "../packages/application/src/neutron/mutation/review/neutron-mutation-review-leak.js";
 import { fingerprintNeutronProjectRoot } from "../packages/application/src/neutron/neutron-session-fingerprint.js";
-import { digestGeneratedFileContent } from "../packages/validator/src/neutron-mutation.js";
+import { digestGeneratedFileContent } from "../packages/validator/src/neutron/mutation/neutron-mutation.js";
 import { NEUTRON_READ_ONLY_TOOLS } from "../packages/protocol/src/neutron/runtime/neutron-runtime.js";
 import {
   REVIEW_GRAPH_ID,

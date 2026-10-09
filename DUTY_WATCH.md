@@ -72,9 +72,47 @@ merge `22fec52f84e952269fe104fd409c7742b2087ff2`).
 **Backend Architecture R4A** (application Neutron semantic topology) is
 merged (PR #552, merge `05b1a2c9f282b5e083485820d7e5b8afe2045581`).
 **Backend Architecture R4B** (protocol Neutron semantic topology) is
-implemented on `refactor/protocol-neutron-topology-r4b` and is awaiting
-maintainer review. Do not merge. Do not start R4C, R4D, Undo U4, or
-Desktop Undo U5.
+merged (PR #553, merge `2298fabb6214160d5456b7a0dda016558209386e`).
+**Backend Architecture R4C** (validator and daemon Neutron semantic
+topology) is implemented on
+`refactor/validator-daemon-neutron-topology-r4c` and is awaiting
+maintainer review. Do not merge. Do not start R4D, Undo U4, or Desktop
+Undo U5.
+
+### 2026-10-09, Backend Architecture R4C — validator and daemon Neutron semantic topology
+
+- **Status:** **BACKEND ARCHITECTURE R4C VALIDATOR AND DAEMON NEUTRON
+  SEMANTIC TOPOLOGY IMPLEMENTED ON BRANCH AWAITING MAINTAINER REVIEW.**
+  Do not merge. Do not start R4D, Undo U4, or Desktop Undo U5.
+- **Branch:** `refactor/validator-daemon-neutron-topology-r4c`
+- **Starting main:** `2298fabb6214160d5456b7a0dda016558209386e` (PR #553
+  merge, Backend Architecture R4B).
+- **Scope:** structural move only. The 26 flat Neutron modules in
+  `packages/validator/src/` now live under `neutron/runtime`, `session`,
+  `graph`, and
+  `mutation/{proposal,review,approval,apply,verification}`. Canonical
+  digest, path-set, and the durable transaction record stay at the
+  mutation root. The 7 flat Neutron modules in `packages/daemon/src/`
+  now live under `neutron/session`, `graph`,
+  `mutation/{review,approval,status,verification}`, with
+  `neutron-workspace-dispatch.ts` at the Neutron root. Public validator
+  subpath names are unchanged. Open governance PR #546 was not used as
+  the base and was not edited.
+- **Behavior:** unchanged. No schema, JSON-RPC method, wire-field,
+  validation, application, daemon, Desktop, or security behavior
+  changes. U4 and U5 were not started. R4A and R4B directory layouts
+  were not reorganized.
+- **Guards:** `tests/validator-neutron-topology.test.ts` and
+  `tests/daemon-neutron-topology.test.ts` ratchet semantic directories,
+  mutation stages, cross-subfeature imports, mutation-stage imports,
+  empty cycle sets, forbidden dependencies, POSIX architecture ids, and
+  stable validator package subpaths.
+- **Validation:** topology guards passed (2 files, 18 tests). Focused
+  Neutron and daemon tests and `pnpm verify` are recorded when the gate
+  finishes.
+- **Not done:** R4D, Undo U4, Desktop Undo U5.
+- **Next:** maintainer review of this branch. Do not start R4D from this
+  handoff.
 
 ### 2026-10-09, Backend Architecture R4B — protocol Neutron semantic topology
 

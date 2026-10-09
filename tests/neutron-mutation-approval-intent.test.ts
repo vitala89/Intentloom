@@ -31,9 +31,9 @@ import {
 } from "../packages/application/src/neutron/neutron-scheduler.js";
 import type { NeutronGraphMutationReviewBundle } from "../packages/application/src/neutron/mutation/review/neutron-graph-mutation-store.js";
 import type { NeutronRuntimeSession } from "../packages/protocol/src/neutron/runtime/neutron-runtime.js";
-import { validateNeutronMutationApprovalIntent } from "../packages/validator/src/neutron-mutation.js";
-import { expectedNeutronMutationApprovalToken } from "../packages/validator/src/neutron-mutation-digest.js";
-import { validateNeutronRuntimeSession } from "../packages/validator/src/neutron-runtime.js";
+import { validateNeutronMutationApprovalIntent } from "../packages/validator/src/neutron/mutation/neutron-mutation.js";
+import { expectedNeutronMutationApprovalToken } from "../packages/validator/src/neutron/mutation/neutron-mutation-digest.js";
+import { validateNeutronRuntimeSession } from "../packages/validator/src/neutron/runtime/neutron-runtime.js";
 import {
   REVIEW_GRAPH_ID,
   SLICE5_CONTENT_A,

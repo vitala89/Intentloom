@@ -4,7 +4,7 @@ import {
   NEUTRON_TOOL_ENVELOPE_SCHEMA_URN,
   NEUTRON_USAGE_BUDGET_SCHEMA_URN,
 } from "@intentloom/protocol";
-import { validateNeutronSessionViewmodel } from "../packages/validator/src/neutron-session-rpc.js";
+import { validateNeutronSessionViewmodel } from "../packages/validator/src/neutron/session/neutron-session-rpc.js";
 import {
   projectContextBundle,
   projectNeutronToolActivity,

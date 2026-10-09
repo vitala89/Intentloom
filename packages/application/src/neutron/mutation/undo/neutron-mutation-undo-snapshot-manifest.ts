@@ -6,8 +6,8 @@ import type { NeutronMutationUndoRestorationClaim } from "../../../../../protoco
 import {
   canonicalNeutronMutationJson,
   compareNeutronMutationPaths,
-} from "../../../../../validator/src/neutron-mutation-canonical.js";
-import { digestGeneratedFileContent } from "../../../../../validator/src/neutron-mutation-review-digest.js";
+} from "../../../../../validator/src/neutron/mutation/neutron-mutation-canonical.js";
+import { digestGeneratedFileContent } from "../../../../../validator/src/neutron/mutation/review/neutron-mutation-review-digest.js";
 
 export const NEUTRON_MUTATION_UNDO_SNAPSHOT_SCHEMA_URN =
   "urn:intentloom:schema:neutron-mutation-undo-snapshot:1" as const;

@@ -9,7 +9,7 @@ import {
   resolveNeutronMutationProposalFromGraphNodes,
   selectSessionMutationProposal,
 } from "../packages/application/src/neutron/session/neutron-session-mutation-proposal.js";
-import { validateNeutronRuntimeSession } from "../packages/validator/src/neutron-runtime.js";
+import { validateNeutronRuntimeSession } from "../packages/validator/src/neutron/runtime/neutron-runtime.js";
 
 const fixtureRoot = join(
   dirname(fileURLToPath(import.meta.url)),

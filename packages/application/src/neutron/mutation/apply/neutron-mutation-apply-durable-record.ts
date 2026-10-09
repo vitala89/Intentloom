@@ -5,7 +5,7 @@ import type { NeutronMutationUndoRestorationClaim } from "../../../../../protoco
 import {
   digestNeutronMutationTransactionRecord,
   validateNeutronMutationDurableTransactionRecord,
-} from "../../../../../validator/src/neutron-mutation-transaction-record.js";
+} from "../../../../../validator/src/neutron/mutation/neutron-mutation-transaction-record.js";
 import type { NeutronMutationTransactionRecord } from "./neutron-mutation-apply-store.js";
 
 export function durableApprovalRecordPath(

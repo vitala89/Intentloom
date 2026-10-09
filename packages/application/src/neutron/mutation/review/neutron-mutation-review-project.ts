@@ -13,7 +13,7 @@ import type { NeutronMutationProposal } from "../../../../../protocol/src/neutro
 import {
   validateNeutronMutationReviewGetResult,
   validateNeutronMutationReviewListResult,
-} from "../../../../../validator/src/neutron-mutation.js";
+} from "../../../../../validator/src/neutron/mutation/neutron-mutation.js";
 import { verifyMutationPayloadAgainstReviewArtifact } from "./neutron-mutation-review-payload.js";
 import type { FileSystem } from "../../../index.js";
 import type { NeutronGraphMutationPayloadStore } from "./neutron-graph-mutation-store.js";

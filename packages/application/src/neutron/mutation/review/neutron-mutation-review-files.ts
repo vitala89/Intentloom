@@ -6,7 +6,7 @@ import {
   NEUTRON_MUTATION_REVIEW_MAX_FILE_CONTENT_BYTES,
 } from "../../../../../protocol/src/neutron/mutation/review/neutron-mutation-review-artifact.js";
 import type { NeutronMutationReviewFileView } from "../../../../../protocol/src/neutron/mutation/review/neutron-mutation-review-view.js";
-import { digestGeneratedFileContent } from "../../../../../validator/src/neutron-mutation.js";
+import { digestGeneratedFileContent } from "../../../../../validator/src/neutron/mutation/neutron-mutation.js";
 import { isSecretLikeRelativePath } from "../../context/neutron-context-secret-paths.js";
 import {
   assertNeutronMutationPathContained,

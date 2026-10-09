@@ -22,8 +22,8 @@ import {
   NEUTRON_MUTATION_APPROVAL_INTENT_ACTION,
   NEUTRON_MUTATION_APPROVAL_INTENT_SCHEMA_URN,
 } from "../packages/protocol/src/neutron/mutation/approval/neutron-mutation-approval-intent.js";
-import { expectedNeutronMutationApprovalToken } from "../packages/validator/src/neutron-mutation-digest.js";
-import { validateNeutronRuntimeSession } from "../packages/validator/src/neutron-runtime.js";
+import { expectedNeutronMutationApprovalToken } from "../packages/validator/src/neutron/mutation/neutron-mutation-digest.js";
+import { validateNeutronRuntimeSession } from "../packages/validator/src/neutron/runtime/neutron-runtime.js";
 import { readFileSync } from "node:fs";
 import { dirname } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -40,8 +40,8 @@ import {
   slice5Node,
   slice5Session,
 } from "./neutron-mutation-slice5-support.js";
-import { bindNeutronSessionHandlers as bindDaemonHandlers } from "../packages/daemon/src/neutron-session-handlers.js";
-import { neutronSessionCapabilities as daemonCapabilities } from "../packages/daemon/src/neutron-session-handlers.js";
+import { bindNeutronSessionHandlers as bindDaemonHandlers } from "../packages/daemon/src/neutron/session/neutron-session-handlers.js";
+import { neutronSessionCapabilities as daemonCapabilities } from "../packages/daemon/src/neutron/session/neutron-session-handlers.js";
 
 const SPOOF_KEYS = [
   "approvalToken",

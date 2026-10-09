@@ -27,7 +27,7 @@ import {
   digestNeutronMutationApproval,
   digestNeutronMutationProposal,
   expectedNeutronMutationApprovalToken,
-} from "../packages/validator/src/neutron-mutation.js";
+} from "../packages/validator/src/neutron/mutation/neutron-mutation.js";
 
 const FIXTURE_NOW = 1_750_000_000_000;
 const STATE_DIGEST = `sha256:${"b".repeat(64)}`;

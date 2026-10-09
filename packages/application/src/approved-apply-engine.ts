@@ -14,7 +14,7 @@ import {
   type FileSystem,
   type TransactionOptions,
 } from "./index.js";
-import { exactNeutronMutationPathSetsEqual } from "../../validator/src/neutron-mutation-path-set.js";
+import { exactNeutronMutationPathSetsEqual } from "../../validator/src/neutron/mutation/neutron-mutation-path-set.js";
 import {
   assertApprovedApplyBaselineCurrent,
   captureApprovedApplyBaseline,

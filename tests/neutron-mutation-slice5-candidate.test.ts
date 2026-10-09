@@ -6,7 +6,7 @@ import {
 import {
   parseNeutronMutationProposalCandidate,
   parseNeutronMutationProposalCandidateOutput,
-} from "../packages/validator/src/neutron-mutation.js";
+} from "../packages/validator/src/neutron/mutation/neutron-mutation.js";
 import { slice5Candidate } from "./neutron-mutation-slice5-support.js";
 
 const FORBIDDEN = [

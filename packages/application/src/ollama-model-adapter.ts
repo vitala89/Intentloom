@@ -8,7 +8,7 @@ import {
   NEUTRON_N2_MAX_BODY_BYTES,
   NeutronN2Error,
   parseNeutronN2BaseUrl,
-} from "../../validator/src/neutron-runtime-n2.js";
+} from "../../validator/src/neutron/runtime/neutron-runtime-n2.js";
 import {
   validateModelAdapterCapabilities,
   validateModelTurnRequest,

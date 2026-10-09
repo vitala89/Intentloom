@@ -1,6 +1,6 @@
-import { neutronMutationContentDigest } from "../../../../../validator/src/neutron-mutation-canonical.js";
-import { canonicalNeutronMutationJson } from "../../../../../validator/src/neutron-mutation-canonical.js";
-import { digestGeneratedFileContent } from "../../../../../validator/src/neutron-mutation-review-digest.js";
+import { neutronMutationContentDigest } from "../../../../../validator/src/neutron/mutation/neutron-mutation-canonical.js";
+import { canonicalNeutronMutationJson } from "../../../../../validator/src/neutron/mutation/neutron-mutation-canonical.js";
+import { digestGeneratedFileContent } from "../../../../../validator/src/neutron/mutation/review/neutron-mutation-review-digest.js";
 import { NEUTRON_HIDDEN_GENERATED_METADATA_PATHS } from "../../../../../protocol/src/neutron/mutation/verification/neutron-mutation-verification.js";
 import { fingerprintNeutronProjectRoot } from "../../neutron-session-fingerprint.js";
 import type { FileSystem } from "../../../index.js";

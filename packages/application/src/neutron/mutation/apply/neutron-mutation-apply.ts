@@ -1,6 +1,6 @@
 import type { NeutronMutationApplyResult } from "../../../../../protocol/src/neutron/mutation/apply/neutron-mutation-apply.js";
 import type { NeutronRuntimeSession } from "../../../../../protocol/src/neutron/runtime/neutron-runtime.js";
-import { validateNeutronRuntimeSession } from "../../../../../validator/src/neutron-runtime.js";
+import { validateNeutronRuntimeSession } from "../../../../../validator/src/neutron/runtime/neutron-runtime.js";
 import { createPersistentNeutronMutationApprovalStore } from "./neutron-mutation-apply-durable-store.js";
 import {
   parseNeutronMutationApplyEnvelope,

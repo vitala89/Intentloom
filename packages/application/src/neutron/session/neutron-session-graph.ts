@@ -20,8 +20,8 @@ import {
   NEUTRON_SESSION_READ_ONLY_CAPS,
   type StoredNeutronSession,
 } from "./neutron-session-turn.js";
-import { validateNeutronRuntimeSession } from "../../../../validator/src/neutron-runtime.js";
-import { validateNeutronGraphSnapshot } from "../../../../validator/src/neutron-graph.js";
+import { validateNeutronRuntimeSession } from "../../../../validator/src/neutron/runtime/neutron-runtime.js";
+import { validateNeutronGraphSnapshot } from "../../../../validator/src/neutron/graph/neutron-graph.js";
 import { resolveNeutronMutationProposalFromGraphNodes } from "./neutron-session-mutation-proposal.js";
 import { bindExecutedGraphMutationState } from "./neutron-session-graph-mutation.js";
 import type { NeutronGraphMutationPayloadStore } from "../mutation/review/neutron-graph-mutation-store.js";

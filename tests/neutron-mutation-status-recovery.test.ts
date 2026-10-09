@@ -34,10 +34,10 @@ import {
   NEUTRON_MUTATION_APPROVAL_INTENT_SCHEMA_URN,
 } from "../packages/protocol/src/neutron/mutation/approval/neutron-mutation-approval-intent.js";
 import { NEUTRON_MUTATION_APPLY_RESULT_SCHEMA_URN } from "../packages/protocol/src/neutron/mutation/apply/neutron-mutation-apply.js";
-import { canonicalNeutronMutationJson } from "../packages/validator/src/neutron-mutation-canonical.js";
-import { expectedNeutronMutationApprovalToken } from "../packages/validator/src/neutron-mutation-digest.js";
-import { neutronSessionCapabilities as daemonCapabilities } from "../packages/daemon/src/neutron-session-handlers.js";
-import { bindNeutronSessionHandlers as bindDaemonHandlers } from "../packages/daemon/src/neutron-session-handlers.js";
+import { canonicalNeutronMutationJson } from "../packages/validator/src/neutron/mutation/neutron-mutation-canonical.js";
+import { expectedNeutronMutationApprovalToken } from "../packages/validator/src/neutron/mutation/neutron-mutation-digest.js";
+import { neutronSessionCapabilities as daemonCapabilities } from "../packages/daemon/src/neutron/session/neutron-session-handlers.js";
+import { bindNeutronSessionHandlers as bindDaemonHandlers } from "../packages/daemon/src/neutron/session/neutron-session-handlers.js";
 import {
   REVIEW_GRAPH_ID,
   SLICE5_CONTENT_A,
@@ -744,7 +744,10 @@ function statusSource(): string {
       "utf8",
     ),
     readFileSync(
-      join(root, "packages/daemon/src/neutron-mutation-status-handlers.ts"),
+      join(
+        root,
+        "packages/daemon/src/neutron/mutation/status/neutron-mutation-status-handlers.ts",
+      ),
       "utf8",
     ),
   ].join("\n");

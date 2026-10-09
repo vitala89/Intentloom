@@ -16,7 +16,7 @@ import type { NeutronNodeExecutionSuccess } from "../packages/application/src/ne
 import { digestNeutronNodeOutput } from "../packages/application/src/neutron/scheduler/node/neutron-node-result.js";
 import type { NeutronAttemptEvidence } from "../packages/application/src/neutron/scheduler/neutron-scheduler-attempt.js";
 import type { NeutronReadyNodeOutcome } from "../packages/application/src/neutron/scheduler/neutron-scheduler-wave-types.js";
-import { validateNeutronRuntimeSession } from "../packages/validator/src/neutron-runtime.js";
+import { validateNeutronRuntimeSession } from "../packages/validator/src/neutron/runtime/neutron-runtime.js";
 
 export const SLICE5_ROOT = "/tmp/neutron-slice5-project";
 export const SLICE5_FINGERPRINT =

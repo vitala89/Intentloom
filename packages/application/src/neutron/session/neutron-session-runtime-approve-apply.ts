@@ -1,5 +1,5 @@
 import type { NeutronMutationApproveAndApplyResult } from "../../../../protocol/src/neutron/mutation/approval/neutron-mutation-approve-apply-result.js";
-import { validateNeutronMutationApprovalIntent } from "../../../../validator/src/neutron-mutation-approval-intent.js";
+import { validateNeutronMutationApprovalIntent } from "../../../../validator/src/neutron/mutation/approval/neutron-mutation-approval-intent.js";
 import type { FileSystem } from "../../index.js";
 import { approveAndApplyNeutronGraphMutation } from "../mutation/approval/neutron-mutation-approve-apply.js";
 import { rejectedApproveAndApplyResult } from "../mutation/approval/neutron-mutation-approve-apply-public.js";

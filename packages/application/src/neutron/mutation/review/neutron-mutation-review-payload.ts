@@ -7,7 +7,7 @@ import type { NeutronMutationReviewArtifact } from "../../../../../protocol/src/
 import {
   digestGeneratedFileContent,
   exactNeutronMutationPathSetsEqual,
-} from "../../../../../validator/src/neutron-mutation.js";
+} from "../../../../../validator/src/neutron/mutation/neutron-mutation.js";
 
 export const MUTATION_PAYLOAD_VERIFICATION_CODES = [
   "artifact-digest-mismatch",

@@ -31,8 +31,8 @@ import { NEUTRON_READ_ONLY_TOOLS } from "../packages/protocol/src/neutron/runtim
 import {
   digestNeutronMutationApproval,
   expectedNeutronMutationApprovalToken,
-} from "../packages/validator/src/neutron-mutation.js";
-import { NeutronN2Error } from "../packages/validator/src/neutron-runtime-n2.js";
+} from "../packages/validator/src/neutron/mutation/neutron-mutation.js";
+import { NeutronN2Error } from "../packages/validator/src/neutron/runtime/neutron-runtime-n2.js";
 import { validateModelAdapterCapabilities } from "../packages/validator/src/model-adapter.js";
 import type {
   ModelTurnRequest,

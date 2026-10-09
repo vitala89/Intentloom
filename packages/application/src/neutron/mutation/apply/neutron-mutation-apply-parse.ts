@@ -5,9 +5,9 @@ import type {
   NeutronMutationProposal,
 } from "../../../../../protocol/src/neutron/mutation/neutron-mutation.js";
 import type { NeutronMutationReviewArtifact } from "../../../../../protocol/src/neutron/mutation/review/neutron-mutation-review-artifact.js";
-import { validateNeutronMutationApproval } from "../../../../../validator/src/neutron-mutation-approval.js";
-import { validateNeutronMutationProposal } from "../../../../../validator/src/neutron-mutation.js";
-import { validateNeutronMutationReviewArtifact } from "../../../../../validator/src/neutron-mutation-review-artifact.js";
+import { validateNeutronMutationApproval } from "../../../../../validator/src/neutron/mutation/approval/neutron-mutation-approval.js";
+import { validateNeutronMutationProposal } from "../../../../../validator/src/neutron/mutation/neutron-mutation.js";
+import { validateNeutronMutationReviewArtifact } from "../../../../../validator/src/neutron/mutation/review/neutron-mutation-review-artifact.js";
 import type { NeutronMutationAuthorizationInput } from "./neutron-mutation-authorization.js";
 
 const FORBIDDEN_ENVELOPE_KEYS = [

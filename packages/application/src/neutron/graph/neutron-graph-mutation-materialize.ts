@@ -8,8 +8,8 @@ import {
   digestNeutronMutationProposal,
   materializeNeutronMutationReviewArtifact,
   validateNeutronMutationProposal,
-} from "../../../../validator/src/neutron-mutation.js";
-import { canonicalizeNeutronMutationPaths } from "../../../../validator/src/neutron-mutation-canonical.js";
+} from "../../../../validator/src/neutron/mutation/neutron-mutation.js";
+import { canonicalizeNeutronMutationPaths } from "../../../../validator/src/neutron/mutation/neutron-mutation-canonical.js";
 import {
   assertNeutronGraphMutationMaterializationCurrent,
   neutronGraphMutationProjectStateDigest,

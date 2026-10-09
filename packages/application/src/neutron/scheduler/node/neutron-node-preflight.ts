@@ -7,7 +7,7 @@ import {
   type NeutronTaskGraph,
   type NeutronTaskNode,
 } from "../../../../../protocol/src/neutron/runtime/neutron-runtime.js";
-import { validateNeutronRuntimeSession } from "../../../../../validator/src/neutron-runtime.js";
+import { validateNeutronRuntimeSession } from "../../../../../validator/src/neutron/runtime/neutron-runtime.js";
 import { NeutronSchedulerError } from "../neutron-scheduler-errors.js";
 import { planNeutronTaskScheduling } from "../neutron-scheduler-select.js";
 import { validateNeutronTaskGraphForExecution } from "../neutron-scheduler-validate.js";

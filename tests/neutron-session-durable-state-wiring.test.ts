@@ -6,7 +6,7 @@ import { createPersistentNeutronMutationApprovalStore } from "../packages/applic
 import { requireNeutronHostDurableState } from "../packages/application/src/neutron/session/neutron-host-durable-state.js";
 import type { ModelAdapter } from "../packages/application/src/model-adapter.js";
 import { createNeutronSessionRuntime } from "../packages/application/src/neutron/session/neutron-session-runtime.js";
-import { bindNeutronSessionHandlers } from "../packages/daemon/src/neutron-session-handlers.js";
+import { bindNeutronSessionHandlers } from "../packages/daemon/src/neutron/session/neutron-session-handlers.js";
 
 function fixtureAdapter(): ModelAdapter {
   return {

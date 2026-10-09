@@ -9,8 +9,8 @@ import {
 import type { NeutronMutationProposal } from "../../../../../protocol/src/neutron/mutation/neutron-mutation.js";
 import type { NeutronMutationReviewArtifact } from "../../../../../protocol/src/neutron/mutation/review/neutron-mutation-review-artifact.js";
 import type { NeutronMutationApplyResult } from "../../../../../protocol/src/neutron/mutation/apply/neutron-mutation-apply.js";
-import { canonicalNeutronMutationJson } from "../../../../../validator/src/neutron-mutation-canonical.js";
-import { neutronMutationContentDigest } from "../../../../../validator/src/neutron-mutation-canonical.js";
+import { canonicalNeutronMutationJson } from "../../../../../validator/src/neutron/mutation/neutron-mutation-canonical.js";
+import { neutronMutationContentDigest } from "../../../../../validator/src/neutron/mutation/neutron-mutation-canonical.js";
 
 export function buildNeutronGraphMutationProposalEvidence(input: {
   readonly proposal: NeutronMutationProposal;

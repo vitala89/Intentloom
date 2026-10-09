@@ -17,7 +17,7 @@ import {
   NEUTRON_RUNTIME_SESSION_SCHEMA_URN,
   type NeutronRuntimeSession,
 } from "../packages/protocol/src/neutron/runtime/neutron-runtime.js";
-import { validateNeutronRuntimeSession } from "../packages/validator/src/neutron-runtime.js";
+import { validateNeutronRuntimeSession } from "../packages/validator/src/neutron/runtime/neutron-runtime.js";
 import {
   digestNeutronMutationApproval,
   digestNeutronMutationProposal,
@@ -26,7 +26,7 @@ import {
   validateNeutronMutationPreflightRequest,
   validateNeutronMutationPreflightResult,
   validateNeutronMutationProposal,
-} from "../packages/validator/src/neutron-mutation.js";
+} from "../packages/validator/src/neutron/mutation/neutron-mutation.js";
 
 function loadJson(name: string): unknown {
   return JSON.parse(

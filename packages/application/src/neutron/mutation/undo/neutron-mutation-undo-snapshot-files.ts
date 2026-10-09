@@ -4,7 +4,7 @@ import {
   NEUTRON_MUTATION_REVIEW_MAX_AGGREGATE_CONTENT_BYTES,
   NEUTRON_MUTATION_REVIEW_MAX_FILE_CONTENT_BYTES,
 } from "../../../../../protocol/src/neutron/mutation/review/neutron-mutation-review-artifact.js";
-import { compareNeutronMutationPaths } from "../../../../../validator/src/neutron-mutation-canonical.js";
+import { compareNeutronMutationPaths } from "../../../../../validator/src/neutron/mutation/neutron-mutation-canonical.js";
 import {
   ApplyBlockedBeforeWrite,
   approvedApplyPathHasSymlink,

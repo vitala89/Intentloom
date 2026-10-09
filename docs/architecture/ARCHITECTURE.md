@@ -196,6 +196,51 @@ There is no `packages/protocol/src/neutron/index.ts`. Package subpath names stay
 
 Runtime, session, graph, and mutation are the protocol cycle boundary. Imports between those directories are an explicit allowlist and must stay acyclic. Imports among `mutation/*` stay inside mutation. Three file cycles already existed and remain: the mutation contract with approval and the review artifact, the status result with its body parser, and Undo execution with its checker. Protocol modules define and parse contracts. They do not execute mutation, touch the filesystem, issue approval, or call application or daemon code.
 
+### Validator Neutron layout
+
+`@intentloom/validator` owns deterministic validation of Neutron contracts. It checks protocol shapes, schema invariants, canonical digest inputs, path sets, lifecycle consistency, review artifacts, approval intent, Apply records, verification evidence, and session, activity, graph, and runtime payloads. It does not orchestrate sessions, issue approval, mutate the filesystem, dispatch daemon requests, or call providers. Validation stays fail closed.
+
+```text
+packages/validator/src/neutron/
+  runtime/                 Runtime session, adapter, N2, N3, and runtime-record validation
+  session/                 Session RPC and turn-activity validation
+  graph/                   Graph snapshot validation
+  mutation/                Proposal, preflight, canonical digest, path set, transaction record
+    proposal/              Proposal candidate
+    review/                Review artifact, review digest, and review RPC
+    approval/              Approval record and approval intent
+    apply/                 Apply result
+    verification/          Post-Apply verification evidence and its digest
+```
+
+`neutron-runtime-helpers.ts` remains a private runtime parser module. Session, graph, and mutation import it. `neutron-mutation-review-rpc-helpers.ts` remains the private review-RPC parser. Canonical digest, exact path-set comparison, and the durable transaction record stay at the mutation root because proposal, review, approval, Apply, verification, and the Undo restoration claim share them. The transaction record checks the Apply result and the optional Undo restoration claim, so Apply alone does not own it. There is no validator `undo/` or `status/` directory: those stages have no separate validator modules.
+
+There is no `packages/validator/src/neutron/index.ts`. Package subpath names stay `@intentloom/validator/neutron-runtime`, `neutron-mutation`, `neutron-session`, `neutron-graph`, `neutron-runtime-n2`, and `neutron-runtime-n3`. Their files live at the paths above. `packages/validator/src/index.ts` does not re-export Neutron.
+
+Runtime, session, graph, and mutation are the validator cycle boundary. Imports between those directories are an explicit allowlist and must stay acyclic. Runtime imports none of the others. Imports among `mutation/*` stay inside mutation. Validator Neutron modules depend on `@intentloom/core` and `@intentloom/protocol`. They do not import application, daemon, CLI, Desktop, React, Tauri, or a provider SDK, and they do not read the filesystem or the network.
+
+### Daemon Neutron layout
+
+`@intentloom/daemon` is the authenticated local process adapter. Neutron daemon code maps protocol requests onto host application operations. It owns IPC composition, request dispatch, and handler binding. It does not own mutation invariants, protocol schemas, the approval model, or validation rules. `handlers` is the transport term for that binding.
+
+```text
+packages/daemon/src/neutron/
+  neutron-workspace-dispatch.ts   Neutron-wide request composition
+  session/                        Session and turn RPC, plus capability composition
+  graph/                          Graph RPC
+  mutation/
+    review/                       Review list and review get
+    approval/                     Approve-and-apply
+    status/                       Read-only status
+    verification/                 Verification retry
+```
+
+`neutron-workspace-dispatch.ts` is the Neutron composition root. It routes an authenticated request to the handler family and resolves the canonical project root. It does not hold domain rules. Session handlers bind session and turn methods and assemble the capability list by calling the graph and mutation binders. That composition is one-way: graph and mutation handlers do not import session or the dispatcher.
+
+Approve-and-apply stays under `approval/`. The handler accepts the approval-intent request and invokes the host `approveAndApplyNeutronMutation` operation. Status calls `getNeutronMutationStatus` and stays read-only. Verification retry calls `retryNeutronMutationVerification` and cannot Apply. There is no daemon `apply/` or `undo/` directory and no `recovery/` bucket.
+
+Each handler binds `NeutronSessionRuntime` from the application session module. That existing host-only type import is the application surface. Daemon Neutron code does not import Desktop, CLI, React, Tauri, or the validator package. `node:net` stays on the workspace dispatcher because that module is the socket adapter.
+
 Potential future implementation packages may include private agent protocol, agent session, provider adapter, orchestration, benchmark, and evaluation modules. These modules must not access arbitrary files or execute a generic shell. Every project operation remains typed, root-bound, capability-bounded, and subject to application validation.
 
 Model output, prompts, tool recommendations, external MCP data, and evaluator scores never count as approval. Capability enforcement, ownership validation, path safety, plan verification, and transactional writes remain deterministic system responsibilities outside model weights and prompts.

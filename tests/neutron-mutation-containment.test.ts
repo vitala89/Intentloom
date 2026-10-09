@@ -26,7 +26,7 @@ import {
   digestNeutronMutationApproval,
   digestNeutronMutationProposal,
   expectedNeutronMutationApprovalToken,
-} from "../packages/validator/src/neutron-mutation.js";
+} from "../packages/validator/src/neutron/mutation/neutron-mutation.js";
 
 function loadRequest(): NeutronMutationPreflightRequest {
   return structuredClone(

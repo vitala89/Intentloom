@@ -25,7 +25,7 @@ import type {
   ModelTurnRequest,
   ModelTurnResult,
 } from "../packages/protocol/src/model-adapter.js";
-import { NeutronN2Error } from "../packages/validator/src/neutron-runtime-n2.js";
+import { NeutronN2Error } from "../packages/validator/src/neutron/runtime/neutron-runtime-n2.js";
 import { validateModelAdapterCapabilities } from "../packages/validator/src/model-adapter.js";
 import {
   SLICE5_CONTENT_A,
