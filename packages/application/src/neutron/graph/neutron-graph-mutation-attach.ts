@@ -1,5 +1,5 @@
-import type { NeutronGraphMutationApplyEvidence } from "../../../../protocol/src/neutron-graph-mutation.js";
-import type { NeutronGraphMutationProposalEvidence } from "../../../../protocol/src/neutron-graph-mutation.js";
+import type { NeutronGraphMutationApplyEvidence } from "../../../../protocol/src/neutron/mutation/neutron-graph-mutation.js";
+import type { NeutronGraphMutationProposalEvidence } from "../../../../protocol/src/neutron/mutation/neutron-graph-mutation.js";
 import { digestGraphMutationEvidence } from "../mutation/apply/neutron-graph-mutation-evidence.js";
 import { digestNeutronGraphExecution } from "../scheduler/neutron-scheduler-graph-result.js";
 import type { NeutronGraphExecutionResult } from "../scheduler/neutron-scheduler-graph-result.js";

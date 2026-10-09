@@ -1,7 +1,7 @@
 import type { GeneratedFile } from "@intentloom/core";
 import type { ApprovedApplyPlan } from "../../../../../protocol/src/approved-apply.js";
 import type { ApprovedApplyRollbackFile } from "../../../../../protocol/src/approved-apply.js";
-import { NEUTRON_MUTATION_INNER_APPLY_APPROVAL } from "../../../../../protocol/src/neutron-mutation.js";
+import { NEUTRON_MUTATION_INNER_APPLY_APPROVAL } from "../../../../../protocol/src/neutron/mutation/neutron-mutation.js";
 import { exactNeutronMutationPathSetsEqual } from "../../../../../validator/src/neutron-mutation-path-set.js";
 import { executeApprovedApplyPlan } from "../../../approved-apply-engine.js";
 import { GENERATED_FILE_SYNC_DECLARED_PATHS_ONLY } from "../../../generated-file-sync-declared.js";

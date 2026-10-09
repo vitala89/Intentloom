@@ -7,7 +7,7 @@ import {
   type NeutronReadOnlyTool,
   type NeutronRuntimeSession,
   type NeutronToolEnvelope,
-} from "../../../protocol/src/neutron-runtime.js";
+} from "../../../protocol/src/neutron/runtime/neutron-runtime.js";
 import { neutronToolAdapterDescriptors } from "./tools/neutron-tool-registry.js";
 import {
   NEUTRON_N2_MAX_BODY_BYTES,

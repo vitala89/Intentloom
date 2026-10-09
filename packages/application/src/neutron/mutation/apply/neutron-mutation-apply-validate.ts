@@ -1,12 +1,12 @@
 import type { GeneratedFile } from "@intentloom/core";
 import type { AgentRoleCapabilities } from "../../../../../protocol/src/index.js";
-import type { NeutronMutationApplyFailureCode } from "../../../../../protocol/src/neutron-mutation-apply.js";
+import type { NeutronMutationApplyFailureCode } from "../../../../../protocol/src/neutron/mutation/apply/neutron-mutation-apply.js";
 import type {
   NeutronMutationApproval,
   NeutronMutationProposal,
-} from "../../../../../protocol/src/neutron-mutation.js";
-import type { NeutronMutationReviewArtifact } from "../../../../../protocol/src/neutron-mutation-review-artifact.js";
-import type { NeutronRuntimeSession } from "../../../../../protocol/src/neutron-runtime.js";
+} from "../../../../../protocol/src/neutron/mutation/neutron-mutation.js";
+import type { NeutronMutationReviewArtifact } from "../../../../../protocol/src/neutron/mutation/review/neutron-mutation-review-artifact.js";
+import type { NeutronRuntimeSession } from "../../../../../protocol/src/neutron/runtime/neutron-runtime.js";
 import { exactNeutronMutationPathSetsEqual } from "../../../../../validator/src/neutron-mutation-path-set.js";
 import { assertCanonicalContentBoundPlanDigest } from "../../../../../validator/src/neutron-mutation-review-artifact.js";
 import {

@@ -1,4 +1,4 @@
-import type { NeutronMutationApproveAndApplyResult } from "../../../../protocol/src/neutron-mutation-approve-apply-result.js";
+import type { NeutronMutationApproveAndApplyResult } from "../../../../protocol/src/neutron/mutation/approval/neutron-mutation-approve-apply-result.js";
 import { validateNeutronMutationApprovalIntent } from "../../../../validator/src/neutron-mutation-approval-intent.js";
 import type { FileSystem } from "../../index.js";
 import { approveAndApplyNeutronGraphMutation } from "../mutation/approval/neutron-mutation-approve-apply.js";
@@ -8,7 +8,7 @@ import type {
   NeutronGraphStaleBaseline,
   NeutronGraphStaleSnapshot,
 } from "../scheduler/neutron-scheduler-stale.js";
-import type { NeutronMutationApprovalIntent } from "../../../../protocol/src/neutron-mutation-approval-intent.js";
+import type { NeutronMutationApprovalIntent } from "../../../../protocol/src/neutron/mutation/approval/neutron-mutation-approval-intent.js";
 
 /**
  * Production D4 composition. Resolves the host session and durable directory,

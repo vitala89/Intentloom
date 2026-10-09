@@ -5,7 +5,7 @@ import {
   type NeutronErrorCode,
   type NeutronReadOnlyTool,
   type NeutronSkillLoadingLevel,
-} from "../../protocol/src/neutron-runtime.js";
+} from "../../protocol/src/neutron/runtime/neutron-runtime.js";
 import {
   NEUTRON_TOOL_ACTIVITY_STATUSES,
   NEUTRON_TURN_ACTIVITY_SUMMARY_MAX_CHARS,
@@ -13,7 +13,7 @@ import {
   type NeutronTurnContextSourceRow,
   type NeutronTurnContextSummary,
   type NeutronTurnToolActivity,
-} from "../../protocol/src/neutron-session-activity.js";
+} from "../../protocol/src/neutron/session/neutron-session-activity.js";
 import {
   finiteInt,
   isObject,

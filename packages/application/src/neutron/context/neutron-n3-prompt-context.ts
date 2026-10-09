@@ -1,4 +1,4 @@
-import type { NeutronContextSource } from "../../../../protocol/src/neutron-runtime.js";
+import type { NeutronContextSource } from "../../../../protocol/src/neutron/runtime/neutron-runtime.js";
 import {
   compareAssemblyCandidates,
   type AssemblyCandidate,

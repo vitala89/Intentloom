@@ -1,8 +1,8 @@
 import { createHash } from "node:crypto";
 import { join } from "node:path";
 import { checksum } from "@intentloom/core";
-import { NEUTRON_MUTATION_UNDO_RESTORATION_SCHEMA_URN } from "../../../../../protocol/src/neutron-mutation-undo-snapshot.js";
-import type { NeutronMutationUndoRestorationClaim } from "../../../../../protocol/src/neutron-mutation-undo-snapshot.js";
+import { NEUTRON_MUTATION_UNDO_RESTORATION_SCHEMA_URN } from "../../../../../protocol/src/neutron/mutation/undo/neutron-mutation-undo-snapshot.js";
+import type { NeutronMutationUndoRestorationClaim } from "../../../../../protocol/src/neutron/mutation/undo/neutron-mutation-undo-snapshot.js";
 import {
   canonicalNeutronMutationJson,
   compareNeutronMutationPaths,

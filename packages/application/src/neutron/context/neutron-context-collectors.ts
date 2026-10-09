@@ -12,7 +12,7 @@ import type {
   AssembleNeutronContextRequest,
   NeutronContextSource,
   NeutronSkillLoadingLevel,
-} from "../../../../protocol/src/neutron-runtime.js";
+} from "../../../../protocol/src/neutron/runtime/neutron-runtime.js";
 import {
   discoverSkills,
   getBoundedProjectContext,

@@ -1,7 +1,7 @@
 import type {
   NeutronTaskGraph,
   NeutronTaskState,
-} from "../../../../protocol/src/neutron-runtime.js";
+} from "../../../../protocol/src/neutron/runtime/neutron-runtime.js";
 import type { ExecuteNeutronTaskNodeResult } from "./node/neutron-node-execution.js";
 import { executeNeutronTaskNode } from "./node/neutron-node-execution.js";
 import {

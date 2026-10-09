@@ -10,7 +10,7 @@ import {
 import { fingerprintNeutronProjectRoot } from "../packages/application/src/neutron/neutron-session-fingerprint.js";
 import { projectNeutronMutationReviewFiles } from "../packages/application/src/neutron/mutation/review/neutron-mutation-review-files.js";
 import { nodeFileSystem } from "../packages/application/src/index.js";
-import { NEUTRON_MUTATION_PROPOSAL_CANDIDATE_SCHEMA_URN } from "../packages/protocol/src/neutron-mutation-proposal-candidate.js";
+import { NEUTRON_MUTATION_PROPOSAL_CANDIDATE_SCHEMA_URN } from "../packages/protocol/src/neutron/mutation/proposal/neutron-mutation-proposal-candidate.js";
 import {
   REVIEW_GRAPH_ID,
   SLICE5_CONTENT_Z,

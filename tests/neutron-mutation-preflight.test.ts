@@ -17,12 +17,12 @@ import {
   type NeutronMutationApproval,
   type NeutronMutationPreflightRequest,
   type NeutronMutationProposal,
-} from "../packages/protocol/src/neutron-mutation.js";
+} from "../packages/protocol/src/neutron/mutation/neutron-mutation.js";
 import {
   NEUTRON_READ_ONLY_TOOLS,
   NEUTRON_RUNTIME_SESSION_SCHEMA_URN,
   type NeutronRuntimeSession,
-} from "../packages/protocol/src/neutron-runtime.js";
+} from "../packages/protocol/src/neutron/runtime/neutron-runtime.js";
 import {
   digestNeutronMutationApproval,
   digestNeutronMutationProposal,

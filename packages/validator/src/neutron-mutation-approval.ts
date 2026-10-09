@@ -1,9 +1,9 @@
-import { NEUTRON_MUTATION_CLASS } from "../../protocol/src/neutron-mutation.js";
+import { NEUTRON_MUTATION_CLASS } from "../../protocol/src/neutron/mutation/neutron-mutation.js";
 import {
   NEUTRON_MUTATION_APPROVAL_SCHEMA_URN,
   NEUTRON_MUTATION_APPROVAL_SOURCE,
   type NeutronMutationApproval,
-} from "../../protocol/src/neutron-mutation-approval.js";
+} from "../../protocol/src/neutron/mutation/approval/neutron-mutation-approval.js";
 import {
   assertNeutronMutationDigest,
   canonicalizeNeutronMutationPaths,

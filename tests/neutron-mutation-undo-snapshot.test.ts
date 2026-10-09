@@ -15,7 +15,7 @@ import {
   NEUTRON_READ_ONLY_TOOLS,
   PROTOCOL_VERSION,
 } from "@intentloom/protocol";
-import { NEUTRON_MUTATION_REVIEW_MAX_FILE_CONTENT_BYTES } from "../packages/protocol/src/neutron-mutation-review-artifact.js";
+import { NEUTRON_MUTATION_REVIEW_MAX_FILE_CONTENT_BYTES } from "../packages/protocol/src/neutron/mutation/review/neutron-mutation-review-artifact.js";
 import { nodeFileSystem } from "../packages/application/src/index.js";
 import type { FileSystem } from "../packages/application/src/index.js";
 import {
@@ -45,9 +45,9 @@ import { retryAppliedNeutronMutationVerification } from "../packages/application
 import {
   NEUTRON_MUTATION_APPROVAL_INTENT_ACTION,
   NEUTRON_MUTATION_APPROVAL_INTENT_SCHEMA_URN,
-} from "../packages/protocol/src/neutron-mutation-approval-intent.js";
-import { NEUTRON_MUTATION_UNDO_INTENT_SCHEMA_URN } from "../packages/protocol/src/neutron-mutation-undo.js";
-import { NEUTRON_MUTATION_VERIFICATION_RETRY_SCHEMA_URN } from "../packages/protocol/src/neutron-mutation-verification-retry-rpc.js";
+} from "../packages/protocol/src/neutron/mutation/approval/neutron-mutation-approval-intent.js";
+import { NEUTRON_MUTATION_UNDO_INTENT_SCHEMA_URN } from "../packages/protocol/src/neutron/mutation/undo/neutron-mutation-undo.js";
+import { NEUTRON_MUTATION_VERIFICATION_RETRY_SCHEMA_URN } from "../packages/protocol/src/neutron/mutation/verification/neutron-mutation-verification-retry-rpc.js";
 import { compareNeutronMutationPaths } from "../packages/validator/src/neutron-mutation-canonical.js";
 import { digestGeneratedFileContent } from "../packages/validator/src/neutron-mutation-review-digest.js";
 import { listRegisteredNeutronTools } from "../packages/application/src/neutron/tools/neutron-tool-registry.js";

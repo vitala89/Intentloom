@@ -28,12 +28,12 @@ import {
   statusIndexPath,
 } from "../packages/application/src/neutron/mutation/status/neutron-mutation-status-index.js";
 import { publicNeutronMutationStatus } from "../packages/application/src/neutron/mutation/status/neutron-mutation-status-public.js";
-import { NEUTRON_READ_ONLY_TOOLS } from "../packages/protocol/src/neutron-runtime.js";
+import { NEUTRON_READ_ONLY_TOOLS } from "../packages/protocol/src/neutron/runtime/neutron-runtime.js";
 import {
   NEUTRON_MUTATION_APPROVAL_INTENT_ACTION,
   NEUTRON_MUTATION_APPROVAL_INTENT_SCHEMA_URN,
-} from "../packages/protocol/src/neutron-mutation-approval-intent.js";
-import { NEUTRON_MUTATION_APPLY_RESULT_SCHEMA_URN } from "../packages/protocol/src/neutron-mutation-apply.js";
+} from "../packages/protocol/src/neutron/mutation/approval/neutron-mutation-approval-intent.js";
+import { NEUTRON_MUTATION_APPLY_RESULT_SCHEMA_URN } from "../packages/protocol/src/neutron/mutation/apply/neutron-mutation-apply.js";
 import { canonicalNeutronMutationJson } from "../packages/validator/src/neutron-mutation-canonical.js";
 import { expectedNeutronMutationApprovalToken } from "../packages/validator/src/neutron-mutation-digest.js";
 import { neutronSessionCapabilities as daemonCapabilities } from "../packages/daemon/src/neutron-session-handlers.js";

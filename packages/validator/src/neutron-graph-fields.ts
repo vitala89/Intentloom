@@ -3,7 +3,7 @@ import {
   NEUTRON_TASK_STATES,
   type NeutronErrorCode,
   type NeutronTaskState,
-} from "../../protocol/src/neutron-runtime.js";
+} from "../../protocol/src/neutron/runtime/neutron-runtime.js";
 import {
   NEUTRON_GRAPH_ATTEMPT_STATES,
   NEUTRON_GRAPH_DEFAULT_CONCURRENCY,
@@ -21,7 +21,7 @@ import {
   type NeutronGraphStaleSnapshot,
   type NeutronGraphToolInvocationSnapshot,
   type NeutronGraphUsageSnapshot,
-} from "../../protocol/src/neutron-graph.js";
+} from "../../protocol/src/neutron/graph/neutron-graph.js";
 import {
   finiteInt,
   isObject,

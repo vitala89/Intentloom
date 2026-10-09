@@ -28,7 +28,7 @@ import {
   type NeutronRuntimeSession,
   type NeutronTaskGraph,
   type NeutronTaskNode,
-} from "../packages/protocol/src/neutron-runtime.js";
+} from "../packages/protocol/src/neutron/runtime/neutron-runtime.js";
 import type { AgentRoleCapabilities } from "../packages/protocol/src/index.js";
 
 const ROOT = "/project";

@@ -5,7 +5,7 @@ import type {
   TaskSummary,
   TrustClass,
 } from "@intentloom/protocol";
-import type { AssembleNeutronContextRequest } from "../../../../protocol/src/neutron-runtime.js";
+import type { AssembleNeutronContextRequest } from "../../../../protocol/src/neutron/runtime/neutron-runtime.js";
 import {
   getProfile,
   getTaskSummary,

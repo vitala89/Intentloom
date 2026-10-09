@@ -2,8 +2,8 @@ import type { FileSystem } from "../../../index.js";
 import {
   parseNeutronMutationUndoRequest,
   type NeutronMutationUndoRequest,
-} from "../../../../../protocol/src/neutron-mutation-undo-request.js";
-import type { NeutronMutationUndoExecutionResult } from "../../../../../protocol/src/neutron-mutation-undo-execution.js";
+} from "../../../../../protocol/src/neutron/mutation/undo/neutron-mutation-undo-request.js";
+import type { NeutronMutationUndoExecutionResult } from "../../../../../protocol/src/neutron/mutation/undo/neutron-mutation-undo-execution.js";
 import { preflightNeutronMutationUndo } from "./neutron-mutation-undo-preflight.js";
 import { undoUnderProjectLock } from "./neutron-mutation-undo-commit.js";
 import { undoPreflightIntent } from "./neutron-mutation-undo-locate.js";

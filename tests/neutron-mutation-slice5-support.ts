@@ -2,7 +2,7 @@ import { checksum } from "@intentloom/core";
 import {
   NEUTRON_MUTATION_PROPOSAL_CANDIDATE_SCHEMA_URN,
   type NeutronMutationProposalCandidate,
-} from "../packages/protocol/src/neutron-mutation-proposal-candidate.js";
+} from "../packages/protocol/src/neutron/mutation/proposal/neutron-mutation-proposal-candidate.js";
 import {
   NEUTRON_RUNTIME_SESSION_SCHEMA_URN,
   NEUTRON_SUBAGENT_RESULT_SCHEMA_URN,
@@ -10,7 +10,7 @@ import {
   type NeutronRuntimeSession,
   type NeutronTaskGraph,
   type NeutronTaskNode,
-} from "../packages/protocol/src/neutron-runtime.js";
+} from "../packages/protocol/src/neutron/runtime/neutron-runtime.js";
 import type { AgentRoleCapabilities } from "../packages/protocol/src/index.js";
 import type { NeutronNodeExecutionSuccess } from "../packages/application/src/neutron/scheduler/node/neutron-node-execution.js";
 import { digestNeutronNodeOutput } from "../packages/application/src/neutron/scheduler/node/neutron-node-result.js";

@@ -816,13 +816,18 @@ External Specialized Pack live under `apps/desktop/src/features/`.
 into semantic subfeatures. It does not change Neutron behavior.
 **Desktop Architecture R3** is merged (PR #551, merge
 `01e0c7d5454c6c88aa50ae8778e0a700709fae9e`). Shell and workspace
-composition stay behavior-preserving. **Backend Architecture R4A**
-organizes `packages/application/src/neutron/` by session, context, graph,
+composition stay behavior-preserving. **Backend Architecture R4A** is merged (PR #552, merge
+`05b1a2c9f282b5e083485820d7e5b8afe2045581`). It organizes
+`packages/application/src/neutron/` by session, context, graph,
 scheduler (with node execution), tools, and mutation stages. It does not
-change Neutron behavior. R4B protocol topology, R4C validator/daemon
-topology, R4D repository hygiene, Undo U4, and Desktop Undo U5 remain
-unauthorized. Other post-P4 candidates remain in
-`POST_W12_NEXT_INCREMENT_PLAN.md`.
+change Neutron behavior. **Backend Architecture R4B** organizes
+`packages/protocol/src/neutron/` by runtime, session, graph, and
+mutation lifecycle stages. Public protocol subpath names stay stable.
+Wire semantics stay the same. R4B is on
+`refactor/protocol-neutron-topology-r4b` and is awaiting maintainer
+review. R4C validator/daemon topology, R4D repository hygiene, Undo U4,
+and Desktop Undo U5 remain unauthorized. Other post-P4 candidates remain
+in `POST_W12_NEXT_INCREMENT_PLAN.md`.
 
 The Desktop discovery/error and Diff/Timeline slices remain recorded in
 [PHASE1_CONTRACTS.md](docs/desktop/PHASE1_CONTRACTS.md).

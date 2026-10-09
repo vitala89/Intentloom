@@ -2,7 +2,7 @@ import type { AgentRoleCapabilities } from "../../../../../protocol/src/index.js
 import {
   NEUTRON_READ_ONLY_TOOLS,
   type NeutronReadOnlyTool,
-} from "../../../../../protocol/src/neutron-runtime.js";
+} from "../../../../../protocol/src/neutron/runtime/neutron-runtime.js";
 
 export interface ResolveNeutronNodeCapabilitiesInput {
   readonly sessionCapabilities: AgentRoleCapabilities;

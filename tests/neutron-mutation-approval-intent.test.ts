@@ -10,8 +10,8 @@ import {
   NEUTRON_MUTATION_APPROVAL_INTENT_ACTION,
   NEUTRON_MUTATION_APPROVAL_INTENT_SCHEMA_URN,
   NEUTRON_MUTATION_CLASS,
-} from "../packages/protocol/src/neutron-mutation.js";
-import { NEUTRON_READ_ONLY_TOOLS } from "../packages/protocol/src/neutron-runtime.js";
+} from "../packages/protocol/src/neutron/mutation/neutron-mutation.js";
+import { NEUTRON_READ_ONLY_TOOLS } from "../packages/protocol/src/neutron/runtime/neutron-runtime.js";
 import type { ModelAdapter } from "../packages/application/src/model-adapter.js";
 import { nodeFileSystem } from "../packages/application/src/index.js";
 import { createMemoryNeutronMutationApprovalStore } from "../packages/application/src/neutron/mutation/apply/neutron-mutation-apply-store.js";
@@ -30,7 +30,7 @@ import {
   type NeutronMutationApprovalIssueOutcome,
 } from "../packages/application/src/neutron/neutron-scheduler.js";
 import type { NeutronGraphMutationReviewBundle } from "../packages/application/src/neutron/mutation/review/neutron-graph-mutation-store.js";
-import type { NeutronRuntimeSession } from "../packages/protocol/src/neutron-runtime.js";
+import type { NeutronRuntimeSession } from "../packages/protocol/src/neutron/runtime/neutron-runtime.js";
 import { validateNeutronMutationApprovalIntent } from "../packages/validator/src/neutron-mutation.js";
 import { expectedNeutronMutationApprovalToken } from "../packages/validator/src/neutron-mutation-digest.js";
 import { validateNeutronRuntimeSession } from "../packages/validator/src/neutron-runtime.js";

@@ -1,7 +1,7 @@
-import { NEUTRON_MUTATION_CLASS } from "../../../../protocol/src/neutron-mutation.js";
-import { NEUTRON_MUTATION_PROPOSAL_SCHEMA_URN } from "../../../../protocol/src/neutron-mutation.js";
-import type { NeutronMutationProposal } from "../../../../protocol/src/neutron-mutation.js";
-import type { NeutronRuntimeSession } from "../../../../protocol/src/neutron-runtime.js";
+import { NEUTRON_MUTATION_CLASS } from "../../../../protocol/src/neutron/mutation/neutron-mutation.js";
+import { NEUTRON_MUTATION_PROPOSAL_SCHEMA_URN } from "../../../../protocol/src/neutron/mutation/neutron-mutation.js";
+import type { NeutronMutationProposal } from "../../../../protocol/src/neutron/mutation/neutron-mutation.js";
+import type { NeutronRuntimeSession } from "../../../../protocol/src/neutron/runtime/neutron-runtime.js";
 import {
   digestContentBoundApplyPlan,
   digestGeneratedFileContent,

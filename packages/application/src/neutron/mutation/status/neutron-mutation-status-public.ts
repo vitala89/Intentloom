@@ -1,8 +1,8 @@
-import type { NeutronMutationApplyResult } from "../../../../../protocol/src/neutron-mutation-apply.js";
-import type { NeutronMutationTransactionState } from "../../../../../protocol/src/neutron-mutation-apply.js";
-import { validateNeutronMutationStatusResult } from "../../../../../protocol/src/neutron-mutation-status-result.js";
-import type { NeutronMutationStatusResult } from "../../../../../protocol/src/neutron-mutation-status-result.js";
-import { NEUTRON_MUTATION_STATUS_SCHEMA_URN } from "../../../../../protocol/src/neutron-mutation-status-rpc.js";
+import type { NeutronMutationApplyResult } from "../../../../../protocol/src/neutron/mutation/apply/neutron-mutation-apply.js";
+import type { NeutronMutationTransactionState } from "../../../../../protocol/src/neutron/mutation/apply/neutron-mutation-apply.js";
+import { validateNeutronMutationStatusResult } from "../../../../../protocol/src/neutron/mutation/status/neutron-mutation-status-result.js";
+import type { NeutronMutationStatusResult } from "../../../../../protocol/src/neutron/mutation/status/neutron-mutation-status-result.js";
+import { NEUTRON_MUTATION_STATUS_SCHEMA_URN } from "../../../../../protocol/src/neutron/mutation/status/neutron-mutation-status-rpc.js";
 import { PROTOCOL_VERSION } from "../../../../../protocol/src/jsonrpc.js";
 import type { NeutronMutationTransactionRecord } from "../apply/neutron-mutation-apply-store.js";
 

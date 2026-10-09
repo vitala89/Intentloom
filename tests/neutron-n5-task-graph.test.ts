@@ -3,7 +3,7 @@ import {
   NEUTRON_TASK_GRAPH_SCHEMA_URN,
   type NeutronTaskGraph,
   type NeutronTaskNode,
-} from "../packages/protocol/src/neutron-runtime.js";
+} from "../packages/protocol/src/neutron/runtime/neutron-runtime.js";
 import {
   NeutronSchedulerError,
   validateNeutronTaskGraphForExecution,

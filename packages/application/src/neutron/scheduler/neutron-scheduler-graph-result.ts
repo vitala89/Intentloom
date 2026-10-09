@@ -1,16 +1,16 @@
 import { checksum } from "@intentloom/core";
-import type { NeutronGraphMutationApplyEvidence } from "../../../../protocol/src/neutron-graph-mutation.js";
-import type { NeutronGraphMutationProposalEvidence } from "../../../../protocol/src/neutron-graph-mutation.js";
+import type { NeutronGraphMutationApplyEvidence } from "../../../../protocol/src/neutron/mutation/neutron-graph-mutation.js";
+import type { NeutronGraphMutationProposalEvidence } from "../../../../protocol/src/neutron/mutation/neutron-graph-mutation.js";
 import type {
   NeutronRuntimeSession,
   NeutronTaskGraph,
   NeutronTaskState,
   NeutronUsageBudget,
-} from "../../../../protocol/src/neutron-runtime.js";
+} from "../../../../protocol/src/neutron/runtime/neutron-runtime.js";
 import {
   NEUTRON_GRAPH_STATUSES,
   type NeutronGraphStatus,
-} from "../../../../protocol/src/neutron-graph.js";
+} from "../../../../protocol/src/neutron/graph/neutron-graph.js";
 import {
   compareNeutronTaskIds,
   sortNeutronTaskIds,

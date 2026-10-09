@@ -1,4 +1,4 @@
-import type { NeutronMutationApplyResult } from "../../../../../protocol/src/neutron-mutation-apply.js";
+import type { NeutronMutationApplyResult } from "../../../../../protocol/src/neutron/mutation/apply/neutron-mutation-apply.js";
 import { ApplyBlockedBeforeWrite } from "../../../approved-apply-baseline.js";
 import { executeTrustedDeclaredPathApply } from "../apply/neutron-mutation-apply-execute.js";
 import type { ParsedNeutronMutationApplyRequest } from "../apply/neutron-mutation-apply-parse.js";

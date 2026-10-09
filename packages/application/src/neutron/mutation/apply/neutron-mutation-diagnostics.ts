@@ -2,7 +2,7 @@ import {
   NEUTRON_MUTATION_PREFLIGHT_RESULT_SCHEMA_URN,
   type NeutronMutationPreflightRejectionReason,
   type NeutronMutationPreflightResult,
-} from "../../../../../protocol/src/neutron-mutation.js";
+} from "../../../../../protocol/src/neutron/mutation/neutron-mutation.js";
 import { validateNeutronMutationPreflightResult } from "../../../../../validator/src/neutron-mutation.js";
 
 export interface NeutronMutationPreflightDiagnostics {

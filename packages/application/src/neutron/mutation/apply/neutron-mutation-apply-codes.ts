@@ -1,5 +1,5 @@
-import type { NeutronMutationApplyFailureCode } from "../../../../../protocol/src/neutron-mutation-apply.js";
-import type { NeutronMutationPreflightRejectionReason } from "../../../../../protocol/src/neutron-mutation.js";
+import type { NeutronMutationApplyFailureCode } from "../../../../../protocol/src/neutron/mutation/apply/neutron-mutation-apply.js";
+import type { NeutronMutationPreflightRejectionReason } from "../../../../../protocol/src/neutron/mutation/neutron-mutation.js";
 import type { MutationPayloadVerificationCode } from "../review/neutron-mutation-review-payload.js";
 
 export function mapPreflightReasonToApplyCode(

@@ -6,7 +6,7 @@ import {
   type NeutronRuntimeSession,
   type NeutronSessionState,
   type NeutronToolInvocation,
-} from "../../../../protocol/src/neutron-runtime.js";
+} from "../../../../protocol/src/neutron/runtime/neutron-runtime.js";
 import { NEUTRON_N2_MAX_BODY_BYTES } from "../../../../validator/src/neutron-runtime-n2.js";
 import { validateNeutronRuntimeSession } from "../../../../validator/src/neutron-runtime.js";
 import {

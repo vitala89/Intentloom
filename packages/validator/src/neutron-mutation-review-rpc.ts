@@ -4,7 +4,7 @@ import {
   NEUTRON_MUTATION_REVIEW_OUTCOMES,
   type NeutronMutationReviewGetResult,
   type NeutronMutationReviewListResult,
-} from "../../protocol/src/neutron-mutation-review-view.js";
+} from "../../protocol/src/neutron/mutation/review/neutron-mutation-review-view.js";
 import { PROTOCOL_VERSION } from "../../protocol/src/jsonrpc.js";
 import { oneOf } from "./neutron-runtime-helpers.js";
 import {

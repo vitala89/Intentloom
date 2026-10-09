@@ -21,7 +21,7 @@ import {
   type NeutronMutationApproval,
   type NeutronMutationPreflightRequest,
   type NeutronMutationProposal,
-} from "../packages/protocol/src/neutron-mutation.js";
+} from "../packages/protocol/src/neutron/mutation/neutron-mutation.js";
 import {
   digestNeutronMutationApproval,
   digestNeutronMutationProposal,

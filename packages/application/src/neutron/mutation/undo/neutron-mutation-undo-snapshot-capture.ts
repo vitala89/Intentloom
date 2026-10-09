@@ -1,5 +1,5 @@
 import type { ApprovedApplyRollbackFile } from "../../../../../protocol/src/approved-apply.js";
-import type { NeutronMutationApplyFailureCode } from "../../../../../protocol/src/neutron-mutation-apply.js";
+import type { NeutronMutationApplyFailureCode } from "../../../../../protocol/src/neutron/mutation/apply/neutron-mutation-apply.js";
 import { compareNeutronMutationPaths } from "../../../../../validator/src/neutron-mutation-canonical.js";
 import { exactNeutronMutationPathSetsEqual } from "../../../../../validator/src/neutron-mutation-path-set.js";
 import {

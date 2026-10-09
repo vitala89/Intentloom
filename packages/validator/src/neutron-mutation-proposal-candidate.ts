@@ -2,13 +2,13 @@ import {
   NEUTRON_MUTATION_PROPOSAL_CANDIDATE_SCHEMA_URN,
   type NeutronMutationProposalCandidate,
   type NeutronMutationProposalCandidateFile,
-} from "../../protocol/src/neutron-mutation-proposal-candidate.js";
+} from "../../protocol/src/neutron/mutation/proposal/neutron-mutation-proposal-candidate.js";
 import {
   NEUTRON_MUTATION_REVIEW_MAX_AGGREGATE_CONTENT_BYTES,
   NEUTRON_MUTATION_REVIEW_MAX_FILE_CONTENT_BYTES,
   NEUTRON_MUTATION_REVIEW_MAX_FILES,
   NEUTRON_MUTATION_REVIEW_MAX_PATH_LENGTH,
-} from "../../protocol/src/neutron-mutation-review-artifact.js";
+} from "../../protocol/src/neutron/mutation/review/neutron-mutation-review-artifact.js";
 import { canonicalizeNeutronMutationPaths } from "./neutron-mutation-canonical.js";
 import { isObject, nonEmpty } from "./neutron-runtime-helpers.js";
 

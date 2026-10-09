@@ -1,8 +1,8 @@
 import type {
   NeutronMutationApplyResult,
   NeutronMutationTransactionState,
-} from "../../../../../protocol/src/neutron-mutation-apply.js";
-import type { NeutronMutationUndoRestorationClaim } from "../../../../../protocol/src/neutron-mutation-undo-snapshot.js";
+} from "../../../../../protocol/src/neutron/mutation/apply/neutron-mutation-apply.js";
+import type { NeutronMutationUndoRestorationClaim } from "../../../../../protocol/src/neutron/mutation/undo/neutron-mutation-undo-snapshot.js";
 import { durableTransactionRecordDigest } from "./neutron-mutation-apply-durable-record.js";
 import { neutronMutationVerificationRetryEligible } from "../verification/neutron-mutation-verification-retry-eligibility.js";
 

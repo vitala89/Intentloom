@@ -2,8 +2,8 @@ import {
   validateEngineeringWorkflowPolicy,
   validateGenericTimeline,
 } from "../../../../protocol/src/index.js";
-import type { NeutronRuntimeSession } from "../../../../protocol/src/neutron-runtime.js";
-import type { NeutronToolInvocation } from "../../../../protocol/src/neutron-runtime.js";
+import type { NeutronRuntimeSession } from "../../../../protocol/src/neutron/runtime/neutron-runtime.js";
+import type { NeutronToolInvocation } from "../../../../protocol/src/neutron/runtime/neutron-runtime.js";
 import {
   definition,
   fail,

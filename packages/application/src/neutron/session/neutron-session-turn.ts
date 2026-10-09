@@ -5,16 +5,16 @@ import type {
   NeutronRuntimeSession,
   NeutronSessionState,
   NeutronToolEnvelope,
-} from "../../../../protocol/src/neutron-runtime.js";
-import type { NeutronAdapterCapability } from "../../../../protocol/src/neutron-runtime.js";
+} from "../../../../protocol/src/neutron/runtime/neutron-runtime.js";
+import type { NeutronAdapterCapability } from "../../../../protocol/src/neutron/runtime/neutron-runtime.js";
 import type {
   NeutronTurnContextSummary,
   NeutronTurnToolActivity,
-} from "../../../../protocol/src/neutron-session-activity.js";
-import type { NeutronGraphSnapshot } from "../../../../protocol/src/neutron-graph.js";
-import type { NeutronMutationProposal } from "../../../../protocol/src/neutron-mutation.js";
-import type { NeutronMutationProposalSource } from "../../../../protocol/src/neutron-graph-mutation.js";
-import type { NeutronTaskGraph } from "../../../../protocol/src/neutron-runtime.js";
+} from "../../../../protocol/src/neutron/session/neutron-session-activity.js";
+import type { NeutronGraphSnapshot } from "../../../../protocol/src/neutron/graph/neutron-graph.js";
+import type { NeutronMutationProposal } from "../../../../protocol/src/neutron/mutation/neutron-mutation.js";
+import type { NeutronMutationProposalSource } from "../../../../protocol/src/neutron/mutation/neutron-graph-mutation.js";
+import type { NeutronTaskGraph } from "../../../../protocol/src/neutron/runtime/neutron-runtime.js";
 import type { NeutronGraphMutationPayloadStore } from "../mutation/review/neutron-graph-mutation-store.js";
 import type { NeutronGraphStaleBaseline } from "../scheduler/neutron-scheduler-stale.js";
 import type { NeutronSchedulingPlan } from "../scheduler/neutron-scheduler-select.js";

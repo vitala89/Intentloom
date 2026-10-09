@@ -1,6 +1,6 @@
-import type { NeutronGraphMutationApplyEvidence } from "../../../../../protocol/src/neutron-graph-mutation.js";
-import type { NeutronMutationApplyResult } from "../../../../../protocol/src/neutron-mutation-apply.js";
-import type { NeutronRuntimeSession } from "../../../../../protocol/src/neutron-runtime.js";
+import type { NeutronGraphMutationApplyEvidence } from "../../../../../protocol/src/neutron/mutation/neutron-graph-mutation.js";
+import type { NeutronMutationApplyResult } from "../../../../../protocol/src/neutron/mutation/apply/neutron-mutation-apply.js";
+import type { NeutronRuntimeSession } from "../../../../../protocol/src/neutron/runtime/neutron-runtime.js";
 import { applyApprovedNeutronMutation } from "./neutron-mutation-apply.js";
 import type { NeutronMutationApplyInput } from "./neutron-mutation-apply-types.js";
 import { buildNeutronGraphMutationApplyEvidence } from "./neutron-graph-mutation-evidence.js";

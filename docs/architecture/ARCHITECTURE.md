@@ -171,6 +171,31 @@ Mutation stages stay distinct. Proposal, review, approval, Apply, status, verifi
 
 Session, context, graph, scheduler (including node), tools, and mutation are the cycle boundary. Imports between those directories are an explicit allowlist and must stay acyclic. Mutation stages share one transaction record, so imports among `mutation/*` stay inside that one subfeature. Host durable state is the session host port: the session runtime accepts the directory and passes it into mutation operations.
 
+### Protocol Neutron layout
+
+`@intentloom/protocol` owns stable versioned messages, RPC requests and responses, schema identifiers, and client-visible lifecycle shapes. Application Neutron code owns use cases and orchestration. The protocol tree follows that public contract language. It does not mirror `packages/application/src/neutron/`.
+
+```text
+packages/protocol/src/neutron/
+  runtime/                 Neutron-wide session, context, tool, task-graph, and event contracts
+  session/                 Session and turn RPC, plus activity summaries
+  graph/                   Graph snapshot and graph RPC
+  mutation/                Proposal, preflight, and graph-linked evidence shared across stages
+    proposal/              Proposal candidate
+    review/                Review artifact, review view, and review RPC
+    approval/              Approval record, approval intent, and approve-and-apply RPC
+    apply/                 Apply result and durable transaction record
+    status/                Read-only status query and result
+    verification/          Post-Apply verification evidence and verification retry
+    undo/                  User Undo intent, preflight, snapshot, and execution
+```
+
+`runtime/` is the Neutron-wide contract module. Session, graph, and mutation depend on it. Runtime imports none of them. Graph snapshot and graph RPC stay under `graph/`. `neutron-graph-mutation.ts` stays at the mutation root because that one module owns both graph-linked proposal evidence and graph-linked Apply evidence. `NeutronMutationProposal` and preflight stay in `neutron-mutation.ts`, which is also the stable `@intentloom/protocol/neutron-mutation` re-export. `proposal/` holds the proposal-candidate contract. The approve-and-apply RPC stays under `approval/` with the approval intent it accepts. Apply's result and transaction record stay under `apply/`. `verification/` holds the existing post-Apply verification evidence and verification-retry contracts. User Undo stays under `undo/`.
+
+There is no `packages/protocol/src/neutron/index.ts`. Package subpath names stay `@intentloom/protocol/neutron-runtime`, `neutron-mutation`, `neutron-session`, and `neutron-graph`. Their files live at the paths above. The package root still exposes Neutron RPC symbols through `workspace-daemon-request.ts`.
+
+Runtime, session, graph, and mutation are the protocol cycle boundary. Imports between those directories are an explicit allowlist and must stay acyclic. Imports among `mutation/*` stay inside mutation. Three file cycles already existed and remain: the mutation contract with approval and the review artifact, the status result with its body parser, and Undo execution with its checker. Protocol modules define and parse contracts. They do not execute mutation, touch the filesystem, issue approval, or call application or daemon code.
+
 Potential future implementation packages may include private agent protocol, agent session, provider adapter, orchestration, benchmark, and evaluation modules. These modules must not access arbitrary files or execute a generic shell. Every project operation remains typed, root-bound, capability-bounded, and subject to application validation.
 
 Model output, prompts, tool recommendations, external MCP data, and evaluator scores never count as approval. Capability enforcement, ownership validation, path safety, plan verification, and transactional writes remain deterministic system responsibilities outside model weights and prompts.

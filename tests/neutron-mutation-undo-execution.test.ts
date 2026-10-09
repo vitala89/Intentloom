@@ -46,14 +46,14 @@ import { listRegisteredNeutronTools } from "../packages/application/src/neutron/
 import {
   NEUTRON_MUTATION_APPROVAL_INTENT_ACTION,
   NEUTRON_MUTATION_APPROVAL_INTENT_SCHEMA_URN,
-} from "../packages/protocol/src/neutron-mutation-approval-intent.js";
-import { NEUTRON_MUTATION_UNDO_INTENT_SCHEMA_URN } from "../packages/protocol/src/neutron-mutation-undo.js";
+} from "../packages/protocol/src/neutron/mutation/approval/neutron-mutation-approval-intent.js";
+import { NEUTRON_MUTATION_UNDO_INTENT_SCHEMA_URN } from "../packages/protocol/src/neutron/mutation/undo/neutron-mutation-undo.js";
 import {
   NEUTRON_MUTATION_UNDO_REQUEST_ACTION,
   NEUTRON_MUTATION_UNDO_REQUEST_SCHEMA_URN,
-} from "../packages/protocol/src/neutron-mutation-undo-request.js";
-import { NEUTRON_MUTATION_CLASS } from "../packages/protocol/src/neutron-mutation.js";
-import { NEUTRON_MUTATION_VERIFICATION_RETRY_SCHEMA_URN } from "../packages/protocol/src/neutron-mutation-verification-retry-rpc.js";
+} from "../packages/protocol/src/neutron/mutation/undo/neutron-mutation-undo-request.js";
+import { NEUTRON_MUTATION_CLASS } from "../packages/protocol/src/neutron/mutation/neutron-mutation.js";
+import { NEUTRON_MUTATION_VERIFICATION_RETRY_SCHEMA_URN } from "../packages/protocol/src/neutron/mutation/verification/neutron-mutation-verification-retry-rpc.js";
 import {
   REVIEW_GRAPH_ID,
   materializeReviewBundle,

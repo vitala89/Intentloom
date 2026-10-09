@@ -1,5 +1,5 @@
-import type { NeutronMutationReviewFileBinding } from "../../../../../protocol/src/neutron-mutation-review-artifact.js";
-import type { NeutronMutationByteCheck } from "../../../../../protocol/src/neutron-mutation-verification.js";
+import type { NeutronMutationReviewFileBinding } from "../../../../../protocol/src/neutron/mutation/review/neutron-mutation-review-artifact.js";
+import type { NeutronMutationByteCheck } from "../../../../../protocol/src/neutron/mutation/verification/neutron-mutation-verification.js";
 import { digestGeneratedFileContent } from "../../../../../validator/src/neutron-mutation-review-digest.js";
 import type { FileSystem } from "../../../index.js";
 

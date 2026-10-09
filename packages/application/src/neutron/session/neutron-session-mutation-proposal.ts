@@ -2,9 +2,9 @@ import {
   NEUTRON_MUTATION_CLASS,
   NEUTRON_MUTATION_PROPOSAL_SCHEMA_URN,
   type NeutronMutationProposal,
-} from "../../../../protocol/src/neutron-mutation.js";
-import type { NeutronRuntimeSession } from "../../../../protocol/src/neutron-runtime.js";
-import type { NeutronTaskNode } from "../../../../protocol/src/neutron-runtime.js";
+} from "../../../../protocol/src/neutron/mutation/neutron-mutation.js";
+import type { NeutronRuntimeSession } from "../../../../protocol/src/neutron/runtime/neutron-runtime.js";
+import type { NeutronTaskNode } from "../../../../protocol/src/neutron/runtime/neutron-runtime.js";
 import {
   digestNeutronMutationProposal,
   validateNeutronMutationProposal,

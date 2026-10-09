@@ -1,8 +1,8 @@
-import type { NeutronMutationVerificationRetryQuery } from "../../../../../protocol/src/neutron-mutation-verification-retry-rpc.js";
+import type { NeutronMutationVerificationRetryQuery } from "../../../../../protocol/src/neutron/mutation/verification/neutron-mutation-verification-retry-rpc.js";
 import {
   notEligibleVerificationRetry,
   type NeutronMutationVerificationRetryResult,
-} from "../../../../../protocol/src/neutron-mutation-verification-retry-result.js";
+} from "../../../../../protocol/src/neutron/mutation/verification/neutron-mutation-verification-retry-result.js";
 import type { FileSystem } from "../../../index.js";
 import { durableTransactionRecordDigest } from "../apply/neutron-mutation-apply-durable-record.js";
 import { buildNeutronMutationApplyResult } from "../apply/neutron-mutation-apply-result.js";

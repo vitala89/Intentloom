@@ -13,8 +13,8 @@ import {
   type NeutronGraphStaleSnapshot,
   type NeutronGraphToolInvocationSnapshot,
   type NeutronGraphUsageSnapshot,
-} from "../../../../protocol/src/neutron-graph.js";
-import type { NeutronTaskState } from "../../../../protocol/src/neutron-runtime.js";
+} from "../../../../protocol/src/neutron/graph/neutron-graph.js";
+import type { NeutronTaskState } from "../../../../protocol/src/neutron/runtime/neutron-runtime.js";
 import type { NeutronGraphExecutionResult } from "../scheduler/neutron-scheduler-graph-result.js";
 import type { NeutronGraphNodeRecord } from "../scheduler/neutron-scheduler-provenance.js";
 import type { NeutronAttemptEvidence } from "../scheduler/neutron-scheduler-attempt.js";

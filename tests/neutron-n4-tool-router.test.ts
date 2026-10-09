@@ -12,7 +12,7 @@ import { runNeutronN2ReadOnlyLoop } from "../packages/application/src/neutron/ne
 import {
   NEUTRON_RUNTIME_SESSION_SCHEMA_URN,
   type NeutronRuntimeSession,
-} from "../packages/protocol/src/neutron-runtime.js";
+} from "../packages/protocol/src/neutron/runtime/neutron-runtime.js";
 import type { AgentRoleCapabilities } from "../packages/protocol/src/index.js";
 
 const READ_ONLY_CAPS: AgentRoleCapabilities = {

@@ -32,13 +32,13 @@ import { retryAppliedNeutronMutationVerification } from "../packages/application
 import {
   NEUTRON_MUTATION_APPROVAL_INTENT_ACTION,
   NEUTRON_MUTATION_APPROVAL_INTENT_SCHEMA_URN,
-} from "../packages/protocol/src/neutron-mutation-approval-intent.js";
+} from "../packages/protocol/src/neutron/mutation/approval/neutron-mutation-approval-intent.js";
 import {
   NEUTRON_MUTATION_UNDO_AUTHORITY_KEYS,
   NEUTRON_MUTATION_UNDO_INTENT_SCHEMA_URN,
   parseNeutronMutationUndoIntent,
-} from "../packages/protocol/src/neutron-mutation-undo.js";
-import { NEUTRON_MUTATION_VERIFICATION_RETRY_SCHEMA_URN } from "../packages/protocol/src/neutron-mutation-verification-retry-rpc.js";
+} from "../packages/protocol/src/neutron/mutation/undo/neutron-mutation-undo.js";
+import { NEUTRON_MUTATION_VERIFICATION_RETRY_SCHEMA_URN } from "../packages/protocol/src/neutron/mutation/verification/neutron-mutation-verification-retry-rpc.js";
 import {
   REVIEW_GRAPH_ID,
   materializeReviewBundle,
@@ -366,8 +366,8 @@ function undoSource(): string {
     "packages/application/src/neutron/mutation/undo/neutron-mutation-undo-preflight.ts",
     "packages/application/src/neutron/mutation/undo/neutron-mutation-undo-eligibility.ts",
     "packages/application/src/neutron/mutation/undo/neutron-mutation-undo-current.ts",
-    "packages/protocol/src/neutron-mutation-undo.ts",
-    "packages/protocol/src/neutron-mutation-undo-result.ts",
+    "packages/protocol/src/neutron/mutation/undo/neutron-mutation-undo.ts",
+    "packages/protocol/src/neutron/mutation/undo/neutron-mutation-undo-result.ts",
   ]
     .map((path) => readFileSync(join(repoRoot(), path), "utf8"))
     .join("\n");

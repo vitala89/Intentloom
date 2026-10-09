@@ -1,12 +1,12 @@
-import { NEUTRON_GRAPH_SNAPSHOT_SCHEMA_URN } from "../../protocol/src/neutron-graph.js";
-import type { NeutronGraphSnapshot } from "../../protocol/src/neutron-graph.js";
+import { NEUTRON_GRAPH_SNAPSHOT_SCHEMA_URN } from "../../protocol/src/neutron/graph/neutron-graph.js";
+import type { NeutronGraphSnapshot } from "../../protocol/src/neutron/graph/neutron-graph.js";
 import {
   isObject,
   nonEmpty,
   oneOf,
   strings,
 } from "./neutron-runtime-helpers.js";
-import { NEUTRON_GRAPH_STATUSES } from "../../protocol/src/neutron-graph.js";
+import { NEUTRON_GRAPH_STATUSES } from "../../protocol/src/neutron/graph/neutron-graph.js";
 import {
   validateGraphConcurrency,
   validateGraphCounts,

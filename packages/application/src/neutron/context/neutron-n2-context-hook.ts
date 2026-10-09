@@ -3,8 +3,8 @@ import type {
   NeutronContextSourceType,
   NeutronDelegatedAgentRole,
   NeutronSkillLoadingLevel,
-} from "../../../../protocol/src/neutron-runtime.js";
-import { NEUTRON_CONTEXT_ASSEMBLY_REQUEST_SCHEMA_URN } from "../../../../protocol/src/neutron-runtime.js";
+} from "../../../../protocol/src/neutron/runtime/neutron-runtime.js";
+import { NEUTRON_CONTEXT_ASSEMBLY_REQUEST_SCHEMA_URN } from "../../../../protocol/src/neutron/runtime/neutron-runtime.js";
 import { nodeFileSystem, type FileSystem } from "../../index.js";
 import {
   assembleNeutronContext,

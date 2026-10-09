@@ -1,10 +1,10 @@
 import type { GeneratedFile } from "@intentloom/core";
-import type { NeutronMutationApplyFailureCode } from "../../../../../protocol/src/neutron-mutation-apply.js";
+import type { NeutronMutationApplyFailureCode } from "../../../../../protocol/src/neutron/mutation/apply/neutron-mutation-apply.js";
 import type {
   NeutronMutationApproval,
   NeutronMutationProposal,
-} from "../../../../../protocol/src/neutron-mutation.js";
-import type { NeutronMutationReviewArtifact } from "../../../../../protocol/src/neutron-mutation-review-artifact.js";
+} from "../../../../../protocol/src/neutron/mutation/neutron-mutation.js";
+import type { NeutronMutationReviewArtifact } from "../../../../../protocol/src/neutron/mutation/review/neutron-mutation-review-artifact.js";
 import { validateNeutronMutationApproval } from "../../../../../validator/src/neutron-mutation-approval.js";
 import { validateNeutronMutationProposal } from "../../../../../validator/src/neutron-mutation.js";
 import { validateNeutronMutationReviewArtifact } from "../../../../../validator/src/neutron-mutation-review-artifact.js";

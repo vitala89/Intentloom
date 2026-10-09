@@ -1,4 +1,4 @@
-import type { NeutronMutationVerificationEvidence } from "../../protocol/src/neutron-mutation-verification.js";
+import type { NeutronMutationVerificationEvidence } from "../../protocol/src/neutron/mutation/verification/neutron-mutation-verification.js";
 import { checksum } from "@intentloom/core";
 import { canonicalNeutronMutationJson } from "./neutron-mutation-canonical.js";
 

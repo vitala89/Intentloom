@@ -1,8 +1,8 @@
-import type { NeutronMutationStatusQuery } from "../../../../protocol/src/neutron-mutation-status-rpc.js";
+import type { NeutronMutationStatusQuery } from "../../../../protocol/src/neutron/mutation/status/neutron-mutation-status-rpc.js";
 import {
   closedNeutronMutationStatus,
   type NeutronMutationStatusResult,
-} from "../../../../protocol/src/neutron-mutation-status-result.js";
+} from "../../../../protocol/src/neutron/mutation/status/neutron-mutation-status-result.js";
 import type { StoredNeutronSession } from "./neutron-session-turn.js";
 import { readNeutronMutationStatus } from "../mutation/status/neutron-mutation-status-read.js";
 

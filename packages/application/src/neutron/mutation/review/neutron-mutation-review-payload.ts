@@ -3,7 +3,7 @@ import {
   normalizeStoredPath,
   type GeneratedFile,
 } from "@intentloom/core";
-import type { NeutronMutationReviewArtifact } from "../../../../../protocol/src/neutron-mutation-review-artifact.js";
+import type { NeutronMutationReviewArtifact } from "../../../../../protocol/src/neutron/mutation/review/neutron-mutation-review-artifact.js";
 import {
   digestGeneratedFileContent,
   exactNeutronMutationPathSetsEqual,

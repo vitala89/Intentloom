@@ -1,12 +1,12 @@
-import type { NeutronMutationUndoPreflightResult } from "../../../../../protocol/src/neutron-mutation-undo-result.js";
+import type { NeutronMutationUndoPreflightResult } from "../../../../../protocol/src/neutron/mutation/undo/neutron-mutation-undo-result.js";
 import {
   assembleNeutronMutationUndoExecutionResult,
   type NeutronMutationUndoExecutionBody,
   type NeutronMutationUndoExecutionOutcome,
   type NeutronMutationUndoExecutionPath,
   type NeutronMutationUndoExecutionResult,
-} from "../../../../../protocol/src/neutron-mutation-undo-execution.js";
-import type { NeutronMutationUndoRequest } from "../../../../../protocol/src/neutron-mutation-undo-request.js";
+} from "../../../../../protocol/src/neutron/mutation/undo/neutron-mutation-undo-execution.js";
+import type { NeutronMutationUndoRequest } from "../../../../../protocol/src/neutron/mutation/undo/neutron-mutation-undo-request.js";
 import type { NeutronMutationUndoPlan } from "./neutron-mutation-undo-plan.js";
 
 export function closedUndoExecution(

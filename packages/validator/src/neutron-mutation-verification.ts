@@ -6,7 +6,7 @@ import {
   type NeutronMutationByteCheck,
   type NeutronMutationRollbackProjection,
   type NeutronMutationVerificationEvidence,
-} from "../../protocol/src/neutron-mutation-verification.js";
+} from "../../protocol/src/neutron/mutation/verification/neutron-mutation-verification.js";
 import { assertNeutronMutationDigest } from "./neutron-mutation-canonical.js";
 import { digestNeutronMutationVerificationEvidence } from "./neutron-mutation-verification-digest.js";
 import {

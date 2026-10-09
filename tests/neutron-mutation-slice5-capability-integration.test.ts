@@ -12,7 +12,7 @@ import { fingerprintNeutronProjectRoot } from "../packages/application/src/neutr
 import { neutronAdapterCapability } from "../packages/application/src/neutron/session/neutron-session-runtime-helpers.js";
 import type { StoredNeutronSession } from "../packages/application/src/neutron/session/neutron-session-turn.js";
 import type { ModelAdapter } from "../packages/application/src/model-adapter.js";
-import { NEUTRON_READ_ONLY_TOOLS } from "../packages/protocol/src/neutron-runtime.js";
+import { NEUTRON_READ_ONLY_TOOLS } from "../packages/protocol/src/neutron/runtime/neutron-runtime.js";
 import type {
   ModelTurnRequest,
   ModelTurnResult,

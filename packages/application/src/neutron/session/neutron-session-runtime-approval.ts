@@ -1,6 +1,6 @@
 import type { IssueNeutronMutationApprovalResult } from "../mutation/approval/neutron-mutation-approval-issue.js";
 import { issueNeutronMutationApprovalFromIntent } from "../mutation/approval/neutron-mutation-approval-issue.js";
-import type { NeutronMutationApprovalIntent } from "../../../../protocol/src/neutron-mutation-approval-intent.js";
+import type { NeutronMutationApprovalIntent } from "../../../../protocol/src/neutron/mutation/approval/neutron-mutation-approval-intent.js";
 import { validateNeutronMutationApprovalIntent } from "../../../../validator/src/neutron-mutation-approval-intent.js";
 import type { StoredNeutronSession } from "./neutron-session-turn.js";
 import type {

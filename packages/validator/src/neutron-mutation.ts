@@ -8,8 +8,8 @@ import {
   type NeutronMutationPreflightRequest,
   type NeutronMutationPreflightResult,
   type NeutronMutationProposal,
-} from "../../protocol/src/neutron-mutation.js";
-import { NEUTRON_SESSION_STATES } from "../../protocol/src/neutron-runtime.js";
+} from "../../protocol/src/neutron/mutation/neutron-mutation.js";
+import { NEUTRON_SESSION_STATES } from "../../protocol/src/neutron/runtime/neutron-runtime.js";
 import { validateApprovedApplyPlan } from "./approved-apply.js";
 import { validateNeutronMutationApproval } from "./neutron-mutation-approval.js";
 import {

@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto";
-import type { NeutronMutationUndoExecutionResult } from "../../../../../protocol/src/neutron-mutation-undo-execution.js";
-import type { NeutronMutationUndoRequest } from "../../../../../protocol/src/neutron-mutation-undo-request.js";
+import type { NeutronMutationUndoExecutionResult } from "../../../../../protocol/src/neutron/mutation/undo/neutron-mutation-undo-execution.js";
+import type { NeutronMutationUndoRequest } from "../../../../../protocol/src/neutron/mutation/undo/neutron-mutation-undo-request.js";
 import {
   issueHostUndoApproval,
   isHostUndoApproval,

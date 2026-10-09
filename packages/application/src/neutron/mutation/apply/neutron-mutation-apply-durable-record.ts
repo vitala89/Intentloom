@@ -1,7 +1,7 @@
 import { createHash } from "node:crypto";
 import { join } from "node:path";
-import { NEUTRON_MUTATION_TRANSACTION_RECORD_SCHEMA_URN } from "../../../../../protocol/src/neutron-mutation-apply.js";
-import type { NeutronMutationUndoRestorationClaim } from "../../../../../protocol/src/neutron-mutation-undo-snapshot.js";
+import { NEUTRON_MUTATION_TRANSACTION_RECORD_SCHEMA_URN } from "../../../../../protocol/src/neutron/mutation/apply/neutron-mutation-apply.js";
+import type { NeutronMutationUndoRestorationClaim } from "../../../../../protocol/src/neutron/mutation/undo/neutron-mutation-undo-snapshot.js";
 import {
   digestNeutronMutationTransactionRecord,
   validateNeutronMutationDurableTransactionRecord,

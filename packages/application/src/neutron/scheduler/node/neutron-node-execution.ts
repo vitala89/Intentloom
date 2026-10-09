@@ -6,7 +6,7 @@ import type {
   NeutronTaskState,
   NeutronToolEnvelope,
   NeutronUsageBudget,
-} from "../../../../../protocol/src/neutron-runtime.js";
+} from "../../../../../protocol/src/neutron/runtime/neutron-runtime.js";
 import type { AssembleNeutronContextResult } from "../../context/neutron-context-assembly.js";
 import type { NeutronN2LoopResult } from "../../neutron-n2-loop.js";
 import {

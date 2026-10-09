@@ -4,7 +4,7 @@ import {
   type NeutronReadOnlyTool,
   type NeutronToolEnvelope,
   type NeutronToolInvocation,
-} from "../../../../protocol/src/neutron-runtime.js";
+} from "../../../../protocol/src/neutron/runtime/neutron-runtime.js";
 
 export interface NeutronToolFailureAudit {
   readonly toolName: string;

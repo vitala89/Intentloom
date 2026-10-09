@@ -1,18 +1,18 @@
 import type { AgentRoleCapabilities } from "../../../../protocol/src/index.js";
-import type { NeutronTaskNode } from "../../../../protocol/src/neutron-runtime.js";
+import type { NeutronTaskNode } from "../../../../protocol/src/neutron/runtime/neutron-runtime.js";
 import type {
   NeutronMutationReviewGetResult,
   NeutronMutationReviewListResult,
-} from "../../../../protocol/src/neutron-mutation-review-view.js";
-import type { NeutronSessionViewmodel } from "../../../../protocol/src/neutron-session-rpc.js";
+} from "../../../../protocol/src/neutron/mutation/review/neutron-mutation-review-view.js";
+import type { NeutronSessionViewmodel } from "../../../../protocol/src/neutron/session/neutron-session-rpc.js";
 import type { FileSystem } from "../../index.js";
 import type { ModelAdapter } from "../../model-adapter.js";
 import type { IssueNeutronMutationApprovalResult } from "../mutation/approval/neutron-mutation-approval-issue.js";
-import type { NeutronMutationApproveAndApplyResult } from "../../../../protocol/src/neutron-mutation-approve-apply-result.js";
-import type { NeutronMutationStatusQuery } from "../../../../protocol/src/neutron-mutation-status-rpc.js";
-import type { NeutronMutationStatusResult } from "../../../../protocol/src/neutron-mutation-status-result.js";
-import type { NeutronMutationVerificationRetryQuery } from "../../../../protocol/src/neutron-mutation-verification-retry-rpc.js";
-import type { NeutronMutationVerificationRetryResult } from "../../../../protocol/src/neutron-mutation-verification-retry-result.js";
+import type { NeutronMutationApproveAndApplyResult } from "../../../../protocol/src/neutron/mutation/approval/neutron-mutation-approve-apply-result.js";
+import type { NeutronMutationStatusQuery } from "../../../../protocol/src/neutron/mutation/status/neutron-mutation-status-rpc.js";
+import type { NeutronMutationStatusResult } from "../../../../protocol/src/neutron/mutation/status/neutron-mutation-status-result.js";
+import type { NeutronMutationVerificationRetryQuery } from "../../../../protocol/src/neutron/mutation/verification/neutron-mutation-verification-retry-rpc.js";
+import type { NeutronMutationVerificationRetryResult } from "../../../../protocol/src/neutron/mutation/verification/neutron-mutation-verification-retry-result.js";
 import type { NeutronHostDurableState } from "./neutron-host-durable-state.js";
 
 export interface NeutronSessionRuntimeOptions {

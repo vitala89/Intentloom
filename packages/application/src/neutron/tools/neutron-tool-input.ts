@@ -2,7 +2,7 @@ import type {
   NeutronReadOnlyTool,
   NeutronRuntimeSession,
   NeutronToolInvocation,
-} from "../../../../protocol/src/neutron-runtime.js";
+} from "../../../../protocol/src/neutron/runtime/neutron-runtime.js";
 import { NeutronToolRouterError, auditFields } from "./neutron-tool-errors.js";
 
 export const NEUTRON_TOOL_DEFINITION_VERSION = 1 as const;

@@ -4,7 +4,7 @@ import {
   type NeutronTaskGraph,
   type NeutronTaskNode,
   type NeutronTaskState,
-} from "../packages/protocol/src/neutron-runtime.js";
+} from "../packages/protocol/src/neutron/runtime/neutron-runtime.js";
 import {
   applyNeutronTaskStateTransition,
   NeutronSchedulerError,

@@ -4,7 +4,7 @@ import {
   type NeutronContextBundle,
   type NeutronContextSource,
   type NeutronUsageBudget,
-} from "../../../../protocol/src/neutron-runtime.js";
+} from "../../../../protocol/src/neutron/runtime/neutron-runtime.js";
 import {
   validateAssembleNeutronContextRequest,
   validateNeutronContextBundle,

@@ -9,8 +9,8 @@ import {
   parseNeutronMutationReviewGetResponse,
 } from "@intentloom/protocol";
 import { PROTOCOL_VERSION } from "../packages/protocol/src/jsonrpc.js";
-import { NEUTRON_MUTATION_REVIEW_GET_SCHEMA_URN } from "../packages/protocol/src/neutron-mutation-review-view.js";
-import { NEUTRON_READ_ONLY_TOOLS } from "../packages/protocol/src/neutron-runtime.js";
+import { NEUTRON_MUTATION_REVIEW_GET_SCHEMA_URN } from "../packages/protocol/src/neutron/mutation/review/neutron-mutation-review-view.js";
+import { NEUTRON_READ_ONLY_TOOLS } from "../packages/protocol/src/neutron/runtime/neutron-runtime.js";
 
 describe("Neutron mutation review D1 protocol", () => {
   it("parses named list and get methods", () => {
