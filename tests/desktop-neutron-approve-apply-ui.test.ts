@@ -6,14 +6,14 @@ import {
   type NeutronMutationApproveAndApplyResult,
   type NeutronMutationReviewCurrentness,
 } from "@intentloom/protocol";
-import { NeutronApproveApplyControl } from "../apps/desktop/src/neutron/NeutronApproveApplyControl.js";
-import { NeutronMutationReviewView as MutationReviewView } from "../apps/desktop/src/neutron/NeutronMutationReviewPanel.js";
-import { idleRecoveryModel } from "../apps/desktop/src/neutron/neutron-mutation-recovery-model.js";
-import { beginPending } from "../apps/desktop/src/neutron/neutron-mutation-recovery-model.js";
-import { recordDirectResult } from "../apps/desktop/src/neutron/neutron-mutation-recovery-model.js";
-import { recoveryIdentity } from "../apps/desktop/src/neutron/neutron-mutation-recovery-model.js";
-import { projectMutationRecoveryView } from "../apps/desktop/src/neutron/neutron-mutation-recovery-view.js";
-import { initialMutationReviewUiState } from "../apps/desktop/src/neutron/neutron-mutation-review-state.js";
+import { NeutronApproveApplyControl } from "../apps/desktop/src/neutron/mutation/recovery/NeutronApproveApplyControl.js";
+import { NeutronMutationReviewView as MutationReviewView } from "../apps/desktop/src/neutron/mutation/review/NeutronMutationReviewPanel.js";
+import { idleRecoveryModel } from "../apps/desktop/src/neutron/mutation/recovery/neutron-mutation-recovery-model.js";
+import { beginPending } from "../apps/desktop/src/neutron/mutation/recovery/neutron-mutation-recovery-model.js";
+import { recordDirectResult } from "../apps/desktop/src/neutron/mutation/recovery/neutron-mutation-recovery-model.js";
+import { recoveryIdentity } from "../apps/desktop/src/neutron/mutation/recovery/neutron-mutation-recovery-model.js";
+import { projectMutationRecoveryView } from "../apps/desktop/src/neutron/mutation/recovery/neutron-mutation-recovery-view.js";
+import { initialMutationReviewUiState } from "../apps/desktop/src/neutron/mutation/neutron-mutation-review-state.js";
 
 describe("Desktop Approve & Apply control", () => {
   it("enables the mutation button only for a current review", () => {

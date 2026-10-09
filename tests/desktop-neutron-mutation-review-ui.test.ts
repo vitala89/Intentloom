@@ -15,20 +15,33 @@ import {
   type NeutronMutationReviewSummary,
   type NeutronMutationReviewView,
 } from "@intentloom/protocol";
-import { NeutronMutationReviewView as MutationReviewView } from "../apps/desktop/src/neutron/NeutronMutationReviewPanel.js";
+import { NeutronMutationReviewView as MutationReviewView } from "../apps/desktop/src/neutron/mutation/review/NeutronMutationReviewPanel.js";
 import {
   NO_NEWLINE_AT_END_OF_FILE,
   diffReviewLines,
   exactReviewFileDiff,
-} from "../apps/desktop/src/neutron/neutron-mutation-review-diff.js";
-import { orchestrateMutationReviewLoad } from "../apps/desktop/src/neutron/neutron-mutation-review-load.js";
+} from "../apps/desktop/src/neutron/mutation/review/neutron-mutation-review-diff.js";
+import { orchestrateMutationReviewLoad } from "../apps/desktop/src/neutron/mutation/review/neutron-mutation-review-load.js";
 import {
   initialMutationReviewUiState,
   selectMutationProposal,
   type NeutronMutationReviewPort,
   type NeutronMutationReviewScope,
   type NeutronMutationReviewUiState,
-} from "../apps/desktop/src/neutron/neutron-mutation-review-state.js";
+} from "../apps/desktop/src/neutron/mutation/neutron-mutation-review-state.js";
+
+function mutationReviewSources(dir: string): string[] {
+  const files: string[] = [];
+  for (const entry of readdirSync(dir, { withFileTypes: true })) {
+    const path = join(dir, entry.name);
+    if (entry.isDirectory()) {
+      files.push(...mutationReviewSources(path));
+    } else if (entry.name.includes("mutation-review")) {
+      files.push(path);
+    }
+  }
+  return files;
+}
 
 const desktopNeutron = join(
   dirname(fileURLToPath(import.meta.url)),
@@ -395,12 +408,10 @@ describe("Neutron D2 exact mutation review UI", () => {
   });
 
   it("keeps the review UI isolated from the legacy apply modal", () => {
-    const files = readdirSync(desktopNeutron).filter((name) =>
-      name.includes("mutation-review"),
-    );
+    const files = mutationReviewSources(desktopNeutron);
     expect(files.length).toBeGreaterThan(0);
-    for (const name of files) {
-      const source = readFileSync(join(desktopNeutron, name), "utf8");
+    for (const path of files) {
+      const source = readFileSync(path, "utf8");
       expect(source).not.toContain("ApprovedApplyModal");
       expect(source).not.toContain("applied: true");
       expect(source).not.toContain("approveAndApply");

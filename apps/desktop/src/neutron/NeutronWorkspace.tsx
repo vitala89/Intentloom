@@ -1,16 +1,16 @@
 import { Button } from "../design/components/core/Button.js";
 import { EmptyState } from "../design/components/states/EmptyState.js";
 import { Card } from "../design/components/layout/Card.js";
-import { NeutronActivityPanel } from "./NeutronActivityPanel.js";
-import { NeutronComposer } from "./NeutronComposer.js";
-import { NeutronResult } from "./NeutronResult.js";
-import { NeutronSessionHeader } from "./NeutronSessionHeader.js";
-import { NeutronMutationProposalPanel } from "./NeutronMutationProposalPanel.js";
-import { NeutronMutationReviewPanel } from "./NeutronMutationReviewPanel.js";
-import { NeutronTaskGraphPanel } from "./NeutronTaskGraphPanel.js";
-import { authoritativeGraphSnapshot } from "./neutron-graph-viewmodel.js";
-import { neutronSurfaceKind } from "./neutron-session-viewmodel.js";
-import { useNeutronSession } from "./use-neutron-session.js";
+import { NeutronActivityPanel } from "./activity/NeutronActivityPanel.js";
+import { NeutronComposer } from "./session/NeutronComposer.js";
+import { NeutronResult } from "./result/NeutronResult.js";
+import { NeutronSessionHeader } from "./session/NeutronSessionHeader.js";
+import { NeutronMutationProposalPanel } from "./mutation/proposal/NeutronMutationProposalPanel.js";
+import { NeutronMutationReviewPanel } from "./mutation/review/NeutronMutationReviewPanel.js";
+import { NeutronTaskGraphPanel } from "./graph/NeutronTaskGraphPanel.js";
+import { authoritativeGraphSnapshot } from "./graph/neutron-graph-viewmodel.js";
+import { neutronSurfaceKind } from "./session/neutron-session-viewmodel.js";
+import { useNeutronSession } from "./session/use-neutron-session.js";
 
 export interface NeutronWorkspaceProps {
   readonly root: string | null;

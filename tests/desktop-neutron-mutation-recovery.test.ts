@@ -25,9 +25,9 @@ import {
   NEUTRON_MUTATION_APPROVAL_INTENT_SCHEMA_URN,
 } from "../packages/protocol/src/neutron-mutation-approval-intent.js";
 import { desktopDaemonAuthenticated } from "../apps/desktop/src/desktop-daemon-ready.js";
-import { NeutronApproveApplyControl } from "../apps/desktop/src/neutron/NeutronApproveApplyControl.js";
-import { createNeutronMutationRecovery } from "../apps/desktop/src/neutron/neutron-mutation-recovery-controller.js";
-import type { NeutronMutationRecoveryController } from "../apps/desktop/src/neutron/neutron-mutation-recovery-controller.js";
+import { NeutronApproveApplyControl } from "../apps/desktop/src/neutron/mutation/recovery/NeutronApproveApplyControl.js";
+import { createNeutronMutationRecovery } from "../apps/desktop/src/neutron/mutation/recovery/neutron-mutation-recovery-controller.js";
+import type { NeutronMutationRecoveryController } from "../apps/desktop/src/neutron/mutation/recovery/neutron-mutation-recovery-controller.js";
 import {
   MUTATION_APPLIED_INCOMPLETE_COPY,
   MUTATION_APPLIED_RECONCILIATION_COPY,
@@ -40,9 +40,9 @@ import {
   MUTATION_RESULT_UNKNOWN_COPY,
   MUTATION_STATUS_UNAVAILABLE_COPY,
   MUTATION_UNKNOWN_RECORD_COPY,
-} from "../apps/desktop/src/neutron/neutron-mutation-recovery-copy.js";
-import { projectMutationRecoveryView } from "../apps/desktop/src/neutron/neutron-mutation-recovery-view.js";
-import type { NeutronMutationReviewScope } from "../apps/desktop/src/neutron/neutron-mutation-review-state.js";
+} from "../apps/desktop/src/neutron/mutation/recovery/neutron-mutation-recovery-copy.js";
+import { projectMutationRecoveryView } from "../apps/desktop/src/neutron/mutation/recovery/neutron-mutation-recovery-view.js";
+import type { NeutronMutationReviewScope } from "../apps/desktop/src/neutron/mutation/neutron-mutation-review-state.js";
 import {
   REVIEW_GRAPH_ID,
   SLICE5_CONTENT_A,
@@ -611,11 +611,11 @@ function daemonInfo(status: "compatible" | "incompatible"): DaemonInfoResult {
 function recoverySource(): string {
   const root = join(dirname(fileURLToPath(import.meta.url)), "..");
   return [
-    "apps/desktop/src/neutron/neutron-mutation-recovery-controller.ts",
-    "apps/desktop/src/neutron/neutron-mutation-recovery-model.ts",
-    "apps/desktop/src/neutron/neutron-mutation-recovery-copy.ts",
-    "apps/desktop/src/neutron/neutron-mutation-recovery-view.ts",
-    "apps/desktop/src/neutron/use-neutron-mutation-recovery.ts",
+    "apps/desktop/src/neutron/mutation/recovery/neutron-mutation-recovery-controller.ts",
+    "apps/desktop/src/neutron/mutation/recovery/neutron-mutation-recovery-model.ts",
+    "apps/desktop/src/neutron/mutation/recovery/neutron-mutation-recovery-copy.ts",
+    "apps/desktop/src/neutron/mutation/recovery/neutron-mutation-recovery-view.ts",
+    "apps/desktop/src/neutron/mutation/recovery/use-neutron-mutation-recovery.ts",
   ]
     .map((path) => readFileSync(join(root, path), "utf8"))
     .join("\n");

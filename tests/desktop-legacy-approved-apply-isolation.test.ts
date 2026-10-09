@@ -112,7 +112,7 @@ describe("Desktop legacy Approved Apply isolation (DL)", () => {
 
   it("keeps mutationAllowed literal false on the Neutron session viewmodel", () => {
     const source = readFileSync(
-      join(desktopSrc, "neutron/neutron-session-viewmodel.ts"),
+      join(desktopSrc, "neutron/session/neutron-session-viewmodel.ts"),
       "utf8",
     );
     expect(source).toContain("mutationAllowed: false");

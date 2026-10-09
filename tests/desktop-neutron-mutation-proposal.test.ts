@@ -10,9 +10,9 @@ import {
 import {
   NEUTRON_MUTATION_NOT_AUTHORIZED_COPY,
   mutationProposalPanelLines,
-} from "../apps/desktop/src/neutron/neutron-mutation-proposal-copy.js";
-import { parseNeutronMutationProposal } from "../apps/desktop/src/neutron/neutron-mutation-proposal-viewmodel.js";
-import { parseNeutronDesktopViewmodel } from "../apps/desktop/src/neutron/neutron-session-viewmodel.js";
+} from "../apps/desktop/src/neutron/mutation/proposal/neutron-mutation-proposal-copy.js";
+import { parseNeutronMutationProposal } from "../apps/desktop/src/neutron/mutation/proposal/neutron-mutation-proposal-viewmodel.js";
+import { parseNeutronDesktopViewmodel } from "../apps/desktop/src/neutron/session/neutron-session-viewmodel.js";
 
 const desktopRoot = join(
   dirname(fileURLToPath(import.meta.url)),
@@ -233,8 +233,8 @@ describe("Neutron N6 Slice 5 mutation proposal review UI", () => {
   it("keeps Neutron workspace free of Apply wiring and mutation tools", () => {
     const files = [
       "src/neutron/NeutronWorkspace.tsx",
-      "src/neutron/NeutronMutationProposalPanel.tsx",
-      "src/neutron/use-neutron-session.ts",
+      "src/neutron/mutation/proposal/NeutronMutationProposalPanel.tsx",
+      "src/neutron/session/use-neutron-session.ts",
       "src/desktop-client-neutron.ts",
     ];
     for (const relative of files) {

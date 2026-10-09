@@ -11,12 +11,12 @@ import {
   contextSourceLine,
   contextSummaryLines,
   toolActivityHeading,
-} from "../apps/desktop/src/neutron/neutron-activity-copy.js";
+} from "../apps/desktop/src/neutron/activity/neutron-activity-copy.js";
 import {
   authoritativeToolActivity,
   parseNeutronContextSummary,
-} from "../apps/desktop/src/neutron/neutron-activity-viewmodel.js";
-import { parseNeutronDesktopViewmodel } from "../apps/desktop/src/neutron/neutron-session-viewmodel.js";
+} from "../apps/desktop/src/neutron/activity/neutron-activity-viewmodel.js";
+import { parseNeutronDesktopViewmodel } from "../apps/desktop/src/neutron/session/neutron-session-viewmodel.js";
 
 const desktopRoot = join(
   dirname(fileURLToPath(import.meta.url)),
@@ -213,12 +213,12 @@ describe("Neutron N6 Slice 2 Desktop context and tool activity", () => {
 
   it("does not import provider clients or Approved Apply from activity modules", () => {
     const files = [
-      "src/neutron/NeutronActivityPanel.tsx",
-      "src/neutron/NeutronContextSummary.tsx",
-      "src/neutron/NeutronContextSources.tsx",
-      "src/neutron/NeutronToolActivity.tsx",
-      "src/neutron/neutron-activity-viewmodel.ts",
-      "src/neutron/neutron-activity-copy.ts",
+      "src/neutron/activity/NeutronActivityPanel.tsx",
+      "src/neutron/activity/NeutronContextSummary.tsx",
+      "src/neutron/activity/NeutronContextSources.tsx",
+      "src/neutron/activity/NeutronToolActivity.tsx",
+      "src/neutron/activity/neutron-activity-viewmodel.ts",
+      "src/neutron/activity/neutron-activity-copy.ts",
     ];
     for (const relative of files) {
       const source = readFileSync(join(desktopRoot, relative), "utf8");

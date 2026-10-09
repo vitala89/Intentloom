@@ -8,7 +8,7 @@ import {
 } from "@intentloom/protocol";
 import { invoke } from "@tauri-apps/api/core";
 import { DesktopBridgeError } from "./desktop-client.js";
-import type { NeutronMutationRecoveryPorts } from "./neutron/neutron-mutation-recovery-controller.js";
+import type { NeutronMutationRecoveryPorts } from "./neutron/mutation/recovery/neutron-mutation-recovery-controller.js";
 import { neutronMutationStatusDesktopMethods } from "./desktop-client-neutron-status.js";
 import { neutronMutationVerificationRetryDesktopMethods } from "./desktop-client-neutron-verification-retry.js";
 

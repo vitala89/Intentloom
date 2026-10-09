@@ -21,12 +21,12 @@ import {
   nodeDependencyLine,
   nodeHeading,
   staleWarning,
-} from "../apps/desktop/src/neutron/neutron-graph-copy.js";
+} from "../apps/desktop/src/neutron/graph/neutron-graph-copy.js";
 import {
   authoritativeGraphSnapshot,
   parseNeutronGraphSnapshot,
-} from "../apps/desktop/src/neutron/neutron-graph-viewmodel.js";
-import { parseNeutronDesktopViewmodel } from "../apps/desktop/src/neutron/neutron-session-viewmodel.js";
+} from "../apps/desktop/src/neutron/graph/neutron-graph-viewmodel.js";
+import { parseNeutronDesktopViewmodel } from "../apps/desktop/src/neutron/session/neutron-session-viewmodel.js";
 
 const desktopRoot = join(
   dirname(fileURLToPath(import.meta.url)),
@@ -312,7 +312,7 @@ describe("Neutron N6 Slice 3 Desktop task graph", () => {
 
   it("clears graph snapshot when the project root changes", () => {
     const source = readFileSync(
-      join(desktopRoot, "src/neutron/use-neutron-session.ts"),
+      join(desktopRoot, "src/neutron/session/use-neutron-session.ts"),
       "utf8",
     );
     expect(source).toMatch(/useEffect\(\(\) => \{[\s\S]*setViewmodel\(null\)/);
@@ -353,13 +353,13 @@ describe("Neutron N6 Slice 3 Desktop task graph", () => {
 
   it("does not add mutation or Apply UI on the graph path", () => {
     const files = [
-      "src/neutron/NeutronTaskGraphPanel.tsx",
-      "src/neutron/NeutronGraphSummary.tsx",
-      "src/neutron/NeutronTaskNodeCard.tsx",
-      "src/neutron/use-neutron-session.ts",
+      "src/neutron/graph/NeutronTaskGraphPanel.tsx",
+      "src/neutron/graph/NeutronGraphSummary.tsx",
+      "src/neutron/graph/NeutronTaskNodeCard.tsx",
+      "src/neutron/session/use-neutron-session.ts",
       "src/desktop-client-neutron.ts",
-      "src/neutron/neutron-graph-parse.ts",
-      "src/neutron/neutron-graph-parse-node.ts",
+      "src/neutron/graph/neutron-graph-parse.ts",
+      "src/neutron/graph/neutron-graph-parse-node.ts",
     ];
     for (const relative of files) {
       const source = readFileSync(join(desktopRoot, relative), "utf8");

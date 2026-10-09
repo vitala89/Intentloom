@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { parseNeutronMutationChangedPaths } from "../apps/desktop/src/neutron/neutron-mutation-proposal-paths-parse.js";
+import { parseNeutronMutationChangedPaths } from "../apps/desktop/src/neutron/mutation/proposal/neutron-mutation-proposal-paths-parse.js";
 
 describe("Neutron mutation proposal changedPaths (Desktop boundary)", () => {
   it("accepts canonical project-relative paths", () => {
