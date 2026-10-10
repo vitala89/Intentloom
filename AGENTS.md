@@ -5,8 +5,10 @@ task, read `AGENT_START_HERE.md`, `PROJECT_STATE.md`, the latest entry in
 `DUTY_WATCH.md`, `docs/governance/ENGINEERING_PRINCIPLES.md`,
 `docs/governance/CODE_QUALITY_STANDARDS.md`,
 `docs/governance/DOMAIN_MODELING.md`,
-`docs/governance/REACT_BEST_PRACTICES.md`, and
-`docs/governance/AI_AGENT_WORKFLOW.md`.
+`docs/governance/REACT_BEST_PRACTICES.md`,
+`docs/governance/AI_AGENT_WORKFLOW.md`, and
+`docs/architecture/ARCHITECTURE.md`. The documentation index and architecture
+source-of-truth map live in `docs/README.md`.
 
 Do not begin implementation from the user prompt alone. Verify current state
 against code, Git history, merged pull requests, releases, tests, and CI when

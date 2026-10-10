@@ -259,7 +259,8 @@ packages/
 apps/desktop/            Tauri 2 read-only Desktop client and design system
 examples/                minimal, typescript, angular-tauri, adoption report
 tests/                   cross-package test suite
-docs/                    specs, ADRs, guides, references, roadmap, audits
+docs/                    architecture, governance, decisions, roadmap, releases, archive
+scripts/                 repository tooling
 ```
 
 ## Architecture and safety

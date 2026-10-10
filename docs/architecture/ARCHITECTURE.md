@@ -32,6 +32,51 @@ All workspace packages are implemented. The public `intentloom` package bundles
 the CLI and its runtime catalog/profile assets; the workspace libraries remain
 private implementation packages without a public import API.
 
+`catalog/` and `profiles/` stay beside `packages/`. They are not package
+internals. `tests/` holds cross-package and integration coverage. `scripts/`
+holds repository tooling. Historical Engineering Quality implementation plans
+live under
+[docs/archive/implementation-plans/](../archive/implementation-plans/README.md)
+and are not current roadmap authority. The documentation index is
+[docs/README.md](../README.md).
+
+## Dependency direction
+
+Workspace dependencies follow the packages as they are declared:
+
+```text
+Desktop client
+        ↓
+@intentloom/protocol, through the Tauri transport
+        ↓
+authenticated local daemon
+        ↓
+application use cases
+        ↓
+core, validator, protocol, adapters, and evidence packages
+```
+
+`@intentloom/desktop` depends on `@intentloom/protocol` and the Tauri API. It
+does not depend on application, core, or daemon. `@intentloom/daemon` depends
+on application and protocol. `@intentloom/application` depends on core,
+validator, protocol, adapters, and the evidence packages. `@intentloom/validator`
+depends on core and protocol. Protocol and core do not depend on other
+workspace packages.
+
+Protocol is the versioned contract shared by the desktop client and the daemon.
+It is not a process sitting between the daemon and application. The daemon maps
+an authenticated protocol request onto an application use case.
+
+```text
+Presentation and process adapters
+        ↓
+application use cases
+        ↓
+core / validator / stable protocol contracts
+```
+
+CLI, TUI, and MCP call application use cases directly. Desktop does not.
+
 ## Platform Foundation boundary
 
 The private `@intentloom/application` workspace package owns the reusable
@@ -90,16 +135,25 @@ approval for a project mutation.
 
 ## Interactive presentation boundary
 
-The normal CLI remains the authoritative non-interactive interface. A future terminal UI and desktop application are optional presentation adapters.
+The normal CLI remains the authoritative non-interactive interface. The
+terminal UI and Desktop application are presentation adapters.
 
 ```text
-CLI / terminal UI / desktop UI
-              ↓
-structured application results or versioned protocol
+CLI / terminal UI / MCP
               ↓
 @intentloom/application
               ↓
-core / validator / evidence / conformance / transactions
+core / validator / protocol / evidence / conformance / transactions
+
+Desktop
+  ↓
+desktop client
+  ↓
+Tauri
+  ↓
+authenticated local daemon
+  ↓
+application use cases
 ```
 
 Interactive surfaces must not parse human-oriented CLI text or implement their own filesystem, ownership, evidence, conformance, planning, approval, or transaction behavior. Equivalent input and project state must produce equivalent structured results across CLI, TUI, MCP, daemon, and desktop surfaces.
@@ -118,8 +172,21 @@ The shell composes public feature entrypoints in one window. It is not a
 URL router and it does not own feature behavior.
 
 ```text
-Desktop shell → feature entrypoint → desktop client / @intentloom/protocol → Tauri → daemon → application
+Desktop shell
+  ↓
+feature entrypoint
+  ↓
+desktop client
+  ↓
+Tauri transport
+  ↓
+authenticated local daemon
+  ↓
+application use cases
 ```
+
+The desktop client speaks `@intentloom/protocol`. Tauri carries that local
+call. The daemon authenticates the session and dispatches the request.
 
 ## Agent and Neutron boundary
 
@@ -167,7 +234,7 @@ packages/application/src/neutron/
 
 The Neutron root keeps only package entrypoints and Neutron-wide modules: the N1 runtime contract, the N2 read-only loop, the project fingerprint shared by session and mutation, and the scheduler and graph-mutation composition barrels. There is no `neutron/index.ts` that re-exports the implementation. Package subpath names (`@intentloom/application/neutron-session` and the other Neutron exports) stay stable; their files live at the paths above.
 
-Mutation stages stay distinct. Proposal, review, approval, Apply, status, verification, and user Undo are separate directories. `verification/` includes internal rollback evidence from a failed Apply. `undo/` is user Undo. Undo does not rewrite original Apply history and is not that rollback. The graph Apply bridge, review payload store, materialization currentness, and graph mutation evidence live under `mutation/` because review and Apply own those contracts. Graph orchestration depends on them.
+Mutation stages stay distinct. Proposal, review, approval, Apply, status, verification, and user Undo are separate directories. Approval is not Apply. A status record is not authority to Apply or Undo. Verification is not Apply. `verification/` includes internal rollback evidence from a failed Apply. `undo/` is user Undo. Undo is not that internal rollback, and it does not rewrite original Apply history. The graph Apply bridge, review payload store, materialization currentness, and graph mutation evidence live under `mutation/` because review and Apply own those contracts. Graph orchestration depends on them.
 
 Session, context, graph, scheduler (including node), tools, and mutation are the cycle boundary. Imports between those directories are an explicit allowlist and must stay acyclic. Mutation stages share one transaction record, so imports among `mutation/*` stay inside that one subfeature. Host durable state is the session host port: the session runtime accepts the directory and passes it into mutation operations.
 
@@ -240,6 +307,14 @@ packages/daemon/src/neutron/
 Approve-and-apply stays under `approval/`. The handler accepts the approval-intent request and invokes the host `approveAndApplyNeutronMutation` operation. Status calls `getNeutronMutationStatus` and stays read-only. Verification retry calls `retryNeutronMutationVerification` and cannot Apply. There is no daemon `apply/` or `undo/` directory and no `recovery/` bucket.
 
 Each handler binds `NeutronSessionRuntime` from the application session module. That existing host-only type import is the application surface. Daemon Neutron code does not import Desktop, CLI, React, Tauri, or the validator package. `node:net` stays on the workspace dispatcher because that module is the socket adapter.
+
+`intentloomd` process lifecycle is outside the Neutron tree.
+`listenLocalDaemonEndpoint` in `packages/daemon/src/local-daemon-endpoint.ts`
+creates the close handle, runs `beforeListen`, and only then binds. The binary
+registers SIGINT and SIGTERM inside `beforeListen`, so a signal that arrives
+once the endpoint exists can still call `daemon.close()`. That registration
+does not unlink an endpoint before bind. Windows named pipes use the same
+order. This is process lifecycle, not a Neutron domain module.
 
 Potential future implementation packages may include private agent protocol, agent session, provider adapter, orchestration, benchmark, and evaluation modules. These modules must not access arbitrary files or execute a generic shell. Every project operation remains typed, root-bound, capability-bounded, and subject to application validation.
 

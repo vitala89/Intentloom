@@ -50,9 +50,10 @@ renderer sends identity fields only; `mutationAllowed` remains literal
 outcome after a lost D4 response. **DESKTOP MUTATION D5 COMPLETE** (Slice 2
 PR #540). Post-D5 verification retry is verification-only. Undo U1
 preflight is merged (PR #545). Undo U2 snapshot persistence is merged
-(PR #547). Undo U3 host execution is on
-`feat/neutron-mutation-undo-execution` awaiting maintainer review.
-U4 and U5 remain unauthorized.
+(PR #547). Undo U3 host execution is merged (PR #548). Architecture
+stabilization through R4D is the current repository increment. Undo U4,
+independent post-Undo verification, is the next authorized increment
+and is not started. Desktop Undo U5 is not started.
 Canon:
 [`NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md`](NEUTRON_N6_DESKTOP_MUTATION_HOST_BRIEF.md).
 
@@ -541,13 +542,13 @@ that an unauthorized write was acceptable. Policy stays outside the model.
 Prefer the existing sync + Approved Apply rollback evidence. Do not add a
 second backup system.
 
-| Question                                       | Answer from current code                                                                                                                  |
-| ---------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
-| Snapshot before Apply?                         | Per-file previous bytes captured in `executeApprovedApplyPlan` _before_ sync; plus sync’s own staging backups.                            |
-| Restore affected files?                        | Sync rollback on failure; `rollbackEvidence` on **success** for later human revert.                                                       |
-| Automatic rollback on mid-transaction failure? | Yes, via sync; incomplete rollback is evidenced, not silent.                                                                              |
-| User rollback after successful Apply?          | Evidence exists; no Neutron-authorized “rollback tool” yet. Future slice: host-only revert using `rollbackEvidence`, same approval class. |
-| Who authorizes rollback?                       | Human/host, same as Apply. Model cannot roll back to hide a write.                                                                        |
+| Question                                       | Answer from current code                                                                                            |
+| ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| Snapshot before Apply?                         | Per-file previous bytes captured in `executeApprovedApplyPlan` _before_ sync; plus sync’s own staging backups.      |
+| Restore affected files?                        | Sync rollback on failure; `rollbackEvidence` on **success** for later human revert.                                 |
+| Automatic rollback on mid-transaction failure? | Yes, via sync; incomplete rollback is evidenced, not silent.                                                        |
+| User Undo after successful Apply?              | U3 host Undo is merged (PR #548). It is a separate transaction, not failed-Apply rollback, and not U4 verification. |
+| Who authorizes rollback?                       | Human/host, same as Apply. Model cannot roll back to hide a write.                                                  |
 
 Slice 4 closed the failed-sync `rollbackEvidence` omission. Neutron operator
 evidence uses path, digest, existedBefore, restored, and rollback status — not
@@ -558,8 +559,7 @@ U1 host preflight is merged (PR #545, merge
 a different operation from failed-Apply recovery. Historical Apply kept
 previous bytes only in ephemeral `rollbackEvidence`. After success the
 Slice 3.1 record kept digests, so a pre-U2 updated path stays
-`undo-source-unavailable`. U2, on `feat/neutron-mutation-undo-snapshots`
-awaiting maintainer review, persists a host-private snapshot before the
+`undo-source-unavailable`. U2 persists a host-private snapshot before the
 first project write for new mutations. The manifest binds the canonical
 transaction. Payload files hold exact previous text for updated paths.
 Created paths record absence without a body. Unchanged paths are omitted.
@@ -569,12 +569,12 @@ does not encrypt snapshots at rest. A new verified transaction can become
 U1 `eligible` when that snapshot validates and current bytes still match.
 `approvalReusable` and `executionAuthorized` stay false. U2 does not
 execute Undo. U2 is merged (PR #547, merge
-`85ae255952680fbbcc2107e0e616a2ad70452061`). U3, on
-`feat/neutron-mutation-undo-execution` awaiting maintainer review, is a
-separate host Undo transaction. It does not reuse the original Apply
-approval and does not rewrite historical `applied: true`. A successful
-Undo is not U4 verification. U4 and U5 are not authorized. Pre-U2 records
-are not rewritten.
+`85ae255952680fbbcc2107e0e616a2ad70452061`). U3 is merged (PR #548,
+merge `053898f20be09f0dcaa603c869acc766c2cb60c4`) and is a separate host
+Undo transaction. It does not reuse the original Apply approval and does
+not rewrite historical `applied: true`. A successful Undo is not U4
+verification. U4 is the next authorized increment and is not started.
+Desktop Undo U5 is not started. Pre-U2 records are not rewritten.
 
 ---
 

@@ -1,6 +1,44 @@
 # Intentloom documentation
 
-Start with:
+This is the documentation index and the architecture source-of-truth map.
+Start here before designing, implementing, or refactoring.
+
+## Source of truth
+
+| Concern                                               | Canonical document                                                                          |
+| ----------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| Current repository structure and dependency direction | [Architecture](architecture/ARCHITECTURE.md)                                                |
+| Domain language                                       | [Domain modeling](governance/DOMAIN_MODELING.md)                                            |
+| Engineering boundaries and safety                     | [Engineering principles](governance/ENGINEERING_PRINCIPLES.md)                              |
+| File budgets, decomposition, and testing              | [Code quality standards](governance/CODE_QUALITY_STANDARDS.md)                              |
+| Desktop and React                                     | [React best practices](governance/REACT_BEST_PRACTICES.md)                                  |
+| Agent workflow                                        | [AI agent workflow](governance/AI_AGENT_WORKFLOW.md)                                        |
+| Accepted decisions                                    | [ADRs](decisions/)                                                                          |
+| Product scope                                         | [Roadmap](../ROADMAP.md) and current [roadmap material](roadmap/NEUTRON_RUNTIME_ROADMAP.md) |
+| Operational state                                     | [Project state](../PROJECT_STATE.md) and [Duty Watch](../DUTY_WATCH.md)                     |
+
+`DDD_ARCHITECTURE.md`, `UBIQUITOUS_LANGUAGE.md`, `ARCHITECTURE_GUIDELINES.md`,
+`BACKEND_ARCHITECTURE.md`, `FRONTEND_ARCHITECTURE.md`, `CODE_STYLE.md`, and
+`AGENT_DEVELOPMENT_RULES.md` are not separate sources of truth. Those concerns
+belong to the documents above.
+
+Architecture stabilization covers Desktop R1–R3 and Backend R4A–R4D. R1–R4C
+and the daemon startup signal fix are merged. R4D is the repository and
+documentation increment. The next authorized product increment is Undo U4,
+independent post-Undo verification, named in the Neutron runtime roadmap. U4
+and Desktop Undo U5 are not started in R4D.
+
+## How this tree is organized
+
+- [Architecture](architecture/ARCHITECTURE.md) — current structure and ownership.
+- [Governance](governance/) — principles, domain language, quality, and agent workflow.
+- [Decisions](decisions/) — accepted ADRs. Historical decisions stay historical.
+- [Roadmap](../ROADMAP.md) and [docs/roadmap/](roadmap/) — current planning. Active plans stay here.
+- [Releases](releases/) and [dogfooding records](releases/dogfooding/) — what shipped and what was exercised.
+- [Archive](archive/implementation-plans/README.md) — historical implementation plans. Not current authority.
+- Guides, reference, concepts, specs, desktop, compatibility, audits, security, and journal remain beside those categories.
+
+## Start here
 
 - [Getting Started](guides/GETTING_STARTED.md)
 - [Release state](releases/RELEASE_STATE.md)
@@ -15,7 +53,7 @@ Start with:
 - [Compatibility matrix](compatibility/COMPATIBILITY_MATRIX.md)
 - [Migration guide](releases/MIGRATION_GUIDE.md)
 
-Product and platform directions:
+## Product and platform directions
 
 - [Desktop documentation](desktop/README.md)
 - [Desktop v0.6 implementation plan](roadmap/DESKTOP_V0_6_IMPLEMENTATION_PLAN.md)
@@ -62,7 +100,7 @@ Product and platform directions:
 - [Controlled Agent Learning Roadmap](roadmap/CONTROLLED_AGENT_LEARNING_ROADMAP.md)
 - [Public Monorepo Evolution Plan](roadmap/PUBLIC_MONOREPO_EVOLUTION_PLAN.md)
 
-Repository governance:
+## Repository governance
 
 - [Contributing guide](../CONTRIBUTING.md)
 - [Security policy](../SECURITY.md)
