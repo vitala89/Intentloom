@@ -831,15 +831,21 @@ lifecycle stages. Validator and daemon package subpath names stay
 stable. Validation, RPC results, and security behavior stay the same.
 R4C is merged (PR #554, merge
 `25c3fb0a340eb5a92e2634517dfe1f075506fbba`). The merge is structural
-only. Daemon startup on that merge still bound the IPC endpoint before
-`intentloomd` installed SIGINT/SIGTERM handling. `fix/daemon-startup-signal-race`
-installs that handling in `beforeListen`, before bind, and is awaiting
-maintainer review. An early SIGTERM uses the daemon `close()` path and
-removes only the Unix socket this process bound. Windows named pipes
-keep the same lifecycle and still disappear with the owning process.
-R4D repository hygiene, Undo U4, and Desktop Undo U5 remain
-unauthorized. Other post-P4 candidates remain
-in `POST_W12_NEXT_INCREMENT_PLAN.md`.
+only. **Daemon startup signal shutdown is merged** (PR #555, merge
+`96dd39368e98a83d2a356acfe0af0213e2ffd518`). `intentloomd` registers
+SIGINT and SIGTERM in `beforeListen`, before the IPC endpoint is bound,
+and shutdown uses `daemon.close()`. **Architecture preflight governance is merged** (PR #546, merge
+`879fb765334f59968ca97bc1a7914ada9dc35eae`). **Backend Architecture R4D**
+(repository root, documentation hygiene, and the repository layout
+ratchet) is on `refactor/repository-architecture-hygiene-r4d` as PR #556,
+rebased onto that main, and is awaiting maintainer review. It is not
+merged. It preserves the #546 preflight rules and does not change
+runtime, protocol, or package behavior. Architecture stabilization is
+Desktop R1–R3 and Backend R4A–R4D. The next authorized increment after
+R4D merges is Undo U4,
+independent post-Undo verification. U4 and Desktop Undo U5 are not
+started. Other post-P4 candidates remain in
+`POST_W12_NEXT_INCREMENT_PLAN.md`.
 
 The Desktop discovery/error and Diff/Timeline slices remain recorded in
 [PHASE1_CONTRACTS.md](docs/desktop/PHASE1_CONTRACTS.md).

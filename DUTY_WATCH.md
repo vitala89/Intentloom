@@ -76,9 +76,70 @@ merged (PR #553, merge `2298fabb6214160d5456b7a0dda016558209386e`).
 **Backend Architecture R4C** (validator and daemon Neutron semantic
 topology) is merged (PR #554, merge
 `25c3fb0a340eb5a92e2634517dfe1f075506fbba`). The merge is structural
-only. **Daemon startup signal shutdown** is implemented on
-`fix/daemon-startup-signal-race` and is awaiting maintainer review.
-Do not merge. Do not start R4D, Undo U4, or Desktop Undo U5.
+only. **Daemon startup signal shutdown** is merged (PR #555, merge
+`96dd39368e98a83d2a356acfe0af0213e2ffd518`). **Architecture preflight governance is merged** (PR #546, merge
+`879fb765334f59968ca97bc1a7914ada9dc35eae`). **Backend Architecture
+R4D** is PR #556 on `refactor/repository-architecture-hygiene-r4d`,
+rebased onto that main, and is awaiting maintainer review. Do not
+merge. Do not start Undo U4 or Desktop Undo U5.
+
+### 2026-10-10, R4D reconciled with merged governance PR #546
+
+- **Status:** **PR #556 REBASED ONTO MAIN THAT INCLUDES #546 AND
+  AWAITING MAINTAINER REVIEW.** Do not merge. Do not start Undo U4 or
+  Desktop Undo U5.
+- **Branch:** `refactor/repository-architecture-hygiene-r4d`
+- **Previous R4D head:** `2455fe3a183889ebe791969346d4d75ec7fd29f4`
+- **Main before reconciliation:** `879fb765334f59968ca97bc1a7914ada9dc35eae`
+  (PR #546). #555 and Backend R4A–R4C remain ancestors.
+- **Method:** rebase onto `origin/main`. Git replayed the R4D commit
+  without conflict markers. A follow-up commit separates the map in
+  `docs/README.md` from the preflight obligation in `AGENTS.md`.
+- **Preserved from #546:** canonical-doc resolution before
+  implementation, named guidance in the plan, dependency direction,
+  bounded context and ubiquitous language when relevant, file and
+  function budgets, technology-specific guidance, an ADR or explicit
+  maintainer decision when a durable architecture choice is unanswered,
+  and a closing check against the canonical architecture documents.
+- **Not done:** merging #556, Undo U4, Desktop Undo U5. No runtime
+  change.
+- **Validation:** `pnpm verify` passed: typecheck, lint, format check,
+  349 files / 3042 passed / 3 skipped, build, and `git diff --check`.
+  `tests/repository-layout.test.ts` passed (6 tests).
+- **Next:** maintainer review of PR #556. Do not start Undo U4 from
+  this handoff.
+
+### 2026-10-10, Backend Architecture R4D
+
+- **Status:** **BACKEND ARCHITECTURE R4D REPOSITORY AND DOCUMENTATION
+  HYGIENE IMPLEMENTED ON BRANCH AWAITING MAINTAINER REVIEW.** Do not
+  merge. Do not start Undo U4 or Desktop Undo U5.
+- **Branch:** `refactor/repository-architecture-hygiene-r4d`
+- **Starting main:** `96dd39368e98a83d2a356acfe0af0213e2ffd518` (PR #555
+  merge). That commit is an ancestor of this branch.
+- **Root:** historical Engineering Quality plans `implementation_plan.md`
+  and `implementation_plan_q4.md` through `implementation_plan_q14.md`
+  moved to `docs/archive/implementation-plans/`. They are not current
+  roadmap authority. No active root plan was archived.
+- **Docs:** `docs/README.md` is the documentation index and architecture
+  source-of-truth map. `ARCHITECTURE.md` now matches the current
+  dependency direction, Desktop flow, and daemon `beforeListen`
+  lifecycle. PR #546 later merged and is preserved by the reconciliation
+  entry above.
+- **Guard:** `tests/repository-layout.test.ts` checks top-level
+  directories, canonical entrypoints, archived plans, and forbidden
+  architecture-alias filenames. It does not repeat Neutron topology
+  guards.
+- **Quality exceptions:** removed the obsolete R4C
+  `packages/daemon/src/index.ts` growth pair (1023/1050 to 1037/1064).
+  Current `index.ts` is 1023 effective / 1050 physical lines. Other
+  expired exceptions were left in place.
+- **Not done:** Undo U4, Desktop Undo U5. No runtime, protocol, schema,
+  package export, Application, Validator, Daemon, Desktop, or CLI
+  behavior change.
+- **Validation:** `pnpm verify` passed: typecheck, lint, format check,
+  349 files / 3042 passed / 3 skipped, build, and `git diff --check`.
+- **Next:** maintainer review. Do not start Undo U4 from this handoff.
 
 ### 2026-10-10, Daemon startup signal shutdown race
 

@@ -21,6 +21,15 @@ adoption workflow have been exercised in multiple real projects.
 | `post-v1.0 curated skills`     | Project-aware routing, discovery, verification, and external-skill review | First-party skills are provider-neutral and generated safely; structured routing and managed import require later evidence gates      | Initial catalog slice implemented; adapter dogfooding and managed import remain planned                                |
 | `post-v1.0 agentic harness`    | Reproducible agent evaluation, isolated execution, scoring, and replay    | Versioned scenarios, deterministic gates, executor conformance, durable traces, and adversarial corpus pass before mutation expansion | H1-H9 evidence, benchmark design, and PR #235 compatibility reconciliation merged; runner hardening and parity planned |
 
+Architecture stabilization for the current repository is Desktop R1–R3 and
+Backend R4A (application), R4B (protocol), R4C (validator and daemon), and
+R4D (repository and documentation hygiene). R1–R4C and the daemon startup
+signal fix (PR #555) are merged. R4D is the documentation increment in
+progress and does not add a product phase. The next authorized product
+increment is Undo U4, independent post-Undo verification, already named in
+[the Neutron runtime roadmap](docs/roadmap/NEUTRON_RUNTIME_ROADMAP.md).
+U4 is not started here. Desktop Undo U5 is not started.
+
 Before the first beta, Intentloom needed at least three real dogfooding scenarios: a
 minimal project, a TypeScript project, and a sanitized existing-project example
 such as Applye or an Angular + Tauri project. The goal is evidence that

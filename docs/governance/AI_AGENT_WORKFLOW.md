@@ -12,11 +12,13 @@ Before implementation:
 3. Read `PROJECT_STATE.md`.
 4. Read the latest entry in `DUTY_WATCH.md`.
 5. Read `ENGINEERING_PRINCIPLES.md`, `CODE_QUALITY_STANDARDS.md`,
-   `DOMAIN_MODELING.md`, and relevant specifications, ADRs, roadmaps,
-   technology-specific governance, code, tests, and Git history.
-6. Use the architecture source-of-truth map in `AGENTS.md` to resolve the
-   documents that govern the affected scope. Do not invent architecture,
-   naming, style, or size rules from memory or from filenames used elsewhere.
+   `DOMAIN_MODELING.md`, `docs/architecture/ARCHITECTURE.md`, and relevant
+   specifications, ADRs, roadmaps, technology-specific governance, code,
+   tests, and Git history.
+6. Use the source-of-truth map in `docs/README.md`, and the preflight
+   obligation in `AGENTS.md`, to resolve the documents that govern the
+   affected scope. Do not invent architecture, naming, style, or size rules
+   from memory or from filenames used elsewhere.
 7. Identify the current milestone, requested outcome, affected boundaries,
    risks, required validation, and applicable domain guidance.
 8. If the task is new design, a new feature with competing approaches,

@@ -17,9 +17,10 @@ Read, in order:
 8. The relevant specification, ADRs, roadmap documents, package documentation,
    technology-specific governance, and code for the requested task
 
-Do not begin implementation from the user prompt alone. `AGENTS.md` defines the
-canonical architecture source-of-truth map. Do not substitute guessed filenames
-or remembered rules from another repository.
+Do not begin implementation from the user prompt alone. `AGENTS.md` requires
+the architecture preflight below. `docs/README.md` is the documentation index
+and source-of-truth map. Do not substitute guessed filenames or remembered
+rules from another repository.
 
 ## Required opening check
 

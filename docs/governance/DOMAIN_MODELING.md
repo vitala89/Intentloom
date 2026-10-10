@@ -191,8 +191,12 @@ For example, Mutation Governance has meaningful distinctions such as:
 - a proposal is not authorization;
 - reviewed content is content-bound;
 - approval is bound to exact reviewed state and trusted host authority;
+- Approval is not Apply;
+- Status is not authority to Apply or Undo;
 - Apply is distinct from Verification;
+- Verification is not Apply;
 - successful Apply does not imply successful Verification;
+- user Undo is not internal rollback of a failed Apply;
 - stale project state fails closed.
 
 Those invariants are more important than whether the implementation contains a
