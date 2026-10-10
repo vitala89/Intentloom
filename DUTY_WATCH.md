@@ -100,9 +100,18 @@ Desktop Undo U5.
   `packages/application/src/index.ts` at 7,131 physical and 6,746 effective
   lines, and records five file-level import cycles. No production source
   was moved or edited.
+- **Pull request:** https://github.com/vitala89/Intentloom/pull/557
+- **Head:** `c4c25dfb5b09147e0394a69609ea44b262d2683f` plus the handoff
+  commit that records this verification.
+- **Validation:** `pnpm verify` passed: typecheck, lint (pre-existing
+  oxlint warnings only), format check, 349 files / 3042 passed / 3
+  skipped, build, and `git diff --check`. Architecture guards passed
+  earlier in the same run: application, protocol, validator, and daemon
+  Neutron topology plus repository layout (47 tests). Relative links in
+  the edited docs resolved (121 links, none missing).
 - **Not done:** P1B and later slices, Neutron edits, Undo U4, Desktop
   Undo U5.
-- **Next:** Maintainer review of the plan. Do not start an implementation
+- **Next:** Maintainer review of PR #557. Do not start an implementation
   PR from this handoff until that review accepts a slice.
 
 ### 2026-10-10, R4D reconciled with merged governance PR #546
