@@ -20,18 +20,13 @@ Before designing, implementing, refactoring, or materially editing a feature,
 resolve the architecture instructions from repository documentation. Do not
 invent rules from memory or from filenames used in another project.
 
-Canonical Intentloom guidance is:
-
-- `ENGINEERING_PRINCIPLES.md`: architecture boundaries, dependency direction,
-  safety, ownership, and platform invariants;
-- `DOMAIN_MODELING.md`: pragmatic DDD, ubiquitous language, bounded contexts,
-  domain naming, and tactical-pattern decisions;
-- `CODE_QUALITY_STANDARDS.md`: code style, decomposition, file/function budgets,
-  testing, and frontend/backend/TypeScript/Rust/Tauri guidance;
-- `REACT_BEST_PRACTICES.md` when React code is affected;
-- `AGENTS.md` and `AI_AGENT_WORKFLOW.md`: agent development rules;
-- relevant accepted ADRs, specifications, package documentation, and roadmap
-  documents for the affected scope.
+`docs/README.md` is the documentation index and the canonical source-of-truth
+map. It names `docs/architecture/ARCHITECTURE.md` for current structure and
+dependency direction, plus domain language, engineering principles, code-quality
+budgets, React guidance, the agent workflow, ADRs, the roadmap, and operational
+state. Resolve the documents that map names for the affected scope. This file
+states the obligation. `docs/governance/AI_AGENT_WORKFLOW.md` states the
+planning, validation, and handoff steps. Do not copy those steps here.
 
 `DDD_ARCHITECTURE.md`, `UBIQUITOUS_LANGUAGE.md`, `ARCHITECTURE_GUIDELINES.md`,
 `BACKEND_ARCHITECTURE.md`, `FRONTEND_ARCHITECTURE.md`, `CODE_STYLE.md`, and
