@@ -829,11 +829,14 @@ R4C** organizes `packages/validator/src/neutron/` and
 `packages/daemon/src/neutron/` by runtime, session, graph, and mutation
 lifecycle stages. Validator and daemon package subpath names stay
 stable. Validation, RPC results, and security behavior stay the same.
-R4C is on `refactor/validator-daemon-neutron-topology-r4c` and is
-awaiting maintainer review. The branch is structural only. Daemon
-startup and shutdown match the R4B baseline. A pre-existing Ubuntu
-Node 24 SIGTERM race during startup is excluded and belongs in a
-later `fix/daemon-startup-signal-race` branch after this PR merges.
+R4C is merged (PR #554, merge
+`25c3fb0a340eb5a92e2634517dfe1f075506fbba`). The merge is structural
+only. Daemon startup on that merge still bound the IPC endpoint before
+`intentloomd` installed SIGINT/SIGTERM handling. `fix/daemon-startup-signal-race`
+installs that handling in `beforeListen`, before bind, and is awaiting
+maintainer review. An early SIGTERM uses the daemon `close()` path and
+removes only the Unix socket this process bound. Windows named pipes
+keep the same lifecycle and still disappear with the owning process.
 R4D repository hygiene, Undo U4, and Desktop Undo U5 remain
 unauthorized. Other post-P4 candidates remain
 in `POST_W12_NEXT_INCREMENT_PLAN.md`.

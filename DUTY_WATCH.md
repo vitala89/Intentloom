@@ -74,12 +74,45 @@ merged (PR #552, merge `05b1a2c9f282b5e083485820d7e5b8afe2045581`).
 **Backend Architecture R4B** (protocol Neutron semantic topology) is
 merged (PR #553, merge `2298fabb6214160d5456b7a0dda016558209386e`).
 **Backend Architecture R4C** (validator and daemon Neutron semantic
-topology) is implemented on
-`refactor/validator-daemon-neutron-topology-r4c` and is awaiting
-maintainer review. The branch is structural only. The Ubuntu Node 24
-startup SIGTERM race is a separate pre-existing bug and is not fixed
-on this branch. Do not merge. Do not start R4D, Undo U4, or Desktop
-Undo U5.
+topology) is merged (PR #554, merge
+`25c3fb0a340eb5a92e2634517dfe1f075506fbba`). The merge is structural
+only. **Daemon startup signal shutdown** is implemented on
+`fix/daemon-startup-signal-race` and is awaiting maintainer review.
+Do not merge. Do not start R4D, Undo U4, or Desktop Undo U5.
+
+### 2026-10-10, Daemon startup signal shutdown race
+
+- **Status:** **DAEMON STARTUP SIGNAL SHUTDOWN RACE FIXED ON BRANCH
+  AWAITING MAINTAINER REVIEW.** Do not merge. Do not start R4D, Undo
+  U4, or Desktop Undo U5.
+- **Branch:** `fix/daemon-startup-signal-race`
+- **Starting main:** `25c3fb0a340eb5a92e2634517dfe1f075506fbba` (PR #554
+  merge, Backend Architecture R4C).
+- **Proof:** on current `main`, `startLocalDaemon` binds the endpoint
+  inside `server.listen` and `bin.ts` registers SIGINT/SIGTERM only
+  after that promise resolves. A same-order model killed as soon as the
+  Unix socket appeared exited on SIGTERM in 40 of 40 trials and left
+  `daemon.sock` in place. Installing the handler before `listen`
+  exited 0, removed the socket, and allowed a second bind in 20 of 20
+  trials.
+- **Fix:** `listenLocalDaemonEndpoint` creates the close handle, runs
+  `beforeListen`, and only then binds. `intentloomd` registers SIGINT
+  and SIGTERM in `beforeListen` and still closes through `daemon.close()`.
+  There is no pre-bind unlink. Windows named pipes use the same order.
+- **Regression:** the binary test holds inside `listen` after the bind
+  syscall and before `listen` returns, sends SIGTERM in that window,
+  expects exit code 0 and `ENOENT`, then binds a second daemon to the
+  same endpoint. An in-process test checks that `beforeListen` runs
+  while the Unix socket is still absent.
+- **Not done:** R4D, Undo U4, Desktop Undo U5. Neutron topology is
+  unchanged. No new quality exception. `packages/daemon/src/index.ts`
+  shrank from 1037 to 1023 effective lines.
+- **Validation:** focused daemon auth, lifecycle, Neutron session, graph,
+  mutation review, approve-and-apply, status, verification retry, and
+  durable-state tests passed (12 files, 107 passed, 1 skipped).
+  `pnpm verify` passed: typecheck, lint, format check, 348 files /
+  3036 passed / 3 skipped, build, and `git diff --check`.
+- **Next:** maintainer review. Do not start R4D from this handoff.
 
 ### 2026-10-09, R4C scope repair — remove the daemon startup signal fix
 

@@ -98,6 +98,7 @@ import {
   canonicalProjectRoot,
   runWithProjectRootLock,
 } from "./daemon-canonical-root.js";
+import { listenLocalDaemonEndpoint } from "./local-daemon-endpoint.js";
 const maxMessageBytes = 1024 * 1024;
 const defaultMaxConnections = 16;
 const defaultRequestTimeoutMs = 30_000;
@@ -109,6 +110,7 @@ export interface DaemonOptions
   readonly maxConnections?: number;
   readonly requestTimeoutMs?: number;
   readonly shutdownTimeoutMs?: number;
+  readonly beforeListen?: (daemon: LocalDaemon) => void;
   readonly daemonVersion?: string;
   readonly enforceCanonicalRoots?: boolean;
   readonly doctor?: (
@@ -376,7 +378,6 @@ export async function startLocalDaemon(
   if (!localEndpoint(options.endpoint))
     throw new Error("endpoint must be an absolute local IPC path");
   const sockets = new Set<Socket>();
-  let closePromise: Promise<void> | undefined;
   const server: Server = createServer((socket) => {
     sockets.add(socket);
     socket.setTimeout(options.requestTimeoutMs ?? 30_000, () =>
@@ -759,32 +760,17 @@ export async function startLocalDaemon(
     socket.on("close", () => sockets.delete(socket));
   });
   server.maxConnections = options.maxConnections ?? defaultMaxConnections;
-  await new Promise<void>((resolve, reject) => {
-    server.once("error", reject);
-    server.listen(options.endpoint, () => {
-      server.off("error", reject);
-      resolve();
-    });
-  });
-  return {
+  return listenLocalDaemonEndpoint({
+    server,
+    sockets,
     endpoint: options.endpoint,
-    async close(): Promise<void> {
-      if (closePromise !== undefined) return closePromise;
-      closePromise = new Promise<void>((resolve, reject) => {
-        let timedOut = false;
-        const timeout = setTimeout(() => {
-          timedOut = true;
-          for (const socket of sockets) socket.destroy();
-        }, options.shutdownTimeoutMs ?? 5_000);
-        server.close((error) => {
-          clearTimeout(timeout);
-          if (error && !timedOut) reject(error);
-          else resolve();
-        });
-      });
-      return closePromise;
-    },
-  };
+    ...(options.shutdownTimeoutMs === undefined
+      ? {}
+      : { shutdownTimeoutMs: options.shutdownTimeoutMs }),
+    ...(options.beforeListen === undefined
+      ? {}
+      : { beforeListen: options.beforeListen }),
+  });
 }
 
 export async function requestDaemonDoctor(
