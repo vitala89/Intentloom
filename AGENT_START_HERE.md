@@ -15,9 +15,11 @@ Read, in order:
 6. `docs/governance/DOMAIN_MODELING.md`
 7. `docs/governance/AI_AGENT_WORKFLOW.md`
 8. The relevant specification, ADRs, roadmap documents, package documentation,
-   and code for the requested task
+   technology-specific governance, and code for the requested task
 
-Do not begin implementation from the user prompt alone.
+Do not begin implementation from the user prompt alone. `AGENTS.md` defines the
+canonical architecture source-of-truth map. Do not substitute guessed filenames
+or remembered rules from another repository.
 
 ## Required opening check
 
@@ -26,12 +28,19 @@ Before changing files, state internally or in the task plan:
 - the current project phase and active milestone;
 - the last completed duty watch entry;
 - how the task fits the roadmap;
-- which architectural boundaries it may affect;
+- which canonical architecture/governance documents apply to the affected scope;
+- which architectural boundaries it may affect and the required dependency
+  direction;
+- the owning bounded context and established ubiquitous-language terms when
+  domain behavior is affected;
 - the current size and responsibilities of touched implementation files;
-- planned extraction points for any oversized file;
-- the relevant domain guidance, ubiquitous language, owning bounded context,
-  and required tests;
+- the applicable file/function budgets and planned extraction points for any
+  oversized file;
+- the relevant frontend, backend, TypeScript, React, Rust, Tauri, security, or
+  other technology guidance and required tests;
 - which validations and documentation updates will be required;
+- whether a material architecture decision is unanswered by existing docs and
+  therefore requires an ADR or explicit maintainer decision rather than a guess;
 - whether grilling applies (new design, competing approaches, architecture, or
   Ambiguity = 2) per `docs/governance/MATT_POCOCK_SKILLS_ADOPTION.md`.
 
@@ -46,6 +55,9 @@ A task is not complete until the agent has:
 - implemented or documented the requested change;
 - run the relevant validation;
 - reviewed the resulting diff;
+- confirmed the implementation follows the canonical architecture documents
+  identified during preflight, or documented the accepted decision that changes
+  them;
 - confirmed that new or substantially changed files satisfy the code-quality
   budgets, or documented an approved exception;
 - avoided growth of existing oversized files, or recorded the required
