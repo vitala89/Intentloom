@@ -85,6 +85,9 @@ project-operation surface. Its `initProject`, `adoptProject`, `diffProject`,
 transaction, validation, and result contracts. The CLI owns argument parsing,
 current-working-directory defaults, output rendering, and exit-code mapping.
 The application package does not depend on CLI or process behavior. See ADR-0007.
+The active decomposition program for `packages/` is
+[PACKAGES_STABILIZATION_PLAN.md](PACKAGES_STABILIZATION_PLAN.md). P1A records
+the application audit and does not move code.
 
 `@intentloom/protocol` is a separate private, transport-independent package. It
 defines JSON-RPC 2.0-compatible versioned wire types, beginning with the read-only
