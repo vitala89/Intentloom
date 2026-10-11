@@ -850,10 +850,13 @@ extracts the six conformance summary operations into
 merged as PR #558 (`5dac7f0556498949eb2ab33fae6e89e3cbdcfb68`). The
 application root still exports those six names. P1C extracts the host
 filesystem port and adapters into
-`packages/application/src/host-file-system.ts` and is awaiting
-maintainer review. The application root still exports `FileSystem`,
-`nodeFileSystem`, and `createMemoryFileSystem`. P1D and later slices
-have not started. Undo U4 and Desktop Undo U5 are not started. Other
+`packages/application/src/host-file-system.ts` and is merged as PR #559
+(`762f979890f90a8064de756cd038195bb49646ef`). The application root still
+exports `FileSystem`, `nodeFileSystem`, and `createMemoryFileSystem`.
+P1D extracts `secretLikePath`, `inside`, and `projectRelativePaths` into
+`packages/application/src/project-path.ts` and is awaiting maintainer
+review. Those three names stay internal. P1E and later slices have not
+started. Undo U4 and Desktop Undo U5 are not started. Other
 post-P4 candidates remain in `POST_W12_NEXT_INCREMENT_PLAN.md`.
 
 The Desktop discovery/error and Diff/Timeline slices remain recorded in

@@ -6,17 +6,22 @@ conformance summary operations into
 `packages/application/src/project-conformance-summaries.ts` and is merged
 (PR #558, `5dac7f0556498949eb2ab33fae6e89e3cbdcfb68`). **P1C** extracts the
 host filesystem port and adapters into
-`packages/application/src/host-file-system.ts` and is awaiting maintainer
-review. P1 is not complete. P1D and later slices have not started. Undo U4
+`packages/application/src/host-file-system.ts` and is merged (PR #559,
+`762f979890f90a8064de756cd038195bb49646ef`). **P1D** extracts
+`secretLikePath`, `inside`, and `projectRelativePaths` into
+`packages/application/src/project-path.ts` and is awaiting maintainer
+review. P1 is not complete. P1E and later slices have not started. Undo U4
 and Desktop Undo U5 are not started. Neutron's R4A topology stays frozen.
 The measurements below remain the P1A baseline and are not restated as the
 post-extraction size.
 
 This is the canonical plan for the packages stabilization program. It records
 evidence from `main` at `f0b19c885d2aa95b041a4582e5218d2f3539f525`. It does not
-add governance rules. P1B is merged. P1C is implemented and awaiting
-maintainer review. P1D and later slices, and the section 12 ratchet tests,
-are not part of this move.
+add governance rules. P1B is merged. P1C is merged (PR #559,
+`762f979890f90a8064de756cd038195bb49646ef`). P1D is implemented on
+`refactor/application-project-path-p1d` and awaiting maintainer review.
+P1E and later slices, and the section 12 ratchet tests, are not part of
+this move.
 
 ## 1. Baseline
 
@@ -948,32 +953,33 @@ implement them.
 
 ### P1C — host filesystem port
 
-|                      |                                                                                                                                                                                                                                 |
-| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Source               | `FileSystem` and the types that are only the port, plus `createMemoryFileSystem`, `memoryPath`, and `nodeFileSystem` (`index.ts` 472–482 and 2993–3109)                                                                         |
-| Target               | `packages/application/src/host-file-system.ts`                                                                                                                                                                                  |
-| Moved responsibility | The existing port and its two adapters                                                                                                                                                                                          |
-| Edges                | Imports `node:fs/promises`, `node:path`, and `project-scan-exclusions.ts` (that module has no imports today). Does not import `index.ts`.                                                                                       |
-| Exports              | `FileSystem`, `nodeFileSystem`, `createMemoryFileSystem` remain on the root barrel                                                                                                                                              |
-| Tests                | The large set that calls `createMemoryFileSystem` and `nodeFileSystem`. Run the adoption, doctor, and Approved Apply suites, not a new behavior test.                                                                           |
-| Guards               | Preserve symlink skip, binary skip, depth 32, and the 10,000 file cap.                                                                                                                                                          |
-| SLOC                 | About 120 lines leave `index.ts`.                                                                                                                                                                                               |
-| Why second           | Unblocks later modules so they can take a filesystem without importing the barrel.                                                                                                                                              |
-| Implementation       | Implemented on `refactor/application-host-filesystem-p1c` and awaiting maintainer review. `FileSystem`, `nodeFileSystem`, and `createMemoryFileSystem` stay on the application root as explicit re-exports. P1D is not started. |
+|                      |                                                                                                                                                                                   |
+| -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Source               | `FileSystem` and the types that are only the port, plus `createMemoryFileSystem`, `memoryPath`, and `nodeFileSystem` (`index.ts` 472–482 and 2993–3109)                           |
+| Target               | `packages/application/src/host-file-system.ts`                                                                                                                                    |
+| Moved responsibility | The existing port and its two adapters                                                                                                                                            |
+| Edges                | Imports `node:fs/promises`, `node:path`, and `project-scan-exclusions.ts` (that module has no imports today). Does not import `index.ts`.                                         |
+| Exports              | `FileSystem`, `nodeFileSystem`, `createMemoryFileSystem` remain on the root barrel                                                                                                |
+| Tests                | The large set that calls `createMemoryFileSystem` and `nodeFileSystem`. Run the adoption, doctor, and Approved Apply suites, not a new behavior test.                             |
+| Guards               | Preserve symlink skip, binary skip, depth 32, and the 10,000 file cap.                                                                                                            |
+| SLOC                 | About 120 lines leave `index.ts`.                                                                                                                                                 |
+| Why second           | Unblocks later modules so they can take a filesystem without importing the barrel.                                                                                                |
+| Implementation       | Merged as PR #559 (`762f979890f90a8064de756cd038195bb49646ef`). `FileSystem`, `nodeFileSystem`, and `createMemoryFileSystem` stay on the application root as explicit re-exports. |
 
 ### P1D — pure path checks
 
-|                      |                                                                                                               |
-| -------------------- | ------------------------------------------------------------------------------------------------------------- |
-| Source               | `secretLikePath`, `inside`, and `projectRelativePaths`                                                        |
-| Target               | `packages/application/src/project-path.ts`                                                                    |
-| Moved responsibility | Path traversal rejection and secret-like path filtering                                                       |
-| Edges                | `node:path` and the existing relative-path helper only                                                        |
-| Exports              | Internal. `index.ts` imports them. Do not add new public names.                                               |
-| Tests                | `tests/project-inspection.test.ts` and the adoption/sync tests that already cover traversal and symlink roots |
-| Guards               | The check text and the thrown error string stay.                                                              |
-| SLOC                 | Under 40 lines moved.                                                                                         |
-| Risk                 | Security-sensitive but pure. Do not "improve" the prefix check in the same PR.                                |
+|                      |                                                                                                                                                                                                                                                                 |
+| -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Source               | `secretLikePath`, `inside`, and `projectRelativePaths`                                                                                                                                                                                                          |
+| Target               | `packages/application/src/project-path.ts`                                                                                                                                                                                                                      |
+| Moved responsibility | Path traversal rejection and secret-like path filtering                                                                                                                                                                                                         |
+| Edges                | `node:path` and the existing relative-path helper only                                                                                                                                                                                                          |
+| Exports              | Internal. `index.ts` imports them. Do not add new public names.                                                                                                                                                                                                 |
+| Tests                | `tests/project-inspection.test.ts` and the adoption/sync tests that already cover traversal and symlink roots                                                                                                                                                   |
+| Guards               | The check text and the thrown error string stay.                                                                                                                                                                                                                |
+| SLOC                 | Under 40 lines moved.                                                                                                                                                                                                                                           |
+| Risk                 | Security-sensitive but pure. Do not "improve" the prefix check in the same PR.                                                                                                                                                                                  |
+| Implementation       | Implemented on `refactor/application-project-path-p1d` and awaiting maintainer review. The three functions stay internal. `index.ts` imports them and does not export them. The lexical containment check and `path traversal:` error stay. P1E is not started. |
 
 ### P1E — retarget `FileSystem` imports off the barrel, by family
 
