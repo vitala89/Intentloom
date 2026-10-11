@@ -847,10 +847,14 @@ is packages stabilization. P1A is the application audit and plan in
 merged as PR #557 (`ded6e0a7031d31f3181e22d0495418552aa60745`). P1B
 extracts the six conformance summary operations into
 `packages/application/src/project-conformance-summaries.ts` and is
-awaiting maintainer review. The application root still exports the same
-six names. P1C and later slices have not started. Undo U4 and Desktop
-Undo U5 are not started. Other post-P4 candidates remain in
-`POST_W12_NEXT_INCREMENT_PLAN.md`.
+merged as PR #558 (`5dac7f0556498949eb2ab33fae6e89e3cbdcfb68`). The
+application root still exports those six names. P1C extracts the host
+filesystem port and adapters into
+`packages/application/src/host-file-system.ts` and is awaiting
+maintainer review. The application root still exports `FileSystem`,
+`nodeFileSystem`, and `createMemoryFileSystem`. P1D and later slices
+have not started. Undo U4 and Desktop Undo U5 are not started. Other
+post-P4 candidates remain in `POST_W12_NEXT_INCREMENT_PLAN.md`.
 
 The Desktop discovery/error and Diff/Timeline slices remain recorded in
 [PHASE1_CONTRACTS.md](docs/desktop/PHASE1_CONTRACTS.md).
