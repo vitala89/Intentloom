@@ -22,11 +22,11 @@ Start here before designing, implementing, or refactoring.
 `AGENT_DEVELOPMENT_RULES.md` are not separate sources of truth. Those concerns
 belong to the documents above.
 
-Architecture stabilization covers Desktop R1–R3 and Backend R4A–R4D. R1–R4C
-and the daemon startup signal fix are merged. R4D is the repository and
-documentation increment. The next authorized product increment is Undo U4,
-independent post-Undo verification, named in the Neutron runtime roadmap. U4
-and Desktop Undo U5 are not started in R4D.
+Architecture stabilization R1–R4 is merged, including R4D (PR #556). The
+maintainer-authorized packages program is
+[Packages stabilization plan](architecture/PACKAGES_STABILIZATION_PLAN.md).
+P1A is the application audit and decomposition plan. P1 implementation has
+not started. Undo U4 and Desktop Undo U5 are not started.
 
 ## How this tree is organized
 

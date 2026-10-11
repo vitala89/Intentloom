@@ -79,9 +79,40 @@ topology) is merged (PR #554, merge
 only. **Daemon startup signal shutdown** is merged (PR #555, merge
 `96dd39368e98a83d2a356acfe0af0213e2ffd518`). **Architecture preflight governance is merged** (PR #546, merge
 `879fb765334f59968ca97bc1a7914ada9dc35eae`). **Backend Architecture
-R4D** is PR #556 on `refactor/repository-architecture-hygiene-r4d`,
-rebased onto that main, and is awaiting maintainer review. Do not
-merge. Do not start Undo U4 or Desktop Undo U5.
+R4D** is merged (PR #556, merge
+`f0b19c885d2aa95b041a4582e5218d2f3539f525`). **Packages architecture
+P1A** (application audit and decomposition plan) is on
+`docs/packages-architecture-audit-p1a` awaiting maintainer review. P1
+implementation has not started. Do not merge. Do not start Undo U4 or
+Desktop Undo U5.
+
+### 2026-10-10, Packages architecture P1A application audit
+
+- **Status:** **PACKAGES ARCHITECTURE P1A AUDIT COMPLETED, AWAITING
+  MAINTAINER REVIEW.** P1 implementation has not started. Do not merge.
+  Do not start Undo U4 or Desktop Undo U5.
+- **Branch:** `docs/packages-architecture-audit-p1a`
+- **Starting main:** `f0b19c885d2aa95b041a4582e5218d2f3539f525` (PR #556,
+  R4D merged). Earlier Duty Watch text that left R4D unmerged is stale
+  relative to this commit and is corrected in the status block above.
+- **Scope:** Documentation only. `docs/architecture/PACKAGES_STABILIZATION_PLAN.md`
+  is the P1–P6 plan. It inventories 363 application sources, measures
+  `packages/application/src/index.ts` at 7,131 physical and 6,746 effective
+  lines, and records five file-level import cycles. No production source
+  was moved or edited.
+- **Pull request:** https://github.com/vitala89/Intentloom/pull/557
+- **Head:** `c4c25dfb5b09147e0394a69609ea44b262d2683f` plus the handoff
+  commit that records this verification.
+- **Validation:** `pnpm verify` passed: typecheck, lint (pre-existing
+  oxlint warnings only), format check, 349 files / 3042 passed / 3
+  skipped, build, and `git diff --check`. Architecture guards passed
+  earlier in the same run: application, protocol, validator, and daemon
+  Neutron topology plus repository layout (47 tests). Relative links in
+  the edited docs resolved (121 links, none missing).
+- **Not done:** P1B and later slices, Neutron edits, Undo U4, Desktop
+  Undo U5.
+- **Next:** Maintainer review of PR #557. Do not start an implementation
+  PR from this handoff until that review accepts a slice.
 
 ### 2026-10-10, R4D reconciled with merged governance PR #546
 
