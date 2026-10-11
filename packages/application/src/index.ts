@@ -51,11 +51,13 @@ import {
   type ProfileDetectionResult,
   type WorkspaceTopology,
 } from "./project-profile-detection.js";
-import {
-  inspectionExclusions,
-  projectRelativePaths as relativeProjectPaths,
-} from "./project-scan-exclusions.js";
+import { inspectionExclusions } from "./project-scan-exclusions.js";
 import { nodeFileSystem, type FileSystem } from "./host-file-system.js";
+import {
+  inside,
+  projectRelativePaths,
+  secretLikePath,
+} from "./project-path.js";
 import {
   collectGitEvidence,
   createReleaseTimeline,
@@ -652,17 +654,6 @@ const inspectionAdapterNames: readonly AdapterName[] = [
 ];
 const inspectionMetadataPaths = [configPath, lockPath, sourceMapPath] as const;
 
-function secretLikePath(path: string): boolean {
-  return path
-    .split("/")
-    .some(
-      (segment) =>
-        segment === ".env" ||
-        segment.startsWith(".env.") ||
-        /\.(?:key|pem|p12|pfx)$/iu.test(segment),
-    );
-}
-
 export async function inspectProject(
   root: string,
   fs: FileSystem,
@@ -781,20 +772,6 @@ export async function inspectProject(
     exclusions: inspectionExclusions,
     findings,
   };
-}
-
-function projectRelativePaths(
-  root: string,
-  entries: readonly string[],
-): string[] {
-  return relativeProjectPaths(root, entries, resolve, relative);
-}
-
-function inside(root: string, path: string): string {
-  const target = resolve(root, path);
-  if (target !== resolve(root) && !target.startsWith(`${resolve(root)}${sep}`))
-    throw new Error(`path traversal: ${path}`);
-  return target;
 }
 
 export {

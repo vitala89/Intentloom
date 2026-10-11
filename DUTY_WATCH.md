@@ -85,9 +85,46 @@ P1A** is merged (PR #557, merge
 `ded6e0a7031d31f3181e22d0495418552aa60745`). **Packages architecture
 P1B** is merged (PR #558, merge
 `5dac7f0556498949eb2ab33fae6e89e3cbdcfb68`). **Packages architecture
-P1C** extracts the host filesystem port and adapters and is awaiting
-maintainer review. Do not merge. Do not start P1D, Undo U4, or Desktop
-Undo U5.
+P1C** is merged (PR #559, merge
+`762f979890f90a8064de756cd038195bb49646ef`). **Packages architecture
+P1D** extracts the pure project path checks and is awaiting maintainer
+review. Do not merge. Do not start P1E, Undo U4, or Desktop Undo U5.
+
+### 2026-10-11, Packages architecture P1D pure project path extraction
+
+- **Status:** **PACKAGES ARCHITECTURE P1D PURE PROJECT PATH EXTRACTION
+  IMPLEMENTED ON BRANCH AWAITING MAINTAINER REVIEW.** Do not merge. Do
+  not start P1E, Undo U4, or Desktop Undo U5.
+- **Branch:** `refactor/application-project-path-p1d`
+- **Starting main:** `762f979890f90a8064de756cd038195bb49646ef` (PR #559,
+  P1C merged). Matches the expected baseline.
+- **Scope:** Moved `secretLikePath`, `projectRelativePaths`, and `inside`
+  from `packages/application/src/index.ts` into
+  `packages/application/src/project-path.ts`. The root barrel imports
+  the three names and does not export them. The new module imports
+  `node:path` and the existing `projectRelativePaths` helper from
+  `project-scan-exclusions.ts` only. It does not import the application
+  root, CLI, daemon, Desktop, MCP, React, or Tauri. The lexical
+  containment check and the `path traversal:` error stay. Secret-like
+  classification stays. No Approved Apply, host approval, transaction,
+  snapshot, lock, Neutron, Undo, or verification behavior was edited.
+- **Metrics (`scripts/production-file-metrics.mjs`):** `index.ts`
+  6,960 physical / 6,582 effective before; 6,937 physical / 6,562
+  effective after. New module 27 physical / 24 effective. Net production
+  change +4 physical / +4 effective (127,615 / 119,479 before;
+  127,619 / 119,483 after).
+- **Cycles:** The same five file-level components recorded in P1A, with
+  the same members. The new module imports `project-scan-exclusions.ts`
+  only and is not in a component. It does not import `index.ts`.
+- **Validation:** `pnpm verify` passed: typecheck, lint (pre-existing
+  oxlint warnings only), format check, 352 files / 3056 passed / 3
+  skipped, build, and `git diff --check`. Focused path, inspection,
+  adoption, sync, memory secret-path, host filesystem, conformance
+  export, Neutron topology, and repository layout tests passed before
+  that run (15 files / 137 tests).
+- **Not done:** P1E and later slices, section 12 ratchet tests beyond
+  the existing topology guards, Neutron edits, Undo U4, Desktop Undo U5.
+- **Next:** Maintainer review. Do not merge. Do not start P1E.
 
 ### 2026-10-11, Packages architecture P1C host filesystem extraction
 
