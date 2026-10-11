@@ -843,9 +843,13 @@ preflight rules and does not change runtime, protocol, or package
 behavior. Architecture stabilization R1–R4 (Desktop R1–R3 and Backend
 R4A–R4D) is complete. The next maintainer-authorized architecture program
 is packages stabilization. P1A is the application audit and plan in
-[PACKAGES_STABILIZATION_PLAN.md](docs/architecture/PACKAGES_STABILIZATION_PLAN.md).
-P1 implementation has not started. Undo U4 and Desktop Undo U5 are not
-started. Other post-P4 candidates remain in
+[PACKAGES_STABILIZATION_PLAN.md](docs/architecture/PACKAGES_STABILIZATION_PLAN.md),
+merged as PR #557 (`ded6e0a7031d31f3181e22d0495418552aa60745`). P1B
+extracts the six conformance summary operations into
+`packages/application/src/project-conformance-summaries.ts` and is
+awaiting maintainer review. The application root still exports the same
+six names. P1C and later slices have not started. Undo U4 and Desktop
+Undo U5 are not started. Other post-P4 candidates remain in
 `POST_W12_NEXT_INCREMENT_PLAN.md`.
 
 The Desktop discovery/error and Diff/Timeline slices remain recorded in

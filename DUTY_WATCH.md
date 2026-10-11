@@ -81,10 +81,50 @@ only. **Daemon startup signal shutdown** is merged (PR #555, merge
 `879fb765334f59968ca97bc1a7914ada9dc35eae`). **Backend Architecture
 R4D** is merged (PR #556, merge
 `f0b19c885d2aa95b041a4582e5218d2f3539f525`). **Packages architecture
-P1A** (application audit and decomposition plan) is on
-`docs/packages-architecture-audit-p1a` awaiting maintainer review. P1
-implementation has not started. Do not merge. Do not start Undo U4 or
-Desktop Undo U5.
+P1A** is merged (PR #557, merge
+`ded6e0a7031d31f3181e22d0495418552aa60745`). **Packages architecture
+P1B** extracts the six conformance summary operations and is awaiting
+maintainer review. Do not merge. P1C has not started. Do not start Undo
+U4 or Desktop Undo U5.
+
+### 2026-10-11, Packages architecture P1B conformance summary extraction
+
+- **Status:** **PACKAGES ARCHITECTURE P1B CONFORMANCE SUMMARY EXTRACTION
+  IMPLEMENTED ON BRANCH AWAITING MAINTAINER REVIEW.** Do not merge. Do
+  not start P1C, Undo U4, or Desktop Undo U5.
+- **Branch:** `refactor/application-conformance-summaries-p1b`
+- **Starting main:** `ded6e0a7031d31f3181e22d0495418552aa60745` (PR #557,
+  P1A merged).
+- **Scope:** Moved the six leaf wrappers
+  `evaluateProjectEngineeringConformance`,
+  `summarizeProjectWorkflowVariants`,
+  `summarizeProjectWorkflowDurations`,
+  `summarizeProjectConformanceTrend`,
+  `summarizeProjectWorkflowRepetitions`, and
+  `summarizeProjectWorkflowTransitionIntervals` from
+  `packages/application/src/index.ts` into
+  `packages/application/src/project-conformance-summaries.ts`. The root
+  barrel re-exports those names. The new module imports
+  `@intentloom/evidence-analysis` and `@intentloom/protocol` only. It
+  does not import the application root, CLI, daemon, Desktop, MCP,
+  React, or Tauri. No Approved Apply, host approval, transaction,
+  filesystem, snapshot, lock, Neutron, Undo, or verification code was
+  edited.
+- **Metrics (`scripts/production-file-metrics.mjs`):** `index.ts`
+  7,131 physical / 6,746 effective before; 7,085 physical / 6,705
+  effective after. New module 57 physical / 51 effective. Net production
+  change +11 physical / +10 effective.
+- **Cycles:** The same five file-level components recorded in P1A. The
+  new module is not in a component. `index.ts` remains in the Approved
+  Apply component and does not gain a new edge back from the leaf.
+- **Validation:** `pnpm verify` passed: typecheck, lint (pre-existing
+  oxlint warnings only), format check, 350 files / 3044 passed / 3
+  skipped, build, and `git diff --check`. Focused conformance, root
+  export, daemon conformance IPC, Neutron topology, and repository
+  layout tests passed in that run.
+- **Not done:** P1C and later slices, section 12 ratchet tests beyond
+  the existing topology guards, Neutron edits, Undo U4, Desktop Undo U5.
+- **Next:** Maintainer review. Do not merge. Do not start P1C.
 
 ### 2026-10-10, Packages architecture P1A application audit
 
