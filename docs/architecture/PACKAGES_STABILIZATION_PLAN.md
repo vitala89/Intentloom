@@ -1,13 +1,18 @@
 # Packages architecture stabilization (P1–P6)
 
-Status: **P1A audit and plan only.** Implementation has not started. P1 is not
-complete. Undo U4 and Desktop Undo U5 are not started. Neutron's R4A topology
-stays frozen.
+Status: **P1A audit merged** (PR #557,
+`ded6e0a7031d31f3181e22d0495418552aa60745`). **P1B** extracts the six
+conformance summary operations into
+`packages/application/src/project-conformance-summaries.ts` and is awaiting
+maintainer review. P1 is not complete. P1C and later slices have not started.
+Undo U4 and Desktop Undo U5 are not started. Neutron's R4A topology stays
+frozen. The measurements below remain the P1A baseline and are not restated
+as the post-extraction size.
 
 This is the canonical plan for the packages stabilization program. It records
 evidence from `main` at `f0b19c885d2aa95b041a4582e5218d2f3539f525`. It does not
-add governance rules. File moves, export changes, and ratchet tests wait for
-maintainer review of this plan.
+add governance rules. P1B is the first authorized move and is awaiting review.
+Later slices and the section 12 ratchet tests are not part of that move.
 
 ## 1. Baseline
 
@@ -935,6 +940,7 @@ implement them.
 | Guards               | New file under 250 effective lines. `index.ts` effective and physical lines do not rise. Topology test still passes.                                                                                                                                                                                                       |
 | SLOC                 | About 40 effective lines leave `index.ts`. New file is that body plus imports.                                                                                                                                                                                                                                             |
 | Why first            | Leaf, no filesystem, no transaction, existing equality tests against evidence-analysis.                                                                                                                                                                                                                                    |
+| Implementation       | Awaiting maintainer review on `refactor/application-conformance-summaries-p1b`. The six names stay on the application root as explicit re-exports. P1C is not started.                                                                                                                                                     |
 
 ### P1C — host filesystem port
 

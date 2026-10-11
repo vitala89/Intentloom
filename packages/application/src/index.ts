@@ -6,14 +6,6 @@ import { extractMarkdownSection } from "./skill-markdown.js";
 import { dirname, relative, resolve, sep } from "node:path";
 import { adapterVersion, generateAdapters } from "@intentloom/adapters";
 import { getAdapterContract } from "@intentloom/adapters";
-import {
-  evaluateEngineeringConformance,
-  summarizeWorkflowVariants,
-  summarizeWorkflowDurations,
-  summarizeConformanceTrend,
-  summarizeWorkflowRepetitions,
-  summarizeWorkflowTransitionIntervals,
-} from "@intentloom/evidence-analysis";
 import { INTENTLOOM_VERSION, checksum, loadCatalog } from "@intentloom/core";
 import { normalizeOutputPath, normalizeStoredPath } from "@intentloom/core";
 import { type AdapterName } from "@intentloom/core";
@@ -142,14 +134,6 @@ import {
   type AgentWorkspaceMode,
   type WorkspaceMessage,
   type WorkspaceConversationRecord,
-  type EngineeringConformanceReport,
-  type EngineeringWorkflowPolicy,
-  type GenericTimeline,
-  type WorkflowVariantSummaryReport,
-  type WorkflowDurationSummaryReport,
-  type ConformanceTrendSummaryReport,
-  type WorkflowRepetitionSummaryReport,
-  type WorkflowTransitionIntervalsReport,
   type NeutronSubagentRole,
   type NeutronSubagentStatus,
   type NeutronSubagentTaskRecord,
@@ -189,44 +173,14 @@ import {
   validateNeutronSubagentTaskRecord,
 } from "@intentloom/protocol";
 export { INTENTLOOM_VERSION } from "@intentloom/core";
-export function evaluateProjectEngineeringConformance(options: {
-  readonly root: string;
-  readonly timeline: GenericTimeline;
-  readonly policy: EngineeringWorkflowPolicy;
-}): EngineeringConformanceReport {
-  if (options.root.length === 0) throw new Error("project root is required");
-  return evaluateEngineeringConformance(options.timeline, options.policy);
-}
-
-export function summarizeProjectWorkflowVariants(
-  timelines: readonly GenericTimeline[],
-): WorkflowVariantSummaryReport {
-  return summarizeWorkflowVariants(timelines);
-}
-
-export function summarizeProjectWorkflowDurations(
-  timelines: readonly GenericTimeline[],
-): WorkflowDurationSummaryReport {
-  return summarizeWorkflowDurations(timelines);
-}
-
-export function summarizeProjectConformanceTrend(
-  reports: readonly EngineeringConformanceReport[],
-): ConformanceTrendSummaryReport {
-  return summarizeConformanceTrend(reports);
-}
-
-export function summarizeProjectWorkflowRepetitions(
-  timelines: readonly GenericTimeline[],
-): WorkflowRepetitionSummaryReport {
-  return summarizeWorkflowRepetitions(timelines);
-}
-
-export function summarizeProjectWorkflowTransitionIntervals(
-  timelines: readonly GenericTimeline[],
-): WorkflowTransitionIntervalsReport {
-  return summarizeWorkflowTransitionIntervals(timelines);
-}
+export {
+  evaluateProjectEngineeringConformance,
+  summarizeProjectWorkflowVariants,
+  summarizeProjectWorkflowDurations,
+  summarizeProjectConformanceTrend,
+  summarizeProjectWorkflowRepetitions,
+  summarizeProjectWorkflowTransitionIntervals,
+} from "./project-conformance-summaries.js";
 export type {
   RetentionState,
   SessionSummary,
