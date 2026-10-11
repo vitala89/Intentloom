@@ -837,13 +837,14 @@ SIGINT and SIGTERM in `beforeListen`, before the IPC endpoint is bound,
 and shutdown uses `daemon.close()`. **Architecture preflight governance is merged** (PR #546, merge
 `879fb765334f59968ca97bc1a7914ada9dc35eae`). **Backend Architecture R4D**
 (repository root, documentation hygiene, and the repository layout
-ratchet) is on `refactor/repository-architecture-hygiene-r4d` as PR #556,
-rebased onto that main, and is awaiting maintainer review. It is not
-merged. It preserves the #546 preflight rules and does not change
-runtime, protocol, or package behavior. Architecture stabilization is
-Desktop R1–R3 and Backend R4A–R4D. The next authorized increment after
-R4D merges is Undo U4,
-independent post-Undo verification. U4 and Desktop Undo U5 are not
+ratchet) is merged (PR #556, merge
+`f0b19c885d2aa95b041a4582e5218d2f3539f525`). It preserves the #546
+preflight rules and does not change runtime, protocol, or package
+behavior. Architecture stabilization R1–R4 (Desktop R1–R3 and Backend
+R4A–R4D) is complete. The next maintainer-authorized architecture program
+is packages stabilization. P1A is the application audit and plan in
+[PACKAGES_STABILIZATION_PLAN.md](docs/architecture/PACKAGES_STABILIZATION_PLAN.md).
+P1 implementation has not started. Undo U4 and Desktop Undo U5 are not
 started. Other post-P4 candidates remain in
 `POST_W12_NEXT_INCREMENT_PLAN.md`.
 
