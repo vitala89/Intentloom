@@ -83,9 +83,49 @@ R4D** is merged (PR #556, merge
 `f0b19c885d2aa95b041a4582e5218d2f3539f525`). **Packages architecture
 P1A** is merged (PR #557, merge
 `ded6e0a7031d31f3181e22d0495418552aa60745`). **Packages architecture
-P1B** extracts the six conformance summary operations and is awaiting
-maintainer review. Do not merge. P1C has not started. Do not start Undo
-U4 or Desktop Undo U5.
+P1B** is merged (PR #558, merge
+`5dac7f0556498949eb2ab33fae6e89e3cbdcfb68`). **Packages architecture
+P1C** extracts the host filesystem port and adapters and is awaiting
+maintainer review. Do not merge. Do not start P1D, Undo U4, or Desktop
+Undo U5.
+
+### 2026-10-11, Packages architecture P1C host filesystem extraction
+
+- **Status:** **PACKAGES ARCHITECTURE P1C HOST FILESYSTEM EXTRACTION
+  IMPLEMENTED ON BRANCH AWAITING MAINTAINER REVIEW.** Do not merge. Do
+  not start P1D, Undo U4, or Desktop Undo U5.
+- **Branch:** `refactor/application-host-filesystem-p1c`
+- **Starting main:** `5dac7f0556498949eb2ab33fae6e89e3cbdcfb68` (PR #558,
+  P1B merged). Matches the expected baseline.
+- **Scope:** Moved `FileSystem`, `memoryPath`, `createMemoryFileSystem`,
+  and `nodeFileSystem` from `packages/application/src/index.ts` into
+  `packages/application/src/host-file-system.ts`. The root barrel
+  re-exports `FileSystem` as a type and `nodeFileSystem` and
+  `createMemoryFileSystem` as values. The new module imports
+  `node:fs/promises`, `node:path`, and `project-scan-exclusions.ts`
+  only. It does not import the application root, CLI, daemon, Desktop,
+  MCP, React, or Tauri. `index.ts` still reads the skill catalog with
+  `readFile` and `readdir`. `secretLikePath`, `inside`, and
+  `projectRelativePaths` stay in place for P1D. No Approved Apply, host
+  approval, transaction, snapshot, lock, Neutron, Undo, or verification
+  behavior was edited.
+- **Metrics (`scripts/production-file-metrics.mjs`):** `index.ts`
+  7,085 physical / 6,705 effective before; 6,960 physical / 6,582
+  effective after. New module 144 physical / 141 effective. Net
+  production change +19 physical / +18 effective.
+- **Cycles:** The same five file-level components recorded in P1A. The
+  new module imports `project-scan-exclusions.ts` only and is not in a
+  component. `index.ts` remains in the Approved Apply component and
+  does not gain an edge back from the filesystem module.
+- **Validation:** `pnpm verify` passed: typecheck, lint (pre-existing
+  oxlint warnings only), format check, 351 files / 3051 passed / 3
+  skipped, build, and `git diff --check`. Focused host-filesystem,
+  inspection, adoption, doctor, sync, Approved Apply, containment,
+  Neutron topology, and repository layout tests passed before that run
+  (14 files / 103 tests).
+- **Not done:** P1D and later slices, section 12 ratchet tests beyond
+  the existing topology guards, Neutron edits, Undo U4, Desktop Undo U5.
+- **Next:** Maintainer review. Do not merge. Do not start P1D.
 
 ### 2026-10-11, Packages architecture P1B conformance summary extraction
 

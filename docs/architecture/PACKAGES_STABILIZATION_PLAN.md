@@ -3,16 +3,20 @@
 Status: **P1A audit merged** (PR #557,
 `ded6e0a7031d31f3181e22d0495418552aa60745`). **P1B** extracts the six
 conformance summary operations into
-`packages/application/src/project-conformance-summaries.ts` and is awaiting
-maintainer review. P1 is not complete. P1C and later slices have not started.
-Undo U4 and Desktop Undo U5 are not started. Neutron's R4A topology stays
-frozen. The measurements below remain the P1A baseline and are not restated
-as the post-extraction size.
+`packages/application/src/project-conformance-summaries.ts` and is merged
+(PR #558, `5dac7f0556498949eb2ab33fae6e89e3cbdcfb68`). **P1C** extracts the
+host filesystem port and adapters into
+`packages/application/src/host-file-system.ts` and is awaiting maintainer
+review. P1 is not complete. P1D and later slices have not started. Undo U4
+and Desktop Undo U5 are not started. Neutron's R4A topology stays frozen.
+The measurements below remain the P1A baseline and are not restated as the
+post-extraction size.
 
 This is the canonical plan for the packages stabilization program. It records
 evidence from `main` at `f0b19c885d2aa95b041a4582e5218d2f3539f525`. It does not
-add governance rules. P1B is the first authorized move and is awaiting review.
-Later slices and the section 12 ratchet tests are not part of that move.
+add governance rules. P1B is merged. P1C is implemented and awaiting
+maintainer review. P1D and later slices, and the section 12 ratchet tests,
+are not part of this move.
 
 ## 1. Baseline
 
@@ -940,21 +944,22 @@ implement them.
 | Guards               | New file under 250 effective lines. `index.ts` effective and physical lines do not rise. Topology test still passes.                                                                                                                                                                                                       |
 | SLOC                 | About 40 effective lines leave `index.ts`. New file is that body plus imports.                                                                                                                                                                                                                                             |
 | Why first            | Leaf, no filesystem, no transaction, existing equality tests against evidence-analysis.                                                                                                                                                                                                                                    |
-| Implementation       | Awaiting maintainer review on `refactor/application-conformance-summaries-p1b`. The six names stay on the application root as explicit re-exports. P1C is not started.                                                                                                                                                     |
+| Implementation       | Merged as PR #558 (`5dac7f0556498949eb2ab33fae6e89e3cbdcfb68`). The six names stay on the application root as explicit re-exports.                                                                                                                                                                                         |
 
 ### P1C — host filesystem port
 
-|                      |                                                                                                                                                         |
-| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Source               | `FileSystem` and the types that are only the port, plus `createMemoryFileSystem`, `memoryPath`, and `nodeFileSystem` (`index.ts` 472–482 and 2993–3109) |
-| Target               | `packages/application/src/host-file-system.ts`                                                                                                          |
-| Moved responsibility | The existing port and its two adapters                                                                                                                  |
-| Edges                | Imports `node:fs/promises`, `node:path`, and `project-scan-exclusions.ts` (that module has no imports today). Does not import `index.ts`.               |
-| Exports              | `FileSystem`, `nodeFileSystem`, `createMemoryFileSystem` remain on the root barrel                                                                      |
-| Tests                | The large set that calls `createMemoryFileSystem` and `nodeFileSystem`. Run the adoption, doctor, and Approved Apply suites, not a new behavior test.   |
-| Guards               | Preserve symlink skip, binary skip, depth 32, and the 10,000 file cap.                                                                                  |
-| SLOC                 | About 120 lines leave `index.ts`.                                                                                                                       |
-| Why second           | Unblocks later modules so they can take a filesystem without importing the barrel.                                                                      |
+|                      |                                                                                                                                                                                                                                 |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Source               | `FileSystem` and the types that are only the port, plus `createMemoryFileSystem`, `memoryPath`, and `nodeFileSystem` (`index.ts` 472–482 and 2993–3109)                                                                         |
+| Target               | `packages/application/src/host-file-system.ts`                                                                                                                                                                                  |
+| Moved responsibility | The existing port and its two adapters                                                                                                                                                                                          |
+| Edges                | Imports `node:fs/promises`, `node:path`, and `project-scan-exclusions.ts` (that module has no imports today). Does not import `index.ts`.                                                                                       |
+| Exports              | `FileSystem`, `nodeFileSystem`, `createMemoryFileSystem` remain on the root barrel                                                                                                                                              |
+| Tests                | The large set that calls `createMemoryFileSystem` and `nodeFileSystem`. Run the adoption, doctor, and Approved Apply suites, not a new behavior test.                                                                           |
+| Guards               | Preserve symlink skip, binary skip, depth 32, and the 10,000 file cap.                                                                                                                                                          |
+| SLOC                 | About 120 lines leave `index.ts`.                                                                                                                                                                                               |
+| Why second           | Unblocks later modules so they can take a filesystem without importing the barrel.                                                                                                                                              |
+| Implementation       | Implemented on `refactor/application-host-filesystem-p1c` and awaiting maintainer review. `FileSystem`, `nodeFileSystem`, and `createMemoryFileSystem` stay on the application root as explicit re-exports. P1D is not started. |
 
 ### P1D — pure path checks
 
