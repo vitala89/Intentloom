@@ -1,7 +1,7 @@
-import { readFileSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 import { mkdir, mkdtemp, rm, symlink, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { dirname, join, resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 import {
   createMemoryFileSystem,
@@ -173,4 +173,77 @@ describe("application host filesystem extraction", () => {
       expect(listed).not.toContain("f10000.txt");
     });
   }, 20_000);
+
+  it("keeps engineering quality filesystem port imports off the application root", () => {
+    const rootBarrel = resolve("packages/application/src/index.ts");
+    const hostModule = resolve("packages/application/src/host-file-system.ts");
+    const portNames = new Set([
+      "FileSystem",
+      "nodeFileSystem",
+      "createMemoryFileSystem",
+    ]);
+    const qualityDir = "packages/application/src/engineering-quality";
+    const rootPortImports: string[] = [];
+    const nonHostAdapterImports: string[] = [];
+    for (const name of readdirSync(qualityDir)) {
+      if (!name.endsWith(".ts")) continue;
+      const file = join(qualityDir, name);
+      for (const binding of namedImportBindings(readFileSync(file, "utf8"))) {
+        const importedPort = binding.names.filter((imported) =>
+          portNames.has(imported),
+        );
+        if (importedPort.length === 0) continue;
+        const resolved = resolveRelativeSpecifier(file, binding.specifier);
+        if (resolved === rootBarrel) {
+          rootPortImports.push(`${name}:${importedPort.join(",")}`);
+        }
+        if (
+          importedPort.some((imported) => imported !== "FileSystem") &&
+          resolved !== hostModule
+        ) {
+          nonHostAdapterImports.push(name);
+        }
+      }
+    }
+
+    expect(rootPortImports).toEqual([]);
+    expect(nonHostAdapterImports).toEqual([]);
+    const hostSource = readFileSync(hostModule, "utf8");
+    expect(hostSource).not.toMatch(/engineering-quality/);
+    expect(hostSource).not.toMatch(
+      /from\s+["'](?:\.\.?\/)*index\.(?:js|ts)["']/,
+    );
+  });
 });
+
+function namedImportBindings(
+  source: string,
+): { specifier: string; names: string[] }[] {
+  const bindings: { specifier: string; names: string[] }[] = [];
+  const pattern =
+    /(?:^|\n)import\s+(?:type\s+)?([\s\S]*?)\sfrom\s+["']([^"']+)["']/g;
+  for (const match of source.matchAll(pattern)) {
+    const clause = match[1] ?? "";
+    const specifier = match[2] ?? "";
+    const named = clause.match(/\{([\s\S]*)\}/);
+    const names = named
+      ? (named[1] ?? "")
+          .split(",")
+          .map((part) => part.trim())
+          .filter((part) => part.length > 0)
+          .map(
+            (part) => part.replace(/^type\s+/, "").split(/\s+as\s+/)[0] ?? "",
+          )
+          .map((part) => part.trim())
+          .filter((part) => part.length > 0)
+      : [];
+    bindings.push({ specifier, names });
+  }
+  return bindings;
+}
+
+function resolveRelativeSpecifier(fromFile: string, specifier: string): string {
+  const lexical = resolve(dirname(fromFile), specifier);
+  if (lexical.endsWith(".js")) return `${lexical.slice(0, -3)}.ts`;
+  return lexical;
+}

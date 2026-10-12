@@ -87,8 +87,62 @@ P1B** is merged (PR #558, merge
 `5dac7f0556498949eb2ab33fae6e89e3cbdcfb68`). **Packages architecture
 P1C** is merged (PR #559, merge
 `762f979890f90a8064de756cd038195bb49646ef`). **Packages architecture
-P1D** extracts the pure project path checks and is awaiting maintainer
-review. Do not merge. Do not start P1E, Undo U4, or Desktop Undo U5.
+P1D** is merged (PR #560, merge
+`7713318aa0390cad0ecb2e0313422ba0f66ae6bb`). **Packages architecture
+P1E.1** retargets Engineering Quality filesystem-port imports and is
+awaiting maintainer review. Do not merge. Do not start P1E.2, Undo U4,
+or Desktop Undo U5.
+
+### 2026-10-12, Packages architecture P1E.1 engineering quality filesystem imports
+
+- **Status:** **PACKAGES ARCHITECTURE P1E.1 ENGINEERING QUALITY
+  FILESYSTEM IMPORT DECOUPLING IMPLEMENTED ON BRANCH AWAITING MAINTAINER
+  REVIEW.** Do not merge. Do not start P1E.2, P1F, Undo U4, or Desktop
+  Undo U5.
+- **Branch:** `refactor/application-quality-filesystem-imports-p1e1`
+- **Starting main:** `7713318aa0390cad0ecb2e0313422ba0f66ae6bb` (PR #560,
+  P1D merged). Matches the expected baseline.
+- **Scope:** Engineering Quality modules that imported the filesystem
+  port from `../index.js` now import it from `../host-file-system.js`:
+  `surface.ts` (`FileSystem`, type-only), `cli-specialized-packs.ts` and
+  `cli-specialized-packs-external.ts` (`FileSystem` type-only and
+  `nodeFileSystem`), and `specialized-pack-external-apply.ts`
+  (`FileSystem`, type-only). `assertCanonicalProjectRoot` and
+  `ProjectRootError` stay on the application root. No checker, metric,
+  catalog, remediation, pack, SARIF, baseline, viewmodel, or validation
+  behavior was edited. The root still exports `FileSystem`,
+  `nodeFileSystem`, and `createMemoryFileSystem`.
+- **Imports:** Engineering Quality `FileSystem` imports from the
+  application root went from 4 to 0. Direct `host-file-system.js`
+  imports in that directory went from 0 to 4. The remaining root import
+  is `specialized-pack-external-apply.ts` (`assertCanonicalProjectRoot`,
+  `ProjectRootError`). Two health modules still import a separate local
+  `FileSystem` from `propose-and-apply-extension-adoption.ts`.
+- **Cycles:** The five import-edge components recorded in P1A are
+  unchanged, and engineering quality is not in them. With `export …
+from` edges included, the component that contains `index.ts` and
+  engineering quality shrank from 45 files to 42. `surface.ts`,
+  `cli-specialized-packs.ts`, and `cli-commands.ts` left it. The cycle
+  remains through `specialized-pack-external-apply.ts` → `index.ts` for
+  the non-port names above, reached by
+  `cli-specialized-packs-external.ts` and
+  `specialized-pack-external-viewmodel.ts`. No new component appeared.
+  `host-file-system.ts` still depends only on
+  `project-scan-exclusions.ts`.
+- **Metrics (`scripts/production-file-metrics.mjs`):** `surface.ts`
+  83 physical / 78 effective, unchanged. `cli-specialized-packs.ts`
+  140/131 to 139/130. `cli-specialized-packs-external.ts` 217/205 to
+  216/204. `specialized-pack-external-apply.ts` 235/218 to 232/215.
+  No production file grew.
+- **Validation:** Focused Engineering Quality, CLI/daemon/MCP/Desktop
+  quality surfaces, host filesystem, conformance root exports, and
+  Neutron topology tests passed: 35 files / 248 tests. `pnpm verify`
+  passed: typecheck, lint (pre-existing oxlint warnings only), format
+  check, 352 files / 3057 passed / 3 skipped, build, and
+  `git diff --check`.
+- **Not done:** P1E.2 and later slices, breaking the remaining quality
+  root import, Neutron edits, Undo U4, Desktop Undo U5.
+- **Next:** Maintainer review. Do not merge. Do not start P1E.2.
 
 ### 2026-10-11, Packages architecture P1D pure project path extraction
 

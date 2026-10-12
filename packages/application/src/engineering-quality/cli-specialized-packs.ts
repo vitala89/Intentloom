@@ -1,5 +1,4 @@
-import type { FileSystem } from "../index.js";
-import { nodeFileSystem } from "../index.js";
+import { nodeFileSystem, type FileSystem } from "../host-file-system.js";
 import { getFirstPartySpecializedPackEntries } from "./first-party-specialized-pack-runtime.js";
 import {
   resolveFirstPartySpecializedPackDetection,

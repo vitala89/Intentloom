@@ -9,19 +9,24 @@ host filesystem port and adapters into
 `packages/application/src/host-file-system.ts` and is merged (PR #559,
 `762f979890f90a8064de756cd038195bb49646ef`). **P1D** extracts
 `secretLikePath`, `inside`, and `projectRelativePaths` into
-`packages/application/src/project-path.ts` and is awaiting maintainer
-review. P1 is not complete. P1E and later slices have not started. Undo U4
-and Desktop Undo U5 are not started. Neutron's R4A topology stays frozen.
+`packages/application/src/project-path.ts` and is merged (PR #560,
+`7713318aa0390cad0ecb2e0313422ba0f66ae6bb`). P1 is not complete.
+**P1E.1** retargets Engineering Quality filesystem-port imports onto
+`host-file-system.ts` and is awaiting maintainer review. P1E.2 and later
+slices have not started. Undo U4 and Desktop Undo U5 are not started.
+Neutron's R4A topology stays frozen.
 The measurements below remain the P1A baseline and are not restated as the
 post-extraction size.
 
 This is the canonical plan for the packages stabilization program. It records
 evidence from `main` at `f0b19c885d2aa95b041a4582e5218d2f3539f525`. It does not
 add governance rules. P1B is merged. P1C is merged (PR #559,
-`762f979890f90a8064de756cd038195bb49646ef`). P1D is implemented on
-`refactor/application-project-path-p1d` and awaiting maintainer review.
-P1E and later slices, and the section 12 ratchet tests, are not part of
-this move.
+`762f979890f90a8064de756cd038195bb49646ef`). P1D is merged (PR #560,
+`7713318aa0390cad0ecb2e0313422ba0f66ae6bb`). P1E.1 is implemented on
+`refactor/application-quality-filesystem-imports-p1e1` and awaiting
+maintainer review. P1E.2 and later slices, and the section 12 ratchet
+tests beyond the Engineering Quality filesystem-port guard, are not part
+of this move.
 
 ## 1. Baseline
 
@@ -968,18 +973,18 @@ implement them.
 
 ### P1D — pure path checks
 
-|                      |                                                                                                                                                                                                                                                                 |
-| -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Source               | `secretLikePath`, `inside`, and `projectRelativePaths`                                                                                                                                                                                                          |
-| Target               | `packages/application/src/project-path.ts`                                                                                                                                                                                                                      |
-| Moved responsibility | Path traversal rejection and secret-like path filtering                                                                                                                                                                                                         |
-| Edges                | `node:path` and the existing relative-path helper only                                                                                                                                                                                                          |
-| Exports              | Internal. `index.ts` imports them. Do not add new public names.                                                                                                                                                                                                 |
-| Tests                | `tests/project-inspection.test.ts` and the adoption/sync tests that already cover traversal and symlink roots                                                                                                                                                   |
-| Guards               | The check text and the thrown error string stay.                                                                                                                                                                                                                |
-| SLOC                 | Under 40 lines moved.                                                                                                                                                                                                                                           |
-| Risk                 | Security-sensitive but pure. Do not "improve" the prefix check in the same PR.                                                                                                                                                                                  |
-| Implementation       | Implemented on `refactor/application-project-path-p1d` and awaiting maintainer review. The three functions stay internal. `index.ts` imports them and does not export them. The lexical containment check and `path traversal:` error stay. P1E is not started. |
+|                      |                                                                                                                                                                                                                      |
+| -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Source               | `secretLikePath`, `inside`, and `projectRelativePaths`                                                                                                                                                               |
+| Target               | `packages/application/src/project-path.ts`                                                                                                                                                                           |
+| Moved responsibility | Path traversal rejection and secret-like path filtering                                                                                                                                                              |
+| Edges                | `node:path` and the existing relative-path helper only                                                                                                                                                               |
+| Exports              | Internal. `index.ts` imports them. Do not add new public names.                                                                                                                                                      |
+| Tests                | `tests/project-inspection.test.ts` and the adoption/sync tests that already cover traversal and symlink roots                                                                                                        |
+| Guards               | The check text and the thrown error string stay.                                                                                                                                                                     |
+| SLOC                 | Under 40 lines moved.                                                                                                                                                                                                |
+| Risk                 | Security-sensitive but pure. Do not "improve" the prefix check in the same PR.                                                                                                                                       |
+| Implementation       | Merged as PR #560 (`7713318aa0390cad0ecb2e0313422ba0f66ae6bb`). The three functions stay internal. `index.ts` imports them and does not export them. The lexical containment check and `path traversal:` error stay. |
 
 ### P1E — retarget `FileSystem` imports off the barrel, by family
 
@@ -989,6 +994,32 @@ Each PR changes import sites from `./index.js` to `./host-file-system.js`
 only where the imported names are the port. This removes the
 quality ↔ root cycle once quality no longer needs the barrel for
 `FileSystem`. It does not move feature files yet.
+
+#### P1E.1 — engineering quality
+
+Implemented on `refactor/application-quality-filesystem-imports-p1e1` and
+awaiting maintainer review. Do not merge. P1E.2 is not started.
+
+`FileSystem` and `nodeFileSystem` in `surface.ts`,
+`cli-specialized-packs.ts`, `cli-specialized-packs-external.ts`, and
+`specialized-pack-external-apply.ts` now import
+`../host-file-system.js`. `FileSystem` stays type-only.
+`assertCanonicalProjectRoot` and `ProjectRootError` stay on `../index.js`
+in `specialized-pack-external-apply.ts`. No feature files moved. The
+application root still exports `FileSystem`, `nodeFileSystem`, and
+`createMemoryFileSystem`.
+
+Recomputed on this baseline, the five import-edge components recorded in
+section 5 are unchanged, and engineering quality is not a member of them.
+Counting `export … from` as an edge, `index.ts` and engineering quality
+share one component. That component shrank from 45 files to 42.
+`surface.ts`, `cli-specialized-packs.ts`, and `cli-commands.ts` left it.
+It remains because `specialized-pack-external-apply.ts` still imports the
+root for `assertCanonicalProjectRoot` and `ProjectRootError`, and
+`cli-specialized-packs-external.ts` plus
+`specialized-pack-external-viewmodel.ts` still reach that module. Removing
+it would retarget those non-port imports. That is a later slice.
+`host-file-system.ts` still imports only `project-scan-exclusions.ts`.
 
 ### P1F — directory moves of families that are already split
 
