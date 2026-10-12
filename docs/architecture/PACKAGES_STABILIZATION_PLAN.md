@@ -12,8 +12,13 @@ host filesystem port and adapters into
 `packages/application/src/project-path.ts` and is merged (PR #560,
 `7713318aa0390cad0ecb2e0313422ba0f66ae6bb`). P1 is not complete.
 **P1E.1** retargets Engineering Quality filesystem-port imports onto
-`host-file-system.ts` and is awaiting maintainer review. P1E.2 and later
-slices have not started. Undo U4 and Desktop Undo U5 are not started.
+`host-file-system.ts` and is merged (PR #561,
+`d64eebadf099019c26cb806a3f814de8ace1d7c5`). **P1E.2** measured the
+Foundation family and found no filesystem-port imports through the
+application root. That result is recorded on
+`refactor/application-foundation-filesystem-imports-p1e2` and is awaiting
+maintainer review. P1E.3 and later slices have not started. Undo U4 and
+Desktop Undo U5 are not started.
 Neutron's R4A topology stays frozen.
 The measurements below remain the P1A baseline and are not restated as the
 post-extraction size.
@@ -22,11 +27,11 @@ This is the canonical plan for the packages stabilization program. It records
 evidence from `main` at `f0b19c885d2aa95b041a4582e5218d2f3539f525`. It does not
 add governance rules. P1B is merged. P1C is merged (PR #559,
 `762f979890f90a8064de756cd038195bb49646ef`). P1D is merged (PR #560,
-`7713318aa0390cad0ecb2e0313422ba0f66ae6bb`). P1E.1 is implemented on
-`refactor/application-quality-filesystem-imports-p1e1` and awaiting
-maintainer review. P1E.2 and later slices, and the section 12 ratchet
-tests beyond the Engineering Quality filesystem-port guard, are not part
-of this move.
+`7713318aa0390cad0ecb2e0313422ba0f66ae6bb`). P1E.1 is merged (PR #561,
+`d64eebadf099019c26cb806a3f814de8ace1d7c5`). P1E.2 records a measured zero
+baseline for Foundation filesystem-port imports and does not move source.
+P1E.3 and later slices, and the section 12 ratchet tests beyond the
+Engineering Quality filesystem-port guard, are not part of this move.
 
 ## 1. Baseline
 
@@ -551,9 +556,13 @@ stay shared. No new repository interfaces are required for the moves below.
    the root barrel (CLI and daemon import them from `@intentloom/application`).
 3. Internal implementation: 33 `foundation*.ts` files. `foundation-flow.ts`
    and the `foundation-w*.ts` files are small barrels.
-4. Shared contracts: protocol foundation types, `FileSystem`.
-5. Dependencies: protocol, validator, and the root barrel for filesystem.
-6. I/O: filesystem port; fixtures read JSON with `node:fs`.
+4. Shared contracts: protocol foundation types. The family does not
+   import `FileSystem`.
+5. Dependencies: protocol and validator. P1E.2 measured zero imports of
+   `FileSystem`, `nodeFileSystem`, and `createMemoryFileSystem` in the
+   33 `foundation*.ts` files.
+6. I/O: `foundation-fixtures.ts` reads JSON with `node:fs`. Scaffold apply
+   calls the inception scaffold applier. No host filesystem port import.
 7. Transaction and security: scaffold apply revalidation
    (`foundation-scaffold-apply-revalidation.ts`). Not Neutron Apply.
 8. Tests: 14 `tests/foundation*` files plus daemon foundation tests.
@@ -997,8 +1006,8 @@ quality ↔ root cycle once quality no longer needs the barrel for
 
 #### P1E.1 — engineering quality
 
-Implemented on `refactor/application-quality-filesystem-imports-p1e1` and
-awaiting maintainer review. Do not merge. P1E.2 is not started.
+Merged as PR #561 (`d64eebadf099019c26cb806a3f814de8ace1d7c5`). P1E.2 is
+the following subsection.
 
 `FileSystem` and `nodeFileSystem` in `surface.ts`,
 `cli-specialized-packs.ts`, `cli-specialized-packs-external.ts`, and
@@ -1020,6 +1029,26 @@ root for `assertCanonicalProjectRoot` and `ProjectRootError`, and
 `specialized-pack-external-viewmodel.ts` still reach that module. Removing
 it would retarget those non-port imports. That is a later slice.
 `host-file-system.ts` still imports only `project-scan-exclusions.ts`.
+
+#### P1E.2 — foundation
+
+Recorded on `refactor/application-foundation-filesystem-imports-p1e2` and
+awaiting maintainer review. Do not merge. P1E.3 is not started.
+
+The 33 `foundation*.ts` modules do not import `FileSystem`,
+`nodeFileSystem`, or `createMemoryFileSystem` from `./index.js` or from
+`./host-file-system.js`. No Foundation source moved. The application root
+still exports those three names.
+
+Import edges alone still form the five components in section 5. Foundation
+is in the workshop trio and the scaffold viewmodel pair. Counting
+`export … from`, the 42-file component that contains `index.ts` also
+contains `foundation-flow.ts`. That barrel re-exports the
+existing-project, feature-intent, bounded-execution, and continuous-loop
+families, and those families still import the port from the root. The
+root reaches `foundation-flow.ts` through `inception-flow.ts`. Removing
+`foundation-flow.ts` from that component would retarget other families.
+That is a later slice. No component grew.
 
 ### P1F — directory moves of families that are already split
 
