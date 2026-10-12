@@ -1,7 +1,8 @@
 import { resolve } from "node:path";
 import type { ExistingProjectAdoptionPlanViewModel } from "@intentloom/protocol";
 import { parseExistingProjectAdoptionPlanViewModel } from "@intentloom/protocol";
-import type { FileSystem, ProjectMapping } from "./index.js";
+import type { FileSystem } from "./host-file-system.js";
+import type { ProjectMapping } from "./index.js";
 import { adoptProject, inspectProject } from "./index.js";
 import {
   spreadExistingProjectAdoptionGeneration,

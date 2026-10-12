@@ -91,9 +91,51 @@ P1D** is merged (PR #560, merge
 `7713318aa0390cad0ecb2e0313422ba0f66ae6bb`). **Packages architecture
 P1E.1** is merged (PR #561, merge
 `d64eebadf099019c26cb806a3f814de8ace1d7c5`). **Packages architecture
-P1E.2** records that the Foundation family already has no filesystem-port
-imports through the application root, and is awaiting maintainer review.
-Do not merge. Do not start P1E.3, Undo U4, or Desktop Undo U5.
+P1E.2** is merged (PR #574, merge
+`7596ebd156661d245eb3c7d84375ba828de10bab`). **P1E.3** found no inception
+filesystem-port imports through the application root, so no PR was opened.
+**P1E.4** retargets existing-project Adoption filesystem-port imports onto
+`host-file-system.ts` and is awaiting maintainer review. Do not merge. Do
+not start P1E.5, Undo U4, or Desktop Undo U5.
+
+### 2026-10-13, Packages architecture P1E.4 adoption filesystem imports
+
+- **Status:** **PACKAGES ARCHITECTURE P1E.4 ADOPTION FILESYSTEM IMPORT
+  DECOUPLING IMPLEMENTED ON BRANCH AWAITING MAINTAINER REVIEW.** Do not
+  merge. Do not start P1E.5, P1F, Undo U4, or Desktop Undo U5.
+- **Branch:** `refactor/application-adoption-filesystem-imports-p1e4`
+- **Starting main:** `7596ebd156661d245eb3c7d84375ba828de10bab` (PR #574,
+  P1E.2 merged). Matches the expected baseline. P1E.3 was already
+  satisfied on that baseline: the 19 `inception*.ts` modules do not import
+  `FileSystem`, `nodeFileSystem`, or `createMemoryFileSystem`.
+- **Scope:** Twelve existing-project Adoption modules that imported the
+  filesystem port from `./index.js` now import it from
+  `./host-file-system.js`. `FileSystem` stays type-only except
+  `existing-project-workspace-cli.ts` (`nodeFileSystem`) and
+  `existing-project-fixtures.ts` (`createMemoryFileSystem`).
+  `adoptProject`, `syncProject`, `inspectProject`, `doctorProject`,
+  `diffProject`, `planProjectAdoption`, `ProjectMapping`, `InitOptions`,
+  and `TransactionOptions` stay on the application root. No adoption
+  plan, approval, path check, write, rollback, or diagnostic changed.
+- **Imports:** Adoption filesystem-port imports through the application
+  root went from 13 sites to 0. Direct `host-file-system.ts` imports in
+  that family went from 0 to 13. Application-wide root filesystem-port
+  imports went from 71 to 58. The root still exports `FileSystem`,
+  `nodeFileSystem`, and `createMemoryFileSystem`.
+- **Cycles:** Import edges alone still form the five P1A components.
+  Adoption is not a member of them. With `export … from` edges included,
+  there are still six components. The component that contains `index.ts`
+  shrank from 42 files to 40. `existing-project-adoption-project-fingerprint.ts`
+  and `existing-project-fixtures.ts` left it. No file joined. The
+  Approved Apply members stay in that component.
+  `host-file-system.ts` still imports only `project-scan-exclusions.ts`.
+- **Validation:** `pnpm verify` passed: typecheck, lint (pre-existing oxlint
+  warnings only), format check, tests, build, and `git diff --check`.
+  Focused Adoption, Approved Apply, inspection, daemon, and Neutron topology
+  tests passed before that full run.
+- **Not done:** P1E.5 and later slices, Adoption directory moves, the
+  Approved Apply import cycle, Neutron edits, Undo U4, Desktop Undo U5.
+- **Next:** Maintainer review. Do not merge. Do not start P1E.5.
 
 ### 2026-10-12, Packages architecture P1E.2 foundation filesystem import audit
 

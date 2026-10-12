@@ -8,7 +8,8 @@ import {
   type ExistingProjectAdoptionDecisionViewModel,
   type SelectedAdoptionDecision,
 } from "@intentloom/protocol";
-import type { FileSystem, ProjectMapping } from "./index.js";
+import type { FileSystem } from "./host-file-system.js";
+import type { ProjectMapping } from "./index.js";
 import {
   spreadExistingProjectAdoptionGeneration,
   type ExistingProjectAdoptionGenerationOptions,

@@ -6,7 +6,7 @@ import {
   type ExistingProjectAdoptionPreparedPlan,
   type ExistingProjectAdoptionRevalidateViewModel,
 } from "@intentloom/protocol";
-import type { FileSystem } from "./index.js";
+import type { FileSystem } from "./host-file-system.js";
 import type { ExistingProjectAdoptionGenerationOptions } from "./existing-project-adoption-generation.js";
 import {
   adoptionPreparedPlanClock,

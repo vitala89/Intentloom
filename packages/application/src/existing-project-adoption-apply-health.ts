@@ -1,9 +1,9 @@
 import type { ExistingProjectAdoptionApplyViewModel } from "@intentloom/protocol";
+import type { FileSystem } from "./host-file-system.js";
 import {
   diffProject,
   doctorProject,
   inspectProject,
-  type FileSystem,
   type InitOptions,
 } from "./index.js";
 
