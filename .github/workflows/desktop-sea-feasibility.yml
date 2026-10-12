@@ -68,7 +68,7 @@ jobs:
       # (`dtolnay/rust-toolchain@stable`). Pinning to a commit SHA removes that
       # signal, so the toolchain has to be named explicitly.
       - name: Install stable Rust toolchain
-        uses: dtolnay/rust-toolchain@6c977a6ca4077a0ceb28ffbe03f59d46e9ac8772 # master @ 2026-07-30
+        uses: dtolnay/rust-toolchain@e2a55d2ffb04f378e9626c28d38b36d230d1e12f # master @ 2026-07-30
         with:
           toolchain: stable
 
