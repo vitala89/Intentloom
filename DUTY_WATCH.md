@@ -89,9 +89,47 @@ P1C** is merged (PR #559, merge
 `762f979890f90a8064de756cd038195bb49646ef`). **Packages architecture
 P1D** is merged (PR #560, merge
 `7713318aa0390cad0ecb2e0313422ba0f66ae6bb`). **Packages architecture
-P1E.1** retargets Engineering Quality filesystem-port imports and is
-awaiting maintainer review. Do not merge. Do not start P1E.2, Undo U4,
-or Desktop Undo U5.
+P1E.1** is merged (PR #561, merge
+`d64eebadf099019c26cb806a3f814de8ace1d7c5`). **Packages architecture
+P1E.2** records that the Foundation family already has no filesystem-port
+imports through the application root, and is awaiting maintainer review.
+Do not merge. Do not start P1E.3, Undo U4, or Desktop Undo U5.
+
+### 2026-10-12, Packages architecture P1E.2 foundation filesystem import audit
+
+- **Status:** **PACKAGES ARCHITECTURE P1E.2 FOUNDATION FILESYSTEM IMPORT
+  DECOUPLING ALREADY SATISFIED ON BRANCH AWAITING MAINTAINER REVIEW.**
+  Do not merge. Do not start P1E.3, P1F, Undo U4, or Desktop Undo U5.
+- **Branch:** `refactor/application-foundation-filesystem-imports-p1e2`
+- **Starting main:** `d64eebadf099019c26cb806a3f814de8ace1d7c5` (PR #561,
+  P1E.1 merged). Matches the expected baseline.
+- **Scope:** The 33 `foundation*.ts` modules under
+  `packages/application/src/` do not import `FileSystem`,
+  `nodeFileSystem`, or `createMemoryFileSystem`. They do not import
+  `./index.js` or `./host-file-system.js`. No Foundation algorithm,
+  scaffold, approval, persistence, or CLI path was edited. The
+  application root still exports `FileSystem`, `nodeFileSystem`, and
+  `createMemoryFileSystem`.
+- **Imports:** Foundation filesystem-port imports through the application
+  root are 0. Direct `host-file-system.ts` imports from that family are 0. `foundation-flow.ts` re-exports the existing-project, feature-intent,
+  bounded-execution, and continuous-loop barrels. Those families still
+  import the port from the root. Retargeting them is a later P1E slice.
+- **Cycles:** Import edges alone still form the five P1A components.
+  Foundation is in the workshop trio and the scaffold viewmodel pair.
+  With `export … from` edges included, there are six components. The
+  42-file component that contains `index.ts` also contains
+  `foundation-flow.ts`, because the root reaches that barrel through
+  `inception-flow.ts` and the barrel re-exports families that import the
+  root. The workshop trio and the scaffold viewmodel pair are unchanged
+  and do not contain `index.ts` or `host-file-system.ts`. No component
+  grew. No component was removed.
+- **Metrics:** No production file changed.
+- **Validation:** `pnpm verify` passed: typecheck, lint (pre-existing oxlint
+  warnings only), format check, 352 files / 3057 passed / 3 skipped, build,
+  and `git diff --check`.
+- **Not done:** P1E.3 and later slices, Foundation directory moves,
+  Neutron edits, Undo U4, Desktop Undo U5.
+- **Next:** Maintainer review. Do not merge. Do not start P1E.3.
 
 ### 2026-10-12, Packages architecture P1E.1 engineering quality filesystem imports
 
