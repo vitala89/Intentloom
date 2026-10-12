@@ -4,8 +4,7 @@ import {
   validateExternalQualityPackActivationApproval,
   validateExternalQualityPackImportRequest,
 } from "@intentloom/validator";
-import type { FileSystem } from "../index.js";
-import { nodeFileSystem } from "../index.js";
+import { nodeFileSystem, type FileSystem } from "../host-file-system.js";
 import type { QualityCliResult } from "./cli-quality-standards.js";
 import {
   activateExternalSpecializedPack,

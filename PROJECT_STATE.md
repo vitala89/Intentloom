@@ -854,9 +854,16 @@ filesystem port and adapters into
 (`762f979890f90a8064de756cd038195bb49646ef`). The application root still
 exports `FileSystem`, `nodeFileSystem`, and `createMemoryFileSystem`.
 P1D extracts `secretLikePath`, `inside`, and `projectRelativePaths` into
-`packages/application/src/project-path.ts` and is awaiting maintainer
-review. Those three names stay internal. P1E and later slices have not
-started. Undo U4 and Desktop Undo U5 are not started. Other
+`packages/application/src/project-path.ts` and is merged as PR #560
+(`7713318aa0390cad0ecb2e0313422ba0f66ae6bb`). Those three names stay
+internal. P1E.1 retargets Engineering Quality `FileSystem` and
+`nodeFileSystem` imports from the application root to
+`packages/application/src/host-file-system.ts` and is awaiting maintainer
+review. The quality/root re-export cycle remains:
+`specialized-pack-external-apply.ts` still imports
+`assertCanonicalProjectRoot` and `ProjectRootError` from the root.
+P1E.2 and later slices have not started. Undo U4 and Desktop Undo U5
+are not started. Other
 post-P4 candidates remain in `POST_W12_NEXT_INCREMENT_PLAN.md`.
 
 The Desktop discovery/error and Diff/Timeline slices remain recorded in

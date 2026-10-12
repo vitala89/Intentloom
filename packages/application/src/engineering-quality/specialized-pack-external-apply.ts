@@ -1,11 +1,8 @@
 import { dirname, resolve } from "node:path";
 import type { ExternalQualityPackActivationApproval } from "@intentloom/protocol";
 import { applyExtensionAdoptionPlan } from "@intentloom/validator";
-import {
-  assertCanonicalProjectRoot,
-  ProjectRootError,
-  type FileSystem,
-} from "../index.js";
+import type { FileSystem } from "../host-file-system.js";
+import { assertCanonicalProjectRoot, ProjectRootError } from "../index.js";
 import {
   defaultExtensionLockfile,
   extensionLockRelativePath,

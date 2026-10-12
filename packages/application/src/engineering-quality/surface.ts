@@ -1,7 +1,7 @@
 import { dirname, join } from "node:path";
 import type { EngineeringGraphSnapshot } from "@intentloom/protocol";
 import { createGraphSnapshotFromTypeScriptWorkspace } from "./graph-provider.js";
-import type { FileSystem } from "../index.js";
+import type { FileSystem } from "../host-file-system.js";
 
 interface PackageManifest {
   readonly name?: unknown;
