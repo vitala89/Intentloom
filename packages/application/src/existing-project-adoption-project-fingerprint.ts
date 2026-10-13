@@ -2,7 +2,7 @@ import { resolve, sep } from "node:path";
 import { checksum } from "@intentloom/core";
 import { canonicalJson } from "./canonical-json.js";
 import { ignoredScanPath } from "./project-scan-exclusions.js";
-import type { FileSystem } from "./index.js";
+import type { FileSystem } from "./host-file-system.js";
 
 function secretLikePath(path: string): boolean {
   return path

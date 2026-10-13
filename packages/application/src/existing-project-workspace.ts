@@ -12,7 +12,7 @@ import type {
 } from "@intentloom/protocol";
 import { EXISTING_PROJECT_WORKSPACE_OVERVIEW_SCHEMA_URN } from "@intentloom/protocol";
 import { validateExistingProjectWorkspaceOverview } from "@intentloom/validator";
-import type { FileSystem } from "./index.js";
+import type { FileSystem } from "./host-file-system.js";
 import { doctorProject, inspectProject, planProjectAdoption } from "./index.js";
 import { assessProject } from "./engineering-assessment/assess.js";
 import { buildAssessmentViewModel } from "./engineering-assessment/viewmodel.js";

@@ -7,7 +7,7 @@ import {
   type ExistingProjectAdoptionApproval,
   type ExistingProjectAdoptionPreparedPlan,
 } from "@intentloom/protocol";
-import type { FileSystem } from "./index.js";
+import type { FileSystem } from "./host-file-system.js";
 import { inspectProject } from "./index.js";
 import {
   spreadExistingProjectAdoptionGeneration,

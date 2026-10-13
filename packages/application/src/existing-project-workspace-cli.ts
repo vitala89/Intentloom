@@ -1,6 +1,6 @@
 import type { ExistingProjectScanScope } from "@intentloom/protocol";
-import type { FileSystem } from "./index.js";
-import { nodeFileSystem } from "./index.js";
+import type { FileSystem } from "./host-file-system.js";
+import { nodeFileSystem } from "./host-file-system.js";
 import type { QualityCliResult } from "./engineering-quality/cli-quality-standards.js";
 import {
   listExistingProjectScanScopes,

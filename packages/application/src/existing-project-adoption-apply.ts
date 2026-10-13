@@ -9,12 +9,8 @@ import {
   type ExistingProjectAdoptionApproval,
   type ExistingProjectAdoptionPreparedPlan,
 } from "@intentloom/protocol";
-import {
-  adoptProject,
-  syncProject,
-  type FileSystem,
-  type TransactionOptions,
-} from "./index.js";
+import type { FileSystem } from "./host-file-system.js";
+import { adoptProject, syncProject, type TransactionOptions } from "./index.js";
 import { mappingsFromSelectedAdoptionDecisions } from "./existing-project-adoption-decisions.js";
 import {
   spreadExistingProjectAdoptionGeneration,

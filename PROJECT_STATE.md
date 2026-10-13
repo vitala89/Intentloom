@@ -864,12 +864,16 @@ cycle remains: `specialized-pack-external-apply.ts` still imports
 `assertCanonicalProjectRoot` and `ProjectRootError` from the root.
 P1E.2 audited the 33 `foundation*.ts` modules. They do not import
 `FileSystem`, `nodeFileSystem`, or `createMemoryFileSystem` from the
-application root or from `host-file-system.ts`. That filesystem-port
-boundary already holds. The audit is on
-`refactor/application-foundation-filesystem-imports-p1e2` and is awaiting
-maintainer review. No Foundation source moved. P1E.3 and later slices
-have not started. Undo U4 and Desktop Undo U5 are not started. Other
-post-P4 candidates remain in `POST_W12_NEXT_INCREMENT_PLAN.md`.
+application root or from `host-file-system.ts`. That result is merged as
+PR #574 (`7596ebd156661d245eb3c7d84375ba828de10bab`). P1E.3 audited the
+19 `inception*.ts` modules and found no filesystem-port imports, so no
+inception PR was opened. P1E.4 retargets existing-project Adoption
+filesystem-port imports from the application root to
+`packages/application/src/host-file-system.ts` and is awaiting maintainer
+review. Non-port Adoption imports stay on the root. The Approved Apply
+cycle is unchanged. P1E.5 and later slices have not started. Undo U4 and
+Desktop Undo U5 are not started. Other post-P4 candidates remain in
+`POST_W12_NEXT_INCREMENT_PLAN.md`.
 
 The Desktop discovery/error and Diff/Timeline slices remain recorded in
 [PHASE1_CONTRACTS.md](docs/desktop/PHASE1_CONTRACTS.md).

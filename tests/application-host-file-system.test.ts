@@ -214,6 +214,42 @@ describe("application host filesystem extraction", () => {
       /from\s+["'](?:\.\.?\/)*index\.(?:js|ts)["']/,
     );
   });
+
+  it("keeps existing-project adoption filesystem port imports off the application root", () => {
+    const hostModule = resolve("packages/application/src/host-file-system.ts");
+    const portNames = new Set([
+      "FileSystem",
+      "nodeFileSystem",
+      "createMemoryFileSystem",
+    ]);
+    const adoptionDir = "packages/application/src";
+    const offHost: string[] = [];
+    for (const name of readdirSync(adoptionDir)) {
+      if (!name.startsWith("existing-project") || !name.endsWith(".ts")) {
+        continue;
+      }
+      const file = join(adoptionDir, name);
+      for (const binding of namedImportBindings(readFileSync(file, "utf8"))) {
+        const importedPort = binding.names.filter((imported) =>
+          portNames.has(imported),
+        );
+        if (importedPort.length === 0) continue;
+        const resolved = binding.specifier.startsWith(".")
+          ? resolveRelativeSpecifier(file, binding.specifier)
+          : binding.specifier;
+        if (resolved !== hostModule) {
+          offHost.push(`${name}:${importedPort.join(",")}`);
+        }
+      }
+    }
+
+    expect(offHost).toEqual([]);
+    const hostSource = readFileSync(hostModule, "utf8");
+    expect(hostSource).not.toMatch(/existing-project/);
+    expect(hostSource).not.toMatch(
+      /from\s+["'](?:\.\.?\/)*index\.(?:js|ts)["']/,
+    );
+  });
 });
 
 function namedImportBindings(

@@ -15,10 +15,13 @@ host filesystem port and adapters into
 `host-file-system.ts` and is merged (PR #561,
 `d64eebadf099019c26cb806a3f814de8ace1d7c5`). **P1E.2** measured the
 Foundation family and found no filesystem-port imports through the
-application root. That result is recorded on
-`refactor/application-foundation-filesystem-imports-p1e2` and is awaiting
-maintainer review. P1E.3 and later slices have not started. Undo U4 and
-Desktop Undo U5 are not started.
+application root. That result is merged as PR #574
+(`7596ebd156661d245eb3c7d84375ba828de10bab`). **P1E.3** measured the
+inception family and found no filesystem-port imports through the
+application root, so no inception PR was opened. **P1E.4** retargets
+existing-project Adoption filesystem-port imports onto
+`host-file-system.ts` and is awaiting maintainer review. P1E.5 and later
+slices have not started. Undo U4 and Desktop Undo U5 are not started.
 Neutron's R4A topology stays frozen.
 The measurements below remain the P1A baseline and are not restated as the
 post-extraction size.
@@ -30,8 +33,12 @@ add governance rules. P1B is merged. P1C is merged (PR #559,
 `7713318aa0390cad0ecb2e0313422ba0f66ae6bb`). P1E.1 is merged (PR #561,
 `d64eebadf099019c26cb806a3f814de8ace1d7c5`). P1E.2 records a measured zero
 baseline for Foundation filesystem-port imports and does not move source.
-P1E.3 and later slices, and the section 12 ratchet tests beyond the
-Engineering Quality filesystem-port guard, are not part of this move.
+That baseline is merged as PR #574
+(`7596ebd156661d245eb3c7d84375ba828de10bab`). P1E.3 records a measured zero
+baseline for inception filesystem-port imports and does not move source.
+P1E.4 retargets existing-project Adoption filesystem-port imports and is
+awaiting maintainer review. P1E.5 and later slices are not part of that
+change.
 
 ## 1. Baseline
 
@@ -1032,8 +1039,9 @@ it would retarget those non-port imports. That is a later slice.
 
 #### P1E.2 — foundation
 
-Recorded on `refactor/application-foundation-filesystem-imports-p1e2` and
-awaiting maintainer review. Do not merge. P1E.3 is not started.
+Merged as PR #574 (`7596ebd156661d245eb3c7d84375ba828de10bab`). The
+measurement below is the P1E.2 baseline and is not restated as the
+post-P1E.4 graph.
 
 The 33 `foundation*.ts` modules do not import `FileSystem`,
 `nodeFileSystem`, or `createMemoryFileSystem` from `./index.js` or from
@@ -1049,6 +1057,42 @@ families, and those families still import the port from the root. The
 root reaches `foundation-flow.ts` through `inception-flow.ts`. Removing
 `foundation-flow.ts` from that component would retarget other families.
 That is a later slice. No component grew.
+
+#### P1E.3 — inception
+
+Already satisfied on `main` at
+`7596ebd156661d245eb3c7d84375ba828de10bab`. No PR.
+
+The 19 `inception*.ts` modules do not import `FileSystem`,
+`nodeFileSystem`, or `createMemoryFileSystem`. No inception source moved.
+The application root still exports those three names.
+
+#### P1E.4 — adoption
+
+Awaiting maintainer review. Do not merge. P1E.5 is not started.
+
+Twelve existing-project Adoption modules imported the filesystem port from
+`./index.js` (13 import sites). Those symbols now import
+`./host-file-system.js`. `FileSystem` stays type-only except where
+`nodeFileSystem` or `createMemoryFileSystem` is a value.
+`adoptProject`, `syncProject`, `inspectProject`, `doctorProject`,
+`diffProject`, `planProjectAdoption`, `ProjectMapping`, `InitOptions`, and
+`TransactionOptions` stay on `./index.js`. No Adoption source moved. The
+application root still exports `FileSystem`, `nodeFileSystem`, and
+`createMemoryFileSystem`.
+
+`harness-adoption-gate.ts` is the harness family and does not import the
+port. `propose-and-apply-extension-adoption.ts` is the extension family.
+`approved-apply-baseline.ts`, `approved-apply-engine.ts`, and
+`generated-file-sync-declared.ts` stay on the Approved Apply cycle.
+`project-root-mutation-lock.ts` stays shared transaction infrastructure.
+
+Recomputed on this branch, the five import-edge components are unchanged.
+Counting `export … from`, the component that contains `index.ts` shrank
+from 42 files to 40. `existing-project-adoption-project-fingerprint.ts`
+and `existing-project-fixtures.ts` left it because the port was their only
+root import. No file joined a component. `host-file-system.ts` still
+imports only `project-scan-exclusions.ts`.
 
 ### P1F — directory moves of families that are already split
 
