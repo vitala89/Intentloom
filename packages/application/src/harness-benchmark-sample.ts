@@ -11,18 +11,12 @@ import {
   type HarnessCheckpointRecord,
   type HarnessStateStore,
 } from "./harness-state.js";
-// synchronizeGeneratedFiles and createMemoryFileSystem live only in the
-// package barrel (index.ts). This import is circular in the module graph
-// (index.ts re-exports harness.ts, which re-exports this file), but both
-// functions are hoisted `function` declarations invoked only inside
-// measureH9EvidenceStages, never at module-evaluation time, so the circular
-// reference resolves safely. FileSystem is a type-only import, erased at
-// compile time, so it carries no runtime circularity at all.
-import {
-  createMemoryFileSystem,
-  synchronizeGeneratedFiles,
-  type FileSystem,
-} from "./index.js";
+import { createMemoryFileSystem, type FileSystem } from "./host-file-system.js";
+// synchronizeGeneratedFiles still lives in the package barrel. This import is
+// circular (index.ts re-exports harness.ts, which re-exports this file), but
+// the function is a hoisted declaration invoked only inside
+// measureH9EvidenceStages, never at module-evaluation time.
+import { synchronizeGeneratedFiles } from "./index.js";
 import {
   H9_DRILL_REQUEST,
   H9_DRILL_SCENARIO,

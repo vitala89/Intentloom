@@ -94,9 +94,49 @@ P1E.1** is merged (PR #561, merge
 P1E.2** is merged (PR #574, merge
 `7596ebd156661d245eb3c7d84375ba828de10bab`). **P1E.3** found no inception
 filesystem-port imports through the application root, so no PR was opened.
-**P1E.4** retargets existing-project Adoption filesystem-port imports onto
+**P1E.4** is merged (PR #575, merge
+`55f1ea362a359424e603764d9ec969535747851a`). **P1E.5** found no extension
+filesystem-port imports through the application root, so no PR was opened.
+**P1E.6** retargets the Harness filesystem-port import onto
 `host-file-system.ts` and is awaiting maintainer review. Do not merge. Do
-not start P1E.5, Undo U4, or Desktop Undo U5.
+not start P1E.7, P1F, Undo U4, or Desktop Undo U5.
+
+### 2026-10-13, Packages architecture P1E.6 harness filesystem imports
+
+- **Status:** **PACKAGES ARCHITECTURE P1E.6 HARNESS FILESYSTEM IMPORT
+  DECOUPLING IMPLEMENTED ON BRANCH AWAITING MAINTAINER REVIEW.** Do not
+  merge. Do not start P1E.7, P1F, Undo U4, or Desktop Undo U5.
+- **Branch:** `refactor/application-harness-filesystem-imports-p1e6`
+- **Starting main:** `55f1ea362a359424e603764d9ec969535747851a` (PR #575,
+  P1E.4 merged). Matches the expected baseline. P1E.5 was already
+  satisfied on that baseline: the 13 extension modules do not import
+  `FileSystem`, `nodeFileSystem`, or `createMemoryFileSystem`.
+- **Scope:** `harness-benchmark-sample.ts` imported `createMemoryFileSystem`
+  and `FileSystem` from `./index.js` together with
+  `synchronizeGeneratedFiles`. The port symbols now import
+  `./host-file-system.js`. `FileSystem` stays type-only.
+  `createMemoryFileSystem` stays a value. `synchronizeGeneratedFiles`
+  stays on the application root. No Harness plan, gate, score, sandbox,
+  rollback drill, or diagnostic changed.
+- **Imports:** Harness filesystem-port imports through the application
+  root went from 1 site to 0. Direct `host-file-system.ts` imports in
+  that family went from 0 to 1. Application-wide root filesystem-port
+  import sites went from 58 to 57. The root still exports `FileSystem`,
+  `nodeFileSystem`, and `createMemoryFileSystem`.
+- **Cycles:** Import edges alone still form the five P1A components.
+  Harness is not a member of them. With `export … from` edges included,
+  there are still six components. The component that contains `index.ts`
+  stays at 40 files. `harness.ts`, `harness-benchmark.ts`, and
+  `harness-benchmark-sample.ts` remain because
+  `synchronizeGeneratedFiles` is still imported from the root. No file
+  joined. `host-file-system.ts` still imports only
+  `project-scan-exclusions.ts`.
+- **Validation:** Focused Harness, host-filesystem, Approved Apply, and
+  Neutron topology tests passed (17 files, 116 tests). Full `pnpm verify`
+  passed on this branch before the pull request.
+- **Not done:** P1E.7 and later slices, Harness directory moves, the
+  Approved Apply import cycle, Neutron edits, Undo U4, Desktop Undo U5.
+- **Next:** Maintainer review. Do not merge. Do not start P1E.7.
 
 ### 2026-10-13, Packages architecture P1E.4 adoption filesystem imports
 

@@ -869,11 +869,17 @@ PR #574 (`7596ebd156661d245eb3c7d84375ba828de10bab`). P1E.3 audited the
 19 `inception*.ts` modules and found no filesystem-port imports, so no
 inception PR was opened. P1E.4 retargets existing-project Adoption
 filesystem-port imports from the application root to
-`packages/application/src/host-file-system.ts` and is awaiting maintainer
-review. Non-port Adoption imports stay on the root. The Approved Apply
-cycle is unchanged. P1E.5 and later slices have not started. Undo U4 and
-Desktop Undo U5 are not started. Other post-P4 candidates remain in
-`POST_W12_NEXT_INCREMENT_PLAN.md`.
+`packages/application/src/host-file-system.ts` and is merged as PR #575
+(`55f1ea362a359424e603764d9ec969535747851a`). Non-port Adoption imports
+stay on the root. The Approved Apply cycle is unchanged. P1E.5 audited
+the 13 extension modules and found no filesystem-port imports through
+the application root, so no extension PR was opened. P1E.6 retargets the
+Harness port import in `harness-benchmark-sample.ts` onto
+`host-file-system.ts`. `synchronizeGeneratedFiles` stays on the root, so
+the 40-file re-export component that contains `index.ts` does not shrink.
+That slice is awaiting maintainer review. P1E.7 and later slices have
+not started. Undo U4 and Desktop Undo U5 are not started. Other post-P4
+candidates remain in `POST_W12_NEXT_INCREMENT_PLAN.md`.
 
 The Desktop discovery/error and Diff/Timeline slices remain recorded in
 [PHASE1_CONTRACTS.md](docs/desktop/PHASE1_CONTRACTS.md).

@@ -20,8 +20,13 @@ application root. That result is merged as PR #574
 inception family and found no filesystem-port imports through the
 application root, so no inception PR was opened. **P1E.4** retargets
 existing-project Adoption filesystem-port imports onto
-`host-file-system.ts` and is awaiting maintainer review. P1E.5 and later
-slices have not started. Undo U4 and Desktop Undo U5 are not started.
+`host-file-system.ts` and is merged (PR #575,
+`55f1ea362a359424e603764d9ec969535747851a`). **P1E.5** measured the
+extension family and found no filesystem-port imports through the
+application root, so no extension PR was opened. **P1E.6** retargets the
+one Harness filesystem-port import onto `host-file-system.ts` and is on
+branch awaiting maintainer review. P1E.7 and later slices have not
+started. Undo U4 and Desktop Undo U5 are not started.
 Neutron's R4A topology stays frozen.
 The measurements below remain the P1A baseline and are not restated as the
 post-extraction size.
@@ -37,8 +42,11 @@ That baseline is merged as PR #574
 (`7596ebd156661d245eb3c7d84375ba828de10bab`). P1E.3 records a measured zero
 baseline for inception filesystem-port imports and does not move source.
 P1E.4 retargets existing-project Adoption filesystem-port imports and is
-awaiting maintainer review. P1E.5 and later slices are not part of that
-change.
+merged (PR #575, `55f1ea362a359424e603764d9ec969535747851a`). P1E.5
+records a measured zero baseline for extension filesystem-port imports
+and does not move source. P1E.6 retargets the Harness filesystem-port
+import and is awaiting maintainer review. P1E.7 and later slices are not
+part of that change.
 
 ## 1. Baseline
 
@@ -1069,7 +1077,7 @@ The application root still exports those three names.
 
 #### P1E.4 — adoption
 
-Awaiting maintainer review. Do not merge. P1E.5 is not started.
+Merged as PR #575 (`55f1ea362a359424e603764d9ec969535747851a`).
 
 Twelve existing-project Adoption modules imported the filesystem port from
 `./index.js` (13 import sites). Those symbols now import
@@ -1093,6 +1101,51 @@ from 42 files to 40. `existing-project-adoption-project-fingerprint.ts`
 and `existing-project-fixtures.ts` left it because the port was their only
 root import. No file joined a component. `host-file-system.ts` still
 imports only `project-scan-exclusions.ts`.
+
+#### P1E.5 — extension
+
+Already satisfied on `main` at
+`55f1ea362a359424e603764d9ec969535747851a`. No PR.
+
+The 13 extension modules under `packages/application/src/` do not import
+`FileSystem`, `nodeFileSystem`, or `createMemoryFileSystem`. That set is
+`apply-extension-update.ts`, `discover-and-apply-extension-update.ts`,
+`extension-health.ts`, `extension-health-evaluator.ts`,
+`extension-health-runtime.ts`, `extension-lock-path.ts`,
+`extension-removal-files.ts`, `extension-sandbox.ts`,
+`extension-update-files.ts`, `inspect-extension-manifest.ts`,
+`preview-extension-removal.ts`, `propose-and-apply-extension-adoption.ts`,
+and `remove-extension.ts`. No extension source moved. The application
+root still exports those three names.
+
+#### P1E.6 — harness
+
+Awaiting maintainer review. Do not merge. P1E.7 is not started.
+
+`harness-benchmark-sample.ts` imported `createMemoryFileSystem` and
+`FileSystem` from `./index.js`, in the same declaration as
+`synchronizeGeneratedFiles`. The port symbols now import
+`./host-file-system.js`. `FileSystem` stays type-only.
+`createMemoryFileSystem` stays a value.
+`synchronizeGeneratedFiles` stays on `./index.js`. No Harness source
+moved. The application root still exports `FileSystem`,
+`nodeFileSystem`, and `createMemoryFileSystem`.
+
+The audited Harness set is the 16 `harness*.ts` modules plus
+`external-skill-import.ts`. Only `harness-benchmark-sample.ts` imported
+the port. Harness filesystem-port imports through the application root
+went from 1 site to 0. Direct `host-file-system.ts` imports in that
+family went from 0 to 1. Application-wide root filesystem-port import
+sites went from 58 to 57.
+
+Recomputed on this branch, import edges alone still form the five
+components in section 5. Harness is not a member of them. Counting
+`export … from`, there are still six components. The component that
+contains `index.ts` stays at 40 files. `harness.ts`,
+`harness-benchmark.ts`, and `harness-benchmark-sample.ts` remain in it
+because `synchronizeGeneratedFiles` is still imported from the root. No
+file joined. `host-file-system.ts` still imports only
+`project-scan-exclusions.ts`.
 
 ### P1F — directory moves of families that are already split
 
