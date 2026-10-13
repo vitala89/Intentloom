@@ -3,7 +3,7 @@ import type {
   FeatureIntent,
   FeatureIntentAffectedScope,
 } from "@intentloom/protocol";
-import type { FileSystem } from "./index.js";
+import type { FileSystem } from "./host-file-system.js";
 import { getFirstPartySpecializedPackEntries } from "./engineering-quality/first-party-specialized-pack-runtime.js";
 import { resolveFirstPartySpecializedPackDetection } from "./engineering-quality/specialized-pack-catalog-engine.js";
 import {

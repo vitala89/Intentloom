@@ -6,7 +6,7 @@ import {
   type FeatureIntentOperation,
 } from "@intentloom/protocol";
 import { validateFeatureIntentWorkspaceOverview } from "@intentloom/validator";
-import type { FileSystem } from "./index.js";
+import type { FileSystem } from "./host-file-system.js";
 import { createFeatureIntent } from "./feature-intent-create.js";
 import { analyzeArchitectureImpact } from "./feature-intent-impact.js";
 import {

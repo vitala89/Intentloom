@@ -24,9 +24,12 @@ existing-project Adoption filesystem-port imports onto
 `55f1ea362a359424e603764d9ec969535747851a`). **P1E.5** measured the
 extension family and found no filesystem-port imports through the
 application root, so no extension PR was opened. **P1E.6** retargets the
-one Harness filesystem-port import onto `host-file-system.ts` and is on
-branch awaiting maintainer review. P1E.7 and later slices have not
-started. Undo U4 and Desktop Undo U5 are not started.
+one Harness filesystem-port import onto `host-file-system.ts` and is
+merged (PR #576, `0d4159b9623e65a5236ce8a9c7c225331765df83`). **P1E.7**
+retargets Feature Intent filesystem-port imports onto
+`host-file-system.ts` and is on branch awaiting maintainer review.
+P1E.8 and later slices have not started. Undo U4 and Desktop Undo U5
+are not started.
 Neutron's R4A topology stays frozen.
 The measurements below remain the P1A baseline and are not restated as the
 post-extraction size.
@@ -45,8 +48,10 @@ P1E.4 retargets existing-project Adoption filesystem-port imports and is
 merged (PR #575, `55f1ea362a359424e603764d9ec969535747851a`). P1E.5
 records a measured zero baseline for extension filesystem-port imports
 and does not move source. P1E.6 retargets the Harness filesystem-port
-import and is awaiting maintainer review. P1E.7 and later slices are not
-part of that change.
+import and is merged (PR #576,
+`0d4159b9623e65a5236ce8a9c7c225331765df83`). P1E.7 retargets Feature
+Intent filesystem-port imports and is awaiting maintainer review.
+P1E.8 and later slices are not part of that change.
 
 ## 1. Baseline
 
@@ -1120,7 +1125,7 @@ root still exports those three names.
 
 #### P1E.6 — harness
 
-Awaiting maintainer review. Do not merge. P1E.7 is not started.
+Merged as PR #576 (`0d4159b9623e65a5236ce8a9c7c225331765df83`).
 
 `harness-benchmark-sample.ts` imported `createMemoryFileSystem` and
 `FileSystem` from `./index.js`, in the same declaration as
@@ -1146,6 +1151,42 @@ contains `index.ts` stays at 40 files. `harness.ts`,
 because `synchronizeGeneratedFiles` is still imported from the root. No
 file joined. `host-file-system.ts` still imports only
 `project-scan-exclusions.ts`.
+
+#### P1E.7 — feature intent
+
+Awaiting maintainer review. Do not merge. P1E.8 is not started.
+
+Five Feature Intent import declarations in four modules imported the
+filesystem port from `./index.js`. Those symbols now import
+`./host-file-system.js`. `FileSystem` stays type-only.
+`nodeFileSystem` and `createMemoryFileSystem` stay values. No
+declaration mixed the port with a non-port name. No Feature Intent
+source moved. The application root still exports `FileSystem`,
+`nodeFileSystem`, and `createMemoryFileSystem`.
+
+The audited set is the nine `feature-intent*.ts` modules plus
+`task-routing.ts` and `skill-markdown.ts`. Those two companions, plus
+`feature-intent-create.ts`, `feature-intent-impact.ts`,
+`feature-intent-plan.ts`, `feature-intent-workspace-viewmodel.ts`, and
+`feature-intent-w10.ts`, do not import the port. `planFeature` stays in
+`index.ts`. `bounded-execution-workspace.ts` still imports `FileSystem`
+from the root. That module is bounded execution.
+
+Feature Intent filesystem-port imports through the application root
+went from 5 sites to 0. Direct `host-file-system.ts` imports in that
+family went from 0 to 5. Application-wide root filesystem-port import
+sites went from 57 to 52.
+
+Recomputed on this branch, import edges alone still form the five
+components in section 5. Feature Intent is not a member of them.
+Counting `export … from`, there are still six components. The component
+that contains `index.ts` shrank from 40 files to 35.
+`feature-intent-fixtures.ts`, `feature-intent-scope.ts`,
+`feature-intent-w10.ts`, `feature-intent-workspace.ts`, and
+`feature-intent-workspace-cli.ts` left it. No file joined.
+`host-file-system.ts` still imports only `project-scan-exclusions.ts`.
+The Approved Apply cycle, the foundation and inception pairs, and the
+recorded Neutron mutation cycle are unchanged.
 
 ### P1F — directory moves of families that are already split
 

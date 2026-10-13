@@ -1,6 +1,6 @@
 import { readFileSync } from "node:fs";
 import { join, resolve } from "node:path";
-import { createMemoryFileSystem, type FileSystem } from "./index.js";
+import { createMemoryFileSystem, type FileSystem } from "./host-file-system.js";
 
 export interface FeatureIntentFixtureExpectation {
   readonly title: string;

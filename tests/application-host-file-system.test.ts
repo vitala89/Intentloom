@@ -290,6 +290,49 @@ describe("application host filesystem extraction", () => {
       /from\s+["'](?:\.\.?\/)*index\.(?:js|ts)["']/,
     );
   });
+
+  it("keeps feature intent filesystem port imports off the application root", () => {
+    const hostModule = resolve("packages/application/src/host-file-system.ts");
+    const portNames = new Set([
+      "FileSystem",
+      "nodeFileSystem",
+      "createMemoryFileSystem",
+    ]);
+    const sourceDir = "packages/application/src";
+    const offHost: string[] = [];
+    for (const name of readdirSync(sourceDir)) {
+      if (
+        (!name.startsWith("feature-intent") &&
+          name !== "task-routing.ts" &&
+          name !== "skill-markdown.ts") ||
+        !name.endsWith(".ts")
+      ) {
+        continue;
+      }
+      const file = join(sourceDir, name);
+      for (const binding of namedImportBindings(readFileSync(file, "utf8"))) {
+        const importedPort = binding.names.filter((imported) =>
+          portNames.has(imported),
+        );
+        if (importedPort.length === 0) continue;
+        const resolved = binding.specifier.startsWith(".")
+          ? resolveRelativeSpecifier(file, binding.specifier)
+          : binding.specifier;
+        if (resolved !== hostModule) {
+          offHost.push(`${name}:${importedPort.join(",")}`);
+        }
+      }
+    }
+
+    expect(offHost).toEqual([]);
+    const hostSource = readFileSync(hostModule, "utf8");
+    expect(hostSource).not.toMatch(/feature-intent/);
+    expect(hostSource).not.toMatch(/task-routing/);
+    expect(hostSource).not.toMatch(/skill-markdown/);
+    expect(hostSource).not.toMatch(
+      /from\s+["'](?:\.\.?\/)*index\.(?:js|ts)["']/,
+    );
+  });
 });
 
 function namedImportBindings(
