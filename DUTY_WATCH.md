@@ -97,9 +97,46 @@ filesystem-port imports through the application root, so no PR was opened.
 **P1E.4** is merged (PR #575, merge
 `55f1ea362a359424e603764d9ec969535747851a`). **P1E.5** found no extension
 filesystem-port imports through the application root, so no PR was opened.
-**P1E.6** retargets the Harness filesystem-port import onto
-`host-file-system.ts` and is awaiting maintainer review. Do not merge. Do
-not start P1E.7, P1F, Undo U4, or Desktop Undo U5.
+**P1E.6** is merged (PR #576, merge
+`0d4159b9623e65a5236ce8a9c7c225331765df83`). **P1E.7** retargets Feature
+Intent filesystem-port imports onto `host-file-system.ts` and is
+awaiting maintainer review. Do not merge. Do not start P1E.8, P1F, Undo
+U4, or Desktop Undo U5.
+
+### 2026-10-14, Packages architecture P1E.7 feature intent filesystem imports
+
+- **Status:** **PACKAGES ARCHITECTURE P1E.7 FEATURE INTENT FILESYSTEM
+  IMPORT DECOUPLING IMPLEMENTED ON BRANCH AWAITING MAINTAINER REVIEW.**
+  Do not merge. Do not start P1E.8, P1F, Undo U4, or Desktop Undo U5.
+- **Branch:** `refactor/application-feature-intent-filesystem-imports-p1e7`
+- **Starting main:** `0d4159b9623e65a5236ce8a9c7c225331765df83` (PR #576,
+  P1E.6 merged). Matches the expected baseline.
+- **Scope:** Four Feature Intent modules imported `FileSystem`,
+  `nodeFileSystem`, or `createMemoryFileSystem` from `./index.js`.
+  Those symbols now import `./host-file-system.js`. `FileSystem` stays
+  type-only. `nodeFileSystem` and `createMemoryFileSystem` stay values.
+  No declaration mixed the port with another root symbol. No capture,
+  plan, validation, or workspace behavior changed.
+- **Imports:** Feature Intent filesystem-port imports through the
+  application root went from 5 sites to 0. Direct `host-file-system.ts`
+  imports in that family went from 0 to 5. Application-wide root
+  filesystem-port import sites went from 57 to 52. The root still
+  exports `FileSystem`, `nodeFileSystem`, and `createMemoryFileSystem`.
+- **Cycles:** Import edges alone still form the five P1A components.
+  Feature Intent is not a member of them. With `export … from` edges
+  included, there are still six components. The component that contains
+  `index.ts` shrank from 40 files to 35. `feature-intent-fixtures.ts`,
+  `feature-intent-scope.ts`, `feature-intent-w10.ts`,
+  `feature-intent-workspace.ts`, and
+  `feature-intent-workspace-cli.ts` left it. No file joined.
+  `host-file-system.ts` still imports only `project-scan-exclusions.ts`.
+- **Validation:** Focused Feature Intent, host-filesystem, Approved Apply,
+  and Neutron topology tests passed (8 files, 65 tests). Full
+  `pnpm verify` passed on this branch before the pull request.
+- **Not done:** P1E.8 and later slices, Feature Intent directory moves,
+  the Approved Apply import cycle, Neutron edits, Undo U4, Desktop Undo
+  U5.
+- **Next:** Maintainer review. Do not merge. Do not start P1E.8.
 
 ### 2026-10-13, Packages architecture P1E.6 harness filesystem imports
 
