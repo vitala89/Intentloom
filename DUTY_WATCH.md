@@ -99,10 +99,48 @@ filesystem-port imports through the application root, so no PR was opened.
 filesystem-port imports through the application root, so no PR was opened.
 **P1E.6** is merged (PR #576, merge
 `0d4159b9623e65a5236ce8a9c7c225331765df83`). **P1E.7** is merged
-(PR #577, merge `5db19ba962882ca2bd1bd0b36195564d9d3d13c0`). **P1E.8**
-retargets Bounded Execution filesystem-port imports onto
-`host-file-system.ts` and is awaiting maintainer review. Do not merge.
-Do not start P1E.9, P1F, Undo U4, or Desktop Undo U5.
+(PR #577, merge `5db19ba962882ca2bd1bd0b36195564d9d3d13c0`). **P1E.8** is merged (PR #578, merge
+`3700abeadca7dc3274a4529058a7dc6c560b0cc2`). **P1E.9** retargets
+Continuous Loop filesystem-port imports onto `host-file-system.ts` and
+is awaiting maintainer review. Do not merge. Do not start P1F, Undo U4,
+or Desktop Undo U5.
+
+### 2026-10-14, Packages architecture P1E.9 continuous loop filesystem imports
+
+- **Status:** **PACKAGES ARCHITECTURE P1E.9 CONTINUOUS LOOP FILESYSTEM
+  IMPORT DECOUPLING IMPLEMENTED ON BRANCH AWAITING MAINTAINER REVIEW.**
+  Do not merge. Do not start P1F, Undo U4, or Desktop Undo U5.
+- **Branch:** `refactor/application-continuous-loop-filesystem-imports-p1e9`
+- **Starting main:** `3700abeadca7dc3274a4529058a7dc6c560b0cc2` (PR #578,
+  P1E.8 merged). Matches the expected baseline.
+- **Scope:** Four Continuous Loop modules imported `FileSystem`,
+  `nodeFileSystem`, or `createMemoryFileSystem` from `./index.js`.
+  Those symbols now import `./host-file-system.js`. `FileSystem` stays
+  type-only. `nodeFileSystem` and `createMemoryFileSystem` stay values.
+  No declaration mixed the port with another root symbol. No loop
+  orchestration, iteration, checkpoint, or apply behavior changed.
+- **Imports:** Continuous Loop filesystem-port imports through the
+  application root went from 5 sites to 0. Direct `host-file-system.ts`
+  imports in that family went from 0 to 5. Application-wide root
+  filesystem-port import sites went from 47 to 42. The root still
+  exports `FileSystem`, `nodeFileSystem`, and `createMemoryFileSystem`.
+- **Cycles:** Import edges alone still form the five P1A components.
+  Continuous Loop is not a member of them. With `export … from` edges
+  included, there are still six components. The component that contains
+  `index.ts` shrank from 34 files to 29. `continuous-loop-apply.ts`,
+  `continuous-loop-fixtures.ts`, `continuous-loop-w12.ts`,
+  `continuous-loop-workspace.ts`, and
+  `continuous-loop-workspace-cli.ts` left it. Compare and the workspace
+  viewmodel were already outside it. No file joined.
+  `host-file-system.ts` still imports only `project-scan-exclusions.ts`.
+- **Validation:** Focused Continuous Loop, host-filesystem, Approved
+  Apply, and Neutron topology tests passed (7 files, 43 tests). Full
+  `pnpm verify` passed on this branch before the pull request (352
+  files, 3062 passed, 3 skipped).
+- **Not done:** P1F and later slices, Continuous Loop directory moves,
+  the Approved Apply import cycle, Neutron edits, Undo U4, Desktop
+  Undo U5.
+- **Next:** Maintainer review. Do not merge. Do not start P1F.
 
 ### 2026-10-14, Packages architecture P1E.8 bounded execution filesystem imports
 

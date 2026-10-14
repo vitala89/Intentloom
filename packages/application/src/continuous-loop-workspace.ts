@@ -12,7 +12,7 @@ import {
   type ContinuousLoopSnapshot,
 } from "@intentloom/protocol";
 import { validateContinuousLoopWorkspaceOverview } from "@intentloom/validator";
-import type { FileSystem } from "./index.js";
+import type { FileSystem } from "./host-file-system.js";
 import {
   applyContinuousLoopMemory,
   draftLoopMemoryProposal,

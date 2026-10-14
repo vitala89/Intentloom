@@ -4,7 +4,7 @@ import type {
   ContinuousLoopChangeKind,
   ContinuousLoopSnapshot,
 } from "@intentloom/protocol";
-import { createMemoryFileSystem, type FileSystem } from "./index.js";
+import { createMemoryFileSystem, type FileSystem } from "./host-file-system.js";
 
 export interface ContinuousLoopFixtureExpectation {
   readonly loopGate: string;

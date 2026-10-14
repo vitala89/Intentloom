@@ -4,7 +4,7 @@ import {
   type ContinuousLoopMemoryApply,
   type ContinuousLoopMemoryProposal,
 } from "@intentloom/protocol";
-import type { FileSystem } from "./index.js";
+import type { FileSystem } from "./host-file-system.js";
 
 export const CONTINUOUS_LOOP_MEMORY_APPROVAL = "approved:w12-memory";
 

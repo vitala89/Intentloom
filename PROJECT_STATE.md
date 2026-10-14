@@ -883,12 +883,19 @@ filesystem-port imports onto `host-file-system.ts` and is merged as
 PR #577 (`5db19ba962882ca2bd1bd0b36195564d9d3d13c0`). The five Feature
 Intent modules leave that component, which shrinks from 40 files to 35.
 P1E.8 retargets Bounded Execution filesystem-port imports onto
-`host-file-system.ts`. `bounded-execution-fixtures.ts` leaves that
-component, which shrinks from 35 files to 34. Apply, workspace, the
-workspace CLI, and the W11 barrel stay because apply still imports the
-Approved Apply engine. That slice is awaiting maintainer review.
-P1E.9 and later slices have not started. Undo U4 and Desktop Undo U5
-are not started. Other post-P4
+`host-file-system.ts` and is merged as PR #578
+(`3700abeadca7dc3274a4529058a7dc6c560b0cc2`).
+`bounded-execution-fixtures.ts` leaves that component, which shrinks
+from 35 files to 34. Apply, workspace, the workspace CLI, and the W11
+barrel stay because apply still imports the Approved Apply engine.
+P1E.9 retargets Continuous Loop filesystem-port imports onto
+`host-file-system.ts`. `continuous-loop-apply.ts`,
+`continuous-loop-fixtures.ts`, `continuous-loop-w12.ts`,
+`continuous-loop-workspace.ts`, and
+`continuous-loop-workspace-cli.ts` leave that component, which shrinks
+from 34 files to 29. Compare and the workspace viewmodel were already
+outside it. That slice is awaiting maintainer review. P1F and later
+slices have not started. Undo U4 and Desktop Undo U5 are not started. Other post-P4
 candidates remain in `POST_W12_NEXT_INCREMENT_PLAN.md`.
 
 The Desktop discovery/error and Diff/Timeline slices remain recorded in
