@@ -10,7 +10,7 @@ import {
   type BoundedExecutionOperation,
 } from "@intentloom/protocol";
 import { validateBoundedExecutionWorkspaceOverview } from "@intentloom/validator";
-import type { FileSystem } from "./index.js";
+import type { FileSystem } from "./host-file-system.js";
 import { applyBoundedExecutionChange } from "./bounded-execution-apply.js";
 import { grantBoundedExecutionCapability } from "./bounded-execution-capability.js";
 import { executeBoundedCodingAgentTask } from "./bounded-execution-task.js";

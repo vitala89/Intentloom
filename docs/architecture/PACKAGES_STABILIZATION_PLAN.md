@@ -27,9 +27,11 @@ application root, so no extension PR was opened. **P1E.6** retargets the
 one Harness filesystem-port import onto `host-file-system.ts` and is
 merged (PR #576, `0d4159b9623e65a5236ce8a9c7c225331765df83`). **P1E.7**
 retargets Feature Intent filesystem-port imports onto
-`host-file-system.ts` and is on branch awaiting maintainer review.
-P1E.8 and later slices have not started. Undo U4 and Desktop Undo U5
-are not started.
+`host-file-system.ts` and is merged (PR #577,
+`5db19ba962882ca2bd1bd0b36195564d9d3d13c0`). **P1E.8** retargets
+Bounded Execution filesystem-port imports onto `host-file-system.ts`
+and is on branch awaiting maintainer review. P1E.9 and later slices
+have not started. Undo U4 and Desktop Undo U5 are not started.
 Neutron's R4A topology stays frozen.
 The measurements below remain the P1A baseline and are not restated as the
 post-extraction size.
@@ -50,8 +52,10 @@ records a measured zero baseline for extension filesystem-port imports
 and does not move source. P1E.6 retargets the Harness filesystem-port
 import and is merged (PR #576,
 `0d4159b9623e65a5236ce8a9c7c225331765df83`). P1E.7 retargets Feature
-Intent filesystem-port imports and is awaiting maintainer review.
-P1E.8 and later slices are not part of that change.
+Intent filesystem-port imports and is merged (PR #577,
+`5db19ba962882ca2bd1bd0b36195564d9d3d13c0`). P1E.8 retargets Bounded
+Execution filesystem-port imports and is awaiting maintainer review.
+P1E.9 and later slices are not part of that change.
 
 ## 1. Baseline
 
@@ -1154,7 +1158,8 @@ file joined. `host-file-system.ts` still imports only
 
 #### P1E.7 — feature intent
 
-Awaiting maintainer review. Do not merge. P1E.8 is not started.
+Merged as PR #577 (`5db19ba962882ca2bd1bd0b36195564d9d3d13c0`). P1E.8 is
+the following subsection.
 
 Five Feature Intent import declarations in four modules imported the
 filesystem port from `./index.js`. Those symbols now import
@@ -1187,6 +1192,44 @@ that contains `index.ts` shrank from 40 files to 35.
 `host-file-system.ts` still imports only `project-scan-exclusions.ts`.
 The Approved Apply cycle, the foundation and inception pairs, and the
 recorded Neutron mutation cycle are unchanged.
+
+#### P1E.8 — bounded execution
+
+Awaiting maintainer review. Do not merge. P1E.9 is not started.
+
+Five Bounded Execution import declarations in four modules imported the
+filesystem port from `./index.js`. Those symbols now import
+`./host-file-system.js`. `FileSystem` stays type-only.
+`nodeFileSystem` and `createMemoryFileSystem` stay values. No
+declaration mixed the port with a non-port name. No Bounded Execution
+source moved. The application root still exports `FileSystem`,
+`nodeFileSystem`, and `createMemoryFileSystem`.
+
+The audited set is the nine `bounded-execution*.ts` modules.
+`bounded-execution-capability.ts`, `bounded-execution-task.ts`,
+`bounded-execution-verify.ts`, `bounded-execution-workspace-viewmodel.ts`,
+and `bounded-execution-w11.ts` do not import the port.
+`bounded-execution-apply.ts` still imports `executeApprovedApplyPlan`
+from `approved-apply-engine.ts`. That edge is Approved Apply, not the
+port.
+
+Bounded Execution filesystem-port imports through the application root
+went from 5 sites to 0. Direct `host-file-system.ts` imports in that
+family went from 0 to 5. Application-wide root filesystem-port import
+sites went from 52 to 47.
+
+Recomputed on this branch, import edges alone still form the five
+components in section 5. Bounded Execution is not a member of them.
+Counting `export … from`, there are still six components. The component
+that contains `index.ts` shrank from 35 files to 34.
+`bounded-execution-fixtures.ts` left it.
+`bounded-execution-apply.ts`, `bounded-execution-workspace.ts`,
+`bounded-execution-workspace-cli.ts`, and `bounded-execution-w11.ts`
+remain because apply still imports the Approved Apply engine. No file
+joined. `host-file-system.ts` still imports only
+`project-scan-exclusions.ts`. The Approved Apply cycle, the foundation
+and inception pairs, the extension update cycle, and the recorded
+Neutron mutation cycle are unchanged.
 
 ### P1F — directory moves of families that are already split
 

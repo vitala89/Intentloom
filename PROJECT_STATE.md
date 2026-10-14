@@ -879,10 +879,16 @@ Harness port import in `harness-benchmark-sample.ts` onto
 (`0d4159b9623e65a5236ce8a9c7c225331765df83`).
 `synchronizeGeneratedFiles` stays on the root, so that slice did not
 shrink the 40-file re-export component. P1E.7 retargets Feature Intent
-filesystem-port imports onto `host-file-system.ts`. The five Feature
+filesystem-port imports onto `host-file-system.ts` and is merged as
+PR #577 (`5db19ba962882ca2bd1bd0b36195564d9d3d13c0`). The five Feature
 Intent modules leave that component, which shrinks from 40 files to 35.
-That slice is awaiting maintainer review. P1E.8 and later slices have
-not started. Undo U4 and Desktop Undo U5 are not started. Other post-P4
+P1E.8 retargets Bounded Execution filesystem-port imports onto
+`host-file-system.ts`. `bounded-execution-fixtures.ts` leaves that
+component, which shrinks from 35 files to 34. Apply, workspace, the
+workspace CLI, and the W11 barrel stay because apply still imports the
+Approved Apply engine. That slice is awaiting maintainer review.
+P1E.9 and later slices have not started. Undo U4 and Desktop Undo U5
+are not started. Other post-P4
 candidates remain in `POST_W12_NEXT_INCREMENT_PLAN.md`.
 
 The Desktop discovery/error and Diff/Timeline slices remain recorded in
