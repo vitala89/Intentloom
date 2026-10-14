@@ -98,10 +98,50 @@ filesystem-port imports through the application root, so no PR was opened.
 `55f1ea362a359424e603764d9ec969535747851a`). **P1E.5** found no extension
 filesystem-port imports through the application root, so no PR was opened.
 **P1E.6** is merged (PR #576, merge
-`0d4159b9623e65a5236ce8a9c7c225331765df83`). **P1E.7** retargets Feature
-Intent filesystem-port imports onto `host-file-system.ts` and is
-awaiting maintainer review. Do not merge. Do not start P1E.8, P1F, Undo
-U4, or Desktop Undo U5.
+`0d4159b9623e65a5236ce8a9c7c225331765df83`). **P1E.7** is merged
+(PR #577, merge `5db19ba962882ca2bd1bd0b36195564d9d3d13c0`). **P1E.8**
+retargets Bounded Execution filesystem-port imports onto
+`host-file-system.ts` and is awaiting maintainer review. Do not merge.
+Do not start P1E.9, P1F, Undo U4, or Desktop Undo U5.
+
+### 2026-10-14, Packages architecture P1E.8 bounded execution filesystem imports
+
+- **Status:** **PACKAGES ARCHITECTURE P1E.8 BOUNDED EXECUTION FILESYSTEM
+  IMPORT DECOUPLING IMPLEMENTED ON BRANCH AWAITING MAINTAINER REVIEW.**
+  Do not merge. Do not start P1E.9, P1F, Undo U4, or Desktop Undo U5.
+- **Branch:** `refactor/application-bounded-execution-filesystem-imports-p1e8`
+- **Starting main:** `5db19ba962882ca2bd1bd0b36195564d9d3d13c0` (PR #577,
+  P1E.7 merged). Matches the expected baseline.
+- **Scope:** Four Bounded Execution modules imported `FileSystem`,
+  `nodeFileSystem`, or `createMemoryFileSystem` from `./index.js`.
+  Those symbols now import `./host-file-system.js`. `FileSystem` stays
+  type-only. `nodeFileSystem` and `createMemoryFileSystem` stay values.
+  No declaration mixed the port with another root symbol. No task
+  execution, planning, capability, verification, or apply behavior
+  changed.
+- **Imports:** Bounded Execution filesystem-port imports through the
+  application root went from 5 sites to 0. Direct `host-file-system.ts`
+  imports in that family went from 0 to 5. Application-wide root
+  filesystem-port import sites went from 52 to 47. The root still
+  exports `FileSystem`, `nodeFileSystem`, and `createMemoryFileSystem`.
+- **Cycles:** Import edges alone still form the five P1A components.
+  Bounded Execution is not a member of them. With `export … from` edges
+  included, there are still six components. The component that contains
+  `index.ts` shrank from 35 files to 34. `bounded-execution-fixtures.ts`
+  left it. `bounded-execution-apply.ts`,
+  `bounded-execution-workspace.ts`,
+  `bounded-execution-workspace-cli.ts`, and `bounded-execution-w11.ts`
+  remain because apply still imports the Approved Apply engine. No file
+  joined. `host-file-system.ts` still imports only
+  `project-scan-exclusions.ts`.
+- **Validation:** Focused Bounded Execution, host-filesystem, Approved
+  Apply, and Neutron topology tests passed (5 files, 35 tests). Full
+  `pnpm verify` passed on this branch before the pull request (352
+  files, 3061 passed, 3 skipped).
+- **Not done:** P1E.9 and later slices, Bounded Execution directory
+  moves, the Approved Apply import cycle, Neutron edits, Undo U4,
+  Desktop Undo U5.
+- **Next:** Maintainer review. Do not merge. Do not start P1E.9.
 
 ### 2026-10-14, Packages architecture P1E.7 feature intent filesystem imports
 

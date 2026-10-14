@@ -1,7 +1,7 @@
 import { checksum, type GeneratedFile } from "@intentloom/core";
 import type { BoundedExecutionApplySummary } from "@intentloom/protocol";
 import { executeApprovedApplyPlan } from "./approved-apply-engine.js";
-import type { FileSystem } from "./index.js";
+import type { FileSystem } from "./host-file-system.js";
 
 export async function applyBoundedExecutionChange(input: {
   readonly root: string;
