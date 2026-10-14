@@ -1,6 +1,6 @@
-import type { FileSystem } from "./host-file-system.js";
-import { nodeFileSystem } from "./host-file-system.js";
-import type { QualityCliResult } from "./engineering-quality/cli-quality-standards.js";
+import type { FileSystem } from "../host-file-system.js";
+import { nodeFileSystem } from "../host-file-system.js";
+import type { QualityCliResult } from "../engineering-quality/cli-quality-standards.js";
 import {
   listFeatureIntentOperations,
   prepareFeatureIntentWorkspace,

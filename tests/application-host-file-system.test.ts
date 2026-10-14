@@ -299,17 +299,26 @@ describe("application host filesystem extraction", () => {
       "createMemoryFileSystem",
     ]);
     const sourceDir = "packages/application/src";
+    const featureDir = join(sourceDir, "feature-intent");
+    const featureNames = readdirSync(featureDir).filter((name) =>
+      name.endsWith(".ts"),
+    );
+    expect(featureNames).toEqual(
+      expect.arrayContaining([
+        "feature-intent-fixtures.ts",
+        "feature-intent-scope.ts",
+        "feature-intent-workspace.ts",
+        "feature-intent-workspace-cli.ts",
+      ]),
+    );
+    const files = [
+      ...featureNames.map((name) => join(featureDir, name)),
+      join(sourceDir, "task-routing.ts"),
+      join(sourceDir, "skill-markdown.ts"),
+    ];
     const offHost: string[] = [];
-    for (const name of readdirSync(sourceDir)) {
-      if (
-        (!name.startsWith("feature-intent") &&
-          name !== "task-routing.ts" &&
-          name !== "skill-markdown.ts") ||
-        !name.endsWith(".ts")
-      ) {
-        continue;
-      }
-      const file = join(sourceDir, name);
+    for (const file of files) {
+      const name = file.slice(sourceDir.length + 1);
       for (const binding of namedImportBindings(readFileSync(file, "utf8"))) {
         const importedPort = binding.names.filter((imported) =>
           portNames.has(imported),

@@ -15,7 +15,7 @@ import { applyBoundedExecutionChange } from "./bounded-execution-apply.js";
 import { grantBoundedExecutionCapability } from "./bounded-execution-capability.js";
 import { executeBoundedCodingAgentTask } from "./bounded-execution-task.js";
 import { runBoundedExecutionVerification } from "./bounded-execution-verify.js";
-import { prepareFeatureIntentWorkspace } from "./feature-intent-workspace.js";
+import { prepareFeatureIntentWorkspace } from "./feature-intent/feature-intent-workspace.js";
 
 export interface PrepareBoundedExecutionWorkspaceOptions {
   readonly root: string;
