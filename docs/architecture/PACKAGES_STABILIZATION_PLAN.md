@@ -30,7 +30,10 @@ retargets Feature Intent filesystem-port imports onto
 `host-file-system.ts` and is merged (PR #577,
 `5db19ba962882ca2bd1bd0b36195564d9d3d13c0`). **P1E.8** retargets
 Bounded Execution filesystem-port imports onto `host-file-system.ts`
-and is on branch awaiting maintainer review. P1E.9 and later slices
+and is merged (PR #578,
+`3700abeadca7dc3274a4529058a7dc6c560b0cc2`). **P1E.9** retargets
+Continuous Loop filesystem-port imports onto `host-file-system.ts`
+and is on branch awaiting maintainer review. P1F and later slices
 have not started. Undo U4 and Desktop Undo U5 are not started.
 Neutron's R4A topology stays frozen.
 The measurements below remain the P1A baseline and are not restated as the
@@ -54,8 +57,10 @@ import and is merged (PR #576,
 `0d4159b9623e65a5236ce8a9c7c225331765df83`). P1E.7 retargets Feature
 Intent filesystem-port imports and is merged (PR #577,
 `5db19ba962882ca2bd1bd0b36195564d9d3d13c0`). P1E.8 retargets Bounded
-Execution filesystem-port imports and is awaiting maintainer review.
-P1E.9 and later slices are not part of that change.
+Execution filesystem-port imports and is merged (PR #578,
+`3700abeadca7dc3274a4529058a7dc6c560b0cc2`). P1E.9 retargets
+Continuous Loop filesystem-port imports and is awaiting maintainer
+review. P1F and later slices are not part of that change.
 
 ## 1. Baseline
 
@@ -1195,7 +1200,8 @@ recorded Neutron mutation cycle are unchanged.
 
 #### P1E.8 — bounded execution
 
-Awaiting maintainer review. Do not merge. P1E.9 is not started.
+Merged as PR #578 (`3700abeadca7dc3274a4529058a7dc6c560b0cc2`). P1E.9 is
+the following subsection.
 
 Five Bounded Execution import declarations in four modules imported the
 filesystem port from `./index.js`. Those symbols now import
@@ -1230,6 +1236,44 @@ joined. `host-file-system.ts` still imports only
 `project-scan-exclusions.ts`. The Approved Apply cycle, the foundation
 and inception pairs, the extension update cycle, and the recorded
 Neutron mutation cycle are unchanged.
+
+#### P1E.9 — continuous loop
+
+Awaiting maintainer review. Do not merge. P1F is not started.
+
+Five Continuous Loop import declarations in four modules imported the
+filesystem port from `./index.js`. Those symbols now import
+`./host-file-system.js`. `FileSystem` stays type-only.
+`nodeFileSystem` and `createMemoryFileSystem` stay values. No
+declaration mixed the port with a non-port name. No Continuous Loop
+source moved. The application root still exports `FileSystem`,
+`nodeFileSystem`, and `createMemoryFileSystem`.
+
+The audited set is the seven `continuous-loop*.ts` modules.
+`continuous-loop-compare.ts` and
+`continuous-loop-workspace-viewmodel.ts` do not import the port.
+`continuous-loop-w12.ts` only re-exports the family. No Continuous Loop
+module declares a separate `FileSystem` contract. There is no
+`@intentloom/application` path alias. The only root resolution for
+these symbols was `./index.js`.
+
+Continuous Loop filesystem-port imports through the application root
+went from 5 sites to 0. Direct `host-file-system.ts` imports in that
+family went from 0 to 5. Application-wide root filesystem-port import
+sites went from 47 to 42.
+
+Recomputed on this branch, import edges alone still form the five
+components in section 5. Continuous Loop is not a member of them.
+Counting `export … from`, there are still six components. The component
+that contains `index.ts` shrank from 34 files to 29.
+`continuous-loop-apply.ts`, `continuous-loop-fixtures.ts`,
+`continuous-loop-w12.ts`, `continuous-loop-workspace.ts`, and
+`continuous-loop-workspace-cli.ts` left it. Compare and the workspace
+viewmodel were already outside it. No file joined.
+`host-file-system.ts` still imports only `project-scan-exclusions.ts`.
+The Approved Apply cycle, the foundation and inception pairs, the
+extension update cycle, and the recorded Neutron mutation cycle are
+unchanged.
 
 ### P1F — directory moves of families that are already split
 
