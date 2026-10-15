@@ -29,4 +29,4 @@ export async function inspectExtensionManifest(
 export * from "./extension-sandbox.js";
 
 export * from "./extension-health.js";
-export * from "./remove-extension.js";
+export * from "../remove-extension.js";

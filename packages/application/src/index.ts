@@ -25,7 +25,7 @@ import type {
   ArtifactValidator,
 } from "@intentloom/validator";
 import { validateSkillSet } from "@intentloom/validator";
-import { collectExtensionHealthDoctorFindings } from "./extension-health.js";
+import { collectExtensionHealthDoctorFindings } from "./extension-inspection/extension-health.js";
 import { documentConcept } from "./document-concepts.js";
 import {
   adapterForKnownInstructionPath,
@@ -6929,7 +6929,7 @@ export * from "./inception-actions.js";
 export * from "./inception-flow.js";
 export * from "./inception-templates.js";
 export * from "./harness/harness.js";
-export * from "./inspect-extension-manifest.js";
+export * from "./extension-inspection/inspect-extension-manifest.js";
 export * from "./propose-and-apply-extension-adoption.js";
 export * from "./knowledge-provider.js";
 export * from "./graphify-adapter.js";

@@ -5,14 +5,14 @@ import type {
   ExtensionHealthReport,
   ExtensionLockfile,
 } from "@intentloom/protocol";
-import type { FileSystem } from "./propose-and-apply-extension-adoption.js";
+import type { FileSystem } from "../propose-and-apply-extension-adoption.js";
 import { inspectExtensionHealthEntry } from "./extension-health-evaluator.js";
-import { extensionLockRelativePath } from "./extension-lock-path.js";
+import { extensionLockRelativePath } from "../extension-lock-path.js";
 import {
   inspectExternalSpecializedPackHealth,
   isExternalSpecializedPackCandidate,
   isSpecializedPackSecurityFinding,
-} from "./engineering-quality/specialized-pack-external-health.js";
+} from "../engineering-quality/specialized-pack-external-health.js";
 
 const defaultMaxAgeMs = 24 * 60 * 60 * 1000;
 
