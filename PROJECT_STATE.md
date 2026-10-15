@@ -900,11 +900,16 @@ into `packages/application/src/feature-intent/` and is merged as PR #580
 (`2451dc01faac9c12ece874c13bf3fe1918e86f9f`). `task-routing.ts`,
 `skill-markdown.ts`, and `planFeature` stay at the application root.
 P1F.2 moves the sixteen Harness modules into
-`packages/application/src/harness/` and is awaiting maintainer review.
+`packages/application/src/harness/` and is merged as PR #581
+(`e44f24fe282a186d662ee8b71cfa16cecd37bc05`).
 `external-skill-import.ts` and `synchronizeGeneratedFiles` stay at the
-application root. The re-export component that contains `index.ts`
-stays at 29 files. P1F.3 and later slices have not started. Undo U4 and
-Desktop Undo U5 are not started. Other post-P4 candidates remain in
+application root. P1F.3 moves five Extension Inspection modules into
+`packages/application/src/extension-inspection/` and is awaiting
+maintainer review. `extension-lock-path.ts` and the extension adoption,
+update, and removal modules stay at the application root. The re-export
+component that contains `index.ts` stays at 29 files. The four-file
+extension update component is unchanged. P1F.4 and later slices have
+not started. Undo U4 and Desktop Undo U5 are not started. Other post-P4 candidates remain in
 `POST_W12_NEXT_INCREMENT_PLAN.md`.
 
 The Desktop discovery/error and Diff/Timeline slices remain recorded in

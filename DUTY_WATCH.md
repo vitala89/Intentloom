@@ -103,10 +103,61 @@ filesystem-port imports through the application root, so no PR was opened.
 `3700abeadca7dc3274a4529058a7dc6c560b0cc2`). **P1E.9** is merged (PR #579, merge
 `6742cd3be1c61d79301b8a13cb3dec13ef044064`). P1E is complete. **P1F.1**
 is merged (PR #580, merge
-`2451dc01faac9c12ece874c13bf3fe1918e86f9f`). **P1F.2** moves Harness
-modules into `packages/application/src/harness/` and is awaiting
-maintainer review. Do not merge. Do not start P1F.3, Undo U4, or
+`2451dc01faac9c12ece874c13bf3fe1918e86f9f`). **P1F.2** is merged (PR #581, merge
+`e44f24fe282a186d662ee8b71cfa16cecd37bc05`). **P1F.3** moves
+Extension Inspection modules into
+`packages/application/src/extension-inspection/` and is awaiting
+maintainer review. Do not merge. Do not start P1F.4, Undo U4, or
 Desktop Undo U5.
+
+### 2026-10-15, Packages architecture P1F.3 extension inspection directory
+
+- **Status:** **PACKAGES ARCHITECTURE P1F.3 EXTENSION INSPECTION DIRECTORY
+  MOVE IMPLEMENTED ON BRANCH AWAITING MAINTAINER REVIEW.** Do not merge.
+  Do not start P1F.4, Undo U4, or Desktop Undo U5.
+- **Branch:** `refactor/application-extension-inspection-directory-p1f3`
+- **Starting main:** `e44f24fe282a186d662ee8b71cfa16cecd37bc05` (PR #581,
+  P1F.2 merged). Matches the expected baseline.
+- **Moved:** `inspect-extension-manifest.ts`, `extension-health.ts`,
+  `extension-health-evaluator.ts`, `extension-health-runtime.ts`, and
+  `extension-sandbox.ts` from `packages/application/src/` to
+  `packages/application/src/extension-inspection/`. Filenames are
+  unchanged.
+- **Retained:** `extension-lock-path.ts` stays at the application root.
+  Health still imports `extensionLockRelativePath` from it, and
+  engineering-quality apply and health modules import it too.
+  `propose-and-apply-extension-adoption.ts`,
+  `discover-and-apply-extension-update.ts`, `apply-extension-update.ts`,
+  `extension-update-files.ts`, `extension-removal-files.ts`,
+  `preview-extension-removal.ts`, and `remove-extension.ts` stay at the
+  application root. The inspection barrel still re-exports
+  `remove-extension.ts`.
+- **Consumers:** `index.ts` imports
+  `./extension-inspection/extension-health.js` and re-exports
+  `./extension-inspection/inspect-extension-manifest.js`.
+  `extension-health.ts` imports the adoption `FileSystem` type, the
+  lock-path helper, and specialized-pack health from `../`. The
+  `FileSystem` import stays type-only. CLI, daemon, MCP, and Desktop
+  keep importing the public application names.
+- **Cycles:** Import edges alone still form the five P1A components.
+  Extension Inspection is not a member of them. With `export … from`
+  edges included, there are still six components. The component that
+  contains `index.ts` stays at 29 files. The extension update component
+  stays the same four files:
+  `propose-and-apply-extension-adoption.ts`,
+  `discover-and-apply-extension-update.ts`, `apply-extension-update.ts`,
+  and `extension-update-files.ts`. No file joined or left. Path changes
+  are not cycle elimination. `host-file-system.ts` still imports only
+  `project-scan-exclusions.ts`.
+- **Validation:** Focused extension inspection, health, sandbox, update,
+  removal, schema, resolution, specialized-pack doctor, Approved Apply,
+  Neutron topology, host filesystem, and repository layout tests passed
+  (13 files, 91 tests). Full `pnpm verify` passed on this branch before
+  the pull request (352 files, 3062 passed, 3 skipped).
+- **Not done:** P1F.4 and later slices, other family directory moves,
+  the Approved Apply import cycle, the extension update cycle, Neutron
+  edits, Undo U4, Desktop Undo U5.
+- **Next:** Maintainer review. Do not merge. Do not start P1F.4.
 
 ### 2026-10-15, Packages architecture P1F.2 harness directory
 

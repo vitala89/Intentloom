@@ -38,9 +38,12 @@ and is merged (PR #579,
 **P1F.1** moves the Feature Intent family into
 `packages/application/src/feature-intent/` and is merged (PR #580,
 `2451dc01faac9c12ece874c13bf3fe1918e86f9f`). **P1F.2** moves the
-Harness family into `packages/application/src/harness/` and is on
-branch awaiting maintainer review. P1F.3 and later slices have not
-started. Undo U4 and Desktop Undo U5 are not started.
+Harness family into `packages/application/src/harness/` and is merged
+(PR #581, `e44f24fe282a186d662ee8b71cfa16cecd37bc05`). **P1F.3**
+moves Extension Inspection modules into
+`packages/application/src/extension-inspection/` and is on branch
+awaiting maintainer review. P1F.4 and later slices have not started.
+Undo U4 and Desktop Undo U5 are not started.
 Neutron's R4A topology stays frozen.
 The measurements below remain the P1A baseline and are not restated as the
 post-extraction size.
@@ -69,8 +72,10 @@ Continuous Loop filesystem-port imports and is merged (PR #579,
 `6742cd3be1c61d79301b8a13cb3dec13ef044064`). P1E is complete.
 P1F.1 moves Feature Intent modules into a directory and is merged
 (PR #580, `2451dc01faac9c12ece874c13bf3fe1918e86f9f`). P1F.2 moves
-Harness modules into a directory and is awaiting maintainer review.
-P1F.3 and later slices are not part of that change.
+Harness modules into a directory and is merged (PR #581,
+`e44f24fe282a186d662ee8b71cfa16cecd37bc05`). P1F.3 moves Extension
+Inspection modules into a directory and is awaiting maintainer review.
+P1F.4 and later slices are not part of that change.
 
 ## 1. Baseline
 
@@ -1331,7 +1336,8 @@ through `index.ts`.
 
 #### P1F.2 — harness
 
-On branch awaiting maintainer review. Do not merge. P1F.3 is not started.
+Merged as PR #581 (`e44f24fe282a186d662ee8b71cfa16cecd37bc05`). P1F.3
+is the following subsection.
 
 Sixteen Harness modules moved from `packages/application/src/` into
 `packages/application/src/harness/` with their filenames unchanged:
@@ -1373,6 +1379,53 @@ unchanged. Harness still does not import the filesystem port through
 `harness-benchmark-sample.ts` grew from 189/205 effective/physical
 lines to 192/208 because the longer `../host-file-system.js` import
 wrapped. No other moved file changed size.
+
+#### P1F.3 — extension inspection
+
+On branch awaiting maintainer review. Do not merge. P1F.4 is not started.
+
+Five Extension Inspection modules moved from `packages/application/src/`
+into `packages/application/src/extension-inspection/` with their filenames
+unchanged: `inspect-extension-manifest.ts`, `extension-health.ts`,
+`extension-health-evaluator.ts`, `extension-health-runtime.ts`, and
+`extension-sandbox.ts`. `inspectExtensionManifest` still validates a
+manifest through `@intentloom/validator` and does not install an
+extension. Health evaluation still reads the lockfile and evidence. It
+does not update or remove an extension. Public names still leave the
+application root. `index.ts` imports
+`extension-inspection/extension-health.ts` and re-exports
+`extension-inspection/inspect-extension-manifest.ts`. That barrel still
+re-exports `remove-extension.ts` at the application root. The removal
+module did not move.
+
+Retained at `packages/application/src/`: `extension-lock-path.ts`,
+`propose-and-apply-extension-adoption.ts`,
+`discover-and-apply-extension-update.ts`, `apply-extension-update.ts`,
+`extension-update-files.ts`, `extension-removal-files.ts`,
+`preview-extension-removal.ts`, and `remove-extension.ts`.
+`extension-lock-path.ts` is shared lock-path infrastructure. Health
+imports `extensionLockRelativePath` from it, and engineering-quality
+apply and health modules import it too. The other retained files own
+adoption, update, removal, and transaction file changes. The task does
+not authorize moving them.
+
+Import-only cycles stay the five components in section 5. Extension
+Inspection is not a member of them. Counting `export … from`, there are
+still six components. The component that contains `index.ts` stays at
+29 files. The extension update component stays these four files:
+`propose-and-apply-extension-adoption.ts`,
+`discover-and-apply-extension-update.ts`, `apply-extension-update.ts`,
+and `extension-update-files.ts`. No file joined or left. Path changes
+are not cycle elimination. `host-file-system.ts` still imports only
+`project-scan-exclusions.ts`. The Approved Apply cycle, the foundation
+and inception pairs, and the recorded Neutron mutation cycle are
+unchanged.
+
+Moved production files stayed at their previous effective/physical
+counts: `inspect-extension-manifest.ts` 27/32,
+`extension-health.ts` 155/163, `extension-health-evaluator.ts` 106/112,
+`extension-health-runtime.ts` 199/206, and `extension-sandbox.ts`
+127/139.
 
 ### P1G — break the small cycles by import direction
 
