@@ -6,6 +6,6 @@ export * from "./foundation-w6.js";
 export * from "./foundation-w7.js";
 export * from "./foundation-w8.js";
 export * from "./existing-project-w9.js";
-export * from "./feature-intent-w10.js";
+export * from "./feature-intent/feature-intent-w10.js";
 export * from "./bounded-execution-w11.js";
 export * from "./continuous-loop-w12.js";

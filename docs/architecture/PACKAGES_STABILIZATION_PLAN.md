@@ -33,8 +33,12 @@ Bounded Execution filesystem-port imports onto `host-file-system.ts`
 and is merged (PR #578,
 `3700abeadca7dc3274a4529058a7dc6c560b0cc2`). **P1E.9** retargets
 Continuous Loop filesystem-port imports onto `host-file-system.ts`
-and is on branch awaiting maintainer review. P1F and later slices
-have not started. Undo U4 and Desktop Undo U5 are not started.
+and is merged (PR #579,
+`6742cd3be1c61d79301b8a13cb3dec13ef044064`). P1E is complete.
+**P1F.1** moves the Feature Intent family into
+`packages/application/src/feature-intent/` and is on branch awaiting
+maintainer review. P1F.2 and later slices have not started. Undo U4
+and Desktop Undo U5 are not started.
 Neutron's R4A topology stays frozen.
 The measurements below remain the P1A baseline and are not restated as the
 post-extraction size.
@@ -59,8 +63,10 @@ Intent filesystem-port imports and is merged (PR #577,
 `5db19ba962882ca2bd1bd0b36195564d9d3d13c0`). P1E.8 retargets Bounded
 Execution filesystem-port imports and is merged (PR #578,
 `3700abeadca7dc3274a4529058a7dc6c560b0cc2`). P1E.9 retargets
-Continuous Loop filesystem-port imports and is awaiting maintainer
-review. P1F and later slices are not part of that change.
+Continuous Loop filesystem-port imports and is merged (PR #579,
+`6742cd3be1c61d79301b8a13cb3dec13ef044064`). P1E is complete.
+P1F.1 moves Feature Intent modules into a directory and is awaiting
+maintainer review. P1F.2 and later slices are not part of that change.
 
 ## 1. Baseline
 
@@ -1239,7 +1245,8 @@ Neutron mutation cycle are unchanged.
 
 #### P1E.9 — continuous loop
 
-Awaiting maintainer review. Do not merge. P1F is not started.
+Merged as PR #579 (`6742cd3be1c61d79301b8a13cb3dec13ef044064`). P1E is
+complete.
 
 Five Continuous Loop import declarations in four modules imported the
 filesystem port from `./index.js`. Those symbols now import
@@ -1286,6 +1293,36 @@ cycle.
 
 Each PR lists the exact files in its body. Expected import updates are the
 family's own relative imports plus barrel re-exports. No behavior edits.
+
+#### P1F.1 — feature intent
+
+On branch awaiting maintainer review. Do not merge. P1F.2 is not started.
+
+Nine Feature Intent modules moved from `packages/application/src/` into
+`packages/application/src/feature-intent/` with their filenames unchanged:
+`feature-intent-create.ts`, `feature-intent-fixtures.ts`,
+`feature-intent-impact.ts`, `feature-intent-plan.ts`,
+`feature-intent-scope.ts`, `feature-intent-w10.ts`,
+`feature-intent-workspace.ts`, `feature-intent-workspace-cli.ts`, and
+`feature-intent-workspace-viewmodel.ts`. `planFeature` stays in
+`index.ts`. Public names still leave the application root through
+`foundation-flow.ts` re-exporting `feature-intent/feature-intent-w10.ts`.
+
+Retained at `packages/application/src/`: `task-routing.ts` and
+`skill-markdown.ts`. Feature Intent does not import either file.
+`task-routing.ts` is re-exported by the application root, and protocol
+and validator keep their own task-routing modules. `skill-markdown.ts`
+is imported by `parseSkillProgressive` in `index.ts`.
+
+Import-only cycles stay the five components in section 5. Feature
+Intent is not a member of them. Counting `export … from`, there are
+still six components. The component that contains `index.ts` stays at
+29 files. No file joined or left because of the directory move.
+`host-file-system.ts` still imports only `project-scan-exclusions.ts`.
+The Approved Apply cycle, the foundation and inception pairs, the
+extension update cycle, and the recorded Neutron mutation cycle are
+unchanged. Feature Intent still does not import the filesystem port
+through `index.ts`.
 
 ### P1G — break the small cycles by import direction
 

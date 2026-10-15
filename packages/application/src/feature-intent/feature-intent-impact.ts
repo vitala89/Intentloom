@@ -3,8 +3,8 @@ import type {
   FeatureIntentAffectedScope,
   FeatureIntentArchitectureImpact,
 } from "@intentloom/protocol";
-import { assessProject } from "./engineering-assessment/assess.js";
-import { buildAssessmentViewModel } from "./engineering-assessment/viewmodel.js";
+import { assessProject } from "../engineering-assessment/assess.js";
+import { buildAssessmentViewModel } from "../engineering-assessment/viewmodel.js";
 
 export interface AnalyzeArchitectureImpactOptions {
   readonly root: string;

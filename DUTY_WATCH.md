@@ -100,10 +100,52 @@ filesystem-port imports through the application root, so no PR was opened.
 **P1E.6** is merged (PR #576, merge
 `0d4159b9623e65a5236ce8a9c7c225331765df83`). **P1E.7** is merged
 (PR #577, merge `5db19ba962882ca2bd1bd0b36195564d9d3d13c0`). **P1E.8** is merged (PR #578, merge
-`3700abeadca7dc3274a4529058a7dc6c560b0cc2`). **P1E.9** retargets
-Continuous Loop filesystem-port imports onto `host-file-system.ts` and
-is awaiting maintainer review. Do not merge. Do not start P1F, Undo U4,
-or Desktop Undo U5.
+`3700abeadca7dc3274a4529058a7dc6c560b0cc2`). **P1E.9** is merged (PR #579, merge
+`6742cd3be1c61d79301b8a13cb3dec13ef044064`). P1E is complete. **P1F.1**
+moves Feature Intent modules into `packages/application/src/feature-intent/`
+and is awaiting maintainer review. Do not merge. Do not start P1F.2,
+Undo U4, or Desktop Undo U5.
+
+### 2026-10-15, Packages architecture P1F.1 feature intent directory
+
+- **Status:** **PACKAGES ARCHITECTURE P1F.1 FEATURE INTENT DIRECTORY
+  MOVE IMPLEMENTED ON BRANCH AWAITING MAINTAINER REVIEW.** Do not merge.
+  Do not start P1F.2, Undo U4, or Desktop Undo U5.
+- **Branch:** `refactor/application-feature-intent-directory-p1f1`
+- **Starting main:** `6742cd3be1c61d79301b8a13cb3dec13ef044064` (PR #579,
+  P1E.9 merged). Matches the expected baseline. P1E is complete.
+- **Moved:** `feature-intent-create.ts`, `feature-intent-fixtures.ts`,
+  `feature-intent-impact.ts`, `feature-intent-plan.ts`,
+  `feature-intent-scope.ts`, `feature-intent-w10.ts`,
+  `feature-intent-workspace.ts`, `feature-intent-workspace-cli.ts`, and
+  `feature-intent-workspace-viewmodel.ts` from
+  `packages/application/src/` to
+  `packages/application/src/feature-intent/`. Filenames are unchanged.
+  `planFeature` stays in `index.ts`.
+- **Retained:** `task-routing.ts` and `skill-markdown.ts` stay at
+  `packages/application/src/`. Feature Intent does not import them.
+  `skill-markdown.ts` is used by `parseSkillProgressive`. The
+  application root still re-exports `task-routing.ts`.
+- **Consumers:** `foundation-flow.ts` re-exports
+  `./feature-intent/feature-intent-w10.js`.
+  `bounded-execution-workspace.ts` imports
+  `./feature-intent/feature-intent-workspace.js`. Moved modules import
+  `../host-file-system.js` and `../engineering-quality/` or
+  `../engineering-assessment/` where they already used those modules.
+- **Cycles:** Import edges alone still form the five P1A components.
+  Feature Intent is not a member of them. With `export … from` edges
+  included, there are still six components. The component that contains
+  `index.ts` stays at 29 files. No file joined or left. Path changes are
+  not cycle elimination. `host-file-system.ts` still imports only
+  `project-scan-exclusions.ts`.
+- **Validation:** Focused Feature Intent, host-filesystem, repository
+  layout, Approved Apply, and Neutron topology tests passed (9 files,
+  58 tests). Full `pnpm verify` passed on this branch before the pull
+  request (352 files, 3062 passed, 3 skipped).
+- **Not done:** P1F.2 and later slices, other family directory moves,
+  the Approved Apply import cycle, Neutron edits, Undo U4, Desktop
+  Undo U5.
+- **Next:** Maintainer review. Do not merge. Do not start P1F.2.
 
 ### 2026-10-14, Packages architecture P1E.9 continuous loop filesystem imports
 
