@@ -102,9 +102,56 @@ filesystem-port imports through the application root, so no PR was opened.
 (PR #577, merge `5db19ba962882ca2bd1bd0b36195564d9d3d13c0`). **P1E.8** is merged (PR #578, merge
 `3700abeadca7dc3274a4529058a7dc6c560b0cc2`). **P1E.9** is merged (PR #579, merge
 `6742cd3be1c61d79301b8a13cb3dec13ef044064`). P1E is complete. **P1F.1**
-moves Feature Intent modules into `packages/application/src/feature-intent/`
-and is awaiting maintainer review. Do not merge. Do not start P1F.2,
-Undo U4, or Desktop Undo U5.
+is merged (PR #580, merge
+`2451dc01faac9c12ece874c13bf3fe1918e86f9f`). **P1F.2** moves Harness
+modules into `packages/application/src/harness/` and is awaiting
+maintainer review. Do not merge. Do not start P1F.3, Undo U4, or
+Desktop Undo U5.
+
+### 2026-10-15, Packages architecture P1F.2 harness directory
+
+- **Status:** **PACKAGES ARCHITECTURE P1F.2 HARNESS DIRECTORY MOVE
+  IMPLEMENTED ON BRANCH AWAITING MAINTAINER REVIEW.** Do not merge.
+  Do not start P1F.3, Undo U4, or Desktop Undo U5.
+- **Branch:** `refactor/application-harness-directory-p1f2`
+- **Starting main:** `2451dc01faac9c12ece874c13bf3fe1918e86f9f` (PR #580,
+  P1F.1 merged). Matches the expected baseline.
+- **Moved:** `harness.ts`, `harness-adoption-gate.ts`,
+  `harness-agent.ts`, `harness-agent-fake.ts`,
+  `harness-agent-result.ts`, `harness-benchmark.ts`,
+  `harness-benchmark-fixtures.ts`, `harness-benchmark-sample.ts`,
+  `harness-comparison.ts`, `harness-runner.ts`, `harness-sandbox.ts`,
+  `harness-scenarios.ts`, `harness-state.ts`, `harness-surfaces.ts`,
+  `harness-voting.ts`, and `harness-voting-metrics.ts` from
+  `packages/application/src/` to `packages/application/src/harness/`.
+  Filenames are unchanged.
+- **Retained:** `external-skill-import.ts` stays at
+  `packages/application/src/`. No Harness module imports it. The
+  application root still re-exports it. `synchronizeGeneratedFiles`
+  stays in `index.ts`. `harness-benchmark-sample.ts` still imports it
+  from `../index.js`.
+- **Consumers:** `index.ts` re-exports
+  `./harness/harness-adoption-gate.js` and `./harness/harness.js`.
+  `foundation-discovery-turn.ts` and `bounded-execution-task.ts`
+  import the moved agent, runner, and sandbox modules.
+  `harness-benchmark-sample.ts` imports `../host-file-system.js`.
+  `FileSystem` stays type-only.
+- **Cycles:** Import edges alone still form the five P1A components.
+  Harness is not a member of them. With `export … from` edges
+  included, there are still six components. The component that contains
+  `index.ts` stays at 29 files and still contains `harness.ts`,
+  `harness-benchmark.ts`, and `harness-benchmark-sample.ts`. No file
+  joined or left. Path changes are not cycle elimination.
+  `host-file-system.ts` still imports only `project-scan-exclusions.ts`.
+- **Validation:** Focused Harness, host-filesystem, repository layout,
+  Approved Apply, Neutron topology, bounded execution, foundation
+  discovery, and external skill import tests passed (22 files, 144
+  tests). Full `pnpm verify` passed on this branch before the pull
+  request (352 files, 3062 passed, 3 skipped).
+- **Not done:** P1F.3 and later slices, other family directory moves,
+  the Approved Apply import cycle, Neutron edits, Undo U4, Desktop
+  Undo U5.
+- **Next:** Maintainer review. Do not merge. Do not start P1F.3.
 
 ### 2026-10-15, Packages architecture P1F.1 feature intent directory
 

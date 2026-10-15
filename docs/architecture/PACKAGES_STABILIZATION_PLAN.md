@@ -36,9 +36,11 @@ Continuous Loop filesystem-port imports onto `host-file-system.ts`
 and is merged (PR #579,
 `6742cd3be1c61d79301b8a13cb3dec13ef044064`). P1E is complete.
 **P1F.1** moves the Feature Intent family into
-`packages/application/src/feature-intent/` and is on branch awaiting
-maintainer review. P1F.2 and later slices have not started. Undo U4
-and Desktop Undo U5 are not started.
+`packages/application/src/feature-intent/` and is merged (PR #580,
+`2451dc01faac9c12ece874c13bf3fe1918e86f9f`). **P1F.2** moves the
+Harness family into `packages/application/src/harness/` and is on
+branch awaiting maintainer review. P1F.3 and later slices have not
+started. Undo U4 and Desktop Undo U5 are not started.
 Neutron's R4A topology stays frozen.
 The measurements below remain the P1A baseline and are not restated as the
 post-extraction size.
@@ -65,8 +67,10 @@ Execution filesystem-port imports and is merged (PR #578,
 `3700abeadca7dc3274a4529058a7dc6c560b0cc2`). P1E.9 retargets
 Continuous Loop filesystem-port imports and is merged (PR #579,
 `6742cd3be1c61d79301b8a13cb3dec13ef044064`). P1E is complete.
-P1F.1 moves Feature Intent modules into a directory and is awaiting
-maintainer review. P1F.2 and later slices are not part of that change.
+P1F.1 moves Feature Intent modules into a directory and is merged
+(PR #580, `2451dc01faac9c12ece874c13bf3fe1918e86f9f`). P1F.2 moves
+Harness modules into a directory and is awaiting maintainer review.
+P1F.3 and later slices are not part of that change.
 
 ## 1. Baseline
 
@@ -1296,7 +1300,8 @@ family's own relative imports plus barrel re-exports. No behavior edits.
 
 #### P1F.1 — feature intent
 
-On branch awaiting maintainer review. Do not merge. P1F.2 is not started.
+Merged as PR #580 (`2451dc01faac9c12ece874c13bf3fe1918e86f9f`). P1F.2
+is the following subsection.
 
 Nine Feature Intent modules moved from `packages/application/src/` into
 `packages/application/src/feature-intent/` with their filenames unchanged:
@@ -1323,6 +1328,51 @@ The Approved Apply cycle, the foundation and inception pairs, the
 extension update cycle, and the recorded Neutron mutation cycle are
 unchanged. Feature Intent still does not import the filesystem port
 through `index.ts`.
+
+#### P1F.2 — harness
+
+On branch awaiting maintainer review. Do not merge. P1F.3 is not started.
+
+Sixteen Harness modules moved from `packages/application/src/` into
+`packages/application/src/harness/` with their filenames unchanged:
+`harness.ts`, `harness-adoption-gate.ts`, `harness-agent.ts`,
+`harness-agent-fake.ts`, `harness-agent-result.ts`,
+`harness-benchmark.ts`, `harness-benchmark-fixtures.ts`,
+`harness-benchmark-sample.ts`, `harness-comparison.ts`,
+`harness-runner.ts`, `harness-sandbox.ts`, `harness-scenarios.ts`,
+`harness-state.ts`, `harness-surfaces.ts`, `harness-voting.ts`, and
+`harness-voting-metrics.ts`. Public names still leave the application
+root. `index.ts` re-exports `harness/harness-adoption-gate.ts` and
+`harness/harness.ts`. `harness.ts` still re-exports the other Harness
+modules except the adoption gate, which stays a direct root re-export.
+
+Retained at `packages/application/src/`: `external-skill-import.ts`.
+No Harness module imports it. It normalizes external skill import
+requests and is re-exported by the application root. Protocol and
+validator keep their own external-skill-import modules.
+`synchronizeGeneratedFiles` stays in `index.ts`.
+`harness-benchmark-sample.ts` still imports that function from
+`../index.js`, and still imports `createMemoryFileSystem` and
+`FileSystem` from `../host-file-system.js`. `FileSystem` stays
+type-only.
+
+Import-only cycles stay the five components in section 5. Harness is
+not a member of them. Counting `export … from`, there are still six
+components. The component that contains `index.ts` stays at 29 files
+and still contains `harness/harness.ts`,
+`harness/harness-benchmark.ts`, and
+`harness/harness-benchmark-sample.ts` because
+`synchronizeGeneratedFiles` is still imported from the root. No file
+joined or left. Path changes are not cycle elimination.
+`host-file-system.ts` still imports only `project-scan-exclusions.ts`.
+The Approved Apply cycle, the foundation and inception pairs, the
+extension update cycle, and the recorded Neutron mutation cycle are
+unchanged. Harness still does not import the filesystem port through
+`index.ts`.
+
+`harness-benchmark-sample.ts` grew from 189/205 effective/physical
+lines to 192/208 because the longer `../host-file-system.js` import
+wrapped. No other moved file changed size.
 
 ### P1G — break the small cycles by import direction
 

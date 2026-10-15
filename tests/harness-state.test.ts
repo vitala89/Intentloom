@@ -8,7 +8,7 @@ import {
   replayHarnessEvents,
   resumeHarnessExecution,
   type HarnessCheckpointRecord,
-} from "../packages/application/src/harness-state.js";
+} from "../packages/application/src/harness/harness-state.js";
 
 describe("harness durable state, tracing, resume, and replay (Phase H4)", () => {
   const mockScenario: HarnessScenario = {

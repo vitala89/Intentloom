@@ -896,12 +896,16 @@ P1E.9 retargets Continuous Loop filesystem-port imports onto
 `continuous-loop-workspace-cli.ts` leave that component, which shrinks
 from 34 files to 29. Compare and the workspace viewmodel were already
 outside it. P1E is complete. P1F.1 moves the nine Feature Intent modules
-into `packages/application/src/feature-intent/` and is awaiting
-maintainer review. `task-routing.ts`, `skill-markdown.ts`, and
-`planFeature` stay at the application root. The re-export component
-that contains `index.ts` stays at 29 files. P1F.2 and later slices have
-not started. Undo U4 and Desktop Undo U5 are not started. Other post-P4
-candidates remain in `POST_W12_NEXT_INCREMENT_PLAN.md`.
+into `packages/application/src/feature-intent/` and is merged as PR #580
+(`2451dc01faac9c12ece874c13bf3fe1918e86f9f`). `task-routing.ts`,
+`skill-markdown.ts`, and `planFeature` stay at the application root.
+P1F.2 moves the sixteen Harness modules into
+`packages/application/src/harness/` and is awaiting maintainer review.
+`external-skill-import.ts` and `synchronizeGeneratedFiles` stay at the
+application root. The re-export component that contains `index.ts`
+stays at 29 files. P1F.3 and later slices have not started. Undo U4 and
+Desktop Undo U5 are not started. Other post-P4 candidates remain in
+`POST_W12_NEXT_INCREMENT_PLAN.md`.
 
 The Desktop discovery/error and Diff/Timeline slices remain recorded in
 [PHASE1_CONTRACTS.md](docs/desktop/PHASE1_CONTRACTS.md).

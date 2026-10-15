@@ -259,15 +259,24 @@ describe("application host filesystem extraction", () => {
       "createMemoryFileSystem",
     ]);
     const sourceDir = "packages/application/src";
+    const harnessDir = join(sourceDir, "harness");
+    const flatHarness = readdirSync(sourceDir).filter(
+      (name) => name.startsWith("harness") && name.endsWith(".ts"),
+    );
+    expect(flatHarness).toEqual([]);
+    const harnessNames = readdirSync(harnessDir).filter((name) =>
+      name.endsWith(".ts"),
+    );
+    expect(harnessNames).toEqual(
+      expect.arrayContaining(["harness-benchmark-sample.ts"]),
+    );
+    const files = [
+      ...harnessNames.map((name) => join(harnessDir, name)),
+      join(sourceDir, "external-skill-import.ts"),
+    ];
     const offHost: string[] = [];
-    for (const name of readdirSync(sourceDir)) {
-      if (
-        (!name.startsWith("harness") && name !== "external-skill-import.ts") ||
-        !name.endsWith(".ts")
-      ) {
-        continue;
-      }
-      const file = join(sourceDir, name);
+    for (const file of files) {
+      const name = file.slice(sourceDir.length + 1);
       for (const binding of namedImportBindings(readFileSync(file, "utf8"))) {
         const importedPort = binding.names.filter((imported) =>
           portNames.has(imported),
