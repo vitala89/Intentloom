@@ -11,12 +11,15 @@ import {
   type HarnessCheckpointRecord,
   type HarnessStateStore,
 } from "./harness-state.js";
-import { createMemoryFileSystem, type FileSystem } from "./host-file-system.js";
+import {
+  createMemoryFileSystem,
+  type FileSystem,
+} from "../host-file-system.js";
 // synchronizeGeneratedFiles still lives in the package barrel. This import is
 // circular (index.ts re-exports harness.ts, which re-exports this file), but
 // the function is a hoisted declaration invoked only inside
 // measureH9EvidenceStages, never at module-evaluation time.
-import { synchronizeGeneratedFiles } from "./index.js";
+import { synchronizeGeneratedFiles } from "../index.js";
 import {
   H9_DRILL_REQUEST,
   H9_DRILL_SCENARIO,

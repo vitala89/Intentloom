@@ -5,7 +5,7 @@ import {
   createFakeSandbox,
   createLocalReadonlySandbox,
   negotiateExecutorCapabilities,
-} from "../packages/application/src/harness-sandbox.js";
+} from "../packages/application/src/harness/harness-sandbox.js";
 
 describe("harness execution isolation adapters (Phase H3)", () => {
   const baseRequestedCapabilities: HarnessCapabilities = {

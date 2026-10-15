@@ -262,7 +262,7 @@ export type {
 };
 export * from "./task-routing.js";
 export * from "./external-skill-import.js";
-export * from "./harness-adoption-gate.js";
+export * from "./harness/harness-adoption-gate.js";
 export * from "./approved-apply-gate.js";
 export * from "./approved-apply-engine.js";
 export {
@@ -6928,7 +6928,7 @@ export * from "./inception-scaffold-apply.js";
 export * from "./inception-actions.js";
 export * from "./inception-flow.js";
 export * from "./inception-templates.js";
-export * from "./harness.js";
+export * from "./harness/harness.js";
 export * from "./inspect-extension-manifest.js";
 export * from "./propose-and-apply-extension-adoption.js";
 export * from "./knowledge-provider.js";

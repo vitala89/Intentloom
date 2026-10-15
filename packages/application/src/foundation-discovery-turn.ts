@@ -9,9 +9,9 @@ import type {
 } from "@intentloom/protocol";
 import { FOUNDATION_DISCOVERY_TURN_SCHEMA_URN } from "@intentloom/protocol";
 import { validateFoundationDiscoveryTurnResult } from "@intentloom/validator";
-import type { HarnessAgentAdapter } from "./harness-agent.js";
-import { executeHarnessAgent } from "./harness-agent.js";
-import { createFakeHarnessAgentAdapter } from "./harness-agent-fake.js";
+import type { HarnessAgentAdapter } from "./harness/harness-agent.js";
+import { executeHarnessAgent } from "./harness/harness-agent.js";
+import { createFakeHarnessAgentAdapter } from "./harness/harness-agent-fake.js";
 import {
   evaluateFoundationDiscoveryCompleteness,
   generateAdaptiveFoundationQuestions,

@@ -1,8 +1,8 @@
 import type { HarnessScorecard } from "@intentloom/protocol";
-import { createFakeHarnessAgentAdapter } from "./harness-agent-fake.js";
-import { executeHarnessAgent } from "./harness-agent.js";
-import { executeHarnessScenario } from "./harness-runner.js";
-import { createLocalReadonlySandbox } from "./harness-sandbox.js";
+import { createFakeHarnessAgentAdapter } from "./harness/harness-agent-fake.js";
+import { executeHarnessAgent } from "./harness/harness-agent.js";
+import { executeHarnessScenario } from "./harness/harness-runner.js";
+import { createLocalReadonlySandbox } from "./harness/harness-sandbox.js";
 
 export async function executeBoundedCodingAgentTask(input: {
   readonly intentId: string;
