@@ -41,8 +41,12 @@ and is merged (PR #579,
 Harness family into `packages/application/src/harness/` and is merged
 (PR #581, `e44f24fe282a186d662ee8b71cfa16cecd37bc05`). **P1F.3**
 moves Extension Inspection modules into
-`packages/application/src/extension-inspection/` and is on branch
-awaiting maintainer review. P1F.4 and later slices have not started.
+`packages/application/src/extension-inspection/` and is merged (PR #582,
+`14e86cd85292ba7e0fa4854824cdade14835d2e4`). **P1F.4** found the
+Engineering Assessment directory already in place, so no PR was opened.
+**P1F.5** moves the Bounded Execution read side into
+`packages/application/src/bounded-execution/` and is on branch awaiting
+maintainer review. P1F.6 and later slices have not started.
 Undo U4 and Desktop Undo U5 are not started.
 Neutron's R4A topology stays frozen.
 The measurements below remain the P1A baseline and are not restated as the
@@ -74,8 +78,11 @@ P1F.1 moves Feature Intent modules into a directory and is merged
 (PR #580, `2451dc01faac9c12ece874c13bf3fe1918e86f9f`). P1F.2 moves
 Harness modules into a directory and is merged (PR #581,
 `e44f24fe282a186d662ee8b71cfa16cecd37bc05`). P1F.3 moves Extension
-Inspection modules into a directory and is awaiting maintainer review.
-P1F.4 and later slices are not part of that change.
+Inspection modules into a directory and is merged (PR #582,
+`14e86cd85292ba7e0fa4854824cdade14835d2e4`). P1F.4 found the
+Engineering Assessment directory already in place and did not open a
+PR. P1F.5 is the bounded-execution read-side directory move in its own
+subsection. P1F.6 and later slices are not part of that change.
 
 ## 1. Baseline
 
@@ -1382,7 +1389,8 @@ wrapped. No other moved file changed size.
 
 #### P1F.3 — extension inspection
 
-On branch awaiting maintainer review. Do not merge. P1F.4 is not started.
+Merged as PR #582 (`14e86cd85292ba7e0fa4854824cdade14835d2e4`). P1F.4
+is the following subsection.
 
 Five Extension Inspection modules moved from `packages/application/src/`
 into `packages/application/src/extension-inspection/` with their filenames
@@ -1426,6 +1434,55 @@ counts: `inspect-extension-manifest.ts` 27/32,
 `extension-health.ts` 155/163, `extension-health-evaluator.ts` 106/112,
 `extension-health-runtime.ts` 199/206, and `extension-sandbox.ts`
 127/139.
+
+#### P1F.4 — engineering assessment
+
+Already satisfied. No pull request. The Engineering Assessment modules
+already live under `packages/application/src/engineering-assessment/`.
+`engineering-assessment.ts` at the application root remains the package
+subpath barrel. No consumer path change was required, so this slice did
+not move source.
+
+#### P1F.5 — bounded execution read side
+
+On branch awaiting maintainer review. Do not merge. P1F.6 is not started.
+
+Two read-side modules moved from `packages/application/src/` into
+`packages/application/src/bounded-execution/` with their filenames
+unchanged: `bounded-execution-verify.ts` and
+`bounded-execution-workspace-viewmodel.ts`. Verification is a pure path
+and architecture projection. It does not read the filesystem, grant a
+capability, execute a task, or call Approved Apply. The viewmodel only
+copies an existing workspace overview into a client surface and renders
+text. Public names still leave the application root.
+`foundation-flow.ts` re-exports `bounded-execution-w11.ts`, and that
+barrel re-exports the moved files.
+
+Retained at `packages/application/src/`: `bounded-execution-capability.ts`,
+`bounded-execution-task.ts`, `bounded-execution-apply.ts`,
+`bounded-execution-fixtures.ts`, `bounded-execution-workspace.ts`,
+`bounded-execution-workspace-cli.ts`, and `bounded-execution-w11.ts`.
+Capability granting, task execution, Approved Apply, fixture loading,
+and workspace orchestration stay there. The workspace CLI can request
+apply. The W11 barrel re-exports those mutation-side modules, so it
+stays at the root. Fixtures read the catalog and build a memory
+filesystem that includes apply payloads, so they are not read-side.
+
+Import-only cycles stay the five components in section 5. Bounded
+Execution is not a member of them. Counting `export … from`, there are
+still six components. The component that contains `index.ts` stays at
+29 files and still contains `bounded-execution-apply.ts`,
+`bounded-execution-workspace.ts`, `bounded-execution-workspace-cli.ts`,
+and `bounded-execution-w11.ts`. The moved files were already outside
+that component. No file joined or left. Path changes are not cycle
+elimination. `host-file-system.ts` still imports only
+`project-scan-exclusions.ts`. The Approved Apply cycle, the foundation
+and inception pairs, the extension update cycle, and the recorded
+Neutron mutation cycle are unchanged.
+
+Moved production files stayed at their previous effective/physical
+counts: `bounded-execution-verify.ts` 56/57 and
+`bounded-execution-workspace-viewmodel.ts` 97/101.
 
 ### P1G — break the small cycles by import direction
 

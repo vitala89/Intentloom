@@ -360,12 +360,37 @@ describe("application host filesystem extraction", () => {
       "createMemoryFileSystem",
     ]);
     const sourceDir = "packages/application/src";
+    const boundedDir = join(sourceDir, "bounded-execution");
+    const flatNames = readdirSync(sourceDir).filter(
+      (name) => name.startsWith("bounded-execution") && name.endsWith(".ts"),
+    );
+    const boundedNames = readdirSync(boundedDir).filter((name) =>
+      name.endsWith(".ts"),
+    );
+    expect(boundedNames).toEqual(
+      expect.arrayContaining([
+        "bounded-execution-verify.ts",
+        "bounded-execution-workspace-viewmodel.ts",
+      ]),
+    );
+    expect(flatNames).toEqual(
+      expect.arrayContaining([
+        "bounded-execution-apply.ts",
+        "bounded-execution-capability.ts",
+        "bounded-execution-fixtures.ts",
+        "bounded-execution-task.ts",
+        "bounded-execution-w11.ts",
+        "bounded-execution-workspace-cli.ts",
+        "bounded-execution-workspace.ts",
+      ]),
+    );
+    const files = [
+      ...flatNames.map((name) => join(sourceDir, name)),
+      ...boundedNames.map((name) => join(boundedDir, name)),
+    ];
     const offHost: string[] = [];
-    for (const name of readdirSync(sourceDir)) {
-      if (!name.startsWith("bounded-execution") || !name.endsWith(".ts")) {
-        continue;
-      }
-      const file = join(sourceDir, name);
+    for (const file of files) {
+      const name = file.slice(sourceDir.length + 1);
       for (const binding of namedImportBindings(readFileSync(file, "utf8"))) {
         const importedPort = binding.names.filter((imported) =>
           portNames.has(imported),
