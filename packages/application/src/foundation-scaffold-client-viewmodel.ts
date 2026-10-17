@@ -7,7 +7,7 @@ import type {
   ScaffoldFilePlan,
   ScaffoldResultStatus,
 } from "@intentloom/protocol";
-import type { FoundationClientSurfaceState } from "./foundation-client-viewmodel.js";
+import type { FoundationClientSurfaceState } from "./foundation/foundation-client-viewmodel.js";
 import {
   buildFoundationScaffoldWorkspaceSection,
   type FoundationScaffoldWorkspaceSection,

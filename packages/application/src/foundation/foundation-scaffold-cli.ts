@@ -1,4 +1,4 @@
-import type { QualityCliResult } from "./engineering-quality/cli-quality-standards.js";
+import type { QualityCliResult } from "../engineering-quality/cli-quality-standards.js";
 import {
   compareProjectScaffoldPlan,
   getProjectScaffoldPlan,

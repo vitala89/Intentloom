@@ -918,10 +918,15 @@ directory already in place, so no PR was opened. P1F.5 moves
 fixtures, workspace, the workspace CLI, and the W11 barrel stay at the
 application root. P1F.6 moves `continuous-loop-compare.ts` and
 `continuous-loop-workspace-viewmodel.ts` into
-`packages/application/src/continuous-loop/` and is awaiting maintainer
-review. Apply, fixtures, workspace, the workspace CLI, and the W12
-barrel stay at the application root. P1F.7 and later slices have not
-started. Undo U4 and Desktop Undo U5 are not started. Other post-P4 candidates remain in
+`packages/application/src/continuous-loop/` and is merged as PR #584
+(`6d94862b58046a5126048fc8dea1ffd60e882fb9`). Apply, fixtures, workspace,
+the workspace CLI, and the W12 barrel stay at the application root.
+P1F.7 moves twenty-six Foundation modules that sit outside the
+workshop and scaffold-viewmodel cycles into
+`packages/application/src/foundation/` and is awaiting maintainer
+review. The two Foundation cycles, `foundation-w8.ts`, and
+`foundation-flow.ts` stay at the application root. P1F.8 and later slices have not started. Undo U4 and
+Desktop Undo U5 are not started. Other post-P4 candidates remain in
 `POST_W12_NEXT_INCREMENT_PLAN.md`.
 
 The Desktop discovery/error and Diff/Timeline slices remain recorded in

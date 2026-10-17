@@ -13,8 +13,8 @@ import {
   listFoundationQuestions,
   recordFoundationWorkshopAnswer,
   summarizeFoundationUnderstandingViewmodel,
-} from "./foundation-workshop.js";
-import { discoverFoundationAdaptiveQuestions } from "./foundation-discovery.js";
+} from "../foundation-workshop.js";
+import { discoverFoundationAdaptiveQuestions } from "../foundation-discovery.js";
 import { runFoundationDiscoveryTurn } from "./foundation-discovery-turn.js";
 import {
   approveFoundationBlueprint,
@@ -22,7 +22,7 @@ import {
   proposeFoundationBlueprints,
   revokeFoundationBlueprintApproval,
 } from "./foundation-blueprint.js";
-import type { QualityCliResult } from "./engineering-quality/cli-quality-standards.js";
+import type { QualityCliResult } from "../engineering-quality/cli-quality-standards.js";
 
 export type FoundationCliCommand =
   | "start"

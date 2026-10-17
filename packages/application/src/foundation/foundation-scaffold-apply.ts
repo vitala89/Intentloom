@@ -21,7 +21,7 @@ import {
 import {
   applyProjectScaffold as applyInceptionScaffold,
   rollbackProjectScaffold as rollbackInceptionScaffold,
-} from "./inception-scaffold-apply.js";
+} from "../inception-scaffold-apply.js";
 
 export interface FoundationScaffoldApplyOptions {
   readonly fileWriter?: (path: string, content: string) => void;

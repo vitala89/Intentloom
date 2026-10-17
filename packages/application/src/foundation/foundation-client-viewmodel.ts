@@ -7,7 +7,7 @@ import {
   getFoundationWorkshopViewmodel,
   identifyFoundationWorkshopConflicts,
   summarizeFoundationUnderstandingViewmodel,
-} from "./foundation-workshop.js";
+} from "../foundation-workshop.js";
 
 export type FoundationClientSurfaceState =
   "empty" | "loading" | "ready" | "error" | "resume" | "deleted";

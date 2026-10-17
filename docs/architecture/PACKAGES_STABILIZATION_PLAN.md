@@ -48,8 +48,11 @@ Engineering Assessment directory already in place, so no PR was opened.
 `packages/application/src/bounded-execution/` and is merged (PR #583,
 `e14a5b67bf342e06ae83a55010acf76327e8a0f3`). **P1F.6** moves the
 Continuous Loop read side into
-`packages/application/src/continuous-loop/` and is on branch awaiting
-maintainer review. P1F.7 and later slices have not started.
+`packages/application/src/continuous-loop/` and is merged (PR #584,
+`6d94862b58046a5126048fc8dea1ffd60e882fb9`). **P1F.7** moves Foundation
+modules that sit outside the two Foundation cycles into
+`packages/application/src/foundation/` and is on branch awaiting
+maintainer review. P1F.8 and later slices have not started.
 Undo U4 and Desktop Undo U5 are not started.
 Neutron's R4A topology stays frozen.
 The measurements below remain the P1A baseline and are not restated as the
@@ -86,8 +89,10 @@ Inspection modules into a directory and is merged (PR #582,
 Engineering Assessment directory already in place and did not open a
 PR. P1F.5 moves Bounded Execution read-side modules into a directory
 and is merged (PR #583, `e14a5b67bf342e06ae83a55010acf76327e8a0f3`).
-P1F.6 is the continuous-loop read-side directory move in its own
-subsection. P1F.7 and later slices are not part of that change.
+P1F.6 moves Continuous Loop read-side modules into a directory and is
+merged (PR #584, `6d94862b58046a5126048fc8dea1ffd60e882fb9`). P1F.7 is
+the foundation directory move in its own subsection. P1F.8 and later
+slices are not part of that change.
 
 ## 1. Baseline
 
@@ -1492,7 +1497,8 @@ counts: `bounded-execution-verify.ts` 56/57 and
 
 #### P1F.6 — continuous loop read side
 
-On branch awaiting maintainer review. Do not merge. P1F.7 is not started.
+Merged as PR #584 (`6d94862b58046a5126048fc8dea1ffd60e882fb9`). P1F.7
+is the following subsection.
 
 Two read-side modules moved from `packages/application/src/` into
 `packages/application/src/continuous-loop/` with their filenames
@@ -1528,6 +1534,64 @@ unchanged.
 Moved production files stayed at their previous effective/physical
 counts: `continuous-loop-compare.ts` 52/55 and
 `continuous-loop-workspace-viewmodel.ts` 75/79.
+
+#### P1F.7 — foundation files outside the cycles
+
+On branch awaiting maintainer review. Do not merge. P1F.8 is not started.
+
+Twenty-six Foundation modules moved from `packages/application/src/`
+into `packages/application/src/foundation/` with their filenames
+unchanged: `foundation-blueprint-client-viewmodel.ts`,
+`foundation-blueprint-store.ts`,
+`foundation-blueprint-viewmodel-renderers.ts`,
+`foundation-blueprint.ts`, `foundation-cli.ts`,
+`foundation-client-viewmodel.ts`,
+`foundation-discovery-client-viewmodel.ts`,
+`foundation-discovery-turn.ts`,
+`foundation-discovery-viewmodel-renderers.ts`,
+`foundation-fixtures.ts`, `foundation-readiness.ts`,
+`foundation-scaffold-apply-revalidation.ts`,
+`foundation-scaffold-apply-store.ts`, `foundation-scaffold-apply.ts`,
+`foundation-scaffold-cli.ts`, `foundation-scaffold-store.ts`,
+`foundation-scaffold-viewmodel-renderers.ts`, `foundation-scaffold.ts`,
+`foundation-viewmodel-renderers.ts`, `foundation-w2.ts`,
+`foundation-w3.ts`, `foundation-w4.ts`, `foundation-w6.ts`,
+`foundation-w7.ts`, `foundation-workshop-defaults.ts`, and
+`foundation-workshop-store.ts`. Public names still leave the
+application root. `index.ts` re-exports `inception-flow.ts`, and that
+barrel re-exports `foundation-flow.ts`.
+
+Retained at `packages/application/src/`: `foundation-discovery.ts`,
+`foundation-viewmodel.ts`, and `foundation-workshop.ts` (the workshop
+import cycle); `foundation-scaffold-client-viewmodel.ts` and
+`foundation-scaffold-workspace-viewmodel.ts` (the scaffold viewmodel
+import cycle); `foundation-w8.ts`; and `foundation-flow.ts`.
+`foundation-w8.ts` is the one-line re-export of the retained scaffold
+workspace viewmodel, so it stays beside that cycle member. The flow
+file re-exports existing-project, feature-intent, bounded-execution,
+and continuous-loop as well as Foundation, so it stays at the root.
+`foundation-cli.ts` and the viewmodel renderers remain application
+modules inside the Foundation directory. Scaffold apply still calls
+the inception scaffold applier. Revalidation still checks the approved
+blueprint, workshop, template version, and scaffold diff.
+`foundation-fixtures.ts` still reads its catalog from `process.cwd()`.
+No Foundation module imports `FileSystem`, `nodeFileSystem`, or
+`createMemoryFileSystem`.
+
+Import-only cycles stay the five components in section 5. Counting
+`export … from`, there are still six components. The component that
+contains `index.ts` stays at 29 files and still contains
+`foundation-flow.ts`. The moved files were already outside every
+component. No file joined or left. Path changes are not cycle
+elimination. `host-file-system.ts` still imports only
+`project-scan-exclusions.ts`. The Approved Apply cycle, the foundation
+workshop and scaffold-viewmodel cycles, the inception pair, the
+extension update cycle, and the recorded Neutron mutation cycle are
+unchanged.
+
+Moved production files stayed at their previous effective/physical
+counts. The largest moved file remains `foundation-blueprint.ts` at
+292/314. Retained `foundation-workshop.ts` stays at 245/266.
 
 ### P1G — break the small cycles by import direction
 
