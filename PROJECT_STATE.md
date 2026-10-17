@@ -928,9 +928,15 @@ workshop and scaffold-viewmodel cycles into
 cycles, `foundation-w8.ts`, and `foundation-flow.ts` stay at the
 application root. P1F.8 moves sixteen Inception modules that sit
 outside the viewmodel cycle into `packages/application/src/inception/`
-and is awaiting maintainer review. `inception.ts`,
+and is merged as PR #586
+(`d647c6ec25b21e758fa83ae04d6a31b75bc94ecb`). `inception.ts`,
 `inception-viewmodel.ts`, and `inception-flow.ts` stay at the
-application root. P1G and later slices have not started. Undo U4 and
+application root. P1G.1 moves `InceptionSummary` into
+`packages/application/src/inception/inception-summary-types.ts` so
+`inception-viewmodel.ts` no longer imports `inception.ts`. That slice
+is awaiting maintainer review. Import-only cycles drop from five
+components to four. The re-export component that contains `index.ts`
+stays at 29 files. P1G.2 and later slices have not started. Undo U4 and
 Desktop Undo U5 are not started. Other post-P4 candidates remain in
 `POST_W12_NEXT_INCREMENT_PLAN.md`.
 

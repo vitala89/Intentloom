@@ -112,8 +112,42 @@ Engineering Assessment directory already in place, so no PR was opened.
 (PR #584, merge `6d94862b58046a5126048fc8dea1ffd60e882fb9`). **P1F.7** is merged (PR #585, merge
 `aff1dd52cd66f437e5a20b5b08a658af83b0e9a2`). **P1F.8** moves Inception
 modules that sit outside the viewmodel cycle into
-`packages/application/src/inception/` and is awaiting maintainer
-review. Do not merge. Do not start P1G, Undo U4, or Desktop Undo U5.
+`packages/application/src/inception/` and is merged (PR #586, merge
+`d647c6ec25b21e758fa83ae04d6a31b75bc94ecb`). **P1G.1** moves
+`InceptionSummary` into
+`packages/application/src/inception/inception-summary-types.ts` and is
+awaiting maintainer review. Do not merge. Do not start P1G.2, Undo U4,
+or Desktop Undo U5.
+
+### 2026-10-17, Packages architecture P1G.1 inception viewmodel cycle
+
+- **Status:** **PACKAGES ARCHITECTURE P1G.1 INCEPTION VIEWMODEL CYCLE
+  BREAK IMPLEMENTED ON BRANCH AWAITING MAINTAINER REVIEW.** Do not
+  merge. Do not start P1G.2, P1G.3, P1H, P1I, P1J, Undo U4, or Desktop
+  Undo U5.
+- **Branch:** `refactor/application-inception-cycle-p1g1`
+- **Starting main:** `d647c6ec25b21e758fa83ae04d6a31b75bc94ecb` (PR #586,
+  P1F.8 merged).
+- **Removed edge:** `inception-viewmodel.ts` imported
+  `InceptionSummary` from `inception.ts` while `inception.ts` imported
+  the viewmodel builders. The interface now lives in
+  `inception/inception-summary-types.ts`. Both files import that
+  module. The shared module imports neither file. `inception.ts`
+  re-exports the type only, and still imports the viewmodel builders.
+- **Graph:** import-only cycles drop from five components (sizes
+  3, 3, 3, 2, 2) to four (sizes 3, 3, 3, 2). Re-export cycles drop
+  from six (sizes 29, 4, 3, 3, 2, 2) to five (sizes 29, 4, 3, 3, 2).
+  The component that contains `index.ts` stays at 29 files and still
+  contains `inception-flow.ts`. Foundation cycles, the extension
+  update component, and the Neutron mutation component are unchanged.
+  `host-file-system.ts` still imports only `project-scan-exclusions.ts`.
+- **Public API:** `InceptionSummary` remains importable from
+  `@intentloom/application`. The type is not a runtime export.
+  `package.json` exports are unchanged. Session and viewmodel function
+  names are unchanged.
+- **Not done:** P1G.2 and later slices, Undo U4, Desktop Undo U5,
+  Neutron, and Desktop feature work.
+- **Next:** Maintainer review. Do not merge. Do not start P1G.2.
 
 ### 2026-10-17, Packages architecture P1F.8 inception directory
 

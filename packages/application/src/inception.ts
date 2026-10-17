@@ -24,26 +24,15 @@ import {
   buildVersionedInceptionSummary,
 } from "./inception-viewmodel.js";
 import { identifyInceptionConflicts } from "./inception/inception-discovery.js";
+import type { InceptionSummary } from "./inception/inception-summary-types.js";
+
+export type { InceptionSummary };
 
 export interface CreateInceptionSessionParams {
   readonly root: string;
   readonly idea: string;
   readonly initialQuestions?: readonly InceptionQuestion[];
   readonly sessionId?: string;
-}
-
-export interface InceptionSummary {
-  readonly sessionId: string;
-  readonly root: string;
-  readonly idea: string;
-  readonly status: string;
-  readonly totalQuestions: number;
-  readonly answeredQuestions: number;
-  readonly pendingQuestions: number;
-  readonly confirmedAnswers: number;
-  readonly assumptionsCount: number;
-  readonly constraintsCount: number;
-  readonly alternativesCount: number;
 }
 
 const DEFAULT_STARTER_QUESTIONS: readonly InceptionQuestion[] = [

@@ -54,8 +54,13 @@ modules that sit outside the two Foundation cycles into
 `packages/application/src/foundation/` and is merged (PR #585,
 `aff1dd52cd66f437e5a20b5b08a658af83b0e9a2`). **P1F.8** moves Inception
 modules that sit outside the viewmodel cycle into
-`packages/application/src/inception/` and is on branch awaiting
-maintainer review. P1G and later slices have not started.
+`packages/application/src/inception/` and is merged (PR #586,
+`d647c6ec25b21e758fa83ae04d6a31b75bc94ecb`). **P1G.1** moves
+`InceptionSummary` into
+`packages/application/src/inception/inception-summary-types.ts` so
+`inception-viewmodel.ts` no longer imports `inception.ts`. That slice
+is on branch awaiting maintainer review. P1G.2 and later slices have
+not started.
 Undo U4 and Desktop Undo U5 are not started.
 Neutron's R4A topology stays frozen.
 The measurements below remain the P1A baseline and are not restated as the
@@ -96,8 +101,9 @@ P1F.6 moves Continuous Loop read-side modules into a directory and is
 merged (PR #584, `6d94862b58046a5126048fc8dea1ffd60e882fb9`). P1F.7
 moves Foundation modules outside the two Foundation cycles and is
 merged (PR #585, `aff1dd52cd66f437e5a20b5b08a658af83b0e9a2`). P1F.8 is
-the inception directory move in its own subsection. P1G and later
-slices are not part of that change.
+merged (PR #586, `d647c6ec25b21e758fa83ae04d6a31b75bc94ecb`). P1G.1
+is the inception viewmodel cycle break in its own subsection. P1G.2
+and later slices are not part of that change.
 
 ## 1. Baseline
 
@@ -1601,7 +1607,8 @@ counts. The largest moved file remains `foundation-blueprint.ts` at
 
 #### P1F.8 — inception files outside the viewmodel cycle
 
-On branch awaiting maintainer review. Do not merge. P1G is not started.
+Merged as PR #586 (`d647c6ec25b21e758fa83ae04d6a31b75bc94ecb`). P1G.1
+is the following subsection.
 
 Sixteen Inception modules moved from `packages/application/src/` into
 `packages/application/src/inception/` with their filenames unchanged:
@@ -1656,6 +1663,36 @@ counts. The largest moved file remains
 
 No new interfaces. Move a type or a pure function to a third file that both
 sides may import.
+
+#### P1G.1 — inception viewmodel cycle
+
+On branch awaiting maintainer review. Do not merge. P1G.2 is not started.
+
+`InceptionSummary` moved from `packages/application/src/inception.ts`
+into `packages/application/src/inception/inception-summary-types.ts`.
+The declaration is unchanged. `inception.ts` imports that type and
+re-exports it with `export type`, so `@intentloom/application` still
+exposes `InceptionSummary` through `export * from "./inception.js"`.
+`inception-viewmodel.ts` imports the type from the shared module and
+no longer imports `inception.ts`. The shared module imports neither
+cycle member and has no runtime dependency. `inception.ts` still
+imports the viewmodel builders. That edge is one-way.
+
+Before this slice, import-only cycles were five components with sizes
+3, 3, 3, 2, 2. The size-2 inception component was `inception.ts` and
+`inception-viewmodel.ts`. After this slice, import-only cycles are
+four components with sizes 3, 3, 3, 2. Counting `export … from`,
+cycles were six components with sizes 29, 4, 3, 3, 2, 2. They are now
+five components with sizes 29, 4, 3, 3, 2. The component that contains
+`index.ts` stays at 29 files and still contains `inception-flow.ts`.
+The Approved Apply cycle, both Foundation cycles, the extension update
+component, and the recorded Neutron mutation cycle are unchanged.
+`host-file-system.ts` still imports only `project-scan-exclusions.ts`.
+No package export-map key was added or removed.
+
+`inception.ts` and `inception-viewmodel.ts` stay at the application
+root. Session creation, answer recording, summaries, and the viewmodel
+builders keep their existing functions. P1G.2 and P1G.3 are not started.
 
 ### P1H — index groups that become leaves after P1C
 
