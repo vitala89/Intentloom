@@ -24,13 +24,13 @@ import {
 } from "@intentloom/validator";
 import { getFoundationBlueprintApproval } from "./foundation-blueprint-store.js";
 import { proposeFoundationBlueprints } from "./foundation-blueprint.js";
-import { getFoundationWorkshop } from "./foundation-workshop.js";
+import { getFoundationWorkshop } from "../foundation-workshop.js";
 import {
   diffScaffoldPlan,
   formatScaffoldPlanDryRun,
   prepareProjectScaffoldPlan,
-} from "./inception-scaffold-planner.js";
-import { validateWorkspaceScaffoldPlan } from "./inception-workspace-scaffold-validation.js";
+} from "../inception-scaffold-planner.js";
+import { validateWorkspaceScaffoldPlan } from "../inception-workspace-scaffold-validation.js";
 import {
   clearFoundationScaffoldPlans,
   getFoundationScaffoldPlan,

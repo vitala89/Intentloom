@@ -471,6 +471,86 @@ describe("application host filesystem extraction", () => {
       /from\s+["'](?:\.\.?\/)*index\.(?:js|ts)["']/,
     );
   });
+
+  it("keeps foundation filesystem port imports off the application root", () => {
+    const hostModule = resolve("packages/application/src/host-file-system.ts");
+    const portNames = new Set([
+      "FileSystem",
+      "nodeFileSystem",
+      "createMemoryFileSystem",
+    ]);
+    const sourceDir = "packages/application/src";
+    const foundationDir = join(sourceDir, "foundation");
+    const retained = [
+      "foundation-discovery.ts",
+      "foundation-flow.ts",
+      "foundation-scaffold-client-viewmodel.ts",
+      "foundation-scaffold-workspace-viewmodel.ts",
+      "foundation-viewmodel.ts",
+      "foundation-w8.ts",
+      "foundation-workshop.ts",
+    ];
+    const moved = [
+      "foundation-blueprint-client-viewmodel.ts",
+      "foundation-blueprint-store.ts",
+      "foundation-blueprint-viewmodel-renderers.ts",
+      "foundation-blueprint.ts",
+      "foundation-cli.ts",
+      "foundation-client-viewmodel.ts",
+      "foundation-discovery-client-viewmodel.ts",
+      "foundation-discovery-turn.ts",
+      "foundation-discovery-viewmodel-renderers.ts",
+      "foundation-fixtures.ts",
+      "foundation-readiness.ts",
+      "foundation-scaffold-apply-revalidation.ts",
+      "foundation-scaffold-apply-store.ts",
+      "foundation-scaffold-apply.ts",
+      "foundation-scaffold-cli.ts",
+      "foundation-scaffold-store.ts",
+      "foundation-scaffold-viewmodel-renderers.ts",
+      "foundation-scaffold.ts",
+      "foundation-viewmodel-renderers.ts",
+      "foundation-w2.ts",
+      "foundation-w3.ts",
+      "foundation-w4.ts",
+      "foundation-w6.ts",
+      "foundation-w7.ts",
+      "foundation-workshop-defaults.ts",
+      "foundation-workshop-store.ts",
+    ];
+    const flatNames = readdirSync(sourceDir).filter(
+      (name) => name.startsWith("foundation") && name.endsWith(".ts"),
+    );
+    const foundationNames = readdirSync(foundationDir).filter((name) =>
+      name.endsWith(".ts"),
+    );
+    expect(flatNames.toSorted()).toEqual(retained);
+    expect(foundationNames.toSorted()).toEqual(moved);
+    const files = [
+      ...flatNames.map((name) => join(sourceDir, name)),
+      ...foundationNames.map((name) => join(foundationDir, name)),
+    ];
+    const portSites: string[] = [];
+    for (const file of files) {
+      const name = file.slice(sourceDir.length + 1);
+      for (const binding of namedImportBindings(readFileSync(file, "utf8"))) {
+        const importedPort = binding.names.filter((imported) =>
+          portNames.has(imported),
+        );
+        if (importedPort.length === 0) continue;
+        portSites.push(
+          `${name}:${importedPort.join(",")}:${binding.specifier}`,
+        );
+      }
+    }
+
+    expect(portSites).toEqual([]);
+    const hostSource = readFileSync(hostModule, "utf8");
+    expect(hostSource).not.toMatch(/foundation-/);
+    expect(hostSource).not.toMatch(
+      /from\s+["'](?:\.\.?\/)*index\.(?:js|ts)["']/,
+    );
+  });
 });
 
 function namedImportBindings(

@@ -13,7 +13,7 @@ import {
   getFoundationWorkshopStoreEntry,
   registerFoundationWorkshop,
   updateFoundationWorkshopStoreEntry,
-} from "./foundation-workshop-store.js";
+} from "./foundation/foundation-workshop-store.js";
 import {
   buildFoundationConflictList,
   buildFoundationQuestionList,
@@ -27,12 +27,12 @@ import { identifyFoundationConflicts } from "./foundation-discovery.js";
 import {
   evaluateFoundationReadinessFindings,
   resolveFoundationReadinessStatus,
-} from "./foundation-readiness.js";
+} from "./foundation/foundation-readiness.js";
 import {
   DEFAULT_FOUNDATION_QUESTIONS,
   applyAnswerToWorkshopState,
   createDefaultFoundationWorkshopId,
-} from "./foundation-workshop-defaults.js";
+} from "./foundation/foundation-workshop-defaults.js";
 
 export interface CreateFoundationWorkshopParams {
   readonly root: string;

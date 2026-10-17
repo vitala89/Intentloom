@@ -108,11 +108,42 @@ is merged (PR #580, merge
 `14e86cd85292ba7e0fa4854824cdade14835d2e4`). **P1F.4** found the
 Engineering Assessment directory already in place, so no PR was opened.
 **P1F.5** is merged (PR #583, merge
-`e14a5b67bf342e06ae83a55010acf76327e8a0f3`). **P1F.6** moves the
-Continuous Loop read side into
-`packages/application/src/continuous-loop/` and is awaiting
-maintainer review. Do not merge. Do not start P1F.7, Undo U4, or
-Desktop Undo U5.
+`e14a5b67bf342e06ae83a55010acf76327e8a0f3`). **P1F.6** is merged
+(PR #584, merge `6d94862b58046a5126048fc8dea1ffd60e882fb9`). **P1F.7**
+moves Foundation modules that sit outside the workshop and
+scaffold-viewmodel cycles into
+`packages/application/src/foundation/` and is awaiting maintainer
+review. Do not merge. Do not start P1F.8, Undo U4, or Desktop Undo U5.
+
+### 2026-10-17, Packages architecture P1F.7 foundation directory
+
+- **Status:** **PACKAGES ARCHITECTURE P1F.7 FOUNDATION DIRECTORY MOVE
+  IMPLEMENTED ON BRANCH AWAITING MAINTAINER REVIEW.** Do not merge. Do
+  not start P1F.8, P1G, P1H, P1I, Undo U4, or Desktop Undo U5.
+- **Branch:** `refactor/application-foundation-directory-p1f7`
+- **Starting main:** `6d94862b58046a5126048fc8dea1ffd60e882fb9` (PR #584,
+  P1F.6 merged).
+- **Moved:** twenty-six Foundation modules into
+  `packages/application/src/foundation/`. Filenames are unchanged.
+  Scaffold apply, revalidation, fixtures, CLI adapters, and viewmodel
+  renderers moved with import paths only.
+- **Retained at the application root:** `foundation-discovery.ts`,
+  `foundation-viewmodel.ts`, `foundation-workshop.ts`,
+  `foundation-scaffold-client-viewmodel.ts`,
+  `foundation-scaffold-workspace-viewmodel.ts`, `foundation-w8.ts`,
+  and `foundation-flow.ts`. `foundation-w8.ts` stays because it only
+  re-exports the retained scaffold workspace viewmodel. The flow barrel
+  remains the cross-family
+  re-export. Public names still leave `@intentloom/application` through
+  `inception-flow.ts`.
+- **Graph:** import-only cycles stay five components. Re-export cycles
+  stay six. The `index.ts` component stays 29 files and still contains
+  `foundation-flow.ts`. Approved Apply, foundation, inception, extension
+  update, and Neutron cycles are unchanged. `host-file-system.ts` still
+  imports only `project-scan-exclusions.ts`.
+- **Not done:** P1F.8 and later slices, cycle elimination, Undo U4,
+  Desktop Undo U5.
+- **Next:** Maintainer review. Do not merge. Do not start P1F.8.
 
 ### 2026-10-17, Packages architecture P1F.6 continuous loop read side
 

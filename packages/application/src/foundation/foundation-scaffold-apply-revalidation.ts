@@ -5,11 +5,11 @@ import type {
   ProjectBlueprint,
 } from "@intentloom/protocol";
 import { INTENTLOOM_VERSION } from "@intentloom/core";
-import { satisfiesVersionRange } from "./engineering-quality/semver-range.js";
+import { satisfiesVersionRange } from "../engineering-quality/semver-range.js";
 import { getFoundationBlueprintApproval } from "./foundation-blueprint-store.js";
 import { proposeFoundationBlueprints } from "./foundation-blueprint.js";
-import { getFoundationWorkshop } from "./foundation-workshop.js";
-import { diffScaffoldPlan } from "./inception-scaffold-planner.js";
+import { getFoundationWorkshop } from "../foundation-workshop.js";
+import { diffScaffoldPlan } from "../inception-scaffold-planner.js";
 
 const MIN_SCAFFOLD_INTENTLOOM_VERSION = ">=1.0.0";
 

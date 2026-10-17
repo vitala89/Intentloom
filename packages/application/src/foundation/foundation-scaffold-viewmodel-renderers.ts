@@ -4,7 +4,7 @@ import type {
   FoundationScaffoldPrepareViewModel,
   FoundationScaffoldRollbackViewModel,
   FoundationScaffoldValidateViewModel,
-} from "./foundation-scaffold-client-viewmodel.js";
+} from "../foundation-scaffold-client-viewmodel.js";
 
 export function renderFoundationScaffoldPrepareText(
   vm: FoundationScaffoldPrepareViewModel,

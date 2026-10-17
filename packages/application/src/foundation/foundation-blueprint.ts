@@ -21,18 +21,18 @@ import {
 import {
   compareProjectBlueprints,
   computeBlueprintDigest,
-} from "./inception-blueprint.js";
+} from "../inception-blueprint.js";
 import {
   approveBlueprint,
   revokeBlueprintApproval,
-} from "./inception-approval.js";
+} from "../inception-approval.js";
 import {
   clearFoundationBlueprintApprovals,
   deleteFoundationBlueprintApproval,
   getFoundationBlueprintApproval,
   setFoundationBlueprintApproval,
 } from "./foundation-blueprint-store.js";
-import { getFoundationWorkshop } from "./foundation-workshop.js";
+import { getFoundationWorkshop } from "../foundation-workshop.js";
 
 const TIERS: readonly FoundationBlueprintTier[] = [
   "minimal",
