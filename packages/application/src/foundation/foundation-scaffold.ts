@@ -29,8 +29,8 @@ import {
   diffScaffoldPlan,
   formatScaffoldPlanDryRun,
   prepareProjectScaffoldPlan,
-} from "../inception-scaffold-planner.js";
-import { validateWorkspaceScaffoldPlan } from "../inception-workspace-scaffold-validation.js";
+} from "../inception/inception-scaffold-planner.js";
+import { validateWorkspaceScaffoldPlan } from "../inception/inception-workspace-scaffold-validation.js";
 import {
   clearFoundationScaffoldPlans,
   getFoundationScaffoldPlan,

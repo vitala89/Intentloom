@@ -551,6 +551,72 @@ describe("application host filesystem extraction", () => {
       /from\s+["'](?:\.\.?\/)*index\.(?:js|ts)["']/,
     );
   });
+
+  it("keeps inception filesystem port imports off the application root", () => {
+    const hostModule = resolve("packages/application/src/host-file-system.ts");
+    const portNames = new Set([
+      "FileSystem",
+      "nodeFileSystem",
+      "createMemoryFileSystem",
+    ]);
+    const sourceDir = "packages/application/src";
+    const inceptionDir = join(sourceDir, "inception");
+    const retained = [
+      "inception-flow.ts",
+      "inception-viewmodel.ts",
+      "inception.ts",
+    ];
+    const moved = [
+      "inception-actions.ts",
+      "inception-approval.ts",
+      "inception-blueprint.ts",
+      "inception-cli.ts",
+      "inception-client-viewmodel.ts",
+      "inception-discovery.ts",
+      "inception-fixtures.ts",
+      "inception-package-name.ts",
+      "inception-scaffold-apply.ts",
+      "inception-scaffold-planner.ts",
+      "inception-session-store.ts",
+      "inception-templates.ts",
+      "inception-viewmodel-renderers.ts",
+      "inception-w1.ts",
+      "inception-workspace-scaffold-files.ts",
+      "inception-workspace-scaffold-validation.ts",
+    ];
+    const flatNames = readdirSync(sourceDir).filter(
+      (name) => name.startsWith("inception") && name.endsWith(".ts"),
+    );
+    const inceptionNames = readdirSync(inceptionDir).filter((name) =>
+      name.endsWith(".ts"),
+    );
+    expect(flatNames.toSorted()).toEqual(retained);
+    expect(inceptionNames.toSorted()).toEqual(moved);
+    const files = [
+      ...flatNames.map((name) => join(sourceDir, name)),
+      ...inceptionNames.map((name) => join(inceptionDir, name)),
+    ];
+    const portSites: string[] = [];
+    for (const file of files) {
+      const name = file.slice(sourceDir.length + 1);
+      for (const binding of namedImportBindings(readFileSync(file, "utf8"))) {
+        const importedPort = binding.names.filter((imported) =>
+          portNames.has(imported),
+        );
+        if (importedPort.length === 0) continue;
+        portSites.push(
+          `${name}:${importedPort.join(",")}:${binding.specifier}`,
+        );
+      }
+    }
+
+    expect(portSites).toEqual([]);
+    const hostSource = readFileSync(hostModule, "utf8");
+    expect(hostSource).not.toMatch(/inception-/);
+    expect(hostSource).not.toMatch(
+      /from\s+["'](?:\.\.?\/)*index\.(?:js|ts)["']/,
+    );
+  });
 });
 
 function namedImportBindings(

@@ -9,7 +9,7 @@ import { satisfiesVersionRange } from "../engineering-quality/semver-range.js";
 import { getFoundationBlueprintApproval } from "./foundation-blueprint-store.js";
 import { proposeFoundationBlueprints } from "./foundation-blueprint.js";
 import { getFoundationWorkshop } from "../foundation-workshop.js";
-import { diffScaffoldPlan } from "../inception-scaffold-planner.js";
+import { diffScaffoldPlan } from "../inception/inception-scaffold-planner.js";
 
 const MIN_SCAFFOLD_INTENTLOOM_VERSION = ">=1.0.0";
 

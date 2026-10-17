@@ -9,9 +9,9 @@ import {
   validateBlueprintApproval,
 } from "@intentloom/validator";
 import { createInceptionSession, recordInceptionAnswer } from "./inception.js";
-import { proposeProjectBlueprints } from "./inception-blueprint.js";
-import { prepareProjectScaffoldPlan } from "./inception-scaffold-planner.js";
-import { applyProjectScaffold } from "./inception-scaffold-apply.js";
+import { proposeProjectBlueprints } from "./inception/inception-blueprint.js";
+import { prepareProjectScaffoldPlan } from "./inception/inception-scaffold-planner.js";
+import { applyProjectScaffold } from "./inception/inception-scaffold-apply.js";
 
 export type InceptionFlowAction =
   | { readonly type: "record-answer"; readonly answer: InceptionAnswer }
@@ -223,5 +223,5 @@ export function generateFlowReviewCard(
   };
 }
 
-export * from "./inception-w1.js";
+export * from "./inception/inception-w1.js";
 export * from "./foundation-flow.js";
