@@ -8,8 +8,8 @@ import {
   listInceptionQuestions,
   recordInceptionSessionAnswer,
   summarizeInceptionSessionViewmodel,
-} from "./inception.js";
-import type { QualityCliResult } from "./engineering-quality/cli-quality-standards.js";
+} from "../inception.js";
+import type { QualityCliResult } from "../engineering-quality/cli-quality-standards.js";
 
 export type InceptionCliCommand =
   | "start"

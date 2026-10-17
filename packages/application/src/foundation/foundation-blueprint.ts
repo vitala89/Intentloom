@@ -21,11 +21,11 @@ import {
 import {
   compareProjectBlueprints,
   computeBlueprintDigest,
-} from "../inception-blueprint.js";
+} from "../inception/inception-blueprint.js";
 import {
   approveBlueprint,
   revokeBlueprintApproval,
-} from "../inception-approval.js";
+} from "../inception/inception-approval.js";
 import {
   clearFoundationBlueprintApprovals,
   deleteFoundationBlueprintApproval,

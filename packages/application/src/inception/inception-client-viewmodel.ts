@@ -7,7 +7,7 @@ import {
   identifyInceptionSessionConflicts,
   listInceptionQuestions,
   summarizeInceptionSessionViewmodel,
-} from "./inception.js";
+} from "../inception.js";
 
 export type InceptionClientSurfaceState =
   "empty" | "loading" | "ready" | "error" | "resume" | "deleted";

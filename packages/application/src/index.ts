@@ -6920,14 +6920,14 @@ export async function syncLocalWorkspaceState(
   };
 }
 export * from "./inception.js";
-export * from "./inception-discovery.js";
-export * from "./inception-blueprint.js";
-export * from "./inception-approval.js";
-export * from "./inception-scaffold-planner.js";
-export * from "./inception-scaffold-apply.js";
-export * from "./inception-actions.js";
+export * from "./inception/inception-discovery.js";
+export * from "./inception/inception-blueprint.js";
+export * from "./inception/inception-approval.js";
+export * from "./inception/inception-scaffold-planner.js";
+export * from "./inception/inception-scaffold-apply.js";
+export * from "./inception/inception-actions.js";
 export * from "./inception-flow.js";
-export * from "./inception-templates.js";
+export * from "./inception/inception-templates.js";
 export * from "./harness/harness.js";
 export * from "./extension-inspection/inspect-extension-manifest.js";
 export * from "./propose-and-apply-extension-adoption.js";

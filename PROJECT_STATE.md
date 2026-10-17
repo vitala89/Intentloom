@@ -923,9 +923,14 @@ application root. P1F.6 moves `continuous-loop-compare.ts` and
 the workspace CLI, and the W12 barrel stay at the application root.
 P1F.7 moves twenty-six Foundation modules that sit outside the
 workshop and scaffold-viewmodel cycles into
-`packages/application/src/foundation/` and is awaiting maintainer
-review. The two Foundation cycles, `foundation-w8.ts`, and
-`foundation-flow.ts` stay at the application root. P1F.8 and later slices have not started. Undo U4 and
+`packages/application/src/foundation/` and is merged as PR #585
+(`aff1dd52cd66f437e5a20b5b08a658af83b0e9a2`). The two Foundation
+cycles, `foundation-w8.ts`, and `foundation-flow.ts` stay at the
+application root. P1F.8 moves sixteen Inception modules that sit
+outside the viewmodel cycle into `packages/application/src/inception/`
+and is awaiting maintainer review. `inception.ts`,
+`inception-viewmodel.ts`, and `inception-flow.ts` stay at the
+application root. P1G and later slices have not started. Undo U4 and
 Desktop Undo U5 are not started. Other post-P4 candidates remain in
 `POST_W12_NEXT_INCREMENT_PLAN.md`.
 

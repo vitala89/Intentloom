@@ -109,11 +109,45 @@ is merged (PR #580, merge
 Engineering Assessment directory already in place, so no PR was opened.
 **P1F.5** is merged (PR #583, merge
 `e14a5b67bf342e06ae83a55010acf76327e8a0f3`). **P1F.6** is merged
-(PR #584, merge `6d94862b58046a5126048fc8dea1ffd60e882fb9`). **P1F.7**
-moves Foundation modules that sit outside the workshop and
-scaffold-viewmodel cycles into
-`packages/application/src/foundation/` and is awaiting maintainer
-review. Do not merge. Do not start P1F.8, Undo U4, or Desktop Undo U5.
+(PR #584, merge `6d94862b58046a5126048fc8dea1ffd60e882fb9`). **P1F.7** is merged (PR #585, merge
+`aff1dd52cd66f437e5a20b5b08a658af83b0e9a2`). **P1F.8** moves Inception
+modules that sit outside the viewmodel cycle into
+`packages/application/src/inception/` and is awaiting maintainer
+review. Do not merge. Do not start P1G, Undo U4, or Desktop Undo U5.
+
+### 2026-10-17, Packages architecture P1F.8 inception directory
+
+- **Status:** **PACKAGES ARCHITECTURE P1F.8 INCEPTION DIRECTORY MOVE
+  IMPLEMENTED ON BRANCH AWAITING MAINTAINER REVIEW.** Do not merge. Do
+  not start P1G, P1H, P1I, P1J, Undo U4, or Desktop Undo U5.
+- **Branch:** `refactor/application-inception-directory-p1f8`
+- **Starting main:** `aff1dd52cd66f437e5a20b5b08a658af83b0e9a2` (PR #585,
+  P1F.7 merged).
+- **Moved:** sixteen Inception modules into
+  `packages/application/src/inception/`. Filenames are unchanged.
+  Blueprint, approval, discovery, session store, scaffold planning,
+  scaffold apply, workspace templates, validation, actions, templates,
+  fixtures, CLI, client viewmodel, renderers, and the W1 barrel moved
+  with import paths only.
+- **Retained at the application root:** `inception.ts`,
+  `inception-viewmodel.ts`, and `inception-flow.ts`. The viewmodel pair
+  remains the two-file import cycle. The flow barrel stays because it
+  re-exports `foundation-flow.ts` and remains in the 29-file re-export
+  component that contains `index.ts`.
+- **Graph:** import-only cycles stay five components. Re-export cycles
+  stay six. The component that contains `index.ts` stays at 29 files
+  and still contains `inception-flow.ts`. The inception pair stays
+  `inception.ts` and `inception-viewmodel.ts`. Foundation cycles, the
+  extension update component, and the Neutron mutation component are
+  unchanged. `host-file-system.ts` still imports only
+  `project-scan-exclusions.ts`.
+- **Public API:** `@intentloom/application` still exports the same
+  Inception names. `package.json` exports are unchanged. Scaffold apply
+  still uses the injected file writer and the existing rollback
+  records.
+- **Not done:** P1G and later slices, cycle elimination, Undo U4,
+  Desktop Undo U5, Neutron, and Desktop feature work.
+- **Next:** Maintainer review. Do not merge. Do not start P1G.
 
 ### 2026-10-17, Packages architecture P1F.7 foundation directory
 

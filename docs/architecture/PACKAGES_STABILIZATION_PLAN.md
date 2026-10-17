@@ -51,8 +51,11 @@ Continuous Loop read side into
 `packages/application/src/continuous-loop/` and is merged (PR #584,
 `6d94862b58046a5126048fc8dea1ffd60e882fb9`). **P1F.7** moves Foundation
 modules that sit outside the two Foundation cycles into
-`packages/application/src/foundation/` and is on branch awaiting
-maintainer review. P1F.8 and later slices have not started.
+`packages/application/src/foundation/` and is merged (PR #585,
+`aff1dd52cd66f437e5a20b5b08a658af83b0e9a2`). **P1F.8** moves Inception
+modules that sit outside the viewmodel cycle into
+`packages/application/src/inception/` and is on branch awaiting
+maintainer review. P1G and later slices have not started.
 Undo U4 and Desktop Undo U5 are not started.
 Neutron's R4A topology stays frozen.
 The measurements below remain the P1A baseline and are not restated as the
@@ -90,8 +93,10 @@ Engineering Assessment directory already in place and did not open a
 PR. P1F.5 moves Bounded Execution read-side modules into a directory
 and is merged (PR #583, `e14a5b67bf342e06ae83a55010acf76327e8a0f3`).
 P1F.6 moves Continuous Loop read-side modules into a directory and is
-merged (PR #584, `6d94862b58046a5126048fc8dea1ffd60e882fb9`). P1F.7 is
-the foundation directory move in its own subsection. P1F.8 and later
+merged (PR #584, `6d94862b58046a5126048fc8dea1ffd60e882fb9`). P1F.7
+moves Foundation modules outside the two Foundation cycles and is
+merged (PR #585, `aff1dd52cd66f437e5a20b5b08a658af83b0e9a2`). P1F.8 is
+the inception directory move in its own subsection. P1G and later
 slices are not part of that change.
 
 ## 1. Baseline
@@ -1537,7 +1542,8 @@ counts: `continuous-loop-compare.ts` 52/55 and
 
 #### P1F.7 — foundation files outside the cycles
 
-On branch awaiting maintainer review. Do not merge. P1F.8 is not started.
+Merged as PR #585 (`aff1dd52cd66f437e5a20b5b08a658af83b0e9a2`). P1F.8
+is the following subsection.
 
 Twenty-six Foundation modules moved from `packages/application/src/`
 into `packages/application/src/foundation/` with their filenames
@@ -1592,6 +1598,54 @@ unchanged.
 Moved production files stayed at their previous effective/physical
 counts. The largest moved file remains `foundation-blueprint.ts` at
 292/314. Retained `foundation-workshop.ts` stays at 245/266.
+
+#### P1F.8 — inception files outside the viewmodel cycle
+
+On branch awaiting maintainer review. Do not merge. P1G is not started.
+
+Sixteen Inception modules moved from `packages/application/src/` into
+`packages/application/src/inception/` with their filenames unchanged:
+`inception-actions.ts`, `inception-approval.ts`, `inception-blueprint.ts`,
+`inception-cli.ts`, `inception-client-viewmodel.ts`,
+`inception-discovery.ts`, `inception-fixtures.ts`,
+`inception-package-name.ts`, `inception-scaffold-apply.ts`,
+`inception-scaffold-planner.ts`, `inception-session-store.ts`,
+`inception-templates.ts`, `inception-viewmodel-renderers.ts`,
+`inception-w1.ts`, `inception-workspace-scaffold-files.ts`, and
+`inception-workspace-scaffold-validation.ts`. Public names still leave
+the application root. `index.ts` re-exports `inception.ts` and
+`inception-flow.ts` from the application root, and re-exports the moved
+discovery, blueprint, approval, scaffold planner, scaffold apply,
+actions, and templates modules from `inception/`.
+`inception-flow.ts` re-exports `inception/inception-w1.ts`.
+
+Retained at `packages/application/src/`: `inception.ts` and
+`inception-viewmodel.ts` (the viewmodel import cycle), and
+`inception-flow.ts`. The flow barrel re-exports `foundation-flow.ts`,
+so it stays at the root with the 29-file re-export component that
+contains `index.ts`. Scaffold apply still writes through the caller
+supplied file writer and rolls partial writes back from the same backup
+records. The planner, workspace file templates, and workspace
+validation keep their existing functions. No Inception module imports
+`FileSystem`, `nodeFileSystem`, or `createMemoryFileSystem`.
+`inception-fixtures.ts` still reads its catalog from `process.cwd()`.
+
+Import-only cycles stay the five components in section 5. Counting
+`export … from`, there are still six components. The component that
+contains `index.ts` stays at 29 files and still contains
+`inception-flow.ts`. The moved files were already outside every
+component. No file joined or left. Path changes are not cycle
+elimination. `host-file-system.ts` still imports only
+`project-scan-exclusions.ts`. The Approved Apply cycle, the foundation
+workshop and scaffold-viewmodel cycles, the inception pair, the
+extension update cycle, and the recorded Neutron mutation cycle are
+unchanged.
+
+Moved production files stayed at their previous effective/physical
+counts. The largest moved file remains
+`inception-workspace-scaffold-files.ts` at 269/276. Retained
+`inception.ts` stays at 279/309 and `inception-flow.ts` stays at
+201/227.
 
 ### P1G — break the small cycles by import direction
 

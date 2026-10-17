@@ -14,7 +14,7 @@ import {
   getInceptionSessionStoreEntry,
   registerInceptionSession,
   updateInceptionSessionStoreEntry,
-} from "./inception-session-store.js";
+} from "./inception/inception-session-store.js";
 import {
   buildInceptionConflictList,
   buildInceptionQuestionList,
@@ -23,7 +23,7 @@ import {
   buildInceptionSessionViewmodel,
   buildVersionedInceptionSummary,
 } from "./inception-viewmodel.js";
-import { identifyInceptionConflicts } from "./inception-discovery.js";
+import { identifyInceptionConflicts } from "./inception/inception-discovery.js";
 
 export interface CreateInceptionSessionParams {
   readonly root: string;
