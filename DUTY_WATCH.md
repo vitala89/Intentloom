@@ -104,11 +104,35 @@ filesystem-port imports through the application root, so no PR was opened.
 `6742cd3be1c61d79301b8a13cb3dec13ef044064`). P1E is complete. **P1F.1**
 is merged (PR #580, merge
 `2451dc01faac9c12ece874c13bf3fe1918e86f9f`). **P1F.2** is merged (PR #581, merge
-`e44f24fe282a186d662ee8b71cfa16cecd37bc05`). **P1F.3** moves
-Extension Inspection modules into
-`packages/application/src/extension-inspection/` and is awaiting
-maintainer review. Do not merge. Do not start P1F.4, Undo U4, or
+`e44f24fe282a186d662ee8b71cfa16cecd37bc05`). **P1F.3** is merged (PR #582, merge
+`14e86cd85292ba7e0fa4854824cdade14835d2e4`). **P1F.4** found the
+Engineering Assessment directory already in place, so no PR was opened.
+**P1F.5** moves the Bounded Execution read side into
+`packages/application/src/bounded-execution/` and is awaiting
+maintainer review. Do not merge. Do not start P1F.6, Undo U4, or
 Desktop Undo U5.
+
+### 2026-10-16, Packages architecture P1F.5 bounded execution read side
+
+- **Status:** **PACKAGES ARCHITECTURE P1F.5 BOUNDED EXECUTION READ-SIDE
+  DIRECTORY MOVE IMPLEMENTED ON BRANCH AWAITING MAINTAINER REVIEW.** Do
+  not merge. Do not start P1F.6, Undo U4, or Desktop Undo U5.
+- **Branch:** `refactor/application-bounded-execution-read-directory-p1f5`
+- **Starting main:** `14e86cd85292ba7e0fa4854824cdade14835d2e4` (PR #582).
+- **Moved:** `bounded-execution-verify.ts` and
+  `bounded-execution-workspace-viewmodel.ts` into
+  `packages/application/src/bounded-execution/`.
+- **Retained at the application root:** capability, task, apply, fixtures,
+  workspace, workspace CLI, and the W11 barrel.
+- **P1F.4:** Engineering Assessment directory already existed. No PR.
+- **Graph:** import-only cycles stay five components. Re-export cycles
+  stay six. The `index.ts` component stays 29 files. Approved Apply,
+  foundation, inception, extension update, and Neutron cycles are
+  unchanged. `host-file-system.ts` still imports only
+  `project-scan-exclusions.ts`.
+- **Not done:** P1F.6 and later slices, other family directory moves,
+  Undo U4, Desktop Undo U5.
+- **Next:** Maintainer review. Do not merge. Do not start P1F.6.
 
 ### 2026-10-15, Packages architecture P1F.3 extension inspection directory
 

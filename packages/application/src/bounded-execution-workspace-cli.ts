@@ -8,7 +8,7 @@ import {
 import {
   buildBoundedExecutionWorkspaceViewModel,
   renderBoundedExecutionWorkspaceText,
-} from "./bounded-execution-workspace-viewmodel.js";
+} from "./bounded-execution/bounded-execution-workspace-viewmodel.js";
 
 export type BoundedExecutionWorkspaceCliCommand =
   "prepare" | "execute" | "operations";

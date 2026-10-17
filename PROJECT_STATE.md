@@ -904,12 +904,19 @@ P1F.2 moves the sixteen Harness modules into
 (`e44f24fe282a186d662ee8b71cfa16cecd37bc05`).
 `external-skill-import.ts` and `synchronizeGeneratedFiles` stay at the
 application root. P1F.3 moves five Extension Inspection modules into
-`packages/application/src/extension-inspection/` and is awaiting
-maintainer review. `extension-lock-path.ts` and the extension adoption,
-update, and removal modules stay at the application root. The re-export
-component that contains `index.ts` stays at 29 files. The four-file
-extension update component is unchanged. P1F.4 and later slices have
-not started. Undo U4 and Desktop Undo U5 are not started. Other post-P4 candidates remain in
+`packages/application/src/extension-inspection/` and is merged as
+PR #582 (`14e86cd85292ba7e0fa4854824cdade14835d2e4`).
+`extension-lock-path.ts` and the extension adoption, update, and
+removal modules stay at the application root. The re-export component
+that contains `index.ts` stays at 29 files. The four-file extension
+update component is unchanged. P1F.4 found the Engineering Assessment
+directory already in place, so no PR was opened. P1F.5 moves
+`bounded-execution-verify.ts` and
+`bounded-execution-workspace-viewmodel.ts` into
+`packages/application/src/bounded-execution/` and is awaiting
+maintainer review. Capability, task, apply, fixtures, workspace, the
+workspace CLI, and the W11 barrel stay at the application root. P1F.6
+and later slices have not started. Undo U4 and Desktop Undo U5 are not started. Other post-P4 candidates remain in
 `POST_W12_NEXT_INCREMENT_PLAN.md`.
 
 The Desktop discovery/error and Diff/Timeline slices remain recorded in

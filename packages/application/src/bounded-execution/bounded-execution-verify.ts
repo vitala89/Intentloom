@@ -4,7 +4,7 @@ import type {
   BoundedExecutionDiffReview,
 } from "@intentloom/protocol";
 import type { FeatureIntentArchitectureImpact } from "@intentloom/protocol";
-import { isPathInsideApprovedRoot } from "./bounded-execution-capability.js";
+import { isPathInsideApprovedRoot } from "../bounded-execution-capability.js";
 
 export function runBoundedExecutionVerification(input: {
   readonly approvedRoot: string;
