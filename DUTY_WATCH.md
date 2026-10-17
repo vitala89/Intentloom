@@ -107,10 +107,37 @@ is merged (PR #580, merge
 `e44f24fe282a186d662ee8b71cfa16cecd37bc05`). **P1F.3** is merged (PR #582, merge
 `14e86cd85292ba7e0fa4854824cdade14835d2e4`). **P1F.4** found the
 Engineering Assessment directory already in place, so no PR was opened.
-**P1F.5** moves the Bounded Execution read side into
-`packages/application/src/bounded-execution/` and is awaiting
-maintainer review. Do not merge. Do not start P1F.6, Undo U4, or
+**P1F.5** is merged (PR #583, merge
+`e14a5b67bf342e06ae83a55010acf76327e8a0f3`). **P1F.6** moves the
+Continuous Loop read side into
+`packages/application/src/continuous-loop/` and is awaiting
+maintainer review. Do not merge. Do not start P1F.7, Undo U4, or
 Desktop Undo U5.
+
+### 2026-10-17, Packages architecture P1F.6 continuous loop read side
+
+- **Status:** **PACKAGES ARCHITECTURE P1F.6 CONTINUOUS LOOP READ-SIDE
+  DIRECTORY MOVE IMPLEMENTED ON BRANCH AWAITING MAINTAINER REVIEW.** Do
+  not merge. Do not start P1F.7, Undo U4, or Desktop Undo U5.
+- **Branch:** `refactor/application-continuous-loop-read-directory-p1f6`
+- **Starting main:** `e14a5b67bf342e06ae83a55010acf76327e8a0f3` (PR #583,
+  P1F.5 merged).
+- **Moved:** `continuous-loop-compare.ts` and
+  `continuous-loop-workspace-viewmodel.ts` into
+  `packages/application/src/continuous-loop/`.
+- **Retained at the application root:** apply, fixtures, workspace,
+  workspace CLI, and the W12 barrel. `draftLoopMemoryProposal` stays
+  inside the apply module.
+- **P1F.4:** Engineering Assessment directory already existed. No PR.
+- **P1F.5:** Merged as PR #583.
+- **Graph:** import-only cycles stay five components. Re-export cycles
+  stay six. The `index.ts` component stays 29 files. Approved Apply,
+  foundation, inception, extension update, and Neutron cycles are
+  unchanged. `host-file-system.ts` still imports only
+  `project-scan-exclusions.ts`.
+- **Not done:** P1F.7 and later slices, other family directory moves,
+  Undo U4, Desktop Undo U5.
+- **Next:** Maintainer review. Do not merge. Do not start P1F.7.
 
 ### 2026-10-16, Packages architecture P1F.5 bounded execution read side
 

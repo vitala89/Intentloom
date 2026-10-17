@@ -913,10 +913,15 @@ update component is unchanged. P1F.4 found the Engineering Assessment
 directory already in place, so no PR was opened. P1F.5 moves
 `bounded-execution-verify.ts` and
 `bounded-execution-workspace-viewmodel.ts` into
-`packages/application/src/bounded-execution/` and is awaiting
-maintainer review. Capability, task, apply, fixtures, workspace, the
-workspace CLI, and the W11 barrel stay at the application root. P1F.6
-and later slices have not started. Undo U4 and Desktop Undo U5 are not started. Other post-P4 candidates remain in
+`packages/application/src/bounded-execution/` and is merged as PR #583
+(`e14a5b67bf342e06ae83a55010acf76327e8a0f3`). Capability, task, apply,
+fixtures, workspace, the workspace CLI, and the W11 barrel stay at the
+application root. P1F.6 moves `continuous-loop-compare.ts` and
+`continuous-loop-workspace-viewmodel.ts` into
+`packages/application/src/continuous-loop/` and is awaiting maintainer
+review. Apply, fixtures, workspace, the workspace CLI, and the W12
+barrel stay at the application root. P1F.7 and later slices have not
+started. Undo U4 and Desktop Undo U5 are not started. Other post-P4 candidates remain in
 `POST_W12_NEXT_INCREMENT_PLAN.md`.
 
 The Desktop discovery/error and Diff/Timeline slices remain recorded in

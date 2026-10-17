@@ -421,12 +421,35 @@ describe("application host filesystem extraction", () => {
       "createMemoryFileSystem",
     ]);
     const sourceDir = "packages/application/src";
+    const loopDir = join(sourceDir, "continuous-loop");
+    const flatNames = readdirSync(sourceDir).filter(
+      (name) => name.startsWith("continuous-loop") && name.endsWith(".ts"),
+    );
+    const loopNames = readdirSync(loopDir).filter((name) =>
+      name.endsWith(".ts"),
+    );
+    expect(loopNames).toEqual(
+      expect.arrayContaining([
+        "continuous-loop-compare.ts",
+        "continuous-loop-workspace-viewmodel.ts",
+      ]),
+    );
+    expect(flatNames).toEqual(
+      expect.arrayContaining([
+        "continuous-loop-apply.ts",
+        "continuous-loop-fixtures.ts",
+        "continuous-loop-w12.ts",
+        "continuous-loop-workspace-cli.ts",
+        "continuous-loop-workspace.ts",
+      ]),
+    );
+    const files = [
+      ...flatNames.map((name) => join(sourceDir, name)),
+      ...loopNames.map((name) => join(loopDir, name)),
+    ];
     const offHost: string[] = [];
-    for (const name of readdirSync(sourceDir)) {
-      if (!name.startsWith("continuous-loop") || !name.endsWith(".ts")) {
-        continue;
-      }
-      const file = join(sourceDir, name);
+    for (const file of files) {
+      const name = file.slice(sourceDir.length + 1);
       for (const binding of namedImportBindings(readFileSync(file, "utf8"))) {
         const importedPort = binding.names.filter((imported) =>
           portNames.has(imported),

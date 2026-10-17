@@ -17,7 +17,7 @@ import {
   applyContinuousLoopMemory,
   draftLoopMemoryProposal,
 } from "./continuous-loop-apply.js";
-import { compareLoopSnapshots } from "./continuous-loop-compare.js";
+import { compareLoopSnapshots } from "./continuous-loop/continuous-loop-compare.js";
 
 export interface PrepareContinuousLoopWorkspaceOptions {
   readonly root: string;
