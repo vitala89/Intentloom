@@ -12,7 +12,7 @@ import {
 import {
   buildContinuousLoopWorkspaceViewModel,
   renderContinuousLoopWorkspaceText,
-} from "./continuous-loop-workspace-viewmodel.js";
+} from "./continuous-loop/continuous-loop-workspace-viewmodel.js";
 
 export type ContinuousLoopWorkspaceCliCommand =
   "prepare" | "execute" | "operations";

@@ -45,8 +45,11 @@ moves Extension Inspection modules into
 `14e86cd85292ba7e0fa4854824cdade14835d2e4`). **P1F.4** found the
 Engineering Assessment directory already in place, so no PR was opened.
 **P1F.5** moves the Bounded Execution read side into
-`packages/application/src/bounded-execution/` and is on branch awaiting
-maintainer review. P1F.6 and later slices have not started.
+`packages/application/src/bounded-execution/` and is merged (PR #583,
+`e14a5b67bf342e06ae83a55010acf76327e8a0f3`). **P1F.6** moves the
+Continuous Loop read side into
+`packages/application/src/continuous-loop/` and is on branch awaiting
+maintainer review. P1F.7 and later slices have not started.
 Undo U4 and Desktop Undo U5 are not started.
 Neutron's R4A topology stays frozen.
 The measurements below remain the P1A baseline and are not restated as the
@@ -81,8 +84,10 @@ Harness modules into a directory and is merged (PR #581,
 Inspection modules into a directory and is merged (PR #582,
 `14e86cd85292ba7e0fa4854824cdade14835d2e4`). P1F.4 found the
 Engineering Assessment directory already in place and did not open a
-PR. P1F.5 is the bounded-execution read-side directory move in its own
-subsection. P1F.6 and later slices are not part of that change.
+PR. P1F.5 moves Bounded Execution read-side modules into a directory
+and is merged (PR #583, `e14a5b67bf342e06ae83a55010acf76327e8a0f3`).
+P1F.6 is the continuous-loop read-side directory move in its own
+subsection. P1F.7 and later slices are not part of that change.
 
 ## 1. Baseline
 
@@ -1445,7 +1450,8 @@ not move source.
 
 #### P1F.5 — bounded execution read side
 
-On branch awaiting maintainer review. Do not merge. P1F.6 is not started.
+Merged as PR #583 (`e14a5b67bf342e06ae83a55010acf76327e8a0f3`). P1F.6
+is the following subsection.
 
 Two read-side modules moved from `packages/application/src/` into
 `packages/application/src/bounded-execution/` with their filenames
@@ -1483,6 +1489,45 @@ Neutron mutation cycle are unchanged.
 Moved production files stayed at their previous effective/physical
 counts: `bounded-execution-verify.ts` 56/57 and
 `bounded-execution-workspace-viewmodel.ts` 97/101.
+
+#### P1F.6 — continuous loop read side
+
+On branch awaiting maintainer review. Do not merge. P1F.7 is not started.
+
+Two read-side modules moved from `packages/application/src/` into
+`packages/application/src/continuous-loop/` with their filenames
+unchanged: `continuous-loop-compare.ts` and
+`continuous-loop-workspace-viewmodel.ts`. Comparison is a pure snapshot
+transformation. It does not read the filesystem, execute a task, approve
+Apply, or write memory. The viewmodel only copies an existing workspace
+overview into a client surface and renders text. Public names still leave
+the application root. `foundation-flow.ts` re-exports
+`continuous-loop-w12.ts`, and that barrel re-exports the moved files.
+
+Retained at `packages/application/src/`: `continuous-loop-apply.ts`,
+`continuous-loop-fixtures.ts`, `continuous-loop-workspace.ts`,
+`continuous-loop-workspace-cli.ts`, and `continuous-loop-w12.ts`. Apply
+writes persistent memory after the memory approval token. Workspace
+preparation calls that apply path and sets the loop gate. The workspace
+CLI can request execute. Fixtures read the catalog and build a memory
+filesystem that includes apply payloads, so they are not read-side. The
+W12 barrel re-exports both sides, so it stays at the root.
+`draftLoopMemoryProposal` is a pure helper inside the apply module and
+stays there.
+
+Import-only cycles stay the five components in section 5. Continuous
+Loop is not a member of them. Counting `export … from`, there are still
+six components. The component that contains `index.ts` stays at 29
+files. The moved files were already outside that component. No file
+joined or left. Path changes are not cycle elimination.
+`host-file-system.ts` still imports only `project-scan-exclusions.ts`.
+The Approved Apply cycle, the foundation and inception pairs, the
+extension update cycle, and the recorded Neutron mutation cycle are
+unchanged.
+
+Moved production files stayed at their previous effective/physical
+counts: `continuous-loop-compare.ts` 52/55 and
+`continuous-loop-workspace-viewmodel.ts` 75/79.
 
 ### P1G — break the small cycles by import direction
 
