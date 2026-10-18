@@ -116,15 +116,58 @@ modules that sit outside the viewmodel cycle into
 `d647c6ec25b21e758fa83ae04d6a31b75bc94ecb`). **P1G.1** moves
 `InceptionSummary` into
 `packages/application/src/inception/inception-summary-types.ts` and is
-awaiting maintainer review. Do not merge. Do not start P1G.2, Undo U4,
-or Desktop Undo U5.
+merged (PR #587, merge
+`a6234a4d20c208a34be301b468f2d3774640b1a9`). **P1G.2** moves
+`FoundationScaffoldFileRow` into
+`packages/application/src/foundation/foundation-scaffold-file-row-types.ts`
+and is awaiting maintainer review. Do not merge. Do not start P1G.3,
+Undo U4, or Desktop Undo U5.
+
+### 2026-10-18, Packages architecture P1G.2 foundation scaffold viewmodel cycle
+
+- **Status:** **PACKAGES ARCHITECTURE P1G.2 FOUNDATION SCAFFOLD
+  VIEWMODEL CYCLE BREAK IMPLEMENTED ON BRANCH AWAITING MAINTAINER
+  REVIEW.** Do not merge. Do not start P1G.3, P1H, P1I, P1J, Undo U4,
+  or Desktop Undo U5.
+- **Branch:** `refactor/application-foundation-scaffold-cycle-p1g2`
+- **Starting main:** `a6234a4d20c208a34be301b468f2d3774640b1a9` (PR #587,
+  P1G.1 merged).
+- **Removed edge:** `foundation-scaffold-workspace-viewmodel.ts`
+  imported `FoundationScaffoldFileRow` from
+  `foundation-scaffold-client-viewmodel.ts` while the client viewmodel
+  imported `buildFoundationScaffoldWorkspaceSection`. The interface now
+  lives in `foundation/foundation-scaffold-file-row-types.ts`. Both
+  viewmodels import that module. The shared module imports neither
+  file and has no runtime dependency. The client viewmodel re-exports
+  the type only, and still imports the workspace builder.
+- **Graph:** import-only cycles drop from four components (sizes
+  3, 3, 3, 2) to three (sizes 3, 3, 3): Approved Apply, Foundation
+  workshop, and the recorded Neutron mutation cycle. Re-export cycles
+  drop from five (sizes 29, 4, 3, 3, 2) to four (sizes 29, 4, 3, 3).
+  The component that contains `index.ts` stays at 29 files and still
+  contains `inception-flow.ts`. The extension update component stays
+  at four files. The inception pair does not return.
+  `host-file-system.ts` still imports only `project-scan-exclusions.ts`.
+- **Public API:** `FoundationScaffoldFileRow`,
+  `FoundationScaffoldWorkspaceSection`, and
+  `FoundationScaffoldWorkspaceFileGroup` remain importable from
+  `@intentloom/application`. Those types are not runtime exports.
+  Prepare, compare, validate, apply, rollback, and workspace builders
+  stay runtime exports. `package.json` exports are unchanged.
+- **Invariants:** file grouping, group labels, `pnpm-workspace`
+  topology, `hasNx`, template matching, ownership mapping, scaffold
+  approval, and filesystem mutation authority are unchanged. The shared
+  module has no filesystem, network, or execution dependency.
+- **Not done:** P1G.3 and later slices, Undo U4, Desktop Undo U5,
+  Neutron, and Desktop feature work.
+- **Next:** Maintainer review. Do not merge. Do not start P1G.3.
 
 ### 2026-10-17, Packages architecture P1G.1 inception viewmodel cycle
 
 - **Status:** **PACKAGES ARCHITECTURE P1G.1 INCEPTION VIEWMODEL CYCLE
-  BREAK IMPLEMENTED ON BRANCH AWAITING MAINTAINER REVIEW.** Do not
-  merge. Do not start P1G.2, P1G.3, P1H, P1I, P1J, Undo U4, or Desktop
-  Undo U5.
+  BREAK MERGED** as PR #587
+  (`a6234a4d20c208a34be301b468f2d3774640b1a9`). Do not start P1G.3,
+  P1H, P1I, P1J, Undo U4, or Desktop Undo U5.
 - **Branch:** `refactor/application-inception-cycle-p1g1`
 - **Starting main:** `d647c6ec25b21e758fa83ae04d6a31b75bc94ecb` (PR #586,
   P1F.8 merged).
@@ -145,9 +188,9 @@ or Desktop Undo U5.
   `@intentloom/application`. The type is not a runtime export.
   `package.json` exports are unchanged. Session and viewmodel function
   names are unchanged.
-- **Not done:** P1G.2 and later slices, Undo U4, Desktop Undo U5,
-  Neutron, and Desktop feature work.
-- **Next:** Maintainer review. Do not merge. Do not start P1G.2.
+- **Not done:** P1G.3 and later slices, Undo U4, Desktop Undo U5,
+  Neutron, and Desktop feature work. P1G.2 is a later watch.
+- **Next:** Merged as PR #587. P1G.2 follows on its own branch.
 
 ### 2026-10-17, Packages architecture P1F.8 inception directory
 
