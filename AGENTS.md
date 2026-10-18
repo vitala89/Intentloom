@@ -177,3 +177,7 @@ The source of product scope is `docs/specs/AIF_V0_1_SPEC.md`; architecture
 decisions live in `docs/decisions/`. If newer approved documents supersede a
 historical name or direction, preserve the history and link the newer decision
 rather than silently rewriting it.
+
+## Design First diagram requirement
+
+For new features, integrations and material architecture changes, follow `docs/governance/DESIGN_FIRST_POLICY.md`. Before implementation, create and obtain explicit maintainer approval for a System Design with editable diagrams in `docs/designs/<task-slug>/`. Excalidraw (`.excalidraw`) and draw.io (`.drawio`) require paired SVG previews; Mermaid may be `.md`/`.mmd`. Choose only formats that add value. Preserve existing DDD boundaries, canonical architecture and ADRs. Keep design and implementation PRs separate.

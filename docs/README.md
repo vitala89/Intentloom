@@ -107,3 +107,7 @@ not started. Undo U4 and Desktop Undo U5 are not started.
 - [Project roadmap](../ROADMAP.md)
 
 The public documentation site is built with VitePress and deployed to GitHub Pages through [.github/workflows/docs.yml](../.github/workflows/docs.yml).
+
+## Design First and diagram sources
+
+[Design-first policy](governance/DESIGN_FIRST_POLICY.md) defines approval gates and diagram conventions. New task designs use `designs/<task-slug>/` for editable Excalidraw (`.excalidraw` plus `.svg`), diagrams.net (`.drawio` plus `.svg`) and/or Mermaid (`.md`/`.mmd`). Use only necessary tools; existing approved designs need not be relocated or duplicated.

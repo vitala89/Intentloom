@@ -73,3 +73,7 @@ A task is not complete until the agent has:
 
 Never claim completion without evidence. Never invent completed milestones, test
 results, versions, pull requests, or repository state.
+
+## Diagram preflight
+
+Before non-trivial implementation, check `docs/governance/DESIGN_FIRST_POLICY.md` and the approved System Design under `docs/designs/<task-slug>/` (or an existing canonical design location). Check editable diagrams, paired SVG previews for Excalidraw/draw.io, and Mermaid renderability as applicable. Stop for explicit maintainer design approval before changing production code.
