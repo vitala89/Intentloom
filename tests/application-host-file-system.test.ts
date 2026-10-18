@@ -506,6 +506,7 @@ describe("application host filesystem extraction", () => {
       "foundation-scaffold-apply-store.ts",
       "foundation-scaffold-apply.ts",
       "foundation-scaffold-cli.ts",
+      "foundation-scaffold-file-row-types.ts",
       "foundation-scaffold-store.ts",
       "foundation-scaffold-viewmodel-renderers.ts",
       "foundation-scaffold.ts",

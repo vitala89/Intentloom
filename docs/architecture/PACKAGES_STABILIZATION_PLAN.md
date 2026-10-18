@@ -59,8 +59,13 @@ modules that sit outside the viewmodel cycle into
 `InceptionSummary` into
 `packages/application/src/inception/inception-summary-types.ts` so
 `inception-viewmodel.ts` no longer imports `inception.ts`. That slice
-is on branch awaiting maintainer review. P1G.2 and later slices have
-not started.
+is merged as PR #587
+(`a6234a4d20c208a34be301b468f2d3774640b1a9`). **P1G.2** moves
+`FoundationScaffoldFileRow` into
+`packages/application/src/foundation/foundation-scaffold-file-row-types.ts`
+so the workspace viewmodel no longer imports the client viewmodel.
+That slice is on branch awaiting maintainer review. P1G.3 and later
+slices have not started.
 Undo U4 and Desktop Undo U5 are not started.
 Neutron's R4A topology stays frozen.
 The measurements below remain the P1A baseline and are not restated as the
@@ -102,8 +107,9 @@ merged (PR #584, `6d94862b58046a5126048fc8dea1ffd60e882fb9`). P1F.7
 moves Foundation modules outside the two Foundation cycles and is
 merged (PR #585, `aff1dd52cd66f437e5a20b5b08a658af83b0e9a2`). P1F.8 is
 merged (PR #586, `d647c6ec25b21e758fa83ae04d6a31b75bc94ecb`). P1G.1
-is the inception viewmodel cycle break in its own subsection. P1G.2
-and later slices are not part of that change.
+is merged (PR #587, `a6234a4d20c208a34be301b468f2d3774640b1a9`).
+P1G.2 is the foundation scaffold viewmodel cycle break in its own
+subsection. P1G.3 and later slices are not part of that change.
 
 ## 1. Baseline
 
@@ -1666,7 +1672,7 @@ sides may import.
 
 #### P1G.1 — inception viewmodel cycle
 
-On branch awaiting maintainer review. Do not merge. P1G.2 is not started.
+Merged as PR #587 (`a6234a4d20c208a34be301b468f2d3774640b1a9`).
 
 `InceptionSummary` moved from `packages/application/src/inception.ts`
 into `packages/application/src/inception/inception-summary-types.ts`.
@@ -1692,7 +1698,54 @@ No package export-map key was added or removed.
 
 `inception.ts` and `inception-viewmodel.ts` stay at the application
 root. Session creation, answer recording, summaries, and the viewmodel
-builders keep their existing functions. P1G.2 and P1G.3 are not started.
+builders keep their existing functions.
+
+#### P1G.2 — foundation scaffold viewmodel cycle
+
+On branch awaiting maintainer review. Do not merge. P1G.3 is not started.
+
+`FoundationScaffoldFileRow` moved from
+`packages/application/src/foundation-scaffold-client-viewmodel.ts`
+into
+`packages/application/src/foundation/foundation-scaffold-file-row-types.ts`.
+The declaration is unchanged: `path`, `action`, and
+`ownership: "managed" | "project-owned"`. The client viewmodel imports
+that type and re-exports it with `export type`, so
+`@intentloom/application` still exposes it through
+`foundation-w6.ts` → `foundation-flow.ts` → `inception-flow.ts` →
+`index.ts`. The workspace viewmodel imports the type from the shared
+module and no longer imports the client viewmodel. The shared module
+imports neither viewmodel and has no runtime dependency. The client
+viewmodel still imports `buildFoundationScaffoldWorkspaceSection` and
+re-exports `FoundationScaffoldWorkspaceSection` and
+`FoundationScaffoldWorkspaceFileGroup`. That edge is one-way.
+
+Before this slice, import-only cycles were four components with sizes
+3, 3, 3, 2. The size-2 component was
+`foundation-scaffold-client-viewmodel.ts` and
+`foundation-scaffold-workspace-viewmodel.ts`. After this slice,
+import-only cycles are three components with sizes 3, 3, 3: Approved
+Apply (`approved-apply-baseline.ts`, `generated-file-sync-declared.ts`,
+`index.ts`), Foundation workshop (`foundation-discovery.ts`,
+`foundation-viewmodel.ts`, `foundation-workshop.ts`), and the recorded
+Neutron mutation cycle. Counting `export … from`, cycles were five
+components with sizes 29, 4, 3, 3, 2. They are now four components
+with sizes 29, 4, 3, 3. The component that contains `index.ts` stays
+at 29 files and still contains `inception-flow.ts`. The extension
+update component stays the four files
+`apply-extension-update.ts`,
+`discover-and-apply-extension-update.ts`,
+`extension-update-files.ts`, and
+`propose-and-apply-extension-adoption.ts`. The inception pair does
+not return. `host-file-system.ts` still imports only
+`project-scan-exclusions.ts`. No package export-map key was added or
+removed. The shared module is not a new public entry.
+
+Both viewmodels stay at the application root. Prepare, compare,
+validate, apply, and rollback builders keep their existing functions.
+Workspace grouping, `pnpm-workspace` topology, `hasNx`, template
+matching, and file ownership mapping are unchanged. P1G.3, P1H, P1I,
+and P1J are not started.
 
 ### P1H — index groups that become leaves after P1C
 

@@ -934,9 +934,17 @@ and is merged as PR #586
 application root. P1G.1 moves `InceptionSummary` into
 `packages/application/src/inception/inception-summary-types.ts` so
 `inception-viewmodel.ts` no longer imports `inception.ts`. That slice
-is awaiting maintainer review. Import-only cycles drop from five
-components to four. The re-export component that contains `index.ts`
-stays at 29 files. P1G.2 and later slices have not started. Undo U4 and
+is merged as PR #587
+(`a6234a4d20c208a34be301b468f2d3774640b1a9`). Import-only cycles drop
+from five components to four. The re-export component that contains
+`index.ts` stays at 29 files. P1G.2 moves `FoundationScaffoldFileRow`
+into `packages/application/src/foundation/foundation-scaffold-file-row-types.ts`
+so `foundation-scaffold-workspace-viewmodel.ts` no longer imports
+`foundation-scaffold-client-viewmodel.ts`. That slice is awaiting
+maintainer review. Import-only cycles drop from four components to
+three (sizes 3, 3, 3). Re-export cycles drop from five components to
+four, and the component that contains `index.ts` stays at 29 files.
+P1G.3 and later slices have not started. Undo U4 and
 Desktop Undo U5 are not started. Other post-P4 candidates remain in
 `POST_W12_NEXT_INCREMENT_PLAN.md`.
 
