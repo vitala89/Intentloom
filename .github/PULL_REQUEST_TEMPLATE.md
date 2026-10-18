@@ -1,11 +1,13 @@
 ## Summary
 
 ## Change type
+
 - [ ] Design PR (diagrams/docs only)
 - [ ] Implementation PR (approved design linked)
 - [ ] Non-architectural change (explain below)
 
 ## Architecture / Design First
+
 - Canonical architecture, ADR and DDD guidance consulted:
 - Design folder: `docs/designs/<task-slug>/` (or existing canonical location):
 - Design PR and explicit maintainer approval (required before implementation):
@@ -18,6 +20,7 @@
 - [ ] Implementation follows approved design; material deviations re-approved, or N/A
 
 ## Validation
+
 - Commands and results:
 - Unavailable checks:
 
