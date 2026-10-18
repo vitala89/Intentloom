@@ -250,3 +250,7 @@ Never:
 - leave vague next steps such as "continue implementation";
 - transfer responsibility without identifying the repository's actual current
   state.
+
+## Design PR gate
+
+Before implementation of a new feature, integration or material architecture change, follow `DESIGN_FIRST_POLICY.md`: discover existing architecture/DDD guidance; submit a separate design PR with editable diagram sources under `docs/designs/<task-slug>/`; include SVG previews for Excalidraw and draw.io, or Mermaid `.md`/`.mmd` diagrams as appropriate. Select formats by task, not by checklist count. Review component ownership, flows, contracts, trust boundaries, errors and deployment where relevant. Record explicit maintainer approval. Link the approved design in the subsequent implementation PR and re-review material deviations.
