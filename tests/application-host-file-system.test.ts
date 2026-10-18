@@ -578,6 +578,7 @@ describe("application host filesystem extraction", () => {
       "inception-scaffold-apply.ts",
       "inception-scaffold-planner.ts",
       "inception-session-store.ts",
+      "inception-summary-types.ts",
       "inception-templates.ts",
       "inception-viewmodel-renderers.ts",
       "inception-w1.ts",

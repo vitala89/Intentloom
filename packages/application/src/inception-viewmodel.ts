@@ -26,7 +26,7 @@ import {
   validateVersionedInceptionSession,
   validateVersionedInceptionSummary,
 } from "@intentloom/validator";
-import type { InceptionSummary } from "./inception.js";
+import type { InceptionSummary } from "./inception/inception-summary-types.js";
 
 export function buildVersionedInceptionSession(
   session: InceptionSessionState,
