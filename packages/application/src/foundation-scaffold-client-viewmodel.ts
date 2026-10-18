@@ -8,19 +8,15 @@ import type {
   ScaffoldResultStatus,
 } from "@intentloom/protocol";
 import type { FoundationClientSurfaceState } from "./foundation/foundation-client-viewmodel.js";
+import type { FoundationScaffoldFileRow } from "./foundation/foundation-scaffold-file-row-types.js";
 import {
   buildFoundationScaffoldWorkspaceSection,
   type FoundationScaffoldWorkspaceSection,
 } from "./foundation-scaffold-workspace-viewmodel.js";
 
+export type { FoundationScaffoldFileRow };
 export type { FoundationScaffoldWorkspaceSection };
 export type { FoundationScaffoldWorkspaceFileGroup } from "./foundation-scaffold-workspace-viewmodel.js";
-
-export interface FoundationScaffoldFileRow {
-  readonly path: string;
-  readonly action: string;
-  readonly ownership: "managed" | "project-owned";
-}
 
 export interface FoundationScaffoldPrepareViewModel {
   readonly workshopId: string;

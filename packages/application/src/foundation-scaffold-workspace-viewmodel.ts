@@ -1,4 +1,4 @@
-import type { FoundationScaffoldFileRow } from "./foundation-scaffold-client-viewmodel.js";
+import type { FoundationScaffoldFileRow } from "./foundation/foundation-scaffold-file-row-types.js";
 
 export interface FoundationScaffoldWorkspaceFileGroup {
   readonly label: string;
