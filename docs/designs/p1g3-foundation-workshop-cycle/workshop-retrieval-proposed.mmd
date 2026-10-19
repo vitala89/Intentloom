@@ -1,0 +1,20 @@
+sequenceDiagram
+  participant Caller
+  participant Discovery as foundation-discovery.ts
+  participant Lookup as foundation-workshop-lookup.ts
+  participant Store as foundation-workshop-store.ts
+  participant Validator as validateFoundationWorkshopState
+  Note over Caller,Validator: Proposed behavior
+  Caller->>Discovery: discoverFoundationAdaptiveQuestions(workshopId)
+  Discovery->>Lookup: getFoundationWorkshop(workshopId)
+  Lookup->>Store: getFoundationWorkshopStoreEntry(workshopId)
+  alt entry is undefined
+    Store-->>Lookup: undefined
+    Lookup-->>Caller: throw unknown foundation workshop
+  else entry is present
+    Store-->>Lookup: stored state
+    Lookup->>Validator: validateFoundationWorkshopState(stored state)
+    Validator-->>Lookup: validated state or throw
+    Lookup-->>Discovery: FoundationWorkshopState
+    Discovery-->>Caller: adaptive question list
+  end

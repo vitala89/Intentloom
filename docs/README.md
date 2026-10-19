@@ -111,3 +111,5 @@ The public documentation site is built with VitePress and deployed to GitHub Pag
 ## Design First and diagram sources
 
 [Design-first policy](governance/DESIGN_FIRST_POLICY.md) defines approval gates and diagram conventions. New task designs use `designs/<task-slug>/` for editable Excalidraw (`.excalidraw` plus `.svg`), diagrams.net (`.drawio` plus `.svg`) and/or Mermaid (`.md`/`.mmd`). Use only necessary tools; existing approved designs need not be relocated or duplicated.
+
+[P1G.3 Foundation workshop cycle](designs/p1g3-foundation-workshop-cycle/SYSTEM_DESIGN.md) is a proposed design. It is not approved and not implemented.

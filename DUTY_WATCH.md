@@ -120,8 +120,32 @@ merged (PR #587, merge
 `a6234a4d20c208a34be301b468f2d3774640b1a9`). **P1G.2** moves
 `FoundationScaffoldFileRow` into
 `packages/application/src/foundation/foundation-scaffold-file-row-types.ts`
-and is awaiting maintainer review. Do not merge. Do not start P1G.3,
-Undo U4, or Desktop Undo U5.
+and is merged as PR #588
+(`6bbfb988ee6f4f4b686d60e7ffd3a26ecc2b3103`). **P1G.3** System Design is
+proposed and is not implemented. Do not start implementation, P1H, P1I,
+P1J, Undo U4, or Desktop Undo U5 until the design is explicitly
+approved.
+
+### 2026-10-19, Packages architecture P1G.3 foundation workshop cycle design
+
+- **Status:** **DESIGN PR OPEN — AWAITING MAINTAINER APPROVAL.**
+  PR #591, https://github.com/vitala89/Intentloom/pull/591. P1G.3 is
+  not implemented. Do not merge this design as if it were the cycle
+  break. Do not start P1H, P1I, P1J, Undo U4, or Desktop Undo U5.
+- **Branch:** `docs/p1g3-foundation-workshop-cycle`
+- **Baseline:** `6bbfb988ee6f4f4b686d60e7ffd3a26ecc2b3103` (PR #588,
+  P1G.2 merged). PR #589 and PR #590 are already on that baseline.
+- **Design:** `docs/designs/p1g3-foundation-workshop-cycle/SYSTEM_DESIGN.md`
+- **Recommendation:** move `FoundationUnderstanding` to
+  `foundation/foundation-understanding-types.ts`, and move the existing
+  `getFoundationWorkshop` body to
+  `foundation/foundation-workshop-lookup.ts`. Discovery imports the
+  lookup. The viewmodel imports the type. The workshop module
+  re-exports both. Direct store reads are not equivalent.
+- **Not done:** production edits, test edits, SCC expectation edits,
+  implementation, merge.
+- **Next:** Maintainer review of the design. A green CI result is not
+  approval.
 
 ### 2026-10-18, Packages architecture P1G.2 foundation scaffold viewmodel cycle
 
