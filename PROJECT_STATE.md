@@ -941,13 +941,20 @@ from five components to four. The re-export component that contains
 into `packages/application/src/foundation/foundation-scaffold-file-row-types.ts`
 so `foundation-scaffold-workspace-viewmodel.ts` no longer imports
 `foundation-scaffold-client-viewmodel.ts`. That slice is merged as
-PR #588 (`6bbfb988ee6f4f4b686d60e7ffd3a26ecc2b3103`). Import-only
-cycles are three components (sizes 3, 3, 3). Re-export cycles are four,
-and the component that contains `index.ts` stays at 29 files. P1G.3 has
-a proposed System Design at
-`docs/designs/p1g3-foundation-workshop-cycle/SYSTEM_DESIGN.md` and is
-not implemented. Later slices have not started. Undo U4 and Desktop
-Undo U5 are not started. Other post-P4 candidates remain in
+PR #588 (`6bbfb988ee6f4f4b686d60e7ffd3a26ecc2b3103`). After that
+merge, import-only cycles were three components (sizes 3, 3, 3) and
+re-export cycles were four, with the component that contains `index.ts`
+still at 29 files. P1G.3
+design is merged as PR #591
+(`454cd7736abe37fe1f2e39c472f8e6a7e0d3d0e3`). The implementation moves
+`FoundationUnderstanding` to
+`packages/application/src/foundation/foundation-understanding-types.ts`
+and `getFoundationWorkshop` to
+`packages/application/src/foundation/foundation-workshop-lookup.ts`.
+Import-only cycles are two components of size 3. Re-export cycles are
+three, and the component that contains `index.ts` stays at 29 files.
+That implementation is not merged. Later slices have not started.
+Undo U4 and Desktop Undo U5 are not started. Other post-P4 candidates remain in
 `POST_W12_NEXT_INCREMENT_PLAN.md`.
 
 The Desktop discovery/error and Diff/Timeline slices remain recorded in

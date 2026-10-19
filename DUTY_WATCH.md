@@ -121,17 +121,54 @@ merged (PR #587, merge
 `FoundationScaffoldFileRow` into
 `packages/application/src/foundation/foundation-scaffold-file-row-types.ts`
 and is merged as PR #588
-(`6bbfb988ee6f4f4b686d60e7ffd3a26ecc2b3103`). **P1G.3** System Design is
-proposed and is not implemented. Do not start implementation, P1H, P1I,
-P1J, Undo U4, or Desktop Undo U5 until the design is explicitly
-approved.
+(`6bbfb988ee6f4f4b686d60e7ffd3a26ecc2b3103`). **P1G.3** design is merged
+(PR #591, `454cd7736abe37fe1f2e39c472f8e6a7e0d3d0e3`). **P1G.3**
+implementation moves `FoundationUnderstanding` and
+`getFoundationWorkshop` onto leaf modules and is not merged. Do not
+start P1H, P1I, P1J, Undo U4, or Desktop Undo U5.
+
+### 2026-10-19, Packages architecture P1G.3 foundation workshop cycle implementation
+
+- **Status:** **IMPLEMENTED — PR NOT YET OPENED.** Do not merge. Do not
+  start P1H, P1I, P1J, Undo U4, or Desktop Undo U5.
+- **Branch:** `refactor/application-foundation-workshop-cycle-p1g3`
+- **Baseline:** `454cd7736abe37fe1f2e39c472f8e6a7e0d3d0e3` (PR #591,
+  P1G.3 design merged).
+- **Design:** `docs/designs/p1g3-foundation-workshop-cycle/SYSTEM_DESIGN.md`
+- **Change:** `FoundationUnderstanding` now lives in
+  `foundation/foundation-understanding-types.ts` with no imports.
+  `getFoundationWorkshop` now lives in
+  `foundation/foundation-workshop-lookup.ts`. Discovery imports the
+  lookup. The viewmodel imports the type. The workshop module
+  re-exports both. Removed edges:
+  `foundation-discovery.ts` → `foundation-workshop.ts` and
+  `foundation-viewmodel.ts` → `foundation-workshop.ts`.
+- **SCC:** Import-only components are two, each size 3 (Approved Apply,
+  recorded Neutron mutation). Re-export components are three: extension
+  update (4), the unchanged 29-file `index.ts` component, and Neutron
+  (3). The Foundation workshop component is gone. P1G.1 and P1G.2 do
+  not return.
+- **Compatibility:** `getFoundationWorkshop` still throws
+  `unknown foundation workshop '<id>'` and still calls
+  `validateFoundationWorkshopState`. Public names, signatures, schema
+  URNs, and the package `"."` export stay. `FoundationUnderstanding`
+  stays a type export.
+- **Security:** The lookup is read-only. The workshop Map, readiness
+  writes, Approved Apply, transactions, and Neutron permissions are
+  unchanged. No new filesystem or network authority.
+- **Testing:** Focused Foundation, daemon, Desktop/TUI, and
+  architecture tests, 17 files and 82 tests, passed. `pnpm verify`
+  passed: typecheck, oxlint, Prettier, Vitest 354 files / 3074 passed /
+  3 skipped, build, and `git diff --check`.
+- **Not done:** merge, P1H, P1I, P1J, Undo U4, Desktop Undo U5.
+- **Next:** Open the implementation pull request and wait for
+  maintainer review.
 
 ### 2026-10-19, Packages architecture P1G.3 foundation workshop cycle design
 
-- **Status:** **DESIGN PR OPEN — AWAITING MAINTAINER APPROVAL.**
-  PR #591, https://github.com/vitala89/Intentloom/pull/591. P1G.3 is
-  not implemented. Do not merge this design as if it were the cycle
-  break. Do not start P1H, P1I, P1J, Undo U4, or Desktop Undo U5.
+- **Status:** **DESIGN MERGED** as PR #591
+  (`454cd7736abe37fe1f2e39c472f8e6a7e0d3d0e3`). The design is not the
+  cycle break. Do not start P1H, P1I, P1J, Undo U4, or Desktop Undo U5.
 - **Branch:** `docs/p1g3-foundation-workshop-cycle`
 - **Baseline:** `6bbfb988ee6f4f4b686d60e7ffd3a26ecc2b3103` (PR #588,
   P1G.2 merged). PR #589 and PR #590 are already on that baseline.
@@ -142,10 +179,9 @@ approved.
   `foundation/foundation-workshop-lookup.ts`. Discovery imports the
   lookup. The viewmodel imports the type. The workshop module
   re-exports both. Direct store reads are not equivalent.
-- **Not done:** production edits, test edits, SCC expectation edits,
-  implementation, merge.
-- **Next:** Maintainer review of the design. A green CI result is not
-  approval.
+- **Not done:** this design entry does not itself change production
+  source. Implementation is the entry above and is not merged.
+- **Next:** Maintainer review of the implementation pull request.
 
 ### 2026-10-18, Packages architecture P1G.2 foundation scaffold viewmodel cycle
 

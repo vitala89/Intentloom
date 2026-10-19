@@ -65,10 +65,11 @@ is merged as PR #587
 `packages/application/src/foundation/foundation-scaffold-file-row-types.ts`
 so the workspace viewmodel no longer imports the client viewmodel.
 That slice is merged as PR #588
-(`6bbfb988ee6f4f4b686d60e7ffd3a26ecc2b3103`). **P1G.3** has a proposed
-System Design at
-`docs/designs/p1g3-foundation-workshop-cycle/SYSTEM_DESIGN.md` and is
-not implemented. Later slices have not started.
+(`6bbfb988ee6f4f4b686d60e7ffd3a26ecc2b3103`). **P1G.3** design is
+merged as PR #591
+(`454cd7736abe37fe1f2e39c472f8e6a7e0d3d0e3`). The implementation moves
+`FoundationUnderstanding` and `getFoundationWorkshop` onto leaf modules
+and is not merged. Later slices have not started.
 Undo U4 and Desktop Undo U5 are not started.
 Neutron's R4A topology stays frozen.
 The measurements below remain the P1A baseline and are not restated as the
@@ -111,8 +112,9 @@ moves Foundation modules outside the two Foundation cycles and is
 merged (PR #585, `aff1dd52cd66f437e5a20b5b08a658af83b0e9a2`). P1F.8 is
 merged (PR #586, `d647c6ec25b21e758fa83ae04d6a31b75bc94ecb`). P1G.1
 is merged (PR #587, `a6234a4d20c208a34be301b468f2d3774640b1a9`).
-P1G.2 is merged (PR #588). P1G.3 is a design proposal only; see its
-subsection. Later slices have not started.
+P1G.2 is merged (PR #588). P1G.3 design is merged (PR #591). The
+implementation is recorded in its subsection and is not merged. Later
+slices have not started.
 
 ## 1. Baseline
 
@@ -1753,16 +1755,71 @@ P1J are not started.
 
 #### P1G.3 — foundation workshop, discovery, and viewmodel cycle
 
-Proposed, not implemented. The review document is
+Design approved and merged as PR #591
+(`454cd7736abe37fe1f2e39c472f8e6a7e0d3d0e3`). The approved contract is
 [`docs/designs/p1g3-foundation-workshop-cycle/SYSTEM_DESIGN.md`](../designs/p1g3-foundation-workshop-cycle/SYSTEM_DESIGN.md).
-It recommends moving `FoundationUnderstanding` to a leaf types module
-and moving the existing `getFoundationWorkshop` body to a lookup module
-that discovery can import without importing `foundation-workshop.ts`.
-Direct store reads are not equivalent: the store getter does not throw
-on a missing id and does not validate. No production source, test, or
-SCC expectation changes in the design PR. Implementation waits for
-explicit maintainer approval. P1H, P1I, P1J, Undo U4, and Desktop Undo
-U5 are not started.
+Implementation is on
+`refactor/application-foundation-workshop-cycle-p1g3` and is not merged.
+P1H, P1I, P1J, Undo U4, and Desktop Undo U5 are not started.
+
+`FoundationUnderstanding` moved unchanged from
+`packages/application/src/foundation-workshop.ts` into
+`packages/application/src/foundation/foundation-understanding-types.ts`.
+That module has no imports. `foundation-viewmodel.ts` imports the type
+from there. `foundation-workshop.ts` imports it and re-exports it with
+`export type`, so `@intentloom/application` still exposes the type and
+does not gain a runtime value of that name.
+
+`getFoundationWorkshop` moved unchanged into
+`packages/application/src/foundation/foundation-workshop-lookup.ts`.
+The lookup reads `getFoundationWorkshopStoreEntry`, throws
+`unknown foundation workshop '<id>'` when the entry is missing, and
+otherwise returns `validateFoundationWorkshopState(entry)`. It imports
+the store, the validator, and the protocol state type. It does not
+import `foundation-workshop.ts`, `foundation-discovery.ts`, or
+`foundation-viewmodel.ts`. Discovery's two session-id functions import
+the lookup. `foundation-workshop.ts` imports the same function and
+re-exports it with `export { getFoundationWorkshop }`. Neither new file
+is added to `foundation-w2.ts`, `foundation-w3.ts`, or
+`foundation-flow.ts`.
+
+Edges removed: `foundation-discovery.ts` → `foundation-workshop.ts`,
+and `foundation-viewmodel.ts` → `foundation-workshop.ts`. The workshop
+module still imports discovery and the viewmodel builders. Direct store
+reads stay rejected: the store getter does not throw and does not
+validate.
+
+Before this slice, import-only cycles were three components with sizes
+3, 3, 3. The Foundation component was `foundation-discovery.ts`,
+`foundation-viewmodel.ts`, and `foundation-workshop.ts`. After this
+slice, import-only cycles are two components, each of size 3: Approved
+Apply (`approved-apply-baseline.ts`, `generated-file-sync-declared.ts`,
+`index.ts`) and the recorded Neutron mutation cycle
+(`neutron/mutation/apply/neutron-mutation-apply-durable-record.ts`,
+`neutron/mutation/apply/neutron-mutation-apply-store.ts`,
+`neutron/mutation/verification/neutron-mutation-verification-retry-eligibility.ts`).
+Counting `export … from`, cycles were four components with sizes
+29, 4, 3, 3. They are now three: the extension-update component (size
+4), the existing 29-file component that contains `index.ts` and
+`inception-flow.ts`, and the Neutron component (size 3). The 29-file
+membership is unchanged. The P1G.1 and P1G.2 cycles do not return.
+`host-file-system.ts` is not in a component. No package export-map key
+was added or removed.
+
+Public names, signatures, schema URNs, and the `"."` export path are
+unchanged. Unknown workshop ids still throw. Validator errors still
+propagate. The lookup does not register, update, delete, seed, or
+clear the workshop Map. Readiness writes stay in
+`foundation-workshop.ts`. No filesystem, network, or mutation
+entrypoint was added.
+
+Focused Foundation, daemon, Desktop/TUI, and architecture tests:
+17 files, 82 tests passed. That set includes the scaffold cycle lock,
+the inception cycle lock, and the foundation directory inventory.
+`pnpm verify` passed on this branch: typecheck, oxlint, Prettier,
+Vitest 354 files / 3074 passed / 3 skipped, build, and
+`git diff --check`. The three original modules stay at the application
+root.
 
 ### P1H — index groups that become leaves after P1C
 
