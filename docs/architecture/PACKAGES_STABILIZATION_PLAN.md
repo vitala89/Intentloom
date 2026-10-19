@@ -1758,7 +1758,7 @@ P1J are not started.
 Design approved and merged as PR #591
 (`454cd7736abe37fe1f2e39c472f8e6a7e0d3d0e3`). The approved contract is
 [`docs/designs/p1g3-foundation-workshop-cycle/SYSTEM_DESIGN.md`](../designs/p1g3-foundation-workshop-cycle/SYSTEM_DESIGN.md).
-Implementation is on
+Implementation is open as PR #596 on
 `refactor/application-foundation-workshop-cycle-p1g3` and is not merged.
 P1H, P1I, P1J, Undo U4, and Desktop Undo U5 are not started.
 

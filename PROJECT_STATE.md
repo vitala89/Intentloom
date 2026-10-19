@@ -953,7 +953,8 @@ and `getFoundationWorkshop` to
 `packages/application/src/foundation/foundation-workshop-lookup.ts`.
 Import-only cycles are two components of size 3. Re-export cycles are
 three, and the component that contains `index.ts` stays at 29 files.
-That implementation is not merged. Later slices have not started.
+That implementation is open as PR #596 and is not merged. Later
+slices have not started.
 Undo U4 and Desktop Undo U5 are not started. Other post-P4 candidates remain in
 `POST_W12_NEXT_INCREMENT_PLAN.md`.
 

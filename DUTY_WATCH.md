@@ -123,14 +123,15 @@ merged (PR #587, merge
 and is merged as PR #588
 (`6bbfb988ee6f4f4b686d60e7ffd3a26ecc2b3103`). **P1G.3** design is merged
 (PR #591, `454cd7736abe37fe1f2e39c472f8e6a7e0d3d0e3`). **P1G.3**
-implementation moves `FoundationUnderstanding` and
-`getFoundationWorkshop` onto leaf modules and is not merged. Do not
-start P1H, P1I, P1J, Undo U4, or Desktop Undo U5.
+implementation is open as PR #596
+(https://github.com/vitala89/Intentloom/pull/596) and is not merged.
+Do not start P1H, P1I, P1J, Undo U4, or Desktop Undo U5.
 
 ### 2026-10-19, Packages architecture P1G.3 foundation workshop cycle implementation
 
-- **Status:** **IMPLEMENTED — PR NOT YET OPENED.** Do not merge. Do not
-  start P1H, P1I, P1J, Undo U4, or Desktop Undo U5.
+- **Status:** **IMPLEMENTED — PR OPEN, AWAITING MAINTAINER REVIEW.**
+  PR #596, https://github.com/vitala89/Intentloom/pull/596. Do not
+  merge. Do not start P1H, P1I, P1J, Undo U4, or Desktop Undo U5.
 - **Branch:** `refactor/application-foundation-workshop-cycle-p1g3`
 - **Baseline:** `454cd7736abe37fe1f2e39c472f8e6a7e0d3d0e3` (PR #591,
   P1G.3 design merged).
@@ -161,8 +162,8 @@ start P1H, P1I, P1J, Undo U4, or Desktop Undo U5.
   passed: typecheck, oxlint, Prettier, Vitest 354 files / 3074 passed /
   3 skipped, build, and `git diff --check`.
 - **Not done:** merge, P1H, P1I, P1J, Undo U4, Desktop Undo U5.
-- **Next:** Open the implementation pull request and wait for
-  maintainer review.
+- **Next:** Maintainer review of PR #596. Do not merge. Do not start
+  P1H, P1I, P1J, Undo U4, or Desktop Undo U5.
 
 ### 2026-10-19, Packages architecture P1G.3 foundation workshop cycle design
 
