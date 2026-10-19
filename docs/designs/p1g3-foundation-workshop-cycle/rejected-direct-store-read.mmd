@@ -1,0 +1,9 @@
+flowchart TD
+  call["discovery reads getFoundationWorkshopStoreEntry directly"]
+  missing{"entry is undefined?"}
+  diverge["return undefined and do not throw"]
+  live["return the live Map value"]
+  skip["do not call validateFoundationWorkshopState"]
+  call --> missing
+  missing -->|yes| diverge
+  missing -->|no| live --> skip

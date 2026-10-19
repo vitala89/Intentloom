@@ -64,8 +64,11 @@ is merged as PR #587
 `FoundationScaffoldFileRow` into
 `packages/application/src/foundation/foundation-scaffold-file-row-types.ts`
 so the workspace viewmodel no longer imports the client viewmodel.
-That slice is on branch awaiting maintainer review. P1G.3 and later
-slices have not started.
+That slice is merged as PR #588
+(`6bbfb988ee6f4f4b686d60e7ffd3a26ecc2b3103`). **P1G.3** has a proposed
+System Design at
+`docs/designs/p1g3-foundation-workshop-cycle/SYSTEM_DESIGN.md` and is
+not implemented. Later slices have not started.
 Undo U4 and Desktop Undo U5 are not started.
 Neutron's R4A topology stays frozen.
 The measurements below remain the P1A baseline and are not restated as the
@@ -108,8 +111,8 @@ moves Foundation modules outside the two Foundation cycles and is
 merged (PR #585, `aff1dd52cd66f437e5a20b5b08a658af83b0e9a2`). P1F.8 is
 merged (PR #586, `d647c6ec25b21e758fa83ae04d6a31b75bc94ecb`). P1G.1
 is merged (PR #587, `a6234a4d20c208a34be301b468f2d3774640b1a9`).
-P1G.2 is the foundation scaffold viewmodel cycle break in its own
-subsection. P1G.3 and later slices are not part of that change.
+P1G.2 is merged (PR #588). P1G.3 is a design proposal only; see its
+subsection. Later slices have not started.
 
 ## 1. Baseline
 
@@ -1702,7 +1705,8 @@ builders keep their existing functions.
 
 #### P1G.2 — foundation scaffold viewmodel cycle
 
-On branch awaiting maintainer review. Do not merge. P1G.3 is not started.
+Merged as PR #588 (`6bbfb988ee6f4f4b686d60e7ffd3a26ecc2b3103`).
+P1G.3 is not part of that merge.
 
 `FoundationScaffoldFileRow` moved from
 `packages/application/src/foundation-scaffold-client-viewmodel.ts`
@@ -1744,8 +1748,21 @@ removed. The shared module is not a new public entry.
 Both viewmodels stay at the application root. Prepare, compare,
 validate, apply, and rollback builders keep their existing functions.
 Workspace grouping, `pnpm-workspace` topology, `hasNx`, template
-matching, and file ownership mapping are unchanged. P1G.3, P1H, P1I,
-and P1J are not started.
+matching, and file ownership mapping are unchanged. P1H, P1I, and
+P1J are not started.
+
+#### P1G.3 — foundation workshop, discovery, and viewmodel cycle
+
+Proposed, not implemented. The review document is
+[`docs/designs/p1g3-foundation-workshop-cycle/SYSTEM_DESIGN.md`](../designs/p1g3-foundation-workshop-cycle/SYSTEM_DESIGN.md).
+It recommends moving `FoundationUnderstanding` to a leaf types module
+and moving the existing `getFoundationWorkshop` body to a lookup module
+that discovery can import without importing `foundation-workshop.ts`.
+Direct store reads are not equivalent: the store getter does not throw
+on a missing id and does not validate. No production source, test, or
+SCC expectation changes in the design PR. Implementation waits for
+explicit maintainer approval. P1H, P1I, P1J, Undo U4, and Desktop Undo
+U5 are not started.
 
 ### P1H — index groups that become leaves after P1C
 

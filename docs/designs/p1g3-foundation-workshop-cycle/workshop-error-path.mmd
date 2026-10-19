@@ -1,0 +1,14 @@
+flowchart TD
+  call["getFoundationWorkshop(workshopId)"]
+  read["getFoundationWorkshopStoreEntry(workshopId)"]
+  missing{"entry is undefined?"}
+  unknown["throw Error: unknown foundation workshop id"]
+  validate["validateFoundationWorkshopState(entry)"]
+  bad{"validator throws?"}
+  invalid["propagate that Error unchanged"]
+  ok["return validated FoundationWorkshopState"]
+  call --> read --> missing
+  missing -->|yes| unknown
+  missing -->|no| validate --> bad
+  bad -->|yes| invalid
+  bad -->|no| ok

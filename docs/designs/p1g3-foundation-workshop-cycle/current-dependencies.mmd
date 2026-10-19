@@ -1,0 +1,10 @@
+flowchart LR
+  workshop["foundation-workshop.ts"]
+  discovery["foundation-discovery.ts"]
+  viewmodel["foundation-viewmodel.ts"]
+  store["foundation-workshop-store.ts"]
+  workshop -->|"identifyFoundationConflicts"| discovery
+  workshop -->|"build viewmodel values"| viewmodel
+  workshop -->|"register, read, update, delete"| store
+  discovery -->|"getFoundationWorkshop"| workshop
+  viewmodel -->|"FoundationUnderstanding"| workshop
