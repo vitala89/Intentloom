@@ -128,8 +128,9 @@ approved.
 
 ### 2026-10-19, Packages architecture P1G.3 foundation workshop cycle design
 
-- **Status:** **DESIGN PR OPEN — AWAITING MAINTAINER APPROVAL.** P1G.3
-  is not implemented. Do not merge this design as if it were the cycle
+- **Status:** **DESIGN PR OPEN — AWAITING MAINTAINER APPROVAL.**
+  PR #591, https://github.com/vitala89/Intentloom/pull/591. P1G.3 is
+  not implemented. Do not merge this design as if it were the cycle
   break. Do not start P1H, P1I, P1J, Undo U4, or Desktop Undo U5.
 - **Branch:** `docs/p1g3-foundation-workshop-cycle`
 - **Baseline:** `6bbfb988ee6f4f4b686d60e7ffd3a26ecc2b3103` (PR #588,
