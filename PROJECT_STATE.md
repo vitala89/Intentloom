@@ -953,8 +953,11 @@ and `getFoundationWorkshop` to
 `packages/application/src/foundation/foundation-workshop-lookup.ts`.
 Import-only cycles are two components of size 3. Re-export cycles are
 three, and the component that contains `index.ts` stays at 29 files.
-That implementation is open as PR #596 and is not merged. Later
-slices have not started.
+That implementation is merged as PR #596
+(`488067af1d39a614e718660944c7f3ae030b1be7`). P1H.1 persistent memory
+extraction is proposed in
+`docs/designs/p1h1-persistent-memory/SYSTEM_DESIGN.md` and is not
+implemented. Later slices have not started.
 Undo U4 and Desktop Undo U5 are not started. Other post-P4 candidates remain in
 `POST_W12_NEXT_INCREMENT_PLAN.md`.
 

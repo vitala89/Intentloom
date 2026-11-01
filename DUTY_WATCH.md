@@ -123,9 +123,52 @@ merged (PR #587, merge
 and is merged as PR #588
 (`6bbfb988ee6f4f4b686d60e7ffd3a26ecc2b3103`). **P1G.3** design is merged
 (PR #591, `454cd7736abe37fe1f2e39c472f8e6a7e0d3d0e3`). **P1G.3**
-implementation is open as PR #596
-(https://github.com/vitala89/Intentloom/pull/596) and is not merged.
-Do not start P1H, P1I, P1J, Undo U4, or Desktop Undo U5.
+implementation is merged (PR #596,
+`488067af1d39a614e718660944c7f3ae030b1be7`). **P1H.1** persistent
+memory extraction is a design proposal and is not implemented.
+Do not start implementation, P1H.2, P1I, P1J, Undo U4, or Desktop Undo U5
+until that design is explicitly approved.
+
+### 2026-11-01, Packages architecture P1H.1 persistent memory extraction design
+
+- **Status:** **DESIGN PR OPEN — AWAITING MAINTAINER APPROVAL.**
+  P1H.1 is not implemented. A green CI result is not approval. Do not
+  start implementation, P1H.2, P1I, P1J, Undo U4, or Desktop Undo U5.
+- **Branch:** `docs/p1h1-persistent-memory`
+- **Baseline:** `488067af1d39a614e718660944c7f3ae030b1be7` (PR #596,
+  P1G.3 implementation merged).
+- **Design:** `docs/designs/p1h1-persistent-memory/SYSTEM_DESIGN.md`
+- **Inventory:** twelve public operations in
+  `packages/application/src/index.ts` lines 4908–5257:
+  `getPersistentMemoryItem`, `listPersistentMemoryItems`,
+  `proposePersistentMemory`, `acceptPersistentMemory`,
+  `supersedePersistentMemory`, `forgetPersistentMemory`,
+  `exportPersistentMemory`, `importPersistentMemory`,
+  `searchPersistentMemory`, `rebuildPersistentMemoryIndex`,
+  `clearPersistentMemoryIndex`, `renderPersistentMemoryContext`.
+  Private helpers in the same block: `redactPersistentMemoryContent`,
+  `persistentMemoryPath`, `writePersistentMemoryItem`.
+- **Recommendation:** move that text into
+  `memory/persistent-memory-store.ts` (77/82),
+  `memory/persistent-memory-lifecycle.ts` (200/206), and
+  `memory/persistent-memory-retrieval.ts` (92/96). Named re-exports
+  stay on `index.ts`. The analyzed candidate takes `index.ts` from
+  6,562/6,937 to 6,244/6,605. No operation in the family calls another
+  `index.ts` function, so the leaf does not import the barrel.
+- **Callers:** CLI `memory-command.ts` uses the package root.
+  `supersedePersistentMemory` has no CLI subcommand. Neutron N3
+  collector and N4 dispatch call `searchPersistentMemory`. Production
+  daemon `bin.ts` does not inject `memorySearch`. MCP and Desktop do
+  not call this family. `applyContinuousLoopMemory` stays a separate
+  writer.
+- **SCC:** Import-only components are two, each size 3 (Approved Apply,
+  recorded Neutron mutation). Re-export components are three: extension
+  update (4), the 29-file `index.ts` component, and Neutron (3). The
+  move must not change that membership.
+- **Not done:** production edits, test edits, SCC expectation edits,
+  implementation, merge.
+- **Next:** Maintainer review of the design. A green CI result is not
+  approval.
 
 ### 2026-10-19, Packages architecture P1G.3 foundation workshop cycle implementation
 

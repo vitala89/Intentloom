@@ -1,0 +1,29 @@
+flowchart LR
+  barrel["index.ts named re-exports"]
+  store["persistent-memory-store.ts"]
+  life["persistent-memory-lifecycle.ts"]
+  retrieval["persistent-memory-retrieval.ts"]
+  fsport["host-file-system.ts"]
+  pathmod["project-path.ts inside"]
+  protocol["@intentloom/protocol"]
+  cli["cli memory-command.ts"]
+  n3["neutron-context-state-collectors.ts"]
+  n4["neutron-tool-dispatch.ts"]
+  loop["continuous-loop-apply.ts"]
+  barrel --> store
+  barrel --> life
+  barrel --> retrieval
+  life --> store
+  retrieval --> store
+  store --> fsport
+  store --> pathmod
+  store --> protocol
+  life --> protocol
+  retrieval --> protocol
+  retrieval --> pathmod
+  cli -->|"package root"| barrel
+  n3 -->|"searchPersistentMemory"| retrieval
+  n4 -->|"searchPersistentMemory"| retrieval
+  n3 -->|"other symbols"| barrel
+  n4 -->|"other symbols"| barrel
+  loop -->|"unchanged direct write"| items[".aif/memory/items/id.json"]

@@ -1,0 +1,13 @@
+stateDiagram-v2
+  [*] --> proposed: proposePersistentMemory or importPersistentMemory
+  proposed --> accepted: acceptPersistentMemory
+  accepted --> superseded: supersedePersistentMemory
+  proposed --> deleted: forgetPersistentMemory
+  accepted --> deleted: forgetPersistentMemory
+  superseded --> deleted: forgetPersistentMemory
+  deleted --> [*]: file remains and content is replaced by the redaction token
+  note right of accepted
+    rebuildPersistentMemoryIndex writes
+    .aif/memory/index.json from accepted ids
+    clearPersistentMemoryIndex deletes only that file
+  end note

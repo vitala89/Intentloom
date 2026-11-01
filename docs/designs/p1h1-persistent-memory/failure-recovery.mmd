@@ -1,0 +1,23 @@
+sequenceDiagram
+  participant Caller
+  participant Op as supersede or import
+  participant FS as FileSystem
+  alt supersedePersistentMemory
+    Caller->>Op: accepted id and replacement item
+    Op->>FS: write superseded record
+    Op->>FS: write replacement record
+    alt second write fails
+      Op->>FS: write original record back
+      Op->>FS: remove replacement path
+      Op-->>Caller: rethrow the original write error
+    end
+  else importPersistentMemory
+    Caller->>Op: bundle and projectId
+    loop each eligible source
+      Op->>FS: write import-id proposal
+    end
+    alt a later record is rejected
+      Op->>FS: remove every item written in this batch
+      Op-->>Caller: rethrow
+    end
+  end

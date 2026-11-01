@@ -112,4 +112,6 @@ The public documentation site is built with VitePress and deployed to GitHub Pag
 
 [Design-first policy](governance/DESIGN_FIRST_POLICY.md) defines approval gates and diagram conventions. New task designs use `designs/<task-slug>/` for editable Excalidraw (`.excalidraw` plus `.svg`), diagrams.net (`.drawio` plus `.svg`) and/or Mermaid (`.md`/`.mmd`). Use only necessary tools; existing approved designs need not be relocated or duplicated.
 
-[P1G.3 Foundation workshop cycle](designs/p1g3-foundation-workshop-cycle/SYSTEM_DESIGN.md) is the approved design (PR #591). Implementation follows that design and is not merged.
+[P1G.3 Foundation workshop cycle](designs/p1g3-foundation-workshop-cycle/SYSTEM_DESIGN.md) is the approved design (PR #591). Implementation is merged as PR #596 (`488067af1d39a614e718660944c7f3ae030b1be7`).
+
+[P1H.1 Persistent memory extraction](designs/p1h1-persistent-memory/SYSTEM_DESIGN.md) is a proposed design. It is not approved and it is not implemented.
