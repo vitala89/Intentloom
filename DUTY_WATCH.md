@@ -125,14 +125,15 @@ and is merged as PR #588
 (PR #591, `454cd7736abe37fe1f2e39c472f8e6a7e0d3d0e3`). **P1G.3**
 implementation is merged (PR #596,
 `488067af1d39a614e718660944c7f3ae030b1be7`). **P1H.1** persistent
-memory extraction is a design proposal and is not implemented.
+memory extraction is proposed in PR #597 and is not implemented.
 Do not start implementation, P1H.2, P1I, P1J, Undo U4, or Desktop Undo U5
 until that design is explicitly approved.
 
 ### 2026-11-01, Packages architecture P1H.1 persistent memory extraction design
 
 - **Status:** **DESIGN PR OPEN — AWAITING MAINTAINER APPROVAL.**
-  P1H.1 is not implemented. A green CI result is not approval. Do not
+  PR #597, https://github.com/vitala89/Intentloom/pull/597. P1H.1 is
+  not implemented. A green CI result is not approval. Do not
   start implementation, P1H.2, P1I, P1J, Undo U4, or Desktop Undo U5.
 - **Branch:** `docs/p1h1-persistent-memory`
 - **Baseline:** `488067af1d39a614e718660944c7f3ae030b1be7` (PR #596,

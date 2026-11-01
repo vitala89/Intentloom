@@ -71,8 +71,8 @@ merged as PR #591
 `FoundationUnderstanding` and `getFoundationWorkshop` onto leaf modules
 and is merged as PR #596
 (`488067af1d39a614e718660944c7f3ae030b1be7`). **P1H.1** persistent
-memory extraction is proposed in
-[`docs/designs/p1h1-persistent-memory/SYSTEM_DESIGN.md`](../designs/p1h1-persistent-memory/SYSTEM_DESIGN.md)
+memory extraction is proposed in PR #597
+([`docs/designs/p1h1-persistent-memory/SYSTEM_DESIGN.md`](../designs/p1h1-persistent-memory/SYSTEM_DESIGN.md))
 and is not implemented. Later slices have not started.
 Undo U4 and Desktop Undo U5 are not started.
 Neutron's R4A topology stays frozen.
@@ -118,8 +118,8 @@ merged (PR #586, `d647c6ec25b21e758fa83ae04d6a31b75bc94ecb`). P1G.1
 is merged (PR #587, `a6234a4d20c208a34be301b468f2d3774640b1a9`).
 P1G.2 is merged (PR #588). P1G.3 design is merged (PR #591). The
 implementation is merged as PR #596
-(`488067af1d39a614e718660944c7f3ae030b1be7`). P1H.1 is a proposed
-design and is not implemented. Later slices have not started.
+(`488067af1d39a614e718660944c7f3ae030b1be7`). P1H.1 is proposed in
+PR #597 and is not implemented. Later slices have not started.
 
 ## 1. Baseline
 
@@ -1764,9 +1764,9 @@ Design approved and merged as PR #591
 (`454cd7736abe37fe1f2e39c472f8e6a7e0d3d0e3`). The approved contract is
 [`docs/designs/p1g3-foundation-workshop-cycle/SYSTEM_DESIGN.md`](../designs/p1g3-foundation-workshop-cycle/SYSTEM_DESIGN.md).
 Implementation is merged as PR #596
-(`488067af1d39a614e718660944c7f3ae030b1be7`). P1H.1 is proposed and
-is not implemented. P1H.2, P1I, P1J, Undo U4, and Desktop Undo U5 are
-not started.
+(`488067af1d39a614e718660944c7f3ae030b1be7`). P1H.1 is proposed in
+PR #597 and is not implemented. P1H.2, P1I, P1J, Undo U4, and Desktop
+Undo U5 are not started.
 
 `FoundationUnderstanding` moved unchanged from
 `packages/application/src/foundation-workshop.ts` into
@@ -1841,7 +1841,7 @@ move the callee first.
 
 #### P1H.1 — persistent memory
 
-Proposed, not implemented. The review document is
+Proposed in PR #597, not implemented. The review document is
 [`docs/designs/p1h1-persistent-memory/SYSTEM_DESIGN.md`](../designs/p1h1-persistent-memory/SYSTEM_DESIGN.md).
 It inventories the twelve public operations and three private helpers
 at `packages/application/src/index.ts` lines 4908–5257 and recommends
