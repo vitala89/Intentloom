@@ -9,11 +9,6 @@ import {
 const importComponents = [
   ["approved-apply-baseline.ts", "generated-file-sync-declared.ts", "index.ts"],
   [
-    "foundation-discovery.ts",
-    "foundation-viewmodel.ts",
-    "foundation-workshop.ts",
-  ],
-  [
     "neutron/mutation/apply/neutron-mutation-apply-durable-record.ts",
     "neutron/mutation/apply/neutron-mutation-apply-store.ts",
     "neutron/mutation/verification/neutron-mutation-verification-retry-eligibility.ts",

@@ -10,10 +10,10 @@ import {
 } from "@intentloom/validator";
 import {
   deleteFoundationWorkshopStoreEntry,
-  getFoundationWorkshopStoreEntry,
   registerFoundationWorkshop,
   updateFoundationWorkshopStoreEntry,
 } from "./foundation/foundation-workshop-store.js";
+import { getFoundationWorkshop } from "./foundation/foundation-workshop-lookup.js";
 import {
   buildFoundationConflictList,
   buildFoundationQuestionList,
@@ -33,6 +33,10 @@ import {
   applyAnswerToWorkshopState,
   createDefaultFoundationWorkshopId,
 } from "./foundation/foundation-workshop-defaults.js";
+import type { FoundationUnderstanding } from "./foundation/foundation-understanding-types.js";
+
+export type { FoundationUnderstanding };
+export { getFoundationWorkshop };
 
 export interface CreateFoundationWorkshopParams {
   readonly root: string;
@@ -40,27 +44,6 @@ export interface CreateFoundationWorkshopParams {
   readonly inceptionSessionId?: string;
   readonly initialQuestions?: readonly FoundationQuestion[];
   readonly workshopId?: string;
-}
-
-export interface FoundationUnderstanding {
-  readonly workshopId: string;
-  readonly root: string;
-  readonly idea: string;
-  readonly status: string;
-  readonly problemStatement: string;
-  readonly smallestOutcome: string;
-  readonly nonGoalsCount: number;
-  readonly totalQuestions: number;
-  readonly answeredQuestions: number;
-  readonly pendingQuestions: number;
-  readonly actorsCount: number;
-  readonly workflowsCount: number;
-  readonly domainConceptsCount: number;
-  readonly qualityScenariosCount: number;
-  readonly changeScenariosCount: number;
-  readonly constraintsCount: number;
-  readonly risksCount: number;
-  readonly alternativesCount: number;
 }
 
 export function createFoundationWorkshop(
@@ -109,16 +92,6 @@ export function createFoundationWorkshop(
   };
 
   return registerFoundationWorkshop(validateFoundationWorkshopState(workshop));
-}
-
-export function getFoundationWorkshop(
-  workshopId: string,
-): FoundationWorkshopState {
-  const workshop = getFoundationWorkshopStoreEntry(workshopId);
-  if (workshop === undefined) {
-    throw new Error(`unknown foundation workshop '${workshopId}'`);
-  }
-  return validateFoundationWorkshopState(workshop);
 }
 
 export function listFoundationQuestions(

@@ -17,7 +17,7 @@ import {
   validateFoundationDiscoveryAdaptiveQuestionList,
   validateFoundationDiscoveryCompleteness,
 } from "@intentloom/validator";
-import { getFoundationWorkshop } from "./foundation-workshop.js";
+import { getFoundationWorkshop } from "./foundation/foundation-workshop-lookup.js";
 
 const MEDIUM_EFFORT_QUESTIONS: readonly FoundationQuestion[] = [
   {

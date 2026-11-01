@@ -510,6 +510,7 @@ describe("application host filesystem extraction", () => {
       "foundation-scaffold-store.ts",
       "foundation-scaffold-viewmodel-renderers.ts",
       "foundation-scaffold.ts",
+      "foundation-understanding-types.ts",
       "foundation-viewmodel-renderers.ts",
       "foundation-w2.ts",
       "foundation-w3.ts",
@@ -517,6 +518,7 @@ describe("application host filesystem extraction", () => {
       "foundation-w6.ts",
       "foundation-w7.ts",
       "foundation-workshop-defaults.ts",
+      "foundation-workshop-lookup.ts",
       "foundation-workshop-store.ts",
     ];
     const flatNames = readdirSync(sourceDir).filter(

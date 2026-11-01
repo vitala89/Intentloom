@@ -2,9 +2,11 @@ import { afterEach, describe, expect, it } from "vitest";
 import {
   clearFoundationWorkshopStore,
   createFoundationWorkshop,
+  deleteFoundationWorkshop,
   discoverFoundationAdaptiveQuestions,
   evaluateFoundationDiscoveryCompletenessForWorkshop,
   getFoundationWorkshop,
+  getFoundationWorkshopStoreEntry,
   recordFoundationWorkshopAnswer,
   runFoundationDiscoveryTurn,
   runFoundationCliCommand,
@@ -147,5 +149,38 @@ describe("Engineering Workspace W3: foundation Neutron discovery", () => {
     expect(summarizeFoundationUnderstandingViewmodel(workshopId)).toEqual(
       JSON.parse(summary.stdout),
     );
+  });
+
+  it("throws for a missing workshop instead of returning an empty discovery result", () => {
+    const missingId = "fnd_missing_workshop";
+    expect(() => getFoundationWorkshop(missingId)).toThrow(
+      `unknown foundation workshop '${missingId}'`,
+    );
+    expect(() => discoverFoundationAdaptiveQuestions(missingId)).toThrow(
+      `unknown foundation workshop '${missingId}'`,
+    );
+    expect(() =>
+      evaluateFoundationDiscoveryCompletenessForWorkshop(missingId),
+    ).toThrow(`unknown foundation workshop '${missingId}'`);
+
+    const workshop = createFoundationWorkshop({
+      root: "/tmp/foundation-discovery-lookup",
+      idea: "Validated lookup",
+      workshopId: "fnd_fixture_discovery_lookup",
+    });
+    const stored = getFoundationWorkshopStoreEntry(workshop.id);
+    const loaded = getFoundationWorkshop(workshop.id);
+    expect(loaded).toEqual(stored);
+    expect(loaded).not.toBe(stored);
+    deleteFoundationWorkshop(workshop.id);
+    expect(() => getFoundationWorkshop(workshop.id)).toThrow(
+      `unknown foundation workshop '${workshop.id}'`,
+    );
+    expect(() => discoverFoundationAdaptiveQuestions(workshop.id)).toThrow(
+      `unknown foundation workshop '${workshop.id}'`,
+    );
+    expect(() =>
+      evaluateFoundationDiscoveryCompletenessForWorkshop(workshop.id),
+    ).toThrow(`unknown foundation workshop '${workshop.id}'`);
   });
 });

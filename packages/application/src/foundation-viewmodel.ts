@@ -30,7 +30,7 @@ import {
   validateFoundationUnderstandingSummary,
   validateFoundationReadinessReport,
 } from "@intentloom/validator";
-import type { FoundationUnderstanding } from "./foundation-workshop.js";
+import type { FoundationUnderstanding } from "./foundation/foundation-understanding-types.js";
 
 export function buildVersionedFoundationWorkshop(
   workshop: FoundationWorkshopState,
