@@ -1,0 +1,21 @@
+sequenceDiagram
+  participant Caller
+  participant Start as startAgentSession
+  participant Get as getAgentSession
+  participant Close as closeAgentSession
+  participant FS as FileSystem
+  Caller->>Start: root, projectId, task, optional id
+  Start->>FS: exists session path
+  FS-->>Start: false
+  Start->>Start: redact and validateAgentSessionItem
+  Start->>FS: mkdir parent when missing
+  Start->>FS: write pretty JSON plus newline
+  Start-->>Caller: active AgentSessionItem
+  Caller->>Get: sessionId and root
+  Get->>FS: read
+  Get-->>Caller: validated item
+  Caller->>Close: optional outcomes, decisions, state
+  Close->>Get: existing item
+  Close->>Close: append, redact, validate
+  Close->>FS: write
+  Close-->>Caller: item in closed, compacted, or archived

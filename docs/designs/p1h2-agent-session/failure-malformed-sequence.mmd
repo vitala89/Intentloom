@@ -1,0 +1,26 @@
+sequenceDiagram
+  participant Caller
+  participant Start as startAgentSession
+  participant Get as getAgentSession
+  participant Close as closeAgentSession
+  participant Export as exportAgentSession
+  participant FS as FileSystem
+  alt session file already exists
+    Caller->>Start: same sessionId
+    Start->>FS: exists
+    FS-->>Start: true
+    Start-->>Caller: Error agent session already exists
+  else file missing
+    Caller->>Get: sessionId
+    Get->>FS: exists
+    FS-->>Get: false
+    Get-->>Caller: null
+  else invalid JSON or validator failure
+    Caller->>Get: sessionId
+    Get->>FS: read
+    Get-->>Caller: null
+  end
+  Caller->>Close: get returned null
+  Close-->>Caller: Error agent session not found
+  Caller->>Export: get returned null
+  Export-->>Caller: Error agent session not found

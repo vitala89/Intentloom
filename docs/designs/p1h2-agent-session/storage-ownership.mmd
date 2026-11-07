@@ -1,0 +1,27 @@
+flowchart TD
+  subgraph family [Agent Session family]
+    start[startAgentSession]
+    get[getAgentSession]
+    list[listAgentSessions]
+    close[closeAgentSession]
+    del[deleteAgentSession]
+    exp[exportAgentSession]
+  end
+  subgraph other [Other writers]
+    summary[recordSessionSummary]
+    tasks[task summaries]
+    items[persistent memory items]
+  end
+  dir[".aif/memory/sessions/id.json"]
+  taskDir[".aif/memory/tasks"]
+  itemDir[".aif/memory/items"]
+  exportFile["optional targetPath inside project root"]
+  start --> dir
+  get --> dir
+  list --> get
+  close --> dir
+  del --> dir
+  exp --> exportFile
+  summary --> dir
+  tasks --> taskDir
+  items --> itemDir
