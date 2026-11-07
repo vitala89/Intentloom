@@ -127,10 +127,53 @@ implementation is merged (PR #596,
 `488067af1d39a614e718660944c7f3ae030b1be7`). **P1H.1** design is merged
 (PR #597, `eeda24d7bfba504d5ea6c7a781a6a054117a8a15`). **P1H.1**
 implementation is merged (PR #598,
-`5f7917c1cef0997f6947932aa2f8f4186ac2decc`). **P1H.2** design is proposed in PR #599
-(https://github.com/vitala89/Intentloom/pull/599) and is not approved.
-P1H.2 is not implemented. Do not merge. Do not start implementation,
-P1H.3, P1I, P1J, Undo U4, or Desktop Undo U5.
+`5f7917c1cef0997f6947932aa2f8f4186ac2decc`). **P1H.2** design is merged
+(PR #599, `ff7cb79329f403220aa4b369eede4cb8f06e591b`). **P1H.2**
+implementation is on `refactor/application-agent-session-p1h2` and is
+not merged. Do not merge. Do not start P1H.3, P1I, P1J, Undo U4, or
+Desktop Undo U5.
+
+### 2026-11-07, Packages architecture P1H.2 agent session extraction
+
+- **Status:** **IMPLEMENTED — PR OPEN, AWAITING MAINTAINER REVIEW.**
+  The implementation is not merged. Do not merge. Do not start P1H.3,
+  P1I, P1J, Undo U4, or Desktop Undo U5.
+- **Branch:** `refactor/application-agent-session-p1h2`
+- **Baseline:** `ff7cb79329f403220aa4b369eede4cb8f06e591b` (PR #599,
+  P1H.2 design merged). P1H.1 implementation is PR #598
+  (`5f7917c1cef0997f6947932aa2f8f4186ac2decc`).
+- **Design:** `docs/designs/p1h2-agent-session/SYSTEM_DESIGN.md`
+- **Extraction:** six public operations moved from
+  `packages/application/src/index.ts` lines 4927–5098 into
+  `agent-session/agent-session.ts`: `startAgentSession`,
+  `getAgentSession`, `listAgentSessions`, `closeAgentSession`,
+  `deleteAgentSession`, and `exportAgentSession`. The private helper
+  `sessionFilePath` lives on that module and is not re-exported.
+  `index.ts` imports the six names and re-exports them so
+  `getInteractiveWorkspaceState` still calls `listAgentSessions`.
+- **Sizes:** `index.ts` 6,244/6,605 to 6,093/6,448. The new module is
+  177/185. No `agent-session/index.ts`. No new package export-map key.
+  `quality-exceptions.json` unchanged. Physical lines are one above
+  the 6,447 estimate; effective lines match 6,093.
+- **Invariants:** session path, generated id, null reads, close states,
+  pretty JSON, redaction, default trust `user-supplied`, default
+  retention `project`, and export `projectId` from the caller are
+  unchanged. Session summaries stay in `index.ts` and keep the shared
+  directory. Documented path, collision, metadata, retention, and
+  export limitations stay in place.
+- **SCC:** import-only components stay two of size 3 (Approved Apply
+  and the recorded Neutron mutation cycle). Re-export components stay
+  sizes 4, 29, and 3, with the same membership. The new file,
+  `host-file-system.ts`, `project-path.ts`, and the P1H.1 memory
+  modules are outside every component. Cycle tests were not edited.
+- **Tests:** focused session, CLI session, interactive workspace, v1
+  client, and both cycle suites: 7 files, 94 tests passed. Existing
+  assertions were not rewritten. Nine M4 cases cover the move-sensitive
+  reads, listing, compacted close, and export behavior.
+  `pnpm verify` passed: typecheck, oxlint, Prettier, Vitest 354 files /
+  3083 passed / 3 skipped, build, and `git diff --check`.
+- **Not done:** merge, P1H.3, P1I, P1J, Undo U4, Desktop Undo U5.
+- **Next:** Maintainer review. Do not merge.
 
 ### 2026-11-07, Packages architecture P1H.2 agent session extraction design
 
