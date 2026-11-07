@@ -967,10 +967,20 @@ measures 6,244 effective lines and 6,605 physical lines, down from
 6,562 and 6,937. Import-only cycles stay two components of size 3.
 Re-export cycles stay three, and the component that contains
 `index.ts` stays at 29 files. The implementation is merged as PR #598
-(`5f7917c1cef0997f6947932aa2f8f4186ac2decc`). P1H.2 design is proposed in PR #599
-(`docs/designs/p1h2-agent-session/SYSTEM_DESIGN.md`) and is not
-approved. P1H.2 is not implemented. P1H.3 and later slices have not
-started.
+(`5f7917c1cef0997f6947932aa2f8f4186ac2decc`). P1H.2 design is merged
+as PR #599 (`ff7cb79329f403220aa4b369eede4cb8f06e591b`,
+`docs/designs/p1h2-agent-session/SYSTEM_DESIGN.md`). The six public
+agent-session operations and the private `sessionFilePath` helper
+moved out of `packages/application/src/index.ts` into
+`agent-session/agent-session.ts` (177/185). `index.ts` imports and
+re-exports the six public names and does not re-export the helper. It
+measures 6,093 effective lines and 6,448 physical lines, down from
+6,244 and 6,605. Import-only cycles stay two components of size 3.
+Re-export cycles stay three, and the component that contains
+`index.ts` stays at 29 files. The new module is outside every
+component. Implementation is on
+`refactor/application-agent-session-p1h2` and is not merged. P1H.3
+and later slices have not started.
 Undo U4 and Desktop Undo U5 are not started. Other post-P4 candidates remain in
 `POST_W12_NEXT_INCREMENT_PLAN.md`.
 

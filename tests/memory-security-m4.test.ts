@@ -8,6 +8,7 @@ import {
   closeAgentSession,
   deleteAgentSession,
   exportAgentSession,
+  recordSessionSummary,
 } from "@intentloom/application";
 import { runCli } from "../packages/cli/src/command.js";
 import { validateAgentSessionItem } from "@intentloom/protocol";
@@ -190,5 +191,211 @@ describe("Memory & Security Candidate M4", () => {
         state: "unknown-state",
       }),
     ).toThrow("invalid agent session state");
+  });
+
+  it("returns null when an agent session file is missing", async () => {
+    const fs = createMemoryFileSystem();
+    expect(
+      await getAgentSession("missing-session", { root: "/project" }, fs),
+    ).toBeNull();
+  });
+
+  it("returns null when an agent session file is invalid JSON", async () => {
+    const fs = createMemoryFileSystem();
+    const root = "/project";
+    const path = `${root}/.aif/memory/sessions/bad-json.json`;
+    await fs.write(path, "{not-json");
+
+    expect(await getAgentSession("bad-json", { root }, fs)).toBeNull();
+    expect(await fs.read(path)).toBe("{not-json");
+  });
+
+  it("returns null when an agent session file fails validation", async () => {
+    const fs = createMemoryFileSystem();
+    const root = "/project";
+    const path = `${root}/.aif/memory/sessions/bad-state.json`;
+    const stored = `${JSON.stringify({
+      schemaVersion: "1",
+      sessionId: "bad-state",
+      projectId: "project-m4",
+      state: "unknown-state",
+    })}\n`;
+    await fs.write(path, stored);
+
+    expect(await getAgentSession("bad-state", { root }, fs)).toBeNull();
+    expect(await fs.read(path)).toBe(stored);
+  });
+
+  it("lists agent sessions sorted by session id", async () => {
+    const fs = createMemoryFileSystem();
+    const root = "/project";
+    for (const sessionId of ["sess-c", "sess-a", "sess-b"]) {
+      await startAgentSession(
+        { root, projectId: "project-m4", sessionId, activeTask: sessionId },
+        fs,
+      );
+    }
+
+    const listed = await listAgentSessions({ root }, fs);
+    expect(listed.map((session) => session.sessionId)).toEqual([
+      "sess-a",
+      "sess-b",
+      "sess-c",
+    ]);
+  });
+
+  it("skips session summary files when listing agent sessions", async () => {
+    const fs = createMemoryFileSystem();
+    const root = "/project";
+    await recordSessionSummary(
+      {
+        id: "summary-only",
+        root,
+        profile: "generic",
+        activeAdapters: ["claude"],
+        completedTaskIds: ["task-A"],
+      },
+      { root },
+      fs,
+    );
+    await startAgentSession(
+      {
+        root,
+        projectId: "project-m4",
+        sessionId: "agent-only",
+        activeTask: "Keep the agent session",
+      },
+      fs,
+    );
+
+    const listed = await listAgentSessions({ root }, fs);
+    expect(listed.map((session) => session.sessionId)).toEqual(["agent-only"]);
+  });
+
+  it("persists a compacted close with redacted appended outcomes", async () => {
+    const fs = createMemoryFileSystem();
+    const root = "/project";
+    await startAgentSession(
+      {
+        root,
+        projectId: "project-m4",
+        sessionId: "compact-1",
+        activeTask: "Compact the session",
+        decisions: ["Keep the original decision"],
+      },
+      fs,
+    );
+
+    const closed = await closeAgentSession(
+      "compact-1",
+      {
+        root,
+        state: "compacted",
+        outcomes: [".env", "kept outcome"],
+        decisions: ["server.key"],
+      },
+      fs,
+    );
+
+    expect(closed.state).toBe("compacted");
+    expect(closed.closedAt).toBe(closed.updatedAt);
+    expect(closed.outcomes).toEqual(["[REDACTED]", "kept outcome"]);
+    expect(closed.decisions).toEqual([
+      "Keep the original decision",
+      "[REDACTED]",
+    ]);
+
+    const stored = await getAgentSession("compact-1", { root }, fs);
+    expect(stored?.state).toBe("compacted");
+    expect(stored?.closedAt).toBe(closed.closedAt);
+    expect(stored?.updatedAt).toBe(closed.updatedAt);
+    expect(stored?.outcomes).toEqual(["[REDACTED]", "kept outcome"]);
+  });
+
+  it("returns an export envelope without writing when targetPath is omitted", async () => {
+    const fs = createMemoryFileSystem();
+    const root = "/project";
+    await startAgentSession(
+      {
+        root,
+        projectId: "session-project",
+        sessionId: "export-envelope",
+        activeTask: "Export without a file",
+      },
+      fs,
+    );
+    const before = [...(await fs.list(root))].toSorted();
+
+    const exported = await exportAgentSession(
+      "export-envelope",
+      { root, projectId: "export-argument" },
+      fs,
+    );
+
+    expect(exported.schemaVersion).toBe("1");
+    expect(exported.projectId).toBe("export-argument");
+    expect(exported.session.sessionId).toBe("export-envelope");
+    expect(exported.session.projectId).toBe("session-project");
+    expect(exported.exportedAt).toEqual(expect.any(String));
+    expect([...(await fs.list(root))].toSorted()).toEqual(before);
+  });
+
+  it("throws when an export target path escapes the project root", async () => {
+    const fs = createMemoryFileSystem();
+    const root = "/project";
+    await startAgentSession(
+      {
+        root,
+        projectId: "project-m4",
+        sessionId: "export-escape",
+        activeTask: "Stay inside the root",
+      },
+      fs,
+    );
+
+    await expect(
+      exportAgentSession(
+        "export-escape",
+        { root, projectId: "project-m4", targetPath: "../escape.json" },
+        fs,
+      ),
+    ).rejects.toThrow("path traversal: ../escape.json");
+    expect(await fs.exists("/escape.json")).toBe(false);
+  });
+
+  it("persists default trust and retention and round-trips metadata", async () => {
+    const fs = createMemoryFileSystem();
+    const root = "/project";
+    const metadata = { note: "kept", nested: { ok: true } };
+    const session = await startAgentSession(
+      {
+        root,
+        projectId: "project-m4",
+        sessionId: "defaults",
+        activeTask: "Record defaults",
+        metadata,
+      },
+      fs,
+    );
+
+    expect(session.trustClass).toBe("user-supplied");
+    expect(session.retentionPolicy).toBe("project");
+    expect(session.metadata).toEqual(metadata);
+
+    const stored = JSON.parse(
+      await fs.read(`${root}/.aif/memory/sessions/defaults.json`),
+    ) as {
+      trustClass: string;
+      retentionPolicy: string;
+      metadata: unknown;
+    };
+    expect(stored.trustClass).toBe("user-supplied");
+    expect(stored.retentionPolicy).toBe("project");
+    expect(stored.metadata).toEqual(metadata);
+
+    const fetched = await getAgentSession("defaults", { root }, fs);
+    expect(fetched?.trustClass).toBe("user-supplied");
+    expect(fetched?.retentionPolicy).toBe("project");
+    expect(fetched?.metadata).toEqual(metadata);
   });
 });
