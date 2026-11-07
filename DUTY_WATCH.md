@@ -125,11 +125,58 @@ and is merged as PR #588
 (PR #591, `454cd7736abe37fe1f2e39c472f8e6a7e0d3d0e3`). **P1G.3**
 implementation is merged (PR #596,
 `488067af1d39a614e718660944c7f3ae030b1be7`). **P1H.1** design is merged
-(PR #597, `eeda24d7bfba504d5ea6c7a781a6a054117a8a15`). The persistent
-memory implementation is open as PR #598
-(https://github.com/vitala89/Intentloom/pull/598) and is not merged.
-Do not merge it. Do not start P1H.2, P1I, P1J, Undo U4, or Desktop
-Undo U5.
+(PR #597, `eeda24d7bfba504d5ea6c7a781a6a054117a8a15`). **P1H.1**
+implementation is merged (PR #598,
+`5f7917c1cef0997f6947932aa2f8f4186ac2decc`). **P1H.2** design is proposed in PR #599
+(https://github.com/vitala89/Intentloom/pull/599) and is not approved.
+P1H.2 is not implemented. Do not merge. Do not start implementation,
+P1H.3, P1I, P1J, Undo U4, or Desktop Undo U5.
+
+### 2026-11-07, Packages architecture P1H.2 agent session extraction design
+
+- **Status:** **DESIGN PR OPEN — AWAITING MAINTAINER APPROVAL.**
+  PR #599, https://github.com/vitala89/Intentloom/pull/599. P1H.2 is
+  not implemented. A green CI result is not approval. Do not merge.
+  Do not start implementation, P1H.3, P1I, P1J, Undo U4, or Desktop
+  Undo U5.
+- **Branch:** `docs/p1h2-agent-session`
+- **Baseline:** `5f7917c1cef0997f6947932aa2f8f4186ac2decc` (PR #598,
+  P1H.1 implementation merged). P1H.1 design is PR #597
+  (`eeda24d7bfba504d5ea6c7a781a6a054117a8a15`).
+- **Design:** `docs/designs/p1h2-agent-session/SYSTEM_DESIGN.md`
+- **Inventory:** six public operations in
+  `packages/application/src/index.ts` lines 4927–5098:
+  `startAgentSession`, `getAgentSession`, `listAgentSessions`,
+  `closeAgentSession`, `deleteAgentSession`, `exportAgentSession`.
+  Private helper in the same block: `sessionFilePath`.
+- **Recommendation:** move that text into
+  `agent-session/agent-session.ts` (estimate 177 effective / 185
+  physical). Named re-exports stay on `index.ts`. The analyzed
+  candidate takes `index.ts` from 6,244/6,605 to 6,093/6,447. No
+  operation in the family calls another `index.ts` function.
+  `getInteractiveWorkspaceState` calls `listAgentSessions`, so the
+  barrel imports the leaf and re-exports the six names. The leaf does
+  not import the barrel.
+- **Callers:** CLI `session-command.ts` uses the package root.
+  `getInteractiveWorkspaceState` lists sessions and stays in the
+  barrel. Daemon, MCP, and Desktop do not call this family. Neutron
+  runtime sessions, inception sessions, and session summaries are
+  different records. Session summaries share
+  `.aif/memory/sessions/<id>.json` and stay in `index.ts`.
+- **SCC:** Import-only components are two, each size 3 (Approved Apply,
+  recorded Neutron mutation). Re-export components are three: extension
+  update (4), the 29-file `index.ts` component, and Neutron (3).
+  `host-file-system.ts` is outside every component. The move must not
+  change that membership.
+- **Validation:** `pnpm verify` passed on this design tree: typecheck,
+  oxlint, Prettier, Vitest 354 files / 3074 passed / 3 skipped, build,
+  and `git diff --check`. Mermaid parse succeeded for the six `.mmd`
+  diagrams. No production code changed, so this run does not
+  runtime-test the extraction.
+- **Not done:** production edits, test edits, SCC expectation edits,
+  implementation, merge.
+- **Next:** Maintainer review of the design. A green CI result is not
+  approval.
 
 ### 2026-11-07, Packages architecture P1H.1 persistent memory extraction
 

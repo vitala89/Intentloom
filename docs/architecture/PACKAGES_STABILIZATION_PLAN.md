@@ -74,8 +74,11 @@ and is merged as PR #596
 merged as PR #597
 (`eeda24d7bfba504d5ea6c7a781a6a054117a8a15`). The approved contract is
 [`docs/designs/p1h1-persistent-memory/SYSTEM_DESIGN.md`](../designs/p1h1-persistent-memory/SYSTEM_DESIGN.md).
-Implementation is open as PR #598 and is not merged. P1H.2 and
-later slices have not started.
+Implementation is merged as PR #598
+(`5f7917c1cef0997f6947932aa2f8f4186ac2decc`). **P1H.2** design is proposed in PR #599
+([`docs/designs/p1h2-agent-session/SYSTEM_DESIGN.md`](../designs/p1h2-agent-session/SYSTEM_DESIGN.md))
+and is not approved. P1H.2 is not implemented. P1H.3 and later slices
+have not started.
 Undo U4 and Desktop Undo U5 are not started.
 Neutron's R4A topology stays frozen.
 The measurements below remain the P1A baseline and are not restated as the
@@ -122,7 +125,9 @@ P1G.2 is merged (PR #588). P1G.3 design is merged (PR #591). The
 implementation is merged as PR #596
 (`488067af1d39a614e718660944c7f3ae030b1be7`). P1H.1 design is merged
 as PR #597 (`eeda24d7bfba504d5ea6c7a781a6a054117a8a15`). Implementation
-is open as PR #598 and is not merged. Later slices have not started.
+is merged as PR #598
+(`5f7917c1cef0997f6947932aa2f8f4186ac2decc`). P1H.2 design is proposed in PR #599
+and is not implemented. Later slices have not started.
 
 ## 1. Baseline
 
@@ -1769,8 +1774,10 @@ Design approved and merged as PR #591
 Implementation is merged as PR #596
 (`488067af1d39a614e718660944c7f3ae030b1be7`). P1H.1 design is merged
 as PR #597 (`eeda24d7bfba504d5ea6c7a781a6a054117a8a15`). Implementation
-is open as PR #598 and is not merged. P1H.2, P1I, P1J, Undo U4, and
-Desktop Undo U5 are not started.
+is merged as PR #598
+(`5f7917c1cef0997f6947932aa2f8f4186ac2decc`). P1H.2 design is proposed in PR #599
+and is not implemented. P1I, P1J, Undo U4, and Desktop Undo U5 are not
+started.
 
 `FoundationUnderstanding` moved unchanged from
 `packages/application/src/foundation-workshop.ts` into
@@ -1848,9 +1855,10 @@ move the callee first.
 Design approved and merged as PR #597
 (`eeda24d7bfba504d5ea6c7a781a6a054117a8a15`). The approved contract is
 [`docs/designs/p1h1-persistent-memory/SYSTEM_DESIGN.md`](../designs/p1h1-persistent-memory/SYSTEM_DESIGN.md).
-Implementation is open as PR #598
-(https://github.com/vitala89/Intentloom/pull/598) and is not merged.
-P1H.2, P1I, P1J, Undo U4, and Desktop Undo U5 are not started.
+Implementation is merged as PR #598
+(`5f7917c1cef0997f6947932aa2f8f4186ac2decc`). P1H.2 design is proposed in PR #599
+and is not implemented. P1I, P1J, Undo U4, and Desktop Undo U5 are not
+started.
 
 The twelve public operations moved unchanged out of
 `packages/application/src/index.ts` lines 4908–5257:
@@ -1921,6 +1929,48 @@ Focused tests: 7 files, 85 tests passed
 `tests/application-inception-cycle.test.ts`). No assertion was edited.
 `pnpm verify` passed: typecheck, oxlint, Prettier, Vitest 354 files /
 3074 passed / 3 skipped, build, and `git diff --check`.
+
+#### P1H.2 — agent session
+
+Design is proposed in PR #599 and is not approved. The contract is
+[`docs/designs/p1h2-agent-session/SYSTEM_DESIGN.md`](../designs/p1h2-agent-session/SYSTEM_DESIGN.md).
+P1H.2 is not implemented. P1H.3, P1I, P1J, Undo U4, and Desktop Undo U5
+are not started.
+
+The six public operations are still in
+`packages/application/src/index.ts` lines 4927–5098:
+`startAgentSession`, `getAgentSession`, `listAgentSessions`,
+`closeAgentSession`, `deleteAgentSession`, and `exportAgentSession`.
+The private helper `sessionFilePath` is in the same block. The
+proposed move puts that text in
+`agent-session/agent-session.ts` and keeps the six names as named
+re-exports on `index.ts`. The helper stays unexported. There is no
+`agent-session/index.ts` and no new package export-map key.
+
+The family does not call another function defined in `index.ts`.
+`getInteractiveWorkspaceState` calls `listAgentSessions`, so the
+barrel imports the new module. The module imports
+`host-file-system.ts`, `inside`, `secretLikePath`, and the protocol
+session validators. It does not import `index.ts`, the CLI, the
+daemon, the MCP server, or Desktop.
+
+Session summaries stay in `index.ts`. They already share
+`.aif/memory/sessions/<id>.json` with this family. The move does not
+split that directory and does not change id generation, null-on-corrupt
+reads, close states, redaction, or export `projectId` handling.
+
+On this baseline, import-only components are two, each size 3:
+Approved Apply and the recorded Neutron mutation cycle. Re-export
+components are sizes 4, 29, and 3. `host-file-system.ts` is outside
+every component. The implementation must keep that membership. The
+new file must sit outside every component. Cycle expectations and
+grandfathered limits stay unchanged in the design PR and in the
+implementation PR.
+
+`index.ts` measures 6,244 effective lines and 6,605 physical lines.
+The family block measures 165 and 172. The proposed module is an
+estimate of 177 and 185. The proposed barrel is an estimate of 6,093
+and 6,447. Those estimates are not an implemented result.
 
 ### P1I — transaction and lifecycle
 

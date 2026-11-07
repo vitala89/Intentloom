@@ -1,0 +1,18 @@
+stateDiagram-v2
+  [*] --> active: startAgentSession
+  active --> closed: close default
+  active --> compacted: close state compacted
+  active --> archived: close state archived
+  closed --> closed: close again
+  closed --> compacted: close state compacted
+  closed --> archived: close state archived
+  compacted --> closed: close default
+  compacted --> compacted: close state compacted
+  compacted --> archived: close state archived
+  archived --> closed: close default
+  archived --> compacted: close state compacted
+  archived --> archived: close state archived
+  active --> [*]: deleteAgentSession
+  closed --> [*]: deleteAgentSession
+  compacted --> [*]: deleteAgentSession
+  archived --> [*]: deleteAgentSession

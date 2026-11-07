@@ -1,0 +1,18 @@
+flowchart LR
+  cli["cli/session-command.ts"]
+  ui["getInteractiveWorkspaceState"]
+  barrel["index.ts named re-exports"]
+  mod["agent-session/agent-session.ts"]
+  fsport["host-file-system.ts"]
+  pathmod["project-path.ts"]
+  protocol["@intentloom/protocol"]
+  summaries["recordSessionSummary stays in index.ts"]
+  dir[".aif/memory/sessions"]
+  cli -->|"package root"| barrel
+  ui --> barrel
+  barrel -->|"import and named re-export"| mod
+  mod --> fsport
+  mod --> pathmod
+  mod --> protocol
+  mod --> dir
+  summaries -->|"unchanged writer"| dir

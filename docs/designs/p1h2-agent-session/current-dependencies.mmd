@@ -1,0 +1,16 @@
+flowchart LR
+  cli["cli/session-command.ts"]
+  ui["getInteractiveWorkspaceState"]
+  index["index.ts lines 4927-5098"]
+  fsport["host-file-system.ts"]
+  pathmod["project-path.ts"]
+  protocol["@intentloom/protocol"]
+  sessions[".aif/memory/sessions/id.json"]
+  summaries["recordSessionSummary"]
+  cli -->|"package root"| index
+  ui -->|"listAgentSessions"| index
+  index --> fsport
+  index --> pathmod
+  index --> protocol
+  index --> sessions
+  summaries --> sessions
