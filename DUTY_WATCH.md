@@ -127,15 +127,18 @@ implementation is merged (PR #596,
 `488067af1d39a614e718660944c7f3ae030b1be7`). **P1H.1** design is merged
 (PR #597, `eeda24d7bfba504d5ea6c7a781a6a054117a8a15`). **P1H.1**
 implementation is merged (PR #598,
-`5f7917c1cef0997f6947932aa2f8f4186ac2decc`). **P1H.2** design is
-proposed and is not approved. P1H.2 is not implemented. Do not start
-implementation, P1H.3, P1I, P1J, Undo U4, or Desktop Undo U5.
+`5f7917c1cef0997f6947932aa2f8f4186ac2decc`). **P1H.2** design is proposed in PR #599
+(https://github.com/vitala89/Intentloom/pull/599) and is not approved.
+P1H.2 is not implemented. Do not merge. Do not start implementation,
+P1H.3, P1I, P1J, Undo U4, or Desktop Undo U5.
 
 ### 2026-11-07, Packages architecture P1H.2 agent session extraction design
 
 - **Status:** **DESIGN PR OPEN — AWAITING MAINTAINER APPROVAL.**
-  P1H.2 is not implemented. A green CI result is not approval. Do not
-  start implementation, P1H.3, P1I, P1J, Undo U4, or Desktop Undo U5.
+  PR #599, https://github.com/vitala89/Intentloom/pull/599. P1H.2 is
+  not implemented. A green CI result is not approval. Do not merge.
+  Do not start implementation, P1H.3, P1I, P1J, Undo U4, or Desktop
+  Undo U5.
 - **Branch:** `docs/p1h2-agent-session`
 - **Baseline:** `5f7917c1cef0997f6947932aa2f8f4186ac2decc` (PR #598,
   P1H.1 implementation merged). P1H.1 design is PR #597

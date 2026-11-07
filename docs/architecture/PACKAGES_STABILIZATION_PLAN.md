@@ -75,9 +75,8 @@ merged as PR #597
 (`eeda24d7bfba504d5ea6c7a781a6a054117a8a15`). The approved contract is
 [`docs/designs/p1h1-persistent-memory/SYSTEM_DESIGN.md`](../designs/p1h1-persistent-memory/SYSTEM_DESIGN.md).
 Implementation is merged as PR #598
-(`5f7917c1cef0997f6947932aa2f8f4186ac2decc`). **P1H.2** design is
-proposed in
-[`docs/designs/p1h2-agent-session/SYSTEM_DESIGN.md`](../designs/p1h2-agent-session/SYSTEM_DESIGN.md)
+(`5f7917c1cef0997f6947932aa2f8f4186ac2decc`). **P1H.2** design is proposed in PR #599
+([`docs/designs/p1h2-agent-session/SYSTEM_DESIGN.md`](../designs/p1h2-agent-session/SYSTEM_DESIGN.md))
 and is not approved. P1H.2 is not implemented. P1H.3 and later slices
 have not started.
 Undo U4 and Desktop Undo U5 are not started.
@@ -127,7 +126,7 @@ implementation is merged as PR #596
 (`488067af1d39a614e718660944c7f3ae030b1be7`). P1H.1 design is merged
 as PR #597 (`eeda24d7bfba504d5ea6c7a781a6a054117a8a15`). Implementation
 is merged as PR #598
-(`5f7917c1cef0997f6947932aa2f8f4186ac2decc`). P1H.2 design is proposed
+(`5f7917c1cef0997f6947932aa2f8f4186ac2decc`). P1H.2 design is proposed in PR #599
 and is not implemented. Later slices have not started.
 
 ## 1. Baseline
@@ -1776,7 +1775,7 @@ Implementation is merged as PR #596
 (`488067af1d39a614e718660944c7f3ae030b1be7`). P1H.1 design is merged
 as PR #597 (`eeda24d7bfba504d5ea6c7a781a6a054117a8a15`). Implementation
 is merged as PR #598
-(`5f7917c1cef0997f6947932aa2f8f4186ac2decc`). P1H.2 design is proposed
+(`5f7917c1cef0997f6947932aa2f8f4186ac2decc`). P1H.2 design is proposed in PR #599
 and is not implemented. P1I, P1J, Undo U4, and Desktop Undo U5 are not
 started.
 
@@ -1857,7 +1856,7 @@ Design approved and merged as PR #597
 (`eeda24d7bfba504d5ea6c7a781a6a054117a8a15`). The approved contract is
 [`docs/designs/p1h1-persistent-memory/SYSTEM_DESIGN.md`](../designs/p1h1-persistent-memory/SYSTEM_DESIGN.md).
 Implementation is merged as PR #598
-(`5f7917c1cef0997f6947932aa2f8f4186ac2decc`). P1H.2 design is proposed
+(`5f7917c1cef0997f6947932aa2f8f4186ac2decc`). P1H.2 design is proposed in PR #599
 and is not implemented. P1I, P1J, Undo U4, and Desktop Undo U5 are not
 started.
 
@@ -1933,7 +1932,7 @@ Focused tests: 7 files, 85 tests passed
 
 #### P1H.2 — agent session
 
-Design is proposed and is not approved. The contract is
+Design is proposed in PR #599 and is not approved. The contract is
 [`docs/designs/p1h2-agent-session/SYSTEM_DESIGN.md`](../designs/p1h2-agent-session/SYSTEM_DESIGN.md).
 P1H.2 is not implemented. P1H.3, P1I, P1J, Undo U4, and Desktop Undo U5
 are not started.
