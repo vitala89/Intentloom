@@ -114,4 +114,4 @@ The public documentation site is built with VitePress and deployed to GitHub Pag
 
 [P1G.3 Foundation workshop cycle](designs/p1g3-foundation-workshop-cycle/SYSTEM_DESIGN.md) is the approved design (PR #591). Implementation is merged as PR #596 (`488067af1d39a614e718660944c7f3ae030b1be7`).
 
-[P1H.1 Persistent memory extraction](designs/p1h1-persistent-memory/SYSTEM_DESIGN.md) is proposed in PR #597. It is not approved and it is not implemented.
+[P1H.1 Persistent memory extraction](designs/p1h1-persistent-memory/SYSTEM_DESIGN.md) is the approved design (PR #597, `eeda24d7bfba504d5ea6c7a781a6a054117a8a15`). Implementation is open as PR #598 and is not merged. P1H.2 and later stages have not started.

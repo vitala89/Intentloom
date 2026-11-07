@@ -124,10 +124,56 @@ and is merged as PR #588
 (`6bbfb988ee6f4f4b686d60e7ffd3a26ecc2b3103`). **P1G.3** design is merged
 (PR #591, `454cd7736abe37fe1f2e39c472f8e6a7e0d3d0e3`). **P1G.3**
 implementation is merged (PR #596,
-`488067af1d39a614e718660944c7f3ae030b1be7`). **P1H.1** persistent
-memory extraction is proposed in PR #597 and is not implemented.
-Do not start implementation, P1H.2, P1I, P1J, Undo U4, or Desktop Undo U5
-until that design is explicitly approved.
+`488067af1d39a614e718660944c7f3ae030b1be7`). **P1H.1** design is merged
+(PR #597, `eeda24d7bfba504d5ea6c7a781a6a054117a8a15`). The persistent
+memory implementation is open as PR #598
+(https://github.com/vitala89/Intentloom/pull/598) and is not merged.
+Do not merge it. Do not start P1H.2, P1I, P1J, Undo U4, or Desktop
+Undo U5.
+
+### 2026-11-07, Packages architecture P1H.1 persistent memory extraction
+
+- **Status:** **IMPLEMENTED — PR OPEN, AWAITING MAINTAINER REVIEW.**
+  PR #598, https://github.com/vitala89/Intentloom/pull/598. The
+  implementation is not merged. Do not merge. Do not start P1H.2,
+  P1I, P1J, Undo U4, or Desktop Undo U5.
+- **Branch:** `refactor/application-persistent-memory-p1h1`
+- **Baseline:** `eeda24d7bfba504d5ea6c7a781a6a054117a8a15` (PR #597,
+  P1H.1 design merged).
+- **Design:** `docs/designs/p1h1-persistent-memory/SYSTEM_DESIGN.md`
+- **Extraction:** twelve public operations moved from
+  `packages/application/src/index.ts` lines 4908–5257 into
+  `memory/persistent-memory-store.ts`,
+  `memory/persistent-memory-lifecycle.ts`, and
+  `memory/persistent-memory-retrieval.ts`. Helpers
+  `redactPersistentMemoryContent`, `persistentMemoryPath`, and
+  `writePersistentMemoryItem` live on the store module and are not
+  re-exported from `index.ts`. Named re-exports keep the twelve
+  public names on `@intentloom/application`.
+- **Sizes:** `index.ts` 6,562/6,937 to 6,244/6,605. Store 77/82.
+  Lifecycle 200/206. Retrieval 92/96. No `memory/index.ts`. No new
+  package export-map key. `quality-exceptions.json` unchanged.
+- **Neutron:** `searchPersistentMemory` in
+  `neutron-context-state-collectors.ts` and
+  `neutron-tool-dispatch.ts` imports the retrieval module. Other
+  barrel imports stay. Limits, project restrictions, and tool
+  authorization are unchanged.
+- **Invariants:** item and index paths, JSON formatting, redaction,
+  lifecycle, trust class, approval evidence, import and export
+  semantics, search filters, and best-effort supersede/import
+  compensation are unchanged. `applyContinuousLoopMemory` still
+  writes items itself with `join`.
+- **SCC:** import-only components stay two of size 3 (Approved Apply
+  and the recorded Neutron mutation cycle). Re-export components stay
+  sizes 4, 29, and 3, with the same membership. The three new files
+  and `host-file-system.ts` are outside every component. Cycle tests
+  were not edited.
+- **Tests:** focused memory, CLI memory, Neutron memory, and both
+  cycle suites: 7 files, 85 tests passed. No assertion edits.
+  `pnpm verify` passed: typecheck, oxlint, Prettier, Vitest 354 files /
+  3074 passed / 3 skipped, build, and `git diff --check`.
+- **Not done:** merge, P1H.2, P1I, P1J, Undo U4, Desktop Undo U5.
+- **Next:** Maintainer review. Do not merge.
 
 ### 2026-11-01, Packages architecture P1H.1 persistent memory extraction design
 

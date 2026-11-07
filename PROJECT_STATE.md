@@ -954,10 +954,20 @@ and `getFoundationWorkshop` to
 Import-only cycles are two components of size 3. Re-export cycles are
 three, and the component that contains `index.ts` stays at 29 files.
 That implementation is merged as PR #596
-(`488067af1d39a614e718660944c7f3ae030b1be7`). P1H.1 persistent memory
-extraction is proposed in PR #597
-(`docs/designs/p1h1-persistent-memory/SYSTEM_DESIGN.md`) and is not
-implemented. Later slices have not started.
+(`488067af1d39a614e718660944c7f3ae030b1be7`). P1H.1 design is merged
+as PR #597 (`eeda24d7bfba504d5ea6c7a781a6a054117a8a15`,
+`docs/designs/p1h1-persistent-memory/SYSTEM_DESIGN.md`). The twelve
+public persistent-memory operations and three private helpers moved
+out of `packages/application/src/index.ts` into
+`memory/persistent-memory-store.ts` (77/82),
+`memory/persistent-memory-lifecycle.ts` (200/206), and
+`memory/persistent-memory-retrieval.ts` (92/96). `index.ts` re-exports
+the twelve public names and does not re-export the helpers. It
+measures 6,244 effective lines and 6,605 physical lines, down from
+6,562 and 6,937. Import-only cycles stay two components of size 3.
+Re-export cycles stay three, and the component that contains
+`index.ts` stays at 29 files. The implementation is open as PR #598 and is not merged.
+P1H.2 and later slices have not started.
 Undo U4 and Desktop Undo U5 are not started. Other post-P4 candidates remain in
 `POST_W12_NEXT_INCREMENT_PLAN.md`.
 

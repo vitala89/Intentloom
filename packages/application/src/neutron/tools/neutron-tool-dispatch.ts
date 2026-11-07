@@ -3,10 +3,10 @@ import {
   doctorProject,
   evaluateProjectEngineeringConformance,
   listSecurityFindings,
-  searchPersistentMemory,
   timelineProject,
   type FileSystem,
 } from "../../index.js";
+import { searchPersistentMemory } from "../../memory/persistent-memory-retrieval.js";
 import type { GitRunner } from "@intentloom/evidence-git";
 import type {
   EngineeringConformanceReport,

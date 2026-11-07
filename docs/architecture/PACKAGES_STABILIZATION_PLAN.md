@@ -70,10 +70,12 @@ merged as PR #591
 (`454cd7736abe37fe1f2e39c472f8e6a7e0d3d0e3`). The implementation moves
 `FoundationUnderstanding` and `getFoundationWorkshop` onto leaf modules
 and is merged as PR #596
-(`488067af1d39a614e718660944c7f3ae030b1be7`). **P1H.1** persistent
-memory extraction is proposed in PR #597
-([`docs/designs/p1h1-persistent-memory/SYSTEM_DESIGN.md`](../designs/p1h1-persistent-memory/SYSTEM_DESIGN.md))
-and is not implemented. Later slices have not started.
+(`488067af1d39a614e718660944c7f3ae030b1be7`). **P1H.1** design is
+merged as PR #597
+(`eeda24d7bfba504d5ea6c7a781a6a054117a8a15`). The approved contract is
+[`docs/designs/p1h1-persistent-memory/SYSTEM_DESIGN.md`](../designs/p1h1-persistent-memory/SYSTEM_DESIGN.md).
+Implementation is open as PR #598 and is not merged. P1H.2 and
+later slices have not started.
 Undo U4 and Desktop Undo U5 are not started.
 Neutron's R4A topology stays frozen.
 The measurements below remain the P1A baseline and are not restated as the
@@ -118,8 +120,9 @@ merged (PR #586, `d647c6ec25b21e758fa83ae04d6a31b75bc94ecb`). P1G.1
 is merged (PR #587, `a6234a4d20c208a34be301b468f2d3774640b1a9`).
 P1G.2 is merged (PR #588). P1G.3 design is merged (PR #591). The
 implementation is merged as PR #596
-(`488067af1d39a614e718660944c7f3ae030b1be7`). P1H.1 is proposed in
-PR #597 and is not implemented. Later slices have not started.
+(`488067af1d39a614e718660944c7f3ae030b1be7`). P1H.1 design is merged
+as PR #597 (`eeda24d7bfba504d5ea6c7a781a6a054117a8a15`). Implementation
+is open as PR #598 and is not merged. Later slices have not started.
 
 ## 1. Baseline
 
@@ -1764,9 +1767,10 @@ Design approved and merged as PR #591
 (`454cd7736abe37fe1f2e39c472f8e6a7e0d3d0e3`). The approved contract is
 [`docs/designs/p1g3-foundation-workshop-cycle/SYSTEM_DESIGN.md`](../designs/p1g3-foundation-workshop-cycle/SYSTEM_DESIGN.md).
 Implementation is merged as PR #596
-(`488067af1d39a614e718660944c7f3ae030b1be7`). P1H.1 is proposed in
-PR #597 and is not implemented. P1H.2, P1I, P1J, Undo U4, and Desktop
-Undo U5 are not started.
+(`488067af1d39a614e718660944c7f3ae030b1be7`). P1H.1 design is merged
+as PR #597 (`eeda24d7bfba504d5ea6c7a781a6a054117a8a15`). Implementation
+is open as PR #598 and is not merged. P1H.2, P1I, P1J, Undo U4, and
+Desktop Undo U5 are not started.
 
 `FoundationUnderstanding` moved unchanged from
 `packages/application/src/foundation-workshop.ts` into
@@ -1841,21 +1845,82 @@ move the callee first.
 
 #### P1H.1 — persistent memory
 
-Proposed in PR #597, not implemented. The review document is
+Design approved and merged as PR #597
+(`eeda24d7bfba504d5ea6c7a781a6a054117a8a15`). The approved contract is
 [`docs/designs/p1h1-persistent-memory/SYSTEM_DESIGN.md`](../designs/p1h1-persistent-memory/SYSTEM_DESIGN.md).
-It inventories the twelve public operations and three private helpers
-at `packages/application/src/index.ts` lines 4908–5257 and recommends
-moving that text into `memory/persistent-memory-store.ts`,
-`memory/persistent-memory-lifecycle.ts`, and
-`memory/persistent-memory-retrieval.ts`. The family does not call any
-other `index.ts` function, so the move does not need to import the
-barrel. `index.ts` keeps the public names through named re-exports.
-The analyzed candidate reduces `index.ts` from 6,562/6,937 to
-6,244/6,605. Import-only components stay two of size 3.
-Re-export components stay sizes 4, 29, and 3. No production source,
-test, or SCC expectation changes in the design PR. Implementation
-waits for explicit maintainer approval. P1H.2, P1I, P1J, Undo U4, and
-Desktop Undo U5 are not started.
+Implementation is open as PR #598
+(https://github.com/vitala89/Intentloom/pull/598) and is not merged.
+P1H.2, P1I, P1J, Undo U4, and Desktop Undo U5 are not started.
+
+The twelve public operations moved unchanged out of
+`packages/application/src/index.ts` lines 4908–5257:
+`getPersistentMemoryItem`, `listPersistentMemoryItems`,
+`proposePersistentMemory`, `acceptPersistentMemory`,
+`supersedePersistentMemory`, `forgetPersistentMemory`,
+`exportPersistentMemory`, `importPersistentMemory`,
+`searchPersistentMemory`, `rebuildPersistentMemoryIndex`,
+`clearPersistentMemoryIndex`, and `renderPersistentMemoryContext`.
+The private helpers `redactPersistentMemoryContent`,
+`persistentMemoryPath`, and `writePersistentMemoryItem` moved with
+them. `index.ts` re-exports only the twelve public names. The helpers
+are not package-root exports.
+
+`memory/persistent-memory-store.ts` owns redaction, path validation,
+item writing, get, and list. It measures 77 effective lines and 82
+physical lines. `memory/persistent-memory-lifecycle.ts` owns propose,
+accept, supersede, forget, export, and import. It measures 200
+effective lines and 206 physical lines.
+`memory/persistent-memory-retrieval.ts` owns search, render, rebuild,
+and clear. It measures 92 effective lines and 96 physical lines.
+There is no `memory/index.ts` and no new package export-map key.
+
+Store imports the filesystem port, `inside`, and the protocol item
+validator. Lifecycle imports the store. Retrieval imports the store
+and `inside`. None of the three modules import `index.ts`.
+
+`index.ts` measured 6,562 effective lines and 6,937 physical lines
+before the move. After the named re-exports it measures 6,244
+effective lines and 6,605 physical lines. Both counts are below the
+grandfathered ceiling. `docs/governance/quality-exceptions.json` is
+unchanged.
+
+Neutron N3 `neutron-context-state-collectors.ts` and N4
+`neutron-tool-dispatch.ts` import `searchPersistentMemory` from
+`memory/persistent-memory-retrieval.ts`. Their other barrel imports
+stay. Tool names, `maxItems` limits, project restrictions, context
+assembly, read-only authorization, mutation governance, and session
+permissions are unchanged. CLI, daemon, MCP, and Desktop import paths
+stay on the package root.
+
+Storage paths stay `.aif/memory/items/<id>.json` and
+`.aif/memory/index.json`. Schemas, JSON formatting, trailing newlines,
+redaction, lifecycle transitions, trust-class rules, approval
+evidence, import and export semantics, search ordering, and the
+best-effort supersede and import compensation stay as they were.
+`canonical-intent` and `verified-evidence` remain prohibited in
+proposals and imports. Search still returns only accepted items for
+the requested project and still ignores the derived index.
+`applyContinuousLoopMemory` is not routed through these operations
+and still writes with `join`.
+
+Before and after, import-only components are two, each size 3:
+Approved Apply (`approved-apply-baseline.ts`,
+`generated-file-sync-declared.ts`, `index.ts`) and the recorded
+Neutron mutation cycle. Re-export components stay sizes 4, 29, and 3.
+The 29-file component that contains `index.ts` and
+`inception-flow.ts` has the same membership. The three new files are
+outside every component. `host-file-system.ts` stays outside every
+component. The locked cycle tests were not edited.
+
+Focused tests: 7 files, 85 tests passed
+(`tests/memory-security-m2.test.ts`,
+`tests/memory-security-m3.test.ts`, `tests/cli-memory.test.ts`,
+`tests/neutron-n4-memory-tool.test.ts`,
+`tests/neutron-n3-context-state.test.ts`,
+`tests/application-foundation-scaffold-cycle.test.ts`,
+`tests/application-inception-cycle.test.ts`). No assertion was edited.
+`pnpm verify` passed: typecheck, oxlint, Prettier, Vitest 354 files /
+3074 passed / 3 skipped, build, and `git diff --check`.
 
 ### P1I — transaction and lifecycle
 

@@ -10,9 +10,9 @@ import {
   getProfile,
   getTaskSummary,
   listTaskCheckpoints,
-  searchPersistentMemory,
   type FileSystem,
 } from "../../index.js";
+import { searchPersistentMemory } from "../../memory/persistent-memory-retrieval.js";
 import {
   memoryRequested,
   type CollectionResult,
