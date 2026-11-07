@@ -126,13 +126,16 @@ and is merged as PR #588
 implementation is merged (PR #596,
 `488067af1d39a614e718660944c7f3ae030b1be7`). **P1H.1** design is merged
 (PR #597, `eeda24d7bfba504d5ea6c7a781a6a054117a8a15`). The persistent
-memory implementation is not merged. Do not merge it. Do not start
-P1H.2, P1I, P1J, Undo U4, or Desktop Undo U5.
+memory implementation is open as PR #598
+(https://github.com/vitala89/Intentloom/pull/598) and is not merged.
+Do not merge it. Do not start P1H.2, P1I, P1J, Undo U4, or Desktop
+Undo U5.
 
 ### 2026-11-07, Packages architecture P1H.1 persistent memory extraction
 
 - **Status:** **IMPLEMENTED — PR OPEN, AWAITING MAINTAINER REVIEW.**
-  The implementation is not merged. Do not merge. Do not start P1H.2,
+  PR #598, https://github.com/vitala89/Intentloom/pull/598. The
+  implementation is not merged. Do not merge. Do not start P1H.2,
   P1I, P1J, Undo U4, or Desktop Undo U5.
 - **Branch:** `refactor/application-persistent-memory-p1h1`
 - **Baseline:** `eeda24d7bfba504d5ea6c7a781a6a054117a8a15` (PR #597,

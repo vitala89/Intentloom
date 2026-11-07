@@ -966,7 +966,7 @@ the twelve public names and does not re-export the helpers. It
 measures 6,244 effective lines and 6,605 physical lines, down from
 6,562 and 6,937. Import-only cycles stay two components of size 3.
 Re-export cycles stay three, and the component that contains
-`index.ts` stays at 29 files. The implementation is not merged.
+`index.ts` stays at 29 files. The implementation is open as PR #598 and is not merged.
 P1H.2 and later slices have not started.
 Undo U4 and Desktop Undo U5 are not started. Other post-P4 candidates remain in
 `POST_W12_NEXT_INCREMENT_PLAN.md`.

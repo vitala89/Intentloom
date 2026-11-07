@@ -74,8 +74,8 @@ and is merged as PR #596
 merged as PR #597
 (`eeda24d7bfba504d5ea6c7a781a6a054117a8a15`). The approved contract is
 [`docs/designs/p1h1-persistent-memory/SYSTEM_DESIGN.md`](../designs/p1h1-persistent-memory/SYSTEM_DESIGN.md).
-Implementation extracts the persistent memory family and is not
-merged. P1H.2 and later slices have not started.
+Implementation is open as PR #598 and is not merged. P1H.2 and
+later slices have not started.
 Undo U4 and Desktop Undo U5 are not started.
 Neutron's R4A topology stays frozen.
 The measurements below remain the P1A baseline and are not restated as the
@@ -122,7 +122,7 @@ P1G.2 is merged (PR #588). P1G.3 design is merged (PR #591). The
 implementation is merged as PR #596
 (`488067af1d39a614e718660944c7f3ae030b1be7`). P1H.1 design is merged
 as PR #597 (`eeda24d7bfba504d5ea6c7a781a6a054117a8a15`). Implementation
-is not merged. Later slices have not started.
+is open as PR #598 and is not merged. Later slices have not started.
 
 ## 1. Baseline
 
@@ -1769,8 +1769,8 @@ Design approved and merged as PR #591
 Implementation is merged as PR #596
 (`488067af1d39a614e718660944c7f3ae030b1be7`). P1H.1 design is merged
 as PR #597 (`eeda24d7bfba504d5ea6c7a781a6a054117a8a15`). Implementation
-is not merged. P1H.2, P1I, P1J, Undo U4, and Desktop Undo U5 are not
-started.
+is open as PR #598 and is not merged. P1H.2, P1I, P1J, Undo U4, and
+Desktop Undo U5 are not started.
 
 `FoundationUnderstanding` moved unchanged from
 `packages/application/src/foundation-workshop.ts` into
@@ -1848,8 +1848,9 @@ move the callee first.
 Design approved and merged as PR #597
 (`eeda24d7bfba504d5ea6c7a781a6a054117a8a15`). The approved contract is
 [`docs/designs/p1h1-persistent-memory/SYSTEM_DESIGN.md`](../designs/p1h1-persistent-memory/SYSTEM_DESIGN.md).
-Implementation is not merged. P1H.2, P1I, P1J, Undo U4, and Desktop
-Undo U5 are not started.
+Implementation is open as PR #598
+(https://github.com/vitala89/Intentloom/pull/598) and is not merged.
+P1H.2, P1I, P1J, Undo U4, and Desktop Undo U5 are not started.
 
 The twelve public operations moved unchanged out of
 `packages/application/src/index.ts` lines 4908–5257:
