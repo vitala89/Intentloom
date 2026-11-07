@@ -1,0 +1,20 @@
+flowchart LR
+  index["index.ts lines 4908-5257"]
+  fsport["host-file-system.ts"]
+  pathmod["project-path.ts inside"]
+  protocol["@intentloom/protocol"]
+  cli["cli memory-command.ts"]
+  n3["neutron-context-state-collectors.ts"]
+  n4["neutron-tool-dispatch.ts"]
+  loop["continuous-loop-apply.ts"]
+  items[".aif/memory/items/id.json"]
+  derived[".aif/memory/index.json"]
+  cli -->|"package root"| index
+  n3 -->|"searchPersistentMemory"| index
+  n4 -->|"searchPersistentMemory"| index
+  index --> fsport
+  index --> pathmod
+  index --> protocol
+  index --> items
+  index --> derived
+  loop -->|"direct item write"| items

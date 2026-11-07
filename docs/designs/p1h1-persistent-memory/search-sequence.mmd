@@ -1,0 +1,22 @@
+sequenceDiagram
+  participant Caller
+  participant Search as searchPersistentMemory
+  participant List as listPersistentMemoryItems
+  participant FS as FileSystem
+  participant Validator as validatePersistentMemorySearchResult
+  Caller->>Search: query, root, projectId, maxItems, fs
+  Search->>List: root, fs
+  List->>FS: list(root)
+  FS-->>List: paths
+  loop each .aif/memory/items/*.json
+    List->>FS: read(inside(root, path))
+    alt valid item
+      List->>List: keep when lifecycle filter matches
+    else malformed or traversal
+      List->>List: skip
+    end
+  end
+  List-->>Search: items sorted by id
+  Search->>Search: accepted items in projectId, term score, default max 10
+  Search->>Validator: schemaVersion 1, query, items, indexRebuilt false
+  Validator-->>Caller: PersistentMemorySearchResult

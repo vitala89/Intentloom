@@ -1,0 +1,28 @@
+sequenceDiagram
+  participant Caller
+  participant Accept as acceptPersistentMemory
+  participant Get as getPersistentMemoryItem
+  participant Validator as validatePersistentMemoryItem
+  participant Write as writePersistentMemoryItem
+  participant FS as FileSystem
+  Caller->>Accept: id, approval, root, fs
+  Accept->>Get: id, root, fs
+  Get->>FS: exists(item path)
+  alt missing
+    Get-->>Accept: undefined
+    Accept-->>Caller: throw only an existing proposed memory item can be accepted
+  else present
+    Get->>FS: read(item path)
+    Get->>Validator: parsed JSON
+    Validator-->>Accept: existing item
+  end
+  alt lifecycle is not proposed
+    Accept-->>Caller: throw only an existing proposed memory item can be accepted
+  else proposed
+    Accept->>Validator: accepted, trustClass user-supplied, approval
+    Validator-->>Accept: accepted item
+    Accept->>Write: accepted item, root, fs
+    Write->>FS: mkdir(items directory) when missing
+    Write->>FS: write(item path, pretty JSON)
+    Write-->>Caller: accepted item
+  end
