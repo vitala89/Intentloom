@@ -3463,291 +3463,30 @@ export async function listSessionSummaries(
 export { parseSkillProgressive } from "./skills/skill-progressive-parse.js";
 export { discoverSkills, getSkillAtLevel } from "./skills/skill-discovery.js";
 
-import {
+import { listSkillProposals } from "./skills/skill-proposal-store.js";
+import { listSkillEvaluations } from "./skills/skill-evaluation.js";
+
+export {
   createSkillProposal,
   getSkillProposal,
   listSkillProposals,
 } from "./skills/skill-proposal-store.js";
-import {
+export {
   evaluateSkillProposal,
   getSkillEvaluation,
   listSkillEvaluations,
 } from "./skills/skill-evaluation.js";
-
-export { createSkillProposal, getSkillProposal, listSkillProposals };
-export { evaluateSkillProposal, getSkillEvaluation, listSkillEvaluations };
-
-export async function updateSkillProposalState(
-  id: string,
-  newState: SkillProposalState,
-  options: {
-    root: string;
-    approvalEvidence?: string;
-    bypassEvaluationGate?: boolean;
-  },
-  fs: FileSystem = nodeFileSystem,
-): Promise<SkillProposal> {
-  const existing = await getSkillProposal(id, options, fs);
-  if (!existing) throw new Error(`Skill proposal not found: ${id}`);
-
-  if (
-    (newState === "approved" || newState === "active") &&
-    (!options.approvalEvidence || options.approvalEvidence.trim().length === 0)
-  ) {
-    throw new Error(
-      `Transitioning proposal ${id} to ${newState} requires non-empty approvalEvidence`,
-    );
-  }
-
-  if (
-    (newState === "approved" || newState === "active") &&
-    !options.bypassEvaluationGate
-  ) {
-    const evaluations = await listSkillEvaluations({ root: options.root }, fs);
-    const proposalEvals = evaluations.filter(
-      (e) =>
-        e.proposalId === id ||
-        e.skillId === existing.id ||
-        e.skillId === existing.name,
-    );
-    if (proposalEvals.length === 0) {
-      throw new Error(
-        `Activation blocked: skill proposal ${id} has no evaluation records`,
-      );
-    }
-    const latestEval = proposalEvals[0]!;
-    if (
-      !latestEval.passed ||
-      !latestEval.securityPass ||
-      latestEval.outcome === "regressed" ||
-      latestEval.outcome === "unsafe"
-    ) {
-      throw new Error(
-        `Activation blocked: skill proposal ${id} evaluation outcome is ${latestEval.outcome}`,
-      );
-    }
-  }
-
-  const updated = validateSkillProposal({
-    ...existing,
-    state: newState,
-    ...(options.approvalEvidence !== undefined
-      ? { approvalEvidence: options.approvalEvidence }
-      : existing.approvalEvidence !== undefined
-        ? { approvalEvidence: existing.approvalEvidence }
-        : {}),
-    updatedAt: new Date().toISOString(),
-  });
-
-  const path = inside(options.root, `.aif/memory/proposals/${id}.json`);
-  await fs.write(path, `${JSON.stringify(updated, null, 2)}\n`);
-  return updated;
-}
-
-export async function rollbackSkill(
-  id: string,
-  options: { root: string; approvalEvidence?: string },
-  fs: FileSystem = nodeFileSystem,
-): Promise<SkillProposal> {
-  const existing = await getSkillProposal(id, options, fs);
-  if (!existing) throw new Error(`Skill proposal not found: ${id}`);
-
-  const updated = validateSkillProposal({
-    ...existing,
-    state: "rolled-back",
-    ...(options.approvalEvidence !== undefined
-      ? { approvalEvidence: options.approvalEvidence }
-      : {}),
-    updatedAt: new Date().toISOString(),
-  });
-
-  const path = inside(options.root, `.aif/memory/proposals/${id}.json`);
-  await fs.write(path, `${JSON.stringify(updated, null, 2)}\n`);
-  return updated;
-}
-
-export async function validateSkillExtensionLock(
-  options: { root: string },
-  fs: FileSystem = nodeFileSystem,
-): Promise<"clean" | "stale" | "unverified" | "corrupted"> {
-  const lockFilePath = inside(options.root, ".aif/memory/lock.json");
-  if (!(await fs.exists(lockFilePath))) return "unverified";
-  try {
-    const content = await fs.read(lockFilePath);
-    JSON.parse(content);
-    return "clean";
-  } catch {
-    return "corrupted";
-  }
-}
-
-export async function listProceduralMemorySummary(
-  options: { root: string },
-  fs: FileSystem = nodeFileSystem,
-): Promise<ProceduralMemorySummary> {
-  const proposals = await listSkillProposals({ root: options.root }, fs);
-  const evaluations = await listSkillEvaluations({ root: options.root }, fs);
-  const extensionLockStatus = await validateSkillExtensionLock(options, fs);
-
-  const proposalCountsByState: Record<string, number> = {};
-  let activeSkillsCount = 0;
-  for (const p of proposals) {
-    proposalCountsByState[p.state] = (proposalCountsByState[p.state] ?? 0) + 1;
-    if (p.state === "active" || p.state === "approved") {
-      activeSkillsCount += 1;
-    }
-  }
-
-  const passedEvals = evaluations.filter((e) => e.passed && e.securityPass);
-  const evaluationPassRate =
-    evaluations.length > 0
-      ? Math.round((passedEvals.length / evaluations.length) * 100)
-      : 100;
-
-  return {
-    totalProposals: proposals.length,
-    proposalCountsByState,
-    totalEvaluations: evaluations.length,
-    evaluationPassRate,
-    activeSkillsCount,
-    extensionLockStatus,
-  };
-}
-
-export async function inspectProceduralMemory(
-  options: { root: string },
-  fs: FileSystem = nodeFileSystem,
-): Promise<ProceduralMemoryInspection> {
-  const summary = await listProceduralMemorySummary(options, fs);
-  const proposals = await listSkillProposals({ root: options.root }, fs);
-  const evaluations = await listSkillEvaluations({ root: options.root }, fs);
-  const issues: string[] = [];
-
-  if (summary.extensionLockStatus === "corrupted") {
-    issues.push("Extension lock file .aif/memory/lock.json is corrupted");
-  } else if (summary.extensionLockStatus === "unverified") {
-    issues.push("Extension lock file .aif/memory/lock.json is missing");
-  }
-
-  for (const p of proposals) {
-    if (p.state === "approved" || p.state === "active") {
-      const propEvals = evaluations.filter(
-        (e) => e.proposalId === p.id || e.skillId === p.name,
-      );
-      if (propEvals.length === 0) {
-        issues.push(
-          `Proposal [${p.id}] (${p.name}) is ${p.state} but has no evaluations`,
-        );
-      } else if (!propEvals[0]!.passed || !propEvals[0]!.securityPass) {
-        issues.push(
-          `Proposal [${p.id}] (${p.name}) is ${p.state} but latest evaluation failed`,
-        );
-      }
-    }
-  }
-
-  return {
-    summary,
-    proposals,
-    evaluations,
-    issues,
-  };
-}
-
-export async function prepareSkillMutationPlan(
-  options: {
-    root: string;
-    action: "approve" | "activate" | "deprecate" | "rollback";
-    proposalId: string;
-    approvalEvidence?: string;
-  },
-  fs: FileSystem = nodeFileSystem,
-): Promise<SkillMutationPlan> {
-  const proposal = await getSkillProposal(options.proposalId, options, fs);
-  if (!proposal)
-    throw new Error(`Skill proposal not found: ${options.proposalId}`);
-
-  let targetState: SkillProposalState;
-  switch (options.action) {
-    case "approve":
-      targetState = "approved";
-      break;
-    case "activate":
-      targetState = "active";
-      break;
-    case "deprecate":
-      targetState = "deprecated";
-      break;
-    case "rollback":
-      targetState = "rolled-back";
-      break;
-  }
-
-  const planId = `plan-skill-${options.proposalId}-${Date.now()}`;
-  const checksumPayload = `${planId}:${options.action}:${options.proposalId}:${targetState}:${options.approvalEvidence ?? ""}`;
-  const checksumDigest = createHash("sha256")
-    .update(checksumPayload)
-    .digest("hex");
-
-  return validateSkillMutationPlan({
-    schemaVersion: "1",
-    id: planId,
-    action: options.action,
-    proposalId: options.proposalId,
-    targetState,
-    ...(options.approvalEvidence !== undefined
-      ? { approvalEvidence: options.approvalEvidence }
-      : {}),
-    checksum: checksumDigest,
-    createdAt: new Date().toISOString(),
-  });
-}
-
-export async function applySkillMutationPlan(
-  planInput: unknown,
-  options: { root: string },
-  fs: FileSystem = nodeFileSystem,
-): Promise<SkillProposal> {
-  const mutationPlan = validateSkillMutationPlan(planInput);
-
-  let result: SkillProposal;
-  if (mutationPlan.action === "rollback") {
-    result = await rollbackSkill(
-      mutationPlan.proposalId,
-      {
-        root: options.root,
-        ...(mutationPlan.approvalEvidence !== undefined
-          ? { approvalEvidence: mutationPlan.approvalEvidence }
-          : {}),
-      },
-      fs,
-    );
-  } else {
-    result = await updateSkillProposalState(
-      mutationPlan.proposalId,
-      mutationPlan.targetState,
-      {
-        root: options.root,
-        ...(mutationPlan.approvalEvidence !== undefined
-          ? { approvalEvidence: mutationPlan.approvalEvidence }
-          : {}),
-      },
-      fs,
-    );
-  }
-
-  const logPath = inside(
-    options.root,
-    `.aif/memory/mutations/${mutationPlan.id}.json`,
-  );
-  const dir = dirname(logPath);
-  if (!(await fs.exists(dir))) {
-    await fs.mkdir(dir);
-  }
-  await fs.write(logPath, `${JSON.stringify(mutationPlan, null, 2)}\n`);
-
-  return result;
-}
+export {
+  updateSkillProposalState,
+  rollbackSkill,
+  prepareSkillMutationPlan,
+  applySkillMutationPlan,
+} from "./skills/skill-mutation.js";
+export {
+  validateSkillExtensionLock,
+  listProceduralMemorySummary,
+  inspectProceduralMemory,
+} from "./skills/skill-procedural-memory.js";
 
 export async function createTaskCheckpoint(
   taskId: string,

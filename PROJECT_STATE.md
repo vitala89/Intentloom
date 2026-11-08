@@ -1008,10 +1008,24 @@ It measures 5,575 effective lines and 5,881 physical lines, down from
 5,795 and 6,119. `quality-exceptions.json` is unchanged. Import-only
 cycles stay two components of size 3. Re-export cycles stay three,
 sizes 4, 29, and 3. The new modules stay outside every component.
-The implementation pull request is #603
-(https://github.com/vitala89/Intentloom/pull/603) and is not merged. P1H.3c
-and P1H.4 and later slices have not started. `rankProceduralMemory`
-stays in the barrel.
+The implementation is merged as PR #603
+(https://github.com/vitala89/Intentloom/pull/603,
+`f116d199a0783870806e8c8660d90385c106f8e1`). P1H.3c moves
+`updateSkillProposalState`, `rollbackSkill`, `prepareSkillMutationPlan`,
+and `applySkillMutationPlan` into `skills/skill-mutation.ts` (181/197)
+and `validateSkillExtensionLock`, `listProceduralMemorySummary`, and
+`inspectProceduralMemory` into `skills/skill-procedural-memory.ts`
+(87/96). Mutation imports the store and evaluation. Procedural memory
+imports the store and evaluation and does not import mutation. The
+store does not import evaluation or mutation. `index.ts` re-exports all
+sixteen skill names and keeps value imports of `listSkillProposals` and
+`listSkillEvaluations` for `rankProceduralMemory`. It measures 5,339
+effective lines and 5,620 physical lines, down from 5,575 and 5,881.
+`quality-exceptions.json` is unchanged. Import-only cycles stay two
+components of size 3. Re-export cycles stay three, sizes 4, 29, and 3.
+The six skill modules stay outside every component. P1H.3c is
+implemented and is not merged. P1H.4 and later slices have not started.
+`rankProceduralMemory` stays in the barrel.
 Undo U4 and Desktop Undo U5 are not started. Other post-P4 candidates remain in
 `POST_W12_NEXT_INCREMENT_PLAN.md`.
 

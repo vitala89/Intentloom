@@ -133,17 +133,75 @@ implementation is merged (PR #600,
 `efce5db2b40d1f350df43d38b4b97d1ccd5c2736`). **P1H.3** design is merged (PR #601,
 `6b387a34c221f967a15ef670d53bea9b76e40828`). **P1H.3a** catalog read is
 merged (PR #602, `460b81efd1e81f5b24a22e11d3af4680c8f28aad`). **P1H.3b**
-proposal store and evaluation is implemented in PR #603
-(https://github.com/vitala89/Intentloom/pull/603) and is not merged. Do not
-merge it on a green CI result alone. Do not start P1H.3c, P1H.4, P1I,
-P1J, Undo U4, or Desktop Undo U5.
+proposal store and evaluation is merged (PR #603,
+`f116d199a0783870806e8c8660d90385c106f8e1`). **P1H.3c** skill mutation
+and procedural memory is implemented and is not merged. Do not merge it
+on a green CI result alone. Do not start P1H.4, P1I, P1J, Undo U4, or
+Desktop Undo U5.
+
+### 2026-11-08, Packages architecture P1H.3c skill mutation and procedural memory
+
+- **Status:** **IMPLEMENTED — PR OPEN, AWAITING MAINTAINER REVIEW.**
+  P1H.3c is not merged. Do not merge. Do not start P1H.4, P1I, P1J,
+  Undo U4, or Desktop Undo U5.
+- **Branch:** `refactor/application-skill-mutation-p1h3c`
+- **Baseline:** `f116d199a0783870806e8c8660d90385c106f8e1` (PR #603,
+  P1H.3b proposal store and evaluation merged). P1H.3 design is PR #601
+  (`6b387a34c221f967a15ef670d53bea9b76e40828`). P1H.3a is PR #602
+  (`460b81efd1e81f5b24a22e11d3af4680c8f28aad`).
+- **Design:** `docs/designs/p1h3-skill-catalog-proposals/SYSTEM_DESIGN.md`,
+  section 19 step 3.
+- **Extraction:** `updateSkillProposalState`, `rollbackSkill`,
+  `prepareSkillMutationPlan`, and `applySkillMutationPlan` moved to
+  `packages/application/src/skills/skill-mutation.ts`.
+  `validateSkillExtensionLock`, `listProceduralMemorySummary`, and
+  `inspectProceduralMemory` moved to
+  `packages/application/src/skills/skill-procedural-memory.ts`.
+  Mutation imports the store and evaluation. Procedural memory imports
+  the store and evaluation and does not import mutation. The store does
+  not import evaluation or mutation. `index.ts` re-exports the seven
+  names and keeps value imports of `listSkillProposals` and
+  `listSkillEvaluations` for `rankProceduralMemory`.
+- **Sizes:** `index.ts` 5,575/5,881 to 5,339/5,620 (down 236 effective
+  and 261 physical). Mutation module 181/197 (estimate 176/192).
+  Procedural-memory module 87/96 (estimate 84/93). Both stay under the
+  250-line preference. No `skills/index.ts`. No new package export-map
+  key. `quality-exceptions.json` unchanged. The six-module P1H.3 layout
+  is now present. The group is not merged until this pull request merges.
+- **SCC:** import-only components stay two of size 3 (Approved Apply
+  and the recorded Neutron mutation cycle). Re-export components stay
+  sizes 4, 29, and 3, with the same membership. The six skill modules,
+  `host-file-system.ts`, the P1H.1 memory modules, and
+  `agent-session/agent-session.ts` are outside every component. Cycle
+  tests were not edited.
+- **Compatibility:** approval still requires non-empty
+  `approvalEvidence`. The evaluation gate, latest-match rule, and
+  `bypassEvaluationGate` are unchanged. Rollback still does not restore
+  a skill file and does not require evidence. Mutation plans still use
+  the existing checksum payload. Apply still validates, then changes
+  proposal state, then writes the mutation log. It still does not
+  recompute the checksum or require the target state to match the
+  action. A log-write failure still leaves the updated proposal in
+  place. Extension-lock status, summary counts, the default pass rate
+  of 100, and inspection issue text are unchanged.
+  `rankProceduralMemory` stays in `index.ts`.
+- **Tests:** focused proposal, evaluation, memory, rank, cycle, and new
+  mutation and procedural-memory suites: 13 files, 150 tests passed.
+  Existing assertions were not rewritten.
+- **Verification:** local `pnpm verify` passed: typecheck, oxlint,
+  Prettier, Vitest 358 files / 3107 passed / 3 skipped, build, and
+  `git diff --check`. Hosted CI is recorded against the pull request
+  head and is not claimed here before that run finishes.
+- **Not done:** merge, P1H.4, P1I, P1J, Undo U4, Desktop Undo U5.
+- **Next:** Maintainer review. Do not merge. Do not start P1H.4.
 
 ### 2026-11-08, Packages architecture P1H.3b skill proposal store and evaluation
 
-- **Status:** **IMPLEMENTED — PR OPEN, AWAITING MAINTAINER REVIEW.**
-  PR #603, https://github.com/vitala89/Intentloom/pull/603. P1H.3b is
-  not merged. Do not merge. Do not start P1H.3c, P1H.4, P1I, P1J,
-  Undo U4, or Desktop Undo U5.
+- **Status:** **MERGED.** PR #603,
+  https://github.com/vitala89/Intentloom/pull/603, merge
+  `f116d199a0783870806e8c8660d90385c106f8e1`. P1H.3c is the watch entry
+  above and is not merged. Do not start P1H.4, P1I, P1J, Undo U4, or
+  Desktop Undo U5.
 - **Branch:** `refactor/application-skill-proposals-p1h3b`
 - **Baseline:** `460b81efd1e81f5b24a22e11d3af4680c8f28aad` (PR #602,
   P1H.3a catalog read merged). P1H.3 design is PR #601
@@ -185,17 +243,19 @@ P1J, Undo U4, or Desktop Undo U5.
   Prettier, Vitest 356 files / 3096 passed / 3 skipped, build, and
   `git diff --check`. Hosted CI is recorded against the pull request
   head and is not claimed here before that run finishes.
-- **Not done:** merge, P1H.3c, P1H.4, P1I, P1J, Undo U4, Desktop Undo
-  U5.
-- **Next:** Maintainer review. Do not merge. Do not start P1H.3c.
+- **Not done:** P1H.4, P1I, P1J, Undo U4, Desktop Undo U5. Merge of
+  this entry completed as PR #603.
+- **Next:** P1H.3c, recorded in the watch entry above. Do not start
+  P1H.4.
 
 ### 2026-11-08, Packages architecture P1H.3a skill catalog read extraction
 
 - **Status:** **MERGED.** PR #602,
   https://github.com/vitala89/Intentloom/pull/602, merge
-  `460b81efd1e81f5b24a22e11d3af4680c8f28aad`. P1H.3b is the watch
-  entry above and is not merged. Do not start P1H.3c, P1H.4, P1I,
-  P1J, Undo U4, or Desktop Undo U5.
+  `460b81efd1e81f5b24a22e11d3af4680c8f28aad`. P1H.3b was later merged
+  as PR #603 (`f116d199a0783870806e8c8660d90385c106f8e1`). P1H.3c is
+  not merged. Do not start P1H.4, P1I, P1J, Undo U4, or Desktop
+  Undo U5.
 - **Branch:** `refactor/application-skill-catalog-read-p1h3a`
 - **Baseline:** `6b387a34c221f967a15ef670d53bea9b76e40828` (PR #601,
   P1H.3 design merged). P1H.2 implementation is PR #600
@@ -256,9 +316,9 @@ P1J, Undo U4, or Desktop Undo U5.
   https://github.com/vitala89/Intentloom/pull/601, merge
   `6b387a34c221f967a15ef670d53bea9b76e40828`. This entry is the design
   record. P1H.3a implementation was later merged as PR #602
-  (`460b81efd1e81f5b24a22e11d3af4680c8f28aad`). P1H.3b is implemented
-  in PR #603 (https://github.com/vitala89/Intentloom/pull/603) and is
-  not merged. P1H.3c, P1H.4, P1I, P1J, Undo U4, and Desktop
+  (`460b81efd1e81f5b24a22e11d3af4680c8f28aad`). P1H.3b was later merged
+  as PR #603 (`f116d199a0783870806e8c8660d90385c106f8e1`). P1H.3c is
+  implemented and is not merged. P1H.4, P1I, P1J, Undo U4, and Desktop
   Undo U5 have not started.
 - **Branch:** `docs/p1h3-skill-catalog-proposals`
 - **Baseline:** `efce5db2b40d1f350df43d38b4b97d1ccd5c2736` (PR #600,
