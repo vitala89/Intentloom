@@ -1,8 +1,9 @@
 # P1H.3 Skill Catalog and Proposals extraction
 
-Status: **proposed**. This document is a Design First review artifact. It
-does not implement P1H.3, and it does not authorize implementation until
-a maintainer approves it. A green CI result is not approval.
+Status: **proposed** (PR #601). This document is a Design First review
+artifact. It does not implement P1H.3, and it does not authorize
+implementation until a maintainer approves it. A green CI result is
+not approval.
 
 Baseline: `main` at `efce5db2b40d1f350df43d38b4b97d1ccd5c2736` (PR #600,
 P1H.2 implementation). P1H.2 design is PR #599

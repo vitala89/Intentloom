@@ -979,8 +979,8 @@ measures 6,093 effective lines and 6,448 physical lines, down from
 Re-export cycles stay three, and the component that contains
 `index.ts` stays at 29 files. The new module is outside every
 component. Implementation is merged as PR #600
-(`efce5db2b40d1f350df43d38b4b97d1ccd5c2736`). P1H.3 design is proposed
-in `docs/designs/p1h3-skill-catalog-proposals/SYSTEM_DESIGN.md` and
+(`efce5db2b40d1f350df43d38b4b97d1ccd5c2736`). P1H.3 design is proposed as PR #601
+(`docs/designs/p1h3-skill-catalog-proposals/SYSTEM_DESIGN.md`) and
 awaits maintainer approval. The design inventories sixteen public
 operations at `packages/application/src/index.ts` lines 3464–4317 and
 recommends six leaves under `packages/application/src/skills/`.

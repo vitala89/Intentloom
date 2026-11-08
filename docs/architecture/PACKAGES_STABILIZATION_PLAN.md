@@ -80,8 +80,7 @@ merged as PR #599
 (`ff7cb79329f403220aa4b369eede4cb8f06e591b`). The approved contract is
 [`docs/designs/p1h2-agent-session/SYSTEM_DESIGN.md`](../designs/p1h2-agent-session/SYSTEM_DESIGN.md).
 Implementation is merged as PR #600
-(`efce5db2b40d1f350df43d38b4b97d1ccd5c2736`). **P1H.3** design is
-proposed in
+(`efce5db2b40d1f350df43d38b4b97d1ccd5c2736`). **P1H.3** design is proposed as PR #601 in
 [`docs/designs/p1h3-skill-catalog-proposals/SYSTEM_DESIGN.md`](../designs/p1h3-skill-catalog-proposals/SYSTEM_DESIGN.md)
 and is awaiting maintainer approval. Implementation has not started.
 P1H.4 and later slices have not started.
@@ -135,7 +134,7 @@ is merged as PR #598
 (`5f7917c1cef0997f6947932aa2f8f4186ac2decc`). P1H.2 design is merged
 as PR #599 (`ff7cb79329f403220aa4b369eede4cb8f06e591b`). Implementation
 is merged as PR #600
-(`efce5db2b40d1f350df43d38b4b97d1ccd5c2736`). P1H.3 design is proposed
+(`efce5db2b40d1f350df43d38b4b97d1ccd5c2736`). P1H.3 design is proposed as PR #601
 and awaiting approval. Implementation has not started.
 
 ## 1. Baseline
@@ -1787,7 +1786,7 @@ is merged as PR #598
 (`5f7917c1cef0997f6947932aa2f8f4186ac2decc`). P1H.2 design is merged
 as PR #599 (`ff7cb79329f403220aa4b369eede4cb8f06e591b`). Implementation
 is merged as PR #600
-(`efce5db2b40d1f350df43d38b4b97d1ccd5c2736`). P1H.3 design is proposed
+(`efce5db2b40d1f350df43d38b4b97d1ccd5c2736`). P1H.3 design is proposed as PR #601
 and awaiting approval. Implementation has not started. P1I, P1J,
 Undo U4, and Desktop Undo U5 are not started.
 
@@ -1871,7 +1870,7 @@ Implementation is merged as PR #598
 (`5f7917c1cef0997f6947932aa2f8f4186ac2decc`). P1H.2 design is merged
 as PR #599 (`ff7cb79329f403220aa4b369eede4cb8f06e591b`). Implementation
 is merged as PR #600
-(`efce5db2b40d1f350df43d38b4b97d1ccd5c2736`). P1H.3 design is proposed
+(`efce5db2b40d1f350df43d38b4b97d1ccd5c2736`). P1H.3 design is proposed as PR #601
 and awaiting approval. Implementation has not started. P1I, P1J,
 Undo U4, and Desktop Undo U5 are not started.
 
@@ -2016,7 +2015,7 @@ target, path traversal, and default trust and retention.
 
 #### P1H.3 — skill catalog and proposals
 
-Design is proposed in
+Design is proposed as PR #601 in
 [`docs/designs/p1h3-skill-catalog-proposals/SYSTEM_DESIGN.md`](../designs/p1h3-skill-catalog-proposals/SYSTEM_DESIGN.md)
 and is awaiting maintainer approval. Implementation has not started.
 P1H.4, P1I, P1J, Undo U4, and Desktop Undo U5 are not started.

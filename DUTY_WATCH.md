@@ -139,9 +139,10 @@ U5.
 ### 2026-11-08, Packages architecture P1H.3 skill catalog and proposals design
 
 - **Status:** **DESIGN PR OPEN — AWAITING MAINTAINER APPROVAL.**
-  P1H.3 is not implemented. A green CI result is not approval. Do not
-  merge. Do not start implementation, P1H.4, P1I, P1J, Undo U4, or
-  Desktop Undo U5.
+  PR #601, https://github.com/vitala89/Intentloom/pull/601. P1H.3 is
+  not implemented. A green CI result is not approval. Do not merge.
+  Do not start implementation, P1H.4, P1I, P1J, Undo U4, or Desktop
+  Undo U5.
 - **Branch:** `docs/p1h3-skill-catalog-proposals`
 - **Baseline:** `efce5db2b40d1f350df43d38b4b97d1ccd5c2736` (PR #600,
   P1H.2 implementation merged). P1H.2 design is PR #599
