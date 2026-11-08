@@ -144,17 +144,19 @@ and coverage is merged (PR #606,
 `7a77db52753360f0029cd266d8c95eb78c34995c`). P1H.4 is fully
 implemented. **P1H.5** design is merged (PR #608,
 `1d0611070b02c5e9f0f0e2816a0f560fbf18c18e`). **P1H.5a** policy,
-baseline, and comparison is implemented and its pull request is open
-and not merged. Do not merge it on a green CI result alone. P1H.5b
+baseline, and comparison is open as PR #609
+(https://github.com/vitala89/Intentloom/pull/609) and is not merged. Do not merge it on a green CI result alone. P1H.5b
 has not started. P1H.5 is not fully implemented. Do not start P1H.5b,
 P1H.6, P1H.7, P1I, P1J, Undo U4, or Desktop Undo U5.
 
 ### 2026-11-08, Packages architecture P1H.5a security policy and baseline
 
 - **Status:** **IMPLEMENTED — PR OPEN, AWAITING MAINTAINER REVIEW.**
-  The pull request is open and not merged. A green CI result is not
-  approval. Do not merge. Do not start P1H.5b, P1H.6, P1H.7, P1I,
-  P1J, Undo U4, or Desktop Undo U5.
+  PR #609, https://github.com/vitala89/Intentloom/pull/609. The
+  extraction commit is
+  `5793759b962588bc7705399946eb0f6466d9ff49`. It is not merged. A green
+  CI result is not approval. Do not merge. Do not start P1H.5b,
+  P1H.6, P1H.7, P1I, P1J, Undo U4, or Desktop Undo U5.
 - **Branch:** `cursor/application-security-policy-baseline-p1h5a-2aed`
 - **Baseline:** `1d0611070b02c5e9f0f0e2816a0f560fbf18c18e` (PR #608,
   P1H.5 design merged). P1H.4b is PR #607

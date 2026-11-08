@@ -99,8 +99,8 @@ merged as PR #607
 implemented.
 P1H.5 design is merged as PR #608
 (`1d0611070b02c5e9f0f0e2816a0f560fbf18c18e`). P1H.5a policy, baseline,
-and comparison is implemented on this branch and its pull request is
-open and not merged. P1H.5b has not started. P1H.5 is not fully
+and comparison is open as PR #609
+(https://github.com/vitala89/Intentloom/pull/609) and is not merged. P1H.5b has not started. P1H.5 is not fully
 implemented. P1H.6 and later slices have not started.
 Undo U4 and Desktop Undo U5 are not started.
 Neutron's R4A topology stays frozen.
@@ -2301,8 +2301,8 @@ merged as PR #606 (`ec951f32246ad0c94a145f520dc1862d9592c72e`).
 P1H.4b SARIF import is merged as PR #607
 (`7a77db52753360f0029cd266d8c95eb78c34995c`). P1H.4 is fully
 implemented. P1H.5 design is merged as PR #608
-(`1d0611070b02c5e9f0f0e2816a0f560fbf18c18e`). P1H.5a is implemented
-and its pull request is open and not merged. P1H.5b has not started.
+(`1d0611070b02c5e9f0f0e2816a0f560fbf18c18e`). P1H.5a is open as PR #609
+(https://github.com/vitala89/Intentloom/pull/609) and is not merged. P1H.5b has not started.
 P1H.5 is not fully implemented. P1H.6, P1H.7, P1I, P1J, Undo U4, and
 Desktop Undo U5 have not started.
 
@@ -2485,8 +2485,8 @@ Design is merged as PR #608
 (https://github.com/vitala89/Intentloom/pull/608,
 `1d0611070b02c5e9f0f0e2816a0f560fbf18c18e`). The approved contract is
 [`docs/designs/p1h5-security-policy-sandbox/SYSTEM_DESIGN.md`](../designs/p1h5-security-policy-sandbox/SYSTEM_DESIGN.md).
-P1H.4 is fully implemented. P1H.5a is implemented and its pull request
-is open and not merged. P1H.5b has not started. P1H.5 is not fully
+P1H.4 is fully implemented. P1H.5a is open as PR #609
+(https://github.com/vitala89/Intentloom/pull/609) and is not merged. P1H.5b has not started. P1H.5 is not fully
 implemented. P1H.6, P1H.7, P1I, P1J, Undo U4, and Desktop Undo U5 have
 not started.
 
@@ -2536,7 +2536,10 @@ allowed. Neither starts P1H.6.
 
 Implemented from the merged design, section 21 stage P1H.5a, on
 baseline `1d0611070b02c5e9f0f0e2816a0f560fbf18c18e` (PR #608). This
-slice's pull request is open and not merged. P1H.5b has not started.
+slice is PR #609 (https://github.com/vitala89/Intentloom/pull/609).
+The extraction commit is
+`5793759b962588bc7705399946eb0f6466d9ff49`. It is not merged.
+P1H.5b has not started.
 P1H.5 is not fully implemented.
 
 `securityPolicyPath`, `getSecurityPolicy`, and `writeSecurityPolicy`
@@ -2600,7 +2603,8 @@ plus the existing security, CLI, workspace, and cycle suites: 13
 files, 157 tests passed. Existing assertions were not rewritten.
 Local `pnpm verify` passed: typecheck, oxlint, Prettier, Vitest 361
 files / 3132 passed / 3 skipped, build, and `git diff --check`. The
-implementation pull request is open and not merged.
+implementation pull request is #609
+(https://github.com/vitala89/Intentloom/pull/609) and is not merged.
 
 ### P1I — transaction and lifecycle
 
