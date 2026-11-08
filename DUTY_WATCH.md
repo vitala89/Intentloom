@@ -144,9 +144,10 @@ or Desktop Undo U5.
 ### 2026-11-08, Packages architecture P1H.4 security findings and SARIF design
 
 - **Status:** **DESIGN PR OPEN — AWAITING MAINTAINER APPROVAL.**
-  P1H.4 is not implemented. Do not merge this design on a green CI
-  result alone. Do not start P1H.4 implementation, P1H.5, P1H.6,
-  P1H.7, P1I, P1J, Undo U4, or Desktop Undo U5.
+  PR #605, https://github.com/vitala89/Intentloom/pull/605. P1H.4 is
+  not implemented. Do not merge this design on a green CI result
+  alone. Do not start P1H.4 implementation, P1H.5, P1H.6, P1H.7, P1I,
+  P1J, Undo U4, or Desktop Undo U5.
 - **Branch:** `docs/p1h4-security-findings-sarif`
 - **Baseline:** `911b229af00fcde54d8861af83a56e7e61df0902` (PR #604,
   P1H.3c skill mutation and procedural memory merged). P1H.3 design is

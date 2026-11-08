@@ -1027,8 +1027,8 @@ The six skill modules stay outside every component. The implementation is merged
 (https://github.com/vitala89/Intentloom/pull/604,
 `911b229af00fcde54d8861af83a56e7e61df0902`). P1H.3 is fully
 implemented. P1H.4 design is proposed in
-`docs/designs/p1h4-security-findings-sarif/SYSTEM_DESIGN.md` and is
-not approved. The design moves Security Finding storage, SARIF import,
+`docs/designs/p1h4-security-findings-sarif/SYSTEM_DESIGN.md` (PR #605,
+https://github.com/vitala89/Intentloom/pull/605) and is not approved. The design moves Security Finding storage, SARIF import,
 and coverage into `packages/application/src/security/`. It leaves
 `correlateSecurityFindings` and `runLocalSecurityAdapters` in
 `index.ts`. P1H.5 and later slices have not started.

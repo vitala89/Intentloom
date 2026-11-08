@@ -2265,7 +2265,9 @@ implementation pull request is #604
 
 #### P1H.4 — security findings and SARIF import
 
-Design is proposed and is not approved. The contract is
+Design is proposed as PR #605
+(https://github.com/vitala89/Intentloom/pull/605) and is not approved.
+The contract is
 [`docs/designs/p1h4-security-findings-sarif/SYSTEM_DESIGN.md`](../designs/p1h4-security-findings-sarif/SYSTEM_DESIGN.md).
 P1H.3 is fully implemented. P1H.5, P1H.6, P1H.7, P1I, P1J, Undo U4,
 and Desktop Undo U5 have not started. This section does not implement
