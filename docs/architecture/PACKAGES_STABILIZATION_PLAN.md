@@ -88,8 +88,9 @@ P1H.3a catalog read is merged as PR #602
 (`460b81efd1e81f5b24a22e11d3af4680c8f28aad`). P1H.3b proposal store
 and evaluation is merged as PR #603
 (`f116d199a0783870806e8c8660d90385c106f8e1`). P1H.3c skill mutation
-and procedural memory is implemented in PR #604
-(https://github.com/vitala89/Intentloom/pull/604) and is not merged. P1H.4 and
+and procedural memory is merged as PR #604
+(`911b229af00fcde54d8861af83a56e7e61df0902`). P1H.3 is fully
+implemented. P1H.4 design is proposed and is not approved. P1H.5 and
 later slices have not started.
 Undo U4 and Desktop Undo U5 are not started.
 Neutron's R4A topology stays frozen.
@@ -147,8 +148,9 @@ read is merged as PR #602
 (`460b81efd1e81f5b24a22e11d3af4680c8f28aad`). P1H.3b proposal store
 and evaluation is merged as PR #603
 (`f116d199a0783870806e8c8660d90385c106f8e1`). P1H.3c skill mutation
-and procedural memory is implemented in PR #604
-(https://github.com/vitala89/Intentloom/pull/604) and is not merged.
+and procedural memory is merged as PR #604
+(`911b229af00fcde54d8861af83a56e7e61df0902`). P1H.3 is fully
+implemented. P1H.4 design is proposed and is not approved.
 
 ## 1. Baseline
 
@@ -1805,8 +1807,8 @@ read is merged as PR #602
 (`460b81efd1e81f5b24a22e11d3af4680c8f28aad`). P1H.3b proposal store
 and evaluation is merged as PR #603
 (`f116d199a0783870806e8c8660d90385c106f8e1`). P1H.3c skill mutation
-and procedural memory is implemented in PR #604
-(https://github.com/vitala89/Intentloom/pull/604) and is not merged. P1I, P1J,
+and procedural memory is merged as PR #604
+(`911b229af00fcde54d8861af83a56e7e61df0902`). P1I, P1J,
 Undo U4, and Desktop Undo U5 are not started.
 
 `FoundationUnderstanding` moved unchanged from
@@ -1895,8 +1897,8 @@ read is merged as PR #602
 (`460b81efd1e81f5b24a22e11d3af4680c8f28aad`). P1H.3b proposal store
 and evaluation is merged as PR #603
 (`f116d199a0783870806e8c8660d90385c106f8e1`). P1H.3c skill mutation
-and procedural memory is implemented in PR #604
-(https://github.com/vitala89/Intentloom/pull/604) and is not merged. P1I, P1J,
+and procedural memory is merged as PR #604
+(`911b229af00fcde54d8861af83a56e7e61df0902`). P1I, P1J,
 Undo U4, and Desktop Undo U5 are not started.
 
 The twelve public operations moved unchanged out of
@@ -2047,9 +2049,10 @@ P1H.3a catalog read is merged as PR #602
 (`460b81efd1e81f5b24a22e11d3af4680c8f28aad`). P1H.3b proposal store
 and evaluation is merged as PR #603
 (`f116d199a0783870806e8c8660d90385c106f8e1`). P1H.3c skill mutation
-and procedural memory is implemented in PR #604
-(https://github.com/vitala89/Intentloom/pull/604) and is not merged. P1H.4, P1I,
-P1J, Undo U4, and Desktop Undo U5 have not started.
+and procedural memory is merged as PR #604
+(`911b229af00fcde54d8861af83a56e7e61df0902`). P1H.3 is fully
+implemented. P1H.4 design is proposed and is not approved. P1I, P1J,
+Undo U4, and Desktop Undo U5 have not started.
 
 On `efce5db2b40d1f350df43d38b4b97d1ccd5c2736`, `index.ts` measures
 6,093 effective lines and 6,448 physical lines. The family is lines
@@ -2202,8 +2205,9 @@ Vitest 356 files / 3096 passed / 3 skipped, build, and
 
 Implemented from the merged design, section 19 step 3, on baseline
 `f116d199a0783870806e8c8660d90385c106f8e1` (PR #603). This slice is
-PR #604 (https://github.com/vitala89/Intentloom/pull/604) and is not
-merged. P1H.4 has not started.
+merged as PR #604
+(`911b229af00fcde54d8861af83a56e7e61df0902`). P1H.4 design is
+proposed and is not approved.
 
 `updateSkillProposalState`, `rollbackSkill`, `prepareSkillMutationPlan`,
 and `applySkillMutationPlan` moved to
@@ -2256,7 +2260,59 @@ tests passed. Existing assertions were not rewritten. Local
 `pnpm verify` passed: typecheck, oxlint, Prettier, Vitest 358 files /
 3107 passed / 3 skipped, build, and `git diff --check`. The
 implementation pull request is #604
-(https://github.com/vitala89/Intentloom/pull/604) and is not merged.
+(https://github.com/vitala89/Intentloom/pull/604) and is merged as
+`911b229af00fcde54d8861af83a56e7e61df0902`.
+
+#### P1H.4 — security findings and SARIF import
+
+Design is proposed as PR #605
+(https://github.com/vitala89/Intentloom/pull/605) and is not approved.
+The contract is
+[`docs/designs/p1h4-security-findings-sarif/SYSTEM_DESIGN.md`](../designs/p1h4-security-findings-sarif/SYSTEM_DESIGN.md).
+P1H.3 is fully implemented. P1H.5, P1H.6, P1H.7, P1I, P1J, Undo U4,
+and Desktop Undo U5 have not started. This section does not implement
+P1H.4.
+
+On `911b229af00fcde54d8861af83a56e7e61df0902`, `index.ts` measures
+5,339 effective lines and 5,620 physical lines. The selected family is
+lines 4115–4383 (247 effective, 269 physical): `securityFindingPath`,
+`getSecurityFinding`, `listSecurityFindings`,
+`dismissSecurityFinding`, `acceptSecurityRisk`, `isObjectRecord`,
+`importSarifSecurityReport`, and `getSecurityCoverageReport`.
+
+The proposed modules, all under `packages/application/src/security/`
+and all estimated under 250 effective lines, are
+`security-finding-store.ts` (113/118), `sarif-security-import.ts`
+(121/134), and `security-coverage.ts` (43/48). There is no
+`security/index.ts` and no new package export-map key. No new module
+imports `index.ts`. A simulated splice of the move, before Prettier,
+measures `index.ts` at 5,101 effective lines and 5,363 physical lines.
+
+`correlateSecurityFindings` and `runLocalSecurityAdapters` stay in
+`index.ts`. Adapters import `securityFindingPath` from the store.
+Policy and baseline stay in `index.ts` and import
+`listSecurityFindings`. `runContinuousSecurityAudit` does not call the
+adapters. Coverage moves because it only aggregates the finding list.
+
+`importSarifSecurityReport` remains 106 effective lines. The design
+keeps that function intact and records the 80-line function debt
+instead of editing `quality-exceptions.json`. SARIF ids stay
+`sarif-finding-<counter>` for one call. Repeated imports overwrite
+those files. A failure after the first write leaves the earlier file
+in place. Stored trust class stays `verified-evidence`. Those
+behaviors are preserved. Mitigations need a separate Design First
+review.
+
+Import-only components stay two of size 3. Re-export components stay
+sizes 4, 29, and 3, with the membership locked by
+`tests/application-inception-cycle.test.ts`. The new files must stay
+outside every component, together with `host-file-system.ts`, the
+P1H.1 memory modules, `agent-session/agent-session.ts`, and the six
+skill modules.
+
+The approved implementation order, if split, is the finding store and
+coverage, then SARIF import. One implementation PR is also allowed by
+the design. Neither starts P1H.5.
 
 ### P1I — transaction and lifecycle
 

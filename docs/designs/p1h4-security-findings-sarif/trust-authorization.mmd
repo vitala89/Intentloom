@@ -1,0 +1,19 @@
+flowchart TB
+  sarif["Untrusted SARIF text"]
+  import["importSarifSecurityReport"]
+  record["Stored SecurityFinding"]
+  trust["trustClass verified-evidence"]
+  dismiss["dismissSecurityFinding"]
+  accept["acceptSecurityRisk"]
+  meta["acceptedRisk metadata"]
+  policy["checkSecurityPolicyAndBaseline stays in index.ts"]
+  apply["Approved Apply and sandbox stay outside this slice"]
+  sarif --> import
+  import --> record
+  record --> trust
+  dismiss --> record
+  accept --> meta
+  meta --> record
+  record --> policy
+  policy -->|"skips dismissed, accepted-risk, remediated"| record
+  accept -.->|"no identity check and no Apply gate"| apply

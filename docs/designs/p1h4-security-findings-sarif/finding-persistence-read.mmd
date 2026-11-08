@@ -1,0 +1,19 @@
+flowchart TB
+  caller["Caller passes root and FileSystem"]
+  path["securityFindingPath"]
+  inside["inside root plus findings id json"]
+  get["getSecurityFinding"]
+  list["listSecurityFindings"]
+  write["dismiss, accept, or SARIF write"]
+  disk[".aif/security/findings/id.json"]
+  caller --> get
+  caller --> list
+  caller --> write
+  get --> path
+  write --> path
+  path --> inside
+  inside --> disk
+  list -->|"fs.list root, keep findings prefix"| get
+  get -->|"missing, bad JSON, or invalid record"| null["return null"]
+  get -->|"valid record"| finding["validateSecurityFinding"]
+  write -->|"pretty JSON and trailing newline"| disk

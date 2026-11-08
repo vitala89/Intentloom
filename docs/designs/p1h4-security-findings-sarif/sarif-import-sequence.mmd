@@ -1,0 +1,21 @@
+sequenceDiagram
+  participant Caller
+  participant Import as importSarifSecurityReport
+  participant Validator as protocol validators
+  participant FS as FileSystem
+  Caller->>Import: content, reportPath, root, fs
+  Import->>Import: JSON.parse
+  alt malformed JSON
+    Import-->>Caller: throw malformed SARIF JSON document
+  else runs is missing
+    Import-->>Caller: throw invalid SARIF structure missing runs array
+  else runs is an array
+    loop each object run and each object result
+      Import->>Import: map level, redact secret-like paths
+      Import->>Validator: validateSecurityFinding
+      Import->>FS: mkdir findings directory when missing
+      Import->>FS: write sarif-finding-N.json
+    end
+    Import->>Validator: validateSarifImportResult
+    Import-->>Caller: SarifImportResult
+  end

@@ -1,0 +1,17 @@
+sequenceDiagram
+  participant Import as importSarifSecurityReport
+  participant FS as FileSystem
+  Import->>FS: write sarif-finding-1.json
+  Import->>Import: validateSecurityFinding for result 2
+  alt result 2 fails validation
+    Import-->>Import: throw ProtocolValidationError
+    Note over FS: sarif-finding-1.json remains
+  else result 2 validates
+    Import->>FS: write sarif-finding-2.json
+    alt write throws
+      Import-->>Import: throw the filesystem error
+      Note over FS: earlier files remain
+    else every result is written
+      Import-->>Import: return SarifImportResult
+    end
+  end

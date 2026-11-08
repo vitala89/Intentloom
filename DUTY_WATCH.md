@@ -135,16 +135,65 @@ implementation is merged (PR #600,
 merged (PR #602, `460b81efd1e81f5b24a22e11d3af4680c8f28aad`). **P1H.3b**
 proposal store and evaluation is merged (PR #603,
 `f116d199a0783870806e8c8660d90385c106f8e1`). **P1H.3c** skill mutation
-and procedural memory is implemented and is not merged. Do not merge it
-on a green CI result alone. Do not start P1H.4, P1I, P1J, Undo U4, or
-Desktop Undo U5.
+and procedural memory is merged (PR #604,
+`911b229af00fcde54d8861af83a56e7e61df0902`). P1H.3 is fully
+implemented. **P1H.4** design is proposed and is not approved. Do not
+implement P1H.4. Do not start P1H.5, P1H.6, P1H.7, P1I, P1J, Undo U4,
+or Desktop Undo U5.
+
+### 2026-11-08, Packages architecture P1H.4 security findings and SARIF design
+
+- **Status:** **DESIGN PR OPEN — AWAITING MAINTAINER APPROVAL.**
+  PR #605, https://github.com/vitala89/Intentloom/pull/605. P1H.4 is
+  not implemented. Do not merge this design on a green CI result
+  alone. Do not start P1H.4 implementation, P1H.5, P1H.6, P1H.7, P1I,
+  P1J, Undo U4, or Desktop Undo U5.
+- **Branch:** `docs/p1h4-security-findings-sarif`
+- **Baseline:** `911b229af00fcde54d8861af83a56e7e61df0902` (PR #604,
+  P1H.3c skill mutation and procedural memory merged). P1H.3 design is
+  PR #601 (`6b387a34c221f967a15ef670d53bea9b76e40828`). P1H.3a is PR
+  #602 (`460b81efd1e81f5b24a22e11d3af4680c8f28aad`). P1H.3b is PR #603
+  (`f116d199a0783870806e8c8660d90385c106f8e1`). P1H.3 is fully
+  implemented.
+- **Design:** `docs/designs/p1h4-security-findings-sarif/SYSTEM_DESIGN.md`.
+- **Selected operations:** `securityFindingPath`, `getSecurityFinding`,
+  `listSecurityFindings`, `dismissSecurityFinding`,
+  `acceptSecurityRisk`, `isObjectRecord`, `importSarifSecurityReport`,
+  and `getSecurityCoverageReport`. Proposed modules are
+  `security/security-finding-store.ts`,
+  `security/sarif-security-import.ts`, and
+  `security/security-coverage.ts`. No `security/index.ts`. No new
+  package export-map key.
+- **Excluded:** `correlateSecurityFindings` and
+  `runLocalSecurityAdapters` stay in `index.ts`. Policy, baseline,
+  sandbox, and `runContinuousSecurityAudit` stay for later P1H
+  slices. Adapters would import the extracted path helper. Audit does
+  not call the adapters.
+- **Open questions:** implementation may be one PR or the two slices
+  in the design. Partial writes, the `verified-evidence` label on
+  SARIF imports, restarting `sarif-finding-<counter>` ids, and
+  caller-supplied `approvedBy` stay as they are. Mitigations need a
+  separate Design First review.
+- **Verification:** `git diff --check` passed. All eight Mermaid
+  sources parsed with Mermaid 11 (`flowchart-v2`, `sequence`, and
+  `stateDiagram`). Local `pnpm verify` passed: typecheck, oxlint,
+  Prettier, Vitest 358 files / 3107 passed / 3 skipped, build, and
+  `git diff --check`. No extraction was implemented, so this is not a
+  runtime claim for the move. Hosted CI is recorded against the pull
+  request head and is not claimed here before that run finishes.
+- **Not done:** maintainer approval, P1H.4 implementation, P1H.5,
+  P1H.6, P1H.7, P1I, P1J, Undo U4, Desktop Undo U5.
+- **Next:** Maintainer review of the design. Do not implement. Do not
+  merge.
 
 ### 2026-11-08, Packages architecture P1H.3c skill mutation and procedural memory
 
-- **Status:** **IMPLEMENTED — PR OPEN, AWAITING MAINTAINER REVIEW.**
-  PR #604, https://github.com/vitala89/Intentloom/pull/604. P1H.3c is
-  not merged. Do not merge. Do not start P1H.4, P1I, P1J, Undo U4, or
-  Desktop Undo U5.
+- **Status:** **MERGED.** PR #604,
+  https://github.com/vitala89/Intentloom/pull/604, merge
+  `911b229af00fcde54d8861af83a56e7e61df0902`. P1H.3 is fully
+  implemented. P1H.4 design is the watch entry above and is not
+  approved. Do not implement P1H.4. Do not start P1H.5, P1I, P1J,
+  Undo U4, or Desktop Undo U5.
 - **Branch:** `refactor/application-skill-mutation-p1h3c`
 - **Baseline:** `f116d199a0783870806e8c8660d90385c106f8e1` (PR #603,
   P1H.3b proposal store and evaluation merged). P1H.3 design is PR #601
@@ -168,7 +217,7 @@ Desktop Undo U5.
   Procedural-memory module 87/96 (estimate 84/93). Both stay under the
   250-line preference. No `skills/index.ts`. No new package export-map
   key. `quality-exceptions.json` unchanged. The six-module P1H.3 layout
-  is now present. The group is not merged until this pull request merges.
+  is now present. The group is merged as PR #604.
 - **SCC:** import-only components stay two of size 3 (Approved Apply
   and the recorded Neutron mutation cycle). Re-export components stay
   sizes 4, 29, and 3, with the same membership. The six skill modules,
@@ -193,16 +242,18 @@ Desktop Undo U5.
   Prettier, Vitest 358 files / 3107 passed / 3 skipped, build, and
   `git diff --check`. Hosted CI is recorded against the pull request
   head and is not claimed here before that run finishes.
-- **Not done:** merge, P1H.4, P1I, P1J, Undo U4, Desktop Undo U5.
-- **Next:** Maintainer review. Do not merge. Do not start P1H.4.
+- **Not done:** P1H.4 implementation, P1H.5, P1I, P1J, Undo U4,
+  Desktop Undo U5. Merge of this entry completed as PR #604.
+- **Next:** P1H.4 design, recorded in the watch entry above. Do not
+  implement P1H.4.
 
 ### 2026-11-08, Packages architecture P1H.3b skill proposal store and evaluation
 
 - **Status:** **MERGED.** PR #603,
   https://github.com/vitala89/Intentloom/pull/603, merge
-  `f116d199a0783870806e8c8660d90385c106f8e1`. P1H.3c is the watch entry
-  above and is not merged. Do not start P1H.4, P1I, P1J, Undo U4, or
-  Desktop Undo U5.
+  `f116d199a0783870806e8c8660d90385c106f8e1`. P1H.3c was later merged
+  as PR #604 (`911b229af00fcde54d8861af83a56e7e61df0902`). P1H.4
+  design is proposed and is not approved. Do not implement P1H.4.
 - **Branch:** `refactor/application-skill-proposals-p1h3b`
 - **Baseline:** `460b81efd1e81f5b24a22e11d3af4680c8f28aad` (PR #602,
   P1H.3a catalog read merged). P1H.3 design is PR #601
@@ -318,8 +369,10 @@ Desktop Undo U5.
   `6b387a34c221f967a15ef670d53bea9b76e40828`. This entry is the design
   record. P1H.3a implementation was later merged as PR #602
   (`460b81efd1e81f5b24a22e11d3af4680c8f28aad`). P1H.3b was later merged
-  as PR #603 (`f116d199a0783870806e8c8660d90385c106f8e1`). P1H.3c is
-  implemented and is not merged. P1H.4, P1I, P1J, Undo U4, and Desktop
+  as PR #603 (`f116d199a0783870806e8c8660d90385c106f8e1`). P1H.3c was
+  later merged as PR #604
+  (`911b229af00fcde54d8861af83a56e7e61df0902`). P1H.4 design is
+  proposed and is not approved. P1H.5, P1I, P1J, Undo U4, and Desktop
   Undo U5 have not started.
 - **Branch:** `docs/p1h3-skill-catalog-proposals`
 - **Baseline:** `efce5db2b40d1f350df43d38b4b97d1ccd5c2736` (PR #600,
