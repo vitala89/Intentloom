@@ -1,4 +1,5 @@
 import { createHash } from "node:crypto";
+import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 import {
   applySkillMutationPlan,
@@ -74,6 +75,15 @@ function storeEvaluation(
 function checksum(payload: string): string {
   return createHash("sha256").update(payload).digest("hex");
 }
+
+function projectPath(relativePath: string): string {
+  return resolve("/project", relativePath);
+}
+
+function isMutationLogPath(path: string): boolean {
+  return path.replaceAll("\\", "/").includes("/.aif/memory/mutations/");
+}
+
 describe("P1H.3c skill mutation extraction", () => {
   it("requires evidence for approval and activation and preserves the other transitions", async () => {
     const fs = createMemoryFileSystem();
@@ -398,10 +408,10 @@ describe("P1H.3c skill mutation extraction", () => {
     );
     expect(applied.state).toBe("deprecated");
     expect(writes).toEqual([
-      "/project/.aif/memory/proposals/alpha.json",
-      `/project/.aif/memory/mutations/${plan.id}.json`,
+      projectPath(".aif/memory/proposals/alpha.json"),
+      projectPath(`.aif/memory/mutations/${plan.id}.json`),
     ]);
-    const logged = fs.files.get(writes[1]!)!;
+    const logged = await fs.read(writes[1]!);
     expect(logged.endsWith("\n")).toBe(true);
     expect(JSON.parse(logged)).toEqual({
       schemaVersion: "1",
@@ -429,7 +439,7 @@ describe("P1H.3c skill mutation extraction", () => {
     const failing: FileSystem = {
       ...fs,
       async write(path, content) {
-        if (path.includes("/.aif/memory/mutations/")) {
+        if (isMutationLogPath(path)) {
           throw new Error("mutation log write failed");
         }
         await fs.write(path, content);
@@ -441,9 +451,7 @@ describe("P1H.3c skill mutation extraction", () => {
     expect(
       (await getSkillProposal("beta", { root: "/project" }, fs))?.state,
     ).toBe("deprecated");
-    expect(
-      [...fs.files.keys()].some((path) => path.includes("/mutations/")),
-    ).toBe(false);
+    expect([...fs.files.keys()].some(isMutationLogPath)).toBe(false);
 
     await createSkillProposal(proposalInput("gamma"), { root: "/project" }, fs);
     const rollbackPlan = await prepareSkillMutationPlan(
@@ -460,8 +468,6 @@ describe("P1H.3c skill mutation extraction", () => {
     expect(
       (await getSkillProposal("gamma", { root: "/project" }, fs))?.state,
     ).toBe("rolled-back");
-    expect(
-      fs.files.has(`/project/.aif/memory/mutations/${rollbackPlan.id}.json`),
-    ).toBe(false);
+    expect([...fs.files.keys()].some(isMutationLogPath)).toBe(false);
   });
 });
