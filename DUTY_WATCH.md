@@ -137,9 +137,72 @@ proposal store and evaluation is merged (PR #603,
 `f116d199a0783870806e8c8660d90385c106f8e1`). **P1H.3c** skill mutation
 and procedural memory is merged (PR #604,
 `911b229af00fcde54d8861af83a56e7e61df0902`). P1H.3 is fully
-implemented. **P1H.4** design is proposed and is not approved. Do not
-implement P1H.4. Do not start P1H.5, P1H.6, P1H.7, P1I, P1J, Undo U4,
-or Desktop Undo U5.
+implemented. **P1H.4** design is merged (PR #605,
+`6a9d0d26015caa857c19d0d22415904d832ad818`). **P1H.4a** finding store
+and coverage is open and is not merged. P1H.4b has not started. Do not
+start P1H.4b, P1H.5, P1H.6, P1H.7, P1I, P1J, Undo U4, or Desktop Undo
+U5.
+
+### 2026-11-08, Packages architecture P1H.4a security finding store and coverage
+
+- **Status:** **IMPLEMENTED — PR OPEN, AWAITING MAINTAINER REVIEW.**
+  P1H.4 design is merged as PR #605
+  (https://github.com/vitala89/Intentloom/pull/605,
+  `6a9d0d26015caa857c19d0d22415904d832ad818`). P1H.4a is open on
+  `refactor/application-security-findings-p1h4a` and is not merged.
+  P1H.4 is not fully implemented. Do not merge on a green CI result
+  alone. Do not start P1H.4b, P1H.5, P1H.6, P1H.7, P1I, P1J, Undo U4,
+  or Desktop Undo U5.
+- **Branch:** `refactor/application-security-findings-p1h4a`
+- **Baseline:** `6a9d0d26015caa857c19d0d22415904d832ad818` (PR #605).
+  The working tree was clean before this branch. Open pull requests
+  at start were dependency updates and did not overlap this
+  extraction.
+- **Moved public operations:** `getSecurityFinding`,
+  `listSecurityFindings`, `dismissSecurityFinding`,
+  `acceptSecurityRisk`, and `getSecurityCoverageReport`.
+- **Private helper:** `securityFindingPath` is a named export of
+  `packages/application/src/security/security-finding-store.ts`. It
+  is not a package-root export. `index.ts` value-imports it for
+  `importSarifSecurityReport` and `runLocalSecurityAdapters`, and
+  value-imports `listSecurityFindings` for `updateSecurityBaseline`
+  and `checkSecurityPolicyAndBaseline`.
+- **Modules:** `security/security-finding-store.ts` (113 effective /
+  118 physical) and `security/security-coverage.ts` (43 effective /
+  48 physical). Coverage imports `listSecurityFindings` from the
+  store. No `security/index.ts`. No new package export-map key. No
+  file under `security/` imports `index.ts`.
+- **Barrel:** `index.ts` measures 5,211 effective lines and 5,484
+  physical lines, down 128 effective and 136 physical from 5,339 and
+  5,620. The design estimate was 5,209 and 5,483.
+- **Public API:** the five names stay on `@intentloom/application`.
+  External import paths are unchanged. Finding read, list, dismiss,
+  accept, and coverage behavior is unchanged, including null reads,
+  traversal errors, listing order, pretty JSON, and caller-supplied
+  risk-acceptance metadata. SARIF import, adapters, policy, and
+  baseline still see stored findings.
+- **SCC:** import-only components stay two, sizes 3 and 3.
+  Re-export-inclusive components stay three, sizes 4, 29, and 3, with
+  the same membership. Approved Apply, Neutron mutation, and
+  extension-update components are unchanged. Both new modules stay
+  outside every component. `quality-exceptions.json` is unchanged.
+- **Verification:** focused suites passed: 8 files, 118 tests
+  (`tests/security-finding-store-p1h4a.test.ts`,
+  `tests/memory-security-s1.test.ts`,
+  `tests/memory-security-s2.test.ts`,
+  `tests/memory-security-s3.test.ts`,
+  `tests/cli-security.test.ts`,
+  `tests/neutron-n4-readonly-tools.test.ts`,
+  `tests/application-inception-cycle.test.ts`,
+  `tests/application-foundation-scaffold-cycle.test.ts`). Local
+  `pnpm verify` passed: typecheck, oxlint, Prettier, Vitest 359 files
+  / 3115 passed / 3 skipped, build, and `git diff --check`. Hosted CI
+  is recorded against the pull request head and is not claimed here
+  before that run finishes.
+- **Not done:** maintainer review, merge, P1H.4b SARIF import, P1H.5,
+  P1H.6, P1H.7, P1I, P1J, Undo U4, Desktop Undo U5.
+- **Next:** Maintainer review of P1H.4a. Do not merge. Do not start
+  P1H.4b.
 
 ### 2026-11-08, Packages architecture P1H.4 security findings and SARIF design
 

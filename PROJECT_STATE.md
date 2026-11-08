@@ -1026,12 +1026,24 @@ components of size 3. Re-export cycles stay three, sizes 4, 29, and 3.
 The six skill modules stay outside every component. The implementation is merged as PR #604
 (https://github.com/vitala89/Intentloom/pull/604,
 `911b229af00fcde54d8861af83a56e7e61df0902`). P1H.3 is fully
-implemented. P1H.4 design is proposed in
-`docs/designs/p1h4-security-findings-sarif/SYSTEM_DESIGN.md` (PR #605,
-https://github.com/vitala89/Intentloom/pull/605) and is not approved. The design moves Security Finding storage, SARIF import,
-and coverage into `packages/application/src/security/`. It leaves
-`correlateSecurityFindings` and `runLocalSecurityAdapters` in
-`index.ts`. P1H.5 and later slices have not started.
+implemented. P1H.4 design is merged as PR #605
+(https://github.com/vitala89/Intentloom/pull/605,
+`6a9d0d26015caa857c19d0d22415904d832ad818`). The approved contract is
+`docs/designs/p1h4-security-findings-sarif/SYSTEM_DESIGN.md`. P1H.4a
+moves `getSecurityFinding`, `listSecurityFindings`,
+`dismissSecurityFinding`, `acceptSecurityRisk`, and
+`getSecurityCoverageReport` into
+`packages/application/src/security/`. `securityFindingPath` is a
+module export used by the barrel and is not a package-root export.
+`index.ts` measures 5,211 effective lines and 5,484 physical lines,
+down from 5,339 and 5,620. The finding store is 113/118 and coverage
+is 43/48. Import-only cycles stay two components of size 3.
+Re-export cycles stay three, sizes 4, 29, and 3. The new modules stay
+outside every component. `quality-exceptions.json` is unchanged.
+P1H.4a is open and is not merged. P1H.4b has not started. P1H.4 is
+not fully implemented. SARIF import, correlation, local adapters,
+policy, and baseline stay in `index.ts`. P1H.5 and later slices have
+not started.
 `rankProceduralMemory` stays in the barrel.
 Undo U4 and Desktop Undo U5 are not started. Other post-P4 candidates remain in
 `POST_W12_NEXT_INCREMENT_PLAN.md`.
