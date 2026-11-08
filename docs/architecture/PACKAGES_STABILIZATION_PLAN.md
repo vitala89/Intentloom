@@ -92,9 +92,10 @@ and procedural memory is merged as PR #604
 (`911b229af00fcde54d8861af83a56e7e61df0902`). P1H.3 is fully
 implemented. P1H.4 design is merged as PR #605
 (`6a9d0d26015caa857c19d0d22415904d832ad818`). P1H.4a finding store
-and coverage is open as PR #606
-(https://github.com/vitala89/Intentloom/pull/606) and is not merged.
-P1H.4b has not started.
+and coverage is merged as PR #606
+(`ec951f32246ad0c94a145f520dc1862d9592c72e`). P1H.4b SARIF import is
+open on `refactor/application-sarif-security-import-p1h4b` and is not
+merged. P1H.4 is not fully implemented.
 P1H.5 and later slices have not started.
 Undo U4 and Desktop Undo U5 are not started.
 Neutron's R4A topology stays frozen.
@@ -156,9 +157,10 @@ and procedural memory is merged as PR #604
 (`911b229af00fcde54d8861af83a56e7e61df0902`). P1H.3 is fully
 implemented. P1H.4 design is merged as PR #605
 (`6a9d0d26015caa857c19d0d22415904d832ad818`). P1H.4a finding store
-and coverage is open as PR #606
-(https://github.com/vitala89/Intentloom/pull/606) and is not merged.
-P1H.4b has not started.
+and coverage is merged as PR #606
+(`ec951f32246ad0c94a145f520dc1862d9592c72e`). P1H.4b SARIF import is
+open on `refactor/application-sarif-security-import-p1h4b` and is not
+merged. P1H.4 is not fully implemented.
 
 ## 1. Baseline
 
@@ -2061,9 +2063,10 @@ and procedural memory is merged as PR #604
 (`911b229af00fcde54d8861af83a56e7e61df0902`). P1H.3 is fully
 implemented. P1H.4 design is merged as PR #605
 (`6a9d0d26015caa857c19d0d22415904d832ad818`). P1H.4a finding store
-and coverage is open as PR #606
-(https://github.com/vitala89/Intentloom/pull/606) and is not merged.
-P1H.4b has not started. P1I,
+and coverage is merged as PR #606
+(`ec951f32246ad0c94a145f520dc1862d9592c72e`). P1H.4b SARIF import is
+open on `refactor/application-sarif-security-import-p1h4b` and is not
+merged. P1H.4 is not fully implemented. P1I,
 P1J, Undo U4, and Desktop Undo U5 have not started.
 
 On `efce5db2b40d1f350df43d38b4b97d1ccd5c2736`, `index.ts` measures
@@ -2220,9 +2223,10 @@ Implemented from the merged design, section 19 step 3, on baseline
 merged as PR #604
 (`911b229af00fcde54d8861af83a56e7e61df0902`). P1H.4 design is
 merged as PR #605
-(`6a9d0d26015caa857c19d0d22415904d832ad818`). P1H.4a is open as
-PR #606 (https://github.com/vitala89/Intentloom/pull/606) and is not
-merged. P1H.4b has not started.
+(`6a9d0d26015caa857c19d0d22415904d832ad818`). P1H.4a is merged
+as PR #606 (`ec951f32246ad0c94a145f520dc1862d9592c72e`). P1H.4b is
+open on `refactor/application-sarif-security-import-p1h4b` and is not
+merged.
 
 `updateSkillProposalState`, `rollbackSkill`, `prepareSkillMutationPlan`,
 and `applySkillMutationPlan` moved to
@@ -2284,11 +2288,12 @@ Design is merged as PR #605
 (https://github.com/vitala89/Intentloom/pull/605,
 `6a9d0d26015caa857c19d0d22415904d832ad818`). The approved contract is
 [`docs/designs/p1h4-security-findings-sarif/SYSTEM_DESIGN.md`](../designs/p1h4-security-findings-sarif/SYSTEM_DESIGN.md).
-P1H.3 is fully implemented. P1H.4a is the finding store and coverage
-extraction below, open as PR #606
-(https://github.com/vitala89/Intentloom/pull/606) and not merged.
-P1H.4b has not started. P1H.4 is not fully implemented. P1H.5, P1H.6, P1H.7, P1I, P1J, Undo U4, and
-Desktop Undo U5 have not started.
+P1H.3 is fully implemented. P1H.4a finding store and coverage is
+merged as PR #606 (`ec951f32246ad0c94a145f520dc1862d9592c72e`).
+P1H.4b SARIF import is the extraction below, open on
+`refactor/application-sarif-security-import-p1h4b` and not merged.
+P1H.4 is not fully implemented. P1H.5, P1H.6, P1H.7, P1I, P1J, Undo U4,
+and Desktop Undo U5 have not started.
 
 On `911b229af00fcde54d8861af83a56e7e61df0902`, `index.ts` measures
 5,339 effective lines and 5,620 physical lines. The selected family is
@@ -2335,10 +2340,8 @@ the design. Neither starts P1H.5.
 
 Implemented from the merged design, section 20 stage P1H.4a, on
 baseline `6a9d0d26015caa857c19d0d22415904d832ad818` (PR #605). This
-slice is open as PR #606
-(https://github.com/vitala89/Intentloom/pull/606) on
-`refactor/application-security-findings-p1h4a` and is not merged.
-P1H.4b has not started.
+slice is merged as PR #606
+(`ec951f32246ad0c94a145f520dc1862d9592c72e`).
 
 `securityFindingPath`, `getSecurityFinding`, `listSecurityFindings`,
 `dismissSecurityFinding`, and `acceptSecurityRisk` moved to
@@ -2388,7 +2391,79 @@ files, 118 tests passed. Existing assertions were not rewritten.
 Local `pnpm verify` passed: typecheck, oxlint, Prettier, Vitest 359
 files / 3115 passed / 3 skipped, build, and `git diff --check`. The
 implementation pull request is #606
-(https://github.com/vitala89/Intentloom/pull/606) and is not merged.
+(https://github.com/vitala89/Intentloom/pull/606) and is merged as
+`ec951f32246ad0c94a145f520dc1862d9592c72e`.
+
+##### P1H.4b — SARIF import
+
+Implemented from the merged design, section 20 stage P1H.4b, on
+baseline `ec951f32246ad0c94a145f520dc1862d9592c72e` (PR #606). This
+slice is open on `refactor/application-sarif-security-import-p1h4b`
+and is not merged. P1H.5 has not started.
+
+`isObjectRecord` and `importSarifSecurityReport` moved to
+`packages/application/src/security/sarif-security-import.ts`. The
+helper stays private to that module and is not a package-root export.
+The importer imports `securityFindingPath` from the finding store. It
+does not import `index.ts`. The finding store does not import the
+SARIF module. `index.ts` re-exports `importSarifSecurityReport` and
+does not keep a local value import of it. The value imports of
+`listSecurityFindings` and `securityFindingPath` remain for
+`runLocalSecurityAdapters`, `updateSecurityBaseline`, and
+`checkSecurityPolicyAndBaseline`. No `security/index.ts` was added.
+The package export map is unchanged. `quality-exceptions.json` is
+unchanged.
+
+On this change, `index.ts` measures 5,102 effective lines and 5,362
+physical lines, down 109 effective and 122 physical from 5,211 and
+5,484. The design's P1H.4b estimate was 5,101 and 5,363. The SARIF
+module measures 121 effective and 134 physical lines, matching the
+design's mechanical splice. It stays under the 250-line preference
+and the 400 / 700 hard limits.
+
+`importSarifSecurityReport` remains 106 effective lines and 117
+physical lines. That exceeds the 80-line function hard limit in
+`docs/governance/CODE_QUALITY_STANDARDS.md` section 4.
+`scripts/production-file-metrics.mjs` checks file size only, so the
+move passes that check. The merged design, section 8, keeps the
+function intact because splitting the parse-and-write loop would hide
+the partial-write order. This plan records the debt instead of adding
+a `quality-exceptions.json` entry. Owner: Application maintainers.
+Review trigger: the next behavior change to
+`importSarifSecurityReport`.
+
+Import-only components stay two, each size 3: Approved Apply and the
+recorded Neutron mutation component. Re-export components stay sizes
+4, 29, and 3, with the same membership. The three security modules,
+`host-file-system.ts`, `project-path.ts`, the P1H.1 memory modules,
+`agent-session/agent-session.ts`, and the six skill modules stay
+outside every component. The locked cycle tests were not edited.
+
+The move preserves the current SARIF parser. Invalid JSON still throws
+`malformed SARIF JSON document`. A missing `runs` array still throws
+`invalid SARIF structure: missing runs array`. Non-object runs and
+results are skipped. Scanner, rule id, and title fallbacks stay
+`sarif-scanner`, `SARIF-RULE`, and `SARIF Finding`. Severity mapping
+is unchanged, including `critical` stored as `info` and a missing
+level stored as `medium`. `secretLikePath` still redacts only the
+evidence URI, the snippet, and the title. Scanner names, rule ids,
+and plain secret values that are not secret-like paths stay as
+written. Evidence URIs are not canonicalized to the project root.
+Finding ids still restart at `sarif-finding-1` on every call, so a
+repeated import overwrites those files, including a dismissed or
+accepted-risk finding. Stored trust class stays `verified-evidence`.
+Pretty JSON with a trailing newline is unchanged. A later validation
+failure or filesystem write failure leaves earlier finding files in
+place. That differs from the clean-abort sentence in ADR-0027 and
+stays documented until a separate design changes it. An empty import
+still returns a valid result and writes nothing.
+
+Focused coverage is `tests/sarif-security-import-p1h4b.test.ts` plus
+the existing security, CLI, Neutron read-only, and cycle suites: 9
+files, 129 tests passed. Existing assertions were not rewritten.
+Local `pnpm verify` passed: typecheck, oxlint, Prettier, Vitest 360
+files / 3126 passed / 3 skipped, build, and `git diff --check`. The
+implementation pull request is open and is not merged.
 
 ### P1I — transaction and lifecycle
 

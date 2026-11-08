@@ -1040,12 +1040,28 @@ down from 5,339 and 5,620. The finding store is 113/118 and coverage
 is 43/48. Import-only cycles stay two components of size 3.
 Re-export cycles stay three, sizes 4, 29, and 3. The new modules stay
 outside every component. `quality-exceptions.json` is unchanged.
-P1H.4a is open as PR #606
-(https://github.com/vitala89/Intentloom/pull/606) and is not merged.
-P1H.4b has not started. P1H.4 is
-not fully implemented. SARIF import, correlation, local adapters,
-policy, and baseline stay in `index.ts`. P1H.5 and later slices have
-not started.
+P1H.4a is merged as PR #606
+(https://github.com/vitala89/Intentloom/pull/606,
+`ec951f32246ad0c94a145f520dc1862d9592c72e`). P1H.4b moves
+`isObjectRecord` and `importSarifSecurityReport` into
+`packages/application/src/security/sarif-security-import.ts` (121
+effective lines, 134 physical lines). The helper stays private.
+`index.ts` re-exports `importSarifSecurityReport` and measures 5,102
+effective lines and 5,362 physical lines, down from 5,211 and 5,484.
+`importSarifSecurityReport` remains 106 effective lines and 117
+physical lines, above the 80-line function limit. The approved design
+keeps that function intact. Owner: Application maintainers. Review
+trigger: the next behavior change to that function.
+`quality-exceptions.json` is unchanged. Import-only cycles stay two
+components of size 3. Re-export cycles stay three, sizes 4, 29, and 3.
+The three security modules stay outside every component. P1H.4b is
+open on `refactor/application-sarif-security-import-p1h4b` and is not
+merged. P1H.4 is not fully implemented. Correlation, local adapters,
+policy, and baseline stay in `index.ts`. Known SARIF limitations stay:
+partial writes, the `verified-evidence` label, restarting ids that
+overwrite dismissed or accepted-risk findings, narrow
+`secretLikePath` redaction, and evidence URIs that are not
+canonicalized. P1H.5 and later slices have not started.
 `rankProceduralMemory` stays in the barrel.
 Undo U4 and Desktop Undo U5 are not started. Other post-P4 candidates remain in
 `POST_W12_NEXT_INCREMENT_PLAN.md`.
