@@ -1040,7 +1040,9 @@ down from 5,339 and 5,620. The finding store is 113/118 and coverage
 is 43/48. Import-only cycles stay two components of size 3.
 Re-export cycles stay three, sizes 4, 29, and 3. The new modules stay
 outside every component. `quality-exceptions.json` is unchanged.
-P1H.4a is open and is not merged. P1H.4b has not started. P1H.4 is
+P1H.4a is open as PR #606
+(https://github.com/vitala89/Intentloom/pull/606) and is not merged.
+P1H.4b has not started. P1H.4 is
 not fully implemented. SARIF import, correlation, local adapters,
 policy, and baseline stay in `index.ts`. P1H.5 and later slices have
 not started.

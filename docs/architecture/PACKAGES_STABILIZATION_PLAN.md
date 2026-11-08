@@ -92,7 +92,9 @@ and procedural memory is merged as PR #604
 (`911b229af00fcde54d8861af83a56e7e61df0902`). P1H.3 is fully
 implemented. P1H.4 design is merged as PR #605
 (`6a9d0d26015caa857c19d0d22415904d832ad818`). P1H.4a finding store
-and coverage is open and is not merged. P1H.4b has not started.
+and coverage is open as PR #606
+(https://github.com/vitala89/Intentloom/pull/606) and is not merged.
+P1H.4b has not started.
 P1H.5 and later slices have not started.
 Undo U4 and Desktop Undo U5 are not started.
 Neutron's R4A topology stays frozen.
@@ -154,7 +156,9 @@ and procedural memory is merged as PR #604
 (`911b229af00fcde54d8861af83a56e7e61df0902`). P1H.3 is fully
 implemented. P1H.4 design is merged as PR #605
 (`6a9d0d26015caa857c19d0d22415904d832ad818`). P1H.4a finding store
-and coverage is open and is not merged. P1H.4b has not started.
+and coverage is open as PR #606
+(https://github.com/vitala89/Intentloom/pull/606) and is not merged.
+P1H.4b has not started.
 
 ## 1. Baseline
 
@@ -2057,7 +2061,9 @@ and procedural memory is merged as PR #604
 (`911b229af00fcde54d8861af83a56e7e61df0902`). P1H.3 is fully
 implemented. P1H.4 design is merged as PR #605
 (`6a9d0d26015caa857c19d0d22415904d832ad818`). P1H.4a finding store
-and coverage is open and is not merged. P1H.4b has not started. P1I,
+and coverage is open as PR #606
+(https://github.com/vitala89/Intentloom/pull/606) and is not merged.
+P1H.4b has not started. P1I,
 P1J, Undo U4, and Desktop Undo U5 have not started.
 
 On `efce5db2b40d1f350df43d38b4b97d1ccd5c2736`, `index.ts` measures
@@ -2214,8 +2220,9 @@ Implemented from the merged design, section 19 step 3, on baseline
 merged as PR #604
 (`911b229af00fcde54d8861af83a56e7e61df0902`). P1H.4 design is
 merged as PR #605
-(`6a9d0d26015caa857c19d0d22415904d832ad818`). P1H.4a is open and is
-not merged. P1H.4b has not started.
+(`6a9d0d26015caa857c19d0d22415904d832ad818`). P1H.4a is open as
+PR #606 (https://github.com/vitala89/Intentloom/pull/606) and is not
+merged. P1H.4b has not started.
 
 `updateSkillProposalState`, `rollbackSkill`, `prepareSkillMutationPlan`,
 and `applySkillMutationPlan` moved to
@@ -2278,8 +2285,9 @@ Design is merged as PR #605
 `6a9d0d26015caa857c19d0d22415904d832ad818`). The approved contract is
 [`docs/designs/p1h4-security-findings-sarif/SYSTEM_DESIGN.md`](../designs/p1h4-security-findings-sarif/SYSTEM_DESIGN.md).
 P1H.3 is fully implemented. P1H.4a is the finding store and coverage
-extraction below and is not merged. P1H.4b has not started. P1H.4 is
-not fully implemented. P1H.5, P1H.6, P1H.7, P1I, P1J, Undo U4, and
+extraction below, open as PR #606
+(https://github.com/vitala89/Intentloom/pull/606) and not merged.
+P1H.4b has not started. P1H.4 is not fully implemented. P1H.5, P1H.6, P1H.7, P1I, P1J, Undo U4, and
 Desktop Undo U5 have not started.
 
 On `911b229af00fcde54d8861af83a56e7e61df0902`, `index.ts` measures
@@ -2327,8 +2335,10 @@ the design. Neither starts P1H.5.
 
 Implemented from the merged design, section 20 stage P1H.4a, on
 baseline `6a9d0d26015caa857c19d0d22415904d832ad818` (PR #605). This
-slice is open on `refactor/application-security-findings-p1h4a` and
-is not merged. P1H.4b has not started.
+slice is open as PR #606
+(https://github.com/vitala89/Intentloom/pull/606) on
+`refactor/application-security-findings-p1h4a` and is not merged.
+P1H.4b has not started.
 
 `securityFindingPath`, `getSecurityFinding`, `listSecurityFindings`,
 `dismissSecurityFinding`, and `acceptSecurityRisk` moved to
@@ -2376,7 +2386,9 @@ Focused coverage is `tests/security-finding-store-p1h4a.test.ts` plus
 the existing security, CLI, Neutron read-only, and cycle suites: 8
 files, 118 tests passed. Existing assertions were not rewritten.
 Local `pnpm verify` passed: typecheck, oxlint, Prettier, Vitest 359
-files / 3115 passed / 3 skipped, build, and `git diff --check`.
+files / 3115 passed / 3 skipped, build, and `git diff --check`. The
+implementation pull request is #606
+(https://github.com/vitala89/Intentloom/pull/606) and is not merged.
 
 ### P1I — transaction and lifecycle
 

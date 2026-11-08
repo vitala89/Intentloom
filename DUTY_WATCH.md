@@ -139,7 +139,9 @@ and procedural memory is merged (PR #604,
 `911b229af00fcde54d8861af83a56e7e61df0902`). P1H.3 is fully
 implemented. **P1H.4** design is merged (PR #605,
 `6a9d0d26015caa857c19d0d22415904d832ad818`). **P1H.4a** finding store
-and coverage is open and is not merged. P1H.4b has not started. Do not
+and coverage is open as PR #606
+(https://github.com/vitala89/Intentloom/pull/606) and is not merged.
+P1H.4b has not started. Do not
 start P1H.4b, P1H.5, P1H.6, P1H.7, P1I, P1J, Undo U4, or Desktop Undo
 U5.
 
@@ -148,7 +150,8 @@ U5.
 - **Status:** **IMPLEMENTED — PR OPEN, AWAITING MAINTAINER REVIEW.**
   P1H.4 design is merged as PR #605
   (https://github.com/vitala89/Intentloom/pull/605,
-  `6a9d0d26015caa857c19d0d22415904d832ad818`). P1H.4a is open on
+  `6a9d0d26015caa857c19d0d22415904d832ad818`). P1H.4a is PR #606
+  (https://github.com/vitala89/Intentloom/pull/606) on
   `refactor/application-security-findings-p1h4a` and is not merged.
   P1H.4 is not fully implemented. Do not merge on a green CI result
   alone. Do not start P1H.4b, P1H.5, P1H.6, P1H.7, P1I, P1J, Undo U4,
