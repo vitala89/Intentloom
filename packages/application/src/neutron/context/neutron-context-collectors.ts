@@ -13,11 +13,8 @@ import type {
   NeutronContextSource,
   NeutronSkillLoadingLevel,
 } from "../../../../protocol/src/neutron/runtime/neutron-runtime.js";
-import {
-  discoverSkills,
-  getBoundedProjectContext,
-  type FileSystem,
-} from "../../index.js";
+import { getBoundedProjectContext, type FileSystem } from "../../index.js";
+import { discoverSkills } from "../../skills/skill-discovery.js";
 import {
   N3_COLLECTOR_MAX_ITEMS,
   N3_COLLECTOR_MAX_TOKENS,

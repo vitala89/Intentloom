@@ -80,10 +80,12 @@ merged as PR #599
 (`ff7cb79329f403220aa4b369eede4cb8f06e591b`). The approved contract is
 [`docs/designs/p1h2-agent-session/SYSTEM_DESIGN.md`](../designs/p1h2-agent-session/SYSTEM_DESIGN.md).
 Implementation is merged as PR #600
-(`efce5db2b40d1f350df43d38b4b97d1ccd5c2736`). **P1H.3** design is proposed as PR #601 in
-[`docs/designs/p1h3-skill-catalog-proposals/SYSTEM_DESIGN.md`](../designs/p1h3-skill-catalog-proposals/SYSTEM_DESIGN.md)
-and is awaiting maintainer approval. Implementation has not started.
-P1H.4 and later slices have not started.
+(`efce5db2b40d1f350df43d38b4b97d1ccd5c2736`). **P1H.3** design is merged
+as PR #601
+(`6b387a34c221f967a15ef670d53bea9b76e40828`). The approved contract is
+[`docs/designs/p1h3-skill-catalog-proposals/SYSTEM_DESIGN.md`](../designs/p1h3-skill-catalog-proposals/SYSTEM_DESIGN.md).
+P1H.3a catalog read is implemented and is not merged. P1H.3b, P1H.3c,
+and P1H.4 and later slices have not started.
 Undo U4 and Desktop Undo U5 are not started.
 Neutron's R4A topology stays frozen.
 The measurements below remain the P1A baseline and are not restated as the
@@ -134,8 +136,10 @@ is merged as PR #598
 (`5f7917c1cef0997f6947932aa2f8f4186ac2decc`). P1H.2 design is merged
 as PR #599 (`ff7cb79329f403220aa4b369eede4cb8f06e591b`). Implementation
 is merged as PR #600
-(`efce5db2b40d1f350df43d38b4b97d1ccd5c2736`). P1H.3 design is proposed as PR #601
-and awaiting approval. Implementation has not started.
+(`efce5db2b40d1f350df43d38b4b97d1ccd5c2736`). P1H.3 design is merged
+as PR #601 (`6b387a34c221f967a15ef670d53bea9b76e40828`). P1H.3a catalog
+read is implemented and is not merged. P1H.3b and P1H.3c have not
+started.
 
 ## 1. Baseline
 
@@ -1786,8 +1790,9 @@ is merged as PR #598
 (`5f7917c1cef0997f6947932aa2f8f4186ac2decc`). P1H.2 design is merged
 as PR #599 (`ff7cb79329f403220aa4b369eede4cb8f06e591b`). Implementation
 is merged as PR #600
-(`efce5db2b40d1f350df43d38b4b97d1ccd5c2736`). P1H.3 design is proposed as PR #601
-and awaiting approval. Implementation has not started. P1I, P1J,
+(`efce5db2b40d1f350df43d38b4b97d1ccd5c2736`). P1H.3 design is merged
+as PR #601 (`6b387a34c221f967a15ef670d53bea9b76e40828`). P1H.3a catalog
+read is implemented and is not merged. P1H.3b, P1H.3c, P1I, P1J,
 Undo U4, and Desktop Undo U5 are not started.
 
 `FoundationUnderstanding` moved unchanged from
@@ -1870,8 +1875,9 @@ Implementation is merged as PR #598
 (`5f7917c1cef0997f6947932aa2f8f4186ac2decc`). P1H.2 design is merged
 as PR #599 (`ff7cb79329f403220aa4b369eede4cb8f06e591b`). Implementation
 is merged as PR #600
-(`efce5db2b40d1f350df43d38b4b97d1ccd5c2736`). P1H.3 design is proposed as PR #601
-and awaiting approval. Implementation has not started. P1I, P1J,
+(`efce5db2b40d1f350df43d38b4b97d1ccd5c2736`). P1H.3 design is merged
+as PR #601 (`6b387a34c221f967a15ef670d53bea9b76e40828`). P1H.3a catalog
+read is implemented and is not merged. P1H.3b, P1H.3c, P1I, P1J,
 Undo U4, and Desktop Undo U5 are not started.
 
 The twelve public operations moved unchanged out of
@@ -2015,10 +2021,11 @@ target, path traversal, and default trust and retention.
 
 #### P1H.3 — skill catalog and proposals
 
-Design is proposed as PR #601 in
-[`docs/designs/p1h3-skill-catalog-proposals/SYSTEM_DESIGN.md`](../designs/p1h3-skill-catalog-proposals/SYSTEM_DESIGN.md)
-and is awaiting maintainer approval. Implementation has not started.
-P1H.4, P1I, P1J, Undo U4, and Desktop Undo U5 are not started.
+Design is merged as PR #601
+(`6b387a34c221f967a15ef670d53bea9b76e40828`). The approved contract is
+[`docs/designs/p1h3-skill-catalog-proposals/SYSTEM_DESIGN.md`](../designs/p1h3-skill-catalog-proposals/SYSTEM_DESIGN.md).
+P1H.3a catalog read is implemented and is not merged. P1H.3b, P1H.3c,
+P1H.4, P1I, P1J, Undo U4, and Desktop Undo U5 have not started.
 
 On `efce5db2b40d1f350df43d38b4b97d1ccd5c2736`, `index.ts` measures
 6,093 effective lines and 6,448 physical lines. The family is lines
@@ -2053,9 +2060,60 @@ Skill proposal approval stays the `approvalEvidence` string on
 `updateSkillProposalState`. It is not Approved Apply and it is not
 sandbox evaluation. The design records the current trust fallback,
 unused `catalogRoot`, checksum, and rollback behavior as shortcomings
-to preserve. Recommended implementation order, after approval, is
-catalog read, then proposal store and evaluation, then mutation and
-the procedural-memory read model.
+to preserve. The approved implementation order is catalog read, then
+proposal store and evaluation, then mutation and the procedural-memory
+read model.
+
+##### P1H.3a — catalog read
+
+Implemented from the merged design, section 19 step 1, and not merged.
+`parseSkillProgressive` moved to
+`packages/application/src/skills/skill-progressive-parse.ts`.
+`discoverSkills` and `getSkillAtLevel` moved to
+`packages/application/src/skills/skill-discovery.ts`. Discovery
+imports the parser directly. `index.ts` re-exports the three names
+and no longer imports `skill-markdown.ts`. Neutron
+`neutron-context-collectors.ts` imports `discoverSkills` from the
+discovery module and still imports `getBoundedProjectContext` and
+`FileSystem` from the barrel. No `skills/index.ts` was added. The
+package export map is unchanged. `rankProceduralMemory` and the other
+thirteen family operations stay in `index.ts`.
+
+On this change, `index.ts` measures 5,795 effective lines and 6,119
+physical lines, down 298 effective and 329 physical from 6,093 and
+6,448. The design estimate was 5,798 and 6,122. The parser module
+measures 132 effective and 144 physical lines, matching its estimate.
+The discovery module measures 187 effective and 208 physical lines,
+one line above the 186 and 207 estimate. Both new files stay under
+the 250-line preference and the 400 / 700 hard limits.
+`quality-exceptions.json` is unchanged, and the grandfathered
+`index.ts` ceiling is not raised.
+
+`parseSkillProgressive` remains 124 effective lines and
+`discoverSkills` remains 145. Both exceed the 80-line function hard
+limit. `scripts/production-file-metrics.mjs` checks file size only, so
+the move passes that check. The merged design, sections 2, 8, and 22,
+keeps both functions intact and records the debt here instead of
+adding a `quality-exceptions.json` entry. Owner: Application
+maintainers. Review trigger: the next behavior change to either
+function.
+
+Import-only components stay two, each size 3: Approved Apply and the
+recorded Neutron mutation component. Re-export components stay sizes
+4, 29, and 3, with the same membership. The new modules,
+`host-file-system.ts`, `project-path.ts`, `skill-markdown.ts`, the
+P1H.1 memory modules, and `agent-session/agent-session.ts` stay
+outside every component. The locked cycle tests were not edited.
+
+Public signatures, defaults, discovery filters, ignored `catalogRoot`,
+`getSkillAtLevel` path precedence, and Neutron read-only assembly stay
+as they were. Focused coverage is
+`tests/skill-catalog-read-p1h3a.test.ts` plus the existing parser,
+discovery, CLI skill, Neutron context, and cycle suites: 8 files, 61
+tests passed. Existing assertions were not rewritten. Local
+`pnpm verify` passed: typecheck, oxlint, Prettier, Vitest 355 files /
+3088 passed / 3 skipped, build, and `git diff --check`. The
+implementation pull request is open and not merged.
 
 ### P1I — transaction and lifecycle
 

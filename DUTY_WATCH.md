@@ -130,19 +130,78 @@ implementation is merged (PR #598,
 `5f7917c1cef0997f6947932aa2f8f4186ac2decc`). **P1H.2** design is merged
 (PR #599, `ff7cb79329f403220aa4b369eede4cb8f06e591b`). **P1H.2**
 implementation is merged (PR #600,
-`efce5db2b40d1f350df43d38b4b97d1ccd5c2736`). **P1H.3** design is
-proposed and awaiting maintainer approval. Implementation has not
-started. Do not merge the design on a green CI result alone. Do not
-start P1H.3 implementation, P1H.4, P1I, P1J, Undo U4, or Desktop Undo
-U5.
+`efce5db2b40d1f350df43d38b4b97d1ccd5c2736`). **P1H.3** design is merged (PR #601,
+`6b387a34c221f967a15ef670d53bea9b76e40828`). **P1H.3a** catalog read is
+implemented and is not merged. Do not merge it on a green CI result
+alone. Do not start P1H.3b, P1H.3c, P1H.4, P1I, P1J, Undo U4, or
+Desktop Undo U5.
+
+### 2026-11-08, Packages architecture P1H.3a skill catalog read extraction
+
+- **Status:** **IMPLEMENTED — PR OPEN, AWAITING MAINTAINER REVIEW.**
+  P1H.3a is not merged. Do not merge. Do not start P1H.3b, P1H.3c,
+  P1H.4, P1I, P1J, Undo U4, or Desktop Undo U5.
+- **Branch:** `refactor/application-skill-catalog-read-p1h3a`
+- **Baseline:** `6b387a34c221f967a15ef670d53bea9b76e40828` (PR #601,
+  P1H.3 design merged). P1H.2 implementation is PR #600
+  (`efce5db2b40d1f350df43d38b4b97d1ccd5c2736`).
+- **Design:** `docs/designs/p1h3-skill-catalog-proposals/SYSTEM_DESIGN.md`,
+  section 19 step 1.
+- **Extraction:** `parseSkillProgressive` moved to
+  `packages/application/src/skills/skill-progressive-parse.ts`.
+  `discoverSkills` and `getSkillAtLevel` moved to
+  `packages/application/src/skills/skill-discovery.ts`. `index.ts`
+  re-exports the three names. Neutron
+  `neutron-context-collectors.ts` imports `discoverSkills` from the
+  discovery module and still imports `getBoundedProjectContext` and
+  `FileSystem` from the barrel.
+- **Sizes:** `index.ts` 6,093/6,448 to 5,795/6,119 (estimate
+  5,798/6,122). Parser module 132/144. Discovery module 187/208
+  (estimate 186/207). No `skills/index.ts`. No new package export-map
+  key. `quality-exceptions.json` unchanged.
+- **Function length:** `parseSkillProgressive` remains 124 effective
+  lines and `discoverSkills` remains 145. The 80-line hard limit still
+  applies. The production-file check enforces file budgets only, and
+  the merged design keeps both functions intact. This record is the
+  debt: rule is the 80-line function limit; measured values are 124
+  and 145; splitting now would rewrite the parser or discovery loop
+  the design froze; scope is those two functions; owner is Application
+  maintainers; review trigger is the next behavior change to either
+  function. This is not a `quality-exceptions.json` exception.
+- **SCC:** import-only components stay two of size 3 (Approved Apply
+  and the recorded Neutron mutation cycle). Re-export components stay
+  sizes 4, 29, and 3, with the same membership. The new files,
+  `host-file-system.ts`, `project-path.ts`, the P1H.1 memory modules,
+  and `agent-session/agent-session.ts` are outside every component.
+  Cycle tests were not edited.
+- **Compatibility:** parser output, discovery filters and budgets,
+  ignored `catalogRoot`, `getSkillAtLevel` path precedence, null and
+  unavailable results, and Neutron read-only assembly are unchanged.
+  The thirteen proposal, evaluation, mutation, and procedural-memory
+  operations stay in `index.ts`. `rankProceduralMemory` is unchanged.
+- **Tests:** focused parser, discovery, CLI skill, Neutron context,
+  cycle, and new catalog-read suites: 8 files, 61 tests passed.
+  Existing assertions were not rewritten. New cases cover the sixteen
+  package-root names, the unchanged export map, ignored `catalogRoot`,
+  default catalog level, catalog-root precedence and fallback, path
+  traversal, and cycle membership.
+- **Verification:** local `pnpm verify` passed: typecheck, oxlint,
+  Prettier, Vitest 355 files / 3088 passed / 3 skipped, build, and
+  `git diff --check`. Focused suites were 8 files and 61 tests.
+  Hosted CI is recorded against the pull request head and is not
+  claimed here before that run finishes.
+- **Not done:** merge, P1H.3b, P1H.3c, P1H.4, P1I, P1J, Undo U4,
+  Desktop Undo U5.
+- **Next:** Maintainer review. Do not merge.
 
 ### 2026-11-08, Packages architecture P1H.3 skill catalog and proposals design
 
-- **Status:** **DESIGN PR OPEN — AWAITING MAINTAINER APPROVAL.**
-  PR #601, https://github.com/vitala89/Intentloom/pull/601. P1H.3 is
-  not implemented. A green CI result is not approval. Do not merge.
-  Do not start implementation, P1H.4, P1I, P1J, Undo U4, or Desktop
-  Undo U5.
+- **Status:** **MERGED.** PR #601,
+  https://github.com/vitala89/Intentloom/pull/601, merge
+  `6b387a34c221f967a15ef670d53bea9b76e40828`. This entry is the design
+  record. P1H.3a implementation is the following watch entry and is
+  not merged. P1H.3b, P1H.3c, P1H.4, P1I, P1J, Undo U4, and Desktop
+  Undo U5 have not started.
 - **Branch:** `docs/p1h3-skill-catalog-proposals`
 - **Baseline:** `efce5db2b40d1f350df43d38b4b97d1ccd5c2736` (PR #600,
   P1H.2 implementation merged). P1H.2 design is PR #599
