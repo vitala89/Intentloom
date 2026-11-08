@@ -101,7 +101,8 @@ P1H.5 design is merged as PR #608
 (`1d0611070b02c5e9f0f0e2816a0f560fbf18c18e`). P1H.5a policy, baseline,
 and comparison is merged as PR #609
 (`7589c6ccff5d79d1f8c6e5de34d2f521ea3caa6e`). P1H.5b sandbox policy
-and evaluation is open from
+and evaluation is open as
+PR #610 (https://github.com/vitala89/Intentloom/pull/610) on
 `refactor/application-sandbox-policy-evaluation-p1h5b` and is not
 merged. P1H.5 is not fully implemented. P1H.6 and later slices have
 not started.
@@ -2305,7 +2306,8 @@ P1H.4b SARIF import is merged as PR #607
 (`7a77db52753360f0029cd266d8c95eb78c34995c`). P1H.4 is fully
 implemented. P1H.5 design is merged as PR #608
 (`1d0611070b02c5e9f0f0e2816a0f560fbf18c18e`). P1H.5a is merged as PR
-#609 (`7589c6ccff5d79d1f8c6e5de34d2f521ea3caa6e`). P1H.5b is open from
+#609 (`7589c6ccff5d79d1f8c6e5de34d2f521ea3caa6e`). P1H.5b is open as
+PR #610 (https://github.com/vitala89/Intentloom/pull/610) on
 `refactor/application-sandbox-policy-evaluation-p1h5b` and is not
 merged. P1H.5 is not fully implemented. P1H.6, P1H.7, P1I, P1J, Undo
 U4, and Desktop Undo U5 have not started.
@@ -2490,7 +2492,8 @@ Design is merged as PR #608
 `1d0611070b02c5e9f0f0e2816a0f560fbf18c18e`). The approved contract is
 [`docs/designs/p1h5-security-policy-sandbox/SYSTEM_DESIGN.md`](../designs/p1h5-security-policy-sandbox/SYSTEM_DESIGN.md).
 P1H.4 is fully implemented. P1H.5a is merged as PR #609
-(`7589c6ccff5d79d1f8c6e5de34d2f521ea3caa6e`). P1H.5b is open from
+(`7589c6ccff5d79d1f8c6e5de34d2f521ea3caa6e`). P1H.5b is open as
+PR #610 (https://github.com/vitala89/Intentloom/pull/610) on
 `refactor/application-sandbox-policy-evaluation-p1h5b` and is not
 merged. P1H.5 is not fully implemented. P1H.6, P1H.7, P1I, P1J, Undo
 U4, and Desktop Undo U5 have not started.
@@ -2614,7 +2617,8 @@ implementation pull request is #609
 
 Implemented from the merged design, section 21 stage P1H.5b, on
 baseline `7589c6ccff5d79d1f8c6e5de34d2f521ea3caa6e` (PR #609). P1H.5a
-is merged. This slice is open from
+is merged. This slice is open as
+PR #610 (https://github.com/vitala89/Intentloom/pull/610) on
 `refactor/application-sandbox-policy-evaluation-p1h5b` and is not
 merged. P1H.5 is not fully implemented. P1H.6 has not started.
 
@@ -2676,7 +2680,8 @@ security, CLI, workspace, and cycle suites: 14 files, 163 tests
 passed. Existing assertions were not rewritten. Local `pnpm verify`
 passed: typecheck, oxlint, Prettier, Vitest 363 files / 3143 passed /
 3 skipped, build, and `git diff --check`. The implementation pull
-request is open from
+request is open as
+PR #610 (https://github.com/vitala89/Intentloom/pull/610) on
 `refactor/application-sandbox-policy-evaluation-p1h5b` and is not
 merged.
 

@@ -146,7 +146,8 @@ implemented. **P1H.5** design is merged (PR #608,
 `1d0611070b02c5e9f0f0e2816a0f560fbf18c18e`). **P1H.5a** policy,
 baseline, and comparison is merged (PR #609,
 `7589c6ccff5d79d1f8c6e5de34d2f521ea3caa6e`). **P1H.5b** sandbox policy
-and evaluation is open from
+and evaluation is open as PR #610
+(https://github.com/vitala89/Intentloom/pull/610) on
 `refactor/application-sandbox-policy-evaluation-p1h5b` and is not
 merged. P1H.5 is not fully implemented. Do not merge P1H.5b on a green
 CI result alone. Do not start P1H.6, P1H.7, P1I, P1J, Undo U4, or
@@ -155,10 +156,10 @@ Desktop Undo U5.
 ### 2026-11-08, Packages architecture P1H.5b sandbox policy and evaluation
 
 - **Status:** **IMPLEMENTED — PR OPEN, AWAITING MAINTAINER REVIEW.**
-  Branch `refactor/application-sandbox-policy-evaluation-p1h5b`. The
-  pull request is not merged. A green CI result is not approval. Do
-  not merge. Do not start P1H.6, P1H.7, P1I, P1J, Undo U4, or Desktop
-  Undo U5.
+  PR #610, https://github.com/vitala89/Intentloom/pull/610. The
+  extraction commit is `9c5bfa18ac641d110376e850f1d6dbe17a0aafd1`. It
+  is not merged. A green CI result is not approval. Do not merge. Do
+  not start P1H.6, P1H.7, P1I, P1J, Undo U4, or Desktop Undo U5.
 - **Branch:** `refactor/application-sandbox-policy-evaluation-p1h5b`
 - **Baseline:** `7589c6ccff5d79d1f8c6e5de34d2f521ea3caa6e` (PR #609,
   P1H.5a merged). P1H.5 design is PR #608

@@ -1098,7 +1098,8 @@ keeps value imports of `getSandboxCapabilityPolicy` for
 `quality-exceptions.json` is unchanged. Import-only cycles stay two
 components of size 3. Re-export cycles stay three, sizes 4, 29, and 3.
 The sandbox modules stay outside every component. The implementation
-pull request is open from
+pull request is
+PR #610 (https://github.com/vitala89/Intentloom/pull/610) on
 `refactor/application-sandbox-policy-evaluation-p1h5b` and is not
 merged. P1H.5 is not fully implemented. P1H.6 and later slices have
 not started.
