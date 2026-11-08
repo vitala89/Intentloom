@@ -1008,7 +1008,8 @@ It measures 5,575 effective lines and 5,881 physical lines, down from
 5,795 and 6,119. `quality-exceptions.json` is unchanged. Import-only
 cycles stay two components of size 3. Re-export cycles stay three,
 sizes 4, 29, and 3. The new modules stay outside every component.
-The implementation pull request is open and is not merged. P1H.3c
+The implementation pull request is #603
+(https://github.com/vitala89/Intentloom/pull/603) and is not merged. P1H.3c
 and P1H.4 and later slices have not started. `rankProceduralMemory`
 stays in the barrel.
 Undo U4 and Desktop Undo U5 are not started. Other post-P4 candidates remain in

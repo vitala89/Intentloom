@@ -86,7 +86,8 @@ as PR #601
 [`docs/designs/p1h3-skill-catalog-proposals/SYSTEM_DESIGN.md`](../designs/p1h3-skill-catalog-proposals/SYSTEM_DESIGN.md).
 P1H.3a catalog read is merged as PR #602
 (`460b81efd1e81f5b24a22e11d3af4680c8f28aad`). P1H.3b proposal store
-and evaluation is implemented and is not merged. P1H.3c and P1H.4
+and evaluation is implemented in PR #603
+(https://github.com/vitala89/Intentloom/pull/603) and is not merged. P1H.3c and P1H.4
 and later slices have not started.
 Undo U4 and Desktop Undo U5 are not started.
 Neutron's R4A topology stays frozen.
@@ -142,7 +143,8 @@ is merged as PR #600
 as PR #601 (`6b387a34c221f967a15ef670d53bea9b76e40828`). P1H.3a catalog
 read is merged as PR #602
 (`460b81efd1e81f5b24a22e11d3af4680c8f28aad`). P1H.3b proposal store
-and evaluation is implemented and is not merged. P1H.3c has not
+and evaluation is implemented in PR #603
+(https://github.com/vitala89/Intentloom/pull/603) and is not merged. P1H.3c has not
 started.
 
 ## 1. Baseline
@@ -1798,7 +1800,8 @@ is merged as PR #600
 as PR #601 (`6b387a34c221f967a15ef670d53bea9b76e40828`). P1H.3a catalog
 read is merged as PR #602
 (`460b81efd1e81f5b24a22e11d3af4680c8f28aad`). P1H.3b proposal store
-and evaluation is implemented and is not merged. P1H.3c, P1I, P1J,
+and evaluation is implemented in PR #603
+(https://github.com/vitala89/Intentloom/pull/603) and is not merged. P1H.3c, P1I, P1J,
 Undo U4, and Desktop Undo U5 are not started.
 
 `FoundationUnderstanding` moved unchanged from
@@ -1885,7 +1888,8 @@ is merged as PR #600
 as PR #601 (`6b387a34c221f967a15ef670d53bea9b76e40828`). P1H.3a catalog
 read is merged as PR #602
 (`460b81efd1e81f5b24a22e11d3af4680c8f28aad`). P1H.3b proposal store
-and evaluation is implemented and is not merged. P1H.3c, P1I, P1J,
+and evaluation is implemented in PR #603
+(https://github.com/vitala89/Intentloom/pull/603) and is not merged. P1H.3c, P1I, P1J,
 Undo U4, and Desktop Undo U5 are not started.
 
 The twelve public operations moved unchanged out of
@@ -2034,7 +2038,8 @@ Design is merged as PR #601
 [`docs/designs/p1h3-skill-catalog-proposals/SYSTEM_DESIGN.md`](../designs/p1h3-skill-catalog-proposals/SYSTEM_DESIGN.md).
 P1H.3a catalog read is merged as PR #602
 (`460b81efd1e81f5b24a22e11d3af4680c8f28aad`). P1H.3b proposal store
-and evaluation is implemented and is not merged. P1H.3c, P1H.4, P1I,
+and evaluation is implemented in PR #603
+(https://github.com/vitala89/Intentloom/pull/603) and is not merged. P1H.3c, P1H.4, P1I,
 P1J, Undo U4, and Desktop Undo U5 have not started.
 
 On `efce5db2b40d1f350df43d38b4b97d1ccd5c2736`, `index.ts` measures
@@ -2180,8 +2185,8 @@ plus the existing proposal, evaluation, memory, rank, and cycle
 suites: 11 files, 139 tests passed. Existing assertions were not
 rewritten. Local `pnpm verify` passed: typecheck, oxlint, Prettier,
 Vitest 356 files / 3096 passed / 3 skipped, build, and
-`git diff --check`. The implementation pull request is open and is
-not merged.
+`git diff --check`. The implementation pull request is #603
+(https://github.com/vitala89/Intentloom/pull/603) and is not merged.
 
 ### P1I — transaction and lifecycle
 

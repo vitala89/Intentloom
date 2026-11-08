@@ -133,16 +133,17 @@ implementation is merged (PR #600,
 `efce5db2b40d1f350df43d38b4b97d1ccd5c2736`). **P1H.3** design is merged (PR #601,
 `6b387a34c221f967a15ef670d53bea9b76e40828`). **P1H.3a** catalog read is
 merged (PR #602, `460b81efd1e81f5b24a22e11d3af4680c8f28aad`). **P1H.3b**
-proposal store and evaluation is implemented and is not merged. Do not
+proposal store and evaluation is implemented in PR #603
+(https://github.com/vitala89/Intentloom/pull/603) and is not merged. Do not
 merge it on a green CI result alone. Do not start P1H.3c, P1H.4, P1I,
 P1J, Undo U4, or Desktop Undo U5.
 
 ### 2026-11-08, Packages architecture P1H.3b skill proposal store and evaluation
 
 - **Status:** **IMPLEMENTED — PR OPEN, AWAITING MAINTAINER REVIEW.**
-  The pull request is open against `main` and is not merged. Do not
-  merge. Do not start P1H.3c, P1H.4, P1I, P1J, Undo U4, or Desktop
-  Undo U5.
+  PR #603, https://github.com/vitala89/Intentloom/pull/603. P1H.3b is
+  not merged. Do not merge. Do not start P1H.3c, P1H.4, P1I, P1J,
+  Undo U4, or Desktop Undo U5.
 - **Branch:** `refactor/application-skill-proposals-p1h3b`
 - **Baseline:** `460b81efd1e81f5b24a22e11d3af4680c8f28aad` (PR #602,
   P1H.3a catalog read merged). P1H.3 design is PR #601
@@ -256,7 +257,8 @@ P1J, Undo U4, or Desktop Undo U5.
   `6b387a34c221f967a15ef670d53bea9b76e40828`. This entry is the design
   record. P1H.3a implementation was later merged as PR #602
   (`460b81efd1e81f5b24a22e11d3af4680c8f28aad`). P1H.3b is implemented
-  and is not merged. P1H.3c, P1H.4, P1I, P1J, Undo U4, and Desktop
+  in PR #603 (https://github.com/vitala89/Intentloom/pull/603) and is
+  not merged. P1H.3c, P1H.4, P1I, P1J, Undo U4, and Desktop
   Undo U5 have not started.
 - **Branch:** `docs/p1h3-skill-catalog-proposals`
 - **Baseline:** `efce5db2b40d1f350df43d38b4b97d1ccd5c2736` (PR #600,
