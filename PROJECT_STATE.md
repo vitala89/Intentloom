@@ -979,14 +979,23 @@ measures 6,093 effective lines and 6,448 physical lines, down from
 Re-export cycles stay three, and the component that contains
 `index.ts` stays at 29 files. The new module is outside every
 component. Implementation is merged as PR #600
-(`efce5db2b40d1f350df43d38b4b97d1ccd5c2736`). P1H.3 design is proposed as PR #601
-(`docs/designs/p1h3-skill-catalog-proposals/SYSTEM_DESIGN.md`) and
-awaits maintainer approval. The design inventories sixteen public
-operations at `packages/application/src/index.ts` lines 3464–4317 and
-recommends six leaves under `packages/application/src/skills/`.
-`rankProceduralMemory` stays in the barrel because it also calls
-`getSemanticRankingConfig`. Implementation has not started. P1H.4 and
-later slices have not started.
+(`efce5db2b40d1f350df43d38b4b97d1ccd5c2736`). P1H.3 design is merged
+as PR #601 (`6b387a34c221f967a15ef670d53bea9b76e40828`,
+`docs/designs/p1h3-skill-catalog-proposals/SYSTEM_DESIGN.md`). The
+design inventories sixteen public operations and recommends six leaves
+under `packages/application/src/skills/`. P1H.3a moves
+`parseSkillProgressive`, `discoverSkills`, and `getSkillAtLevel` into
+`skills/skill-progressive-parse.ts` (132/144) and
+`skills/skill-discovery.ts` (187/208). `index.ts` names those three
+as re-exports and measures 5,795 effective lines and 6,119 physical
+lines, down from 6,093 and 6,448. `parseSkillProgressive` stays 124
+effective lines and `discoverSkills` stays 145. Both remain over the
+80-line function limit. The approved design keeps them intact.
+`quality-exceptions.json` is unchanged. Import-only cycles stay two
+components of size 3. Re-export cycles stay three, sizes 4, 29, and 3.
+The new modules stay outside every component. The implementation pull request is #602
+(https://github.com/vitala89/Intentloom/pull/602) and is not merged. P1H.3b, P1H.3c, and P1H.4 and later slices have not
+started. `rankProceduralMemory` stays in the barrel.
 Undo U4 and Desktop Undo U5 are not started. Other post-P4 candidates remain in
 `POST_W12_NEXT_INCREMENT_PLAN.md`.
 
