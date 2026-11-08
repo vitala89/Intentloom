@@ -1,0 +1,47 @@
+flowchart TB
+  callers["CLI commands stay on the package root"]
+  neutron["neutron-context-collectors.ts"]
+  barrel["index.ts named re-exports"]
+  rank["rankProceduralMemory stays in index.ts"]
+  parse["skills/skill-progressive-parse.ts"]
+  discovery["skills/skill-discovery.ts"]
+  store["skills/skill-proposal-store.ts"]
+  evaluation["skills/skill-evaluation.ts"]
+  mutation["skills/skill-mutation.ts"]
+  memory["skills/skill-procedural-memory.ts"]
+  markdown["skill-markdown.ts"]
+  fsport["host-file-system.ts"]
+  pathmod["project-path.ts"]
+  protocol["@intentloom/protocol"]
+  callers --> barrel
+  neutron -->|"discoverSkills"| discovery
+  neutron -->|"getBoundedProjectContext"| barrel
+  barrel --> parse
+  barrel --> discovery
+  barrel --> store
+  barrel --> evaluation
+  barrel --> mutation
+  barrel --> memory
+  rank --> store
+  rank --> evaluation
+  discovery --> parse
+  evaluation --> store
+  mutation --> store
+  mutation --> evaluation
+  memory --> store
+  memory --> evaluation
+  parse --> markdown
+  parse --> protocol
+  discovery --> fsport
+  discovery --> pathmod
+  store --> fsport
+  store --> pathmod
+  store --> protocol
+  evaluation --> fsport
+  evaluation --> pathmod
+  evaluation --> protocol
+  mutation --> fsport
+  mutation --> pathmod
+  mutation --> protocol
+  memory --> fsport
+  memory --> pathmod

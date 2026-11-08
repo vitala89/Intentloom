@@ -1,0 +1,18 @@
+flowchart TB
+  callers["CLI skill, proposal, evaluate, and memory commands"]
+  neutron["neutron-context-collectors.ts"]
+  family["index.ts lines 3464-4317"]
+  rank["rankProceduralMemory lines 4561-4647"]
+  markdown["skill-markdown.ts"]
+  yaml["yaml parse"]
+  fsport["host-file-system.ts"]
+  pathmod["project-path.ts"]
+  protocol["@intentloom/protocol"]
+  callers -->|"package root"| family
+  neutron -->|"discoverSkills and getBoundedProjectContext"| family
+  rank -->|"listSkillProposals and listSkillEvaluations"| family
+  family --> markdown
+  family --> yaml
+  family --> fsport
+  family --> pathmod
+  family --> protocol

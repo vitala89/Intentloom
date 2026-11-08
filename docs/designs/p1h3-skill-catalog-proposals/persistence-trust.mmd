@@ -1,0 +1,18 @@
+flowchart LR
+  subgraph disk ["Project root via inside()"]
+    skillmd["skills/id/SKILL.md and catalog/skills/id/SKILL.md"]
+    proposals[".aif/memory/proposals/id.json"]
+    evals[".aif/memory/evaluations/eval-id.json"]
+    mutations[".aif/memory/mutations/planId.json"]
+    lock[".aif/memory/lock.json"]
+  end
+  parse["parseSkillProgressive"]
+  store["proposal store"]
+  evaluation["evaluateSkillProposal"]
+  mutation["applySkillMutationPlan"]
+  memory["validateSkillExtensionLock"]
+  skillmd -->|"read, default trust canonical-policy"| parse
+  store -->|"caller content, validated schema"| proposals
+  evaluation -->|"local regex result"| evals
+  mutation -->|"plan after state write"| mutations
+  memory -->|"read only"| lock

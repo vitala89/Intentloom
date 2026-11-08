@@ -1,0 +1,14 @@
+sequenceDiagram
+  participant Apply as applySkillMutationPlan
+  participant Gate as rollbackSkill or updateSkillProposalState
+  participant FS as FileSystem
+  Apply->>Apply: validateSkillMutationPlan
+  alt action is rollback
+    Apply->>Gate: rollbackSkill
+    Note over Gate: sets rolled-back, no evaluation gate
+  else approve, activate, or deprecate
+    Apply->>Gate: updateSkillProposalState(targetState)
+  end
+  Gate->>FS: write .aif/memory/proposals/id.json
+  Apply->>FS: write .aif/memory/mutations/planId.json
+  Note over Apply,FS: A throw from the mutation write leaves the proposal state already replaced. Checksum is stored and not compared.

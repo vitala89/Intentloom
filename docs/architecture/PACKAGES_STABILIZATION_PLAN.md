@@ -79,8 +79,11 @@ Implementation is merged as PR #598
 merged as PR #599
 (`ff7cb79329f403220aa4b369eede4cb8f06e591b`). The approved contract is
 [`docs/designs/p1h2-agent-session/SYSTEM_DESIGN.md`](../designs/p1h2-agent-session/SYSTEM_DESIGN.md).
-Implementation is on `refactor/application-agent-session-p1h2` and is
-not merged. P1H.3 and later slices have not started.
+Implementation is merged as PR #600
+(`efce5db2b40d1f350df43d38b4b97d1ccd5c2736`). **P1H.3** design is proposed as PR #601 in
+[`docs/designs/p1h3-skill-catalog-proposals/SYSTEM_DESIGN.md`](../designs/p1h3-skill-catalog-proposals/SYSTEM_DESIGN.md)
+and is awaiting maintainer approval. Implementation has not started.
+P1H.4 and later slices have not started.
 Undo U4 and Desktop Undo U5 are not started.
 Neutron's R4A topology stays frozen.
 The measurements below remain the P1A baseline and are not restated as the
@@ -130,8 +133,9 @@ as PR #597 (`eeda24d7bfba504d5ea6c7a781a6a054117a8a15`). Implementation
 is merged as PR #598
 (`5f7917c1cef0997f6947932aa2f8f4186ac2decc`). P1H.2 design is merged
 as PR #599 (`ff7cb79329f403220aa4b369eede4cb8f06e591b`). Implementation
-is on `refactor/application-agent-session-p1h2` and is not merged.
-Later slices have not started.
+is merged as PR #600
+(`efce5db2b40d1f350df43d38b4b97d1ccd5c2736`). P1H.3 design is proposed as PR #601
+and awaiting approval. Implementation has not started.
 
 ## 1. Baseline
 
@@ -1781,8 +1785,10 @@ as PR #597 (`eeda24d7bfba504d5ea6c7a781a6a054117a8a15`). Implementation
 is merged as PR #598
 (`5f7917c1cef0997f6947932aa2f8f4186ac2decc`). P1H.2 design is merged
 as PR #599 (`ff7cb79329f403220aa4b369eede4cb8f06e591b`). Implementation
-is on `refactor/application-agent-session-p1h2` and is not merged.
-P1I, P1J, Undo U4, and Desktop Undo U5 are not started.
+is merged as PR #600
+(`efce5db2b40d1f350df43d38b4b97d1ccd5c2736`). P1H.3 design is proposed as PR #601
+and awaiting approval. Implementation has not started. P1I, P1J,
+Undo U4, and Desktop Undo U5 are not started.
 
 `FoundationUnderstanding` moved unchanged from
 `packages/application/src/foundation-workshop.ts` into
@@ -1863,8 +1869,10 @@ Design approved and merged as PR #597
 Implementation is merged as PR #598
 (`5f7917c1cef0997f6947932aa2f8f4186ac2decc`). P1H.2 design is merged
 as PR #599 (`ff7cb79329f403220aa4b369eede4cb8f06e591b`). Implementation
-is on `refactor/application-agent-session-p1h2` and is not merged.
-P1I, P1J, Undo U4, and Desktop Undo U5 are not started.
+is merged as PR #600
+(`efce5db2b40d1f350df43d38b4b97d1ccd5c2736`). P1H.3 design is proposed as PR #601
+and awaiting approval. Implementation has not started. P1I, P1J,
+Undo U4, and Desktop Undo U5 are not started.
 
 The twelve public operations moved unchanged out of
 `packages/application/src/index.ts` lines 4908–5257:
@@ -1941,9 +1949,9 @@ Focused tests: 7 files, 85 tests passed
 Design approved and merged as PR #599
 (`ff7cb79329f403220aa4b369eede4cb8f06e591b`). The approved contract is
 [`docs/designs/p1h2-agent-session/SYSTEM_DESIGN.md`](../designs/p1h2-agent-session/SYSTEM_DESIGN.md).
-Implementation is on `refactor/application-agent-session-p1h2` and is
-not merged. P1H.3, P1I, P1J, Undo U4, and Desktop Undo U5 are not
-started.
+Implementation is merged as PR #600
+(`efce5db2b40d1f350df43d38b4b97d1ccd5c2736`). P1I, P1J, Undo U4, and
+Desktop Undo U5 are not started.
 
 The six public operations moved unchanged out of
 `packages/application/src/index.ts` lines 4927–5098:
@@ -2004,6 +2012,50 @@ reads, list order, summary skip, compacted close, export without a
 target, path traversal, and default trust and retention.
 `pnpm verify` passed: typecheck, oxlint, Prettier, Vitest 354 files /
 3083 passed / 3 skipped, build, and `git diff --check`.
+
+#### P1H.3 — skill catalog and proposals
+
+Design is proposed as PR #601 in
+[`docs/designs/p1h3-skill-catalog-proposals/SYSTEM_DESIGN.md`](../designs/p1h3-skill-catalog-proposals/SYSTEM_DESIGN.md)
+and is awaiting maintainer approval. Implementation has not started.
+P1H.4, P1I, P1J, Undo U4, and Desktop Undo U5 are not started.
+
+On `efce5db2b40d1f350df43d38b4b97d1ccd5c2736`, `index.ts` measures
+6,093 effective lines and 6,448 physical lines. The family is lines
+3464–4317 (777 effective, 854 physical): `parseSkillProgressive`,
+`discoverSkills`, `getSkillAtLevel`, `createSkillProposal`,
+`listSkillProposals`, `getSkillProposal`, `updateSkillProposalState`,
+`rollbackSkill`, `evaluateSkillProposal`, `listSkillEvaluations`,
+`getSkillEvaluation`, `validateSkillExtensionLock`,
+`listProceduralMemorySummary`, `inspectProceduralMemory`,
+`prepareSkillMutationPlan`, and `applySkillMutationPlan`. None of
+those functions calls another `index.ts` function.
+`rankProceduralMemory` stays in the barrel because it also calls
+`getSemanticRankingConfig`.
+
+The proposed modules, all under `packages/application/src/skills/`
+and all estimated under 250 effective lines, are
+`skill-progressive-parse.ts`, `skill-discovery.ts`,
+`skill-proposal-store.ts`, `skill-evaluation.ts`,
+`skill-mutation.ts`, and `skill-procedural-memory.ts`. There is no
+`skills/index.ts` and no new package export-map key. No new module
+imports `index.ts`. A simulated splice of the move, before Prettier,
+measures `index.ts` at 5,342 effective lines and 5,621 physical
+lines.
+
+Import-only components stay two of size 3. Re-export components stay
+sizes 4, 29, and 3, with the membership locked by
+`tests/application-inception-cycle.test.ts`. The new files must stay
+outside every component, together with `host-file-system.ts`, the
+P1H.1 memory modules, and `agent-session/agent-session.ts`.
+
+Skill proposal approval stays the `approvalEvidence` string on
+`updateSkillProposalState`. It is not Approved Apply and it is not
+sandbox evaluation. The design records the current trust fallback,
+unused `catalogRoot`, checksum, and rollback behavior as shortcomings
+to preserve. Recommended implementation order, after approval, is
+catalog read, then proposal store and evaluation, then mutation and
+the procedural-memory read model.
 
 ### P1I — transaction and lifecycle
 

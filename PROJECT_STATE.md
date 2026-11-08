@@ -978,9 +978,15 @@ measures 6,093 effective lines and 6,448 physical lines, down from
 6,244 and 6,605. Import-only cycles stay two components of size 3.
 Re-export cycles stay three, and the component that contains
 `index.ts` stays at 29 files. The new module is outside every
-component. Implementation is on
-`refactor/application-agent-session-p1h2` and is not merged. P1H.3
-and later slices have not started.
+component. Implementation is merged as PR #600
+(`efce5db2b40d1f350df43d38b4b97d1ccd5c2736`). P1H.3 design is proposed as PR #601
+(`docs/designs/p1h3-skill-catalog-proposals/SYSTEM_DESIGN.md`) and
+awaits maintainer approval. The design inventories sixteen public
+operations at `packages/application/src/index.ts` lines 3464–4317 and
+recommends six leaves under `packages/application/src/skills/`.
+`rankProceduralMemory` stays in the barrel because it also calls
+`getSemanticRankingConfig`. Implementation has not started. P1H.4 and
+later slices have not started.
 Undo U4 and Desktop Undo U5 are not started. Other post-P4 candidates remain in
 `POST_W12_NEXT_INCREMENT_PLAN.md`.
 
