@@ -1062,19 +1062,30 @@ implemented. Correlation and local adapters stay in `index.ts`. Known
 SARIF limitations stay: partial writes, the `verified-evidence`
 label, restarting ids that overwrite dismissed or accepted-risk
 findings, narrow `secretLikePath` redaction, and evidence URIs that
-are not canonicalized. P1H.5 design is proposed as PR #608
-(https://github.com/vitala89/Intentloom/pull/608) in
-`docs/designs/p1h5-security-policy-sandbox/SYSTEM_DESIGN.md` and is
-not approved. The proposed modules are `security-policy.ts`,
-`security-baseline.ts`, `security-policy-evaluation.ts`,
-`sandbox-capability-policy.ts`, and
-`sandbox-proposal-evaluation.ts`. The selected operations are
-`getSecurityPolicy`, `writeSecurityPolicy`, `getSecurityBaseline`,
-`updateSecurityBaseline`, `checkSecurityPolicyAndBaseline`,
-`getSandboxCapabilityPolicy`, `writeSandboxCapabilityPolicy`, and
-`evaluateProposalAgainstSandbox`, plus the three private path helpers.
-Implementation has not started. P1H.6 and later slices have not
-started.
+are not canonicalized. P1H.5 design is merged as PR #608
+(https://github.com/vitala89/Intentloom/pull/608,
+`1d0611070b02c5e9f0f0e2816a0f560fbf18c18e`). The approved contract is
+`docs/designs/p1h5-security-policy-sandbox/SYSTEM_DESIGN.md`. P1H.5a
+moves `securityPolicyPath`, `getSecurityPolicy`, and
+`writeSecurityPolicy` into `security/security-policy.ts` (48
+effective lines, 52 physical lines), `securityBaselinePath`,
+`getSecurityBaseline`, and `updateSecurityBaseline` into
+`security/security-baseline.ts` (49/54), and
+`checkSecurityPolicyAndBaseline` into
+`security/security-policy-evaluation.ts` (83/93). The path helpers
+stay private. `index.ts` re-exports the five public names and keeps
+value imports of `getSecurityPolicy`, `getSecurityBaseline`, and
+`checkSecurityPolicyAndBaseline` for `runContinuousSecurityAudit`.
+It drops the `listSecurityFindings` value import and keeps
+`securityFindingPath`. It measures 4,952 effective lines and 5,194
+physical lines, down from 5,102 and 5,362. `quality-exceptions.json`
+is unchanged. Import-only cycles stay two components of size 3.
+Re-export cycles stay three, sizes 4, 29, and 3. The new modules stay
+outside every component. The implementation pull request is #609
+(https://github.com/vitala89/Intentloom/pull/609). The extraction
+commit is `5793759b962588bc7705399946eb0f6466d9ff49`. It is not merged. P1H.5b has not started. Sandbox policy and evaluation stay
+in `index.ts`. P1H.5 is not fully implemented. P1H.6 and later slices
+have not started.
 `rankProceduralMemory` stays in the barrel.
 Undo U4 and Desktop Undo U5 are not started. Other post-P4 candidates remain in
 `POST_W12_NEXT_INCREMENT_PLAN.md`.

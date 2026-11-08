@@ -97,8 +97,11 @@ and coverage is merged as PR #606
 merged as PR #607
 (`7a77db52753360f0029cd266d8c95eb78c34995c`). P1H.4 is fully
 implemented.
-P1H.5 design is proposed as PR #608 and is not approved. Its implementation has
-not started. P1H.6 and later slices have not started.
+P1H.5 design is merged as PR #608
+(`1d0611070b02c5e9f0f0e2816a0f560fbf18c18e`). P1H.5a policy, baseline,
+and comparison is open as PR #609
+(https://github.com/vitala89/Intentloom/pull/609) and is not merged. P1H.5b has not started. P1H.5 is not fully
+implemented. P1H.6 and later slices have not started.
 Undo U4 and Desktop Undo U5 are not started.
 Neutron's R4A topology stays frozen.
 The measurements below remain the P1A baseline and are not restated as the
@@ -2297,8 +2300,11 @@ P1H.3 is fully implemented. P1H.4a finding store and coverage is
 merged as PR #606 (`ec951f32246ad0c94a145f520dc1862d9592c72e`).
 P1H.4b SARIF import is merged as PR #607
 (`7a77db52753360f0029cd266d8c95eb78c34995c`). P1H.4 is fully
-implemented. P1H.5 design is proposed as PR #608 and is not approved. P1H.6,
-P1H.7, P1I, P1J, Undo U4, and Desktop Undo U5 have not started.
+implemented. P1H.5 design is merged as PR #608
+(`1d0611070b02c5e9f0f0e2816a0f560fbf18c18e`). P1H.5a is open as PR #609
+(https://github.com/vitala89/Intentloom/pull/609) and is not merged. P1H.5b has not started.
+P1H.5 is not fully implemented. P1H.6, P1H.7, P1I, P1J, Undo U4, and
+Desktop Undo U5 have not started.
 
 On `911b229af00fcde54d8861af83a56e7e61df0902`, `index.ts` measures
 5,339 effective lines and 5,620 physical lines. The selected family is
@@ -2475,12 +2481,14 @@ implementation pull request is #607
 
 #### P1H.5 — security policy and sandbox
 
-Design is proposed as PR #608
-(https://github.com/vitala89/Intentloom/pull/608) and is not approved.
-The contract is
+Design is merged as PR #608
+(https://github.com/vitala89/Intentloom/pull/608,
+`1d0611070b02c5e9f0f0e2816a0f560fbf18c18e`). The approved contract is
 [`docs/designs/p1h5-security-policy-sandbox/SYSTEM_DESIGN.md`](../designs/p1h5-security-policy-sandbox/SYSTEM_DESIGN.md).
-P1H.4 is fully implemented. Implementation of P1H.5 has not started.
-P1H.6, P1H.7, P1I, P1J, Undo U4, and Desktop Undo U5 have not started.
+P1H.4 is fully implemented. P1H.5a is open as PR #609
+(https://github.com/vitala89/Intentloom/pull/609) and is not merged. P1H.5b has not started. P1H.5 is not fully
+implemented. P1H.6, P1H.7, P1I, P1J, Undo U4, and Desktop Undo U5 have
+not started.
 
 On `7a77db52753360f0029cd266d8c95eb78c34995c`, `index.ts` measures
 5,102 effective lines and 5,362 physical lines. The selected family is
@@ -2523,6 +2531,80 @@ The approved implementation order, if split, is policy, baseline, and
 comparison, then sandbox policy and evaluation. Those two slices do
 not depend on each other. One implementation pull request is also
 allowed. Neither starts P1H.6.
+
+##### P1H.5a — policy, baseline, and comparison
+
+Implemented from the merged design, section 21 stage P1H.5a, on
+baseline `1d0611070b02c5e9f0f0e2816a0f560fbf18c18e` (PR #608). This
+slice is PR #609 (https://github.com/vitala89/Intentloom/pull/609).
+The extraction commit is
+`5793759b962588bc7705399946eb0f6466d9ff49`. It is not merged.
+P1H.5b has not started.
+P1H.5 is not fully implemented.
+
+`securityPolicyPath`, `getSecurityPolicy`, and `writeSecurityPolicy`
+moved to `packages/application/src/security/security-policy.ts`.
+`securityBaselinePath`, `getSecurityBaseline`, and
+`updateSecurityBaseline` moved to
+`packages/application/src/security/security-baseline.ts`. The baseline
+module imports `listSecurityFindings` from the finding store.
+`checkSecurityPolicyAndBaseline` moved to
+`packages/application/src/security/security-policy-evaluation.ts` and
+imports `getSecurityPolicy`, `getSecurityBaseline`, and
+`listSecurityFindings`. Both path helpers stay private to their
+modules and are not package-root exports. No new module imports
+`index.ts`. Policy persistence and baseline persistence do not import
+each other. No `security/index.ts` was added. The package export map
+is unchanged. `quality-exceptions.json` is unchanged.
+
+`index.ts` named-re-exports the five public functions. It value-imports
+`getSecurityPolicy`, `getSecurityBaseline`, and
+`checkSecurityPolicyAndBaseline` for `runContinuousSecurityAudit`. It
+drops the `listSecurityFindings` value import and keeps
+`securityFindingPath` for `runLocalSecurityAdapters`. Sandbox policy,
+sandbox evaluation, audit, workspace review, Approved Apply, the
+finding store, and SARIF import stay where they were.
+
+On this change, `index.ts` measures 4,952 effective lines and 5,194
+physical lines, down 150 effective and 168 physical from 5,102 and
+5,362. That matches the design's posture-slice estimate. The new
+modules measure 48/52, 49/54, and 83/93. All stay under the 250-line
+preference and the 400 / 700 hard limits.
+`checkSecurityPolicyAndBaseline` remains 74 effective lines and 83
+physical lines, under the 80-line function hard limit.
+
+Import-only components stay two, each size 3: Approved Apply
+(`approved-apply-baseline.ts`, `generated-file-sync-declared.ts`,
+`index.ts`) and the recorded Neutron mutation component. Re-export
+components stay sizes 4, 29, and 3, with the same membership. The
+three new modules, the three earlier security modules,
+`host-file-system.ts`, `project-path.ts`, the P1H.1 memory modules,
+`agent-session/agent-session.ts`, and the six skill modules stay
+outside every component. The locked cycle tests were not edited.
+
+The move preserves the current policy and baseline behavior. A missing
+or invalid policy still falls back to default enforcement `warn` and
+the four rules in order: critical fail, high fail, medium warn, low
+ignore. The fallback `projectId` is still `options.projectId` or
+`project-local`, and `updatedAt` is still generated for that fallback.
+A failed policy write still throws and leaves the stored file in
+place. A missing or invalid baseline still returns null. Baseline
+update still hashes `JSON.stringify` of the id-sorted finding array
+with lowercase SHA-256, stores every finding state, and replaces
+`createdAt`. Comparison is still by finding id. The first matching
+rule still wins. A `warn` rule on a critical finding still adds a
+violation without setting exit code 3. Dismissed, accepted-risk, and
+remediated findings are still skipped. The stored baseline hash is
+still not verified on read. Those limitations stay until a separate
+design changes them.
+
+Focused coverage is `tests/security-policy-baseline-p1h5a.test.ts`
+plus the existing security, CLI, workspace, and cycle suites: 13
+files, 157 tests passed. Existing assertions were not rewritten.
+Local `pnpm verify` passed: typecheck, oxlint, Prettier, Vitest 361
+files / 3132 passed / 3 skipped, build, and `git diff --check`. The
+implementation pull request is #609
+(https://github.com/vitala89/Intentloom/pull/609) and is not merged.
 
 ### P1I — transaction and lifecycle
 

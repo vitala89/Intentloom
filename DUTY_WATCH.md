@@ -142,10 +142,59 @@ implemented. **P1H.4** design is merged (PR #605,
 and coverage is merged (PR #606,
 `ec951f32246ad0c94a145f520dc1862d9592c72e`). **P1H.4b** SARIF import is merged (PR #607,
 `7a77db52753360f0029cd266d8c95eb78c34995c`). P1H.4 is fully
-implemented. **P1H.5** design is proposed as PR #608
-(https://github.com/vitala89/Intentloom/pull/608) and is not
-approved. Do not merge that design on a green CI result alone. Do not start P1H.5
-implementation, P1H.6, P1H.7, P1I, P1J, Undo U4, or Desktop Undo U5.
+implemented. **P1H.5** design is merged (PR #608,
+`1d0611070b02c5e9f0f0e2816a0f560fbf18c18e`). **P1H.5a** policy,
+baseline, and comparison is open as PR #609
+(https://github.com/vitala89/Intentloom/pull/609) and is not merged. Do not merge it on a green CI result alone. P1H.5b
+has not started. P1H.5 is not fully implemented. Do not start P1H.5b,
+P1H.6, P1H.7, P1I, P1J, Undo U4, or Desktop Undo U5.
+
+### 2026-11-08, Packages architecture P1H.5a security policy and baseline
+
+- **Status:** **IMPLEMENTED — PR OPEN, AWAITING MAINTAINER REVIEW.**
+  PR #609, https://github.com/vitala89/Intentloom/pull/609. The
+  extraction commit is
+  `5793759b962588bc7705399946eb0f6466d9ff49`. It is not merged. A green
+  CI result is not approval. Do not merge. Do not start P1H.5b,
+  P1H.6, P1H.7, P1I, P1J, Undo U4, or Desktop Undo U5.
+- **Branch:** `cursor/application-security-policy-baseline-p1h5a-2aed`
+- **Baseline:** `1d0611070b02c5e9f0f0e2816a0f560fbf18c18e` (PR #608,
+  P1H.5 design merged). P1H.4b is PR #607
+  (`7a77db52753360f0029cd266d8c95eb78c34995c`). The working tree was
+  clean before this branch. Open pull requests at start were
+  dependency updates and did not overlap this extraction.
+- **Moved:** `securityPolicyPath`, `getSecurityPolicy`, and
+  `writeSecurityPolicy` to `security/security-policy.ts` (48/52).
+  `securityBaselinePath`, `getSecurityBaseline`, and
+  `updateSecurityBaseline` to `security/security-baseline.ts` (49/54).
+  `checkSecurityPolicyAndBaseline` to
+  `security/security-policy-evaluation.ts` (83/93, function 74
+  effective lines). Path helpers stay private. `index.ts` re-exports
+  the five public names and value-imports `getSecurityPolicy`,
+  `getSecurityBaseline`, and `checkSecurityPolicyAndBaseline` for
+  `runContinuousSecurityAudit`. The `listSecurityFindings` value
+  import is gone. `securityFindingPath` stays for
+  `runLocalSecurityAdapters`.
+- **Public API:** package root names and the twelve export-map keys
+  are unchanged. No `security/index.ts`.
+- **Metrics:** `index.ts` is 4,952 effective lines and 5,194 physical
+  lines, down from 5,102 and 5,362. Import-only cycles stay sizes
+  3 and 3. Re-export cycles stay sizes 4, 29, and 3. The new modules
+  are outside every component. `quality-exceptions.json` is unchanged.
+- **Behavior:** missing and invalid policy still falls open to the
+  default rules. Missing and invalid baseline still returns null.
+  Baseline hash is still SHA-256 of the id-sorted finding JSON, and
+  it is still not checked on read. First matching rule still wins.
+  `warn` on a critical finding still yields a violation with exit
+  code 0. Exit code 3 is still only for a `fail` rule.
+- **Verification:** focused suites, 13 files / 157 tests, passed.
+  Local `pnpm verify` passed: typecheck, oxlint, Prettier, Vitest 361
+  files / 3132 passed / 3 skipped, build, and `git diff --check`.
+  Hosted CI is recorded against the pull request head and is not
+  claimed here before that run finishes.
+- **Not done:** maintainer review, merge, P1H.5b sandbox extraction,
+  P1H.6, P1H.7, P1I, P1J, Undo U4, Desktop Undo U5.
+- **Next:** Maintainer review. Do not merge. Do not start P1H.5b.
 
 ### 2026-11-08, Packages architecture P1H.5 security policy and sandbox design
 
