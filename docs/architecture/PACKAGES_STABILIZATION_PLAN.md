@@ -94,10 +94,11 @@ implemented. P1H.4 design is merged as PR #605
 (`6a9d0d26015caa857c19d0d22415904d832ad818`). P1H.4a finding store
 and coverage is merged as PR #606
 (`ec951f32246ad0c94a145f520dc1862d9592c72e`). P1H.4b SARIF import is
-open as PR #607
-(https://github.com/vitala89/Intentloom/pull/607) and is not
-merged. P1H.4 is not fully implemented.
-P1H.5 and later slices have not started.
+merged as PR #607
+(`7a77db52753360f0029cd266d8c95eb78c34995c`). P1H.4 is fully
+implemented.
+P1H.5 design is proposed and is not approved. Its implementation has
+not started. P1H.6 and later slices have not started.
 Undo U4 and Desktop Undo U5 are not started.
 Neutron's R4A topology stays frozen.
 The measurements below remain the P1A baseline and are not restated as the
@@ -160,9 +161,9 @@ implemented. P1H.4 design is merged as PR #605
 (`6a9d0d26015caa857c19d0d22415904d832ad818`). P1H.4a finding store
 and coverage is merged as PR #606
 (`ec951f32246ad0c94a145f520dc1862d9592c72e`). P1H.4b SARIF import is
-open as PR #607
-(https://github.com/vitala89/Intentloom/pull/607) and is not
-merged. P1H.4 is not fully implemented.
+merged as PR #607
+(`7a77db52753360f0029cd266d8c95eb78c34995c`). P1H.4 is fully
+implemented.
 
 ## 1. Baseline
 
@@ -2067,9 +2068,9 @@ implemented. P1H.4 design is merged as PR #605
 (`6a9d0d26015caa857c19d0d22415904d832ad818`). P1H.4a finding store
 and coverage is merged as PR #606
 (`ec951f32246ad0c94a145f520dc1862d9592c72e`). P1H.4b SARIF import is
-open as PR #607
-(https://github.com/vitala89/Intentloom/pull/607) and is not
-merged. P1H.4 is not fully implemented. P1I,
+merged as PR #607
+(`7a77db52753360f0029cd266d8c95eb78c34995c`). P1H.4 is fully
+implemented. P1I,
 P1J, Undo U4, and Desktop Undo U5 have not started.
 
 On `efce5db2b40d1f350df43d38b4b97d1ccd5c2736`, `index.ts` measures
@@ -2228,9 +2229,9 @@ merged as PR #604
 merged as PR #605
 (`6a9d0d26015caa857c19d0d22415904d832ad818`). P1H.4a is merged
 as PR #606 (`ec951f32246ad0c94a145f520dc1862d9592c72e`). P1H.4b is
-open as PR #607
-(https://github.com/vitala89/Intentloom/pull/607) and is not
-merged.
+merged as PR #607
+(`7a77db52753360f0029cd266d8c95eb78c34995c`). P1H.4 is fully
+implemented.
 
 `updateSkillProposalState`, `rollbackSkill`, `prepareSkillMutationPlan`,
 and `applySkillMutationPlan` moved to
@@ -2294,10 +2295,10 @@ Design is merged as PR #605
 [`docs/designs/p1h4-security-findings-sarif/SYSTEM_DESIGN.md`](../designs/p1h4-security-findings-sarif/SYSTEM_DESIGN.md).
 P1H.3 is fully implemented. P1H.4a finding store and coverage is
 merged as PR #606 (`ec951f32246ad0c94a145f520dc1862d9592c72e`).
-P1H.4b SARIF import is the extraction below, open as PR #607
-(https://github.com/vitala89/Intentloom/pull/607) and not merged.
-P1H.4 is not fully implemented. P1H.5, P1H.6, P1H.7, P1I, P1J, Undo U4,
-and Desktop Undo U5 have not started.
+P1H.4b SARIF import is merged as PR #607
+(`7a77db52753360f0029cd266d8c95eb78c34995c`). P1H.4 is fully
+implemented. P1H.5 design is proposed and is not approved. P1H.6,
+P1H.7, P1I, P1J, Undo U4, and Desktop Undo U5 have not started.
 
 On `911b229af00fcde54d8861af83a56e7e61df0902`, `index.ts` measures
 5,339 effective lines and 5,620 physical lines. The selected family is
@@ -2402,9 +2403,9 @@ implementation pull request is #606
 
 Implemented from the merged design, section 20 stage P1H.4b, on
 baseline `ec951f32246ad0c94a145f520dc1862d9592c72e` (PR #606). This
-slice is open as PR #607
-(https://github.com/vitala89/Intentloom/pull/607) and is not merged.
-P1H.5 has not started.
+slice is merged as PR #607
+(`7a77db52753360f0029cd266d8c95eb78c34995c`). P1H.4 is fully
+implemented. P1H.5 design is proposed below and is not approved.
 
 `isObjectRecord` and `importSarifSecurityReport` moved to
 `packages/application/src/security/sarif-security-import.ts`. The
@@ -2469,7 +2470,57 @@ files, 129 tests passed. Existing assertions were not rewritten.
 Local `pnpm verify` passed: typecheck, oxlint, Prettier, Vitest 360
 files / 3126 passed / 3 skipped, build, and `git diff --check`. The
 implementation pull request is #607
-(https://github.com/vitala89/Intentloom/pull/607) and is not merged.
+(https://github.com/vitala89/Intentloom/pull/607) and is merged as
+`7a77db52753360f0029cd266d8c95eb78c34995c`.
+
+#### P1H.5 — security policy and sandbox
+
+Design is proposed and is not approved. The contract is
+[`docs/designs/p1h5-security-policy-sandbox/SYSTEM_DESIGN.md`](../designs/p1h5-security-policy-sandbox/SYSTEM_DESIGN.md).
+P1H.4 is fully implemented. Implementation of P1H.5 has not started.
+P1H.6, P1H.7, P1I, P1J, Undo U4, and Desktop Undo U5 have not started.
+
+On `7a77db52753360f0029cd266d8c95eb78c34995c`, `index.ts` measures
+5,102 effective lines and 5,362 physical lines. The selected family is
+lines 4353–4660 (279 effective, 308 physical): `securityPolicyPath`,
+`getSecurityPolicy`, `writeSecurityPolicy`, `securityBaselinePath`,
+`getSecurityBaseline`, `updateSecurityBaseline`,
+`checkSecurityPolicyAndBaseline`, `sandboxCapabilityPolicyPath`,
+`getSandboxCapabilityPolicy`, `writeSandboxCapabilityPolicy`, and
+`evaluateProposalAgainstSandbox`.
+
+The proposed modules, all under `packages/application/src/security/`
+and all estimated under 250 effective lines, are `security-policy.ts`
+(48/52), `security-baseline.ts` (49/54),
+`security-policy-evaluation.ts` (83/93),
+`sandbox-capability-policy.ts` (52/56), and
+`sandbox-proposal-evaluation.ts` (84/92). There is no
+`security/index.ts` and no new package export-map key. No new module
+imports `index.ts`. A simulated splice measures `index.ts` at 4,833
+effective lines and 5,064 physical lines.
+
+`getSecurityAuditReport`, `runContinuousSecurityAudit`, and
+`securityAuditReportPath` stay in `index.ts` for P1H.6. Audit calls
+policy read, baseline read, sandbox policy read, and comparison.
+`reviewWorkspaceProposal` stays and calls sandbox evaluation.
+`runContinuousSecurityAudit` remains 208 effective lines. The design
+does not split it and does not edit `quality-exceptions.json`.
+`checkSecurityPolicyAndBaseline` is 74 effective lines and
+`evaluateProposalAgainstSandbox` is 78. Both stay whole.
+
+Policy persistence and baseline persistence do not import each other.
+Comparison imports both and `listSecurityFindings`. Sandbox evaluation
+imports sandbox policy only. Known weaknesses, including prefix
+matches, unused stored fields, and the fact that evaluation does not
+contain execution, are preserved. Mitigations need a separate Design
+First review.
+
+Import-only components stay two of size 3. Re-export components stay
+sizes 4, 29, and 3. The new files must stay outside every component.
+The approved implementation order, if split, is policy, baseline, and
+comparison, then sandbox policy and evaluation. Those two slices do
+not depend on each other. One implementation pull request is also
+allowed. Neither starts P1H.6.
 
 ### P1I — transaction and lifecycle
 

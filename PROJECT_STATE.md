@@ -1055,14 +1055,25 @@ trigger: the next behavior change to that function.
 `quality-exceptions.json` is unchanged. Import-only cycles stay two
 components of size 3. Re-export cycles stay three, sizes 4, 29, and 3.
 The three security modules stay outside every component. P1H.4b is
-open as PR #607
-(https://github.com/vitala89/Intentloom/pull/607) and is not
-merged. P1H.4 is not fully implemented. Correlation, local adapters,
-policy, and baseline stay in `index.ts`. Known SARIF limitations stay:
-partial writes, the `verified-evidence` label, restarting ids that
-overwrite dismissed or accepted-risk findings, narrow
-`secretLikePath` redaction, and evidence URIs that are not
-canonicalized. P1H.5 and later slices have not started.
+merged as PR #607
+(https://github.com/vitala89/Intentloom/pull/607,
+`7a77db52753360f0029cd266d8c95eb78c34995c`). P1H.4 is fully
+implemented. Correlation and local adapters stay in `index.ts`. Known
+SARIF limitations stay: partial writes, the `verified-evidence`
+label, restarting ids that overwrite dismissed or accepted-risk
+findings, narrow `secretLikePath` redaction, and evidence URIs that
+are not canonicalized. P1H.5 design is proposed in
+`docs/designs/p1h5-security-policy-sandbox/SYSTEM_DESIGN.md` and is
+not approved. The proposed modules are `security-policy.ts`,
+`security-baseline.ts`, `security-policy-evaluation.ts`,
+`sandbox-capability-policy.ts`, and
+`sandbox-proposal-evaluation.ts`. The selected operations are
+`getSecurityPolicy`, `writeSecurityPolicy`, `getSecurityBaseline`,
+`updateSecurityBaseline`, `checkSecurityPolicyAndBaseline`,
+`getSandboxCapabilityPolicy`, `writeSandboxCapabilityPolicy`, and
+`evaluateProposalAgainstSandbox`, plus the three private path helpers.
+Implementation has not started. P1H.6 and later slices have not
+started.
 `rankProceduralMemory` stays in the barrel.
 Undo U4 and Desktop Undo U5 are not started. Other post-P4 candidates remain in
 `POST_W12_NEXT_INCREMENT_PLAN.md`.

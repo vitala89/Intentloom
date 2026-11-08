@@ -1,0 +1,23 @@
+flowchart LR
+  policy["security-policy.ts"]
+  baseline["security-baseline.ts"]
+  check["security-policy-evaluation.ts"]
+  sandbox["sandbox-capability-policy.ts"]
+  eval["sandbox-proposal-evaluation.ts"]
+  audit["P1H.6 audit report stays out"]
+  workspace["P1H.7 workspace read model stays out"]
+  store["security-finding-store.ts"]
+  check --> policy
+  check --> baseline
+  check --> store
+  baseline --> store
+  eval --> sandbox
+  audit --> policy
+  audit --> baseline
+  audit --> check
+  audit --> sandbox
+  workspace --> audit
+  policy -.->|"no edge"| audit
+  baseline -.->|"no edge"| audit
+  sandbox -.->|"no edge"| audit
+  eval -.->|"no edge"| audit

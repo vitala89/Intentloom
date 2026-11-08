@@ -1,0 +1,21 @@
+sequenceDiagram
+  participant Caller
+  participant Update as updateSecurityBaseline
+  participant Check as checkSecurityPolicyAndBaseline
+  participant Store as listSecurityFindings
+  participant Policy as getSecurityPolicy
+  participant Read as getSecurityBaseline
+  participant FS as FileSystem
+  Caller->>Update: root projectId fs
+  Update->>Store: list findings
+  Store-->>Update: validated findings
+  Update->>Update: sort by id and SHA-256 JSON.stringify
+  Update->>FS: mkdir and write baseline.json
+  Update-->>Caller: SecurityBaseline
+  Caller->>Check: root projectId fs
+  Check->>Policy: load policy or default
+  Check->>Read: load baseline or null
+  Check->>Store: list current findings
+  Check->>Check: new and resolved by id
+  Check->>Check: first matching rule
+  Check-->>Caller: SecurityBaselineCheckResult

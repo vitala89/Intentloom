@@ -1,0 +1,24 @@
+flowchart TB
+  cli["CLI security-operations-command"]
+  review["reviewWorkspaceProposal in index.ts"]
+  audit["runContinuousSecurityAudit in index.ts"]
+  barrel["index.ts policy baseline and sandbox"]
+  store["security/security-finding-store.ts"]
+  adapters["runLocalSecurityAdapters in index.ts"]
+  apply["Approved Apply and Neutron mutation"]
+  ext["extension-inspection/extension-sandbox.ts"]
+  fsport["host-file-system.ts"]
+  pathmod["project-path.ts inside"]
+  protocol["@intentloom/protocol validators"]
+  cli -->|"package root"| barrel
+  review -->|"evaluateProposalAgainstSandbox"| barrel
+  audit -->|"getters and check"| barrel
+  barrel -->|"listSecurityFindings"| store
+  adapters -->|"securityFindingPath"| store
+  apply -.->|"does not call these operations"| barrel
+  ext -.->|"different sandbox model"| barrel
+  barrel --> fsport
+  barrel --> pathmod
+  barrel --> protocol
+  store --> fsport
+  store --> pathmod
