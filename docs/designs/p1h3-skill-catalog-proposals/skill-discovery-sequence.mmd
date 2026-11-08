@@ -1,0 +1,20 @@
+sequenceDiagram
+  participant Caller
+  participant Discover as discoverSkills
+  participant FS as FileSystem
+  participant Parse as parseSkillProgressive
+  Caller->>Discover: root, level, filters, fs
+  Discover->>FS: list(root)
+  loop each skill id in sorted order
+    Discover->>FS: read(matched SKILL.md)
+    Discover->>Parse: id and file text
+    alt trust, pack, role, or query miss
+      Discover-->>Caller: decision rejected
+    else cost exceeds maxBudget
+      Discover-->>Caller: decision incompatible
+    else read throws
+      Discover-->>Caller: decision unavailable
+    else selected
+      Discover-->>Caller: catalog, contract, or procedure
+    end
+  end

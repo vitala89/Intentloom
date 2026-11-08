@@ -1,0 +1,21 @@
+stateDiagram-v2
+  state "under-review" as underReview
+  state "rolled-back" as rolledBack
+  [*] --> proposed: create default
+  proposed --> underReview: updateSkillProposalState
+  proposed --> approved: evidence and passing evaluation
+  proposed --> active: evidence and passing evaluation
+  underReview --> approved: evidence and passing evaluation
+  approved --> active: evidence and passing evaluation
+  active --> deprecated: updateSkillProposalState
+  proposed --> rolledBack: rollbackSkill
+  approved --> rolledBack: rollbackSkill
+  active --> rolledBack: rollbackSkill
+  note right of proposed
+    updateSkillProposalState can write any SkillProposalState
+    from any stored state. The arrows are the CLI and apply paths.
+    approved and active require non-empty approvalEvidence.
+    Unless bypassEvaluationGate is true they also require a
+    passing latest evaluation. rollbackSkill sets rolled-back
+    and does not apply that gate. create can store any state.
+  end note

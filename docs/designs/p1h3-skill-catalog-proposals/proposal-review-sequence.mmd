@@ -1,0 +1,21 @@
+sequenceDiagram
+  participant CLI as proposal and evaluate CLI
+  participant Proposal as createSkillProposal
+  participant Eval as evaluateSkillProposal
+  participant Update as updateSkillProposalState
+  participant FS as FileSystem
+  CLI->>Proposal: caller JSON
+  Proposal->>Proposal: validateSkillProposal
+  Proposal->>FS: write .aif/memory/proposals/id.json
+  CLI->>Eval: proposalId
+  Eval->>FS: read proposal
+  Eval->>Eval: regex scan and empty-content check
+  Eval->>FS: write .aif/memory/evaluations/eval-id.json
+  CLI->>Update: state approved and approvalEvidence
+  Update->>FS: read proposal
+  Update->>FS: list evaluations
+  alt evidence missing or latest evaluation fails
+    Update-->>CLI: Error, proposal file unchanged
+  else gate passes
+    Update->>FS: write proposal with the new state
+  end

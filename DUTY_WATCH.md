@@ -129,9 +129,58 @@ implementation is merged (PR #596,
 implementation is merged (PR #598,
 `5f7917c1cef0997f6947932aa2f8f4186ac2decc`). **P1H.2** design is merged
 (PR #599, `ff7cb79329f403220aa4b369eede4cb8f06e591b`). **P1H.2**
-implementation is on `refactor/application-agent-session-p1h2` and is
-not merged. Do not merge. Do not start P1H.3, P1I, P1J, Undo U4, or
-Desktop Undo U5.
+implementation is merged (PR #600,
+`efce5db2b40d1f350df43d38b4b97d1ccd5c2736`). **P1H.3** design is
+proposed and awaiting maintainer approval. Implementation has not
+started. Do not merge the design on a green CI result alone. Do not
+start P1H.3 implementation, P1H.4, P1I, P1J, Undo U4, or Desktop Undo
+U5.
+
+### 2026-11-08, Packages architecture P1H.3 skill catalog and proposals design
+
+- **Status:** **DESIGN PR OPEN — AWAITING MAINTAINER APPROVAL.**
+  P1H.3 is not implemented. A green CI result is not approval. Do not
+  merge. Do not start implementation, P1H.4, P1I, P1J, Undo U4, or
+  Desktop Undo U5.
+- **Branch:** `docs/p1h3-skill-catalog-proposals`
+- **Baseline:** `efce5db2b40d1f350df43d38b4b97d1ccd5c2736` (PR #600,
+  P1H.2 implementation merged). P1H.2 design is PR #599
+  (`ff7cb79329f403220aa4b369eede4cb8f06e591b`). P1H.1 implementation
+  is PR #598 (`5f7917c1cef0997f6947932aa2f8f4186ac2decc`).
+- **Design:** `docs/designs/p1h3-skill-catalog-proposals/SYSTEM_DESIGN.md`
+- **Inventory:** sixteen public operations in
+  `packages/application/src/index.ts` lines 3464–4317 (777 effective,
+  854 physical). No private helper in the block. `index.ts` measures
+  6,093 effective lines and 6,448 physical lines.
+- **Recommendation:** six leaves under `packages/application/src/skills/`:
+  `skill-progressive-parse.ts` (132/144), `skill-discovery.ts`
+  (186/207), `skill-proposal-store.ts` (111/119),
+  `skill-evaluation.ts` (132/144), `skill-mutation.ts` (176/192), and
+  `skill-procedural-memory.ts` (84/93). Named re-exports stay on
+  `index.ts`. A simulated splice measures the barrel at 5,342
+  effective and 5,621 physical lines. No `skills/index.ts`. No new
+  package export-map key. No leaf imports `index.ts`.
+- **Left in the barrel:** `rankProceduralMemory`, because it calls
+  `getSemanticRankingConfig`. Task summaries, session summaries,
+  checkpoints, profiles, external skill import, `validateSkillSet`,
+  and later P1H security families stay put.
+- **Callers:** CLI skill, proposal, evaluate, and memory commands use
+  the package root. Neutron `neutron-context-collectors.ts` imports
+  `discoverSkills` from the barrel today; the design retargets that
+  one import to the discovery leaf. Daemon, MCP, and Desktop do not
+  call this family.
+- **SCC:** Import-only components are two, each size 3 (Approved Apply
+  and the recorded Neutron mutation cycle). Re-export components are
+  three: extension update (4), the 29-file `index.ts` component, and
+  Neutron (3). The move must not change that membership.
+- **Security:** proposal approval remains `approvalEvidence` on
+  `updateSkillProposalState`. It is not Approved Apply and not sandbox
+  evaluation. Current trust fallback, unused `catalogRoot`, checksum,
+  and rollback behavior stay as they are.
+- **Sequence after approval:** catalog read, then proposal store and
+  evaluation, then mutation and the procedural-memory read model.
+- **Not done:** production edits, test edits, SCC expectation edits,
+  implementation, merge.
 
 ### 2026-11-07, Packages architecture P1H.2 agent session extraction
 
