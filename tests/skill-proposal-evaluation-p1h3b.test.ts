@@ -299,14 +299,6 @@ describe("P1H.3b skill proposal store and evaluation extraction", () => {
       { root: "/project", caseId: "case-ignored" },
       fs,
     );
-    const passedAgain = await evaluateSkillProposal(
-      "safe",
-      { root: "/project" },
-      fs,
-    );
-    expect(comparableEvaluation(passed)).toEqual(
-      comparableEvaluation(passedAgain),
-    );
     expect(passed.outcome).toBe("passed");
     expect(passed.passed).toBe(true);
     expect(passed.securityPass).toBe(true);
@@ -325,10 +317,20 @@ describe("P1H.3b skill proposal store and evaluation extraction", () => {
       model: "eval-gate-v1",
       environment: "test-harness",
     });
+    expect(passed).not.toHaveProperty("caseId");
     const stored = [...fs.files.entries()].find(([path]) =>
       path.endsWith(`/${passed.id}.json`),
     );
     expect(stored?.[1]).toBe(`${JSON.stringify(passed, null, 2)}\n`);
+
+    const passedAgain = await evaluateSkillProposal(
+      "safe",
+      { root: "/project" },
+      fs,
+    );
+    expect(comparableEvaluation(passed)).toEqual(
+      comparableEvaluation(passedAgain),
+    );
 
     expect(
       (await evaluateSkillProposal("revised", { root: "/project" }, fs))

@@ -139,11 +139,80 @@ and procedural memory is merged (PR #604,
 `911b229af00fcde54d8861af83a56e7e61df0902`). P1H.3 is fully
 implemented. **P1H.4** design is merged (PR #605,
 `6a9d0d26015caa857c19d0d22415904d832ad818`). **P1H.4a** finding store
-and coverage is open as PR #606
-(https://github.com/vitala89/Intentloom/pull/606) and is not merged.
-P1H.4b has not started. Do not
-start P1H.4b, P1H.5, P1H.6, P1H.7, P1I, P1J, Undo U4, or Desktop Undo
-U5.
+and coverage is merged (PR #606,
+`ec951f32246ad0c94a145f520dc1862d9592c72e`). **P1H.4b** SARIF import
+is open as PR #607
+(https://github.com/vitala89/Intentloom/pull/607) and is
+not merged. P1H.4 is not fully implemented. Do not merge on a green
+CI result alone. Do not start P1H.5, P1H.6, P1H.7, P1I, P1J, Undo U4,
+or Desktop Undo U5.
+
+### 2026-11-08, Packages architecture P1H.4b SARIF security import
+
+- **Status:** **IMPLEMENTED — PR OPEN, AWAITING MAINTAINER REVIEW.**
+  P1H.4 design is merged as PR #605
+  (https://github.com/vitala89/Intentloom/pull/605,
+  `6a9d0d26015caa857c19d0d22415904d832ad818`). P1H.4a is merged as
+  PR #606 (https://github.com/vitala89/Intentloom/pull/606,
+  `ec951f32246ad0c94a145f520dc1862d9592c72e`). P1H.4b is PR #607
+  (https://github.com/vitala89/Intentloom/pull/607) and is not
+  merged. P1H.4 is not fully implemented. Do not merge on a green CI
+  result alone. Do not start P1H.5, P1H.6, P1H.7, P1I, P1J, Undo U4,
+  or Desktop Undo U5.
+- **Branch:** `refactor/application-sarif-security-import-p1h4b`
+- **Baseline:** `ec951f32246ad0c94a145f520dc1862d9592c72e` (PR #606).
+  The working tree was clean before this branch. Open pull requests
+  at start were dependency updates and did not overlap this
+  extraction.
+- **Moved:** private `isObjectRecord` and public
+  `importSarifSecurityReport` into
+  `packages/application/src/security/sarif-security-import.ts`. The
+  helper is not exported. `index.ts` re-exports only
+  `importSarifSecurityReport`.
+- **Dependencies:** the SARIF module imports `dirname`,
+  `nodeFileSystem`, `FileSystem`, `secretLikePath`,
+  `securityFindingPath`, and the existing protocol finding and SARIF
+  types and validators. The finding store does not import the SARIF
+  module. No file under `security/` imports `index.ts`. No
+  `security/index.ts`. No new package export-map key.
+- **Barrel:** `index.ts` measures 5,102 effective lines and 5,362
+  physical lines, down 109 effective and 122 physical from 5,211 and
+  5,484. The design estimate was 5,101 and 5,363. The SARIF module
+  measures 121 effective and 134 physical lines.
+- **Function debt:** `importSarifSecurityReport` remains 106 effective
+  lines and 117 physical lines, above the 80-line hard limit. The
+  approved design keeps the parse-and-write loop intact. Owner:
+  Application maintainers. Review trigger: the next behavior change
+  to that function. `quality-exceptions.json` is unchanged.
+- **Preserved behavior:** SARIF parsing, severity mapping, redaction,
+  restarting `sarif-finding-<counter>` ids, overwrite of dismissed or
+  accepted-risk findings, `verified-evidence`, pretty JSON, and
+  partial writes. ADR-0027's clean-abort sentence still differs from
+  the implementation. Evidence URIs are still not canonicalized.
+  Scanner names, rule ids, and plain secret values that are not
+  secret-like paths are still not redacted.
+- **SCC:** import-only components stay two, sizes 3 and 3.
+  Re-export-inclusive components stay three, sizes 4, 29, and 3, with
+  the same membership. The three security modules stay outside every
+  component.
+- **Verification:** focused suites passed: 9 files, 129 tests
+  (`tests/sarif-security-import-p1h4b.test.ts`,
+  `tests/memory-security-s1.test.ts`,
+  `tests/memory-security-s2.test.ts`,
+  `tests/memory-security-s3.test.ts`,
+  `tests/cli-security.test.ts`,
+  `tests/security-finding-store-p1h4a.test.ts`,
+  `tests/neutron-n4-readonly-tools.test.ts`,
+  `tests/application-inception-cycle.test.ts`,
+  `tests/application-foundation-scaffold-cycle.test.ts`). Local
+  `pnpm verify` passed: typecheck, oxlint, Prettier, Vitest 360 files
+  / 3126 passed / 3 skipped, build, and `git diff --check`. Hosted CI
+  is recorded against the pull request head and is not claimed here
+  before that run finishes.
+- **Not done:** maintainer review, merge, P1H.5, P1H.6, P1H.7, P1I,
+  P1J, Undo U4, Desktop Undo U5.
+- **Next:** Maintainer review of P1H.4b. Do not merge. Do not start
+  P1H.5.
 
 ### 2026-11-08, Packages architecture P1H.4a security finding store and coverage
 
