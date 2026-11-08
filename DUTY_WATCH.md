@@ -132,15 +132,69 @@ implementation is merged (PR #598,
 implementation is merged (PR #600,
 `efce5db2b40d1f350df43d38b4b97d1ccd5c2736`). **P1H.3** design is merged (PR #601,
 `6b387a34c221f967a15ef670d53bea9b76e40828`). **P1H.3a** catalog read is
-implemented and is not merged. Do not merge it on a green CI result
-alone. Do not start P1H.3b, P1H.3c, P1H.4, P1I, P1J, Undo U4, or
-Desktop Undo U5.
+merged (PR #602, `460b81efd1e81f5b24a22e11d3af4680c8f28aad`). **P1H.3b**
+proposal store and evaluation is implemented in PR #603
+(https://github.com/vitala89/Intentloom/pull/603) and is not merged. Do not
+merge it on a green CI result alone. Do not start P1H.3c, P1H.4, P1I,
+P1J, Undo U4, or Desktop Undo U5.
+
+### 2026-11-08, Packages architecture P1H.3b skill proposal store and evaluation
+
+- **Status:** **IMPLEMENTED — PR OPEN, AWAITING MAINTAINER REVIEW.**
+  PR #603, https://github.com/vitala89/Intentloom/pull/603. P1H.3b is
+  not merged. Do not merge. Do not start P1H.3c, P1H.4, P1I, P1J,
+  Undo U4, or Desktop Undo U5.
+- **Branch:** `refactor/application-skill-proposals-p1h3b`
+- **Baseline:** `460b81efd1e81f5b24a22e11d3af4680c8f28aad` (PR #602,
+  P1H.3a catalog read merged). P1H.3 design is PR #601
+  (`6b387a34c221f967a15ef670d53bea9b76e40828`).
+- **Design:** `docs/designs/p1h3-skill-catalog-proposals/SYSTEM_DESIGN.md`,
+  section 19 step 2.
+- **Extraction:** `createSkillProposal`, `listSkillProposals`, and
+  `getSkillProposal` moved to
+  `packages/application/src/skills/skill-proposal-store.ts`.
+  `evaluateSkillProposal`, `listSkillEvaluations`, and
+  `getSkillEvaluation` moved to
+  `packages/application/src/skills/skill-evaluation.ts`. Evaluation
+  imports `getSkillProposal` from the store. The store does not import
+  evaluation or `index.ts`. `index.ts` re-exports the six names and
+  keeps value imports of `getSkillProposal`, `listSkillProposals`, and
+  `listSkillEvaluations` for the functions that have not moved.
+- **Sizes:** `index.ts` 5,795/6,119 to 5,575/5,881 (down 220 effective
+  and 238 physical). Store module 115/123 (estimate 111/119).
+  Evaluation module 135/147 (estimate 132/144). Both stay under the
+  250-line preference. No `skills/index.ts`. No new package export-map
+  key. `quality-exceptions.json` unchanged.
+- **SCC:** import-only components stay two of size 3 (Approved Apply
+  and the recorded Neutron mutation cycle). Re-export components stay
+  sizes 4, 29, and 3, with the same membership. The new files, the
+  P1H.3a parser and discovery modules, `host-file-system.ts`, the
+  P1H.1 memory modules, and `agent-session/agent-session.ts` are
+  outside every component. Cycle tests were not edited.
+- **Compatibility:** proposal and evaluation paths, defaults,
+  caller-supplied initial state, overwrite, corrupt reads, filters,
+  ordering, ignored `caseId`, security-pattern heuristics, provenance,
+  and pretty JSON are unchanged. Approval still requires non-empty
+  `approvalEvidence` and an eligible evaluation unless the existing
+  bypass flag is set. Rollback is unchanged. Mutation, procedural
+  memory, and `rankProceduralMemory` stay in `index.ts`.
+- **Tests:** focused proposal, evaluation, memory, rank, cycle, and
+  new store-evaluation suites: 11 files, 139 tests passed. Existing
+  assertions were not rewritten.
+- **Verification:** local `pnpm verify` passed: typecheck, oxlint,
+  Prettier, Vitest 356 files / 3096 passed / 3 skipped, build, and
+  `git diff --check`. Hosted CI is recorded against the pull request
+  head and is not claimed here before that run finishes.
+- **Not done:** merge, P1H.3c, P1H.4, P1I, P1J, Undo U4, Desktop Undo
+  U5.
+- **Next:** Maintainer review. Do not merge. Do not start P1H.3c.
 
 ### 2026-11-08, Packages architecture P1H.3a skill catalog read extraction
 
-- **Status:** **IMPLEMENTED — PR OPEN, AWAITING MAINTAINER REVIEW.**
-  PR #602, https://github.com/vitala89/Intentloom/pull/602. P1H.3a is
-  not merged. Do not merge. Do not start P1H.3b, P1H.3c, P1H.4, P1I,
+- **Status:** **MERGED.** PR #602,
+  https://github.com/vitala89/Intentloom/pull/602, merge
+  `460b81efd1e81f5b24a22e11d3af4680c8f28aad`. P1H.3b is the watch
+  entry above and is not merged. Do not start P1H.3c, P1H.4, P1I,
   P1J, Undo U4, or Desktop Undo U5.
 - **Branch:** `refactor/application-skill-catalog-read-p1h3a`
 - **Baseline:** `6b387a34c221f967a15ef670d53bea9b76e40828` (PR #601,
@@ -191,17 +245,20 @@ Desktop Undo U5.
   `git diff --check`. Focused suites were 8 files and 61 tests.
   Hosted CI is recorded against the pull request head and is not
   claimed here before that run finishes.
-- **Not done:** merge, P1H.3b, P1H.3c, P1H.4, P1I, P1J, Undo U4,
-  Desktop Undo U5.
-- **Next:** Maintainer review. Do not merge.
+- **Not done:** P1H.3c, P1H.4, P1I, P1J, Undo U4, Desktop Undo U5.
+  Merge of this entry completed as PR #602.
+- **Next:** P1H.3b, recorded in the watch entry above. Do not start
+  P1H.3c.
 
 ### 2026-11-08, Packages architecture P1H.3 skill catalog and proposals design
 
 - **Status:** **MERGED.** PR #601,
   https://github.com/vitala89/Intentloom/pull/601, merge
   `6b387a34c221f967a15ef670d53bea9b76e40828`. This entry is the design
-  record. P1H.3a implementation is the following watch entry and is
-  not merged. P1H.3b, P1H.3c, P1H.4, P1I, P1J, Undo U4, and Desktop
+  record. P1H.3a implementation was later merged as PR #602
+  (`460b81efd1e81f5b24a22e11d3af4680c8f28aad`). P1H.3b is implemented
+  in PR #603 (https://github.com/vitala89/Intentloom/pull/603) and is
+  not merged. P1H.3c, P1H.4, P1I, P1J, Undo U4, and Desktop
   Undo U5 have not started.
 - **Branch:** `docs/p1h3-skill-catalog-proposals`
 - **Baseline:** `efce5db2b40d1f350df43d38b4b97d1ccd5c2736` (PR #600,

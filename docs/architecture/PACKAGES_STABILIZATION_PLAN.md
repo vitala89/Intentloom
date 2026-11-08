@@ -84,8 +84,11 @@ Implementation is merged as PR #600
 as PR #601
 (`6b387a34c221f967a15ef670d53bea9b76e40828`). The approved contract is
 [`docs/designs/p1h3-skill-catalog-proposals/SYSTEM_DESIGN.md`](../designs/p1h3-skill-catalog-proposals/SYSTEM_DESIGN.md).
-P1H.3a catalog read is implemented and is not merged. P1H.3b, P1H.3c,
-and P1H.4 and later slices have not started.
+P1H.3a catalog read is merged as PR #602
+(`460b81efd1e81f5b24a22e11d3af4680c8f28aad`). P1H.3b proposal store
+and evaluation is implemented in PR #603
+(https://github.com/vitala89/Intentloom/pull/603) and is not merged. P1H.3c and P1H.4
+and later slices have not started.
 Undo U4 and Desktop Undo U5 are not started.
 Neutron's R4A topology stays frozen.
 The measurements below remain the P1A baseline and are not restated as the
@@ -138,7 +141,10 @@ as PR #599 (`ff7cb79329f403220aa4b369eede4cb8f06e591b`). Implementation
 is merged as PR #600
 (`efce5db2b40d1f350df43d38b4b97d1ccd5c2736`). P1H.3 design is merged
 as PR #601 (`6b387a34c221f967a15ef670d53bea9b76e40828`). P1H.3a catalog
-read is implemented and is not merged. P1H.3b and P1H.3c have not
+read is merged as PR #602
+(`460b81efd1e81f5b24a22e11d3af4680c8f28aad`). P1H.3b proposal store
+and evaluation is implemented in PR #603
+(https://github.com/vitala89/Intentloom/pull/603) and is not merged. P1H.3c has not
 started.
 
 ## 1. Baseline
@@ -1792,7 +1798,10 @@ as PR #599 (`ff7cb79329f403220aa4b369eede4cb8f06e591b`). Implementation
 is merged as PR #600
 (`efce5db2b40d1f350df43d38b4b97d1ccd5c2736`). P1H.3 design is merged
 as PR #601 (`6b387a34c221f967a15ef670d53bea9b76e40828`). P1H.3a catalog
-read is implemented and is not merged. P1H.3b, P1H.3c, P1I, P1J,
+read is merged as PR #602
+(`460b81efd1e81f5b24a22e11d3af4680c8f28aad`). P1H.3b proposal store
+and evaluation is implemented in PR #603
+(https://github.com/vitala89/Intentloom/pull/603) and is not merged. P1H.3c, P1I, P1J,
 Undo U4, and Desktop Undo U5 are not started.
 
 `FoundationUnderstanding` moved unchanged from
@@ -1877,7 +1886,10 @@ as PR #599 (`ff7cb79329f403220aa4b369eede4cb8f06e591b`). Implementation
 is merged as PR #600
 (`efce5db2b40d1f350df43d38b4b97d1ccd5c2736`). P1H.3 design is merged
 as PR #601 (`6b387a34c221f967a15ef670d53bea9b76e40828`). P1H.3a catalog
-read is implemented and is not merged. P1H.3b, P1H.3c, P1I, P1J,
+read is merged as PR #602
+(`460b81efd1e81f5b24a22e11d3af4680c8f28aad`). P1H.3b proposal store
+and evaluation is implemented in PR #603
+(https://github.com/vitala89/Intentloom/pull/603) and is not merged. P1H.3c, P1I, P1J,
 Undo U4, and Desktop Undo U5 are not started.
 
 The twelve public operations moved unchanged out of
@@ -2024,8 +2036,11 @@ target, path traversal, and default trust and retention.
 Design is merged as PR #601
 (`6b387a34c221f967a15ef670d53bea9b76e40828`). The approved contract is
 [`docs/designs/p1h3-skill-catalog-proposals/SYSTEM_DESIGN.md`](../designs/p1h3-skill-catalog-proposals/SYSTEM_DESIGN.md).
-P1H.3a catalog read is implemented and is not merged. P1H.3b, P1H.3c,
-P1H.4, P1I, P1J, Undo U4, and Desktop Undo U5 have not started.
+P1H.3a catalog read is merged as PR #602
+(`460b81efd1e81f5b24a22e11d3af4680c8f28aad`). P1H.3b proposal store
+and evaluation is implemented in PR #603
+(https://github.com/vitala89/Intentloom/pull/603) and is not merged. P1H.3c, P1H.4, P1I,
+P1J, Undo U4, and Desktop Undo U5 have not started.
 
 On `efce5db2b40d1f350df43d38b4b97d1ccd5c2736`, `index.ts` measures
 6,093 effective lines and 6,448 physical lines. The family is lines
@@ -2066,7 +2081,8 @@ read model.
 
 ##### P1H.3a — catalog read
 
-Implemented from the merged design, section 19 step 1, and not merged.
+Implemented from the merged design, section 19 step 1, and merged as
+PR #602 (`460b81efd1e81f5b24a22e11d3af4680c8f28aad`).
 `parseSkillProgressive` moved to
 `packages/application/src/skills/skill-progressive-parse.ts`.
 `discoverSkills` and `getSkillAtLevel` moved to
@@ -2113,7 +2129,64 @@ discovery, CLI skill, Neutron context, and cycle suites: 8 files, 61
 tests passed. Existing assertions were not rewritten. Local
 `pnpm verify` passed: typecheck, oxlint, Prettier, Vitest 355 files /
 3088 passed / 3 skipped, build, and `git diff --check`. The
-implementation pull request is #602 and is not merged.
+implementation pull request is #602 and is merged as
+`460b81efd1e81f5b24a22e11d3af4680c8f28aad`.
+
+##### P1H.3b — proposal store and evaluation
+
+Implemented from the merged design, section 19 step 2, on baseline
+`460b81efd1e81f5b24a22e11d3af4680c8f28aad` (PR #602). This slice is
+not merged.
+
+`createSkillProposal`, `listSkillProposals`, and `getSkillProposal`
+moved to `packages/application/src/skills/skill-proposal-store.ts`.
+`evaluateSkillProposal`, `listSkillEvaluations`, and
+`getSkillEvaluation` moved to
+`packages/application/src/skills/skill-evaluation.ts`. Evaluation
+imports `getSkillProposal` from the store. The store does not import
+evaluation or `index.ts`. `index.ts` re-exports all six names and
+imports `getSkillProposal`, `listSkillProposals`, and
+`listSkillEvaluations` as local values because
+`updateSkillProposalState`, `rollbackSkill`, the procedural-memory
+reads, mutation planning, and `rankProceduralMemory` still call them.
+No `skills/index.ts` was added. The package export map is unchanged.
+`updateSkillProposalState`, `rollbackSkill`,
+`validateSkillExtensionLock`, `listProceduralMemorySummary`,
+`inspectProceduralMemory`, `prepareSkillMutationPlan`,
+`applySkillMutationPlan`, and `rankProceduralMemory` stay in
+`index.ts`. P1H.3c has not started.
+
+On this change, `index.ts` measures 5,575 effective lines and 5,881
+physical lines, down 220 effective and 238 physical from 5,795 and
+6,119. The store module measures 115 effective and 123 physical
+lines. The design estimate was 111 and 119. The evaluation module
+measures 135 effective and 147 physical lines. The design estimate
+was 132 and 144. Both new files stay under the 250-line preference
+and the 400 / 700 hard limits. `quality-exceptions.json` is unchanged.
+
+Import-only components stay two, each size 3: Approved Apply and the
+recorded Neutron mutation component. Re-export components stay sizes
+4, 29, and 3, with the same membership. The new modules,
+`host-file-system.ts`, the P1H.3a parser and discovery modules, the
+P1H.1 memory modules, and `agent-session/agent-session.ts` stay
+outside every component. The locked cycle tests were not edited.
+
+Proposal paths stay `.aif/memory/proposals/<id>.json`. Evaluation
+paths stay `.aif/memory/evaluations/<id>.json`. Creation defaults,
+caller-supplied initial state, overwrite, corrupt-record skipping,
+list filters and ordering, the ignored `caseId`, the existing
+security-pattern heuristics, provenance, and pretty JSON with a
+trailing newline are unchanged. Approval still requires non-empty
+`approvalEvidence` and an eligible evaluation unless
+`bypassEvaluationGate` is set. Rollback behavior is unchanged.
+
+Focused coverage is `tests/skill-proposal-evaluation-p1h3b.test.ts`
+plus the existing proposal, evaluation, memory, rank, and cycle
+suites: 11 files, 139 tests passed. Existing assertions were not
+rewritten. Local `pnpm verify` passed: typecheck, oxlint, Prettier,
+Vitest 356 files / 3096 passed / 3 skipped, build, and
+`git diff --check`. The implementation pull request is #603
+(https://github.com/vitala89/Intentloom/pull/603) and is not merged.
 
 ### P1I — transaction and lifecycle
 

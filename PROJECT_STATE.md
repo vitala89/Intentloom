@@ -993,9 +993,25 @@ effective lines and `discoverSkills` stays 145. Both remain over the
 80-line function limit. The approved design keeps them intact.
 `quality-exceptions.json` is unchanged. Import-only cycles stay two
 components of size 3. Re-export cycles stay three, sizes 4, 29, and 3.
-The new modules stay outside every component. The implementation pull request is #602
-(https://github.com/vitala89/Intentloom/pull/602) and is not merged. P1H.3b, P1H.3c, and P1H.4 and later slices have not
-started. `rankProceduralMemory` stays in the barrel.
+The new modules stay outside every component. The implementation is
+merged as PR #602 (https://github.com/vitala89/Intentloom/pull/602,
+`460b81efd1e81f5b24a22e11d3af4680c8f28aad`). P1H.3b moves
+`createSkillProposal`, `listSkillProposals`, and `getSkillProposal`
+into `skills/skill-proposal-store.ts` (115/123) and
+`evaluateSkillProposal`, `listSkillEvaluations`, and
+`getSkillEvaluation` into `skills/skill-evaluation.ts` (135/147).
+Evaluation imports `getSkillProposal` from the store. The store does
+not import evaluation. `index.ts` re-exports the six names and keeps
+value imports of `getSkillProposal`, `listSkillProposals`, and
+`listSkillEvaluations` for the operations that remain in the barrel.
+It measures 5,575 effective lines and 5,881 physical lines, down from
+5,795 and 6,119. `quality-exceptions.json` is unchanged. Import-only
+cycles stay two components of size 3. Re-export cycles stay three,
+sizes 4, 29, and 3. The new modules stay outside every component.
+The implementation pull request is #603
+(https://github.com/vitala89/Intentloom/pull/603) and is not merged. P1H.3c
+and P1H.4 and later slices have not started. `rankProceduralMemory`
+stays in the barrel.
 Undo U4 and Desktop Undo U5 are not started. Other post-P4 candidates remain in
 `POST_W12_NEXT_INCREMENT_PLAN.md`.
 
