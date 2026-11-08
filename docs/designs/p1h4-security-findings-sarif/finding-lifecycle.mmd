@@ -1,0 +1,12 @@
+stateDiagram-v2
+  [*] --> open: import or adapter write
+  open --> dismissed: dismissSecurityFinding
+  open --> accepted: acceptSecurityRisk
+  dismissed --> accepted: acceptSecurityRisk
+  accepted --> dismissed: dismissSecurityFinding
+  dismissed --> dismissed: dismiss again
+  accepted --> accepted: accept again
+  note right of open
+    Schema also allows verified and remediated.
+    This family has no writer for those states.
+  end note

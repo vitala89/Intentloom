@@ -1023,9 +1023,15 @@ sixteen skill names and keeps value imports of `listSkillProposals` and
 effective lines and 5,620 physical lines, down from 5,575 and 5,881.
 `quality-exceptions.json` is unchanged. Import-only cycles stay two
 components of size 3. Re-export cycles stay three, sizes 4, 29, and 3.
-The six skill modules stay outside every component. The implementation
-pull request is #604 (https://github.com/vitala89/Intentloom/pull/604)
-and is not merged. P1H.4 and later slices have not started.
+The six skill modules stay outside every component. The implementation is merged as PR #604
+(https://github.com/vitala89/Intentloom/pull/604,
+`911b229af00fcde54d8861af83a56e7e61df0902`). P1H.3 is fully
+implemented. P1H.4 design is proposed in
+`docs/designs/p1h4-security-findings-sarif/SYSTEM_DESIGN.md` and is
+not approved. The design moves Security Finding storage, SARIF import,
+and coverage into `packages/application/src/security/`. It leaves
+`correlateSecurityFindings` and `runLocalSecurityAdapters` in
+`index.ts`. P1H.5 and later slices have not started.
 `rankProceduralMemory` stays in the barrel.
 Undo U4 and Desktop Undo U5 are not started. Other post-P4 candidates remain in
 `POST_W12_NEXT_INCREMENT_PLAN.md`.

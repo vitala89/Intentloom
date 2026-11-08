@@ -1,0 +1,29 @@
+flowchart TB
+  cli["CLI and Neutron stay on the package root"]
+  barrel["index.ts named re-exports"]
+  adapters["runLocalSecurityAdapters stays in index.ts"]
+  correlate["correlateSecurityFindings stays in index.ts"]
+  policy["policy and baseline stay in index.ts"]
+  store["security/security-finding-store.ts"]
+  sarif["security/sarif-security-import.ts"]
+  coverage["security/security-coverage.ts"]
+  fsport["host-file-system.ts"]
+  pathmod["project-path.ts"]
+  protocol["@intentloom/protocol"]
+  cli --> barrel
+  barrel --> store
+  barrel --> sarif
+  barrel --> coverage
+  adapters -->|"securityFindingPath"| store
+  adapters --> correlate
+  policy -->|"listSecurityFindings"| store
+  coverage --> store
+  sarif -->|"securityFindingPath"| store
+  store --> fsport
+  store --> pathmod
+  store --> protocol
+  sarif --> pathmod
+  sarif --> fsport
+  sarif --> protocol
+  coverage --> fsport
+  coverage --> protocol

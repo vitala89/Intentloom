@@ -1,0 +1,18 @@
+flowchart TB
+  cli["CLI security-findings-command.ts"]
+  scan["CLI security-operations-command.ts"]
+  neutron["neutron-tool-dispatch.ts mapSecurity"]
+  barrel["index.ts lines 4115-4609"]
+  policy["updateSecurityBaseline and checkSecurityPolicyAndBaseline"]
+  audit["runContinuousSecurityAudit"]
+  fsport["host-file-system.ts"]
+  pathmod["project-path.ts inside and secretLikePath"]
+  protocol["@intentloom/protocol validators"]
+  cli -->|"package root"| barrel
+  scan -->|"runLocalSecurityAdapters"| barrel
+  neutron -->|"listSecurityFindings from index.js"| barrel
+  policy -->|"listSecurityFindings"| barrel
+  audit -->|"policy, baseline, sandbox"| policy
+  barrel --> fsport
+  barrel --> pathmod
+  barrel --> protocol

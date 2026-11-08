@@ -1,0 +1,21 @@
+flowchart LR
+  subgraph p1h4 ["P1H.4 moves these"]
+    store["finding store"]
+    sarif["SARIF import"]
+    coverage["coverage report"]
+  end
+  subgraph stay ["Stays in index.ts"]
+    correlate["correlateSecurityFindings"]
+    adapters["runLocalSecurityAdapters"]
+    policy["policy and baseline"]
+    sandbox["sandbox"]
+    audit["runContinuousSecurityAudit"]
+  end
+  sarif --> store
+  coverage --> store
+  adapters --> correlate
+  adapters -->|"path helper only"| store
+  policy -->|"listSecurityFindings"| store
+  audit --> policy
+  audit --> sandbox
+  audit -.->|"does not call adapters"| adapters
