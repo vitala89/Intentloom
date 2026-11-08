@@ -1062,7 +1062,8 @@ implemented. Correlation and local adapters stay in `index.ts`. Known
 SARIF limitations stay: partial writes, the `verified-evidence`
 label, restarting ids that overwrite dismissed or accepted-risk
 findings, narrow `secretLikePath` redaction, and evidence URIs that
-are not canonicalized. P1H.5 design is proposed in
+are not canonicalized. P1H.5 design is proposed as PR #608
+(https://github.com/vitala89/Intentloom/pull/608) in
 `docs/designs/p1h5-security-policy-sandbox/SYSTEM_DESIGN.md` and is
 not approved. The proposed modules are `security-policy.ts`,
 `security-baseline.ts`, `security-policy-evaluation.ts`,

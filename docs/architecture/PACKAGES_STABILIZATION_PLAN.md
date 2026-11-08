@@ -97,7 +97,7 @@ and coverage is merged as PR #606
 merged as PR #607
 (`7a77db52753360f0029cd266d8c95eb78c34995c`). P1H.4 is fully
 implemented.
-P1H.5 design is proposed and is not approved. Its implementation has
+P1H.5 design is proposed as PR #608 and is not approved. Its implementation has
 not started. P1H.6 and later slices have not started.
 Undo U4 and Desktop Undo U5 are not started.
 Neutron's R4A topology stays frozen.
@@ -2297,7 +2297,7 @@ P1H.3 is fully implemented. P1H.4a finding store and coverage is
 merged as PR #606 (`ec951f32246ad0c94a145f520dc1862d9592c72e`).
 P1H.4b SARIF import is merged as PR #607
 (`7a77db52753360f0029cd266d8c95eb78c34995c`). P1H.4 is fully
-implemented. P1H.5 design is proposed and is not approved. P1H.6,
+implemented. P1H.5 design is proposed as PR #608 and is not approved. P1H.6,
 P1H.7, P1I, P1J, Undo U4, and Desktop Undo U5 have not started.
 
 On `911b229af00fcde54d8861af83a56e7e61df0902`, `index.ts` measures
@@ -2405,7 +2405,7 @@ Implemented from the merged design, section 20 stage P1H.4b, on
 baseline `ec951f32246ad0c94a145f520dc1862d9592c72e` (PR #606). This
 slice is merged as PR #607
 (`7a77db52753360f0029cd266d8c95eb78c34995c`). P1H.4 is fully
-implemented. P1H.5 design is proposed below and is not approved.
+implemented. P1H.5 design is proposed as PR #608 and is not approved.
 
 `isObjectRecord` and `importSarifSecurityReport` moved to
 `packages/application/src/security/sarif-security-import.ts`. The
@@ -2475,7 +2475,9 @@ implementation pull request is #607
 
 #### P1H.5 — security policy and sandbox
 
-Design is proposed and is not approved. The contract is
+Design is proposed as PR #608
+(https://github.com/vitala89/Intentloom/pull/608) and is not approved.
+The contract is
 [`docs/designs/p1h5-security-policy-sandbox/SYSTEM_DESIGN.md`](../designs/p1h5-security-policy-sandbox/SYSTEM_DESIGN.md).
 P1H.4 is fully implemented. Implementation of P1H.5 has not started.
 P1H.6, P1H.7, P1I, P1J, Undo U4, and Desktop Undo U5 have not started.
