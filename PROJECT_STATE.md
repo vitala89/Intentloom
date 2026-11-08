@@ -993,8 +993,8 @@ effective lines and `discoverSkills` stays 145. Both remain over the
 80-line function limit. The approved design keeps them intact.
 `quality-exceptions.json` is unchanged. Import-only cycles stay two
 components of size 3. Re-export cycles stay three, sizes 4, 29, and 3.
-The new modules stay outside every component. The implementation is
-not merged. P1H.3b, P1H.3c, and P1H.4 and later slices have not
+The new modules stay outside every component. The implementation pull request is #602
+(https://github.com/vitala89/Intentloom/pull/602) and is not merged. P1H.3b, P1H.3c, and P1H.4 and later slices have not
 started. `rankProceduralMemory` stays in the barrel.
 Undo U4 and Desktop Undo U5 are not started. Other post-P4 candidates remain in
 `POST_W12_NEXT_INCREMENT_PLAN.md`.

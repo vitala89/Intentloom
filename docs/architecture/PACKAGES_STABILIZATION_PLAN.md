@@ -2113,7 +2113,7 @@ discovery, CLI skill, Neutron context, and cycle suites: 8 files, 61
 tests passed. Existing assertions were not rewritten. Local
 `pnpm verify` passed: typecheck, oxlint, Prettier, Vitest 355 files /
 3088 passed / 3 skipped, build, and `git diff --check`. The
-implementation pull request is open and not merged.
+implementation pull request is #602 and is not merged.
 
 ### P1I — transaction and lifecycle
 

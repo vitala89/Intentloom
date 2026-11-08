@@ -139,8 +139,9 @@ Desktop Undo U5.
 ### 2026-11-08, Packages architecture P1H.3a skill catalog read extraction
 
 - **Status:** **IMPLEMENTED — PR OPEN, AWAITING MAINTAINER REVIEW.**
-  P1H.3a is not merged. Do not merge. Do not start P1H.3b, P1H.3c,
-  P1H.4, P1I, P1J, Undo U4, or Desktop Undo U5.
+  PR #602, https://github.com/vitala89/Intentloom/pull/602. P1H.3a is
+  not merged. Do not merge. Do not start P1H.3b, P1H.3c, P1H.4, P1I,
+  P1J, Undo U4, or Desktop Undo U5.
 - **Branch:** `refactor/application-skill-catalog-read-p1h3a`
 - **Baseline:** `6b387a34c221f967a15ef670d53bea9b76e40828` (PR #601,
   P1H.3 design merged). P1H.2 implementation is PR #600
