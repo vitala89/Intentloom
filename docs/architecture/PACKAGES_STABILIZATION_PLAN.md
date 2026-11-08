@@ -88,7 +88,8 @@ P1H.3a catalog read is merged as PR #602
 (`460b81efd1e81f5b24a22e11d3af4680c8f28aad`). P1H.3b proposal store
 and evaluation is merged as PR #603
 (`f116d199a0783870806e8c8660d90385c106f8e1`). P1H.3c skill mutation
-and procedural memory is implemented and is not merged. P1H.4 and
+and procedural memory is implemented in PR #604
+(https://github.com/vitala89/Intentloom/pull/604) and is not merged. P1H.4 and
 later slices have not started.
 Undo U4 and Desktop Undo U5 are not started.
 Neutron's R4A topology stays frozen.
@@ -146,7 +147,8 @@ read is merged as PR #602
 (`460b81efd1e81f5b24a22e11d3af4680c8f28aad`). P1H.3b proposal store
 and evaluation is merged as PR #603
 (`f116d199a0783870806e8c8660d90385c106f8e1`). P1H.3c skill mutation
-and procedural memory is implemented and is not merged.
+and procedural memory is implemented in PR #604
+(https://github.com/vitala89/Intentloom/pull/604) and is not merged.
 
 ## 1. Baseline
 
@@ -1803,7 +1805,8 @@ read is merged as PR #602
 (`460b81efd1e81f5b24a22e11d3af4680c8f28aad`). P1H.3b proposal store
 and evaluation is merged as PR #603
 (`f116d199a0783870806e8c8660d90385c106f8e1`). P1H.3c skill mutation
-and procedural memory is implemented and is not merged. P1I, P1J,
+and procedural memory is implemented in PR #604
+(https://github.com/vitala89/Intentloom/pull/604) and is not merged. P1I, P1J,
 Undo U4, and Desktop Undo U5 are not started.
 
 `FoundationUnderstanding` moved unchanged from
@@ -1892,7 +1895,8 @@ read is merged as PR #602
 (`460b81efd1e81f5b24a22e11d3af4680c8f28aad`). P1H.3b proposal store
 and evaluation is merged as PR #603
 (`f116d199a0783870806e8c8660d90385c106f8e1`). P1H.3c skill mutation
-and procedural memory is implemented and is not merged. P1I, P1J,
+and procedural memory is implemented in PR #604
+(https://github.com/vitala89/Intentloom/pull/604) and is not merged. P1I, P1J,
 Undo U4, and Desktop Undo U5 are not started.
 
 The twelve public operations moved unchanged out of
@@ -2043,7 +2047,8 @@ P1H.3a catalog read is merged as PR #602
 (`460b81efd1e81f5b24a22e11d3af4680c8f28aad`). P1H.3b proposal store
 and evaluation is merged as PR #603
 (`f116d199a0783870806e8c8660d90385c106f8e1`). P1H.3c skill mutation
-and procedural memory is implemented and is not merged. P1H.4, P1I,
+and procedural memory is implemented in PR #604
+(https://github.com/vitala89/Intentloom/pull/604) and is not merged. P1H.4, P1I,
 P1J, Undo U4, and Desktop Undo U5 have not started.
 
 On `efce5db2b40d1f350df43d38b4b97d1ccd5c2736`, `index.ts` measures
@@ -2197,7 +2202,8 @@ Vitest 356 files / 3096 passed / 3 skipped, build, and
 
 Implemented from the merged design, section 19 step 3, on baseline
 `f116d199a0783870806e8c8660d90385c106f8e1` (PR #603). This slice is
-not merged. P1H.4 has not started.
+PR #604 (https://github.com/vitala89/Intentloom/pull/604) and is not
+merged. P1H.4 has not started.
 
 `updateSkillProposalState`, `rollbackSkill`, `prepareSkillMutationPlan`,
 and `applySkillMutationPlan` moved to
@@ -2249,7 +2255,8 @@ proposal, evaluation, memory, rank, and cycle suites: 13 files, 150
 tests passed. Existing assertions were not rewritten. Local
 `pnpm verify` passed: typecheck, oxlint, Prettier, Vitest 358 files /
 3107 passed / 3 skipped, build, and `git diff --check`. The
-implementation pull request is not merged.
+implementation pull request is #604
+(https://github.com/vitala89/Intentloom/pull/604) and is not merged.
 
 ### P1I — transaction and lifecycle
 

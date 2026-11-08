@@ -1023,8 +1023,9 @@ sixteen skill names and keeps value imports of `listSkillProposals` and
 effective lines and 5,620 physical lines, down from 5,575 and 5,881.
 `quality-exceptions.json` is unchanged. Import-only cycles stay two
 components of size 3. Re-export cycles stay three, sizes 4, 29, and 3.
-The six skill modules stay outside every component. P1H.3c is
-implemented and is not merged. P1H.4 and later slices have not started.
+The six skill modules stay outside every component. The implementation
+pull request is #604 (https://github.com/vitala89/Intentloom/pull/604)
+and is not merged. P1H.4 and later slices have not started.
 `rankProceduralMemory` stays in the barrel.
 Undo U4 and Desktop Undo U5 are not started. Other post-P4 candidates remain in
 `POST_W12_NEXT_INCREMENT_PLAN.md`.

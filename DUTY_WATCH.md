@@ -142,8 +142,9 @@ Desktop Undo U5.
 ### 2026-11-08, Packages architecture P1H.3c skill mutation and procedural memory
 
 - **Status:** **IMPLEMENTED — PR OPEN, AWAITING MAINTAINER REVIEW.**
-  P1H.3c is not merged. Do not merge. Do not start P1H.4, P1I, P1J,
-  Undo U4, or Desktop Undo U5.
+  PR #604, https://github.com/vitala89/Intentloom/pull/604. P1H.3c is
+  not merged. Do not merge. Do not start P1H.4, P1I, P1J, Undo U4, or
+  Desktop Undo U5.
 - **Branch:** `refactor/application-skill-mutation-p1h3c`
 - **Baseline:** `f116d199a0783870806e8c8660d90385c106f8e1` (PR #603,
   P1H.3b proposal store and evaluation merged). P1H.3 design is PR #601
