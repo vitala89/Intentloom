@@ -141,7 +141,8 @@ implemented. **P1H.4** design is merged (PR #605,
 `6a9d0d26015caa857c19d0d22415904d832ad818`). **P1H.4a** finding store
 and coverage is merged (PR #606,
 `ec951f32246ad0c94a145f520dc1862d9592c72e`). **P1H.4b** SARIF import
-is open on `refactor/application-sarif-security-import-p1h4b` and is
+is open as PR #607
+(https://github.com/vitala89/Intentloom/pull/607) and is
 not merged. P1H.4 is not fully implemented. Do not merge on a green
 CI result alone. Do not start P1H.5, P1H.6, P1H.7, P1I, P1J, Undo U4,
 or Desktop Undo U5.
@@ -153,8 +154,8 @@ or Desktop Undo U5.
   (https://github.com/vitala89/Intentloom/pull/605,
   `6a9d0d26015caa857c19d0d22415904d832ad818`). P1H.4a is merged as
   PR #606 (https://github.com/vitala89/Intentloom/pull/606,
-  `ec951f32246ad0c94a145f520dc1862d9592c72e`). P1H.4b is open on
-  `refactor/application-sarif-security-import-p1h4b` and is not
+  `ec951f32246ad0c94a145f520dc1862d9592c72e`). P1H.4b is PR #607
+  (https://github.com/vitala89/Intentloom/pull/607) and is not
   merged. P1H.4 is not fully implemented. Do not merge on a green CI
   result alone. Do not start P1H.5, P1H.6, P1H.7, P1I, P1J, Undo U4,
   or Desktop Undo U5.

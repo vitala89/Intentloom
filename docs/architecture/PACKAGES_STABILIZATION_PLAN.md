@@ -94,7 +94,8 @@ implemented. P1H.4 design is merged as PR #605
 (`6a9d0d26015caa857c19d0d22415904d832ad818`). P1H.4a finding store
 and coverage is merged as PR #606
 (`ec951f32246ad0c94a145f520dc1862d9592c72e`). P1H.4b SARIF import is
-open on `refactor/application-sarif-security-import-p1h4b` and is not
+open as PR #607
+(https://github.com/vitala89/Intentloom/pull/607) and is not
 merged. P1H.4 is not fully implemented.
 P1H.5 and later slices have not started.
 Undo U4 and Desktop Undo U5 are not started.
@@ -159,7 +160,8 @@ implemented. P1H.4 design is merged as PR #605
 (`6a9d0d26015caa857c19d0d22415904d832ad818`). P1H.4a finding store
 and coverage is merged as PR #606
 (`ec951f32246ad0c94a145f520dc1862d9592c72e`). P1H.4b SARIF import is
-open on `refactor/application-sarif-security-import-p1h4b` and is not
+open as PR #607
+(https://github.com/vitala89/Intentloom/pull/607) and is not
 merged. P1H.4 is not fully implemented.
 
 ## 1. Baseline
@@ -2065,7 +2067,8 @@ implemented. P1H.4 design is merged as PR #605
 (`6a9d0d26015caa857c19d0d22415904d832ad818`). P1H.4a finding store
 and coverage is merged as PR #606
 (`ec951f32246ad0c94a145f520dc1862d9592c72e`). P1H.4b SARIF import is
-open on `refactor/application-sarif-security-import-p1h4b` and is not
+open as PR #607
+(https://github.com/vitala89/Intentloom/pull/607) and is not
 merged. P1H.4 is not fully implemented. P1I,
 P1J, Undo U4, and Desktop Undo U5 have not started.
 
@@ -2225,7 +2228,8 @@ merged as PR #604
 merged as PR #605
 (`6a9d0d26015caa857c19d0d22415904d832ad818`). P1H.4a is merged
 as PR #606 (`ec951f32246ad0c94a145f520dc1862d9592c72e`). P1H.4b is
-open on `refactor/application-sarif-security-import-p1h4b` and is not
+open as PR #607
+(https://github.com/vitala89/Intentloom/pull/607) and is not
 merged.
 
 `updateSkillProposalState`, `rollbackSkill`, `prepareSkillMutationPlan`,
@@ -2290,8 +2294,8 @@ Design is merged as PR #605
 [`docs/designs/p1h4-security-findings-sarif/SYSTEM_DESIGN.md`](../designs/p1h4-security-findings-sarif/SYSTEM_DESIGN.md).
 P1H.3 is fully implemented. P1H.4a finding store and coverage is
 merged as PR #606 (`ec951f32246ad0c94a145f520dc1862d9592c72e`).
-P1H.4b SARIF import is the extraction below, open on
-`refactor/application-sarif-security-import-p1h4b` and not merged.
+P1H.4b SARIF import is the extraction below, open as PR #607
+(https://github.com/vitala89/Intentloom/pull/607) and not merged.
 P1H.4 is not fully implemented. P1H.5, P1H.6, P1H.7, P1I, P1J, Undo U4,
 and Desktop Undo U5 have not started.
 
@@ -2398,8 +2402,9 @@ implementation pull request is #606
 
 Implemented from the merged design, section 20 stage P1H.4b, on
 baseline `ec951f32246ad0c94a145f520dc1862d9592c72e` (PR #606). This
-slice is open on `refactor/application-sarif-security-import-p1h4b`
-and is not merged. P1H.5 has not started.
+slice is open as PR #607
+(https://github.com/vitala89/Intentloom/pull/607) and is not merged.
+P1H.5 has not started.
 
 `isObjectRecord` and `importSarifSecurityReport` moved to
 `packages/application/src/security/sarif-security-import.ts`. The
@@ -2463,7 +2468,8 @@ the existing security, CLI, Neutron read-only, and cycle suites: 9
 files, 129 tests passed. Existing assertions were not rewritten.
 Local `pnpm verify` passed: typecheck, oxlint, Prettier, Vitest 360
 files / 3126 passed / 3 skipped, build, and `git diff --check`. The
-implementation pull request is open and is not merged.
+implementation pull request is #607
+(https://github.com/vitala89/Intentloom/pull/607) and is not merged.
 
 ### P1I — transaction and lifecycle
 

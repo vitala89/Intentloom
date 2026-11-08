@@ -1055,7 +1055,8 @@ trigger: the next behavior change to that function.
 `quality-exceptions.json` is unchanged. Import-only cycles stay two
 components of size 3. Re-export cycles stay three, sizes 4, 29, and 3.
 The three security modules stay outside every component. P1H.4b is
-open on `refactor/application-sarif-security-import-p1h4b` and is not
+open as PR #607
+(https://github.com/vitala89/Intentloom/pull/607) and is not
 merged. P1H.4 is not fully implemented. Correlation, local adapters,
 policy, and baseline stay in `index.ts`. Known SARIF limitations stay:
 partial writes, the `verified-evidence` label, restarting ids that
