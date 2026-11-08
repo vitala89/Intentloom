@@ -140,12 +140,60 @@ and procedural memory is merged (PR #604,
 implemented. **P1H.4** design is merged (PR #605,
 `6a9d0d26015caa857c19d0d22415904d832ad818`). **P1H.4a** finding store
 and coverage is merged (PR #606,
-`ec951f32246ad0c94a145f520dc1862d9592c72e`). **P1H.4b** SARIF import
-is open as PR #607
-(https://github.com/vitala89/Intentloom/pull/607) and is
-not merged. P1H.4 is not fully implemented. Do not merge on a green
-CI result alone. Do not start P1H.5, P1H.6, P1H.7, P1I, P1J, Undo U4,
-or Desktop Undo U5.
+`ec951f32246ad0c94a145f520dc1862d9592c72e`). **P1H.4b** SARIF import is merged (PR #607,
+`7a77db52753360f0029cd266d8c95eb78c34995c`). P1H.4 is fully
+implemented. **P1H.5** design is proposed as PR #608
+(https://github.com/vitala89/Intentloom/pull/608) and is not
+approved. Do not merge that design on a green CI result alone. Do not start P1H.5
+implementation, P1H.6, P1H.7, P1I, P1J, Undo U4, or Desktop Undo U5.
+
+### 2026-11-08, Packages architecture P1H.5 security policy and sandbox design
+
+- **Status:** **DESIGN PR OPEN — AWAITING MAINTAINER APPROVAL.**
+  PR #608, https://github.com/vitala89/Intentloom/pull/608. P1H.5 is
+  not implemented. A green CI result is not approval. Do not merge.
+  Do not start P1H.5 implementation, P1H.6, P1H.7, P1I, P1J, Undo U4,
+  or Desktop Undo U5.
+- **Branch:** `docs/p1h5-security-policy-sandbox`
+- **Baseline:** `7a77db52753360f0029cd266d8c95eb78c34995c` (PR #607,
+  P1H.4b SARIF import merged). P1H.4 design is PR #605
+  (`6a9d0d26015caa857c19d0d22415904d832ad818`). P1H.4a is PR #606
+  (`ec951f32246ad0c94a145f520dc1862d9592c72e`). P1H.4 is fully
+  implemented. The working tree was clean before this branch. Open
+  pull requests at start were dependency updates and did not overlap
+  this design.
+- **Design:** `docs/designs/p1h5-security-policy-sandbox/SYSTEM_DESIGN.md`.
+- **Selected operations:** `securityPolicyPath`, `getSecurityPolicy`,
+  `writeSecurityPolicy`, `securityBaselinePath`, `getSecurityBaseline`,
+  `updateSecurityBaseline`, `checkSecurityPolicyAndBaseline`,
+  `sandboxCapabilityPolicyPath`, `getSandboxCapabilityPolicy`,
+  `writeSandboxCapabilityPolicy`, and `evaluateProposalAgainstSandbox`.
+  Proposed modules are `security/security-policy.ts`,
+  `security/security-baseline.ts`,
+  `security/security-policy-evaluation.ts`,
+  `security/sandbox-capability-policy.ts`, and
+  `security/sandbox-proposal-evaluation.ts`. No `security/index.ts`.
+  No new package export-map key.
+- **Excluded:** `getSecurityAuditReport`, `runContinuousSecurityAudit`,
+  `securityAuditReportPath`, workspace read model, Approved Apply,
+  Neutron mutation, extension sandbox, finding store, and SARIF import.
+  Implementation has not started.
+- **Open questions:** implementation may be one pull request or the
+  two slices in the design. Prefix matching, command-prefix matching,
+  unused stored fields, and the gap between evaluation and execution
+  stay as they are. Mitigations need a separate Design First review.
+- **Verification:** `git diff --check` passed. All eight Mermaid
+  sources and the eight embedded diagrams parsed with Mermaid 11.17.2
+  (`flowchart-v2` and `sequence`). Local `pnpm verify` passed:
+  typecheck, oxlint, Prettier, Vitest 360 files / 3126 passed / 3
+  skipped, build, and `git diff --check`. No extraction was
+  implemented, so this is not a runtime claim for the move. Hosted CI
+  is recorded against the pull request head and is not claimed here
+  before that run finishes.
+- **Not done:** maintainer approval, P1H.5 implementation, P1H.6,
+  P1H.7, P1I, P1J, Undo U4, Desktop Undo U5.
+- **Next:** Maintainer review of the design. Do not merge. Do not
+  start implementation.
 
 ### 2026-11-08, Packages architecture P1H.4b SARIF security import
 

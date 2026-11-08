@@ -1,0 +1,44 @@
+flowchart TB
+  cli["CLI and workspace stay on the package root"]
+  barrel["index.ts named re-exports"]
+  audit["runContinuousSecurityAudit stays in index.ts"]
+  review["reviewWorkspaceProposal stays in index.ts"]
+  adapters["runLocalSecurityAdapters stays in index.ts"]
+  policy["security/security-policy.ts"]
+  baseline["security/security-baseline.ts"]
+  check["security/security-policy-evaluation.ts"]
+  sandbox["security/sandbox-capability-policy.ts"]
+  eval["security/sandbox-proposal-evaluation.ts"]
+  store["security/security-finding-store.ts"]
+  fsport["host-file-system.ts"]
+  pathmod["project-path.ts"]
+  protocol["@intentloom/protocol"]
+  cli --> barrel
+  barrel --> policy
+  barrel --> baseline
+  barrel --> check
+  barrel --> sandbox
+  barrel --> eval
+  audit --> policy
+  audit --> baseline
+  audit --> check
+  audit --> sandbox
+  review --> eval
+  adapters -->|"securityFindingPath only"| store
+  check --> policy
+  check --> baseline
+  check --> store
+  baseline --> store
+  eval --> sandbox
+  policy --> fsport
+  policy --> pathmod
+  policy --> protocol
+  baseline --> fsport
+  baseline --> pathmod
+  baseline --> protocol
+  sandbox --> fsport
+  sandbox --> pathmod
+  sandbox --> protocol
+  check --> protocol
+  eval --> protocol
+  store --> fsport

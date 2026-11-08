@@ -1,0 +1,46 @@
+flowchart TB
+  start["evaluateProposalAgainstSandbox"]
+  load["getSandboxCapabilityPolicy"]
+  mode{"mode is read-only"}
+  modemsg["push read-only violation"]
+  source{"proposal.actions is nullish"}
+  actions["use actions"]
+  changes["use changes or an empty list"]
+  loop["each action"]
+  path{"path is present"}
+  norm["replace backslash with slash"]
+  rule{"first prefix match or star"}
+  outside["push path outside rules"]
+  kind{"type is delete or remove"}
+  del{"allowDelete"}
+  write{"allowWrite"}
+  delmsg["push delete violation"]
+  writemsg["push write violation"]
+  cmd{"command is present"}
+  cmdok{"prefix match or star"}
+  cmdmsg["push command violation"]
+  net{"networkAccess true and allowNetwork false"}
+  netmsg["push network violation"]
+  result["allowed when violations is empty"]
+  start --> load --> mode
+  mode -->|yes| modemsg --> source
+  mode -->|no| source
+  source -->|yes| changes --> loop
+  source -->|no| actions --> loop
+  loop --> path
+  path -->|yes| norm --> rule
+  rule -->|none| outside --> cmd
+  rule -->|match| kind
+  kind -->|yes| del
+  kind -->|no| write
+  del -->|false| delmsg --> cmd
+  del -->|true| cmd
+  write -->|false| writemsg --> cmd
+  write -->|true| cmd
+  path -->|no| cmd
+  cmd -->|yes| cmdok
+  cmdok -->|no| cmdmsg --> net
+  cmdok -->|yes| net
+  cmd -->|no| net
+  net -->|yes| netmsg --> result
+  net -->|no| result

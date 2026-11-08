@@ -1,0 +1,12 @@
+flowchart TB
+  caller["getSecurityPolicy root projectId fs"]
+  path["inside root .aif/security/policy.json"]
+  exists{"file exists"}
+  parsed{"JSON.parse and validateSecurityPolicy"}
+  stored["return stored SecurityPolicy"]
+  fallback["validate default policy"]
+  caller --> path --> exists
+  exists -->|no| fallback
+  exists -->|yes| parsed
+  parsed -->|success| stored
+  parsed -->|throw| fallback

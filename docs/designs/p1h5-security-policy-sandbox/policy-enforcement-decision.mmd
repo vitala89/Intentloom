@@ -1,0 +1,20 @@
+flowchart TB
+  finding["current finding"]
+  skipped{"state is dismissed accepted-risk or remediated"}
+  match{"first rule whose target equals ruleId category or severity"}
+  chosen["use that rule enforcement"]
+  fallback["use defaultEnforcement"]
+  fail{"enforcement is fail"}
+  warncrit{"enforcement is warn and severity is critical"}
+  violation["append finding to policyViolations"]
+  exitfail["remember exit code 3"]
+  ignore["no violation from this finding"]
+  finding --> skipped
+  skipped -->|yes| ignore
+  skipped -->|no| match
+  match -->|found| chosen --> fail
+  match -->|none| fallback --> fail
+  fail -->|yes| violation --> exitfail
+  fail -->|no| warncrit
+  warncrit -->|yes| violation
+  warncrit -->|no| ignore

@@ -1,0 +1,21 @@
+flowchart TB
+  caller["Caller supplies root projectId proposal and FileSystem"]
+  files["Untrusted policy baseline and sandbox JSON"]
+  validate["Protocol validators"]
+  fallback["Invalid policy or sandbox falls back to defaults"]
+  nullbase["Invalid baseline returns null"]
+  eval["String prefix evaluation"]
+  result["SandboxEvaluationResult"]
+  review["reviewWorkspaceProposal sets readyToApply"]
+  apply["applyWorkspaceProposal and Approved Apply"]
+  writes["write operations persist any valid document"]
+  caller --> files
+  files --> validate
+  validate --> fallback
+  validate --> nullbase
+  caller --> eval
+  eval --> result
+  result --> review
+  review -.->|"does not authorize"| apply
+  caller --> writes
+  writes -.->|"no identity check in these functions"| files
