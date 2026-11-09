@@ -1,6 +1,6 @@
 # P1H.6 Continuous Security Audit extraction
 
-Status: **proposed**. This document is a Design First review artifact.
+Status: **proposed** (PR #611). This document is a Design First review artifact.
 It does not implement P1H.6, and it does not authorize implementation
 until a maintainer approves it. A green CI result is not approval.
 

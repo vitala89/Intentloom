@@ -149,14 +149,16 @@ baseline, and comparison is merged (PR #609,
 and evaluation is merged (PR #610,
 `2c0749dce9a31976195277971d6fb35fe663cd31`). P1H.5 is fully
 implemented. **P1H.6** Continuous Security Audit design is proposed
-and is not approved. P1H.6 implementation has not started. Do not
+as PR #611 (https://github.com/vitala89/Intentloom/pull/611) and is
+not approved. P1H.6 implementation has not started. Do not
 start P1H.6 implementation, P1H.7, P1I, P1J, Undo U4, or Desktop Undo
 U5.
 
 ### 2026-11-09, Packages architecture P1H.6 continuous security audit design
 
 - **Status:** **DESIGN PR OPEN — AWAITING MAINTAINER APPROVAL.**
-  P1H.6 is not implemented. A green CI result is not approval. Do not
+  PR #611, https://github.com/vitala89/Intentloom/pull/611. P1H.6 is
+  not implemented. A green CI result is not approval. Do not
   merge. Do not start P1H.6 implementation, P1H.7, P1I, P1J, Undo U4,
   or Desktop Undo U5.
 - **Branch:** `docs/p1h6-continuous-security-audit`
