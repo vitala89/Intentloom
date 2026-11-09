@@ -146,12 +146,63 @@ implemented. **P1H.5** design is merged (PR #608,
 `1d0611070b02c5e9f0f0e2816a0f560fbf18c18e`). **P1H.5a** policy,
 baseline, and comparison is merged (PR #609,
 `7589c6ccff5d79d1f8c6e5de34d2f521ea3caa6e`). **P1H.5b** sandbox policy
-and evaluation is open as PR #610
-(https://github.com/vitala89/Intentloom/pull/610) on
-`refactor/application-sandbox-policy-evaluation-p1h5b` and is not
-merged. P1H.5 is not fully implemented. Do not merge P1H.5b on a green
-CI result alone. Do not start P1H.6, P1H.7, P1I, P1J, Undo U4, or
-Desktop Undo U5.
+and evaluation is merged (PR #610,
+`2c0749dce9a31976195277971d6fb35fe663cd31`). P1H.5 is fully
+implemented. **P1H.6** Continuous Security Audit design is proposed
+and is not approved. P1H.6 implementation has not started. Do not
+start P1H.6 implementation, P1H.7, P1I, P1J, Undo U4, or Desktop Undo
+U5.
+
+### 2026-11-09, Packages architecture P1H.6 continuous security audit design
+
+- **Status:** **DESIGN PR OPEN — AWAITING MAINTAINER APPROVAL.**
+  P1H.6 is not implemented. A green CI result is not approval. Do not
+  merge. Do not start P1H.6 implementation, P1H.7, P1I, P1J, Undo U4,
+  or Desktop Undo U5.
+- **Branch:** `docs/p1h6-continuous-security-audit`
+- **Baseline:** `2c0749dce9a31976195277971d6fb35fe663cd31` (PR #610,
+  P1H.5b sandbox policy and evaluation merged). P1H.5 design is PR
+  #608 (`1d0611070b02c5e9f0f0e2816a0f560fbf18c18e`). P1H.5a is PR #609
+  (`7589c6ccff5d79d1f8c6e5de34d2f521ea3caa6e`). P1H.5 is fully
+  implemented. The P1H.5b implementation head
+  `2da7846b1befe85c5523d58d7c5d3ed8682a6e66` passed CodeQL, Governance,
+  Desktop SEA Feasibility, Compatibility, and Harness Performance
+  Benchmark. The working tree was clean before this branch. Open pull
+  requests at start were dependency updates and did not overlap this
+  design.
+- **Design:** `docs/designs/p1h6-continuous-security-audit/SYSTEM_DESIGN.md`.
+- **Inventory:** `securityAuditReportPath` (3/3),
+  `getSecurityAuditReport` (13/13), and `runContinuousSecurityAudit`
+  (208/214) in `packages/application/src/index.ts` lines 4364–4595.
+  The checks array is 179 lines. `index.ts` is 4,833/5,064.
+- **Proposal:** three modules under `security/`:
+  `security-audit-report-store.ts`, `security-audit-invariants.ts`,
+  and `continuous-security-audit.ts`. No `security/index.ts`. The
+  static catalog stays a constant. Invariants 2–26 stay literal
+  `passed` checks. Invariants 1, 27, and 28 keep their current
+  dynamic rules, including violation count rather than exit code.
+  Named re-exports stay on the package root. A simulated splice
+  estimates the barrel at 4,607/4,829 and the new files at 34/37,
+  216/221, and 47/48. That estimate is not an implementation result.
+- **Security:** the report's static passed rows, health score, and
+  SHA-256 hash do not prove the named controls ran. The hash covers
+  the check array only. Those limits are preserved. Remedies need a
+  separate Design First review.
+- **SCC:** import-only components stay sizes 3 and 3. Re-export
+  components stay sizes 4, 29, and 3. New modules must stay outside
+  every component.
+- **Verification:** `git diff --check` passed. All nine Mermaid
+  sources and the nine embedded diagrams parsed with Mermaid 11.17.2
+  (`flowchart-v2` and `sequence`). Local `pnpm verify` passed:
+  typecheck, oxlint, Prettier, Vitest 363 files / 3143 passed / 3
+  skipped, build, and `git diff --check`. No production source or
+  runtime test changed, so this is not a runtime claim for the
+  extraction. Hosted CI is recorded against the pull request head
+  and is not claimed here before that run finishes.
+- **Not done:** maintainer approval, implementation, P1H.7, P1I, P1J,
+  Undo U4, Desktop Undo U5.
+- **Next:** Maintainer review of the design. Do not merge. Do not
+  start implementation.
 
 ### 2026-11-08, Packages architecture P1H.5b sandbox policy and evaluation
 

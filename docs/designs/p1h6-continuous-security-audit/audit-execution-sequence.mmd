@@ -1,0 +1,28 @@
+sequenceDiagram
+  participant Caller
+  participant Audit as runContinuousSecurityAudit
+  participant Policy as getSecurityPolicy
+  participant Baseline as getSecurityBaseline
+  participant Sandbox as getSandboxCapabilityPolicy
+  participant Check as checkSecurityPolicyAndBaseline
+  participant Build as buildSecurityInvariantChecks
+  participant Protocol as validateContinuousSecurityAuditReport
+  participant Store as writeSecurityAuditReport
+  Caller->>Audit: root, projectId, FileSystem
+  Audit->>Policy: options and FileSystem
+  Policy-->>Audit: SecurityPolicy
+  Audit->>Baseline: root and FileSystem
+  Baseline-->>Audit: SecurityBaseline or null
+  Audit->>Sandbox: options and FileSystem
+  Sandbox-->>Audit: SandboxCapabilityPolicy
+  Audit->>Check: options and FileSystem
+  Note over Check: loads policy, baseline, and findings again
+  Check-->>Audit: SecurityBaselineCheckResult
+  Audit->>Build: network flag, violation count, enforcement, baseline presence, mode, path-rule count
+  Build-->>Audit: 28 checks in id order
+  Note over Audit: passed count, health score, timestamp, id sort, JSON, SHA-256
+  Audit->>Protocol: schema version 1 and report fields
+  Protocol-->>Audit: ContinuousSecurityAuditReport
+  Audit->>Store: root, validated report, FileSystem
+  Store-->>Audit: void
+  Audit-->>Caller: validated report

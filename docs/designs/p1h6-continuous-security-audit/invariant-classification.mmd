@@ -1,0 +1,19 @@
+flowchart TB
+  loaded["Loaded policy, baseline, sandbox, and baseline check"]
+  network{"sandbox.allowNetwork"}
+  catalog["Invariants 2 through 26 stay literal passed checks"]
+  violations{"policyViolations.length greater than 0"}
+  mode{"sandbox.mode equals read-only"}
+  loaded --> network
+  network -->|true| warn1["Invariant 1 warning, class A"]
+  network -->|false| pass1["Invariant 1 passed, class A"]
+  warn1 --> catalog
+  pass1 --> catalog
+  catalog --> classB["Class B static assertions"]
+  classB --> violations
+  violations -->|yes| fail27["Invariant 27 failed, class A"]
+  violations -->|no| pass27["Invariant 27 passed, class A"]
+  fail27 --> mode
+  pass27 --> mode
+  mode -->|yes| warn28["Invariant 28 warning, class A"]
+  mode -->|no| pass28["Invariant 28 passed, class A"]

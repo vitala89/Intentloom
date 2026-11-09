@@ -1,0 +1,14 @@
+flowchart LR
+  checks["28 pre-validation checks"]
+  count["passedCount filters status passed"]
+  score["healthScore uses Math.round"]
+  clock["auditedAt from Date toISOString"]
+  sort["sort a copy by invariantId"]
+  json["JSON.stringify of that copy"]
+  hash["SHA-256 hex auditHash"]
+  report["validated ContinuousSecurityAuditReport"]
+  checks --> count --> score --> report
+  clock --> report
+  checks --> sort --> json --> hash --> report
+  score -.->|"omitted from the hash"| hash
+  clock -.->|"omitted from the hash"| hash

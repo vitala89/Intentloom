@@ -1,0 +1,38 @@
+sequenceDiagram
+  participant Audit as runContinuousSecurityAudit
+  participant Store as writeSecurityAuditReport
+  participant FS as FileSystem
+  participant Reader as getSecurityAuditReport
+  Audit->>Audit: validate the report before any write
+  Audit->>Store: validated report
+  Store->>FS: exists parent directory
+  alt parent is missing
+    Store->>FS: mkdir parent
+  end
+  alt mkdir throws
+    Store-->>Audit: propagate the exception
+    Note over FS: the report file is not written by this step
+  else parent is available
+    Store->>FS: write pretty JSON and newline
+    alt write throws
+      Store-->>Audit: propagate the exception
+      Note over FS: node writeFile can leave a truncated file
+      Note over FS: memory FileSystem throws before replacing the previous text
+    else write succeeds
+      Store-->>Audit: void
+      Audit-->>Audit: return the validated object, not a re-read
+    end
+  end
+  Reader->>FS: exists report path
+  alt exists throws
+    Reader-->>Reader: propagate that exception
+  else file is absent
+    Reader-->>Reader: return null
+  else file is present
+    Reader->>FS: read
+    alt read, JSON, or validator throws
+      Reader-->>Reader: return null
+    else validator accepts the document
+      Reader-->>Reader: return the validated report
+    end
+  end

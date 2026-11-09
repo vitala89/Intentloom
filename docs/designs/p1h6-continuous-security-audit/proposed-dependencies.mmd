@@ -1,0 +1,42 @@
+flowchart TB
+  index["index.ts named re-exports"]
+  workspace["workspace readers remain in index.ts"]
+  audit["continuous-security-audit.ts"]
+  invariants["security-audit-invariants.ts"]
+  store["security-audit-report-store.ts"]
+  policy["security-policy.ts"]
+  baseline["security-baseline.ts"]
+  check["security-policy-evaluation.ts"]
+  sandbox["sandbox-capability-policy.ts"]
+  findings["security-finding-store.ts"]
+  evaluation["sandbox-proposal-evaluation.ts"]
+  fsPort["host-file-system.ts"]
+  pathMod["project-path.ts"]
+  protocol["@intentloom/protocol"]
+  index --> audit
+  index --> store
+  workspace --> store
+  audit --> invariants
+  audit --> store
+  audit --> policy
+  audit --> baseline
+  audit --> check
+  audit --> sandbox
+  audit --> protocol
+  check --> policy
+  check --> baseline
+  check --> findings
+  baseline --> findings
+  store --> fsPort
+  store --> pathMod
+  store --> protocol
+  invariants --> protocol
+  policy -.->|"no edge back"| audit
+  baseline -.->|"no edge back"| audit
+  sandbox -.->|"no edge back"| audit
+  check -.->|"no edge back"| audit
+  store -.->|"no edge to computation"| audit
+  evaluation -.->|"not used by this audit"| audit
+  audit -.->|"no edge"| index
+  invariants -.->|"no edge"| index
+  store -.->|"no edge"| index

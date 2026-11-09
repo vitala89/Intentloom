@@ -1,0 +1,15 @@
+flowchart TB
+  caller["Caller supplies root, projectId, and FileSystem"]
+  files["Policy, baseline, sandbox, and finding files"]
+  staticChecks["Invariants 2 through 26 are declared passed"]
+  dynamicChecks["Invariants 1, 27, and 28 read loaded fields"]
+  digest["SHA-256 of the check array"]
+  disk["audit-report.json"]
+  reader["Reader returns validator output"]
+  caller --> files --> dynamicChecks
+  staticChecks --> digest
+  dynamicChecks --> digest
+  digest --> disk
+  disk --> reader
+  reader -.->|"does not recompute auditHash"| digest
+  caller -.->|"no identity check in these functions"| disk

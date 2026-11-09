@@ -1098,11 +1098,13 @@ keeps value imports of `getSandboxCapabilityPolicy` for
 `quality-exceptions.json` is unchanged. Import-only cycles stay two
 components of size 3. Re-export cycles stay three, sizes 4, 29, and 3.
 The sandbox modules stay outside every component. The implementation
-pull request is
-PR #610 (https://github.com/vitala89/Intentloom/pull/610) on
-`refactor/application-sandbox-policy-evaluation-p1h5b` and is not
-merged. P1H.5 is not fully implemented. P1H.6 and later slices have
-not started.
+pull request is #610
+(https://github.com/vitala89/Intentloom/pull/610). It is merged as
+`2c0749dce9a31976195277971d6fb35fe663cd31`. P1H.5 is fully
+implemented. P1H.6 design is proposed in
+`docs/designs/p1h6-continuous-security-audit/SYSTEM_DESIGN.md` and is
+not approved. P1H.6 implementation has not started. P1H.7 and later
+slices have not started.
 `rankProceduralMemory` stays in the barrel.
 Undo U4 and Desktop Undo U5 are not started. Other post-P4 candidates remain in
 `POST_W12_NEXT_INCREMENT_PLAN.md`.
