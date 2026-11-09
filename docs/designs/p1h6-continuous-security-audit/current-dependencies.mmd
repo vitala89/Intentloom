@@ -1,0 +1,37 @@
+flowchart TB
+  cliAudit["CLI security audit and verify"]
+  cliUi["CLI ui-command"]
+  cliNeutron["CLI neutron-command"]
+  workspace["getInteractiveWorkspaceState and syncLocalWorkspaceState"]
+  audit["runContinuousSecurityAudit in index.ts"]
+  reader["getSecurityAuditReport in index.ts"]
+  pathHelper["securityAuditReportPath"]
+  policy["security-policy.ts"]
+  baseline["security-baseline.ts"]
+  check["security-policy-evaluation.ts"]
+  sandbox["sandbox-capability-policy.ts"]
+  findings["security-finding-store.ts"]
+  evaluation["sandbox-proposal-evaluation.ts"]
+  fsPort["host-file-system.ts"]
+  pathMod["project-path.ts inside"]
+  protocol["protocol audit validator"]
+  cliAudit -->|"package root"| audit
+  cliUi -->|"package root"| workspace
+  cliNeutron -->|"package root"| workspace
+  workspace --> reader
+  audit --> policy
+  audit --> baseline
+  audit --> sandbox
+  audit --> check
+  audit --> pathHelper
+  reader --> pathHelper
+  check --> policy
+  check --> baseline
+  check --> findings
+  baseline --> findings
+  pathHelper --> pathMod
+  audit --> fsPort
+  reader --> fsPort
+  audit --> protocol
+  reader --> protocol
+  evaluation -.->|"not called by the audit"| audit

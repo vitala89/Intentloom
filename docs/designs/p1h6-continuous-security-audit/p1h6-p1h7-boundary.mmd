@@ -1,0 +1,20 @@
+flowchart LR
+  policy["P1H.5 policy and baseline"]
+  sandbox["P1H.5 sandbox policy"]
+  check["P1H.5 policy evaluation"]
+  audit["P1H.6 continuous-security-audit.ts"]
+  invariants["P1H.6 security-audit-invariants.ts"]
+  store["P1H.6 security-audit-report-store.ts"]
+  barrel["index.ts workspace readers"]
+  later["P1H.7 workspace read model"]
+  audit --> policy
+  audit --> sandbox
+  audit --> check
+  audit --> invariants
+  audit --> store
+  barrel --> store
+  barrel --> audit
+  later -.->|"may import the reader"| store
+  later -.->|"does not own computation"| audit
+  policy -.->|"no import of audit"| audit
+  sandbox -.->|"no import of audit"| audit

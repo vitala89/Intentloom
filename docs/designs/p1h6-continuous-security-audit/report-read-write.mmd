@@ -1,0 +1,23 @@
+flowchart TB
+  run["runContinuousSecurityAudit"]
+  write["writeSecurityAuditReport"]
+  read["getSecurityAuditReport"]
+  path["inside root .aif/security/audit-report.json"]
+  parent{"parent directory exists"}
+  mkdir["fs.mkdir parent"]
+  body["pretty JSON and trailing newline"]
+  present{"report file exists"}
+  parsed{"JSON.parse and validator"}
+  value["ContinuousSecurityAuditReport"]
+  empty["null"]
+  run --> write
+  write --> path
+  write --> parent
+  parent -->|no| mkdir --> body
+  parent -->|yes| body
+  read --> path
+  read --> present
+  present -->|no| empty
+  present -->|yes| parsed
+  parsed -->|accepted| value
+  parsed -->|throws| empty
