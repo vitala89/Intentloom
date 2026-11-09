@@ -150,7 +150,8 @@ and evaluation is merged (PR #610,
 `2c0749dce9a31976195277971d6fb35fe663cd31`). P1H.5 is fully
 implemented. **P1H.6** Continuous Security Audit design is merged
 (PR #611, `52b34c8b202cb07ab30c4f3e991dbce3815510a4`). P1H.6
-implementation is open on
+implementation is open as PR #612
+(https://github.com/vitala89/Intentloom/pull/612) on
 `refactor/application-continuous-security-audit-p1h6` and is not
 merged. Do not merge it. Do not start P1H.7, P1I, P1J, Undo U4, or
 Desktop Undo U5.
@@ -158,10 +159,10 @@ Desktop Undo U5.
 ### 2026-11-09, Packages architecture P1H.6 continuous security audit extraction
 
 - **Status:** **IMPLEMENTED — PR OPEN, AWAITING MAINTAINER REVIEW.**
-  The implementation branch is
-  `refactor/application-continuous-security-audit-p1h6`. It is not
-  merged. A green CI result is not approval. Do not merge. Do not
-  start P1H.7, P1I, P1J, Undo U4, or Desktop Undo U5.
+  PR #612, https://github.com/vitala89/Intentloom/pull/612. The
+  extraction commit is `3b0e5510217f321bafd0a1b46b57c8bfc3040a69`. It
+  is not merged. A green CI result is not approval. Do not merge. Do
+  not start P1H.7, P1I, P1J, Undo U4, or Desktop Undo U5.
 - **Branch:** `refactor/application-continuous-security-audit-p1h6`
 - **Baseline:** `52b34c8b202cb07ab30c4f3e991dbce3815510a4` (PR #611,
   P1H.6 design merged). P1H.5 is fully implemented at PR #610

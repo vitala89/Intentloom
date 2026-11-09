@@ -1118,9 +1118,11 @@ by the old runner. It measures 4,607 effective lines and 4,829 physical
 lines, down from 4,833 and 5,064. `quality-exceptions.json` is
 unchanged. Import-only cycles stay two components of size 3.
 Re-export cycles stay three, sizes 4, 29, and 3. The new modules stay
-outside every component. The implementation branch is
-`refactor/application-continuous-security-audit-p1h6`. It is not
-merged. P1H.6 is not fully implemented until that pull request merges.
+outside every component. The implementation pull request is #612
+(https://github.com/vitala89/Intentloom/pull/612), on
+`refactor/application-continuous-security-audit-p1h6`, commit
+`3b0e5510217f321bafd0a1b46b57c8bfc3040a69`. It is not merged. P1H.6
+is not fully implemented until that pull request merges.
 P1H.7 and later slices have not started. Ids 2 through 26 remain
 literal `passed` checks. The score and hash formulas are unchanged.
 The reader still does not recompute either value.

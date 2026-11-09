@@ -106,7 +106,9 @@ and evaluation is merged as PR #610
 implemented. P1H.6 design is merged as PR #611
 (https://github.com/vitala89/Intentloom/pull/611,
 `52b34c8b202cb07ab30c4f3e991dbce3815510a4`). P1H.6 implementation is
-open on `refactor/application-continuous-security-audit-p1h6` and is
+open as PR #612
+(https://github.com/vitala89/Intentloom/pull/612) on
+`refactor/application-continuous-security-audit-p1h6` and is
 not merged. P1H.7 and later slices have not started.
 Undo U4 and Desktop Undo U5 are not started.
 Neutron's R4A topology stays frozen.
@@ -2313,7 +2315,9 @@ PR #610 (`2c0749dce9a31976195277971d6fb35fe663cd31`). P1H.5 is fully
 implemented. P1H.6 design is merged as PR #611
 (https://github.com/vitala89/Intentloom/pull/611,
 `52b34c8b202cb07ab30c4f3e991dbce3815510a4`). P1H.6 implementation is
-open on `refactor/application-continuous-security-audit-p1h6` and is
+open as PR #612
+(https://github.com/vitala89/Intentloom/pull/612) on
+`refactor/application-continuous-security-audit-p1h6` and is
 not merged. P1H.7, P1I, P1J, Undo U4, and Desktop Undo U5 have not
 started.
 
@@ -2502,7 +2506,9 @@ PR #610 (`2c0749dce9a31976195277971d6fb35fe663cd31`). P1H.5 is fully
 implemented. P1H.6 design is merged as PR #611
 (https://github.com/vitala89/Intentloom/pull/611,
 `52b34c8b202cb07ab30c4f3e991dbce3815510a4`). P1H.6 implementation is
-open on `refactor/application-continuous-security-audit-p1h6` and is
+open as PR #612
+(https://github.com/vitala89/Intentloom/pull/612) on
+`refactor/application-continuous-security-audit-p1h6` and is
 not merged. P1H.7, P1I, P1J, Undo U4, and Desktop Undo U5 have not
 started.
 
@@ -2628,7 +2634,8 @@ baseline `7589c6ccff5d79d1f8c6e5de34d2f521ea3caa6e` (PR #609). P1H.5a
 is merged. This slice is PR #610
 (https://github.com/vitala89/Intentloom/pull/610). It is merged as
 `2c0749dce9a31976195277971d6fb35fe663cd31`. P1H.5 is fully
-implemented. P1H.6 implementation is open and not merged.
+implemented. P1H.6 implementation is open as PR #612
+(https://github.com/vitala89/Intentloom/pull/612) and is not merged.
 
 `sandboxCapabilityPolicyPath`, `getSandboxCapabilityPolicy`, and
 `writeSandboxCapabilityPolicy` moved to
@@ -2698,7 +2705,8 @@ Design is merged as PR #611
 (https://github.com/vitala89/Intentloom/pull/611,
 `52b34c8b202cb07ab30c4f3e991dbce3815510a4`). The approved contract is
 [`docs/designs/p1h6-continuous-security-audit/SYSTEM_DESIGN.md`](../designs/p1h6-continuous-security-audit/SYSTEM_DESIGN.md).
-P1H.5 is fully implemented. Implementation is open on
+P1H.5 is fully implemented. Implementation is open as PR #612
+(https://github.com/vitala89/Intentloom/pull/612) on
 `refactor/application-continuous-security-audit-p1h6` and is not
 merged. P1H.6 is not fully implemented until that pull request merges.
 P1H.7, P1I, P1J, Undo U4, and Desktop Undo U5 have not started.
@@ -2749,9 +2757,11 @@ place. Neither shape starts P1H.7.
 ##### P1H.6 implementation
 
 Implemented from the merged design on baseline
-`52b34c8b202cb07ab30c4f3e991dbce3815510a4` (PR #611). The branch is
-`refactor/application-continuous-security-audit-p1h6`. It is not
-merged. P1H.7 has not started.
+`52b34c8b202cb07ab30c4f3e991dbce3815510a4` (PR #611). This slice is
+PR #612 (https://github.com/vitala89/Intentloom/pull/612), on
+`refactor/application-continuous-security-audit-p1h6`, commit
+`3b0e5510217f321bafd0a1b46b57c8bfc3040a69`. It is not merged. P1H.7
+has not started.
 
 `securityAuditReportPath`, `getSecurityAuditReport`, and
 `writeSecurityAuditReport` live in
