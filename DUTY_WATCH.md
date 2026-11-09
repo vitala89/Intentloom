@@ -144,10 +144,66 @@ and coverage is merged (PR #606,
 `7a77db52753360f0029cd266d8c95eb78c34995c`). P1H.4 is fully
 implemented. **P1H.5** design is merged (PR #608,
 `1d0611070b02c5e9f0f0e2816a0f560fbf18c18e`). **P1H.5a** policy,
-baseline, and comparison is open as PR #609
-(https://github.com/vitala89/Intentloom/pull/609) and is not merged. Do not merge it on a green CI result alone. P1H.5b
-has not started. P1H.5 is not fully implemented. Do not start P1H.5b,
-P1H.6, P1H.7, P1I, P1J, Undo U4, or Desktop Undo U5.
+baseline, and comparison is merged (PR #609,
+`7589c6ccff5d79d1f8c6e5de34d2f521ea3caa6e`). **P1H.5b** sandbox policy
+and evaluation is open as PR #610
+(https://github.com/vitala89/Intentloom/pull/610) on
+`refactor/application-sandbox-policy-evaluation-p1h5b` and is not
+merged. P1H.5 is not fully implemented. Do not merge P1H.5b on a green
+CI result alone. Do not start P1H.6, P1H.7, P1I, P1J, Undo U4, or
+Desktop Undo U5.
+
+### 2026-11-08, Packages architecture P1H.5b sandbox policy and evaluation
+
+- **Status:** **IMPLEMENTED — PR OPEN, AWAITING MAINTAINER REVIEW.**
+  PR #610, https://github.com/vitala89/Intentloom/pull/610. The
+  extraction commit is `9c5bfa18ac641d110376e850f1d6dbe17a0aafd1`. It
+  is not merged. A green CI result is not approval. Do not merge. Do
+  not start P1H.6, P1H.7, P1I, P1J, Undo U4, or Desktop Undo U5.
+- **Branch:** `refactor/application-sandbox-policy-evaluation-p1h5b`
+- **Baseline:** `7589c6ccff5d79d1f8c6e5de34d2f521ea3caa6e` (PR #609,
+  P1H.5a merged). P1H.5 design is PR #608
+  (`1d0611070b02c5e9f0f0e2816a0f560fbf18c18e`). The working tree was
+  clean before this branch. Open pull requests at start were
+  dependency updates and did not overlap this extraction.
+- **Moved:** `sandboxCapabilityPolicyPath`, `getSandboxCapabilityPolicy`,
+  and `writeSandboxCapabilityPolicy` to
+  `security/sandbox-capability-policy.ts` (52/56). The path helper
+  stays private. `evaluateProposalAgainstSandbox` to
+  `security/sandbox-proposal-evaluation.ts` (84/92, function 78
+  effective lines). Evaluation imports `getSandboxCapabilityPolicy`
+  from the policy module. `index.ts` re-exports the three public names
+  and value-imports `getSandboxCapabilityPolicy` for
+  `runContinuousSecurityAudit` and `evaluateProposalAgainstSandbox`
+  for `reviewWorkspaceProposal`. The P1H.5a value imports stay.
+  `securityFindingPath` stays for `runLocalSecurityAdapters`.
+- **Public API:** package root names and the twelve export-map keys
+  are unchanged. No `security/index.ts`.
+- **Metrics:** `index.ts` is 4,833 effective lines and 5,064 physical
+  lines, down from 4,952 and 5,194. That matches the approved
+  estimate. Import-only cycles stay sizes 3 and 3. Re-export cycles
+  stay sizes 4, 29, and 3. Approved Apply, Neutron mutation, and
+  extension-update memberships are unchanged. The sandbox modules and
+  the earlier P1H modules are outside every component.
+  `quality-exceptions.json` is unchanged.
+- **Behavior:** missing, unreadable, and invalid sandbox policy still
+  falls open to mode `proposal-only`, the two default path rules, the
+  three command prefixes, and `allowNetwork: false`. Writes still
+  validate first and still store pretty JSON with a trailing newline.
+  Read-only mode still adds its exact violation first. `actions` still
+  wins over `changes`, including an empty array. Path and command
+  checks remain string prefixes, including `src/../secret` and
+  `pnpm test; rm -rf /`. `allowArgs` is still unused by evaluation.
+  Network violations still require `networkAccess === true`.
+  Evaluation still does not execute a proposal or gate apply.
+- **Verification:** focused suites, 14 files / 163 tests, passed.
+  Local `pnpm verify` passed: typecheck, oxlint, Prettier, Vitest 363
+  files / 3143 passed / 3 skipped, build, and `git diff --check`.
+  Hosted CI is recorded against the pull request head and is not
+  claimed here before that run finishes.
+- **Not done:** maintainer review, merge, P1H.6, P1H.7, P1I, P1J, Undo
+  U4, Desktop Undo U5.
+- **Next:** Maintainer review. Do not merge. Do not start P1H.6.
 
 ### 2026-11-08, Packages architecture P1H.5a security policy and baseline
 

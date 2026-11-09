@@ -99,9 +99,13 @@ merged as PR #607
 implemented.
 P1H.5 design is merged as PR #608
 (`1d0611070b02c5e9f0f0e2816a0f560fbf18c18e`). P1H.5a policy, baseline,
-and comparison is open as PR #609
-(https://github.com/vitala89/Intentloom/pull/609) and is not merged. P1H.5b has not started. P1H.5 is not fully
-implemented. P1H.6 and later slices have not started.
+and comparison is merged as PR #609
+(`7589c6ccff5d79d1f8c6e5de34d2f521ea3caa6e`). P1H.5b sandbox policy
+and evaluation is open as
+PR #610 (https://github.com/vitala89/Intentloom/pull/610) on
+`refactor/application-sandbox-policy-evaluation-p1h5b` and is not
+merged. P1H.5 is not fully implemented. P1H.6 and later slices have
+not started.
 Undo U4 and Desktop Undo U5 are not started.
 Neutron's R4A topology stays frozen.
 The measurements below remain the P1A baseline and are not restated as the
@@ -2301,10 +2305,12 @@ merged as PR #606 (`ec951f32246ad0c94a145f520dc1862d9592c72e`).
 P1H.4b SARIF import is merged as PR #607
 (`7a77db52753360f0029cd266d8c95eb78c34995c`). P1H.4 is fully
 implemented. P1H.5 design is merged as PR #608
-(`1d0611070b02c5e9f0f0e2816a0f560fbf18c18e`). P1H.5a is open as PR #609
-(https://github.com/vitala89/Intentloom/pull/609) and is not merged. P1H.5b has not started.
-P1H.5 is not fully implemented. P1H.6, P1H.7, P1I, P1J, Undo U4, and
-Desktop Undo U5 have not started.
+(`1d0611070b02c5e9f0f0e2816a0f560fbf18c18e`). P1H.5a is merged as PR
+#609 (`7589c6ccff5d79d1f8c6e5de34d2f521ea3caa6e`). P1H.5b is open as
+PR #610 (https://github.com/vitala89/Intentloom/pull/610) on
+`refactor/application-sandbox-policy-evaluation-p1h5b` and is not
+merged. P1H.5 is not fully implemented. P1H.6, P1H.7, P1I, P1J, Undo
+U4, and Desktop Undo U5 have not started.
 
 On `911b229af00fcde54d8861af83a56e7e61df0902`, `index.ts` measures
 5,339 effective lines and 5,620 physical lines. The selected family is
@@ -2485,10 +2491,12 @@ Design is merged as PR #608
 (https://github.com/vitala89/Intentloom/pull/608,
 `1d0611070b02c5e9f0f0e2816a0f560fbf18c18e`). The approved contract is
 [`docs/designs/p1h5-security-policy-sandbox/SYSTEM_DESIGN.md`](../designs/p1h5-security-policy-sandbox/SYSTEM_DESIGN.md).
-P1H.4 is fully implemented. P1H.5a is open as PR #609
-(https://github.com/vitala89/Intentloom/pull/609) and is not merged. P1H.5b has not started. P1H.5 is not fully
-implemented. P1H.6, P1H.7, P1I, P1J, Undo U4, and Desktop Undo U5 have
-not started.
+P1H.4 is fully implemented. P1H.5a is merged as PR #609
+(`7589c6ccff5d79d1f8c6e5de34d2f521ea3caa6e`). P1H.5b is open as
+PR #610 (https://github.com/vitala89/Intentloom/pull/610) on
+`refactor/application-sandbox-policy-evaluation-p1h5b` and is not
+merged. P1H.5 is not fully implemented. P1H.6, P1H.7, P1I, P1J, Undo
+U4, and Desktop Undo U5 have not started.
 
 On `7a77db52753360f0029cd266d8c95eb78c34995c`, `index.ts` measures
 5,102 effective lines and 5,362 physical lines. The selected family is
@@ -2537,10 +2545,8 @@ allowed. Neither starts P1H.6.
 Implemented from the merged design, section 21 stage P1H.5a, on
 baseline `1d0611070b02c5e9f0f0e2816a0f560fbf18c18e` (PR #608). This
 slice is PR #609 (https://github.com/vitala89/Intentloom/pull/609).
-The extraction commit is
-`5793759b962588bc7705399946eb0f6466d9ff49`. It is not merged.
-P1H.5b has not started.
-P1H.5 is not fully implemented.
+It is merged as `7589c6ccff5d79d1f8c6e5de34d2f521ea3caa6e`.
+P1H.5 is not fully implemented until P1H.5b merges.
 
 `securityPolicyPath`, `getSecurityPolicy`, and `writeSecurityPolicy`
 moved to `packages/application/src/security/security-policy.ts`.
@@ -2604,7 +2610,80 @@ files, 157 tests passed. Existing assertions were not rewritten.
 Local `pnpm verify` passed: typecheck, oxlint, Prettier, Vitest 361
 files / 3132 passed / 3 skipped, build, and `git diff --check`. The
 implementation pull request is #609
-(https://github.com/vitala89/Intentloom/pull/609) and is not merged.
+(https://github.com/vitala89/Intentloom/pull/609) and is merged as
+`7589c6ccff5d79d1f8c6e5de34d2f521ea3caa6e`.
+
+##### P1H.5b — sandbox policy and evaluation
+
+Implemented from the merged design, section 21 stage P1H.5b, on
+baseline `7589c6ccff5d79d1f8c6e5de34d2f521ea3caa6e` (PR #609). P1H.5a
+is merged. This slice is open as
+PR #610 (https://github.com/vitala89/Intentloom/pull/610) on
+`refactor/application-sandbox-policy-evaluation-p1h5b` and is not
+merged. P1H.5 is not fully implemented. P1H.6 has not started.
+
+`sandboxCapabilityPolicyPath`, `getSandboxCapabilityPolicy`, and
+`writeSandboxCapabilityPolicy` moved to
+`packages/application/src/security/sandbox-capability-policy.ts`.
+`evaluateProposalAgainstSandbox` moved to
+`packages/application/src/security/sandbox-proposal-evaluation.ts`
+and imports `getSandboxCapabilityPolicy` from the policy module. The
+path helper stays private and is not a package-root export. No new
+module imports `index.ts`. The sandbox modules do not import policy,
+baseline, or the finding store. No `security/index.ts` was added. The
+package export map is unchanged. `quality-exceptions.json` is
+unchanged.
+
+`index.ts` named-re-exports the three public functions. It
+value-imports `getSandboxCapabilityPolicy` for
+`runContinuousSecurityAudit` and `evaluateProposalAgainstSandbox` for
+`reviewWorkspaceProposal`. The P1H.5a value imports stay.
+`securityFindingPath` stays for `runLocalSecurityAdapters`. Audit,
+workspace review, workspace apply, Approved Apply, Neutron mutation,
+and the extension sandbox are unchanged.
+
+On this change, `index.ts` measures 4,833 effective lines and 5,064
+physical lines, down 119 effective and 130 physical from 4,952 and
+5,194. That matches the design estimate for the sandbox slice after
+P1H.5a. The new modules measure 52/56 and 84/92.
+`evaluateProposalAgainstSandbox` remains 78 effective lines, under
+the 80-line function hard limit. The violation loop was not rewritten.
+
+Import-only components stay two, each size 3: Approved Apply
+(`approved-apply-baseline.ts`, `generated-file-sync-declared.ts`,
+`index.ts`) and the recorded Neutron mutation component. Re-export
+components stay sizes 4, 29, and 3, with the same membership. The two
+sandbox modules and the earlier P1H modules stay outside every
+component. The locked cycle tests were not edited.
+
+The move preserves sandbox behavior. A missing, unreadable, malformed,
+or validator-rejected policy still falls open to mode `proposal-only`,
+path rules `src/` then `.aif/` (write allowed, delete denied), command
+prefixes `pnpm test`, `pnpm lint`, and `git diff`, and
+`allowNetwork: false`. Writes still validate before creating the
+parent directory and still store pretty JSON with a trailing newline.
+Caller timestamps are not replaced. Read-only mode still inserts its
+exact violation first and still continues. `proposal.actions` still
+wins over `proposal.changes`, including an empty actions array. Path
+and command checks remain string prefixes, including the inherited
+`src/../secret` and `pnpm test; rm -rf /` matches. `allowArgs` is
+still stored and not enforced. Network violations still require
+`networkAccess === true` while `allowNetwork` is false. Evaluation
+still does not execute a proposal or gate Approved Apply, Neutron
+mutation, or workspace apply. `reviewWorkspaceProposal` still copies
+`allowed` into `readyToApply`. Audit still reads the sandbox policy
+for invariants 1 and 28.
+
+Focused coverage is `tests/security-sandbox-policy-p1h5b.test.ts` and
+`tests/security-sandbox-evaluation-p1h5b.test.ts` plus the existing
+security, CLI, workspace, and cycle suites: 14 files, 163 tests
+passed. Existing assertions were not rewritten. Local `pnpm verify`
+passed: typecheck, oxlint, Prettier, Vitest 363 files / 3143 passed /
+3 skipped, build, and `git diff --check`. The implementation pull
+request is open as
+PR #610 (https://github.com/vitala89/Intentloom/pull/610) on
+`refactor/application-sandbox-policy-evaluation-p1h5b` and is not
+merged.
 
 ### P1I — transaction and lifecycle
 

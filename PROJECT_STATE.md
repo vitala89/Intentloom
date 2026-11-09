@@ -1082,10 +1082,27 @@ physical lines, down from 5,102 and 5,362. `quality-exceptions.json`
 is unchanged. Import-only cycles stay two components of size 3.
 Re-export cycles stay three, sizes 4, 29, and 3. The new modules stay
 outside every component. The implementation pull request is #609
-(https://github.com/vitala89/Intentloom/pull/609). The extraction
-commit is `5793759b962588bc7705399946eb0f6466d9ff49`. It is not merged. P1H.5b has not started. Sandbox policy and evaluation stay
-in `index.ts`. P1H.5 is not fully implemented. P1H.6 and later slices
-have not started.
+(https://github.com/vitala89/Intentloom/pull/609). It is merged as
+`7589c6ccff5d79d1f8c6e5de34d2f521ea3caa6e`. P1H.5b moves
+`sandboxCapabilityPolicyPath`, `getSandboxCapabilityPolicy`, and
+`writeSandboxCapabilityPolicy` into
+`security/sandbox-capability-policy.ts` (52 effective lines, 56
+physical lines) and `evaluateProposalAgainstSandbox` into
+`security/sandbox-proposal-evaluation.ts` (84/92). The path helper
+stays private. Evaluation imports `getSandboxCapabilityPolicy` from
+the policy module. `index.ts` re-exports the three public names and
+keeps value imports of `getSandboxCapabilityPolicy` for
+`runContinuousSecurityAudit` and `evaluateProposalAgainstSandbox` for
+`reviewWorkspaceProposal`. It measures 4,833 effective lines and
+5,064 physical lines, down from 4,952 and 5,194.
+`quality-exceptions.json` is unchanged. Import-only cycles stay two
+components of size 3. Re-export cycles stay three, sizes 4, 29, and 3.
+The sandbox modules stay outside every component. The implementation
+pull request is
+PR #610 (https://github.com/vitala89/Intentloom/pull/610) on
+`refactor/application-sandbox-policy-evaluation-p1h5b` and is not
+merged. P1H.5 is not fully implemented. P1H.6 and later slices have
+not started.
 `rankProceduralMemory` stays in the barrel.
 Undo U4 and Desktop Undo U5 are not started. Other post-P4 candidates remain in
 `POST_W12_NEXT_INCREMENT_PLAN.md`.
