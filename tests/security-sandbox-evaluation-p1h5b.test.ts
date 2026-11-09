@@ -468,11 +468,15 @@ describe("P1H.5b sandbox proposal evaluation", () => {
       "../host-file-system.js",
       "./sandbox-capability-policy.js",
     ]);
-    expect(relativeSpecifiers("index.ts", false)).toEqual(
-      expect.arrayContaining([
-        "./security/sandbox-capability-policy.js",
-        "./security/sandbox-proposal-evaluation.js",
-      ]),
+    const indexValueImports = relativeSpecifiers("index.ts", false);
+    expect(indexValueImports).toContain(
+      "./security/sandbox-proposal-evaluation.js",
+    );
+    expect(indexValueImports).not.toContain(
+      "./security/sandbox-capability-policy.js",
+    );
+    expect(relativeSpecifiers("index.ts", true)).toContain(
+      "./security/sandbox-capability-policy.js",
     );
     const evaluationSource = readFileSync(
       "packages/application/src/security/sandbox-proposal-evaluation.ts",
@@ -486,8 +490,8 @@ describe("P1H.5b sandbox proposal evaluation", () => {
       readFileSync("packages/application/src/index.ts", "utf8"),
       "packages/application/src/index.ts",
     );
-    expect(indexMetrics.effectiveCodeLines).toBe(4833);
-    expect(indexMetrics.physicalLines).toBe(5064);
+    expect(indexMetrics.effectiveCodeLines).toBeLessThan(4833);
+    expect(indexMetrics.physicalLines).toBeLessThan(5064);
     expect(
       measureProductionSource(
         readFileSync(

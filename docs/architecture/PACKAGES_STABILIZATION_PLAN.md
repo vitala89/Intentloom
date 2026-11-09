@@ -103,10 +103,11 @@ and comparison is merged as PR #609
 (`7589c6ccff5d79d1f8c6e5de34d2f521ea3caa6e`). P1H.5b sandbox policy
 and evaluation is merged as PR #610
 (`2c0749dce9a31976195277971d6fb35fe663cd31`). P1H.5 is fully
-implemented. P1H.6 design is proposed as PR #611
-(https://github.com/vitala89/Intentloom/pull/611) and is not
-approved. P1H.6 implementation has not started. P1H.7 and later slices
-have not started.
+implemented. P1H.6 design is merged as PR #611
+(https://github.com/vitala89/Intentloom/pull/611,
+`52b34c8b202cb07ab30c4f3e991dbce3815510a4`). P1H.6 implementation is
+open on `refactor/application-continuous-security-audit-p1h6` and is
+not merged. P1H.7 and later slices have not started.
 Undo U4 and Desktop Undo U5 are not started.
 Neutron's R4A topology stays frozen.
 The measurements below remain the P1A baseline and are not restated as the
@@ -2309,10 +2310,12 @@ implemented. P1H.5 design is merged as PR #608
 (`1d0611070b02c5e9f0f0e2816a0f560fbf18c18e`). P1H.5a is merged as PR
 #609 (`7589c6ccff5d79d1f8c6e5de34d2f521ea3caa6e`). P1H.5b is merged as
 PR #610 (`2c0749dce9a31976195277971d6fb35fe663cd31`). P1H.5 is fully
-implemented. P1H.6 design is proposed as PR #611
-(https://github.com/vitala89/Intentloom/pull/611) and is not
-approved. P1H.6 implementation has not started. P1H.7, P1I, P1J, Undo
-U4, and Desktop Undo U5 have not started.
+implemented. P1H.6 design is merged as PR #611
+(https://github.com/vitala89/Intentloom/pull/611,
+`52b34c8b202cb07ab30c4f3e991dbce3815510a4`). P1H.6 implementation is
+open on `refactor/application-continuous-security-audit-p1h6` and is
+not merged. P1H.7, P1I, P1J, Undo U4, and Desktop Undo U5 have not
+started.
 
 On `911b229af00fcde54d8861af83a56e7e61df0902`, `index.ts` measures
 5,339 effective lines and 5,620 physical lines. The selected family is
@@ -2496,10 +2499,12 @@ Design is merged as PR #608
 P1H.4 is fully implemented. P1H.5a is merged as PR #609
 (`7589c6ccff5d79d1f8c6e5de34d2f521ea3caa6e`). P1H.5b is merged as
 PR #610 (`2c0749dce9a31976195277971d6fb35fe663cd31`). P1H.5 is fully
-implemented. P1H.6 design is proposed as PR #611
-(https://github.com/vitala89/Intentloom/pull/611) and is not
-approved. P1H.6 implementation has not started. P1H.7, P1I, P1J, Undo
-U4, and Desktop Undo U5 have not started.
+implemented. P1H.6 design is merged as PR #611
+(https://github.com/vitala89/Intentloom/pull/611,
+`52b34c8b202cb07ab30c4f3e991dbce3815510a4`). P1H.6 implementation is
+open on `refactor/application-continuous-security-audit-p1h6` and is
+not merged. P1H.7, P1I, P1J, Undo U4, and Desktop Undo U5 have not
+started.
 
 On `7a77db52753360f0029cd266d8c95eb78c34995c`, `index.ts` measures
 5,102 effective lines and 5,362 physical lines. The selected family is
@@ -2623,7 +2628,7 @@ baseline `7589c6ccff5d79d1f8c6e5de34d2f521ea3caa6e` (PR #609). P1H.5a
 is merged. This slice is PR #610
 (https://github.com/vitala89/Intentloom/pull/610). It is merged as
 `2c0749dce9a31976195277971d6fb35fe663cd31`. P1H.5 is fully
-implemented. P1H.6 implementation has not started.
+implemented. P1H.6 implementation is open and not merged.
 
 `sandboxCapabilityPolicyPath`, `getSandboxCapabilityPolicy`, and
 `writeSandboxCapabilityPolicy` moved to
@@ -2689,11 +2694,13 @@ and is merged as
 
 #### P1H.6 — continuous security audit
 
-Design is proposed as PR #611
-(https://github.com/vitala89/Intentloom/pull/611) and is not approved.
-The proposed contract is
+Design is merged as PR #611
+(https://github.com/vitala89/Intentloom/pull/611,
+`52b34c8b202cb07ab30c4f3e991dbce3815510a4`). The approved contract is
 [`docs/designs/p1h6-continuous-security-audit/SYSTEM_DESIGN.md`](../designs/p1h6-continuous-security-audit/SYSTEM_DESIGN.md).
-P1H.5 is fully implemented. P1H.6 implementation has not started.
+P1H.5 is fully implemented. Implementation is open on
+`refactor/application-continuous-security-audit-p1h6` and is not
+merged. P1H.6 is not fully implemented until that pull request merges.
 P1H.7, P1I, P1J, Undo U4, and Desktop Undo U5 have not started.
 
 On `2c0749dce9a31976195277971d6fb35fe663cd31`, `index.ts` measures
@@ -2738,6 +2745,60 @@ The approved implementation shape is one pull request that moves and
 splits the family together. A persistence-only first pull request is
 not the default, because it would leave the 208-line function in
 place. Neither shape starts P1H.7.
+
+##### P1H.6 implementation
+
+Implemented from the merged design on baseline
+`52b34c8b202cb07ab30c4f3e991dbce3815510a4` (PR #611). The branch is
+`refactor/application-continuous-security-audit-p1h6`. It is not
+merged. P1H.7 has not started.
+
+`securityAuditReportPath`, `getSecurityAuditReport`, and
+`writeSecurityAuditReport` live in
+`packages/application/src/security/security-audit-report-store.ts`
+(34 effective lines, 37 physical lines). The path helper stays
+private. The static catalog for ids 2 through 26 and the three
+dynamic checks live in `security/security-audit-invariants.ts`
+(221/227). `buildSecurityInvariantChecks` copies the static objects
+before returning them. `runContinuousSecurityAudit` lives in
+`security/continuous-security-audit.ts` (47/48) and is 35 effective
+lines. The 208-line runner is not preserved under another name. No
+new function exceeds 40 effective lines. No `security/index.ts` was
+added. The package export map is unchanged.
+`quality-exceptions.json` is unchanged.
+
+`index.ts` named-re-exports `getSecurityAuditReport` and
+`runContinuousSecurityAudit`. It value-imports the reader for
+`getInteractiveWorkspaceState` and `syncLocalWorkspaceState`. It
+keeps `evaluateProposalAgainstSandbox` and `securityFindingPath`. It
+drops the value imports of `getSecurityPolicy`, `getSecurityBaseline`,
+`getSandboxCapabilityPolicy`, and `checkSecurityPolicyAndBaseline`.
+Those names remain package-root re-exports. The orchestrator imports
+the four P1H.5 reads directly and still performs all four calls.
+`validateContinuousSecurityAuditReport` is no longer used by the
+barrel.
+
+On this change, `index.ts` measures 4,607 effective lines and 4,829
+physical lines, down 226 effective and 235 physical from 4,833 and
+5,064. That matches the design simulation. The invariants file is
+221/227 rather than the simulated 216/221 because of the copy helper.
+All three files stay under the 250-line preference.
+
+Import-only components stay two, each size 3. Re-export components
+stay sizes 4, 29, and 3, with the same membership. The three audit
+modules stay outside every component and do not import `index.ts`.
+No P1H.5 module imports them. The locked cycle tests were not edited.
+
+The move preserves the current report. Ids, titles, details, and
+order stay. Ids 2 through 26 stay literal `passed` checks. Invariant
+1 still follows `allowNetwork`. Invariant 27 still follows the
+violation count, including the unpluralized
+`1 policy violations detected` and a warn-and-critical finding whose
+comparison exit code is 0. Invariant 28 still warns only when the
+mode is `read-only`. The score and hash formulas stay. The reader
+still returns null for a missing or rejected report and does not
+recompute the score or hash. Those limitations stay until a separate
+design changes them.
 
 ### P1I — transaction and lifecycle
 

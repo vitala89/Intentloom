@@ -87,8 +87,18 @@ describe("P1H.5b sandbox capability policy", () => {
       "packages/application/src/index.ts",
       "utf8",
     );
-    expect(indexSource).toContain(
+    const auditSource = readFileSync(
+      "packages/application/src/security/continuous-security-audit.ts",
+      "utf8",
+    );
+    expect(auditSource).toContain(
+      'import { getSandboxCapabilityPolicy } from "./sandbox-capability-policy.js"',
+    );
+    expect(indexSource).not.toContain(
       'import { getSandboxCapabilityPolicy } from "./security/sandbox-capability-policy.js"',
+    );
+    expect(indexSource).toContain(
+      'from "./security/sandbox-capability-policy.js"',
     );
     expect(indexSource).toContain(
       'import { evaluateProposalAgainstSandbox } from "./security/sandbox-proposal-evaluation.js"',
