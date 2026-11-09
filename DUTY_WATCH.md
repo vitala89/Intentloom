@@ -236,9 +236,12 @@ Desktop Undo U5.
   move. Their behavior assertions are unchanged. Local `pnpm verify`
   passed: typecheck, oxlint (warnings only, including the preserved
   `Array#sort` on the audit hash), Prettier, Vitest 365 files / 3155
-  passed / 3 skipped, build, and `git diff --check`. Hosted CI is
-  recorded against the pull request head and is not claimed here
-  before that run finishes.
+  passed / 3 skipped, build, and `git diff --check`. Hosted CI on
+  head `9bc130518a64c130c7e75d493c6f061c68f9148c` passed: Compatibility
+  on Ubuntu, macOS, and Windows for Node 22 and Node 24; Governance;
+  CodeQL for Actions and JavaScript/TypeScript; Desktop SEA
+  Feasibility; and Harness Performance Benchmark. A green CI result is
+  not maintainer approval.
 - **Not done:** maintainer review, merge, P1H.7, P1I, P1J, Undo U4,
   Desktop Undo U5. The static checks are still not runtime probes.
 - **Next:** Maintainer review. Do not merge. Do not start P1H.7.

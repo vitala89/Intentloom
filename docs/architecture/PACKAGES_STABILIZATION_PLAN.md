@@ -2810,6 +2810,11 @@ still returns null for a missing or rejected report and does not
 recompute the score or hash. Those limitations stay until a separate
 design changes them.
 
+Hosted CI on head `9bc130518a64c130c7e75d493c6f061c68f9148c` passed.
+Compatibility passed on Ubuntu, macOS, and Windows for Node 22 and
+Node 24. Governance, CodeQL, Desktop SEA Feasibility, and Harness
+Performance Benchmark also passed. The pull request stays open.
+
 ### P1I — transaction and lifecycle
 
 One PR for the generated-file transaction helpers and
