@@ -1123,7 +1123,8 @@ outside every component. The implementation pull request is #612
 pull-request head was
 `c86cf64309258deec7c4ba2d916d891943f02ec9`. It is merged as
 `b80614d5d65fbdbd9cbc4831a6593ead6b155280`. P1H.6 is fully
-implemented. P1H.7 design is proposed in
+implemented. P1H.7 design is proposed as PR #613
+(https://github.com/vitala89/Intentloom/pull/613) in
 `docs/designs/p1h7-interactive-workspace-read-model/SYSTEM_DESIGN.md`
 and is not implemented. The feasibility verdict is C: the read model
 needs an approved dependency-injection seam because its barrel-owned

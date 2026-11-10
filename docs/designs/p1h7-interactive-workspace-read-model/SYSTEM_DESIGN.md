@@ -1,6 +1,6 @@
 # P1H.7 Interactive Workspace read model extraction
 
-Status: **proposed**. This document is a Design First review artifact.
+Status: **proposed** (PR #613). This document is a Design First review artifact.
 It does not implement P1H.7, and it does not authorize implementation
 until a maintainer approves it. A green CI result is not approval.
 

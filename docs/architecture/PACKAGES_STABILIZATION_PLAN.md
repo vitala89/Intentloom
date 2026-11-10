@@ -2824,7 +2824,9 @@ Documentation, and Compatibility.
 
 #### P1H.7 — interactive workspace read model
 
-Design is proposed and is not approved. The contract is
+Design is proposed as PR #613
+(https://github.com/vitala89/Intentloom/pull/613) and is not
+approved. The contract is
 [`docs/designs/p1h7-interactive-workspace-read-model/SYSTEM_DESIGN.md`](../designs/p1h7-interactive-workspace-read-model/SYSTEM_DESIGN.md).
 P1H.6 is fully implemented at PR #612
 (`b80614d5d65fbdbd9cbc4831a6593ead6b155280`). This design does not
