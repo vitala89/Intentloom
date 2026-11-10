@@ -150,11 +150,54 @@ and evaluation is merged (PR #610,
 `2c0749dce9a31976195277971d6fb35fe663cd31`). P1H.5 is fully
 implemented. **P1H.6** Continuous Security Audit design is merged
 (PR #611, `52b34c8b202cb07ab30c4f3e991dbce3815510a4`). P1H.6
-implementation is open as PR #612
-(https://github.com/vitala89/Intentloom/pull/612) on
-`refactor/application-continuous-security-audit-p1h6` and is not
-merged. Do not merge it. Do not start P1H.7, P1I, P1J, Undo U4, or
-Desktop Undo U5.
+implementation is merged as PR #612
+(https://github.com/vitala89/Intentloom/pull/612,
+`b80614d5d65fbdbd9cbc4831a6593ead6b155280`). P1H.6 is fully
+implemented. **P1H.7** Interactive Workspace read model design is
+proposed and is not approved. Do not implement it. Do not start P1I,
+P1J, Undo U4, or Desktop Undo U5.
+
+### 2026-11-10, Packages architecture P1H.7 interactive workspace read model design
+
+- **Status:** **DESIGN PR OPEN — AWAITING MAINTAINER APPROVAL.**
+  P1H.7 is not implemented. A green CI result is not approval. Do not
+  merge. Do not start implementation, P1I, P1J, Undo U4, or Desktop
+  Undo U5.
+- **Branch:** `docs/p1h7-interactive-workspace-read-model`
+- **Baseline:** `b80614d5d65fbdbd9cbc4831a6593ead6b155280` (PR #612,
+  P1H.6 implementation merged). The final PR #612 head was
+  `c86cf64309258deec7c4ba2d916d891943f02ec9`. CodeQL, Governance,
+  Desktop SEA Feasibility, Compatibility, and Harness Performance
+  Benchmark passed on that head. The working tree was clean. Open
+  pull requests at the start were dependency updates and did not
+  overlap this design.
+- **Design:** `docs/designs/p1h7-interactive-workspace-read-model/SYSTEM_DESIGN.md`
+- **Verdict:** **C. Approved dependency-injection seam required.**
+  `getSecurityAuditReport` and `listAgentSessions` are safe direct
+  imports. `inspectProject`, `doctorProject`, `diffProject`,
+  `timelineProject`, `listWorkspaceConversations`, and
+  `listNeutronSubagentTasks` are still in `index.ts`. A new module
+  that imports `index.ts`, including `import type`, would grow the
+  Approved Apply component and the 29-file re-export component.
+  Moving those callees is outside P1H. The barrel keeps both public
+  signatures and passes the barrel-owned functions in.
+- **Proposed module:**
+  `packages/application/src/workspace/interactive-workspace-read-model.ts`.
+  No `workspace/index.ts` and no new export-map key. The module does
+  not import `continuous-security-audit.ts`.
+  `InteractiveWorkspaceState` stays in `index.ts`.
+  `LocalWorkspaceSyncState` moves. A sketch is 191 effective lines
+  and 201 physical lines. That is an estimate. Estimated remaining
+  `index.ts` is about 4,545 effective lines and 4,766 physical lines,
+  from 4,607 effective lines and 4,829 physical lines remeasured
+  with `measureProductionSource` on this tree.
+- **Behavior:** `Promise.all` and the current catch boundaries stay.
+  `doctorProject` errors still propagate. Sync stays sequential and
+  still does not write. Public names and signatures stay.
+- **Not done:** maintainer approval, implementation, production edits,
+  runtime tests, P1I, P1J, Undo U4, Desktop Undo U5.
+- **Next:** Maintainer review. Do not merge. Do not implement P1H.7.
+  If the seam is rejected, P1H.7 stays blocked.
 
 ### 2026-11-09, Packages architecture P1H.6 continuous security audit extraction
 

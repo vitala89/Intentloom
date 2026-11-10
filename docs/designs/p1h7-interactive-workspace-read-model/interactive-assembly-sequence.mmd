@@ -1,0 +1,40 @@
+sequenceDiagram
+  participant Caller
+  participant Wrap as getInteractiveWorkspaceState
+  participant Asm as assembleInteractiveWorkspaceState
+  participant Inspect as inspectProject
+  participant Doctor as doctorProject
+  participant Diff as diffProject
+  participant Timeline as timelineProject
+  participant Audit as getSecurityAuditReport
+  participant Sessions as listAgentSessions
+  Caller->>Wrap: options and FileSystem
+  Note over Wrap: default FileSystem is nodeFileSystem
+  Wrap->>Asm: options, FileSystem, four barrel functions
+  par six reads started together
+    Asm->>Inspect: root and injected FileSystem
+    Inspect-->>Asm: inspection, or null when rejected
+  and
+    Asm->>Doctor: generic profile, codex, injected FileSystem
+    Doctor-->>Asm: doctor plan, or rejection
+  and
+    Asm->>Diff: dryRun true and injected FileSystem
+    Diff-->>Asm: plan, or null when rejected
+  and
+    Asm->>Timeline: root, case tui-timeline, limit 50
+    Note over Timeline: no FileSystem argument
+    Timeline-->>Asm: timeline, or null when rejected
+  and
+    Asm->>Audit: root and injected FileSystem
+    Audit-->>Asm: report, or null when rejected
+  and
+    Asm->>Sessions: root and injected FileSystem
+    Sessions-->>Asm: sessions, or empty array when rejected
+  end
+  alt doctorProject rejected
+    Asm-->>Caller: rejection, no state object
+  else doctorProject resolved
+    Note over Asm: activeView defaults to inspect after the reads
+    Note over Asm: generatedAt is a new ISO timestamp
+    Asm-->>Caller: InteractiveWorkspaceState
+  end

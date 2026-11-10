@@ -1,0 +1,35 @@
+flowchart TB
+  cliUi["CLI ui-command"]
+  cliNeutron["CLI neutron sync"]
+  barrel["index.ts composition root"]
+  interactiveType["InteractiveWorkspaceState in index.ts"]
+  assembler["interactive-workspace-read-model.ts"]
+  syncType["LocalWorkspaceSyncState"]
+  auditRead["security-audit-report-store.ts"]
+  sessions["agent-session.ts"]
+  auditRun["continuous-security-audit.ts"]
+  inspect["inspectProject in index.ts"]
+  doctor["doctorProject in index.ts"]
+  diffFn["diffProject in index.ts"]
+  timeline["timelineProject in index.ts"]
+  conversations["listWorkspaceConversations in index.ts"]
+  tasks["listNeutronSubagentTasks in index.ts"]
+  fsPort["host-file-system.ts"]
+  cliUi -->|"unchanged package root"| barrel
+  cliNeutron -->|"unchanged package root"| barrel
+  barrel --> interactiveType
+  barrel -->|"value import of assemblers"| assembler
+  barrel -->|"export type"| syncType
+  barrel -->|"passes function values"| inspect
+  barrel -->|"passes function values"| doctor
+  barrel -->|"passes function values"| diffFn
+  barrel -->|"passes function values"| timeline
+  barrel -->|"passes function values"| conversations
+  barrel -->|"passes function values"| tasks
+  assembler --> syncType
+  assembler -->|"direct import"| auditRead
+  assembler -->|"direct import"| sessions
+  assembler --> fsPort
+  auditRead --> fsPort
+  sessions --> fsPort
+  auditRun -->|"existing writer, not a read-model import"| auditRead

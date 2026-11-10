@@ -1,0 +1,44 @@
+flowchart TB
+  subgraph classA ["A. Safe leaf, direct import"]
+    auditRead["getSecurityAuditReport in security-audit-report-store.ts"]
+    sessions["listAgentSessions in agent-session.ts"]
+  end
+  subgraph classB ["B. Existing module, not imported by the read model"]
+    profile["project-profile-detection.ts"]
+    paths["project-path.ts"]
+    scan["project-scan-exclusions.ts"]
+    taxonomy["instruction-file-taxonomy.ts"]
+    health["extension-health.ts"]
+    gitPkg["@intentloom/evidence-git"]
+  end
+  subgraph classC ["C. Body still in index.ts"]
+    inspect["inspectProject"]
+    doctor["doctorProject"]
+    diffFn["diffProject"]
+    timeline["timelineProject"]
+    rootCheck["assertCanonicalProjectRoot"]
+    planFn["private plan"]
+    conversations["listWorkspaceConversations"]
+    tasks["listNeutronSubagentTasks"]
+  end
+  subgraph classD ["D. Owning file is already in a grandfathered SCC"]
+    barrel["index.ts in Approved Apply and the 29-file component"]
+  end
+  subgraph classE ["E. Prerequisite move or injected seam required"]
+    seam["Barrel passes C functions into the assembler"]
+  end
+  inspect --> barrel
+  doctor --> barrel
+  diffFn --> barrel
+  timeline --> barrel
+  rootCheck --> barrel
+  planFn --> barrel
+  conversations --> barrel
+  tasks --> barrel
+  doctor --> planFn
+  diffFn --> planFn
+  timeline --> rootCheck
+  timeline --> gitPkg
+  inspect --> profile
+  doctor --> health
+  seam -->|"function values owned by the barrel"| barrel

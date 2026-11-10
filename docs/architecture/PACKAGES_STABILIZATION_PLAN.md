@@ -106,11 +106,11 @@ and evaluation is merged as PR #610
 implemented. P1H.6 design is merged as PR #611
 (https://github.com/vitala89/Intentloom/pull/611,
 `52b34c8b202cb07ab30c4f3e991dbce3815510a4`). P1H.6 implementation is
-open as PR #612
-(https://github.com/vitala89/Intentloom/pull/612) on
-`refactor/application-continuous-security-audit-p1h6` and is
-not merged. P1H.7 and later slices have not started.
-Undo U4 and Desktop Undo U5 are not started.
+merged as PR #612
+(https://github.com/vitala89/Intentloom/pull/612,
+`b80614d5d65fbdbd9cbc4831a6593ead6b155280`). P1H.6 is fully
+implemented. P1H.7 design is proposed and is not implemented.
+P1I, P1J, Undo U4, and Desktop Undo U5 have not started.
 Neutron's R4A topology stays frozen.
 The measurements below remain the P1A baseline and are not restated as the
 post-extraction size.
@@ -2315,11 +2315,11 @@ PR #610 (`2c0749dce9a31976195277971d6fb35fe663cd31`). P1H.5 is fully
 implemented. P1H.6 design is merged as PR #611
 (https://github.com/vitala89/Intentloom/pull/611,
 `52b34c8b202cb07ab30c4f3e991dbce3815510a4`). P1H.6 implementation is
-open as PR #612
-(https://github.com/vitala89/Intentloom/pull/612) on
-`refactor/application-continuous-security-audit-p1h6` and is
-not merged. P1H.7, P1I, P1J, Undo U4, and Desktop Undo U5 have not
-started.
+merged as PR #612
+(https://github.com/vitala89/Intentloom/pull/612,
+`b80614d5d65fbdbd9cbc4831a6593ead6b155280`). P1H.6 is fully
+implemented. P1H.7 design is proposed and is not implemented.
+P1I, P1J, Undo U4, and Desktop Undo U5 have not started.
 
 On `911b229af00fcde54d8861af83a56e7e61df0902`, `index.ts` measures
 5,339 effective lines and 5,620 physical lines. The selected family is
@@ -2506,11 +2506,11 @@ PR #610 (`2c0749dce9a31976195277971d6fb35fe663cd31`). P1H.5 is fully
 implemented. P1H.6 design is merged as PR #611
 (https://github.com/vitala89/Intentloom/pull/611,
 `52b34c8b202cb07ab30c4f3e991dbce3815510a4`). P1H.6 implementation is
-open as PR #612
-(https://github.com/vitala89/Intentloom/pull/612) on
-`refactor/application-continuous-security-audit-p1h6` and is
-not merged. P1H.7, P1I, P1J, Undo U4, and Desktop Undo U5 have not
-started.
+merged as PR #612
+(https://github.com/vitala89/Intentloom/pull/612,
+`b80614d5d65fbdbd9cbc4831a6593ead6b155280`). P1H.6 is fully
+implemented. P1H.7 design is proposed and is not implemented.
+P1I, P1J, Undo U4, and Desktop Undo U5 have not started.
 
 On `7a77db52753360f0029cd266d8c95eb78c34995c`, `index.ts` measures
 5,102 effective lines and 5,362 physical lines. The selected family is
@@ -2634,8 +2634,9 @@ baseline `7589c6ccff5d79d1f8c6e5de34d2f521ea3caa6e` (PR #609). P1H.5a
 is merged. This slice is PR #610
 (https://github.com/vitala89/Intentloom/pull/610). It is merged as
 `2c0749dce9a31976195277971d6fb35fe663cd31`. P1H.5 is fully
-implemented. P1H.6 implementation is open as PR #612
-(https://github.com/vitala89/Intentloom/pull/612) and is not merged.
+implemented. P1H.6 implementation is merged as PR #612
+(https://github.com/vitala89/Intentloom/pull/612,
+`b80614d5d65fbdbd9cbc4831a6593ead6b155280`).
 
 `sandboxCapabilityPolicyPath`, `getSandboxCapabilityPolicy`, and
 `writeSandboxCapabilityPolicy` moved to
@@ -2705,11 +2706,13 @@ Design is merged as PR #611
 (https://github.com/vitala89/Intentloom/pull/611,
 `52b34c8b202cb07ab30c4f3e991dbce3815510a4`). The approved contract is
 [`docs/designs/p1h6-continuous-security-audit/SYSTEM_DESIGN.md`](../designs/p1h6-continuous-security-audit/SYSTEM_DESIGN.md).
-P1H.5 is fully implemented. Implementation is open as PR #612
-(https://github.com/vitala89/Intentloom/pull/612) on
-`refactor/application-continuous-security-audit-p1h6` and is not
-merged. P1H.6 is not fully implemented until that pull request merges.
-P1H.7, P1I, P1J, Undo U4, and Desktop Undo U5 have not started.
+P1H.5 is fully implemented. Implementation is merged as PR #612
+(https://github.com/vitala89/Intentloom/pull/612,
+`b80614d5d65fbdbd9cbc4831a6593ead6b155280`). P1H.6 is fully
+implemented. The measurements in the following paragraphs are the
+design record from before that merge. P1H.7 design is proposed and
+is not implemented. P1I, P1J, Undo U4, and Desktop Undo U5 have not
+started.
 
 On `2c0749dce9a31976195277971d6fb35fe663cd31`, `index.ts` measures
 4,833 effective lines and 5,064 physical lines. The selected family is
@@ -2759,9 +2762,11 @@ place. Neither shape starts P1H.7.
 Implemented from the merged design on baseline
 `52b34c8b202cb07ab30c4f3e991dbce3815510a4` (PR #611). This slice is
 PR #612 (https://github.com/vitala89/Intentloom/pull/612), on
-`refactor/application-continuous-security-audit-p1h6`, commit
-`3b0e5510217f321bafd0a1b46b57c8bfc3040a69`. It is not merged. P1H.7
-has not started.
+`refactor/application-continuous-security-audit-p1h6`. The final
+pull-request head was
+`c86cf64309258deec7c4ba2d916d891943f02ec9`. It is merged as
+`b80614d5d65fbdbd9cbc4831a6593ead6b155280`. P1H.7 design is proposed
+and is not implemented.
 
 `securityAuditReportPath`, `getSecurityAuditReport`, and
 `writeSecurityAuditReport` live in
@@ -2810,10 +2815,61 @@ still returns null for a missing or rejected report and does not
 recompute the score or hash. Those limitations stay until a separate
 design changes them.
 
-Hosted CI on head `9bc130518a64c130c7e75d493c6f061c68f9148c` passed.
-Compatibility passed on Ubuntu, macOS, and Windows for Node 22 and
-Node 24. Governance, CodeQL, Desktop SEA Feasibility, and Harness
-Performance Benchmark also passed. The pull request stays open.
+Hosted CI on the final head
+`c86cf64309258deec7c4ba2d916d891943f02ec9` passed. CodeQL,
+Governance, Desktop SEA Feasibility, Compatibility, and Harness
+Performance Benchmark passed. The merge push of
+`b80614d5d65fbdbd9cbc4831a6593ead6b155280` passed CodeQL,
+Documentation, and Compatibility.
+
+#### P1H.7 — interactive workspace read model
+
+Design is proposed and is not approved. The contract is
+[`docs/designs/p1h7-interactive-workspace-read-model/SYSTEM_DESIGN.md`](../designs/p1h7-interactive-workspace-read-model/SYSTEM_DESIGN.md).
+P1H.6 is fully implemented at PR #612
+(`b80614d5d65fbdbd9cbc4831a6593ead6b155280`). This design does not
+implement P1H.7. P1I, P1J, Undo U4, and Desktop Undo U5 have not
+started.
+
+The selected declarations in `packages/application/src/index.ts` are
+`InteractiveWorkspaceState` (lines 4362–4380, 19 effective lines),
+`getInteractiveWorkspaceState` (lines 4382–4435, 53 effective and 54
+physical), `LocalWorkspaceSyncState` (lines 4777–4786, 10 effective
+lines), and `syncLocalWorkspaceState` (lines 4787–4813, 27 effective
+lines). `index.ts` on this baseline measures 4,607 effective lines
+and 4,829 physical lines.
+
+Feasibility verdict: **C. An approved dependency-injection seam is
+required.** `getSecurityAuditReport` and `listAgentSessions` are
+already leaves and can be imported directly. `inspectProject`,
+`doctorProject`, `diffProject`, `timelineProject`,
+`listWorkspaceConversations`, and `listNeutronSubagentTasks` are still
+implemented in `index.ts`. Importing `index.ts` from a new module,
+including `import type`, would grow the Approved Apply import
+component and the 29-file re-export component. Moving those callees
+is not authorized in P1H: `doctorProject` is excluded, the project
+lifecycle operations are P1I, conversation commands are excluded, and
+the legacy Neutron helpers wait for P1J.
+
+The proposed module is
+`packages/application/src/workspace/interactive-workspace-read-model.ts`.
+There is no `workspace/index.ts` and no new package export-map key.
+The module does not import `index.ts` or
+`continuous-security-audit.ts`. The barrel keeps both public
+signatures and passes the barrel-owned functions in. A sketch of that
+module is 191 effective lines and 201 physical lines. That figure is
+an estimate, not an implementation measurement. Estimated remaining
+`index.ts` size is about 4,545 effective lines and 4,766 physical
+lines. `InteractiveWorkspaceState` stays in the barrel because its
+fields name types that are declared only there.
+`LocalWorkspaceSyncState` moves. `quality-exceptions.json` stays
+unchanged.
+
+`getInteractiveWorkspaceState` keeps `Promise.all` and the current
+catch boundaries. `doctorProject` errors still propagate.
+`syncLocalWorkspaceState` stays sequential and still does not write.
+Neither function is renamed. If this design is rejected, P1H.7 stays
+blocked and the implementation must not import the barrel.
 
 ### P1I — transaction and lifecycle
 

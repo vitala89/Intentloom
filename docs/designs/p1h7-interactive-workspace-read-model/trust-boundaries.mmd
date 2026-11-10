@@ -1,0 +1,23 @@
+flowchart LR
+  caller["CLI caller"]
+  assembly["Read-model assembly"]
+  port["Injected FileSystem reads"]
+  host["timelineProject host boundary"]
+  mutation["Mutation commands not called"]
+  caller --> assembly
+  assembly --> port
+  assembly --> host
+  port --> inspect["inspectProject"]
+  port --> doctor["doctorProject calls plan, not apply"]
+  port --> diffFn["diffProject calls plan, not apply"]
+  port --> audit["stored audit report reader"]
+  port --> sessions["session list"]
+  port --> conversations["conversation list"]
+  port --> tasks["subagent task list"]
+  host --> realFs["default nodeFileSystem root check"]
+  host --> git["git log through evidence-git"]
+  mutation --> apply["apply and synchronizeGeneratedFiles"]
+  mutation --> adopt["adoptProject and project adoption"]
+  mutation --> workspaceApply["applyWorkspaceProposal"]
+  mutation --> writes["conversation and subagent writes"]
+  assembly -.->|"no call"| mutation
