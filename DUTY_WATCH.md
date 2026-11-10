@@ -148,11 +148,103 @@ baseline, and comparison is merged (PR #609,
 `7589c6ccff5d79d1f8c6e5de34d2f521ea3caa6e`). **P1H.5b** sandbox policy
 and evaluation is merged (PR #610,
 `2c0749dce9a31976195277971d6fb35fe663cd31`). P1H.5 is fully
-implemented. **P1H.6** Continuous Security Audit design is proposed
-as PR #611 (https://github.com/vitala89/Intentloom/pull/611) and is
-not approved. P1H.6 implementation has not started. Do not
-start P1H.6 implementation, P1H.7, P1I, P1J, Undo U4, or Desktop Undo
-U5.
+implemented. **P1H.6** Continuous Security Audit design is merged
+(PR #611, `52b34c8b202cb07ab30c4f3e991dbce3815510a4`). P1H.6
+implementation is open as PR #612
+(https://github.com/vitala89/Intentloom/pull/612) on
+`refactor/application-continuous-security-audit-p1h6` and is not
+merged. Do not merge it. Do not start P1H.7, P1I, P1J, Undo U4, or
+Desktop Undo U5.
+
+### 2026-11-09, Packages architecture P1H.6 continuous security audit extraction
+
+- **Status:** **IMPLEMENTED — PR OPEN, AWAITING MAINTAINER REVIEW.**
+  PR #612, https://github.com/vitala89/Intentloom/pull/612. The
+  extraction commit is `3b0e5510217f321bafd0a1b46b57c8bfc3040a69`. It
+  is not merged. A green CI result is not approval. Do not merge. Do
+  not start P1H.7, P1I, P1J, Undo U4, or Desktop Undo U5.
+- **Branch:** `refactor/application-continuous-security-audit-p1h6`
+- **Baseline:** `52b34c8b202cb07ab30c4f3e991dbce3815510a4` (PR #611,
+  P1H.6 design merged). P1H.5 is fully implemented at PR #610
+  (`2c0749dce9a31976195277971d6fb35fe663cd31`). The working tree was
+  clean. Open pull requests at start were dependency updates and did
+  not overlap this extraction.
+- **Design:** `docs/designs/p1h6-continuous-security-audit/SYSTEM_DESIGN.md`,
+  approved and merged as PR #611. This change does not reopen that
+  design.
+- **Moved:** `securityAuditReportPath`, `getSecurityAuditReport`, and
+  `runContinuousSecurityAudit` out of `packages/application/src/index.ts`.
+  The path helper stays private in
+  `security/security-audit-report-store.ts` (34 effective lines, 37
+  physical lines) with `writeSecurityAuditReport`. The 25 static
+  checks and the three dynamic checks live in
+  `security/security-audit-invariants.ts` (221/227).
+  `buildSecurityInvariantChecks` copies the static catalog.
+  `security/continuous-security-audit.ts` (47/48) owns the runner.
+  `runContinuousSecurityAudit` is 35 effective lines. The previous
+  208-line function is gone. No function in the new modules exceeds
+  40 effective lines.
+- **Barrel:** `index.ts` re-exports `getSecurityAuditReport` and
+  `runContinuousSecurityAudit`. It value-imports
+  `getSecurityAuditReport` for `getInteractiveWorkspaceState` and
+  `syncLocalWorkspaceState`. It keeps `evaluateProposalAgainstSandbox`
+  and `securityFindingPath`. It drops the value imports of
+  `getSecurityPolicy`, `getSecurityBaseline`,
+  `getSandboxCapabilityPolicy`, and `checkSecurityPolicyAndBaseline`.
+  Those four names stay package-root re-exports. The orchestrator
+  imports them directly and still calls all four, including the
+  comparison's internal re-read. `validateContinuousSecurityAuditReport`
+  is no longer imported by the barrel. No `security/index.ts`. No new
+  package export-map key. `writeSecurityAuditReport` and
+  `buildSecurityInvariantChecks` are not package-root exports.
+- **Metrics:** `index.ts` is 4,607 effective lines and 4,829 physical
+  lines, down from 4,833 and 5,064. That matches the approved
+  simulation. The invariants file is 221/227 rather than the simulated
+  216/221 because the builder copies each static check. All three new
+  files stay under 250 effective lines. `quality-exceptions.json` is
+  unchanged.
+- **Behavior:** ids, titles, details, and order 1 through 28 are
+  unchanged. Ids 2 through 26 stay literal `passed` checks. Invariant
+  1 still follows `allowNetwork`. Invariant 27 still follows the
+  violation count, including `1 policy violations detected` and a
+  critical finding under warn enforcement whose comparison exit code
+  is 0. Invariant 28 still warns only for `read-only`. The score is
+  still the unweighted rounded ratio. The hash is still SHA-256 of
+  the sorted check array and still excludes the timestamp, project
+  id, score, and schema version. The stored body is still pretty JSON
+  with a trailing newline. Missing, malformed, and rejected reports
+  still return null. An injected `exists` rejection still propagates.
+  A write or mkdir rejection still propagates. The reader still does
+  not recompute the score or hash. Static passed rows, the score floor
+  of 89, the unauthenticated hash, fallback policy and sandbox files,
+  and partial `writeFile` behavior remain.
+- **SCC:** import-only components stay sizes 3 and 3. Re-export
+  components stay sizes 4, 29, and 3. Approved Apply, Neutron
+  mutation, and extension-update memberships are unchanged. The three
+  audit modules and the earlier P1H modules stay outside every
+  component. No audit module imports `index.ts`. No P1H.5 module
+  imports an audit module.
+- **Public API:** `getSecurityAuditReport` and
+  `runContinuousSecurityAudit` stay on `@intentloom/application`.
+  CLI `security audit` and `security verify` are not edited. Workspace
+  readers still load the persisted report.
+- **Verification:** focused suites passed, including the new P1H.6
+  tests, the P1H.5 policy and sandbox suites, memory security S3–S5,
+  CLI security, supply chain, CLI workspace, workspace apply, and the
+  two application cycle suites. P1H.5 assertions that pinned the old
+  barrel value-imports and the exact 4,833/5,064 size now follow this
+  move. Their behavior assertions are unchanged. Local `pnpm verify`
+  passed: typecheck, oxlint (warnings only, including the preserved
+  `Array#sort` on the audit hash), Prettier, Vitest 365 files / 3155
+  passed / 3 skipped, build, and `git diff --check`. Hosted CI on
+  head `9bc130518a64c130c7e75d493c6f061c68f9148c` passed: Compatibility
+  on Ubuntu, macOS, and Windows for Node 22 and Node 24; Governance;
+  CodeQL for Actions and JavaScript/TypeScript; Desktop SEA
+  Feasibility; and Harness Performance Benchmark. A green CI result is
+  not maintainer approval.
+- **Not done:** maintainer review, merge, P1H.7, P1I, P1J, Undo U4,
+  Desktop Undo U5. The static checks are still not runtime probes.
+- **Next:** Maintainer review. Do not merge. Do not start P1H.7.
 
 ### 2026-11-09, Packages architecture P1H.6 continuous security audit design
 

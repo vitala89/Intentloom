@@ -177,14 +177,32 @@ describe("P1H.5a security policy, baseline, and evaluation", () => {
     expect(indexSource).not.toMatch(
       /import\s*\{[^}]*\blistSecurityFindings\b[^}]*\}\s*from\s*"\.\/security\/security-finding-store\.js"/,
     );
-    expect(indexSource).toContain(
+    const auditSource = readFileSync(
+      "packages/application/src/security/continuous-security-audit.ts",
+      "utf8",
+    );
+    expect(auditSource).toContain(
+      'import { getSecurityPolicy } from "./security-policy.js"',
+    );
+    expect(auditSource).toContain(
+      'import { getSecurityBaseline } from "./security-baseline.js"',
+    );
+    expect(auditSource).toContain(
+      'import { checkSecurityPolicyAndBaseline } from "./security-policy-evaluation.js"',
+    );
+    expect(indexSource).not.toContain(
       'import { getSecurityPolicy } from "./security/security-policy.js"',
     );
-    expect(indexSource).toContain(
+    expect(indexSource).not.toContain(
       'import { getSecurityBaseline } from "./security/security-baseline.js"',
     );
-    expect(indexSource).toContain(
+    expect(indexSource).not.toContain(
       'import { checkSecurityPolicyAndBaseline } from "./security/security-policy-evaluation.js"',
+    );
+    expect(indexSource).toContain('from "./security/security-policy.js"');
+    expect(indexSource).toContain('from "./security/security-baseline.js"');
+    expect(indexSource).toContain(
+      'from "./security/security-policy-evaluation.js"',
     );
   });
 
@@ -617,9 +635,16 @@ describe("P1H.5a security policy, baseline, and evaluation", () => {
     expect(
       relativeSpecifiers("security/security-finding-store.ts", true),
     ).not.toContain("./security-policy.js");
-    expect(relativeSpecifiers("index.ts", false)).toEqual(
+    const indexValueImports = relativeSpecifiers("index.ts", false);
+    expect(indexValueImports).toContain("./security/security-finding-store.js");
+    expect(indexValueImports).not.toContain("./security/security-policy.js");
+    expect(indexValueImports).not.toContain("./security/security-baseline.js");
+    expect(indexValueImports).not.toContain(
+      "./security/security-policy-evaluation.js",
+    );
+    const indexEdges = relativeSpecifiers("index.ts", true);
+    expect(indexEdges).toEqual(
       expect.arrayContaining([
-        "./security/security-finding-store.js",
         "./security/security-policy.js",
         "./security/security-baseline.js",
         "./security/security-policy-evaluation.js",

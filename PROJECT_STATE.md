@@ -1101,11 +1101,31 @@ The sandbox modules stay outside every component. The implementation
 pull request is #610
 (https://github.com/vitala89/Intentloom/pull/610). It is merged as
 `2c0749dce9a31976195277971d6fb35fe663cd31`. P1H.5 is fully
-implemented. P1H.6 design is proposed as PR #611
-(https://github.com/vitala89/Intentloom/pull/611), in
-`docs/designs/p1h6-continuous-security-audit/SYSTEM_DESIGN.md`, and is
-not approved. P1H.6 implementation has not started. P1H.7 and later
-slices have not started.
+implemented. P1H.6 design is merged as PR #611
+(https://github.com/vitala89/Intentloom/pull/611,
+`52b34c8b202cb07ab30c4f3e991dbce3815510a4`). The approved contract is
+`docs/designs/p1h6-continuous-security-audit/SYSTEM_DESIGN.md`.
+P1H.6 implementation moves `securityAuditReportPath`,
+`getSecurityAuditReport`, and `runContinuousSecurityAudit` into
+`security/security-audit-report-store.ts` (34 effective lines, 37
+physical lines), `security/security-audit-invariants.ts` (221/227),
+and `security/continuous-security-audit.ts` (47/48). The path helper
+and `writeSecurityAuditReport` stay off the package root.
+`runContinuousSecurityAudit` is 35 effective lines. `index.ts`
+re-exports the two public names, value-imports the reader for the
+workspace read model, and drops the four P1H.5 value imports used only
+by the old runner. It measures 4,607 effective lines and 4,829 physical
+lines, down from 4,833 and 5,064. `quality-exceptions.json` is
+unchanged. Import-only cycles stay two components of size 3.
+Re-export cycles stay three, sizes 4, 29, and 3. The new modules stay
+outside every component. The implementation pull request is #612
+(https://github.com/vitala89/Intentloom/pull/612), on
+`refactor/application-continuous-security-audit-p1h6`, commit
+`3b0e5510217f321bafd0a1b46b57c8bfc3040a69`. It is not merged. P1H.6
+is not fully implemented until that pull request merges.
+P1H.7 and later slices have not started. Ids 2 through 26 remain
+literal `passed` checks. The score and hash formulas are unchanged.
+The reader still does not recompute either value.
 `rankProceduralMemory` stays in the barrel.
 Undo U4 and Desktop Undo U5 are not started. Other post-P4 candidates remain in
 `POST_W12_NEXT_INCREMENT_PLAN.md`.
