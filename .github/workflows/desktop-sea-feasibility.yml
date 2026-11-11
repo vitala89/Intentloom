@@ -55,34 +55,30 @@ jobs:
       # ── Linux: install Tauri system dependencies ───────────────────────────
       - name: Install Tauri Linux dependencies
         if: runner.os == 'Linux'
+        timeout-minutes: 8
         run: |
-          # azure.archive.ubuntu.com is the first GitHub-hosted mirror. When
-          # that name does not resolve, apt spends a timeout on every index
-          # and package. Point the same lists at archive.ubuntu.com.
-          shopt -s nullglob
-          mirror_files=(
-            /etc/apt/apt-mirrors.txt
-            /etc/apt/sources.list
-            /etc/apt/sources.list.d/*.sources
-            /etc/apt/sources.list.d/*.list
-          )
-          for mirror_file in "${mirror_files[@]}"; do
-            if [ -f "$mirror_file" ] && sudo grep -q 'azure\.archive\.ubuntu\.com' "$mirror_file"; then
-              sudo sed -i 's/azure\.archive\.ubuntu\.com/archive.ubuntu.com/g' "$mirror_file"
-            fi
-          done
+          # azure.archive.ubuntu.com is priority 1 on GitHub-hosted Ubuntu.
+          # When that name does not resolve, apt waits out a timeout on every
+          # index and package before the public archive. Drop that line so
+          # the first mirror is https://archive.ubuntu.com.
           if [ -f /etc/apt/apt-mirrors.txt ]; then
+            sudo sed -i '/azure\.archive\.ubuntu\.com/d' /etc/apt/apt-mirrors.txt
             echo "apt mirrors after rewrite:"
             cat /etc/apt/apt-mirrors.txt
           fi
-          sudo apt-get update -y \
-            -o Acquire::Retries=2 \
-            -o Acquire::http::Timeout=15 \
-            -o Acquire::https::Timeout=15
-          sudo apt-get install -y \
-            -o Acquire::Retries=2 \
-            -o Acquire::http::Timeout=15 \
-            -o Acquire::https::Timeout=15 \
+          shopt -s nullglob
+          for mirror_file in /etc/apt/sources.list /etc/apt/sources.list.d/*.sources /etc/apt/sources.list.d/*.list; do
+            if [ -f "$mirror_file" ] && sudo grep -q 'azure\.archive\.ubuntu\.com' "$mirror_file"; then
+              sudo sed -i 's|http://azure\.archive\.ubuntu\.com/ubuntu/|https://archive.ubuntu.com/ubuntu/|g' "$mirror_file"
+            fi
+          done
+          apt_options=(
+            -o Acquire::Retries=0
+            -o Acquire::http::Timeout=10
+            -o Acquire::https::Timeout=10
+          )
+          sudo apt-get update -y "${apt_options[@]}"
+          sudo apt-get install -y "${apt_options[@]}" \
             libwebkit2gtk-4.1-dev \
             libappindicator3-dev \
             librsvg2-dev \

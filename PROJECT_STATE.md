@@ -1132,8 +1132,9 @@ dependency-injection seam. Implementation is open as PR #614
 (https://github.com/vitala89/Intentloom/pull/614) on
 `refactor/application-workspace-read-model-p1h7` and is not merged.
 Desktop SEA on Ubuntu was waiting on `azure.archive.ubuntu.com`,
-which did not resolve. The workflow now rewrites that host to
-`archive.ubuntu.com` before installing the Tauri packages.
+which did not resolve. The workflow now removes that mirror line
+before installing the Tauri packages, and the step times out after
+8 minutes.
 `packages/application/src/workspace/interactive-workspace-read-model.ts`
 measures 205 effective lines and 219 physical lines.
 `index.ts` measures 4,547 effective lines and 4,769 physical lines,

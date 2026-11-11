@@ -212,9 +212,9 @@ Do not merge it. Do not start P1I, P1J, Undo U4, or Desktop Undo U5.
   Compatibility passed on Ubuntu, macOS, and Windows for Node 22 and
   Node 24. Desktop SEA on Ubuntu stayed in apt because
   `azure.archive.ubuntu.com` did not resolve. The Linux dependency
-  step now rewrites that host to `archive.ubuntu.com` before
-  `apt-get`. The hung run was cancelled so the workflow can start
-  again from this commit.
+  step now removes that mirror line before `apt-get`, so the first
+  mirror is the public HTTPS archive, and the step times out after
+  8 minutes. The hung runs were cancelled.
 - **Not done:** maintainer review, merge, P1I, P1J, Undo U4, Desktop
   Undo U5. Protocol and Validator barrels were not modified.
 - **Next:** Maintainer review. Do not merge. Do not start P1I.
