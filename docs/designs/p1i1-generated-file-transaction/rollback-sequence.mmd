@@ -1,0 +1,14 @@
+sequenceDiagram
+  participant Commit as generated-file transaction
+  participant Roll as transaction rollback
+  participant FS as FileSystem
+  Commit->>Commit: catch at the current stage
+  Commit->>Roll: backups then created paths
+  loop existing files in write order
+    Roll->>FS: write the captured prior bytes
+  end
+  loop new files in write order
+    Roll->>FS: remove the created path
+  end
+  Roll-->>Commit: project-relative failures sorted
+  Commit-->>Commit: failed result and original diagnostic

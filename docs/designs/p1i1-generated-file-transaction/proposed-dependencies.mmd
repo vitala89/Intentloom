@@ -1,0 +1,49 @@
+flowchart LR
+  index["index.ts dispatcher"]
+  commit["generated-file-transaction.ts"]
+  contracts["transaction-contracts.ts"]
+  change["src/project-change.ts"]
+  mode["sync-mode.ts"]
+  meta["transaction-metadata.ts"]
+  summary["transaction-summary.ts"]
+  safety["transaction-path-safety.ts"]
+  post["post-write-consistency.ts"]
+  checks["post-write-metadata-checks.ts"]
+  rollback["transaction-rollback.ts"]
+  declared["generated-file-sync-declared.ts"]
+  baseline["approved-apply-baseline.ts"]
+  engine["approved-apply-engine.ts"]
+  host["host-file-system.ts"]
+  paths["project-path.ts"]
+  collisions["destination-collisions.ts"]
+  index --> commit
+  index --> contracts
+  index --> change
+  index --> mode
+  index --> meta
+  index --> summary
+  index --> safety
+  index --> declared
+  commit --> contracts
+  commit --> meta
+  commit --> summary
+  commit --> safety
+  commit --> post
+  commit --> rollback
+  post --> checks
+  post --> meta
+  post --> paths
+  post --> collisions
+  checks --> contracts
+  contracts --> change
+  contracts --> mode
+  contracts --> host
+  safety --> host
+  safety --> collisions
+  declared --> mode
+  declared --> baseline
+  declared --> index
+  baseline --> index
+  engine --> index
+  engine --> declared
+  engine --> baseline

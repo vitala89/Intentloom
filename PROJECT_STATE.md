@@ -1128,9 +1128,11 @@ implemented. P1H.7 design is merged as PR #613
 `017cb370cf4329a96d723cd83721acbb175f1827`). The approved contract is
 `docs/designs/p1h7-interactive-workspace-read-model/SYSTEM_DESIGN.md`.
 The feasibility verdict is C: the read model uses the approved
-dependency-injection seam. Implementation is open as PR #614
-(https://github.com/vitala89/Intentloom/pull/614) on
-`refactor/application-workspace-read-model-p1h7` and is not merged.
+dependency-injection seam. Implementation is merged as PR #614
+(https://github.com/vitala89/Intentloom/pull/614,
+`e07fddccbc771e415bc1d9056051edb9e00b4d58`). The pull-request head
+was `4ae226125c91301ae5dedfe2a2dfe87b5127110f`. P1H.7 is complete.
+P1H is complete.
 Desktop SEA on Ubuntu was waiting on `azure.archive.ubuntu.com`,
 which did not resolve. The workflow now removes that mirror line
 before installing the Tauri packages, and the step times out after
@@ -1141,9 +1143,16 @@ measures 205 effective lines and 219 physical lines.
 down from 4,607 and 4,829. Import-only cycles stay two components of
 size 3. Re-export cycles stay three, sizes 4, 29, and 3. The new
 module stays outside every component. `quality-exceptions.json` is
-unchanged. P1H.7 is not complete until the implementation pull
-request merges. P1I, P1J, Undo U4, and Desktop Undo U5 have not
-started. Ids 2 through 26 remain
+unchanged. P1H.7 is complete. P1H is complete. P1I.1 design is
+proposed in
+`docs/designs/p1i1-generated-file-transaction/SYSTEM_DESIGN.md` and
+is not implemented. The feasibility verdict is C: composition-root
+dispatch with leaf-owned transaction contracts. `Plan`, `Change`,
+and `ChangeKind` are proposed in
+`packages/application/src/project-change.ts`. Ordinary `syncProject`
+does not pass through the Approved Apply gate. `initProject` uses
+`plan` and `apply`. The post-write corruption union has 31 codes. P1I.2, P1I.3, P1J,
+Undo U4, and Desktop Undo U5 have not started. Ids 2 through 26 remain
 literal `passed` checks. The score and hash formulas are unchanged.
 The reader still does not recompute either value.
 `rankProceduralMemory` stays in the barrel.

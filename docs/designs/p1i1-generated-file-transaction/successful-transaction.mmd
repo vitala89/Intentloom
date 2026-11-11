@@ -1,0 +1,27 @@
+sequenceDiagram
+  participant Caller
+  participant Barrel as index.ts
+  participant Commit as generated-file transaction
+  participant FS as FileSystem
+  participant Check as post-write validation
+  Caller->>Barrel: synchronizeGeneratedFiles
+  Barrel->>Commit: owned generated files
+  Commit->>Commit: reject collision and noncanonical paths
+  Commit->>Commit: inject generated-stage
+  Commit->>Commit: inject manifest-stage
+  Commit->>Commit: inject source-map-stage
+  loop each generated file
+    Commit->>Commit: inject generated-commit
+    Commit->>FS: safeDestination then write
+  end
+  Commit->>Commit: inject manifest-finalize
+  Commit->>FS: write manifest
+  Commit->>Commit: inject source-map-finalize
+  Commit->>FS: write source map
+  Commit->>Commit: inject post-write-consistency
+  Commit->>FS: optional corruptAfterFinalization
+  Commit->>Check: re-read committed bytes
+  Check-->>Commit: valid
+  Commit->>Commit: inject success-cleanup
+  Commit-->>Barrel: success
+  Barrel-->>Caller: TransactionResult
