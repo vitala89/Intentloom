@@ -113,9 +113,9 @@ implemented. P1H.7 design is merged as PR #613
 (`017cb370cf4329a96d723cd83721acbb175f1827`). P1H.7 implementation is merged as PR #614
 (https://github.com/vitala89/Intentloom/pull/614,
 `e07fddccbc771e415bc1d9056051edb9e00b4d58`). P1H is complete.
-P1I.1 design is proposed in
-`docs/designs/p1i1-generated-file-transaction/SYSTEM_DESIGN.md`.
-P1I.1 is not implemented. P1I.2, P1I.3, P1J, Undo U4, and Desktop
+P1I.1 design is merged as PR #615
+(`8bc9e07c74beb701adaae9e30dacb6aec252b58f`). Implementation extracts
+the generated-file transaction. P1I.2, P1I.3, P1J, Undo U4, and Desktop
 Undo U5 have not started.
 Neutron's R4A topology stays frozen.
 The measurements below remain the P1A baseline and are not restated as the
@@ -2328,9 +2328,9 @@ implemented. P1H.7 design is merged as PR #613
 (`017cb370cf4329a96d723cd83721acbb175f1827`). P1H.7 implementation is merged as PR #614
 (https://github.com/vitala89/Intentloom/pull/614,
 `e07fddccbc771e415bc1d9056051edb9e00b4d58`). P1H is complete.
-P1I.1 design is proposed in
-`docs/designs/p1i1-generated-file-transaction/SYSTEM_DESIGN.md`.
-P1I.1 is not implemented. P1I.2, P1I.3, P1J, Undo U4, and Desktop
+P1I.1 design is merged as PR #615
+(`8bc9e07c74beb701adaae9e30dacb6aec252b58f`). Implementation extracts
+the generated-file transaction. P1I.2, P1I.3, P1J, Undo U4, and Desktop
 Undo U5 have not started.
 
 On `911b229af00fcde54d8861af83a56e7e61df0902`, `index.ts` measures
@@ -2525,9 +2525,9 @@ implemented. P1H.7 design is merged as PR #613
 (`017cb370cf4329a96d723cd83721acbb175f1827`). P1H.7 implementation is merged as PR #614
 (https://github.com/vitala89/Intentloom/pull/614,
 `e07fddccbc771e415bc1d9056051edb9e00b4d58`). P1H is complete.
-P1I.1 design is proposed in
-`docs/designs/p1i1-generated-file-transaction/SYSTEM_DESIGN.md`.
-P1I.1 is not implemented. P1I.2, P1I.3, P1J, Undo U4, and Desktop
+P1I.1 design is merged as PR #615
+(`8bc9e07c74beb701adaae9e30dacb6aec252b58f`). Implementation extracts
+the generated-file transaction. P1I.2, P1I.3, P1J, Undo U4, and Desktop
 Undo U5 have not started.
 
 On `7a77db52753360f0029cd266d8c95eb78c34995c`, `index.ts` measures
@@ -2733,8 +2733,10 @@ design record from before that merge. P1H.7 design is merged as PR
 implementation is merged as PR #614
 (https://github.com/vitala89/Intentloom/pull/614,
 `e07fddccbc771e415bc1d9056051edb9e00b4d58`). P1H is complete.
-P1I.1 design is proposed and is not implemented. P1I.2, P1I.3, P1J,
-Undo U4, and Desktop Undo U5 have not started.
+P1I.1 design is merged as PR #615
+(`8bc9e07c74beb701adaae9e30dacb6aec252b58f`). Implementation extracts
+the generated-file transaction. P1I.2, P1I.3, P1J, Undo U4, and Desktop
+Undo U5 have not started.
 
 On `2c0749dce9a31976195277971d6fb35fe663cd31`, `index.ts` measures
 4,833 effective lines and 5,064 physical lines. The selected family is
@@ -2858,8 +2860,10 @@ is required.** P1H.6 is fully implemented at PR #612
 (`b80614d5d65fbdbd9cbc4831a6593ead6b155280`). Implementation is
 merged as PR #614 (https://github.com/vitala89/Intentloom/pull/614,
 `e07fddccbc771e415bc1d9056051edb9e00b4d58`). P1H.7 is complete. P1H
-is complete. P1I.1 design is proposed and is not implemented. P1I.2,
-P1I.3, P1J, Undo U4, and Desktop Undo U5 have not started.
+is complete. P1I.1 design is merged as PR #615
+(`8bc9e07c74beb701adaae9e30dacb6aec252b58f`). Implementation extracts
+the generated-file transaction. P1I.2, P1I.3, P1J, Undo U4, and Desktop
+Undo U5 have not started.
 
 The design inventory below is the pre-implementation measurement.
 
@@ -2930,25 +2934,33 @@ components of size 3. Re-export cycles stay three, sizes 4, 29, and 3. The new m
 stay concurrent, with the previous catch boundaries. Doctor errors
 still propagate. Sync stays sequential, still does not write, and
 keeps a stored health score of 0 as 0. Public names and the twelve
-export-map keys stay. P1H is complete. P1I.1 design is proposed
-and is not implemented.
+export-map keys stay. P1H is complete. P1I.1 design is merged as PR #615
+(`8bc9e07c74beb701adaae9e30dacb6aec252b58f`). Implementation extracts
+the generated-file transaction.
 
 ### P1I — transaction and lifecycle
 
-P1I.1 design is proposed in
+P1I.1 design is merged as PR #615
+(`8bc9e07c74beb701adaae9e30dacb6aec252b58f`). The approved contract is
 [`docs/designs/p1i1-generated-file-transaction/SYSTEM_DESIGN.md`](../designs/p1i1-generated-file-transaction/SYSTEM_DESIGN.md).
 The feasibility verdict is C: the package root keeps
 `synchronizeGeneratedFiles` as the mode dispatcher, and the
-generated-files commit moves to leaves that do not import
-`index.ts`. `Plan`, `Change`, and `ChangeKind` move to
-`packages/application/src/project-change.ts`. The design is not
-implemented. One later implementation
-PR moves the generated-file transaction helpers and the commit body.
-A following PR moves `initProject`, `syncProject`, `diffProject`,
-`doctorProject`, and `inspectProject`. A following PR moves
-`adoptProject`, `planProjectAdoption`, and `applyProjectAdoption`,
-together with the Approved Apply import retarget that removes
-`index.ts` from cycle 1. P1I.2, P1I.3, and P1J have not started.
+generated-files commit lives in leaves that do not import
+`index.ts`. `Plan`, `Change`, and `ChangeKind` live in
+`packages/application/src/project-change.ts`. Measured with
+`measureProductionSource`, `index.ts` is 3,760 effective lines and
+3,956 physical lines, down from 4,547 and 4,769.
+`generated-file/generated-file-transaction.ts` is 210 effective lines
+and 219 physical lines. `generated-file-sync-declared.ts` stays 302
+effective lines. Import-only cycles stay two components of size 3.
+Re-export cycles stay three, sizes 4, 29, and 3. The new modules stay
+outside every component. `quality-exceptions.json` and the twelve
+package export-map keys are unchanged. A following PR moves
+`initProject`, `syncProject`, `diffProject`, `doctorProject`, and
+`inspectProject`. A following PR moves `adoptProject`,
+`planProjectAdoption`, and `applyProjectAdoption`, together with the
+Approved Apply import retarget that removes `index.ts` from cycle 1.
+P1I.2, P1I.3, and P1J have not started.
 
 Prerequisites: P1C and P1D merged, Approved Apply tests green on `main`,
 and a diff that contains no assertion edits.

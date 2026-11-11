@@ -158,9 +158,61 @@ merged (PR #613, `017cb370cf4329a96d723cd83721acbb175f1827`).
 P1H.7 implementation is merged as PR #614
 (https://github.com/vitala89/Intentloom/pull/614,
 `e07fddccbc771e415bc1d9056051edb9e00b4d58`). P1H is complete.
-**P1I.1** generated-file transaction design is proposed and is not
-implemented. Do not implement it. Do not start P1I.2, P1I.3, P1J,
-Undo U4, or Desktop Undo U5.
+**P1I.1** generated-file transaction design is merged as PR #615
+(`8bc9e07c74beb701adaae9e30dacb6aec252b58f`). Implementation extracts
+the generated-file commit from `packages/application/src/index.ts`.
+Do not start P1I.2, P1I.3, P1J, Undo U4, or Desktop Undo U5.
+
+### 2026-11-11, Packages architecture P1I.1 generated-file transaction
+
+- **Status:** **IMPLEMENTED — PR OPEN, AWAITING MAINTAINER REVIEW.**
+  Design PR #615 is merged at
+  `8bc9e07c74beb701adaae9e30dacb6aec252b58f`. The implementation is
+  not merged. A green CI result is not approval. Do not merge. Do not
+  start P1I.2, P1I.3, P1J, Undo U4, or Desktop Undo U5.
+- **Branch:** `refactor/application-generated-file-transaction-p1i1`
+- **Baseline:** `8bc9e07c74beb701adaae9e30dacb6aec252b58f` (PR #615).
+- **Design:** `docs/designs/p1i1-generated-file-transaction/SYSTEM_DESIGN.md`
+- **Verdict:** **C. Composition-root dispatch, with leaf-owned
+  transaction contracts.** `synchronizeGeneratedFiles` stays on
+  `index.ts` with the existing five parameters. Declared-paths mode
+  still calls `synchronizeDeclaredProjectPaths`. Generated-files mode
+  calls `commitOwnedGeneratedFiles`.
+- **Modules:** `project-change.ts`; `generated-file/sync-mode.ts`,
+  `transaction-contracts.ts`, `transaction-metadata.ts`,
+  `transaction-summary.ts`, `transaction-path-safety.ts`,
+  `post-write-metadata-checks.ts`, `post-write-version-checks.ts`,
+  `post-write-consistency.ts`, `post-write-checksum-cascade.ts`,
+  `transaction-rollback.ts`, `generated-file-transaction-plan.ts`,
+  and `generated-file-transaction.ts`. No `generated-file/index.ts`
+  and no new package export-map key. The two extra post-write files
+  and the plan file keep every new module at or below 250 effective
+  lines. The checksum cascade stays in its original order.
+- **Size:** `index.ts` measures 3,760 effective lines and 3,956
+  physical lines, down from 4,547 and 4,769. The P1H.6 and P1H.7
+  structure tests pin that smaller barrel.
+  `generated-file-transaction.ts` is 210/219.
+  `post-write-metadata-checks.ts` is 189/199.
+  `post-write-consistency.ts` is 188/196.
+  `generated-file-sync-declared.ts` stays 302 effective lines and is
+  314 physical lines. `validateCommittedOwnershipState` is 59
+  effective lines. `commitOwnedGeneratedFiles` is 49.
+  `checksumMismatch` is 57. No new function exceeds 80 effective
+  lines. `quality-exceptions.json` is unchanged.
+- **SCC:** Import-only components stay the same two of size 3.
+  Re-export components stay sizes 4, 29, and 3, with the same
+  members. The new modules are outside every component.
+  `approved-apply-baseline.ts` still imports `FileSystem` from
+  `index.ts`. That retarget remains P1I.3.
+- **Behavior:** Public names, stage identifiers, the 31 corruption
+  codes, metadata bytes, write order, rollback sorting, and both sync
+  modes are unchanged. Declared-paths mode is not unified with the
+  generated-files transaction. Direct symlink tests and the manifest
+  `ownershipPolicy` branch of `ownership-classification-invalid` are
+  covered.
+- **Not done:** maintainer review, merge, P1I.2, P1I.3, P1J, Undo U4,
+  Desktop Undo U5.
+- **Next:** Maintainer review. Do not merge. Do not start P1I.2.
 
 ### 2026-11-11, P1I.1 design review corrections
 
