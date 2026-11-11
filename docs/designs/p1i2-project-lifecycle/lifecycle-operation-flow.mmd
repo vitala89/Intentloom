@@ -1,0 +1,29 @@
+flowchart TB
+  caller["CLI daemon MCP Neutron or adoption"]
+  inspect["inspectProject read only"]
+  diff["diffProject"]
+  doctor["doctorProject"]
+  init["initProject"]
+  sync["syncProject"]
+  planRead["plan reads desired state and ownership"]
+  dry["return plan or dry-run summary"]
+  legacy["legacy apply writes create and update"]
+  gate{"dry run or conflict"}
+  block{"blocking change or diagnostic"}
+  dispatcher["synchronizeGeneratedFiles"]
+  caller --> inspect
+  caller --> diff
+  caller --> doctor
+  caller --> init
+  caller --> sync
+  diff --> planRead
+  doctor --> planRead
+  init --> planRead
+  sync --> planRead
+  planRead --> dry
+  init --> gate
+  gate -->|yes| dry
+  gate -->|no| legacy
+  sync --> block
+  block -->|yes| dry
+  block -->|no| dispatcher

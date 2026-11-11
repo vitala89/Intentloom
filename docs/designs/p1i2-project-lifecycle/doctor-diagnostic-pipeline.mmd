@@ -1,0 +1,22 @@
+flowchart TB
+  start["doctorProject"]
+  metadata["metadata presence validator and malformed parse"]
+  schema["schema findings then missing metadata"]
+  planned["plan sync true dryRun true"]
+  map["map update changes to stale"]
+  drift["drift findings with skip rules"]
+  scan["list root and call desired again"]
+  manifest["manifest version orphans and stored paths"]
+  source["source-map orphans and headers"]
+  scoped["path-scoped rule frontmatter"]
+  profile["profile support and mismatch"]
+  capability["adapter capability findings"]
+  roots["instruction roots and product docs"]
+  extension["extension-health findings"]
+  healthy["installation-healthy when no error"]
+  sort["sort by code and path"]
+  errors["DoctorError projection"]
+  start --> metadata --> schema --> planned --> map --> drift
+  drift --> scan --> manifest --> source --> scoped
+  scoped --> profile --> capability --> roots --> extension
+  extension --> healthy --> sort --> errors

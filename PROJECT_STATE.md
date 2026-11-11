@@ -1149,8 +1149,9 @@ merged as PR #615
 `8bc9e07c74beb701adaae9e30dacb6aec252b58f`). The approved contract is
 `docs/designs/p1i1-generated-file-transaction/SYSTEM_DESIGN.md`. The
 feasibility verdict is C: composition-root dispatch with leaf-owned
-transaction contracts. Implementation is open as PR #616
-(https://github.com/vitala89/Intentloom/pull/616) and is not merged.
+transaction contracts. Implementation is merged as PR #616
+(https://github.com/vitala89/Intentloom/pull/616,
+`b9201e9d480b34e453d08e1803f94e734d1e3f1f`). P1I.1 is complete.
 Implementation keeps
 `synchronizeGeneratedFiles` on `index.ts` and moves the generated-files
 commit under `packages/application/src/generated-file/`. `Plan`,
@@ -1165,8 +1166,13 @@ components of size 3. Re-export cycles stay three, sizes 4, 29, and 3.
 The new modules stay outside every component.
 `quality-exceptions.json` is unchanged. Ordinary `syncProject` does not
 pass through the Approved Apply gate. `initProject` uses `plan` and
-`apply`. The post-write corruption union has 31 codes. P1I.2, P1I.3,
-P1J, Undo U4, and Desktop Undo U5 have not started. Ids 2 through 26 remain
+`apply`. The post-write corruption union has 31 codes. P1I.2 design is
+proposed in
+`docs/designs/p1i2-project-lifecycle/SYSTEM_DESIGN.md`. The feasibility
+verdict is B+C: leaf-owned lifecycle contracts and operations, with one
+composition-root binding for `synchronizeGeneratedFiles`. The design is
+not approved. P1I.2 implementation has not started. P1I.3, P1J, Undo U4,
+and Desktop Undo U5 have not started. Ids 2 through 26 remain
 literal `passed` checks. The score and hash formulas are unchanged.
 The reader still does not recompute either value.
 `rankProceduralMemory` stays in the barrel.

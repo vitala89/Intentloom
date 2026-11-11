@@ -1,0 +1,58 @@
+flowchart TB
+  index["index.ts composition root"]
+  contracts["project-lifecycle-contracts.ts"]
+  failure["artifact-validation-failure.ts"]
+  desired["desired-generated-state.ts"]
+  ownership["ownership-state.ts"]
+  plan["project-plan.ts"]
+  init["project-init.ts"]
+  syncLeaf["project-sync.ts"]
+  inspect["project-inspection.ts"]
+  doctor["doctor-project.ts"]
+  meta["transaction-metadata.ts"]
+  commit["generated-file-transaction.ts"]
+  declared["generated-file-sync-declared.ts"]
+  baseline["approved-apply-baseline.ts"]
+  health["extension-health.ts"]
+  profiles["project-profile-detection.ts"]
+  change["project-change.ts"]
+  adopt["adoptProject stays in index.ts"]
+  feature["planFeature stays in index.ts"]
+  dispatcher["synchronizeGeneratedFiles stays in index.ts"]
+  index --> contracts
+  index --> failure
+  index --> desired
+  index --> ownership
+  index --> plan
+  index --> init
+  index --> syncLeaf
+  index --> inspect
+  index --> doctor
+  index --> declared
+  index --> commit
+  desired --> failure
+  desired --> contracts
+  desired --> meta
+  ownership --> meta
+  plan --> desired
+  plan --> ownership
+  init --> plan
+  syncLeaf --> plan
+  syncLeaf --> desired
+  syncLeaf --> meta
+  doctor --> plan
+  doctor --> desired
+  doctor --> health
+  doctor --> profiles
+  inspect --> profiles
+  contracts --> change
+  adopt --> desired
+  adopt --> ownership
+  adopt --> plan
+  feature --> failure
+  dispatcher --> declared
+  dispatcher --> commit
+  declared --> baseline
+  declared --> index
+  baseline --> index
+  index -->|"function argument, not an import"| syncLeaf

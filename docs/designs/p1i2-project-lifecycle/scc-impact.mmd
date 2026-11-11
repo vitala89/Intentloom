@@ -1,0 +1,21 @@
+flowchart TB
+  subgraph importNow ["Import SCC stays size 3"]
+    baseline["approved-apply-baseline.ts"]
+    declared["generated-file-sync-declared.ts"]
+    index["index.ts"]
+  end
+  subgraph outside ["New modules stay outside every SCC"]
+    contracts["project-lifecycle-contracts.ts"]
+    syncLeaf["project-sync.ts"]
+    doctor["doctor-project.ts"]
+    failure["artifact-validation-failure.ts"]
+  end
+  index --> declared
+  declared --> baseline
+  baseline --> index
+  index --> contracts
+  index --> syncLeaf
+  index --> doctor
+  index --> failure
+  syncLeaf --> contracts
+  doctor --> contracts
