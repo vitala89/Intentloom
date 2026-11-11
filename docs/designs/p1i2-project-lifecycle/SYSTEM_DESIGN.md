@@ -802,10 +802,13 @@ Five boundaries:
    `syncMode`, are forwarded unchanged. The fifth argument is still the
    manifest and source-map text taken from the second `desired` result.
 5. **Approved Apply** remains `executeApprovedApplyPlan` calling
-   `evaluateApprovedApplyPlan` before `synchronizeGeneratedFiles`.
-   Ordinary init and sync do not call that gate. The harness benchmark
-   sample still calls the dispatcher directly. P1I.2 does not retarget
-   that sample.
+   `evaluateApprovedApplyPlan`, then the declared-path scope check and
+   the baseline check, before a direct call to
+   `synchronizeGeneratedFiles`. It does not call `executeProjectSync`
+   and it does not use the ordinary sync injection parameter. Ordinary
+   init and sync do not call that gate. The harness benchmark sample
+   still calls the dispatcher directly. P1I.2 does not retarget that
+   sample.
 
 `desired` reads the catalog with `node:fs/promises` `readFile` and
 `readdir` when `catalogRoot` or pinned hashes require it. Those reads
@@ -875,31 +878,57 @@ flowchart TB
   apply["apply create and update only"]
   initResult["return the plan"]
   sync["syncProject"]
+  execute["executeProjectSync"]
   syncPlan["plan with sync true then desired again"]
   syncGate{"dry run"}
   summary["SyncDryRunResult"]
   blocked{"conflict modified security-error or diagnostic"}
   failed["failed result and no write"]
-  bound["barrel passes synchronizeGeneratedFiles"]
+  injected["sync wrapper injects synchronizeGeneratedFiles"]
+  approved["executeApprovedApplyPlan"]
+  approvedGate{"evaluateApprovedApplyPlan"}
+  approvedStop["Approved Apply returns without a project write"]
+  extra{"declared path scope and baseline"}
+  direct["direct call to synchronizeGeneratedFiles"]
+  dispatcher["synchronizeGeneratedFiles mode dispatcher"]
   mode{"declared-paths syncMode"}
   declared["synchronizeDeclaredProjectPaths"]
   owned["commitOwnedGeneratedFiles"]
-  approved["executeApprovedApplyPlan"]
-  approvedGate["evaluateApprovedApplyPlan"]
   init --> initPlan --> initGate
   initGate -->|yes| initResult
   initGate -->|no| apply --> initResult
-  sync --> syncPlan --> syncGate
+  sync --> execute --> syncPlan --> syncGate
   syncGate -->|yes| summary
   syncGate -->|no| blocked
   blocked -->|yes| failed
-  blocked -->|no| bound --> mode
+  blocked -->|no| injected --> dispatcher
+  approved --> approvedGate
+  approvedGate -->|not passed| approvedStop
+  approvedGate -->|passed| extra
+  extra -->|scope mismatch or baseline blocked| approvedStop
+  extra -->|passed| direct --> dispatcher
+  dispatcher --> mode
   mode -->|yes| declared
   mode -->|no| owned
-  approved --> approvedGate --> bound
 ```
 
 Editable source: [`init-sync-write-flow.mmd`](init-sync-write-flow.mmd).
+
+Ordinary sync and Approved Apply meet only at the mode dispatcher.
+`syncProject` calls `executeProjectSync`. That function runs `plan`,
+the second `desired` pass, and the dry-run and blocking checks. Only a
+plan that passes those checks receives the injected
+`synchronizeGeneratedFiles` value. `executeApprovedApplyPlan` does not
+call `executeProjectSync` and does not use that injection parameter.
+After `evaluateApprovedApplyPlan` passes, it still applies the
+declared-path scope check and, when a baseline was supplied,
+`assertApprovedApplyBaselineCurrent`. A failed gate returns without a
+project write. A path-scope mismatch returns without a project write.
+A stale baseline throws `ApplyBlockedBeforeWrite` before the
+transaction. Only after those checks does the engine call
+`synchronizeGeneratedFiles` directly, as it does today in
+`approved-apply-engine.ts`. The dispatcher then selects declared-paths
+mode or `commitOwnedGeneratedFiles`.
 
 Sync blocking kinds stay `conflict`, `modified`, and `security-error`,
 plus any non-empty `proposal.diagnostics`. `missing` is not a sync

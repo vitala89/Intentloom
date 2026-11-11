@@ -166,6 +166,34 @@ as PR #616 (https://github.com/vitala89/Intentloom/pull/616,
 Do not start the P1I.2 implementation, P1I.3, P1J, Undo U4, or Desktop
 Undo U5.
 
+### 2026-11-12, P1I.2 design review correction
+
+- **Status:** **DESIGN PR OPEN — AWAITING MAINTAINER APPROVAL.**
+  The correction stays on PR #617,
+  https://github.com/vitala89/Intentloom/pull/617. Verdict B+C is
+  unchanged. P1I.2 is not implemented. Do not merge. Do not start the
+  P1I.2 implementation, P1I.3, P1J, Undo U4, or Desktop Undo U5.
+- **Diagram:** `init-sync-write-flow.mmd` no longer sends
+  `executeApprovedApplyPlan` through the ordinary sync injection node.
+  Ordinary sync is `syncProject`, `executeProjectSync`, plan and
+  checks, then the injected `synchronizeGeneratedFiles`. Approved Apply
+  is `executeApprovedApplyPlan`, `evaluateApprovedApplyPlan`, the
+  declared-path scope check and baseline check, then a direct call to
+  `synchronizeGeneratedFiles`. Both paths reach the same mode
+  dispatcher only after those separate checks. This matches
+  `approved-apply-engine.ts` and the public `syncProject` wrapper.
+- **CI:** Compatibility run `43119952476` on reviewed head
+  `584a55b7618bf28e96789e4b168eab3765590e7d` failed only
+  `macos-latest / Node 22`. The failure is `tests/cli-schema-process.test.ts`
+  `beforeAll` timing out at 10,000 ms inside `execFileSync` of `pnpm build`.
+  It is not an assertion failure. The other Compatibility jobs, Governance,
+  and CodeQL passed on that head. `gh run rerun 43119952476 --failed`
+  was refused with `Resource not accessible by integration`, so this
+  session could not rerun that job. The timeout is recorded as a
+  follow-up, not fixed in this design pull request.
+- **Not done:** maintainer approval, implementation, a timeout change,
+  P1I.3, P1J, Undo U4, Desktop Undo U5.
+
 ### 2026-11-12, Packages architecture P1I.2 project lifecycle design
 
 - **Status:** **DESIGN PR OPEN — AWAITING MAINTAINER APPROVAL.**
