@@ -2940,7 +2940,9 @@ P1I.1 design is proposed in
 The feasibility verdict is C: the package root keeps
 `synchronizeGeneratedFiles` as the mode dispatcher, and the
 generated-files commit moves to leaves that do not import
-`index.ts`. The design is not implemented. One later implementation
+`index.ts`. `Plan`, `Change`, and `ChangeKind` move to
+`packages/application/src/project-change.ts`. The design is not
+implemented. One later implementation
 PR moves the generated-file transaction helpers and the commit body.
 A following PR moves `initProject`, `syncProject`, `diffProject`,
 `doctorProject`, and `inspectProject`. A following PR moves

@@ -8,11 +8,14 @@ flowchart TB
     commit["generated-file-transaction.ts"]
     contracts["transaction-contracts.ts"]
     mode["sync-mode.ts"]
+    change["src/project-change.ts"]
   end
   index --> declared
   declared --> baseline
   baseline --> index
   index --> commit
   index --> contracts
+  index --> change
+  contracts --> change
   declared --> mode
   contracts --> mode

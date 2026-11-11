@@ -1,16 +1,44 @@
 flowchart TB
-  caller["CLI daemon MCP Desktop Neutron"]
-  gate["Approved Apply gate"]
-  engine["approved-apply-engine.ts"]
-  barrel["index.ts transaction dispatcher"]
+  cliSync["CLI sync command"]
+  adoptCall["adoptProject"]
+  sync["syncProject"]
+  syncPlan["sync plan checks"]
+  syncStop["sync returns failed and does not call the transaction"]
+  cliInit["CLI init command"]
+  init["initProject"]
+  initPlan["init plan checks"]
+  initReturn["init returns the plan without apply"]
+  applyWrite["apply writes create and update changes"]
+  neutronApply["Neutron mutation apply"]
+  boundedApply["bounded execution apply"]
+  engine["executeApprovedApplyPlan"]
+  gate["evaluateApprovedApplyPlan"]
+  extraChecks["declared path scope and baseline checks"]
+  noWrite["Approved Apply returns without a project write"]
+  harness["harness benchmark sample"]
+  barrel["synchronizeGeneratedFiles"]
   owned["generated-files commit"]
-  declared["declared-paths commit"]
+  declaredPaths["declared-paths commit"]
   fs["injected FileSystem"]
-  caller --> gate
-  gate -->|rejected plan| caller
-  gate -->|passed plan| engine
-  engine --> barrel
-  barrel --> owned
-  barrel --> declared
+  cliSync --> sync
+  adoptCall --> sync
+  sync --> syncPlan
+  syncPlan -->|conflict modified or security error| syncStop
+  syncPlan -->|plan accepted| barrel
+  cliInit --> init
+  init --> initPlan
+  initPlan -->|dry run or conflict| initReturn
+  initPlan -->|otherwise| applyWrite
+  applyWrite --> fs
+  neutronApply --> engine
+  boundedApply --> engine
+  engine --> gate
+  gate -->|not passed| noWrite
+  gate -->|passed| extraChecks
+  extraChecks -->|scope or baseline failed| noWrite
+  extraChecks -->|passed| barrel
+  harness --> barrel
+  barrel -->|declared-paths-only| declaredPaths
+  barrel -->|generated-files mode| owned
   owned --> fs
-  declared --> fs
+  declaredPaths --> fs

@@ -1147,7 +1147,11 @@ unchanged. P1H.7 is complete. P1H is complete. P1I.1 design is
 proposed in
 `docs/designs/p1i1-generated-file-transaction/SYSTEM_DESIGN.md` and
 is not implemented. The feasibility verdict is C: composition-root
-dispatch with leaf-owned transaction contracts. P1I.2, P1I.3, P1J,
+dispatch with leaf-owned transaction contracts. `Plan`, `Change`,
+and `ChangeKind` are proposed in
+`packages/application/src/project-change.ts`. Ordinary `syncProject`
+does not pass through the Approved Apply gate. `initProject` uses
+`plan` and `apply`. The post-write corruption union has 31 codes. P1I.2, P1I.3, P1J,
 Undo U4, and Desktop Undo U5 have not started. Ids 2 through 26 remain
 literal `passed` checks. The score and hash formulas are unchanged.
 The reader still does not recompute either value.

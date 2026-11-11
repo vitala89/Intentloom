@@ -208,6 +208,10 @@ Public contracts still declared in `index.ts`:
 | `TransactionOptions`         | 610–617   |         8 |        8 | yes      |
 | `synchronizeGeneratedFiles`  | 1306–1490 |       185 |      185 | yes      |
 
+`PostWriteCorruptionCode` is 32 lines because the count includes the
+`export type` line. The union itself is 31 string literals, from
+`manifest-json-malformed` through `normalized-destination-duplicate`.
+
 Private generated-files implementation still in `index.ts`:
 
 | Declaration                       | Line | Effective | Physical |
@@ -423,7 +427,7 @@ flowchart LR
   index["index.ts dispatcher"]
   commit["generated-file-transaction.ts"]
   contracts["transaction-contracts.ts"]
-  change["project-change.ts"]
+  change["src/project-change.ts"]
   mode["sync-mode.ts"]
   meta["transaction-metadata.ts"]
   summary["transaction-summary.ts"]
@@ -579,41 +583,41 @@ assigns to P1I.3.
 
 ## 8. Declaration move matrix
 
-| Declaration                                              | Current owner                                | Proposed owner                            | Dependencies                                              | Public API          | Move/Stay | Justification                                                                                    |
-| -------------------------------------------------------- | -------------------------------------------- | ----------------------------------------- | --------------------------------------------------------- | ------------------- | --------- | ------------------------------------------------------------------------------------------------ |
-| `ChangeKind`, `Change`, `Plan`                           | `index.ts`                                   | `generated-file/project-change.ts`        | none                                                      | re-export           | Move      | `TransactionResult` extends `Plan`. The contract leaf cannot import `index.ts`.                  |
-| `GeneratedFileSyncMode`                                  | `generated-file-sync-declared.ts`            | `generated-file/sync-mode.ts`             | none                                                      | re-export           | Move      | `TransactionOptions` must name this alias without importing the declared-paths module.           |
-| `GENERATED_FILE_SYNC_DECLARED_PATHS_ONLY`                | `generated-file-sync-declared.ts`            | `generated-file/sync-mode.ts`             | none                                                      | re-export           | Move      | Same alias home as the sync-mode type.                                                           |
-| `isDeclaredPathsOnlySyncMode`                            | `generated-file-sync-declared.ts`            | `generated-file/sync-mode.ts`             | sync-mode constant                                        | re-export           | Move      | The dispatcher and the declared-paths module both call one predicate.                            |
-| `TransactionStage`                                       | `index.ts`                                   | `generated-file/transaction-contracts.ts` | none                                                      | re-export           | Move      | Stage identifiers used by the commit leaf.                                                       |
-| `TransactionResult`                                      | `index.ts`                                   | `generated-file/transaction-contracts.ts` | `Plan`                                                    | re-export           | Move      | Return type of the public function and the commit leaf.                                          |
-| `PostWriteCorruptionCode`                                | `index.ts`                                   | `generated-file/transaction-contracts.ts` | none                                                      | re-export           | Move      | Corruption vocabulary for the validator leaf.                                                    |
-| `ValidPostWriteValidation`                               | `index.ts`                                   | `generated-file/transaction-contracts.ts` | none                                                      | re-export           | Move      | Success arm of the post-write result.                                                            |
-| `InvalidPostWriteValidation`                             | `index.ts`                                   | `generated-file/transaction-contracts.ts` | `PostWriteCorruptionCode`                                 | re-export           | Move      | Failure arm of the post-write result.                                                            |
-| `PostWriteValidationResult`                              | `index.ts`                                   | `generated-file/transaction-contracts.ts` | the two validation arms                                   | re-export           | Move      | Public union.                                                                                    |
-| `PostWriteCorruptionContext`                             | `index.ts`                                   | `generated-file/transaction-contracts.ts` | `FileSystem` from `host-file-system.ts`                   | re-export           | Move      | Callback argument. Importing it from `index.ts` would cycle.                                     |
-| `TransactionOptions`                                     | `index.ts`                                   | `generated-file/transaction-contracts.ts` | `GeneratedFileSyncMode`, `TransactionStage`, `FileSystem` | re-export           | Move      | Public options. The sync-mode field imports the new leaf, not the declared-paths module.         |
-| `TransactionMetadata`                                    | `index.ts`, unexported                       | unexported in `transaction-metadata.ts`   | none                                                      | not a new export    | Move      | Fifth-parameter shape. The root does not gain an exported name.                                  |
-| `lockPath`, `sourceMapPath`                              | `index.ts`, unexported                       | `transaction-metadata.ts`, unexported     | none                                                      | no                  | Move      | Commit and validation need them. Lifecycle in `index.ts` imports them.                           |
-| `metadataFormatVersion`                                  | `index.ts`, unexported                       | `transaction-metadata.ts`, unexported     | none                                                      | no                  | Move      | Shared by metadata build and post-write checks.                                                  |
-| `adapterOutputVersion`                                   | `index.ts`, unexported                       | `transaction-metadata.ts`, unexported     | `adapterVersion`                                          | no                  | Move      | One adapter-version authority, unchanged.                                                        |
-| `transactionAdapterId`                                   | `index.ts`, unexported                       | `transaction-metadata.ts`, unexported     | none                                                      | no                  | Move      | Literal `aif:generated-files`.                                                                   |
-| `MetadataPins`                                           | `index.ts`, unexported                       | `transaction-metadata.ts`, unexported     | `AdapterName`                                             | no                  | Move      | Input of metadata construction.                                                                  |
-| `buildTransactionMetadata`                               | `index.ts`                                   | `transaction-metadata.ts`                 | core checksum, `INTENTLOOM_VERSION`, adapter version      | no                  | Move      | Used by the commit and by `desired`, which stays in `index.ts`.                                  |
-| `collisionPlan`                                          | `index.ts` private copy                      | `transaction-path-safety.ts`              | `findDestinationCollisions`, `Plan`                       | no                  | Move      | Generated-files copy only. The declared-paths copy stays.                                        |
-| `noncanonicalPathPlan`                                   | `index.ts` private copy                      | `transaction-path-safety.ts`              | `normalizeStoredPath`, `Plan`                             | no                  | Move      | Generated-files copy only.                                                                       |
-| `safeDestination`                                        | `index.ts` private copy                      | `transaction-path-safety.ts`              | `FileSystem`, `node:path`                                 | no                  | Move      | Generated-files walk. Declared-paths keeps its own walk.                                         |
-| `transactionSummary`                                     | `index.ts`                                   | `transaction-summary.ts`                  | `Change`, metadata paths                                  | no                  | Move      | Sorted created, updated, and unchanged paths. `syncProject` still calls it.                      |
-| Post-write helpers and `validateCommittedOwnershipState` | `index.ts`                                   | the two post-write modules                | contracts, `inside`, `destinationCollisionKey`, checksum  | no                  | Move      | The 246-line function is decomposed. It is not called outside the commit.                        |
-| Generated-files commit body                              | `synchronizeGeneratedFiles`                  | `commitOwnedGeneratedFiles`               | the leaves above                                          | no                  | Move      | Orchestration without the declared-paths branch.                                                 |
-| `synchronizeGeneratedFiles`                              | `index.ts`                                   | `index.ts`                                | sync-mode predicate, declared runner, commit              | yes, same signature | Stay      | Composition root. Moving the whole function imports the declared-paths module and grows the SCC. |
-| Declared-paths private helpers                           | `generated-file-sync-declared.ts`            | same file                                 | existing                                                  | no                  | Stay      | Different walk, sort, metadata, and failure behavior.                                            |
-| `synchronizeDeclaredProjectPaths`                        | `generated-file-sync-declared.ts`            | same file                                 | baseline, contracts via `index.ts`                        | re-export           | Stay      | Already extracted. It keeps importing types from `index.ts`.                                     |
-| `planSynchronizeGeneratedFilesWriteSet`                  | `generated-file-sync-declared.ts`            | same file                                 | sync-mode leaf                                            | re-export           | Stay      | Write-set preview. It must keep adding metadata paths only for generated-files mode.             |
-| `desired`, `plan`, `apply`, lifecycle exports            | `index.ts`                                   | `index.ts`                                | moved helpers by name                                     | yes                 | Stay      | P1I.2. Bodies stay.                                                                              |
-| `ArtifactValidationFailure`                              | `index.ts`                                   | `index.ts`                                | validator result type                                     | yes                 | Stay      | Thrown by `desired` and `doctorProject`, not by the commit.                                      |
-| `FileSystem` import in baseline                          | `approved-apply-baseline.ts` from `index.ts` | same import                               | `index.ts`                                                | no                  | Stay      | Removing it dissolves cycle 1. That is P1I.3.                                                    |
-| Engine import of `synchronizeGeneratedFiles`             | `approved-apply-engine.ts` from `index.ts`   | same import                               | `index.ts`                                                | no                  | Stay      | Public entry remains the dispatcher.                                                             |
+| Declaration                                              | Current owner                                | Proposed owner                               | Dependencies                                              | Public API          | Move/Stay | Justification                                                                                    |
+| -------------------------------------------------------- | -------------------------------------------- | -------------------------------------------- | --------------------------------------------------------- | ------------------- | --------- | ------------------------------------------------------------------------------------------------ |
+| `ChangeKind`, `Change`, `Plan`                           | `index.ts`                                   | `packages/application/src/project-change.ts` | none                                                      | re-export           | Move      | Shared by doctor, init, diff, sync, and the transaction. `TransactionResult` extends `Plan`.     |
+| `GeneratedFileSyncMode`                                  | `generated-file-sync-declared.ts`            | `generated-file/sync-mode.ts`                | none                                                      | re-export           | Move      | `TransactionOptions` must name this alias without importing the declared-paths module.           |
+| `GENERATED_FILE_SYNC_DECLARED_PATHS_ONLY`                | `generated-file-sync-declared.ts`            | `generated-file/sync-mode.ts`                | none                                                      | re-export           | Move      | Same alias home as the sync-mode type.                                                           |
+| `isDeclaredPathsOnlySyncMode`                            | `generated-file-sync-declared.ts`            | `generated-file/sync-mode.ts`                | sync-mode constant                                        | re-export           | Move      | The dispatcher and the declared-paths module both call one predicate.                            |
+| `TransactionStage`                                       | `index.ts`                                   | `generated-file/transaction-contracts.ts`    | none                                                      | re-export           | Move      | Stage identifiers used by the commit leaf.                                                       |
+| `TransactionResult`                                      | `index.ts`                                   | `generated-file/transaction-contracts.ts`    | `Plan`                                                    | re-export           | Move      | Return type of the public function and the commit leaf.                                          |
+| `PostWriteCorruptionCode`                                | `index.ts`                                   | `generated-file/transaction-contracts.ts`    | none                                                      | re-export           | Move      | Corruption vocabulary for the validator leaf.                                                    |
+| `ValidPostWriteValidation`                               | `index.ts`                                   | `generated-file/transaction-contracts.ts`    | none                                                      | re-export           | Move      | Success arm of the post-write result.                                                            |
+| `InvalidPostWriteValidation`                             | `index.ts`                                   | `generated-file/transaction-contracts.ts`    | `PostWriteCorruptionCode`                                 | re-export           | Move      | Failure arm of the post-write result.                                                            |
+| `PostWriteValidationResult`                              | `index.ts`                                   | `generated-file/transaction-contracts.ts`    | the two validation arms                                   | re-export           | Move      | Public union.                                                                                    |
+| `PostWriteCorruptionContext`                             | `index.ts`                                   | `generated-file/transaction-contracts.ts`    | `FileSystem` from `host-file-system.ts`                   | re-export           | Move      | Callback argument. Importing it from `index.ts` would cycle.                                     |
+| `TransactionOptions`                                     | `index.ts`                                   | `generated-file/transaction-contracts.ts`    | `GeneratedFileSyncMode`, `TransactionStage`, `FileSystem` | re-export           | Move      | Public options. The sync-mode field imports the new leaf, not the declared-paths module.         |
+| `TransactionMetadata`                                    | `index.ts`, unexported                       | unexported in `transaction-metadata.ts`      | none                                                      | not a new export    | Move      | Fifth-parameter shape. The root does not gain an exported name.                                  |
+| `lockPath`, `sourceMapPath`                              | `index.ts`, unexported                       | `transaction-metadata.ts`, unexported        | none                                                      | no                  | Move      | Commit and validation need them. Lifecycle in `index.ts` imports them.                           |
+| `metadataFormatVersion`                                  | `index.ts`, unexported                       | `transaction-metadata.ts`, unexported        | none                                                      | no                  | Move      | Shared by metadata build and post-write checks.                                                  |
+| `adapterOutputVersion`                                   | `index.ts`, unexported                       | `transaction-metadata.ts`, unexported        | `adapterVersion`                                          | no                  | Move      | One adapter-version authority, unchanged.                                                        |
+| `transactionAdapterId`                                   | `index.ts`, unexported                       | `transaction-metadata.ts`, unexported        | none                                                      | no                  | Move      | Literal `aif:generated-files`.                                                                   |
+| `MetadataPins`                                           | `index.ts`, unexported                       | `transaction-metadata.ts`, unexported        | `AdapterName`                                             | no                  | Move      | Input of metadata construction.                                                                  |
+| `buildTransactionMetadata`                               | `index.ts`                                   | `transaction-metadata.ts`                    | core checksum, `INTENTLOOM_VERSION`, adapter version      | no                  | Move      | Used by the commit and by `desired`, which stays in `index.ts`.                                  |
+| `collisionPlan`                                          | `index.ts` private copy                      | `transaction-path-safety.ts`                 | `findDestinationCollisions`, `Plan`                       | no                  | Move      | Generated-files copy only. The declared-paths copy stays.                                        |
+| `noncanonicalPathPlan`                                   | `index.ts` private copy                      | `transaction-path-safety.ts`                 | `normalizeStoredPath`, `Plan`                             | no                  | Move      | Generated-files copy only.                                                                       |
+| `safeDestination`                                        | `index.ts` private copy                      | `transaction-path-safety.ts`                 | `FileSystem`, `node:path`                                 | no                  | Move      | Generated-files walk. Declared-paths keeps its own walk.                                         |
+| `transactionSummary`                                     | `index.ts`                                   | `transaction-summary.ts`                     | `Change`, metadata paths                                  | no                  | Move      | Sorted created, updated, and unchanged paths. `syncProject` still calls it.                      |
+| Post-write helpers and `validateCommittedOwnershipState` | `index.ts`                                   | the two post-write modules                   | contracts, `inside`, `destinationCollisionKey`, checksum  | no                  | Move      | The 246-line function is decomposed. It is not called outside the commit.                        |
+| Generated-files commit body                              | `synchronizeGeneratedFiles`                  | `commitOwnedGeneratedFiles`                  | the leaves above                                          | no                  | Move      | Orchestration without the declared-paths branch.                                                 |
+| `synchronizeGeneratedFiles`                              | `index.ts`                                   | `index.ts`                                   | sync-mode predicate, declared runner, commit              | yes, same signature | Stay      | Composition root. Moving the whole function imports the declared-paths module and grows the SCC. |
+| Declared-paths private helpers                           | `generated-file-sync-declared.ts`            | same file                                    | existing                                                  | no                  | Stay      | Different walk, sort, metadata, and failure behavior.                                            |
+| `synchronizeDeclaredProjectPaths`                        | `generated-file-sync-declared.ts`            | same file                                    | baseline, contracts via `index.ts`                        | re-export           | Stay      | Already extracted. It keeps importing types from `index.ts`.                                     |
+| `planSynchronizeGeneratedFilesWriteSet`                  | `generated-file-sync-declared.ts`            | same file                                    | sync-mode leaf                                            | re-export           | Stay      | Write-set preview. It must keep adding metadata paths only for generated-files mode.             |
+| `desired`, `plan`, `apply`, lifecycle exports            | `index.ts`                                   | `index.ts`                                   | moved helpers by name                                     | yes                 | Stay      | P1I.2. Bodies stay.                                                                              |
+| `ArtifactValidationFailure`                              | `index.ts`                                   | `index.ts`                                   | validator result type                                     | yes                 | Stay      | Thrown by `desired` and `doctorProject`, not by the commit.                                      |
+| `FileSystem` import in baseline                          | `approved-apply-baseline.ts` from `index.ts` | same import                                  | `index.ts`                                                | no                  | Stay      | Removing it dissolves cycle 1. That is P1I.3.                                                    |
+| Engine import of `synchronizeGeneratedFiles`             | `approved-apply-engine.ts` from `index.ts`   | same import                                  | `index.ts`                                                | no                  | Stay      | Public entry remains the dispatcher.                                                             |
 
 `generated-file-sync-declared.ts` replaces its local sync-mode
 declarations with a re-export from `sync-mode.ts`. That edit shrinks
@@ -621,16 +625,26 @@ the file. It does not retarget the type import from `index.ts`.
 
 ## 9. Module boundaries
 
-All new paths are under `packages/application/src/generated-file/`.
+Transaction modules live under
+`packages/application/src/generated-file/`. `ChangeKind`, `Change`,
+and `Plan` do not. `DoctorPlan` extends `Plan`. `initProject`,
+`diffProject`, and `syncProject` return or consume `Plan`. Putting
+those three types under `generated-file/` would make lifecycle
+contracts look owned by the transaction. The shared home is
+`packages/application/src/project-change.ts`, next to
+`project-path.ts` and `host-file-system.ts`. The public names stay
+`ChangeKind`, `Change`, and `Plan`. There is no second copy.
+
 Estimates below are planning figures, not implementation
 measurements. The implementation PR must measure them again with
-`measureProductionSource`.
+`measureProductionSource`. Moving the shared contract out of
+`generated-file/` does not change its size estimate or the SCC.
 
 | Module                          | Responsibility                                                   | Imports                                                                           | Estimate  | Direction                                     |
 | ------------------------------- | ---------------------------------------------------------------- | --------------------------------------------------------------------------------- | --------- | --------------------------------------------- |
-| `project-change.ts`             | `ChangeKind`, `Change`, `Plan`                                   | none                                                                              | 22 / 24   | leaf                                          |
+| `src/project-change.ts`         | `ChangeKind`, `Change`, `Plan`                                   | none                                                                              | 22 / 24   | leaf shared by lifecycle and transaction      |
 | `sync-mode.ts`                  | sync-mode constant, type, and predicate                          | none                                                                              | 14 / 16   | leaf                                          |
-| `transaction-contracts.ts`      | public transaction types                                         | `project-change.ts`, `sync-mode.ts`, `host-file-system.ts` type                   | 100 / 110 | depends on leaves                             |
+| `transaction-contracts.ts`      | public transaction types                                         | `../project-change.ts`, `sync-mode.ts`, `host-file-system.ts` type                | 100 / 110 | depends on leaves                             |
 | `transaction-metadata.ts`       | pins, manifest, source map, path constants                       | `@intentloom/core`, `@intentloom/adapters`, `project-change` not required         | 110 / 120 | leaf besides contracts if it returns metadata |
 | `transaction-summary.ts`        | sorted summary and the pre-write failure shape                   | contracts, metadata paths                                                         | 60 / 70   | depends on contracts                          |
 | `transaction-path-safety.ts`    | generated-files collision, canonical path, symlink walk          | `destination-collisions.ts`, `@intentloom/core`, `host-file-system.ts`, contracts | 80 / 90   | depends on contracts and existing leaves      |
@@ -963,9 +977,16 @@ Editable source: [`post-write-flow.mmd`](post-write-flow.mmd).
 Validation reads filesystem bytes. It does not trust the in-memory
 strings except as the planned text compared at the end. Affected
 paths and identifiers are de-duplicated and sorted. The invalid
-object carries one code. The 32 codes in section 4 stay the complete
-set. `tests/post-write-corruption.test.ts` already names a case for
-each of them.
+object carries one code. The union has 31 string literals. The
+32 in the section 4 table is the declaration's line count, including
+`export type PostWriteCorruptionCode =`.
+`tests/post-write-corruption.test.ts` names all 31 codes across 34
+cases. `adapter-id-missing`, `canonical-source-id-missing`, and
+`source-map-duplicate-ownership` each have two cases. No code is
+absent. The manifest `ownershipPolicy` branch of
+`ownership-classification-invalid` has no separate case. The existing
+case covers that code through a source-map `ownership` value. The
+implementation must not drop either branch.
 
 Declared-paths validation stays `validateDeclaredPathBytes`. It does
 not read the manifest or the source map.
@@ -987,10 +1008,10 @@ Terms already used by the repository:
   after generated files.
 - **Validated write plan.** The `Plan` of create and update changes
   after collision and path checks. It is not itself authorization.
-- **Approved Apply.** `evaluateApprovedApplyPlan` in
-  `approved-apply-gate.ts`, called by the engine before the
-  transaction. The transaction module must not call the gate and must
-  not skip it.
+- **Approved Apply.** `evaluateApprovedApplyPlan` runs inside
+  `executeApprovedApplyPlan`, before that function calls
+  `synchronizeGeneratedFiles`. The transaction does not call the
+  gate. Callers that are not the engine do not pass through it.
 - **Filesystem port.** The injected `FileSystem`. Tests use the memory
   port. Production passes `nodeFileSystem` from the caller. The
   transaction does not open `node:fs` itself. `desired` still reads
@@ -1008,28 +1029,89 @@ Terms already used by the repository:
 
 ```mermaid
 flowchart TB
-  caller["CLI daemon MCP Desktop Neutron"]
-  gate["Approved Apply gate"]
-  engine["approved-apply-engine.ts"]
-  barrel["index.ts transaction dispatcher"]
+  cliSync["CLI sync command"]
+  adoptCall["adoptProject"]
+  sync["syncProject"]
+  syncPlan["sync plan checks"]
+  syncStop["sync returns failed and does not call the transaction"]
+  cliInit["CLI init command"]
+  init["initProject"]
+  initPlan["init plan checks"]
+  initReturn["init returns the plan without apply"]
+  applyWrite["apply writes create and update changes"]
+  neutronApply["Neutron mutation apply"]
+  boundedApply["bounded execution apply"]
+  engine["executeApprovedApplyPlan"]
+  gate["evaluateApprovedApplyPlan"]
+  extraChecks["declared path scope and baseline checks"]
+  noWrite["Approved Apply returns without a project write"]
+  harness["harness benchmark sample"]
+  barrel["synchronizeGeneratedFiles"]
   owned["generated-files commit"]
-  declared["declared-paths commit"]
+  declaredPaths["declared-paths commit"]
   fs["injected FileSystem"]
-  caller --> gate
-  gate -->|rejected plan| caller
-  gate -->|passed plan| engine
-  engine --> barrel
-  barrel --> owned
-  barrel --> declared
+  cliSync --> sync
+  adoptCall --> sync
+  sync --> syncPlan
+  syncPlan -->|conflict modified or security error| syncStop
+  syncPlan -->|plan accepted| barrel
+  cliInit --> init
+  init --> initPlan
+  initPlan -->|dry run or conflict| initReturn
+  initPlan -->|otherwise| applyWrite
+  applyWrite --> fs
+  neutronApply --> engine
+  boundedApply --> engine
+  engine --> gate
+  gate -->|not passed| noWrite
+  gate -->|passed| extraChecks
+  extraChecks -->|scope or baseline failed| noWrite
+  extraChecks -->|passed| barrel
+  harness --> barrel
+  barrel -->|declared-paths-only| declaredPaths
+  barrel -->|generated-files mode| owned
   owned --> fs
-  declared --> fs
+  declaredPaths --> fs
 ```
 
 Editable source: [`trust-boundaries.mmd`](trust-boundaries.mmd).
 
-`syncProject` and `initProject` are not Approved Apply. They keep
-their current authority. Moving the helper they call does not give
-the helper a new caller.
+The diagram separates three production paths that the previous
+drawing collapsed.
+
+Ordinary synchronization starts at the CLI sync command or at
+`adoptProject`. Both call `syncProject`. `syncProject` runs `plan`
+first. A conflict, modified file, or security error returns a failed
+result and does not call `synchronizeGeneratedFiles`. An accepted
+plan calls the dispatcher. That path uses the existing planning,
+ownership, and filesystem checks. It does not call
+`evaluateApprovedApplyPlan`.
+
+`initProject` is not that path. The CLI init command calls
+`initProject`. `initProject` calls `plan`, then `apply` when the run
+is not a dry run and the plan has no `conflict` change. `apply`
+writes `create` and `update` changes through the injected filesystem.
+`initProject` does not call `synchronizeGeneratedFiles`. `diffProject`
+returns `plan` and does not write.
+
+Approved Apply starts at Neutron mutation apply or bounded-execution
+apply. Both call `executeApprovedApplyPlan`. That function calls
+`evaluateApprovedApplyPlan` before any project write. A failed gate
+returns without `synchronizeGeneratedFiles`. A passed gate still runs
+the declared-path scope check, when that mode is set, and the
+baseline check, when a baseline was supplied. Only after those checks
+does the engine call `synchronizeGeneratedFiles`.
+
+`harness/harness-benchmark-sample.ts` calls
+`synchronizeGeneratedFiles` directly. It does not pass through the
+gate. Package-root tests do the same. Daemon, MCP, and Desktop do not
+call this function. They are not drawn as if they did.
+
+The dispatcher still chooses generated-files mode or declared-paths
+mode. Neither mode adds an authorization check that the caller did
+not already perform. Moving the commit must not insert the gate into
+`syncProject` or `initProject`, and must not remove it from
+`executeApprovedApplyPlan`.
 
 Sandbox evaluation is a policy decision in the security modules. It
 is not operating-system isolation, and this extraction does not
@@ -1102,12 +1184,15 @@ flowchart TB
     commit["generated-file-transaction.ts"]
     contracts["transaction-contracts.ts"]
     mode["sync-mode.ts"]
+    change["src/project-change.ts"]
   end
   index --> declared
   declared --> baseline
   baseline --> index
   index --> commit
   index --> contracts
+  index --> change
+  contracts --> change
   declared --> mode
   contracts --> mode
 ```
@@ -1115,9 +1200,12 @@ flowchart TB
 Editable source: [`scc-impact.mmd`](scc-impact.mmd).
 
 After the extraction the membership lists stay identical. The new
-files are absent from every component. Locked cycle tests stay
-unchanged. A new structure test should assert that absence and should
-read the new files for `from "../index.js"` and `from "./index.js"`.
+files are absent from every component. `project-change.ts` imports
+nothing in `packages/application/src`. `index.ts` and
+`transaction-contracts.ts` import it. It does not import them, so it
+does not join either component. Locked cycle tests stay unchanged. A
+new structure test should assert that absence and should read the new
+files for `from "../index.js"` and `from "./index.js"`.
 
 Files that reach `index.ts` today, and that the new modules must not
 import, include the 89 import-graph reachers measured on this
@@ -1156,24 +1244,24 @@ This design pull request does not modify tests. The implementation
 pull request runs the existing suites and adds one structure test.
 It does not rewrite behavior assertions.
 
-| Invariant                                                     | Existing proof                                                                                                                                  | New coverage                                                                                                                       |
-| ------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
-| Create, update, and unchanged success                         | `tests/post-write-success.test.ts`                                                                                                              | Structure test does not replace these                                                                                              |
-| All eight injected stages                                     | `tests/transaction-consistency.test.ts`                                                                                                         | None                                                                                                                               |
-| Complete and incomplete rollback                              | `tests/transaction-consistency.test.ts`                                                                                                         | None                                                                                                                               |
-| Restore existing bytes and remove new files                   | `tests/transaction-consistency.test.ts`                                                                                                         | None                                                                                                                               |
-| Manifest and source map finalize last and match planned bytes | `tests/post-write-success.test.ts`, `tests/transaction-consistency.test.ts`                                                                     | None                                                                                                                               |
-| All 32 corruption codes                                       | `tests/post-write-corruption.test.ts`                                                                                                           | None                                                                                                                               |
-| Missing or malformed ownership metadata                       | Post-write cases for missing ownership; `plan` still rejects a malformed source map and stays in `index.ts`                                     | None in this slice                                                                                                                 |
-| Invalid, escaping, and colliding paths                        | `tests/collision-execution.test.ts`, `tests/collision-abort.test.ts`                                                                            | None                                                                                                                               |
-| Symlink and cross-platform paths                              | `tests/filesystem-security.test.ts` through `initProject`; `tests/post-write-success.test.ts` Windows memory paths; Neutron apply symlink cases | Do not unify the two `safeDestination` copies. Existing tests cover the generated-files copy through `initProject` and the commit  |
-| Identity, version, and checksum metadata                      | `tests/post-write-success.test.ts`, `tests/post-write-corruption.test.ts`                                                                       | None                                                                                                                               |
-| Declared-paths-only mode                                      | `tests/neutron-mutation-apply.test.ts`, `tests/neutron-mutation-review-artifact.test.ts`                                                        | Assert the dispatcher still forwards `syncMode` and does not write `.aif` metadata. The Neutron tests already require that outcome |
-| Approved Apply and Neutron consumers                          | `tests/approved-apply-engine.test.ts`, `tests/neutron-mutation-apply.test.ts`, adoption rollback tests                                          | Engine import stays on the barrel                                                                                                  |
-| CLI result shape                                              | `tests/mutation-outcome.test.ts`, `tests/cli-sync.test.ts`, `tests/cli-sync-process.test.ts`                                                    | None                                                                                                                               |
-| No write on a rejected plan                                   | `tests/collision-execution.test.ts`                                                                                                             | None                                                                                                                               |
-| Public exports and types                                      | Package export-map assertion in `tests/application-foundation-scaffold-cycle.test.ts`; `pnpm typecheck`                                         | Structure test lists the twelve export keys and the moved names as re-exports                                                      |
-| SCC membership                                                | `tests/application-inception-cycle.test.ts`, `tests/application-foundation-scaffold-cycle.test.ts`                                              | Structure test: new files are outside every component and do not import `index.ts`                                                 |
+| Invariant                                                     | Existing proof                                                                                                                                               | New coverage                                                                                                                       |
+| ------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------- |
+| Create, update, and unchanged success                         | `tests/post-write-success.test.ts`                                                                                                                           | Structure test does not replace these                                                                                              |
+| All eight injected stages                                     | `tests/transaction-consistency.test.ts`                                                                                                                      | None                                                                                                                               |
+| Complete and incomplete rollback                              | `tests/transaction-consistency.test.ts`                                                                                                                      | None                                                                                                                               |
+| Restore existing bytes and remove new files                   | `tests/transaction-consistency.test.ts`                                                                                                                      | None                                                                                                                               |
+| Manifest and source map finalize last and match planned bytes | `tests/post-write-success.test.ts`, `tests/transaction-consistency.test.ts`                                                                                  | None                                                                                                                               |
+| All 31 corruption codes                                       | `tests/post-write-corruption.test.ts` covers every literal. The manifest `ownershipPolicy` branch of `ownership-classification-invalid` has no separate case | Keep both branches of that code. Do not add a test in the design PR.                                                               |
+| Missing or malformed ownership metadata                       | Post-write cases for missing ownership; `plan` still rejects a malformed source map and stays in `index.ts`                                                  | None in this slice                                                                                                                 |
+| Invalid, escaping, and colliding paths                        | `tests/collision-execution.test.ts`, `tests/collision-abort.test.ts`                                                                                         | None                                                                                                                               |
+| Symlink and cross-platform paths                              | `tests/filesystem-security.test.ts` through `initProject`; `tests/post-write-success.test.ts` Windows memory paths; Neutron apply symlink cases              | Do not unify the two `safeDestination` copies. Existing tests cover the generated-files copy through `initProject` and the commit  |
+| Identity, version, and checksum metadata                      | `tests/post-write-success.test.ts`, `tests/post-write-corruption.test.ts`                                                                                    | None                                                                                                                               |
+| Declared-paths-only mode                                      | `tests/neutron-mutation-apply.test.ts`, `tests/neutron-mutation-review-artifact.test.ts`                                                                     | Assert the dispatcher still forwards `syncMode` and does not write `.aif` metadata. The Neutron tests already require that outcome |
+| Approved Apply and Neutron consumers                          | `tests/approved-apply-engine.test.ts`, `tests/neutron-mutation-apply.test.ts`, adoption rollback tests                                                       | Engine import stays on the barrel                                                                                                  |
+| CLI result shape                                              | `tests/mutation-outcome.test.ts`, `tests/cli-sync.test.ts`, `tests/cli-sync-process.test.ts`                                                                 | None                                                                                                                               |
+| No write on a rejected plan                                   | `tests/collision-execution.test.ts`                                                                                                                          | None                                                                                                                               |
+| Public exports and types                                      | Package export-map assertion in `tests/application-foundation-scaffold-cycle.test.ts`; `pnpm typecheck`                                                      | Structure test lists the twelve export keys and the moved names as re-exports                                                      |
+| SCC membership                                                | `tests/application-inception-cycle.test.ts`, `tests/application-foundation-scaffold-cycle.test.ts`                                                           | Structure test: new files are outside every component and do not import `index.ts`                                                 |
 
 `tests/harness-h9-evidence-contract.test.ts` injects
 `source-map-finalize`. `tests/adoption-apply.test.ts` injects
@@ -1193,8 +1281,10 @@ measures the files. It may pin the measured numbers at that time.
 One implementation pull request after this design is approved. Do not
 mix it with P1I.2.
 
-1. Add `project-change.ts` and re-export `ChangeKind`, `Change`, and
-   `Plan` from `index.ts`. Leave every other declaration in place.
+1. Add `packages/application/src/project-change.ts` and re-export
+   `ChangeKind`, `Change`, and `Plan` from `index.ts`. Leave every
+   other declaration in place. Do not put this file under
+   `generated-file/`.
 2. Add `sync-mode.ts`. Re-export it from
    `generated-file-sync-declared.ts`. Point the dispatcher import at
    the leaf when the dispatcher exists.
@@ -1243,8 +1333,9 @@ Risks:
 Maintainer decisions, unresolved until this design is approved:
 
 1. Accept verdict C, and leave dissolution of import cycle 1 to P1I.3.
-2. Accept moving `Plan`, `Change`, and `ChangeKind` with the
-   transaction contracts.
+2. Accept moving `Plan`, `Change`, and `ChangeKind` to
+   `packages/application/src/project-change.ts`, outside
+   `generated-file/`.
 3. Accept moving the sync-mode symbols to `sync-mode.ts` and
    re-exporting them from `generated-file-sync-declared.ts`.
 4. Accept a checksum function between 41 and 80 lines if a smaller

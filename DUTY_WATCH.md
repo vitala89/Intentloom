@@ -162,6 +162,32 @@ P1H.7 implementation is merged as PR #614
 implemented. Do not implement it. Do not start P1I.2, P1I.3, P1J,
 Undo U4, or Desktop Undo U5.
 
+### 2026-11-11, P1I.1 design review corrections
+
+- **Status:** **DESIGN PR OPEN — AWAITING MAINTAINER APPROVAL.**
+  Corrections stay on PR #615,
+  https://github.com/vitala89/Intentloom/pull/615. P1I.1 is still not
+  implemented. Do not merge. Do not start implementation.
+- **Trust boundary:** The diagram no longer sends CLI, daemon, MCP,
+  Desktop, and Neutron through the Approved Apply gate.
+  `syncProject` reaches `synchronizeGeneratedFiles` only after its
+  own plan checks. `initProject` uses `plan` and `apply` and does not
+  call `synchronizeGeneratedFiles`. The gate stays inside
+  `executeApprovedApplyPlan`, before that function calls the
+  transaction. The harness benchmark sample calls the transaction
+  directly and does not pass the gate.
+- **Shared contracts:** `Plan`, `Change`, and `ChangeKind` move to
+  `packages/application/src/project-change.ts`. Transaction contracts
+  stay under `generated-file/`. The public names are unchanged. The
+  new file imports nothing that reaches `index.ts`, so both SCC
+  membership lists stay the same.
+- **Corruption codes:** `PostWriteCorruptionCode` has 31 string
+  literals. `tests/post-write-corruption.test.ts` names all 31. The
+  manifest `ownershipPolicy` branch of
+  `ownership-classification-invalid` has no separate case.
+- **Not done:** maintainer approval, implementation, production edits,
+  P1I.2, P1I.3, P1J, Undo U4, Desktop Undo U5.
+
 ### 2026-11-11, Packages architecture P1I.1 generated-file transaction design
 
 - **Status:** **DESIGN PR OPEN — AWAITING MAINTAINER APPROVAL.**
