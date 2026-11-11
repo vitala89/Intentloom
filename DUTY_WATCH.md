@@ -159,14 +159,16 @@ P1H.7 implementation is merged as PR #614
 (https://github.com/vitala89/Intentloom/pull/614,
 `e07fddccbc771e415bc1d9056051edb9e00b4d58`). P1H is complete.
 **P1I.1** generated-file transaction design is merged as PR #615
-(`8bc9e07c74beb701adaae9e30dacb6aec252b58f`). Implementation extracts
-the generated-file commit from `packages/application/src/index.ts`.
-Do not start P1I.2, P1I.3, P1J, Undo U4, or Desktop Undo U5.
+(`8bc9e07c74beb701adaae9e30dacb6aec252b58f`). Implementation is open
+as PR #616 (https://github.com/vitala89/Intentloom/pull/616) and is
+not merged. Do not start P1I.2, P1I.3, P1J, Undo U4, or Desktop Undo
+U5.
 
 ### 2026-11-11, Packages architecture P1I.1 generated-file transaction
 
 - **Status:** **IMPLEMENTED — PR OPEN, AWAITING MAINTAINER REVIEW.**
-  Design PR #615 is merged at
+  PR #616, https://github.com/vitala89/Intentloom/pull/616. Design
+  PR #615 is merged at
   `8bc9e07c74beb701adaae9e30dacb6aec252b58f`. The implementation is
   not merged. A green CI result is not approval. Do not merge. Do not
   start P1I.2, P1I.3, P1J, Undo U4, or Desktop Undo U5.

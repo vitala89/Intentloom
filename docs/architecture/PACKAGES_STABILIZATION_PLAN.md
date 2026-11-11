@@ -114,9 +114,10 @@ implemented. P1H.7 design is merged as PR #613
 (https://github.com/vitala89/Intentloom/pull/614,
 `e07fddccbc771e415bc1d9056051edb9e00b4d58`). P1H is complete.
 P1I.1 design is merged as PR #615
-(`8bc9e07c74beb701adaae9e30dacb6aec252b58f`). Implementation extracts
-the generated-file transaction. P1I.2, P1I.3, P1J, Undo U4, and Desktop
-Undo U5 have not started.
+(`8bc9e07c74beb701adaae9e30dacb6aec252b58f`). Implementation is open
+as PR #616 (https://github.com/vitala89/Intentloom/pull/616) and is
+not merged. P1I.2, P1I.3, P1J, Undo U4, and Desktop Undo U5 have not
+started.
 Neutron's R4A topology stays frozen.
 The measurements below remain the P1A baseline and are not restated as the
 post-extraction size.
@@ -2329,9 +2330,10 @@ implemented. P1H.7 design is merged as PR #613
 (https://github.com/vitala89/Intentloom/pull/614,
 `e07fddccbc771e415bc1d9056051edb9e00b4d58`). P1H is complete.
 P1I.1 design is merged as PR #615
-(`8bc9e07c74beb701adaae9e30dacb6aec252b58f`). Implementation extracts
-the generated-file transaction. P1I.2, P1I.3, P1J, Undo U4, and Desktop
-Undo U5 have not started.
+(`8bc9e07c74beb701adaae9e30dacb6aec252b58f`). Implementation is open
+as PR #616 (https://github.com/vitala89/Intentloom/pull/616) and is
+not merged. P1I.2, P1I.3, P1J, Undo U4, and Desktop Undo U5 have not
+started.
 
 On `911b229af00fcde54d8861af83a56e7e61df0902`, `index.ts` measures
 5,339 effective lines and 5,620 physical lines. The selected family is
@@ -2526,9 +2528,10 @@ implemented. P1H.7 design is merged as PR #613
 (https://github.com/vitala89/Intentloom/pull/614,
 `e07fddccbc771e415bc1d9056051edb9e00b4d58`). P1H is complete.
 P1I.1 design is merged as PR #615
-(`8bc9e07c74beb701adaae9e30dacb6aec252b58f`). Implementation extracts
-the generated-file transaction. P1I.2, P1I.3, P1J, Undo U4, and Desktop
-Undo U5 have not started.
+(`8bc9e07c74beb701adaae9e30dacb6aec252b58f`). Implementation is open
+as PR #616 (https://github.com/vitala89/Intentloom/pull/616) and is
+not merged. P1I.2, P1I.3, P1J, Undo U4, and Desktop Undo U5 have not
+started.
 
 On `7a77db52753360f0029cd266d8c95eb78c34995c`, `index.ts` measures
 5,102 effective lines and 5,362 physical lines. The selected family is
@@ -2734,9 +2737,10 @@ implementation is merged as PR #614
 (https://github.com/vitala89/Intentloom/pull/614,
 `e07fddccbc771e415bc1d9056051edb9e00b4d58`). P1H is complete.
 P1I.1 design is merged as PR #615
-(`8bc9e07c74beb701adaae9e30dacb6aec252b58f`). Implementation extracts
-the generated-file transaction. P1I.2, P1I.3, P1J, Undo U4, and Desktop
-Undo U5 have not started.
+(`8bc9e07c74beb701adaae9e30dacb6aec252b58f`). Implementation is open
+as PR #616 (https://github.com/vitala89/Intentloom/pull/616) and is
+not merged. P1I.2, P1I.3, P1J, Undo U4, and Desktop Undo U5 have not
+started.
 
 On `2c0749dce9a31976195277971d6fb35fe663cd31`, `index.ts` measures
 4,833 effective lines and 5,064 physical lines. The selected family is
@@ -2861,9 +2865,10 @@ is required.** P1H.6 is fully implemented at PR #612
 merged as PR #614 (https://github.com/vitala89/Intentloom/pull/614,
 `e07fddccbc771e415bc1d9056051edb9e00b4d58`). P1H.7 is complete. P1H
 is complete. P1I.1 design is merged as PR #615
-(`8bc9e07c74beb701adaae9e30dacb6aec252b58f`). Implementation extracts
-the generated-file transaction. P1I.2, P1I.3, P1J, Undo U4, and Desktop
-Undo U5 have not started.
+(`8bc9e07c74beb701adaae9e30dacb6aec252b58f`). Implementation is open
+as PR #616 (https://github.com/vitala89/Intentloom/pull/616) and is
+not merged. P1I.2, P1I.3, P1J, Undo U4, and Desktop Undo U5 have not
+started.
 
 The design inventory below is the pre-implementation measurement.
 
@@ -2935,8 +2940,9 @@ stay concurrent, with the previous catch boundaries. Doctor errors
 still propagate. Sync stays sequential, still does not write, and
 keeps a stored health score of 0 as 0. Public names and the twelve
 export-map keys stay. P1H is complete. P1I.1 design is merged as PR #615
-(`8bc9e07c74beb701adaae9e30dacb6aec252b58f`). Implementation extracts
-the generated-file transaction.
+(`8bc9e07c74beb701adaae9e30dacb6aec252b58f`). Implementation is open
+as PR #616 (https://github.com/vitala89/Intentloom/pull/616) and is
+not merged.
 
 ### P1I — transaction and lifecycle
 
@@ -2946,7 +2952,8 @@ P1I.1 design is merged as PR #615
 The feasibility verdict is C: the package root keeps
 `synchronizeGeneratedFiles` as the mode dispatcher, and the
 generated-files commit lives in leaves that do not import
-`index.ts`. `Plan`, `Change`, and `ChangeKind` live in
+`index.ts`. Implementation is open as PR #616
+(https://github.com/vitala89/Intentloom/pull/616) and is not merged. `Plan`, `Change`, and `ChangeKind` live in
 `packages/application/src/project-change.ts`. Measured with
 `measureProductionSource`, `index.ts` is 3,760 effective lines and
 3,956 physical lines, down from 4,547 and 4,769.

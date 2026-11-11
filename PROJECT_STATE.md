@@ -1149,7 +1149,9 @@ merged as PR #615
 `8bc9e07c74beb701adaae9e30dacb6aec252b58f`). The approved contract is
 `docs/designs/p1i1-generated-file-transaction/SYSTEM_DESIGN.md`. The
 feasibility verdict is C: composition-root dispatch with leaf-owned
-transaction contracts. Implementation keeps
+transaction contracts. Implementation is open as PR #616
+(https://github.com/vitala89/Intentloom/pull/616) and is not merged.
+Implementation keeps
 `synchronizeGeneratedFiles` on `index.ts` and moves the generated-files
 commit under `packages/application/src/generated-file/`. `Plan`,
 `Change`, and `ChangeKind` live in
