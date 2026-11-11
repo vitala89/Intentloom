@@ -1,0 +1,29 @@
+stateDiagram-v2
+  [*] --> Prewrite
+  Prewrite --> Rejected: collision or noncanonical path
+  Prewrite --> GeneratedStage: checks pass
+  state "generated-stage" as GeneratedStage
+  state "manifest-stage" as ManifestStage
+  state "source-map-stage" as SourceMapStage
+  state "generated-commit" as GeneratedCommit
+  state "manifest-finalize" as ManifestFinalize
+  state "source-map-finalize" as SourceMapFinalize
+  state "post-write-consistency" as PostWrite
+  state "success-cleanup" as SuccessCleanup
+  GeneratedStage --> ManifestStage: inject before any write
+  ManifestStage --> SourceMapStage: inject before any write
+  SourceMapStage --> GeneratedCommit: each generated file
+  GeneratedCommit --> ManifestFinalize: manifest file
+  ManifestFinalize --> SourceMapFinalize: source-map file
+  SourceMapFinalize --> PostWrite: writes finished
+  PostWrite --> SuccessCleanup: validation valid
+  SuccessCleanup --> Success
+  GeneratedStage --> Rollback: injected failure
+  ManifestStage --> Rollback: injected failure
+  SourceMapStage --> Rollback: injected failure
+  GeneratedCommit --> Rollback: injected failure
+  ManifestFinalize --> Rollback: injected failure
+  SourceMapFinalize --> Rollback: injected failure
+  PostWrite --> Rollback: invalid metadata or injection
+  SuccessCleanup --> Rollback: injected failure
+  Rollback --> Failed

@@ -1,0 +1,16 @@
+flowchart TB
+  caller["CLI daemon MCP Desktop Neutron"]
+  gate["Approved Apply gate"]
+  engine["approved-apply-engine.ts"]
+  barrel["index.ts transaction dispatcher"]
+  owned["generated-files commit"]
+  declared["declared-paths commit"]
+  fs["injected FileSystem"]
+  caller --> gate
+  gate -->|rejected plan| caller
+  gate -->|passed plan| engine
+  engine --> barrel
+  barrel --> owned
+  barrel --> declared
+  owned --> fs
+  declared --> fs

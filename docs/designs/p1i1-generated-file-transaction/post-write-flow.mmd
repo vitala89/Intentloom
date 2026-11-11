@@ -1,0 +1,20 @@
+flowchart TD
+  read["re-read manifest and source map"]
+  read --> parse{"JSON parses"}
+  parse -->|no| malformed["json malformed"]
+  parse -->|yes| identity{"identity agrees"}
+  identity -->|no| fail["first invalid code then rollback"]
+  identity -->|yes| versions{"versions compatible"}
+  versions -->|no| fail
+  versions -->|yes| ownership{"ownership valid"}
+  ownership -->|no| fail
+  ownership -->|yes| shape{"paths unique"}
+  shape -->|no| fail
+  shape -->|yes| present{"destinations exist"}
+  present -->|no| fail
+  present -->|yes| entries{"planned entries present"}
+  entries -->|no| fail
+  entries -->|yes| sums{"checksums and bytes agree"}
+  sums -->|no| fail
+  sums -->|yes| valid["valid result"]
+  malformed --> fail

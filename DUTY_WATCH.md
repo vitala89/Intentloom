@@ -155,10 +155,56 @@ implementation is merged as PR #612
 `b80614d5d65fbdbd9cbc4831a6593ead6b155280`). P1H.6 is fully
 implemented. **P1H.7** Interactive Workspace read model design is
 merged (PR #613, `017cb370cf4329a96d723cd83721acbb175f1827`).
-P1H.7 implementation is open as PR #614
-(https://github.com/vitala89/Intentloom/pull/614) on
-`refactor/application-workspace-read-model-p1h7` and is not merged.
-Do not merge it. Do not start P1I, P1J, Undo U4, or Desktop Undo U5.
+P1H.7 implementation is merged as PR #614
+(https://github.com/vitala89/Intentloom/pull/614,
+`e07fddccbc771e415bc1d9056051edb9e00b4d58`). P1H is complete.
+**P1I.1** generated-file transaction design is proposed and is not
+implemented. Do not implement it. Do not start P1I.2, P1I.3, P1J,
+Undo U4, or Desktop Undo U5.
+
+### 2026-11-11, Packages architecture P1I.1 generated-file transaction design
+
+- **Status:** **DESIGN PR OPEN — AWAITING MAINTAINER APPROVAL.**
+  P1I.1 is not implemented. A green CI result is not approval. Do not
+  merge. Do not start implementation, P1I.2, P1I.3, P1J, Undo U4, or
+  Desktop Undo U5.
+- **Branch:** `docs/architecture-p1i1-generated-file-transaction`
+- **Baseline:** `e07fddccbc771e415bc1d9056051edb9e00b4d58` (PR #614,
+  P1H.7 implementation merged). The pull-request head was
+  `4ae226125c91301ae5dedfe2a2dfe87b5127110f`. CodeQL, Governance,
+  Desktop SEA Feasibility, Compatibility, and Harness Performance
+  Benchmark passed on that head. The merge push passed CodeQL,
+  Documentation, and Compatibility. P1H is complete. Open pull
+  requests at the start were Dependabot updates and did not overlap
+  this design.
+- **Design:** `docs/designs/p1i1-generated-file-transaction/SYSTEM_DESIGN.md`
+- **Verdict:** **C. Composition-root dispatch, with leaf-owned
+  transaction contracts.** `synchronizeGeneratedFiles` stays on
+  `index.ts` and forwards `declared-paths-only` to
+  `synchronizeDeclaredProjectPaths`. The generated-files commit,
+  metadata, post-write validation, and rollback move under
+  `packages/application/src/generated-file/`. Those modules do not
+  import `index.ts`. Direct extraction would grow the Approved Apply
+  import component from 3 files to 4 and the re-export component from
+  29 files to 30.
+- **Modes:** Generated-files mode writes generated files, then the
+  manifest, then the source map. Declared-paths mode does not write
+  metadata, does not sort rollback failures, and keeps its own
+  `safeDestination`. The two copies are not unified.
+- **SCC:** Import-only components stay two of size 3. Re-export
+  components stay sizes 4, 29, and 3. Membership is unchanged.
+  `approved-apply-baseline.ts` keeps its `FileSystem` import from
+  `index.ts`. That retarget remains P1I.3.
+- **Size:** `index.ts` measures 4,547 effective lines and 4,769
+  physical lines. The move is estimated near 3,770 effective lines.
+  That estimate is not an implementation measurement. New files are
+  planned at or below 250 effective lines.
+  `validateCommittedOwnershipState` is 246 effective lines and must
+  be split. `quality-exceptions.json` is unchanged.
+- **Not done:** maintainer approval, implementation, production edits,
+  P1I.2, P1I.3, P1J, Undo U4, Desktop Undo U5.
+- **Next:** Maintainer review. Do not merge. Do not implement P1I.1.
+  If verdict C is rejected, P1I.1 stays blocked.
 
 ### 2026-11-11, Packages architecture P1H.7 interactive workspace read model
 

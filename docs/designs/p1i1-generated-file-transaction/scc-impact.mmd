@@ -1,0 +1,18 @@
+flowchart TB
+  subgraph importNow ["Import SCC stays size 3"]
+    baseline["approved-apply-baseline.ts"]
+    declared["generated-file-sync-declared.ts"]
+    index["index.ts"]
+  end
+  subgraph outside ["New modules stay outside every SCC"]
+    commit["generated-file-transaction.ts"]
+    contracts["transaction-contracts.ts"]
+    mode["sync-mode.ts"]
+  end
+  index --> declared
+  declared --> baseline
+  baseline --> index
+  index --> commit
+  index --> contracts
+  declared --> mode
+  contracts --> mode

@@ -1,0 +1,14 @@
+sequenceDiagram
+  participant Caller
+  participant Barrel as index.ts
+  participant Commit as generated-file transaction
+  participant FS as FileSystem
+  Caller->>Barrel: synchronizeGeneratedFiles
+  Barrel->>Commit: owned generated files
+  alt destination collision
+    Commit-->>Barrel: failed plan destination-collision
+  else noncanonical stored path
+    Commit-->>Barrel: failed plan invalid-stored-path
+  end
+  Note over Commit,FS: no exists read of destinations and no write
+  Barrel-->>Caller: status failed and rollbackAttempted false

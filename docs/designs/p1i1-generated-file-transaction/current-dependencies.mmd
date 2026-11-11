@@ -1,0 +1,21 @@
+flowchart LR
+  index["index.ts"]
+  declared["generated-file-sync-declared.ts"]
+  baseline["approved-apply-baseline.ts"]
+  engine["approved-apply-engine.ts"]
+  host["host-file-system.ts"]
+  paths["project-path.ts"]
+  collisions["destination-collisions.ts"]
+  sample["harness-benchmark-sample.ts"]
+  index --> declared
+  index --> host
+  index --> paths
+  index --> collisions
+  declared --> index
+  declared --> baseline
+  declared --> collisions
+  baseline --> index
+  engine --> index
+  engine --> declared
+  engine --> baseline
+  sample --> index
