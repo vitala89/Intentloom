@@ -165,9 +165,10 @@ Undo U4, or Desktop Undo U5.
 ### 2026-11-11, Packages architecture P1I.1 generated-file transaction design
 
 - **Status:** **DESIGN PR OPEN — AWAITING MAINTAINER APPROVAL.**
-  P1I.1 is not implemented. A green CI result is not approval. Do not
-  merge. Do not start implementation, P1I.2, P1I.3, P1J, Undo U4, or
-  Desktop Undo U5.
+  PR #615, https://github.com/vitala89/Intentloom/pull/615. P1I.1 is
+  not implemented. A green CI result is not approval. Do not merge.
+  Do not start implementation, P1I.2, P1I.3, P1J, Undo U4, or Desktop
+  Undo U5.
 - **Branch:** `docs/architecture-p1i1-generated-file-transaction`
 - **Baseline:** `e07fddccbc771e415bc1d9056051edb9e00b4d58` (PR #614,
   P1H.7 implementation merged). The pull-request head was
@@ -201,6 +202,13 @@ Undo U4, or Desktop Undo U5.
   planned at or below 250 effective lines.
   `validateCommittedOwnershipState` is 246 effective lines and must
   be split. `quality-exceptions.json` is unchanged.
+- **Verification:** `git diff --check` passed. Mermaid 11.17.2 parsed
+  all ten `.mmd` sources and the ten embedded diagrams. Local
+  `pnpm verify` passed: typecheck, oxlint with pre-existing warnings
+  only, Prettier, Vitest 367 files / 3164 passed / 3 skipped, build,
+  and `git diff --check`. No production source changed, so this is
+  not a runtime claim for the extraction. Hosted CI is recorded
+  against the pull-request head after push.
 - **Not done:** maintainer approval, implementation, production edits,
   P1I.2, P1I.3, P1J, Undo U4, Desktop Undo U5.
 - **Next:** Maintainer review. Do not merge. Do not implement P1I.1.
