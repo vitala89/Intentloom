@@ -1,0 +1,23 @@
+flowchart TB
+  start["Read model call"]
+  start --> which{"Which operation"}
+  which -->|"getInteractiveWorkspaceState"| parallel["Promise.all of six reads"]
+  which -->|"syncLocalWorkspaceState"| sequential["Five awaited reads"]
+  parallel --> inspectI["inspectProject rejection becomes null"]
+  parallel --> doctorI["doctorProject rejection fails the call"]
+  parallel --> diffI["diffProject rejection becomes null"]
+  parallel --> timeI["timelineProject rejection becomes null"]
+  parallel --> auditI["getSecurityAuditReport rejection becomes null"]
+  parallel --> sessI["listAgentSessions rejection becomes an empty array"]
+  doctorI --> failI["No InteractiveWorkspaceState is returned"]
+  inspectI --> okI["State is returned only if doctor resolves"]
+  diffI --> okI
+  timeI --> okI
+  auditI --> okI
+  sessI --> okI
+  sequential --> step1["inspectProject rejection stops the call"]
+  step1 --> step2["doctorProject rejection stops the call"]
+  step2 --> step3["Reader null becomes securityScore null"]
+  step3 --> step4["Reader rejection stops the call"]
+  step4 --> step5["Conversation or task rejection stops the call"]
+  step5 --> okS["Sync state is returned only after all five resolve"]

@@ -1,0 +1,24 @@
+flowchart LR
+  done["P1H.1 through P1H.6 leaves"]
+  p1h7["P1H.7 read-model assembly"]
+  stay["Remain in index.ts"]
+  p1i["P1I, not started"]
+  p1j["P1J, not started"]
+  later["Undo U4 and Desktop Undo U5, not started"]
+  done --> p1h7
+  p1h7 -->|"imports reader only"| done
+  p1h7 -->|"injected calls, bodies stay"| stay
+  stay --> inspect["inspectProject"]
+  stay --> doctor["doctorProject"]
+  stay --> diffFn["diffProject"]
+  stay --> timeline["timelineProject"]
+  stay --> conversations["workspace conversation commands"]
+  stay --> tasks["legacy Neutron subagent commands"]
+  stay --> applyWs["applyWorkspaceProposal"]
+  p1i --> lifecycle["init, sync, diff, doctor, inspect"]
+  p1i --> generated["generated-file transaction"]
+  p1i --> adoption["project adoption and Approved Apply retarget"]
+  p1j --> neutron["legacy Neutron helper decision"]
+  p1h7 -.->|"does not start"| p1i
+  p1h7 -.->|"does not start"| p1j
+  p1h7 -.->|"does not start"| later

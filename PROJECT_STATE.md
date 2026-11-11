@@ -1119,11 +1119,18 @@ lines, down from 4,833 and 5,064. `quality-exceptions.json` is
 unchanged. Import-only cycles stay two components of size 3.
 Re-export cycles stay three, sizes 4, 29, and 3. The new modules stay
 outside every component. The implementation pull request is #612
-(https://github.com/vitala89/Intentloom/pull/612), on
-`refactor/application-continuous-security-audit-p1h6`, commit
-`3b0e5510217f321bafd0a1b46b57c8bfc3040a69`. It is not merged. P1H.6
-is not fully implemented until that pull request merges.
-P1H.7 and later slices have not started. Ids 2 through 26 remain
+(https://github.com/vitala89/Intentloom/pull/612). The final
+pull-request head was
+`c86cf64309258deec7c4ba2d916d891943f02ec9`. It is merged as
+`b80614d5d65fbdbd9cbc4831a6593ead6b155280`. P1H.6 is fully
+implemented. P1H.7 design is proposed as PR #613
+(https://github.com/vitala89/Intentloom/pull/613) in
+`docs/designs/p1h7-interactive-workspace-read-model/SYSTEM_DESIGN.md`
+and is not implemented. The feasibility verdict is C: the read model
+needs an approved dependency-injection seam because its barrel-owned
+callees cannot be imported without growing the grandfathered
+cycles, and those callees are outside P1H. P1I, P1J, Undo U4, and
+Desktop Undo U5 have not started. Ids 2 through 26 remain
 literal `passed` checks. The score and hash formulas are unchanged.
 The reader still does not recompute either value.
 `rankProceduralMemory` stays in the barrel.

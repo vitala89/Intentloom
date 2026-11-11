@@ -1,0 +1,22 @@
+flowchart TB
+  subgraph before ["Before, unchanged after"]
+    applyScc["Import SCC size 3: Approved Apply and index.ts"]
+    neutronScc["Import SCC size 3: Neutron mutation"]
+    extScc["Re-export SCC size 4: extension update"]
+    barrelScc["Re-export SCC size 29: index.ts component"]
+    neutronRe["Re-export SCC size 3: Neutron mutation"]
+  end
+  subgraph outside ["Stays outside every SCC"]
+    memory["P1H.1 memory modules"]
+    session["P1H.2 agent-session.ts"]
+    skills["P1H.3 skill modules"]
+    findings["P1H.4 finding and SARIF modules"]
+    policy["P1H.5 policy and sandbox modules"]
+    audit["P1H.6 audit modules"]
+    host["host-file-system.ts"]
+    readModel["proposed interactive-workspace-read-model.ts"]
+  end
+  barrelScc -->|"one-way import"| readModel
+  readModel -->|"one-way import"| session
+  readModel -->|"one-way import"| audit
+  readModel -->|"one-way import"| host

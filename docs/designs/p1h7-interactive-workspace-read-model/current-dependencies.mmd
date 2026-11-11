@@ -1,0 +1,42 @@
+flowchart TB
+  cliUi["CLI ui-command"]
+  cliNeutron["CLI neutron sync"]
+  interactive["getInteractiveWorkspaceState in index.ts"]
+  syncState["syncLocalWorkspaceState in index.ts"]
+  inspect["inspectProject in index.ts"]
+  doctor["doctorProject in index.ts"]
+  diffFn["diffProject in index.ts"]
+  timeline["timelineProject in index.ts"]
+  auditRead["getSecurityAuditReport"]
+  sessions["listAgentSessions"]
+  conversations["listWorkspaceConversations in index.ts"]
+  tasks["listNeutronSubagentTasks in index.ts"]
+  planFn["private plan in index.ts"]
+  rootCheck["assertCanonicalProjectRoot in index.ts"]
+  gitPkg["collectGitEvidence"]
+  fsPort["host-file-system.ts"]
+  cliUi -->|"package root"| interactive
+  cliNeutron -->|"package root"| syncState
+  interactive --> inspect
+  interactive --> doctor
+  interactive --> diffFn
+  interactive --> timeline
+  interactive --> auditRead
+  interactive --> sessions
+  syncState --> inspect
+  syncState --> doctor
+  syncState --> auditRead
+  syncState --> conversations
+  syncState --> tasks
+  doctor --> planFn
+  diffFn --> planFn
+  timeline -->|"no injected FileSystem"| rootCheck
+  timeline --> gitPkg
+  rootCheck -->|"default nodeFileSystem"| fsPort
+  inspect --> fsPort
+  doctor --> fsPort
+  diffFn --> fsPort
+  auditRead --> fsPort
+  sessions --> fsPort
+  conversations --> fsPort
+  tasks --> fsPort

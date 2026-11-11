@@ -1,0 +1,24 @@
+sequenceDiagram
+  participant Caller
+  participant Wrap as syncLocalWorkspaceState
+  participant Asm as assembleLocalWorkspaceSyncState
+  participant Inspect as inspectProject
+  participant Doctor as doctorProject
+  participant Audit as getSecurityAuditReport
+  participant Conversations as listWorkspaceConversations
+  participant Tasks as listNeutronSubagentTasks
+  Caller->>Wrap: root, optional projectId, FileSystem
+  Note over Wrap: default FileSystem is nodeFileSystem
+  Wrap->>Asm: options, FileSystem, four barrel functions
+  Asm->>Inspect: root and injected FileSystem
+  Inspect-->>Asm: inspection
+  Asm->>Doctor: generic profile, codex, injected FileSystem
+  Doctor-->>Asm: doctor plan
+  Asm->>Audit: root and injected FileSystem
+  Audit-->>Asm: report or null
+  Asm->>Conversations: root and injected FileSystem
+  Conversations-->>Asm: validated records
+  Asm->>Tasks: root and injected FileSystem
+  Tasks-->>Asm: task records
+  Note over Asm: syncedAt is a new ISO timestamp after the five reads
+  Asm-->>Caller: LocalWorkspaceSyncState
