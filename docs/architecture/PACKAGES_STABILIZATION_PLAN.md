@@ -111,7 +111,7 @@ merged as PR #612
 `b80614d5d65fbdbd9cbc4831a6593ead6b155280`). P1H.6 is fully
 implemented. P1H.7 design is merged as PR #613
 (`017cb370cf4329a96d723cd83721acbb175f1827`). P1H.7 implementation
-is open on `refactor/application-workspace-read-model-p1h7` and is
+is open as PR #614 (https://github.com/vitala89/Intentloom/pull/614) on `refactor/application-workspace-read-model-p1h7` and is
 not merged.
 P1I, P1J, Undo U4, and Desktop Undo U5 have not started.
 Neutron's R4A topology stays frozen.
@@ -2323,7 +2323,7 @@ merged as PR #612
 `b80614d5d65fbdbd9cbc4831a6593ead6b155280`). P1H.6 is fully
 implemented. P1H.7 design is merged as PR #613
 (`017cb370cf4329a96d723cd83721acbb175f1827`). P1H.7 implementation
-is open on `refactor/application-workspace-read-model-p1h7` and is
+is open as PR #614 (https://github.com/vitala89/Intentloom/pull/614) on `refactor/application-workspace-read-model-p1h7` and is
 not merged.
 P1I, P1J, Undo U4, and Desktop Undo U5 have not started.
 
@@ -2517,7 +2517,7 @@ merged as PR #612
 `b80614d5d65fbdbd9cbc4831a6593ead6b155280`). P1H.6 is fully
 implemented. P1H.7 design is merged as PR #613
 (`017cb370cf4329a96d723cd83721acbb175f1827`). P1H.7 implementation
-is open on `refactor/application-workspace-read-model-p1h7` and is
+is open as PR #614 (https://github.com/vitala89/Intentloom/pull/614) on `refactor/application-workspace-read-model-p1h7` and is
 not merged.
 P1I, P1J, Undo U4, and Desktop Undo U5 have not started.
 
@@ -2721,7 +2721,7 @@ P1H.5 is fully implemented. Implementation is merged as PR #612
 implemented. The measurements in the following paragraphs are the
 design record from before that merge. P1H.7 design is merged as PR
 #613 (`017cb370cf4329a96d723cd83721acbb175f1827`). P1H.7
-implementation is open on `refactor/application-workspace-read-model-p1h7`
+implementation is open as PR #614 (https://github.com/vitala89/Intentloom/pull/614) on `refactor/application-workspace-read-model-p1h7`
 and is not merged. P1I, P1J, Undo U4, and Desktop Undo U5 have not
 started.
 
@@ -2778,7 +2778,7 @@ pull-request head was
 `c86cf64309258deec7c4ba2d916d891943f02ec9`. It is merged as
 `b80614d5d65fbdbd9cbc4831a6593ead6b155280`. P1H.7 design is merged
 as PR #613 (`017cb370cf4329a96d723cd83721acbb175f1827`). P1H.7
-implementation is open on `refactor/application-workspace-read-model-p1h7`
+implementation is open as PR #614 (https://github.com/vitala89/Intentloom/pull/614) on `refactor/application-workspace-read-model-p1h7`
 and is not merged.
 
 `securityAuditReportPath`, `getSecurityAuditReport`, and
@@ -2844,6 +2844,7 @@ Design is merged as PR #613
 The feasibility verdict is **C. An approved dependency-injection seam
 is required.** P1H.6 is fully implemented at PR #612
 (`b80614d5d65fbdbd9cbc4831a6593ead6b155280`). Implementation is open
+as PR #614 (https://github.com/vitala89/Intentloom/pull/614)
 on `refactor/application-workspace-read-model-p1h7` and is not
 merged. P1H.7 is not complete until that pull request merges. P1I,
 P1J, Undo U4, and Desktop Undo U5 have not started.
@@ -2892,7 +2893,8 @@ blocked and the implementation must not import the barrel.
 
 ##### P1H.7 implementation
 
-The approved seam is implemented and not merged. `index.ts` remains
+The approved seam is implemented in PR #614
+(https://github.com/vitala89/Intentloom/pull/614) and is not merged. `index.ts` remains
 the composition root. `getInteractiveWorkspaceState` and
 `syncLocalWorkspaceState` keep their public signatures and pass the
 barrel-owned functions into

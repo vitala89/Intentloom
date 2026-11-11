@@ -1128,7 +1128,8 @@ implemented. P1H.7 design is merged as PR #613
 `017cb370cf4329a96d723cd83721acbb175f1827`). The approved contract is
 `docs/designs/p1h7-interactive-workspace-read-model/SYSTEM_DESIGN.md`.
 The feasibility verdict is C: the read model uses the approved
-dependency-injection seam. Implementation is open on
+dependency-injection seam. Implementation is open as PR #614
+(https://github.com/vitala89/Intentloom/pull/614) on
 `refactor/application-workspace-read-model-p1h7` and is not merged.
 `packages/application/src/workspace/interactive-workspace-read-model.ts`
 measures 205 effective lines and 219 physical lines.

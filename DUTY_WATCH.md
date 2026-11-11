@@ -155,14 +155,16 @@ implementation is merged as PR #612
 `b80614d5d65fbdbd9cbc4831a6593ead6b155280`). P1H.6 is fully
 implemented. **P1H.7** Interactive Workspace read model design is
 merged (PR #613, `017cb370cf4329a96d723cd83721acbb175f1827`).
-P1H.7 implementation is open on
+P1H.7 implementation is open as PR #614
+(https://github.com/vitala89/Intentloom/pull/614) on
 `refactor/application-workspace-read-model-p1h7` and is not merged.
 Do not merge it. Do not start P1I, P1J, Undo U4, or Desktop Undo U5.
 
 ### 2026-11-11, Packages architecture P1H.7 interactive workspace read model
 
 - **Status:** **IMPLEMENTED — PR OPEN, AWAITING MAINTAINER REVIEW.**
-  The implementation is on `refactor/application-workspace-read-model-p1h7`.
+  PR #614, https://github.com/vitala89/Intentloom/pull/614. The
+  implementation commit is `0eb3b3f549758e4a59b817657879844afbdc4621`.
   It is not merged. A green CI result is not approval. Do not merge.
   Do not start P1I, P1J, Undo U4, or Desktop Undo U5. P1H.7 is not
   complete until this implementation merges.
