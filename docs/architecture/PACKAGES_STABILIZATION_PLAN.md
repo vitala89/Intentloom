@@ -109,7 +109,10 @@ implemented. P1H.6 design is merged as PR #611
 merged as PR #612
 (https://github.com/vitala89/Intentloom/pull/612,
 `b80614d5d65fbdbd9cbc4831a6593ead6b155280`). P1H.6 is fully
-implemented. P1H.7 design is proposed and is not implemented.
+implemented. P1H.7 design is merged as PR #613
+(`017cb370cf4329a96d723cd83721acbb175f1827`). P1H.7 implementation
+is open as PR #614 (https://github.com/vitala89/Intentloom/pull/614) on `refactor/application-workspace-read-model-p1h7` and is
+not merged.
 P1I, P1J, Undo U4, and Desktop Undo U5 have not started.
 Neutron's R4A topology stays frozen.
 The measurements below remain the P1A baseline and are not restated as the
@@ -2318,7 +2321,10 @@ implemented. P1H.6 design is merged as PR #611
 merged as PR #612
 (https://github.com/vitala89/Intentloom/pull/612,
 `b80614d5d65fbdbd9cbc4831a6593ead6b155280`). P1H.6 is fully
-implemented. P1H.7 design is proposed and is not implemented.
+implemented. P1H.7 design is merged as PR #613
+(`017cb370cf4329a96d723cd83721acbb175f1827`). P1H.7 implementation
+is open as PR #614 (https://github.com/vitala89/Intentloom/pull/614) on `refactor/application-workspace-read-model-p1h7` and is
+not merged.
 P1I, P1J, Undo U4, and Desktop Undo U5 have not started.
 
 On `911b229af00fcde54d8861af83a56e7e61df0902`, `index.ts` measures
@@ -2509,7 +2515,10 @@ implemented. P1H.6 design is merged as PR #611
 merged as PR #612
 (https://github.com/vitala89/Intentloom/pull/612,
 `b80614d5d65fbdbd9cbc4831a6593ead6b155280`). P1H.6 is fully
-implemented. P1H.7 design is proposed and is not implemented.
+implemented. P1H.7 design is merged as PR #613
+(`017cb370cf4329a96d723cd83721acbb175f1827`). P1H.7 implementation
+is open as PR #614 (https://github.com/vitala89/Intentloom/pull/614) on `refactor/application-workspace-read-model-p1h7` and is
+not merged.
 P1I, P1J, Undo U4, and Desktop Undo U5 have not started.
 
 On `7a77db52753360f0029cd266d8c95eb78c34995c`, `index.ts` measures
@@ -2710,8 +2719,10 @@ P1H.5 is fully implemented. Implementation is merged as PR #612
 (https://github.com/vitala89/Intentloom/pull/612,
 `b80614d5d65fbdbd9cbc4831a6593ead6b155280`). P1H.6 is fully
 implemented. The measurements in the following paragraphs are the
-design record from before that merge. P1H.7 design is proposed and
-is not implemented. P1I, P1J, Undo U4, and Desktop Undo U5 have not
+design record from before that merge. P1H.7 design is merged as PR
+#613 (`017cb370cf4329a96d723cd83721acbb175f1827`). P1H.7
+implementation is open as PR #614 (https://github.com/vitala89/Intentloom/pull/614) on `refactor/application-workspace-read-model-p1h7`
+and is not merged. P1I, P1J, Undo U4, and Desktop Undo U5 have not
 started.
 
 On `2c0749dce9a31976195277971d6fb35fe663cd31`, `index.ts` measures
@@ -2765,8 +2776,10 @@ PR #612 (https://github.com/vitala89/Intentloom/pull/612), on
 `refactor/application-continuous-security-audit-p1h6`. The final
 pull-request head was
 `c86cf64309258deec7c4ba2d916d891943f02ec9`. It is merged as
-`b80614d5d65fbdbd9cbc4831a6593ead6b155280`. P1H.7 design is proposed
-and is not implemented.
+`b80614d5d65fbdbd9cbc4831a6593ead6b155280`. P1H.7 design is merged
+as PR #613 (`017cb370cf4329a96d723cd83721acbb175f1827`). P1H.7
+implementation is open as PR #614 (https://github.com/vitala89/Intentloom/pull/614) on `refactor/application-workspace-read-model-p1h7`
+and is not merged.
 
 `securityAuditReportPath`, `getSecurityAuditReport`, and
 `writeSecurityAuditReport` live in
@@ -2824,14 +2837,19 @@ Documentation, and Compatibility.
 
 #### P1H.7 — interactive workspace read model
 
-Design is proposed as PR #613
-(https://github.com/vitala89/Intentloom/pull/613) and is not
-approved. The contract is
+Design is merged as PR #613
+(https://github.com/vitala89/Intentloom/pull/613,
+`017cb370cf4329a96d723cd83721acbb175f1827`). The approved contract is
 [`docs/designs/p1h7-interactive-workspace-read-model/SYSTEM_DESIGN.md`](../designs/p1h7-interactive-workspace-read-model/SYSTEM_DESIGN.md).
-P1H.6 is fully implemented at PR #612
-(`b80614d5d65fbdbd9cbc4831a6593ead6b155280`). This design does not
-implement P1H.7. P1I, P1J, Undo U4, and Desktop Undo U5 have not
-started.
+The feasibility verdict is **C. An approved dependency-injection seam
+is required.** P1H.6 is fully implemented at PR #612
+(`b80614d5d65fbdbd9cbc4831a6593ead6b155280`). Implementation is open
+as PR #614 (https://github.com/vitala89/Intentloom/pull/614)
+on `refactor/application-workspace-read-model-p1h7` and is not
+merged. P1H.7 is not complete until that pull request merges. P1I,
+P1J, Undo U4, and Desktop Undo U5 have not started.
+
+The design inventory below is the pre-implementation measurement.
 
 The selected declarations in `packages/application/src/index.ts` are
 `InteractiveWorkspaceState` (lines 4362–4380, 19 effective lines),
@@ -2872,6 +2890,34 @@ catch boundaries. `doctorProject` errors still propagate.
 `syncLocalWorkspaceState` stays sequential and still does not write.
 Neither function is renamed. If this design is rejected, P1H.7 stays
 blocked and the implementation must not import the barrel.
+
+##### P1H.7 implementation
+
+The approved seam is implemented in PR #614
+(https://github.com/vitala89/Intentloom/pull/614) and is not merged. `index.ts` remains
+the composition root. `getInteractiveWorkspaceState` and
+`syncLocalWorkspaceState` keep their public signatures and pass the
+barrel-owned functions into
+`packages/application/src/workspace/interactive-workspace-read-model.ts`.
+That module imports `getSecurityAuditReport` and `listAgentSessions`
+directly. It does not import `index.ts` or
+`continuous-security-audit.ts`. There is no `workspace/index.ts` and
+no new package export-map key. `InteractiveWorkspaceState` stays in
+the barrel. `LocalWorkspaceSyncState` is re-exported with
+`export type`. The assemblers are not package exports.
+
+Measured with `measureProductionSource`: the new module is 205
+effective lines and 219 physical lines.
+`assembleInteractiveWorkspaceState` is 64 effective lines and 65
+physical lines. `assembleLocalWorkspaceSyncState` is 41 effective
+lines and 41 physical lines. `index.ts` is 4,547 effective lines and
+4,769 physical lines, down from 4,607 and 4,829.
+`quality-exceptions.json` is unchanged. Import-only cycles stay two
+components of size 3. Re-export cycles stay three, sizes 4, 29, and 3. The new module stays outside every component. Interactive reads
+stay concurrent, with the previous catch boundaries. Doctor errors
+still propagate. Sync stays sequential, still does not write, and
+keeps a stored health score of 0 as 0. Public names and the twelve
+export-map keys stay. P1I and P1J have not started.
 
 ### P1I — transaction and lifecycle
 

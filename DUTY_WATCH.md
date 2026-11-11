@@ -154,10 +154,70 @@ implementation is merged as PR #612
 (https://github.com/vitala89/Intentloom/pull/612,
 `b80614d5d65fbdbd9cbc4831a6593ead6b155280`). P1H.6 is fully
 implemented. **P1H.7** Interactive Workspace read model design is
-proposed as PR #613
-(https://github.com/vitala89/Intentloom/pull/613) and is not
-approved. Do not implement it. Do not start P1I,
-P1J, Undo U4, or Desktop Undo U5.
+merged (PR #613, `017cb370cf4329a96d723cd83721acbb175f1827`).
+P1H.7 implementation is open as PR #614
+(https://github.com/vitala89/Intentloom/pull/614) on
+`refactor/application-workspace-read-model-p1h7` and is not merged.
+Do not merge it. Do not start P1I, P1J, Undo U4, or Desktop Undo U5.
+
+### 2026-11-11, Packages architecture P1H.7 interactive workspace read model
+
+- **Status:** **IMPLEMENTED — PR OPEN, AWAITING MAINTAINER REVIEW.**
+  PR #614, https://github.com/vitala89/Intentloom/pull/614. The
+  implementation commit is `0eb3b3f549758e4a59b817657879844afbdc4621`.
+  It is not merged. A green CI result is not approval. Do not merge.
+  Do not start P1I, P1J, Undo U4, or Desktop Undo U5. P1H.7 is not
+  complete until this implementation merges.
+- **Branch:** `refactor/application-workspace-read-model-p1h7`
+- **Baseline:** `017cb370cf4329a96d723cd83721acbb175f1827` (PR #613,
+  P1H.7 design merged). P1H.6 is fully implemented at PR #612
+  (`b80614d5d65fbdbd9cbc4831a6593ead6b155280`). `origin/main` matched
+  that SHA. Open pull requests at the start were dependency updates
+  and did not overlap this extraction. Untracked local commit-message
+  files were left untracked.
+- **Design:** `docs/designs/p1h7-interactive-workspace-read-model/SYSTEM_DESIGN.md`,
+  approved and merged as PR #613. Verdict C, the dependency-injection
+  seam, is implemented. This change does not reopen that design.
+- **Module:** `packages/application/src/workspace/interactive-workspace-read-model.ts`
+  owns `assembleInteractiveWorkspaceState`,
+  `assembleLocalWorkspaceSyncState`, `LocalWorkspaceSyncState`, and
+  the dependency interfaces. No `workspace/index.ts`. No new export-map
+  key. The assemblers are not package exports.
+- **Seam:** `index.ts` keeps both public signatures.
+  `getInteractiveWorkspaceState` passes `inspectProject`,
+  `doctorProject`, `diffProject`, and `timelineProject`.
+  `syncLocalWorkspaceState` passes `inspectProject`, `doctorProject`,
+  `listWorkspaceConversations`, and `listNeutronSubagentTasks`.
+  The module imports `getSecurityAuditReport` and `listAgentSessions`
+  directly. It does not import `index.ts`, `@intentloom/application`,
+  or `continuous-security-audit.ts`.
+- **Behavior:** Six interactive reads still start together inside
+  `Promise.all`, with the previous catch boundaries. Doctor errors
+  still propagate. Five sync reads stay sequential and still do not
+  write. A stored health score of 0 stays 0. Public names stay.
+  `InteractiveWorkspaceState` stays in the barrel.
+  `LocalWorkspaceSyncState` is re-exported with `export type`.
+- **Size:** The new module measures 205 effective lines and 219
+  physical lines. `assembleInteractiveWorkspaceState` is 64 effective
+  and 65 physical. `assembleLocalWorkspaceSyncState` is 41 effective
+  and 41 physical. `index.ts` measures 4,547 effective lines and
+  4,769 physical lines, down from 4,607 and 4,829.
+  `quality-exceptions.json` is unchanged.
+- **Cycles:** Import-only components stay two of size 3. Re-export
+  components stay sizes 4, 29, and 3. The new module is outside every
+  component. Locked cycle tests were not edited.
+- **Verification:** Focused suites passed: 13 files, 105 tests.
+  Full `pnpm verify` passed: typecheck, oxlint, Prettier, Vitest 367
+  files / 3164 passed / 3 skipped, build, and `git diff --check`.
+  Compatibility passed on Ubuntu, macOS, and Windows for Node 22 and
+  Node 24. Desktop SEA on Ubuntu stayed in apt because
+  `azure.archive.ubuntu.com` did not resolve. The Linux dependency
+  step now removes that mirror line before `apt-get`, so the first
+  mirror is the public HTTPS archive, and the step times out after
+  8 minutes. The hung runs were cancelled.
+- **Not done:** maintainer review, merge, P1I, P1J, Undo U4, Desktop
+  Undo U5. Protocol and Validator barrels were not modified.
+- **Next:** Maintainer review. Do not merge. Do not start P1I.
 
 ### 2026-11-10, Packages architecture P1H.7 interactive workspace read model design
 

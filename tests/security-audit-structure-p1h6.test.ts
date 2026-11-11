@@ -180,8 +180,19 @@ describe("P1H.6 continuous security audit structure", () => {
       "packages/application/src/index.ts",
       "utf8",
     );
-    expect(indexSource).toContain(
+    expect(indexSource).not.toContain(
       'import { getSecurityAuditReport } from "./security/security-audit-report-store.js"',
+    );
+    expect(indexSource).toContain(
+      'export { getSecurityAuditReport } from "./security/security-audit-report-store.js"',
+    );
+    expect(
+      readFileSync(
+        "packages/application/src/workspace/interactive-workspace-read-model.ts",
+        "utf8",
+      ),
+    ).toContain(
+      'import { getSecurityAuditReport } from "../security/security-audit-report-store.js"',
     );
     expect(indexSource).toContain(
       'export { runContinuousSecurityAudit } from "./security/continuous-security-audit.js"',
@@ -218,8 +229,8 @@ describe("P1H.6 continuous security audit structure", () => {
       "packages/application/src/index.ts",
     );
     expect(indexMetrics).toMatchObject({
-      effectiveCodeLines: 4607,
-      physicalLines: 4829,
+      effectiveCodeLines: 4547,
+      physicalLines: 4769,
     });
     const landed = {
       "security/security-audit-report-store.ts": {

@@ -1123,14 +1123,27 @@ outside every component. The implementation pull request is #612
 pull-request head was
 `c86cf64309258deec7c4ba2d916d891943f02ec9`. It is merged as
 `b80614d5d65fbdbd9cbc4831a6593ead6b155280`. P1H.6 is fully
-implemented. P1H.7 design is proposed as PR #613
-(https://github.com/vitala89/Intentloom/pull/613) in
-`docs/designs/p1h7-interactive-workspace-read-model/SYSTEM_DESIGN.md`
-and is not implemented. The feasibility verdict is C: the read model
-needs an approved dependency-injection seam because its barrel-owned
-callees cannot be imported without growing the grandfathered
-cycles, and those callees are outside P1H. P1I, P1J, Undo U4, and
-Desktop Undo U5 have not started. Ids 2 through 26 remain
+implemented. P1H.7 design is merged as PR #613
+(https://github.com/vitala89/Intentloom/pull/613,
+`017cb370cf4329a96d723cd83721acbb175f1827`). The approved contract is
+`docs/designs/p1h7-interactive-workspace-read-model/SYSTEM_DESIGN.md`.
+The feasibility verdict is C: the read model uses the approved
+dependency-injection seam. Implementation is open as PR #614
+(https://github.com/vitala89/Intentloom/pull/614) on
+`refactor/application-workspace-read-model-p1h7` and is not merged.
+Desktop SEA on Ubuntu was waiting on `azure.archive.ubuntu.com`,
+which did not resolve. The workflow now removes that mirror line
+before installing the Tauri packages, and the step times out after
+8 minutes.
+`packages/application/src/workspace/interactive-workspace-read-model.ts`
+measures 205 effective lines and 219 physical lines.
+`index.ts` measures 4,547 effective lines and 4,769 physical lines,
+down from 4,607 and 4,829. Import-only cycles stay two components of
+size 3. Re-export cycles stay three, sizes 4, 29, and 3. The new
+module stays outside every component. `quality-exceptions.json` is
+unchanged. P1H.7 is not complete until the implementation pull
+request merges. P1I, P1J, Undo U4, and Desktop Undo U5 have not
+started. Ids 2 through 26 remain
 literal `passed` checks. The score and hash formulas are unchanged.
 The reader still does not recompute either value.
 `rankProceduralMemory` stays in the barrel.

@@ -4086,7 +4086,7 @@ export {
   searchPersistentMemory,
 } from "./memory/persistent-memory-retrieval.js";
 
-import {
+export {
   closeAgentSession,
   deleteAgentSession,
   exportAgentSession,
@@ -4095,18 +4095,8 @@ import {
   startAgentSession,
 } from "./agent-session/agent-session.js";
 
-export {
-  closeAgentSession,
-  deleteAgentSession,
-  exportAgentSession,
-  getAgentSession,
-  listAgentSessions,
-  startAgentSession,
-};
-
 import { securityFindingPath } from "./security/security-finding-store.js";
 import { evaluateProposalAgainstSandbox } from "./security/sandbox-proposal-evaluation.js";
-import { getSecurityAuditReport } from "./security/security-audit-report-store.js";
 
 export {
   acceptSecurityRisk,
@@ -4359,6 +4349,14 @@ export async function runLocalSecurityAdapters(
   return results;
 }
 
+import {
+  assembleInteractiveWorkspaceState,
+  assembleLocalWorkspaceSyncState,
+  type LocalWorkspaceSyncState,
+} from "./workspace/interactive-workspace-read-model.js";
+
+export type { LocalWorkspaceSyncState };
+
 export interface InteractiveWorkspaceState {
   readonly projectId: string;
   readonly root: string;
@@ -4394,44 +4392,12 @@ export async function getInteractiveWorkspaceState(
   },
   fs: FileSystem = nodeFileSystem,
 ): Promise<InteractiveWorkspaceState> {
-  const projectId = options.projectId ?? "project-local";
-  const [inspect, doctor, diff, timeline, auditReport, sessions] =
-    await Promise.all([
-      inspectProject(options.root, fs).catch(() => null),
-      doctorProject(
-        { root: options.root, profile: "generic", adapters: ["codex"] },
-        fs,
-      ),
-      diffProject(
-        {
-          root: options.root,
-          profile: "generic",
-          adapters: ["codex"],
-          dryRun: true,
-        },
-        fs,
-      ).catch(() => null),
-      timelineProject({
-        root: options.root,
-        caseId: "tui-timeline",
-        limit: 50,
-      }).catch(() => null),
-      getSecurityAuditReport({ root: options.root }, fs).catch(() => null),
-      listAgentSessions({ root: options.root }, fs).catch(() => []),
-    ]);
-
-  return {
-    projectId,
-    root: options.root,
-    activeView: options.activeView ?? "inspect",
-    inspect,
-    findings: doctor.findings,
-    diff,
-    timeline,
-    auditReport,
-    sessions,
-    generatedAt: new Date().toISOString(),
-  };
+  return assembleInteractiveWorkspaceState(options, fs, {
+    inspectProject,
+    doctorProject,
+    diffProject,
+    timelineProject,
+  });
 }
 
 function workspaceConversationPath(
@@ -4774,42 +4740,16 @@ export async function listNeutronSubagentTasks(
     (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
   );
 }
-export interface LocalWorkspaceSyncState {
-  readonly projectId: string;
-  readonly root: string;
-  readonly readiness: string;
-  readonly findingsCount: number;
-  readonly securityScore: number | null;
-  readonly activeConversationsCount: number;
-  readonly subagentTasksCount: number;
-  readonly syncedAt: string;
-}
 export async function syncLocalWorkspaceState(
   options: { root: string; projectId?: string },
   fs: FileSystem = nodeFileSystem,
 ): Promise<LocalWorkspaceSyncState> {
-  const projectId = options.projectId ?? "project-local";
-  const inspection = await inspectProject(options.root, fs);
-  const doctor = await doctorProject(
-    { root: options.root, profile: "generic", adapters: ["codex"] },
-    fs,
-  );
-  const auditReport = await getSecurityAuditReport({ root: options.root }, fs);
-  const conversations = await listWorkspaceConversations(
-    { root: options.root },
-    fs,
-  );
-  const tasks = await listNeutronSubagentTasks({ root: options.root }, fs);
-  return {
-    projectId,
-    root: options.root,
-    readiness: inspection.readiness,
-    findingsCount: doctor.findings.length,
-    securityScore: auditReport ? auditReport.healthScore : null,
-    activeConversationsCount: conversations.length,
-    subagentTasksCount: tasks.length,
-    syncedAt: new Date().toISOString(),
-  };
+  return assembleLocalWorkspaceSyncState(options, fs, {
+    inspectProject,
+    doctorProject,
+    listWorkspaceConversations,
+    listNeutronSubagentTasks,
+  });
 }
 export * from "./inception.js";
 export * from "./inception/inception-discovery.js";
