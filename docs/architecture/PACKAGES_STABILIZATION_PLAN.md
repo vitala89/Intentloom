@@ -117,7 +117,7 @@ P1I.1 design is merged as PR #615
 (`8bc9e07c74beb701adaae9e30dacb6aec252b58f`). Implementation is merged
 as PR #616 (https://github.com/vitala89/Intentloom/pull/616,
 `b9201e9d480b34e453d08e1803f94e734d1e3f1f`). P1I.1 is complete.
-P1I.2 design is proposed and is not approved. P1I.2 implementation,
+P1I.2 design is proposed as PR #617 and is not approved. P1I.2 implementation,
 P1I.3, P1J, Undo U4, and Desktop Undo U5 have not started.
 Neutron's R4A topology stays frozen.
 The measurements below remain the P1A baseline and are not restated as the
@@ -2334,7 +2334,7 @@ P1I.1 design is merged as PR #615
 (`8bc9e07c74beb701adaae9e30dacb6aec252b58f`). Implementation is merged
 as PR #616 (https://github.com/vitala89/Intentloom/pull/616,
 `b9201e9d480b34e453d08e1803f94e734d1e3f1f`). P1I.1 is complete.
-P1I.2 design is proposed and is not approved. P1I.2 implementation,
+P1I.2 design is proposed as PR #617 and is not approved. P1I.2 implementation,
 P1I.3, P1J, Undo U4, and Desktop Undo U5 have not started.
 
 On `911b229af00fcde54d8861af83a56e7e61df0902`, `index.ts` measures
@@ -2533,7 +2533,7 @@ P1I.1 design is merged as PR #615
 (`8bc9e07c74beb701adaae9e30dacb6aec252b58f`). Implementation is merged
 as PR #616 (https://github.com/vitala89/Intentloom/pull/616,
 `b9201e9d480b34e453d08e1803f94e734d1e3f1f`). P1I.1 is complete.
-P1I.2 design is proposed and is not approved. P1I.2 implementation,
+P1I.2 design is proposed as PR #617 and is not approved. P1I.2 implementation,
 P1I.3, P1J, Undo U4, and Desktop Undo U5 have not started.
 
 On `7a77db52753360f0029cd266d8c95eb78c34995c`, `index.ts` measures
@@ -2743,7 +2743,7 @@ P1I.1 design is merged as PR #615
 (`8bc9e07c74beb701adaae9e30dacb6aec252b58f`). Implementation is merged
 as PR #616 (https://github.com/vitala89/Intentloom/pull/616,
 `b9201e9d480b34e453d08e1803f94e734d1e3f1f`). P1I.1 is complete.
-P1I.2 design is proposed and is not approved. P1I.2 implementation,
+P1I.2 design is proposed as PR #617 and is not approved. P1I.2 implementation,
 P1I.3, P1J, Undo U4, and Desktop Undo U5 have not started.
 
 On `2c0749dce9a31976195277971d6fb35fe663cd31`, `index.ts` measures
@@ -2872,7 +2872,7 @@ is complete. P1I.1 design is merged as PR #615
 (`8bc9e07c74beb701adaae9e30dacb6aec252b58f`). Implementation is merged
 as PR #616 (https://github.com/vitala89/Intentloom/pull/616,
 `b9201e9d480b34e453d08e1803f94e734d1e3f1f`). P1I.1 is complete.
-P1I.2 design is proposed and is not approved. P1I.2 implementation,
+P1I.2 design is proposed as PR #617 and is not approved. P1I.2 implementation,
 P1I.3, P1J, Undo U4, and Desktop Undo U5 have not started.
 
 The design inventory below is the pre-implementation measurement.
@@ -2948,7 +2948,7 @@ export-map keys stay. P1H is complete. P1I.1 design is merged as PR #615
 (`8bc9e07c74beb701adaae9e30dacb6aec252b58f`). Implementation is merged
 as PR #616 (https://github.com/vitala89/Intentloom/pull/616,
 `b9201e9d480b34e453d08e1803f94e734d1e3f1f`). P1I.1 is complete.
-P1I.2 design is proposed and is not approved.
+P1I.2 design is proposed as PR #617 and is not approved.
 
 ### P1I — transaction and lifecycle
 
@@ -2975,12 +2975,13 @@ package export-map keys are unchanged. A following PR moves
 `inspectProject`. A following PR moves `adoptProject`,
 `planProjectAdoption`, and `applyProjectAdoption`, together with the
 Approved Apply import retarget that removes `index.ts` from cycle 1.
-P1I.2 design is proposed and is not approved. P1I.2 implementation,
+P1I.2 design is proposed as PR #617 and is not approved. P1I.2 implementation,
 P1I.3, and P1J have not started.
 
 #### P1I.2 — project lifecycle
 
-Design is proposed in
+Design is proposed as PR #617
+(https://github.com/vitala89/Intentloom/pull/617) in
 [`docs/designs/p1i2-project-lifecycle/SYSTEM_DESIGN.md`](../designs/p1i2-project-lifecycle/SYSTEM_DESIGN.md).
 The feasibility verdict is **B+C**: leaf-owned lifecycle contracts and
 operations, with one composition-root binding for

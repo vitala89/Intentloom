@@ -1,8 +1,9 @@
 # P1I.2 Project Lifecycle extraction
 
-Status: **proposed**. This document is the Design First review artifact for
-P1I.2. It does not implement the extraction. A maintainer must approve it
-before any production move. A green CI result is not approval.
+Status: **proposed** (PR #617). This document is the Design First review
+artifact for P1I.2. It does not implement the extraction. A maintainer
+must approve it before any production move. A green CI result is not
+approval.
 
 Feasibility verdict: **B+C. Leaf-owned lifecycle contracts and operations,
 with one composition-root binding for `synchronizeGeneratedFiles`.** Direct

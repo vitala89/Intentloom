@@ -169,7 +169,8 @@ Undo U5.
 ### 2026-11-12, Packages architecture P1I.2 project lifecycle design
 
 - **Status:** **DESIGN PR OPEN — AWAITING MAINTAINER APPROVAL.**
-  P1I.1 is complete. Design PR #615 is merged at
+  PR #617, https://github.com/vitala89/Intentloom/pull/617. P1I.1 is
+  complete. Design PR #615 is merged at
   `8bc9e07c74beb701adaae9e30dacb6aec252b58f`. Implementation PR #616 is
   merged at `b9201e9d480b34e453d08e1803f94e734d1e3f1f`. P1I.2 is not
   implemented. A green CI result is not approval. Do not merge. Do not

@@ -1166,8 +1166,8 @@ components of size 3. Re-export cycles stay three, sizes 4, 29, and 3.
 The new modules stay outside every component.
 `quality-exceptions.json` is unchanged. Ordinary `syncProject` does not
 pass through the Approved Apply gate. `initProject` uses `plan` and
-`apply`. The post-write corruption union has 31 codes. P1I.2 design is
-proposed in
+`apply`. The post-write corruption union has 31 codes. P1I.2 design is proposed as PR #617
+(https://github.com/vitala89/Intentloom/pull/617) in
 `docs/designs/p1i2-project-lifecycle/SYSTEM_DESIGN.md`. The feasibility
 verdict is B+C: leaf-owned lifecycle contracts and operations, with one
 composition-root binding for `synchronizeGeneratedFiles`. The design is
