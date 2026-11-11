@@ -1,8 +1,8 @@
 // Private project-operation layer. It must remain independent of CLI/process code.
 import { readFile, readdir } from "node:fs/promises";
 import { createHash } from "node:crypto";
-import { dirname, relative, resolve, sep } from "node:path";
-import { adapterVersion, generateAdapters } from "@intentloom/adapters";
+import { dirname, relative, resolve } from "node:path";
+import { generateAdapters } from "@intentloom/adapters";
 import { getAdapterContract } from "@intentloom/adapters";
 import { INTENTLOOM_VERSION, checksum, loadCatalog } from "@intentloom/core";
 import { normalizeOutputPath, normalizeStoredPath } from "@intentloom/core";
@@ -34,14 +34,27 @@ import {
   instructionRootKey,
 } from "./instruction-file-taxonomy.js";
 import { planExistingGeneratedChange } from "./generated-metadata-compare.js";
+import { synchronizeDeclaredProjectPaths } from "./generated-file-sync-declared.js";
+import { commitOwnedGeneratedFiles } from "./generated-file/generated-file-transaction.js";
+import { isDeclaredPathsOnlySyncMode } from "./generated-file/sync-mode.js";
 import {
-  destinationCollisionKey,
-  findDestinationCollisions,
-} from "./destination-collisions.js";
+  adapterOutputVersion,
+  buildTransactionMetadata,
+  lockPath,
+  metadataFormatVersion,
+  sourceMapPath,
+} from "./generated-file/transaction-metadata.js";
 import {
-  isDeclaredPathsOnlySyncMode,
-  synchronizeDeclaredProjectPaths,
-} from "./generated-file-sync-declared.js";
+  collisionPlan,
+  safeDestination,
+} from "./generated-file/transaction-path-safety.js";
+import { transactionSummary } from "./generated-file/transaction-summary.js";
+import type { Change, Plan } from "./project-change.js";
+import type {
+  TransactionOptions,
+  TransactionResult,
+  TransactionStage,
+} from "./generated-file/transaction-contracts.js";
 import {
   detectProjectProfiles,
   type DetectedProfile,
@@ -279,24 +292,7 @@ export {
 };
 import { parse, stringify } from "yaml";
 
-export type ChangeKind =
-  | "create"
-  | "update"
-  | "conflict"
-  | "modified"
-  | "missing"
-  | "stale"
-  | "security-error";
-export interface Change {
-  readonly path: string;
-  readonly kind: ChangeKind;
-  readonly reason: string;
-  readonly content?: string;
-}
-export interface Plan {
-  readonly changes: readonly Change[];
-  readonly diagnostics: readonly string[];
-}
+export type { Change, ChangeKind, Plan } from "./project-change.js";
 export interface DoctorPlan extends Plan {
   readonly findings: readonly DoctorFinding[];
   readonly errors: readonly DoctorError[];
@@ -342,81 +338,16 @@ export function doctorExitCode(report: DoctorPlan): 0 | 3 {
     ? 3
     : 0;
 }
-export type TransactionStage =
-  | "generated-stage"
-  | "generated-commit"
-  | "manifest-stage"
-  | "manifest-finalize"
-  | "source-map-stage"
-  | "source-map-finalize"
-  | "post-write-consistency"
-  | "success-cleanup";
-export interface TransactionResult extends Plan {
-  readonly status: "success" | "failed";
-  readonly failedStage?: TransactionStage;
-  readonly rollbackAttempted: boolean;
-  readonly rollbackCompleted: boolean;
-  readonly rollbackFailures: readonly string[];
-  readonly createdFiles: readonly string[];
-  readonly updatedFiles: readonly string[];
-  readonly unchangedFiles: readonly string[];
-  readonly manifestUpdated: boolean;
-  readonly sourceMapUpdated: boolean;
-  readonly consistencyValidated: boolean;
-  readonly cleanupCompleted: boolean;
-  readonly postWriteValidation?: PostWriteValidationResult;
-}
-export type PostWriteCorruptionCode =
-  | "manifest-json-malformed"
-  | "source-map-json-malformed"
-  | "manifest-entry-missing"
-  | "source-map-entry-missing"
-  | "manifest-destination-missing"
-  | "source-map-destination-missing"
-  | "generated-checksum-mismatch"
-  | "manifest-source-map-checksum-mismatch"
-  | "manifest-generated-checksum-mismatch"
-  | "manifest-absolute-path"
-  | "source-map-absolute-path"
-  | "manifest-path-escape"
-  | "source-map-path-escape"
-  | "manifest-duplicate-destination"
-  | "source-map-duplicate-ownership"
-  | "ownership-classification-invalid"
-  | "adapter-id-missing"
-  | "adapter-id-mismatch"
-  | "canonical-source-id-missing"
-  | "canonical-source-id-mismatch"
-  | "framework-version-missing"
-  | "framework-version-incompatible"
-  | "adapter-output-version-missing"
-  | "adapter-output-version-incompatible"
-  | "metadata-format-version-incompatible"
-  | "committed-generated-bytes-mismatch"
-  | "committed-manifest-bytes-mismatch"
-  | "committed-source-map-bytes-mismatch"
-  | "generated-file-without-ownership"
-  | "ownership-record-without-generated-file"
-  | "normalized-destination-duplicate";
-export interface ValidPostWriteValidation {
-  readonly status: "valid";
-  readonly checkedGeneratedFileCount: number;
-  readonly checkedManifestEntryCount: number;
-  readonly checkedSourceMapEntryCount: number;
-  readonly checksumsValidated: true;
-  readonly ownershipValidated: true;
-  readonly pathsValidated: true;
-  readonly versionsValidated: true;
-  readonly metadataBytesValidated: true;
-}
-export interface InvalidPostWriteValidation {
-  readonly status: "invalid";
-  readonly code: PostWriteCorruptionCode;
-  readonly affectedPaths: readonly string[];
-  readonly affectedIdentifiers: readonly string[];
-}
-export type PostWriteValidationResult =
-  ValidPostWriteValidation | InvalidPostWriteValidation;
+export type {
+  InvalidPostWriteValidation,
+  PostWriteCorruptionCode,
+  PostWriteCorruptionContext,
+  PostWriteValidationResult,
+  TransactionOptions,
+  TransactionResult,
+  TransactionStage,
+  ValidPostWriteValidation,
+} from "./generated-file/transaction-contracts.js";
 export interface InitOptions {
   readonly root: string;
   readonly profile: string;
@@ -603,18 +534,6 @@ export interface AdoptionTransactionOutcome {
 export interface SyncOptions extends InitOptions {
   readonly force?: boolean;
 }
-export interface PostWriteCorruptionContext {
-  readonly root: string;
-  readonly fileSystem: FileSystem;
-}
-export interface TransactionOptions {
-  readonly syncMode?: import("./generated-file-sync-declared.js").GeneratedFileSyncMode;
-  readonly failAt?: TransactionStage;
-  readonly rollbackFailPaths?: readonly string[];
-  readonly corruptAfterFinalization?: (
-    context: PostWriteCorruptionContext,
-  ) => void | Promise<void>;
-}
 export interface SyncDryRunResult extends Plan {
   readonly dryRun: true;
   readonly createdFiles: readonly string[];
@@ -630,11 +549,6 @@ const emptyCatalog: Catalog = {
   skills: [],
 };
 const configPath = ".aif/config.yaml";
-const lockPath = ".aif/manifest.lock.json";
-const sourceMapPath = ".aif/source-map.json";
-const metadataFormatVersion = "1";
-const adapterOutputVersion = adapterVersion;
-const transactionAdapterId = "aif:generated-files";
 const inspectionAdapterNames: readonly AdapterName[] = [
   "claude",
   "codex",
@@ -776,531 +690,9 @@ export {
   type GeneratedFileSyncMode,
 } from "./generated-file-sync-declared.js";
 
-function collisionPlan(files: readonly GeneratedFile[]): Plan | null {
-  const collisions = findDestinationCollisions(files);
-  if (collisions.length === 0) return null;
-  return {
-    changes: collisions.map((collision) => ({
-      path: collision.paths.join(", "),
-      kind: "conflict" as const,
-      reason: JSON.stringify(collision),
-    })),
-    diagnostics: ["destination-collision"],
-  };
-}
-
-function noncanonicalPathPlan(files: readonly GeneratedFile[]): Plan | null {
-  const invalidPaths = files
-    .map((file) => file.path)
-    .filter((path) => {
-      try {
-        return normalizeStoredPath(path) !== path;
-      } catch {
-        return true;
-      }
-    })
-    .sort();
-  if (invalidPaths.length === 0) return null;
-  return {
-    changes: invalidPaths.map((path) => ({
-      path,
-      kind: "security-error" as const,
-      reason: "generated destination is not a canonical stored path",
-    })),
-    diagnostics: ["invalid-stored-path"],
-  };
-}
-
-type MetadataObject = Record<string, unknown>;
-type MetadataRecord = Record<string, unknown>;
-
-interface PostWriteValidationInput {
-  readonly root: string;
-  readonly files: readonly GeneratedFile[];
-  readonly manifestBytes: string;
-  readonly sourceMapBytes: string;
-  readonly createdGeneratedPaths: ReadonlySet<string>;
-  readonly fs: FileSystem;
-}
-
 interface TransactionMetadata {
   readonly manifest: string;
   readonly sourceMap: string;
-}
-
-interface MetadataPins {
-  readonly profile: string;
-  readonly adapters: readonly AdapterName[];
-  readonly sourceHashes: readonly {
-    readonly id: string;
-    readonly checksum: string;
-  }[];
-}
-
-function buildTransactionMetadata(
-  files: readonly GeneratedFile[],
-  pins: MetadataPins = {
-    profile: "generic",
-    adapters: ["codex"],
-    sourceHashes: [
-      {
-        id: "transaction:generated",
-        checksum: checksum("transaction:generated"),
-      },
-    ],
-  },
-): TransactionMetadata {
-  const canonicalSourceId = checksum(
-    JSON.stringify([...new Set(files.flatMap((file) => file.sources))].sort()),
-  );
-  const sharedMetadata = {
-    metadataFormatVersion,
-    frameworkVersion: INTENTLOOM_VERSION,
-    adapterOutputVersion,
-    adapterId: transactionAdapterId,
-    canonicalSourceId,
-  };
-  return {
-    manifest: `${JSON.stringify(
-      {
-        schemaVersion: metadataFormatVersion,
-        lockVersion: metadataFormatVersion,
-        ownershipPolicy: "aif-owned-generated",
-        profile: pins.profile,
-        schemaVersions: {
-          config: "1",
-          manifestLock: "1",
-          sourceMap: "1",
-          planning: "1",
-          agentSkillPolicy: "1",
-        },
-        adapters: [...(pins.adapters ?? [])]
-          .sort()
-          .map((id) => ({ id, version: adapterOutputVersion })),
-        sourceHashes: [...(pins.sourceHashes ?? [])].sort((left, right) =>
-          left.id.localeCompare(right.id),
-        ),
-        ...sharedMetadata,
-        generated: files.map(({ path, checksum: fileChecksum }) => ({
-          path,
-          checksum: fileChecksum,
-        })),
-      },
-      null,
-      2,
-    )}\n`,
-    sourceMap: `${JSON.stringify(
-      {
-        schemaVersion: metadataFormatVersion,
-        ...sharedMetadata,
-        files: files.map(({ path, checksum: fileChecksum, sources }) => ({
-          path,
-          checksum: fileChecksum,
-          sources,
-          ownership: "aif-owned-generated",
-        })),
-      },
-      null,
-      2,
-    )}\n`,
-  };
-}
-
-function transactionSummary(
-  files: readonly GeneratedFile[],
-  changes: readonly Change[],
-): Pick<
-  TransactionResult,
-  | "createdFiles"
-  | "updatedFiles"
-  | "unchangedFiles"
-  | "manifestUpdated"
-  | "sourceMapUpdated"
-> {
-  const generatedChanges = changes.filter(
-    (change) => change.path !== lockPath && change.path !== sourceMapPath,
-  );
-  const changedPaths = new Set(generatedChanges.map((change) => change.path));
-  return {
-    createdFiles: generatedChanges
-      .filter((change) => change.kind === "create")
-      .map((change) => change.path)
-      .sort(),
-    updatedFiles: generatedChanges
-      .filter((change) => change.kind === "update")
-      .map((change) => change.path)
-      .sort(),
-    unchangedFiles: files
-      .map((file) => file.path)
-      .filter((path) => !changedPaths.has(path))
-      .sort(),
-    manifestUpdated: changes.some((change) => change.path === lockPath),
-    sourceMapUpdated: changes.some((change) => change.path === sourceMapPath),
-  };
-}
-
-class PostWriteValidationFailure extends Error {
-  constructor(readonly validation: InvalidPostWriteValidation) {
-    super(validation.code);
-  }
-}
-
-function invalidPostWriteState(
-  code: PostWriteCorruptionCode,
-  affectedPaths: readonly string[],
-  affectedIdentifiers: readonly string[] = [],
-): InvalidPostWriteValidation {
-  return {
-    status: "invalid",
-    code,
-    affectedPaths: [...new Set(affectedPaths)].sort(),
-    affectedIdentifiers: [...new Set(affectedIdentifiers)].sort(),
-  };
-}
-
-function metadataRecords(
-  value: MetadataObject,
-  key: "generated" | "files",
-): MetadataRecord[] {
-  return Array.isArray(value[key])
-    ? (value[key] as MetadataRecord[]).filter(
-        (record) => typeof record === "object" && record !== null,
-      )
-    : [];
-}
-
-function pathFailure(
-  metadata: "manifest" | "source-map",
-  records: readonly MetadataRecord[],
-): InvalidPostWriteValidation | null {
-  const metadataPath = metadata === "manifest" ? lockPath : sourceMapPath;
-  const absoluteCode = `${metadata}-absolute-path` as PostWriteCorruptionCode;
-  const escapeCode = `${metadata}-path-escape` as PostWriteCorruptionCode;
-  for (const [index, record] of records.entries()) {
-    const path = record.path;
-    const identifier = `${metadata}.${index}`;
-    if (
-      typeof path !== "string" ||
-      path.startsWith("/") ||
-      /^[A-Za-z]:[\\/]/u.test(path)
-    )
-      return invalidPostWriteState(absoluteCode, [metadataPath], [identifier]);
-    try {
-      if (normalizeStoredPath(path) !== path)
-        return invalidPostWriteState(escapeCode, [metadataPath], [identifier]);
-    } catch {
-      return invalidPostWriteState(escapeCode, [metadataPath], [identifier]);
-    }
-  }
-  return null;
-}
-
-function duplicateFailure(
-  metadata: "manifest" | "source-map",
-  records: readonly MetadataRecord[],
-): InvalidPostWriteValidation | null {
-  const metadataPath = metadata === "manifest" ? lockPath : sourceMapPath;
-  const exact = new Set<string>();
-  for (const [index, record] of records.entries()) {
-    if (typeof record.path !== "string") continue;
-    if (exact.has(record.path))
-      return invalidPostWriteState(
-        metadata === "manifest"
-          ? "manifest-duplicate-destination"
-          : "source-map-duplicate-ownership",
-        [metadataPath, record.path],
-        [`${metadata}.${index}`],
-      );
-    exact.add(record.path);
-  }
-  const normalized = new Map<string, string>();
-  for (const [index, record] of records.entries()) {
-    if (typeof record.path !== "string") continue;
-    const key = destinationCollisionKey(record.path);
-    const previous = normalized.get(key);
-    if (previous !== undefined && previous !== record.path)
-      return invalidPostWriteState(
-        "normalized-destination-duplicate",
-        [metadataPath, previous, record.path],
-        [`${metadata}.${index}`, key],
-      );
-    normalized.set(key, record.path);
-  }
-  return null;
-}
-
-function missingIdentity(
-  manifest: MetadataObject,
-  sourceMap: MetadataObject,
-  key: "adapterId" | "canonicalSourceId",
-  code: "adapter-id-missing" | "canonical-source-id-missing",
-): InvalidPostWriteValidation | null {
-  const affected: string[] = [];
-  if (typeof manifest[key] !== "string" || manifest[key] === "")
-    affected.push(lockPath);
-  if (typeof sourceMap[key] !== "string" || sourceMap[key] === "")
-    affected.push(sourceMapPath);
-  return affected.length === 0
-    ? null
-    : invalidPostWriteState(code, affected, [key]);
-}
-
-async function validateCommittedOwnershipState({
-  root,
-  files,
-  manifestBytes,
-  sourceMapBytes,
-  createdGeneratedPaths,
-  fs,
-}: PostWriteValidationInput): Promise<PostWriteValidationResult> {
-  const committedManifestBytes = await fs.read(inside(root, lockPath));
-  const committedSourceMapBytes = await fs.read(inside(root, sourceMapPath));
-  let manifest: MetadataObject;
-  let sourceMap: MetadataObject;
-  try {
-    manifest = JSON.parse(committedManifestBytes) as MetadataObject;
-  } catch {
-    return invalidPostWriteState("manifest-json-malformed", [lockPath]);
-  }
-  try {
-    sourceMap = JSON.parse(committedSourceMapBytes) as MetadataObject;
-  } catch {
-    return invalidPostWriteState("source-map-json-malformed", [sourceMapPath]);
-  }
-
-  const adapterMissing = missingIdentity(
-    manifest,
-    sourceMap,
-    "adapterId",
-    "adapter-id-missing",
-  );
-  if (adapterMissing) return adapterMissing;
-  if (manifest.adapterId !== sourceMap.adapterId)
-    return invalidPostWriteState(
-      "adapter-id-mismatch",
-      [lockPath, sourceMapPath],
-      ["adapterId"],
-    );
-  const canonicalMissing = missingIdentity(
-    manifest,
-    sourceMap,
-    "canonicalSourceId",
-    "canonical-source-id-missing",
-  );
-  if (canonicalMissing) return canonicalMissing;
-  if (manifest.canonicalSourceId !== sourceMap.canonicalSourceId)
-    return invalidPostWriteState(
-      "canonical-source-id-mismatch",
-      [lockPath, sourceMapPath],
-      ["canonicalSourceId"],
-    );
-
-  const frameworkPaths: string[] = [];
-  if (typeof manifest.frameworkVersion !== "string")
-    frameworkPaths.push(lockPath);
-  if (typeof sourceMap.frameworkVersion !== "string")
-    frameworkPaths.push(sourceMapPath);
-  if (frameworkPaths.length > 0)
-    return invalidPostWriteState("framework-version-missing", frameworkPaths, [
-      "frameworkVersion",
-    ]);
-  if (
-    manifest.frameworkVersion !== INTENTLOOM_VERSION ||
-    sourceMap.frameworkVersion !== INTENTLOOM_VERSION
-  )
-    return invalidPostWriteState(
-      "framework-version-incompatible",
-      [lockPath, sourceMapPath],
-      ["frameworkVersion"],
-    );
-
-  const adapterVersionPaths: string[] = [];
-  if (typeof manifest.adapterOutputVersion !== "string")
-    adapterVersionPaths.push(lockPath);
-  if (typeof sourceMap.adapterOutputVersion !== "string")
-    adapterVersionPaths.push(sourceMapPath);
-  if (adapterVersionPaths.length > 0)
-    return invalidPostWriteState(
-      "adapter-output-version-missing",
-      adapterVersionPaths,
-      ["adapterOutputVersion"],
-    );
-  if (
-    manifest.adapterOutputVersion !== adapterOutputVersion ||
-    sourceMap.adapterOutputVersion !== adapterOutputVersion
-  )
-    return invalidPostWriteState(
-      "adapter-output-version-incompatible",
-      [lockPath, sourceMapPath],
-      ["adapterOutputVersion"],
-    );
-  if (
-    manifest.metadataFormatVersion !== metadataFormatVersion ||
-    sourceMap.metadataFormatVersion !== metadataFormatVersion ||
-    manifest.lockVersion !== metadataFormatVersion ||
-    sourceMap.schemaVersion !== metadataFormatVersion
-  )
-    return invalidPostWriteState(
-      "metadata-format-version-incompatible",
-      [lockPath, sourceMapPath],
-      ["metadataFormatVersion"],
-    );
-
-  const manifestRecords = metadataRecords(manifest, "generated");
-  const sourceMapRecords = metadataRecords(sourceMap, "files");
-  if (manifest.ownershipPolicy !== "aif-owned-generated")
-    return invalidPostWriteState(
-      "ownership-classification-invalid",
-      [lockPath],
-      ["ownershipPolicy"],
-    );
-  const manifestPathFailure = pathFailure("manifest", manifestRecords);
-  if (manifestPathFailure) return manifestPathFailure;
-  const sourceMapPathFailure = pathFailure("source-map", sourceMapRecords);
-  if (sourceMapPathFailure) return sourceMapPathFailure;
-  const manifestDuplicate = duplicateFailure("manifest", manifestRecords);
-  if (manifestDuplicate) return manifestDuplicate;
-  const sourceMapDuplicate = duplicateFailure("source-map", sourceMapRecords);
-  if (sourceMapDuplicate) return sourceMapDuplicate;
-
-  for (const [index, record] of sourceMapRecords.entries())
-    if (record.ownership !== "aif-owned-generated")
-      return invalidPostWriteState(
-        "ownership-classification-invalid",
-        [sourceMapPath, String(record.path ?? "")].filter(Boolean),
-        [`source-map.${index}`, "ownership"],
-      );
-
-  const plannedByPath = new Map(files.map((file) => [file.path, file]));
-  const manifestByPath = new Map(
-    manifestRecords
-      .filter((record) => typeof record.path === "string")
-      .map((record) => [record.path as string, record]),
-  );
-  const sourceMapByPath = new Map(
-    sourceMapRecords
-      .filter((record) => typeof record.path === "string")
-      .map((record) => [record.path as string, record]),
-  );
-
-  for (const record of manifestRecords) {
-    const path = record.path as string;
-    if (!(await fs.exists(inside(root, path))))
-      return invalidPostWriteState(
-        "manifest-destination-missing",
-        [lockPath, path],
-        [path],
-      );
-  }
-  for (const record of sourceMapRecords) {
-    const path = record.path as string;
-    if (!(await fs.exists(inside(root, path))))
-      return invalidPostWriteState(
-        plannedByPath.has(path)
-          ? "source-map-destination-missing"
-          : sourceMapRecords.length > files.length
-            ? "ownership-record-without-generated-file"
-            : "source-map-destination-missing",
-        [sourceMapPath, path],
-        [path],
-      );
-  }
-
-  for (const file of files) {
-    if (!manifestByPath.has(file.path))
-      return invalidPostWriteState(
-        "manifest-entry-missing",
-        [lockPath, file.path],
-        [file.path],
-      );
-    if (!sourceMapByPath.has(file.path))
-      return invalidPostWriteState(
-        createdGeneratedPaths.has(file.path)
-          ? "generated-file-without-ownership"
-          : "source-map-entry-missing",
-        [sourceMapPath, file.path],
-        [file.path],
-      );
-  }
-
-  for (const file of files) {
-    const actualChecksum = checksum(await fs.read(inside(root, file.path)));
-    const manifestChecksum = manifestByPath.get(file.path)!.checksum;
-    const sourceMapChecksum = sourceMapByPath.get(file.path)!.checksum;
-    if (
-      actualChecksum === file.checksum &&
-      sourceMapChecksum !== actualChecksum
-    )
-      return invalidPostWriteState(
-        "generated-checksum-mismatch",
-        [sourceMapPath, file.path],
-        [file.path],
-      );
-    if (
-      actualChecksum === file.checksum &&
-      manifestChecksum !== sourceMapChecksum
-    )
-      return invalidPostWriteState(
-        "manifest-source-map-checksum-mismatch",
-        [lockPath, sourceMapPath, file.path],
-        [file.path],
-      );
-    if (
-      actualChecksum !== file.checksum &&
-      manifestChecksum !== actualChecksum &&
-      manifestChecksum === sourceMapChecksum
-    )
-      return invalidPostWriteState(
-        "manifest-generated-checksum-mismatch",
-        [lockPath, file.path],
-        [file.path],
-      );
-    if (sourceMapChecksum !== actualChecksum)
-      return invalidPostWriteState(
-        "generated-checksum-mismatch",
-        [sourceMapPath, file.path],
-        [file.path],
-      );
-    if (manifestChecksum !== sourceMapChecksum)
-      return invalidPostWriteState(
-        "manifest-source-map-checksum-mismatch",
-        [lockPath, sourceMapPath, file.path],
-        [file.path],
-      );
-    if (manifestChecksum !== actualChecksum)
-      return invalidPostWriteState(
-        "manifest-generated-checksum-mismatch",
-        [lockPath, file.path],
-        [file.path],
-      );
-    if (actualChecksum !== file.checksum)
-      return invalidPostWriteState(
-        "committed-generated-bytes-mismatch",
-        [file.path],
-        [file.path],
-      );
-  }
-
-  if (committedManifestBytes !== manifestBytes)
-    return invalidPostWriteState("committed-manifest-bytes-mismatch", [
-      lockPath,
-    ]);
-  if (committedSourceMapBytes !== sourceMapBytes)
-    return invalidPostWriteState("committed-source-map-bytes-mismatch", [
-      sourceMapPath,
-    ]);
-
-  return {
-    status: "valid",
-    checkedGeneratedFileCount: files.length,
-    checkedManifestEntryCount: manifestRecords.length,
-    checkedSourceMapEntryCount: sourceMapRecords.length,
-    checksumsValidated: true,
-    ownershipValidated: true,
-    pathsValidated: true,
-    versionsValidated: true,
-    metadataBytesValidated: true,
-  };
 }
 
 export async function synchronizeGeneratedFiles(
@@ -1313,212 +705,7 @@ export async function synchronizeGeneratedFiles(
   if (isDeclaredPathsOnlySyncMode(options.syncMode)) {
     return synchronizeDeclaredProjectPaths(root, files, fs, options);
   }
-  const collision = collisionPlan(files);
-  if (collision)
-    return {
-      ...collision,
-      status: "failed",
-      rollbackAttempted: false,
-      rollbackCompleted: true,
-      rollbackFailures: [],
-      createdFiles: [],
-      updatedFiles: [],
-      unchangedFiles: [],
-      manifestUpdated: false,
-      sourceMapUpdated: false,
-      consistencyValidated: false,
-      cleanupCompleted: false,
-    };
-  const invalidPath = noncanonicalPathPlan(files);
-  if (invalidPath)
-    return {
-      ...invalidPath,
-      status: "failed",
-      rollbackAttempted: false,
-      rollbackCompleted: true,
-      rollbackFailures: [],
-      createdFiles: [],
-      updatedFiles: [],
-      unchangedFiles: [],
-      manifestUpdated: false,
-      sourceMapUpdated: false,
-      consistencyValidated: false,
-      cleanupCompleted: false,
-    };
-  const normalized = files.map((file) => ({
-    ...file,
-    checksum: checksum(file.content),
-  }));
-  const { manifest, sourceMap } =
-    validatedMetadata ?? buildTransactionMetadata(normalized);
-  const transactionFiles: GeneratedFile[] = [
-    ...normalized,
-    {
-      path: lockPath,
-      content: manifest,
-      sources: ["transaction:manifest"],
-      checksum: checksum(manifest),
-    },
-    {
-      path: sourceMapPath,
-      content: sourceMap,
-      sources: ["transaction:source-map"],
-      checksum: checksum(sourceMap),
-    },
-  ];
-  const changes: Change[] = [];
-  const createdGeneratedPaths = new Set<string>();
-  for (const file of transactionFiles) {
-    const path = inside(root, file.path);
-    if (!(await fs.exists(path))) {
-      changes.push({
-        path: file.path,
-        kind: "create",
-        reason: "missing",
-        content: file.content,
-      });
-      if (file.path !== lockPath && file.path !== sourceMapPath)
-        createdGeneratedPaths.add(file.path);
-    } else if ((await fs.read(path)) !== file.content)
-      changes.push({
-        path: file.path,
-        kind: "update",
-        reason: "committed content differs",
-        content: file.content,
-      });
-  }
-  const proposal: Plan = { changes, diagnostics: [] };
-  const summary = transactionSummary(normalized, changes);
-  const backups = new Map<string, string>();
-  const created: string[] = [];
-  let stage: TransactionStage = "generated-stage";
-  let postWriteValidation: PostWriteValidationResult | undefined;
-  const inject = (candidate: TransactionStage) => {
-    stage = candidate;
-    if (options.failAt === candidate) throw new Error(`injected:${candidate}`);
-  };
-  try {
-    for (const candidate of [
-      "generated-stage",
-      "manifest-stage",
-      "source-map-stage",
-    ] as const)
-      inject(candidate);
-    for (const file of transactionFiles) {
-      inject(
-        file.path === lockPath
-          ? "manifest-finalize"
-          : file.path === sourceMapPath
-            ? "source-map-finalize"
-            : "generated-commit",
-      );
-      const path = inside(root, file.path);
-      await safeDestination(root, path, fs);
-      if (await fs.exists(path)) backups.set(path, await fs.read(path));
-      else created.push(path);
-      await fs.mkdir(dirname(path));
-      await fs.write(path, file.content);
-    }
-    inject("post-write-consistency");
-    await options.corruptAfterFinalization?.({ root, fileSystem: fs });
-    postWriteValidation = await validateCommittedOwnershipState({
-      root,
-      files: normalized,
-      manifestBytes: manifest,
-      sourceMapBytes: sourceMap,
-      createdGeneratedPaths,
-      fs,
-    });
-    if (postWriteValidation.status === "invalid")
-      throw new PostWriteValidationFailure(postWriteValidation);
-    inject("success-cleanup");
-    return {
-      ...proposal,
-      status: "success",
-      rollbackAttempted: false,
-      rollbackCompleted: true,
-      rollbackFailures: [],
-      ...summary,
-      consistencyValidated: true,
-      cleanupCompleted: true,
-      postWriteValidation,
-    };
-  } catch (error) {
-    if (error instanceof PostWriteValidationFailure)
-      postWriteValidation = error.validation;
-    const rollbackFailures: string[] = [];
-    const injectedRollbackFailures = new Set(options.rollbackFailPaths ?? []);
-    for (const [path, content] of backups) {
-      const projectPath = relative(resolve(root), path).replaceAll("\\", "/");
-      try {
-        if (injectedRollbackFailures.has(projectPath))
-          throw new Error("injected rollback failure", { cause: error });
-        await fs.write(path, content);
-      } catch {
-        rollbackFailures.push(projectPath);
-      }
-    }
-    for (const path of created) {
-      const projectPath = relative(resolve(root), path).replaceAll("\\", "/");
-      try {
-        if (injectedRollbackFailures.has(projectPath))
-          throw new Error("injected rollback failure", { cause: error });
-        await fs.remove(path);
-      } catch {
-        rollbackFailures.push(projectPath);
-      }
-    }
-    const originalError =
-      error instanceof Error ? error.message : String(error);
-    return {
-      ...proposal,
-      status: "failed",
-      failedStage: stage,
-      diagnostics:
-        rollbackFailures.length === 0
-          ? [originalError]
-          : [originalError, "transaction-rollback-incomplete"],
-      rollbackAttempted: true,
-      rollbackCompleted: rollbackFailures.length === 0,
-      rollbackFailures: rollbackFailures.sort(),
-      ...summary,
-      consistencyValidated: postWriteValidation?.status === "valid",
-      cleanupCompleted: false,
-      ...(postWriteValidation === undefined ? {} : { postWriteValidation }),
-    };
-  }
-}
-
-async function safeDestination(
-  root: string,
-  path: string,
-  fs: FileSystem,
-): Promise<void> {
-  let rootResolved = resolve(root);
-  try {
-    rootResolved = await fs.realpath(rootResolved);
-  } catch {
-    /* a new project root has no link to resolve yet */
-  }
-  let current = path;
-  while (true) {
-    if (await fs.isSymbolicLink(current))
-      throw new Error(
-        `security-error: ${relative(resolve(root), path).replaceAll("\\", "/")}`,
-      );
-    if (await fs.exists(current)) {
-      const resolved = await fs.realpath(current);
-      if (
-        resolved !== rootResolved &&
-        !resolved.startsWith(`${rootResolved}${sep}`)
-      )
-        throw new Error(
-          `security-error: ${relative(resolve(root), path).replaceAll("\\", "/")}`,
-        );
-    }
-    if (current === resolve(root)) return;
-    current = dirname(current);
-  }
+  return commitOwnedGeneratedFiles(root, files, fs, options, validatedMetadata);
 }
 
 function sortedMappings(mappings: readonly ProjectMapping[]): ProjectMapping[] {

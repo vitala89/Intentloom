@@ -1144,15 +1144,29 @@ down from 4,607 and 4,829. Import-only cycles stay two components of
 size 3. Re-export cycles stay three, sizes 4, 29, and 3. The new
 module stays outside every component. `quality-exceptions.json` is
 unchanged. P1H.7 is complete. P1H is complete. P1I.1 design is
-proposed in
-`docs/designs/p1i1-generated-file-transaction/SYSTEM_DESIGN.md` and
-is not implemented. The feasibility verdict is C: composition-root
-dispatch with leaf-owned transaction contracts. `Plan`, `Change`,
-and `ChangeKind` are proposed in
-`packages/application/src/project-change.ts`. Ordinary `syncProject`
-does not pass through the Approved Apply gate. `initProject` uses
-`plan` and `apply`. The post-write corruption union has 31 codes. P1I.2, P1I.3, P1J,
-Undo U4, and Desktop Undo U5 have not started. Ids 2 through 26 remain
+merged as PR #615
+(https://github.com/vitala89/Intentloom/pull/615,
+`8bc9e07c74beb701adaae9e30dacb6aec252b58f`). The approved contract is
+`docs/designs/p1i1-generated-file-transaction/SYSTEM_DESIGN.md`. The
+feasibility verdict is C: composition-root dispatch with leaf-owned
+transaction contracts. Implementation is open as PR #616
+(https://github.com/vitala89/Intentloom/pull/616) and is not merged.
+Implementation keeps
+`synchronizeGeneratedFiles` on `index.ts` and moves the generated-files
+commit under `packages/application/src/generated-file/`. `Plan`,
+`Change`, and `ChangeKind` live in
+`packages/application/src/project-change.ts`. `index.ts` measures
+3,760 effective lines and 3,956 physical lines, down from 4,547 and
+4,769. The largest new module,
+`generated-file/generated-file-transaction.ts`, is 210 effective lines
+and 219 physical lines. `generated-file-sync-declared.ts` stays 302
+effective lines and is 314 physical lines. Import-only cycles stay two
+components of size 3. Re-export cycles stay three, sizes 4, 29, and 3.
+The new modules stay outside every component.
+`quality-exceptions.json` is unchanged. Ordinary `syncProject` does not
+pass through the Approved Apply gate. `initProject` uses `plan` and
+`apply`. The post-write corruption union has 31 codes. P1I.2, P1I.3,
+P1J, Undo U4, and Desktop Undo U5 have not started. Ids 2 through 26 remain
 literal `passed` checks. The score and hash formulas are unchanged.
 The reader still does not recompute either value.
 `rankProceduralMemory` stays in the barrel.

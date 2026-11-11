@@ -11,18 +11,15 @@ import type {
   TransactionResult,
   TransactionStage,
 } from "./index.js";
-
-export const GENERATED_FILE_SYNC_DECLARED_PATHS_ONLY =
-  "declared-paths-only" as const;
-
-export type GeneratedFileSyncMode =
-  "generated-files" | typeof GENERATED_FILE_SYNC_DECLARED_PATHS_ONLY;
-
-export function isDeclaredPathsOnlySyncMode(
-  mode: GeneratedFileSyncMode | undefined,
-): boolean {
-  return mode === GENERATED_FILE_SYNC_DECLARED_PATHS_ONLY;
-}
+import {
+  isDeclaredPathsOnlySyncMode,
+  type GeneratedFileSyncMode,
+} from "./generated-file/sync-mode.js";
+export {
+  GENERATED_FILE_SYNC_DECLARED_PATHS_ONLY,
+  isDeclaredPathsOnlySyncMode,
+  type GeneratedFileSyncMode,
+} from "./generated-file/sync-mode.js";
 
 export function planSynchronizeGeneratedFilesWriteSet(
   files: readonly GeneratedFile[],

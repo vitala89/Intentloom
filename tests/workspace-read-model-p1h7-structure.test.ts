@@ -174,11 +174,11 @@ describe("P1H.7 interactive workspace read model structure", () => {
     });
     expect(moduleMetrics.effectiveCodeLines).toBeLessThanOrEqual(250);
     expect(indexMetrics).toMatchObject({
-      effectiveCodeLines: 4547,
-      physicalLines: 4769,
+      effectiveCodeLines: 3760,
+      physicalLines: 3956,
     });
-    expect(indexMetrics.effectiveCodeLines).toBeLessThan(4607);
-    expect(indexMetrics.physicalLines).toBeLessThan(4829);
+    expect(indexMetrics.effectiveCodeLines).toBeLessThan(4547);
+    expect(indexMetrics.physicalLines).toBeLessThan(4769);
     const functions = functionSlices(source).map((slice) => ({
       name: slice.name,
       ...measureProductionSource(slice.source, readModelPath),
