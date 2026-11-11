@@ -209,7 +209,12 @@ Do not merge it. Do not start P1I, P1J, Undo U4, or Desktop Undo U5.
 - **Verification:** Focused suites passed: 13 files, 105 tests.
   Full `pnpm verify` passed: typecheck, oxlint, Prettier, Vitest 367
   files / 3164 passed / 3 skipped, build, and `git diff --check`.
-  Hosted CI is not recorded until the pull request checks finish.
+  Compatibility passed on Ubuntu, macOS, and Windows for Node 22 and
+  Node 24. Desktop SEA on Ubuntu stayed in apt because
+  `azure.archive.ubuntu.com` did not resolve. The Linux dependency
+  step now rewrites that host to `archive.ubuntu.com` before
+  `apt-get`. The hung run was cancelled so the workflow can start
+  again from this commit.
 - **Not done:** maintainer review, merge, P1I, P1J, Undo U4, Desktop
   Undo U5. Protocol and Validator barrels were not modified.
 - **Next:** Maintainer review. Do not merge. Do not start P1I.
