@@ -170,6 +170,24 @@ as PR #618 (https://github.com/vitala89/Intentloom/pull/618,
 maintainer approval. P1I.3 implementation has not started. Do not start
 the P1I.3 implementation, P1J, Undo U4, or Desktop Undo U5.
 
+### 2026-11-12, Packages architecture P1I.3 design review corrections
+
+- **Status:** **DESIGN PR STILL OPEN — AWAITING MAINTAINER APPROVAL.**
+  PR #620, https://github.com/vitala89/Intentloom/pull/620. The review
+  corrections stay on that pull request. Implementation has not started.
+  Do not start the P1I.3 implementation, P1J, Undo U4, or Desktop Undo U5.
+- **Corrections:** The trust-boundary diagram now shows
+  `executeApprovedApplyPlan` calling `evaluateApprovedApplyPlan`, then
+  scope and baseline checks, then `synchronizeGeneratedFiles`. It does
+  not show the engine calling `syncProject`. The failure diagram keeps
+  gate rejection, path-scope mismatch, `ApplyBlockedBeforeWrite`, and
+  transaction rollback as separate Approved Apply branches. A successful
+  governance journal write returns `success` and does not continue into
+  rollback. `AdoptionTransactionOutcome` has one type owner,
+  `generated-file-adoption-contracts.ts`.
+- **Unchanged verdict:** **B.** The predicted SCC membership is unchanged.
+  Those numbers remain predictions.
+
 ### 2026-11-12, Packages architecture P1I.3 adoption extraction design
 
 - **Status:** **DESIGN PR OPEN — AWAITING MAINTAINER APPROVAL.** P1I.2

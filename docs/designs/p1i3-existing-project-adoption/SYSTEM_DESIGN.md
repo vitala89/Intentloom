@@ -515,23 +515,28 @@ component, the existing Neutron trio. No adoption leaf imports
 
 ## 11. Module ownership matrix
 
-| Module                                      | Owns                                                                                                                                   | Must not own                                |
-| ------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------- |
-| `generated-file-adoption-contracts.ts`      | `AdoptionAction`, `AdoptionProposalItem`, `AdoptionProposal`, `AdoptionTransactionOutcome`                                             | Filesystem access, sync, governance types   |
-| `generated-file-adoption-mappings.ts`       | `normalizeMappingPath`, project-owned mapping diagnostics, documentation mapping diagnostics, duplicate-concept counts                 | Item classification, sync                   |
-| `generated-file-adoption-classification.ts` | `unsupportedPath`, desired-destination items, scanned-file items, deterministic item sort                                              | Mapping diagnostics, transaction outcome    |
-| `generated-file-adoption-outcome.ts`        | Diagnostic token coercion, rollback-path normalization, `AdoptionTransactionOutcome`, status `failed-restored` and `failed-incomplete` | The decision to call sync                   |
-| `generated-file-adoption.ts`                | `adoptGeneratedFiles` and the read/blocking helpers it needs to stay under 40 lines                                                    | `synchronizeGeneratedFiles`, Approved Apply |
-| `governance-adoption-contracts.ts`          | `PlanProjectAdoptionOptions`, `ApplyProjectAdoptionOptions`, `AdoptionApplyResult`                                                     | Scan or write logic                         |
-| `governance-adoption-artifacts.ts`          | Ownership class and role-candidate detection, concatenated in today's order                                                            | Journal writes                              |
-| `governance-adoption-plan.ts`               | `planProjectAdoption`                                                                                                                  | Apply, sync, `AdoptionProposal`             |
-| `governance-adoption-apply.ts`              | `applyProjectAdoption`, hash verification, create writes, journal append, best-effort rollback                                         | The generated-file transaction engine       |
-| `index.ts`                                  | Public `adoptProject` wrapper, `planPackUpdate`, `syncProject`, `synchronizeGeneratedFiles`, re-exports                                | The moved rule bodies                       |
+| Module                                      | Owns                                                                                                                   | Must not own                                                          |
+| ------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------- |
+| `generated-file-adoption-contracts.ts`      | `AdoptionAction`, `AdoptionProposalItem`, `AdoptionProposal`, `AdoptionTransactionOutcome`                             | Filesystem access, sync, governance types                             |
+| `generated-file-adoption-mappings.ts`       | `normalizeMappingPath`, project-owned mapping diagnostics, documentation mapping diagnostics, duplicate-concept counts | Item classification, sync                                             |
+| `generated-file-adoption-classification.ts` | `unsupportedPath`, desired-destination items, scanned-file items, deterministic item sort                              | Mapping diagnostics, transaction outcome                              |
+| `generated-file-adoption-outcome.ts`        | Diagnostic token coercion, rollback-path normalization, and mapping a `TransactionResult` into the outcome value       | Declaring `AdoptionTransactionOutcome`, and the decision to call sync |
+| `generated-file-adoption.ts`                | `adoptGeneratedFiles` and the read/blocking helpers it needs to stay under 40 lines                                    | `synchronizeGeneratedFiles`, Approved Apply                           |
+| `governance-adoption-contracts.ts`          | `PlanProjectAdoptionOptions`, `ApplyProjectAdoptionOptions`, `AdoptionApplyResult`                                     | Scan or write logic                                                   |
+| `governance-adoption-artifacts.ts`          | Ownership class and role-candidate detection, concatenated in today's order                                            | Journal writes                                                        |
+| `governance-adoption-plan.ts`               | `planProjectAdoption`                                                                                                  | Apply, sync, `AdoptionProposal`                                       |
+| `governance-adoption-apply.ts`              | `applyProjectAdoption`, hash verification, create writes, journal append, best-effort rollback                         | The generated-file transaction engine                                 |
+| `index.ts`                                  | Public `adoptProject` wrapper, `planPackUpdate`, `syncProject`, `synchronizeGeneratedFiles`, re-exports                | The moved rule bodies                                                 |
 
 Contingency: if `governance-adoption-apply.ts` measures above 250
 effective lines, move journal append and rollback into
 `governance-adoption-journal.ts`. Do not start that file above the
 preference, and do not put both workflows in it.
+
+`AdoptionTransactionOutcome` is declared only in
+`generated-file-adoption-contracts.ts`. `generated-file-adoption-outcome.ts`
+imports that type and constructs the value. It does not declare a second
+type.
 
 Do not add `existing-project-adoption-apply.ts` beside the existing
 file of that name. The public function is `applyProjectAdoption`. The
@@ -629,35 +634,41 @@ version rewrite.
 
 ```mermaid
 flowchart TB
-  subgraph readOnly ["Read-only"]
-    planGov["planProjectAdoption"]
-    preview["prepareExistingProjectAdoptionPlan"]
+  subgraph readOnly ["Read-only inspection"]
     inspect["inspectProject and doctorProject"]
   end
-  subgraph confirm ["Profile confirmation, not Approved Apply"]
+  subgraph onboarding ["1 Generated-file onboarding"]
     adopt["adoptProject"]
-    sync["syncProject ordinary generated-file sync"]
+    sync["syncProject"]
+    adopt --> sync
   end
-  subgraph prepared ["Prepared-plan approval"]
+  subgraph prepared ["2 Prepared-plan adoption"]
+    preview["prepareExistingProjectAdoptionPlan"]
     preparedApply["applyExistingProjectAdoptionPreparedPlan"]
+    preview --> preparedApply
+    preparedApply --> adopt
+    preparedApply --> sync
   end
-  subgraph governanceWrite ["Governance apply, best-effort rollback"]
-    govApply["applyProjectAdoption"]
+  subgraph governance ["3 Governance adoption"]
+    planGov["planProjectAdoption"]
+    govApply["applyProjectAdoption direct filesystem writes"]
+    planGov --> govApply
   end
-  subgraph approved ["Approved Apply gate"]
-    gate["evaluateApprovedApplyPlan"]
+  subgraph approved ["4 Approved Apply"]
     engine["executeApprovedApplyPlan"]
+    gate["evaluateApprovedApplyPlan"]
+    checks["path-scope and baseline checks"]
+    dispatcher["synchronizeGeneratedFiles"]
+    engine --> gate
+    gate --> checks
+    checks --> dispatcher
   end
-  preview --> adopt
-  adopt --> sync
-  preparedApply --> adopt
-  preparedApply --> sync
-  planGov --> govApply
-  gate --> engine
-  engine --> sync
 ```
 
 Editable source: [`trust-boundaries.mmd`](trust-boundaries.mmd).
+`executeApprovedApplyPlan` calls the gate, then the scope and baseline
+checks, then `synchronizeGeneratedFiles`. It does not call `syncProject`.
+The four write paths do not share an approval or rollback implementation.
 
 These are different authorization flows.
 
@@ -672,10 +683,11 @@ These are different authorization flows.
 - `applyProjectAdoption` writes when the plan schema is 1, the root is
   not a symbolic link, hashes match, and `dryRun` is false. It has no
   Approved Apply request and no profile confirmation flag.
-- Approved Apply still evaluates the gate, checks declared-path scope,
-  captures or rechecks the baseline, and then calls
-  `synchronizeGeneratedFiles`. Onboarding does not enter that path.
-  The engine does not start calling onboarding.
+- Approved Apply enters at `executeApprovedApplyPlan`. That function
+  calls `evaluateApprovedApplyPlan`, then the declared-path scope check
+  and the baseline check, and then `synchronizeGeneratedFiles`. It does
+  not call `syncProject`. A rejected gate returns `applied: false`
+  without a transaction. Onboarding does not enter that path.
 
 Ownership metadata proves generated-file ownership through `ownership`
 and the source map. Governance planning assigns an ownership class from
@@ -808,32 +820,64 @@ That throw is unchanged.
 ```mermaid
 flowchart TB
   subgraph generated ["Generated-file adoption"]
-    blocked["blocked or dry-run: no sync, return AdoptionProposal"]
-    tx["syncProject transaction"]
-    restored["failed-restored when rollbackCompleted"]
-    incomplete["failed-incomplete when rollback did not complete"]
-    sanitized["diagnostics coerced to token codes"]
-    tx --> restored
-    tx --> incomplete
-    tx --> sanitized
+    gChoice{"dry-run or blocked"}
+    gNoSync["return AdoptionProposal, no syncProject"]
+    gSync["syncProject"]
+    gOk["success: applied true"]
+    gRestored["failed and rollback completed: failed-restored"]
+    gIncomplete["failed and rollback incomplete: failed-incomplete"]
+    gChoice -->|yes| gNoSync
+    gChoice -->|no| gSync
+    gSync -->|status success| gOk
+    gSync -->|rollbackCompleted| gRestored
+    gSync -->|rollback not completed| gIncomplete
   end
   subgraph governance ["Governance apply"]
-    stale["stale-hash result, no write"]
-    thrown["symbolic root or bad schema throws Error"]
-    backup["in-memory backup, then create writes"]
-    journal["journal write after creates"]
-    bestEffort["catch restores backups and swallows restore errors"]
-    rolled["status rolled-back and empty applied lists"]
-    backup --> journal
-    journal --> bestEffort
-    bestEffort --> rolled
+    gRoot{"symbolic root or schema"}
+    gThrow["throw Error, no write"]
+    gHash{"expected current hash"}
+    gStale["stale-hash, no write"]
+    gDry{"dryRun"}
+    gNoop["no-op, no write"]
+    gWrite["in-memory backup, then create writes"]
+    gJournal["append migration journal"]
+    gSuccess["status success"]
+    gCatch["create or journal throws"]
+    gRestore["best-effort file restore, journal not guaranteed restored"]
+    gRolled["status rolled-back, empty applied lists"]
+    gRoot -->|invalid| gThrow
+    gRoot -->|accepted| gHash
+    gHash -->|mismatch or unreadable| gStale
+    gHash -->|matches| gDry
+    gDry -->|true| gNoop
+    gDry -->|false| gWrite
+    gWrite -->|creates succeed| gJournal
+    gJournal -->|write succeeds| gSuccess
+    gWrite -->|throws| gCatch
+    gJournal -->|throws| gCatch
+    gCatch --> gRestore
+    gRestore --> gRolled
   end
   subgraph approved ["Approved Apply"]
-    gateFail["gate failure: no write"]
-    beforeWrite["ApplyBlockedBeforeWrite before synchronizeGeneratedFiles"]
-    txRollback["generated-file transaction rollback"]
-    gateFail --> beforeWrite
-    beforeWrite --> txRollback
+    engine["executeApprovedApplyPlan"]
+    gate{"evaluateApprovedApplyPlan"}
+    gateFail["applied false, no write, no transaction rollback"]
+    scope{"declared-paths scope"}
+    scopeFail["path-scope-mismatch, no write"]
+    base{"supplied baseline"}
+    blocked["throw ApplyBlockedBeforeWrite before the transaction"]
+    tx["synchronizeGeneratedFiles"]
+    txFail["transaction failed: existing rollback, applied false"]
+    txOk["transaction success: applied true"]
+    engine --> gate
+    gate -->|not passed| gateFail
+    gate -->|passed| scope
+    scope -->|paths differ| scopeFail
+    scope -->|not declared-paths, or paths match| base
+    base -->|stale| blocked
+    base -->|current, or no supplied baseline| tx
+    tx -->|status failed| txFail
+    tx -->|status success| txOk
   end
 ```
 
@@ -960,8 +1004,10 @@ type-only cycle. The engine file is not edited.
 
 Approved Apply behavior that must stay on the current engine path:
 
-- `evaluateApprovedApplyPlan` still runs first.
-- A failed gate still returns `applied: false` and does not write.
+- `executeApprovedApplyPlan` calls `evaluateApprovedApplyPlan`. The gate
+  does not call the engine, and the engine does not call `syncProject`.
+- A failed gate still returns `applied: false` and does not write. It
+  does not start transaction rollback.
 - Declared-path mode still rejects a path-set mismatch with
   `path-scope-mismatch` before baseline capture.
 - `captureApprovedApplyBaseline` and `assertApprovedApplyBaselineCurrent`

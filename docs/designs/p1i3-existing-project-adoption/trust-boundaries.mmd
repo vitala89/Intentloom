@@ -1,27 +1,30 @@
 flowchart TB
-  subgraph readOnly ["Read-only"]
-    planGov["planProjectAdoption"]
-    preview["prepareExistingProjectAdoptionPlan"]
+  subgraph readOnly ["Read-only inspection"]
     inspect["inspectProject and doctorProject"]
   end
-  subgraph confirm ["Profile confirmation, not Approved Apply"]
+  subgraph onboarding ["1 Generated-file onboarding"]
     adopt["adoptProject"]
-    sync["syncProject ordinary generated-file sync"]
+    sync["syncProject"]
+    adopt --> sync
   end
-  subgraph prepared ["Prepared-plan approval"]
+  subgraph prepared ["2 Prepared-plan adoption"]
+    preview["prepareExistingProjectAdoptionPlan"]
     preparedApply["applyExistingProjectAdoptionPreparedPlan"]
+    preview --> preparedApply
+    preparedApply --> adopt
+    preparedApply --> sync
   end
-  subgraph governanceWrite ["Governance apply, best-effort rollback"]
-    govApply["applyProjectAdoption"]
+  subgraph governance ["3 Governance adoption"]
+    planGov["planProjectAdoption"]
+    govApply["applyProjectAdoption direct filesystem writes"]
+    planGov --> govApply
   end
-  subgraph approved ["Approved Apply gate"]
-    gate["evaluateApprovedApplyPlan"]
+  subgraph approved ["4 Approved Apply"]
     engine["executeApprovedApplyPlan"]
+    gate["evaluateApprovedApplyPlan"]
+    checks["path-scope and baseline checks"]
+    dispatcher["synchronizeGeneratedFiles"]
+    engine --> gate
+    gate --> checks
+    checks --> dispatcher
   end
-  preview --> adopt
-  adopt --> sync
-  preparedApply --> adopt
-  preparedApply --> sync
-  planGov --> govApply
-  gate --> engine
-  engine --> sync
