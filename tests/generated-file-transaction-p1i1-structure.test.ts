@@ -259,8 +259,8 @@ describe("P1I.1 generated-file transaction structure", () => {
       `${sourceRoot}/index.ts`,
     );
     expect(indexMetrics).toMatchObject({
-      effectiveCodeLines: 3760,
-      physicalLines: 3956,
+      effectiveCodeLines: 2561,
+      physicalLines: 2736,
     });
     expect(indexMetrics.effectiveCodeLines).toBeLessThan(4547);
     const declaredMetrics = measureProductionSource(

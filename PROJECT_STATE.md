@@ -1166,12 +1166,20 @@ components of size 3. Re-export cycles stay three, sizes 4, 29, and 3.
 The new modules stay outside every component.
 `quality-exceptions.json` is unchanged. Ordinary `syncProject` does not
 pass through the Approved Apply gate. `initProject` uses `plan` and
-`apply`. The post-write corruption union has 31 codes. P1I.2 design is proposed as PR #617
-(https://github.com/vitala89/Intentloom/pull/617) in
+`apply`. The post-write corruption union has 31 codes. P1I.2 design is merged as PR #617
+(https://github.com/vitala89/Intentloom/pull/617,
+`e3585e8eb5f4b58bb42482e249430654375dee5b`) in
 `docs/designs/p1i2-project-lifecycle/SYSTEM_DESIGN.md`. The feasibility
 verdict is B+C: leaf-owned lifecycle contracts and operations, with one
-composition-root binding for `synchronizeGeneratedFiles`. The design is
-not approved. P1I.2 implementation has not started. P1I.3, P1J, Undo U4,
+composition-root binding for `synchronizeGeneratedFiles`. Implementation
+is opened as PR #618
+(https://github.com/vitala89/Intentloom/pull/618) and awaiting
+maintainer review. It is not merged.
+`index.ts` measures 2,561 effective lines and 2,736 physical lines,
+down from 3,760 and 3,956. The new lifecycle modules stay outside every
+locked component. Import-only cycles stay two components of size 3.
+Re-export cycles stay three, sizes 4, 29, and 3.
+`quality-exceptions.json` is unchanged. P1I.3, P1J, Undo U4,
 and Desktop Undo U5 have not started. Ids 2 through 26 remain
 literal `passed` checks. The score and hash formulas are unchanged.
 The reader still does not recompute either value.

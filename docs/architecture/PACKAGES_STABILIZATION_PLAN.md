@@ -117,8 +117,11 @@ P1I.1 design is merged as PR #615
 (`8bc9e07c74beb701adaae9e30dacb6aec252b58f`). Implementation is merged
 as PR #616 (https://github.com/vitala89/Intentloom/pull/616,
 `b9201e9d480b34e453d08e1803f94e734d1e3f1f`). P1I.1 is complete.
-P1I.2 design is proposed as PR #617 and is not approved. P1I.2 implementation,
-P1I.3, P1J, Undo U4, and Desktop Undo U5 have not started.
+P1I.2 design is merged as PR #617
+(`e3585e8eb5f4b58bb42482e249430654375dee5b`). Implementation is opened as PR #618
+(https://github.com/vitala89/Intentloom/pull/618) and awaiting
+maintainer review. P1I.3, P1J, Undo U4, and Desktop Undo
+U5 have not started.
 Neutron's R4A topology stays frozen.
 The measurements below remain the P1A baseline and are not restated as the
 post-extraction size.
@@ -2334,8 +2337,11 @@ P1I.1 design is merged as PR #615
 (`8bc9e07c74beb701adaae9e30dacb6aec252b58f`). Implementation is merged
 as PR #616 (https://github.com/vitala89/Intentloom/pull/616,
 `b9201e9d480b34e453d08e1803f94e734d1e3f1f`). P1I.1 is complete.
-P1I.2 design is proposed as PR #617 and is not approved. P1I.2 implementation,
-P1I.3, P1J, Undo U4, and Desktop Undo U5 have not started.
+P1I.2 design is merged as PR #617
+(`e3585e8eb5f4b58bb42482e249430654375dee5b`). Implementation is opened as PR #618
+(https://github.com/vitala89/Intentloom/pull/618) and awaiting
+maintainer review. P1I.3, P1J, Undo U4, and Desktop Undo
+U5 have not started.
 
 On `911b229af00fcde54d8861af83a56e7e61df0902`, `index.ts` measures
 5,339 effective lines and 5,620 physical lines. The selected family is
@@ -2533,8 +2539,11 @@ P1I.1 design is merged as PR #615
 (`8bc9e07c74beb701adaae9e30dacb6aec252b58f`). Implementation is merged
 as PR #616 (https://github.com/vitala89/Intentloom/pull/616,
 `b9201e9d480b34e453d08e1803f94e734d1e3f1f`). P1I.1 is complete.
-P1I.2 design is proposed as PR #617 and is not approved. P1I.2 implementation,
-P1I.3, P1J, Undo U4, and Desktop Undo U5 have not started.
+P1I.2 design is merged as PR #617
+(`e3585e8eb5f4b58bb42482e249430654375dee5b`). Implementation is opened as PR #618
+(https://github.com/vitala89/Intentloom/pull/618) and awaiting
+maintainer review. P1I.3, P1J, Undo U4, and Desktop Undo
+U5 have not started.
 
 On `7a77db52753360f0029cd266d8c95eb78c34995c`, `index.ts` measures
 5,102 effective lines and 5,362 physical lines. The selected family is
@@ -2743,8 +2752,11 @@ P1I.1 design is merged as PR #615
 (`8bc9e07c74beb701adaae9e30dacb6aec252b58f`). Implementation is merged
 as PR #616 (https://github.com/vitala89/Intentloom/pull/616,
 `b9201e9d480b34e453d08e1803f94e734d1e3f1f`). P1I.1 is complete.
-P1I.2 design is proposed as PR #617 and is not approved. P1I.2 implementation,
-P1I.3, P1J, Undo U4, and Desktop Undo U5 have not started.
+P1I.2 design is merged as PR #617
+(`e3585e8eb5f4b58bb42482e249430654375dee5b`). Implementation is opened as PR #618
+(https://github.com/vitala89/Intentloom/pull/618) and awaiting
+maintainer review. P1I.3, P1J, Undo U4, and Desktop Undo
+U5 have not started.
 
 On `2c0749dce9a31976195277971d6fb35fe663cd31`, `index.ts` measures
 4,833 effective lines and 5,064 physical lines. The selected family is
@@ -2872,8 +2884,11 @@ is complete. P1I.1 design is merged as PR #615
 (`8bc9e07c74beb701adaae9e30dacb6aec252b58f`). Implementation is merged
 as PR #616 (https://github.com/vitala89/Intentloom/pull/616,
 `b9201e9d480b34e453d08e1803f94e734d1e3f1f`). P1I.1 is complete.
-P1I.2 design is proposed as PR #617 and is not approved. P1I.2 implementation,
-P1I.3, P1J, Undo U4, and Desktop Undo U5 have not started.
+P1I.2 design is merged as PR #617
+(`e3585e8eb5f4b58bb42482e249430654375dee5b`). Implementation is opened as PR #618
+(https://github.com/vitala89/Intentloom/pull/618) and awaiting
+maintainer review. P1I.3, P1J, Undo U4, and Desktop Undo
+U5 have not started.
 
 The design inventory below is the pre-implementation measurement.
 
@@ -2948,7 +2963,10 @@ export-map keys stay. P1H is complete. P1I.1 design is merged as PR #615
 (`8bc9e07c74beb701adaae9e30dacb6aec252b58f`). Implementation is merged
 as PR #616 (https://github.com/vitala89/Intentloom/pull/616,
 `b9201e9d480b34e453d08e1803f94e734d1e3f1f`). P1I.1 is complete.
-P1I.2 design is proposed as PR #617 and is not approved.
+P1I.2 design is merged as PR #617
+(`e3585e8eb5f4b58bb42482e249430654375dee5b`). Implementation is opened as PR #618
+(https://github.com/vitala89/Intentloom/pull/618) and awaiting
+maintainer review.
 
 ### P1I — transaction and lifecycle
 
@@ -2970,30 +2988,46 @@ and 219 physical lines. `generated-file-sync-declared.ts` stays 302
 effective lines. Import-only cycles stay two components of size 3.
 Re-export cycles stay three, sizes 4, 29, and 3. The new modules stay
 outside every component. `quality-exceptions.json` and the twelve
-package export-map keys are unchanged. A following PR moves
-`initProject`, `syncProject`, `diffProject`, `doctorProject`, and
-`inspectProject`. A following PR moves `adoptProject`,
-`planProjectAdoption`, and `applyProjectAdoption`, together with the
-Approved Apply import retarget that removes `index.ts` from cycle 1.
-P1I.2 design is proposed as PR #617 and is not approved. P1I.2 implementation,
-P1I.3, and P1J have not started.
+package export-map keys are unchanged. The lifecycle move is the opened P1I.2 implementation. A following PR
+moves `adoptProject`, `planProjectAdoption`, and `applyProjectAdoption`,
+together with the Approved Apply import retarget that removes `index.ts`
+from cycle 1. P1I.3 and P1J have not started.
 
 #### P1I.2 — project lifecycle
 
-Design is proposed as PR #617
-(https://github.com/vitala89/Intentloom/pull/617) in
+Design is merged as PR #617
+(https://github.com/vitala89/Intentloom/pull/617,
+`e3585e8eb5f4b58bb42482e249430654375dee5b`) in
 [`docs/designs/p1i2-project-lifecycle/SYSTEM_DESIGN.md`](../designs/p1i2-project-lifecycle/SYSTEM_DESIGN.md).
-The feasibility verdict is **B+C**: leaf-owned lifecycle contracts and
+The approved verdict is **B+C**: leaf-owned lifecycle contracts and
 operations, with one composition-root binding for
-`synchronizeGeneratedFiles`. Direct extraction would grow the import
-component that contains `index.ts` from 3 files to 4 and the re-export
-component from 29 files to 30. The design is not approved. A green CI
-result is not approval. Implementation has not started. `adoptProject`,
-`planProjectAdoption`, `applyProjectAdoption`, the Approved Apply
-import retarget, P1J, Undo U4, and Desktop Undo U5 have not started.
+`synchronizeGeneratedFiles`. The public `syncProject` wrapper stays on
+`index.ts` and passes that dispatcher into `executeProjectSync`. The
+lifecycle leaves do not import `index.ts`.
+
+Measured with `measureProductionSource`, `index.ts` is 2,561 effective
+lines and 2,736 physical lines, down from 3,760 and 3,956. The largest
+new modules are `doctor-project.ts` at 234 effective lines and
+`desired-generated-state.ts` at 227. `doctor-ownership.ts` was above
+250 before the header checks moved to `doctor-generated-headers.ts`
+(95 effective lines), which is the contingency named in the approved
+design. No new function exceeds 80 effective lines. The widest
+orchestrator, `doctorProject`, is 62. Import-only cycles stay the same
+two components of size 3. Re-export cycles stay the same three
+components of sizes 4, 29, and 3. The new modules are absent from every
+component. `quality-exceptions.json` and the twelve package export-map
+keys are unchanged. Public lifecycle names and `syncProject`'s
+three-parameter signature stay. `adoptProject` stays in `index.ts` and
+calls the extracted leaves. Ordinary sync does not enter Approved
+Apply. P1I.3, the Approved Apply import retarget, P1J, Undo U4, and
+Desktop Undo U5 have not started. The implementation pull request is #618
+(https://github.com/vitala89/Intentloom/pull/618) and is not merged.
 
 Prerequisites: P1C and P1D merged, Approved Apply tests green on `main`,
-and a diff that contains no assertion edits.
+and a diff that contains no assertion edits. Those prerequisites were
+met before this implementation. The three structure tests that pinned
+the previous `index.ts` size now pin 2,561 effective lines and 2,736
+physical lines. Their SCC membership arrays are unchanged.
 
 ### P1J — legacy Neutron helpers in the barrel
 
