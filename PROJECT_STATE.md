@@ -1193,7 +1193,8 @@ and is merged as PR #621
 `measureProductionSource`, `index.ts` is 1,878 effective lines and 2,034
 physical lines, down from 2,561 and 2,736. The adoption modules stay
 outside every component. Implementation B retargets the Approved Apply
-type imports and is open for review. It is not merged, and P1I.3 is not
+type imports and is open for review as PR #622
+(https://github.com/vitala89/Intentloom/pull/622). It is not merged, and P1I.3 is not
 complete. `approved-apply-baseline.ts` imports `FileSystem` from
 `host-file-system.ts`. `generated-file-sync-declared.ts` imports
 `FileSystem` from `host-file-system.ts`, `Plan` from `project-change.ts`,

@@ -171,7 +171,8 @@ as PR #618 (https://github.com/vitala89/Intentloom/pull/618,
 adoption extraction, is merged as PR #621
 (https://github.com/vitala89/Intentloom/pull/621,
 `527ab7f14fc199bc77d21c7e823b4cc2d5c3d926`). Implementation B, the
-Approved Apply type-import retarget, is open for review and is not
+Approved Apply type-import retarget, is open for review as PR #622
+(https://github.com/vitala89/Intentloom/pull/622) and is not
 merged. Measured import-only cycles are the Neutron mutation trio only.
 Measured re-export cycles are sizes 4, 27, and 3. No runtime behavior
 changed. Do not merge Implementation B. Do not start P1J, Undo U4, or
@@ -179,8 +180,9 @@ Desktop Undo U5.
 
 ### 2026-11-13, Packages architecture P1I.3 Approved Apply type-import retarget
 
-- **Status:** **IMPLEMENTATION B OPEN — AWAITING REVIEW.** P1I.3 design
-  PR #620 is merged. Implementation A PR #621 is merged at
+- **Status:** **IMPLEMENTATION B OPEN — AWAITING REVIEW.** Pull request
+  #622 (https://github.com/vitala89/Intentloom/pull/622) is unmerged.
+  P1I.3 design PR #620 is merged. Implementation A PR #621 is merged at
   `527ab7f14fc199bc77d21c7e823b4cc2d5c3d926`. This change retargets two
   type imports and does not change runtime behavior. P1I.3b is not
   merged. P1I.3 is not complete.

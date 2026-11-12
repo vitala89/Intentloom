@@ -125,7 +125,8 @@ P1I.2 design is merged as PR #617
 adoption extraction, is merged as PR #621
 (https://github.com/vitala89/Intentloom/pull/621,
 `527ab7f14fc199bc77d21c7e823b4cc2d5c3d926`). Implementation B, the
-Approved Apply type-import retarget, is open for review and is not
+Approved Apply type-import retarget, is open for review as PR #622
+(https://github.com/vitala89/Intentloom/pull/622) and is not
 merged. Measured import-only cycles are the Neutron mutation trio only.
 Measured re-export cycles are sizes 4, 27, and 3. No runtime behavior
 changed. P1J, Undo U4, and Desktop Undo U5 have not started.
@@ -2352,7 +2353,8 @@ P1I.2 design is merged as PR #617
 adoption extraction, is merged as PR #621
 (https://github.com/vitala89/Intentloom/pull/621,
 `527ab7f14fc199bc77d21c7e823b4cc2d5c3d926`). Implementation B, the
-Approved Apply type-import retarget, is open for review and is not
+Approved Apply type-import retarget, is open for review as PR #622
+(https://github.com/vitala89/Intentloom/pull/622) and is not
 merged. Measured import-only cycles are the Neutron mutation trio only.
 Measured re-export cycles are sizes 4, 27, and 3. No runtime behavior
 changed. P1J, Undo U4, and Desktop Undo U5 have not started.
@@ -2561,7 +2563,8 @@ P1I.2 design is merged as PR #617
 adoption extraction, is merged as PR #621
 (https://github.com/vitala89/Intentloom/pull/621,
 `527ab7f14fc199bc77d21c7e823b4cc2d5c3d926`). Implementation B, the
-Approved Apply type-import retarget, is open for review and is not
+Approved Apply type-import retarget, is open for review as PR #622
+(https://github.com/vitala89/Intentloom/pull/622) and is not
 merged. Measured import-only cycles are the Neutron mutation trio only.
 Measured re-export cycles are sizes 4, 27, and 3. No runtime behavior
 changed. P1J, Undo U4, and Desktop Undo U5 have not started.
@@ -2781,7 +2784,8 @@ P1I.2 design is merged as PR #617
 adoption extraction, is merged as PR #621
 (https://github.com/vitala89/Intentloom/pull/621,
 `527ab7f14fc199bc77d21c7e823b4cc2d5c3d926`). Implementation B, the
-Approved Apply type-import retarget, is open for review and is not
+Approved Apply type-import retarget, is open for review as PR #622
+(https://github.com/vitala89/Intentloom/pull/622) and is not
 merged. Measured import-only cycles are the Neutron mutation trio only.
 Measured re-export cycles are sizes 4, 27, and 3. No runtime behavior
 changed. P1J, Undo U4, and Desktop Undo U5 have not started.
@@ -2920,7 +2924,8 @@ P1I.2 design is merged as PR #617
 adoption extraction, is merged as PR #621
 (https://github.com/vitala89/Intentloom/pull/621,
 `527ab7f14fc199bc77d21c7e823b4cc2d5c3d926`). Implementation B, the
-Approved Apply type-import retarget, is open for review and is not
+Approved Apply type-import retarget, is open for review as PR #622
+(https://github.com/vitala89/Intentloom/pull/622) and is not
 merged. Measured import-only cycles are the Neutron mutation trio only.
 Measured re-export cycles are sizes 4, 27, and 3. No runtime behavior
 changed. P1J, Undo U4, and Desktop Undo U5 have not started.
@@ -3032,7 +3037,8 @@ from cycle 1. That following slice is P1I.3. Its design is merged as PR #620
 Implementation A is merged as PR #621
 (https://github.com/vitala89/Intentloom/pull/621,
 `527ab7f14fc199bc77d21c7e823b4cc2d5c3d926`). Implementation B, the
-Approved Apply type-import retarget, is open for review and is not
+Approved Apply type-import retarget, is open for review as PR #622
+(https://github.com/vitala89/Intentloom/pull/622) and is not
 merged. P1J has not started.
 
 #### P1I.2 — project lifecycle
@@ -3094,8 +3100,9 @@ physical lines, down from 2,561 and 2,736. The new modules live in
 unchanged. Implementation A does not edit `approved-apply-baseline.ts`,
 `generated-file-sync-declared.ts`, or `approved-apply-engine.ts`.
 
-Implementation B retargets those two type imports and is open for review.
-It is not merged, and P1I.3 is not complete. `approved-apply-baseline.ts`
+Implementation B retargets those two type imports and is open for review
+as PR #622 (https://github.com/vitala89/Intentloom/pull/622). It is not
+merged, and P1I.3 is not complete. `approved-apply-baseline.ts`
 imports `FileSystem` from `host-file-system.ts`.
 `generated-file-sync-declared.ts` imports `FileSystem` from
 `host-file-system.ts`, `Plan` from `project-change.ts`, and
