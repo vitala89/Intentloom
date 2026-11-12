@@ -1,0 +1,24 @@
+sequenceDiagram
+  participant Caller
+  participant Plan as planProjectAdoption
+  participant Core as planGovernanceAdoption
+  participant Apply as applyProjectAdoption
+  participant Fs as FileSystem
+  Caller->>Plan: options, fs or nodeFileSystem
+  Plan->>Fs: isSymbolicLink, list, read
+  Plan->>Core: artifacts, ids, validations, exceptions
+  Core-->>Plan: AdoptionPlan
+  Plan-->>Caller: AdoptionPlan
+  Caller->>Apply: root, plan, dryRun, fs
+  Apply->>Fs: isSymbolicLink, exists, read
+  alt schema invalid or symbolic root
+    Apply-->>Caller: throw Error
+  else expected hash mismatch
+    Apply-->>Caller: status stale-hash
+  else dry-run
+    Apply-->>Caller: status no-op
+  else write
+    Apply->>Fs: mkdir, write created governance files
+    Apply->>Fs: write .aif/migration-journal.json
+    Apply-->>Caller: status success
+  end

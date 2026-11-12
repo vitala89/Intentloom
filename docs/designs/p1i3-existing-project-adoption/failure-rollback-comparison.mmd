@@ -1,0 +1,29 @@
+flowchart TB
+  subgraph generated ["Generated-file adoption"]
+    blocked["blocked or dry-run: no sync, return AdoptionProposal"]
+    tx["syncProject transaction"]
+    restored["failed-restored when rollbackCompleted"]
+    incomplete["failed-incomplete when rollback did not complete"]
+    sanitized["diagnostics coerced to token codes"]
+    tx --> restored
+    tx --> incomplete
+    tx --> sanitized
+  end
+  subgraph governance ["Governance apply"]
+    stale["stale-hash result, no write"]
+    thrown["symbolic root or bad schema throws Error"]
+    backup["in-memory backup, then create writes"]
+    journal["journal write after creates"]
+    bestEffort["catch restores backups and swallows restore errors"]
+    rolled["status rolled-back and empty applied lists"]
+    backup --> journal
+    journal --> bestEffort
+    bestEffort --> rolled
+  end
+  subgraph approved ["Approved Apply"]
+    gateFail["gate failure: no write"]
+    beforeWrite["ApplyBlockedBeforeWrite before synchronizeGeneratedFiles"]
+    txRollback["generated-file transaction rollback"]
+    gateFail --> beforeWrite
+    beforeWrite --> txRollback
+  end

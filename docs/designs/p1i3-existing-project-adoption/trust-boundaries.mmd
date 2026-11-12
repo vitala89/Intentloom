@@ -1,0 +1,27 @@
+flowchart TB
+  subgraph readOnly ["Read-only"]
+    planGov["planProjectAdoption"]
+    preview["prepareExistingProjectAdoptionPlan"]
+    inspect["inspectProject and doctorProject"]
+  end
+  subgraph confirm ["Profile confirmation, not Approved Apply"]
+    adopt["adoptProject"]
+    sync["syncProject ordinary generated-file sync"]
+  end
+  subgraph prepared ["Prepared-plan approval"]
+    preparedApply["applyExistingProjectAdoptionPreparedPlan"]
+  end
+  subgraph governanceWrite ["Governance apply, best-effort rollback"]
+    govApply["applyProjectAdoption"]
+  end
+  subgraph approved ["Approved Apply gate"]
+    gate["evaluateApprovedApplyPlan"]
+    engine["executeApprovedApplyPlan"]
+  end
+  preview --> adopt
+  adopt --> sync
+  preparedApply --> adopt
+  preparedApply --> sync
+  planGov --> govApply
+  gate --> engine
+  engine --> sync

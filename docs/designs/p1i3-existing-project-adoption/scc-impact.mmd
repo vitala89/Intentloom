@@ -1,0 +1,24 @@
+flowchart TB
+  subgraph importNow ["Import-only now: sizes 3 and 3"]
+    baselineNow["approved-apply-baseline.ts"]
+    declaredNow["generated-file-sync-declared.ts"]
+    indexNow["index.ts"]
+    neutronNow["neutron mutation trio"]
+  end
+  subgraph importNext ["Import-only predicted: size 3 only"]
+    neutronNext["neutron mutation trio unchanged"]
+  end
+  subgraph reexportNow ["Re-export now: sizes 4, 29, and 3"]
+    extNow["extension update quartet"]
+    barrelNow["29 files including index, baseline, declared, and engine"]
+    neutronReNow["neutron mutation trio"]
+  end
+  subgraph reexportNext ["Re-export predicted: sizes 4, 27, and 3"]
+    extNext["extension update quartet unchanged"]
+    barrelNext["27 files: index and engine remain; baseline and declared leave"]
+    neutronReNext["neutron mutation trio unchanged"]
+  end
+  baselineNow --> indexNow
+  declaredNow --> baselineNow
+  declaredNow --> indexNow
+  indexNow --> declaredNow
