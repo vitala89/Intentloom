@@ -159,10 +159,87 @@ P1H.7 implementation is merged as PR #614
 (https://github.com/vitala89/Intentloom/pull/614,
 `e07fddccbc771e415bc1d9056051edb9e00b4d58`). P1H is complete.
 **P1I.1** generated-file transaction design is merged as PR #615
-(`8bc9e07c74beb701adaae9e30dacb6aec252b58f`). Implementation is open
-as PR #616 (https://github.com/vitala89/Intentloom/pull/616) and is
-not merged. Do not start P1I.2, P1I.3, P1J, Undo U4, or Desktop Undo
-U5.
+(`8bc9e07c74beb701adaae9e30dacb6aec252b58f`). Implementation is merged
+as PR #616 (https://github.com/vitala89/Intentloom/pull/616,
+`b9201e9d480b34e453d08e1803f94e734d1e3f1f`). P1I.1 is complete.
+**P1I.2** project lifecycle design is proposed and is not approved.
+Do not start the P1I.2 implementation, P1I.3, P1J, Undo U4, or Desktop
+Undo U5.
+
+### 2026-11-12, P1I.2 design review correction
+
+- **Status:** **DESIGN PR OPEN — AWAITING MAINTAINER APPROVAL.**
+  The correction stays on PR #617,
+  https://github.com/vitala89/Intentloom/pull/617. Verdict B+C is
+  unchanged. P1I.2 is not implemented. Do not merge. Do not start the
+  P1I.2 implementation, P1I.3, P1J, Undo U4, or Desktop Undo U5.
+- **Diagram:** `init-sync-write-flow.mmd` no longer sends
+  `executeApprovedApplyPlan` through the ordinary sync injection node.
+  Ordinary sync is `syncProject`, `executeProjectSync`, plan and
+  checks, then the injected `synchronizeGeneratedFiles`. Approved Apply
+  is `executeApprovedApplyPlan`, `evaluateApprovedApplyPlan`, the
+  declared-path scope check and baseline check, then a direct call to
+  `synchronizeGeneratedFiles`. Both paths reach the same mode
+  dispatcher only after those separate checks. This matches
+  `approved-apply-engine.ts` and the public `syncProject` wrapper.
+- **CI:** Compatibility run `43119952476` on reviewed head
+  `584a55b7618bf28e96789e4b168eab3765590e7d` failed only
+  `macos-latest / Node 22`. The failure is `tests/cli-schema-process.test.ts`
+  `beforeAll` timing out at 10,000 ms inside `execFileSync` of `pnpm build`.
+  It is not an assertion failure. The other Compatibility jobs, Governance,
+  and CodeQL passed on that head. `gh run rerun 43119952476 --failed`
+  was refused with `Resource not accessible by integration`, so this
+  session could not rerun that job. The timeout is recorded as a
+  follow-up, not fixed in this design pull request.
+- **Not done:** maintainer approval, implementation, a timeout change,
+  P1I.3, P1J, Undo U4, Desktop Undo U5.
+
+### 2026-11-12, Packages architecture P1I.2 project lifecycle design
+
+- **Status:** **DESIGN PR OPEN — AWAITING MAINTAINER APPROVAL.**
+  PR #617, https://github.com/vitala89/Intentloom/pull/617. P1I.1 is
+  complete. Design PR #615 is merged at
+  `8bc9e07c74beb701adaae9e30dacb6aec252b58f`. Implementation PR #616 is
+  merged at `b9201e9d480b34e453d08e1803f94e734d1e3f1f`. P1I.2 is not
+  implemented. A green CI result is not approval. Do not merge. Do not
+  start the P1I.2 implementation, P1I.3, P1J, Undo U4, or Desktop Undo
+  U5.
+- **Branch:** `docs/architecture-p1i2-project-lifecycle`
+- **Baseline:** `b9201e9d480b34e453d08e1803f94e734d1e3f1f` (PR #616).
+- **Design:** `docs/designs/p1i2-project-lifecycle/SYSTEM_DESIGN.md`
+- **Verdict:** **B+C. Leaf-owned lifecycle contracts and operations,
+  with one composition-root binding for `synchronizeGeneratedFiles`.**
+  The public `syncProject` wrapper stays on `index.ts` and passes the
+  dispatcher into `executeProjectSync`. The leaf does not import
+  `index.ts`.
+- **Scope:** `initProject`, `syncProject`, `diffProject`,
+  `doctorProject`, and `inspectProject`, plus `desired`, `ownership`,
+  `plan`, legacy `apply`, and `ArtifactValidationFailure`.
+  `adoptProject` stays in `index.ts` and imports the shared leaves.
+  `unsupportedPath` and `normalizeMappingPath` stay with adoption.
+- **Doctor:** `doctorProject` is 589 effective lines and is split
+  across metadata, drift, ownership, adapter-output, profile, and
+  orchestration modules. Finding concatenation order is preserved.
+  The final sort stays the only sort.
+- **SCC:** Import-only components stay sizes 3 and 3. Re-export
+  components stay sizes 4, 29, and 3. New modules stay outside every
+  component. Existing `index.ts` imports are not retargeted.
+- **Size:** `index.ts` measures 3,760 effective lines and 3,956
+  physical lines. The estimated remainder is about 2,580 effective
+  lines and about 2,780 physical lines. That estimate is not an
+  implementation measurement. `plan` is 83 effective lines and must be
+  split. `desired` is 133 and must be split. No new quality exception.
+- **Verification:** `git diff --check` passed. Mermaid 11.17.2 parsed
+  all nine `.mmd` sources and the nine embedded diagrams. Local
+  `pnpm verify` passed: typecheck, oxlint with pre-existing warnings
+  only, Prettier, Vitest 370 files / 3169 passed / 3 skipped, build,
+  and `git diff --check`. No production source changed, so this is
+  not a runtime claim for the extraction. Hosted CI is recorded
+  against the pull-request head after push.
+- **Not done:** maintainer approval, implementation, production edits,
+  P1I.3, P1J, Undo U4, Desktop Undo U5.
+- **Next:** Maintainer review. Do not merge. Do not implement P1I.2.
+  If verdict B+C is rejected, P1I.2 stays blocked.
 
 ### 2026-11-11, Packages architecture P1I.1 generated-file transaction
 

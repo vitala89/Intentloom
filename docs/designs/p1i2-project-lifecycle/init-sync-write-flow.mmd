@@ -1,0 +1,39 @@
+flowchart TB
+  init["initProject"]
+  initPlan["plan with sync false"]
+  initGate{"dryRun or any conflict"}
+  apply["apply create and update only"]
+  initResult["return the plan"]
+  sync["syncProject"]
+  execute["executeProjectSync"]
+  syncPlan["plan with sync true then desired again"]
+  syncGate{"dry run"}
+  summary["SyncDryRunResult"]
+  blocked{"conflict modified security-error or diagnostic"}
+  failed["failed result and no write"]
+  injected["sync wrapper injects synchronizeGeneratedFiles"]
+  approved["executeApprovedApplyPlan"]
+  approvedGate{"evaluateApprovedApplyPlan"}
+  approvedStop["Approved Apply returns without a project write"]
+  extra{"declared path scope and baseline"}
+  direct["direct call to synchronizeGeneratedFiles"]
+  dispatcher["synchronizeGeneratedFiles mode dispatcher"]
+  mode{"declared-paths syncMode"}
+  declared["synchronizeDeclaredProjectPaths"]
+  owned["commitOwnedGeneratedFiles"]
+  init --> initPlan --> initGate
+  initGate -->|yes| initResult
+  initGate -->|no| apply --> initResult
+  sync --> execute --> syncPlan --> syncGate
+  syncGate -->|yes| summary
+  syncGate -->|no| blocked
+  blocked -->|yes| failed
+  blocked -->|no| injected --> dispatcher
+  approved --> approvedGate
+  approvedGate -->|not passed| approvedStop
+  approvedGate -->|passed| extra
+  extra -->|scope mismatch or baseline blocked| approvedStop
+  extra -->|passed| direct --> dispatcher
+  dispatcher --> mode
+  mode -->|yes| declared
+  mode -->|no| owned

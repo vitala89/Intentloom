@@ -1,0 +1,19 @@
+flowchart TB
+  start["inspectProject"]
+  link{"resolved root is a symbolic link"}
+  reject["not-initialized inspection-root-symlink"]
+  detect["detectProjectProfiles"]
+  filter["drop secret-like scanned paths"]
+  adapters["detected adapters from instruction paths"]
+  meta["config manifest and source-map presence"]
+  ready{"metadata count"}
+  none["intentloom-not-initialized"]
+  partial["intentloom-metadata-partial"]
+  full["inspection-ready"]
+  result["ProjectInspection readOnly true"]
+  start --> link
+  link -->|yes| reject --> result
+  link -->|no| detect --> filter --> adapters --> meta --> ready
+  ready -->|zero| none --> result
+  ready -->|some| partial --> result
+  ready -->|all three| full --> result

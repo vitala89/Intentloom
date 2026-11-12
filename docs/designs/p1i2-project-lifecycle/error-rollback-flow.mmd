@@ -1,0 +1,22 @@
+flowchart TB
+  desired["desired"]
+  invalid["throw ArtifactValidationFailure"]
+  hash["throw canonical source hash unavailable"]
+  plan["plan"]
+  security["return one security-error change"]
+  malformed["return source-map conflict"]
+  init["initProject"]
+  apply["apply"]
+  rollback["restore backups and remove created paths"]
+  propagate["rethrow the write error"]
+  sync["syncProject"]
+  noWrite["return failed without rollback work"]
+  transaction["generated-file transaction rollback"]
+  desired --> invalid
+  desired --> hash
+  plan --> security
+  plan --> malformed
+  init --> apply
+  apply -->|write throws| rollback --> propagate
+  sync -->|blocking plan| noWrite
+  sync -->|accepted plan| transaction

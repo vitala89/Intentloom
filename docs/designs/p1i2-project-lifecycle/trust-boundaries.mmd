@@ -1,0 +1,33 @@
+flowchart TB
+  subgraph readOnly ["Read only"]
+    inspect["inspectProject"]
+    doctor["doctorProject"]
+    diff["diffProject"]
+    dry["sync dry run"]
+  end
+  subgraph initWrite ["Init writes"]
+    init["initProject"]
+    legacy["legacy apply"]
+  end
+  subgraph syncWrite ["Ordinary sync writes"]
+    sync["syncProject"]
+    dispatcher["synchronizeGeneratedFiles"]
+  end
+  subgraph approved ["Approved Apply stays separate"]
+    gate["evaluateApprovedApplyPlan"]
+    engine["executeApprovedApplyPlan"]
+  end
+  port["injected FileSystem"]
+  host["host catalog reads in desired"]
+  inspect --> port
+  doctor --> port
+  doctor --> host
+  diff --> port
+  dry --> port
+  dry --> host
+  init --> legacy --> port
+  init --> host
+  sync --> dispatcher --> port
+  sync --> host
+  engine --> gate
+  gate --> dispatcher

@@ -1,0 +1,50 @@
+flowchart TB
+  index["index.ts lifecycle and adoption"]
+  desired["desired config generated"]
+  ownership["ownership"]
+  plan["plan"]
+  apply["legacy apply"]
+  init["initProject"]
+  sync["syncProject"]
+  diff["diffProject"]
+  doctor["doctorProject"]
+  inspect["inspectProject"]
+  adopt["adoptProject"]
+  feature["planFeature"]
+  failure["ArtifactValidationFailure"]
+  dispatcher["synchronizeGeneratedFiles"]
+  declared["generated-file-sync-declared.ts"]
+  baseline["approved-apply-baseline.ts"]
+  commit["generated-file-transaction.ts"]
+  health["extension-health.ts"]
+  profiles["project-profile-detection.ts"]
+  workspace["interactive-workspace-read-model.ts"]
+  index --> desired
+  index --> ownership
+  index --> plan
+  index --> apply
+  plan --> desired
+  plan --> ownership
+  init --> plan
+  init --> apply
+  sync --> plan
+  sync --> desired
+  sync --> dispatcher
+  diff --> plan
+  doctor --> plan
+  doctor --> desired
+  doctor --> health
+  doctor --> profiles
+  inspect --> profiles
+  adopt --> desired
+  adopt --> ownership
+  adopt --> plan
+  adopt --> sync
+  feature --> failure
+  desired --> failure
+  dispatcher --> declared
+  dispatcher --> commit
+  declared --> baseline
+  declared --> index
+  baseline --> index
+  index --> workspace
