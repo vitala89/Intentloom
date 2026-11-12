@@ -162,9 +162,50 @@ P1H.7 implementation is merged as PR #614
 (`8bc9e07c74beb701adaae9e30dacb6aec252b58f`). Implementation is merged
 as PR #616 (https://github.com/vitala89/Intentloom/pull/616,
 `b9201e9d480b34e453d08e1803f94e734d1e3f1f`). P1I.1 is complete.
-**P1I.2** project lifecycle design is proposed and is not approved.
-Do not start the P1I.2 implementation, P1I.3, P1J, Undo U4, or Desktop
-Undo U5.
+**P1I.2** project lifecycle design is merged as PR #617
+(`e3585e8eb5f4b58bb42482e249430654375dee5b`). Implementation is opened
+and awaiting maintainer review. It is not merged. Do not start P1I.3,
+P1J, Undo U4, or Desktop Undo U5.
+
+### 2026-11-12, Packages architecture P1I.2 project lifecycle implementation
+
+- **Status:** **IMPLEMENTATION PR OPEN — AWAITING MAINTAINER REVIEW.**
+  P1I.1 is complete. Design PR #617 is merged at
+  `e3585e8eb5f4b58bb42482e249430654375dee5b`. The implementation is not
+  merged. Do not start P1I.3, P1J, Undo U4, or Desktop Undo U5.
+- **Branch:** `refactor/application-project-lifecycle-p1i2`
+- **Baseline:** `e3585e8eb5f4b58bb42482e249430654375dee5b`
+- **Verdict implemented:** **B+C.** Lifecycle contracts and operations
+  are leaf modules under `packages/application/src/project-lifecycle/`.
+  `index.ts` remains the composition root. `syncProject` keeps its
+  three-parameter signature and passes `synchronizeGeneratedFiles` into
+  `executeProjectSync`. No lifecycle module imports `index.ts`.
+- **Extra module:** `doctor-generated-headers.ts`. `doctor-ownership.ts`
+  measured above 250 effective lines before the two header checks moved.
+  That split is the contingency in the approved design. There is no
+  `project-lifecycle/index.ts`.
+- **Size:** `measureProductionSource` reports `index.ts` at 2,561
+  effective lines and 2,736 physical lines, down from 3,760 and 3,956.
+  Largest new modules: `doctor-project.ts` 234 effective,
+  `desired-generated-state.ts` 227, `doctor-ownership.ts` 217.
+  `doctorProject` is 62 effective lines. No new function exceeds 80.
+- **SCC:** Import-only components stay the same two of size 3.
+  Re-export-inclusive components stay the same three of sizes 4, 29,
+  and 3. New lifecycle modules and `artifact-validation-failure.ts` are
+  outside every component. `quality-exceptions.json` is unchanged. The
+  twelve application export-map keys are unchanged.
+- **Behavior preserved:** public lifecycle names, `ArtifactValidationFailure`
+  constructor identity and message, the second `desired` call in sync
+  and doctor, doctor sort stability, ordinary sync outside Approved
+  Apply, init rollback, and read-only diff, doctor, and inspect.
+  `adoptProject` stays in `index.ts` and calls the extracted leaves.
+- **Verification:** `pnpm verify` passed on this tree. Typecheck,
+  lint, and format check passed. Vitest reported 372 files passed,
+  3,176 tests passed, and 3 skipped. Build passed. `git diff --check`
+  passed. Lint warnings are the existing sort and mock-type warnings.
+- **Not done:** merge, P1I.3 adoption extraction, Approved Apply import
+  retarget, P1J, Undo U4, Desktop Undo U5.
+- **Next:** Maintainer review. Do not merge. Do not start P1I.3.
 
 ### 2026-11-12, P1I.2 design review correction
 
