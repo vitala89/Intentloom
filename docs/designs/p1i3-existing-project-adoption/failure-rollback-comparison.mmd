@@ -1,0 +1,61 @@
+flowchart TB
+  subgraph generated ["Generated-file adoption"]
+    gChoice{"dry-run or blocked"}
+    gNoSync["return AdoptionProposal, no syncProject"]
+    gSync["syncProject"]
+    gOk["success: applied true"]
+    gRestored["failed and rollback completed: failed-restored"]
+    gIncomplete["failed and rollback incomplete: failed-incomplete"]
+    gChoice -->|yes| gNoSync
+    gChoice -->|no| gSync
+    gSync -->|status success| gOk
+    gSync -->|rollbackCompleted| gRestored
+    gSync -->|rollback not completed| gIncomplete
+  end
+  subgraph governance ["Governance apply"]
+    gRoot{"symbolic root or schema"}
+    gThrow["throw Error, no write"]
+    gHash{"expected current hash"}
+    gStale["stale-hash, no write"]
+    gDry{"dryRun"}
+    gNoop["no-op, no write"]
+    gWrite["in-memory backup, then create writes"]
+    gJournal["append migration journal"]
+    gSuccess["status success"]
+    gCatch["create or journal throws"]
+    gRestore["best-effort file restore, journal not guaranteed restored"]
+    gRolled["status rolled-back, empty applied lists"]
+    gRoot -->|invalid| gThrow
+    gRoot -->|accepted| gHash
+    gHash -->|mismatch or unreadable| gStale
+    gHash -->|matches| gDry
+    gDry -->|true| gNoop
+    gDry -->|false| gWrite
+    gWrite -->|creates succeed| gJournal
+    gJournal -->|write succeeds| gSuccess
+    gWrite -->|throws| gCatch
+    gJournal -->|throws| gCatch
+    gCatch --> gRestore
+    gRestore --> gRolled
+  end
+  subgraph approved ["Approved Apply"]
+    engine["executeApprovedApplyPlan"]
+    gate{"evaluateApprovedApplyPlan"}
+    gateFail["applied false, no write, no transaction rollback"]
+    scope{"declared-paths scope"}
+    scopeFail["path-scope-mismatch, no write"]
+    base{"supplied baseline"}
+    blocked["throw ApplyBlockedBeforeWrite before the transaction"]
+    tx["synchronizeGeneratedFiles"]
+    txFail["transaction failed: existing rollback, applied false"]
+    txOk["transaction success: applied true"]
+    engine --> gate
+    gate -->|not passed| gateFail
+    gate -->|passed| scope
+    scope -->|paths differ| scopeFail
+    scope -->|not declared-paths, or paths match| base
+    base -->|stale| blocked
+    base -->|current, or no supplied baseline| tx
+    tx -->|status failed| txFail
+    tx -->|status success| txOk
+  end

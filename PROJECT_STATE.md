@@ -1179,8 +1179,15 @@ is merged as PR #618
 down from 3,760 and 3,956. The new lifecycle modules stay outside every
 locked component. Import-only cycles stay two components of size 3.
 Re-export cycles stay three, sizes 4, 29, and 3.
-`quality-exceptions.json` is unchanged. P1I.3, P1J, Undo U4,
-and Desktop Undo U5 have not started. Ids 2 through 26 remain
+`quality-exceptions.json` is unchanged. P1I.3 design is proposed in
+`docs/designs/p1i3-existing-project-adoption/SYSTEM_DESIGN.md` and is
+awaiting maintainer approval. The feasibility verdict is B:
+leaf-owned adoption workflows, with `adoptProject` passing `syncProject`
+into the generated-file leaf. The predicted import-only graph keeps only
+the Neutron mutation component. The predicted re-export sizes are 4, 27,
+and 3. Those SCC numbers are predictions, not implementation results.
+P1I.3 implementation has not started. P1J, Undo U4, and Desktop Undo U5
+have not started. Ids 2 through 26 remain
 literal `passed` checks. The score and hash formulas are unchanged.
 The reader still does not recompute either value.
 `rankProceduralMemory` stays in the barrel.

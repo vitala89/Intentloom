@@ -1,0 +1,30 @@
+flowchart TB
+  subgraph readOnly ["Read-only inspection"]
+    inspect["inspectProject and doctorProject"]
+  end
+  subgraph onboarding ["1 Generated-file onboarding"]
+    adopt["adoptProject"]
+    sync["syncProject"]
+    adopt --> sync
+  end
+  subgraph prepared ["2 Prepared-plan adoption"]
+    preview["prepareExistingProjectAdoptionPlan"]
+    preparedApply["applyExistingProjectAdoptionPreparedPlan"]
+    preview --> preparedApply
+    preparedApply --> adopt
+    preparedApply --> sync
+  end
+  subgraph governance ["3 Governance adoption"]
+    planGov["planProjectAdoption"]
+    govApply["applyProjectAdoption direct filesystem writes"]
+    planGov --> govApply
+  end
+  subgraph approved ["4 Approved Apply"]
+    engine["executeApprovedApplyPlan"]
+    gate["evaluateApprovedApplyPlan"]
+    checks["path-scope and baseline checks"]
+    dispatcher["synchronizeGeneratedFiles"]
+    engine --> gate
+    gate --> checks
+    checks --> dispatcher
+  end

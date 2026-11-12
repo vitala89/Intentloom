@@ -1,0 +1,30 @@
+sequenceDiagram
+  participant Caller
+  participant Wrapper as adoptProject
+  participant Leaf as adoptGeneratedFiles
+  participant Profile as detectProjectProfiles
+  participant Desired as desired
+  participant Own as ownership
+  participant Plan as plan
+  participant Sync as syncProject
+  Caller->>Wrapper: options, fs, transactionOptions
+  Wrapper->>Leaf: options, fs, transactionOptions, syncProject
+  Leaf->>Profile: root, fs
+  Profile-->>Leaf: scannedPaths and profileDetection
+  Leaf->>Desired: options
+  Desired-->>Leaf: desiredFiles
+  Leaf->>Own: root, fs
+  Own-->>Leaf: ownership map or null
+  Leaf->>Plan: options with dryRun true, fs
+  Note over Plan,Desired: plan calls desired again
+  Plan-->>Leaf: change plan
+  Leaf->>Leaf: mappings, classification, blocking
+  alt dry-run or blocked
+    Leaf-->>Wrapper: AdoptionProposal without sync
+  else write permitted
+    Leaf->>Sync: options with dryRun false, fs, transactionOptions
+    Note over Sync,Desired: sync calls plan and desired again
+    Sync-->>Leaf: TransactionResult
+    Leaf-->>Wrapper: AdoptionProposal with transactionOutcome
+  end
+  Wrapper-->>Caller: AdoptionProposal

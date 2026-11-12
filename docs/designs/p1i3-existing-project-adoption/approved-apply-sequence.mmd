@@ -1,0 +1,30 @@
+sequenceDiagram
+  participant Caller
+  participant Engine as executeApprovedApplyPlan
+  participant Gate as evaluateApprovedApplyPlan
+  participant Baseline as approved-apply-baseline
+  participant Sync as synchronizeGeneratedFiles
+  participant Declared as synchronizeDeclaredProjectPaths
+  participant Commit as commitOwnedGeneratedFiles
+  Caller->>Engine: request, files, options
+  Engine->>Gate: request
+  alt gate rejected
+    Gate-->>Engine: passed false
+    Engine-->>Caller: applied false
+  else declared path set mismatch
+    Engine-->>Caller: path-scope-mismatch
+  else gate passed
+    Engine->>Baseline: capture or assert current baseline
+    alt supplied baseline is stale
+      Baseline-->>Engine: ApplyBlockedBeforeWrite
+    else baseline current
+      Engine->>Sync: root, files, guarded fs, transaction options
+      alt declared-paths mode
+        Sync->>Declared: same arguments
+      else ordinary mode
+        Sync->>Commit: same arguments
+      end
+      Sync-->>Engine: TransactionResult
+      Engine-->>Caller: ApprovedApplyExecutionResult
+    end
+  end

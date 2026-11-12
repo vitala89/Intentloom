@@ -165,8 +165,52 @@ as PR #616 (https://github.com/vitala89/Intentloom/pull/616,
 **P1I.2** project lifecycle design is merged as PR #617
 (`e3585e8eb5f4b58bb42482e249430654375dee5b`). Implementation is merged
 as PR #618 (https://github.com/vitala89/Intentloom/pull/618,
-`1d8d55cbfd89792272d4d4c00512aa09465ed23d`). P1I.2 is complete. Do not
-start P1I.3, P1J, Undo U4, or Desktop Undo U5.
+`1d8d55cbfd89792272d4d4c00512aa09465ed23d`). P1I.2 is complete.
+**P1I.3** Existing Project Adoption design is proposed and awaiting
+maintainer approval. P1I.3 implementation has not started. Do not start
+the P1I.3 implementation, P1J, Undo U4, or Desktop Undo U5.
+
+### 2026-11-12, Packages architecture P1I.3 design review corrections
+
+- **Status:** **DESIGN PR STILL OPEN — AWAITING MAINTAINER APPROVAL.**
+  PR #620, https://github.com/vitala89/Intentloom/pull/620. The review
+  corrections stay on that pull request. Implementation has not started.
+  Do not start the P1I.3 implementation, P1J, Undo U4, or Desktop Undo U5.
+- **Corrections:** The trust-boundary diagram now shows
+  `executeApprovedApplyPlan` calling `evaluateApprovedApplyPlan`, then
+  scope and baseline checks, then `synchronizeGeneratedFiles`. It does
+  not show the engine calling `syncProject`. The failure diagram keeps
+  gate rejection, path-scope mismatch, `ApplyBlockedBeforeWrite`, and
+  transaction rollback as separate Approved Apply branches. A successful
+  governance journal write returns `success` and does not continue into
+  rollback. `AdoptionTransactionOutcome` has one type owner,
+  `generated-file-adoption-contracts.ts`.
+- **Unchanged verdict:** **B.** The predicted SCC membership is unchanged.
+  Those numbers remain predictions.
+
+### 2026-11-12, Packages architecture P1I.3 adoption extraction design
+
+- **Status:** **DESIGN PR OPEN — AWAITING MAINTAINER APPROVAL.** P1I.2
+  implementation PR #618 is merged at
+  `1d8d55cbfd89792272d4d4c00512aa09465ed23d`. P1I.2 is complete. This
+  design does not implement the extraction. Do not start the P1I.3
+  implementation, P1J, Undo U4, or Desktop Undo U5.
+- **Design:** `docs/designs/p1i3-existing-project-adoption/SYSTEM_DESIGN.md`.
+- **Verdict:** **B.** Generated-file onboarding and governance adoption
+  are separate module families under `packages/application/src/project-adoption/`.
+  The public `adoptProject` wrapper stays on `index.ts` and passes
+  `syncProject` into `adoptGeneratedFiles`. `planProjectAdoption` and
+  `applyProjectAdoption` move. `planPackUpdate` stays.
+- **Baseline:** `origin/main` at
+  `da8d28e4ce33f24154fa69e1067a28fd54e5d04e`. Application source matches
+  the P1I.2 merge. `measureProductionSource` reports `index.ts` at 2,561
+  effective lines and 2,736 physical lines.
+- **Predicted SCC, not measured on an implementation:** after the
+  type-import retarget, the only import-only component is the Neutron
+  mutation trio. Re-export sizes become 4, 27, and 3. The Approved Apply
+  engine still value-imports `synchronizeGeneratedFiles` from `index.ts`.
+- **Next:** Maintainer review. Do not merge without approval. Do not
+  start implementation from this handoff.
 
 ### 2026-11-12, Packages architecture P1I.2 project lifecycle merge
 

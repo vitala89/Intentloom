@@ -1,0 +1,40 @@
+flowchart TB
+  index["index.ts composition root"]
+  wrapper["adoptProject wrapper"]
+  pack["planPackUpdate stays"]
+  syncWrap["syncProject stays"]
+  dispatcher["synchronizeGeneratedFiles stays"]
+  gen["project-adoption generated-file modules"]
+  govPlan["governance-adoption-plan.ts"]
+  govApply["governance-adoption-apply.ts"]
+  lifecycle["project-lifecycle leaves"]
+  declared["generated-file-sync-declared.ts"]
+  baseline["approved-apply-baseline.ts"]
+  host["host-file-system.ts"]
+  change["project-change.ts"]
+  tx["transaction-contracts.ts"]
+  engine["approved-apply-engine.ts"]
+  index --> wrapper
+  index --> pack
+  index --> syncWrap
+  index --> dispatcher
+  index --> gen
+  index --> govPlan
+  index --> govApply
+  wrapper --> gen
+  wrapper --> syncWrap
+  pack --> govPlan
+  gen --> lifecycle
+  syncWrap --> dispatcher
+  dispatcher --> declared
+  declared --> baseline
+  baseline --> host
+  declared --> host
+  declared --> change
+  declared --> tx
+  engine --> index
+  engine --> declared
+  engine --> baseline
+  gen --> host
+  govPlan --> host
+  govApply --> host

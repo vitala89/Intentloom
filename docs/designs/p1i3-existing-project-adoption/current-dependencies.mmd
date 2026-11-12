@@ -1,0 +1,37 @@
+flowchart TB
+  index["index.ts"]
+  adopt["adoptProject"]
+  planGov["planProjectAdoption"]
+  applyGov["applyProjectAdoption"]
+  pack["planPackUpdate"]
+  syncWrap["syncProject"]
+  dispatcher["synchronizeGeneratedFiles"]
+  declared["generated-file-sync-declared.ts"]
+  baseline["approved-apply-baseline.ts"]
+  engine["approved-apply-engine.ts"]
+  gate["approved-apply-gate.ts"]
+  lifecycle["project-lifecycle leaves"]
+  prepared["existing-project-adoption-plan.ts and apply.ts"]
+  workspace["existing-project-workspace.ts"]
+  index --> adopt
+  index --> planGov
+  index --> applyGov
+  index --> pack
+  index --> syncWrap
+  index --> dispatcher
+  adopt --> lifecycle
+  adopt --> syncWrap
+  pack --> planGov
+  syncWrap --> dispatcher
+  dispatcher --> declared
+  declared --> baseline
+  declared --> index
+  baseline --> index
+  index -.-> engine
+  engine --> index
+  engine --> gate
+  engine --> baseline
+  engine --> declared
+  engine --> dispatcher
+  prepared --> index
+  workspace --> index
