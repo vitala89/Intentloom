@@ -164,13 +164,15 @@ as PR #616 (https://github.com/vitala89/Intentloom/pull/616,
 `b9201e9d480b34e453d08e1803f94e734d1e3f1f`). P1I.1 is complete.
 **P1I.2** project lifecycle design is merged as PR #617
 (`e3585e8eb5f4b58bb42482e249430654375dee5b`). Implementation is opened
-and awaiting maintainer review. It is not merged. Do not start P1I.3,
+as PR #618 (https://github.com/vitala89/Intentloom/pull/618) and
+awaiting maintainer review. It is not merged. Do not start P1I.3,
 P1J, Undo U4, or Desktop Undo U5.
 
 ### 2026-11-12, Packages architecture P1I.2 project lifecycle implementation
 
 - **Status:** **IMPLEMENTATION PR OPEN — AWAITING MAINTAINER REVIEW.**
-  P1I.1 is complete. Design PR #617 is merged at
+  PR #618, https://github.com/vitala89/Intentloom/pull/618. P1I.1 is
+  complete. Design PR #617 is merged at
   `e3585e8eb5f4b58bb42482e249430654375dee5b`. The implementation is not
   merged. Do not start P1I.3, P1J, Undo U4, or Desktop Undo U5.
 - **Branch:** `refactor/application-project-lifecycle-p1i2`
@@ -199,7 +201,9 @@ P1J, Undo U4, or Desktop Undo U5.
   and doctor, doctor sort stability, ordinary sync outside Approved
   Apply, init rollback, and read-only diff, doctor, and inspect.
   `adoptProject` stays in `index.ts` and calls the extracted leaves.
-- **Verification:** `pnpm verify` passed on this tree. Typecheck,
+- **Verification:** `pnpm verify` passed on
+  `dffc8b71df29a34c0948cff9c0f482481b7ddf42` before this record named
+  PR #618. That commit contains the extraction. Typecheck,
   lint, and format check passed. Vitest reported 372 files passed,
   3,176 tests passed, and 3 skipped. Build passed. `git diff --check`
   passed. Lint warnings are the existing sort and mock-type warnings.

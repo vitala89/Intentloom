@@ -1172,7 +1172,9 @@ pass through the Approved Apply gate. `initProject` uses `plan` and
 `docs/designs/p1i2-project-lifecycle/SYSTEM_DESIGN.md`. The feasibility
 verdict is B+C: leaf-owned lifecycle contracts and operations, with one
 composition-root binding for `synchronizeGeneratedFiles`. Implementation
-is opened and awaiting maintainer review. It is not merged.
+is opened as PR #618
+(https://github.com/vitala89/Intentloom/pull/618) and awaiting
+maintainer review. It is not merged.
 `index.ts` measures 2,561 effective lines and 2,736 physical lines,
 down from 3,760 and 3,956. The new lifecycle modules stay outside every
 locked component. Import-only cycles stay two components of size 3.

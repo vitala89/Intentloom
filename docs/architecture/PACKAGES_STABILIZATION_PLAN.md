@@ -118,8 +118,9 @@ P1I.1 design is merged as PR #615
 as PR #616 (https://github.com/vitala89/Intentloom/pull/616,
 `b9201e9d480b34e453d08e1803f94e734d1e3f1f`). P1I.1 is complete.
 P1I.2 design is merged as PR #617
-(`e3585e8eb5f4b58bb42482e249430654375dee5b`). Implementation is opened
-and awaiting maintainer review. P1I.3, P1J, Undo U4, and Desktop Undo
+(`e3585e8eb5f4b58bb42482e249430654375dee5b`). Implementation is opened as PR #618
+(https://github.com/vitala89/Intentloom/pull/618) and awaiting
+maintainer review. P1I.3, P1J, Undo U4, and Desktop Undo
 U5 have not started.
 Neutron's R4A topology stays frozen.
 The measurements below remain the P1A baseline and are not restated as the
@@ -2337,8 +2338,9 @@ P1I.1 design is merged as PR #615
 as PR #616 (https://github.com/vitala89/Intentloom/pull/616,
 `b9201e9d480b34e453d08e1803f94e734d1e3f1f`). P1I.1 is complete.
 P1I.2 design is merged as PR #617
-(`e3585e8eb5f4b58bb42482e249430654375dee5b`). Implementation is opened
-and awaiting maintainer review. P1I.3, P1J, Undo U4, and Desktop Undo
+(`e3585e8eb5f4b58bb42482e249430654375dee5b`). Implementation is opened as PR #618
+(https://github.com/vitala89/Intentloom/pull/618) and awaiting
+maintainer review. P1I.3, P1J, Undo U4, and Desktop Undo
 U5 have not started.
 
 On `911b229af00fcde54d8861af83a56e7e61df0902`, `index.ts` measures
@@ -2538,8 +2540,9 @@ P1I.1 design is merged as PR #615
 as PR #616 (https://github.com/vitala89/Intentloom/pull/616,
 `b9201e9d480b34e453d08e1803f94e734d1e3f1f`). P1I.1 is complete.
 P1I.2 design is merged as PR #617
-(`e3585e8eb5f4b58bb42482e249430654375dee5b`). Implementation is opened
-and awaiting maintainer review. P1I.3, P1J, Undo U4, and Desktop Undo
+(`e3585e8eb5f4b58bb42482e249430654375dee5b`). Implementation is opened as PR #618
+(https://github.com/vitala89/Intentloom/pull/618) and awaiting
+maintainer review. P1I.3, P1J, Undo U4, and Desktop Undo
 U5 have not started.
 
 On `7a77db52753360f0029cd266d8c95eb78c34995c`, `index.ts` measures
@@ -2750,8 +2753,9 @@ P1I.1 design is merged as PR #615
 as PR #616 (https://github.com/vitala89/Intentloom/pull/616,
 `b9201e9d480b34e453d08e1803f94e734d1e3f1f`). P1I.1 is complete.
 P1I.2 design is merged as PR #617
-(`e3585e8eb5f4b58bb42482e249430654375dee5b`). Implementation is opened
-and awaiting maintainer review. P1I.3, P1J, Undo U4, and Desktop Undo
+(`e3585e8eb5f4b58bb42482e249430654375dee5b`). Implementation is opened as PR #618
+(https://github.com/vitala89/Intentloom/pull/618) and awaiting
+maintainer review. P1I.3, P1J, Undo U4, and Desktop Undo
 U5 have not started.
 
 On `2c0749dce9a31976195277971d6fb35fe663cd31`, `index.ts` measures
@@ -2881,8 +2885,9 @@ is complete. P1I.1 design is merged as PR #615
 as PR #616 (https://github.com/vitala89/Intentloom/pull/616,
 `b9201e9d480b34e453d08e1803f94e734d1e3f1f`). P1I.1 is complete.
 P1I.2 design is merged as PR #617
-(`e3585e8eb5f4b58bb42482e249430654375dee5b`). Implementation is opened
-and awaiting maintainer review. P1I.3, P1J, Undo U4, and Desktop Undo
+(`e3585e8eb5f4b58bb42482e249430654375dee5b`). Implementation is opened as PR #618
+(https://github.com/vitala89/Intentloom/pull/618) and awaiting
+maintainer review. P1I.3, P1J, Undo U4, and Desktop Undo
 U5 have not started.
 
 The design inventory below is the pre-implementation measurement.
@@ -2959,8 +2964,9 @@ export-map keys stay. P1H is complete. P1I.1 design is merged as PR #615
 as PR #616 (https://github.com/vitala89/Intentloom/pull/616,
 `b9201e9d480b34e453d08e1803f94e734d1e3f1f`). P1I.1 is complete.
 P1I.2 design is merged as PR #617
-(`e3585e8eb5f4b58bb42482e249430654375dee5b`). Implementation is opened
-and awaiting maintainer review.
+(`e3585e8eb5f4b58bb42482e249430654375dee5b`). Implementation is opened as PR #618
+(https://github.com/vitala89/Intentloom/pull/618) and awaiting
+maintainer review.
 
 ### P1I — transaction and lifecycle
 
@@ -3014,8 +3020,8 @@ keys are unchanged. Public lifecycle names and `syncProject`'s
 three-parameter signature stay. `adoptProject` stays in `index.ts` and
 calls the extracted leaves. Ordinary sync does not enter Approved
 Apply. P1I.3, the Approved Apply import retarget, P1J, Undo U4, and
-Desktop Undo U5 have not started. The implementation pull request is
-open and is not merged.
+Desktop Undo U5 have not started. The implementation pull request is #618
+(https://github.com/vitala89/Intentloom/pull/618) and is not merged.
 
 Prerequisites: P1C and P1D merged, Approved Apply tests green on `main`,
 and a diff that contains no assertion edits. Those prerequisites were
