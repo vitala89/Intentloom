@@ -1187,7 +1187,8 @@ feasibility verdict is B: leaf-owned adoption workflows, with
 `adoptProject` passing `syncProject` into the generated-file leaf.
 Implementation A extracts `adoptProject`, `planProjectAdoption`, and
 `applyProjectAdoption` into `packages/application/src/project-adoption/`
-and is awaiting review. It does not retarget Approved Apply imports.
+and is open as PR #621
+(https://github.com/vitala89/Intentloom/pull/621), awaiting review. It does not retarget Approved Apply imports.
 Measured with `measureProductionSource`, `index.ts` is 1,878 effective
 lines and 2,034 physical lines, down from 2,561 and 2,736. Import-only
 SCC membership is unchanged: `approved-apply-baseline.ts`,

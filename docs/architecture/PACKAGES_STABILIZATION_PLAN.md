@@ -122,7 +122,8 @@ P1I.2 design is merged as PR #617
 (https://github.com/vitala89/Intentloom/pull/618,
 `1d8d55cbfd89792272d4d4c00512aa09465ed23d`). P1I.2 is complete. P1I.3 design is merged as PR #620
 (`e93f6b9efdba11d1dd1cd98ed7072a801595320b`). Implementation A, the
-adoption extraction, is awaiting review. Implementation B has not
+adoption extraction, is open as PR #621
+(https://github.com/vitala89/Intentloom/pull/621) and is awaiting review. Implementation B has not
 started. P1J, Undo U4, and Desktop Undo U5 have not started.
 Neutron's R4A topology stays frozen.
 The measurements below remain the P1A baseline and are not restated as the
@@ -2344,7 +2345,8 @@ P1I.2 design is merged as PR #617
 (https://github.com/vitala89/Intentloom/pull/618,
 `1d8d55cbfd89792272d4d4c00512aa09465ed23d`). P1I.2 is complete. P1I.3 design is merged as PR #620
 (`e93f6b9efdba11d1dd1cd98ed7072a801595320b`). Implementation A, the
-adoption extraction, is awaiting review. Implementation B has not
+adoption extraction, is open as PR #621
+(https://github.com/vitala89/Intentloom/pull/621) and is awaiting review. Implementation B has not
 started. P1J, Undo U4, and Desktop Undo U5 have not started.
 
 On `911b229af00fcde54d8861af83a56e7e61df0902`, `index.ts` measures
@@ -2548,7 +2550,8 @@ P1I.2 design is merged as PR #617
 (https://github.com/vitala89/Intentloom/pull/618,
 `1d8d55cbfd89792272d4d4c00512aa09465ed23d`). P1I.2 is complete. P1I.3 design is merged as PR #620
 (`e93f6b9efdba11d1dd1cd98ed7072a801595320b`). Implementation A, the
-adoption extraction, is awaiting review. Implementation B has not
+adoption extraction, is open as PR #621
+(https://github.com/vitala89/Intentloom/pull/621) and is awaiting review. Implementation B has not
 started. P1J, Undo U4, and Desktop Undo U5 have not started.
 
 On `7a77db52753360f0029cd266d8c95eb78c34995c`, `index.ts` measures
@@ -2763,7 +2766,8 @@ P1I.2 design is merged as PR #617
 (https://github.com/vitala89/Intentloom/pull/618,
 `1d8d55cbfd89792272d4d4c00512aa09465ed23d`). P1I.2 is complete. P1I.3 design is merged as PR #620
 (`e93f6b9efdba11d1dd1cd98ed7072a801595320b`). Implementation A, the
-adoption extraction, is awaiting review. Implementation B has not
+adoption extraction, is open as PR #621
+(https://github.com/vitala89/Intentloom/pull/621) and is awaiting review. Implementation B has not
 started. P1J, Undo U4, and Desktop Undo U5 have not started.
 
 On `2c0749dce9a31976195277971d6fb35fe663cd31`, `index.ts` measures
@@ -2897,7 +2901,8 @@ P1I.2 design is merged as PR #617
 (https://github.com/vitala89/Intentloom/pull/618,
 `1d8d55cbfd89792272d4d4c00512aa09465ed23d`). P1I.2 is complete. P1I.3 design is merged as PR #620
 (`e93f6b9efdba11d1dd1cd98ed7072a801595320b`). Implementation A, the
-adoption extraction, is awaiting review. Implementation B has not
+adoption extraction, is open as PR #621
+(https://github.com/vitala89/Intentloom/pull/621) and is awaiting review. Implementation B has not
 started. P1J, Undo U4, and Desktop Undo U5 have not started.
 
 The design inventory below is the pre-implementation measurement.
@@ -3004,7 +3009,8 @@ together with the Approved Apply import retarget that removes `index.ts`
 from cycle 1. That following slice is P1I.3. Its design is merged as PR #620
 (`e93f6b9efdba11d1dd1cd98ed7072a801595320b`) in
 [`docs/designs/p1i3-existing-project-adoption/SYSTEM_DESIGN.md`](../designs/p1i3-existing-project-adoption/SYSTEM_DESIGN.md).
-Implementation A is awaiting review. The predicted SCC change in that
+Implementation A is open as PR #621
+(https://github.com/vitala89/Intentloom/pull/621) and is awaiting review. The predicted SCC change in that
 design is not an implementation result. Implementation B and P1J have
 not started.
 
@@ -3057,7 +3063,8 @@ governance adoption, with the public `adoptProject` wrapper passing
 `applyProjectAdoption` move. `planPackUpdate` stays on `index.ts`. The
 two workflows do not share a write path.
 
-Implementation A is awaiting review. Measured with
+Implementation A is open as PR #621
+(https://github.com/vitala89/Intentloom/pull/621) and is awaiting review. Measured with
 `measureProductionSource`, `index.ts` is 1,878 effective lines and 2,034
 physical lines, down from 2,561 and 2,736. The new modules live in
 `packages/application/src/project-adoption/` and stay outside every SCC.

@@ -168,13 +168,16 @@ as PR #618 (https://github.com/vitala89/Intentloom/pull/618,
 `1d8d55cbfd89792272d4d4c00512aa09465ed23d`). P1I.2 is complete.
 **P1I.3** Existing Project Adoption design is merged as PR #620
 (`e93f6b9efdba11d1dd1cd98ed7072a801595320b`). Implementation A, the
-adoption extraction, is awaiting review. Implementation B has not
+adoption extraction, is open as PR #621
+(https://github.com/vitala89/Intentloom/pull/621) and is awaiting review. Implementation B has not
 started. Do not start Implementation B, P1J, Undo U4, or Desktop Undo U5.
 
 ### 2026-11-12, Packages architecture P1I.3 adoption extraction
 
-- **Status:** **IMPLEMENTATION A OPEN — AWAITING REVIEW.** Base is
-  `e93f6b9efdba11d1dd1cd98ed7072a801595320b`, the merge of Design PR #620.
+- **Status:** **IMPLEMENTATION A OPEN — AWAITING REVIEW.** Pull request
+  #621 (https://github.com/vitala89/Intentloom/pull/621) is unmerged.
+  Base is `e93f6b9efdba11d1dd1cd98ed7072a801595320b`, the merge of Design
+  PR #620.
   P1I.1 and P1I.2 are complete. This change extracts `adoptProject`,
   `planProjectAdoption`, and `applyProjectAdoption` into
   `packages/application/src/project-adoption/`. `index.ts` measures 1,878
