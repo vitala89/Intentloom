@@ -1,64 +1,40 @@
 // Private project-operation layer. It must remain independent of CLI/process code.
 import { createHash } from "node:crypto";
 import { dirname, relative, resolve } from "node:path";
-import { checksum } from "@intentloom/core";
-import { normalizeOutputPath } from "@intentloom/core";
-import { type AdapterName } from "@intentloom/core";
 import type { GeneratedFile } from "@intentloom/core";
 import {
-  deterministicId,
-  planGovernanceAdoption,
   type AcceptedException,
   type AdoptionPlan,
-  type DetectedProjectArtifact,
-  type MigrationJournalEntry,
-  type OwnershipClass,
-  type RoleCandidate,
   type ValidationRequirement,
 } from "@intentloom/core/adoption";
 import type { ArtifactValidator } from "@intentloom/validator";
-import { documentConcept } from "./document-concepts.js";
-import {
-  adapterForKnownInstructionPath,
-  instructionPath,
-} from "./instruction-file-taxonomy.js";
 import { synchronizeDeclaredProjectPaths } from "./generated-file-sync-declared.js";
 import { commitOwnedGeneratedFiles } from "./generated-file/generated-file-transaction.js";
 import { isDeclaredPathsOnlySyncMode } from "./generated-file/sync-mode.js";
-import {
-  lockPath,
-  sourceMapPath,
-} from "./generated-file/transaction-metadata.js";
-import type { Plan } from "./project-change.js";
 import type {
   TransactionOptions,
   TransactionResult,
-  TransactionStage,
 } from "./generated-file/transaction-contracts.js";
-import {
-  detectProjectProfiles,
-  type DetectedProfile,
-  type EngineeringProfile,
-  type ProfileCandidate,
-  type ProfileDetectionResult,
-  type WorkspaceTopology,
+import type { Plan } from "./project-change.js";
+import type {
+  DetectedProfile,
+  EngineeringProfile,
+  ProfileCandidate,
+  ProfileDetectionResult,
+  WorkspaceTopology,
 } from "./project-profile-detection.js";
 import { nodeFileSystem, type FileSystem } from "./host-file-system.js";
-import {
-  inside,
-  projectRelativePaths,
-  secretLikePath,
-} from "./project-path.js";
+import type { AdoptionProposal } from "./project-adoption/generated-file-adoption-contracts.js";
+import { adoptGeneratedFiles } from "./project-adoption/generated-file-adoption.js";
+import { planProjectAdoption } from "./project-adoption/governance-adoption-plan.js";
+import { inside, secretLikePath } from "./project-path.js";
 import { ArtifactValidationFailure } from "./artifact-validation-failure.js";
-import { desired } from "./project-lifecycle/desired-generated-state.js";
 import { doctorProject } from "./project-lifecycle/doctor-project.js";
 import { inspectProject } from "./project-lifecycle/project-inspection.js";
 import { initProject } from "./project-lifecycle/project-init.js";
-import { ownership } from "./project-lifecycle/ownership-state.js";
-import { diffProject, plan } from "./project-lifecycle/project-plan.js";
+import { diffProject } from "./project-lifecycle/project-plan.js";
 import { executeProjectSync } from "./project-lifecycle/project-sync.js";
 import {
-  configPath,
   type DoctorFinding,
   type InitOptions,
   type ProjectInspection,
@@ -389,59 +365,12 @@ export {
 } from "./project-profile-detection.js";
 export { ignoredScanPath } from "./project-scan-exclusions.js";
 
-export type AdoptionAction =
-  | "create"
-  | "map-existing-project-owned"
-  | "map-existing-aif-compatible-document"
-  | "generated-candidate"
-  | "conflict"
-  | "unsupported"
-  | "skip"
-  | "manual-decision-required";
-
-export interface AdoptionProposalItem {
-  readonly path: string;
-  readonly action: AdoptionAction;
-  readonly currentClassification:
-    "absent" | "project-owned" | "aif-owned" | "aif-metadata";
-  readonly proposedClassification:
-    | "aif-generated"
-    | "aif-metadata"
-    | "project-owned"
-    | "project-owned-documentation"
-    | "unsupported";
-  readonly reason: string;
-  readonly canonicalSource: string | null;
-  readonly adapter: AdapterName | null;
-  readonly profile: string | null;
-  readonly conflictDetails: readonly string[];
-  readonly writeEligible: boolean;
-  readonly manualDecisionRequired: boolean;
-  readonly safeNextAction: string;
-}
-
-export interface AdoptionProposal extends Plan {
-  readonly kind: "adoption-proposal";
-  readonly items: readonly AdoptionProposalItem[];
-  readonly profileDetection: ProfileDetectionResult;
-  readonly applied: boolean;
-  readonly applicationStatus:
-    | "not-requested"
-    | "blocked"
-    | "applied"
-    | "failed-restored"
-    | "failed-incomplete";
-  readonly transactionOutcome: AdoptionTransactionOutcome | null;
-}
-export interface AdoptionTransactionOutcome {
-  readonly status: "success" | "failed";
-  readonly failedStage: TransactionStage | null;
-  readonly errorCode: string | null;
-  readonly rollbackAttempted: boolean;
-  readonly rollbackCompleted: boolean;
-  readonly rollbackFailures: readonly string[];
-  readonly diagnostics: readonly string[];
-}
+export type { AdoptionProposal };
+export type {
+  AdoptionAction,
+  AdoptionProposalItem,
+  AdoptionTransactionOutcome,
+} from "./project-adoption/generated-file-adoption-contracts.js";
 export {
   destinationCollisionKey,
   findDestinationCollisions,
@@ -486,323 +415,14 @@ export async function syncProject(
   );
 }
 
-function unsupportedPath(path: string): boolean {
-  return /^\.github\/agents\/.+\.agent\.md$/u.test(path);
-}
-
-function normalizeMappingPath(path: string): string | null {
-  try {
-    const normalized = normalizeOutputPath(path);
-    return normalized === path ? normalized : null;
-  } catch {
-    return null;
-  }
-}
-
 export async function adoptProject(
   options: InitOptions,
   fs: FileSystem,
   transactionOptions: TransactionOptions = {},
 ): Promise<AdoptionProposal> {
-  const profileDetection = await detectProjectProfiles(options.root, fs);
-  const scannedPaths = profileDetection.scannedPaths;
-  const scanned = new Set(scannedPaths);
-  const desiredFiles = await desired(options);
-  const desiredByPath = new Map(desiredFiles.map((file) => [file.path, file]));
-  const ownershipState = await ownership(options.root, fs);
-  const invalidOwnershipMetadata = ownershipState === null;
-  const owned = ownershipState ?? new Map();
-  const completeMetadata = await Promise.all(
-    [configPath, lockPath, sourceMapPath].map((path) =>
-      fs.exists(inside(options.root, path)),
-    ),
-  ).then((present) => present.every(Boolean) && owned.size > 0);
-  const proposal = await plan({ ...options, dryRun: true }, fs);
-  const changes = proposal.changes.map(
-    ({ content: _content, ...change }) => change,
-  );
-  const changeByPath = new Map(changes.map((change) => [change.path, change]));
-  const mappingDiagnostics: string[] = [];
-  for (const mapping of options.projectOwnedMappings ?? []) {
-    const source = normalizeMappingPath(mapping.source);
-    const destination = normalizeMappingPath(mapping.destination);
-    if (
-      source === null ||
-      destination === null ||
-      source !== destination ||
-      !scanned.has(destination)
-    )
-      mappingDiagnostics.push(
-        `project-owned mapping invalid: ${mapping.source}`,
-      );
-  }
-  const documentationMappingsByConcept = new Map<string, string>();
-  for (const mapping of options.documentationMappings ?? []) {
-    const source = normalizeMappingPath(mapping.source);
-    const destination = normalizeMappingPath(mapping.destination);
-    const concept = source === null ? null : documentConcept(source);
-    if (
-      source === null ||
-      destination === null ||
-      source !== destination ||
-      concept === null ||
-      !scanned.has(source) ||
-      documentationMappingsByConcept.has(concept)
-    ) {
-      mappingDiagnostics.push(
-        `documentation mapping invalid: ${mapping.source}`,
-      );
-      continue;
-    }
-    documentationMappingsByConcept.set(concept, source);
-  }
-  const conceptCounts = new Map<string, number>();
-  for (const path of scannedPaths) {
-    const concept = documentConcept(path);
-    if (concept)
-      conceptCounts.set(concept, (conceptCounts.get(concept) ?? 0) + 1);
-  }
-  const items: AdoptionProposalItem[] = [];
-  for (const file of desiredFiles) {
-    const exists =
-      scanned.has(file.path) ||
-      (await fs.exists(inside(options.root, file.path)));
-    const record = owned.get(file.path);
-    const change = changeByPath.get(file.path);
-    const metadata = file.path.startsWith(".aif/");
-    const metadataConflict =
-      file.path === sourceMapPath && invalidOwnershipMetadata;
-    const aifOwned = record !== undefined;
-    const recognizedMetadata = metadata && exists && completeMetadata;
-    const projectOwned =
-      exists && !aifOwned && !recognizedMetadata && !metadataConflict;
-    items.push({
-      path: file.path,
-      action: metadataConflict
-        ? "conflict"
-        : projectOwned
-          ? "map-existing-project-owned"
-          : !exists
-            ? metadata
-              ? "create"
-              : "generated-candidate"
-            : change?.kind === "conflict" || change?.kind === "security-error"
-              ? "conflict"
-              : change
-                ? "generated-candidate"
-                : "skip",
-      currentClassification: recognizedMetadata
-        ? "aif-metadata"
-        : aifOwned
-          ? "aif-owned"
-          : exists
-            ? "project-owned"
-            : "absent",
-      proposedClassification: recognizedMetadata
-        ? "aif-metadata"
-        : projectOwned
-          ? "project-owned"
-          : "aif-generated",
-      reason: metadataConflict
-        ? "existing Intentloom ownership metadata is malformed or unsupported"
-        : projectOwned
-          ? "existing destination has no Intentloom ownership record"
-          : !exists
-            ? "safe generated destination is absent"
-            : (change?.reason ??
-              "existing Intentloom-owned output already matches"),
-      canonicalSource: file.sources[0] ?? null,
-      adapter: adapterForKnownInstructionPath(file.path),
-      profile: options.profile,
-      conflictDetails: metadataConflict
-        ? ["ownership cannot be established from .aif/source-map.json"]
-        : projectOwned && change
-          ? [change.reason]
-          : [],
-      writeEligible:
-        !metadataConflict &&
-        !projectOwned &&
-        change?.kind !== "conflict" &&
-        change?.kind !== "security-error" &&
-        (!exists || aifOwned || recognizedMetadata),
-      manualDecisionRequired: projectOwned || metadataConflict,
-      safeNextAction: metadataConflict
-        ? "Repair or explicitly replace the ownership metadata before applying changes."
-        : projectOwned
-          ? "Keep the file project-owned or explicitly resolve the generated destination conflict."
-          : !exists
-            ? "Apply the reviewed proposal to create this file transactionally."
-            : "No action is required unless regeneration is requested.",
-    });
-  }
-  for (const path of scannedPaths) {
-    if (desiredByPath.has(path)) continue;
-    const concept = documentConcept(path);
-    const duplicate = concept !== null && (conceptCounts.get(concept) ?? 0) > 1;
-    const mappedDocument =
-      concept === null
-        ? undefined
-        : documentationMappingsByConcept.get(concept);
-    const selectedDocument = mappedDocument === path;
-    items.push({
-      path,
-      action: unsupportedPath(path)
-        ? "unsupported"
-        : duplicate && mappedDocument === undefined
-          ? "manual-decision-required"
-          : selectedDocument
-            ? "map-existing-aif-compatible-document"
-            : mappedDocument !== undefined
-              ? "skip"
-              : concept === "public-readme"
-                ? "map-existing-project-owned"
-                : instructionPath(path)
-                  ? "map-existing-project-owned"
-                  : concept
-                    ? "map-existing-aif-compatible-document"
-                    : "skip",
-      currentClassification: "project-owned",
-      proposedClassification: unsupportedPath(path)
-        ? "unsupported"
-        : concept
-          ? "project-owned-documentation"
-          : "project-owned",
-      reason: unsupportedPath(path)
-        ? "custom Copilot agents are not generated by the current adapter"
-        : duplicate && mappedDocument === undefined
-          ? `multiple project documents represent the ${concept} concept`
-          : selectedDocument
-            ? `explicit documentation mapping selects this ${concept} document`
-            : mappedDocument !== undefined
-              ? `explicit documentation mapping retains ${mappedDocument} for the ${concept} concept`
-              : concept
-                ? `existing project document maps to the ${concept} concept`
-                : instructionPath(path)
-                  ? "existing tool instruction remains project-owned"
-                  : "project file is not an adoption artifact",
-      canonicalSource: null,
-      adapter: adapterForKnownInstructionPath(path),
-      profile: null,
-      conflictDetails: duplicate
-        ? mappedDocument === undefined
-          ? [`ambiguous ${concept} document mapping`]
-          : []
-        : [],
-      writeEligible: false,
-      manualDecisionRequired: duplicate && mappedDocument === undefined,
-      safeNextAction: unsupportedPath(path)
-        ? "Keep the unsupported file project-owned and review adapter capabilities."
-        : duplicate && mappedDocument === undefined
-          ? "Choose the authoritative project document manually."
-          : selectedDocument
-            ? "Keep the explicitly mapped project document project-owned."
-            : concept || instructionPath(path)
-              ? "Keep the existing file project-owned and record the mapping only."
-              : "Leave the unrelated project file unchanged.",
-    });
-  }
-  items.sort((left, right) =>
-    `${left.path}:${left.action}`.localeCompare(
-      `${right.path}:${right.action}`,
-    ),
-  );
-  const validationDiagnostics = (options.existingValidationResults ?? [])
-    .flatMap((result) => [
-      ...result.structuralErrors.map(
-        (error) => `${result.documentPath}: ${error.code}`,
-      ),
-      ...result.semanticErrors.map(
-        (error) => `${result.documentPath}: ${error.code}`,
-      ),
-    ])
-    .sort();
-  const profileConfirmationRequired =
-    profileDetection.manualConfirmationRequired && !options.profileConfirmed;
-  const blocked =
-    profileConfirmationRequired ||
-    mappingDiagnostics.length > 0 ||
-    validationDiagnostics.length > 0 ||
-    items.some(
-      (item) =>
-        item.manualDecisionRequired ||
-        (item.action === "conflict" && options.profileConfirmed !== true),
-    );
-  let applied = false;
-  let transactionOutcome: AdoptionTransactionOutcome | null = null;
-  let applicationStatus: AdoptionProposal["applicationStatus"] = options.dryRun
-    ? "not-requested"
-    : blocked
-      ? "blocked"
-      : "applied";
-  if (!options.dryRun && !blocked) {
-    const result = await syncProject(
-      { ...options, dryRun: false },
-      fs,
-      transactionOptions,
-    );
-    if (!("dryRun" in result)) {
-      const safeDiagnostics = [
-        ...new Set(
-          result.diagnostics.map((diagnostic) =>
-            /^[a-z0-9][a-z0-9:-]*$/u.test(diagnostic)
-              ? diagnostic
-              : "transaction-failed",
-          ),
-        ),
-      ].sort();
-      const errorCode =
-        result.status === "success"
-          ? null
-          : result.postWriteValidation?.status === "invalid"
-            ? result.postWriteValidation.code
-            : (safeDiagnostics.find(
-                (diagnostic) =>
-                  diagnostic !== "transaction-rollback-incomplete",
-              ) ?? "transaction-failed");
-      transactionOutcome = {
-        status: result.status,
-        failedStage: result.failedStage ?? null,
-        errorCode,
-        rollbackAttempted: result.rollbackAttempted,
-        rollbackCompleted: result.rollbackCompleted,
-        rollbackFailures: result.rollbackFailures
-          .flatMap((path) => {
-            try {
-              return [normalizeOutputPath(path)];
-            } catch {
-              return [];
-            }
-          })
-          .sort(),
-        diagnostics: safeDiagnostics,
-      };
-      if (result.status === "success") applied = true;
-      else
-        applicationStatus = result.rollbackCompleted
-          ? "failed-restored"
-          : "failed-incomplete";
-    }
-  }
-  return {
-    kind: "adoption-proposal",
-    changes,
-    diagnostics: [
-      ...(profileConfirmationRequired
-        ? ["profile: explicit confirmation required"]
-        : []),
-      ...mappingDiagnostics,
-      ...validationDiagnostics,
-      ...items
-        .filter((item) => item.manualDecisionRequired)
-        .map((item) => `${item.path}: manual decision required`),
-    ].sort(),
-    items,
-    profileDetection,
-    applied,
-    applicationStatus,
-    transactionOutcome,
-  };
+  return adoptGeneratedFiles(options, fs, transactionOptions, syncProject);
 }
+
 export async function planFeature(
   taskId: string,
   validator?: ArtifactValidator,
@@ -870,335 +490,13 @@ export async function planFeature(
   return JSON.stringify({ featureBrief, contextPack }, null, 2);
 }
 
-export interface PlanProjectAdoptionOptions {
-  readonly root: string;
-  readonly projectId?: string;
-  readonly packId?: string;
-  readonly packVersion?: string;
-  readonly validations?: readonly ValidationRequirement[];
-  readonly exceptions?: readonly AcceptedException[];
-}
-
-export async function planProjectAdoption(
-  options: PlanProjectAdoptionOptions,
-  fs: FileSystem = nodeFileSystem,
-): Promise<AdoptionPlan> {
-  const root = resolve(options.root);
-  if (await fs.isSymbolicLink(root)) {
-    throw new Error(
-      "adoption planning requires a non-symbolic explicit project root",
-    );
-  }
-  const rawPaths = await fs.list(root);
-  const scannedPaths = projectRelativePaths(root, rawPaths);
-  const artifacts: DetectedProjectArtifact[] = [];
-
-  for (const path of scannedPaths) {
-    if (secretLikePath(path)) continue;
-    let content: string;
-    try {
-      content = await fs.read(inside(root, path));
-    } catch {
-      continue;
-    }
-    const contentHash = checksum(content);
-
-    let ownershipClass: OwnershipClass = "project-owned";
-    if (path.startsWith(".aif/") || path.startsWith("catalog/")) {
-      ownershipClass = "intentloom-managed";
-    } else if (
-      path.startsWith(".claude/") ||
-      path === "CLAUDE.md" ||
-      path.startsWith(".cursor/") ||
-      path === ".cursorrules" ||
-      path.includes("copilot-instructions.md")
-    ) {
-      ownershipClass = "provider-derivative";
-    }
-
-    const roleCandidates: RoleCandidate[] = [];
-
-    if (
-      path === "docs/product/CURRENT_STATE.md" ||
-      path === "CURRENT_STATE.md"
-    ) {
-      roleCandidates.push({
-        role: "operational-project-state",
-        confidence: 1.0,
-        evidence: [`filename match: ${path}`],
-      });
-    }
-    if (path === "PROJECT_STATE.md") {
-      roleCandidates.push({
-        role: "operational-project-state",
-        confidence: 1.0,
-        evidence: [`filename match: ${path}`],
-      });
-    }
-    if (path === "AGENT_START_HERE.md") {
-      roleCandidates.push({
-        role: "agent-entrypoint",
-        confidence: 1.0,
-        evidence: [`filename match: ${path}`],
-      });
-    }
-    if (path === "DUTY_WATCH.md") {
-      roleCandidates.push({
-        role: "duty-watch-log",
-        confidence: 1.0,
-        evidence: [`filename match: ${path}`],
-      });
-    }
-    if (path === "AGENTS.md") {
-      roleCandidates.push({
-        role: "working-agreement",
-        confidence: 0.9,
-        evidence: [`filename match: ${path}`],
-      });
-    }
-    if (path === "ROADMAP.md") {
-      roleCandidates.push({
-        role: "roadmap",
-        confidence: 1.0,
-        evidence: [`filename match: ${path}`],
-      });
-    }
-    if (path === "CHANGELOG.md") {
-      roleCandidates.push({
-        role: "changelog",
-        confidence: 1.0,
-        evidence: [`filename match: ${path}`],
-      });
-    }
-    if (path === "SECURITY.md") {
-      roleCandidates.push({
-        role: "security-policy",
-        confidence: 1.0,
-        evidence: [`filename match: ${path}`],
-      });
-    }
-    if (
-      path === "docs/governance/ENGINEERING_PRINCIPLES.md" ||
-      path.endsWith("ENGINEERING_PRINCIPLES.md")
-    ) {
-      roleCandidates.push({
-        role: "validation-policy",
-        confidence: 0.9,
-        evidence: [`filename match: ${path}`],
-      });
-    }
-    if (path.startsWith(".claude") || path === "CLAUDE.md") {
-      roleCandidates.push({
-        role: "provider-instructions:claude",
-        confidence: 1.0,
-        evidence: ["provider file: claude"],
-      });
-    }
-    if (path.startsWith(".cursor") || path === ".cursorrules") {
-      roleCandidates.push({
-        role: "provider-instructions:cursor",
-        confidence: 1.0,
-        evidence: ["provider file: cursor"],
-      });
-    }
-    if (path.includes("copilot-instructions.md")) {
-      roleCandidates.push({
-        role: "provider-instructions:copilot",
-        confidence: 1.0,
-        evidence: ["provider file: copilot"],
-      });
-    }
-    if (path.startsWith("docs/decisions/")) {
-      roleCandidates.push({
-        role: "durable-project-context",
-        confidence: 0.8,
-        evidence: ["directory pattern: decisions"],
-      });
-    }
-    if (path.startsWith("docs/specs/")) {
-      roleCandidates.push({
-        role: "durable-project-context",
-        confidence: 0.8,
-        evidence: ["directory pattern: specs"],
-      });
-    }
-
-    artifacts.push({
-      path,
-      contentHash,
-      ownership: ownershipClass,
-      roleCandidates,
-    });
-  }
-
-  return planGovernanceAdoption({
-    projectId: options.projectId ?? "project",
-    packId: options.packId ?? "duty-watch",
-    packVersion: options.packVersion ?? "1.0.0",
-    artifacts,
-    ...(options.validations !== undefined
-      ? { validations: options.validations }
-      : {}),
-    ...(options.exceptions !== undefined
-      ? { exceptions: options.exceptions }
-      : {}),
-  });
-}
-
-export interface ApplyProjectAdoptionOptions {
-  readonly root: string;
-  readonly plan: AdoptionPlan;
-  readonly dryRun?: boolean;
-}
-
-export interface AdoptionApplyResult {
-  readonly status:
-    "success" | "no-op" | "stale-hash" | "failed" | "rolled-back";
-  readonly appliedOperations: readonly string[];
-  readonly createdFiles: readonly string[];
-  readonly updatedFiles: readonly string[];
-  readonly journalEntryId?: string;
-  readonly error?: string;
-}
-
-export async function applyProjectAdoption(
-  options: ApplyProjectAdoptionOptions,
-  fs: FileSystem = nodeFileSystem,
-): Promise<AdoptionApplyResult> {
-  const root = resolve(options.root);
-  if (await fs.isSymbolicLink(root)) {
-    throw new Error(
-      "adoption apply requires a non-symbolic explicit project root",
-    );
-  }
-  const { plan: adoptionPlan, dryRun = false } = options;
-  if (adoptionPlan.schemaVersion !== 1) {
-    throw new Error("unsupported adoption plan schema version");
-  }
-
-  for (const op of adoptionPlan.operations) {
-    if (op.path !== undefined && op.expectedCurrentHash !== undefined) {
-      const fullPath = inside(root, op.path);
-      if (await fs.exists(fullPath)) {
-        let content: string;
-        try {
-          content = await fs.read(fullPath);
-        } catch {
-          return {
-            status: "stale-hash",
-            error: `Unable to read target file for hash verification: ${op.path}`,
-            appliedOperations: [],
-            createdFiles: [],
-            updatedFiles: [],
-          };
-        }
-        if (checksum(content) !== op.expectedCurrentHash) {
-          return {
-            status: "stale-hash",
-            error: `Stale content hash for ${op.path}`,
-            appliedOperations: [],
-            createdFiles: [],
-            updatedFiles: [],
-          };
-        }
-      }
-    }
-  }
-
-  if (dryRun) {
-    return {
-      status: "no-op",
-      appliedOperations: adoptionPlan.operations.map((op) => op.id),
-      createdFiles: [],
-      updatedFiles: [],
-    };
-  }
-
-  const backups = new Map<string, string | null>();
-  const appliedOperations: string[] = [];
-  const createdFiles: string[] = [];
-  const updatedFiles: string[] = [];
-
-  try {
-    for (const op of adoptionPlan.operations) {
-      if (op.kind === "create" && op.path !== undefined) {
-        const fullPath = inside(root, op.path);
-        const exists = await fs.exists(fullPath);
-        if (!backups.has(op.path)) {
-          backups.set(op.path, exists ? await fs.read(fullPath) : null);
-        }
-        const body =
-          op.role === "agent-entrypoint"
-            ? "# Agent Entrypoint\n\nStart here for repository instructions and workflows.\n"
-            : `# Intentloom Governance ${op.role ?? op.path}\n`;
-        await fs.mkdir(dirname(fullPath));
-        await fs.write(fullPath, body);
-        if (!exists) {
-          createdFiles.push(op.path);
-        } else {
-          updatedFiles.push(op.path);
-        }
-        appliedOperations.push(op.id);
-      } else {
-        appliedOperations.push(op.id);
-      }
-    }
-
-    const journalPath = inside(root, ".aif/migration-journal.json");
-    let journalEntries: MigrationJournalEntry[] = [];
-    if (await fs.exists(journalPath)) {
-      try {
-        journalEntries = JSON.parse(
-          await fs.read(journalPath),
-        ) as MigrationJournalEntry[];
-      } catch {
-        journalEntries = [];
-      }
-    }
-    const entryId = deterministicId("journal", {
-      planId: adoptionPlan.planId,
-      timestamp: appliedOperations.join(","),
-    });
-    const entry: MigrationJournalEntry = {
-      id: entryId,
-      planId: adoptionPlan.planId,
-      status: "applied",
-      operationIds: appliedOperations,
-      timestamp: new Date().toISOString(),
-    };
-    journalEntries.push(entry);
-    await fs.mkdir(dirname(journalPath));
-    await fs.write(journalPath, JSON.stringify(journalEntries, null, 2));
-
-    return {
-      status: "success",
-      appliedOperations,
-      createdFiles,
-      updatedFiles,
-      journalEntryId: entry.id,
-    };
-  } catch (err) {
-    for (const [relativePath, originalContent] of backups) {
-      const fullPath = inside(root, relativePath);
-      try {
-        if (originalContent === null) {
-          await fs.remove(fullPath);
-        } else {
-          await fs.write(fullPath, originalContent);
-        }
-      } catch {
-        /* rollback best-effort */
-      }
-    }
-    return {
-      status: "rolled-back",
-      error: err instanceof Error ? err.message : String(err),
-      appliedOperations: [],
-      createdFiles: [],
-      updatedFiles: [],
-    };
-  }
-}
+export { planProjectAdoption };
+export type {
+  AdoptionApplyResult,
+  ApplyProjectAdoptionOptions,
+  PlanProjectAdoptionOptions,
+} from "./project-adoption/governance-adoption-contracts.js";
+export { applyProjectAdoption } from "./project-adoption/governance-adoption-apply.js";
 
 export interface PlanPackUpdateOptions {
   readonly root: string;
