@@ -3,14 +3,14 @@ import { ApplyBlockedBeforeWrite } from "./approved-apply-baseline.js";
 import type { GeneratedFile } from "@intentloom/core";
 import { dirname, relative, resolve, sep } from "node:path";
 import { findDestinationCollisions } from "./destination-collisions.js";
+import type { FileSystem } from "./host-file-system.js";
+import type { Plan } from "./project-change.js";
 import type {
-  FileSystem,
-  Plan,
   PostWriteValidationResult,
   TransactionOptions,
   TransactionResult,
   TransactionStage,
-} from "./index.js";
+} from "./generated-file/transaction-contracts.js";
 import {
   isDeclaredPathsOnlySyncMode,
   type GeneratedFileSyncMode,

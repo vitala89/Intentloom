@@ -434,21 +434,16 @@ describe("P1H.4a security finding store and coverage", () => {
   it("keeps the new security modules outside every source cycle", () => {
     const importComponents = applicationCycles(false);
     const reexportComponents = applicationCycles(true);
-    expect(importComponents.map((component) => component.length)).toEqual([
-      3, 3,
-    ]);
+    expect(importComponents.map((component) => component.length)).toEqual([3]);
     expect(reexportComponents.map((component) => component.length)).toEqual([
-      4, 29, 3,
+      4, 27, 3,
     ]);
-    expect(importComponents[0]).toEqual([
-      "approved-apply-baseline.ts",
-      "generated-file-sync-declared.ts",
-      "index.ts",
-    ]);
-    expect(importComponents[1]).toEqual([
-      "neutron/mutation/apply/neutron-mutation-apply-durable-record.ts",
-      "neutron/mutation/apply/neutron-mutation-apply-store.ts",
-      "neutron/mutation/verification/neutron-mutation-verification-retry-eligibility.ts",
+    expect(importComponents).toEqual([
+      [
+        "neutron/mutation/apply/neutron-mutation-apply-durable-record.ts",
+        "neutron/mutation/apply/neutron-mutation-apply-store.ts",
+        "neutron/mutation/verification/neutron-mutation-verification-retry-eligibility.ts",
+      ],
     ]);
     expect(reexportComponents[0]).toEqual([
       "apply-extension-update.ts",
@@ -456,9 +451,38 @@ describe("P1H.4a security finding store and coverage", () => {
       "extension-update-files.ts",
       "propose-and-apply-extension-adoption.ts",
     ]);
-    expect(reexportComponents[1]).toHaveLength(29);
+    expect(reexportComponents[1]).toEqual([
+      "approved-apply-engine.ts",
+      "bounded-execution-apply.ts",
+      "bounded-execution-w11.ts",
+      "bounded-execution-workspace-cli.ts",
+      "bounded-execution-workspace.ts",
+      "engineering-quality-entry.ts",
+      "engineering-quality/cli-specialized-packs-external.ts",
+      "engineering-quality/index.ts",
+      "engineering-quality/specialized-pack-external-apply.ts",
+      "engineering-quality/specialized-pack-external-viewmodel.ts",
+      "existing-project-adoption-apply-gates.ts",
+      "existing-project-adoption-apply-health.ts",
+      "existing-project-adoption-apply.ts",
+      "existing-project-adoption-approval.ts",
+      "existing-project-adoption-decisions.ts",
+      "existing-project-adoption-plan.ts",
+      "existing-project-adoption-prepared-plan-revalidate.ts",
+      "existing-project-adoption-prepared-plan.ts",
+      "existing-project-w9.ts",
+      "existing-project-workspace-cli.ts",
+      "existing-project-workspace.ts",
+      "foundation-flow.ts",
+      "harness/harness-benchmark-sample.ts",
+      "harness/harness-benchmark.ts",
+      "harness/harness.ts",
+      "inception-flow.ts",
+      "index.ts",
+    ]);
+
     expect(reexportComponents[1]).toContain("index.ts");
-    expect(reexportComponents[2]).toEqual(importComponents[1]);
+    expect(reexportComponents[2]).toEqual(importComponents[0]);
     const members = new Set(
       [...importComponents, ...reexportComponents].flat(),
     );

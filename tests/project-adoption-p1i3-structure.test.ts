@@ -19,7 +19,6 @@ const modules = [
 ] as const;
 
 const importComponents = [
-  ["approved-apply-baseline.ts", "generated-file-sync-declared.ts", "index.ts"],
   [
     "neutron/mutation/apply/neutron-mutation-apply-durable-record.ts",
     "neutron/mutation/apply/neutron-mutation-apply-store.ts",
@@ -35,7 +34,6 @@ const reexportComponents = [
     "propose-and-apply-extension-adoption.ts",
   ],
   [
-    "approved-apply-baseline.ts",
     "approved-apply-engine.ts",
     "bounded-execution-apply.ts",
     "bounded-execution-w11.ts",
@@ -58,14 +56,13 @@ const reexportComponents = [
     "existing-project-workspace-cli.ts",
     "existing-project-workspace.ts",
     "foundation-flow.ts",
-    "generated-file-sync-declared.ts",
     "harness/harness-benchmark-sample.ts",
     "harness/harness-benchmark.ts",
     "harness/harness.ts",
     "inception-flow.ts",
     "index.ts",
   ],
-  importComponents[1],
+  importComponents[0],
 ];
 
 function functionSlices(source: string): { name: string; source: string }[] {
@@ -139,7 +136,7 @@ function functionSlices(source: string): { name: string; source: string }[] {
 }
 
 describe("P1I.3 existing project adoption structure", () => {
-  it("extracts adoption without changing SCC membership", () => {
+  it("keeps adoption leaves outside the retargeted Approved Apply cycles", () => {
     expect(existsSync(`${sourceRoot}/project-adoption/index.ts`)).toBe(false);
     expect(
       existsSync(
@@ -210,9 +207,12 @@ describe("P1I.3 existing project adoption structure", () => {
       ...applicationCycles(false).flat(),
       ...applicationCycles(true).flat(),
     ];
-    expect(members).toContain("approved-apply-baseline.ts");
-    expect(members).toContain("generated-file-sync-declared.ts");
+    expect(applicationCycles(false).flat()).not.toContain("index.ts");
+    expect(members).not.toContain("approved-apply-baseline.ts");
+    expect(members).not.toContain("generated-file-sync-declared.ts");
     expect(members).toContain("index.ts");
+    expect(members).toContain("approved-apply-engine.ts");
+    expect(applicationCycles(true)[1]).toHaveLength(27);
     const baseline = readFileSync(
       `${sourceRoot}/approved-apply-baseline.ts`,
       "utf8",
@@ -225,8 +225,27 @@ describe("P1I.3 existing project adoption structure", () => {
       `${sourceRoot}/approved-apply-engine.ts`,
       "utf8",
     );
-    expect(baseline).toMatch(/from ["']\.\/index\.js["']/);
-    expect(declared).toMatch(/from ["']\.\/index\.js["']/);
+    expect(baseline).not.toMatch(/from ["']\.\/index\.js["']/);
+    expect(baseline).toContain(
+      'import type { FileSystem } from "./host-file-system.js"',
+    );
+    expect(declared).not.toMatch(/from ["']\.\/index\.js["']/);
+    expect(declared).toContain(
+      'import type { FileSystem } from "./host-file-system.js"',
+    );
+    expect(declared).toContain(
+      'import type { Plan } from "./project-change.js"',
+    );
+    expect(declared).toContain(
+      'from "./generated-file/transaction-contracts.js"',
+    );
+    expect(declared).toContain("PostWriteValidationResult");
+    expect(declared).toContain("TransactionOptions");
+    expect(declared).toContain("TransactionResult");
+    expect(declared).toContain("TransactionStage");
+    expect(declared).toContain(
+      'import { ApplyBlockedBeforeWrite } from "./approved-apply-baseline.js"',
+    );
     expect(engine).toMatch(/from ["']\.\/index\.js["']/);
     expect(engine).toContain("synchronizeGeneratedFiles");
 

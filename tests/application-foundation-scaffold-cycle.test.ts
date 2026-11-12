@@ -16,19 +16,13 @@ const fileRowModule = "foundation/foundation-scaffold-file-row-types.ts";
 const clientViewModel = "foundation-scaffold-client-viewmodel.ts";
 const workspaceViewModel = "foundation-scaffold-workspace-viewmodel.ts";
 
-const approvedApplyComponent = [
-  "approved-apply-baseline.ts",
-  "generated-file-sync-declared.ts",
-  "index.ts",
-];
-
 const neutronMutationComponent = [
   "neutron/mutation/apply/neutron-mutation-apply-durable-record.ts",
   "neutron/mutation/apply/neutron-mutation-apply-store.ts",
   "neutron/mutation/verification/neutron-mutation-verification-retry-eligibility.ts",
 ];
 
-const importComponents = [approvedApplyComponent, neutronMutationComponent];
+const importComponents = [neutronMutationComponent];
 
 const workshopCycle = [
   "foundation-discovery.ts",
@@ -40,7 +34,6 @@ const understandingTypes = "foundation/foundation-understanding-types.ts";
 const workshopLookup = "foundation/foundation-workshop-lookup.ts";
 
 const indexReexportComponent = [
-  "approved-apply-baseline.ts",
   "approved-apply-engine.ts",
   "bounded-execution-apply.ts",
   "bounded-execution-w11.ts",
@@ -63,7 +56,6 @@ const indexReexportComponent = [
   "existing-project-workspace-cli.ts",
   "existing-project-workspace.ts",
   "foundation-flow.ts",
-  "generated-file-sync-declared.ts",
   "harness/harness-benchmark-sample.ts",
   "harness/harness-benchmark.ts",
   "harness/harness.ts",
@@ -141,9 +133,9 @@ describe("application foundation scaffold viewmodel cycle", () => {
     const reexportCycles = applicationCycles(true);
     expect(importCycles).toEqual(importComponents);
     expect(reexportCycles).toEqual(reexportComponents);
-    expect(importCycles.map((component) => component.length)).toEqual([3, 3]);
+    expect(importCycles.map((component) => component.length)).toEqual([3]);
     expect(reexportCycles.map((component) => component.length)).toEqual([
-      4, 29, 3,
+      4, 27, 3,
     ]);
     expect(
       importCycles.some((component) => component.includes(clientViewModel)),
@@ -158,7 +150,7 @@ describe("application foundation scaffold viewmodel cycle", () => {
     }
     expect(reexportCycles[1]).toContain("inception-flow.ts");
     expect(reexportCycles[1]).toContain("index.ts");
-    expect(reexportCycles[1]).toHaveLength(29);
+    expect(reexportCycles[1]).toHaveLength(27);
   });
 
   it("keeps the workshop type and validated lookup off the old cycle", () => {

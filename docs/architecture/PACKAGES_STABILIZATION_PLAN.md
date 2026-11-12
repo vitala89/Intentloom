@@ -122,9 +122,13 @@ P1I.2 design is merged as PR #617
 (https://github.com/vitala89/Intentloom/pull/618,
 `1d8d55cbfd89792272d4d4c00512aa09465ed23d`). P1I.2 is complete. P1I.3 design is merged as PR #620
 (`e93f6b9efdba11d1dd1cd98ed7072a801595320b`). Implementation A, the
-adoption extraction, is open as PR #621
-(https://github.com/vitala89/Intentloom/pull/621) and is awaiting review. Implementation B has not
-started. P1J, Undo U4, and Desktop Undo U5 have not started.
+adoption extraction, is merged as PR #621
+(https://github.com/vitala89/Intentloom/pull/621,
+`527ab7f14fc199bc77d21c7e823b4cc2d5c3d926`). Implementation B, the
+Approved Apply type-import retarget, is open for review and is not
+merged. Measured import-only cycles are the Neutron mutation trio only.
+Measured re-export cycles are sizes 4, 27, and 3. No runtime behavior
+changed. P1J, Undo U4, and Desktop Undo U5 have not started.
 Neutron's R4A topology stays frozen.
 The measurements below remain the P1A baseline and are not restated as the
 post-extraction size.
@@ -2345,9 +2349,13 @@ P1I.2 design is merged as PR #617
 (https://github.com/vitala89/Intentloom/pull/618,
 `1d8d55cbfd89792272d4d4c00512aa09465ed23d`). P1I.2 is complete. P1I.3 design is merged as PR #620
 (`e93f6b9efdba11d1dd1cd98ed7072a801595320b`). Implementation A, the
-adoption extraction, is open as PR #621
-(https://github.com/vitala89/Intentloom/pull/621) and is awaiting review. Implementation B has not
-started. P1J, Undo U4, and Desktop Undo U5 have not started.
+adoption extraction, is merged as PR #621
+(https://github.com/vitala89/Intentloom/pull/621,
+`527ab7f14fc199bc77d21c7e823b4cc2d5c3d926`). Implementation B, the
+Approved Apply type-import retarget, is open for review and is not
+merged. Measured import-only cycles are the Neutron mutation trio only.
+Measured re-export cycles are sizes 4, 27, and 3. No runtime behavior
+changed. P1J, Undo U4, and Desktop Undo U5 have not started.
 
 On `911b229af00fcde54d8861af83a56e7e61df0902`, `index.ts` measures
 5,339 effective lines and 5,620 physical lines. The selected family is
@@ -2550,9 +2558,13 @@ P1I.2 design is merged as PR #617
 (https://github.com/vitala89/Intentloom/pull/618,
 `1d8d55cbfd89792272d4d4c00512aa09465ed23d`). P1I.2 is complete. P1I.3 design is merged as PR #620
 (`e93f6b9efdba11d1dd1cd98ed7072a801595320b`). Implementation A, the
-adoption extraction, is open as PR #621
-(https://github.com/vitala89/Intentloom/pull/621) and is awaiting review. Implementation B has not
-started. P1J, Undo U4, and Desktop Undo U5 have not started.
+adoption extraction, is merged as PR #621
+(https://github.com/vitala89/Intentloom/pull/621,
+`527ab7f14fc199bc77d21c7e823b4cc2d5c3d926`). Implementation B, the
+Approved Apply type-import retarget, is open for review and is not
+merged. Measured import-only cycles are the Neutron mutation trio only.
+Measured re-export cycles are sizes 4, 27, and 3. No runtime behavior
+changed. P1J, Undo U4, and Desktop Undo U5 have not started.
 
 On `7a77db52753360f0029cd266d8c95eb78c34995c`, `index.ts` measures
 5,102 effective lines and 5,362 physical lines. The selected family is
@@ -2766,9 +2778,13 @@ P1I.2 design is merged as PR #617
 (https://github.com/vitala89/Intentloom/pull/618,
 `1d8d55cbfd89792272d4d4c00512aa09465ed23d`). P1I.2 is complete. P1I.3 design is merged as PR #620
 (`e93f6b9efdba11d1dd1cd98ed7072a801595320b`). Implementation A, the
-adoption extraction, is open as PR #621
-(https://github.com/vitala89/Intentloom/pull/621) and is awaiting review. Implementation B has not
-started. P1J, Undo U4, and Desktop Undo U5 have not started.
+adoption extraction, is merged as PR #621
+(https://github.com/vitala89/Intentloom/pull/621,
+`527ab7f14fc199bc77d21c7e823b4cc2d5c3d926`). Implementation B, the
+Approved Apply type-import retarget, is open for review and is not
+merged. Measured import-only cycles are the Neutron mutation trio only.
+Measured re-export cycles are sizes 4, 27, and 3. No runtime behavior
+changed. P1J, Undo U4, and Desktop Undo U5 have not started.
 
 On `2c0749dce9a31976195277971d6fb35fe663cd31`, `index.ts` measures
 4,833 effective lines and 5,064 physical lines. The selected family is
@@ -2901,9 +2917,13 @@ P1I.2 design is merged as PR #617
 (https://github.com/vitala89/Intentloom/pull/618,
 `1d8d55cbfd89792272d4d4c00512aa09465ed23d`). P1I.2 is complete. P1I.3 design is merged as PR #620
 (`e93f6b9efdba11d1dd1cd98ed7072a801595320b`). Implementation A, the
-adoption extraction, is open as PR #621
-(https://github.com/vitala89/Intentloom/pull/621) and is awaiting review. Implementation B has not
-started. P1J, Undo U4, and Desktop Undo U5 have not started.
+adoption extraction, is merged as PR #621
+(https://github.com/vitala89/Intentloom/pull/621,
+`527ab7f14fc199bc77d21c7e823b4cc2d5c3d926`). Implementation B, the
+Approved Apply type-import retarget, is open for review and is not
+merged. Measured import-only cycles are the Neutron mutation trio only.
+Measured re-export cycles are sizes 4, 27, and 3. No runtime behavior
+changed. P1J, Undo U4, and Desktop Undo U5 have not started.
 
 The design inventory below is the pre-implementation measurement.
 
@@ -3009,10 +3029,11 @@ together with the Approved Apply import retarget that removes `index.ts`
 from cycle 1. That following slice is P1I.3. Its design is merged as PR #620
 (`e93f6b9efdba11d1dd1cd98ed7072a801595320b`) in
 [`docs/designs/p1i3-existing-project-adoption/SYSTEM_DESIGN.md`](../designs/p1i3-existing-project-adoption/SYSTEM_DESIGN.md).
-Implementation A is open as PR #621
-(https://github.com/vitala89/Intentloom/pull/621) and is awaiting review. The predicted SCC change in that
-design is not an implementation result. Implementation B and P1J have
-not started.
+Implementation A is merged as PR #621
+(https://github.com/vitala89/Intentloom/pull/621,
+`527ab7f14fc199bc77d21c7e823b4cc2d5c3d926`). Implementation B, the
+Approved Apply type-import retarget, is open for review and is not
+merged. P1J has not started.
 
 #### P1I.2 — project lifecycle
 
@@ -3063,22 +3084,33 @@ governance adoption, with the public `adoptProject` wrapper passing
 `applyProjectAdoption` move. `planPackUpdate` stays on `index.ts`. The
 two workflows do not share a write path.
 
-Implementation A is open as PR #621
-(https://github.com/vitala89/Intentloom/pull/621) and is awaiting review. Measured with
+Implementation A is merged as PR #621
+(https://github.com/vitala89/Intentloom/pull/621,
+`527ab7f14fc199bc77d21c7e823b4cc2d5c3d926`). Measured with
 `measureProductionSource`, `index.ts` is 1,878 effective lines and 2,034
 physical lines, down from 2,561 and 2,736. The new modules live in
 `packages/application/src/project-adoption/` and stay outside every SCC.
-Import-only membership is unchanged. Re-export membership is unchanged
-at sizes 4, 29, and 3. `quality-exceptions.json` and the twelve package
-export-map keys are unchanged. Implementation A does not edit
-`approved-apply-baseline.ts`, `generated-file-sync-declared.ts`, or
-`approved-apply-engine.ts`.
+`quality-exceptions.json` and the twelve package export-map keys are
+unchanged. Implementation A does not edit `approved-apply-baseline.ts`,
+`generated-file-sync-declared.ts`, or `approved-apply-engine.ts`.
 
-The predicted import-only graph, after the separate type-import retarget,
-keeps only the Neutron mutation component of size 3. The predicted
-re-export sizes are 4, 27, and 3. Those numbers remain predictions for
-Implementation B. Implementation B has not started. P1J, Undo U4, and
-Desktop Undo U5 have not started.
+Implementation B retargets those two type imports and is open for review.
+It is not merged, and P1I.3 is not complete. `approved-apply-baseline.ts`
+imports `FileSystem` from `host-file-system.ts`.
+`generated-file-sync-declared.ts` imports `FileSystem` from
+`host-file-system.ts`, `Plan` from `project-change.ts`, and
+`PostWriteValidationResult`, `TransactionOptions`, `TransactionResult`,
+and `TransactionStage` from `generated-file/transaction-contracts.ts`.
+Neither file imports `index.ts`. `approved-apply-engine.ts` is unchanged
+and still imports `synchronizeGeneratedFiles` from the barrel. Measured
+import-only membership is only the Neutron mutation trio. Measured
+re-export membership is sizes 4, 27, and 3: the extension-update quartet,
+the previous barrel component without `approved-apply-baseline.ts` and
+without `generated-file-sync-declared.ts`, and the unchanged Neutron
+trio. `index.ts` and `approved-apply-engine.ts` remain in the size-27
+component. No new component appeared. The retarget does not change
+runtime behavior. `index.ts` remains 1,878 effective lines and 2,034
+physical lines. P1J, Undo U4, and Desktop Undo U5 have not started.
 
 ### P1J — legacy Neutron helpers in the barrel
 

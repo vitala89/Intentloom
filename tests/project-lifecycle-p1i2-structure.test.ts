@@ -26,7 +26,6 @@ const modules = [
 ] as const;
 
 const importComponents = [
-  ["approved-apply-baseline.ts", "generated-file-sync-declared.ts", "index.ts"],
   [
     "neutron/mutation/apply/neutron-mutation-apply-durable-record.ts",
     "neutron/mutation/apply/neutron-mutation-apply-store.ts",
@@ -42,7 +41,6 @@ const reexportComponents = [
     "propose-and-apply-extension-adoption.ts",
   ],
   [
-    "approved-apply-baseline.ts",
     "approved-apply-engine.ts",
     "bounded-execution-apply.ts",
     "bounded-execution-w11.ts",
@@ -65,14 +63,13 @@ const reexportComponents = [
     "existing-project-workspace-cli.ts",
     "existing-project-workspace.ts",
     "foundation-flow.ts",
-    "generated-file-sync-declared.ts",
     "harness/harness-benchmark-sample.ts",
     "harness/harness-benchmark.ts",
     "harness/harness.ts",
     "inception-flow.ts",
     "index.ts",
   ],
-  importComponents[1],
+  importComponents[0],
 ];
 
 function functionSlices(source: string): { name: string; source: string }[] {
