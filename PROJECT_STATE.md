@@ -1179,15 +1179,24 @@ is merged as PR #618
 down from 3,760 and 3,956. The new lifecycle modules stay outside every
 locked component. Import-only cycles stay two components of size 3.
 Re-export cycles stay three, sizes 4, 29, and 3.
-`quality-exceptions.json` is unchanged. P1I.3 design is proposed in
-`docs/designs/p1i3-existing-project-adoption/SYSTEM_DESIGN.md` and is
-awaiting maintainer approval. The feasibility verdict is B:
-leaf-owned adoption workflows, with `adoptProject` passing `syncProject`
-into the generated-file leaf. The predicted import-only graph keeps only
-the Neutron mutation component. The predicted re-export sizes are 4, 27,
-and 3. Those SCC numbers are predictions, not implementation results.
-P1I.3 implementation has not started. P1J, Undo U4, and Desktop Undo U5
-have not started. Ids 2 through 26 remain
+`quality-exceptions.json` is unchanged. P1I.3 design is merged as PR #620
+(https://github.com/vitala89/Intentloom/pull/620,
+`e93f6b9efdba11d1dd1cd98ed7072a801595320b`) in
+`docs/designs/p1i3-existing-project-adoption/SYSTEM_DESIGN.md`. The
+feasibility verdict is B: leaf-owned adoption workflows, with
+`adoptProject` passing `syncProject` into the generated-file leaf.
+Implementation A extracts `adoptProject`, `planProjectAdoption`, and
+`applyProjectAdoption` into `packages/application/src/project-adoption/`
+and is awaiting review. It does not retarget Approved Apply imports.
+Measured with `measureProductionSource`, `index.ts` is 1,878 effective
+lines and 2,034 physical lines, down from 2,561 and 2,736. Import-only
+SCC membership is unchanged: `approved-apply-baseline.ts`,
+`generated-file-sync-declared.ts`, and `index.ts`, plus the Neutron
+mutation trio. Re-export SCC membership is unchanged at sizes 4, 29, and 3. The new adoption modules are outside every component. The predicted
+import-only reduction to the Neutron trio, and the predicted re-export
+sizes 4, 27, and 3, belong to Implementation B and are not results of
+this extraction. Implementation B has not started. P1J, Undo U4, and
+Desktop Undo U5 have not started. Ids 2 through 26 remain
 literal `passed` checks. The score and hash formulas are unchanged.
 The reader still does not recompute either value.
 `rankProceduralMemory` stays in the barrel.

@@ -120,9 +120,10 @@ as PR #616 (https://github.com/vitala89/Intentloom/pull/616,
 P1I.2 design is merged as PR #617
 (`e3585e8eb5f4b58bb42482e249430654375dee5b`). Implementation is merged as PR #618
 (https://github.com/vitala89/Intentloom/pull/618,
-`1d8d55cbfd89792272d4d4c00512aa09465ed23d`). P1I.2 is complete. P1I.3 design is proposed and awaiting maintainer
-approval. P1I.3 implementation has not started. P1J, Undo U4, and Desktop
-Undo U5 have not started.
+`1d8d55cbfd89792272d4d4c00512aa09465ed23d`). P1I.2 is complete. P1I.3 design is merged as PR #620
+(`e93f6b9efdba11d1dd1cd98ed7072a801595320b`). Implementation A, the
+adoption extraction, is awaiting review. Implementation B has not
+started. P1J, Undo U4, and Desktop Undo U5 have not started.
 Neutron's R4A topology stays frozen.
 The measurements below remain the P1A baseline and are not restated as the
 post-extraction size.
@@ -2341,9 +2342,10 @@ as PR #616 (https://github.com/vitala89/Intentloom/pull/616,
 P1I.2 design is merged as PR #617
 (`e3585e8eb5f4b58bb42482e249430654375dee5b`). Implementation is merged as PR #618
 (https://github.com/vitala89/Intentloom/pull/618,
-`1d8d55cbfd89792272d4d4c00512aa09465ed23d`). P1I.2 is complete. P1I.3 design is proposed and awaiting maintainer
-approval. P1I.3 implementation has not started. P1J, Undo U4, and Desktop
-Undo U5 have not started.
+`1d8d55cbfd89792272d4d4c00512aa09465ed23d`). P1I.2 is complete. P1I.3 design is merged as PR #620
+(`e93f6b9efdba11d1dd1cd98ed7072a801595320b`). Implementation A, the
+adoption extraction, is awaiting review. Implementation B has not
+started. P1J, Undo U4, and Desktop Undo U5 have not started.
 
 On `911b229af00fcde54d8861af83a56e7e61df0902`, `index.ts` measures
 5,339 effective lines and 5,620 physical lines. The selected family is
@@ -2544,9 +2546,10 @@ as PR #616 (https://github.com/vitala89/Intentloom/pull/616,
 P1I.2 design is merged as PR #617
 (`e3585e8eb5f4b58bb42482e249430654375dee5b`). Implementation is merged as PR #618
 (https://github.com/vitala89/Intentloom/pull/618,
-`1d8d55cbfd89792272d4d4c00512aa09465ed23d`). P1I.2 is complete. P1I.3 design is proposed and awaiting maintainer
-approval. P1I.3 implementation has not started. P1J, Undo U4, and Desktop
-Undo U5 have not started.
+`1d8d55cbfd89792272d4d4c00512aa09465ed23d`). P1I.2 is complete. P1I.3 design is merged as PR #620
+(`e93f6b9efdba11d1dd1cd98ed7072a801595320b`). Implementation A, the
+adoption extraction, is awaiting review. Implementation B has not
+started. P1J, Undo U4, and Desktop Undo U5 have not started.
 
 On `7a77db52753360f0029cd266d8c95eb78c34995c`, `index.ts` measures
 5,102 effective lines and 5,362 physical lines. The selected family is
@@ -2758,9 +2761,10 @@ as PR #616 (https://github.com/vitala89/Intentloom/pull/616,
 P1I.2 design is merged as PR #617
 (`e3585e8eb5f4b58bb42482e249430654375dee5b`). Implementation is merged as PR #618
 (https://github.com/vitala89/Intentloom/pull/618,
-`1d8d55cbfd89792272d4d4c00512aa09465ed23d`). P1I.2 is complete. P1I.3 design is proposed and awaiting maintainer
-approval. P1I.3 implementation has not started. P1J, Undo U4, and Desktop
-Undo U5 have not started.
+`1d8d55cbfd89792272d4d4c00512aa09465ed23d`). P1I.2 is complete. P1I.3 design is merged as PR #620
+(`e93f6b9efdba11d1dd1cd98ed7072a801595320b`). Implementation A, the
+adoption extraction, is awaiting review. Implementation B has not
+started. P1J, Undo U4, and Desktop Undo U5 have not started.
 
 On `2c0749dce9a31976195277971d6fb35fe663cd31`, `index.ts` measures
 4,833 effective lines and 5,064 physical lines. The selected family is
@@ -2891,9 +2895,10 @@ as PR #616 (https://github.com/vitala89/Intentloom/pull/616,
 P1I.2 design is merged as PR #617
 (`e3585e8eb5f4b58bb42482e249430654375dee5b`). Implementation is merged as PR #618
 (https://github.com/vitala89/Intentloom/pull/618,
-`1d8d55cbfd89792272d4d4c00512aa09465ed23d`). P1I.2 is complete. P1I.3 design is proposed and awaiting maintainer
-approval. P1I.3 implementation has not started. P1J, Undo U4, and Desktop
-Undo U5 have not started.
+`1d8d55cbfd89792272d4d4c00512aa09465ed23d`). P1I.2 is complete. P1I.3 design is merged as PR #620
+(`e93f6b9efdba11d1dd1cd98ed7072a801595320b`). Implementation A, the
+adoption extraction, is awaiting review. Implementation B has not
+started. P1J, Undo U4, and Desktop Undo U5 have not started.
 
 The design inventory below is the pre-implementation measurement.
 
@@ -2996,11 +3001,12 @@ outside every component. `quality-exceptions.json` and the twelve
 package export-map keys are unchanged. The lifecycle move is the opened P1I.2 implementation. A following PR
 moves `adoptProject`, `planProjectAdoption`, and `applyProjectAdoption`,
 together with the Approved Apply import retarget that removes `index.ts`
-from cycle 1. That following slice is P1I.3. Its design is proposed in
-[`docs/designs/p1i3-existing-project-adoption/SYSTEM_DESIGN.md`](../designs/p1i3-existing-project-adoption/SYSTEM_DESIGN.md)
-and is awaiting maintainer approval. The predicted SCC change in that
-design is not an implementation result. P1I.3 implementation and P1J
-have not started.
+from cycle 1. That following slice is P1I.3. Its design is merged as PR #620
+(`e93f6b9efdba11d1dd1cd98ed7072a801595320b`) in
+[`docs/designs/p1i3-existing-project-adoption/SYSTEM_DESIGN.md`](../designs/p1i3-existing-project-adoption/SYSTEM_DESIGN.md).
+Implementation A is awaiting review. The predicted SCC change in that
+design is not an implementation result. Implementation B and P1J have
+not started.
 
 #### P1I.2 — project lifecycle
 
@@ -3041,23 +3047,30 @@ physical lines. Their SCC membership arrays are unchanged.
 
 #### P1I.3 — existing project adoption
 
-Design is proposed in
-[`docs/designs/p1i3-existing-project-adoption/SYSTEM_DESIGN.md`](../designs/p1i3-existing-project-adoption/SYSTEM_DESIGN.md)
-and is awaiting maintainer approval. The feasibility verdict is **B**:
-leaf-owned generated-file onboarding and governance adoption, with the
-public `adoptProject` wrapper passing `syncProject` into the
-generated-file leaf. `planProjectAdoption` and `applyProjectAdoption`
-move. `planPackUpdate` stays on `index.ts`. The two workflows do not
-share a write path.
+Design is merged as PR #620
+(https://github.com/vitala89/Intentloom/pull/620,
+`e93f6b9efdba11d1dd1cd98ed7072a801595320b`) in
+[`docs/designs/p1i3-existing-project-adoption/SYSTEM_DESIGN.md`](../designs/p1i3-existing-project-adoption/SYSTEM_DESIGN.md).
+The approved verdict is **B**: leaf-owned generated-file onboarding and
+governance adoption, with the public `adoptProject` wrapper passing
+`syncProject` into the generated-file leaf. `planProjectAdoption` and
+`applyProjectAdoption` move. `planPackUpdate` stays on `index.ts`. The
+two workflows do not share a write path.
+
+Implementation A is awaiting review. Measured with
+`measureProductionSource`, `index.ts` is 1,878 effective lines and 2,034
+physical lines, down from 2,561 and 2,736. The new modules live in
+`packages/application/src/project-adoption/` and stay outside every SCC.
+Import-only membership is unchanged. Re-export membership is unchanged
+at sizes 4, 29, and 3. `quality-exceptions.json` and the twelve package
+export-map keys are unchanged. Implementation A does not edit
+`approved-apply-baseline.ts`, `generated-file-sync-declared.ts`, or
+`approved-apply-engine.ts`.
 
 The predicted import-only graph, after the separate type-import retarget,
 keeps only the Neutron mutation component of size 3. The predicted
-re-export sizes are 4, 27, and 3. `approved-apply-baseline.ts` and
-`generated-file-sync-declared.ts` leave the re-export component that
-contains `index.ts`. `approved-apply-engine.ts` stays in that component
-because it still value-imports `synchronizeGeneratedFiles`. These SCC
-numbers are predictions, not implementation results. No production file
-has moved. P1I.3 implementation has not started. P1J, Undo U4, and
+re-export sizes are 4, 27, and 3. Those numbers remain predictions for
+Implementation B. Implementation B has not started. P1J, Undo U4, and
 Desktop Undo U5 have not started.
 
 ### P1J — legacy Neutron helpers in the barrel

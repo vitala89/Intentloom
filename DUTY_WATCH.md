@@ -166,9 +166,25 @@ as PR #616 (https://github.com/vitala89/Intentloom/pull/616,
 (`e3585e8eb5f4b58bb42482e249430654375dee5b`). Implementation is merged
 as PR #618 (https://github.com/vitala89/Intentloom/pull/618,
 `1d8d55cbfd89792272d4d4c00512aa09465ed23d`). P1I.2 is complete.
-**P1I.3** Existing Project Adoption design is proposed and awaiting
-maintainer approval. P1I.3 implementation has not started. Do not start
-the P1I.3 implementation, P1J, Undo U4, or Desktop Undo U5.
+**P1I.3** Existing Project Adoption design is merged as PR #620
+(`e93f6b9efdba11d1dd1cd98ed7072a801595320b`). Implementation A, the
+adoption extraction, is awaiting review. Implementation B has not
+started. Do not start Implementation B, P1J, Undo U4, or Desktop Undo U5.
+
+### 2026-11-12, Packages architecture P1I.3 adoption extraction
+
+- **Status:** **IMPLEMENTATION A OPEN — AWAITING REVIEW.** Base is
+  `e93f6b9efdba11d1dd1cd98ed7072a801595320b`, the merge of Design PR #620.
+  P1I.1 and P1I.2 are complete. This change extracts `adoptProject`,
+  `planProjectAdoption`, and `applyProjectAdoption` into
+  `packages/application/src/project-adoption/`. `index.ts` measures 1,878
+  effective lines and 2,034 physical lines, down from 2,561 and 2,736.
+  Import-only SCC membership is unchanged. Re-export SCC membership is
+  unchanged at sizes 4, 29, and 3. The predicted Implementation B
+  reduction is not achieved here.
+- **Not done:** merge, Implementation B Approved Apply type-import
+  retarget, P1J, Undo U4, Desktop Undo U5.
+- **Next:** Independent review. Do not merge. Do not start Implementation B.
 
 ### 2026-11-12, Packages architecture P1I.3 design review corrections
 

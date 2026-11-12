@@ -250,8 +250,8 @@ describe("P1I.2 project lifecycle structure", () => {
       `${sourceRoot}/index.ts`,
     );
     expect(indexMetrics).toMatchObject({
-      effectiveCodeLines: 2561,
-      physicalLines: 2736,
+      effectiveCodeLines: 1878,
+      physicalLines: 2034,
     });
     expect(indexMetrics.effectiveCodeLines).toBeLessThan(3760);
     expect(indexMetrics.physicalLines).toBeLessThan(3956);
