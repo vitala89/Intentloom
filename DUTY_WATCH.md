@@ -163,10 +163,24 @@ P1H.7 implementation is merged as PR #614
 as PR #616 (https://github.com/vitala89/Intentloom/pull/616,
 `b9201e9d480b34e453d08e1803f94e734d1e3f1f`). P1I.1 is complete.
 **P1I.2** project lifecycle design is merged as PR #617
-(`e3585e8eb5f4b58bb42482e249430654375dee5b`). Implementation is opened
-as PR #618 (https://github.com/vitala89/Intentloom/pull/618) and
-awaiting maintainer review. It is not merged. Do not start P1I.3,
-P1J, Undo U4, or Desktop Undo U5.
+(`e3585e8eb5f4b58bb42482e249430654375dee5b`). Implementation is merged
+as PR #618 (https://github.com/vitala89/Intentloom/pull/618,
+`1d8d55cbfd89792272d4d4c00512aa09465ed23d`). P1I.2 is complete. Do not
+start P1I.3, P1J, Undo U4, or Desktop Undo U5.
+
+### 2026-11-12, Packages architecture P1I.2 project lifecycle merge
+
+- **Status:** **P1I.2 IMPLEMENTATION MERGED.** PR #618,
+  https://github.com/vitala89/Intentloom/pull/618, merged at
+  `1d8d55cbfd89792272d4d4c00512aa09465ed23d` on 2026-11-12 11:34
+  (Europe/Berlin). Hosted CI on head
+  `3452db0b7d4b4475af86df187a0abd389d553e92` passed all 25 checks,
+  including CodeQL, commit policy, and Ubuntu, macOS, and Windows on
+  Node 22 and Node 24. P1I.2 is complete. Do not start P1I.3, P1J,
+  Undo U4, or Desktop Undo U5.
+- **Next:** Maintainer decision before P1I.3. Do not start adoption
+  extraction, the Approved Apply import retarget, P1J, Undo U4, or
+  Desktop Undo U5 from this handoff.
 
 ### 2026-11-12, Packages architecture P1I.2 project lifecycle implementation
 
