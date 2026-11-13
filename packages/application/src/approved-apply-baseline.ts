@@ -1,6 +1,6 @@
 import { dirname, relative, resolve } from "node:path";
 import type { ApprovedApplyRollbackFile } from "../../protocol/src/approved-apply.js";
-import type { FileSystem } from "./index.js";
+import type { FileSystem } from "./host-file-system.js";
 
 /**
  * Raised after a trusted baseline was captured and before `synchronizeGeneratedFiles`.

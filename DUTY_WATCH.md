@@ -168,9 +168,51 @@ as PR #618 (https://github.com/vitala89/Intentloom/pull/618,
 `1d8d55cbfd89792272d4d4c00512aa09465ed23d`). P1I.2 is complete.
 **P1I.3** Existing Project Adoption design is merged as PR #620
 (`e93f6b9efdba11d1dd1cd98ed7072a801595320b`). Implementation A, the
-adoption extraction, is open as PR #621
-(https://github.com/vitala89/Intentloom/pull/621) and is awaiting review. Implementation B has not
-started. Do not start Implementation B, P1J, Undo U4, or Desktop Undo U5.
+adoption extraction, is merged as PR #621
+(https://github.com/vitala89/Intentloom/pull/621,
+`527ab7f14fc199bc77d21c7e823b4cc2d5c3d926`). Implementation B, the
+Approved Apply type-import retarget, is open for review as PR #622
+(https://github.com/vitala89/Intentloom/pull/622) and is not
+merged. Measured import-only cycles are the Neutron mutation trio only.
+Measured re-export cycles are sizes 4, 27, and 3. No runtime behavior
+changed. Do not merge Implementation B. Do not start P1J, Undo U4, or
+Desktop Undo U5.
+
+### 2026-11-13, Packages architecture P1I.3 Approved Apply type-import retarget
+
+- **Status:** **IMPLEMENTATION B OPEN — AWAITING REVIEW.** Pull request
+  #622 (https://github.com/vitala89/Intentloom/pull/622) is unmerged.
+  P1I.3 design PR #620 is merged. Implementation A PR #621 is merged at
+  `527ab7f14fc199bc77d21c7e823b4cc2d5c3d926`. This change retargets two
+  type imports and does not change runtime behavior. P1I.3b is not
+  merged. P1I.3 is not complete.
+- **Imports:** `approved-apply-baseline.ts` imports `FileSystem` from
+  `./host-file-system.js`. `generated-file-sync-declared.ts` imports
+  `FileSystem` from `./host-file-system.js`, `Plan` from
+  `./project-change.js`, and `PostWriteValidationResult`,
+  `TransactionOptions`, `TransactionResult`, and `TransactionStage` from
+  `./generated-file/transaction-contracts.js`. Neither file imports
+  `./index.js`. `approved-apply-engine.ts` is unchanged and still imports
+  `synchronizeGeneratedFiles` from `./index.js`.
+- **Measured import-only SCC:** one component, the Neutron mutation trio
+  `neutron/mutation/apply/neutron-mutation-apply-durable-record.ts`,
+  `neutron/mutation/apply/neutron-mutation-apply-store.ts`,
+  `neutron/mutation/verification/neutron-mutation-verification-retry-eligibility.ts`.
+  `index.ts`, `approved-apply-baseline.ts`, and
+  `generated-file-sync-declared.ts` are outside every import-only
+  component.
+- **Measured re-export SCC:** sizes 4, 27, and 3. The extension-update
+  quartet is unchanged. The size-27 component is the previous 29-file
+  component without `approved-apply-baseline.ts` and without
+  `generated-file-sync-declared.ts`. `index.ts` and
+  `approved-apply-engine.ts` remain. The Neutron trio is unchanged. No
+  new component appeared.
+- **Unchanged:** `index.ts` is still 1,878 effective lines and 2,034
+  physical lines. Public exports and the twelve package export-map keys
+  are unchanged. `quality-exceptions.json` is unchanged.
+- **Not done:** maintainer review, merge, P1J, Undo U4, Desktop Undo U5.
+- **Next:** Independent review. Do not merge. Do not start P1J, Undo U4,
+  or Desktop Undo U5.
 
 ### 2026-11-12, Packages architecture P1I.3 adoption extraction
 

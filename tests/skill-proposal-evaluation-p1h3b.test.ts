@@ -479,15 +479,44 @@ describe("P1H.3b skill proposal store and evaluation extraction", () => {
   it("keeps proposal and evaluation modules outside the recorded source cycles", () => {
     const importComponents = applicationCycles(false);
     const reexportComponents = applicationCycles(true);
-    expect(importComponents.map((component) => component.length)).toEqual([
-      3, 3,
-    ]);
+    expect(importComponents.map((component) => component.length)).toEqual([3]);
     expect(reexportComponents.map((component) => component.length)).toEqual([
-      4, 29, 3,
+      4, 27, 3,
     ]);
-    expect(importComponents[0]).toEqual([
-      "approved-apply-baseline.ts",
-      "generated-file-sync-declared.ts",
+    expect(importComponents).toEqual([
+      [
+        "neutron/mutation/apply/neutron-mutation-apply-durable-record.ts",
+        "neutron/mutation/apply/neutron-mutation-apply-store.ts",
+        "neutron/mutation/verification/neutron-mutation-verification-retry-eligibility.ts",
+      ],
+    ]);
+    expect(reexportComponents[1]).toEqual([
+      "approved-apply-engine.ts",
+      "bounded-execution-apply.ts",
+      "bounded-execution-w11.ts",
+      "bounded-execution-workspace-cli.ts",
+      "bounded-execution-workspace.ts",
+      "engineering-quality-entry.ts",
+      "engineering-quality/cli-specialized-packs-external.ts",
+      "engineering-quality/index.ts",
+      "engineering-quality/specialized-pack-external-apply.ts",
+      "engineering-quality/specialized-pack-external-viewmodel.ts",
+      "existing-project-adoption-apply-gates.ts",
+      "existing-project-adoption-apply-health.ts",
+      "existing-project-adoption-apply.ts",
+      "existing-project-adoption-approval.ts",
+      "existing-project-adoption-decisions.ts",
+      "existing-project-adoption-plan.ts",
+      "existing-project-adoption-prepared-plan-revalidate.ts",
+      "existing-project-adoption-prepared-plan.ts",
+      "existing-project-w9.ts",
+      "existing-project-workspace-cli.ts",
+      "existing-project-workspace.ts",
+      "foundation-flow.ts",
+      "harness/harness-benchmark-sample.ts",
+      "harness/harness-benchmark.ts",
+      "harness/harness.ts",
+      "inception-flow.ts",
       "index.ts",
     ]);
     const members = new Set(

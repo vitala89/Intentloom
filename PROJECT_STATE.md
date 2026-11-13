@@ -1187,17 +1187,51 @@ feasibility verdict is B: leaf-owned adoption workflows, with
 `adoptProject` passing `syncProject` into the generated-file leaf.
 Implementation A extracts `adoptProject`, `planProjectAdoption`, and
 `applyProjectAdoption` into `packages/application/src/project-adoption/`
-and is open as PR #621
-(https://github.com/vitala89/Intentloom/pull/621), awaiting review. It does not retarget Approved Apply imports.
-Measured with `measureProductionSource`, `index.ts` is 1,878 effective
-lines and 2,034 physical lines, down from 2,561 and 2,736. Import-only
-SCC membership is unchanged: `approved-apply-baseline.ts`,
-`generated-file-sync-declared.ts`, and `index.ts`, plus the Neutron
-mutation trio. Re-export SCC membership is unchanged at sizes 4, 29, and 3. The new adoption modules are outside every component. The predicted
-import-only reduction to the Neutron trio, and the predicted re-export
-sizes 4, 27, and 3, belong to Implementation B and are not results of
-this extraction. Implementation B has not started. P1J, Undo U4, and
-Desktop Undo U5 have not started. Ids 2 through 26 remain
+and is merged as PR #621
+(https://github.com/vitala89/Intentloom/pull/621,
+`527ab7f14fc199bc77d21c7e823b4cc2d5c3d926`). Measured with
+`measureProductionSource`, `index.ts` is 1,878 effective lines and 2,034
+physical lines, down from 2,561 and 2,736. The adoption modules stay
+outside every component. Implementation B retargets the Approved Apply
+type imports and is open for review as PR #622
+(https://github.com/vitala89/Intentloom/pull/622). It is not merged, and P1I.3 is not
+complete. `approved-apply-baseline.ts` imports `FileSystem` from
+`host-file-system.ts`. `generated-file-sync-declared.ts` imports
+`FileSystem` from `host-file-system.ts`, `Plan` from `project-change.ts`,
+and the transaction types from
+`generated-file/transaction-contracts.ts`. Neither module imports
+`index.ts`. `approved-apply-engine.ts` is unchanged and still imports
+`synchronizeGeneratedFiles` from `index.ts`. Measured import-only SCC
+membership is only the Neutron mutation trio:
+`neutron/mutation/apply/neutron-mutation-apply-durable-record.ts`,
+`neutron/mutation/apply/neutron-mutation-apply-store.ts`, and
+`neutron/mutation/verification/neutron-mutation-verification-retry-eligibility.ts`.
+Measured re-export SCC membership is three components, sizes 4, 27, and 3. The extension-update quartet is unchanged. The former 29-file
+component is now these 27 files: `approved-apply-engine.ts`,
+`bounded-execution-apply.ts`, `bounded-execution-w11.ts`,
+`bounded-execution-workspace-cli.ts`, `bounded-execution-workspace.ts`,
+`engineering-quality-entry.ts`,
+`engineering-quality/cli-specialized-packs-external.ts`,
+`engineering-quality/index.ts`,
+`engineering-quality/specialized-pack-external-apply.ts`,
+`engineering-quality/specialized-pack-external-viewmodel.ts`,
+`existing-project-adoption-apply-gates.ts`,
+`existing-project-adoption-apply-health.ts`,
+`existing-project-adoption-apply.ts`,
+`existing-project-adoption-approval.ts`,
+`existing-project-adoption-decisions.ts`,
+`existing-project-adoption-plan.ts`,
+`existing-project-adoption-prepared-plan-revalidate.ts`,
+`existing-project-adoption-prepared-plan.ts`, `existing-project-w9.ts`,
+`existing-project-workspace-cli.ts`, `existing-project-workspace.ts`,
+`foundation-flow.ts`, `harness/harness-benchmark-sample.ts`,
+`harness/harness-benchmark.ts`, `harness/harness.ts`, `inception-flow.ts`,
+and `index.ts`. `approved-apply-baseline.ts` and
+`generated-file-sync-declared.ts` are outside every component. The
+Neutron mutation trio is unchanged. No new component appeared. The
+retarget does not change runtime behavior. `index.ts` remains 1,878
+effective lines and 2,034 physical lines. P1J, Undo U4, and Desktop Undo
+U5 have not started. Ids 2 through 26 remain
 literal `passed` checks. The score and hash formulas are unchanged.
 The reader still does not recompute either value.
 `rankProceduralMemory` stays in the barrel.
