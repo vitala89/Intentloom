@@ -1193,9 +1193,9 @@ and is merged as PR #621
 `measureProductionSource`, `index.ts` is 1,878 effective lines and 2,034
 physical lines, down from 2,561 and 2,736. The adoption modules stay
 outside every component. Implementation B retargets the Approved Apply
-type imports and is open for review as PR #622
-(https://github.com/vitala89/Intentloom/pull/622). It is not merged, and P1I.3 is not
-complete. `approved-apply-baseline.ts` imports `FileSystem` from
+type imports and is merged as PR #622
+(https://github.com/vitala89/Intentloom/pull/622,
+`d6b7d4955f2e58780c1ea2afe134f3217ad3fe86`). P1I.3 is complete. `approved-apply-baseline.ts` imports `FileSystem` from
 `host-file-system.ts`. `generated-file-sync-declared.ts` imports
 `FileSystem` from `host-file-system.ts`, `Plan` from `project-change.ts`,
 and the transaction types from
@@ -1230,8 +1230,14 @@ and `index.ts`. `approved-apply-baseline.ts` and
 `generated-file-sync-declared.ts` are outside every component. The
 Neutron mutation trio is unchanged. No new component appeared. The
 retarget does not change runtime behavior. `index.ts` remains 1,878
-effective lines and 2,034 physical lines. P1J, Undo U4, and Desktop Undo
-U5 have not started. Ids 2 through 26 remain
+effective lines and 2,034 physical lines. P1J design is proposed in
+`docs/designs/p1j-legacy-neutron-helpers/SYSTEM_DESIGN.md` and is
+awaiting approval. The recommended verdict is C: a legacy task-record
+leaf under `packages/application/src/workspace/`, with
+`syncLocalWorkspaceState` remaining on `index.ts`. That verdict is not
+approved. P1J implementation has not started. The predicted extraction
+does not bring `index.ts` to the 400-line P1 gate. Undo U4 and Desktop
+Undo U5 have not started. Ids 2 through 26 remain
 literal `passed` checks. The score and hash formulas are unchanged.
 The reader still does not recompute either value.
 `rankProceduralMemory` stays in the barrel.

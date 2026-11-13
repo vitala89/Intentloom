@@ -1,0 +1,25 @@
+flowchart LR
+  subgraph legacy [Legacy persisted tasks]
+    record["NeutronSubagentTaskRecord"]
+    file[".aif/neutron/subagents"]
+    cliCmd["CLI subagent spawn get list"]
+    synthetic["synthetic completed output"]
+  end
+  subgraph modern [Modern Neutron runtime]
+    result["N1 NeutronSubagentResult"]
+    taskGraph["task graph and scheduler"]
+    tools["typed read-only tools"]
+    mutation["proposal review approval Apply Undo"]
+  end
+  subgraph syncbox [Local workspace sync]
+    sync["syncLocalWorkspaceState"]
+    counts["readiness findings score conversations task count"]
+  end
+  cliCmd --> record
+  record --> file
+  synthetic --> record
+  sync --> counts
+  counts -->|"task count only"| file
+  result -.->|"separate type and store"| record
+  taskGraph -.->|"no shared persistence"| file
+  mutation -.->|"not invoked"| cliCmd

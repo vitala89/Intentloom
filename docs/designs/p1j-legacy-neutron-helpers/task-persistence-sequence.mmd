@@ -1,0 +1,55 @@
+sequenceDiagram
+  participant Caller
+  participant Spawn as spawnNeutronSubagentTask
+  participant Get as getNeutronSubagentTask
+  participant List as listNeutronSubagentTasks
+  participant Validate as validateNeutronSubagentTaskRecord
+  participant Path as neutronSubagentTaskPath
+  participant FS as FileSystem
+
+  Caller->>Spawn: root projectId role taskInput optional conversationId
+  Spawn->>Spawn: id and one ISO timestamp
+  Spawn->>Spawn: synthetic completed resultOutput
+  Spawn->>Validate: record with status completed
+  alt validation rejects
+    Validate-->>Caller: ProtocolValidationError before any write
+  else validation accepts
+    Validate-->>Spawn: NeutronSubagentTaskRecord
+    Spawn->>Path: inside root
+    Path-->>Spawn: task json path
+    Spawn->>FS: exists dirname
+    opt directory missing
+      Spawn->>FS: mkdir dirname
+    end
+    Spawn->>FS: write pretty JSON and trailing newline
+    Spawn-->>Caller: completed record
+  end
+
+  Caller->>Get: root and taskId
+  Get->>Path: inside root
+  Get->>FS: exists path
+  alt missing
+    Get-->>Caller: null
+  else present
+    Get->>FS: read
+    Get->>Validate: parsed JSON
+    alt parse or validation throws
+      Get-->>Caller: null
+    else valid
+      Get-->>Caller: record
+    end
+  end
+
+  Caller->>List: root and optional conversationId
+  List->>FS: list root
+  loop each json path under .aif/neutron/subagents
+    List->>Get: derived taskId
+    alt record is null
+      List->>List: skip
+    else conversation filter misses
+      List->>List: skip
+    else kept
+      List->>List: append
+    end
+  end
+  List-->>Caller: createdAt descending

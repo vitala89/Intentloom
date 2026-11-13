@@ -1,0 +1,19 @@
+flowchart TB
+  caller["CLI or package-root caller"]
+  input["untrusted role taskInput and taskId"]
+  insideFn["inside project root"]
+  meta[".aif task metadata"]
+  source["project source files"]
+  synthetic["synthetic resultOutput"]
+  modern["Approved Apply and user Undo"]
+  sync["sync list and get"]
+
+  caller --> input
+  input --> insideFn
+  insideFn -->|"spawn write after validation"| meta
+  sync -->|"read"| meta
+  synthetic -->|"stored as completed"| meta
+  spawn["spawn"] -.->|"does not write source"| source
+  sync -.->|"does not write"| source
+  modern -.->|"not on this path"| meta
+  synthetic -.->|"not model or tool evidence"| modern

@@ -171,12 +171,41 @@ as PR #618 (https://github.com/vitala89/Intentloom/pull/618,
 adoption extraction, is merged as PR #621
 (https://github.com/vitala89/Intentloom/pull/621,
 `527ab7f14fc199bc77d21c7e823b4cc2d5c3d926`). Implementation B, the
-Approved Apply type-import retarget, is open for review as PR #622
-(https://github.com/vitala89/Intentloom/pull/622) and is not
-merged. Measured import-only cycles are the Neutron mutation trio only.
-Measured re-export cycles are sizes 4, 27, and 3. No runtime behavior
-changed. Do not merge Implementation B. Do not start P1J, Undo U4, or
-Desktop Undo U5.
+Approved Apply type-import retarget, is merged as PR #622
+(https://github.com/vitala89/Intentloom/pull/622,
+`d6b7d4955f2e58780c1ea2afe134f3217ad3fe86`). P1I.3 is complete.
+Measured import-only cycles are the Neutron mutation trio only.
+Measured re-export cycles are sizes 4, 27, and 3. `index.ts` measures
+1,878 effective lines and 2,034 physical lines. No runtime behavior
+changed. P1J design is proposed and awaiting approval. Do not start
+the P1J implementation, Undo U4, or Desktop Undo U5.
+
+### 2026-11-13, Packages architecture P1J legacy Neutron helper design
+
+- **Status:** **DESIGN PR OPEN — AWAITING MAINTAINER APPROVAL.** P1I.3
+  design PR #620, implementation PR #621, and implementation PR #622
+  are merged. PR #622 merged at
+  `d6b7d4955f2e58780c1ea2afe134f3217ad3fe86`. P1I.3 is complete. This
+  change is documentation only. P1J implementation has not started.
+- **Design:** `docs/designs/p1j-legacy-neutron-helpers/SYSTEM_DESIGN.md`.
+- **Verdict:** **C, proposed.** Move the legacy task-record helpers to
+  `packages/application/src/workspace/legacy-subagent-task-record.ts`.
+  Keep `syncLocalWorkspaceState` on `index.ts`. Do not fold them into
+  `src/neutron/`. Do not remove the CLI surface. The synthetic
+  completed task stays. Maintainer review can still choose to leave
+  the helpers in the barrel.
+- **Baseline:** `origin/main` at
+  `d6b7d4955f2e58780c1ea2afe134f3217ad3fe86`. `measureProductionSource`
+  reports `index.ts` at 1,878 effective lines and 2,034 physical
+  lines. The task-record region is 84 effective lines and 91 physical
+  lines. `syncLocalWorkspaceState` is 11 effective lines.
+- **Measured SCC:** import-only size `[3]`, the Neutron mutation trio.
+  Re-export sizes `[4, 27, 3]`. The predicted implementation does not
+  add a component. That prediction is not an implementation result.
+- **Not done:** maintainer approval, P1J implementation, Undo U4,
+  Desktop Undo U5. P1 is not complete after the proposed extraction.
+- **Next:** Maintainer review. Do not merge without approval. Do not
+  start the implementation from this handoff.
 
 ### 2026-11-13, Packages architecture P1I.3 Approved Apply type-import retarget
 

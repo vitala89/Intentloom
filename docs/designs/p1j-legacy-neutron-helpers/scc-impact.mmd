@@ -1,0 +1,13 @@
+flowchart TB
+  subgraph importOnly [Import-only SCC stays size 3]
+    trio["Neutron mutation trio"]
+  end
+  subgraph reexport [Re-export SCC stays 4 then 27 then 3]
+    four["extension-update quartet"]
+    barrel["27-file component including index.ts"]
+    trioAgain["same Neutron mutation trio"]
+  end
+  leaf["legacy-subagent-task-record.ts"]
+  barrel -->|"one-way import and named re-export"| leaf
+  leaf -.->|"no edge back to index.ts"| barrel
+  trio -.->|"membership unchanged"| trioAgain
