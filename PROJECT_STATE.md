@@ -1231,8 +1231,9 @@ and `index.ts`. `approved-apply-baseline.ts` and
 Neutron mutation trio is unchanged. No new component appeared. The
 retarget does not change runtime behavior. `index.ts` remains 1,878
 effective lines and 2,034 physical lines. P1J design is proposed in
-`docs/designs/p1j-legacy-neutron-helpers/SYSTEM_DESIGN.md` and is
-awaiting approval. The recommended verdict is C: a legacy task-record
+`docs/designs/p1j-legacy-neutron-helpers/SYSTEM_DESIGN.md` and is open
+for review as PR #623 (https://github.com/vitala89/Intentloom/pull/623).
+It is not approved. The recommended verdict is C: a legacy task-record
 leaf under `packages/application/src/workspace/`, with
 `syncLocalWorkspaceState` remaining on `index.ts`. That verdict is not
 approved. P1J implementation has not started. The predicted extraction

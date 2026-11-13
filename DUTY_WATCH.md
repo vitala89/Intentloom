@@ -177,14 +177,17 @@ Approved Apply type-import retarget, is merged as PR #622
 Measured import-only cycles are the Neutron mutation trio only.
 Measured re-export cycles are sizes 4, 27, and 3. `index.ts` measures
 1,878 effective lines and 2,034 physical lines. No runtime behavior
-changed. P1J design is proposed and awaiting approval. Do not start
+changed. P1J design is open for review as PR #623
+(https://github.com/vitala89/Intentloom/pull/623) and is not approved.
+Do not start
 the P1J implementation, Undo U4, or Desktop Undo U5.
 
 ### 2026-11-13, Packages architecture P1J legacy Neutron helper design
 
-- **Status:** **DESIGN PR OPEN — AWAITING MAINTAINER APPROVAL.** P1I.3
-  design PR #620, implementation PR #621, and implementation PR #622
-  are merged. PR #622 merged at
+- **Status:** **DESIGN PR OPEN — AWAITING MAINTAINER APPROVAL.**
+  Pull request #623 (https://github.com/vitala89/Intentloom/pull/623)
+  is unmerged. P1I.3 design PR #620, implementation PR #621, and
+  implementation PR #622 are merged. PR #622 merged at
   `d6b7d4955f2e58780c1ea2afe134f3217ad3fe86`. P1I.3 is complete. This
   change is documentation only. P1J implementation has not started.
 - **Design:** `docs/designs/p1j-legacy-neutron-helpers/SYSTEM_DESIGN.md`.
