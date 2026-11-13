@@ -1,0 +1,28 @@
+flowchart TB
+  caller["CLI or package-root caller"]
+  input["untrusted role taskInput and caller taskId"]
+  insideFn["inside project-root boundary only"]
+  intended["intended storage .aif/neutron/subagents"]
+  fsWrite["nodeFileSystem write via writeFile"]
+  actual["actual write target on disk"]
+  source["project source and other files"]
+  synthetic["synthetic resultOutput"]
+  modern["Approved Apply and user Undo"]
+  sync["sync list and get"]
+  listWalk["nodeFileSystem list skips symlink dirs"]
+
+  caller --> input
+  input --> insideFn
+  spawn["spawn generates task id"] --> insideFn
+  insideFn -->|"resolved path string"| intended
+  spawn --> fsWrite
+  fsWrite --> actual
+  fsWrite -.->|"follows symlinks no realpath recheck"| actual
+  actual -.->|"symlink may redirect"| source
+  sync -->|"read may follow links"| intended
+  listWalk -.->|"list only get and spawn lack this"| intended
+  synthetic -->|"stored as completed"| intended
+  spawn -.->|"by convention not direct source write"| source
+  sync -.->|"does not call write"| source
+  modern -.->|"not on this path"| intended
+  synthetic -.->|"not model or tool evidence"| modern

@@ -1,0 +1,23 @@
+flowchart TB
+  spawn["spawn"]
+  invalid["invalid role or empty required field"]
+  escape["resolved path leaves the root"]
+  fsFail["filesystem throw"]
+  get["get"]
+  absent["missing file malformed JSON or invalid record"]
+  list["list"]
+  sync["sync"]
+  readerFail["an awaited reader throws"]
+  spawn --> invalid
+  invalid -->|"throw and write nothing"| callerErr["caller error"]
+  spawn --> escape
+  escape -->|"path traversal error"| callerErr
+  spawn --> fsFail
+  fsFail --> callerErr
+  get --> absent
+  absent -->|"return null"| cliMissing["CLI get exits 3"]
+  list -->|"skip null and filter then sort"| listed["array"]
+  sync --> readerFail
+  readerFail -->|"stop with no partial snapshot"| callerErr
+  keptCli["CLI ignores project id and dry-run still writes"] --> spawn
+  keptScore["score 0 stays 0 and a missing report is null"] --> sync

@@ -1,0 +1,25 @@
+flowchart TB
+  cli["CLI neutron-command.ts"]
+  barrel["index.ts composition root"]
+  leaf["workspace/legacy-subagent-task-record.ts"]
+  sync["syncLocalWorkspaceState"]
+  assemble["assembleLocalWorkspaceSyncState"]
+  inspect["project-lifecycle inspect and doctor"]
+  audit["security-audit-report-store"]
+  conversations["listWorkspaceConversations in index.ts"]
+  protocol["protocol NeutronSubagentTaskRecord"]
+  fsPort["host-file-system and project-path"]
+  neutron["src/neutron runtime"]
+
+  cli -->|"package root"| barrel
+  barrel -->|"named re-export"| leaf
+  barrel --> sync
+  sync --> assemble
+  sync --> inspect
+  sync --> conversations
+  sync -->|"passes listNeutronSubagentTasks"| leaf
+  assemble -.->|"does not import the task leaf"| leaf
+  leaf --> protocol
+  leaf --> fsPort
+  neutron -.->|"no import either way"| leaf
+  leaf -.->|"does not import index.ts"| barrel

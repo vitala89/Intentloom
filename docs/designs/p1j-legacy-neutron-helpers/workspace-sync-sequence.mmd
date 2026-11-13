@@ -1,0 +1,24 @@
+sequenceDiagram
+  participant Caller
+  participant Sync as syncLocalWorkspaceState
+  participant Asm as assembleLocalWorkspaceSyncState
+  participant Inspect as inspectProject
+  participant Doctor as doctorProject
+  participant Audit as getSecurityAuditReport
+  participant Conv as listWorkspaceConversations
+  participant Tasks as listNeutronSubagentTasks
+
+  Caller->>Sync: root and optional projectId
+  Sync->>Asm: options filesystem and four injected readers
+  Asm->>Inspect: root and filesystem
+  Inspect-->>Asm: inspection
+  Asm->>Doctor: generic profile and codex adapter
+  Doctor-->>Asm: findings
+  Asm->>Audit: root and filesystem
+  Audit-->>Asm: report or null
+  Asm->>Conv: root only
+  Conv-->>Asm: conversations
+  Asm->>Tasks: root only
+  Tasks-->>Asm: tasks
+  Asm-->>Sync: LocalWorkspaceSyncState
+  Sync-->>Caller: snapshot and no writes from sync

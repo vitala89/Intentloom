@@ -1,0 +1,39 @@
+flowchart TB
+  cli["CLI neutron-command.ts"]
+  barrel["application index.ts"]
+  spawn["spawnNeutronSubagentTask"]
+  getTask["getNeutronSubagentTask"]
+  listTasks["listNeutronSubagentTasks"]
+  pathFn["neutronSubagentTaskPath"]
+  sync["syncLocalWorkspaceState"]
+  assemble["assembleLocalWorkspaceSyncState"]
+  inspect["inspectProject"]
+  doctor["doctorProject"]
+  audit["getSecurityAuditReport"]
+  conversations["listWorkspaceConversations"]
+  protocol["validateNeutronSubagentTaskRecord"]
+  fsPort["FileSystem port"]
+  insideFn["inside in project-path.ts"]
+  disk[".aif/neutron/subagents/id.json"]
+
+  cli -->|"package root"| barrel
+  barrel --> spawn
+  barrel --> getTask
+  barrel --> listTasks
+  barrel --> sync
+  spawn --> pathFn
+  getTask --> pathFn
+  listTasks --> getTask
+  listTasks --> fsPort
+  pathFn --> insideFn
+  spawn --> protocol
+  getTask --> protocol
+  spawn --> fsPort
+  getTask --> fsPort
+  fsPort --> disk
+  sync --> assemble
+  assemble --> inspect
+  assemble --> doctor
+  assemble --> audit
+  assemble --> conversations
+  assemble -->|"injected list"| listTasks
