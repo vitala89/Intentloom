@@ -177,10 +177,28 @@ Approved Apply type-import retarget, is merged as PR #622
 Measured import-only cycles are the Neutron mutation trio only.
 Measured re-export cycles are sizes 4, 27, and 3. `index.ts` measures
 1,878 effective lines and 2,034 physical lines. No runtime behavior
-changed. P1J design is open for review as PR #623
-(https://github.com/vitala89/Intentloom/pull/623) and is not approved.
-Do not start
-the P1J implementation, Undo U4, or Desktop Undo U5.
+changed. P1J design PR #623
+(https://github.com/vitala89/Intentloom/pull/623) is open, awaiting
+review after architecture-review corrections. Do not start the P1J
+implementation, Undo U4, or Desktop Undo U5.
+
+### 2026-11-13, P1J design architecture review corrections (PR #623)
+
+- **Status:** **DESIGN PR OPEN — AWAITING REVIEW.** Documentation-only
+  corrections on PR #623 after independent architectural review.
+  Verdict C unchanged. P1J implementation, Undo U4, and Desktop Undo U5
+  have not started.
+- **Corrections:** Section 16 and `trust-boundaries.mmd` now distinguish
+  project-root `inside` from `.aif/neutron/subagents/` containment;
+  document caller-supplied `taskId` escape inside the root; record symlink
+  `writeFile` behavior without claiming unconditional source-tree write
+  isolation. Section 20 and acceptance criteria now require focused
+  non-behavior-changing characterization tests in the implementation PR,
+  separate from a later security-hardening task.
+- **Not done:** maintainer approval, merge, P1J implementation, Undo U4,
+  Desktop Undo U5.
+- **Next:** Independent review of the updated design. Do not merge without
+  approval. Do not start implementation.
 
 ### 2026-11-13, Packages architecture P1J legacy Neutron helper design
 

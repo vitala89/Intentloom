@@ -601,11 +601,24 @@ currently injected, are reads: inspection, doctor, the audit report,
 conversations, and the task list. The P1H.7 tests lock that sync makes
 no `write`, `mkdir`, or `remove` of its own.
 
-`inside` resolves `root` and the relative path and throws
-`path traversal: ...` when the resolved path is outside the root.
-Spawn's generated id has no slash or `..`, so a normal spawn stays
-inside the root. A caller-supplied `taskId` of the form that resolves
-outside the root throws before the read.
+`inside` in `project-path.ts` resolves `root` and the relative path and
+throws `path traversal: ...` when the resolved absolute path is outside
+the project root. It does not enforce a separate boundary under
+`.aif/neutron/subagents/`.
+
+`spawnNeutronSubagentTask` generates its own `task-...` id without `/` or
+`..`, so a normal spawn targets one file under the intended subagents
+directory. `getNeutronSubagentTask` accepts a caller-supplied `taskId`
+interpolated into `.aif/neutron/subagents/${taskId}.json`. When that
+relative path resolves inside the project root, `inside` accepts it even
+if the id walks out of the subagents directory. For example, root
+`/project` and `taskId` `../../../secrets` yields
+`.aif/neutron/subagents/../../../secrets.json`, which resolves to
+`/project/secrets.json`. An id whose resolved path leaves the project
+root is rejected. The current implementation does not add an independent
+subagents-directory containment check. That gap is an existing security
+risk and needs a separately approved correction; P1J must not add a new
+validator or change behavior.
 
 ## 11. Public contracts
 
@@ -895,41 +908,51 @@ flowchart TB
 ```mermaid
 flowchart TB
   caller["CLI or package-root caller"]
-  input["untrusted role taskInput and taskId"]
-  insideFn["inside project root"]
-  meta[".aif task metadata"]
-  source["project source files"]
+  input["untrusted role taskInput and caller taskId"]
+  insideFn["inside project-root boundary only"]
+  intended["intended storage .aif/neutron/subagents"]
+  fsWrite["nodeFileSystem write via writeFile"]
+  actual["actual write target on disk"]
+  source["project source and other files"]
   synthetic["synthetic resultOutput"]
   modern["Approved Apply and user Undo"]
   sync["sync list and get"]
+  listWalk["nodeFileSystem list skips symlink dirs"]
 
   caller --> input
   input --> insideFn
-  insideFn -->|"spawn write after validation"| meta
-  sync -->|"read"| meta
-  synthetic -->|"stored as completed"| meta
-  spawn["spawn"] -.->|"does not write source"| source
-  sync -.->|"does not write"| source
-  modern -.->|"not on this path"| meta
+  spawn["spawn generates task id"] --> insideFn
+  insideFn -->|"resolved path string"| intended
+  spawn --> fsWrite
+  fsWrite --> actual
+  fsWrite -.->|"follows symlinks no realpath recheck"| actual
+  actual -.->|"symlink may redirect"| source
+  sync -->|"read may follow links"| intended
+  listWalk -.->|"list only get and spawn lack this"| intended
+  synthetic -->|"stored as completed"| intended
+  spawn -.->|"by convention not direct source write"| source
+  sync -.->|"does not call write"| source
+  modern -.->|"not on this path"| intended
   synthetic -.->|"not model or tool evidence"| modern
 ```
 
 Existing behavior, recorded as risks. A fix is a separate authorized
 slice. The extraction copies the behavior.
 
-| Boundary                         | Current behavior                                                                                            | Risk if misread                                                                                                                         |
-| -------------------------------- | ----------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| Project-root containment         | `inside` throws when the resolved path leaves the root                                                      | Spawn ids are safe. Caller-supplied ids can throw, and list does not catch that throw                                                   |
-| Task-id path shape               | The id is interpolated into one relative path                                                               | A nested id stays under the subagent directory when it does not escape the root. The extraction must not add a second path rule         |
-| Symbolic links                   | `list` skips link entries. `stat`, `read`, and `write` follow links                                         | A link at the task path can be read or written by get and spawn while list never walks it. The path string can still be inside the root |
-| Malformed records                | Parse and validation failures become `null` and disappear from list                                         | Corruption is hidden instead of reported. Preserve that until a separate slice                                                          |
-| Untrusted input                  | `taskInput` and `role` are stored and copied into `resultOutput`                                            | `JSON.stringify` escapes the file. The text is still untrusted if a later reader treats it as evidence                                  |
-| Synthetic results                | Status is `completed` immediately                                                                           | This is not model output, tool output, or an output digest. Do not present it as execution evidence                                     |
-| Read-only boundary               | Get, list, and sync do not write. Spawn writes one metadata file                                            | ADR-0036's source-tree read-only rule still holds for project source. The `.aif` task file is an intentional metadata write             |
-| Source-tree mutation             | Spawn does not write source files. Sync does not write                                                      | Do not add a source write during the move                                                                                               |
-| Authorization                    | None. Any caller with a root and a `FileSystem` can spawn                                                   | The record is not an approval token and not an Apply grant                                                                              |
-| Cancellation and execution state | The schema allows `pending`, `running`, and `failed`. Spawn never writes them. There is no cancel operation | Do not invent those transitions in an extraction                                                                                        |
-| Approved Apply and user Undo     | Not called                                                                                                  | A task file is not an Apply record and not an Undo snapshot                                                                             |
+| Boundary                         | Current behavior                                                                                                                                                   | Risk if misread                                                                                                                                                                |
+| -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Project-root containment         | `inside` throws when the resolved absolute path leaves `root`                                                                                                      | Misread as also constraining paths to `.aif/neutron/subagents/`. Only the project root is checked                                                                              |
+| Task-id path shape               | `get` and `list` interpolate the id into `.aif/neutron/subagents/${taskId}.json` and call `inside(root, …)`                                                        | A caller-supplied id can resolve inside the project root but outside the subagents directory. Spawn generates the id and does not take caller `taskId`                         |
+| Subagents-directory containment  | Not enforced independently                                                                                                                                         | IDs such as `../../../secrets` can target `/project/secrets.json`. P1J must not add a validator; record as an existing security risk                                           |
+| Symbolic links                   | `list` skips link entries in directory walks. `read`, `write`, and `stat` follow links. `write` uses `writeFile` with no immediate `realpath` recheck before write | A symlink in the destination path can redirect spawn writes or get reads away from the intended metadata file. `get` and `spawn` do not get list's symlink-skipping protection |
+| Malformed records                | Parse and validation failures become `null` and disappear from list                                                                                                | Corruption is hidden instead of reported. Preserve that until a separate slice                                                                                                 |
+| Untrusted input                  | `taskInput` and `role` are stored and copied into `resultOutput`                                                                                                   | `JSON.stringify` escapes the file. The text is still untrusted if a later reader treats it as evidence                                                                         |
+| Synthetic results                | Status is `completed` immediately                                                                                                                                  | This is not model output, tool output, or an output digest. Do not present it as execution evidence                                                                            |
+| Read-only boundary               | Get, list, and sync do not call `write`. Spawn writes through the injected filesystem                                                                              | Do not claim unconditional ADR-0036 source-tree write isolation. Symlink following can land bytes outside the intended `.aif` metadata area                                    |
+| Source-tree mutation             | Call paths target the task metadata relative path; sync performs no writes                                                                                         | A normal spawn intends one file under `.aif/neutron/subagents/`. The implementation does not independently enforce that against every symlink or traversal-inside-root id      |
+| Authorization                    | None. Any caller with a root and a `FileSystem` can spawn                                                                                                          | The record is not an approval token and not an Apply grant                                                                                                                     |
+| Cancellation and execution state | The schema allows `pending`, `running`, and `failed`. Spawn never writes them. There is no cancel operation                                                        | Do not invent those transitions in an extraction                                                                                                                               |
+| Approved Apply and user Undo     | Not called                                                                                                                                                         | A task file is not an Apply record and not an Undo snapshot                                                                                                                    |
 
 No provider call, tool execution, shell, network, or background worker
 is added. `nodeFileSystem.list` can also omit task files after 10,000
@@ -1076,18 +1099,21 @@ from the barrel. Removing that edge is outside P1J.
 
 ## 20. Regression-test matrix
 
-The implementation pull request preserves the current tests and adds
-one structure test. It does not add behavior tests that would force a
-"fix". It updates only the `index.ts` size pins.
+The implementation pull request preserves the current tests, adds one
+structure test, and adds focused characterization tests for the existing
+public contracts. Those characterization tests document today’s behavior
+without changing production code and without asserting that symlink or
+subdirectory escape is a desirable long-term guarantee. A behavior-changing
+security fix is a later pull request after its own design and approval.
 
 | Concern                                                   | Existing test to preserve                                          | Implementation addition                                                                                                             |
 | --------------------------------------------------------- | ------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------- |
 | Protocol record and validator                             | current spawn and get tests, protocol topology test                | no protocol edit                                                                                                                    |
 | CLI spawn, get, list, and sync                            | `tests/cli-neutron.test.ts`, `tests/neutron-orchestration.test.ts` | none                                                                                                                                |
 | `--project-id` ignored and `--dry-run` still writes       | `tests/cli-neutron.test.ts`                                        | none                                                                                                                                |
-| Conversation filter                                       | `tests/cli-neutron.test.ts`                                        | none                                                                                                                                |
-| Synthetic completed output                                | `tests/neutron-orchestration.test.ts`                              | none                                                                                                                                |
-| Sync does not mutate the file set                         | `tests/neutron-orchestration.test.ts`                              | none                                                                                                                                |
+| Conversation filter                                       | `tests/cli-neutron.test.ts`                                        | characterization: truthy `conversationId` filters; `""` and omitted do not                                                          |
+| Synthetic completed output                                | `tests/neutron-orchestration.test.ts`                              | characterization: spawn bytes and synthetic `resultOutput` unchanged                                                                |
+| Sync does not mutate the file set                         | `tests/neutron-orchestration.test.ts`                              | characterization: sync stays read-only under a normal memory filesystem                                                             |
 | Sequential sync, score `0`, null report, reader rejection | `tests/workspace-read-model-p1h7.test.ts`                          | none                                                                                                                                |
 | Security score through public sync                        | `tests/security-audit-behavior-p1h6.test.ts`                       | none                                                                                                                                |
 | Read model does not import `index.ts`                     | `tests/workspace-read-model-p1h7-structure.test.ts`                | keep that assertion                                                                                                                 |
@@ -1097,13 +1123,18 @@ one structure test. It does not add behavior tests that would force a
 | SCC membership                                            | structure tests lock sizes and the 27 members                      | assert the same members. Assert the new file is in none of them                                                                     |
 | Neutron topology                                          | `tests/application-neutron-topology.test.ts`                       | do not edit it                                                                                                                      |
 | Quality exception bytes                                   | adoption structure test                                            | assert the exception file is unchanged                                                                                              |
+| Get null on malformed JSON                                | partial coverage in orchestration tests                            | characterization: malformed JSON returns `null`                                                                                     |
+| Get null on invalid persisted record                      | partial coverage                                                   | characterization: invalid record returns `null`                                                                                     |
+| Get null on read failure                                  | partial coverage                                                   | characterization: `read` throw returns `null`                                                                                       |
+| Get propagates `exists` failure                           | partial coverage                                                   | characterization: `exists` throw propagates                                                                                         |
+| List propagates `list` failure                            | partial coverage                                                   | characterization: `list` throw propagates                                                                                           |
+| List sort order                                           | implied by CLI tests                                               | characterization: `createdAt` descending unchanged                                                                                  |
+| Path traversal outside project root                       | not fully characterized today                                      | characterization: resolved path outside `root` rejects; do not add subagents-only containment tests in P1J                          |
 
-Malformed JSON, traversal, and symlink behavior are current behavior
-and are not all locked by a direct assertion. Do not add those
-assertions in the extraction pull request. A characterization pull
-request can lock them later without changing production code. A
-behavior-changing security fix is a third pull request, and only after
-its own approval.
+Symlink escape and task-id traversal that stays inside the project root
+remain documented risks in section 16. The implementation PR must not add
+tests that treat those escapes as intended long-term behavior. Do not
+rewrite existing behavioral assertions in unrelated tests.
 
 ## 21. Implementation PR breakdown
 
@@ -1116,6 +1147,9 @@ In that pull request:
 - Bind and re-export them from `index.ts` as in section 14.
 - Leave `syncLocalWorkspaceState` on `index.ts`.
 - Add `tests/legacy-subagent-task-record-p1j-structure.test.ts`.
+- Add `tests/legacy-subagent-task-record-p1j-characterization.test.ts`
+  for the section 20 matrix rows marked characterization. Do not change
+  runtime logic or existing assertions elsewhere.
 - Update the five `index.ts` size pins to the measured result.
 - Update `PROJECT_STATE.md`, `DUTY_WATCH.md`, `docs/README.md`, and
   `docs/architecture/PACKAGES_STABILIZATION_PLAN.md` to say the
@@ -1163,8 +1197,9 @@ so CLI and test imports do not need a compatibility shim.
 3. Confirm that the extraction preserves the synthetic completion, the
    ignored CLI `--project-id`, the persisting `--dry-run`, and the
    null-on-corrupt get. Those are not defects to fix in the move.
-4. Confirm that symlink-following and hidden malformed records stay
-   recorded risks, not part of P1J.
+4. Confirm that symlink-following, task-id traversal inside the project
+   root but outside `.aif/neutron/subagents/`, and hidden malformed
+   records stay recorded risks, not part of P1J.
 5. Confirm that P1 stays incomplete after this slice, and that the next
    barrel slice is chosen later. This design does not select it.
 6. Confirm that `NeutronSubagentTaskRecord` stays in the protocol
@@ -1191,7 +1226,10 @@ This design pull request is ready for review when:
   compared, and verdict C is labeled a proposal.
 - Predicted SCC membership is `[3]` import-only and `[4, 27, 3]`
   re-export-inclusive, with the new file outside every component.
-- The security risks and the compatibility quirks are explicit.
+- The security risks (project-root-only `inside`, symlink writes, and
+  subdirectory escape) and the compatibility quirks are explicit.
+- The implementation acceptance criteria name non-behavior-changing
+  characterization tests separate from a later security-hardening task.
 - The remaining barrel inventory shows why P1 is not complete.
 - The eight Mermaid sources match the embedded diagrams.
 - No production TypeScript, test assertion, lockfile, or quality
