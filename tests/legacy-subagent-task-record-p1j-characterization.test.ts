@@ -22,6 +22,10 @@ function taskPath(id: string): string {
   return inside(root, `.aif/neutron/subagents/${id}.json`);
 }
 
+function absoluteTaskPath(id: string): string {
+  return `${root}/.aif/neutron/subagents/${id}.json`;
+}
+
 function recordJson(record: {
   id: string;
   conversationId: string | null;
@@ -104,7 +108,7 @@ describe("P1J legacy subagent task record behavior", () => {
       expect(record).toEqual(expected);
       expect(Object.keys(record)).toEqual(Object.keys(expected));
       expect(record.createdAt).toBe(record.completedAt);
-      expect(fs.files.get(taskPath(record.id))).toBe(
+      expect(await fs.read(taskPath(record.id))).toBe(
         `${JSON.stringify(expected, null, 2)}\n`,
       );
 
@@ -229,10 +233,10 @@ describe("P1J legacy subagent task record behavior", () => {
       [taskPath("task-invalid"), '{"schemaVersion":"9"}'],
     ]);
     const fs = filesystem(files, async () => [
-      taskPath("task-new"),
+      absoluteTaskPath("task-new"),
       ".aif/neutron/subagents/task-old.json",
       ".aif\\neutron\\subagents\\task-mid.json",
-      taskPath("task-bad"),
+      absoluteTaskPath("task-bad"),
       ".aif/neutron/subagents/task-invalid.json",
     ]);
 

@@ -187,6 +187,25 @@ awaiting review. It is not merged. No runtime behavior changed. P1 is not comple
 this implementation without review. Do not start Undo U4 or Desktop
 Undo U5.
 
+### 2026-11-14, P1J Windows characterization fixtures
+
+- **Status:** **IMPLEMENTATION STILL OPEN — AWAITING REVIEW.** Pull request
+  #626 is not merged. Compatibility on
+  `bf435e95308633cfecf41f0146a492b1a0e66701` failed on `windows-latest`
+  for Node 22 and Node 24. Ubuntu and macOS passed. The other workflows
+  on that commit passed.
+- **Cause:** Two characterization assertions used `inside()` as a memory
+  filesystem map key and as an absolute `fs.list` entry. On Windows,
+  `resolve("/project", ...)` returns `\project\...`, which does not
+  start with the root string `/project`. Production behavior is
+  unchanged.
+- **Fix:** Read persisted bytes through `fs.read`, and supply list
+  entries that start with the project root string. That is the absolute
+  path branch the list function already tests.
+- **Not done:** maintainer review, merge, Undo U4, Desktop Undo U5.
+- **Next first action:** Wait for Compatibility on the fixture fix. Do
+  not merge until that Windows result is green on the final HEAD.
+
 ### 2026-11-14, Packages architecture P1J legacy subagent task records
 
 - **Status:** **IMPLEMENTATION OPEN — AWAITING REVIEW.** Pull request
