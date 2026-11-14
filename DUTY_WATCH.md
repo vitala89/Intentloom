@@ -178,9 +178,70 @@ Measured import-only cycles are the Neutron mutation trio only.
 Measured re-export cycles are sizes 4, 27, and 3. `index.ts` measures
 1,878 effective lines and 2,034 physical lines. No runtime behavior
 changed. P1J design PR #623
-(https://github.com/vitala89/Intentloom/pull/623) is open, awaiting
-review after architecture-review corrections. Do not start the P1J
+(https://github.com/vitala89/Intentloom/pull/623) is merged at
+`8a44e342f4001bbdc7d7196f66200269af0689b7`. The design text on main still
+says it is a proposal awaiting maintainer approval. Do not start the P1J
 implementation, Undo U4, or Desktop Undo U5.
+
+### 2026-11-14, Project Sable future idea
+
+- **Status:** complete. Documentation only. The idea is recorded as Project
+  Sable, **FUTURE IDEA — NOT APPROVED FOR IMPLEMENTATION**. No discovery,
+  design, or development was started. Current roadmap priorities are
+  unchanged.
+- **Branch:** `cursor/docs-project-sable-e38e`
+- **Objective:** Record a future product idea under the name Project Sable
+  in the existing concept and roadmap index, without adding a milestone or
+  implementation task.
+- **Completed:** Added `docs/concepts/PROJECT_SABLE.md`. Linked it from
+  `ROADMAP.md` and `docs/README.md` under Future Ideas / Long-Term Vision.
+  Recorded that design PR #623 is merged at
+  `8a44e342f4001bbdc7d7196f66200269af0689b7`. The design text on main still
+  says it is a proposal awaiting maintainer approval. P1J implementation,
+  Undo U4, and Desktop Undo U5 remain unstarted.
+- **Not completed:** No Project Sable architecture RFC, proof of concept, or
+  implementation. No approval of the idea. `PROJECT_STATE.md` priorities,
+  active focus, and current milestone are unchanged aside from the merged
+  PR #623 fact.
+- **Files changed:** `docs/concepts/PROJECT_SABLE.md`,
+  `ROADMAP.md`, `docs/README.md`, `PROJECT_STATE.md`,
+  `docs/architecture/PACKAGES_STABILIZATION_PLAN.md`, `DUTY_WATCH.md`.
+- **Validation:** `pnpm exec prettier --check` on the changed Markdown
+  files passed. `pnpm verify` passed: typecheck, oxlint, format check,
+  vitest (375 files, 3184 passed, 3 skipped), build, and
+  `git diff --check`. Hooks are not installed in this checkout;
+  `pnpm verify:staged` is the staged equivalent and is run before commit.
+- **Decisions:** The idea lives with other product concepts. It is not a
+  roadmap milestone and not a system design. Design First is not opened.
+  `CHANGELOG.md` is unchanged because no product behavior shipped. The P1J
+  design file still says it does not approve itself, so this watch does not
+  mark verdict C approved.
+- **Risks or compatibility impact:** A reader could mistake the note for
+  approved work. The status line and the roadmap section state that it is
+  not approved. No runtime or compatibility change.
+- **Open issues or blockers:** None for this note. Project Sable stays
+  blocked on the current roadmap's agreed completion and stability criteria,
+  and on a later explicit maintainer decision.
+- **Next first action:** Continue the current roadmap. Do not start Project
+  Sable discovery, design, or implementation from this note. Do not start P1J
+  implementation, Undo U4, or Desktop Undo U5 from this note.
+- **Evidence:** GitHub PR #623 merged at
+  `8a44e342f4001bbdc7d7196f66200269af0689b7` on 2026-11-13 23:49
+  (Europe/Berlin).
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant tests, type checks, builds, or compatibility checks passed
+- [x] Atomic commit policy and commit-message checks passed
+- [x] Repository hooks installed or equivalent commands run
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `PROJECT_STATE.md` updated when applicable
+- [x] `DUTY_WATCH.md` handoff completed
+- [x] Related roadmap, ADR, changelog, migration, or reference docs updated
+- [x] Failed or unavailable checks recorded
 
 ### 2026-11-13, P1J design architecture review corrections (PR #623)
 
