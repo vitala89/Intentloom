@@ -175,13 +175,126 @@ Approved Apply type-import retarget, is merged as PR #622
 (https://github.com/vitala89/Intentloom/pull/622,
 `d6b7d4955f2e58780c1ea2afe134f3217ad3fe86`). P1I.3 is complete.
 Measured import-only cycles are the Neutron mutation trio only.
-Measured re-export cycles are sizes 4, 27, and 3. `index.ts` measures
-1,878 effective lines and 2,034 physical lines. No runtime behavior
-changed. P1J design PR #623
+Measured re-export cycles are sizes 4, 27, and 3. P1J design PR #623
 (https://github.com/vitala89/Intentloom/pull/623) is merged at
-`8a44e342f4001bbdc7d7196f66200269af0689b7`. The design text on main still
-says it is a proposal awaiting maintainer approval. Do not start the P1J
-implementation, Undo U4, or Desktop Undo U5.
+`8a44e342f4001bbdc7d7196f66200269af0689b7`. The design document keeps
+its design-stage proposal wording. The approved implementation decision
+is Option C. `index.ts` measures 1,804 effective lines and 1,953
+physical lines. The leaf is 92 effective lines and 100 physical lines.
+The implementation pull request is #626
+(https://github.com/vitala89/Intentloom/pull/626). It is open and
+awaiting review. It is not merged. No runtime behavior changed. P1 is not complete. Do not merge
+this implementation without review. Do not start Undo U4 or Desktop
+Undo U5.
+
+### 2026-11-14, P1J Windows characterization fixtures
+
+- **Status:** **IMPLEMENTATION STILL OPEN — AWAITING REVIEW.** Pull request
+  #626 is not merged. Compatibility on
+  `bf435e95308633cfecf41f0146a492b1a0e66701` failed on `windows-latest`
+  for Node 22 and Node 24. Ubuntu and macOS passed. The other workflows
+  on that commit passed.
+- **Cause:** Two characterization assertions used `inside()` as a memory
+  filesystem map key and as an absolute `fs.list` entry. On Windows,
+  `resolve("/project", ...)` returns `\project\...`, which does not
+  start with the root string `/project`. Production behavior is
+  unchanged.
+- **Fix:** Read persisted bytes through `fs.read`, and supply list
+  entries that start with the project root string. That is the absolute
+  path branch the list function already tests.
+- **Not done:** maintainer review, merge, Undo U4, Desktop Undo U5.
+- **Next first action:** Wait for Compatibility on the fixture fix. Do
+  not merge until that Windows result is green on the final HEAD.
+
+### 2026-11-14, Packages architecture P1J legacy subagent task records
+
+- **Status:** **IMPLEMENTATION OPEN — AWAITING REVIEW.** Pull request
+  #626 (https://github.com/vitala89/Intentloom/pull/626), branch
+  `refactor/application-legacy-subagent-record-p1j`, is not merged. P1J design PR #623 is merged at
+  `8a44e342f4001bbdc7d7196f66200269af0689b7`. The design file still uses
+  its design-stage wording that Option C was a proposal. This
+  implementation follows Option C. P1 is not complete. Undo U4 and
+  Desktop Undo U5 have not started. Project Sable remains a future idea
+  and is not part of this change.
+- **Branch:** `refactor/application-legacy-subagent-record-p1j`
+- **Base:** `110eaf3f9ed6a803a610c3d39a7284b8fdd5cfdd` (`origin/main` at
+  task start; it had not advanced).
+- **Objective:** Move the legacy Neutron subagent task-record store out
+  of `packages/application/src/index.ts` without changing behavior.
+- **Completed:** Added
+  `packages/application/src/workspace/legacy-subagent-task-record.ts`.
+  Moved `neutronSubagentTaskPath`, `spawnNeutronSubagentTask`,
+  `getNeutronSubagentTask`, and `listNeutronSubagentTasks`. The path
+  helper stays private. The barrel imports and re-exports the three
+  public functions. `syncLocalWorkspaceState` stays on `index.ts` and
+  still passes `inspectProject`, `doctorProject`,
+  `listWorkspaceConversations`, and `listNeutronSubagentTasks` into
+  `assembleLocalWorkspaceSyncState`. The CLI still imports the package
+  root. No file under `src/neutron/` changed.
+- **Measured source:** `index.ts` is 1,804 effective lines and 1,953
+  physical lines, down from 1,878 and 2,034. The leaf is 92 effective
+  lines and 100 physical lines. Function effective lines stay 3, 32,
+  13, and 36.
+- **Measured SCC:** import-only `[3]`, only the Neutron mutation trio
+  `neutron/mutation/apply/neutron-mutation-apply-durable-record.ts`,
+  `neutron/mutation/apply/neutron-mutation-apply-store.ts`,
+  `neutron/mutation/verification/neutron-mutation-verification-retry-eligibility.ts`.
+  Re-export-inclusive `[4, 27, 3]`. The extension-update quartet is
+  unchanged. The size-27 component is unchanged and still contains
+  `index.ts` and `approved-apply-engine.ts`. The Neutron trio is
+  unchanged. The new leaf is outside every component. No new component
+  appeared.
+- **Security:** `inside` still checks only the project root.
+  `nodeFileSystem.write` still follows symlinks and does not revalidate
+  the destination realpath immediately before writing. A caller-supplied
+  task id can still resolve inside the project root and outside
+  `.aif/neutron/subagents/`. Those risks stay documented and unresolved.
+- **Not completed:** maintainer review, merge, symlink or task-id
+  containment hardening, real subagent execution, Undo U4, Desktop Undo
+  U5. The synthetic completed result is unchanged and is not model
+  execution.
+- **Files changed:** `packages/application/src/index.ts`,
+  `packages/application/src/workspace/legacy-subagent-task-record.ts`,
+  `tests/legacy-subagent-task-record-p1j-structure.test.ts`,
+  `tests/legacy-subagent-task-record-p1j-characterization.test.ts`, the
+  five `index.ts` size pins, `PROJECT_STATE.md`, `DUTY_WATCH.md`,
+  `docs/README.md`, and
+  `docs/architecture/PACKAGES_STABILIZATION_PLAN.md`.
+- **Validation:** `pnpm verify` passed: typecheck, oxlint (existing
+  sort and mock-type warnings only; the moved list still uses
+  `Array#sort`), Prettier, vitest (377 files, 3192 passed, 3 skipped),
+  build, and `git diff --check`. `pnpm docs:build` passed. Hooks are
+  not installed in this checkout. `pnpm verify:staged` is run on the
+  staged tree before commit.
+- **Decisions:** Option C is the approved implementation. The design
+  document's proposal wording stays as the design-stage record.
+  `quality-exceptions.json` is unchanged. The twelve package export-map
+  keys are unchanged.
+- **Risks or compatibility impact:** No runtime behavior change. Public
+  signatures, JSON bytes, CLI defaults, the ignored `--project-id`, and
+  the persisting `--dry-run` stay. Known filesystem containment gaps
+  stay.
+- **Open issues or blockers:** Maintainer review. Do not merge from this
+  handoff.
+- **Next first action:** Review the implementation pull request. Do not
+  start Undo U4, Desktop Undo U5, security hardening, or Project Sable.
+- **Evidence:** Design merge `8a44e342f4001bbdc7d7196f66200269af0689b7`.
+  Base `110eaf3f9ed6a803a610c3d39a7284b8fdd5cfdd`. Implementation commit
+  `79cb92fa56373b2932a230e4b8941558749b2d55`. Pull request #626.
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant tests, type checks, builds, or compatibility checks passed
+- [x] Atomic commit policy and commit-message checks passed
+- [x] Repository hooks installed or equivalent commands run
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `PROJECT_STATE.md` updated when applicable
+- [x] `DUTY_WATCH.md` handoff completed
+- [x] Related roadmap, ADR, changelog, migration, or reference docs updated
+- [x] Failed or unavailable checks recorded
 
 ### 2026-11-14, Project Sable future idea
 
