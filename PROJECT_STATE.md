@@ -1239,7 +1239,8 @@ its design-stage wording that Option C was a proposal. The approved
 implementation decision is Option C: the legacy task-record leaf is
 `packages/application/src/workspace/legacy-subagent-task-record.ts`,
 and `syncLocalWorkspaceState` remains on `index.ts`. The implementation
-pull request is open and awaiting review. It is not merged. Measured
+pull request is #626 (https://github.com/vitala89/Intentloom/pull/626).
+It is open and awaiting review. It is not merged. Measured
 with `measureProductionSource`, `index.ts` is 1,804 effective lines and
 1,953 physical lines. The leaf is 92 effective lines and 100 physical
 lines. Moved functions stay at 3, 32, 13, and 36 effective lines.

@@ -137,8 +137,9 @@ is Option C. `index.ts` measures 1,804 effective lines and 1,953
 physical lines, down from 1,878 and 2,034. The leaf
 `workspace/legacy-subagent-task-record.ts` measures 92 effective lines
 and 100 physical lines and is outside every SCC. No runtime behavior
-changed. The implementation pull request is open and awaiting review.
-It is not merged. Symlink following and caller-supplied task-id
+changed. The implementation pull request is #626
+(https://github.com/vitala89/Intentloom/pull/626). It is open and
+awaiting review. It is not merged. Symlink following and caller-supplied task-id
 traversal inside the project root remain unresolved. P1 is not complete.
 Undo U4 and Desktop Undo U5 have not started.
 Neutron's R4A topology stays frozen.
@@ -3180,8 +3181,9 @@ decision is Option C: move `neutronSubagentTaskPath`,
 and keep `syncLocalWorkspaceState` on `index.ts`. Do not fold the
 helpers into `src/neutron/`. Do not remove the public surface.
 
-The implementation pull request is open and awaiting review. It is not
-merged. Measured with `measureProductionSource` on the implementation
+The implementation pull request is #626
+(https://github.com/vitala89/Intentloom/pull/626). It is open and
+awaiting review. It is not merged. Measured with `measureProductionSource` on the implementation
 tree, `index.ts` is 1,804 effective lines and 1,953 physical lines,
 down from 1,878 and 2,034. The leaf is 92 effective lines and 100
 physical lines. `neutronSubagentTaskPath` is 3 effective lines,

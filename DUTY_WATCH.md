@@ -181,16 +181,17 @@ Measured re-export cycles are sizes 4, 27, and 3. P1J design PR #623
 its design-stage proposal wording. The approved implementation decision
 is Option C. `index.ts` measures 1,804 effective lines and 1,953
 physical lines. The leaf is 92 effective lines and 100 physical lines.
-The implementation pull request is open and awaiting review. It is not
-merged. No runtime behavior changed. P1 is not complete. Do not merge
+The implementation pull request is #626
+(https://github.com/vitala89/Intentloom/pull/626). It is open and
+awaiting review. It is not merged. No runtime behavior changed. P1 is not complete. Do not merge
 this implementation without review. Do not start Undo U4 or Desktop
 Undo U5.
 
 ### 2026-11-14, Packages architecture P1J legacy subagent task records
 
-- **Status:** **IMPLEMENTATION OPEN — AWAITING REVIEW.** The pull request
-  for branch `refactor/application-legacy-subagent-record-p1j` is not
-  merged. P1J design PR #623 is merged at
+- **Status:** **IMPLEMENTATION OPEN — AWAITING REVIEW.** Pull request
+  #626 (https://github.com/vitala89/Intentloom/pull/626), branch
+  `refactor/application-legacy-subagent-record-p1j`, is not merged. P1J design PR #623 is merged at
   `8a44e342f4001bbdc7d7196f66200269af0689b7`. The design file still uses
   its design-stage wording that Option C was a proposal. This
   implementation follows Option C. P1 is not complete. Undo U4 and
@@ -259,7 +260,8 @@ Undo U5.
 - **Next first action:** Review the implementation pull request. Do not
   start Undo U4, Desktop Undo U5, security hardening, or Project Sable.
 - **Evidence:** Design merge `8a44e342f4001bbdc7d7196f66200269af0689b7`.
-  Base `110eaf3f9ed6a803a610c3d39a7284b8fdd5cfdd`.
+  Base `110eaf3f9ed6a803a610c3d39a7284b8fdd5cfdd`. Implementation commit
+  `79cb92fa56373b2932a230e4b8941558749b2d55`. Pull request #626.
 
 #### Duty completion checklist
 
