@@ -493,3 +493,15 @@ until then.
 ## Explicitly not planned for v0.1
 
 MCP, CodeGraph/Graphify, hosted services, telemetry, marketplace, LLM API integration, automatic agent execution, cloud sync, GUI, TUI, desktop agent workspace, Neutron Runtime, custom model training, plugin runtime, autonomous merging, workflow-event ingestion, process discovery, conformance analytics, process-mining dashboards, and managed external-extension installation or updates.
+
+## Future Ideas / Long-Term Vision
+
+This section is not a milestone, a sprint, or a current implementation phase.
+Nothing here changes the priorities, exit gates, or sequencing above. No
+timeline or delivery commitment is implied.
+
+- [Project Sable](docs/concepts/PROJECT_SABLE.md).
+  Status: **FUTURE IDEA — NOT APPROVED FOR IMPLEMENTATION**. A possible later
+  direction for engineers who integrate AI agents with an organization's
+  existing systems. Development is not considered until the current roadmap
+  reaches its agreed completion and stability criteria.

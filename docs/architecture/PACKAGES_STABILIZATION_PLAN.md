@@ -131,7 +131,7 @@ Approved Apply type-import retarget, is merged as PR #622
 Measured import-only cycles are the Neutron mutation trio only.
 Measured re-export cycles are sizes 4, 27, and 3. `index.ts` measures
 1,878 effective lines and 2,034 physical lines. No runtime behavior
-changed. P1J design is open for review as PR #623 (https://github.com/vitala89/Intentloom/pull/623) and is not approved. P1J
+changed. P1J design PR #623 is merged (https://github.com/vitala89/Intentloom/pull/623, `8a44e342f4001bbdc7d7196f66200269af0689b7`). The design text on main still says it is a proposal awaiting maintainer approval. P1J
 implementation, Undo U4, and Desktop Undo U5 have not started.
 Neutron's R4A topology stays frozen.
 The measurements below remain the P1A baseline and are not restated as the
@@ -2362,7 +2362,7 @@ Approved Apply type-import retarget, is merged as PR #622
 Measured import-only cycles are the Neutron mutation trio only.
 Measured re-export cycles are sizes 4, 27, and 3. `index.ts` measures
 1,878 effective lines and 2,034 physical lines. No runtime behavior
-changed. P1J design is open for review as PR #623 (https://github.com/vitala89/Intentloom/pull/623) and is not approved. P1J
+changed. P1J design PR #623 is merged (https://github.com/vitala89/Intentloom/pull/623, `8a44e342f4001bbdc7d7196f66200269af0689b7`). The design text on main still says it is a proposal awaiting maintainer approval. P1J
 implementation, Undo U4, and Desktop Undo U5 have not started.
 
 On `911b229af00fcde54d8861af83a56e7e61df0902`, `index.ts` measures
@@ -2575,7 +2575,7 @@ Approved Apply type-import retarget, is merged as PR #622
 Measured import-only cycles are the Neutron mutation trio only.
 Measured re-export cycles are sizes 4, 27, and 3. `index.ts` measures
 1,878 effective lines and 2,034 physical lines. No runtime behavior
-changed. P1J design is open for review as PR #623 (https://github.com/vitala89/Intentloom/pull/623) and is not approved. P1J
+changed. P1J design PR #623 is merged (https://github.com/vitala89/Intentloom/pull/623, `8a44e342f4001bbdc7d7196f66200269af0689b7`). The design text on main still says it is a proposal awaiting maintainer approval. P1J
 implementation, Undo U4, and Desktop Undo U5 have not started.
 
 On `7a77db52753360f0029cd266d8c95eb78c34995c`, `index.ts` measures
@@ -2799,7 +2799,7 @@ Approved Apply type-import retarget, is merged as PR #622
 Measured import-only cycles are the Neutron mutation trio only.
 Measured re-export cycles are sizes 4, 27, and 3. `index.ts` measures
 1,878 effective lines and 2,034 physical lines. No runtime behavior
-changed. P1J design is open for review as PR #623 (https://github.com/vitala89/Intentloom/pull/623) and is not approved. P1J
+changed. P1J design PR #623 is merged (https://github.com/vitala89/Intentloom/pull/623, `8a44e342f4001bbdc7d7196f66200269af0689b7`). The design text on main still says it is a proposal awaiting maintainer approval. P1J
 implementation, Undo U4, and Desktop Undo U5 have not started.
 
 On `2c0749dce9a31976195277971d6fb35fe663cd31`, `index.ts` measures
@@ -2942,7 +2942,7 @@ Approved Apply type-import retarget, is merged as PR #622
 Measured import-only cycles are the Neutron mutation trio only.
 Measured re-export cycles are sizes 4, 27, and 3. `index.ts` measures
 1,878 effective lines and 2,034 physical lines. No runtime behavior
-changed. P1J design is open for review as PR #623 (https://github.com/vitala89/Intentloom/pull/623) and is not approved. P1J
+changed. P1J design PR #623 is merged (https://github.com/vitala89/Intentloom/pull/623, `8a44e342f4001bbdc7d7196f66200269af0689b7`). The design text on main still says it is a proposal awaiting maintainer approval. P1J
 implementation, Undo U4, and Desktop Undo U5 have not started.
 
 The design inventory below is the pre-implementation measurement.
@@ -3055,7 +3055,7 @@ Implementation A is merged as PR #621
 Approved Apply type-import retarget, is merged as PR #622
 (https://github.com/vitala89/Intentloom/pull/622,
 `d6b7d4955f2e58780c1ea2afe134f3217ad3fe86`). P1I.3 is complete.
-P1J design is open for review as PR #623 (https://github.com/vitala89/Intentloom/pull/623) and is not approved. P1J implementation has
+P1J design PR #623 is merged (https://github.com/vitala89/Intentloom/pull/623, `8a44e342f4001bbdc7d7196f66200269af0689b7`). The design text on main still says it is a proposal awaiting maintainer approval. P1J implementation has
 not started.
 
 #### P1I.2 — project lifecycle
@@ -3134,15 +3134,17 @@ without `generated-file-sync-declared.ts`, and the unchanged Neutron
 trio. `index.ts` and `approved-apply-engine.ts` remain in the size-27
 component. No new component appeared. The retarget does not change
 runtime behavior. `index.ts` remains 1,878 effective lines and 2,034
-physical lines. P1J design is open for review as PR #623 (https://github.com/vitala89/Intentloom/pull/623) and is not approved. P1J
+physical lines. P1J design PR #623 is merged (https://github.com/vitala89/Intentloom/pull/623, `8a44e342f4001bbdc7d7196f66200269af0689b7`). The design text on main still says it is a proposal awaiting maintainer approval. P1J
 implementation, Undo U4, and Desktop Undo U5 have not started.
 
 ### P1J — legacy Neutron helpers in the barrel
 
 The design proposal is
 [`docs/designs/p1j-legacy-neutron-helpers/SYSTEM_DESIGN.md`](../designs/p1j-legacy-neutron-helpers/SYSTEM_DESIGN.md),
-open for review as PR #623
-(https://github.com/vitala89/Intentloom/pull/623). It is not approved. The recommended verdict is C: move
+merged as PR #623
+(https://github.com/vitala89/Intentloom/pull/623,
+`8a44e342f4001bbdc7d7196f66200269af0689b7`). The design text on main still
+says it is a proposal awaiting maintainer approval. The recommended verdict is C: move
 `neutronSubagentTaskPath`, `spawnNeutronSubagentTask`,
 `getNeutronSubagentTask`, and `listNeutronSubagentTasks` to
 `packages/application/src/workspace/legacy-subagent-task-record.ts`,
