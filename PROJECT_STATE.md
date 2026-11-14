@@ -1229,18 +1229,28 @@ component is now these 27 files: `approved-apply-engine.ts`,
 and `index.ts`. `approved-apply-baseline.ts` and
 `generated-file-sync-declared.ts` are outside every component. The
 Neutron mutation trio is unchanged. No new component appeared. The
-retarget does not change runtime behavior. `index.ts` remains 1,878
-effective lines and 2,034 physical lines. P1J design is proposed in
+retarget does not change runtime behavior. At the P1I.3b merge,
+`index.ts` was 1,878 effective lines and 2,034 physical lines. P1J
+design is in
 `docs/designs/p1j-legacy-neutron-helpers/SYSTEM_DESIGN.md` and is merged
 as design PR #623 (https://github.com/vitala89/Intentloom/pull/623,
-`8a44e342f4001bbdc7d7196f66200269af0689b7`). The design text on main still
-says it is a proposal awaiting maintainer approval. The recommended
-verdict is C: a legacy task-record
-leaf under `packages/application/src/workspace/`, with
-`syncLocalWorkspaceState` remaining on `index.ts`. That verdict is not
-approved by this state record. P1J implementation has not started. The predicted extraction
-does not bring `index.ts` to the 400-line P1 gate. Undo U4 and Desktop
-Undo U5 have not started. Ids 2 through 26 remain
+`8a44e342f4001bbdc7d7196f66200269af0689b7`). That design file still uses
+its design-stage wording that Option C was a proposal. The approved
+implementation decision is Option C: the legacy task-record leaf is
+`packages/application/src/workspace/legacy-subagent-task-record.ts`,
+and `syncLocalWorkspaceState` remains on `index.ts`. The implementation
+pull request is open and awaiting review. It is not merged. Measured
+with `measureProductionSource`, `index.ts` is 1,804 effective lines and
+1,953 physical lines. The leaf is 92 effective lines and 100 physical
+lines. Moved functions stay at 3, 32, 13, and 36 effective lines.
+Import-only SCC membership is unchanged: the Neutron mutation trio
+only. Re-export SCC membership is unchanged at sizes 4, 27, and 3, with
+the same members. The leaf is outside every component. No runtime
+behavior changed. Symlink following and caller-supplied task-id
+traversal that stays inside the project root but leaves
+`.aif/neutron/subagents/` remain unresolved. The extraction does not
+bring `index.ts` to the 400-line P1 gate. P1 is not complete. Undo U4
+and Desktop Undo U5 have not started. Ids 2 through 26 remain
 literal `passed` checks. The score and hash formulas are unchanged.
 The reader still does not recompute either value.
 `rankProceduralMemory` stays in the barrel.
