@@ -1,0 +1,42 @@
+flowchart TB
+  design["this design approved"]
+  s1["P1K.1 profile store"]
+  s2["P1K.2 role delegation"]
+  s3["P1K.3 summaries"]
+  s4["P1K.4 checkpoints"]
+  s5["P1K.5 semantic ranking"]
+  s6["P1K.6 bounded context"]
+  s7["P1K.7 security adapters"]
+  s8["P1K.8 conversations"]
+  s9["P1K.9 proposal lifecycle"]
+  s10["P1K.10 project root and timeline"]
+  s11["P1K.11 planFeature"]
+  s12["P1K.12 planPackUpdate"]
+  s13["P1K.13 workspace composition"]
+  s14["P1K.14 dispatcher and Apply retarget"]
+  s15["P1K.15 quality root retarget"]
+  s16["P1K.16 adoption retarget"]
+  s17["P1K.17 export-from barrel"]
+
+  design --> s1
+  s1 --> s2
+  design --> s3
+  design --> s4
+  s3 --> s5
+  design --> s6
+  design --> s7
+  design --> s8
+  s8 --> s9
+  design --> s10
+  design --> s11
+  design --> s12
+  s8 --> s13
+  s10 --> s13
+  design --> s14
+  s10 --> s15
+  s14 --> s16
+  s9 --> s16
+  s12 --> s16
+  s15 --> s17
+  s16 --> s17
+  s13 --> s17

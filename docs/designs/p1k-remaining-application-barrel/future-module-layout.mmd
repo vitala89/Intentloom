@@ -1,0 +1,32 @@
+flowchart TB
+  barrel["index.ts re-export barrel"]
+
+  barrel --> profiles["memory/profile-store.ts"]
+  barrel --> roles["memory/role-delegation.ts"]
+  barrel --> summaries["memory/task-session-summary-store.ts"]
+  barrel --> checkpoints["memory/task-checkpoint-store.ts"]
+  barrel --> ranking["memory/semantic-ranking.ts"]
+  barrel --> bounded["memory/bounded-project-context.ts"]
+  barrel --> adapters["security/security-adapter-run.ts"]
+  barrel --> conversations["workspace/workspace-conversation-store.ts"]
+  barrel --> proposals["workspace/workspace-proposal-lifecycle.ts"]
+  barrel --> interactive["workspace/interactive-workspace-composition.ts"]
+  barrel --> localSync["workspace/local-workspace-sync.ts"]
+  barrel --> root["project-lifecycle/project-root.ts"]
+  barrel --> feature["feature-intent/plan-feature.ts"]
+  barrel --> pack["project-adoption/plan-pack-update.ts"]
+  barrel --> syncBind["project-lifecycle/project-sync-binding.ts"]
+  barrel --> adoptBind["project-adoption/generated-file-adoption-binding.ts"]
+  barrel --> dispatcher["generated-file/synchronize-generated-files.ts"]
+
+  adapters --> correlation["security/security-adapter-correlation.ts"]
+  adapters --> dependency["security/security-adapter-dependency.ts"]
+  adapters --> secret["security/security-adapter-secret.ts"]
+  adapters --> config["security/security-adapter-config.ts"]
+  adapters --> mcp["security/security-adapter-mcp.ts"]
+  ranking --> skills["skills proposal and evaluation leaves"]
+  proposals --> adoptBind
+  syncBind --> dispatcher
+  adoptBind --> syncBind
+  interactive --> root
+  localSync --> conversations

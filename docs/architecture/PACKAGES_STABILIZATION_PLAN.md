@@ -137,11 +137,18 @@ is Option C. `index.ts` measures 1,804 effective lines and 1,953
 physical lines, down from 1,878 and 2,034. The leaf
 `workspace/legacy-subagent-task-record.ts` measures 92 effective lines
 and 100 physical lines and is outside every SCC. No runtime behavior
-changed. The implementation pull request is #626
-(https://github.com/vitala89/Intentloom/pull/626). It is open and
-awaiting review. It is not merged. Symlink following and caller-supplied task-id
+changed. The implementation is merged as PR #626
+(https://github.com/vitala89/Intentloom/pull/626,
+`5efc30a0ae21525312425e69ef82ccd30e138c8a`). Symlink following and caller-supplied task-id
 traversal inside the project root remain unresolved. P1 is not complete.
-Undo U4 and Desktop Undo U5 have not started.
+The remaining-barrel completion design is
+[`docs/designs/p1k-remaining-application-barrel/SYSTEM_DESIGN.md`](../designs/p1k-remaining-application-barrel/SYSTEM_DESIGN.md).
+It is open for maintainer review. P1K is a working label, not an
+approved milestone, and the proposed slices are not approved for
+implementation. Measured import-only SCC membership is `[3]`. Measured
+re-export SCC membership is `[4, 27, 3]`. The 27-file component still
+contains `index.ts` and `approved-apply-engine.ts`. Section 14 is
+unchanged. Undo U4 and Desktop Undo U5 have not started.
 Neutron's R4A topology stays frozen.
 The measurements below remain the P1A baseline and are not restated as the
 post-extraction size.
@@ -3181,10 +3188,10 @@ decision is Option C: move `neutronSubagentTaskPath`,
 and keep `syncLocalWorkspaceState` on `index.ts`. Do not fold the
 helpers into `src/neutron/`. Do not remove the public surface.
 
-The implementation pull request is #626
-(https://github.com/vitala89/Intentloom/pull/626). It is open and
-awaiting review. It is not merged. Measured with `measureProductionSource` on the implementation
-tree, `index.ts` is 1,804 effective lines and 1,953 physical lines,
+The implementation is merged as PR #626
+(https://github.com/vitala89/Intentloom/pull/626,
+`5efc30a0ae21525312425e69ef82ccd30e138c8a`). Measured with `measureProductionSource` on that merge,
+`index.ts` is 1,804 effective lines and 1,953 physical lines,
 down from 1,878 and 2,034. The leaf is 92 effective lines and 100
 physical lines. `neutronSubagentTaskPath` is 3 effective lines,
 `spawnNeutronSubagentTask` is 32, `getNeutronSubagentTask` is 13, and
@@ -3202,7 +3209,11 @@ root. `nodeFileSystem.write` still follows symlinks and does not
 revalidate the destination realpath immediately before writing. A
 caller-supplied task id can still resolve inside the project root and
 outside `.aif/neutron/subagents/`. Those risks remain unresolved. P1 is
-not complete. Undo U4 and Desktop Undo U5 have not started.
+not complete. The next planning document is
+[`docs/designs/p1k-remaining-application-barrel/SYSTEM_DESIGN.md`](../designs/p1k-remaining-application-barrel/SYSTEM_DESIGN.md).
+P1K is a working label, not an approved milestone, and its proposed
+slices are not part of this ordered list until a maintainer approves
+them. Undo U4 and Desktop Undo U5 have not started.
 
 ### What is intentionally not a single PR
 
