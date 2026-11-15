@@ -210,12 +210,11 @@ P1K.3 through P1K.17, Undo U4, or Desktop Undo U5.
 - **Measured SCC:** import-only `[3]`; re-export-inclusive `[4, 27, 3]`,
   same members. Both memory leaves stay outside every component.
 - **Pull request:** #629
-  (https://github.com/vitala89/Intentloom/pull/629), not merged. The
-  first pushed commit (`6d2cf628`) was empty (no staged tree); implementation
-  files land in a follow-up commit on this branch.
-- **Verification:** Re-run `pnpm verify` and PR CI on the commit that
-  contains the implementation files. Prior CI green on `6d2cf628` covered an
-  empty diff only.
+  (https://github.com/vitala89/Intentloom/pull/629), HEAD
+  `27bccc64a9f5872c57be12387c753c3f04437bac`, not merged. Supersedes empty
+  commit `6d2cf628` (unstaged tree).
+- **Verification:** `pnpm verify` green locally on `27bccc6`. PR CI must be
+  re-checked on this HEAD (earlier green on `6d2cf628` was empty diff only).
 - **Next watch:** independent review of the P1K.2 pull request. Do not
   start P1K.3, Undo U4, or Desktop Undo U5.
 
