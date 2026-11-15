@@ -1252,9 +1252,11 @@ traversal that stays inside the project root but leaves
 `.aif/neutron/subagents/` remain unresolved. The extraction does not
 bring `index.ts` to the 400-line P1 gate. P1 is not complete. The
 remaining-barrel completion design is open for maintainer review at
-`docs/designs/p1k-remaining-application-barrel/SYSTEM_DESIGN.md`. P1K is
-a working label, not an approved milestone. The proposed slices are not
-approved for implementation. Import-only SCC membership is `[3]`, the
+`docs/designs/p1k-remaining-application-barrel/SYSTEM_DESIGN.md` (PR #627).
+P1K is a working label, not an approved milestone. The proposed slices are not
+approved for implementation. Architectural review on 2026-11-15 corrected the
+Approved Apply recommendation to **Option B only** (leaf dispatcher, no public
+override); Option C is rejected in the design. Import-only SCC membership is `[3]`, the
 Neutron mutation trio only. Re-export SCC membership is `[4, 27, 3]`.
 The 27-file component still contains `index.ts` and
 `approved-apply-engine.ts`. Undo U4 and Desktop Undo U5 have not

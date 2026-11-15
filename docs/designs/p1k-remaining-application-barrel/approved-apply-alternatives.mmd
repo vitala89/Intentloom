@@ -5,7 +5,7 @@ flowchart TB
     aEngine --> aBarrel
   end
 
-  subgraph optionB ["Option B leaf dispatcher"]
+  subgraph optionB ["Option B leaf dispatcher recommended"]
     bEngine["engine imports the leaf"]
     bLeaf["generated-file/synchronize-generated-files.ts"]
     bDeclared["declared-path sync"]
@@ -15,15 +15,15 @@ flowchart TB
     bLeaf --> bCommit
   end
 
-  subgraph optionC ["Option C inject the same dispatcher"]
-    cPublic["public executeApprovedApplyPlan"]
-    cDefault["default is the leaf dispatcher"]
-    cOverride["optional options.synchronizeGeneratedFiles"]
-    cPublic --> cDefault
-    cPublic --> cOverride
+  subgraph optionC ["Option C optional injection rejected"]
+    cRejected["rejected for P1K"]
+    cOverride["would add options.synchronizeGeneratedFiles"]
+    cRisk["could report applied true without a real write"]
+    cRejected --> cOverride
+    cOverride --> cRisk
   end
 
-  subgraph optionD ["Option D composition module"]
+  subgraph optionD ["Option D composition module viable not necessary"]
     dIndex["index re-exports composition"]
     dComp["approved-apply-composition.ts"]
     dEngine["engine without an index import"]

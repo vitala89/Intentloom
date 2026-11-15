@@ -189,6 +189,27 @@ maintainer review and does not approve implementation. P1K is a working
 label, not an approved milestone. Do not start the proposed slices, Undo
 U4, or Desktop Undo U5.
 
+### 2026-11-15, P1K design — architecture review corrections (PR #627)
+
+- **Status:** **DESIGN PR OPEN — AWAITING MAINTAINER APPROVAL.** Same pull
+  request #627. Documentation-only correction after independent architectural
+  review. Do not merge. Do not implement.
+- **Branch:** `docs/architecture-p1-remaining-barrel-completion`
+- **Correction:** Approved Apply recommendation is **Option B only** (leaf-owned
+  dispatcher). **Option C** (optional `ApprovedApplyEngineOptions`
+  `synchronizeGeneratedFiles` override) is **rejected** as unnecessary for SCC
+  removal and as a new transaction-control surface. Preserve existing engine
+  options and execution order. Added Design First implementation gates (section
+  10): the seventeen-slice roadmap does not auto-authorize implementation; one
+  approved PR at a time; call-outs for P1K.7, P1K.9, P1K.14, P1K.16.
+- **Diagrams:** `approved-apply-alternatives.mmd` and embedded §8.3 diagram
+  synced. All eight `.mmd` sources match embedded Mermaid. Mermaid CLI 11.4.0
+  parsed all eight sources locally (11.17.2 is not published on npm here).
+- **Validation:** `pnpm docs:build` passed. `pnpm format:check` passed.
+  `git diff --check` passed. Production source untouched.
+- **Next:** Maintainer review of corrected design on updated HEAD. Hosted CI
+  pending on push.
+
 ### 2026-11-14, Remaining application barrel completion design
 
 - **Status:** **DESIGN PR OPEN — AWAITING MAINTAINER APPROVAL.** P1K is a

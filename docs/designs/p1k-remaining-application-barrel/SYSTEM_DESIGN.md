@@ -6,11 +6,13 @@ this planning slice, not an approved roadmap milestone.** The packages plan
 already uses P1A through P1J. A maintainer may keep P1K, rename it, or reject
 the sequence. No slice below is approved for implementation.
 
-Selected recommendation for the Approved Apply barrel edge: **Option B plus
-Option C**. Move `synchronizeGeneratedFiles` unchanged onto a generated-file
-leaf, retarget every `index.ts` import in `approved-apply-engine.ts` onto
-existing leaves, and add an optional dispatcher override whose default is that
-same leaf. Do not replace the dispatcher with direct transaction calls.
+Selected recommendation for the Approved Apply barrel edge: **Option B
+only**. Move `synchronizeGeneratedFiles` unchanged onto
+`packages/application/src/generated-file/synchronize-generated-files.ts`.
+Retarget every `index.ts` import in `approved-apply-engine.ts` onto canonical
+leaf owners. Preserve the exact existing `ApprovedApplyEngineOptions` public
+contract. Do not add an optional dispatcher override or any new public callback.
+Do not replace the dispatcher with direct transaction calls.
 
 ## 1. Executive summary
 
@@ -29,9 +31,13 @@ it back, so one 27-file re-export component still contains both `index.ts` and
 
 The safe sequence is seventeen small pull requests. The first is the profile
 store. Security-adapter execution and bounded project context are decomposed
-inside their own slices before the large functions move. The Approved Apply
-edge is a later slice. It keeps the current dispatcher, including the branch
-between declared-path sync and ordinary generated-file commit.
+inside their own slices before the large functions move. The Approved Apply edge is a later slice (P1K.14). It keeps the current
+dispatcher and execution order: gate evaluation, declared-path scope check,
+baseline capture or validation, then the unchanged dispatcher call with
+existing transaction stages, rollback, and diagnostics. Option C, an optional
+public dispatcher injection on `ApprovedApplyEngineOptions`, is explicitly
+rejected as unnecessary for SCC removal and as a new transaction-control
+surface.
 
 After the last slice, the central size forecast is about **381 effective
 lines and about 465 physical lines**. That meets both limits. The upper band
@@ -638,21 +644,21 @@ package export-map key.
 
 Section 3 is the family audit. The extraction consequences are:
 
-| Family                        | Move intact             | Decomposition first                | New seam                         |
-| ----------------------------- | ----------------------- | ---------------------------------- | -------------------------------- |
-| Profiles                      | yes                     | no                                 | no                               |
-| Role delegation               | no                      | split clamp from persistence       | no, after profiles exist         |
-| Task and session summaries    | yes                     | no; keep the 43-line list function | no                               |
-| Task checkpoints              | yes                     | no                                 | no                               |
-| Semantic ranking              | no                      | split the 80-line ranker           | no; import skill leaves directly |
-| Bounded project context       | no                      | split the 101-line function        | no                               |
-| Security adapters             | no                      | split the 188-line runner          | no                               |
-| Conversations                 | yes                     | no                                 | no                               |
-| Proposal lifecycle            | behavior yes, module no | no function is over 80             | inject `adoptProject`            |
-| Root and timeline             | yes                     | no                                 | no                               |
-| `planFeature` and pack update | yes                     | no                                 | no                               |
-| Interactive and local sync    | yes                     | no                                 | seams already exist              |
-| Dispatcher                    | yes                     | no; do not inline the transactions | optional override on the engine  |
+| Family                        | Move intact             | Decomposition first                | New seam                           |
+| ----------------------------- | ----------------------- | ---------------------------------- | ---------------------------------- |
+| Profiles                      | yes                     | no                                 | no                                 |
+| Role delegation               | no                      | split clamp from persistence       | no, after profiles exist           |
+| Task and session summaries    | yes                     | no; keep the 43-line list function | no                                 |
+| Task checkpoints              | yes                     | no                                 | no                                 |
+| Semantic ranking              | no                      | split the 80-line ranker           | no; import skill leaves directly   |
+| Bounded project context       | no                      | split the 101-line function        | no                                 |
+| Security adapters             | no                      | split the 188-line runner          | no                                 |
+| Conversations                 | yes                     | no                                 | no                                 |
+| Proposal lifecycle            | behavior yes, module no | no function is over 80             | inject `adoptProject`              |
+| Root and timeline             | yes                     | no                                 | no                                 |
+| `planFeature` and pack update | yes                     | no                                 | no                                 |
+| Interactive and local sync    | yes                     | no                                 | seams already exist                |
+| Dispatcher                    | yes                     | no; do not inline the transactions | no; engine calls the leaf directly |
 
 Families that are not extracted: protocol re-exports, validator re-exports,
 lifecycle leaves already moved in P1I.2, adoption leaves already moved in
@@ -866,7 +872,7 @@ flowchart TB
     aEngine --> aBarrel
   end
 
-  subgraph optionB ["Option B leaf dispatcher"]
+  subgraph optionB ["Option B leaf dispatcher recommended"]
     bEngine["engine imports the leaf"]
     bLeaf["generated-file/synchronize-generated-files.ts"]
     bDeclared["declared-path sync"]
@@ -876,15 +882,15 @@ flowchart TB
     bLeaf --> bCommit
   end
 
-  subgraph optionC ["Option C inject the same dispatcher"]
-    cPublic["public executeApprovedApplyPlan"]
-    cDefault["default is the leaf dispatcher"]
-    cOverride["optional options.synchronizeGeneratedFiles"]
-    cPublic --> cDefault
-    cPublic --> cOverride
+  subgraph optionC ["Option C optional injection rejected"]
+    cRejected["rejected for P1K"]
+    cOverride["would add options.synchronizeGeneratedFiles"]
+    cRisk["could report applied true without a real write"]
+    cRejected --> cOverride
+    cOverride --> cRisk
   end
 
-  subgraph optionD ["Option D composition module"]
+  subgraph optionD ["Option D composition module viable not necessary"]
     dIndex["index re-exports composition"]
     dComp["approved-apply-composition.ts"]
     dEngine["engine without an index import"]
@@ -927,18 +933,17 @@ Migration cost is one small module and import edits. Risk: a retarget that
 still imports a type from the barrel leaves the SCC edge in place. The
 slice is done only when the engine source has no `index.js` specifier.
 
-**Option C. Inject the dispatcher.** Add optional
-`synchronizeGeneratedFiles` on `ApprovedApplyEngineOptions`. When omitted,
-the engine uses the leaf from Option B. Callers that pass the option use
-that function instead. The public positional parameters do not change.
-Default behavior matches today only if the default is the extracted
-function, not a new call to `commitOwnedGeneratedFiles`. Authorization is
-unchanged because injection happens after the gate and the path-scope
-check. A test can pass a failing dispatcher and observe the existing
-`transaction-failed` diagnostics. Migration cost is the options field plus
-Option B. Risk: a required new parameter would break CLI, daemon, MCP, and
-bounded execution. The field stays optional. Risk: a default that still
-imports the barrel does not break the cycle.
+**Option C. Optional dispatcher injection on the engine.** This would add
+`ApprovedApplyEngineOptions.synchronizeGeneratedFiles`, allowing a caller to
+substitute the synchronization function. A substitute could return
+`status: "success"` without executing the real transaction, yielding
+`applied: true` without a successful write. That is a new public
+transaction-control surface. SCC removal does not require it: Option B alone
+removes the engine's `index.ts` import and breaks the Approved Apply edge from
+the 27-file component. Existing injected `FileSystem`, `failAt`, and
+`rollbackFailPaths` are sufficient for current transaction test scenarios.
+Option C is **explicitly rejected** for P1K.14. No new dependency-injection
+framework is introduced.
 
 **Option D. Composition module.** `approved-apply-composition.ts` would
 import the engine and the leaf and export the wired function. The barrel
@@ -949,19 +954,23 @@ field. It also moves the public function's home. Every current importer of
 `bounded-execution-apply.ts`, would have to follow the move or keep a
 re-export from the engine file. That re-export is safe only if the engine
 file does not import the composition module. SCC impact can match Option B.
-Authorization and rollback can match today. Migration cost is higher than
-B+C because the public function changes modules even when the signature does
-not. The extra module does not remove a cycle that B+C already removes.
+Authorization and rollback can match today. Migration cost is higher than Option B because the public function changes
+modules even when the signature does not. The extra module does not remove a
+cycle that Option B already removes. Option D is a viable alternative but
+not necessary for P1 completion.
 
-**Recommendation: B+C.** The dispatcher stays one function with the current
-branch. The engine stops importing the barrel. The optional override gives
-tests a seam without a required parameter and without a new composition
-module. Option D remains acceptable if the maintainer does not want the
-options field; it is not required. Option A cannot finish P1. No option may
-inline `commitOwnedGeneratedFiles` or `synchronizeDeclaredProjectPaths`
-inside the engine unless a later design proves the diagnostics, stages, and
-rollback match the dispatcher exactly. This design does not make that proof
-and does not recommend the inline.
+**Recommendation: Option B only.** The dispatcher stays one function with the
+current branch inside the extracted leaf. The engine stops importing the
+barrel and calls the real leaf dispatcher directly. Public function signatures
+stay unchanged. The Approved Apply authorization boundary, transaction stages,
+rollback, and diagnostics stay unchanged. No new public option is added.
+Option A is rejected for P1 completion because it preserves the barrel
+dependency. Option C is rejected as unnecessary for SCC removal and as an
+unsafe injection point. Option D remains acceptable but optional. No option may
+inline `commitOwnedGeneratedFiles` or `synchronizeDeclaredProjectPaths` inside
+the engine unless a later design proves the diagnostics, stages, and rollback
+match the dispatcher exactly. This design does not make that proof and does not
+recommend the inline.
 
 Harness retarget belongs in the same slice as the leaf, because it is the
 second value importer of the same function. It is not an Apply behavior
@@ -1036,9 +1045,36 @@ pull requests.
 Every slice: no behavior change, no Neutron file edit, no package export-map
 change, no `quality-exceptions.json` change, no new directory barrel, public
 names re-exported from `index.ts`, and `pnpm verify` before the pull request
-is opened. Design approval for the mechanical slices is approval of this
-document. P1K.7 and P1K.14 also require the maintainer to accept the
-decomposition and the B+C recommendation in sections 6 and 8.
+is opened.
+
+### Design First gates for implementation
+
+This document is an architectural roadmap and a proposed implementation
+sequence. It does **not** automatically authorize unlimited architectural
+changes across all seventeen future pull requests.
+
+- **Mechanical extractions** fully described in this design may proceed after
+  explicit maintainer approval, **one implementation pull request at a time**.
+  Each slice keeps the boundaries in this section.
+- **Significant deviations** from the described move, module owner, public
+  surface, or behavior require renewed design review before implementation.
+- **Security-sensitive, transaction-sensitive, public-contract, and
+  cross-boundary slices** require explicit confirmation that this approved
+  design covers all relevant interfaces, errors, security rules, and testing
+  requirements. When coverage is insufficient, open a focused Design First pull
+  request before implementation. This correction does not open those follow-on
+  design pull requests.
+
+Pay particular attention before implementation:
+
+- **P1K.7** — security adapter decomposition.
+- **P1K.9** — workspace proposal lifecycle and adoption binding.
+- **P1K.14** — Approved Apply dispatcher extraction (Option B only; no public
+  dispatcher override).
+- **P1K.16** — adoption bindings and final SCC hub removal.
+
+P1K.7 and P1K.14 also require the maintainer to accept the decomposition and
+the Option B recommendation in sections 6 and 8.
 
 ### P1K.1 Profile store
 
@@ -1239,25 +1275,44 @@ decomposition and the B+C recommendation in sections 6 and 8.
 
 ### P1K.14 Dispatcher and Approved Apply retarget
 
-- Responsibility: Option B+C from section 8.
-- Declarations: `synchronizeGeneratedFiles` and `TransactionMetadata`.
-- Target: `generated-file/synchronize-generated-files.ts`.
-- Also retarget `approved-apply-engine.ts` and
-  `harness/harness-benchmark-sample.ts`. Do not edit files under
-  `src/neutron/`.
-- Preserve: `tests/approved-apply-engine.test.ts`, generated-file
-  transaction tests, harness benchmark tests.
+- Responsibility: **Option B only** from section 8.3.
+- Move `synchronizeGeneratedFiles` and the private `TransactionMetadata`
+  contract unchanged into
+  `packages/application/src/generated-file/synchronize-generated-files.ts`.
+- Retarget all imports in `approved-apply-engine.ts` to canonical leaf owners
+  (`nodeFileSystem` and `FileSystem` from `host-file-system.ts`,
+  `TransactionOptions` from `generated-file/transaction-contracts.ts`, the
+  dispatcher from the new leaf).
+- Retarget `harness/harness-benchmark-sample.ts` to import the dispatcher from
+  the leaf. Do not edit files under `src/neutron/`.
+- Preserve: evaluate the Approved Apply gate; validate declared-path scope;
+  capture or validate baseline; call the **existing** dispatcher unchanged;
+  preserve transaction stages, rollback, and diagnostics; return the existing
+  validated result shape.
+- Preserve: existing `ApprovedApplyEngineOptions` fields (`fs`, `failAt`,
+  `rollbackFailPaths`, and any others today). **No** public callback or
+  dispatcher override.
+- Preserve: `tests/approved-apply-engine.test.ts`, generated-file transaction
+  tests, harness benchmark tests. Use existing filesystem fault injection and
+  transaction options for regression tests.
 - Lines removed from the barrel: 12 effective. Re-export glue about 3.
 - SCC: engine and bounded execution leave the 27-file component. Harness
   leaves with its retarget. Predicted index component size: 19. Membership
-  is section 16. No new component.
-- Prerequisites: this design's B+C choice. Not dependent on the memory
+  is section 16. No new component. Re-measured membership must match the
+  approved prediction; this design makes no guarantee beyond the forecast.
+- Prerequisites: this design's **Option B** choice. Not dependent on the memory
   slices.
 - Non-goals: changing gate checks, path-scope checks, baseline behavior,
-  stage names, or rollback.
-- Acceptance: engine source contains no `index.js` import; a call with no
-  override matches current success and failure diagnostics; declared-path
-  mode still does not receive `validatedMetadata`.
+  stage names, rollback, or adding `ApprovedApplyEngineOptions` fields.
+- Acceptance:
+  - No import of `index.ts` from `approved-apply-engine.ts`, including
+    type-only imports (no `index.js` specifier in engine source).
+  - No new public dispatcher override on `ApprovedApplyEngineOptions`.
+  - No behavioral change to Apply, transactions, or rollback.
+  - Measured SCC membership after the slice matches the section 16 prediction
+    for this slice.
+  - Existing Approved Apply, transaction, and rollback tests pass.
+  - Declared-path mode still does not receive `validatedMetadata`.
 
 ### P1K.15 Engineering-quality root retarget
 
@@ -1303,7 +1358,8 @@ decomposition and the B+C recommendation in sections 6 and 8.
 CLI, daemon, and MCP import `@intentloom/application`, and the CLI barrel
 star-re-exports it. Every moved name stays exported from `index.ts`. No
 signature gains a required parameter. `executeApprovedApplyPlan` keeps
-`(request, filesToApply, options?)`. The new options field is optional.
+`(request, filesToApply, options?)`. `ApprovedApplyEngineOptions` keeps its
+current fields only; P1K.14 does not add a dispatcher override.
 
 Internal relative imports of `index.ts` are retargeted only in P1K.14,
 P1K.15, and P1K.16, and only for the symbols those slices own. Neutron files
@@ -1367,7 +1423,8 @@ Boundaries that pure extraction must not change:
 - Proposal creation and `readyToApply` do not authorize Apply. Workspace
   `approvedBy` does not grant `atomic-commit-approval`.
 - Transaction rollback stays inside the existing sync implementations.
-  User Undo stays U4 and U5 and does not start.
+  P1K.14 does not expose a public dispatcher substitution seam. User Undo
+  stays U4 and U5 and does not start.
 - Public error strings in section 14 stay.
 - CLI output stays whatever the current commands print from these return
   values.
@@ -1601,17 +1658,16 @@ Behavior tests to keep green across the program:
 
 P1K.6 and P1K.7 add characterization tests before the split: context
 ordering, token budget, exclusion count, adapter category order, finding
-ids, and empty categories. P1K.14 adds one test that the optional dispatcher
-override is used when supplied and that the default path still emits
-`failed-stage:` for an injected stage failure. That test locks the seam. It
-does not change production diagnostics.
+ids, and empty categories. P1K.14 relies on existing Approved Apply and generated-file transaction tests
+plus existing `failAt` and `rollbackFailPaths` fault injection. It does not
+require a new public override seam or new production diagnostics.
 
 No snapshot-only evidence for rollback or authorization. `pnpm verify` is
 the implementation gate. This design pull request does not change tests.
 
 ## 18. ADR impacts
 
-ADR-0053 stays accepted and unchanged. B+C does not change the gate, the
+ADR-0053 stays accepted and unchanged. Option B does not change the gate, the
 requirement for explicit approval, the digest check, or transactional
 rollback. A new ADR is required only if a later decision replaces the
 dispatcher, changes who may Apply, or merges workspace `approvedBy` with the
@@ -1669,8 +1725,9 @@ This checklist is not satisfied by merging the design.
 1. Whether the working label P1K is acceptable, and whether the seventeen
    ids stay.
 2. Whether P1K.1, the profile store, is the first implementation slice.
-3. Whether Option B+C is accepted, or Option D should replace the optional
-   dispatcher field. Option A does not complete P1.
+3. Whether **Option B** (leaf dispatcher, no public override) is accepted, or
+   Option D should be chosen instead. Option C (dispatcher injection) is
+   rejected in this design. Option A does not complete P1.
 4. Whether P1 is incomplete until `index.ts` leaves every SCC, which this
    plan does in P1K.16, or only until it leaves the engine's component,
    which happens in P1K.14. The written gate names the Approved Apply
