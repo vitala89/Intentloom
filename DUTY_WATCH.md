@@ -184,10 +184,67 @@ physical lines. The leaf is 92 effective lines and 100 physical lines.
 The implementation is merged as PR #626
 (https://github.com/vitala89/Intentloom/pull/626,
 `5efc30a0ae21525312425e69ef82ccd30e138c8a`). No runtime behavior changed.
-P1 is not complete. The remaining-barrel completion design is open for
-maintainer review and does not approve implementation. P1K is a working
-label, not an approved milestone. Do not start the proposed slices, Undo
-U4, or Desktop Undo U5.
+P1 is not complete. The remaining-barrel completion design is merged as
+PR #627 (https://github.com/vitala89/Intentloom/pull/627,
+`1abb80e1e5c7fdcb3a16c14b2897a6a6549446c9`). **P1K.1 profile store
+extraction is open and awaiting review.** It is not merged. Do not start
+P1K.2 through P1K.17, Undo U4, or Desktop Undo U5.
+
+### 2026-11-15, Packages architecture P1K.1 profile store
+
+- **Status:** **IMPLEMENTATION OPEN — AWAITING REVIEW.** P1K.1 is not merged.
+  Design PR #627 is merged at
+  `1abb80e1e5c7fdcb3a16c14b2897a6a6549446c9`. This slice extracts
+  `createProfile`, `getProfile`, and `listProfiles` into
+  `packages/application/src/memory/profile-store.ts` and re-exports them
+  from `index.ts`. `delegateTaskRole` stays on the barrel. Do not start
+  P1K.2, Undo U4, or Desktop Undo U5.
+- **Triage:** 6/10 (blast radius 2, ambiguity 0, risk 1, verification 2,
+  unknowns 1). Harness: Cursor. Model role: mid. Effort: high.
+  Subagents: none. Grilling skipped: one mechanical reading of the merged
+  design. Stop when the pull request is open, unmerged, and the measured
+  gates are recorded.
+- **Branch:** `refactor/p1k1-profile-store`
+- **Base:** `1abb80e1e5c7fdcb3a16c14b2897a6a6549446c9`
+- **Design:** `docs/designs/p1k-remaining-application-barrel/SYSTEM_DESIGN.md`,
+  sections 9, 10, 15, 16, and 17.
+- **Measured source:** `index.ts` is 1,751 effective lines and 1,896
+  physical lines, down from 1,804 and 1,953. The leaf is 66 effective
+  lines and 72 physical lines. `createProfile` is 17 effective lines,
+  `getProfile` is 14, and `listProfiles` is 27.
+- **Measured SCC:** import-only `[3]`, the Neutron mutation trio only.
+  Re-export-inclusive `[4, 27, 3]`, same members as the baseline. The
+  profile leaf is outside every component. No new component.
+- **Unchanged risks:** a profile name is not a safe identifier, so the
+  resolved path can leave `.aif/memory/profiles/` while `inside` still
+  keeps it in the project root. `listProfiles` still uses
+  `rawPath.startsWith(root)` and `fs.list(root)`. `nodeFileSystem.write`
+  still follows symlinks and does not revalidate the destination
+  realpath. This slice does not sanitize names or migrate stored JSON.
+- **Validation:** `pnpm verify` passed: typecheck, oxlint (warnings only,
+  including the pre-existing `Array#sort` warning moved with
+  `listProfiles`), format check, Vitest 379 files passed, 3,201 tests
+  passed, 3 skipped, build, and `git diff --check`. `pnpm docs:build`
+  completed. Hooks are not installed in this checkout; `pnpm verify` is
+  the equivalent gate.
+- **Not done:** maintainer review, merge, P1K.2 through P1K.17, Undo U4,
+  Desktop Undo U5. The pull request URL is recorded when the request is
+  opened. P1 remains incomplete.
+- **Next:** Independent review. Do not merge. Do not start P1K.2.
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [x] Relevant tests, type checks, builds, or compatibility checks passed
+- [x] Atomic commit policy and commit-message checks passed
+- [x] Repository hooks installed or equivalent commands run
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `PROJECT_STATE.md` updated when applicable
+- [x] `DUTY_WATCH.md` handoff completed
+- [x] Related roadmap, ADR, changelog, migration, or reference docs updated
+- [x] Failed or unavailable checks recorded
 
 ### 2026-11-15, P1K design — architecture review corrections (PR #627)
 
