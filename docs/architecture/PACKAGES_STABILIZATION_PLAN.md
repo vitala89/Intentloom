@@ -147,7 +147,8 @@ merged as PR #627 (https://github.com/vitala89/Intentloom/pull/627,
 `1abb80e1e5c7fdcb3a16c14b2897a6a6549446c9`). P1K.1 moves
 `createProfile`, `getProfile`, and `listProfiles` to
 `packages/application/src/memory/profile-store.ts`. That implementation
-pull request is pending review and is not merged. Measured with
+is open as PR #628 (https://github.com/vitala89/Intentloom/pull/628),
+pending review and not merged. Measured with
 `measureProductionSource`, `index.ts` is 1,751 effective lines and
 1,896 physical lines, down from 1,804 and 1,953. The leaf is 66
 effective lines and 72 physical lines and is outside every SCC. The
@@ -3220,7 +3221,9 @@ not complete. The next planning document is
 [`docs/designs/p1k-remaining-application-barrel/SYSTEM_DESIGN.md`](../designs/p1k-remaining-application-barrel/SYSTEM_DESIGN.md),
 merged as PR #627 (https://github.com/vitala89/Intentloom/pull/627,
 `1abb80e1e5c7fdcb3a16c14b2897a6a6549446c9`). P1K.1 is the first
-implementation slice and is pending review, not merged. P1K.2 through
+implementation slice and is open as PR #628
+(https://github.com/vitala89/Intentloom/pull/628), pending review and
+not merged. P1K.2 through
 P1K.17 have not started. Undo U4 and Desktop Undo U5 have not started.
 
 ### P1K.1 — profile store
@@ -3234,7 +3237,9 @@ names from `index.ts`. `delegateTaskRole` stays on the barrel and still
 calls `getProfile`. Neutron collectors still import `getProfile` from
 the package root. There is no `memory/index.ts`.
 
-The implementation pull request is pending review and is not merged.
+The implementation is open as PR #628
+(https://github.com/vitala89/Intentloom/pull/628), pending review and
+not merged.
 Measured with `measureProductionSource`, `index.ts` is 1,751 effective
 lines and 1,896 physical lines, down from 1,804 and 1,953. The leaf is
 66 effective lines and 72 physical lines. `createProfile` stays 17

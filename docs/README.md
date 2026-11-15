@@ -64,7 +64,8 @@ behavior changed. P1 is not complete.
 is merged as design PR #627
 (https://github.com/vitala89/Intentloom/pull/627,
 `1abb80e1e5c7fdcb3a16c14b2897a6a6549446c9`). P1K.1, the profile store
-extraction, is an implementation pull request pending review and is not
+extraction, is open as PR #628
+(https://github.com/vitala89/Intentloom/pull/628), pending review and not
 merged. `createProfile`, `getProfile`, and `listProfiles` live in
 `packages/application/src/memory/profile-store.ts` and stay exported
 from the package root. Measured with `measureProductionSource`,

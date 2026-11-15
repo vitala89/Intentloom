@@ -1260,7 +1260,8 @@ recommendation to **Option B only** (leaf dispatcher, no public
 override); Option C is rejected in the design. P1K.1 extracts
 `createProfile`, `getProfile`, and `listProfiles` into
 `packages/application/src/memory/profile-store.ts`. The implementation
-pull request is pending review and is not merged. Measured with
+pull request is #628 (https://github.com/vitala89/Intentloom/pull/628),
+pending review and not merged. Measured with
 `measureProductionSource`, `index.ts` is 1,751 effective lines and
 1,896 physical lines, down from 1,804 and 1,953. The leaf is 66
 effective lines and 72 physical lines. The moved functions stay at 17,

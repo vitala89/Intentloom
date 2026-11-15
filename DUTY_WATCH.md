@@ -187,12 +187,15 @@ The implementation is merged as PR #626
 P1 is not complete. The remaining-barrel completion design is merged as
 PR #627 (https://github.com/vitala89/Intentloom/pull/627,
 `1abb80e1e5c7fdcb3a16c14b2897a6a6549446c9`). **P1K.1 profile store
-extraction is open and awaiting review.** It is not merged. Do not start
+extraction is open as PR #628
+(https://github.com/vitala89/Intentloom/pull/628) and awaiting review.**
+It is not merged. Do not start
 P1K.2 through P1K.17, Undo U4, or Desktop Undo U5.
 
 ### 2026-11-15, Packages architecture P1K.1 profile store
 
-- **Status:** **IMPLEMENTATION OPEN — AWAITING REVIEW.** P1K.1 is not merged.
+- **Status:** **IMPLEMENTATION OPEN — AWAITING REVIEW.** Pull request
+  #628 (https://github.com/vitala89/Intentloom/pull/628) is not merged.
   Design PR #627 is merged at
   `1abb80e1e5c7fdcb3a16c14b2897a6a6549446c9`. This slice extracts
   `createProfile`, `getProfile`, and `listProfiles` into
@@ -228,8 +231,7 @@ P1K.2 through P1K.17, Undo U4, or Desktop Undo U5.
   completed. Hooks are not installed in this checkout; `pnpm verify` is
   the equivalent gate.
 - **Not done:** maintainer review, merge, P1K.2 through P1K.17, Undo U4,
-  Desktop Undo U5. The pull request URL is recorded when the request is
-  opened. P1 remains incomplete.
+  Desktop Undo U5. Pull request #628 remains open. P1 remains incomplete.
 - **Next:** Independent review. Do not merge. Do not start P1K.2.
 
 #### Duty completion checklist
