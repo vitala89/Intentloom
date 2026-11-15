@@ -186,11 +186,38 @@ The implementation is merged as PR #626
 `5efc30a0ae21525312425e69ef82ccd30e138c8a`). No runtime behavior changed.
 P1 is not complete. The remaining-barrel completion design is merged as
 PR #627 (https://github.com/vitala89/Intentloom/pull/627,
-`1abb80e1e5c7fdcb3a16c14b2897a6a6549446c9`). **P1K.1 profile store
-extraction is open as PR #628
-(https://github.com/vitala89/Intentloom/pull/628) and awaiting review.**
-It is not merged. Do not start
-P1K.2 through P1K.17, Undo U4, or Desktop Undo U5.
+`1abb80e1e5c7fdcb3a16c14b2897a6a6549446c9`). **P1K.1 profile store is
+merged** (PR #628, `e808234d2f51d3664871f9ab294e6e7ec6c05fc8`). **P1K.2
+role delegation extraction is open and awaiting review.** Do not start
+P1K.3 through P1K.17, Undo U4, or Desktop Undo U5.
+
+### 2026-11-15, Packages architecture P1K.2 role delegation
+
+- **Status:** **IMPLEMENTATION OPEN — AWAITING REVIEW.**
+- **Triage:** 5/10 (blast radius 1, ambiguity 0, risk 1, verification 2,
+  unknowns 1). Harness: Cursor. Model role: mid. Effort: medium.
+  Subagents: none. Grilling skipped: bounded refactor from merged
+  design. Stop when the pull request is open, unmerged, and measured gates
+  are recorded.
+- **Branch:** `refactor/p1k2-role-delegation`
+- **Base:** `e808234d2f51d3664871f9ab294e6e7ec6c05fc8`
+- **Design:** `docs/designs/p1k-remaining-application-barrel/SYSTEM_DESIGN.md`
+  section 10, slice P1K.2; design PR #627; prerequisite P1K.1 PR #628.
+- **Measured source:** `index.ts` is 1,687 effective lines and 1,822
+  physical lines, down from 1,751 and 1,896. The leaf is 91 effective and
+  103 physical. `clampDelegationCapabilities` is 37 effective lines;
+  `delegateTaskRole` is 37 effective lines.
+- **Measured SCC:** import-only `[3]`; re-export-inclusive `[4, 27, 3]`,
+  same members. Both memory leaves stay outside every component.
+- **Pull request:** #629
+  (https://github.com/vitala89/Intentloom/pull/629), not merged. The
+  first pushed commit (`6d2cf628`) was empty (no staged tree); implementation
+  files land in a follow-up commit on this branch.
+- **Verification:** Re-run `pnpm verify` and PR CI on the commit that
+  contains the implementation files. Prior CI green on `6d2cf628` covered an
+  empty diff only.
+- **Next watch:** independent review of the P1K.2 pull request. Do not
+  start P1K.3, Undo U4, or Desktop Undo U5.
 
 ### 2026-11-15, Packages architecture P1K.1 profile store
 

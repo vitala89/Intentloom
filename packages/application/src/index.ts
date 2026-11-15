@@ -1080,83 +1080,9 @@ import {
   getProfile,
   listProfiles,
 } from "./memory/profile-store.js";
+import { delegateTaskRole } from "./memory/role-delegation.js";
 
-export { createProfile, getProfile, listProfiles };
-
-export async function delegateTaskRole(
-  input: unknown,
-  options: { root: string },
-  fs: FileSystem = nodeFileSystem,
-): Promise<DelegationResult> {
-  const req = validateDelegationRequest(input);
-  const profile = await getProfile(req.profileName, options, fs);
-  if (!profile) {
-    throw new Error(`Profile not found: ${req.profileName}`);
-  }
-
-  if (!profile.activeRoles.includes(req.role)) {
-    throw new Error(
-      `Role [${req.role}] is not allowed by profile [${profile.name}]`,
-    );
-  }
-
-  const deniedCapabilities: string[] = [];
-
-  // Enforce read-only roles
-  const isReadOnlyRole =
-    req.role === "context-scout" || req.role === "reviewer";
-  const readOnly = isReadOnlyRole || profile.allowedCapabilities.readOnly;
-
-  if (isReadOnlyRole && req.requestedCapabilities?.readOnly === false) {
-    deniedCapabilities.push("readOnly: false (role enforces read-only)");
-  }
-
-  const allowedPaths = profile.allowedCapabilities.allowedPaths;
-  const allowedTools = profile.allowedCapabilities.allowedTools;
-  const maxBudget = Math.min(
-    profile.allowedCapabilities.maxBudget,
-    req.requestedCapabilities?.maxBudget ??
-      profile.allowedCapabilities.maxBudget,
-  );
-  const allowNetwork =
-    profile.allowedCapabilities.allowNetwork &&
-    (req.requestedCapabilities?.allowNetwork ?? true);
-
-  if (
-    req.requestedCapabilities?.allowNetwork === true &&
-    !profile.allowedCapabilities.allowNetwork
-  ) {
-    deniedCapabilities.push("allowNetwork: true (profile disallows network)");
-  }
-
-  const delegationId = `del-${req.role}-${Date.now()}`;
-  const result = validateDelegationResult({
-    schemaVersion: "1",
-    delegationId,
-    grantedRole: req.role,
-    effectiveCapabilities: {
-      readOnly,
-      allowedPaths,
-      allowedTools,
-      maxBudget,
-      allowNetwork,
-    },
-    deniedCapabilities,
-    createdAt: new Date().toISOString(),
-  });
-
-  const path = inside(
-    options.root,
-    `.aif/memory/delegations/${delegationId}.json`,
-  );
-  const dir = dirname(path);
-  if (!(await fs.exists(dir))) {
-    await fs.mkdir(dir);
-  }
-  await fs.write(path, `${JSON.stringify(result, null, 2)}\n`);
-
-  return result;
-}
+export { createProfile, getProfile, listProfiles, delegateTaskRole };
 
 export async function getBoundedProjectContext(
   requestInput: unknown,
