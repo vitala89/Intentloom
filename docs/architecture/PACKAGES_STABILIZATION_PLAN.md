@@ -142,13 +142,21 @@ changed. The implementation is merged as PR #626
 `5efc30a0ae21525312425e69ef82ccd30e138c8a`). Symlink following and caller-supplied task-id
 traversal inside the project root remain unresolved. P1 is not complete.
 The remaining-barrel completion design is
-[`docs/designs/p1k-remaining-application-barrel/SYSTEM_DESIGN.md`](../designs/p1k-remaining-application-barrel/SYSTEM_DESIGN.md).
-It is open for maintainer review. P1K is a working label, not an
-approved milestone, and the proposed slices are not approved for
-implementation. Measured import-only SCC membership is `[3]`. Measured
-re-export SCC membership is `[4, 27, 3]`. The 27-file component still
-contains `index.ts` and `approved-apply-engine.ts`. Section 14 is
-unchanged. Undo U4 and Desktop Undo U5 have not started.
+[`docs/designs/p1k-remaining-application-barrel/SYSTEM_DESIGN.md`](../designs/p1k-remaining-application-barrel/SYSTEM_DESIGN.md),
+merged as PR #627 (https://github.com/vitala89/Intentloom/pull/627,
+`1abb80e1e5c7fdcb3a16c14b2897a6a6549446c9`). P1K.1 moves
+`createProfile`, `getProfile`, and `listProfiles` to
+`packages/application/src/memory/profile-store.ts`. That implementation
+is open as PR #628 (https://github.com/vitala89/Intentloom/pull/628),
+pending review and not merged. Measured with
+`measureProductionSource`, `index.ts` is 1,751 effective lines and
+1,896 physical lines, down from 1,804 and 1,953. The leaf is 66
+effective lines and 72 physical lines and is outside every SCC. The
+moved functions stay at 17, 14, and 27 effective lines. Measured
+import-only SCC membership is `[3]`. Measured re-export SCC membership
+is `[4, 27, 3]`, with the same members. P1K.2 through P1K.17 have not
+started. Section 14 is unchanged. Undo U4 and Desktop Undo U5 have not
+started.
 Neutron's R4A topology stays frozen.
 The measurements below remain the P1A baseline and are not restated as the
 post-extraction size.
@@ -3210,10 +3218,47 @@ revalidate the destination realpath immediately before writing. A
 caller-supplied task id can still resolve inside the project root and
 outside `.aif/neutron/subagents/`. Those risks remain unresolved. P1 is
 not complete. The next planning document is
-[`docs/designs/p1k-remaining-application-barrel/SYSTEM_DESIGN.md`](../designs/p1k-remaining-application-barrel/SYSTEM_DESIGN.md).
-P1K is a working label, not an approved milestone, and its proposed
-slices are not part of this ordered list until a maintainer approves
-them. Undo U4 and Desktop Undo U5 have not started.
+[`docs/designs/p1k-remaining-application-barrel/SYSTEM_DESIGN.md`](../designs/p1k-remaining-application-barrel/SYSTEM_DESIGN.md),
+merged as PR #627 (https://github.com/vitala89/Intentloom/pull/627,
+`1abb80e1e5c7fdcb3a16c14b2897a6a6549446c9`). P1K.1 is the first
+implementation slice and is open as PR #628
+(https://github.com/vitala89/Intentloom/pull/628), pending review and
+not merged. P1K.2 through
+P1K.17 have not started. Undo U4 and Desktop Undo U5 have not started.
+
+### P1K.1 — profile store
+
+The approved design is
+[`docs/designs/p1k-remaining-application-barrel/SYSTEM_DESIGN.md`](../designs/p1k-remaining-application-barrel/SYSTEM_DESIGN.md),
+sections 9, 10, 15, 16, and 17. The implementation moves `createProfile`,
+`getProfile`, and `listProfiles` to
+`packages/application/src/memory/profile-store.ts` and re-exports those
+names from `index.ts`. `delegateTaskRole` stays on the barrel and still
+calls `getProfile`. Neutron collectors still import `getProfile` from
+the package root. There is no `memory/index.ts`.
+
+The implementation is open as PR #628
+(https://github.com/vitala89/Intentloom/pull/628), pending review and
+not merged.
+Measured with `measureProductionSource`, `index.ts` is 1,751 effective
+lines and 1,896 physical lines, down from 1,804 and 1,953. The leaf is
+66 effective lines and 72 physical lines. `createProfile` stays 17
+effective lines, `getProfile` stays 14, and `listProfiles` stays 27.
+Import-only SCC membership is unchanged: only the Neutron mutation trio.
+Re-export SCC membership is unchanged at sizes 4, 27, and 3, with the
+same members. The profile leaf is outside every component. No new
+component appeared. `quality-exceptions.json` is unchanged. No runtime
+behavior changed.
+
+Profile names are still not safe identifiers. `inside` keeps the
+resolved path inside the project root, and a name can still leave
+`.aif/memory/profiles/` while remaining inside that root. `listProfiles`
+still scans with `fs.list(root)` and still treats `rawPath.startsWith(root)`
+as the absolute-path test. `nodeFileSystem.write` still follows symlinks
+and does not revalidate the destination realpath before writing. Those
+risks stay unresolved. This slice does not sanitize names, normalize
+paths differently, or migrate stored profiles. P1K.2 through P1K.17 have
+not started. Undo U4 and Desktop Undo U5 have not started.
 
 ### What is intentionally not a single PR
 

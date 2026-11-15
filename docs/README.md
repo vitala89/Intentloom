@@ -61,9 +61,20 @@ Import-only SCC membership is `[3]`. Re-export SCC membership is
 task-id traversal inside the project root remain unresolved. No runtime
 behavior changed. P1 is not complete.
 [Remaining application barrel completion](designs/p1k-remaining-application-barrel/SYSTEM_DESIGN.md)
-is a design proposal awaiting maintainer review. P1K is a working label,
-not an approved milestone. The proposed slices are not approved for
-implementation. Undo U4 and Desktop Undo U5 have not started.
+is merged as design PR #627
+(https://github.com/vitala89/Intentloom/pull/627,
+`1abb80e1e5c7fdcb3a16c14b2897a6a6549446c9`). P1K.1, the profile store
+extraction, is open as PR #628
+(https://github.com/vitala89/Intentloom/pull/628), pending review and not
+merged. `createProfile`, `getProfile`, and `listProfiles` live in
+`packages/application/src/memory/profile-store.ts` and stay exported
+from the package root. Measured with `measureProductionSource`,
+`index.ts` is 1,751 effective lines and 1,896 physical lines, down from
+1,804 and 1,953. The leaf is 66 effective lines and 72 physical lines.
+Import-only SCC membership stays `[3]`. Re-export SCC membership stays
+`[4, 27, 3]`. The profile leaf is outside every component. P1K.2
+through P1K.17 have not started. P1 is not complete. Undo U4 and Desktop
+Undo U5 have not started.
 
 ## How this tree is organized
 

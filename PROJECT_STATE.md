@@ -1251,16 +1251,27 @@ behavior changed. Symlink following and caller-supplied task-id
 traversal that stays inside the project root but leaves
 `.aif/neutron/subagents/` remain unresolved. The extraction does not
 bring `index.ts` to the 400-line P1 gate. P1 is not complete. The
-remaining-barrel completion design is open for maintainer review at
-`docs/designs/p1k-remaining-application-barrel/SYSTEM_DESIGN.md` (PR #627).
-P1K is a working label, not an approved milestone. The proposed slices are not
-approved for implementation. Architectural review on 2026-11-15 corrected the
-Approved Apply recommendation to **Option B only** (leaf dispatcher, no public
-override); Option C is rejected in the design. Import-only SCC membership is `[3]`, the
+remaining-barrel completion design is merged as PR #627
+(https://github.com/vitala89/Intentloom/pull/627,
+`1abb80e1e5c7fdcb3a16c14b2897a6a6549446c9`) in
+`docs/designs/p1k-remaining-application-barrel/SYSTEM_DESIGN.md`.
+Architectural review on 2026-11-15 corrected the Approved Apply
+recommendation to **Option B only** (leaf dispatcher, no public
+override); Option C is rejected in the design. P1K.1 extracts
+`createProfile`, `getProfile`, and `listProfiles` into
+`packages/application/src/memory/profile-store.ts`. The implementation
+pull request is #628 (https://github.com/vitala89/Intentloom/pull/628),
+pending review and not merged. Measured with
+`measureProductionSource`, `index.ts` is 1,751 effective lines and
+1,896 physical lines, down from 1,804 and 1,953. The leaf is 66
+effective lines and 72 physical lines. The moved functions stay at 17,
+14, and 27 effective lines. Import-only SCC membership is `[3]`, the
 Neutron mutation trio only. Re-export SCC membership is `[4, 27, 3]`.
-The 27-file component still contains `index.ts` and
-`approved-apply-engine.ts`. Undo U4 and Desktop Undo U5 have not
-started. Ids 2 through 26 remain
+The same members remain. The profile leaf is outside every component.
+No new component appeared. No runtime behavior changed. P1K.2 through
+P1K.17 have not started. The 27-file component still contains
+`index.ts` and `approved-apply-engine.ts`. Undo U4 and Desktop Undo U5
+have not started. Ids 2 through 26 remain
 literal `passed` checks. The score and hash formulas are unchanged.
 The reader still does not recompute either value.
 `rankProceduralMemory` stays in the barrel.
