@@ -188,8 +188,34 @@ P1 is not complete. The remaining-barrel completion design is merged as
 PR #627 (https://github.com/vitala89/Intentloom/pull/627,
 `1abb80e1e5c7fdcb3a16c14b2897a6a6549446c9`). **P1K.1 profile store is
 merged** (PR #628, `e808234d2f51d3664871f9ab294e6e7ec6c05fc8`). **P1K.2
-role delegation extraction is open and awaiting review.** Do not start
-P1K.3 through P1K.17, Undo U4, or Desktop Undo U5.
+role delegation is merged** (PR #629,
+`b4d0ed69690408764988ca57cf4845f373410c4c`). **P1K.3 task and session
+summary extraction is open and awaiting review.** Do not start P1K.4
+through P1K.17, Undo U4, or Desktop Undo U5.
+
+### 2026-11-15, Packages architecture P1K.3 task and session summaries
+
+- **Status:** **IMPLEMENTATION OPEN — AWAITING REVIEW.**
+- **Triage:** 6/10 (blast radius 2, ambiguity 0, risk 1, verification 2,
+  unknowns 1). Harness: Cursor. Model role: mid. Effort: medium.
+  Subagents: none. Grilling skipped: bounded refactor from merged design.
+  Stop when the pull request is open, unmerged, and measured gates are
+  recorded.
+- **Branch:** `refactor/p1k3-task-session-summaries`
+- **Base:** `b4d0ed69690408764988ca57cf4845f373410c4c`
+- **Design:** `docs/designs/p1k-remaining-application-barrel/SYSTEM_DESIGN.md`
+  section 10, slice P1K.3; design PR #627; prerequisite P1K.2 PR #629.
+- **Measured source:** `index.ts` is 1,550 effective lines and 1,669
+  physical lines, down from 1,687 and 1,822. The leaf is 165 effective and
+  181 physical lines. Function budgets: `recordTaskSummary` 36,
+  `listTaskSummaries` 43, `getTaskSummary` 15, `recordSessionSummary` 29,
+  `listSessionSummaries` 29 effective lines.
+- **Measured SCC:** import-only `[3]`; re-export-inclusive `[4, 27, 3]`,
+  same members. The summary leaf stays outside every component.
+- **Not done:** maintainer review, merge, P1K.4 through P1K.17, Undo U4,
+  Desktop Undo U5. P1 remains incomplete.
+- **Next watch:** independent review of the P1K.3 pull request. Do not start
+  P1K.4, Undo U4, or Desktop Undo U5.
 
 ### 2026-11-15, Packages architecture P1K.2 role delegation
 

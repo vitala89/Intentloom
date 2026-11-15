@@ -183,7 +183,7 @@ describe("P1K.2 role delegation structure", () => {
       /import \{\s*delegateTaskRole\s*\} from "\.\/memory\/role-delegation\.js";/,
     );
     expect(indexSource).toMatch(
-      /export \{\s*createProfile,\s*getProfile,\s*listProfiles,\s*delegateTaskRole,?\s*\};/,
+      /export \{\s*createProfile,\s*getProfile,\s*listProfiles,\s*delegateTaskRole,\s*getTaskSummary,\s*listSessionSummaries,\s*listTaskSummaries,\s*recordSessionSummary,\s*recordTaskSummary,?\s*\};/,
     );
     expect(indexSource).not.toContain('from "./memory/index.js"');
 
@@ -268,8 +268,8 @@ describe("P1K.2 role delegation structure", () => {
 
     const indexMetrics = measureProductionSource(indexSource, indexPath);
     expect(indexMetrics).toMatchObject({
-      effectiveCodeLines: 1687,
-      physicalLines: 1822,
+      effectiveCodeLines: 1550,
+      physicalLines: 1669,
     });
     expect(indexMetrics.effectiveCodeLines).toBeLessThan(1751);
     expect(indexMetrics.physicalLines).toBeLessThan(1896);
