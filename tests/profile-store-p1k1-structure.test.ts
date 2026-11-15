@@ -199,11 +199,14 @@ describe("P1K.1 profile store structure", () => {
       /import \{\s*createProfile,\s*getProfile,\s*listProfiles,\s*\} from "\.\/memory\/profile-store\.js";/,
     );
     expect(indexSource).toMatch(
-      /export \{\s*createProfile,\s*getProfile,\s*listProfiles,?\s*\};/,
+      /import \{\s*delegateTaskRole\s*\} from "\.\/memory\/role-delegation\.js";/,
     );
-    expect(indexSource).toMatch(/export async function delegateTaskRole\(/);
     expect(indexSource).toMatch(
-      /const profile = await getProfile\(req\.profileName, options, fs\);/,
+      /export \{\s*createProfile,\s*getProfile,\s*listProfiles,\s*delegateTaskRole,?\s*\};/,
+    );
+    expect(indexSource).not.toMatch(/function delegateTaskRole\(/);
+    expect(indexSource).toMatch(
+      /import \{\s*delegateTaskRole\s*\} from "\.\/memory\/role-delegation\.js";/,
     );
     expect(indexSource).not.toContain('from "./memory/index.js"');
 
@@ -291,10 +294,10 @@ describe("P1K.1 profile store structure", () => {
 
     const indexMetrics = measureProductionSource(indexSource, indexPath);
     expect(indexMetrics).toMatchObject({
-      effectiveCodeLines: 1751,
-      physicalLines: 1896,
+      effectiveCodeLines: 1687,
+      physicalLines: 1822,
     });
-    expect(indexMetrics.effectiveCodeLines).toBeLessThan(1804);
-    expect(indexMetrics.physicalLines).toBeLessThan(1953);
+    expect(indexMetrics.effectiveCodeLines).toBeLessThan(1751);
+    expect(indexMetrics.physicalLines).toBeLessThan(1896);
   });
 });

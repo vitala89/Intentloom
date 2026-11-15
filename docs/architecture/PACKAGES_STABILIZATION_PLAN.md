@@ -154,9 +154,11 @@ pending review and not merged. Measured with
 effective lines and 72 physical lines and is outside every SCC. The
 moved functions stay at 17, 14, and 27 effective lines. Measured
 import-only SCC membership is `[3]`. Measured re-export SCC membership
-is `[4, 27, 3]`, with the same members. P1K.2 through P1K.17 have not
-started. Section 14 is unchanged. Undo U4 and Desktop Undo U5 have not
-started.
+is `[4, 27, 3]`, with the same members. P1K.1 is merged (PR #628,
+`e808234d2f51d3664871f9ab294e6e7ec6c05fc8`). P1K.2 is open on PR #629,
+not merged. `index.ts` measures 1,687 effective and 1,822 physical lines
+after P1K.2 extraction. P1K.3 through P1K.17 have not started. Section
+14 is unchanged. Undo U4 and Desktop Undo U5 have not started.
 Neutron's R4A topology stays frozen.
 The measurements below remain the P1A baseline and are not restated as the
 post-extraction size.
