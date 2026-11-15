@@ -1,6 +1,6 @@
 import { createHash } from "node:crypto";
 import { existsSync, readdirSync, readFileSync } from "node:fs";
-import { join } from "node:path";
+import { join, sep } from "node:path";
 import { describe, expect, it } from "vitest";
 import * as application from "../packages/application/src/index.js";
 import { measureProductionSource } from "../scripts/production-file-metrics.mjs";
@@ -155,7 +155,9 @@ describe("P1K.1 profile store structure", () => {
       /export async function createProfile\(/.test(readFileSync(file, "utf8")),
     );
 
-    expect(implementations).toEqual([leafPath]);
+    expect(implementations.map((file) => file.split(sep).join("/"))).toEqual([
+      leafPath,
+    ]);
     expect(Object.keys(leafModule).toSorted()).toEqual([
       "createProfile",
       "getProfile",

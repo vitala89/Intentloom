@@ -228,8 +228,11 @@ P1K.2 through P1K.17, Undo U4, or Desktop Undo U5.
   including the pre-existing `Array#sort` warning moved with
   `listProfiles`), format check, Vitest 379 files passed, 3,201 tests
   passed, 3 skipped, build, and `git diff --check`. `pnpm docs:build`
-  completed. Hooks are not installed in this checkout; `pnpm verify` is
-  the equivalent gate.
+  completed. The pre-push hook runs the same `pnpm verify` gate.
+  GitHub Actions on `9ce22f7` passed macOS and Ubuntu. Windows
+  Compatibility failed only in the structure test, which compared a
+  `path.join` result to a forward-slash path. Characterization tests
+  passed on that run. The follow-up compares separator-normalized paths.
 - **Not done:** maintainer review, merge, P1K.2 through P1K.17, Undo U4,
   Desktop Undo U5. Pull request #628 remains open. P1 remains incomplete.
 - **Next:** Independent review. Do not merge. Do not start P1K.2.
