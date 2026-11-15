@@ -1,0 +1,36 @@
+sequenceDiagram
+  participant Caller
+  participant Engine as executeApprovedApplyPlan
+  participant Gate as evaluateApprovedApplyPlan
+  participant Baseline as baseline capture
+  participant Dispatcher as synchronizeGeneratedFiles
+  participant Declared as synchronizeDeclaredProjectPaths
+  participant Commit as commitOwnedGeneratedFiles
+
+  Caller->>Engine: request files options
+  Engine->>Gate: evaluate request
+  alt gate failed
+    Gate-->>Engine: passed false
+    Engine-->>Caller: applied false gate-evaluation-failed
+  else declared paths and path sets differ
+    Engine-->>Caller: applied false path-scope-mismatch
+  else gate passed
+    Engine->>Baseline: capture or assert current baseline
+    alt supplied baseline is stale or a symlink blocks it
+      Baseline-->>Caller: ApplyBlockedBeforeWrite
+    else baseline accepted
+      Engine->>Dispatcher: root files fs options
+      alt syncMode is declared paths only
+        Dispatcher->>Declared: same arguments without metadata
+      else ordinary generated files
+        Dispatcher->>Commit: root files fs options metadata
+      end
+      alt status is not success
+        Dispatcher-->>Engine: failedStage rollback fields
+        Engine-->>Caller: applied false transaction-failed and stage diagnostics
+      else success
+        Dispatcher-->>Engine: success
+        Engine-->>Caller: applied true empty diagnostics
+      end
+    end
+  end

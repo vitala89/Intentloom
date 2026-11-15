@@ -1,0 +1,54 @@
+flowchart TB
+  subgraph barrel ["index.ts local surface"]
+    dispatcher["synchronizeGeneratedFiles"]
+    sync["syncProject"]
+    adopt["adoptProject"]
+    rootFn["assertCanonicalProjectRoot"]
+    timeline["timelineProject"]
+    summaries["task and session summaries"]
+    checkpoints["task checkpoints"]
+    ranking["semantic ranking"]
+    profiles["profiles and delegation"]
+    context["getBoundedProjectContext"]
+    adapters["security adapter runner"]
+    conversations["workspace conversations"]
+    proposals["workspace proposals"]
+    interactive["getInteractiveWorkspaceState"]
+    localSync["syncLocalWorkspaceState"]
+    planFeature["planFeature"]
+    packUpdate["planPackUpdate"]
+  end
+
+  cli["CLI daemon and MCP package root"]
+  engine["approved-apply-engine.ts"]
+  harness["harness-benchmark-sample.ts"]
+  quality["specialized-pack-external-apply.ts"]
+  adoption["existing-project adoption modules"]
+  declared["synchronizeDeclaredProjectPaths"]
+  commit["commitOwnedGeneratedFiles"]
+  readModel["interactive-workspace-read-model.ts"]
+  neutronCtx["neutron context collectors"]
+  skills["skill proposal and evaluation leaves"]
+  sandbox["evaluateProposalAgainstSandbox"]
+
+  cli --> barrel
+  engine -->|"value and type import"| dispatcher
+  engine -->|"nodeFileSystem and types"| barrel
+  harness -->|"value import"| dispatcher
+  quality -->|"value import"| rootFn
+  adoption -->|"adopt sync inspect doctor diff"| barrel
+  dispatcher --> declared
+  dispatcher --> commit
+  sync --> dispatcher
+  adopt --> sync
+  proposals --> adopt
+  proposals --> sandbox
+  interactive --> timeline
+  interactive --> readModel
+  localSync --> conversations
+  localSync --> readModel
+  ranking --> skills
+  neutronCtx --> context
+  neutronCtx --> profiles
+  neutronCtx --> summaries
+  neutronCtx --> checkpoints

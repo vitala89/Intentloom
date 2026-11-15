@@ -1,0 +1,42 @@
+flowchart LR
+  subgraph memory ["Agent Memory"]
+    summaryStore["task and session summaries"]
+    checkpointStore["task checkpoints"]
+    rankStore["semantic ranking"]
+    profileStore["profiles"]
+    delegation["role delegation"]
+  end
+
+  subgraph contextCtx ["Context retrieval"]
+    bounded["bounded project context"]
+  end
+
+  subgraph security ["Security findings"]
+    adapterRun["local adapter execution"]
+    correlation["finding correlation"]
+  end
+
+  subgraph workspace ["Agent Workspace"]
+    conversationStore["conversation store"]
+    proposalLife["proposal lifecycle"]
+    composition["interactive and local sync bindings"]
+  end
+
+  subgraph project ["Project lifecycle and adoption"]
+    root["canonical project root and timeline"]
+    syncBind["sync and adopt bindings"]
+    dispatcher["generated-file dispatcher"]
+    featurePlan["feature-brief stub"]
+    packPlan["pack-update plan"]
+  end
+
+  subgraph apply ["Mutation governance"]
+    gate["Approved Apply gate and engine"]
+  end
+
+  delegation --> profileStore
+  proposalLife --> syncBind
+  composition --> conversationStore
+  composition --> root
+  syncBind --> dispatcher
+  gate --> dispatcher

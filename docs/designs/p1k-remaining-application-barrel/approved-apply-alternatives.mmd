@@ -1,0 +1,34 @@
+flowchart TB
+  subgraph optionA ["Option A keep dispatcher on the barrel"]
+    aEngine["engine imports index.ts"]
+    aBarrel["synchronizeGeneratedFiles stays in index.ts"]
+    aEngine --> aBarrel
+  end
+
+  subgraph optionB ["Option B leaf dispatcher recommended"]
+    bEngine["engine imports the leaf"]
+    bLeaf["generated-file/synchronize-generated-files.ts"]
+    bDeclared["declared-path sync"]
+    bCommit["owned generated-file commit"]
+    bEngine --> bLeaf
+    bLeaf --> bDeclared
+    bLeaf --> bCommit
+  end
+
+  subgraph optionC ["Option C optional injection rejected"]
+    cRejected["rejected for P1K"]
+    cOverride["would add options.synchronizeGeneratedFiles"]
+    cRisk["could report applied true without a real write"]
+    cRejected --> cOverride
+    cOverride --> cRisk
+  end
+
+  subgraph optionD ["Option D composition module viable not necessary"]
+    dIndex["index re-exports composition"]
+    dComp["approved-apply-composition.ts"]
+    dEngine["engine without an index import"]
+    dLeaf["leaf dispatcher"]
+    dIndex --> dComp
+    dComp --> dEngine
+    dComp --> dLeaf
+  end

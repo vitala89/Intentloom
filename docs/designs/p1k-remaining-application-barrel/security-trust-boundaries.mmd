@@ -1,0 +1,19 @@
+flowchart TB
+  caller["CLI daemon MCP or Neutron caller"]
+  barrel["package root re-exports"]
+  memory[".aif/memory JSON stores"]
+  workspace[".aif/workspace and .aif/proposals"]
+  project["project files inside the resolved root"]
+  gate["evaluateApprovedApplyPlan"]
+  dispatcher["synchronizeGeneratedFiles"]
+  transaction["declared-path or owned-file transaction"]
+
+  caller --> barrel
+  barrel -->|"secretLikePath filter on task paths"| memory
+  barrel -->|"regex redaction on appended messages"| workspace
+  barrel -->|"path exclusion before context read"| memory
+  caller -->|"non-empty approvedBy is not the Apply gate"| barrel
+  barrel -->|"proposal create and review do not write project files"| workspace
+  gate -->|"fail closed before write"| dispatcher
+  dispatcher --> transaction
+  transaction -->|"contained writes and transactional rollback"| project

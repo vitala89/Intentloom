@@ -181,11 +181,98 @@ Measured re-export cycles are sizes 4, 27, and 3. P1J design PR #623
 its design-stage proposal wording. The approved implementation decision
 is Option C. `index.ts` measures 1,804 effective lines and 1,953
 physical lines. The leaf is 92 effective lines and 100 physical lines.
-The implementation pull request is #626
-(https://github.com/vitala89/Intentloom/pull/626). It is open and
-awaiting review. It is not merged. No runtime behavior changed. P1 is not complete. Do not merge
-this implementation without review. Do not start Undo U4 or Desktop
-Undo U5.
+The implementation is merged as PR #626
+(https://github.com/vitala89/Intentloom/pull/626,
+`5efc30a0ae21525312425e69ef82ccd30e138c8a`). No runtime behavior changed.
+P1 is not complete. The remaining-barrel completion design is open for
+maintainer review and does not approve implementation. P1K is a working
+label, not an approved milestone. Do not start the proposed slices, Undo
+U4, or Desktop Undo U5.
+
+### 2026-11-15, P1K design — architecture review corrections (PR #627)
+
+- **Status:** **DESIGN PR OPEN — AWAITING MAINTAINER APPROVAL.** Same pull
+  request #627. Documentation-only correction after independent architectural
+  review. Do not merge. Do not implement.
+- **Branch:** `docs/architecture-p1-remaining-barrel-completion`
+- **Correction:** Approved Apply recommendation is **Option B only** (leaf-owned
+  dispatcher). **Option C** (optional `ApprovedApplyEngineOptions`
+  `synchronizeGeneratedFiles` override) is **rejected** as unnecessary for SCC
+  removal and as a new transaction-control surface. Preserve existing engine
+  options and execution order. Added Design First implementation gates (section
+  10): the seventeen-slice roadmap does not auto-authorize implementation; one
+  approved PR at a time; call-outs for P1K.7, P1K.9, P1K.14, P1K.16.
+- **Diagrams:** `approved-apply-alternatives.mmd` and embedded §8.3 diagram
+  synced. All eight `.mmd` sources match embedded Mermaid. Mermaid CLI 11.4.0
+  parsed all eight sources locally (11.17.2 is not published on npm here).
+- **Validation:** `pnpm docs:build` passed. `pnpm format:check` passed.
+  `git diff --check` passed. Production source untouched.
+- **Next:** Maintainer review of corrected design on updated HEAD. Hosted CI
+  pending on push.
+
+### 2026-11-14, Remaining application barrel completion design
+
+- **Status:** **DESIGN PR OPEN — AWAITING MAINTAINER APPROVAL.** P1K is a
+  working label, not an approved roadmap milestone. The proposed slices
+  are not approved for implementation. A green CI result is not approval.
+  Do not merge. Do not start P1K.1, Undo U4, Desktop Undo U5, or P2–P6.
+- **Triage:** 9/10 (blast radius 2, ambiguity 2, risk 1, verification 2,
+  unknowns 2). Harness: Cursor. Model role: frontier. Effort: highest.
+  Subagents: none. Stop when the design pull request is open and
+  production code is untouched.
+- **Branch:** `docs/architecture-p1-remaining-barrel-completion`
+- **Base:** `5efc30a0ae21525312425e69ef82ccd30e138c8a`
+- **Design:** `docs/designs/p1k-remaining-application-barrel/SYSTEM_DESIGN.md`
+- **Recommendation:** seventeen structural slices. The first is the profile
+  store. The Approved Apply edge is Option B plus Option C: a leaf
+  dispatcher plus an optional override, with every engine import of
+  `index.ts` removed. The dispatcher is not replaced by direct transaction
+  calls.
+- **Measured source:** `index.ts` is 1,804 effective lines and 1,953
+  physical lines. Forty-two local functions are 1,304 effective lines.
+  `runLocalSecurityAdapters` is 188 effective lines.
+  `getBoundedProjectContext` is 101. `rankProceduralMemory` is 80.
+- **Measured SCC:** import-only `[3]`, the Neutron mutation trio only.
+  Re-export-inclusive `[4, 27, 3]`. The size-27 component contains
+  `index.ts` and `approved-apply-engine.ts`. Full filenames are in the
+  design.
+- **Forecast:** central estimate about 381 effective lines and about 465
+  physical lines after a re-export-only barrel. The upper band can miss
+  400 effective lines. No exception is requested or granted. P1 stays
+  incomplete.
+- **Validation:** `git diff --check` passed. Mermaid 11.17.2 parsed all
+  eight `.mmd` sources and the eight embedded diagrams. `pnpm docs:build`
+  completed. `pnpm typecheck` passed. `pnpm lint` passed with existing
+  warnings only. `pnpm format:check` passed. `pnpm test` did not pass:
+  372 files passed and 5 failed. The failures are packed CLI installs that
+  did not leave `node_modules/intentloom/package.json` in temporary
+  runtimes (`adapter-packed-process`, `adoption-doctor-packed-process`,
+  `cli-schema-process`, `package-publish-readiness`) and
+  `cli-sync-process` initialization. 3,116 tests passed, 76 skipped, 3
+  failed. This change does not touch production source, package manifests,
+  or those tests. `pnpm build` passed afterwards. Hooks are not installed
+  in this checkout. `pnpm verify:staged` is the staged equivalent and is
+  run before commit. `pnpm verify:staged` passed for the staged
+  documentation.
+- **Not done:** maintainer approval, every implementation slice, Undo U4,
+  Desktop Undo U5, security hardening, Neutron edits. Hosted CI is not yet
+  recorded.
+- **Next first action:** Maintainer review of the design. Do not implement
+  from this handoff.
+
+#### Duty completion checklist
+
+- [x] Formatter passed
+- [x] Markdown and lint checks passed when configured
+- [ ] Relevant tests, type checks, builds, or compatibility checks passed
+- [x] Atomic commit policy and commit-message checks passed
+- [x] Repository hooks installed or equivalent commands run
+- [x] `git diff --check` passed
+- [x] Final diff reviewed
+- [x] `PROJECT_STATE.md` updated when applicable
+- [x] `DUTY_WATCH.md` handoff completed
+- [x] Related roadmap, ADR, changelog, migration, or reference docs updated
+- [x] Failed or unavailable checks recorded
 
 ### 2026-11-14, P1J Windows characterization fixtures
 

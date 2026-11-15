@@ -1,0 +1,28 @@
+flowchart LR
+  index["index.ts"]
+  engine["approved-apply-engine.ts"]
+  inception["inception-flow.ts"]
+  foundation["foundation-flow.ts"]
+  w11["bounded-execution-w11.ts"]
+  applyBe["bounded-execution-apply.ts"]
+  w9["existing-project-w9.ts"]
+  adoption["existing-project adoption modules"]
+  harness["harness.ts and benchmark sample"]
+  qualityEntry["engineering-quality-entry.ts"]
+  qualityApply["specialized-pack-external-apply.ts"]
+
+  index -->|"export star"| engine
+  index -->|"export star"| inception
+  index -->|"export star"| harness
+  index -->|"export star"| qualityEntry
+  inception -->|"export star"| foundation
+  foundation -->|"export star"| w11
+  foundation -->|"export star"| w9
+  w11 -->|"export star"| applyBe
+  applyBe -->|"executeApprovedApplyPlan"| engine
+  w9 -->|"export star"| adoption
+  engine -->|"synchronizeGeneratedFiles nodeFileSystem types"| index
+  harness -->|"synchronizeGeneratedFiles"| index
+  adoption -->|"adopt sync inspect doctor diff types"| index
+  qualityEntry -->|"export star"| qualityApply
+  qualityApply -->|"assertCanonicalProjectRoot"| index

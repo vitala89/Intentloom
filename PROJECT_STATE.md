@@ -1239,8 +1239,8 @@ its design-stage wording that Option C was a proposal. The approved
 implementation decision is Option C: the legacy task-record leaf is
 `packages/application/src/workspace/legacy-subagent-task-record.ts`,
 and `syncLocalWorkspaceState` remains on `index.ts`. The implementation
-pull request is #626 (https://github.com/vitala89/Intentloom/pull/626).
-It is open and awaiting review. It is not merged. Measured
+is merged as PR #626 (https://github.com/vitala89/Intentloom/pull/626,
+`5efc30a0ae21525312425e69ef82ccd30e138c8a`). Measured
 with `measureProductionSource`, `index.ts` is 1,804 effective lines and
 1,953 physical lines. The leaf is 92 effective lines and 100 physical
 lines. Moved functions stay at 3, 32, 13, and 36 effective lines.
@@ -1250,8 +1250,17 @@ the same members. The leaf is outside every component. No runtime
 behavior changed. Symlink following and caller-supplied task-id
 traversal that stays inside the project root but leaves
 `.aif/neutron/subagents/` remain unresolved. The extraction does not
-bring `index.ts` to the 400-line P1 gate. P1 is not complete. Undo U4
-and Desktop Undo U5 have not started. Ids 2 through 26 remain
+bring `index.ts` to the 400-line P1 gate. P1 is not complete. The
+remaining-barrel completion design is open for maintainer review at
+`docs/designs/p1k-remaining-application-barrel/SYSTEM_DESIGN.md` (PR #627).
+P1K is a working label, not an approved milestone. The proposed slices are not
+approved for implementation. Architectural review on 2026-11-15 corrected the
+Approved Apply recommendation to **Option B only** (leaf dispatcher, no public
+override); Option C is rejected in the design. Import-only SCC membership is `[3]`, the
+Neutron mutation trio only. Re-export SCC membership is `[4, 27, 3]`.
+The 27-file component still contains `index.ts` and
+`approved-apply-engine.ts`. Undo U4 and Desktop Undo U5 have not
+started. Ids 2 through 26 remain
 literal `passed` checks. The score and hash formulas are unchanged.
 The reader still does not recompute either value.
 `rankProceduralMemory` stays in the barrel.

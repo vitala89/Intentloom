@@ -49,15 +49,21 @@ is merged as design PR #623
 its design-stage wording that Option C was a proposal. The approved
 implementation decision is Option C. The leaf is
 `packages/application/src/workspace/legacy-subagent-task-record.ts`.
-`syncLocalWorkspaceState` stays on `index.ts`. The implementation pull
-request is #626 (https://github.com/vitala89/Intentloom/pull/626). It is
-open and awaiting review. It is not merged. Measured with
+`syncLocalWorkspaceState` stays on `index.ts`. The implementation is
+merged as PR #626 (https://github.com/vitala89/Intentloom/pull/626,
+`5efc30a0ae21525312425e69ef82ccd30e138c8a`). Measured with
 `measureProductionSource`, `index.ts` is 1,804 effective lines and
 1,953 physical lines, down from 1,878 and 2,034. The leaf is 92
 effective lines and 100 physical lines and is outside every SCC.
-Symlink following and caller-supplied task-id traversal inside the
-project root remain unresolved. No runtime behavior changed. P1 is not
-complete. Undo U4 and Desktop Undo U5 have not started.
+Import-only SCC membership is `[3]`. Re-export SCC membership is
+`[4, 27, 3]`. The 27-file component still contains `index.ts` and
+`approved-apply-engine.ts`. Symlink following and caller-supplied
+task-id traversal inside the project root remain unresolved. No runtime
+behavior changed. P1 is not complete.
+[Remaining application barrel completion](designs/p1k-remaining-application-barrel/SYSTEM_DESIGN.md)
+is a design proposal awaiting maintainer review. P1K is a working label,
+not an approved milestone. The proposed slices are not approved for
+implementation. Undo U4 and Desktop Undo U5 have not started.
 
 ## How this tree is organized
 
