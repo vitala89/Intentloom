@@ -267,8 +267,8 @@ describe("P1I.3 existing project adoption structure", () => {
       `${sourceRoot}/index.ts`,
     );
     expect(indexMetrics).toMatchObject({
-      effectiveCodeLines: 1687,
-      physicalLines: 1822,
+      effectiveCodeLines: 1550,
+      physicalLines: 1669,
     });
     expect(indexMetrics.effectiveCodeLines).toBeLessThan(2561);
     expect(indexMetrics.physicalLines).toBeLessThan(2736);
