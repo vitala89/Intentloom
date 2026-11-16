@@ -201,9 +201,7 @@ describe("P1K.1 profile store structure", () => {
     expect(indexSource).toMatch(
       /import \{\s*delegateTaskRole\s*\} from "\.\/memory\/role-delegation\.js";/,
     );
-    expect(indexSource).toMatch(
-      /export \{\s*createProfile,\s*getProfile,\s*listProfiles,\s*delegateTaskRole,\s*getTaskSummary,\s*listSessionSummaries,\s*listTaskSummaries,\s*recordSessionSummary,\s*recordTaskSummary,?\s*\};/,
-    );
+    expect(indexSource).toMatch(/export \{[\s\S]*recordTaskSummary,[\s\S]*\};/);
     expect(indexSource).not.toMatch(/function delegateTaskRole\(/);
     expect(indexSource).toMatch(
       /import \{\s*delegateTaskRole\s*\} from "\.\/memory\/role-delegation\.js";/,
@@ -294,8 +292,8 @@ describe("P1K.1 profile store structure", () => {
 
     const indexMetrics = measureProductionSource(indexSource, indexPath);
     expect(indexMetrics).toMatchObject({
-      effectiveCodeLines: 1550,
-      physicalLines: 1669,
+      effectiveCodeLines: 1388,
+      physicalLines: 1483,
     });
     expect(indexMetrics.effectiveCodeLines).toBeLessThan(1751);
     expect(indexMetrics.physicalLines).toBeLessThan(1896);

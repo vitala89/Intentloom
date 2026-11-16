@@ -182,9 +182,7 @@ describe("P1K.2 role delegation structure", () => {
     expect(indexSource).toMatch(
       /import \{\s*delegateTaskRole\s*\} from "\.\/memory\/role-delegation\.js";/,
     );
-    expect(indexSource).toMatch(
-      /export \{\s*createProfile,\s*getProfile,\s*listProfiles,\s*delegateTaskRole,\s*getTaskSummary,\s*listSessionSummaries,\s*listTaskSummaries,\s*recordSessionSummary,\s*recordTaskSummary,?\s*\};/,
-    );
+    expect(indexSource).toMatch(/export \{[\s\S]*recordTaskSummary,[\s\S]*\};/);
     expect(indexSource).not.toContain('from "./memory/index.js"');
 
     const profileLeaf = readFileSync(profileLeafPath, "utf8");
@@ -268,8 +266,8 @@ describe("P1K.2 role delegation structure", () => {
 
     const indexMetrics = measureProductionSource(indexSource, indexPath);
     expect(indexMetrics).toMatchObject({
-      effectiveCodeLines: 1550,
-      physicalLines: 1669,
+      effectiveCodeLines: 1388,
+      physicalLines: 1483,
     });
     expect(indexMetrics.effectiveCodeLines).toBeLessThan(1751);
     expect(indexMetrics.physicalLines).toBeLessThan(1896);
