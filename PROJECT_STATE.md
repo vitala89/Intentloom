@@ -1259,15 +1259,17 @@ Architectural review on 2026-11-15 corrected the Approved Apply
 recommendation to **Option B only** (leaf dispatcher, no public
 override); Option C is rejected in the design. P1K.1 is merged at
 `e808234d2f51d3664871f9ab294e6e7ec6c05fc8` (PR #628). P1K.2 is merged at
-`b4d0ed69690408764988ca57cf4845f373410c4c` (PR #629). P1K.3 extracts the
-task and session summary store into
-`packages/application/src/memory/task-session-summary-store.ts` and is open
-for independent review, not merged. Measured with `measureProductionSource`,
-`index.ts` is 1,550 effective lines and 1,669 physical lines after P1K.3
-implementation on branch `refactor/p1k3-task-session-summaries`. The summary
-leaf is 165 effective and 181 physical lines. Import-only SCC membership is
-`[3]`. Re-export SCC membership is `[4, 27, 3]`. The same members remain. No
-runtime behavior changed in P1K.3 scope. P1K.4 through P1K.17 have not started.
+`b4d0ed69690408764988ca57cf4845f373410c4c` (PR #629). P1K.3 is merged at
+`952555df6daa2affaf17e61151e8a0fe21c3cc60` (PR #630). P1K.4 extracts the
+task checkpoint store into
+`packages/application/src/memory/task-checkpoint-store.ts` and is open for
+independent review, not merged. Measured with `measureProductionSource` after
+P1K.4 implementation, `index.ts` is 1,388 effective lines and 1,483 physical
+lines. The checkpoint leaf is 188 effective and 212 physical lines; the eight
+moved functions stay at 33, 14, 29, 19, 19, 26, 28, and 10 effective lines.
+Import-only SCC membership is `[3]`. Re-export SCC membership is `[4, 27, 3]`.
+The same members remain. No runtime behavior changed in P1K.4 scope. P1K.5
+through P1K.17 have not started.
 The 27-file component still contains
 `index.ts` and `approved-apply-engine.ts`. Undo U4 and Desktop Undo U5
 have not started. Ids 2 through 26 remain

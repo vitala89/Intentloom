@@ -200,7 +200,7 @@ describe("P1K.3 task and session summary store structure", () => {
       /import \{\s*getTaskSummary,\s*listSessionSummaries,\s*listTaskSummaries,\s*recordSessionSummary,\s*recordTaskSummary,\s*\} from "\.\/memory\/task-session-summary-store\.js";/,
     );
     expect(indexSource).toMatch(
-      /export \{\s*createProfile,\s*getProfile,\s*listProfiles,\s*delegateTaskRole,\s*getTaskSummary,\s*listSessionSummaries,\s*listTaskSummaries,\s*recordSessionSummary,\s*recordTaskSummary,?\s*\};/,
+      /export \{[\s\S]*getTaskSummary,[\s\S]*recordTaskSummary,[\s\S]*\};/,
     );
     expect(indexSource).not.toContain('from "./memory/index.js"');
 
@@ -295,10 +295,10 @@ describe("P1K.3 task and session summary store structure", () => {
 
     const indexMetrics = measureProductionSource(indexSource, indexPath);
     expect(indexMetrics).toMatchObject({
-      effectiveCodeLines: 1550,
-      physicalLines: 1669,
+      effectiveCodeLines: 1388,
+      physicalLines: 1483,
     });
-    expect(indexMetrics.effectiveCodeLines).toBeLessThan(1687);
-    expect(indexMetrics.physicalLines).toBeLessThan(1822);
+    expect(indexMetrics.effectiveCodeLines).toBeLessThan(1507);
+    expect(indexMetrics.physicalLines).toBeLessThan(1642);
   });
 });

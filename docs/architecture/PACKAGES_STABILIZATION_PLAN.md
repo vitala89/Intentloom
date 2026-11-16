@@ -156,10 +156,11 @@ moved functions stay at 17, 14, and 27 effective lines. Measured
 import-only SCC membership is `[3]`. Measured re-export SCC membership
 is `[4, 27, 3]`, with the same members. P1K.1 is merged (PR #628,
 `e808234d2f51d3664871f9ab294e6e7ec6c05fc8`). P1K.2 is merged (PR #629,
-`b4d0ed69690408764988ca57cf4845f373410c4c`). P1K.3 task and session summary
-extraction is open for review, not merged. After P1K.3 implementation,
-`index.ts` measures 1,550 effective and 1,669 physical lines. P1K.4 through
-P1K.17 have not started. Section
+`b4d0ed69690408764988ca57cf4845f373410c4c`). P1K.3 is merged (PR #630,
+`952555df6daa2affaf17e61151e8a0fe21c3cc60`). P1K.4 task checkpoint extraction
+is open for review, not merged. After P1K.4 implementation, `index.ts` measures
+1,388 effective and 1,483 physical lines; the checkpoint leaf is 188 effective
+and 212 physical lines. P1K.5 through P1K.17 have not started. Section
 14 is unchanged. Undo U4 and Desktop Undo U5 have not started.
 Neutron's R4A topology stays frozen.
 The measurements below remain the P1A baseline and are not restated as the

@@ -253,8 +253,8 @@ describe("P1H.6 continuous security audit structure", () => {
       "packages/application/src/index.ts",
     );
     expect(indexMetrics).toMatchObject({
-      effectiveCodeLines: 1550,
-      physicalLines: 1669,
+      effectiveCodeLines: 1388,
+      physicalLines: 1483,
     });
     const landed = {
       "security/security-audit-report-store.ts": {
