@@ -1260,22 +1260,24 @@ recommendation to **Option B only** (leaf dispatcher, no public
 override); Option C is rejected in the design. P1K.1 is merged at
 `e808234d2f51d3664871f9ab294e6e7ec6c05fc8` (PR #628). P1K.2 is merged at
 `b4d0ed69690408764988ca57cf4845f373410c4c` (PR #629). P1K.3 is merged at
-`952555df6daa2affaf17e61151e8a0fe21c3cc60` (PR #630). P1K.4 extracts the
-task checkpoint store into
-`packages/application/src/memory/task-checkpoint-store.ts` and is open for
-independent review, not merged. Measured with `measureProductionSource` after
-P1K.4 implementation, `index.ts` is 1,388 effective lines and 1,483 physical
-lines. The checkpoint leaf is 188 effective and 212 physical lines; the eight
-moved functions stay at 33, 14, 29, 19, 19, 26, 28, and 10 effective lines.
+`952555df6daa2affaf17e61151e8a0fe21c3cc60` (PR #630). P1K.4 is merged at
+`65bba16250c3c98b851254c007c2b238394a6b7f` (PR #634). After P1K.4,
+`index.ts` measures 1,388 effective lines and 1,483 physical lines. The
+checkpoint leaf is 188 effective and 212 physical lines. P1K.5 extracts
+semantic ranking into `packages/application/src/memory/semantic-ranking.ts`
+and is open for independent review, not merged. Measured with
+`measureProductionSource` after P1K.5 implementation, `index.ts` is 1,279
+effective lines and 1,365 physical lines. The semantic-ranking leaf is 153
+effective and 163 physical lines; helpers are 6, 31, and 31 effective lines;
+the three public operations stay at 23, 14, and 33 effective lines.
 Import-only SCC membership is `[3]`. Re-export SCC membership is `[4, 27, 3]`.
-The same members remain. No runtime behavior changed in P1K.4 scope. P1K.5
+The same members remain. No runtime behavior changed in P1K.5 scope. P1K.6
 through P1K.17 have not started.
 The 27-file component still contains
 `index.ts` and `approved-apply-engine.ts`. Undo U4 and Desktop Undo U5
 have not started. Ids 2 through 26 remain
 literal `passed` checks. The score and hash formulas are unchanged.
 The reader still does not recompute either value.
-`rankProceduralMemory` stays in the barrel.
 Undo U4 and Desktop Undo U5 are not started. Other post-P4 candidates remain in
 `POST_W12_NEXT_INCREMENT_PLAN.md`.
 
