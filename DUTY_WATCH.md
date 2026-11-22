@@ -193,8 +193,40 @@ role delegation is merged** (PR #629,
 summary extraction is merged** (PR #630,
 `952555df6daa2affaf17e61151e8a0fe21c3cc60`). **P1K.4 task checkpoint store
 is merged** (PR #634, `65bba16250c3c98b851254c007c2b238394a6b7f`). **P1K.5
-semantic ranking extraction is open and awaiting review.** Do not start P1K.6
-through P1K.17, Undo U4, or Desktop Undo U5.
+semantic ranking is merged** (PR #635,
+`eacf825947545d0ebadc60b1f8fb09e5ba82413e`). **P1K.6 bounded project context
+extraction is open and awaiting review.** Do not start P1K.7 through P1K.17,
+Undo U4, or Desktop Undo U5.
+
+### 2026-11-23, Packages architecture P1K.6 bounded project context
+
+- **Status:** **IMPLEMENTATION OPEN — AWAITING REVIEW.**
+- **Triage:** 6/10 (blast radius 2, ambiguity 0, risk 1, verification 2,
+  unknowns 1). Harness: Cursor. Model role: mid. Effort: high.
+  Subagents: none. Grilling skipped: approved mechanical extraction from the
+  merged P1K design. Stop when the pull request is open, unmerged, and
+  measured gates are recorded.
+- **Branch:** `refactor/p1k6-bounded-project-context`
+- **Base:** `eacf825947545d0ebadc60b1f8fb09e5ba82413e` (P1K.5, PR #635).
+- **Design:** `docs/designs/p1k-remaining-application-barrel/SYSTEM_DESIGN.md`
+  sections 3.7, 10 (P1K.6), 11–17, and 19; design PR #627.
+- **Measured source:** `index.ts` is 1,180 effective lines and 1,250
+  physical lines, down from 1,279 and 1,365. The leaf is 193 effective and
+  208 physical lines. Function budgets: `normalizeListedContextPath` 6,
+  `isExcludedContextPath` 5, `classifyBoundedContextPath` 23,
+  `contextSourceMatchesQuery` 12, `summarizeBoundedContextContent` 3,
+  `estimateBoundedContextTokens` 3, `resolveListedContextFile` 7,
+  `readBoundedContextSource` 28, `collectBoundedContextCandidates` 32,
+  `selectBoundedContextItems` 15, `getBoundedProjectContext` 24 effective
+  lines.
+- **Measured SCC:** import-only `[3]`; re-export-inclusive `[4, 27, 3]`,
+  same members. The bounded-project-context leaf stays outside every
+  component.
+- **Not done:** maintainer review, merge, P1K.7 through P1K.17, Undo U4,
+  Desktop Undo U5. P1 remains incomplete. Neutron context assembly, Approved
+  Apply, and Undo were not modified.
+- **Next watch:** independent review of the P1K.6 pull request. Do not start
+  P1K.7, Undo U4, or Desktop Undo U5.
 
 ### 2026-11-21, Packages architecture P1K.5 semantic ranking
 
@@ -210,8 +242,8 @@ through P1K.17, Undo U4, or Desktop Undo U5.
   sections 3.6, 10 (P1K.5), 11–17, and 19; design PR #627; prerequisite P1K.4
   PR #634.
 - **Measured source:** `index.ts` is 1,279 effective lines and 1,365
-  physical lines, down from 1,388 and 1,483. The leaf is 154 effective and
-  164 physical lines. Function budgets: `getSemanticRankingConfig` 23,
+  physical lines, down from 1,388 and 1,483. The leaf is 153 effective and
+  163 physical lines. Function budgets: `getSemanticRankingConfig` 23,
   `updateSemanticRankingConfig` 14, `normalizeSemanticQueryTerms` 6,
   `scoreSemanticProposalItems` 31, `scoreSemanticEvaluationItems` 31,
   `rankProceduralMemory` 33 effective lines.

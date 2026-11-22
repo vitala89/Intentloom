@@ -258,8 +258,8 @@ describe("P1J legacy subagent task record structure", () => {
 
     const indexMetrics = measureProductionSource(indexSource, indexPath);
     expect(indexMetrics).toMatchObject({
-      effectiveCodeLines: 1279,
-      physicalLines: 1365,
+      effectiveCodeLines: 1180,
+      physicalLines: 1250,
     });
     expect(indexMetrics.effectiveCodeLines).toBeLessThan(1878);
     expect(indexMetrics.physicalLines).toBeLessThan(2034);

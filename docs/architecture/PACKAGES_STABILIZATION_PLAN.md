@@ -160,10 +160,16 @@ is `[4, 27, 3]`, with the same members. P1K.1 is merged (PR #628,
 `952555df6daa2affaf17e61151e8a0fe21c3cc60`). P1K.4 is merged (PR #634,
 `65bba16250c3c98b851254c007c2b238394a6b7f`). After P1K.4, `index.ts` measures
 1,388 effective and 1,483 physical lines; the checkpoint leaf is 188 effective
-and 212 physical lines. P1K.5 semantic ranking extraction is open for review,
-not merged. After P1K.5 implementation, `index.ts` measures 1,279 effective
-and 1,365 physical lines; the semantic-ranking leaf is 154 effective and 164
-physical lines. P1K.6 through P1K.17 have not started. Section
+and 212 physical lines. P1K.5 is merged (PR #635,
+`eacf825947545d0ebadc60b1f8fb09e5ba82413e`). After P1K.5, `index.ts` measures
+1,279 effective and 1,365 physical lines; the semantic-ranking leaf is 153
+effective and 163 physical lines. P1K.6 bounded project context extraction is
+open for review, not merged. After P1K.6 implementation, `index.ts` measures
+1,180 effective and 1,250 physical lines; the bounded-project-context leaf is
+193 effective and 208 physical lines. Import-only SCC membership remains
+`[3]`. Re-export SCC membership remains `[4, 27, 3]` with the same members.
+The new leaf is outside every component. P1K.7 through P1K.17 have not
+started. Section
 14 is unchanged. Undo U4 and Desktop Undo U5 have not started.
 Neutron's R4A topology stays frozen.
 The measurements below remain the P1A baseline and are not restated as the

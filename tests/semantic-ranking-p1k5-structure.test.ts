@@ -285,8 +285,8 @@ describe("P1K.5 semantic ranking structure", () => {
 
     const indexMetrics = measureProductionSource(indexSource, indexPath);
     expect(indexMetrics).toMatchObject({
-      effectiveCodeLines: 1279,
-      physicalLines: 1365,
+      effectiveCodeLines: 1180,
+      physicalLines: 1250,
     });
     expect(indexMetrics.effectiveCodeLines).toBeLessThan(1388);
     expect(indexMetrics.physicalLines).toBeLessThan(1483);

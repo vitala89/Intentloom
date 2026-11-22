@@ -1263,16 +1263,23 @@ override); Option C is rejected in the design. P1K.1 is merged at
 `952555df6daa2affaf17e61151e8a0fe21c3cc60` (PR #630). P1K.4 is merged at
 `65bba16250c3c98b851254c007c2b238394a6b7f` (PR #634). After P1K.4,
 `index.ts` measures 1,388 effective lines and 1,483 physical lines. The
-checkpoint leaf is 188 effective and 212 physical lines. P1K.5 extracts
-semantic ranking into `packages/application/src/memory/semantic-ranking.ts`
-and is open for independent review, not merged. Measured with
-`measureProductionSource` after P1K.5 implementation, `index.ts` is 1,279
-effective lines and 1,365 physical lines. The semantic-ranking leaf is 153
-effective and 163 physical lines; helpers are 6, 31, and 31 effective lines;
-the three public operations stay at 23, 14, and 33 effective lines.
-Import-only SCC membership is `[3]`. Re-export SCC membership is `[4, 27, 3]`.
-The same members remain. No runtime behavior changed in P1K.5 scope. P1K.6
-through P1K.17 have not started.
+checkpoint leaf is 188 effective and 212 physical lines. P1K.5 is merged
+at `eacf825947545d0ebadc60b1f8fb09e5ba82413e` (PR #635). Measured with
+`measureProductionSource`, `index.ts` was 1,279 effective lines and 1,365
+physical lines. The semantic-ranking leaf is 153 effective and 163 physical
+lines; helpers are 6, 31, and 31 effective lines; the three public operations
+stay at 23, 14, and 33 effective lines. Import-only SCC membership is `[3]`.
+Re-export SCC membership is `[4, 27, 3]`. The same members remain. No runtime
+behavior changed in P1K.5 scope. P1K.6 extracts `getBoundedProjectContext`
+into `packages/application/src/memory/bounded-project-context.ts` and is open
+for independent review, not merged. Measured after P1K.6 implementation,
+`index.ts` is 1,180 effective lines and 1,250 physical lines. The bounded
+project context leaf is 193 effective and 208 physical lines. Its helpers stay
+at or below 32 effective lines, and `getBoundedProjectContext` is 24.
+Import-only SCC membership remains `[3]`. Re-export SCC membership remains
+`[4, 27, 3]` with the same members. The new leaf is outside every component.
+No runtime behavior changed in P1K.6 scope. P1K.7 through P1K.17 have not
+started.
 The 27-file component still contains
 `index.ts` and `approved-apply-engine.ts`. Undo U4 and Desktop Undo U5
 have not started. Ids 2 through 26 remain
