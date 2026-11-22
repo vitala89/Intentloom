@@ -64,6 +64,7 @@ const outsideComponents = [
   "memory/persistent-memory-store.ts",
   "memory/persistent-memory-lifecycle.ts",
   "memory/persistent-memory-retrieval.ts",
+  "memory/semantic-ranking.ts",
 ];
 
 function proposalInput(
@@ -539,7 +540,8 @@ describe("P1H.3b skill proposal store and evaluation extraction", () => {
     expect(evaluationSpecs).toContain("./skill-proposal-store.js");
     expect(evaluationSpecs).not.toContain("../index.js");
     const indexImports = relativeSpecifiers("index.ts", false);
-    expect(indexImports).toContain("./skills/skill-proposal-store.js");
-    expect(indexImports).toContain("./skills/skill-evaluation.js");
+    expect(indexImports).toContain("./memory/semantic-ranking.js");
+    expect(indexImports).not.toContain("./skills/skill-proposal-store.js");
+    expect(indexImports).not.toContain("./skills/skill-evaluation.js");
   });
 });

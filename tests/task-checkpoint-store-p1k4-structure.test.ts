@@ -298,8 +298,8 @@ describe("P1K.4 task checkpoint store structure", () => {
 
     const indexMetrics = measureProductionSource(indexSource, indexPath);
     expect(indexMetrics).toMatchObject({
-      effectiveCodeLines: 1388,
-      physicalLines: 1483,
+      effectiveCodeLines: 1279,
+      physicalLines: 1365,
     });
     expect(indexMetrics.effectiveCodeLines).toBeLessThan(1507);
     expect(indexMetrics.physicalLines).toBeLessThan(1642);
