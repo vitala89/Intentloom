@@ -266,8 +266,8 @@ describe("P1K.2 role delegation structure", () => {
 
     const indexMetrics = measureProductionSource(indexSource, indexPath);
     expect(indexMetrics).toMatchObject({
-      effectiveCodeLines: 1279,
-      physicalLines: 1365,
+      effectiveCodeLines: 1180,
+      physicalLines: 1250,
     });
     expect(indexMetrics.effectiveCodeLines).toBeLessThan(1751);
     expect(indexMetrics.physicalLines).toBeLessThan(1896);

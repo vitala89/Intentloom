@@ -198,8 +198,8 @@ describe("P1H.7 interactive workspace read model structure", () => {
     });
     expect(moduleMetrics.effectiveCodeLines).toBeLessThanOrEqual(250);
     expect(indexMetrics).toMatchObject({
-      effectiveCodeLines: 1279,
-      physicalLines: 1365,
+      effectiveCodeLines: 1180,
+      physicalLines: 1250,
     });
     expect(indexMetrics.effectiveCodeLines).toBeLessThan(4547);
     expect(indexMetrics.physicalLines).toBeLessThan(4769);
