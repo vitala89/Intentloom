@@ -213,6 +213,10 @@ start P1K.8 through P1K.17, Undo U4, or Desktop Undo U5.
 - **Design:** `docs/designs/p1k-remaining-application-barrel/SYSTEM_DESIGN.md`
   sections 3.8, 10 (P1K.7), and **22**; diagrams
   `security-adapter-dependencies.mmd`, `security-adapter-run-sequence.mmd`.
+  Review corrections on the same pull request: dependency and MCP
+  `validateSecurityFinding` stay inside the existing catch, secret and config
+  validation still propagate, and section 2 keeps the P1J snapshot separate
+  from the `dbea5baf` review baseline.
 - **Verified source:** `correlateSecurityFindings` and `runLocalSecurityAdapters`
   remain in `packages/application/src/index.ts` (lines 688–912 on base).
 - **Not done:** maintainer approval of section 22, P1K.7 implementation,
