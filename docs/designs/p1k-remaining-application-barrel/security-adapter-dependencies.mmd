@@ -1,0 +1,36 @@
+flowchart TB
+  cli["CLI security-operations-command.ts"]
+  barrel["index.ts re-exports"]
+  runner["security/security-adapter-run.ts"]
+  correlate["security/security-adapter-correlation.ts"]
+  dep["security/security-adapter-dependency.ts"]
+  secret["security/security-adapter-secret.ts"]
+  cfg["security/security-adapter-config.ts"]
+  mcp["security/security-adapter-mcp.ts"]
+  store["security/security-finding-store.ts"]
+  pathmod["project-path.ts inside secretLikePath"]
+  fsport["host-file-system.ts"]
+  protocol["@intentloom/protocol validators"]
+
+  cli -->|"runLocalSecurityAdapters"| barrel
+  barrel --> runner
+  runner --> dep
+  runner --> secret
+  runner --> cfg
+  runner --> mcp
+  runner --> correlate
+  runner -->|"securityFindingPath"| store
+  dep --> fsport
+  dep --> pathmod
+  dep --> protocol
+  secret --> fsport
+  secret --> pathmod
+  secret --> protocol
+  cfg --> fsport
+  cfg --> protocol
+  mcp --> fsport
+  mcp --> pathmod
+  mcp --> protocol
+  runner --> fsport
+  runner --> protocol
+  correlate --> protocol

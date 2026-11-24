@@ -1,0 +1,27 @@
+sequenceDiagram
+  participant Caller
+  participant Runner as runLocalSecurityAdapters
+  participant Scanner as category scanner module
+  participant Corr as correlateSecurityFindings
+  participant FS as FileSystem
+  participant Disk as .aif/security/findings
+
+  Caller->>Runner: root categories fs
+  Runner->>Runner: resolve category order shared now counter
+  loop each category
+    alt dependency secret config mcp
+      Runner->>Scanner: scan options fs counter
+      Scanner->>FS: read list
+      Scanner-->>Runner: raw SecurityFinding array
+    else source extension hook agentic
+      Runner-->>Runner: empty raw findings
+    end
+    Runner->>Corr: rawFindings per category
+    Corr-->>Runner: correlated sorted by id
+    loop each correlated finding
+      Runner->>FS: exists mkdir write finding JSON
+      FS->>Disk: sequential persist
+    end
+    Runner-->>Runner: append SecurityAdapterResult
+  end
+  Runner-->>Caller: readonly SecurityAdapterResult array
