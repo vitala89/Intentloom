@@ -53,7 +53,8 @@ Verified `origin/main` and local `HEAD` before this design:
 
 That commit is the merge of P1J implementation PR #626,
 `refactor(application): extract legacy subagent task records (P1J)`, merged
-at 2026-11-14 19:32 Europe/Berlin. No later `main` commit was present.
+at 2026-11-14 19:32 Europe/Berlin. No later `main` commit was present when
+this design was written. The table below is that snapshot only.
 
 | Fact                                                                   | Evidence                                                                                                                                                   |
 | ---------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -71,6 +72,22 @@ Before this change, `PROJECT_STATE.md`, the Duty Watch status, `docs/README.md`,
 and the packages plan said PR #626 was still open. Those current-state
 passages now record the merge. Historical Duty Watch entries that described
 the open review stay as history.
+
+### P1K.7 review baseline
+
+The P1K.7 Design First review uses a later commit. It does not replace the
+snapshot above.
+
+Reviewed on 2026-11-24 against `origin/main`
+`dbea5baf79af002a203e62ba9609c8a67c87662c`, the merge of P1K.6 implementation
+PR #636. P1K.1 through P1K.6 are merged. P1K.7 implementation has not started.
+
+`measureProductionSource` on `packages/application/src/index.ts` at that
+commit: **1,180 effective lines, 1,250 physical lines, 69 blank, 1
+comment-only**. Import-only SCC sizes stay `[3]`. Re-export-inclusive SCC
+sizes stay `[4, 27, 3]`. Section 3.8 line spans are from this commit.
+Sections 3.1 through 3.7 and 3.9 through 3.11 keep the P1J inventory spans
+from the snapshot above.
 
 Section 14 of the packages plan remains the completion gate:
 
@@ -342,67 +359,126 @@ must not import `index.ts` or `src/neutron/`.
 
 ### 3.8 Security adapter execution
 
-| Name                        | Lines     | Eff | Phys | Export | Seam | Final barrel |
-| --------------------------- | --------- | --: | ---: | ------ | ---- | ------------ |
-| `correlateSecurityFindings` | 1391–1415 |  25 |   25 | yes    | no   | re-export    |
-| `runLocalSecurityAdapters`  | 1417–1615 | 188 |  199 | yes    | no   | re-export    |
+| Name                        | Lines   | Eff | Phys | Export | Seam | Final barrel |
+| --------------------------- | ------- | --: | ---: | ------ | ---- | ------------ |
+| `correlateSecurityFindings` | 688–712 |  25 |   25 | yes    | no   | re-export    |
+| `runLocalSecurityAdapters`  | 714–912 | 188 |  199 | yes    | no   | re-export    |
+
+Line spans below are the P1K.7 review baseline in section 2
+(`dbea5baf79af002a203e62ba9609c8a67c87662c`). The six-file decomposition in
+section 22 is unchanged. Section 22 is the Design First acceptance record
+for P1K.7 implementation. Section 23 is the diagram index.
+
+**Verified current behavior** (production `packages/application/src/index.ts`,
+not the proposed layout):
 
 Correlation keys `ruleId` plus the first evidence path, or `"unknown"`.
-Equal keys keep the existing finding unless the new severity rank is
-strictly higher. Severity rank is critical 5, high 4, medium 3, low 2, info
-
-1. The result is sorted by `id`.
+Equal keys keep the earlier finding unless the new severity rank is
+strictly higher; equal severity keeps the earlier finding. Severity rank
+is critical 5, high 4, medium 3, low 2, info 1. The result is sorted
+lexicographically by `id`. Correlation runs once per category on that
+category's raw findings only.
 
 The runner is over both the preferred and hard function limits. Moving it
 unchanged into `security/` would shrink `index.ts` and leave an illegal
-function. The slice decomposes it first. Default category order is
-`dependency`, `secret`, `config`, `source`, `extension`, `mcp`, `hook`,
-`agentic`. A caller-supplied `categories` list replaces that order and can
-be empty only when its length is not used; a zero-length list selects the
-default because the code checks `options.categories?.length`. Finding ids
-are `sec-dep-`, `sec-secret-`, `sec-cfg-`, and `sec-mcp-` plus a counter
-that starts at 1 and is shared across categories. Each category, including
-`source`, `extension`, `hook`, and `agentic`, emits one adapter result.
-Those four categories currently add no findings. They stay empty. This
-program does not turn stubs into scanners.
+function. The slice decomposes it first.
 
-Per-category behavior to preserve:
+**Category ordering:** default order is `dependency`, `secret`, `config`,
+`source`, `extension`, `mcp`, `hook`, `agentic`. When
+`options.categories?.length` is truthy, that array replaces the default
+order exactly (preserving duplicates; no deduplication). A zero-length
+`categories` array is falsy for `.length`, so all eight defaults run.
 
-- Dependency reads `package.json` when present, merges `dependencies` and
-  `devDependencies`, and flags string versions `"*"`, `"latest"`, or a
-  `>=` prefix as `dep/unpinned-wildcard` at medium severity. Malformed JSON
-  is ignored.
-- Secret lists the project, skips paths containing `node_modules`, starting
-  with `.git`, or ending in `.png` or `.jpg`, and flags `secretLikePath`.
-  Evidence path is `"[REDACTED]"` whenever `secretLikePath` matches. That
-  predicate is already true in this branch.
-- Config lists the project and, when some path contains `.aif/` and none
-  contains `.aif/policy`, emits `config/missing-security-policy`.
-- MCP reads JSON files whose normalized path contains `.aif/mcp/` and ends
-  in `.json`. `allowGenericShell === true` emits
-  `mcp/unrestricted-shell-permission` at critical severity. Malformed JSON
-  is ignored.
+**Finding IDs:** `findingCounter` starts at `1` once per runner
+invocation and is shared across all categories. Prefixes stay `sec-dep-`,
+`sec-secret-`, `sec-cfg-`, and `sec-mcp-` for findings those scanners emit.
+Each category, including `source`, `extension`, `hook`, and `agentic`,
+still produces exactly one `SecurityAdapterResult` with zero findings today.
+P1K.7 does not implement scanners for those four categories.
 
-Correlated findings are written through the existing
-`securityFindingPath` helper. The runner then builds adapter metadata with
-`readOnly: true`, `networkAccess: false`, and version `"1.0.0"`. One
-`executedAt` timestamp is captured before the loop and reused.
+Per-category scanner behavior to preserve (verified):
 
-Proposed files, all under the existing `security/` directory:
+- **Dependency:** reads `inside(root, "package.json")` when present; merges
+  `dependencies` and `devDependencies`; flags string versions `"*"`,
+  `"latest"`, or any value starting with `>=` as `dep/unpinned-wildcard`
+  at medium severity. Caret (`^`) and other ranges are not flagged.
+  `fs.exists` is outside the try and propagates. `fs.read`, `JSON.parse`,
+  and `validateSecurityFinding` share one try around the whole manifest.
+  A caught failure keeps findings already pushed, keeps every
+  `findingCounter` increment already evaluated (the id expression runs
+  before validation, so a validation throw consumes an id that is not
+  stored), stops the rest of that manifest, and does not throw. Correlation
+  and persistence still run for the partial list. Later categories still
+  run.
+- **Secret:** `fs.list(root)`; skips relative paths containing
+  `node_modules`, starting with `.git`, or ending in `.png` or `.jpg`; flags
+  paths where `secretLikePath(rel)` is true (`.env` segment, `.env.*`
+  segment, or segment ending in `.key`, `.pem`, `.p12`, `.pfx`). No file
+  bytes are read. Evidence path is always `"[REDACTED]"` when the finding is
+  emitted. Description still interpolates the relative path (existing
+  behavior; possible future hardening, not changed in P1K.7).
+  `validateSecurityFinding` is outside any try. A validation throw aborts
+  the runner before this category is correlated or persisted. Findings
+  already pushed for this category are not written. Earlier categories
+  stay on disk. The shared counter is not rewound: the throwing call has
+  already incremented it. `fs.list` failure propagates before this
+  category is correlated or persisted.
+- **Config:** `fs.list(root)`; when some listed path contains `.aif/` and
+  none contains `.aif/policy`, emits `config/missing-security-policy` at
+  low severity with evidence path `.aif`. Validation is outside any try and
+  propagates the same way as the secret scanner. Listing failure propagates
+  before any config finding is built.
+- **MCP:** `fs.list(root)` is outside any try and propagates. For each
+  normalized path that includes `.aif/mcp/` and ends in `.json`, one try
+  covers `fs.read`, `JSON.parse`, and `validateSecurityFinding`. A caught
+  failure skips the rest of that file only. Findings already pushed from
+  earlier files stay in `rawFindings`. A validation throw consumes the next
+  id and does not push that finding. Later matching files still run, and
+  the category still correlates and persists the partial list. When
+  `allowGenericShell === true`, the finding is
+  `mcp/unrestricted-shell-permission` at critical severity with the relative
+  config path as evidence.
 
-- `security-adapter-correlation.ts`
-- `security-adapter-dependency.ts`
-- `security-adapter-secret.ts`
-- `security-adapter-config.ts`
-- `security-adapter-mcp.ts`
-- `security-adapter-run.ts` for order, ids, persistence, and result assembly
+**Persistence:** after per-category correlation, each finding is written to
+`securityFindingPath(root, id)` → `.aif/security/findings/{id}.json` via
+`JSON.stringify(finding, null, 2)` plus trailing newline. Parent directory
+is created with `fs.mkdir` only when absent. Writes are sequential. There
+is no transaction, rollback, or retry. Persistence, directory checks, and
+`mkdir` are outside every scanner try. `fs.exists` on the parent,
+`fs.mkdir`, and `fs.write` propagate. A failure there leaves findings
+already written in this run on disk, including earlier findings in the same
+category, and skips the rest of the runner. `validateSecurityAdapterMetadata`
+and `validateSecurityAdapterResult` run after that category's writes. If
+either throws, those finding files are already stored and later categories
+do not run.
 
-No file and no function may exceed the hard budgets. The leaf imports
-`security-finding-store.ts` for the path helper and does not import
-`index.ts`. Callers: `cli/security-operations-command.ts`. Tests:
-`tests/memory-security-s2.test.ts` and the security-audit behavior tests
-that already cover adjacent security modules. Known filesystem weaknesses
-in section 12 stay documented. They are not patched here.
+**Adapter metadata:** each result uses `validateSecurityAdapterMetadata`
+with `readOnly: true`, `networkAccess: false`, `version: "1.0.0"`, and
+name `built-in:{category}-adapter`. One `executedAt` ISO timestamp is
+captured before the category loop and reused for every finding timestamp
+and every adapter result. Metadata describes adapter capability; the
+runner still persists finding records regardless.
+
+**Proposed files** (structural only; behavior identical), under
+`packages/application/src/security/`:
+
+| Module                            | Ownership                                                                            |
+| --------------------------------- | ------------------------------------------------------------------------------------ |
+| `security-adapter-correlation.ts` | duplicate-key handling, severity precedence, sort by `id`                            |
+| `security-adapter-dependency.ts`  | dependency scanner logic                                                             |
+| `security-adapter-secret.ts`      | secret scanner logic                                                                 |
+| `security-adapter-config.ts`      | config scanner logic                                                                 |
+| `security-adapter-mcp.ts`         | MCP scanner logic                                                                    |
+| `security-adapter-run.ts`         | category order, shared counter, correlation invocation, persistence, result assembly |
+
+No new security scanners or public APIs. No file or function may exceed
+hard budgets (250 / 400 file, 40 / 80 function). The runner imports
+`securityFindingPath` from `security-finding-store.ts`. No extracted leaf
+imports `index.ts`. Callers stay on the package root:
+`packages/cli/src/security-operations-command.ts`. Tests:
+`tests/memory-security-s2.test.ts`, `tests/security-finding-store-p1h4a.test.ts`,
+and CLI security scan coverage. Known filesystem weaknesses in section 12
+and section 22 are not patched in this slice.
 
 ### 3.9 Interactive workspace conversations
 
@@ -1067,7 +1143,8 @@ changes across all seventeen future pull requests.
 
 Pay particular attention before implementation:
 
-- **P1K.7** — security adapter decomposition.
+- **P1K.7** — security adapter decomposition (section 22 Design First gate;
+  documentation pull request required before implementation).
 - **P1K.9** — workspace proposal lifecycle and adoption binding.
 - **P1K.14** — Approved Apply dispatcher extraction (Option B only; no public
   dispatcher override).
@@ -1172,16 +1249,21 @@ the Option B recommendation in sections 6 and 8.
 - Responsibility: correlation and the local adapter runner.
 - Declarations: `correlateSecurityFindings`, `runLocalSecurityAdapters`.
 - Targets: the six `security/security-adapter-*.ts` files in section 3.8.
-- Preserve: `tests/memory-security-s2.test.ts` and security CLI coverage.
-  Add characterization tests for category order, shared finding counter,
-  empty categories, and secret evidence redaction before moving code.
-- Lines removed: 213 effective. Glue about 4. Net about 209.
-- SCC: unchanged.
-- Prerequisites: this design approved, including the decomposition.
-- Non-goals: new scanners, symlink hardening, changing rule ids or severity.
-- Acceptance: the 188-line function does not exist in the new files; default
-  category order and id prefixes stay; four categories still return zero
-  findings and one result each.
+- **Design First gate:** section 22. Implementation does not start until
+  that section is explicitly approved after this documentation pull request.
+- Preserve: `tests/memory-security-s2.test.ts`,
+  `tests/security-finding-store-p1h4a.test.ts`, and security CLI coverage.
+  Add characterization tests listed in section 22 before moving code.
+- Lines removed: 213 effective (remeasured after P1K.6). Glue about 4. Net
+  about 209.
+- SCC: unchanged — import-only `[3]`, re-export-inclusive `[4, 27, 3]`; new
+  leaves stay outside every component.
+- Prerequisites: merged P1K design (PR #627), P1K.6 merged, and maintainer
+  approval of section 22.
+- Non-goals: new scanners, symlink hardening, secret description redaction,
+  transactions, caching, concurrency, protocol or export-map changes.
+- Acceptance: section 22 implementation acceptance matrix; no function above
+  80 effective lines in new modules; barrel re-exports only.
 
 ### P1K.8 Workspace conversations
 
@@ -1745,18 +1827,311 @@ This checklist is not satisfied by merging the design.
 Project Sable and other future product ideas are unchanged and are not
 decided here.
 
-## 22. Diagram index
+## 22. P1K.7 security adapter execution — Design First gate
 
-| Diagram                                 | Source file                        | Section |
-| --------------------------------------- | ---------------------------------- | ------- |
-| Current application barrel dependencies | `current-barrel-dependencies.mmd`  | 4       |
-| Bounded-context ownership               | `bounded-context-ownership.mmd`    | 5       |
-| Future target module layout             | `future-module-layout.mmd`         | 7       |
-| Approved Apply cycle                    | `approved-apply-cycle.mmd`         | 8       |
-| Alternatives for breaking that cycle    | `approved-apply-alternatives.mmd`  | 8       |
-| Phased implementation dependencies      | `phased-implementation.mmd`        | 9       |
-| Security trust boundaries               | `security-trust-boundaries.mmd`    | 12      |
-| Approved Apply synchronization sequence | `approved-apply-sync-sequence.mmd` | 14      |
+Status: **proposed** (this documentation pull request). Parent design PR #627
+remains the architectural roadmap. This section records verified current
+behavior and implementation boundaries for slice P1K.7 only. It does not
+approve implementation.
+
+### 22.1 Problem and scope
+
+P1K.7 extracts `correlateSecurityFindings` and `runLocalSecurityAdapters`
+from `index.ts` into six modules under `packages/application/src/security/`
+without changing scanning rules, persistence bytes, public signatures, or CLI
+output. ADR-0028 and the existing security finding store contract stay in
+force.
+
+### 22.2 Public interfaces and compatibility
+
+| Symbol                                   | Visibility                              | Compatibility                                                                                    |
+| ---------------------------------------- | --------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| `correlateSecurityFindings(findings)`    | exported from `@intentloom/application` | same signature; pure function; no `FileSystem`                                                   |
+| `runLocalSecurityAdapters(options, fs?)` | exported from `@intentloom/application` | same `options.root`, optional `categories`, optional `FileSystem` defaulting to `nodeFileSystem` |
+| Scanner modules                          | package-internal                        | not exported from barrel or export map                                                           |
+| Protocol types                           | `@intentloom/protocol`                  | unchanged in this slice                                                                          |
+
+CLI `intentloom security scan` continues to call `runLocalSecurityAdapters`
+through the package root with optional single `--category` (wraps as a
+one-element `categories` array). JSON and text output shapes stay as today.
+
+### 22.3 Proposed dependency direction
+
+```mermaid
+flowchart TB
+  cli["CLI security-operations-command.ts"]
+  barrel["index.ts re-exports"]
+  runner["security/security-adapter-run.ts"]
+  correlate["security/security-adapter-correlation.ts"]
+  dep["security/security-adapter-dependency.ts"]
+  secret["security/security-adapter-secret.ts"]
+  cfg["security/security-adapter-config.ts"]
+  mcp["security/security-adapter-mcp.ts"]
+  store["security/security-finding-store.ts"]
+  pathmod["project-path.ts inside secretLikePath"]
+  fsport["host-file-system.ts"]
+  protocol["@intentloom/protocol validators"]
+
+  cli -->|"runLocalSecurityAdapters"| barrel
+  barrel --> runner
+  runner --> dep
+  runner --> secret
+  runner --> cfg
+  runner --> mcp
+  runner --> correlate
+  runner -->|"securityFindingPath"| store
+  dep --> fsport
+  dep --> pathmod
+  dep --> protocol
+  secret --> fsport
+  secret --> pathmod
+  secret --> protocol
+  cfg --> fsport
+  cfg --> protocol
+  mcp --> fsport
+  mcp --> pathmod
+  mcp --> protocol
+  runner --> fsport
+  runner --> protocol
+  correlate --> protocol
+```
+
+Source: `security-adapter-dependencies.mmd`. Section 7 `future-module-layout.mmd`
+already shows the same leaf names; that diagram is still correct and is not
+duplicated here.
+
+Rules:
+
+- Clients depend on the package barrel only; no new subpath exports.
+- Extracted leaves import `host-file-system.ts`, `project-path.ts`, protocol
+  validators, and sibling scanner modules only through the runner.
+- No leaf imports `index.ts` or `src/neutron/**`.
+- `security-finding-store.ts` does not import adapter modules.
+
+### 22.4 DDD ownership
+
+Bounded context: **Security findings** (section 5). Local adapter execution
+produces normalized `SecurityFinding` records and adapter metadata; it is not
+Approved Apply, not sandbox evaluation, not continuous audit orchestration.
+Correlation is a domain helper for duplicate suppression within one category
+batch.
+
+### 22.5 Data flow
+
+```mermaid
+sequenceDiagram
+  participant Caller
+  participant Runner as runLocalSecurityAdapters
+  participant Dep as dependency scanner
+  participant Secret as secret scanner
+  participant Config as config scanner
+  participant Mcp as mcp scanner
+  participant Corr as correlateSecurityFindings
+  participant FS as FileSystem
+  participant Disk as .aif/security/findings
+
+  Caller->>Runner: root, categories, fs
+  Runner->>Runner: category order, shared timestamp, counter starts at 1
+  loop each category in order
+    alt dependency
+      Dep->>FS: exists package.json
+      opt file exists
+        Dep->>FS: read package.json
+        Note over Dep: one try covers read, JSON.parse, and validateSecurityFinding
+      end
+    else secret
+      Secret->>FS: list root
+      Note over Secret: no file read, and validateSecurityFinding is outside any try
+    else config
+      Config->>FS: list root
+      Note over Config: no file read, and validateSecurityFinding is outside any try
+    else mcp
+      Mcp->>FS: list root
+      loop each .aif/mcp JSON file
+        Mcp->>FS: read that file
+        Note over Mcp: per-file try covers read, JSON.parse, and validateSecurityFinding
+      end
+    else source, extension, hook, or agentic
+      Note over Runner: no filesystem call and no findings
+    end
+    Runner->>Corr: this category raw findings
+    Corr-->>Runner: sorted by id
+    loop each correlated finding
+      Runner->>FS: exists parent directory
+      opt parent is missing
+        Runner->>FS: mkdir parent
+      end
+      Runner->>FS: write finding JSON
+      FS->>Disk: .aif/security/findings/id.json
+    end
+    Runner->>Runner: validate adapter metadata and result
+  end
+  Runner-->>Caller: SecurityAdapterResult array
+```
+
+Source: `security-adapter-run-sequence.mmd`.
+
+### 22.6 Failure propagation and error boundaries
+
+| Boundary                                                             | Behavior today                                                                                                                                                                                                                             | P1K.7 change |
+| -------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------ |
+| Dependency `package.json` missing                                    | `fs.exists` is false; no dependency findings; category still returns one adapter result                                                                                                                                                    | none         |
+| Dependency `fs.exists` failure                                       | propagates before the try; this category is not persisted; earlier categories stay on disk                                                                                                                                                 | none         |
+| Dependency `fs.read`, `JSON.parse`, or `validateSecurityFinding`     | one try around the whole manifest; catch keeps findings already pushed and counter increments already evaluated; remaining names in that manifest are skipped; no throw; correlation and persistence still run; later categories still run | none         |
+| Secret or config `fs.list` failure                                   | propagates; this category is not correlated or persisted; earlier categories stay on disk                                                                                                                                                  | none         |
+| Secret or config `validateSecurityFinding`                           | outside any try; propagates; findings already pushed for this category are not written; counter is not rewound; later categories do not run                                                                                                | none         |
+| MCP `fs.list` failure                                                | propagates, same as secret and config listing                                                                                                                                                                                              | none         |
+| MCP per-file `fs.read`, `JSON.parse`, or `validateSecurityFinding`   | one try per matching JSON file; that file stops; earlier files' findings stay; a validation throw consumes an id and does not push; later files still run; the partial list is correlated and persisted                                    | none         |
+| Parent `fs.exists`, `fs.mkdir`, or `fs.write` during persistence     | outside every scanner try; propagates; findings already written in this run stay, including earlier findings in the same category; remaining writes and categories do not run                                                              | none         |
+| `validateSecurityAdapterMetadata` or `validateSecurityAdapterResult` | after that category's writes; throw leaves those files on disk and skips later categories                                                                                                                                                  | none         |
+| `inside()` path traversal                                            | throws; not caught by the dependency try when it happens before `fs.exists`                                                                                                                                                                | none         |
+
+No new fail-open or fail-closed policy is introduced. Partial persistence on
+write failure is an existing limitation, not fixed here.
+
+### 22.7 Security and trust invariants
+
+Documented in section 3.8 and section 12. Additional P1K.7 clarifications:
+
+- Secret scanner: path-only; `secretLikePath` from `project-path.ts`; evidence
+  redacted; description exposes relative path (future hardening candidate).
+- Empty stub categories must remain zero-finding adapters with full metadata.
+- Adapter `readOnly` / `networkAccess` metadata does not skip persistence.
+- `nodeFileSystem` symlink follow behavior unchanged.
+
+### 22.8 Code size and SCC constraints
+
+| Constraint             | Requirement                                                                                                                   |
+| ---------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| Production file budget | each new module ≤250 effective preferred, ≤400 hard                                                                           |
+| Function budget        | each function ≤40 preferred, ≤80 hard; runner orchestration split so no 188-line function remains                             |
+| SCC after slice        | import-only `[3]`; re-export-inclusive `[4, 27, 3]` unchanged                                                                 |
+| Structure test         | same style as `tests/legacy-subagent-task-record-p1j-structure.test.ts`: no `index.js` import from new leaves, measured sizes |
+
+Forecast: `index.ts` drops by ~209 effective lines toward the P1K.7 row in
+section 15 (remeasure on implementation).
+
+### 22.9 Test strategy
+
+**Before extraction (characterization, new or extended tests):**
+
+- Default eight categories in exact order; assert eight adapter results.
+- Caller order `["mcp", "dependency"]` and duplicate
+  `["dependency", "dependency"]`.
+- Shared counter: dependency then secret ids `sec-dep-1`, `sec-secret-2` (etc.).
+- Correlation: higher, equal, and lower severity on same rule/evidence key.
+- Secret: `.env` match, skip `node_modules`, evidence `[REDACTED]`, description
+  contains relative path.
+- Dependency: `*` / `latest` / `>=`; `^` not flagged; malformed JSON silent.
+- Config: `.aif/` without `.aif/policy`.
+- MCP: `allowGenericShell === true`; malformed JSON silent.
+- Empty categories `source`, `extension`, `hook`, `agentic`: zero findings,
+  one result each.
+- Persisted JSON bytes and path layout under `.aif/security/findings/`.
+- Partial persistence: simulate write failure after first finding (injected FS).
+- CLI JSON and text for `security scan`.
+
+**After extraction:** existing tests above plus `pnpm verify`; structure test
+for six modules; `applicationCycles` unchanged.
+
+### 22.10 Design First acceptance matrix
+
+| Area                                          | Covered                    |
+| --------------------------------------------- | -------------------------- |
+| Public interfaces and compatibility           | section 22.2               |
+| Component ownership (six modules)             | sections 3.8, 22.3–22.4    |
+| Data flow scanner → correlation → persistence | section 22.5               |
+| Success path                                  | section 22.5 sequence      |
+| Failure paths and propagation                 | section 22.6               |
+| Validation boundaries                         | sections 22.6, 3.8         |
+| Partial write / no rollback                   | sections 22.6, 3.8         |
+| Category and finding ordering                 | section 3.8                |
+| Redaction and description-path behavior       | sections 3.8, 22.7         |
+| Test strategy including negatives             | section 22.9               |
+| Non-goals                                     | sections 10 (P1K.7), 22.11 |
+| SCC topology and size budgets                 | section 22.8               |
+| Diagrams                                      | sections 22.3–22.5, 7, 12  |
+
+Maintainer approval of this matrix and section 3.8 decomposition is required
+before any P1K.7 implementation pull request.
+
+### 22.11 Non-goals (P1K.7)
+
+- Implementing scanners for `source`, `extension`, `hook`, or `agentic`.
+- Changing rule IDs, severities, scanners strings, or trust classes.
+- Symlink hardening, transactional persistence, retries, or caching.
+- Protocol schema or package export-map edits.
+- Neutron, Approved Apply, Undo, or P1K.8+ slices.
+
+### 22.12 Future work (not P1K.7)
+
+- Redact or generalize secret-finding descriptions that include paths.
+- Real scanners for stub categories (separate Design First).
+- Stronger containment for `fs.list` traversal and symlink writes (section 12).
+
+### 22.13 Implementation acceptance matrix (for the future implementation PR)
+
+The implementation PR must satisfy all of the following (characterization
+tests first, then move code):
+
+1. All eight categories in exact default order when `categories` omitted.
+2. Caller-supplied category order preserved; duplicate categories not deduped.
+3. Shared `findingCounter` across categories in one invocation.
+4. Finding ID prefixes `sec-dep-`, `sec-secret-`, `sec-cfg-`, `sec-mcp-` and
+   deterministic lexicographic order after correlation.
+5. Correlation: higher severity replaces lower; equal keeps first; lower does
+   not replace higher.
+6. Secret path exclusions and evidence `[REDACTED]`.
+7. Description still interpolates relative path for secret findings.
+8. Malformed dependency JSON is caught with read and
+   `validateSecurityFinding` for the whole manifest: no throw, findings
+   already accepted in that manifest stay, the counter is not rewound, and
+   later dependency names in that file are skipped. Malformed MCP JSON is
+   caught per file with that file's read and `validateSecurityFinding`: no
+   throw, other MCP files continue, and a consumed id is not reused.
+9. Dependency version matching: `*`, `latest`, `>=` only.
+10. Config missing-policy when `.aif/` present without `.aif/policy`.
+11. MCP `allowGenericShell === true` detection.
+12. Empty scanner categories still return adapter results with `totalCount: 0`.
+13. Persisted finding JSON: two-space indent, trailing newline, paths via
+    `securityFindingPath`.
+14. Directory creation when the parent is missing. Listing failures, parent
+    `exists` / `mkdir` / `write` failures, and secret or config validation
+    failures propagate. Dependency and MCP read, parse, and validation
+    failures stay inside their existing catch boundaries.
+15. Partial persistence when a write fails after earlier writes succeeded.
+16. CLI JSON and text output unchanged for `security scan`.
+17. No protocol or public export changes beyond re-export wiring.
+18. No new SCC; structure tests and `applicationCycles` match section 22.8.
+19. Six modules exist; `runLocalSecurityAdapters` body not a single 188-line
+    function in any file.
+20. Barrel re-exports `correlateSecurityFindings` and `runLocalSecurityAdapters`
+    only; scanners stay internal.
+
+### 22.14 Remaining risks
+
+| Risk                                                  | Mitigation                                 |
+| ----------------------------------------------------- | ------------------------------------------ |
+| Behavior drift during mechanical move                 | characterization tests before edit         |
+| Accidental scanner implementation for stub categories | explicit non-goals and tests               |
+| Leaf imports barrel and recreates SCC                 | structure test forbids `index.js` import   |
+| Oversized runner after split                          | measure each function in CI structure test |
+| Silent "fix" of description-path leak                 | documented as future work only             |
+
+## 23. Diagram index
+
+| Diagram                                 | Source file                         | Section |
+| --------------------------------------- | ----------------------------------- | ------- |
+| Current application barrel dependencies | `current-barrel-dependencies.mmd`   | 4       |
+| Bounded-context ownership               | `bounded-context-ownership.mmd`     | 5       |
+| Future target module layout             | `future-module-layout.mmd`          | 7       |
+| Approved Apply cycle                    | `approved-apply-cycle.mmd`          | 8       |
+| Alternatives for breaking that cycle    | `approved-apply-alternatives.mmd`   | 8       |
+| Phased implementation dependencies      | `phased-implementation.mmd`         | 9       |
+| Security trust boundaries               | `security-trust-boundaries.mmd`     | 12      |
+| Approved Apply synchronization sequence | `approved-apply-sync-sequence.mmd`  | 14      |
+| P1K.7 security adapter dependencies     | `security-adapter-dependencies.mmd` | 22      |
+| P1K.7 adapter run sequence              | `security-adapter-run-sequence.mmd` | 22      |
 
 Each fenced diagram in this file is the same text as its `.mmd` source.
 Mermaid is the only diagram format. Excalidraw and draw.io are not used

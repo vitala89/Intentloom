@@ -195,8 +195,35 @@ summary extraction is merged** (PR #630,
 is merged** (PR #634, `65bba16250c3c98b851254c007c2b238394a6b7f`). **P1K.5
 semantic ranking is merged** (PR #635,
 `eacf825947545d0ebadc60b1f8fb09e5ba82413e`). **P1K.6 bounded project context
-extraction is open and awaiting review.** Do not start P1K.7 through P1K.17,
-Undo U4, or Desktop Undo U5.
+is merged** (PR #636, `dbea5baf79af002a203e62ba9609c8a67c87662c`).
+**P1K.7 Design First gate is open and awaiting review.** Do not implement
+P1K.7 until section 22 of the P1K design is explicitly approved. Do not
+start P1K.8 through P1K.17, Undo U4, or Desktop Undo U5.
+
+### 2026-11-24, Packages architecture P1K.7 security adapter Design First gate
+
+- **Status:** **DESIGN OPEN — AWAITING REVIEW.**
+- **Triage:** 5/10 (blast radius 1 documentation, ambiguity 0, risk 2
+  security-sensitive design, verification 1, unknowns 0). Harness: Cursor.
+  Model role: mid. Effort: medium. Subagents: none. Grilling skipped:
+  decomposition fixed in merged PR #627; task clarifies verified behavior.
+  Stop when design pull request is open with no production code changes.
+- **Branch:** `design/p1k7-security-adapter-boundaries`
+- **Base:** `dbea5baf79af002a203e62ba9609c8a67c87662c` (`main`, after P1K.6).
+- **Design:** `docs/designs/p1k-remaining-application-barrel/SYSTEM_DESIGN.md`
+  sections 3.8, 10 (P1K.7), and **22**; diagrams
+  `security-adapter-dependencies.mmd`, `security-adapter-run-sequence.mmd`.
+  Review corrections on the same pull request: dependency and MCP
+  `validateSecurityFinding` stay inside the existing catch, secret and config
+  validation still propagate, and section 2 keeps the P1J snapshot separate
+  from the `dbea5baf` review baseline.
+- **Verified source:** `correlateSecurityFindings` and `runLocalSecurityAdapters`
+  remain in `packages/application/src/index.ts` (lines 688–912 on base).
+- **Not done:** maintainer approval of section 22, P1K.7 implementation,
+  P1K.8 through P1K.17, Undo U4, Desktop Undo U5.
+- **Next watch:** independent review of the P1K.7 design pull request. Do not
+  implement P1K.7 until approved. Do not start P1K.8, Undo U4, or Desktop
+  Undo U5.
 
 ### 2026-11-23, Packages architecture P1K.6 bounded project context
 

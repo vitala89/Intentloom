@@ -1,0 +1,48 @@
+sequenceDiagram
+  participant Caller
+  participant Runner as runLocalSecurityAdapters
+  participant Dep as dependency scanner
+  participant Secret as secret scanner
+  participant Config as config scanner
+  participant Mcp as mcp scanner
+  participant Corr as correlateSecurityFindings
+  participant FS as FileSystem
+  participant Disk as .aif/security/findings
+
+  Caller->>Runner: root, categories, fs
+  Runner->>Runner: category order, shared timestamp, counter starts at 1
+  loop each category in order
+    alt dependency
+      Dep->>FS: exists package.json
+      opt file exists
+        Dep->>FS: read package.json
+        Note over Dep: one try covers read, JSON.parse, and validateSecurityFinding
+      end
+    else secret
+      Secret->>FS: list root
+      Note over Secret: no file read, and validateSecurityFinding is outside any try
+    else config
+      Config->>FS: list root
+      Note over Config: no file read, and validateSecurityFinding is outside any try
+    else mcp
+      Mcp->>FS: list root
+      loop each .aif/mcp JSON file
+        Mcp->>FS: read that file
+        Note over Mcp: per-file try covers read, JSON.parse, and validateSecurityFinding
+      end
+    else source, extension, hook, or agentic
+      Note over Runner: no filesystem call and no findings
+    end
+    Runner->>Corr: this category raw findings
+    Corr-->>Runner: sorted by id
+    loop each correlated finding
+      Runner->>FS: exists parent directory
+      opt parent is missing
+        Runner->>FS: mkdir parent
+      end
+      Runner->>FS: write finding JSON
+      FS->>Disk: .aif/security/findings/id.json
+    end
+    Runner->>Runner: validate adapter metadata and result
+  end
+  Runner-->>Caller: SecurityAdapterResult array

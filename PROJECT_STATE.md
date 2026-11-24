@@ -1278,8 +1278,11 @@ project context leaf is 193 effective and 208 physical lines. Its helpers stay
 at or below 32 effective lines, and `getBoundedProjectContext` is 24.
 Import-only SCC membership remains `[3]`. Re-export SCC membership remains
 `[4, 27, 3]` with the same members. The new leaf is outside every component.
-No runtime behavior changed in P1K.6 scope. P1K.7 through P1K.17 have not
-started.
+No runtime behavior changed in P1K.6 scope. P1K.6 is merged at
+`dbea5baf79af002a203e62ba9609c8a67c87662c` (PR #636). P1K.7 Design First
+documentation (section 22 of the P1K system design) is open for review; P1K.7
+implementation is not authorized until that gate is approved. P1K.8 through
+P1K.17 have not started.
 The 27-file component still contains
 `index.ts` and `approved-apply-engine.ts`. Undo U4 and Desktop Undo U5
 have not started. Ids 2 through 26 remain
