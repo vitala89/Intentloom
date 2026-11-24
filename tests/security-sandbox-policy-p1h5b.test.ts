@@ -103,9 +103,12 @@ describe("P1H.5b sandbox capability policy", () => {
     expect(indexSource).toContain(
       'import { evaluateProposalAgainstSandbox } from "./security/sandbox-proposal-evaluation.js"',
     );
-    expect(indexSource).toContain(
-      'import { securityFindingPath } from "./security/security-finding-store.js"',
-    );
+    expect(
+      readFileSync(
+        "packages/application/src/security/security-adapter-run.ts",
+        "utf8",
+      ),
+    ).toContain('from "./security-finding-store.js"');
     expect(indexSource).not.toContain("function sandboxCapabilityPolicyPath");
     expect(indexSource).not.toContain("function getSandboxCapabilityPolicy");
     expect(indexSource).not.toContain("function writeSandboxCapabilityPolicy");

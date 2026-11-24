@@ -1,4 +1,4 @@
-import { dirname, resolve } from "node:path";
+import { resolve } from "node:path";
 import { describe, expect, it, vi } from "vitest";
 import {
   correlateSecurityFindings,
@@ -152,7 +152,9 @@ describe("P1K.7 security adapter characterization", () => {
       id: "sec-2",
       severity: "high",
     });
-    expect(correlateSecurityFindings([tieFirst, tieSecond])).toEqual([tieFirst]);
+    expect(correlateSecurityFindings([tieFirst, tieSecond])).toEqual([
+      tieFirst,
+    ]);
     const sorted = correlateSecurityFindings([
       validateSecurityFinding({ ...base, id: "m-2", severity: "info" }),
       validateSecurityFinding({
@@ -185,7 +187,10 @@ describe("P1K.7 security adapter characterization", () => {
 
     const ignored = await seedProject({
       "package.json": JSON.stringify({
-        dependencies: { caret: "^1.0.0", object: { bad: true } as unknown as string },
+        dependencies: {
+          caret: "^1.0.0",
+          object: { bad: true } as unknown as string,
+        },
       }),
     });
     const ignoredResults = await runLocalSecurityAdapters(
@@ -239,10 +244,7 @@ describe("P1K.7 security adapter characterization", () => {
     );
     expect(missing[0]?.findings).toHaveLength(0);
 
-    await fs.write(
-      `${root}/package.json`,
-      "{not valid json",
-    );
+    await fs.write(`${root}/package.json`, "{not valid json");
     const malformed = await runLocalSecurityAdapters(
       { root, categories: ["dependency"] },
       fs,
@@ -254,7 +256,7 @@ describe("P1K.7 security adapter characterization", () => {
     const fs = await seedProject({
       "package.json": JSON.stringify({ dependencies: { a: "*" } }),
     });
-  const broken: FileSystem = {
+    const broken: FileSystem = {
       ...fs,
       async exists(path) {
         if (path.endsWith("package.json")) throw new Error("exists failed");
@@ -274,9 +276,8 @@ describe("P1K.7 security adapter characterization", () => {
       if (calls === 2) throw new Error("validation stop");
       return validateSecurityFinding(raw);
     });
-    const { runLocalSecurityAdapters: runAdapters } = await import(
-      "@intentloom/application"
-    );
+    const { runLocalSecurityAdapters: runAdapters } =
+      await import("@intentloom/application");
     const fs = await seedProject({
       "package.json": JSON.stringify({
         dependencies: { good: "*", bad: "latest", also: ">=" },
@@ -407,9 +408,9 @@ describe("P1K.7 security adapter characterization", () => {
       tracking,
     );
     expect(mkdirCalls).toBeGreaterThanOrEqual(1);
-    expect(
-      fs.files.has(`${root}/.aif/security/findings/sec-dep-1.json`),
-    ).toBe(true);
+    expect(fs.files.has(`${root}/.aif/security/findings/sec-dep-1.json`)).toBe(
+      true,
+    );
   });
 
   it("leaves earlier persisted findings when a later write fails", async () => {
@@ -429,9 +430,9 @@ describe("P1K.7 security adapter characterization", () => {
     expect(fs.files.has(`${root}/.aif/security/findings/sec-dep-1.json`)).toBe(
       true,
     );
-    expect(fs.files.has(`${root}/.aif/security/findings/sec-secret-2.json`)).toBe(
-      false,
-    );
+    expect(
+      fs.files.has(`${root}/.aif/security/findings/sec-secret-2.json`),
+    ).toBe(false);
   });
 
   it("propagates fs.list failures for secret scanning", async () => {
@@ -467,9 +468,12 @@ describe("P1K.7 security adapter characterization", () => {
         "--json",
       ],
       { catalogRoot: resolve("catalog"), fileSystem: fs },
-      { stdout: (msg) => {
+      {
+        stdout: (msg) => {
           output += `${msg}\n`;
-        }, stderr: () => undefined },
+        },
+        stderr: () => undefined,
+      },
     );
     expect(exit).toBe(0);
     const parsed = JSON.parse(output);

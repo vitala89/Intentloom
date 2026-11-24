@@ -294,10 +294,10 @@ describe("P1K.6 bounded project context structure", () => {
 
     const indexMetrics = measureProductionSource(indexSource, indexPath);
     expect(indexMetrics).toMatchObject({
-      effectiveCodeLines: 1180,
-      physicalLines: 1250,
+      effectiveCodeLines: 965,
+      physicalLines: 1023,
     });
-    expect(indexMetrics.effectiveCodeLines).toBeLessThan(1279);
-    expect(indexMetrics.physicalLines).toBeLessThan(1365);
+    expect(indexMetrics.effectiveCodeLines).toBeLessThan(1064);
+    expect(indexMetrics.physicalLines).toBeLessThan(1138);
   });
 });
