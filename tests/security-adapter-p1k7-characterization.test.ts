@@ -12,9 +12,38 @@ import {
 } from "@intentloom/protocol";
 import { runCli } from "../packages/cli/src/command.js";
 import { securityFindingPath } from "../packages/application/src/security/security-finding-store.js";
-import * as protocol from "@intentloom/protocol";
 
 const root = "/project";
+
+function isFindingDraft(
+  raw: unknown,
+): raw is { category?: string; ruleId?: string } {
+  return typeof raw === "object" && raw !== null;
+}
+
+async function runAdaptersWithValidationMock(
+  options: Parameters<typeof runLocalSecurityAdapters>[0],
+  fs: FileSystem,
+  onValidate: (
+    raw: unknown,
+    realValidate: typeof validateSecurityFinding,
+  ) => ReturnType<typeof validateSecurityFinding>,
+) {
+  vi.resetModules();
+  const protocolMod = await import("@intentloom/protocol");
+  const realValidate = protocolMod.validateSecurityFinding;
+  const spy = vi
+    .spyOn(protocolMod, "validateSecurityFinding")
+    .mockImplementation((raw) => onValidate(raw, realValidate));
+  const { runLocalSecurityAdapters: runAdapters } =
+    await import("@intentloom/application");
+  try {
+    return await runAdapters(options, fs);
+  } finally {
+    spy.mockRestore();
+  }
+}
+
 const defaultOrder: SecurityAdapterCategory[] = [
   "dependency",
   "secret",
@@ -270,25 +299,21 @@ describe("P1K.7 security adapter characterization", () => {
   });
 
   it("retains partial dependency findings when manifest processing fails", async () => {
-    vi.resetModules();
     let calls = 0;
-    vi.spyOn(protocol, "validateSecurityFinding").mockImplementation((raw) => {
-      calls += 1;
-      if (calls === 2) throw new Error("validation stop");
-      return validateSecurityFinding(raw);
-    });
-    const { runLocalSecurityAdapters: runAdapters } =
-      await import("@intentloom/application");
     const fs = await seedProject({
       "package.json": JSON.stringify({
         dependencies: { good: "*", bad: "latest", also: ">=" },
       }),
     });
-    const results = await runAdapters(
+    const results = await runAdaptersWithValidationMock(
       { root, categories: ["dependency", "secret"] },
       fs,
+      (raw, realValidate) => {
+        calls += 1;
+        if (calls === 2) throw new Error("validation stop");
+        return realValidate(raw);
+      },
     );
-    vi.restoreAllMocks();
     expect(results[0]?.findings.map((f) => f.id)).toEqual(["sec-dep-1"]);
     expect(results[1]?.adapter.category).toBe("secret");
   });
@@ -386,9 +411,12 @@ describe("P1K.7 security adapter characterization", () => {
       "package.json": JSON.stringify({ dependencies: { a: "*" } }),
     });
     await runLocalSecurityAdapters({ root, categories: ["dependency"] }, fs);
-    const stored = await fs.read(securityFindingPath(root, "sec-dep-1"));
+    const canonicalPath = securityFindingPath(root, "sec-dep-1");
+    expect(await fs.exists(canonicalPath)).toBe(true);
+    const stored = await fs.read(canonicalPath);
     expect(stored.endsWith("\n")).toBe(true);
     expect(stored).toBe(`${JSON.stringify(JSON.parse(stored), null, 2)}\n`);
+    expect(JSON.parse(stored).id).toBe("sec-dep-1");
   });
 
   it("creates parent directories when persisting the first finding", async () => {
@@ -477,9 +505,142 @@ describe("P1K.7 security adapter characterization", () => {
     expect(parsed[0].findings[0].ruleId).toBe("dep/unpinned-wildcard");
   });
 
-  it("documents secret validation throw as non-forcible without a production injection seam", () => {
-    expect(
-      "Secret scanner validateSecurityFinding failures abort before persistence; forcing them requires mocking @intentloom/protocol in this suite.",
-    ).toBeTruthy();
+  it("propagates secret finding validation failures without persisting secret findings", async () => {
+    const fs = await seedProject({
+      ".env": "SECRET",
+      "keys/release.pem": "PEM",
+    });
+    await expect(
+      runAdaptersWithValidationMock(
+        { root, categories: ["secret"] },
+        fs,
+        (raw, realValidate) => {
+          if (isFindingDraft(raw) && raw.category === "secret") {
+            throw new Error("secret validation");
+          }
+          return realValidate(raw);
+        },
+      ),
+    ).rejects.toThrow("secret validation");
+    expect(await fs.exists(securityFindingPath(root, "sec-secret-1"))).toBe(
+      false,
+    );
+    expect(await fs.exists(securityFindingPath(root, "sec-secret-2"))).toBe(
+      false,
+    );
+  });
+
+  it("propagates config finding validation failures without persisting config findings", async () => {
+    const fs = await seedProject({ ".aif/state.json": "{}" });
+    await expect(
+      runAdaptersWithValidationMock(
+        { root, categories: ["config"] },
+        fs,
+        (raw, realValidate) => {
+          if (isFindingDraft(raw) && raw.category === "config") {
+            throw new Error("config validation");
+          }
+          return realValidate(raw);
+        },
+      ),
+    ).rejects.toThrow("config validation");
+    expect(await fs.exists(securityFindingPath(root, "sec-cfg-1"))).toBe(false);
+  });
+
+  it("keeps earlier persisted findings when secret validation fails mid-category", async () => {
+    const fs = await seedProject({
+      "package.json": JSON.stringify({ dependencies: { a: "*" } }),
+      ".env": "SECRET",
+    });
+    await expect(
+      runAdaptersWithValidationMock(
+        { root, categories: ["dependency", "secret"] },
+        fs,
+        (raw, realValidate) => {
+          if (isFindingDraft(raw) && raw.category === "secret") {
+            throw new Error("secret validation");
+          }
+          return realValidate(raw);
+        },
+      ),
+    ).rejects.toThrow("secret validation");
+    expect(await fs.exists(securityFindingPath(root, "sec-dep-1"))).toBe(true);
+    expect(await fs.exists(securityFindingPath(root, "sec-secret-2"))).toBe(
+      false,
+    );
+  });
+
+  it("keeps partial MCP findings when validation fails for one matching file", async () => {
+    const fs = await seedProject({
+      ".aif/mcp/first.json": JSON.stringify({ allowGenericShell: true }),
+      ".aif/mcp/second.json": JSON.stringify({ allowGenericShell: true }),
+    });
+    let mcpValidations = 0;
+    const results = await runAdaptersWithValidationMock(
+      { root, categories: ["mcp"] },
+      fs,
+      (raw, realValidate) => {
+        if (isFindingDraft(raw) && raw.category === "mcp") {
+          mcpValidations += 1;
+          if (mcpValidations === 2) throw new Error("mcp validation");
+        }
+        return realValidate(raw);
+      },
+    );
+    expect(results[0]?.findings).toHaveLength(1);
+    expect(results[0]?.findings[0]?.id).toBe("sec-mcp-1");
+    expect(await fs.exists(securityFindingPath(root, "sec-mcp-1"))).toBe(true);
+    expect(await fs.exists(securityFindingPath(root, "sec-mcp-2"))).toBe(false);
+  });
+
+  it("propagates fs.mkdir failures and leaves earlier category findings stored", async () => {
+    const fs = await seedProject({
+      "package.json": JSON.stringify({ dependencies: { a: "*" } }),
+      ".env": "SECRET",
+    });
+    let mkdirCalls = 0;
+    const tracking: FileSystem = {
+      ...fs,
+      async mkdir(path) {
+        mkdirCalls += 1;
+        if (mkdirCalls >= 2) throw new Error("mkdir failed");
+        await fs.mkdir(path);
+      },
+    };
+    await expect(
+      runLocalSecurityAdapters(
+        { root, categories: ["dependency", "secret"] },
+        tracking,
+      ),
+    ).rejects.toThrow("mkdir failed");
+    expect(await fs.exists(securityFindingPath(root, "sec-dep-1"))).toBe(true);
+    expect(await fs.exists(securityFindingPath(root, "sec-secret-2"))).toBe(
+      false,
+    );
+  });
+
+  it("continues MCP scanning when one matching config cannot be read", async () => {
+    const fs = await seedProject({
+      ".aif/mcp/readable.json": JSON.stringify({ allowGenericShell: true }),
+      ".aif/mcp/unreadable.json": "{}",
+    });
+    const tracking: FileSystem = {
+      ...fs,
+      async read(path) {
+        const normalized = path.replaceAll("\\", "/");
+        if (normalized.includes("unreadable.json")) {
+          throw new Error("mcp read failed");
+        }
+        return fs.read(path);
+      },
+    };
+    const results = await runLocalSecurityAdapters(
+      { root, categories: ["mcp"] },
+      tracking,
+    );
+    expect(results[0]?.findings).toHaveLength(1);
+    expect(results[0]?.findings[0]?.evidence[0]?.path).toContain(
+      "readable.json",
+    );
   });
 });
