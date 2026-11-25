@@ -1276,14 +1276,14 @@ merged at `4a4c5046e238119d60bf905f3db5c79b146c6a99` (PR #637). P1K.7
 implementation is merged at `4a949b0fdecf57e785ed437ace6576918a38eee6` (PR
 #638). Measured after P1K.7, `index.ts` is 965 effective lines and 1,023
 physical lines. Security adapter leaves measure 29–122 effective lines.
-P1K.8 extracts workspace conversation persistence into
-`packages/application/src/workspace/workspace-conversation-store.ts` and is
-open for independent review, not merged. Measured after P1K.8 implementation,
-`index.ts` is 857 effective lines and 903 physical lines; the conversation leaf
-is 129 effective and 142 physical lines. Import-only SCC membership remains
-`[3]`. Re-export SCC membership remains `[4, 27, 3]` with the same members.
-No runtime behavior changed in P1K.8 scope. P1K.9 through P1K.17 have not
-started. P1 remains incomplete after P1K.8.
+P1K.8 is merged at `d8c5f2c5c4c06e86bf6f04d4014bcf6e68f066db` (PR #639).
+Measured after P1K.8, `index.ts` is 857 effective lines and 903 physical
+lines; the conversation leaf is 129 effective and 142 physical lines.
+Import-only SCC membership remains `[3]`. Re-export SCC membership remains
+`[4, 27, 3]` with the same members. No runtime behavior changed in P1K.8
+scope. P1K.9 Design First is open for independent review and does not
+authorize implementation. P1K.10 through P1K.17 have not started. P1 remains
+incomplete.
 The 27-file component still contains
 `index.ts` and `approved-apply-engine.ts`. Undo U4 and Desktop Undo U5
 have not started. Ids 2 through 26 remain

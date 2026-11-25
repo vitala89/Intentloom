@@ -1298,6 +1298,8 @@ the Option B recommendation in sections 6 and 8.
   `readyToApply`, or treating `approvedBy` as an ADR-0053 capability.
 - Acceptance: promote and the review fallback stay `dryRun: true`; apply
   default stays `dryRun: false`; the approval error string stays.
+- Design First gate: section 24. Implementation is not authorized until a
+  maintainer approves that section.
 
 ### P1K.10 Project root and timeline
 
@@ -2120,18 +2122,377 @@ tests first, then move code):
 
 ## 23. Diagram index
 
-| Diagram                                 | Source file                         | Section |
-| --------------------------------------- | ----------------------------------- | ------- |
-| Current application barrel dependencies | `current-barrel-dependencies.mmd`   | 4       |
-| Bounded-context ownership               | `bounded-context-ownership.mmd`     | 5       |
-| Future target module layout             | `future-module-layout.mmd`          | 7       |
-| Approved Apply cycle                    | `approved-apply-cycle.mmd`          | 8       |
-| Alternatives for breaking that cycle    | `approved-apply-alternatives.mmd`   | 8       |
-| Phased implementation dependencies      | `phased-implementation.mmd`         | 9       |
-| Security trust boundaries               | `security-trust-boundaries.mmd`     | 12      |
-| Approved Apply synchronization sequence | `approved-apply-sync-sequence.mmd`  | 14      |
-| P1K.7 security adapter dependencies     | `security-adapter-dependencies.mmd` | 22      |
-| P1K.7 adapter run sequence              | `security-adapter-run-sequence.mmd` | 22      |
+| Diagram                                 | Source file                           | Section |
+| --------------------------------------- | ------------------------------------- | ------- |
+| Current application barrel dependencies | `current-barrel-dependencies.mmd`     | 4       |
+| Bounded-context ownership               | `bounded-context-ownership.mmd`       | 5       |
+| Future target module layout             | `future-module-layout.mmd`            | 7       |
+| Approved Apply cycle                    | `approved-apply-cycle.mmd`            | 8       |
+| Alternatives for breaking that cycle    | `approved-apply-alternatives.mmd`     | 8       |
+| Phased implementation dependencies      | `phased-implementation.mmd`           | 9       |
+| Security trust boundaries               | `security-trust-boundaries.mmd`       | 12      |
+| Approved Apply synchronization sequence | `approved-apply-sync-sequence.mmd`    | 14      |
+| P1K.7 security adapter dependencies     | `security-adapter-dependencies.mmd`   | 22      |
+| P1K.7 adapter run sequence              | `security-adapter-run-sequence.mmd`   | 22      |
+| P1K.9 proposal lifecycle dependencies   | `workspace-proposal-dependencies.mmd` | 24      |
+| P1K.9 promote, review, and apply        | `workspace-proposal-sequence.mmd`     | 24      |
+
+## 24. P1K.9 workspace proposal lifecycle — Design First gate
+
+Status: **proposed** (this documentation pull request). Parent design PR #627
+remains the architectural roadmap. This section records behavior verified on
+`main` at `d8c5f2c5c4c06e86bf6f04d4014bcf6e68f066db` (P1K.8, PR #639) and the
+extraction contract for slice P1K.9 only. It does not approve implementation
+and it does not change adoption, sandbox, or mutation behavior.
+
+### 24.1 Problem and scope
+
+P1K.9 moves workspace proposal path resolution, promotion, review, and apply
+orchestration out of `packages/application/src/index.ts` into
+`packages/application/src/workspace/workspace-proposal-lifecycle.ts`.
+
+Declarations:
+
+| Name                                     | Today                 | After extraction                               |
+| ---------------------------------------- | --------------------- | ---------------------------------------------- |
+| `workspaceProposalPath`                  | private in `index.ts` | private in the leaf                            |
+| `promoteWorkspaceConversationToProposal` | public                | public wrapper on the barrel; body on the leaf |
+| `WorkspaceProposalReviewResult`          | public interface      | public type re-exported from the leaf          |
+| `reviewWorkspaceProposal`                | public                | public wrapper; body on the leaf               |
+| `applyWorkspaceProposal`                 | public                | public wrapper; body on the leaf               |
+
+Conversation persistence stays in
+`workspace/workspace-conversation-store.ts`. `syncLocalWorkspaceState` and
+`getInteractiveWorkspaceState` stay on `index.ts`.
+
+Measured on this baseline with `measureProductionSource`: `index.ts` is 857
+effective lines and 903 physical lines. The parent forecast removes about 70
+effective lines while the three public wrappers remain. Re-measure during the
+implementation PR. Preferred file budget is 250 effective lines; hard limit is 400. Preferred function budget is 40 effective lines; hard limit is 80. Current
+bodies are within the hard function limit (`promote` about 33 effective,
+`review` about 38, `apply` about 23, path helper 3).
+
+### 24.2 Verified current behavior
+
+Verified by reading `packages/application/src/index.ts` and
+`packages/cli/src/workspace-command.ts` on the baseline above.
+
+**Promote**
+
+- Loads the conversation with `getWorkspaceConversation` and the same
+  `FileSystem`.
+- Throws `Workspace conversation ${conversationId} not found` when the record
+  is null. It does not copy conversation messages into the proposal.
+- Proposal id is `options.proposalId` when supplied, otherwise
+  `prop-${Date.now()}`.
+- Calls `adoptProject` with `profile: "generic"`, `adapters: ["codex"]`, and
+  `dryRun: true`. No `transactionOptions` argument is passed.
+- Writes `JSON.stringify(proposal, null, 2)` plus a trailing newline to
+  `.aif/proposals/{id}.json` via `inside`.
+- Creates the parent directory only when `fs.exists(dirname(path))` is false.
+- Returns the adoption proposal object, not a separate review record.
+- Validation, existence, mkdir, adoption, and write errors propagate. There is
+  no retry and no rollback of a partial write.
+
+**Review**
+
+- Resolves the same proposal path.
+- When the file exists, assigns `JSON.parse(await fs.read(path))` with no
+  schema validator and no `try/catch`.
+- When the file does not exist, calls the same dry-run `adoptProject` as
+  promote and does not write that result.
+- `affectedPaths` is `proposalData.items.map((item) => item.path)`.
+- Sandbox input is
+  `{ changes: affectedPaths.map((path) => ({ type: "modify", path })) }` with
+  `{ root, projectId: options.proposalId }` and the same filesystem.
+- `readyToApply` is `sandboxEval.allowed`. `schemaVersion` on the review
+  result is the literal `1`, not a field read from the proposal file.
+- `options.policyPath` is part of the public options object. The function body
+  does not read it and does not pass it to `evaluateProposalAgainstSandbox`.
+  The CLI still forwards `--policy` into that field. Preserve this unused
+  argument.
+
+**Apply**
+
+- Throws `human approval required (--approved-by USER)` when `approvedBy` is
+  missing or `approvedBy.trim()` is empty.
+- A non-empty trimmed string is the only check. It is not a capability token,
+  plan digest, or ADR-0053 approval.
+- Then calls `adoptProject` with `profile: "generic"`, `adapters: ["codex"]`,
+  and `dryRun: options.dryRun ?? false`.
+- `proposalId` and `planFile` are accepted on the options object and are not
+  read. Apply does not open the stored proposal and does not read
+  `readyToApply`.
+- Apply does not call `executeApprovedApplyPlan` or
+  `evaluateApprovedApplyPlan`.
+- The CLI always passes `dryRun` from the presence of `--dry-run`, so the CLI
+  path does not rely on the library default. Direct library callers that omit
+  `dryRun` get `false`.
+
+These are existing semantics. Extraction must not “correct” them.
+
+### 24.3 Port and public wrappers
+
+`adoptProject` still lives on `index.ts` and calls `adoptGeneratedFiles` with
+`syncProject`. A leaf that imported `adoptProject` from `../index.js` would
+cycle as soon as the barrel re-exported the leaf.
+
+The leaf therefore takes a typed internal port. It is not a public option on
+`promoteWorkspaceConversationToProposal`, `reviewWorkspaceProposal`, or
+`applyWorkspaceProposal`.
+
+```ts
+type WorkspaceProposalAdoption = (
+  options: InitOptions,
+  fs: FileSystem,
+  transactionOptions?: TransactionOptions,
+) => Promise<AdoptionProposal>;
+```
+
+Leaf operations take `(options, fs, adoptProject)`. They do not default
+`adoptProject`. Barrel wrappers keep today’s public signatures, including
+`fs = nodeFileSystem`, and pass the local `adoptProject`:
+
+```ts
+export async function promoteWorkspaceConversationToProposal(
+  options,
+  fs = nodeFileSystem,
+) {
+  return promoteWorkspaceConversationToProposalOperation(
+    options,
+    fs,
+    adoptProject,
+  );
+}
+```
+
+The same pattern applies to review and apply. `WorkspaceProposalReviewResult`
+is defined on the leaf and re-exported from the barrel. `workspaceProposalPath`
+stays unexported. There is no new package, `package.json` export, workspace
+directory barrel, or public dependency-injection callback.
+
+The port does not add an authorization bypass. Callers of
+`@intentloom/application` still hit the wrappers, which always pass the
+existing `adoptProject`. Tests may pass a substitute only by importing the
+leaf module directly. That substitute cannot widen the public CLI or package
+API.
+
+When `adoptProject` later moves to a module that does not import the barrel
+(P1K.16), the port can become a direct import and the wrappers can become
+re-exports. That is not part of P1K.9.
+
+### 24.4 Dependency direction
+
+```mermaid
+flowchart TB
+  cli["CLI workspace-command.ts"]
+  barrel["index.ts public wrappers"]
+  leaf["workspace/workspace-proposal-lifecycle.ts"]
+  port["WorkspaceProposalAdoption port"]
+  adopt["adoptProject on index.ts"]
+  conv["workspace/workspace-conversation-store.ts"]
+  sandbox["security/sandbox-proposal-evaluation.ts"]
+  fs["FileSystem"]
+
+  cli --> barrel
+  barrel --> leaf
+  barrel --> adopt
+  leaf --> port
+  port -.-> adopt
+  leaf --> conv
+  leaf --> sandbox
+  leaf --> fs
+  adopt --> fs
+  sandbox --> fs
+```
+
+Source: `workspace-proposal-dependencies.mmd`.
+
+The leaf may import `getWorkspaceConversation` from the conversation leaf and
+`evaluateProposalAgainstSandbox` from
+`security/sandbox-proposal-evaluation.ts`. It must not import `../index.js`,
+`@intentloom/application`, Neutron modules, or Approved Apply modules.
+
+Import-only SCC membership on this baseline is the Neutron mutation trio
+(`[3]`). Re-export-inclusive membership is `[4, 27, 3]` with the same members
+as P1K.8, including `index.ts` inside the 27-file component. The new leaf must
+stay outside every component. Do not edit `quality-exceptions.json`.
+
+### 24.5 Sequence
+
+```mermaid
+sequenceDiagram
+  participant Caller
+  participant Barrel as index.ts wrapper
+  participant Leaf as proposal lifecycle leaf
+  participant Conv as conversation store
+  participant Adopt as adoptProject port
+  participant FS as FileSystem
+  participant Sandbox as sandbox evaluation
+
+  Caller->>Barrel: promote(options, fs)
+  Barrel->>Leaf: promote(options, fs, adoptProject)
+  Leaf->>Conv: getWorkspaceConversation
+  alt conversation missing
+    Leaf-->>Caller: throw Workspace conversation id not found
+  else conversation exists
+    Leaf->>Adopt: profile generic, adapters codex, dryRun true
+    Leaf->>FS: exists parent, mkdir if absent, write proposal JSON
+    Leaf-->>Caller: AdoptionProposal
+  end
+
+  Caller->>Barrel: review(options, fs)
+  Barrel->>Leaf: review(options, fs, adoptProject)
+  Leaf->>FS: exists proposal path
+  alt file exists
+    Leaf->>FS: read and JSON.parse
+  else file missing
+    Leaf->>Adopt: same dryRun true adoption
+  end
+  Leaf->>Sandbox: changes from item paths, root, projectId = proposalId
+  Note over Leaf: policyPath is accepted and unused
+  Leaf-->>Caller: readyToApply equals sandbox.allowed
+
+  Caller->>Barrel: apply(options, fs)
+  Barrel->>Leaf: apply(options, fs, adoptProject)
+  alt approvedBy missing or blank after trim
+    Leaf-->>Caller: throw human approval required
+  else non-blank approvedBy
+    Note over Leaf: proposalId and planFile are not read
+    Note over Leaf: stored proposal and readyToApply are not read
+    Leaf->>Adopt: dryRun defaults to false
+    Leaf-->>Caller: AdoptionProposal
+  end
+```
+
+Source: `workspace-proposal-sequence.mmd`.
+
+### 24.6 Security and trust
+
+Three classes of statement are kept separate.
+
+**Verified today**
+
+- Promote proves only that a conversation record loaded. It then stores a
+  dry-run adoption proposal. Creating that file is not permission to mutate
+  the project.
+- Review reports sandbox `allowed` as `readyToApply`. A denied review is a
+  report. Apply does not consult it.
+- Apply checks that `approvedBy` is non-blank after trim, then runs adoption
+  with `dryRun` defaulting to false. The string is an operator label, not a
+  cryptographic grant and not an ADR-0053 capability.
+- ADR-0053 requires plan digest, expiry, project-state digest, and
+  `evaluateApprovedApplyPlan` before mutation. This workspace API does not
+  call that gate and does not provide atomic rollback, transaction binding, or
+  fail-closed plan identity.
+
+**Preserve in P1K.9**
+
+- The three behaviors above, including the unused `policyPath`, `proposalId`,
+  and `planFile` fields, and the fact that apply ignores `readyToApply`.
+
+**Future Design First, not this slice**
+
+- Binding apply to the stored proposal, honoring `readyToApply`, forwarding
+  `policyPath`, or routing workspace apply through ADR-0053. Any of those
+  changes behavior and needs its own design review.
+
+No invariant in this extraction requires a behavior change. If implementation
+cannot keep apply off the Approved Apply engine without a code change, stop
+and report a blocker.
+
+### 24.7 Error and persistence matrix
+
+| Condition                               | Operation       | Current result                             | Persistence                                                                                    |
+| --------------------------------------- | --------------- | ------------------------------------------ | ---------------------------------------------------------------------------------------------- |
+| Proposal id escapes the root (`inside`) | all three       | throws `path traversal: …` before `exists` | no proposal write                                                                              |
+| Conversation missing or invalid         | promote         | throws the not-found error                 | no proposal write                                                                              |
+| `fs.exists` throws                      | promote, review | propagates                                 | no new write from this function                                                                |
+| `adoptProject` throws                   | promote         | propagates before write                    | no proposal file from this function                                                            |
+| Parent `mkdir` throws                   | promote         | propagates after dry-run adoption          | proposal file absent                                                                           |
+| Proposal `write` throws                 | promote         | propagates                                 | partial file only if the filesystem wrote before failing; this function does not roll back     |
+| Proposal JSON parse throws              | review          | propagates                                 | no write                                                                                       |
+| Stored JSON has no `items`              | review          | throws when mapping paths                  | no write                                                                                       |
+| Proposal file absent                    | review          | dry-run `adoptProject` fallback            | fallback is not written                                                                        |
+| Sandbox evaluation throws               | review          | propagates                                 | no write                                                                                       |
+| `approvedBy` missing or blank           | apply           | throws the approval error before adoption  | no write in this function                                                                      |
+| `adoptProject` throws                   | apply           | propagates                                 | mutation effects are whatever `adoptProject` already performed; this function adds no rollback |
+| `dryRun: true`                          | apply           | adoption dry-run                           | no project mutation beyond what dry-run adoption already does                                  |
+| `dryRun` omitted                        | apply           | treated as `false`                         | mutating adoption, still not ADR-0053                                                          |
+
+No new retries, caches, swallowed errors, or transactions.
+
+### 24.8 Alternatives
+
+| Option                                                         | Result                                                                                           |
+| -------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| Leave the three operations on `index.ts`                       | No cycle, but the barrel keeps proposal persistence and the P1K size gate stays missed.          |
+| Leaf imports `adoptProject` from `index.ts`                    | Re-export cycle as soon as the barrel exports the leaf. Rejected.                                |
+| Leaf takes `WorkspaceProposalAdoption` from the barrel wrapper | Preserves public signatures, avoids the cycle, and does not add a public injector. **Selected.** |
+| Public dispatcher or `executeApprovedApplyPlan` inside apply   | Changes authorization and mutation. Rejected for P1K.9.                                          |
+
+### 24.9 Implementation test plan
+
+The implementation PR adds characterization tests before moving code, then
+structure tests. Do not add those tests in this design PR.
+
+Characterization file suggestion:
+`tests/workspace-proposal-p1k9-characterization.test.ts`.
+
+Required cases:
+
+- Promote succeeds and writes formatted JSON with a trailing newline.
+- Missing conversation throws the exact error and writes nothing.
+- Supplied `proposalId` and generated `prop-${Date.now()}` ids.
+- `adoptProject` arguments are exactly generic, `["codex"]`, `dryRun: true`.
+- Stored bytes are the adoption proposal, not the conversation record.
+- Directory is created only when absent.
+- Review of an existing file uses those bytes and does not call adoption.
+- Review of a missing file calls dry-run adoption and does not write it.
+- Sandbox `changes` are `{ type: "modify", path }` for each item path, and
+  `projectId` is the proposal id.
+- `readyToApply` follows `allowed` for both true and false.
+- Passing `policyPath` does not change the sandbox call.
+- Malformed proposal JSON and `exists` failures propagate.
+- Blank and whitespace `approvedBy` throw the exact approval error.
+- Apply with `dryRun: true` and with `dryRun` omitted (`false`).
+- `proposalId` and `planFile` do not select a file or plan.
+- Filesystem and adoption failures propagate.
+- CLI JSON and text output and exit codes stay as in
+  `tests/cli-workspace.test.ts` (promote 0, review 0 or 3, apply approval
+  failure).
+
+Existing references: `tests/workspace-apply.test.ts`,
+`tests/cli-workspace.test.ts`, `tests/workspace-agent.test.ts`.
+
+Structure tests must show one implementation of each moved declaration, barrel
+identity for the three functions, private path helper, no `workspace/index.ts`,
+no new export map, no leaf import of `index.js`, unchanged SCC member sets, and
+unchanged `quality-exceptions.json`.
+
+Mock `adoptProject` only through the leaf’s port in tests that import the leaf.
+Do not add a production public test hook.
+
+### 24.10 Design First acceptance matrix
+
+Implementation starts only after a maintainer checks every row.
+
+| #   | Maintainer confirms                                                 | Required |
+| --- | ------------------------------------------------------------------- | -------- |
+| 1   | Section 24 matches code on `d8c5f2c`                                | yes      |
+| 2   | Public signatures and CLI error strings stay                        | yes      |
+| 3   | `adoptProject` is an internal port, not a public option             | yes      |
+| 4   | Apply stays off ADR-0053 and ignores `readyToApply`                 | yes      |
+| 5   | Unused `policyPath`, `planFile`, and apply `proposalId` stay unused | yes      |
+| 6   | Leaf stays outside SCC sets `[3]` and `[4, 27, 3]`                  | yes      |
+| 7   | Characterization tests land before the move                         | yes      |
+| 8   | No Neutron, Undo, or quality-exception edits                        | yes      |
+
+### 24.11 Non-goals
+
+P1K.10 and later slices, moving sync or interactive workspace state, Approved
+Apply integration, sandbox rule changes, protocol changes, package export
+maps, Undo U4, and Desktop Undo U5.
 
 Each fenced diagram in this file is the same text as its `.mmd` source.
 Mermaid is the only diagram format. Excalidraw and draw.io are not used

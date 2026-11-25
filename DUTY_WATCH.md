@@ -199,10 +199,30 @@ is merged** (PR #636, `dbea5baf79af002a203e62ba9609c8a67c87662c`).
 **P1K.7 Design First is merged** (PR #637,
 `4a4c5046e238119d60bf905f3db5c79b146c6a99`). **P1K.7 security adapter
 execution is merged** (PR #638,
-`4a949b0fdecf57e785ed437ace6576918a38eee6`). **P1K.8 workspace conversation
-extraction implementation is open for independent review** on branch
-`refactor/p1k8-workspace-conversations`. Do not start P1K.9 through P1K.17,
-Undo U4, or Desktop Undo U5.
+`4a949b0fdecf57e785ed437ace6576918a38eee6`). **P1K.8 workspace conversation extraction is merged** (PR #639,
+`d8c5f2c5c4c06e86bf6f04d4014bcf6e68f066db`). **P1K.9 Design First is open
+for independent review** and does not authorize implementation. Do not start
+P1K.10 through P1K.17, Undo U4, or Desktop Undo U5.
+
+### 2026-11-25, Packages architecture P1K.9 proposal lifecycle Design First
+
+- **Status:** **DESIGN OPEN — AWAITING REVIEW.** Implementation is not
+  authorized.
+- **Triage:** 6/10 (blast radius 1 documentation, ambiguity 1 verified-behavior
+  contract, risk 2 authorization-sensitive design, verification 1, unknowns 0).
+  Harness: Cursor. Model role: mid. Effort: medium. Subagents: none. Grilling
+  skipped: parent design PR #627 already selected the internal `adoptProject`
+  port; this slice records verified behavior. Stop when the design pull request
+  is open with no production code changes.
+- **Branch:** `design/p1k9-workspace-proposal-boundaries`
+- **Base:** `d8c5f2c5c4c06e86bf6f04d4014bcf6e68f066db` (P1K.8 merge on `main`).
+- **Design:** `docs/designs/p1k-remaining-application-barrel/SYSTEM_DESIGN.md`
+  section 24; diagrams `workspace-proposal-dependencies.mmd` and
+  `workspace-proposal-sequence.mmd`.
+- **Scope:** documentation only. No production move, no new tests.
+- **Not done:** maintainer approval, P1K.9 implementation, P1K.10+, Undo U4,
+  Desktop Undo U5.
+- **Next watch:** independent review of the P1K.9 Design First pull request.
 
 ### 2026-11-25, Packages architecture P1K.8 workspace conversation store
 

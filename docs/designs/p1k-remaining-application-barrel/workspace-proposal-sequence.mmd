@@ -1,0 +1,42 @@
+sequenceDiagram
+  participant Caller
+  participant Barrel as index.ts wrapper
+  participant Leaf as proposal lifecycle leaf
+  participant Conv as conversation store
+  participant Adopt as adoptProject port
+  participant FS as FileSystem
+  participant Sandbox as sandbox evaluation
+
+  Caller->>Barrel: promote(options, fs)
+  Barrel->>Leaf: promote(options, fs, adoptProject)
+  Leaf->>Conv: getWorkspaceConversation
+  alt conversation missing
+    Leaf-->>Caller: throw Workspace conversation id not found
+  else conversation exists
+    Leaf->>Adopt: profile generic, adapters codex, dryRun true
+    Leaf->>FS: exists parent, mkdir if absent, write proposal JSON
+    Leaf-->>Caller: AdoptionProposal
+  end
+
+  Caller->>Barrel: review(options, fs)
+  Barrel->>Leaf: review(options, fs, adoptProject)
+  Leaf->>FS: exists proposal path
+  alt file exists
+    Leaf->>FS: read and JSON.parse
+  else file missing
+    Leaf->>Adopt: same dryRun true adoption
+  end
+  Leaf->>Sandbox: changes from item paths, root, projectId = proposalId
+  Note over Leaf: policyPath is accepted and unused
+  Leaf-->>Caller: readyToApply equals sandbox.allowed
+
+  Caller->>Barrel: apply(options, fs)
+  Barrel->>Leaf: apply(options, fs, adoptProject)
+  alt approvedBy missing or blank after trim
+    Leaf-->>Caller: throw human approval required
+  else non-blank approvedBy
+    Note over Leaf: proposalId and planFile are not read
+    Note over Leaf: stored proposal and readyToApply are not read
+    Leaf->>Adopt: dryRun defaults to false
+    Leaf-->>Caller: AdoptionProposal
+  end
