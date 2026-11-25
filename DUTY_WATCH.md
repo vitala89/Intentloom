@@ -224,12 +224,19 @@ Undo U4, or Desktop Undo U5.
 - **Measurements:** `index.ts` 857 effective / 903 physical (from 965 / 1,023
   after P1K.7). Conversation leaf 129 effective / 142 physical. SCC import-only
   `[3]`; re-export-inclusive `[4, 27, 3]` (unchanged members).
-- **Validation:** `pnpm verify` passed locally; characterization
-  `tests/workspace-conversation-p1k8-characterization.test.ts` (16 cases) run
-  before and after extraction; structure
-  `tests/workspace-conversation-p1k8-structure.test.ts`; workspace regressions
-  including `tests/workspace-agent.test.ts`, `tests/cli-workspace.test.ts`,
-  `tests/workspace-read-model-p1h7-structure.test.ts`,
+- **HEAD:** `031d0ec71a25b84c25f598d06e42aa93d28dd09e` (PR
+  [#639](https://github.com/vitala89/Intentloom/pull/639)); implementation fix
+  `cf8073e` (Windows characterization memory-fs paths).
+- **Validation:** `pnpm verify` passed locally; Compatibility **green** on all
+  platforms. One **Desktop SEA Feasibility** run (`45632660820`) marked failed
+  because **macos-latest / Node 22 was cancelled** without a runner (infra, not
+  code); Ubuntu and Windows SEA jobs on that run succeeded. Retrigger via this
+  push if macOS still does not start.
+- **Tests:** characterization
+  `tests/workspace-conversation-p1k8-characterization.test.ts` (16 cases);
+  structure `tests/workspace-conversation-p1k8-structure.test.ts`; workspace
+  regressions including `tests/workspace-agent.test.ts`,
+  `tests/cli-workspace.test.ts`, `tests/workspace-read-model-p1h7-structure.test.ts`,
   `tests/neutron-orchestration.test.ts`.
 - **Risks:** redaction regex semantics frozen by characterization tests;
   conversation persistence still non-transactional; concurrent append still
