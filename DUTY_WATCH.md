@@ -198,9 +198,46 @@ semantic ranking is merged** (PR #635,
 is merged** (PR #636, `dbea5baf79af002a203e62ba9609c8a67c87662c`).
 **P1K.7 Design First is merged** (PR #637,
 `4a4c5046e238119d60bf905f3db5c79b146c6a99`). **P1K.7 security adapter
-execution implementation is open for independent review** on branch
-`refactor/p1k7-security-adapter-execution`. Do not start P1K.8 through P1K.17,
+execution is merged** (PR #638,
+`4a949b0fdecf57e785ed437ace6576918a38eee6`). **P1K.8 workspace conversation
+extraction implementation is open for independent review** on branch
+`refactor/p1k8-workspace-conversations`. Do not start P1K.9 through P1K.17,
 Undo U4, or Desktop Undo U5.
+
+### 2026-11-25, Packages architecture P1K.8 workspace conversation store
+
+- **Status:** **IMPLEMENTATION OPEN — AWAITING REVIEW.**
+- **Triage:** 7/10 (blast radius 2, ambiguity 0, risk 1 security-sensitive
+  redaction refactor, verification 2, unknowns 0). Harness: Cursor. Model role:
+  mid. Effort: medium. Subagents: none. Grilling skipped: approved Design First
+  P1K.8 slice. Stop when pull request is open, `pnpm verify` is green, and
+  handoff documents are updated.
+- **Branch:** `refactor/p1k8-workspace-conversations`
+- **Base:** `4a949b0fdecf57e785ed437ace6576918a38eee6` (P1K.7 merge on `main`).
+- **Design:** `docs/designs/p1k-remaining-application-barrel/SYSTEM_DESIGN.md`
+  sections 3.9, 10 (P1K.8), 11–17; design PR #627.
+- **Scope:** behavior-preserving extraction of `startWorkspaceConversation`,
+  `getWorkspaceConversation`, `appendWorkspaceMessage`, and
+  `listWorkspaceConversations` (plus private path and redaction helpers) into
+  `workspace/workspace-conversation-store.ts`. `syncLocalWorkspaceState` and
+  proposal lifecycle remain on `index.ts`.
+- **Measurements:** `index.ts` 857 effective / 903 physical (from 965 / 1,023
+  after P1K.7). Conversation leaf 129 effective / 142 physical. SCC import-only
+  `[3]`; re-export-inclusive `[4, 27, 3]` (unchanged members).
+- **Validation:** `pnpm verify` passed locally; characterization
+  `tests/workspace-conversation-p1k8-characterization.test.ts` (16 cases) run
+  before and after extraction; structure
+  `tests/workspace-conversation-p1k8-structure.test.ts`; workspace regressions
+  including `tests/workspace-agent.test.ts`, `tests/cli-workspace.test.ts`,
+  `tests/workspace-read-model-p1h7-structure.test.ts`,
+  `tests/neutron-orchestration.test.ts`.
+- **Risks:** redaction regex semantics frozen by characterization tests;
+  conversation persistence still non-transactional; concurrent append still
+  last-write-wins; `syncLocalWorkspaceState` still on the barrel until a later
+  slice.
+- **Not done:** maintainer merge, P1K.9+, Undo U4, Desktop Undo U5, P1
+  completion.
+- **Next watch:** independent review of the P1K.8 implementation pull request.
 
 ### 2026-11-24, Packages architecture P1K.7 security adapter execution
 
