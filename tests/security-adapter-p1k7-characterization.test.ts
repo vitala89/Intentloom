@@ -11,6 +11,7 @@ import {
   type SecurityAdapterCategory,
 } from "@intentloom/protocol";
 import { runCli } from "../packages/cli/src/command.js";
+import { securityFindingPath } from "../packages/application/src/security/security-finding-store.js";
 import * as protocol from "@intentloom/protocol";
 
 const root = "/project";
@@ -385,8 +386,7 @@ describe("P1K.7 security adapter characterization", () => {
       "package.json": JSON.stringify({ dependencies: { a: "*" } }),
     });
     await runLocalSecurityAdapters({ root, categories: ["dependency"] }, fs);
-    const path = resolve(root, ".aif/security/findings/sec-dep-1.json");
-    const stored = fs.files.get(path.replaceAll("\\", "/")) ?? "";
+    const stored = await fs.read(securityFindingPath(root, "sec-dep-1"));
     expect(stored.endsWith("\n")).toBe(true);
     expect(stored).toBe(`${JSON.stringify(JSON.parse(stored), null, 2)}\n`);
   });
@@ -408,9 +408,7 @@ describe("P1K.7 security adapter characterization", () => {
       tracking,
     );
     expect(mkdirCalls).toBeGreaterThanOrEqual(1);
-    expect(fs.files.has(`${root}/.aif/security/findings/sec-dep-1.json`)).toBe(
-      true,
-    );
+    expect(await fs.exists(securityFindingPath(root, "sec-dep-1"))).toBe(true);
   });
 
   it("leaves earlier persisted findings when a later write fails", async () => {
@@ -427,12 +425,10 @@ describe("P1K.7 security adapter characterization", () => {
         fs,
       ),
     ).rejects.toThrow("injected write failure");
-    expect(fs.files.has(`${root}/.aif/security/findings/sec-dep-1.json`)).toBe(
-      true,
+    expect(await fs.exists(securityFindingPath(root, "sec-dep-1"))).toBe(true);
+    expect(await fs.exists(securityFindingPath(root, "sec-secret-2"))).toBe(
+      false,
     );
-    expect(
-      fs.files.has(`${root}/.aif/security/findings/sec-secret-2.json`),
-    ).toBe(false);
   });
 
   it("propagates fs.list failures for secret scanning", async () => {
