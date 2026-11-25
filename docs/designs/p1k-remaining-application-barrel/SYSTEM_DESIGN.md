@@ -2187,8 +2187,11 @@ Verified by reading `packages/application/src/index.ts` and
   `prop-${Date.now()}`.
 - Calls `adoptProject` with `profile: "generic"`, `adapters: ["codex"]`, and
   `dryRun: true`. No `transactionOptions` argument is passed.
-- Writes `JSON.stringify(proposal, null, 2)` plus a trailing newline to
-  `.aif/proposals/{id}.json` via `inside`.
+- Resolves `.aif/proposals/{id}.json` with `workspaceProposalPath` only after
+  that dry-run adoption returns. A proposal id that escapes the root throws
+  `path traversal:` at this point, after adoption and before `fs.exists`.
+- Writes `JSON.stringify(proposal, null, 2)` plus a trailing newline to that
+  path.
 - Creates the parent directory only when `fs.exists(dirname(path))` is false.
 - Returns the adoption proposal object, not a separate review record.
 - Validation, existence, mkdir, adoption, and write errors propagate. There is
@@ -2196,7 +2199,9 @@ Verified by reading `packages/application/src/index.ts` and
 
 **Review**
 
-- Resolves the same proposal path.
+- Resolves the proposal path with `workspaceProposalPath` before `fs.exists`.
+  A proposal id that escapes the root throws `path traversal:` before the
+  read and before the dry-run adoption fallback.
 - When the file exists, assigns `JSON.parse(await fs.read(path))` with no
   schema validator and no `try/catch`.
 - When the file does not exist, calls the same dry-run `adoptProject` as
@@ -2221,8 +2226,10 @@ Verified by reading `packages/application/src/index.ts` and
 - Then calls `adoptProject` with `profile: "generic"`, `adapters: ["codex"]`,
   and `dryRun: options.dryRun ?? false`.
 - `proposalId` and `planFile` are accepted on the options object and are not
-  read. Apply does not open the stored proposal and does not read
-  `readyToApply`.
+  read. Apply does not call `workspaceProposalPath` or `inside()` for the
+  proposal id, does not open the stored proposal, and does not read
+  `readyToApply`. A proposal id that would fail path checks does not throw
+  from this function.
 - Apply does not call `executeApprovedApplyPlan` or
   `evaluateApprovedApplyPlan`.
 - The CLI always passes `dryRun` from the presence of `--dry-run`, so the CLI
@@ -2337,24 +2344,35 @@ sequenceDiagram
     Leaf-->>Caller: throw Workspace conversation id not found
   else conversation exists
     Leaf->>Adopt: profile generic, adapters codex, dryRun true
-    Leaf->>FS: exists parent, mkdir if absent, write proposal JSON
-    Leaf-->>Caller: AdoptionProposal
+    Note over Leaf: workspaceProposalPath runs after adoption
+    alt proposal path escapes the root
+      Leaf-->>Caller: throw path traversal after dry-run adoption
+    else path stays inside the root
+      Leaf->>FS: exists parent, mkdir if absent, write proposal JSON
+      Leaf-->>Caller: AdoptionProposal
+    end
   end
 
   Caller->>Barrel: review(options, fs)
   Barrel->>Leaf: review(options, fs, adoptProject)
-  Leaf->>FS: exists proposal path
-  alt file exists
-    Leaf->>FS: read and JSON.parse
-  else file missing
-    Leaf->>Adopt: same dryRun true adoption
+  Note over Leaf: workspaceProposalPath runs before exists
+  alt proposal path escapes the root
+    Leaf-->>Caller: throw path traversal before read or adoption
+  else path stays inside the root
+    Leaf->>FS: exists proposal path
+    alt file exists
+      Leaf->>FS: read and JSON.parse
+    else file missing
+      Leaf->>Adopt: same dryRun true adoption
+    end
+    Leaf->>Sandbox: changes from item paths, root, projectId = proposalId
+    Note over Leaf: policyPath is accepted and unused
+    Leaf-->>Caller: readyToApply equals sandbox.allowed
   end
-  Leaf->>Sandbox: changes from item paths, root, projectId = proposalId
-  Note over Leaf: policyPath is accepted and unused
-  Leaf-->>Caller: readyToApply equals sandbox.allowed
 
   Caller->>Barrel: apply(options, fs)
   Barrel->>Leaf: apply(options, fs, adoptProject)
+  Note over Leaf: does not call workspaceProposalPath or inside
   alt approvedBy missing or blank after trim
     Leaf-->>Caller: throw human approval required
   else non-blank approvedBy
@@ -2403,22 +2421,24 @@ and report a blocker.
 
 ### 24.7 Error and persistence matrix
 
-| Condition                               | Operation       | Current result                             | Persistence                                                                                    |
-| --------------------------------------- | --------------- | ------------------------------------------ | ---------------------------------------------------------------------------------------------- |
-| Proposal id escapes the root (`inside`) | all three       | throws `path traversal: …` before `exists` | no proposal write                                                                              |
-| Conversation missing or invalid         | promote         | throws the not-found error                 | no proposal write                                                                              |
-| `fs.exists` throws                      | promote, review | propagates                                 | no new write from this function                                                                |
-| `adoptProject` throws                   | promote         | propagates before write                    | no proposal file from this function                                                            |
-| Parent `mkdir` throws                   | promote         | propagates after dry-run adoption          | proposal file absent                                                                           |
-| Proposal `write` throws                 | promote         | propagates                                 | partial file only if the filesystem wrote before failing; this function does not roll back     |
-| Proposal JSON parse throws              | review          | propagates                                 | no write                                                                                       |
-| Stored JSON has no `items`              | review          | throws when mapping paths                  | no write                                                                                       |
-| Proposal file absent                    | review          | dry-run `adoptProject` fallback            | fallback is not written                                                                        |
-| Sandbox evaluation throws               | review          | propagates                                 | no write                                                                                       |
-| `approvedBy` missing or blank           | apply           | throws the approval error before adoption  | no write in this function                                                                      |
-| `adoptProject` throws                   | apply           | propagates                                 | mutation effects are whatever `adoptProject` already performed; this function adds no rollback |
-| `dryRun: true`                          | apply           | adoption dry-run                           | no project mutation beyond what dry-run adoption already does                                  |
-| `dryRun` omitted                        | apply           | treated as `false`                         | mutating adoption, still not ADR-0053                                                          |
+| Condition                               | Operation       | Current result                                                                                                      | Persistence                                                                                    |
+| --------------------------------------- | --------------- | ------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| Proposal id escapes the root (`inside`) | promote         | throws `path traversal:` only after the conversation load and dry-run `adoptProject` return, and before `fs.exists` | no proposal write; dry-run adoption already ran                                                |
+| Proposal id escapes the root (`inside`) | review          | throws `path traversal:` when resolving the path, before `fs.exists`, read, or the adoption fallback                | no proposal write                                                                              |
+| Proposal id that would escape the root  | apply           | not checked. Apply does not call `workspaceProposalPath` or `inside()`                                              | no proposal write from this function                                                           |
+| Conversation missing or invalid         | promote         | throws the not-found error                                                                                          | no proposal write                                                                              |
+| `fs.exists` throws                      | promote, review | propagates                                                                                                          | no new write from this function                                                                |
+| `adoptProject` throws                   | promote         | propagates before write                                                                                             | no proposal file from this function                                                            |
+| Parent `mkdir` throws                   | promote         | propagates after dry-run adoption                                                                                   | proposal file absent                                                                           |
+| Proposal `write` throws                 | promote         | propagates                                                                                                          | partial file only if the filesystem wrote before failing; this function does not roll back     |
+| Proposal JSON parse throws              | review          | propagates                                                                                                          | no write                                                                                       |
+| Stored JSON has no `items`              | review          | throws when mapping paths                                                                                           | no write                                                                                       |
+| Proposal file absent                    | review          | dry-run `adoptProject` fallback                                                                                     | fallback is not written                                                                        |
+| Sandbox evaluation throws               | review          | propagates                                                                                                          | no write                                                                                       |
+| `approvedBy` missing or blank           | apply           | throws the approval error before adoption                                                                           | no write in this function                                                                      |
+| `adoptProject` throws                   | apply           | propagates                                                                                                          | mutation effects are whatever `adoptProject` already performed; this function adds no rollback |
+| `dryRun: true`                          | apply           | adoption dry-run                                                                                                    | no project mutation beyond what dry-run adoption already does                                  |
+| `dryRun` omitted                        | apply           | treated as `false`                                                                                                  | mutating adoption, still not ADR-0053                                                          |
 
 No new retries, caches, swallowed errors, or transactions.
 
@@ -2458,6 +2478,11 @@ Required cases:
 - Apply with `dryRun: true` and with `dryRun` omitted (`false`).
 - `proposalId` and `planFile` do not select a file or plan.
 - Filesystem and adoption failures propagate.
+- Promote path traversal throws only after conversation retrieval and dry-run
+  adoption, and does not write the proposal file.
+- Review path traversal throws before `exists`, read, and adoption.
+- Apply does not throw a proposal-path traversal error. A traversal-shaped
+  `proposalId` still reaches the approval check and `adoptProject`.
 - CLI JSON and text output and exit codes stay as in
   `tests/cli-workspace.test.ts` (promote 0, review 0 or 3, apply approval
   failure).
@@ -2465,10 +2490,25 @@ Required cases:
 Existing references: `tests/workspace-apply.test.ts`,
 `tests/cli-workspace.test.ts`, `tests/workspace-agent.test.ts`.
 
-Structure tests must show one implementation of each moved declaration, barrel
-identity for the three functions, private path helper, no `workspace/index.ts`,
-no new export map, no leaf import of `index.js`, unchanged SCC member sets, and
-unchanged `quality-exceptions.json`.
+Structure tests must show one implementation of each moved body, a private
+path helper, no `workspace/index.ts`, no new export map, no leaf import of
+`index.js`, unchanged SCC member sets, and unchanged
+`quality-exceptions.json`.
+
+Public wrappers are not the same function references as the leaf operations,
+because each wrapper injects the existing `adoptProject`. Tests assert:
+
+- The public names `promoteWorkspaceConversationToProposal`,
+  `reviewWorkspaceProposal`, and `applyWorkspaceProposal` stay exported from
+  `@intentloom/application` with the current options and the default
+  `FileSystem`.
+- Each wrapper passes the caller options, the filesystem, and the existing
+  `adoptProject` function into its leaf operation.
+- Return values, error messages, and observable behavior stay compatible.
+- `WorkspaceProposalReviewResult` stays a public type.
+- The internal adoption-port operations are not new package-level APIs.
+- The extraction adds no import or re-export cycle. The leaf stays outside the
+  existing SCC member sets.
 
 Mock `adoptProject` only through the leaf’s port in tests that import the leaf.
 Do not add a production public test hook.

@@ -220,6 +220,10 @@ P1K.10 through P1K.17, Undo U4, or Desktop Undo U5.
   section 24; diagrams `workspace-proposal-dependencies.mmd` and
   `workspace-proposal-sequence.mmd`.
 - **Scope:** documentation only. No production move, no new tests.
+- **Review correction:** section 24.7 records promote path traversal after
+  dry-run adoption, review path traversal before `exists`, and no proposal
+  path check in apply. Section 24.9 tests public wrappers without requiring
+  function-reference identity with the leaf.
 - **Not done:** maintainer approval, P1K.9 implementation, P1K.10+, Undo U4,
   Desktop Undo U5.
 - **Next watch:** independent review of the P1K.9 Design First pull request.

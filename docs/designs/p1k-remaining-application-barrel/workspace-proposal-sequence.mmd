@@ -14,24 +14,35 @@ sequenceDiagram
     Leaf-->>Caller: throw Workspace conversation id not found
   else conversation exists
     Leaf->>Adopt: profile generic, adapters codex, dryRun true
-    Leaf->>FS: exists parent, mkdir if absent, write proposal JSON
-    Leaf-->>Caller: AdoptionProposal
+    Note over Leaf: workspaceProposalPath runs after adoption
+    alt proposal path escapes the root
+      Leaf-->>Caller: throw path traversal after dry-run adoption
+    else path stays inside the root
+      Leaf->>FS: exists parent, mkdir if absent, write proposal JSON
+      Leaf-->>Caller: AdoptionProposal
+    end
   end
 
   Caller->>Barrel: review(options, fs)
   Barrel->>Leaf: review(options, fs, adoptProject)
-  Leaf->>FS: exists proposal path
-  alt file exists
-    Leaf->>FS: read and JSON.parse
-  else file missing
-    Leaf->>Adopt: same dryRun true adoption
+  Note over Leaf: workspaceProposalPath runs before exists
+  alt proposal path escapes the root
+    Leaf-->>Caller: throw path traversal before read or adoption
+  else path stays inside the root
+    Leaf->>FS: exists proposal path
+    alt file exists
+      Leaf->>FS: read and JSON.parse
+    else file missing
+      Leaf->>Adopt: same dryRun true adoption
+    end
+    Leaf->>Sandbox: changes from item paths, root, projectId = proposalId
+    Note over Leaf: policyPath is accepted and unused
+    Leaf-->>Caller: readyToApply equals sandbox.allowed
   end
-  Leaf->>Sandbox: changes from item paths, root, projectId = proposalId
-  Note over Leaf: policyPath is accepted and unused
-  Leaf-->>Caller: readyToApply equals sandbox.allowed
 
   Caller->>Barrel: apply(options, fs)
   Barrel->>Leaf: apply(options, fs, adoptProject)
+  Note over Leaf: does not call workspaceProposalPath or inside
   alt approvedBy missing or blank after trim
     Leaf-->>Caller: throw human approval required
   else non-blank approvedBy
