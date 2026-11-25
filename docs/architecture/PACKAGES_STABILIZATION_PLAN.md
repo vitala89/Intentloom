@@ -166,11 +166,15 @@ and 212 physical lines. P1K.5 is merged (PR #635,
 effective and 163 physical lines. P1K.6 bounded project context extraction is merged (PR #636,
 `dbea5baf79af002a203e62ba9609c8a67c87662c`). P1K.7 Design First is merged (PR
 #637, `4a4c5046e238119d60bf905f3db5c79b146c6a99`). P1K.7 security adapter
-execution is open for independent review, not merged. After P1K.7
-implementation, `index.ts` measures 965 effective and 1,023 physical lines;
-six security-adapter leaves measure 29–122 effective lines. Import-only SCC
-membership remains `[3]`. Re-export SCC membership remains `[4, 27, 3]` with
-the same members. P1K.8 through P1K.17 have not started. Section
+execution is merged (PR #638,
+`4a949b0fdecf57e785ed437ace6576918a38eee6`). After P1K.7, `index.ts`
+measures 965 effective and 1,023 physical lines; six security-adapter leaves
+measure 29–122 effective lines. P1K.8 workspace conversation extraction is
+open for independent review, not merged. After P1K.8 implementation,
+`index.ts` measures 857 effective and 903 physical lines; the conversation leaf
+measures 129 effective and 142 physical lines. Import-only SCC membership
+remains `[3]`. Re-export SCC membership remains `[4, 27, 3]` with the same
+members. P1K.9 through P1K.17 have not started. Section
 14 is unchanged. Undo U4 and Desktop Undo U5 have not started.
 Neutron's R4A topology stays frozen.
 The measurements below remain the P1A baseline and are not restated as the
