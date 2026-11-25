@@ -22,6 +22,20 @@ function absoluteConversationPath(id: string): string {
   return `${root}/.aif/workspace/conversations/${id}.json`;
 }
 
+function memoryFsKey(path: string): string {
+  return path.replaceAll("\\", "/").replace(/^[A-Za-z]:/iu, "");
+}
+
+function storedConversationBytes(
+  fs: ReturnType<typeof createMemoryFileSystem>,
+  conversationId: string,
+): string | undefined {
+  const suffix = `.aif/workspace/conversations/${conversationId}.json`;
+  return [...fs.files.entries()].find(([path]) =>
+    memoryFsKey(path).endsWith(suffix),
+  )?.[1];
+}
+
 function recordJson(
   overrides: Partial<WorkspaceConversationRecord> & { id: string },
 ): string {
@@ -125,9 +139,9 @@ describe("P1K.8 workspace conversation store behavior", () => {
     expect(conv.id).toMatch(/^conv-\d+-[a-z0-9]{6}$/u);
 
     const path = conversationPath(conv.id);
-    const stored = fs.files.get(path);
+    const stored = storedConversationBytes(fs, conv.id);
     expect(stored).toBe(`${JSON.stringify(conv, null, 2)}\n`);
-    expect(path).toBe(absoluteConversationPath(conv.id));
+    expect(memoryFsKey(path)).toBe(absoluteConversationPath(conv.id));
   });
 
   it("creates the conversations directory only when absent", async () => {
@@ -294,7 +308,7 @@ describe("P1K.8 workspace conversation store behavior", () => {
         fs,
       );
       expect(persisted?.messages).toEqual(assistant.messages);
-      const stored = fs.files.get(conversationPath(conv.id));
+      const stored = storedConversationBytes(fs, conv.id);
       expect(stored).toBe(`${JSON.stringify(assistant, null, 2)}\n`);
     } finally {
       msgNow.mockRestore();
@@ -402,7 +416,7 @@ describe("P1K.8 workspace conversation store behavior", () => {
     expect(multiContent).toContain("[REDACTED PRIVATE KEY]");
     expect(multiContent).not.toContain(ghpToken);
 
-    const storedRaw = fs.files.get(conversationPath(conv.id)) ?? "";
+    const storedRaw = storedConversationBytes(fs, conv.id) ?? "";
     expect(storedRaw).not.toContain(ghpToken);
     expect(storedRaw).toContain("[REDACTED_SECRET]");
   });
