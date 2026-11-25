@@ -196,9 +196,42 @@ is merged** (PR #634, `65bba16250c3c98b851254c007c2b238394a6b7f`). **P1K.5
 semantic ranking is merged** (PR #635,
 `eacf825947545d0ebadc60b1f8fb09e5ba82413e`). **P1K.6 bounded project context
 is merged** (PR #636, `dbea5baf79af002a203e62ba9609c8a67c87662c`).
-**P1K.7 Design First gate is open and awaiting review.** Do not implement
-P1K.7 until section 22 of the P1K design is explicitly approved. Do not
-start P1K.8 through P1K.17, Undo U4, or Desktop Undo U5.
+**P1K.7 Design First is merged** (PR #637,
+`4a4c5046e238119d60bf905f3db5c79b146c6a99`). **P1K.7 security adapter
+execution implementation is open for independent review** on branch
+`refactor/p1k7-security-adapter-execution`. Do not start P1K.8 through P1K.17,
+Undo U4, or Desktop Undo U5.
+
+### 2026-11-24, Packages architecture P1K.7 security adapter execution
+
+- **Status:** **IMPLEMENTATION OPEN — AWAITING REVIEW.**
+- **Triage:** 8/10 (blast radius 2, ambiguity 0, risk 2 security-sensitive
+  refactor, verification 2, unknowns 1). Harness: Cursor. Model role: frontier.
+  Effort: high. Subagents: none. Grilling skipped: approved Design First
+  section 22. Stop when pull request is open, `pnpm verify` is green, and
+  handoff documents are updated.
+- **Branch:** `refactor/p1k7-security-adapter-execution`
+- **Base:** `4a4c5046e238119d60bf905f3db5c79b146c6a99` (`main`, after P1K.7
+  design merge).
+- **Design:** `docs/designs/p1k-remaining-application-barrel/SYSTEM_DESIGN.md`
+  sections 3.8, 10 (P1K.7), 12, 17, and 22; design PRs #627 and #637.
+- **Scope:** behavior-preserving extraction of `correlateSecurityFindings` and
+  `runLocalSecurityAdapters` into `security-adapter-correlation.ts`,
+  `security-adapter-dependency.ts`, `security-adapter-secret.ts`,
+  `security-adapter-config.ts`, `security-adapter-mcp.ts`, and
+  `security-adapter-run.ts`. Characterization and structure tests added;
+  structure-test `index.ts` pins updated to 965 effective / 1,023 physical lines.
+- **Measurements:** `index.ts` 965 effective / 1,023 physical (from 1,180 /
+  1,250 baseline). SCC import-only `[3]`; re-export-inclusive `[4, 27, 3]`.
+- **Validation:** `pnpm verify` passed locally; characterization
+  `tests/security-adapter-p1k7-characterization.test.ts`, structure
+  `tests/security-adapter-p1k7-structure.test.ts`, plus
+  `tests/memory-security-s2.test.ts` and `tests/security-finding-store-p1h4a.test.ts`.
+- **Risks:** secret scanner descriptions still expose relative paths (known,
+  unchanged); persistence still lacks transactions; partial writes on failure
+  remain.
+- **Not done:** maintainer merge, P1K.8+, Undo U4, Desktop Undo U5, P1 completion.
+- **Next watch:** independent review of the P1K.7 implementation pull request.
 
 ### 2026-11-24, Packages architecture P1K.7 security adapter Design First gate
 

@@ -171,9 +171,13 @@ describe("P1H.5a security policy, baseline, and evaluation", () => {
       "packages/application/src/index.ts",
       "utf8",
     );
-    expect(indexSource).toContain(
-      'import { securityFindingPath } from "./security/security-finding-store.js"',
-    );
+    expect(
+      readFileSync(
+        "packages/application/src/security/security-adapter-run.ts",
+        "utf8",
+      ),
+    ).toContain('from "./security-finding-store.js"');
+    expect(indexSource).not.toContain("securityFindingPath");
     expect(indexSource).not.toMatch(
       /import\s*\{[^}]*\blistSecurityFindings\b[^}]*\}\s*from\s*"\.\/security\/security-finding-store\.js"/,
     );
@@ -660,7 +664,12 @@ describe("P1H.5a security policy, baseline, and evaluation", () => {
       relativeSpecifiers("security/security-finding-store.ts", true),
     ).not.toContain("./security-policy.js");
     const indexValueImports = relativeSpecifiers("index.ts", false);
-    expect(indexValueImports).toContain("./security/security-finding-store.js");
+    expect(
+      relativeSpecifiers("security/security-adapter-run.ts", false),
+    ).toContain("./security-finding-store.js");
+    expect(relativeSpecifiers("index.ts", true)).toContain(
+      "./security/security-finding-store.js",
+    );
     expect(indexValueImports).not.toContain("./security/security-policy.js");
     expect(indexValueImports).not.toContain("./security/security-baseline.js");
     expect(indexValueImports).not.toContain(

@@ -498,7 +498,10 @@ describe("P1H.4a security finding store and coverage", () => {
     expect(
       relativeSpecifiers("security/security-coverage.ts", true),
     ).not.toContain("../index.js");
-    expect(relativeSpecifiers("index.ts", false)).toContain(
+    expect(
+      relativeSpecifiers("security/security-adapter-run.ts", false),
+    ).toContain("./security-finding-store.js");
+    expect(relativeSpecifiers("index.ts", true)).toContain(
       "./security/security-finding-store.js",
     );
     expect(relativeSpecifiers("index.ts", true)).toContain(
