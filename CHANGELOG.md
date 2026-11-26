@@ -8,7 +8,8 @@ Changes listed here are merged after the current release-preparation scope and
 are not included in the current npm artifact until a later release.
 
 - Repository engineering lifecycle, accessibility assessment, pull-request
-  evidence, and release-readiness rules are documented for contributors.
+  evidence, and release-readiness rules are proposed for contributors in
+  PR #641. They are not merged with this note.
   `scripts/commit-policy.mjs` is unchanged and still rejects `Co-authored-by`
   trailers. The intended authorship policy is pending enforcement
   reconciliation. No product behavior changed.

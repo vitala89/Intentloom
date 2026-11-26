@@ -244,8 +244,9 @@ esbuild` then ran the native binary through Node. That failure is
 - **Not done:** owner review, merge, main-branch verification after merge,
   the commit-policy enforcement change, CI cost changes, axe-core, P1K.9
   implementation, P1K.10+, Undo U4, Desktop Undo U5.
-- **Next first action:** Independent review of the governance pull request.
-  After owner merge and main verification, the next product task remains P1K.9
+- **Pull request:** https://github.com/vitala89/Intentloom/pull/641
+- **Next first action:** Independent review of pull request #641. After owner
+  merge and main verification, the next product task remains P1K.9
   implementation, and only after the section 24.10 matrix is accepted.
 
 ### 2026-11-26, Packages architecture P1K.9 final Design First corrections
