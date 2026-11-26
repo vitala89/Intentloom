@@ -204,15 +204,35 @@ execution is merged** (PR #638,
 for independent review** and does not authorize implementation. Do not start
 P1K.10 through P1K.17, Undo U4, or Desktop Undo U5.
 
+### 2026-11-26, Packages architecture P1K.9 final Design First corrections
+
+- **Status:** **DESIGN OPEN — AWAITING REVIEW.** Implementation is not
+  authorized. Maintainer approval of section 24 is still required.
+- **Triage:** 3/10 (blast radius 1, ambiguity 0, risk 0, verification 2 because
+  this pass runs `pnpm verify` and `git diff --check`, unknowns 0). Harness:
+  Cursor. Model role: mid. Effort: medium. Subagents: none. Stop when PR #640
+  has the restored description, the promote error sentence, the Stage A read
+  case, and this triage history, with no production code changes.
+- **Branch:** `design/p1k9-workspace-proposal-boundaries` (prefix remains outside
+  `AGENTS.md`; PR #640 is not renamed).
+- **Reviewed HEAD before this pass:** `2c08a29f6c57cc1b24410f3c4d4dd2d3493aea17`.
+- **Corrections:** section 24.2 no longer says conversation validation errors
+  propagate; Stage A requires a conversation `fs.read` failure that surfaces as
+  the exact not-found error; exact adoption arguments stay on Stage B when
+  public seams cannot see them; original triage arithmetic (5/10) is separated
+  from the later risk-axis reassessment (3/10).
+- **Not done:** maintainer approval, P1K.9 implementation.
+- **Next watch:** final independent Design Review of PR #640.
+
 ### 2026-11-26, Packages architecture P1K.9 Design First review corrections
 
 - **Status:** **DESIGN OPEN — AWAITING REVIEW.** Implementation is not
   authorized.
-- **Triage:** 2/10 (blast radius 1 documentation corrections, ambiguity 0, risk
-  0, verification 1 `pnpm format:check` and `git diff --check`, unknowns 0).
-  Harness: Cursor. Model role: cheapest. Effort: lowest. Subagents: none.
-  Stop when PR #640 documents conversation error semantics, Stage A/B tests, and
-  corrected triage with no production code changes.
+- **Triage:** 3/10 under this later reading (blast radius 1, ambiguity 0, risk
+  0, verification 2 for the pre-push gate actually run, unknowns 0). The entry
+  originally recorded verification 1 and total 2/10. That understated the
+  `pnpm verify` gate used before push. Harness: Cursor. Model role: mid.
+  Effort: medium. Subagents: none.
 - **Branch:** `design/p1k9-workspace-proposal-boundaries` (see branch naming
   note below).
 - **Base / reviewed code:** `main` at `d8c5f2c5c4c06e86bf6f04d4014bcf6e68f066db`
@@ -229,13 +249,16 @@ P1K.10 through P1K.17, Undo U4, or Desktop Undo U5.
 
 - **Status:** **DESIGN OPEN — AWAITING REVIEW.** Implementation is not
   authorized.
-- **Triage:** 3/10 (blast radius 1 documentation, ambiguity 1 verified-behavior
-  contract, risk 0, verification 1, unknowns 0). Prior handoff incorrectly
-  reported 6/10 because risk was scored 2; component sum is 3. Harness: Cursor.
-  Model role: mid. Effort: medium. Subagents: none. Grilling skipped: parent
-  design PR #627 already selected the internal `adoptProject` port; this slice
-  records verified behavior. Stop when the design pull request is open with no
-  production code changes.
+- **Triage history:** the first handoff listed blast radius 1, ambiguity 1,
+  risk 2, verification 1, unknowns 0 and labeled the total 6/10. Those
+  components sum to **5/10**. Reporting 6/10 was an arithmetic mistake only.
+  The routing table maps 5/10 to mid / high. A later correction reassessed the
+  risk axis from 2 to 0 because the slice does not change authorization
+  behavior. That reassessment is separate from the arithmetic mistake and
+  yields **3/10** (mid / medium). Harness: Cursor. Subagents: none. Grilling
+  skipped: parent design PR #627 already selected the internal `adoptProject`
+  port; this slice records verified behavior. Stop when the design pull request
+  is open with no production code changes.
 - **Branch:** `design/p1k9-workspace-proposal-boundaries` — **not** an approved
   `<type>/` prefix in `AGENTS.md` (`docs/`, `refactor/`, … only). PR #640 kept
   on this branch without rename unless maintainer authorizes.

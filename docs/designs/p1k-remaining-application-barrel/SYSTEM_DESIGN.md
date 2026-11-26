@@ -2215,8 +2215,16 @@ Verified by reading `packages/application/src/index.ts` and
   path.
 - Creates the parent directory only when `fs.exists(dirname(path))` is false.
 - Returns the adoption proposal object, not a separate review record.
-- Validation, existence, mkdir, adoption, and write errors propagate. There is
-  no retry and no rollback of a partial write.
+- Conversation `fs.read`, JSON parsing, and record validation failures are
+  caught inside `getWorkspaceConversation`, which returns `null`. Promote then
+  throws `Workspace conversation ${conversationId} not found`. Those failures
+  do not propagate as read, parse, or validation errors.
+- Conversation path resolution (`workspaceConversationPath` / `inside`) and
+  conversation `fs.exists` failures outside that catch propagate unchanged.
+- After a conversation record is loaded, adoption failures, proposal parent
+  directory creation (`mkdir`), proposal-path `fs.exists`, and proposal write
+  failures propagate as implemented today. There is no retry and no rollback
+  of a partial write.
 
 **Review**
 
@@ -2506,11 +2514,20 @@ Required Stage A cases:
 - Conversation file present but malformed JSON or invalid record: promote throws
   the same not-found error (not a parse or validation error at the promote
   boundary).
+- Conversation `fs.read` failure: the file exists, `read` throws, and promote
+  throws the exact `Workspace conversation ${conversationId} not found` error
+  and writes nothing. Observe this through the public package API and an
+  existing filesystem seam. Do not add a production test hook to force the
+  failure.
 - Conversation id path traversal: `path traversal:` propagates from promote
   (before not-found).
 - Conversation `fs.exists` failure: propagates through promote.
 - Supplied `proposalId` and generated `prop-${Date.now()}` ids.
-- `adoptProject` arguments are exactly generic, `["codex"]`, `dryRun: true`.
+- Observable adoption outcome: stored bytes are the dry-run adoption proposal
+  (`profile: "generic"`, `adapters: ["codex"]`, `dryRun: true` as reflected in
+  the persisted proposal), not the conversation record. Exact internal
+  `adoptProject` argument lists and invocation ordering belong in Stage B when
+  existing public seams cannot observe the call.
 - Stored bytes are the adoption proposal, not the conversation record.
 - Directory is created only when absent.
 - Review of an existing file uses those bytes and does not call adoption.
@@ -2540,9 +2557,16 @@ Existing references: `tests/workspace-apply.test.ts`,
 
 Once `workspace-proposal-lifecycle.ts` exists, add tests that import the leaf
 operations with a mock `WorkspaceProposalAdoption` port (not a new public API).
+Do not require a production callback or other test hook before extraction.
+Stage A stays on the public package API and existing filesystem seams.
 
-- Assert exact adoption arguments, call count, and invocation ordering for
-  promote, review fallback, and apply.
+When exact adoption arguments or invocation ordering cannot be asserted through
+those baseline seams, Stage B port tests are the place that verifies them:
+
+- Assert exact adoption arguments (`profile: "generic"`, `adapters: ["codex"]`,
+  `dryRun: true` for promote and the review fallback; apply `dryRun` as
+  passed), call count, and invocation ordering for promote, review fallback,
+  and apply.
 - Assert adoption errors propagate unchanged through wrappers.
 - Assert public barrel wrappers preserve current signatures, default
   `nodeFileSystem`, and observable compatibility with Stage A baselines.
