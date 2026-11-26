@@ -56,15 +56,15 @@ the same session.
 
 ### Do not auto-invoke
 
-| Skill                                                                      | Reason                                                                                                                     |
-| -------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
-| `implement`                                                                | Instructs committing from the skill; skips our branch/PR and attribution rules unless the human already asked for commits. |
-| `to-spec` / `to-tickets` / `triage`                                        | Assume GitHub Issues or `.scratch/` tickets, not Duty Watch + PRs.                                                         |
-| `prototype`                                                                | Throwaway branches and extra trees; only with an explicit prototype request.                                               |
-| `wizard`                                                                   | Writes `.env` and GitHub secrets.                                                                                          |
-| `loop-me`, `writing-fragments`, `writing-shape`, `claude-handoff`, `teach` | In-progress or off this engineering workflow.                                                                              |
-| `to-questionnaire`                                                         | External questionnaire, not repo design.                                                                                   |
-| `setup-matt-pocock-skills`                                                 | Would install a second tracker/docs layout.                                                                                |
+| Skill                                                                      | Reason                                                                                                                                |
+| -------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| `implement`                                                                | Instructs committing from the skill; skips our branch, pull request, and authorship rules unless the human already asked for commits. |
+| `to-spec` / `to-tickets` / `triage`                                        | Assume GitHub Issues or `.scratch/` tickets, not Duty Watch + PRs.                                                                    |
+| `prototype`                                                                | Throwaway branches and extra trees; only with an explicit prototype request.                                                          |
+| `wizard`                                                                   | Writes `.env` and GitHub secrets.                                                                                                     |
+| `loop-me`, `writing-fragments`, `writing-shape`, `claude-handoff`, `teach` | In-progress or off this engineering workflow.                                                                                         |
+| `to-questionnaire`                                                         | External questionnaire, not repo design.                                                                                              |
+| `setup-matt-pocock-skills`                                                 | Would install a second tracker/docs layout.                                                                                           |
 
 ## Grilling adaptations (normative)
 

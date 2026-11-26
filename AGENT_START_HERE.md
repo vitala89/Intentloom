@@ -14,9 +14,11 @@ Read, in order:
 5. `docs/governance/CODE_QUALITY_STANDARDS.md`
 6. `docs/governance/DOMAIN_MODELING.md`
 7. `docs/governance/AI_AGENT_WORKFLOW.md`
-8. `docs/governance/DESIGN_FIRST_POLICY.md` for the mandatory design-before-implementation gate
-9. The relevant specification, ADRs, roadmap documents, package documentation,
-   technology-specific governance, and code for the requested task
+8. `docs/governance/ENGINEERING_LIFECYCLE.md` for the repository lifecycle
+9. `docs/governance/DESIGN_FIRST_POLICY.md` for the mandatory design-before-implementation gate
+10. `docs/governance/ACCESSIBILITY.md` when the task changes a user-facing interface
+11. The relevant specification, ADRs, roadmap documents, package documentation,
+    technology-specific governance, and code for the requested task
 
 Do not begin implementation from the user prompt alone. `AGENTS.md` requires
 the architecture preflight below. `docs/README.md` is the documentation index

@@ -7,6 +7,12 @@ All notable changes are documented here. This project follows Keep a Changelog p
 Changes listed here are merged after the current release-preparation scope and
 are not included in the current npm artifact until a later release.
 
+- Repository engineering lifecycle, accessibility assessment, pull-request
+  evidence, and release-readiness rules are documented for contributors.
+  `scripts/commit-policy.mjs` is unchanged and still rejects `Co-authored-by`
+  trailers. The intended authorship policy is pending enforcement
+  reconciliation. No product behavior changed.
+
 - Neutron Desktop D5 Slice 1 adds read-only
   `intentloom.neutron.mutation.status.get.v1`. Merged in PR #537
   (implementation branch `feat/neutron-desktop-mutation-status-recovery`;

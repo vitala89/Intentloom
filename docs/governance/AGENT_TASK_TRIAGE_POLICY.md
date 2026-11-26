@@ -43,8 +43,11 @@ replaces the other.
 | 7-8   | frontier   | high    | scout + reviewer, read-only, if the tool has delegation    | large                |
 | 9-10  | frontier   | highest | decision gate first, then scout and reviewer, if available | announce it up front |
 
-Role names, not vendor model names - this table stays true across tools. Each
-carrier below maps role to the tool's own verified names.
+Role names, not vendor model names. This table stays true across tools. The
+canonical role identifiers are `cheapest`, `mid`, and `frontier`. Owner-facing
+names for the same roles are Economy / cheapest, Mid-tier, and Frontier. Do not
+invent a fourth role. Each carrier below maps a role to model identifiers that
+the environment actually exposes.
 
 ## Carriers, per tool
 
@@ -77,13 +80,59 @@ always-apply carriers are `.cursor/rules/session-start.mdc`,
 point at this file and at `AGENT_START_HERE.md`; they must not copy the rubric
 or routing table. `grilling.mdc` points at `.agents/skills/grilling/SKILL.md`
 and must not copy that interview.
-Model and effort are the user's picker. The agent prints a role
-recommendation (`cheapest` / `mid` / `frontier`) and continues. Do not
-spawn subagents unless the user asked.
+Model and effort are the user's picker. The agent prints the required verdict
+above, including the role (`cheapest`, `mid`, or `frontier`), and continues.
+Cite a concrete model identifier only when this session's tool schema lists it.
+Do not assume a context-window size. Do not spawn subagents unless the user
+asked. Do not switch the session model.
 
 **Copilot / anything else:** no `.github/copilot-instructions.md` exists at
 the time of this carrier update. If one is added, give it a short pointer
 to this same canon rather than duplicating the table.
+
+## Required verdict
+
+Print this block before planning or editing, and again after a material scope
+change. Carriers point here. They do not keep a second copy of the rubric or
+the routing table.
+
+```text
+Task:
+Environment:
+Score: X/10
+Blast Radius:
+Ambiguity:
+Risk:
+Verification:
+Unknowns:
+Recommended Model:
+Reasoning Effort:
+Context Budget:
+Delegation:
+Approval Required:
+Stop Condition:
+```
+
+`Recommended Model` is the role (`cheapest`, `mid`, or `frontier`), plus a
+concrete model identifier only when the current environment lists that
+identifier. `Reasoning Effort` is lowest, medium, high, or highest, matching
+the routing table. `Context Budget` uses the table’s budget column. Do not
+invent a context-window size, a reasoning setting, or a model id.
+
+Identify the environment from the session (Cursor, Claude Code, Codex,
+Copilot, Antigravity, or another named agent). If the environment does not
+expose its model list, say so and leave the recommendation at the role so the
+owner can select a model. The owner’s selection is separate from executing the
+task. Do not silently switch models, delegate work, or start an additional paid
+agent. Delegation follows the routing table and the repository rule that
+forbids subagents unless the user asked.
+
+## Model availability
+
+Verify identifiers against the current tool schema or the vendor’s
+documentation in that session. A list recorded in a past Duty Watch entry is
+evidence for that session, not a catalog for the next one. This policy
+intentionally does not freeze model names or context limits.
 
 ## Adjustments specific to this repository
 

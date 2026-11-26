@@ -68,6 +68,14 @@ export default defineConfig({
             link: "/governance/ENGINEERING_PRINCIPLES",
           },
           {
+            text: "Engineering Lifecycle",
+            link: "/governance/ENGINEERING_LIFECYCLE",
+          },
+          {
+            text: "Accessibility",
+            link: "/governance/ACCESSIBILITY",
+          },
+          {
             text: "Memory & Security Roadmap",
             link: "/roadmap/MEMORY_AND_SECURITY_ROADMAP",
           },

@@ -200,9 +200,53 @@ is merged** (PR #636, `dbea5baf79af002a203e62ba9609c8a67c87662c`).
 `4a4c5046e238119d60bf905f3db5c79b146c6a99`). **P1K.7 security adapter
 execution is merged** (PR #638,
 `4a949b0fdecf57e785ed437ace6576918a38eee6`). **P1K.8 workspace conversation extraction is merged** (PR #639,
-`d8c5f2c5c4c06e86bf6f04d4014bcf6e68f066db`). **P1K.9 Design First is open
-for independent review** and does not authorize implementation. Do not start
-P1K.10 through P1K.17, Undo U4, or Desktop Undo U5.
+`d8c5f2c5c4c06e86bf6f04d4014bcf6e68f066db`). **P1K.9 Design First is merged**
+(PR #640, `84fd593bb81f2f3eff98fa6ddef0b3ae579027d1`). Section 24 still says
+status **proposed**, and section 24.10 still requires the maintainer to check
+the acceptance matrix before implementation. Do not start P1K.9 implementation
+until that check is recorded. Do not start P1K.10 through P1K.17, Undo U4, or
+Desktop Undo U5.
+
+### 2026-11-26, Repository engineering and project-management governance
+
+- **Status:** **IN REVIEW.** Documentation only. Not merged. Does not authorize
+  P1K.9 implementation.
+- **Triage:** 6/10 (blast radius 2, ambiguity 1, risk 1, verification 2,
+  unknowns 0). Environment: Cursor. Recommended role: `mid`. Reasoning effort:
+  high. Context budget: larger. Delegation: none. This session stayed on the
+  owner-selected model and did not switch or start another agent. The session
+  identified itself as Grok 4.7. Subagent model identifiers were read from this
+  session’s Task tool schema only; context-window limits were not exposed and
+  are not stated. Stop when the governance pull request is open for independent
+  review, with no product, runtime, or CI change.
+- **Route:** `implement`. Grilling and feature discovery were not run. The
+  requested governance text had one reading and named the files to extend.
+- **Branch:** `docs/engineering-project-management-governance`, from `main` at
+  `84fd593bb81f2f3eff98fa6ddef0b3ae579027d1` (PR #640).
+- **Decisions:** One new lifecycle document and one accessibility document,
+  because those concerns had no canonical owner. Triage, Design First, tests,
+  release, and architecture stay in their existing files. Authorship intent is
+  documented. `scripts/commit-policy.mjs` still rejects `Co-authored-by`
+  trailers, so the intended policy is pending enforcement reconciliation and
+  is not fully active. No workflow file was edited.
+- **P1K.9:** PR #640 is merged. Section 24 of the System Design still says
+  status **proposed**. Section 24.10 still requires the maintainer to check the
+  acceptance matrix. This watch does not check that matrix and does not treat
+  the design as void because later planning headings were added.
+- **Validation:** Second `pnpm verify` exited 0 after a local esbuild shim
+  correction that is not in the commit. Result: typecheck passed; lint passed
+  with existing warnings; format check passed; 393 test files passed; 3308
+  tests passed; 3 skipped; build passed; `git diff --check` passed. The first
+  `pnpm verify` failed in `tests/cli-sync-process.test.ts` because this
+  environment’s pnpm install ignored esbuild’s install script and `pnpm exec
+esbuild` then ran the native binary through Node. That failure is
+  environmental. It is not a product regression from this change.
+- **Not done:** owner review, merge, main-branch verification after merge,
+  the commit-policy enforcement change, CI cost changes, axe-core, P1K.9
+  implementation, P1K.10+, Undo U4, Desktop Undo U5.
+- **Next first action:** Independent review of the governance pull request.
+  After owner merge and main verification, the next product task remains P1K.9
+  implementation, and only after the section 24.10 matrix is accepted.
 
 ### 2026-11-26, Packages architecture P1K.9 final Design First corrections
 

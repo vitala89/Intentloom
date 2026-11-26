@@ -79,11 +79,16 @@ limit, reason, scope, responsible area, and expiry or review trigger.
    decomposition evidence, exceptions, and changelog impact.
 7. Update `CHANGELOG.md` in the same PR when the change is user-visible.
 8. Merge only after required checks and review pass.
-9. Verify the resulting `main` commit before beginning release work.
+9. Verify the resulting `main` commit before beginning release work. Merge does
+   not establish release readiness. Follow
+   [the engineering lifecycle](docs/governance/ENGINEERING_LIFECYCLE.md) and the
+   [release process](docs/releases/RELEASE_PROCESS.md).
 
-Commit and pull request text must not contain `Co-Authored-By` trailers,
-generated-with footers, or other attribution for an assistant, model, agent,
-tool, or bot.
+Authorship follows the transition in the engineering lifecycle. Accurate
+existing co-authorship metadata may stay, and promotional tool footers are not
+added. `scripts/commit-policy.mjs` still rejects `Co-authored-by` trailers, so
+the intended policy is not fully active until the owner authorizes that
+enforcement change. Do not bypass the hook.
 
 Version changes, tags, and publication are release-only actions; see the
 [release process](docs/releases/RELEASE_PROCESS.md) and

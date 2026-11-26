@@ -1,6 +1,10 @@
 # Intentloom Project State
 
-Last verified: 2026-08-22 (P3 S8 External Specialized Pack Lifecycle complete)
+Last verified: 2026-11-26 for the P1K.9 Design First merge
+(`84fd593bb81f2f3eff98fa6ddef0b3ae579027d1`, PR #640) and the repository
+engineering-lifecycle documentation. The 2026-08-22 phase note below was not
+re-audited in that documentation change. Earlier product-phase text remains
+historical until a release audit replaces it.
 
 This file records the durable current state of the project. It is not a
 chronological log. Session history and handoff details belong in
@@ -148,7 +152,11 @@ and real consumers justify them.
   `scripts/validate-*.mjs`, and `.github/workflows/governance.yml`. Hooks are
   explicitly enabled per checkout with `pnpm hooks:install`; CI independently
   validates commit structure, attribution, whitespace, and production-file
-  budgets.
+  budgets. The intended authorship policy in
+  `docs/governance/ENGINEERING_LIFECYCLE.md` would preserve legitimate
+  `Co-authored-by` trailers. `scripts/commit-policy.mjs` still rejects those
+  trailers. The policy is pending a separate owner-authorized enforcement
+  change and is not fully active.
 - `pnpm lint` now runs `oxlint` (config in `.oxlintrc.json`) instead of
   duplicating `pnpm typecheck`. `typescript-eslint` cannot parse this
   repository's TypeScript 7 toolchain yet (upstream tracking issue), so
@@ -1281,9 +1289,13 @@ Measured after P1K.8, `index.ts` is 857 effective lines and 903 physical
 lines; the conversation leaf is 129 effective and 142 physical lines.
 Import-only SCC membership remains `[3]`. Re-export SCC membership remains
 `[4, 27, 3]` with the same members. No runtime behavior changed in P1K.8
-scope. P1K.9 Design First is open for independent review and does not
-authorize implementation. P1K.10 through P1K.17 have not started. P1 remains
-incomplete.
+scope. P1K.9 Design First is merged at
+`84fd593bb81f2f3eff98fa6ddef0b3ae579027d1` (PR #640). Section 24 still says
+status **proposed**, and section 24.10 still requires the maintainer to check
+the acceptance matrix before implementation. That check has not been recorded
+here. P1K.10 through P1K.17 have not started. P1 remains incomplete. The next
+product implementation is still P1K.9, after that matrix is accepted. An
+intermediate repository-governance update does not replace it.
 The 27-file component still contains
 `index.ts` and `approved-apply-engine.ts`. Undo U4 and Desktop Undo U5
 have not started. Ids 2 through 26 remain
