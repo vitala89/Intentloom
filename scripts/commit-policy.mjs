@@ -20,9 +20,6 @@ export function validateCommitMessage(message, label = "commit") {
       `${label}: use <type>(<scope>): <summary> with a supported Conventional Commit type`,
     );
   }
-  if (/co-authored-by\s*:/i.test(message)) {
-    errors.push(`${label}: Co-Authored-By trailers are not allowed`);
-  }
   if (
     /generated\s*(with|by)\s+/i.test(message) ||
     /made\s+with\s+/i.test(message)

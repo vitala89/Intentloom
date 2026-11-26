@@ -86,9 +86,8 @@ limit, reason, scope, responsible area, and expiry or review trigger.
 
 Authorship follows the transition in the engineering lifecycle. Accurate
 existing co-authorship metadata may stay, and promotional tool footers are not
-added. `scripts/commit-policy.mjs` still rejects `Co-authored-by` trailers, so
-the intended policy is not fully active until the owner authorizes that
-enforcement change. Do not bypass the hook.
+added. `scripts/commit-policy.mjs` accepts truthful `Co-authored-by` trailers
+and still rejects promotional attribution lines. Do not bypass the hook.
 
 Version changes, tags, and publication are release-only actions; see the
 [release process](docs/releases/RELEASE_PROCESS.md) and
