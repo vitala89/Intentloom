@@ -297,10 +297,12 @@ verification.
   failed before results were published.
 - **RACI:** unchanged — implementer this watch; Accountable Project Owner;
   independent reviewer before merge.
+- **HEAD after corrections:** `521310f` (ordinary `git commit` with hooks).
+  Published PR #642 description restored on GitHub (no `$file:` placeholder).
 - **Blockers:** Main-branch CodeQL red on `5cde03d` is a **separate** owner
   verification item (infra timeout). PR #642 mergeable state may show `blocked`
-  until branch protection inputs are satisfied. PR #642 CI after correction
-  commit: PENDING until push completes.
+  until branch protection inputs are satisfied. PR #642 CI on `521310f`:
+  PENDING.
 - **Not done:** owner merge, main verification including CodeQL recovery on
   `main`, P1K.9 implementation.
 - **Next first action:** Final independent review of PR #642 with restored
