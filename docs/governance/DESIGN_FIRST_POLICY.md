@@ -12,25 +12,37 @@ Status: proposed. Applies to Intentloom features, integrations, and material arc
 
 ## Minimum System Design content
 
-- Problem, scope, requirements, acceptance criteria and non-goals.
-- Current-state and proposed context/component diagrams (Mermaid).
-- Sequence diagrams for successful and rejected/failed operations.
-- Data-flow diagram, storage ownership, lifecycle and persistence.
-- DDD bounded contexts, ubiquitous language, dependency direction and ownership; do not force unnecessary domain patterns.
-- Typed API/RPC contracts, events, versioning and compatibility.
-- Authentication, authorization, approval boundaries, trust boundaries and threat considerations.
-- Errors, retries, idempotency, timeouts, recovery, observability and rollback.
-- Alternatives considered, performance and resource constraints.
-- Test strategy: unit, integration, contract, E2E and negative cases as applicable.
-- Implementation slices, migration steps, risks and open questions.
+Include each item that applies. Where one does not apply, say why.
 
-Use diagrams to clarify actual behavior, not decorative architecture. Explicitly distinguish verified current behavior from proposed behavior. Where a section does not apply, state why.
+- Problem, scope, requirements, acceptance criteria, and non-goals.
+- Existing architecture and proposed architecture.
+- Current-state and proposed context and component diagrams.
+- Domain boundaries and ownership, using the ubiquitous language in `DOMAIN_MODELING.md`. Do not force unused domain patterns.
+- Data flow, storage ownership, lifecycle, and persistence.
+- Component interactions and typed contracts, including events, versioning, and compatibility.
+- Dependency direction.
+- Security, authorization, privacy, trust boundaries, and threat considerations.
+- Error handling, retries, idempotency, timeouts, recovery, and rollback.
+- Performance and resource constraints, and the alternatives considered.
+- Accessibility impact, following `ACCESSIBILITY.md`.
+- Migration and rollback.
+- Test strategy, following `CODE_QUALITY_STANDARDS.md` section 5, including existing behavior and the checks that will show the change worked.
+- Project plan, responsibilities, and the SWOT or RAID record required by `ENGINEERING_LIFECYCLE.md`.
+- Sequence diagrams for successful and rejected or failed operations when behavior is not obvious from the text.
+
+Use diagrams to clarify actual behavior, not as decoration. Distinguish verified current behavior from the proposal.
+
+Planning fields added to this policy do not, by themselves, revoke a design the maintainer already approved. Before the next implementation, assess which new evidence is actually missing and record that assessment. Do not treat a previously approved design as void only because a later policy lists more headings.
 
 ## Scope and exceptions
 
-Full design review is required for new features, external integrations, cross-boundary behavior, public contracts, persistence changes, security-sensitive changes and substantial refactors. Small documentation edits, isolated test maintenance and trivial fixes with no architectural impact may use a short impact statement instead. The agent must justify the classification; ambiguous cases default to design review.
+Full design review is required for new features, external integrations, cross-boundary behavior, public contracts, persistence changes, security-sensitive changes, and substantial refactors. Small documentation edits, isolated test maintenance, and trivial fixes with no architectural impact may use a short impact statement instead. The author must justify the classification. Ambiguous cases use design review.
 
-An urgent fix may use an abbreviated design and expedited explicit approval, but must still describe its boundary, risk and verification. No agent may self-approve or infer approval from silence.
+An urgent fix may use an abbreviated design and expedited explicit approval, and must still describe its boundary, risk, and verification. No agent may self-approve or treat silence as approval.
+
+Before explicit owner approval, the allowed work is repository investigation, running existing tests, planning baseline characterization, and writing the test design. Do not start new feature implementation, a migration, or new feature tests before that approval. A material deviation from an approved design needs a new review and approval before the implementation continues.
+
+Design and implementation stay in separate pull requests for every change that requires this gate.
 
 ## PR checklist
 
@@ -38,7 +50,7 @@ An urgent fix may use an abbreviated design and expedited explicit approval, but
 
 **Implementation PR:** link to approved design; conformity/deviations; relevant tests and CI; security/compatibility impact; migration/rollback; updated `PROJECT_STATE.md` and `DUTY_WATCH.md` where required.
 
-This document supplements rather than replaces `docs/governance/AI_AGENT_WORKFLOW.md`, `docs/architecture/ARCHITECTURE.md`, `docs/governance/DOMAIN_MODELING.md`, and `docs/governance/CODE_QUALITY_STANDARDS.md`. If rules conflict, resolve them explicitly in review before implementation.
+This document supplements rather than replaces `docs/governance/AI_AGENT_WORKFLOW.md`, `docs/governance/ENGINEERING_LIFECYCLE.md`, `docs/governance/ACCESSIBILITY.md`, `docs/architecture/ARCHITECTURE.md`, `docs/governance/DOMAIN_MODELING.md`, and `docs/governance/CODE_QUALITY_STANDARDS.md`. If rules conflict, resolve them explicitly in review before implementation.
 
 ## Diagram sources and previews
 

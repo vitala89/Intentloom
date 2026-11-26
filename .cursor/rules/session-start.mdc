@@ -14,10 +14,12 @@ Do not start from the user prompt alone. Read, in order:
 5. `docs/governance/ENGINEERING_PRINCIPLES.md`
 6. `docs/governance/CODE_QUALITY_STANDARDS.md`
 7. `docs/governance/AI_AGENT_WORKFLOW.md`
-8. `docs/governance/AGENT_TASK_TRIAGE_POLICY.md` (print the verdict; do not copy the table)
-9. `docs/governance/REACT_BEST_PRACTICES.md` when the task touches Desktop UI
-10. The spec, ADRs, roadmap, and code for this task
-11. Grilling, when it applies — `.cursor/rules/grilling.mdc` and
+8. `docs/governance/ENGINEERING_LIFECYCLE.md` (lifecycle order; do not copy it)
+9. `docs/governance/AGENT_TASK_TRIAGE_POLICY.md` (print the verdict; do not copy the table)
+10. `docs/governance/ACCESSIBILITY.md` when the task changes a user-facing interface
+11. `docs/governance/REACT_BEST_PRACTICES.md` when the task touches Desktop UI
+12. The spec, ADRs, roadmap, and code for this task
+13. Grilling, when it applies — `.cursor/rules/grilling.mdc` and
     `.agents/skills/grilling/SKILL.md`
 
 If `PROJECT_STATE.md` or `DUTY_WATCH.md` disagrees with Git, PRs, tests, or CI,

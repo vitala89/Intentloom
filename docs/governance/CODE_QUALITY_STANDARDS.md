@@ -126,7 +126,8 @@ ordering, rollback, or safety guarantees.
 
 - Every behavior change requires tests at the lowest reliable level.
 - Every bug fix requires a regression test that fails before the fix when this
-  can be expressed safely.
+  can be expressed safely. If it cannot, record the equivalent verification and
+  why a test is not a safe expression of the defect.
 - Add integration or contract tests at process, protocol, filesystem, adapter,
   database, IPC, or UI boundaries.
 - Test public behavior and invariants, not private implementation order.
@@ -134,8 +135,48 @@ ordering, rollback, or safety guarantees.
   access injectable or otherwise controllable in tests.
 - Avoid hidden mutable globals and singleton state.
 - A refactor must preserve existing behavior tests before adding new behavior.
+  Characterize the current behavior before moving production code when the
+  refactor is supposed to preserve it.
 - Do not use snapshot tests as the only evidence for security, authorization,
   transactions, compatibility, or error semantics.
+- Do not delete a necessary test, weaken a valid assertion, or change the
+  expected behavior in order to obtain a passing result.
+- The required repository gate remains `pnpm verify` before push, as named in
+  `AGENT_TASK_TRIAGE_POLICY.md`. Independent review reads the tests as well as
+  the production code. Critical existing user journeys that the change can
+  affect must still work.
+
+### Test planning before implementation
+
+A substantial System Design records the test strategy before implementation:
+requirements and acceptance criteria, existing behavior, baseline results from
+runs that actually happened, expected behavior, happy paths, edge and negative
+cases, failure and recovery, regression risks, fixtures, environments,
+automated and manual checks, and the validation commands. Never invent a
+baseline result. Record a pre-existing failure separately from a failure the
+change introduced.
+
+Trace evidence as: requirement, acceptance criterion, test scenario, test
+evidence.
+
+Run the existing tests before implementation when that is practical.
+
+### Test-first development
+
+After design approval, use Test-Driven Development (TDD) where it fits:
+Red, then Green, then Refactor. Use it for domain logic, algorithms,
+validation, contracts, and reproducible defects. Where TDD does not fit,
+implement and test in the same change and record why.
+
+### Risk-based selection
+
+Run the categories the risk justifies. Do not run every category for every
+change. Select from: unit, integration, component, contract, Application
+Programming Interface (API), end-to-end (E2E), regression, visual regression,
+accessibility, performance, load, security, privacy, migration, compatibility,
+recovery, smoke, AI evaluation, and content validation. AI evaluation criteria
+are in `ENGINEERING_LIFECYCLE.md`. Accessibility evidence is in
+`ACCESSIBILITY.md`.
 
 ## 6. Domain guidance
 

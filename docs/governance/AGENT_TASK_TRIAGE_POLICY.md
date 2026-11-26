@@ -43,8 +43,11 @@ replaces the other.
 | 7-8   | frontier   | high    | scout + reviewer, read-only, if the tool has delegation    | large                |
 | 9-10  | frontier   | highest | decision gate first, then scout and reviewer, if available | announce it up front |
 
-Role names, not vendor model names - this table stays true across tools. Each
-carrier below maps role to the tool's own verified names.
+Role names, not vendor model names. This table stays true across tools. The
+canonical role identifiers are `cheapest`, `mid`, and `frontier`. Owner-facing
+names for the same roles are Economy / cheapest, Mid-tier, and Frontier. Do not
+invent a fourth role. Each carrier below maps a role to model identifiers that
+the environment actually exposes.
 
 ## Carriers, per tool
 
@@ -77,13 +80,65 @@ always-apply carriers are `.cursor/rules/session-start.mdc`,
 point at this file and at `AGENT_START_HERE.md`; they must not copy the rubric
 or routing table. `grilling.mdc` points at `.agents/skills/grilling/SKILL.md`
 and must not copy that interview.
-Model and effort are the user's picker. The agent prints a role
-recommendation (`cheapest` / `mid` / `frontier`) and continues. Do not
-spawn subagents unless the user asked.
+Model and effort are the user's picker. The agent prints the required verdict
+above, including the role (`cheapest`, `mid`, or `frontier`), and continues.
+Cite a concrete model identifier only when this session's tool schema lists it.
+Do not assume a context-window size. Do not spawn subagents unless the user
+asked. Do not switch the session model.
 
 **Copilot / anything else:** no `.github/copilot-instructions.md` exists at
 the time of this carrier update. If one is added, give it a short pointer
 to this same canon rather than duplicating the table.
+
+## Required verdict
+
+Print this block before planning or editing, and again after a material scope
+change. Carriers point here. They do not keep a second copy of the rubric or
+the routing table.
+
+```text
+Task:
+Environment:
+Score: X/10
+Blast Radius:
+Ambiguity:
+Risk:
+Verification:
+Unknowns:
+Recommended Model:
+Reasoning Effort:
+Context Budget:
+Delegation:
+Approval Required:
+Stop Condition:
+```
+
+`Recommended Model` is the role (`cheapest`, `mid`, or `frontier`), plus a
+concrete model identifier only when the current environment lists that
+identifier. `Reasoning Effort` is lowest, medium, high, or highest, matching
+the routing table. `Context Budget` uses the table’s budget column. Do not
+invent a context-window size, a reasoning setting, or a model id.
+
+Identify the environment from the session (Cursor, Claude Code, Codex,
+Copilot, Antigravity, or another named agent). If the session does not show
+which environment it is, ask the owner before naming a model that belongs to
+one environment. Do not ask again once the environment is known. If the known
+environment does not expose its model list, say so and leave the recommendation
+at the role so the owner can select a model. The owner’s selection is separate
+from executing the task. Do not silently switch models.
+
+The routing table states the largest delegation a score allows. It does not
+authorize launching an agent. An additional agent, including a read-only
+scout, starts only after the owner explicitly authorizes it. If delegation is
+unavailable or not authorized, investigate inside the current session, keep
+that reading bounded, and record what was not covered.
+
+## Model availability
+
+Verify identifiers against the current tool schema or the vendor’s
+documentation in that session. A list recorded in a past Duty Watch entry is
+evidence for that session, not a catalog for the next one. This policy
+intentionally does not freeze model names or context limits.
 
 ## Adjustments specific to this repository
 
@@ -96,11 +151,22 @@ to this same canon rather than duplicating the table.
   security/auth-boundary changes, `aif-privacy-review` for data-handling
   changes, `aif-extension-review` before adopting any external skill or
   plugin. All three are required by `AGENTS.md` regardless of triage score.
-- **Verification axis 2 -> run `pnpm verify`**, the same command required
-  before every push by `.githooks/pre-push` and the `Governance` CI workflow.
-  Triage does not invent a new gate; it names the existing one.
-- **Unknowns = 2 -> one read-only scout**, not the main session reading
+- **Verification axis 2 -> run `pnpm verify` locally.** `.githooks/pre-push`
+  runs that command: `typecheck`, `lint`, `format:check`, `test`, `build`, and
+  `git diff --check`, as defined in `package.json`. The Governance workflow
+  does not run it. Governance validates the commit range and the diff
+  (whitespace and production-file budgets) through
+  `scripts/validate-commit-range.mjs` and `scripts/validate-diff.mjs`.
+  Compatibility CI runs typecheck, lint, format check, build, and test on its
+  matrix. It does not run `git diff --check`. Manual quality checks, including
+  accessibility, and the release checks in `docs/releases/` are separate
+  again. Triage does not invent a gate and does not collapse these into one
+  workflow.
+- **Unknowns = 2 -> investigate before planning**, and do not read
   `packages/application/src/index.ts` (a known oversized file) end to end.
+  The routing table may name one read-only scout as the maximum. That name is
+  not permission to launch one. Without explicit owner authorization, do the
+  bounded reading in the current session and record the limit.
 
 ## Enforcement
 

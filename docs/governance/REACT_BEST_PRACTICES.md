@@ -24,7 +24,11 @@ These standards govern React 19 and UI development in `apps/desktop` and any fut
 
 ---
 
-## 3. Accessibility (WCAG 2.x & Keyboard-First)
+## 3. Accessibility (WCAG 2.2 target and keyboard-first Desktop)
+
+The accessibility policy is `ACCESSIBILITY.md`. The target for web content is
+WCAG 2.2 Level AA. This section keeps Desktop techniques already used in the
+product. It is not a second policy.
 
 - **Roving Tabindex**: Tab groups (`role="tablist"`) must maintain roving `tabIndex` (`0` for active tab, `-1` for inactive tabs) and support keyboard navigation (`ArrowLeft`, `ArrowRight`, `Home`, `End`).
 - **Dialogs & Overlays**: Modals (`role="dialog"`) must trap focus inside the panel while open, support `Escape` key dismissal, and backdrop click closing.
