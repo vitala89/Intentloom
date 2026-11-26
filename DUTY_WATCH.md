@@ -205,7 +205,57 @@ execution is merged** (PR #638,
 status **proposed**, and section 24.10 still requires the maintainer to check
 the acceptance matrix before implementation. Do not start P1K.9 implementation
 until that check is recorded. Do not start P1K.10 through P1K.17, Undo U4, or
-Desktop Undo U5.
+Desktop Undo U5. **PR #641 is merged** (`5cde03de36879024f449e0b45fedff33a03f8c9c`).
+Authorship enforcement reconciliation is on branch
+`fix/transparent-ai-authorship` pending independent review; P1K.9
+implementation remains the next product task after that merge and main
+verification.
+
+### 2026-11-26, Transparent AI authorship enforcement reconciliation
+
+- **Status:** **IN REVIEW.** Governance maintenance. Not merged. Does not authorize
+  P1K.9 implementation.
+- **Triage:** 6/10 (blast radius 2, ambiguity 0, risk 2, verification 2,
+  unknowns 0). Environment: Cursor. Recommended role: `mid` (Composer 2.5).
+  Reasoning effort: high. Context budget: larger. Delegation: none. Approval:
+  narrow enforcement change authorized by Project Owner. Stop condition:
+  validated pull request ready for independent review.
+- **Design:** NOT APPLICABLE as a new System Design. Implementation follows the
+  authorship transition in `docs/governance/ENGINEERING_LIFECYCLE.md` (reviewed
+  in PR #641).
+- **Scope:** Remove the blanket `Co-authored-by` rejection from
+  `validateCommitMessage`; add `tests/commit-policy.test.ts`; reconcile active
+  instructions; rename `.cursor/rules/no-co-authored-by.mdc` to
+  `authorship-and-attribution.mdc`. **Non-goals:** product code, workflows,
+  hooks, dependencies, publish, merge, P1K.9+ implementation.
+- **RAID:** Primary risk is accidental weakening of unrelated commit safeguards.
+  Mitigation: minimal diff, regression tests, `pnpm verify`. Dependency: owner
+  merge and post-merge main verification before P1K.9 implementation.
+- **RACI:** Implementer — this watch. Accountable — Project Owner. Independent
+  reviewer — human before merge.
+- **Branch:** `fix/transparent-ai-authorship`, from `main` at `5cde03d`.
+- **TDD evidence — Red:** `pnpm exec vitest run tests/commit-policy.test.ts`
+  before the script change: 6 failed, 13 passed (co-author acceptance and entry
+  points failed as expected).
+- **TDD evidence — Green:** Same command after the script change: 19 passed.
+- **Validation:** `pnpm verify` exit 0 (Cursor cloud VM, Node 22, pnpm 10.12.4):
+  typecheck PASS; lint PASS with existing warnings; format check PASS; 394 test
+  files, 3327 tests passed, 3 skipped; build PASS; `git diff --check` PASS.
+  `pnpm docs:build` NOT APPLICABLE (no docs-site navigation or VitePress config
+  change). Governance and Compatibility CI: PENDING after push.
+- **Files:** `scripts/commit-policy.mjs`, `tests/commit-policy.test.ts`,
+  `docs/governance/ENGINEERING_LIFECYCLE.md`, `AGENTS.md`, `AGENT_START_HERE.md`
+  (unchanged — no stale authorship text), `CONTRIBUTING.md`,
+  `docs/governance/AI_AGENT_WORKFLOW.md`, `CHANGELOG.md`, `PROJECT_STATE.md`,
+  `.cursor/rules/authorship-and-attribution.mdc`, `.cursor/rules/git-branch-and-pr.mdc`,
+  `docs/handoffs/P0_RELEASE_HONESTY_AGENT_PROMPT.md`; removed
+  `.cursor/rules/no-co-authored-by.mdc`.
+- **Not done:** owner merge, main verification, P1K.9 implementation, P1K.10+,
+  Undo U4, Desktop Undo U5.
+- **Next first action:** Independent review of the authorship reconciliation pull
+  request. After owner merge and main verification, return to P1K.9 Workspace
+  Proposal Lifecycle Extraction subject to explicit maintainer acceptance of
+  section 24.10.
 
 ### 2026-11-26, PR #641 governance review corrections
 

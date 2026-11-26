@@ -150,11 +150,11 @@ commit or a pull request. The short form:
 - A trailer does not transfer accountability, approval authority, or ownership
   to an agent.
 
-That intended policy is **pending enforcement reconciliation**.
-`scripts/commit-policy.mjs` still rejects `Co-authored-by` trailers and
-promotional footers. The commit-msg hook and Governance CI both use that
-script. Do not bypass them and do not describe the intended policy as already
-enforced. Conventional Commit subjects stay required.
+`scripts/commit-policy.mjs` accepts truthful `Co-authored-by` trailers and
+rejects promotional footers. The commit-msg hook and Governance CI both use
+that script. Do not bypass them. Conventional Commit subjects stay required.
+Co-authorship is optional and must be truthful; the validator does not
+authenticate contributor identities.
 
 ## Duty Watch requirement
 

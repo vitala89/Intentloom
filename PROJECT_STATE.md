@@ -152,11 +152,10 @@ and real consumers justify them.
   `scripts/validate-*.mjs`, and `.github/workflows/governance.yml`. Hooks are
   explicitly enabled per checkout with `pnpm hooks:install`; CI independently
   validates commit structure, attribution, whitespace, and production-file
-  budgets. The intended authorship policy in
-  `docs/governance/ENGINEERING_LIFECYCLE.md` would preserve legitimate
-  `Co-authored-by` trailers. `scripts/commit-policy.mjs` still rejects those
-  trailers. The policy is pending a separate owner-authorized enforcement
-  change and is not fully active.
+  budgets. On `main` at `5cde03d`, authorship intent is documented but the
+  commit validator still rejected `Co-authored-by` trailers until the
+  `fix/transparent-ai-authorship` reconciliation lands: truthful co-authorship
+  permitted, promotional attribution still rejected.
 - `pnpm lint` now runs `oxlint` (config in `.oxlintrc.json`) instead of
   duplicating `pnpm typecheck`. `typescript-eslint` cannot parse this
   repository's TypeScript 7 toolchain yet (upstream tracking issue), so
