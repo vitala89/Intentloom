@@ -290,7 +290,8 @@ verification.
   same session continuation after prior PR #642 CI green @ `8452f2e`. Original
   PR estimate: governance maintenance, mid/high (6/10). Measured execution:
   prior `pnpm verify` ~206s wall; prior focused Vitest 19/19; this pass re-runs
-  required gates after doc edits (recorded below). Confidence: high for
+  required gates after doc edits: `pnpm verify` exit 0, wall ~200s (394 files,
+  3327 tests). Confidence: high for
   validator/tests unchanged; high for CodeQL timeout classification from job
   logs; limitations — no code-scanning alert list retrieved because upload
   failed before results were published.
