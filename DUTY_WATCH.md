@@ -242,7 +242,8 @@ verification.
   typecheck PASS; lint PASS with existing warnings; format check PASS; 394 test
   files, 3327 tests passed, 3 skipped; build PASS; `git diff --check` PASS.
   `pnpm docs:build` NOT APPLICABLE (no docs-site navigation or VitePress config
-  change). Governance and Compatibility CI: PENDING after push.
+  change). Governance and Compatibility CI on PR #642 @ `c59919d`: **PASS** (16
+  checks, 2026-11-26 ~21:12 CET).
 - **Files:** `scripts/commit-policy.mjs`, `tests/commit-policy.test.ts`,
   `docs/governance/ENGINEERING_LIFECYCLE.md`, `AGENTS.md`, `AGENT_START_HERE.md`
   (unchanged — no stale authorship text), `CONTRIBUTING.md`,
@@ -250,10 +251,11 @@ verification.
   `.cursor/rules/authorship-and-attribution.mdc`, `.cursor/rules/git-branch-and-pr.mdc`,
   `docs/handoffs/P0_RELEASE_HONESTY_AGENT_PROMPT.md`; removed
   `.cursor/rules/no-co-authored-by.mdc`.
+- **Pull request:** https://github.com/vitala89/Intentloom/pull/642
 - **Not done:** owner merge, main verification, P1K.9 implementation, P1K.10+,
   Undo U4, Desktop Undo U5.
-- **Next first action:** Independent review of the authorship reconciliation pull
-  request. After owner merge and main verification, return to P1K.9 Workspace
+- **Next first action:** Independent review of pull request #642. After owner
+  merge and main verification, return to P1K.9 Workspace
   Proposal Lifecycle Extraction subject to explicit maintainer acceptance of
   section 24.10.
 
