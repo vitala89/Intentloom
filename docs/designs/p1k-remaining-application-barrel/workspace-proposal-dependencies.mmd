@@ -1,0 +1,20 @@
+flowchart TB
+  cli["CLI workspace-command.ts"]
+  barrel["index.ts public wrappers"]
+  leaf["workspace/workspace-proposal-lifecycle.ts"]
+  port["WorkspaceProposalAdoption port"]
+  adopt["adoptProject on index.ts"]
+  conv["workspace/workspace-conversation-store.ts"]
+  sandbox["security/sandbox-proposal-evaluation.ts"]
+  fs["FileSystem"]
+
+  cli --> barrel
+  barrel --> leaf
+  barrel --> adopt
+  leaf --> port
+  port -.-> adopt
+  leaf --> conv
+  leaf --> sandbox
+  leaf --> fs
+  adopt --> fs
+  sandbox --> fs
