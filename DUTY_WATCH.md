@@ -204,17 +204,41 @@ execution is merged** (PR #638,
 for independent review** and does not authorize implementation. Do not start
 P1K.10 through P1K.17, Undo U4, or Desktop Undo U5.
 
+### 2026-11-26, Packages architecture P1K.9 Design First review corrections
+
+- **Status:** **DESIGN OPEN — AWAITING REVIEW.** Implementation is not
+  authorized.
+- **Triage:** 2/10 (blast radius 1 documentation corrections, ambiguity 0, risk
+  0, verification 1 `pnpm format:check` and `git diff --check`, unknowns 0).
+  Harness: Cursor. Model role: cheapest. Effort: lowest. Subagents: none.
+  Stop when PR #640 documents conversation error semantics, Stage A/B tests, and
+  corrected triage with no production code changes.
+- **Branch:** `design/p1k9-workspace-proposal-boundaries` (see branch naming
+  note below).
+- **Base / reviewed code:** `main` at `d8c5f2c5c4c06e86bf6f04d4014bcf6e68f066db`
+  (P1K.8); prior design HEAD `e6a52c91637bdb13fcd5e6e971085465ae61fba2`.
+- **Corrections:** section 24.2 and 24.7 distinguish conversation path,
+  `exists`, read/parse/validation (null + not-found), proposal persistence, and
+  adoption failures; section 24.9 splits Stage A (public API baseline) and Stage
+  B (internal adoption port); `docs/README.md` P1K status; triage math fix
+  for the original design entry; branch prefix discrepancy recorded per `AGENTS.md`.
+- **Not done:** maintainer approval, P1K.9 implementation.
+- **Next watch:** independent review of PR #640.
+
 ### 2026-11-25, Packages architecture P1K.9 proposal lifecycle Design First
 
 - **Status:** **DESIGN OPEN — AWAITING REVIEW.** Implementation is not
   authorized.
-- **Triage:** 6/10 (blast radius 1 documentation, ambiguity 1 verified-behavior
-  contract, risk 2 authorization-sensitive design, verification 1, unknowns 0).
-  Harness: Cursor. Model role: mid. Effort: medium. Subagents: none. Grilling
-  skipped: parent design PR #627 already selected the internal `adoptProject`
-  port; this slice records verified behavior. Stop when the design pull request
-  is open with no production code changes.
-- **Branch:** `design/p1k9-workspace-proposal-boundaries`
+- **Triage:** 3/10 (blast radius 1 documentation, ambiguity 1 verified-behavior
+  contract, risk 0, verification 1, unknowns 0). Prior handoff incorrectly
+  reported 6/10 because risk was scored 2; component sum is 3. Harness: Cursor.
+  Model role: mid. Effort: medium. Subagents: none. Grilling skipped: parent
+  design PR #627 already selected the internal `adoptProject` port; this slice
+  records verified behavior. Stop when the design pull request is open with no
+  production code changes.
+- **Branch:** `design/p1k9-workspace-proposal-boundaries` — **not** an approved
+  `<type>/` prefix in `AGENTS.md` (`docs/`, `refactor/`, … only). PR #640 kept
+  on this branch without rename unless maintainer authorizes.
 - **Base:** `d8c5f2c5c4c06e86bf6f04d4014bcf6e68f066db` (P1K.8 merge on `main`).
 - **Design:** `docs/designs/p1k-remaining-application-barrel/SYSTEM_DESIGN.md`
   section 24; diagrams `workspace-proposal-dependencies.mmd` and

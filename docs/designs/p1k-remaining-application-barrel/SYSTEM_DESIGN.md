@@ -2145,6 +2145,15 @@ remains the architectural roadmap. This section records behavior verified on
 extraction contract for slice P1K.9 only. It does not approve implementation
 and it does not change adoption, sandbox, or mutation behavior.
 
+**Branch naming.** Pull request #640 uses
+`design/p1k9-workspace-proposal-boundaries`. `AGENTS.md` allows only
+`<type>/<short-kebab>` with change types such as `feat`, `fix`, `refactor`,
+`docs`, `test`, `chore`, `build`, `ci`, `perf`, `security`, `release`, and
+`revert`; `design/` is not in that list. Keep PR #640 and its remote branch as
+is unless a maintainer explicitly authorizes a rename or a duplicate pull
+request. Use an approved prefix (for example `docs/p1k9-workspace-proposal-boundaries`)
+for future work on this slice.
+
 ### 24.1 Problem and scope
 
 P1K.9 moves workspace proposal path resolution, promotion, review, and apply
@@ -2180,9 +2189,21 @@ Verified by reading `packages/application/src/index.ts` and
 **Promote**
 
 - Loads the conversation with `getWorkspaceConversation` and the same
-  `FileSystem`.
-- Throws `Workspace conversation ${conversationId} not found` when the record
-  is null. It does not copy conversation messages into the proposal.
+  `FileSystem` (implementation in `workspace-conversation-store.ts`).
+- **Conversation path resolution.** `workspaceConversationPath` calls
+  `inside(root, ...)` before any I/O. A conversation id that escapes the root
+  throws `path traversal:` from path resolution. That error propagates; promote
+  does not catch it.
+- **Conversation presence and readability.** `fs.exists(path)` runs outside
+  the read/parse/validate `try/catch`. An `exists` error propagates. When
+  `exists` is false, `getWorkspaceConversation` returns `null`.
+- **Conversation bytes and record shape.** `fs.read`, `JSON.parse`, and
+  `validateWorkspaceConversationRecord` run inside a `try/catch` that returns
+  `null` on any failure (unreadable file, invalid JSON, or invalid record).
+  Those failures do not propagate as read or parse errors to promote's caller.
+- Throws `Workspace conversation ${conversationId} not found` when the loaded
+  record is `null`. Promote does not distinguish missing file, bad JSON, or
+  invalid record. It does not copy conversation messages into the proposal.
 - Proposal id is `options.proposalId` when supplied, otherwise
   `prop-${Date.now()}`.
 - Calls `adoptProject` with `profile: "generic"`, `adapters: ["codex"]`, and
@@ -2421,24 +2442,29 @@ and report a blocker.
 
 ### 24.7 Error and persistence matrix
 
-| Condition                               | Operation       | Current result                                                                                                      | Persistence                                                                                    |
-| --------------------------------------- | --------------- | ------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
-| Proposal id escapes the root (`inside`) | promote         | throws `path traversal:` only after the conversation load and dry-run `adoptProject` return, and before `fs.exists` | no proposal write; dry-run adoption already ran                                                |
-| Proposal id escapes the root (`inside`) | review          | throws `path traversal:` when resolving the path, before `fs.exists`, read, or the adoption fallback                | no proposal write                                                                              |
-| Proposal id that would escape the root  | apply           | not checked. Apply does not call `workspaceProposalPath` or `inside()`                                              | no proposal write from this function                                                           |
-| Conversation missing or invalid         | promote         | throws the not-found error                                                                                          | no proposal write                                                                              |
-| `fs.exists` throws                      | promote, review | propagates                                                                                                          | no new write from this function                                                                |
-| `adoptProject` throws                   | promote         | propagates before write                                                                                             | no proposal file from this function                                                            |
-| Parent `mkdir` throws                   | promote         | propagates after dry-run adoption                                                                                   | proposal file absent                                                                           |
-| Proposal `write` throws                 | promote         | propagates                                                                                                          | partial file only if the filesystem wrote before failing; this function does not roll back     |
-| Proposal JSON parse throws              | review          | propagates                                                                                                          | no write                                                                                       |
-| Stored JSON has no `items`              | review          | throws when mapping paths                                                                                           | no write                                                                                       |
-| Proposal file absent                    | review          | dry-run `adoptProject` fallback                                                                                     | fallback is not written                                                                        |
-| Sandbox evaluation throws               | review          | propagates                                                                                                          | no write                                                                                       |
-| `approvedBy` missing or blank           | apply           | throws the approval error before adoption                                                                           | no write in this function                                                                      |
-| `adoptProject` throws                   | apply           | propagates                                                                                                          | mutation effects are whatever `adoptProject` already performed; this function adds no rollback |
-| `dryRun: true`                          | apply           | adoption dry-run                                                                                                    | no project mutation beyond what dry-run adoption already does                                  |
-| `dryRun` omitted                        | apply           | treated as `false`                                                                                                  | mutating adoption, still not ADR-0053                                                          |
+| Condition                                     | Operation       | Current result                                                                                                      | Persistence                                                                                    |
+| --------------------------------------------- | --------------- | ------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| Proposal id escapes the root (`inside`)       | promote         | throws `path traversal:` only after the conversation load and dry-run `adoptProject` return, and before `fs.exists` | no proposal write; dry-run adoption already ran                                                |
+| Proposal id escapes the root (`inside`)       | review          | throws `path traversal:` when resolving the path, before `fs.exists`, read, or the adoption fallback                | no proposal write                                                                              |
+| Proposal id that would escape the root        | apply           | not checked. Apply does not call `workspaceProposalPath` or `inside()`                                              | no proposal write from this function                                                           |
+| Conversation id escapes root (`inside`)       | promote         | throws `path traversal:` during `workspaceConversationPath`, before `exists` or read                                | no proposal write                                                                              |
+| Conversation file absent (`exists` false)     | promote         | `getWorkspaceConversation` returns `null`; promote throws `Workspace conversation ${id} not found`                  | no proposal write                                                                              |
+| Conversation `fs.read` fails (caught)         | promote         | swallowed in `getWorkspaceConversation`; promote throws the not-found error                                         | no proposal write                                                                              |
+| Conversation JSON parse fails (caught)        | promote         | same as read failure: `null`, then not-found error                                                                  | no proposal write                                                                              |
+| Conversation record validation fails (caught) | promote         | same: `null`, then not-found error                                                                                  | no proposal write                                                                              |
+| Conversation `fs.exists` throws               | promote         | propagates (outside the catch in `getWorkspaceConversation`)                                                        | no proposal write                                                                              |
+| `fs.exists` throws on proposal path           | promote, review | propagates                                                                                                          | no new write from this function                                                                |
+| `adoptProject` throws                         | promote         | propagates before write                                                                                             | no proposal file from this function                                                            |
+| Parent `mkdir` throws                         | promote         | propagates after dry-run adoption                                                                                   | proposal file absent                                                                           |
+| Proposal `write` throws                       | promote         | propagates                                                                                                          | partial file only if the filesystem wrote before failing; this function does not roll back     |
+| Proposal JSON parse throws                    | review          | propagates                                                                                                          | no write                                                                                       |
+| Stored JSON has no `items`                    | review          | throws when mapping paths                                                                                           | no write                                                                                       |
+| Proposal file absent                          | review          | dry-run `adoptProject` fallback                                                                                     | fallback is not written                                                                        |
+| Sandbox evaluation throws                     | review          | propagates                                                                                                          | no write                                                                                       |
+| `approvedBy` missing or blank                 | apply           | throws the approval error before adoption                                                                           | no write in this function                                                                      |
+| `adoptProject` throws                         | apply           | propagates                                                                                                          | mutation effects are whatever `adoptProject` already performed; this function adds no rollback |
+| `dryRun: true`                                | apply           | adoption dry-run                                                                                                    | no project mutation beyond what dry-run adoption already does                                  |
+| `dryRun` omitted                              | apply           | treated as `false`                                                                                                  | mutating adoption, still not ADR-0053                                                          |
 
 No new retries, caches, swallowed errors, or transactions.
 
@@ -2453,16 +2479,36 @@ No new retries, caches, swallowed errors, or transactions.
 
 ### 24.9 Implementation test plan
 
-The implementation PR adds characterization tests before moving code, then
-structure tests. Do not add those tests in this design PR.
+The implementation PR adds characterization tests **before** moving production
+code, then structure and port tests **after** the leaf exists. Do not add those
+tests in this design PR.
 
-Characterization file suggestion:
-`tests/workspace-proposal-p1k9-characterization.test.ts`.
+#### Stage A — Before extraction (baseline characterization)
 
-Required cases:
+Characterize the three public operations only through the current
+`@intentloom/application` package API and existing filesystem or test seams
+(memory filesystem, integration fixtures, CLI tests where applicable).
+
+- Use observable behavior: public return values, thrown error messages and
+  types, bytes on disk, and sandbox side effects.
+- Do **not** introduce production dependency injection, optional callbacks, or
+  other hooks solely to enable baseline characterization.
+- Baseline characterization must pass on `main`-equivalent behavior before any
+  proposal lifecycle bodies move out of `index.ts`.
+
+Suggested file: `tests/workspace-proposal-p1k9-characterization.test.ts`.
+
+Required Stage A cases:
 
 - Promote succeeds and writes formatted JSON with a trailing newline.
-- Missing conversation throws the exact error and writes nothing.
+- Conversation absent (`exists` false): promote throws the exact not-found
+  error and writes nothing.
+- Conversation file present but malformed JSON or invalid record: promote throws
+  the same not-found error (not a parse or validation error at the promote
+  boundary).
+- Conversation id path traversal: `path traversal:` propagates from promote
+  (before not-found).
+- Conversation `fs.exists` failure: propagates through promote.
 - Supplied `proposalId` and generated `prop-${Date.now()}` ids.
 - `adoptProject` arguments are exactly generic, `["codex"]`, `dryRun: true`.
 - Stored bytes are the adoption proposal, not the conversation record.
@@ -2490,13 +2536,26 @@ Required cases:
 Existing references: `tests/workspace-apply.test.ts`,
 `tests/cli-workspace.test.ts`, `tests/workspace-agent.test.ts`.
 
+#### Stage B — After extraction (leaf and adoption port)
+
+Once `workspace-proposal-lifecycle.ts` exists, add tests that import the leaf
+operations with a mock `WorkspaceProposalAdoption` port (not a new public API).
+
+- Assert exact adoption arguments, call count, and invocation ordering for
+  promote, review fallback, and apply.
+- Assert adoption errors propagate unchanged through wrappers.
+- Assert public barrel wrappers preserve current signatures, default
+  `nodeFileSystem`, and observable compatibility with Stage A baselines.
+- Do **not** expose an additional public callback or production test hook.
+
 Structure tests must show one implementation of each moved body, a private
 path helper, no `workspace/index.ts`, no new export map, no leaf import of
 `index.js`, unchanged SCC member sets, and unchanged
 `quality-exceptions.json`.
 
 Public wrappers are not the same function references as the leaf operations,
-because each wrapper injects the existing `adoptProject`. Tests assert:
+because each wrapper injects the existing `adoptProject`. Stage B structure and
+compatibility assertions include:
 
 - The public names `promoteWorkspaceConversationToProposal`,
   `reviewWorkspaceProposal`, and `applyWorkspaceProposal` stay exported from
@@ -2504,14 +2563,12 @@ because each wrapper injects the existing `adoptProject`. Tests assert:
   `FileSystem`.
 - Each wrapper passes the caller options, the filesystem, and the existing
   `adoptProject` function into its leaf operation.
-- Return values, error messages, and observable behavior stay compatible.
+- Return values, error messages, and observable behavior stay compatible with
+  Stage A.
 - `WorkspaceProposalReviewResult` stays a public type.
 - The internal adoption-port operations are not new package-level APIs.
 - The extraction adds no import or re-export cycle. The leaf stays outside the
   existing SCC member sets.
-
-Mock `adoptProject` only through the leaf’s port in tests that import the leaf.
-Do not add a production public test hook.
 
 ### 24.10 Design First acceptance matrix
 

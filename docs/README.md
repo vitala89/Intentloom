@@ -63,18 +63,16 @@ behavior changed. P1 is not complete.
 [Remaining application barrel completion](designs/p1k-remaining-application-barrel/SYSTEM_DESIGN.md)
 is merged as design PR #627
 (https://github.com/vitala89/Intentloom/pull/627,
-`1abb80e1e5c7fdcb3a16c14b2897a6a6549446c9`). P1K.1, the profile store
-extraction, is open as PR #628
-(https://github.com/vitala89/Intentloom/pull/628), pending review and not
-merged. `createProfile`, `getProfile`, and `listProfiles` live in
-`packages/application/src/memory/profile-store.ts` and stay exported
-from the package root. Measured with `measureProductionSource`,
-`index.ts` is 1,751 effective lines and 1,896 physical lines, down from
-1,804 and 1,953. The leaf is 66 effective lines and 72 physical lines.
-Import-only SCC membership stays `[3]`. Re-export SCC membership stays
-`[4, 27, 3]`. The profile leaf is outside every component. P1K.2
-through P1K.17 have not started. P1 is not complete. Undo U4 and Desktop
-Undo U5 have not started.
+`1abb80e1e5c7fdcb3a16c14b2897a6a6549446c9`). P1K.1 through P1K.8 are merged on
+`main` (profile store through workspace conversation extraction; latest
+implementation PR #639, `d8c5f2c5c4c06e86bf6f04d4014bcf6e68f066db`). Measured
+with `measureProductionSource` after P1K.8, `index.ts` is 857 effective lines
+and 903 physical lines; the conversation leaf is 129 effective and 142 physical
+lines. Import-only SCC membership is `[3]`. Re-export SCC membership is
+`[4, 27, 3]`. P1K.9 Design First is open as PR #640
+(https://github.com/vitala89/Intentloom/pull/640), pending independent review;
+it does not authorize implementation. P1K.10 through P1K.17 have not started. P1
+is not complete. Undo U4 and Desktop Undo U5 have not started.
 
 ## How this tree is organized
 
