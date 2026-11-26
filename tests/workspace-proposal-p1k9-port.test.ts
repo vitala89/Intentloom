@@ -17,6 +17,10 @@ import { inside } from "../packages/application/src/project-path.ts";
 
 const root = "/project/p1k9-port";
 
+const adoptFail: WorkspaceProposalAdoption = async () => {
+  throw new Error("adopt failed");
+};
+
 function proposalPath(proposalId: string): string {
   return inside(root, `.aif/proposals/${proposalId}.json`);
 }
@@ -104,14 +108,11 @@ describe("P1K.9 workspace proposal adoption port", () => {
       { root, projectId: "proj-fail", mode: "plan" },
       fs,
     );
-    const adopt: WorkspaceProposalAdoption = async () => {
-      throw new Error("adopt failed");
-    };
     await expect(
       promoteWorkspaceConversationToProposalOperation(
         { root, conversationId: conv.id, proposalId: "prop-fail" },
         fs,
-        adopt,
+        adoptFail,
       ),
     ).rejects.toThrow("adopt failed");
     expect(await fs.exists(proposalPath("prop-fail"))).toBe(false);

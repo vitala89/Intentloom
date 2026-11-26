@@ -108,7 +108,9 @@ describe("P1K.9 workspace proposal lifecycle structure", () => {
     expect(indexSource).toMatch(
       /export async function promoteWorkspaceConversationToProposal\(/,
     );
-    expect(indexSource).toMatch(/export type \{ WorkspaceProposalReviewResult \}/);
+    expect(indexSource).toMatch(
+      /export type \{ WorkspaceProposalReviewResult \}/,
+    );
 
     for (const name of publicProposalExports) {
       const implementations = typescriptFiles(sourceRoot).filter((file) =>
@@ -144,7 +146,9 @@ describe("P1K.9 workspace proposal lifecycle structure", () => {
     expect(leaf).not.toContain("@intentloom/application");
     expect(leaf).not.toMatch(/from ["'][^"']*\/neutron\//);
     expect(leaf).not.toMatch(/approved-apply/);
-    expect(leaf).not.toMatch(/export async function promoteWorkspaceConversationToProposal\(/);
+    expect(leaf).not.toMatch(
+      /export async function promoteWorkspaceConversationToProposal\(/,
+    );
 
     expect(applicationCycles(false)).toEqual(importComponents);
     expect(applicationCycles(true)).toEqual(reexportComponents);
@@ -169,7 +173,11 @@ describe("P1K.9 workspace proposal lifecycle structure", () => {
     const sliceNames = slices.map((slice) => slice.name);
     expect(sliceNames).toEqual(expect.arrayContaining(movedOperationNames));
     for (const slice of slices) {
-      if (!movedOperationNames.includes(slice.name as (typeof movedOperationNames)[number])) {
+      if (
+        !movedOperationNames.includes(
+          slice.name as (typeof movedOperationNames)[number],
+        )
+      ) {
         continue;
       }
       expect(
@@ -179,10 +187,10 @@ describe("P1K.9 workspace proposal lifecycle structure", () => {
 
     const indexMetrics = measureProductionSource(indexSource, indexPath);
     expect(indexMetrics).toMatchObject({
-      effectiveCodeLines: 795,
-      physicalLines: 834,
+      effectiveCodeLines: 793,
+      physicalLines: 831,
     });
-    expect(indexMetrics.effectiveCodeLines).toBeLessThan(857);
+    expect(indexMetrics.effectiveCodeLines).toBeLessThan(795);
 
     const pkg = readFileSync("packages/application/package.json", "utf8");
     expect(pkg).not.toContain("workspace-proposal-lifecycle");

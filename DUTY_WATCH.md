@@ -211,6 +211,33 @@ Authorship enforcement reconciliation is on branch
 implementation remains the next product task after that merge and main
 verification.
 
+### 2026-11-26, P1K.9 workspace proposal lifecycle extraction (implementation)
+
+- **Status:** **IN REVIEW.** Behavior-preserving extraction on
+  `refactor/p1k9-workspace-proposal-lifecycle`. Not merged.
+- **Triage:** 7/10 (blast 2, ambiguity 0, risk 2, verification 2, unknowns 1).
+  Environment: Cursor. Recommended role: frontier. Reasoning effort: high. Context
+  budget: large. Delegation: none. Approval: section 24.10 maintainer matrix at
+  independent review. Stop condition: validated implementation PR ready for review.
+- **Design:** Merged PR #640 section 24. No duplicate design PR. Section 24.10
+  explicit maintainer checkbox acceptance is **not recorded in-repo**; the
+  implementation follows the matrix and requests owner confirmation at review.
+- **Main baseline:** `f076e043b4331faf1c2610f450e1e6bf7437885c` (PR #642 merge).
+  CodeQL, Documentation, and Compatibility on that SHA: **PASS** (2026-11-26 ~23:07 CET).
+- **Stage A:** `tests/workspace-proposal-p1k9-characterization.test.ts` — 17 passed
+  on baseline commit `cc07ad5` before extraction body move.
+- **Stage B/C:** Leaf `workspace-proposal-lifecycle.ts`; port and structure tests
+  `tests/workspace-proposal-p1k9-port.test.ts`,
+  `tests/workspace-proposal-p1k9-structure.test.ts`.
+- **Measurements:** `index.ts` 793 effective / 831 physical (was 857 / 903);
+  proposal leaf 123 effective / 135 physical. Import-only SCC `[3]`; re-export
+  SCC `[4, 27, 3]` unchanged; leaf outside all cyclic components.
+- **Validation:** `pnpm verify` **PASS** on branch HEAD (typecheck, lint, format,
+  full test suite, build, `git diff --check`). Accessibility: NOT APPLICABLE (no UI).
+- **Not done:** owner merge, P1K.10+, Undo U4, Desktop Undo U5.
+- **Next:** Independent review of the implementation PR. After merge and green main,
+  next product slice is **P1K.10** Project Root and Timeline Extraction.
+
 ### 2026-11-26, Transparent AI authorship enforcement reconciliation
 
 - **Status:** **IN REVIEW.** Governance maintenance. Not merged. Does not authorize

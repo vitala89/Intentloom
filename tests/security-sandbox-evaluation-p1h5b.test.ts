@@ -493,9 +493,12 @@ describe("P1H.5b sandbox proposal evaluation", () => {
       "./sandbox-capability-policy.js",
     ]);
     const indexValueImports = relativeSpecifiers("index.ts", false);
-    expect(indexValueImports).toContain(
+    expect(indexValueImports).not.toContain(
       "./security/sandbox-proposal-evaluation.js",
     );
+    expect(
+      relativeSpecifiers("workspace/workspace-proposal-lifecycle.ts", false),
+    ).toContain("../security/sandbox-proposal-evaluation.js");
     expect(indexValueImports).not.toContain(
       "./security/sandbox-capability-policy.js",
     );

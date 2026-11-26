@@ -1,8 +1,9 @@
 # Intentloom Project State
 
-Last verified: 2026-11-26 for the P1K.9 Design First merge
-(`84fd593bb81f2f3eff98fa6ddef0b3ae579027d1`, PR #640) and the repository
-engineering-lifecycle documentation. The 2026-08-22 phase note below was not
+Last verified: 2026-11-26 for P1K.9 workspace proposal lifecycle extraction
+(in review on `refactor/p1k9-workspace-proposal-lifecycle`), main at
+`f076e043b4331faf1c2610f450e1e6bf7437885c` (PR #642 merge), and post-merge
+main verification for CodeQL, Documentation, and Compatibility. The 2026-08-22 phase note below was not
 re-audited in that documentation change. Earlier product-phase text remains
 historical until a release audit replaces it.
 
@@ -1289,15 +1290,15 @@ lines; the conversation leaf is 129 effective and 142 physical lines.
 Import-only SCC membership remains `[3]`. Re-export SCC membership remains
 `[4, 27, 3]` with the same members. No runtime behavior changed in P1K.8
 scope. P1K.9 Design First is merged at
-`84fd593bb81f2f3eff98fa6ddef0b3ae579027d1` (PR #640). Section 24 still says
-status **proposed**, and section 24.10 still requires the maintainer to check
-the acceptance matrix before implementation. That check has not been recorded
-here. P1K.10 through P1K.17 have not started. P1 remains incomplete. The next
-product implementation is still P1K.9, after that matrix is accepted. Planning
-fields added by the repository lifecycle do not invalidate the merged P1K.9
-design. Implementation still requires explicit maintainer acceptance of the
-section 24.10 matrix. An intermediate repository-governance update is in
-review as PR #641 and does not replace that product task.
+`84fd593bb81f2f3eff98fa6ddef0b3ae579027d1` (PR #640). P1K.9 implementation is
+in review on branch `refactor/p1k9-workspace-proposal-lifecycle` with measured
+post-extraction `index.ts` at 793 effective and 831 physical lines and proposal
+leaf `workspace-proposal-lifecycle.ts` at 123 effective and 135 physical lines.
+Import-only SCC membership remains `[3]`; re-export SCC membership remains
+`[4, 27, 3]`. Explicit maintainer sign-off for section 24.10 is requested at
+implementation review. P1K.10 through P1K.17 have not started. P1 remains
+incomplete. Transparent authorship reconciliation is merged as PR #642 at
+`f076e043b4331faf1c2610f450e1e6bf7437885c`.
 The 27-file component still contains
 `index.ts` and `approved-apply-engine.ts`. Undo U4 and Desktop Undo U5
 have not started. Ids 2 through 26 remain

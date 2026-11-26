@@ -77,7 +77,14 @@ describe("application project path checks", () => {
     expect(source).toContain("`path traversal: ${path}`");
     expect(source).not.toContain("realpath");
     expect(source).not.toMatch(/from\s+["'](?:\.\.?\/)*index\.(?:js|ts)["']/);
-    expect(barrel).toContain('from "./project-path.js"');
+    const proposalLeaf = readFileSync(
+      "packages/application/src/workspace/workspace-proposal-lifecycle.ts",
+      "utf8",
+    );
+    expect(
+      barrel.includes('from "./project-path.js"') ||
+        proposalLeaf.includes('from "../project-path.js"'),
+    ).toBe(true);
     expect(barrel).not.toMatch(/^function secretLikePath/m);
     expect(barrel).not.toMatch(/^function projectRelativePaths/m);
     expect(barrel).not.toMatch(/^function inside\b/m);

@@ -101,7 +101,7 @@ describe("P1H.5b sandbox capability policy", () => {
       'from "./security/sandbox-capability-policy.js"',
     );
     expect(indexSource).toContain(
-      'import { evaluateProposalAgainstSandbox } from "./security/sandbox-proposal-evaluation.js"',
+      'export { evaluateProposalAgainstSandbox } from "./security/sandbox-proposal-evaluation.js"',
     );
     expect(
       readFileSync(

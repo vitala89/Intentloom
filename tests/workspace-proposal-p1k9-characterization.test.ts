@@ -1,4 +1,4 @@
-import { dirname, resolve } from "node:path";
+import { dirname } from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import {
   applyWorkspaceProposal,
@@ -92,7 +92,10 @@ describe("P1K.9 workspace proposal lifecycle (Stage A characterization)", () => 
     const conversationId = await conversationReady(fs);
     vi.spyOn(Date, "now").mockReturnValue(1_900_000_000_000);
     try {
-      await promoteWorkspaceConversationToProposal({ root, conversationId }, fs);
+      await promoteWorkspaceConversationToProposal(
+        { root, conversationId },
+        fs,
+      );
       expect(await fs.exists(proposalPath("prop-1900000000000"))).toBe(true);
     } finally {
       vi.restoreAllMocks();
@@ -334,7 +337,7 @@ describe("P1K.9 workspace proposal lifecycle (Stage A characterization)", () => 
     await fs.write(proposalPath("prop-bad"), "{");
     await expect(
       reviewWorkspaceProposal({ root, proposalId: "prop-bad" }, fs),
-    ).rejects.toThrow();
+    ).rejects.toThrow(/Unexpected token|JSON/u);
 
     const existsFail = filesystem(
       new Map([[proposalPath("prop-exists"), "{}"]]),
@@ -352,10 +355,7 @@ describe("P1K.9 workspace proposal lifecycle (Stage A characterization)", () => 
     const fs = createMemoryFileSystem();
     await preparedRoot(fs);
     await expect(
-      reviewWorkspaceProposal(
-        { root, proposalId: "../../../../escape" },
-        fs,
-      ),
+      reviewWorkspaceProposal({ root, proposalId: "../../../../escape" }, fs),
     ).rejects.toThrow(/path traversal/u);
   });
 
@@ -406,9 +406,9 @@ describe("P1K.9 workspace proposal lifecycle (Stage A characterization)", () => 
       fs,
     );
     expect(result.kind).toBe("adoption-proposal");
-    expect(
-      [...fs.files.keys()].filter((p) => p.includes("escape")),
-    ).toEqual([]);
+    expect([...fs.files.keys()].filter((p) => p.includes("escape"))).toEqual(
+      [],
+    );
   });
 
   it("propagates promote write failures", async () => {

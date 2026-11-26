@@ -292,8 +292,8 @@ describe("P1K.8 workspace conversation store structure", () => {
 
     const indexMetrics = measureProductionSource(indexSource, indexPath);
     expect(indexMetrics).toMatchObject({
-      effectiveCodeLines: 795,
-      physicalLines: 834,
+      effectiveCodeLines: 793,
+      physicalLines: 831,
     });
     expect(indexMetrics.effectiveCodeLines).toBeLessThan(965);
     expect(indexMetrics.physicalLines).toBeLessThan(1023);

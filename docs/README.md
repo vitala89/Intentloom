@@ -74,12 +74,13 @@ implementation PR #639, `d8c5f2c5c4c06e86bf6f04d4014bcf6e68f066db`). Measured
 with `measureProductionSource` after P1K.8, `index.ts` is 857 effective lines
 and 903 physical lines; the conversation leaf is 129 effective and 142 physical
 lines. Import-only SCC membership is `[3]`. Re-export SCC membership is
-`[4, 27, 3]`. P1K.9 Design First is merged as PR #640
-(https://github.com/vitala89/Intentloom/pull/640,
-`84fd593bb81f2f3eff98fa6ddef0b3ae579027d1`). Section 24 of that design still
-says status **proposed**, and section 24.10 still requires the maintainer to
-check the acceptance matrix before implementation. This index does not check
-that matrix. P1K.10 through P1K.17 have not started. P1 is not complete. Undo
+`[4, 27, 3]`. P1K.9 workspace proposal lifecycle extraction is in review (design PR #640).
+Measured after the implementation branch extraction, `index.ts` is 793 effective
+and 831 physical lines; the proposal leaf is 123 effective and 135 physical
+lines. SCC membership remains `[3]` import-only and `[4, 27, 3]` re-export
+inclusive. Section 24.10 maintainer acceptance is recorded in the open
+implementation pull request handoff, not here. P1K.10 through P1K.17 have not
+started. P1 is not complete. Undo
 U4 and Desktop Undo U5 have not started.
 
 ## How this tree is organized

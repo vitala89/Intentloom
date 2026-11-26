@@ -1,5 +1,5 @@
 // Private project-operation layer. It must remain independent of CLI/process code.
-import { dirname, resolve } from "node:path";
+import { resolve } from "node:path";
 import type { GeneratedFile } from "@intentloom/core";
 import {
   type AcceptedException,
@@ -26,7 +26,6 @@ import { nodeFileSystem, type FileSystem } from "./host-file-system.js";
 import type { AdoptionProposal } from "./project-adoption/generated-file-adoption-contracts.js";
 import { adoptGeneratedFiles } from "./project-adoption/generated-file-adoption.js";
 import { planProjectAdoption } from "./project-adoption/governance-adoption-plan.js";
-import { inside } from "./project-path.js";
 import { ArtifactValidationFailure } from "./artifact-validation-failure.js";
 import { doctorProject } from "./project-lifecycle/doctor-project.js";
 import { inspectProject } from "./project-lifecycle/project-inspection.js";
@@ -659,8 +658,6 @@ export {
   listAgentSessions,
   startAgentSession,
 } from "./agent-session/agent-session.js";
-
-import { evaluateProposalAgainstSandbox } from "./security/sandbox-proposal-evaluation.js";
 
 export {
   acceptSecurityRisk,
