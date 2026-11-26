@@ -259,6 +259,53 @@ verification.
   Proposal Lifecycle Extraction subject to explicit maintainer acceptance of
   section 24.10.
 
+### 2026-11-26, PR #642 independent review corrections
+
+- **Status:** **IN REVIEW.** Documentation and PR-evidence corrections on the
+  existing pull request. Validator unchanged. Not merged. Does not authorize
+  P1K.9 implementation.
+- **Triage:** 6/10 (blast radius 1–2, ambiguity 0, risk 1, verification 2,
+  unknowns 0). Environment: Cursor. Recommended role: `mid`. Reasoning effort:
+  high. Context budget: larger. Delegation: none. Approval: identified review
+  findings only. Stop condition: corrected PR with complete review evidence and
+  accurate remaining blockers.
+- **Corrections:** Removed `git commit-tree` / hook-bypass guidance from
+  `.cursor/rules/authorship-and-attribution.mdc` and `.cursor/rules/git-branch-and-pr.mdc`.
+  Restored the GitHub PR #642 description (replaced erroneous
+  `$file:/tmp/...` placeholder). Clarified that the validator permits co-author
+  trailers but does not authenticate identities.
+- **CodeQL on main @ `5cde03d` (PR #641 merge, not PR #642):** Workflow run
+  [45892460387](https://github.com/vitala89/Intentloom/actions/runs/45892460387).
+  **Analyze (javascript-typescript):** PASS. **Analyze (actions):** FAIL at
+  step **Perform CodeQL analysis** during **Uploading code scanning results** —
+  `Connect Timeout Error (attempted address: api.github.com:443, timeout:
+10000ms)`. SARIF export completed locally in the job; no alert upload evidence
+  in the log. Classification: **infrastructure / execution failure**, not an
+  observed new security finding and not caused by PR #642. **No workflow
+  change** in this correction. Owner may retry the scheduled or push-triggered
+  CodeQL run; unpaid reruns were not started here.
+- **Planning effort:** Human Active Effort — independent review of PR #642 and
+  direction for hook-bypass and PR-body fixes (not timed in-repo). AI Agent
+  Execution Effort — correction pass on Cursor cloud VM. Calendar Duration —
+  same session continuation after prior PR #642 CI green @ `8452f2e`. Original
+  PR estimate: governance maintenance, mid/high (6/10). Measured execution:
+  prior `pnpm verify` ~206s wall; prior focused Vitest 19/19; this pass re-runs
+  required gates after doc edits (recorded below). Confidence: high for
+  validator/tests unchanged; high for CodeQL timeout classification from job
+  logs; limitations — no code-scanning alert list retrieved because upload
+  failed before results were published.
+- **RACI:** unchanged — implementer this watch; Accountable Project Owner;
+  independent reviewer before merge.
+- **Blockers:** Main-branch CodeQL red on `5cde03d` is a **separate** owner
+  verification item (infra timeout). PR #642 mergeable state may show `blocked`
+  until branch protection inputs are satisfied. PR #642 CI after correction
+  commit: PENDING until push completes.
+- **Not done:** owner merge, main verification including CodeQL recovery on
+  `main`, P1K.9 implementation.
+- **Next first action:** Final independent review of PR #642 with restored
+  description and hook guidance. Owner decides CodeQL rerun on `main`. After this
+  PR merges and main verifies, P1K.9 per section 24.10 matrix acceptance.
+
 ### 2026-11-26, PR #641 governance review corrections
 
 - **Status:** **IN REVIEW.** Corrections on the existing pull request. Not merged.

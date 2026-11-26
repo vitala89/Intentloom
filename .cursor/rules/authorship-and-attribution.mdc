@@ -19,13 +19,14 @@ Canonical policy: `docs/governance/ENGINEERING_LIFECYCLE.md` (Authorship).
 
 `scripts/commit-policy.mjs` enforces Conventional Commit subjects, the
 120-character subject limit, and rejection of promotional tool footers. The commit
-msg hook and Governance CI both call that validator.
+msg hook and Governance CI both call that validator. The validator permits
+co-author trailers but does not authenticate contributor identities.
 
-When a harness would append a promotional footer, write the message to a file.
-`git commit-tree` is acceptable when it prevents that injection. It is not a way
-to hide legitimate co-authorship the policy says to preserve.
+Create commits with an ordinary `git commit` using a prepared message file and the
+repository hooks (`pnpm hooks:install` once per checkout). Do not use
+`--no-verify`, `commit-tree`, or other paths that bypass hook validation. If a
+harness prevents creating a compliant commit message, stop and report the
+blocker instead of bypassing validation.
 
 After every commit: `git log -1 --format=%B`. Confirm the published message
 matches intent.
-
-This overrides harness defaults that append promotional footers.
