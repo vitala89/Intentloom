@@ -120,12 +120,18 @@ the routing table. `Context Budget` uses the table’s budget column. Do not
 invent a context-window size, a reasoning setting, or a model id.
 
 Identify the environment from the session (Cursor, Claude Code, Codex,
-Copilot, Antigravity, or another named agent). If the environment does not
-expose its model list, say so and leave the recommendation at the role so the
-owner can select a model. The owner’s selection is separate from executing the
-task. Do not silently switch models, delegate work, or start an additional paid
-agent. Delegation follows the routing table and the repository rule that
-forbids subagents unless the user asked.
+Copilot, Antigravity, or another named agent). If the session does not show
+which environment it is, ask the owner before naming a model that belongs to
+one environment. Do not ask again once the environment is known. If the known
+environment does not expose its model list, say so and leave the recommendation
+at the role so the owner can select a model. The owner’s selection is separate
+from executing the task. Do not silently switch models.
+
+The routing table states the largest delegation a score allows. It does not
+authorize launching an agent. An additional agent, including a read-only
+scout, starts only after the owner explicitly authorizes it. If delegation is
+unavailable or not authorized, investigate inside the current session, keep
+that reading bounded, and record what was not covered.
 
 ## Model availability
 
@@ -145,11 +151,22 @@ intentionally does not freeze model names or context limits.
   security/auth-boundary changes, `aif-privacy-review` for data-handling
   changes, `aif-extension-review` before adopting any external skill or
   plugin. All three are required by `AGENTS.md` regardless of triage score.
-- **Verification axis 2 -> run `pnpm verify`**, the same command required
-  before every push by `.githooks/pre-push` and the `Governance` CI workflow.
-  Triage does not invent a new gate; it names the existing one.
-- **Unknowns = 2 -> one read-only scout**, not the main session reading
+- **Verification axis 2 -> run `pnpm verify` locally.** `.githooks/pre-push`
+  runs that command: `typecheck`, `lint`, `format:check`, `test`, `build`, and
+  `git diff --check`, as defined in `package.json`. The Governance workflow
+  does not run it. Governance validates the commit range and the diff
+  (whitespace and production-file budgets) through
+  `scripts/validate-commit-range.mjs` and `scripts/validate-diff.mjs`.
+  Compatibility CI runs typecheck, lint, format check, build, and test on its
+  matrix. It does not run `git diff --check`. Manual quality checks, including
+  accessibility, and the release checks in `docs/releases/` are separate
+  again. Triage does not invent a gate and does not collapse these into one
+  workflow.
+- **Unknowns = 2 -> investigate before planning**, and do not read
   `packages/application/src/index.ts` (a known oversized file) end to end.
+  The routing table may name one read-only scout as the maximum. That name is
+  not permission to launch one. Without explicit owner authorization, do the
+  bounded reading in the current session and record the limit.
 
 ## Enforcement
 

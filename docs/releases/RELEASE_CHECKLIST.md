@@ -26,8 +26,13 @@ decision.
       users will run.
 - [ ] Installation, startup, and upgrade from the supported previous version
       were checked where this candidate changes them.
-- [ ] Database migrations and data integrity were checked, or NOT APPLICABLE
-      because this candidate does not migrate stored data.
+- [ ] Stored-data migration was tested when this candidate changes how stored
+      data is migrated. NOT APPLICABLE requires its own reason, for example
+      that the candidate does not change a migration.
+- [ ] Data integrity was verified for the persistence, transactions, backup, or
+      recovery this candidate can affect. NOT APPLICABLE requires its own
+      reason. The absence of a migration is not that reason. A candidate can
+      leave migration behaviour unchanged and still need an integrity check.
 - [ ] Accessibility evidence for changed user-facing behavior is recorded
       (`docs/governance/ACCESSIBILITY.md`), or NOT APPLICABLE with a reason.
 - [ ] Security and dependency review evidence for the candidate is recorded.
@@ -42,8 +47,10 @@ decision.
 ## After publication
 
 - [ ] Smoke checks against the published artifact, not only the git tree.
-- [ ] Critical journeys, install/update, migration and data integrity, error
-      behavior, and recovery were re-checked where the release can affect them.
+- [ ] Critical journeys, installation and update, error behavior, and recovery
+      were re-checked where the release can affect them.
+- [ ] Post-release migration evidence and post-release data-integrity evidence
+      are recorded separately, each PASS or NOT APPLICABLE with its own reason.
 - [ ] No new telemetry or user-data collection was introduced without explicit
       authorization.
 

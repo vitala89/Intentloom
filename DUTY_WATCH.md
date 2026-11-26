@@ -207,6 +207,56 @@ the acceptance matrix before implementation. Do not start P1K.9 implementation
 until that check is recorded. Do not start P1K.10 through P1K.17, Undo U4, or
 Desktop Undo U5.
 
+### 2026-11-26, PR #641 governance review corrections
+
+- **Status:** **IN REVIEW.** Corrections on the existing pull request. Not merged.
+  Does not authorize P1K.9 implementation.
+- **Triage:** 5/10 (blast radius 2, ambiguity 0, risk 1, verification 2,
+  unknowns 0). Environment: Cursor, already known, so the owner was not asked
+  again. Recommended role: `mid`. Reasoning effort: high. Context budget:
+  larger. Delegation: none. The routing table does not authorize another
+  agent, and none was started. Stop when the corrections are on PR #641.
+- **Reviewed HEAD:** `ba50af8f62a8b1f411dc07c4590df0652aaf7837`. Base:
+  `84fd593bb81f2f3eff98fa6ddef0b3ae579027d1`. Branch:
+  `docs/engineering-project-management-governance`.
+- **Trade-off:** The accepted lifecycle stays. The correction is narrower
+  wording: WCAG 2.5.7 is a single-pointer alternative to dragging, not a
+  keyboard substitute; migration and data integrity are separate release
+  checks; a triage scout is not self-authorized; Governance CI is commit and
+  diff policy, while `pnpm verify` is the local pre-push command. The
+  duplicated Compatibility runs are duplicated compute. No invoice was
+  available, so no charge is stated.
+- **Risk:** Contributors could still treat a green Governance check as a full
+  test run if an older note is copied. The corrected sentences are in
+  `AGENT_TASK_TRIAGE_POLICY.md`, `AI_AGENT_WORKFLOW.md`, and
+  `ENGINEERING_LIFECYCLE.md`. Outstanding dependencies: owner merge, explicit
+  acceptance of P1K.9 section 24.10, and a separate authorization before
+  changing `scripts/commit-policy.mjs`. New planning fields do not invalidate
+  the merged P1K.9 design.
+- **Responsibilities:** The coding agent prepared the correction. The Project
+  Owner is accountable for approval and merge. An independent reviewer reads
+  the correction before that merge.
+- **Time:** The estimate was one documentation pass on the files named in the
+  review. Observed command time, not an estimate of earlier work: Vitest
+  reported 182.62 seconds, and `pnpm docs:build` reported 4.95 seconds.
+  Earlier session duration is not reconstructed.
+- **Validation:** `pnpm verify` exited 0 in this Cursor environment after the
+  policy edits and before this handoff paragraph. Typecheck passed. Lint
+  passed with existing warnings. Format check passed. 393 test files passed.
+  3308 tests passed. 3 skipped. Build passed. `git diff --check` passed.
+  `pnpm docs:build` then completed (`vitepress v1.6.4`, “build complete in
+  4.95s”) and wrote
+  `docs/.vitepress/dist/governance/ACCESSIBILITY.html` and
+  `docs/.vitepress/dist/governance/ENGINEERING_LIFECYCLE.html`. The build log
+  also printed existing VitePress/Rolldown “assigns to bundle variable”
+  messages and said they are ignored. `esbuild` 0.28.2 already ran through
+  `pnpm exec` in this environment; no new shim was written for this pass.
+- **Not done:** owner approval, merge, main verification after merge, the
+  commit-policy enforcement change, CI for this correction commit, P1K.9
+  implementation.
+- **Next first action:** Final independent review of
+  https://github.com/vitala89/Intentloom/pull/641.
+
 ### 2026-11-26, Repository engineering and project-management governance
 
 - **Status:** **IN REVIEW.** Documentation only. Not merged. Does not authorize

@@ -1294,9 +1294,11 @@ scope. P1K.9 Design First is merged at
 status **proposed**, and section 24.10 still requires the maintainer to check
 the acceptance matrix before implementation. That check has not been recorded
 here. P1K.10 through P1K.17 have not started. P1 remains incomplete. The next
-product implementation is still P1K.9, after that matrix is accepted. An
-intermediate repository-governance update is in review as PR #641 and does
-not replace it.
+product implementation is still P1K.9, after that matrix is accepted. Planning
+fields added by the repository lifecycle do not invalidate the merged P1K.9
+design. Implementation still requires explicit maintainer acceptance of the
+section 24.10 matrix. An intermediate repository-governance update is in
+review as PR #641 and does not replace that product task.
 The 27-file component still contains
 `index.ts` and `approved-apply-engine.ts`. Undo U4 and Desktop Undo U5
 have not started. Ids 2 through 26 remain

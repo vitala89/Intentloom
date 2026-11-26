@@ -188,11 +188,13 @@ promotional tool footers. `scripts/commit-policy.mjs` still rejects
 reconciliation and is not fully active.
 
 Install the repository hooks once per checkout with `pnpm hooks:install`.
-`commit-msg` validates the subject and attribution policy; `pre-commit` checks
-staged formatting, whitespace, and production-file budgets; `pre-push` runs the
-full `pnpm verify` suite. The same commit and diff policy is checked in the
-`Governance` pull-request workflow, so hooks are a fast local guard rather than
-the only enforcement point.
+`commit-msg` validates the subject and the commit script’s current attribution
+rules. `pre-commit` checks staged formatting, whitespace, and production-file
+budgets. `pre-push` runs `pnpm verify`. The Governance pull-request workflow
+checks the commit range and the diff policy. It does not run `pnpm verify`.
+Compatibility CI runs the typecheck, lint, format, build, and test matrix. It
+does not replace local `git diff --check`, manual quality checks, or release
+validation. Hooks are a fast local guard, not the only enforcement point.
 
 Before committing or pushing, the agent must inspect the staged diff, run the
 relevant checks, and record failures or unavailable checks in Duty Watch. A

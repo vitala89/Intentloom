@@ -310,27 +310,50 @@ Regression tests to add with that change, in a Vitest file that imports
 - The script does not try to judge whether a named person is real. Fabrication
   and impersonation remain review rules, not regular expressions.
 
-## CI cost observations
+## What verification runs where
+
+These checks stay separate. The Governance workflow is the commit and diff
+policy. It is not the local pre-push command.
+
+- Local pre-push. `.githooks/pre-push` runs `pnpm verify`. `package.json`
+  defines that as typecheck, lint, format check, test, build, and
+  `git diff --check`.
+- Automated commit and diff policy. `.github/workflows/governance.yml` runs on
+  pull requests. It validates the commit range and the diff (whitespace and
+  production-file budgets). It does not run the test suite or the build.
+- Compatibility matrix. `.github/workflows/compatibility.yml` runs on pull
+  requests and on pushes. Each job runs typecheck, lint, format check, build,
+  and test. It does not run `git diff --check`.
+- Manual quality checks. Accessibility evidence, assistive-technology passes,
+  and other checks that have no workflow remain manual.
+- Release validation. The release checklist and the manual `release.yml`
+  dispatch apply when preparing a release. They are not the pull-request
+  gates above.
+
+## CI observations
 
 These observations are recommendations. Workflow files, branch protection, and
 billing are unchanged until the owner approves a separate change. Do not weaken
-a mandatory check to reduce cost.
+a mandatory check to save work. Duplicated jobs are duplicated compute. This
+repository does not contain account invoices, so no billable charge is stated.
 
-| Workflow                      | When it runs                                                                 | Role today                                       | Cost note                                                                                                     |
-| ----------------------------- | ---------------------------------------------------------------------------- | ------------------------------------------------ | ------------------------------------------------------------------------------------------------------------- |
-| `governance.yml`              | Every pull request                                                           | Commit text and production-file budgets          | One Ubuntu job. Automated and appropriate.                                                                    |
-| `compatibility.yml`           | Every pull request and every push                                            | Typecheck, lint, format, build, and test         | Three operating systems and two Node versions (six jobs). Push plus pull request can bill the same SHA twice. |
-| `codeql.yml`                  | Pull requests to `main`, pushes to `main`, Mondays 02:30 UTC, manual         | JavaScript/TypeScript and Actions analysis       | Two jobs. Scheduled even when nothing changed. Keep; it is the security scan.                                 |
-| `dependency-review.yml`       | Pull requests that touch dependency manifests                                | Dependency review                                | Path-filtered. Automated.                                                                                     |
-| `desktop-sea-feasibility.yml` | Manual, and pull requests touching Desktop, daemon, protocol, or application | Ubuntu, macOS, and Windows packaging feasibility | Path filter is broad. macOS minutes dominate.                                                                 |
-| `docs.yml`                    | Pushes to `main` that touch docs, plus manual                                | GitHub Pages                                     | Not a pull-request gate.                                                                                      |
-| `harness-benchmark.yml`       | Manual, and pull requests touching harness paths                             | Benchmark matrix, `continue-on-error: true`      | Six jobs that do not fail the pull request. Reporting only.                                                   |
-| `release.yml`                 | Manual dispatch only                                                         | npm publish via trusted publishing               | Dry run defaults to true. Protected `npm-publish` environment.                                                |
+| Workflow                      | When it runs                                                                 | Role today                                       | Compute note                                                                                         |
+| ----------------------------- | ---------------------------------------------------------------------------- | ------------------------------------------------ | ---------------------------------------------------------------------------------------------------- |
+| `governance.yml`              | Every pull request                                                           | Commit text and production-file budgets          | One Ubuntu job. It does not run `pnpm verify`.                                                       |
+| `compatibility.yml`           | Every pull request and every push                                            | Typecheck, lint, format, build, and test         | Three operating systems and two Node versions (six jobs). Both events can run the same commit twice. |
+| `codeql.yml`                  | Pull requests to `main`, pushes to `main`, Mondays 02:30 UTC, manual         | JavaScript/TypeScript and Actions analysis       | Two language jobs. The schedule runs even when nothing changed. It stays; it is the security scan.   |
+| `dependency-review.yml`       | Pull requests that touch dependency manifests                                | Dependency review                                | Path-filtered. Automated.                                                                            |
+| `desktop-sea-feasibility.yml` | Manual, and pull requests touching Desktop, daemon, protocol, or application | Ubuntu, macOS, and Windows packaging feasibility | Path filter is broad. Three hosted runners.                                                          |
+| `docs.yml`                    | Pushes to `main` that touch docs, plus manual                                | GitHub Pages                                     | Not a pull-request gate.                                                                             |
+| `harness-benchmark.yml`       | Manual, and pull requests touching harness paths                             | Benchmark matrix, `continue-on-error: true`      | Six jobs that do not fail the pull request. Reporting only.                                          |
+| `release.yml`                 | Manual dispatch only                                                         | npm publish via trusted publishing               | Dry run defaults to true. Protected `npm-publish` environment.                                       |
 
 `compatibility.yml` uses `actions/setup-node` with `cache: pnpm`. The suite is
 not limited to affected projects. A future owner-approved saving is to avoid
 running the full matrix on both `push` and `pull_request` for the same commit,
 without dropping an operating system or Node version from the required matrix.
+That would remove a repeated run. It would not, by itself, document a sum of
+money.
 
 Not automated, and not made automated here: accessibility tooling (`axe-core`
 is not installed), manual assistive-technology checks, live model evaluation,

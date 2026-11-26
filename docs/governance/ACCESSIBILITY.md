@@ -63,14 +63,24 @@ not legal advice and it is not a conformance claim.
   explanation:
   `https://www.bundesfachstelle-barrierefreiheit.de/DE/Fachwissen/Produkte-und-Dienstleistungen/European-Accessibility-Act/european-accessibility-act`.
 - EN 301 549 is the European standard for information and communications
-  technology accessibility. The same office describes version 3.2.1 (2021-03)
-  as the current technical reference, with web requirements in clause 9
-  pointing at WCAG 2.1, and expects a later revision to point at WCAG 2.2.
-  Presumption of conformity under BFSG §4 depends on harmonised standards whose
-  references are published in the Official Journal of the European Union. This
-  policy does not assert that those references include EN 301 549, and it does
-  not assert that Intentloom meets the standard. Office note:
-  `https://www.bundesfachstelle-barrierefreiheit.de/DE/Barrierefreiheitsstaerkungsgesetz/Normen-und-Standards/normen-und-standards_node`.
+  technology accessibility. These three things are not the same document, and
+  this policy does not treat them as one:
+  - Published standard. On 26 November 2026 the federal accessibility office
+    described EN 301 549 V3.2.1 (2021-03) as the current technical reference.
+    It said web requirements are in clause 9 and that this published version
+    points at WCAG 2.1.
+  - Later revision. The same page, read the same day, described a revision
+    that would point at WCAG 2.2 and said that updated version was expected to
+    become legally effective around 2027. That is the office’s description of
+    work that was not yet the published V3.2.1 text. It is not cited here as a
+    finished standard.
+  - Harmonised standard. Presumption of conformity under BFSG §4 applies to
+    harmonised standards, or parts of them, whose references have been
+    published in the Official Journal of the European Union. This policy does
+    not assert that publication for V3.2.1 or for any draft revision, and it
+    does not assert that Intentloom meets either.
+    Office note, read 26 November 2026:
+    `https://www.bundesfachstelle-barrierefreiheit.de/DE/Barrierefreiheitsstaerkungsgesetz/Normen-und-Standards/normen-und-standards_node`.
 
 Intentloom is documented as a local open-source developer tool. Whether a given
 distribution, hosted offer, or commercial service falls inside the directive or
@@ -94,8 +104,20 @@ Cover the items that the change can affect:
 - Touch target size, checked against WCAG 2.2 success criterion 2.5.8 for web
   targets.
 - Dialogs.
-- An alternative to drag-and-drop when dragging is not the only way to complete
-  the action.
+- Dragging movements, checked against WCAG 2.2 success criterion 2.5.7. When
+  web content uses a dragging movement to operate a function, the same
+  function must also be achievable with a single pointer and without dragging,
+  unless dragging is essential or the dragging behaviour is determined by the
+  user agent and not modified by the author. The W3C understanding document,
+  updated 10 August 2026, is
+  `https://www.w3.org/WAI/WCAG22/Understanding/dragging-movements`.
+  This is not the keyboard requirement. Success criteria 2.1.1 and 2.1.3 still
+  require a keyboard path, and a keyboard path does not by itself meet 2.5.7
+  unless that path also gives controls a pointer can click or tap. A
+  single-pointer alternative must not itself be only a path-based gesture such
+  as a swipe. Scrolling that the user agent provides, including ordinary
+  overflow scrolling, is the user-agent exception. Content that replaces that
+  scrolling with its own dragging behaviour is in scope.
 - Captions and transcripts for time-based media.
 - Charts and other data visualization.
 - AI streaming, progress, and agent status, exposed as text or another
