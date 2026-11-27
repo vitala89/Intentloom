@@ -225,7 +225,7 @@ verification.
   **Merge gate:** owner must record explicit eight-row acceptance on PR #643 (not
   backdated).
 - **Corrections:** Port tests use `vi.fn` `mock.calls` length (not `tx ===
-  undefined` argc); instrumented `exists`/`read` spies for review traversal before
+undefined` argc); instrumented `exists`/`read` spies for review traversal before
   FS/adoption, apply skipping stored proposal reads, blank approval skipping FS.
 - **Tests:** P1K.9 suites 29/29 PASS (`vitest run` on three files); full
   `pnpm verify` PASS on `c845576` (397 files, 3356 tests).
