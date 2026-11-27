@@ -211,6 +211,27 @@ Authorship enforcement reconciliation is on branch
 implementation remains the next product task after that merge and main
 verification.
 
+### 2026-11-27, P1K.9 final review closure (PR #643)
+
+- **Status:** **READY FOR OWNER MERGE** (pending section 24.10 sign-off). Branch
+  `refactor/p1k9-workspace-proposal-lifecycle`, HEAD `c845576`. Production code
+  unchanged this pass. Not merged.
+- **Triage:** 4/10 (blast 1, ambiguity 0, risk 1, verification 2, unknowns 0).
+  Environment: Cursor. Recommended role: mid. Reasoning effort: medium. Context
+  budget: moderate. Stop condition: validated PR ready for owner merge.
+- **Section 24.10:** No PR comment, issue comment, or in-repo dated owner
+  statement accepting all eight matrix rows as of 2026-11-27 13:xx CET. Original
+  Design First sequence deviation (`cc07ad5` before matrix record) unchanged.
+  **Merge gate:** owner must record explicit eight-row acceptance on PR #643 (not
+  backdated).
+- **Corrections:** Port tests use `vi.fn` `mock.calls` length (not `tx ===
+  undefined` argc); instrumented `exists`/`read` spies for review traversal before
+  FS/adoption, apply skipping stored proposal reads, blank approval skipping FS.
+- **Tests:** P1K.9 suites 29/29 PASS (`vitest run` on three files); full
+  `pnpm verify` PASS on `c845576` (397 files, 3356 tests).
+- **Next:** Owner section 24.10 matrix on PR #643, then owner merge and main
+  verification; then P1K.10.
+
 ### 2026-11-27, P1K.9 independent review corrections (PR #643)
 
 - **Status:** **IN REVIEW.** Test and documentation corrections on
