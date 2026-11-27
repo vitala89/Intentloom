@@ -12,6 +12,7 @@ import {
   promoteWorkspaceConversationToProposal,
   reviewWorkspaceProposal,
   startWorkspaceConversation,
+  type FileSystem,
 } from "@intentloom/application";
 import type { AdoptionProposal } from "../packages/application/src/project-adoption/generated-file-adoption-contracts.js";
 import { inside } from "../packages/application/src/project-path.ts";
@@ -48,33 +49,24 @@ function minimalAdoptionProposal(
   } as AdoptionProposal;
 }
 
-function trackAdoption(
+function captureAdoption(
   proposal: AdoptionProposal = minimalAdoptionProposal(),
-): {
-  adopt: WorkspaceProposalAdoption;
-  calls: {
-    options: Parameters<WorkspaceProposalAdoption>[0];
-    fs: unknown;
-    argc: number;
-    transactionOptions?: Parameters<WorkspaceProposalAdoption>[2];
-  }[];
-} {
-  const calls: {
-    options: Parameters<WorkspaceProposalAdoption>[0];
-    fs: unknown;
-    argc: number;
-    transactionOptions?: Parameters<WorkspaceProposalAdoption>[2];
-  }[] = [];
-  const adopt: WorkspaceProposalAdoption = async (options, adoptFs, tx) => {
-    calls.push({
-      options,
-      fs: adoptFs,
-      argc: tx === undefined ? 2 : 3,
-      transactionOptions: tx,
-    });
+): ReturnType<typeof vi.fn<WorkspaceProposalAdoption>> {
+  return vi.fn<WorkspaceProposalAdoption>(async (options, adoptFs) => {
+    void options;
+    void adoptFs;
     return proposal;
+  });
+}
+
+function instrumentFilesystemIO(fs: FileSystem): {
+  existsSpy: ReturnType<typeof vi.spyOn>;
+  readSpy: ReturnType<typeof vi.spyOn>;
+} {
+  return {
+    existsSpy: vi.spyOn(fs, "exists"),
+    readSpy: vi.spyOn(fs, "read"),
   };
-  return { adopt, calls };
 }
 
 describe("P1K.9 workspace proposal adoption port", () => {
@@ -85,79 +77,82 @@ describe("P1K.9 workspace proposal adoption port", () => {
       { root, projectId: "proj-port", mode: "plan" },
       fs,
     );
-    const { adopt, calls } = trackAdoption();
+    const adopt = captureAdoption();
 
     await promoteWorkspaceConversationToProposalOperation(
       { root, conversationId: conv.id, proposalId: "prop-port" },
       fs,
       adopt,
     );
-    expect(calls).toHaveLength(1);
-    expect(calls[0]?.fs).toBe(fs);
-    expect(calls[0]?.argc).toBe(2);
-    expect(calls[0]?.transactionOptions).toBeUndefined();
-    expect(calls[0]?.options).toEqual({
+    expect(adopt).toHaveBeenCalledTimes(1);
+    expect(adopt.mock.calls[0]).toHaveLength(2);
+    expect(adopt.mock.calls[0]?.[1]).toBe(fs);
+    expect(adopt.mock.calls[0]?.[0]).toEqual({
       root,
       profile: "generic",
       adapters: ["codex"],
       dryRun: true,
     });
 
-    calls.length = 0;
+    adopt.mockClear();
     await reviewWorkspaceProposalOperation(
       { root, proposalId: "prop-missing-port" },
       fs,
       adopt,
     );
-    expect(calls).toHaveLength(1);
-    expect(calls[0]?.options).toEqual({
+    expect(adopt).toHaveBeenCalledTimes(1);
+    expect(adopt.mock.calls[0]).toHaveLength(2);
+    expect(adopt.mock.calls[0]?.[0]).toEqual({
       root,
       profile: "generic",
       adapters: ["codex"],
       dryRun: true,
     });
-    expect(calls[0]?.argc).toBe(2);
 
-    calls.length = 0;
+    adopt.mockClear();
     await applyWorkspaceProposalOperation(
       { root, proposalId: "any", approvedBy: "lead", dryRun: true },
       fs,
       adopt,
     );
-    expect(calls).toHaveLength(1);
-    expect(calls[0]?.options).toEqual({
+    expect(adopt).toHaveBeenCalledTimes(1);
+    expect(adopt.mock.calls[0]).toHaveLength(2);
+    expect(adopt.mock.calls[0]?.[0]).toEqual({
       root,
       profile: "generic",
       adapters: ["codex"],
       dryRun: true,
     });
 
-    calls.length = 0;
+    adopt.mockClear();
     await applyWorkspaceProposalOperation(
       { root, proposalId: "any", approvedBy: "lead", dryRun: false },
       fs,
       adopt,
     );
-    expect(calls[0]?.options).toEqual({
+    expect(adopt).toHaveBeenCalledTimes(1);
+    expect(adopt.mock.calls[0]).toHaveLength(2);
+    expect(adopt.mock.calls[0]?.[0]).toEqual({
       root,
       profile: "generic",
       adapters: ["codex"],
       dryRun: false,
     });
 
-    calls.length = 0;
+    adopt.mockClear();
     await applyWorkspaceProposalOperation(
       { root, proposalId: "any", approvedBy: "lead" },
       fs,
       adopt,
     );
-    expect(calls[0]?.options).toEqual({
+    expect(adopt).toHaveBeenCalledTimes(1);
+    expect(adopt.mock.calls[0]).toHaveLength(2);
+    expect(adopt.mock.calls[0]?.[0]).toEqual({
       root,
       profile: "generic",
       adapters: ["codex"],
       dryRun: false,
     });
-    expect(calls).toHaveLength(1);
   });
 
   it("does not invoke adoption when reviewing a stored proposal", async () => {
@@ -168,7 +163,7 @@ describe("P1K.9 workspace proposal adoption port", () => {
       proposalPath("prop-stored"),
       `${JSON.stringify(stored, null, 2)}\n`,
     );
-    const adopt = vi.fn<WorkspaceProposalAdoption>(async () => stored);
+    const adopt = captureAdoption(stored);
     const review = await reviewWorkspaceProposalOperation(
       { root, proposalId: "prop-stored" },
       fs,
@@ -210,27 +205,32 @@ describe("P1K.9 workspace proposal adoption port", () => {
     ).rejects.toBe(adoptFailError);
   });
 
-  it("does not invoke adoption when approval is blank", async () => {
+  it("does not invoke adoption or filesystem reads when approval is blank", async () => {
     const fs = createMemoryFileSystem();
     await initProject({ root, adapters: ["codex"] }, fs);
-    const adopt = vi.fn<WorkspaceProposalAdoption>(async () =>
-      minimalAdoptionProposal(),
+    await fs.write(
+      proposalPath("prop-stored"),
+      `${JSON.stringify(minimalAdoptionProposal(), null, 2)}\n`,
     );
+    const adopt = captureAdoption();
+    const { existsSpy, readSpy } = instrumentFilesystemIO(fs);
     await expect(
       applyWorkspaceProposalOperation(
-        { root, proposalId: "any", approvedBy: "" },
+        { root, proposalId: "prop-stored", approvedBy: "" },
         fs,
         adopt,
       ),
     ).rejects.toThrow("human approval required (--approved-by USER)");
     await expect(
       applyWorkspaceProposalOperation(
-        { root, proposalId: "any", approvedBy: "  " },
+        { root, proposalId: "prop-stored", approvedBy: "  " },
         fs,
         adopt,
       ),
     ).rejects.toThrow("human approval required (--approved-by USER)");
     expect(adopt).not.toHaveBeenCalled();
+    expect(existsSpy).not.toHaveBeenCalled();
+    expect(readSpy).not.toHaveBeenCalled();
   });
 
   it("runs dry-run adoption before proposal-path traversal on promote", async () => {
@@ -240,7 +240,7 @@ describe("P1K.9 workspace proposal adoption port", () => {
       { root, projectId: "proj-order", mode: "plan" },
       fs,
     );
-    const { adopt, calls } = trackAdoption();
+    const adopt = captureAdoption();
     await expect(
       promoteWorkspaceConversationToProposalOperation(
         { root, conversationId: conv.id, proposalId: "../../../escape" },
@@ -248,17 +248,17 @@ describe("P1K.9 workspace proposal adoption port", () => {
         adopt,
       ),
     ).rejects.toThrow(/path traversal/u);
-    expect(calls).toHaveLength(1);
-    expect(calls[0]?.options).toEqual(dryRunAdoptOptions);
+    expect(adopt).toHaveBeenCalledTimes(1);
+    expect(adopt.mock.calls[0]).toHaveLength(2);
+    expect(adopt.mock.calls[0]?.[0]).toEqual(dryRunAdoptOptions);
     expect(await fs.exists(proposalPath("escape"))).toBe(false);
   });
 
-  it("validates review proposal paths before fallback adoption and skips paths on apply", async () => {
+  it("rejects review traversal before filesystem access and fallback adoption", async () => {
     const fs = createMemoryFileSystem();
     await initProject({ root, adapters: ["codex"] }, fs);
-    const adopt = vi.fn<WorkspaceProposalAdoption>(async () =>
-      minimalAdoptionProposal(),
-    );
+    const adopt = captureAdoption();
+    const { existsSpy, readSpy } = instrumentFilesystemIO(fs);
 
     await expect(
       reviewWorkspaceProposalOperation(
@@ -268,6 +268,33 @@ describe("P1K.9 workspace proposal adoption port", () => {
       ),
     ).rejects.toThrow(/path traversal/u);
     expect(adopt).not.toHaveBeenCalled();
+    expect(existsSpy).not.toHaveBeenCalled();
+    expect(readSpy).not.toHaveBeenCalled();
+  });
+
+  it("apply does not resolve or read stored proposals regardless of proposal id", async () => {
+    const fs = createMemoryFileSystem();
+    await initProject({ root, adapters: ["codex"] }, fs);
+    await fs.write(
+      proposalPath("prop-on-disk"),
+      `${JSON.stringify(minimalAdoptionProposal(), null, 2)}\n`,
+    );
+    const adopt = captureAdoption();
+    const { existsSpy, readSpy } = instrumentFilesystemIO(fs);
+
+    await applyWorkspaceProposalOperation(
+      { root, proposalId: "prop-on-disk", approvedBy: "op" },
+      fs,
+      adopt,
+    );
+    expect(adopt).toHaveBeenCalledTimes(1);
+    expect(adopt.mock.calls[0]).toHaveLength(2);
+    expect(existsSpy).not.toHaveBeenCalled();
+    expect(readSpy).not.toHaveBeenCalled();
+
+    adopt.mockClear();
+    existsSpy.mockClear();
+    readSpy.mockClear();
 
     await applyWorkspaceProposalOperation(
       { root, proposalId: "../../../escape", approvedBy: "op" },
@@ -275,7 +302,9 @@ describe("P1K.9 workspace proposal adoption port", () => {
       adopt,
     );
     expect(adopt).toHaveBeenCalledTimes(1);
-    expect(adopt.mock.calls[0]?.length).toBe(2);
+    expect(adopt.mock.calls[0]).toHaveLength(2);
+    expect(existsSpy).not.toHaveBeenCalled();
+    expect(readSpy).not.toHaveBeenCalled();
   });
 
   it("keeps public memory-filesystem wrappers compatible with port-injected adoptProject", async () => {
