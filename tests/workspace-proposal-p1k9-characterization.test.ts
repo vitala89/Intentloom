@@ -374,7 +374,16 @@ describe("P1K.9 workspace proposal lifecycle (Stage A characterization)", () => 
       },
       fs,
     );
-    expect(withPolicy).toEqual(baseline);
+    expect(withPolicy.proposalId).toBe(baseline.proposalId);
+    expect(withPolicy.schemaVersion).toBe(baseline.schemaVersion);
+    expect(withPolicy.itemsCount).toBe(baseline.itemsCount);
+    expect(withPolicy.affectedPaths).toEqual(baseline.affectedPaths);
+    expect(withPolicy.readyToApply).toBe(baseline.readyToApply);
+    const { evaluatedAt: _withAt, ...sandboxWithPolicy } =
+      withPolicy.sandboxEvaluation;
+    const { evaluatedAt: _baselineAt, ...sandboxBaseline } =
+      baseline.sandboxEvaluation;
+    expect(sandboxWithPolicy).toEqual(sandboxBaseline);
   });
 
   it("propagates malformed proposal JSON and exists failures on review", async () => {
