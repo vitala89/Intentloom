@@ -1291,8 +1291,8 @@ Import-only SCC membership remains `[3]`. Re-export SCC membership remains
 `[4, 27, 3]` with the same members. No runtime behavior changed in P1K.8
 scope. P1K.9 Design First is merged at
 `84fd593bb81f2f3eff98fa6ddef0b3ae579027d1` (PR #640). P1K.9 implementation PR
-#643 is in independent review correction pass on
-`refactor/p1k9-workspace-proposal-lifecycle` (HEAD `0af5851`). Measured
+#643 is ready for owner merge (pending §24.10 sign-off) on
+`refactor/p1k9-workspace-proposal-lifecycle` (HEAD `b94a602`). Measured
 post-extraction `index.ts` is 793 effective and 831 physical lines; proposal leaf
 is 122 effective and 134 physical lines. Section 24.10 explicit matrix sign-off
 is still required before merge; the original implementation began before that
