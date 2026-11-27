@@ -1,4 +1,6 @@
-import { dirname } from "node:path";
+import { mkdtemp, rm } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { dirname, join } from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import {
   applyWorkspaceProposal,
@@ -64,6 +66,38 @@ async function conversationReady(fs: FileSystem): Promise<string> {
     fs,
   );
   return conv.id;
+}
+
+async function writeAllowAllSandbox(fs: FileSystem): Promise<void> {
+  await writeSandboxCapabilityPolicy(
+    {
+      schemaVersion: "1",
+      projectId: "project-local",
+      mode: "mutating",
+      pathRules: [{ pathPrefix: "*", allowWrite: true, allowDelete: true }],
+      commandRules: [],
+      allowNetwork: true,
+      updatedAt: new Date().toISOString(),
+    },
+    { root },
+    fs,
+  );
+}
+
+async function writeReadOnlySandbox(fs: FileSystem): Promise<void> {
+  await writeSandboxCapabilityPolicy(
+    {
+      schemaVersion: "1",
+      projectId: "project-local",
+      mode: "read-only",
+      pathRules: [],
+      commandRules: [],
+      allowNetwork: false,
+      updatedAt: new Date().toISOString(),
+    },
+    { root },
+    fs,
+  );
 }
 
 describe("P1K.9 workspace proposal lifecycle (Stage A characterization)", () => {
@@ -286,27 +320,39 @@ describe("P1K.9 workspace proposal lifecycle (Stage A characterization)", () => 
     expect(review.readyToApply).toBe(review.sandboxEvaluation.allowed);
   });
 
-  it("reflects sandbox allow and deny in readyToApply", async () => {
+  it("reflects explicit sandbox deny and allow in readyToApply", async () => {
     const fs = createMemoryFileSystem();
     await preparedRoot(fs);
+    const deniedPaths = ["notes/readme.md"];
     await fs.write(
       proposalPath("prop-deny"),
-      `${JSON.stringify({ items: [{ path: "notes/readme.md" }] })}\n`,
+      `${JSON.stringify({ items: deniedPaths.map((path) => ({ path })) })}\n`,
     );
-    await fs.write(
-      proposalPath("prop-allow"),
-      `${JSON.stringify({ items: [{ path: ".aif/intentloom.yaml" }] })}\n`,
-    );
+    await writeReadOnlySandbox(fs);
     const deny = await reviewWorkspaceProposal(
       { root, proposalId: "prop-deny" },
       fs,
     );
+    expect(deny.sandboxEvaluation.allowed).toBe(false);
+    expect(deny.readyToApply).toBe(false);
+    expect(deny.affectedPaths).toEqual(deniedPaths);
+    expect(deny.sandboxEvaluation.violations.length).toBeGreaterThan(0);
+    expect(deny.sandboxEvaluation.projectId).toBe("prop-deny");
+
+    await fs.write(
+      proposalPath("prop-allow"),
+      `${JSON.stringify({ items: [{ path: ".aif/intentloom.yaml" }] })}\n`,
+    );
+    await writeAllowAllSandbox(fs);
     const allow = await reviewWorkspaceProposal(
       { root, proposalId: "prop-allow" },
       fs,
     );
-    expect(deny.readyToApply).toBe(false);
-    expect(allow.readyToApply).toBe(allow.sandboxEvaluation.allowed);
+    expect(allow.sandboxEvaluation.allowed).toBe(true);
+    expect(allow.readyToApply).toBe(true);
+    expect(allow.affectedPaths).toEqual([".aif/intentloom.yaml"]);
+    expect(allow.sandboxEvaluation.violations).toEqual([]);
+    expect(allow.sandboxEvaluation.projectId).toBe("prop-allow");
   });
 
   it("accepts policyPath without changing review behavior", async () => {
@@ -411,6 +457,75 @@ describe("P1K.9 workspace proposal lifecycle (Stage A characterization)", () => 
     );
   });
 
+  it("propagates promote proposal-parent exists and mkdir failures", async () => {
+    const proposalId = "prop-parent-exists";
+    const path = proposalPath(proposalId);
+    const parent = dirname(path);
+
+    const existsFail = createMemoryFileSystem();
+    await initProject({ root, adapters: ["codex"] }, existsFail);
+    const convRecord = await startWorkspaceConversation(
+      { root, projectId: "x", mode: "plan" },
+      existsFail,
+    );
+    const baseExists = existsFail.exists.bind(existsFail);
+    existsFail.exists = async (checkPath) => {
+      if (checkPath === parent) throw new Error("parent exists failed");
+      return baseExists(checkPath);
+    };
+    await expect(
+      promoteWorkspaceConversationToProposal(
+        {
+          root,
+          conversationId: convRecord.id,
+          proposalId,
+        },
+        existsFail,
+      ),
+    ).rejects.toThrow("parent exists failed");
+
+    const mkdirFail = createMemoryFileSystem();
+    await initProject({ root, adapters: ["codex"] }, mkdirFail);
+    const conv2 = await startWorkspaceConversation(
+      { root, projectId: "y", mode: "plan" },
+      mkdirFail,
+    );
+    mkdirFail.mkdir = async (mkdirPath) => {
+      if (mkdirPath === parent) throw new Error("parent mkdir failed");
+    };
+    await expect(
+      promoteWorkspaceConversationToProposal(
+        { root, conversationId: conv2.id, proposalId },
+        mkdirFail,
+      ),
+    ).rejects.toThrow("parent mkdir failed");
+    expect(await mkdirFail.exists(path)).toBe(false);
+  });
+
+  it("propagates review read failures and JSON without items", async () => {
+    const fs = createMemoryFileSystem();
+    await preparedRoot(fs);
+    const readFail = filesystem(
+      new Map([[proposalPath("prop-read"), "{}"]]),
+      async () => [],
+    );
+    readFail.exists = async () => true;
+    readFail.read = async () => {
+      throw new Error("proposal read failed");
+    };
+    await expect(
+      reviewWorkspaceProposal({ root, proposalId: "prop-read" }, readFail),
+    ).rejects.toThrow("proposal read failed");
+
+    await fs.write(
+      proposalPath("prop-no-items"),
+      '{"kind":"adoption-proposal"}\n',
+    );
+    await expect(
+      reviewWorkspaceProposal({ root, proposalId: "prop-no-items" }, fs),
+    ).rejects.toThrow(/Cannot read properties of undefined \(reading 'map'\)/u);
+  });
+
   it("propagates promote write failures", async () => {
     const fs = createMemoryFileSystem();
     const conversationId = await conversationReady(fs);
@@ -423,5 +538,41 @@ describe("P1K.9 workspace proposal lifecycle (Stage A characterization)", () => 
         fs,
       ),
     ).rejects.toThrow("promote write failed");
+  });
+});
+
+describe("P1K.9 workspace proposal lifecycle default nodeFileSystem", () => {
+  it("exercises public operations without an explicit filesystem argument", async () => {
+    const tempRoot = await mkdtemp(
+      join(tmpdir(), "intentloom-p1k9-default-fs-"),
+    );
+    try {
+      await initProject({ root: tempRoot, adapters: ["codex"] });
+      const conv = await startWorkspaceConversation({
+        root: tempRoot,
+        projectId: "proj-default-fs",
+        mode: "plan",
+      });
+      const proposal = await promoteWorkspaceConversationToProposal({
+        root: tempRoot,
+        conversationId: conv.id,
+        proposalId: "prop-default-fs",
+      });
+      expect(proposal.applied).toBe(false);
+      const review = await reviewWorkspaceProposal({
+        root: tempRoot,
+        proposalId: "prop-default-fs",
+      });
+      expect(review.proposalId).toBe("prop-default-fs");
+      const applied = await applyWorkspaceProposal({
+        root: tempRoot,
+        proposalId: "prop-default-fs",
+        approvedBy: "lead",
+        dryRun: true,
+      });
+      expect(applied.applicationStatus).toBe("not-requested");
+    } finally {
+      await rm(tempRoot, { recursive: true, force: true });
+    }
   });
 });

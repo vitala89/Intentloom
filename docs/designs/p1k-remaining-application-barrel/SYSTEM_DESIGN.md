@@ -2523,12 +2523,13 @@ Required Stage A cases:
   (before not-found).
 - Conversation `fs.exists` failure: propagates through promote.
 - Supplied `proposalId` and generated `prop-${Date.now()}` ids.
-- Observable adoption outcome: stored bytes are the dry-run adoption proposal
-  (`profile: "generic"`, `adapters: ["codex"]`, `dryRun: true` as reflected in
-  the persisted proposal), not the conversation record. Exact internal
-  `adoptProject` argument lists and invocation ordering belong in Stage B when
-  existing public seams cannot observe the call.
-- Stored bytes are the adoption proposal, not the conversation record.
+- Observable adoption outcome on promote: persisted bytes are the formatted
+  dry-run `AdoptionProposal`, not the conversation record. `AdoptionProposal`
+  does not expose top-level `profile`, `adapters`, or `dryRun`; assert
+  `applied: false`, `applicationStatus: "not-requested"`,
+  `transactionOutcome: null`, and exact JSON with trailing newline. Exact
+  internal `adoptProject` argument lists and invocation ordering belong in Stage
+  B port tests when public seams cannot observe the call.
 - Directory is created only when absent.
 - Review of an existing file uses those bytes and does not call adoption.
 - Review of a missing file calls dry-run adoption and does not write it.
@@ -2596,7 +2597,12 @@ compatibility assertions include:
 
 ### 24.10 Design First acceptance matrix
 
-Implementation starts only after a maintainer checks every row.
+Implementation starts only after a maintainer checks every row. PR #643
+implementation began on 2026-11-26 **before** this matrix was recorded in Git;
+that was a Design First sequence deviation. Independent review accepted the
+extraction architecture; explicit maintainer sign-off for every row below is
+still required before merge and must be recorded in the pull request and
+`DUTY_WATCH.md` — not backdated.
 
 | #   | Maintainer confirms                                                 | Required |
 | --- | ------------------------------------------------------------------- | -------- |

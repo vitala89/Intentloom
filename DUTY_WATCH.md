@@ -211,6 +211,39 @@ Authorship enforcement reconciliation is on branch
 implementation remains the next product task after that merge and main
 verification.
 
+### 2026-11-27, P1K.9 independent review corrections (PR #643)
+
+- **Status:** **IN REVIEW.** Test and documentation corrections on
+  `refactor/p1k9-workspace-proposal-lifecycle`. Production extraction unchanged
+  except `SandboxEvaluationResult` type restoration on
+  `WorkspaceProposalReviewResult`. Not merged.
+- **Triage:** 6/10 (blast 1, ambiguity 0, risk 2, verification 2, unknowns 1).
+  Environment: Cursor. Recommended role: mid. Reasoning effort: high. Context
+  budget: larger. Delegation: none.
+- **Section 24.10 / Design First sequence:** Original implementation commit
+  `cc07ad5` landed **before** explicit maintainer matrix sign-off was recorded
+  in Git (**sequence deviation**). No backdated approval was fabricated.
+  Explicit eight-row owner acceptance remains **BLOCKED** until the Project
+  Owner records it on PR #643 before merge.
+- **Independent review:** Architecture and production extraction accepted;
+  corrections address sandbox assertions, adoption-port rigor, failure matrix
+  gaps, default-filesystem coverage, and structural assertions.
+- **Baseline verification:** Strengthened
+  `tests/workspace-proposal-p1k9-characterization.test.ts` (20 tests) passed on
+  detached worktree at pre-extraction commit `cc07ad5` with production bodies
+  still in `index.ts` (retrospective verification; tests did not exist in that
+  form at `cc07ad5` commit time). Current branch: 28 tests across
+  characterization, port, and structure — **PASS** locally.
+- **Measurements:** `index.ts` 793 effective / 831 physical; proposal leaf 122
+  effective / 134 physical; import-only SCC `[3]`; re-export SCC `[4, 27, 3]`.
+- **Planning (original P1K.9 estimates):** Human active effort 5–15 minutes;
+  AI execution 100–195 minutes; calendar 2–5 hours. **Observed (this correction
+  pass):** not timed end-to-end; local `pnpm verify` full suite on branch after
+  corrections — **PASS** (wall time not separately logged this pass).
+- **Not done:** owner merge, section 24.10 matrix sign-off, P1K.10+.
+- **Next:** Final independent review of PR #643; owner records section 24.10
+  acceptance before merge.
+
 ### 2026-11-26, P1K.9 workspace proposal lifecycle extraction (implementation)
 
 - **Status:** **IN REVIEW.** Behavior-preserving extraction on

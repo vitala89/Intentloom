@@ -1,4 +1,5 @@
 import { dirname } from "node:path";
+import type { SandboxEvaluationResult } from "@intentloom/protocol";
 import type { AdoptionProposal } from "../project-adoption/generated-file-adoption-contracts.js";
 import type { FileSystem } from "../host-file-system.js";
 import type { TransactionOptions } from "../generated-file/transaction-contracts.js";
@@ -60,9 +61,7 @@ export interface WorkspaceProposalReviewResult {
   readonly schemaVersion: number;
   readonly itemsCount: number;
   readonly affectedPaths: readonly string[];
-  readonly sandboxEvaluation: Awaited<
-    ReturnType<typeof evaluateProposalAgainstSandbox>
-  >;
+  readonly sandboxEvaluation: SandboxEvaluationResult;
   readonly readyToApply: boolean;
 }
 
