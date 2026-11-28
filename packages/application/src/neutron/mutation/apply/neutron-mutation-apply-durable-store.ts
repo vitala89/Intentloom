@@ -57,11 +57,35 @@ async function classifyLoadedClaim(
   directory: string,
   incoming: NeutronMutationTransactionRecord,
 ): Promise<NeutronMutationClaimOutcome> {
-  const loaded = await loadRecord(directory, incoming.approvalId);
+  const loaded = await loadRecordAfterExclusiveCreateContention(
+    directory,
+    incoming.approvalId,
+  );
   if (loaded.kind === "missing" || loaded.kind === "corrupt") {
     return { kind: "storage-failed" };
   }
   return classifyExistingClaim(loaded.record, incoming);
+}
+
+/**
+ * Another caller may still be flushing the exclusive-create record on Windows;
+ * a single read can return "missing" while the lock file already exists.
+ */
+async function loadRecordAfterExclusiveCreateContention(
+  directory: string,
+  approvalId: string,
+): Promise<
+  | { readonly kind: "missing" }
+  | { readonly kind: "corrupt" }
+  | { readonly kind: "ok"; readonly record: NeutronMutationTransactionRecord }
+> {
+  const deadlineMs = Date.now() + 500;
+  let loaded = await loadRecord(directory, approvalId);
+  while (loaded.kind === "missing" && Date.now() < deadlineMs) {
+    await new Promise((resolve) => setTimeout(resolve, 10));
+    loaded = await loadRecord(directory, approvalId);
+  }
+  return loaded;
 }
 
 async function replaceIfExpected(
