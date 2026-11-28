@@ -1,11 +1,13 @@
 # Intentloom Project State
 
-Last verified: 2026-11-28 for P1K.9 implementation merge
-(`800716340e22a92240ab5d769f5e347f0363c1e4`, PR #643), main verification on
-that SHA (CodeQL and Documentation PASS; Compatibility PENDING at verification
-time), and proposed P1K.10 Design First section 25. The 2026-08-22 phase note
-below was not re-audited in this change. Earlier product-phase text remains
-historical until a release audit replaces it.
+Last verified: 2026-11-28 for P1K.10 Design First merge
+(`26dfe51e56f8b37972dd167e71c6fa55e4920f85`, PR #644) and the Project Owner
+acceptance of section 25.17 at 2026-11-28 13:20 Europe/Berlin. Main
+verification of that SHA: CodeQL success, Compatibility success,
+Documentation failed at Pages deploy after a successful VitePress build.
+P1K.10 implementation is not authorized until that verification succeeds.
+The 2026-08-22 phase note below was not re-audited in this change. Earlier
+product-phase text remains historical until a release audit replaces it.
 
 This file records the durable current state of the project. It is not a
 chronological log. Session history and handoff details belong in
@@ -1298,8 +1300,12 @@ sign-off was **not** recorded in PR #643 comments or reviews at merge (process
 exception; owner reconciliation still required). Design First sequence deviation
 (extraction before matrix record) remains documented in `DUTY_WATCH.md` and
 section 24.10. Import-only SCC membership remains `[3]`; re-export SCC membership
-remains `[4, 27, 3]`. P1K.10 Design First (section 25) is **proposed** on the
-open design branch; implementation is not authorized. P1K.11 through P1K.17 have
+remains `[4, 27, 3]`. P1K.10 Design First (section 25) is merged at
+`26dfe51e56f8b37972dd167e71c6fa55e4920f85` (PR #644). The Project Owner
+accepted all ten section 25.17 rows at 2026-11-28 13:20 Europe/Berlin. PR #644
+had no GitHub review, and this acceptance does not backdate one. A separate
+implementation task stays unauthorized until main verification of `26dfe51`
+succeeds. Neutron changes stay unauthorized. P1K.11 through P1K.17 have
 not started. P1 remains
 incomplete. Transparent authorship reconciliation is merged as PR #642 at
 `f076e043b4331faf1c2610f450e1e6bf7437885c`.

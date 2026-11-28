@@ -2627,12 +2627,19 @@ maps, Undo U4, and Desktop Undo U5.
 
 ## 25. P1K.10 project root and timeline — Design First gate
 
-Status: **proposed** (this documentation pull request). Parent design PR #627
-remains the architectural roadmap. This section records behavior verified on
-`main` at `800716340e22a92240ab5d769f5e347f0363c1e4` (P1K.9 implementation,
-PR #643) and the extraction contract for slice P1K.10 only. It does not
-authorize implementation and it does not change application, daemon, CLI, or
-evidence-git runtime behavior.
+Status: **accepted 2026-11-28 13:20 Europe/Berlin**, after PR #644 merged.
+Parent design PR #627 remains the architectural roadmap. This section records
+behavior verified on `main` at `800716340e22a92240ab5d769f5e347f0363c1e4`
+(P1K.9 implementation, PR #643) and the extraction contract for slice P1K.10
+only. The Project Owner accepted every row in section 25.17 at that time.
+GitHub reviews on PR #644 were empty when it merged at 2026-11-28 13:15
+Europe/Berlin (`26dfe51e56f8b37972dd167e71c6fa55e4920f85`). This status does
+not rewrite that GitHub record. A separate implementation task is authorized
+only after main verification of that merge succeeds. `DUTY_WATCH.md` records
+that this verification is not complete: Documentation run 46143717431 failed
+at Pages deploy after a successful VitePress build. This section does not
+change application, daemon, CLI, or evidence-git runtime behavior, and it
+does not authorize Neutron changes.
 
 ### 25.1 Problem and scope
 
@@ -3075,6 +3082,13 @@ No new tests in this Design PR.
 Do not start P1K.11 or later, Engineering Quality retarget, or Neutron edits
 in the implementation PR.
 
+**Recorded order.** Steps 2 and 4 completed before step 3. PR #644 merged at
+2026-11-28 13:15 Europe/Berlin with no GitHub review. Step 3 is the Project
+Owner statement at 2026-11-28 13:20 Europe/Berlin, recorded in section 25.17
+and `DUTY_WATCH.md`. It is not a backdated GitHub approval. Step 6 in that
+statement stays inactive until step 5 succeeds. Step 5 is not complete: see
+the main-verification note in `DUTY_WATCH.md` for `26dfe51`.
+
 ### 25.14 Architecture metrics
 
 | Metric               | Observed @ `8007163` | Forecast after P1K.10            |
@@ -3111,9 +3125,18 @@ in `DUTY_WATCH.md`. This design does not authorize a Neutron fix.
 
 ### 25.17 Design First acceptance matrix
 
-All rows stay **proposed** until the Project Owner accepts them on this Design
-PR (or another genuine dated source) **before** merge. The implementation PR
-cites that record. It does not replace it.
+The design required every row to be accepted on PR #644, or in another genuine
+dated source, before merge. PR #644 merged at 2026-11-28 13:15 Europe/Berlin
+(`26dfe51e56f8b37972dd167e71c6fa55e4920f85`). Its GitHub review list was empty.
+This section does not add or backdate a GitHub approval review.
+
+On 2026-11-28 13:20 Europe/Berlin the Project Owner accepted all ten rows.
+That statement is the dated source. The implementation pull request cites this
+section and `DUTY_WATCH.md`. It does not replace them.
+
+The same statement authorizes a separate P1K.10 implementation task only after
+main verification of `26dfe51` succeeds. It does not authorize Neutron changes.
+That verification had not succeeded when this acceptance was recorded.
 
 | #   | Maintainer confirms                                                   | Required |
 | --- | --------------------------------------------------------------------- | -------- |
@@ -3127,6 +3150,9 @@ cites that record. It does not replace it.
 | 8   | Module path and dependency direction in section 25.5                  | yes      |
 | 9   | Leaf stays outside SCC sets `[3]` and `[4, 27, 3]`                    | yes      |
 | 10  | Stage A tests precede production extraction                           | yes      |
+
+All ten rows: **accepted** by the Project Owner at 2026-11-28 13:20
+Europe/Berlin.
 
 P1K.9 PR #643 merged without a recorded section 24.10 owner matrix. That
 exception is unchanged and does not approve this matrix.
