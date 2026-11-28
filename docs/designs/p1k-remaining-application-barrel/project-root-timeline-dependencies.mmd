@@ -1,26 +1,29 @@
 flowchart TB
-  cli_daemon["CLI bin / daemon bin timeline RPC"]
-  desktop["Desktop daemon client"]
+  cli_timeline["CLI timeline-command.ts"]
+  daemon_rpc["daemon bin.ts timeline RPC"]
+  desktop["Desktop client"]
+  protocol["protocol ProjectTimeline RPC"]
   neutron["neutron-tool-dispatch.ts"]
   workspace["getInteractiveWorkspaceState"]
   eq_apply["specialized-pack-external-apply.ts"]
-  eq_daemon["daemon quality / specialized-pack handlers"]
-  barrel["index.ts re-exports"]
+  eq_daemon["daemon quality and specialized-pack handlers"]
+  barrel["index.ts re-exports plus local binding"]
   leaf["project-lifecycle/project-root.ts"]
-  fs["host-file-system FileSystem"]
+  fs["../host-file-system.js"]
   evidence["@intentloom/evidence-git"]
   path["node:path resolve"]
-  daemon_root["daemon-canonical-root.ts separate"]
+  daemon_root["daemon-canonical-root.ts DaemonRootError"]
 
-  cli_daemon --> barrel
-  desktop --> barrel
+  desktop --> protocol
+  protocol --> daemon_rpc
+  daemon_rpc --> barrel
   neutron --> barrel
   workspace --> barrel
   eq_apply --> barrel
   eq_daemon --> barrel
+  eq_daemon --> daemon_root
   barrel --> leaf
   leaf --> fs
   leaf --> evidence
   leaf --> path
-  eq_daemon --> daemon_root
-  cli_daemon -.->|"timeline CLI bypasses timelineProject"| evidence
+  cli_timeline --> evidence

@@ -2640,443 +2640,497 @@ P1K.10 moves canonical project-root validation and the release timeline builder
 out of `packages/application/src/index.ts` into
 `packages/application/src/project-lifecycle/project-root.ts`.
 
-| Name                         | Today            | After extraction            |
-| ---------------------------- | ---------------- | --------------------------- |
-| `ProjectRootError`           | public class     | public class on the leaf    |
-| `assertCanonicalProjectRoot` | public function  | public function on the leaf |
-| `ProjectTimelineOptions`     | public interface | public type on the leaf     |
-| `ProjectTimeline`            | public interface | public type on the leaf     |
-| `timelineProject`            | public function  | public function on the leaf |
+| Name                         | Today            | After extraction                         |
+| ---------------------------- | ---------------- | ---------------------------------------- |
+| `ProjectRootError`           | public class     | public class on the leaf, re-exported    |
+| `assertCanonicalProjectRoot` | public function  | public function on the leaf, re-exported |
+| `ProjectTimelineOptions`     | public interface | public type on the leaf, re-exported     |
+| `ProjectTimeline`            | public interface | public type on the leaf, re-exported     |
+| `timelineProject`            | public function  | public function on the leaf, re-exported |
 
-The barrel keeps **re-exports only**. Unlike P1K.9, there are no public wrapper
-bodies that inject ports. `index.ts` becomes:
+There are **no forwarding wrappers**. The barrel re-exports the leaf bindings,
+so public class and function identity stay the leaf values (`instanceof` and
+function identity match the owning module).
+
+`getInteractiveWorkspaceState` still passes the local `timelineProject` binding
+into `assembleInteractiveWorkspaceState`. The barrel therefore **imports** the
+leaf symbols and **re-exports** them; it does not drop the local name.
+
+`resolve` from `node:path` stays imported on the barrel because
+`planPackUpdate` still calls it. Do not remove unrelated imports.
+
+Proposed barrel arrangement (illustrative; implementation must match remaining
+barrel composition exactly aside from this move):
 
 ```ts
-export {
-  ProjectRootError,
+import { resolve } from "node:path";
+import {
   assertCanonicalProjectRoot,
+  ProjectRootError,
   timelineProject,
 } from "./project-lifecycle/project-root.js";
-export type {
+import type {
   ProjectTimeline,
   ProjectTimelineOptions,
 } from "./project-lifecycle/project-root.js";
+
+export { assertCanonicalProjectRoot, ProjectRootError, timelineProject };
+export type { ProjectTimeline, ProjectTimelineOptions };
+
+export async function getInteractiveWorkspaceState(
+  options,
+  fs = nodeFileSystem,
+) {
+  return assembleInteractiveWorkspaceState(options, fs, {
+    inspectProject,
+    doctorProject,
+    diffProject,
+    timelineProject,
+  });
+}
 ```
 
 Measured on this baseline with `measureProductionSource`: `index.ts` is **793
 effective** and **831 physical** lines. The contiguous root and timeline block
 (lines 289–348) measures **56 effective** and **60 physical** lines. The parent
 roadmap forecast removes about **51 effective** lines from the barrel after
-re-export glue (~5 lines). **Post-P1K.10 forecast: about 742 effective lines**
-on the central estimate; the phased table row **718** remains the rounded
-running estimate from section 15. Re-measure during the implementation PR. Do
-not present forecasts as observed results.
+re-export glue. **Post-P1K.10 forecast: about 742 effective lines** on the
+central estimate; the phased table row **718** remains the rounded running
+estimate from section 15. Re-measure during the implementation PR. Do not
+present forecasts as observed results.
 
-Preferred file budget is 250 effective lines; hard limit is 400. The moved slice
-fits the preferred budget with room for Stage A characterization tests
-elsewhere.
+Preferred file budget is 250 effective lines; hard limit is 400.
+
+**Branch name.** This Design PR uses
+`cursor/docs-p1k10-project-root-timeline-design-e067`. `AGENTS.md` forbids
+`cursor/` prefixes. The published branch and PR stay as-is unless the owner
+authorizes a rename. Later work uses an approved prefix such as `docs/`.
 
 ### 25.2 Verified current behavior
 
 Verified by reading `packages/application/src/index.ts`,
 `packages/application/src/host-file-system.ts`,
 `packages/evidence-git/src/index.ts`, `packages/daemon/src/daemon-canonical-root.ts`,
-`packages/cli/src/timeline-command.ts`, and consumer imports on the baseline
-above.
+`packages/daemon/src/bin.ts`, `packages/cli/src/timeline-command.ts`, and
+consumer imports on `8007163`.
 
 #### `assertCanonicalProjectRoot`
 
-1. `const canonicalRoot = resolve(root)` using `node:path` `resolve` (lexical
-   normalization against the current working directory when `root` is relative).
-   This is **not** filesystem `realpath` canonicalization.
-2. `if (!(await fs.exists(canonicalRoot)))` → throw `ProjectRootError` with
-   code `invalid_root` and message **`project root does not exist`**.
-3. `if (await fs.isSymbolicLink(canonicalRoot))` → throw `ProjectRootError`
-   with code `stale_root` and message **`project root is a symbolic link and is
-not stable`**.
-4. Return `canonicalRoot`.
+1. `const canonicalRoot = resolve(root)` (`node:path`). Relative inputs are
+   resolved against the process current working directory. This is **lexical**
+   normalization, not `realpath`.
+2. `await fs.exists(canonicalRoot)`. When the result is **false**, throw
+   `ProjectRootError("invalid_root", "project root does not exist")`
+   **immediately**. **`isSymbolicLink` is not called** on this branch.
+3. When `exists` is true, `await fs.isSymbolicLink(canonicalRoot)`. When true,
+   throw `ProjectRootError("stale_root", "project root is a symbolic link and is not stable")`.
+4. Otherwise return `canonicalRoot`.
 
-Defaults: `fs: FileSystem = nodeFileSystem`. `ProjectRootError.name` is
+`fs` defaults to `nodeFileSystem`. `ProjectRootError.name` is
 `"ProjectRootError"`. `clientErrorCode` is `"invalid_root" | "stale_root"`.
-Inheritance is `extends Error`.
+The class `extends Error`. Neither the function nor `nodeFileSystem` catches
+errors thrown by a **custom** `FileSystem`.
 
-**Filesystem semantics (`nodeFileSystem`):**
+**Path cases (current implementation):**
 
-- `exists` uses `stat`; any existing file or directory yields `true`; I/O errors
-  are caught and yield `false` (surfacing as `invalid_root`, not as the
-  underlying error).
-- `isSymbolicLink` uses `lstat`; I/O errors are caught and yield `false` (so a
-  broken symlink that `exists` treats as missing still fails at step 2, not step
-  3).
-- There is **no** check that the root is a directory. An existing **regular
-  file** passes validation when it is not a symlink.
-
-**Lexical vs realpath:** Symlinks in parent path segments are not expanded by
-`resolve` alone. Daemon enforcement uses a separate implementation (section 25.9).
+| Case                                               | What happens                                                                                                |
+| -------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| Lexically resolved relative path                   | `resolve` against cwd; then the checks above                                                                |
+| Existing directory                                 | `exists` true, not a symlink → returned path                                                                |
+| Existing regular file                              | `exists` true, not a symlink → **accepted** (no directory check)                                            |
+| Direct symlink whose target exists                 | `nodeFileSystem.exists` uses `stat` (follows) so true; `isSymbolicLink` uses `lstat` so true → `stale_root` |
+| Dangling symlink                                   | `stat` fails, `exists` returns false → `invalid_root`; `isSymbolicLink` not called                          |
+| Symlink in a parent segment, leaf is not a symlink | `resolve` does not expand the parent; `lstat` of the leaf is not a symlink → accepted lexical path          |
+| Missing path                                       | `exists` false → `invalid_root`; `isSymbolicLink` not called                                                |
+| Custom `exists` throws                             | error propagates; `isSymbolicLink` not called                                                               |
+| Custom `isSymbolicLink` throws after `exists` true | error propagates                                                                                            |
+| `nodeFileSystem.exists` I/O error                  | caught inside `exists`, returns false → `invalid_root`                                                      |
+| `nodeFileSystem.isSymbolicLink` I/O error          | caught inside `isSymbolicLink`, returns false → path accepted if `exists` was true                          |
 
 #### `timelineProject`
 
-1. `const root = await assertCanonicalProjectRoot(options.root)` — always the
-   default `nodeFileSystem`; callers cannot pass a custom `FileSystem` through
+1. `assertCanonicalProjectRoot(options.root)` with the **default**
+   `nodeFileSystem`. Callers cannot pass a custom filesystem through
    `timelineProject`.
-2. `collectGitEvidence` from `@intentloom/evidence-git` with:
-   - `root` set to the validated root;
-   - optional `limit`, `timeoutMs`, `maxOutputBytes`, and `run` copied only when
-     `!== undefined` (omitted properties stay omitted).
-3. Return object:
-   - `root` from validation;
-   - spread `createReleaseTimeline(options.caseId, evidence)`;
-   - `diagnostics: [...evidence.diagnostics]` (shallow copy of the diagnostics
-     array).
+2. `collectGitEvidence` with `root` set to the validated path. `limit`,
+   `timeoutMs`, `maxOutputBytes`, and `run` are copied only when
+   `!== undefined`.
+3. Return `{ root, ...createReleaseTimeline(options.caseId, evidence), diagnostics: [...evidence.diagnostics] }`.
 
-**Git evidence failures:** `collectGitEvidence` catches runner failures and
-returns `status: "unavailable"` with `diagnostics: ["git-unavailable"]` — it does
-not throw. `createReleaseTimeline` maps status to `quality`, sorts events by
-timestamp then commit id, and sets findings for bounded/unavailable cases.
-`timelineProject` does not add writes or mutations under `root`.
+**Evidence-git (verified in `packages/evidence-git/src/index.ts`):**
 
-#### CLI timeline divergence
+- Defaults inside `collectGitEvidence` when a property is omitted: limit 50
+  (clamped 1–500), timeout 5000 ms (clamped 100–30000), max output 512 KiB
+  (clamped 4096–4 MiB), `run` defaults to the built-in git runner.
+- The `try` wraps the runner call and stdout parsing. A throw **inside that
+  try** returns `status: "unavailable"` and `diagnostics: ["git-unavailable"]`.
+  That is not a claim that every failure outside that `try` becomes
+  unavailable evidence.
+- `limit-reached` sets `diagnostics: ["commit-limit-reached"]` and
+  `createReleaseTimeline` maps that to `quality: "bounded"` and finding
+  `evidence-bounded`. `available` maps to `quality: "complete"` and empty
+  findings. `unavailable` maps to `quality: "unavailable"` and finding
+  `evidence-unavailable`.
+- Events are commits sorted by timestamp, then commit id.
+- A `GitRunner` observes `file`, `args`, `{ cwd, timeout, maxBuffer }`. It
+  does **not** show whether optional properties were present on the object
+  `timelineProject` passed to `collectGitEvidence`. Exact omission needs a
+  test-level module mock of `@intentloom/evidence-git` (or an equivalent
+  existing seam). Do not add a production injection callback.
 
-`packages/cli/src/timeline-command.ts` calls `collectGitEvidence` and
-`createReleaseTimeline` **directly** — it does **not** call
-`assertCanonicalProjectRoot` or `timelineProject`. P1K.10 does not retarget that
-command. Characterization should record both paths: library timeline vs CLI
-timeline.
+`timelineProject` does not write under `root`.
+
+#### Two timeline entry points (different root checks)
+
+- **Library and daemon RPC** (`packages/daemon/src/bin.ts`) call
+  `timelineProject`, which runs `assertCanonicalProjectRoot` first.
+- **Standalone CLI** (`packages/cli/src/timeline-command.ts`) calls
+  `collectGitEvidence` and `createReleaseTimeline` directly. It does **not**
+  call `assertCanonicalProjectRoot`. P1K.10 does not retarget the CLI.
+  These paths do **not** share root-validation semantics.
+
+Daemon JSON-RPC handlers that call `assertCanonicalProjectRoot` may throw
+`ProjectRootError` for a relative path **before** the application function,
+with message `project root must be an absolute path`. That is a handler
+pre-check, not `DaemonRootError`, and not `collectGitEvidence`.
+`packages/daemon/src/daemon-canonical-root.ts` uses `DaemonRootError` and
+`realpath` (section 25.9). Do not conflate those three error sites.
 
 ### 25.3 Proposed module ownership
 
 Target: `packages/application/src/project-lifecycle/project-root.ts`.
 
-Rationale: the directory already owns project lifecycle operations
-(`doctorProject`, `inspectProject`, `syncProject`, and others). Root validation
-and release timeline composition are project-boundary concerns adjacent to those
-flows. No new `project-lifecycle/index.ts` barrel. No new `package.json` export
-map entries.
+The directory already owns project lifecycle operations. No
+`project-lifecycle/index.ts`. No new `package.json` exports.
 
 ### 25.4 Public contracts
 
-All five declarations remain exported from `@intentloom/application` with
-unchanged names and signatures:
+All five names stay on `@intentloom/application` with the same signatures.
+Re-exports preserve class and function identity. `ProjectRootError` must keep
+working for `instanceof` in `specialized-pack-external-apply.ts`.
 
-- `ProjectRootError` class identity must remain stable for `instanceof` checks
-  (today in `specialized-pack-external-apply.ts`).
-- `assertCanonicalProjectRoot(root, fs?)` arity and default `nodeFileSystem`
-  preserved.
-- `ProjectTimelineOptions` and `ProjectTimeline` unchanged.
-- `timelineProject(options)` unchanged.
-
-Protocol types `ProjectTimelineParams`, `ProjectTimelineResult`, and daemon JSON
-mapping stay in `@intentloom/protocol` and daemon handlers — out of scope.
+Protocol `ProjectTimelineParams` / `ProjectTimelineResult` stay in
+`@intentloom/protocol`.
 
 ### 25.5 Dependency direction
 
 ```mermaid
 flowchart TB
-  cli_daemon["CLI bin / daemon bin timeline RPC"]
-  desktop["Desktop daemon client"]
+  cli_timeline["CLI timeline-command.ts"]
+  daemon_rpc["daemon bin.ts timeline RPC"]
+  desktop["Desktop client"]
+  protocol["protocol ProjectTimeline RPC"]
   neutron["neutron-tool-dispatch.ts"]
   workspace["getInteractiveWorkspaceState"]
   eq_apply["specialized-pack-external-apply.ts"]
-  eq_daemon["daemon quality / specialized-pack handlers"]
-  barrel["index.ts re-exports"]
+  eq_daemon["daemon quality and specialized-pack handlers"]
+  barrel["index.ts re-exports plus local binding"]
   leaf["project-lifecycle/project-root.ts"]
-  fs["host-file-system FileSystem"]
+  fs["../host-file-system.js"]
   evidence["@intentloom/evidence-git"]
   path["node:path resolve"]
-  daemon_root["daemon-canonical-root.ts separate"]
+  daemon_root["daemon-canonical-root.ts DaemonRootError"]
 
-  cli_daemon --> barrel
-  desktop --> barrel
+  desktop --> protocol
+  protocol --> daemon_rpc
+  daemon_rpc --> barrel
   neutron --> barrel
   workspace --> barrel
   eq_apply --> barrel
   eq_daemon --> barrel
+  eq_daemon --> daemon_root
   barrel --> leaf
   leaf --> fs
   leaf --> evidence
   leaf --> path
-  eq_daemon --> daemon_root
-  cli_daemon -.->|"timeline CLI bypasses timelineProject"| evidence
+  cli_timeline --> evidence
 ```
 
 Source: `project-root-timeline-dependencies.mmd`.
 
+Desktop reaches timeline data through the daemon and protocol. It does not
+import `@intentloom/application` for this flow. The CLI timeline edge is a
+**source import of evidence-git**, not the same runtime path as daemon RPC.
+Edges into the barrel are **source imports**. Re-exports are not extra runtime
+wrapper calls.
+
 Allowed leaf imports:
 
 - `node:path` (`resolve`)
-- `./host-file-system.js` (`FileSystem`, `nodeFileSystem`)
+- `../host-file-system.js` (`FileSystem`, `nodeFileSystem`)
 - `@intentloom/evidence-git` (`collectGitEvidence`, `createReleaseTimeline`,
-  `GitRunner` type)
+  type `GitRunner`, type `ReleaseTimeline`)
 
-Forbidden leaf imports:
+Forbidden leaf imports: `../index.js`, `@intentloom/application`, daemon
+internals, Engineering Quality modules, Neutron, Approved Apply.
 
-- `../index.js` or any `@intentloom/application` self-import
-- Daemon internals
-- Engineering Quality implementation modules (including
-  `specialized-pack-external-apply.ts`)
-- Neutron or Approved Apply modules
-
-`specialized-pack-external-apply.ts` continues to import
-`assertCanonicalProjectRoot` and `ProjectRootError` from `../index.js` until
-**P1K.15**. Do not retarget in P1K.10.
+`specialized-pack-external-apply.ts` keeps `from "../index.js"` until
+**P1K.15**.
 
 ### 25.6 Consumer analysis
 
-| Consumer                                                                          | Import path                            | Symbols                                          | Notes                                                                                  |
-| --------------------------------------------------------------------------------- | -------------------------------------- | ------------------------------------------------ | -------------------------------------------------------------------------------------- |
-| `packages/daemon/src/bin.ts`                                                      | `@intentloom/application`              | `timelineProject`                                | RPC timeline handler forwards optional limit/timeout/maxOutputBytes                    |
-| `packages/daemon/src/engineering-quality-handlers.ts`                             | `@intentloom/application`              | `assertCanonicalProjectRoot`, `ProjectRootError` | Pre-checks absolute path, then application root validation                             |
-| `packages/daemon/src/specialized-pack-handlers.ts`                                | same                                   | same                                             | same pattern                                                                           |
-| `packages/daemon/src/specialized-pack-external-handlers.ts`                       | same                                   | same                                             | same pattern                                                                           |
-| `packages/application/src/engineering-quality/specialized-pack-external-apply.ts` | `../index.js`                          | `assertCanonicalProjectRoot`, `ProjectRootError` | `instanceof ProjectRootError` maps codes to diagnostics — **defer retarget to P1K.15** |
-| `packages/application/src/neutron/tools/neutron-tool-dispatch.ts`                 | `../../index.js`                       | `timelineProject`                                | Internal barrel import; passes optional `run`, `limit`                                 |
-| `packages/application/src/index.ts` (`getInteractiveWorkspaceState`)              | local                                  | `timelineProject`                                | Passed as port into read-model assembler                                               |
-| `packages/application/src/workspace/interactive-workspace-read-model.ts`          | port type only                         | `timelineProject` shape                          | Receives injected function                                                             |
-| `tests/project-timeline.test.ts`                                                  | `../packages/application/src/index.js` | `timelineProject`                                | GitRunner stub; read-only assertion                                                    |
-| Desktop / protocol clients                                                        | daemon + protocol                      | `ProjectTimelineResult`                          | No direct application import                                                           |
+| Consumer                                                    | Import                     | Symbols                                          | Notes                                           |
+| ----------------------------------------------------------- | -------------------------- | ------------------------------------------------ | ----------------------------------------------- |
+| `packages/daemon/src/bin.ts`                                | `@intentloom/application`  | `timelineProject`                                | RPC; forwards limit, timeoutMs, maxOutputBytes  |
+| `packages/daemon/src/engineering-quality-handlers.ts`       | `@intentloom/application`  | `assertCanonicalProjectRoot`, `ProjectRootError` | Absolute-path pre-check, then application check |
+| `packages/daemon/src/specialized-pack-handlers.ts`          | same                       | same                                             | same pattern                                    |
+| `packages/daemon/src/specialized-pack-external-handlers.ts` | same                       | same                                             | same pattern                                    |
+| `specialized-pack-external-apply.ts`                        | `../index.js`              | both                                             | `instanceof`; retarget deferred to P1K.15       |
+| `neutron-tool-dispatch.ts`                                  | `../../index.js`           | `timelineProject`                                | optional `run`, `limit`                         |
+| `index.ts` `getInteractiveWorkspaceState`                   | local binding              | `timelineProject`                                | port into the read model                        |
+| `interactive-workspace-read-model.ts`                       | injected port              | shape only                                       | no direct import of the function                |
+| `packages/cli/src/timeline-command.ts`                      | `@intentloom/evidence-git` | collect + create                                 | **no** application root check                   |
+| Desktop timeline UI                                         | daemon client + protocol   | `ProjectTimelineResult`                          | no application barrel import                    |
+| `tests/project-timeline.test.ts`                            | application `index.js`     | `timelineProject`                                | stub `run`                                      |
 
-No production consumer retarget during this design task.
+No production consumer retarget in the design task.
 
 ### 25.7 Error and failure matrix
 
-| Condition                              | `assertCanonicalProjectRoot`           | `timelineProject`                                                             | `collectGitEvidence`                                                                |
-| -------------------------------------- | -------------------------------------- | ----------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
-| Missing path                           | `ProjectRootError` `invalid_root`      | Same (before Git)                                                             | Not reached                                                                         |
-| Direct symlink root                    | `ProjectRootError` `stale_root`        | Same (before Git)                                                             | Not reached                                                                         |
-| Existing regular file root             | Returns resolved path                  | Proceeds to Git                                                               | Uses `cwd: root` in runner                                                          |
-| Existing directory root                | Returns resolved path                  | Proceeds                                                                      | Normal                                                                              |
-| `exists` I/O error (`nodeFileSystem`)  | Treated as missing → `invalid_root`    | Same                                                                          | Not reached                                                                         |
-| `isSymbolicLink` I/O error             | Treated as not symlink                 | May proceed                                                                   | —                                                                                   |
-| Git runner throws                      | —                                      | Returns timeline with `quality: "unavailable"`, diagnostics `git-unavailable` | Caught internally                                                                   |
-| Git limit reached                      | —                                      | `quality: "bounded"`, finding `evidence-bounded`                              | `diagnostics: ["commit-limit-reached"]`                                             |
-| Custom `fs` denies root                | `invalid_root` or `stale_root` per spy | N/A (always `nodeFileSystem`)                                                 | —                                                                                   |
-| Daemon relative root without abs check | —                                      | —                                                                             | Daemon throws `ProjectRootError` with **different message** before application call |
+| Condition                                    | `assertCanonicalProjectRoot`                                 | `timelineProject`                                               | `collectGitEvidence`              |
+| -------------------------------------------- | ------------------------------------------------------------ | --------------------------------------------------------------- | --------------------------------- |
+| Missing root                                 | `invalid_root` after `exists` false; **no** `isSymbolicLink` | same, before Git                                                | not called                        |
+| Dangling symlink (`nodeFileSystem`)          | `exists` false → `invalid_root`                              | same                                                            | not called                        |
+| Direct symlink to an existing target         | `stale_root`                                                 | same                                                            | not called                        |
+| Existing directory or regular file           | returns `resolve` result                                     | proceeds                                                        | runner `cwd` is that path         |
+| Parent symlink, leaf not a symlink           | returns lexical path                                         | proceeds                                                        | runner `cwd` is that path         |
+| Relative path                                | `resolve` against cwd, then the checks                       | same                                                            | not called if validation throws   |
+| Custom `exists` throws                       | propagates                                                   | propagates                                                      | not called                        |
+| Custom `isSymbolicLink` throws               | propagates after `exists` true                               | propagates                                                      | not called                        |
+| `nodeFileSystem.exists` swallows I/O         | false → `invalid_root`                                       | same                                                            | not called                        |
+| `nodeFileSystem.isSymbolicLink` swallows I/O | false → accept if exists                                     | may proceed                                                     | may run                           |
+| Runner or parse throw inside evidence `try`  | —                                                            | `quality: "unavailable"`, diagnostics include `git-unavailable` | caught in that `try` only         |
+| Commit limit reached                         | —                                                            | `quality: "bounded"`, finding `evidence-bounded`                | diagnostic `commit-limit-reached` |
+| Evidence `available`                         | —                                                            | `quality: "complete"`                                           | empty diagnostics                 |
 
-Daemon-only messages (`project root must be an absolute path`, directory
-validation, `realpath` failures) stay on `DaemonRootError` / daemon pre-checks,
-not in this slice.
+Daemon handler absolute-path failures and `DaemonRootError` are **not**
+`collectGitEvidence` outcomes. See section 25.2 and 25.9.
 
 ### 25.8 Filesystem and Git evidence flows
 
 ```mermaid
 sequenceDiagram
   participant Caller
-  participant Barrel as index.ts
   participant Leaf as project-root.ts
   participant FS as FileSystem
   participant Git as evidence-git
 
-  Caller->>Barrel: timelineProject(options)
-  Barrel->>Leaf: timelineProject(options)
-  Leaf->>Leaf: assertCanonicalProjectRoot(root)
-  Leaf->>FS: exists(resolve(root))
-  alt missing path
-    FS-->>Leaf: false
+  Caller->>Leaf: timelineProject(options)
+  Leaf->>Leaf: resolve(root)
+  Leaf->>FS: exists(resolved)
+  FS-->>Leaf: exists result
+  alt exists is false
     Leaf-->>Caller: ProjectRootError invalid_root
-  else direct symlink root
-    FS-->>Leaf: isSymbolicLink true
-    Leaf-->>Caller: ProjectRootError stale_root
-  else root accepted
-    FS-->>Leaf: ok
-    Leaf->>Git: collectGitEvidence(optional fields)
-    Git-->>Leaf: GitEvidenceResult
-    Leaf->>Git: createReleaseTimeline(caseId, evidence)
-    Git-->>Leaf: ReleaseTimeline
-    Leaf-->>Caller: ProjectTimeline with diagnostics copy
+  else exists is true
+    Leaf->>FS: isSymbolicLink(resolved)
+    FS-->>Leaf: symlink result
+    alt isSymbolicLink is true
+      Leaf-->>Caller: ProjectRootError stale_root
+    else path accepted
+      Leaf->>Git: collectGitEvidence
+      Git-->>Leaf: GitEvidenceResult
+      Leaf->>Git: createReleaseTimeline(caseId, evidence)
+      Git-->>Leaf: ReleaseTimeline
+      Leaf-->>Caller: ProjectTimeline diagnostics copy
+    end
   end
 ```
 
 Source: `project-root-timeline-sequence.mmd`.
 
-Call ordering for root validation: **`exists` then `isSymbolicLink`** on the
-same resolved path. No `realpath`, `mkdir`, or directory reads.
+The public `timelineProject` **is** the leaf function after a re-export. The
+diagram does not insert a barrel wrapper hop. Git runs only after validation
+returns. No `realpath`, directory check, or extra filesystem calls.
 
 ### 25.9 Daemon canonical root boundary (do not merge)
 
-`packages/daemon/src/daemon-canonical-root.ts` implements `canonicalProjectRoot`
-and `DaemonRootError`. Differences from application `assertCanonicalProjectRoot`:
-
-| Check                  | Application         | Daemon `canonicalProjectRoot`  |
-| ---------------------- | ------------------- | ------------------------------ |
-| Absolute path required | No                  | Yes (`invalid_root`)           |
-| Exists                 | `fs.exists`         | `lstat` catch → `invalid_root` |
-| Symlink root           | `fs.isSymbolicLink` | `metadata.isSymbolicLink()`    |
-| Directory required     | No                  | Yes (`invalid_root`)           |
-| Resolution             | `path.resolve` only | `realpath` after checks        |
-
-Consolidation is a **separate design decision**. P1K.10 must not replace
-`DaemonRootError` with `ProjectRootError`, change root locking, or alter daemon
-error mapping.
+`canonicalProjectRoot` in `daemon-canonical-root.ts` requires an absolute path,
+`lstat`, a real directory, symlink rejection, and `realpath`. It throws
+`DaemonRootError`. Application `assertCanonicalProjectRoot` does none of the
+absolute, directory, or `realpath` steps. Do not merge the implementations or
+replace `DaemonRootError` with `ProjectRootError`.
 
 ### 25.10 Security and trust boundaries
 
-- Root validation is a **host filesystem trust** gate before bounded Git read
-  evidence (`trust: "local-observed-unverified"`).
-- Preserving symlink rejection avoids binding operations to an unstable root
-  alias; this is not a substitute for path traversal controls elsewhere (`inside`,
-  declared-path sync).
-- No new authorization, network, or telemetry surfaces.
-- Engineering Quality external apply uses root validation before lock writes;
-  behavior preservation is security-relevant — **no semantic hardening** in this
-  refactor.
+Root validation is a host filesystem gate before read-only git evidence
+(`trust: "local-observed-unverified"`). Preserving the current symlink check
+is not a new authorization control and is not a claim of complete assurance.
+No new network or telemetry. Accessibility, product discovery, and AI
+evaluation are **NOT APPLICABLE**.
 
-Accessibility, product discovery, and AI evaluation: **NOT APPLICABLE** (no
-user-facing interface or model contract changes).
+### 25.11 Alternatives, planning, and RAID
 
-### 25.11 Alternatives and trade-offs
+| Alternative                                          | Decision                                |
+| ---------------------------------------------------- | --------------------------------------- |
+| Leave the symbols on `index.ts`                      | Rejected                                |
+| Split timeline into a second file                    | Rejected for this slice                 |
+| `project-lifecycle` directory barrel                 | Rejected                                |
+| Realpath or directory hardening                      | Rejected for P1K.10                     |
+| Retarget Engineering Quality imports now             | Rejected; P1K.15                        |
+| Merge daemon and application root checks             | Rejected                                |
+| Fix the Windows durable-claim observation in this PR | Rejected; out of scope (see Duty Watch) |
 
-| Alternative                                   | Outcome                       | Decision                       |
-| --------------------------------------------- | ----------------------------- | ------------------------------ |
-| Keep root/timeline on `index.ts`              | No decomposition progress     | Rejected                       |
-| New `project-timeline.ts` sibling file        | Splits root from timeline     | Rejected; single cohesive leaf |
-| `project-lifecycle/` directory barrel         | Extra public surface          | Rejected                       |
-| Realpath hardening in application root check  | Behavior change               | Rejected for P1K.10            |
-| Retarget EQ import in P1K.10                  | SCC churn before P1K.15 plan  | Rejected; defer                |
-| Merge daemon and application canonicalization | Cross-package behavior change | Rejected; section 25.9         |
+**SWOT:** Strengths — one leaf, public re-exports, existing timeline test.
+Weaknesses — CLI bypasses root validation; sparse root tests; Windows claim
+observation recorded but not fixed here. Opportunities — Stage A before the
+move. Threats — class-identity break if wrappers are introduced; scope drift
+into Neutron.
 
-**SWOT (proportional):** Strengths — bounded move, existing tests, clear leaf
-owner. Weaknesses — thin root semantics vs daemon, CLI bypass path, sparse
-root-specific tests today. Opportunities — characterization before move, leaves
-room for P1K.13 composition deps on timeline leaf. Threats — `instanceof` drift
-if re-export wiring breaks class identity (mitigate with Stage B assertions).
+**RACI:** Responsible — design author; Accountable — Project Owner; Consulted —
+independent reviewer; Informed — Duty Watch readers.
 
-**RACI:** Responsible — implementation agent; Accountable — Project Owner;
-Consulted — independent reviewer; Informed — maintainers via Duty Watch.
+**RAID:**
 
-**RAID:** Risk — Design First sequence repeat (implementation before matrix);
-mitigate with Stage A before move. Assumption — evidence-git contracts unchanged.
-Issue — P1K.9 section **24.10** owner matrix still not recorded at merge
-(process exception; owner reconciliation). Dependency — P1K.9 merged on `main`.
+- Risk — repeating the P1K.9 sequence (implementation before owner matrix).
+  Mitigation — section 25.13 order; Stage A only after design merge and a
+  separate implementation authorization.
+- Risk — commit `2633821` changed Neutron production code inside a
+  documentation PR. Mitigation — that file is restored to `main` in the
+  corrective commit; the Windows observation is recorded in `DUTY_WATCH.md`
+  and is not authorized for implementation here.
+- Assumption — evidence-git defaults and catch scope stay as read on `8007163`.
+- Issue — P1K.9 section 24.10 owner matrix was not recorded when PR #643
+  merged. Historical exception stands. It does not approve section 25.17.
+- Dependency — P1K.9 is on `main` at `8007163`.
 
-Planning estimates (original design-only guidance, not measured this pass):
+**Design First estimates** (not measured wall-clock for this correction pass):
 
-| Measure             | Estimate                                        |
-| ------------------- | ----------------------------------------------- |
-| Human active effort | 3–10 minutes (owner matrix review)              |
-| AI agent execution  | 40–75 minutes (implementation, when authorized) |
-| Calendar duration   | 1–2 hours (review turnaround)                   |
+| Measure                   | Estimate      |
+| ------------------------- | ------------- |
+| Human active effort       | 3–10 minutes  |
+| AI agent execution effort | 40–75 minutes |
+| Calendar duration         | 1–2 hours     |
 
-Observed for **this Design PR pass:** wall time not instrumented; local
-verification commands recorded in the pull request.
+This correction pass does not invent an observed duration.
+
+**Main verification at `8007163` (current, not historical pending):**
+
+| Workflow      | Run         | Result  |
+| ------------- | ----------- | ------- |
+| CodeQL        | 46138992949 | success |
+| Compatibility | 46138992983 | success |
+| Documentation | 46138992947 | success |
 
 ### 25.12 Test strategy
 
-**Existing coverage to preserve**
+No new tests in this Design PR.
 
-| File                                       | Relevance                                     |
-| ------------------------------------------ | --------------------------------------------- |
-| `tests/project-timeline.test.ts`           | `timelineProject` happy path with stub `run`  |
-| `tests/cli-timeline.test.ts`               | CLI path without `assertCanonicalProjectRoot` |
-| `tests/daemon-canonical-root.test.ts`      | Daemon-only canonicalization                  |
-| `tests/daemon.test.ts`                     | Timeline RPC dispatch                         |
-| `tests/daemon-engineering-quality.test.ts` | Root validation entry                         |
-| `tests/evidence-git.test.ts`               | Evidence and timeline shaping                 |
-| `tests/workspace-read-model-p1h7.test.ts`  | Injected `timelineProject` port               |
-| Architecture / P1K structure tests         | SCC and barrel metrics after slice            |
+**Existing coverage:** `tests/project-timeline.test.ts`,
+`tests/cli-timeline.test.ts` (CLI path without application root check),
+`tests/daemon-canonical-root.test.ts`, `tests/daemon.test.ts`,
+`tests/daemon-engineering-quality.test.ts`, `tests/evidence-git.test.ts`,
+`tests/workspace-read-model-p1h7.test.ts`, architecture structure tests.
 
-#### Stage A — Characterization before extraction
+#### Stage A — public API, before extraction
 
-Add `tests/project-root-timeline-p1k10-characterization.test.ts` (name per
-repository convention) using public API and existing seams:
+- Missing root: `invalid_root`, and the test filesystem shows **`exists` only**
+  (`isSymbolicLink` not called).
+- Existing root: `exists` then `isSymbolicLink`, same path argument, same
+  filesystem object identity where the spy can see it.
+- Custom filesystem throws from `exists` and from `isSymbolicLink` propagate.
+- Dangling symlink vs direct symlink (portable fixture; skip with a stated
+  reason only where the platform cannot create the link).
+- Relative root via a path argument `resolve` can see **without** changing
+  `process.cwd` when a lexical expectation can be stated from `resolve` itself.
+- Regular file accepted; directory accepted; parent-symlink leaf documented.
+- `nodeFileSystem` swallow vs custom throw, as in section 25.2.
+- Exact `ProjectRootError` name, message, `clientErrorCode`, and `instanceof`.
+- `timelineProject` does not call `GitRunner` when root validation throws.
+- Evidence defaults and explicit limit/timeout/maxBuffer visible on `GitRunner`.
+- Exact property omission of the object passed to `collectGitEvidence` via a
+  **test-level** module mock, not a new production callback.
+- Complete, bounded, and unavailable timeline output; event order; diagnostics
+  copy; read-only directory listing.
+- CLI and daemon compatibility: CLI still skips `assertCanonicalProjectRoot`;
+  daemon RPC still uses `timelineProject`.
 
-- Missing root → `invalid_root` message and code; call order `exists` then
-  `isSymbolicLink` (instrumented `FileSystem` or memory FS).
-- Direct symlink root → `stale_root` (platform-permitting temp symlink).
-- Relative root resolution against cwd (spy on `resolve` inputs or controlled
-  cwd).
-- Existing regular **file** as root (documents current acceptance).
-- Directory root success.
-- Symlink parent with non-symlink leaf (document `resolve` behavior).
-- `exists` / `isSymbolicLink` error propagation vs swallowed behavior on
-  `nodeFileSystem`.
-- Default `nodeFileSystem` when `fs` omitted.
-- `timelineProject`: root failure before `run` invoked (spy GitRunner).
-- Optional argument omission when `limit` / `timeoutMs` / `maxOutputBytes` /
-  `run` undefined.
-- Event ordering, `caseId`, diagnostics copy, read-only directory listing.
-- Daemon/CLI compatibility unchanged (no CLI retarget in P1K.10).
+#### Stage B — after extraction
 
-No new production test hooks. Use isolated temp dirs and existing doubles.
+- One implementation of each moved declaration.
+- Barrel re-export identity equals the leaf (`ProjectRootError`,
+  `assertCanonicalProjectRoot`, `timelineProject`).
+- Public types still exported.
+- No leaf import of `index.js`.
+- No new package exports or wrappers.
+- SCC sets stay `[3]` and `[4, 27, 3]`.
+- `measureProductionSource` recorded from the implementation tree.
+- `quality-exceptions.json` unchanged.
+- Local `timelineProject` binding still passed by `getInteractiveWorkspaceState`.
 
-#### Stage B — After extraction
+### 25.13 Mandatory sequence
 
-Add structure test module (pattern from P1K.9):
+1. Proposed system design (this section).
+2. Independent design review.
+3. Explicit Project Owner acceptance of section **25.17** on this Design PR
+   or another genuine dated approval source. Do not backdate it.
+4. Owner merges the Design PR.
+5. Main verification of that merge.
+6. Separate implementation authorization that **references** the existing
+   approval. The implementation PR does not collect the initial design approval.
+7. Stage A characterization tests.
+8. Production extraction.
+9. Stage B architecture tests.
+10. Independent implementation review.
 
-- Single implementation location for each moved declaration.
-- Barrel re-exports without bodies beyond import/export glue.
-- Leaf does not import `index.js`.
-- `instanceof ProjectRootError` across barrel and leaf re-export.
-- SCC member sets unchanged: import-only `[3]`, re-export `[4, 27, 3]`.
-- `measureProductionSource` on leaf and updated `index.ts` (forecast ~742
-  effective, not asserted as exact until measured).
-- No new package exports; `quality-exceptions.json` unchanged.
-
-### 25.13 Implementation sequence
-
-1. Owner approves section **25.17** matrix on the Design PR.
-2. Implementation branch: Stage A characterization tests on `main` behavior
-   (public API).
-3. Create `project-lifecycle/project-root.ts`; move bodies unchanged.
-4. Replace barrel definitions with re-exports; keep `timelineProject` reference
-   in `getInteractiveWorkspaceState` composition.
-5. Stage B structure tests and update P1K structure expected `index.ts` sizes.
-6. Run full `pnpm verify`; record SCC and metrics in PR and Duty Watch.
-
-Do not start P1K.11–P1K.17, P1K.13 composition moves, EQ import retarget, or
-Neutron edits in the same implementation PR.
+Do not start P1K.11 or later, Engineering Quality retarget, or Neutron edits
+in the implementation PR.
 
 ### 25.14 Architecture metrics
 
-| Metric               | Observed @ `8007163` | Post-P1K.10 forecast          |
-| -------------------- | -------------------- | ----------------------------- |
-| `index.ts` effective | 793                  | ~742 (central); table row 718 |
-| `index.ts` physical  | 831                  | re-measure                    |
-| Moved block          | 56 effective         | becomes leaf + ~5 glue        |
-| Import-only SCC      | `[3]`                | unchanged                     |
-| Re-export SCC        | `[4, 27, 3]`         | unchanged                     |
+| Metric               | Observed @ `8007163` | Forecast after P1K.10            |
+| -------------------- | -------------------- | -------------------------------- |
+| `index.ts` effective | 793                  | about 742 central; table row 718 |
+| `index.ts` physical  | 831                  | re-measure                       |
+| Moved block          | 56 effective         | leaf plus re-export glue         |
+| Import-only SCC      | `[3]`                | unchanged                        |
+| Re-export SCC        | `[4, 27, 3]`         | unchanged                        |
 
-Leaf must remain **outside** all cyclic components. Do not edit
-`quality-exceptions.json` in P1K.10.
+The leaf stays outside those components. Do not edit `quality-exceptions.json`.
 
-### 25.15 Definition of Done (implementation, when authorized)
+### 25.15 Definition of Done (implementation, only after section 25.13 steps 1–6)
 
-- [ ] Section 25.17 matrix accepted by Project Owner on the implementation PR
-- [ ] Stage A and Stage B tests green
+- [ ] Implementation PR links the dated section 25.17 approval
+- [ ] Stage A landed before the production move
+- [ ] Stage B green
 - [ ] `pnpm verify` PASS
-- [ ] Observed `measureProductionSource` and SCC recorded (not forecast)
+- [ ] Measured lines and SCC recorded
 - [ ] `PROJECT_STATE.md` and `DUTY_WATCH.md` updated
-- [ ] No consumer retarget beyond barrel re-export wiring
-- [ ] Daemon canonical root file untouched
+- [ ] No consumer retarget beyond re-exports and the local timeline binding
+- [ ] `daemon-canonical-root.ts` untouched
 
 ### 25.16 Non-goals
 
-P1K.11 and later slices, CLI timeline retarget, daemon canonicalization merge,
-realpath/directory hardening on application root, EQ barrel import retarget
-(P1K.15), new package exports, protocol changes, Undo U4/U5, Neutron behavior
-changes, evidence-git changes, and CI quality-exception edits.
+P1K.11 and later, CLI timeline retarget, merging daemon canonicalization,
+realpath or directory hardening, Engineering Quality import retarget,
+package export changes, protocol changes, Undo U4/U5, Neutron behavior
+changes, evidence-git changes, and quality-exception edits.
+
+The Windows Node 24 observation on
+`lets only one concurrent caller own the shared durable directory` is recorded
+in `DUTY_WATCH.md`. This design does not authorize a Neutron fix.
 
 ### 25.17 Design First acceptance matrix
 
-Implementation starts only after a maintainer checks every row. Record acceptance
-on the **implementation** pull request and in `DUTY_WATCH.md` — not backdated.
+All rows stay **proposed** until the Project Owner accepts them on this Design
+PR (or another genuine dated source) **before** merge. The implementation PR
+cites that record. It does not replace it.
 
-| #   | Maintainer confirms                                                               | Required |
-| --- | --------------------------------------------------------------------------------- | -------- |
-| 1   | Section 25 matches code on `8007163`                                              | yes      |
-| 2   | Root-check semantics (`exists` then `isSymbolicLink`, messages, codes) preserved  | yes      |
-| 3   | `timelineProject` Git forwarding and diagnostics behavior preserved               | yes      |
-| 4   | Public class, function, and type compatibility at `@intentloom/application`       | yes      |
-| 5   | `ProjectRootError` identity and `instanceof` consumers remain valid               | yes      |
-| 6   | Daemon `daemon-canonical-root.ts` stays separate; no merge in this slice          | yes      |
-| 7   | EQ `specialized-pack-external-apply.ts` barrel import retarget deferred to P1K.15 | yes      |
-| 8   | Approved module path and dependency direction (section 25.5)                      | yes      |
-| 9   | Leaf stays outside SCC sets `[3]` and `[4, 27, 3]`                                | yes      |
-| 10  | Stage A characterization tests land before production extraction                  | yes      |
+| #   | Maintainer confirms                                                   | Required |
+| --- | --------------------------------------------------------------------- | -------- |
+| 1   | Section 25 matches code on `8007163`                                  | yes      |
+| 2   | Root-check order, messages, and codes in section 25.2 stay            | yes      |
+| 3   | Timeline and evidence-git behavior in section 25.2 stay               | yes      |
+| 4   | Public class, function, and type compatibility via re-export identity | yes      |
+| 5   | `ProjectRootError` identity for existing `instanceof` consumers       | yes      |
+| 6   | Daemon canonical root stays separate from application root checks     | yes      |
+| 7   | Engineering Quality barrel import stays until P1K.15                  | yes      |
+| 8   | Module path and dependency direction in section 25.5                  | yes      |
+| 9   | Leaf stays outside SCC sets `[3]` and `[4, 27, 3]`                    | yes      |
+| 10  | Stage A tests precede production extraction                           | yes      |
 
-P1K.9 process note: PR #643 merged **without** a recorded section **24.10**
-owner matrix in PR comments or reviews (0 comments at merge). That remains a
-process exception requiring owner reconciliation; it does **not** approve P1K.10
-and does not substitute for section **25.17** sign-off.
+P1K.9 PR #643 merged without a recorded section 24.10 owner matrix. That
+exception is unchanged and does not approve this matrix.
+
 Each fenced diagram in this file is the same text as its `.mmd` source.
 Mermaid is the only diagram format. Excalidraw and draw.io are not used
 because these graphs are dependency and sequence records, not sketches that

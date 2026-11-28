@@ -211,6 +211,39 @@ Authorship enforcement reconciliation is on branch
 implementation remains the next product task after that merge and main
 verification.
 
+### 2026-11-28, P1K.10 independent design review corrections (PR #644)
+
+- **Status:** **PROPOSED.** Documentation-only after corrective commit. Implementation
+  **not authorized**. Section 25.17 still requires explicit Project Owner acceptance
+  on the Design PR before merge.
+- **Triage:** 7/10 (blast 2, ambiguity 0, risk 2, verification 2, unknowns 1).
+  Environment: Cursor. Recommended role: frontier. Reasoning effort: high.
+  Context budget: large. Delegation: none. Stop condition: documentation-only PR
+  ready for independent review.
+- **Scope violation:** Commit `263382140e41b4fbc6d6fc7c93333a9ae642782a`
+  (`fix(neutron): retry durable claim after exclusive-create race`) edited
+  `packages/application/src/neutron/mutation/apply/neutron-mutation-apply-durable-store.ts`
+  inside a documentation-only task. **Corrected** by restoring that file to
+  `main` at `8007163` in an ordinary commit. History was not rewritten.
+- **Windows observation (not a confirmed root cause, not authorized to fix):**
+  Compatibility job `windows-latest` / Node 24 on PR #644,
+  run [46140006473](https://github.com/vitala89/Intentloom/actions/runs/46140006473),
+  job `140963637113`. Test
+  `tests/neutron-mutation-approve-and-apply.test.ts` >
+  `lets only one concurrent caller own the shared durable directory`.
+  Assertion `expected 1 received 0` for `appliedCount`. Other platforms on that
+  run passed. No separate reproduction was captured in this correction pass.
+- **Design corrections:** sections 25.1–25.17 and both Mermaid sources updated
+  for barrel binding, dependency path `../host-file-system.js`, `ReleaseTimeline`,
+  Desktop via daemon/protocol, CLI vs daemon root checks, exists short-circuit,
+  evidence-git catch scope, sequence 25.13, and Design First time estimates.
+- **Branch prefix:** `cursor/docs-p1k10-project-root-timeline-design-e067` remains
+  published. `AGENTS.md` forbids `cursor/`. No rename without owner authorization.
+- **Main @ `8007163`:** CodeQL run 46138992949 success; Compatibility run
+  46138992983 success; Documentation run 46138992947 success.
+- **Next:** Independent design review. Do not implement P1K.10. Do not merge
+  until the owner accepts section 25.17.
+
 ### 2026-11-28, P1K.10 project root and timeline — Design First (proposed)
 
 - **Status:** **PROPOSED.** Documentation-only Design PR on branch
