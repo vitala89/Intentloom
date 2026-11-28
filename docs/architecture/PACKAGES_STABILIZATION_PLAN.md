@@ -174,13 +174,14 @@ measure 29–122 effective lines. P1K.8 workspace conversation extraction is mer
 measures 857 effective and 903 physical lines; the conversation leaf measures
 129 effective and 142 physical lines. Import-only SCC membership remains
 `[3]`. Re-export SCC membership remains `[4, 27, 3]` with the same members.
-P1K.9 workspace proposal lifecycle extraction is in review (implementation
-branch `refactor/p1k9-workspace-proposal-lifecycle`). Design First is merged as
-PR #640; section 24.10 maintainer acceptance is requested during implementation
-review. After P1K.9, measured `index.ts` is 793 effective and 831 physical lines;
-`workspace-proposal-lifecycle.ts` is 123 effective and 135 physical lines.
+P1K.9 workspace proposal lifecycle extraction is merged (PR #643,
+`800716340e22a92240ab5d769f5e347f0363c1e4`). Design First is merged as PR #640;
+section 24.10 owner matrix sign-off was not recorded at merge (process exception).
+After P1K.9, measured `index.ts` is 793 effective and 831 physical lines;
+`workspace-proposal-lifecycle.ts` is 122 effective and 134 physical lines.
 Import-only SCC membership remains `[3]`; re-export SCC membership remains
-`[4, 27, 3]`. P1K.10 through P1K.17 have not started. Section
+`[4, 27, 3]`. P1K.10 Design First (section 25) is proposed; P1K.11 through
+P1K.17 have not started. Section
 14 is unchanged. Undo U4 and Desktop Undo U5 have not started.
 Neutron's R4A topology stays frozen.
 The measurements below remain the P1A baseline and are not restated as the

@@ -1,0 +1,25 @@
+sequenceDiagram
+  participant Caller
+  participant Barrel as index.ts
+  participant Leaf as project-root.ts
+  participant FS as FileSystem
+  participant Git as evidence-git
+
+  Caller->>Barrel: timelineProject(options)
+  Barrel->>Leaf: timelineProject(options)
+  Leaf->>Leaf: assertCanonicalProjectRoot(root)
+  Leaf->>FS: exists(resolve(root))
+  alt missing path
+    FS-->>Leaf: false
+    Leaf-->>Caller: ProjectRootError invalid_root
+  else direct symlink root
+    FS-->>Leaf: isSymbolicLink true
+    Leaf-->>Caller: ProjectRootError stale_root
+  else root accepted
+    FS-->>Leaf: ok
+    Leaf->>Git: collectGitEvidence(optional fields)
+    Git-->>Leaf: GitEvidenceResult
+    Leaf->>Git: createReleaseTimeline(caseId, evidence)
+    Git-->>Leaf: ReleaseTimeline
+    Leaf-->>Caller: ProjectTimeline with diagnostics copy
+  end

@@ -211,6 +211,42 @@ Authorship enforcement reconciliation is on branch
 implementation remains the next product task after that merge and main
 verification.
 
+### 2026-11-28, P1K.10 project root and timeline — Design First (proposed)
+
+- **Status:** **PROPOSED.** Documentation-only Design PR on branch
+  `cursor/docs-p1k10-project-root-timeline-design-e067`. Section 25 in
+  `docs/designs/p1k-remaining-application-barrel/SYSTEM_DESIGN.md`.
+  Implementation **not authorized**.
+- **Triage:** 5/10 (blast 2, ambiguity 0, risk 0, verification 2, unknowns 1).
+  Environment: Cursor Cloud Agent. Recommended role: mid. Reasoning effort: high.
+  Context budget: larger. Delegation: none. Approval: section 25.17 maintainer
+  matrix on the Design PR before implementation. Stop condition: Design PR ready
+  for independent review.
+- **Main baseline:** `800716340e22a92240ab5d769f5e347f0363c1e4` (P1K.9 PR #643
+  merge). Measured `index.ts` 793 effective / 831 physical; moved root/timeline
+  block 56 effective / 60 physical; forecast after P1K.10 ~742 effective (central).
+  Import-only SCC `[3]`; re-export SCC `[4, 27, 3]`.
+- **P1K.9 reconciliation:** PR #643 merged 2026-11-28 12:15 CET without PR
+  comments; section **24.10** owner matrix still **not recorded** (process
+  exception preserved).
+- **Main verification @ `8007163`:** CodeQL PASS; Documentation PASS;
+  Compatibility **PENDING** at handoff time (workflow run 46138992983 in progress).
+- **Diagrams:** `project-root-timeline-dependencies.mmd`,
+  `project-root-timeline-sequence.mmd` (Mermaid only; Excalidraw/draw.io not
+  applicable).
+- **Next:** Owner reviews Design PR and checks section 25.17 matrix; separate
+  task authorizes implementation with Stage A tests before extraction.
+
+### 2026-11-28, P1K.9 workspace proposal lifecycle merged (PR #643)
+
+- **Status:** **MERGED** at `800716340e22a92240ab5d769f5e347f0363c1e4`.
+- **Measurements:** `index.ts` 793 effective / 831 physical;
+  `workspace-proposal-lifecycle.ts` 122 effective / 134 physical. SCC unchanged.
+- **Section 24.10:** No owner matrix sign-off found in PR #643 comments or
+  reviews at merge; Design First sequence deviation remains; owner reconciliation
+  still required.
+- **Next:** P1K.10 Design First (this watch entry).
+
 ### 2026-11-27, P1K.9 final review closure (PR #643)
 
 - **Status:** **READY FOR OWNER MERGE** (pending section 24.10 sign-off). Branch

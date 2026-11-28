@@ -74,13 +74,13 @@ implementation PR #639, `d8c5f2c5c4c06e86bf6f04d4014bcf6e68f066db`). Measured
 with `measureProductionSource` after P1K.8, `index.ts` is 857 effective lines
 and 903 physical lines; the conversation leaf is 129 effective and 142 physical
 lines. Import-only SCC membership is `[3]`. Re-export SCC membership is
-`[4, 27, 3]`. P1K.9 workspace proposal lifecycle extraction is in review (design PR #640).
-Measured after the implementation branch extraction, `index.ts` is 793 effective
-and 831 physical lines; the proposal leaf is 123 effective and 135 physical
-lines. SCC membership remains `[3]` import-only and `[4, 27, 3]` re-export
-inclusive. Section 24.10 maintainer acceptance is recorded in the open
-implementation pull request handoff, not here. P1K.10 through P1K.17 have not
-started. P1 is not complete. Undo
+`[4, 27, 3]`. P1K.9 workspace proposal lifecycle extraction is merged (PR #643,
+`800716340e22a92240ab5d769f5e347f0363c1e4`). Measured `index.ts` is 793
+effective and 831 physical lines; the proposal leaf is 122 effective and 134
+physical lines. SCC membership remains `[3]` import-only and `[4, 27, 3]`
+re-export inclusive. Section 24.10 owner matrix sign-off was not recorded in PR
+#643 at merge (process exception). P1K.10 Design First (section 25) is proposed;
+P1K.11 through P1K.17 have not started. P1 is not complete. Undo
 U4 and Desktop Undo U5 have not started.
 
 ## How this tree is organized
