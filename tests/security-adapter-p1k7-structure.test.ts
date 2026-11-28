@@ -314,8 +314,8 @@ describe("P1K.7 security adapter structure", () => {
 
     const indexMetrics = measureProductionSource(indexSource, indexPath);
     expect(indexMetrics).toMatchObject({
-      effectiveCodeLines: 857,
-      physicalLines: 903,
+      effectiveCodeLines: 793,
+      physicalLines: 831,
     });
 
     expect(metricsByFile[securityModules[0]]).toMatchObject({

@@ -7,6 +7,10 @@ All notable changes are documented here. This project follows Keep a Changelog p
 Changes listed here are merged after the current release-preparation scope and
 are not included in the current npm artifact until a later release.
 
+- Extract workspace proposal promote, review, and apply into
+  `workspace-proposal-lifecycle.ts` with thin public barrel wrappers and an
+  internal adoption port. No public API or CLI behavior change (P1K.9, in review).
+
 - Repository engineering lifecycle, accessibility assessment, pull-request
   evidence, and release-readiness rules are documented for contributors
   (PR #641).

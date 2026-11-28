@@ -211,6 +211,87 @@ Authorship enforcement reconciliation is on branch
 implementation remains the next product task after that merge and main
 verification.
 
+### 2026-11-27, P1K.9 final review closure (PR #643)
+
+- **Status:** **READY FOR OWNER MERGE** (pending section 24.10 sign-off). Branch
+  `refactor/p1k9-workspace-proposal-lifecycle`, HEAD `c845576`. Production code
+  unchanged this pass. Not merged.
+- **Triage:** 4/10 (blast 1, ambiguity 0, risk 1, verification 2, unknowns 0).
+  Environment: Cursor. Recommended role: mid. Reasoning effort: medium. Context
+  budget: moderate. Stop condition: validated PR ready for owner merge.
+- **Section 24.10:** No PR comment, issue comment, or in-repo dated owner
+  statement accepting all eight matrix rows as of 2026-11-27 13:xx CET. Original
+  Design First sequence deviation (`cc07ad5` before matrix record) unchanged.
+  **Merge gate:** owner must record explicit eight-row acceptance on PR #643 (not
+  backdated).
+- **Corrections:** Port tests use `vi.fn` `mock.calls` length (not `tx ===
+undefined` argc); instrumented `exists`/`read` spies for review traversal before
+  FS/adoption, apply skipping stored proposal reads, blank approval skipping FS.
+- **Tests:** P1K.9 suites 29/29 PASS (`vitest run` on three files); full
+  `pnpm verify` PASS on `c845576` (397 files, 3356 tests).
+- **Next:** Owner section 24.10 matrix on PR #643, then owner merge and main
+  verification; then P1K.10.
+
+### 2026-11-27, P1K.9 independent review corrections (PR #643)
+
+- **Status:** **IN REVIEW.** Test and documentation corrections on
+  `refactor/p1k9-workspace-proposal-lifecycle`. Production extraction unchanged
+  except `SandboxEvaluationResult` type restoration on
+  `WorkspaceProposalReviewResult`. Not merged.
+- **Triage:** 6/10 (blast 1, ambiguity 0, risk 2, verification 2, unknowns 1).
+  Environment: Cursor. Recommended role: mid. Reasoning effort: high. Context
+  budget: larger. Delegation: none.
+- **Section 24.10 / Design First sequence:** Original implementation commit
+  `cc07ad5` landed **before** explicit maintainer matrix sign-off was recorded
+  in Git (**sequence deviation**). No backdated approval was fabricated.
+  Explicit eight-row owner acceptance remains **BLOCKED** until the Project
+  Owner records it on PR #643 before merge.
+- **Independent review:** Architecture and production extraction accepted;
+  corrections address sandbox assertions, adoption-port rigor, failure matrix
+  gaps, default-filesystem coverage, and structural assertions.
+- **Baseline verification:** Strengthened
+  `tests/workspace-proposal-p1k9-characterization.test.ts` (20 tests) passed on
+  detached worktree at pre-extraction commit `cc07ad5` with production bodies
+  still in `index.ts` (retrospective verification; tests did not exist in that
+  form at `cc07ad5` commit time). Current branch: 28 tests across
+  characterization, port, and structure — **PASS** locally.
+- **Measurements:** `index.ts` 793 effective / 831 physical; proposal leaf 122
+  effective / 134 physical; import-only SCC `[3]`; re-export SCC `[4, 27, 3]`.
+- **Planning (original P1K.9 estimates):** Human active effort 5–15 minutes;
+  AI execution 100–195 minutes; calendar 2–5 hours. **Observed (this correction
+  pass):** not timed end-to-end; local `pnpm verify` full suite on branch after
+  corrections — **PASS** (wall time not separately logged this pass).
+- **Not done:** owner merge, section 24.10 matrix sign-off, P1K.10+.
+- **Next:** Final independent review of PR #643; owner records section 24.10
+  acceptance before merge.
+
+### 2026-11-26, P1K.9 workspace proposal lifecycle extraction (implementation)
+
+- **Status:** **IN REVIEW.** Behavior-preserving extraction on
+  `refactor/p1k9-workspace-proposal-lifecycle`. Not merged.
+- **Triage:** 7/10 (blast 2, ambiguity 0, risk 2, verification 2, unknowns 1).
+  Environment: Cursor. Recommended role: frontier. Reasoning effort: high. Context
+  budget: large. Delegation: none. Approval: section 24.10 maintainer matrix at
+  independent review. Stop condition: validated implementation PR ready for review.
+- **Design:** Merged PR #640 section 24. No duplicate design PR. Section 24.10
+  explicit maintainer checkbox acceptance is **not recorded in-repo**; the
+  implementation follows the matrix and requests owner confirmation at review.
+- **Main baseline:** `f076e043b4331faf1c2610f450e1e6bf7437885c` (PR #642 merge).
+  CodeQL, Documentation, and Compatibility on that SHA: **PASS** (2026-11-26 ~23:07 CET).
+- **Stage A:** `tests/workspace-proposal-p1k9-characterization.test.ts` — 17 passed
+  on baseline commit `cc07ad5` before extraction body move.
+- **Stage B/C:** Leaf `workspace-proposal-lifecycle.ts`; port and structure tests
+  `tests/workspace-proposal-p1k9-port.test.ts`,
+  `tests/workspace-proposal-p1k9-structure.test.ts`.
+- **Measurements:** `index.ts` 793 effective / 831 physical (was 857 / 903);
+  proposal leaf 123 effective / 135 physical. Import-only SCC `[3]`; re-export
+  SCC `[4, 27, 3]` unchanged; leaf outside all cyclic components.
+- **Validation:** `pnpm verify` **PASS** on branch HEAD (typecheck, lint, format,
+  full test suite, build, `git diff --check`). Accessibility: NOT APPLICABLE (no UI).
+- **Not done:** owner merge, P1K.10+, Undo U4, Desktop Undo U5.
+- **Next:** Independent review of the implementation PR. After merge and green main,
+  next product slice is **P1K.10** Project Root and Timeline Extraction.
+
 ### 2026-11-26, Transparent AI authorship enforcement reconciliation
 
 - **Status:** **IN REVIEW.** Governance maintenance. Not merged. Does not authorize

@@ -1,5 +1,5 @@
 // Private project-operation layer. It must remain independent of CLI/process code.
-import { dirname, resolve } from "node:path";
+import { resolve } from "node:path";
 import type { GeneratedFile } from "@intentloom/core";
 import {
   type AcceptedException,
@@ -26,7 +26,6 @@ import { nodeFileSystem, type FileSystem } from "./host-file-system.js";
 import type { AdoptionProposal } from "./project-adoption/generated-file-adoption-contracts.js";
 import { adoptGeneratedFiles } from "./project-adoption/generated-file-adoption.js";
 import { planProjectAdoption } from "./project-adoption/governance-adoption-plan.js";
-import { inside } from "./project-path.js";
 import { ArtifactValidationFailure } from "./artifact-validation-failure.js";
 import { doctorProject } from "./project-lifecycle/doctor-project.js";
 import { inspectProject } from "./project-lifecycle/project-inspection.js";
@@ -660,8 +659,6 @@ export {
   startAgentSession,
 } from "./agent-session/agent-session.js";
 
-import { evaluateProposalAgainstSandbox } from "./security/sandbox-proposal-evaluation.js";
-
 export {
   acceptSecurityRisk,
   dismissSecurityFinding,
@@ -758,9 +755,13 @@ export {
   startWorkspaceConversation,
 };
 
-function workspaceProposalPath(root: string, proposalId: string): string {
-  return inside(root, `.aif/proposals/${proposalId}.json`);
-}
+import type { WorkspaceProposalReviewResult } from "./workspace/workspace-proposal-lifecycle.js";
+export type { WorkspaceProposalReviewResult } from "./workspace/workspace-proposal-lifecycle.js";
+import {
+  applyWorkspaceProposalOperation,
+  promoteWorkspaceConversationToProposalOperation,
+  reviewWorkspaceProposalOperation,
+} from "./workspace/workspace-proposal-lifecycle.js";
 
 export async function promoteWorkspaceConversationToProposal(
   options: {
@@ -770,42 +771,11 @@ export async function promoteWorkspaceConversationToProposal(
   },
   fs: FileSystem = nodeFileSystem,
 ): Promise<AdoptionProposal> {
-  const conv = await getWorkspaceConversation(
-    { root: options.root, conversationId: options.conversationId },
+  return promoteWorkspaceConversationToProposalOperation(
+    options,
     fs,
+    adoptProject,
   );
-  if (!conv)
-    throw new Error(
-      `Workspace conversation ${options.conversationId} not found`,
-    );
-
-  const proposalId = options.proposalId ?? `prop-${Date.now()}`;
-  const proposalData = await adoptProject(
-    {
-      root: options.root,
-      profile: "generic",
-      adapters: ["codex"],
-      dryRun: true,
-    },
-    fs,
-  );
-  const path = workspaceProposalPath(options.root, proposalId);
-
-  if (!(await fs.exists(dirname(path)))) {
-    await fs.mkdir(dirname(path));
-  }
-  await fs.write(path, `${JSON.stringify(proposalData, null, 2)}\n`);
-
-  return proposalData;
-}
-
-export interface WorkspaceProposalReviewResult {
-  readonly proposalId: string;
-  readonly schemaVersion: number;
-  readonly itemsCount: number;
-  readonly affectedPaths: readonly string[];
-  readonly sandboxEvaluation: SandboxEvaluationResult;
-  readonly readyToApply: boolean;
 }
 
 export async function reviewWorkspaceProposal(
@@ -816,37 +786,7 @@ export async function reviewWorkspaceProposal(
   },
   fs: FileSystem = nodeFileSystem,
 ): Promise<WorkspaceProposalReviewResult> {
-  const path = workspaceProposalPath(options.root, options.proposalId);
-  let proposalData: AdoptionProposal;
-  if (await fs.exists(path)) {
-    proposalData = JSON.parse(await fs.read(path));
-  } else {
-    proposalData = await adoptProject(
-      {
-        root: options.root,
-        profile: "generic",
-        adapters: ["codex"],
-        dryRun: true,
-      },
-      fs,
-    );
-  }
-
-  const affectedPaths = proposalData.items.map((i) => i.path);
-  const sandboxEval = await evaluateProposalAgainstSandbox(
-    { changes: affectedPaths.map((p) => ({ type: "modify", path: p })) },
-    { root: options.root, projectId: options.proposalId },
-    fs,
-  );
-
-  return {
-    proposalId: options.proposalId,
-    schemaVersion: 1,
-    itemsCount: proposalData.items.length,
-    affectedPaths,
-    sandboxEvaluation: sandboxEval,
-    readyToApply: sandboxEval.allowed,
-  };
+  return reviewWorkspaceProposalOperation(options, fs, adoptProject);
 }
 
 export async function applyWorkspaceProposal(
@@ -859,19 +799,7 @@ export async function applyWorkspaceProposal(
   },
   fs: FileSystem = nodeFileSystem,
 ): Promise<AdoptionProposal> {
-  if (!options.approvedBy || !options.approvedBy.trim()) {
-    throw new Error("human approval required (--approved-by USER)");
-  }
-
-  return adoptProject(
-    {
-      root: options.root,
-      profile: "generic",
-      adapters: ["codex"],
-      dryRun: options.dryRun ?? false,
-    },
-    fs,
-  );
+  return applyWorkspaceProposalOperation(options, fs, adoptProject);
 }
 
 export async function syncLocalWorkspaceState(
