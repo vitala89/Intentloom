@@ -180,8 +180,10 @@ section 24.10 owner matrix sign-off was not recorded at merge (process exception
 After P1K.9, measured `index.ts` is 793 effective and 831 physical lines;
 `workspace-proposal-lifecycle.ts` is 122 effective and 134 physical lines.
 Import-only SCC membership remains `[3]`; re-export SCC membership remains
-`[4, 27, 3]`. P1K.10 Design First (section 25) is proposed; P1K.11 through
-P1K.17 have not started. Section
+`[4, 27, 3]`. P1K.10 Design First (section 25) is merged (PR #644,
+`26dfe51e56f8b37972dd167e71c6fa55e4920f85`). Section 25.17 was accepted on
+2026-11-28 13:20 Europe/Berlin after that merge. Implementation has not
+started. P1K.11 through P1K.17 have not started. Section
 14 is unchanged. Undo U4 and Desktop Undo U5 have not started.
 Neutron's R4A topology stays frozen.
 The measurements below remain the P1A baseline and are not restated as the

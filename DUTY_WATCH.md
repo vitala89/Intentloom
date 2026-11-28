@@ -201,15 +201,59 @@ is merged** (PR #636, `dbea5baf79af002a203e62ba9609c8a67c87662c`).
 execution is merged** (PR #638,
 `4a949b0fdecf57e785ed437ace6576918a38eee6`). **P1K.8 workspace conversation extraction is merged** (PR #639,
 `d8c5f2c5c4c06e86bf6f04d4014bcf6e68f066db`). **P1K.9 Design First is merged**
-(PR #640, `84fd593bb81f2f3eff98fa6ddef0b3ae579027d1`). Section 24 still says
-status **proposed**, and section 24.10 still requires the maintainer to check
-the acceptance matrix before implementation. Do not start P1K.9 implementation
-until that check is recorded. Do not start P1K.10 through P1K.17, Undo U4, or
-Desktop Undo U5. **PR #641 is merged** (`5cde03de36879024f449e0b45fedff33a03f8c9c`).
-Authorship enforcement reconciliation is on branch
-`fix/transparent-ai-authorship` pending independent review; P1K.9
-implementation remains the next product task after that merge and main
-verification.
+(PR #640, `84fd593bb81f2f3eff98fa6ddef0b3ae579027d1`). **P1K.9 implementation
+is merged** (PR #643, `800716340e22a92240ab5d769f5e347f0363c1e4`). Section
+24.10 was not recorded on that pull request. **P1K.10 Design First is merged**
+(PR #644, `26dfe51e56f8b37972dd167e71c6fa55e4920f85`). The Project Owner
+accepted section 25.17 rows 1–10 at 2026-11-28 13:20 Europe/Berlin, after the
+merge. GitHub reviews on PR #644 were empty; the acceptance is not backdated.
+A separate P1K.10 implementation task stays unauthorized until main
+verification of `26dfe51` succeeds. Neutron changes stay unauthorized. Do not
+start P1K.11 through P1K.17, Undo U4, or Desktop Undo U5.
+
+### 2026-11-28, P1K.10 section 25.17 Project Owner acceptance
+
+- **Status:** **ACCEPTED, IMPLEMENTATION NOT RELEASED.** Documentation record
+  only. No production code. No Neutron change.
+- **Triage:** 4/10 (blast radius 1, ambiguity 0, risk 1, verification 2,
+  unknowns 0). Environment: Cursor. Recommended role: mid. Reasoning effort:
+  medium. Context budget: moderate. Delegation: none. Grilling skipped: the
+  owner accepted an existing matrix. Stop when the dated acceptance is in
+  section 25.17 and the handoff, and implementation has not started.
+- **Owner statement time:** 2026-11-28 13:20 Europe/Berlin. The statement
+  accepts all ten architectural decisions in section 25.17 and authorizes a
+  separate P1K.10 implementation task only after successful main verification.
+  It does not backdate the GitHub approval record and does not authorize
+  unrelated Neutron changes.
+- **GitHub record left unchanged:** PR #644 merged at 2026-11-28 13:15
+  Europe/Berlin (`26dfe51e56f8b37972dd167e71c6fa55e4920f85`) by the repository
+  owner. `list_pull_request_reviews` returned no reviews. The only issue
+  comment is the earlier Cursor bot note about a Neutron retry that the design
+  PR later reverted. This watch does not post a review, edit the pull request,
+  or rewrite that history.
+- **Sequence:** Section 25.13 step 3 was recorded after step 4. The dated
+  source is section 25.17 plus this entry.
+- **Main verification of `26dfe51`:**
+  - CodeQL run [46143717439](https://github.com/vitala89/Intentloom/actions/runs/46143717439): **success**.
+  - Compatibility run [46143717417](https://github.com/vitala89/Intentloom/actions/runs/46143717417): **success** (completed 2026-11-28 13:24 Europe/Berlin). All six jobs succeeded, including `windows-latest` / Node 24 and `windows-latest` / Node 22. The earlier Windows durable-claim failure did not reproduce on this SHA.
+  - Documentation run [46143717431](https://github.com/vitala89/Intentloom/actions/runs/46143717431): **failure**. VitePress build succeeded. Pages artifact upload succeeded (artifact `15262558998`). Deploy then reported zero artifacts named `github-pages` and asked for a later rerun. Classification: Actions/Pages artifact lookup failure, not a content failure. Workflow conclusion remains failure. No rerun was started.
+- **Implementation:** not started. The owner's authorization stays inactive
+  until Documentation on `26dfe51` succeeds, or the owner separately accepts
+  this deploy failure as sufficient verification. P1K.11+, Undo U4, and
+  Desktop Undo U5 stay unauthorized.
+- **Branch prefix:** `cursor/docs-p1k10-section-2517-acceptance-2734` is the
+  harness branch name. `AGENTS.md` forbids `cursor/`. The prefix is recorded
+  here and the branch is not renamed in this watch.
+- **Validation:** `pnpm verify` exit 0 (Node 22.23.4, pnpm 10.12.4): typecheck
+  PASS; lint PASS with existing warnings; format check PASS; 397 test files,
+  3356 passed, 3 skipped; build PASS; `git diff --check` PASS. Vitest reported
+  223.92 seconds. `pnpm docs:build` completed in 6.52s, with the existing
+  VitePress/Rolldown bundle-assignment messages. Accessibility: NOT APPLICABLE.
+- **RACI:** Responsible — this watch, for the record. Accountable — Project
+  Owner, for the acceptance. Informed — the next watch.
+- **Next:** Owner merges this record. After Documentation on `26dfe51` is
+  green, a separate implementation task may cite section 25.17 and start at
+  Stage A. Do not implement from this pull request.
 
 ### 2026-11-28, P1K.10 independent design review corrections (PR #644)
 
