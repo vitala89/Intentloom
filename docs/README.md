@@ -82,9 +82,12 @@ re-export inclusive. Section 24.10 owner matrix sign-off was not recorded in PR
 #643 at merge (process exception). P1K.10 Design First (section 25) is merged
 (PR #644, `26dfe51e56f8b37972dd167e71c6fa55e4920f85`). Section 25.17 was
 accepted by the Project Owner at 2026-11-28 13:20 Europe/Berlin, after that
-merge, and the GitHub review list on PR #644 stayed empty. Implementation
-waits on successful main verification of `26dfe51`. P1K.11 through P1K.17
-have not started. P1 is not complete. Undo
+merge, and the GitHub review list on PR #644 stayed empty. P1K.10
+implementation extracts project root and timeline into
+`project-lifecycle/project-root.ts`. Measured `index.ts` is 742 effective and
+777 physical lines; the leaf is 64 effective and 69 physical lines. SCC
+membership remains `[3]` import-only and `[4, 27, 3]` re-export inclusive.
+P1K.11 through P1K.17 have not started. P1 is not complete. Undo
 U4 and Desktop Undo U5 have not started.
 
 ## How this tree is organized
