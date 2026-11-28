@@ -83,11 +83,15 @@ re-export inclusive. Section 24.10 owner matrix sign-off was not recorded in PR
 (PR #644, `26dfe51e56f8b37972dd167e71c6fa55e4920f85`). Section 25.17 was
 accepted by the Project Owner at 2026-11-28 13:20 Europe/Berlin, after that
 merge, and the GitHub review list on PR #644 stayed empty. P1K.10
-implementation extracts project root and timeline into
-`project-lifecycle/project-root.ts`. Measured `index.ts` is 742 effective and
-777 physical lines; the leaf is 64 effective and 69 physical lines. SCC
-membership remains `[3]` import-only and `[4, 27, 3]` re-export inclusive.
-P1K.11 through P1K.17 have not started. P1 is not complete. Undo
+implementation is merged (PR #646,
+`fecace86f4baf4a532d4cdd358f2cfc1e4c74cf3`). It extracts project root and
+timeline into `project-lifecycle/project-root.ts`. Measured `index.ts` is
+742 effective and 777 physical lines; the leaf is 64 effective and 69
+physical lines. SCC membership remains `[3]` import-only and `[4, 27, 3]`
+re-export inclusive. At 2026-11-28 15:14 Europe/Berlin the Project Owner
+authorized that implementation under section 25.17 after accepting main
+verification of `6fe72e9`. The statement is later than the 15:13 merge and
+is not backdated. P1K.11 through P1K.17 have not started. P1 is not complete. Undo
 U4 and Desktop Undo U5 have not started.
 
 ## How this tree is organized

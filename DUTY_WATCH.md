@@ -207,15 +207,114 @@ is merged** (PR #643, `800716340e22a92240ab5d769f5e347f0363c1e4`). Section
 (PR #644, `26dfe51e56f8b37972dd167e71c6fa55e4920f85`). The Project Owner
 accepted section 25.17 rows 1–10 at 2026-11-28 13:20 Europe/Berlin, after the
 merge. GitHub reviews on PR #644 were empty; the acceptance is not backdated.
-**P1K.10 project root and timeline extraction is in review.** Main
-`6fe72e99f53be471d1941032c74ea37c8f8c2a41` passed Documentation, CodeQL, and
-Compatibility before this extraction. Documentation run 46143717431 on
-`26dfe51` was not rerun. Neutron changes stay unauthorized. Do not start
-P1K.11 through P1K.17, Undo U4, or Desktop Undo U5.
+**P1K.10 project root and timeline extraction is merged** (PR #646,
+`fecace86f4baf4a532d4cdd358f2cfc1e4c74cf3`, 2026-11-28 15:13 Europe/Berlin).
+Main `6fe72e99f53be471d1941032c74ea37c8f8c2a41` passed Documentation, CodeQL,
+and Compatibility before that extraction. The merge commit itself passed
+Documentation
+[46153555727](https://github.com/vitala89/Intentloom/actions/runs/46153555727),
+CodeQL
+[46153555747](https://github.com/vitala89/Intentloom/actions/runs/46153555747),
+and Compatibility
+[46153555724](https://github.com/vitala89/Intentloom/actions/runs/46153555724).
+Documentation run 46143717431 on `26dfe51` was not rerun and remains a
+failure. At 2026-11-28 15:14 Europe/Berlin the Project Owner authorized the
+implementation under section 25.17 and accepted the `6fe72e9` verification
+in place of a Documentation rerun on `26dfe51`. That statement is one minute
+after the merge timestamp. It is not backdated. Neutron changes stay
+unauthorized. P1K.11 through P1K.17, Undo U4, and Desktop Undo U5 have not
+started. The next roadmap task is **P1K.11 Feature Planning Extraction**
+(design heading: Feature planning stub). Do not start it in this record.
+
+### 2026-11-28, P1K.10 post-merge record
+
+- **Status:** **RECORD ONLY.** Production code is unchanged. PR #646 is
+  already merged. This entry corrects the handoff that still said the
+  extraction was in review, and it records the owner statement that arrived
+  after that merge.
+- **Triage for this record:** 4/10 (blast radius 0, ambiguity 1, risk 1,
+  verification 2, unknowns 0). Environment: Cursor. Recommended role: mid.
+  Reasoning effort: medium. Context budget: moderate. Delegation: none.
+  Grilling skipped: the extraction has one accepted design and is already on
+  `main`. Stop when the canonical handoff matches merged `main` and the
+  record pull request is open for review.
+- **Extraction triage, already completed on PR #646:** 7/10 (blast radius 2
+  because the public application barrel moved, ambiguity 0, risk 2 because
+  root validation is a security boundary, verification 2, unknowns 1 because
+  main had to be reverified). Recommended role: frontier. Reasoning effort:
+  high. Context budget: large. Delegation: none. The unknown resolved:
+  `main` had moved from `6fe72e9` to `fecace8`, and the accepted design was
+  already implemented there.
+- **Owner statement time:** 2026-11-28 15:14 Europe/Berlin. Original
+  Russian, preserved:
+
+  > Как Project Owner принимаю успешную верификацию актуального main 6fe72e99f53be471d1941032c74ea37c8f8c2a41 вместо повторной проверки предыдущего SHA 26dfe51. Исторический сбой GitHub Pages сохраняем в документации. Разрешаю реализацию P1K.10 согласно утверждённому Section 25.17. Подготовь следующий промпт агенту.
+
+- **English translation of that statement:** As Project Owner, I accept the
+  successful verification of current main
+  `6fe72e99f53be471d1941032c74ea37c8f8c2a41` instead of rechecking the
+  previous SHA `26dfe51`. The historical GitHub Pages failure stays in the
+  documentation. I authorize the P1K.10 implementation according to the
+  approved Section 25.17. Prepare the next agent prompt.
+- **Chronology:** PR #646 merged at 2026-11-28 15:13 Europe/Berlin
+  (`fecace86f4baf4a532d4cdd358f2cfc1e4c74cf3`). The statement above is later.
+  It resolves the implementation gate recorded in PR #645. It does not
+  rewrite the merge, the empty GitHub review list on PR #644, or the 13:20
+  Europe/Berlin acceptance of section 25.17. The same statement is on the
+  PR #646 description. This file is the repository copy.
+- **Main before the extraction:** `6fe72e99` Documentation
+  [46146840933](https://github.com/vitala89/Intentloom/actions/runs/46146840933)
+  success; CodeQL
+  [46146840880](https://github.com/vitala89/Intentloom/actions/runs/46146840880)
+  success; Compatibility
+  [46146840883](https://github.com/vitala89/Intentloom/actions/runs/46146840883)
+  success. Historical Documentation run
+  [46143717431](https://github.com/vitala89/Intentloom/actions/runs/46143717431)
+  on `26dfe51` stays **FAILURE**. The VitePress build and artifact upload
+  succeeded. The Pages deployment then failed because artifact metadata
+  lookup returned zero matching artifacts. No confirmed internal GitHub root
+  cause is claimed. The run was not rerun, and CI configuration was not
+  changed.
+- **Stage A, before the production move:** commit
+  `7e61e7168fb04096d3b2d2cfede78a80092242ec` on the implementation branch.
+  Tests: `tests/project-root-p1k10-characterization.test.ts` and
+  `tests/project-root-p1k10-evidence-options.test.ts`.
+- **Production extraction:** commit
+  `0ffa4c7a222a11b6c5a3f2eb133c7b45339f7d3e`. Leaf:
+  `packages/application/src/project-lifecycle/project-root.ts`. The barrel
+  re-exports the leaf bindings. `getInteractiveWorkspaceState` still passes
+  the local `timelineProject`. `resolve` stays for `planPackUpdate`.
+- **Measurements on the merged tree:** `index.ts` 742 effective / 777
+  physical (was 793 / 831). Leaf 64 effective / 69 physical.
+  `assertCanonicalProjectRoot` is 14 physical lines,
+  `timelineProject` is 21 physical lines, and `ProjectRootError` is 9
+  physical lines. Import-only SCC `[3]`. Re-export SCC `[4, 27, 3]`. The
+  leaf is outside both. `quality-exceptions.json` was not edited.
+- **Section 25.7 clarification:** custom `FileSystem` error propagation
+  applies to `assertCanonicalProjectRoot`. `timelineProject` has no
+  filesystem argument and uses the default `nodeFileSystem`.
+- **Security:** The root-validation boundary is unchanged by this record.
+  Preserving it is not a claim of complete assurance. Accessibility, AI
+  evaluation, and product discovery are NOT APPLICABLE.
+- **Estimates kept separate from observation:** the implementation prompt
+  estimated human active effort 5–15 minutes, AI agent execution 90–185
+  minutes, and calendar duration 2–4 hours. This watch does not invent an
+  observed duration for the already-merged extraction.
+- **Validation this watch:** `pnpm verify` exit 0 (Node 22.23.4, pnpm
+  10.12.4): typecheck PASS; lint PASS with existing warnings; format check
+  PASS; 400 test files, 3372 passed, 3 skipped; build PASS; whitespace
+  check PASS. `pnpm docs:build` exit 0. VitePress printed existing Rolldown
+  plugin warnings and completed. No Neutron failure was observed.
+- **Not done here:** a second implementation, Neutron edits, daemon root
+  changes, P1K.11, Undo U4, Desktop Undo U5.
+- **Next:** Independent review of this record. After the owner merges it,
+  the next product slice is **P1K.11 Feature Planning Extraction**.
 
 ### 2026-11-28, P1K.10 project root and timeline extraction
 
-- **Status:** **IN REVIEW.** Behavior-preserving extraction. Not merged.
+- **Status:** **IN REVIEW** at the time of that watch. Behavior-preserving
+  extraction. The later post-merge record above is the current status. This
+  entry is not rewritten into a merge claim.
 - **Triage:** 7/10 (blast radius 2, ambiguity 0, risk 2, verification 2,
   unknowns 0). Environment: Cursor. Recommended role: frontier. Reasoning
   effort: high. Context budget: large. Delegation: none. Grilling skipped:
