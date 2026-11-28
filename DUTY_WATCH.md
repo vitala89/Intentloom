@@ -207,9 +207,56 @@ is merged** (PR #643, `800716340e22a92240ab5d769f5e347f0363c1e4`). Section
 (PR #644, `26dfe51e56f8b37972dd167e71c6fa55e4920f85`). The Project Owner
 accepted section 25.17 rows 1–10 at 2026-11-28 13:20 Europe/Berlin, after the
 merge. GitHub reviews on PR #644 were empty; the acceptance is not backdated.
-A separate P1K.10 implementation task stays unauthorized until main
-verification of `26dfe51` succeeds. Neutron changes stay unauthorized. Do not
-start P1K.11 through P1K.17, Undo U4, or Desktop Undo U5.
+**P1K.10 project root and timeline extraction is in review.** Main
+`6fe72e99f53be471d1941032c74ea37c8f8c2a41` passed Documentation, CodeQL, and
+Compatibility before this extraction. Documentation run 46143717431 on
+`26dfe51` was not rerun. Neutron changes stay unauthorized. Do not start
+P1K.11 through P1K.17, Undo U4, or Desktop Undo U5.
+
+### 2026-11-28, P1K.10 project root and timeline extraction
+
+- **Status:** **IN REVIEW.** Behavior-preserving extraction. Not merged.
+- **Triage:** 7/10 (blast radius 2, ambiguity 0, risk 2, verification 2,
+  unknowns 0). Environment: Cursor. Recommended role: frontier. Reasoning
+  effort: high. Context budget: large. Delegation: none. Grilling skipped:
+  section 25.17 was accepted. Stop when the implementation pull request is
+  open and `pnpm verify` has passed.
+- **Approval:** Section 25.17, Project Owner, 2026-11-28 13:20 Europe/Berlin,
+  recorded in PR #645. GitHub reviews on PR #644 stayed empty.
+- **Main verification before implementation:** `6fe72e99` Documentation
+  [46146840933](https://github.com/vitala89/Intentloom/actions/runs/46146840933)
+  success; CodeQL
+  [46146840880](https://github.com/vitala89/Intentloom/actions/runs/46146840880)
+  success; Compatibility
+  [46146840883](https://github.com/vitala89/Intentloom/actions/runs/46146840883)
+  success, including `windows-latest` / Node 24. Documentation run 46143717431
+  on `26dfe51` remains a failed historical run and was not rerun.
+- **Stage A:** `tests/project-root-p1k10-characterization.test.ts` and
+  `tests/project-root-p1k10-evidence-options.test.ts` committed before the
+  production move.
+- **Extraction:** `packages/application/src/project-lifecycle/project-root.ts`
+  owns `ProjectRootError`, `assertCanonicalProjectRoot`, `timelineProject`,
+  and the timeline types. The barrel re-exports those bindings.
+  `getInteractiveWorkspaceState` still passes the local `timelineProject`.
+  `resolve` stays on the barrel for `planPackUpdate`.
+- **Measurements:** `index.ts` 742 effective / 777 physical (was 793 / 831).
+  Leaf 64 effective / 69 physical. Import-only SCC `[3]`. Re-export SCC
+  `[4, 27, 3]`. The leaf is outside both. Existing structure tests that locked
+  the barrel at 793 / 831 now lock 742 / 777.
+- **Untouched:** Neutron production files, `daemon-canonical-root.ts`,
+  `quality-exceptions.json`, CLI timeline command, evidence-git, package
+  export map.
+- **Branch prefix:** `cursor/refactor-p1k10-project-root-timeline-2734` is the
+  harness branch name. `AGENTS.md` forbids `cursor/`. The prefix is recorded
+  here and the branch is not renamed in this watch.
+- **Validation:** `pnpm verify` exit 0 after the barrel-size lock update
+  (Node 22.23.4, pnpm 10.12.4): typecheck PASS; lint PASS with existing
+  warnings; format check PASS; 400 test files, 3372 passed, 3 skipped; build
+  PASS; `git diff --check` PASS. Accessibility: NOT APPLICABLE.
+- **RACI:** Responsible — this watch. Accountable — Project Owner. Informed —
+  the next watch.
+- **Next:** Independent review. Do not start P1K.11, Engineering Quality
+  retarget, or Neutron edits.
 
 ### 2026-11-28, P1K.10 section 25.17 Project Owner acceptance
 

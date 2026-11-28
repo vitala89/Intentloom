@@ -1,13 +1,12 @@
 # Intentloom Project State
 
-Last verified: 2026-11-28 for P1K.10 Design First merge
-(`26dfe51e56f8b37972dd167e71c6fa55e4920f85`, PR #644) and the Project Owner
-acceptance of section 25.17 at 2026-11-28 13:20 Europe/Berlin. Main
-verification of that SHA: CodeQL success, Compatibility success,
-Documentation failed at Pages deploy after a successful VitePress build.
-P1K.10 implementation is not authorized until that verification succeeds.
-The 2026-08-22 phase note below was not re-audited in this change. Earlier
-product-phase text remains historical until a release audit replaces it.
+Last verified: 2026-11-28 for P1K.10 project root and timeline extraction,
+after main `6fe72e99f53be471d1941032c74ea37c8f8c2a41` (PR #645) passed
+Documentation, CodeQL, and Compatibility. The Project Owner accepted section
+25.17 at 2026-11-28 13:20 Europe/Berlin. Documentation run 46143717431 on
+`26dfe51` was not rerun. The 2026-08-22 phase note below was not re-audited
+in this change. Earlier product-phase text remains historical until a
+release audit replaces it.
 
 This file records the durable current state of the project. It is not a
 chronological log. Session history and handoff details belong in
@@ -1303,10 +1302,14 @@ section 24.10. Import-only SCC membership remains `[3]`; re-export SCC membershi
 remains `[4, 27, 3]`. P1K.10 Design First (section 25) is merged at
 `26dfe51e56f8b37972dd167e71c6fa55e4920f85` (PR #644). The Project Owner
 accepted all ten section 25.17 rows at 2026-11-28 13:20 Europe/Berlin. PR #644
-had no GitHub review, and this acceptance does not backdate one. A separate
-implementation task stays unauthorized until main verification of `26dfe51`
-succeeds. Neutron changes stay unauthorized. P1K.11 through P1K.17 have
-not started. P1 remains
+had no GitHub review, and this acceptance does not backdate one. P1K.10
+implementation moves project root and timeline into
+`packages/application/src/project-lifecycle/project-root.ts` and re-exports
+the same bindings. Measured `index.ts` is 742 effective and 777 physical
+lines; the leaf is 64 effective and 69 physical lines. Import-only SCC
+membership remains `[3]`; re-export SCC membership remains `[4, 27, 3]`.
+Neutron files, `daemon-canonical-root.ts`, and `quality-exceptions.json` are
+unchanged. P1K.11 through P1K.17 have not started. P1 remains
 incomplete. Transparent authorship reconciliation is merged as PR #642 at
 `f076e043b4331faf1c2610f450e1e6bf7437885c`.
 The 27-file component still contains

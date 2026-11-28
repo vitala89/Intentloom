@@ -292,8 +292,8 @@ describe("P1K.1 profile store structure", () => {
 
     const indexMetrics = measureProductionSource(indexSource, indexPath);
     expect(indexMetrics).toMatchObject({
-      effectiveCodeLines: 793,
-      physicalLines: 831,
+      effectiveCodeLines: 742,
+      physicalLines: 777,
     });
     expect(indexMetrics.effectiveCodeLines).toBeLessThan(1751);
     expect(indexMetrics.physicalLines).toBeLessThan(1896);

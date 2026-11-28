@@ -2639,7 +2639,10 @@ only after main verification of that merge succeeds. `DUTY_WATCH.md` records
 that this verification is not complete: Documentation run 46143717431 failed
 at Pages deploy after a successful VitePress build. This section does not
 change application, daemon, CLI, or evidence-git runtime behavior, and it
-does not authorize Neutron changes.
+does not authorize Neutron changes. Implementation follows main
+`6fe72e99f53be471d1941032c74ea37c8f8c2a41` (PR #645), whose Documentation,
+CodeQL, and Compatibility checks succeeded. Run 46143717431 on `26dfe51`
+was not rerun.
 
 ### 25.1 Problem and scope
 
@@ -3086,8 +3089,11 @@ in the implementation PR.
 2026-11-28 13:15 Europe/Berlin with no GitHub review. Step 3 is the Project
 Owner statement at 2026-11-28 13:20 Europe/Berlin, recorded in section 25.17
 and `DUTY_WATCH.md`. It is not a backdated GitHub approval. Step 6 in that
-statement stays inactive until step 5 succeeds. Step 5 is not complete: see
-the main-verification note in `DUTY_WATCH.md` for `26dfe51`.
+statement stays inactive until step 5 succeeds. Step 5 completed for main
+`6fe72e99f53be471d1941032c74ea37c8f8c2a41`: Documentation, CodeQL, and
+Compatibility succeeded. The earlier Documentation run 46143717431 on
+`26dfe51` was not rerun. Step 6 is the separate implementation that cites
+this section.
 
 ### 25.14 Architecture metrics
 
@@ -3103,14 +3109,14 @@ The leaf stays outside those components. Do not edit `quality-exceptions.json`.
 
 ### 25.15 Definition of Done (implementation, only after section 25.13 steps 1–6)
 
-- [ ] Implementation PR links the dated section 25.17 approval
-- [ ] Stage A landed before the production move
-- [ ] Stage B green
-- [ ] `pnpm verify` PASS
-- [ ] Measured lines and SCC recorded
-- [ ] `PROJECT_STATE.md` and `DUTY_WATCH.md` updated
-- [ ] No consumer retarget beyond re-exports and the local timeline binding
-- [ ] `daemon-canonical-root.ts` untouched
+- [x] Implementation PR links the dated section 25.17 approval
+- [x] Stage A landed before the production move
+- [x] Stage B green
+- [x] `pnpm verify` PASS
+- [x] Measured lines and SCC recorded
+- [x] `PROJECT_STATE.md` and `DUTY_WATCH.md` updated
+- [x] No consumer retarget beyond re-exports and the local timeline binding
+- [x] `daemon-canonical-root.ts` untouched
 
 ### 25.16 Non-goals
 
