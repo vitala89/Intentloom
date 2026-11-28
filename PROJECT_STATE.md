@@ -1,10 +1,10 @@
 # Intentloom Project State
 
-Last verified: 2026-11-26 for P1K.9 workspace proposal lifecycle extraction
-(in review on `refactor/p1k9-workspace-proposal-lifecycle`), main at
-`f076e043b4331faf1c2610f450e1e6bf7437885c` (PR #642 merge), and post-merge
-main verification for CodeQL, Documentation, and Compatibility. The 2026-08-22 phase note below was not
-re-audited in that documentation change. Earlier product-phase text remains
+Last verified: 2026-11-28 for P1K.9 implementation merge
+(`800716340e22a92240ab5d769f5e347f0363c1e4`, PR #643), main verification on
+that SHA (CodeQL and Documentation PASS; Compatibility PENDING at verification
+time), and proposed P1K.10 Design First section 25. The 2026-08-22 phase note
+below was not re-audited in this change. Earlier product-phase text remains
 historical until a release audit replaces it.
 
 This file records the durable current state of the project. It is not a
@@ -1290,16 +1290,17 @@ lines; the conversation leaf is 129 effective and 142 physical lines.
 Import-only SCC membership remains `[3]`. Re-export SCC membership remains
 `[4, 27, 3]` with the same members. No runtime behavior changed in P1K.8
 scope. P1K.9 Design First is merged at
-`84fd593bb81f2f3eff98fa6ddef0b3ae579027d1` (PR #640). P1K.9 implementation PR
-#643 is ready for owner merge (pending §24.10 sign-off) on
-`refactor/p1k9-workspace-proposal-lifecycle` (HEAD `b94a602`). Measured
+`84fd593bb81f2f3eff98fa6ddef0b3ae579027d1` (PR #640). P1K.9 implementation is
+merged at `800716340e22a92240ab5d769f5e347f0363c1e4` (PR #643). Measured
 post-extraction `index.ts` is 793 effective and 831 physical lines; proposal leaf
-is 122 effective and 134 physical lines. Section 24.10 explicit matrix sign-off
-is still required before merge; the original implementation began before that
-sign-off was recorded (sequence deviation documented in `DUTY_WATCH.md`).
-Import-only SCC membership remains `[3]`; re-export SCC membership remains
-`[4, 27, 3]`. Explicit maintainer sign-off for section 24.10 is requested at
-implementation review. P1K.10 through P1K.17 have not started. P1 remains
+is 122 effective and 134 physical lines. Section 24.10 explicit owner matrix
+sign-off was **not** recorded in PR #643 comments or reviews at merge (process
+exception; owner reconciliation still required). Design First sequence deviation
+(extraction before matrix record) remains documented in `DUTY_WATCH.md` and
+section 24.10. Import-only SCC membership remains `[3]`; re-export SCC membership
+remains `[4, 27, 3]`. P1K.10 Design First (section 25) is **proposed** on the
+open design branch; implementation is not authorized. P1K.11 through P1K.17 have
+not started. P1 remains
 incomplete. Transparent authorship reconciliation is merged as PR #642 at
 `f076e043b4331faf1c2610f450e1e6bf7437885c`.
 The 27-file component still contains

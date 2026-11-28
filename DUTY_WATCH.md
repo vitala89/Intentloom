@@ -211,6 +211,75 @@ Authorship enforcement reconciliation is on branch
 implementation remains the next product task after that merge and main
 verification.
 
+### 2026-11-28, P1K.10 independent design review corrections (PR #644)
+
+- **Status:** **PROPOSED.** Documentation-only after corrective commit. Implementation
+  **not authorized**. Section 25.17 still requires explicit Project Owner acceptance
+  on the Design PR before merge.
+- **Triage:** 7/10 (blast 2, ambiguity 0, risk 2, verification 2, unknowns 1).
+  Environment: Cursor. Recommended role: frontier. Reasoning effort: high.
+  Context budget: large. Delegation: none. Stop condition: documentation-only PR
+  ready for independent review.
+- **Scope violation:** Commit `263382140e41b4fbc6d6fc7c93333a9ae642782a`
+  (`fix(neutron): retry durable claim after exclusive-create race`) edited
+  `packages/application/src/neutron/mutation/apply/neutron-mutation-apply-durable-store.ts`
+  inside a documentation-only task. **Corrected** by restoring that file to
+  `main` at `8007163` in an ordinary commit. History was not rewritten.
+- **Windows observation (not a confirmed root cause, not authorized to fix):**
+  Compatibility job `windows-latest` / Node 24 on PR #644,
+  run [46140006473](https://github.com/vitala89/Intentloom/actions/runs/46140006473),
+  job `140963637113`. Test
+  `tests/neutron-mutation-approve-and-apply.test.ts` >
+  `lets only one concurrent caller own the shared durable directory`.
+  Assertion `expected 1 received 0` for `appliedCount`. Other platforms on that
+  run passed. No separate reproduction was captured in this correction pass.
+- **Design corrections:** sections 25.1–25.17 and both Mermaid sources updated
+  for barrel binding, dependency path `../host-file-system.js`, `ReleaseTimeline`,
+  Desktop via daemon/protocol, CLI vs daemon root checks, exists short-circuit,
+  evidence-git catch scope, sequence 25.13, and Design First time estimates.
+- **Branch prefix:** `cursor/docs-p1k10-project-root-timeline-design-e067` remains
+  published. `AGENTS.md` forbids `cursor/`. No rename without owner authorization.
+- **Main @ `8007163`:** CodeQL run 46138992949 success; Compatibility run
+  46138992983 success; Documentation run 46138992947 success.
+- **Next:** Independent design review. Do not implement P1K.10. Do not merge
+  until the owner accepts section 25.17.
+
+### 2026-11-28, P1K.10 project root and timeline — Design First (proposed)
+
+- **Status:** **PROPOSED.** Documentation-only Design PR on branch
+  `cursor/docs-p1k10-project-root-timeline-design-e067`. Section 25 in
+  `docs/designs/p1k-remaining-application-barrel/SYSTEM_DESIGN.md`.
+  Implementation **not authorized**.
+- **Triage:** 5/10 (blast 2, ambiguity 0, risk 0, verification 2, unknowns 1).
+  Environment: Cursor Cloud Agent. Recommended role: mid. Reasoning effort: high.
+  Context budget: larger. Delegation: none. Approval: section 25.17 maintainer
+  matrix on the Design PR before implementation. Stop condition: Design PR ready
+  for independent review.
+- **Main baseline:** `800716340e22a92240ab5d769f5e347f0363c1e4` (P1K.9 PR #643
+  merge). Measured `index.ts` 793 effective / 831 physical; moved root/timeline
+  block 56 effective / 60 physical; forecast after P1K.10 ~742 effective (central).
+  Import-only SCC `[3]`; re-export SCC `[4, 27, 3]`.
+- **P1K.9 reconciliation:** PR #643 merged 2026-11-28 12:15 CET without PR
+  comments; section **24.10** owner matrix still **not recorded** (process
+  exception preserved).
+- **Main verification @ `8007163`:** CodeQL PASS; Documentation PASS;
+  Compatibility **PENDING** at handoff time (workflow run 46138992983 in progress).
+- **Diagrams:** `project-root-timeline-dependencies.mmd`,
+  `project-root-timeline-sequence.mmd` (Mermaid only; Excalidraw/draw.io not
+  applicable).
+- **Next:** Owner reviews Design PR and checks section 25.17 matrix; separate
+  task authorizes implementation with Stage A tests before extraction.
+
+### 2026-11-28, P1K.9 workspace proposal lifecycle merged (PR #643)
+
+- **Status:** **MERGED** at `800716340e22a92240ab5d769f5e347f0363c1e4`.
+- **Measurements:** `index.ts` 793 effective / 831 physical;
+  `workspace-proposal-lifecycle.ts` 122 effective / 134 physical. SCC unchanged.
+- **Section 24.10:** No owner matrix sign-off found in PR #643 comments or
+  reviews at merge; Design First sequence deviation remains; owner reconciliation
+  still required.
+- **Next:** P1K.10 Design First (this watch entry).
+
 ### 2026-11-27, P1K.9 final review closure (PR #643)
 
 - **Status:** **READY FOR OWNER MERGE** (pending section 24.10 sign-off). Branch
