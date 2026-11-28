@@ -2634,15 +2634,34 @@ behavior verified on `main` at `800716340e22a92240ab5d769f5e347f0363c1e4`
 only. The Project Owner accepted every row in section 25.17 at that time.
 GitHub reviews on PR #644 were empty when it merged at 2026-11-28 13:15
 Europe/Berlin (`26dfe51e56f8b37972dd167e71c6fa55e4920f85`). This status does
-not rewrite that GitHub record. A separate implementation task is authorized
-only after main verification of that merge succeeds. `DUTY_WATCH.md` records
-that this verification is not complete: Documentation run 46143717431 failed
-at Pages deploy after a successful VitePress build. This section does not
+not rewrite that GitHub record. A separate implementation task was
+authorized only after a later main verification succeeded. Documentation run
+46143717431 failed at Pages deploy after a successful VitePress build. That
+historical result stays a failure. This section does not
 change application, daemon, CLI, or evidence-git runtime behavior, and it
 does not authorize Neutron changes. Implementation follows main
 `6fe72e99f53be471d1941032c74ea37c8f8c2a41` (PR #645), whose Documentation,
 CodeQL, and Compatibility checks succeeded. Run 46143717431 on `26dfe51`
 was not rerun.
+
+The implementation is merged as PR #646 at 2026-11-28 15:13 Europe/Berlin
+(`fecace86f4baf4a532d4cdd358f2cfc1e4c74cf3`). Documentation, CodeQL, and
+Compatibility on that merge commit succeeded. At 2026-11-28 15:14
+Europe/Berlin the Project Owner issued a later statement. Original Russian:
+
+> Как Project Owner принимаю успешную верификацию актуального main 6fe72e99f53be471d1941032c74ea37c8f8c2a41 вместо повторной проверки предыдущего SHA 26dfe51. Исторический сбой GitHub Pages сохраняем в документации. Разрешаю реализацию P1K.10 согласно утверждённому Section 25.17. Подготовь следующий промпт агенту.
+
+English translation: As Project Owner, I accept the successful verification
+of current main `6fe72e99f53be471d1941032c74ea37c8f8c2a41` instead of
+rechecking the previous SHA `26dfe51`. The historical GitHub Pages failure
+stays in the documentation. I authorize the P1K.10 implementation according
+to the approved Section 25.17. Prepare the next agent prompt.
+
+That statement accepts the `6fe72e9` verification in place of a Documentation
+rerun on `26dfe51` and authorizes this slice under section 25.17. It is one
+minute after the merge timestamp. This section does not backdate it and does
+not treat it as a GitHub review on PR #644. Historical run 46143717431 stays
+a failure. No confirmed internal GitHub root cause is claimed.
 
 ### 25.1 Problem and scope
 
@@ -2905,13 +2924,20 @@ No production consumer retarget in the design task.
 | Existing directory or regular file           | returns `resolve` result                                     | proceeds                                                        | runner `cwd` is that path         |
 | Parent symlink, leaf not a symlink           | returns lexical path                                         | proceeds                                                        | runner `cwd` is that path         |
 | Relative path                                | `resolve` against cwd, then the checks                       | same                                                            | not called if validation throws   |
-| Custom `exists` throws                       | propagates                                                   | propagates                                                      | not called                        |
-| Custom `isSymbolicLink` throws               | propagates after `exists` true                               | propagates                                                      | not called                        |
+| Custom `exists` throws                       | propagates                                                   | no filesystem argument; default `nodeFileSystem` only           | not called                        |
+| Custom `isSymbolicLink` throws               | propagates after `exists` true                               | no filesystem argument; default `nodeFileSystem` only           | not called                        |
 | `nodeFileSystem.exists` swallows I/O         | false → `invalid_root`                                       | same                                                            | not called                        |
 | `nodeFileSystem.isSymbolicLink` swallows I/O | false → accept if exists                                     | may proceed                                                     | may run                           |
 | Runner or parse throw inside evidence `try`  | —                                                            | `quality: "unavailable"`, diagnostics include `git-unavailable` | caught in that `try` only         |
 | Commit limit reached                         | —                                                            | `quality: "bounded"`, finding `evidence-bounded`                | diagnostic `commit-limit-reached` |
 | Evidence `available`                         | —                                                            | `quality: "complete"`                                           | empty diagnostics                 |
+
+Custom `FileSystem` error propagation in this table applies to
+`assertCanonicalProjectRoot`, which accepts an optional `FileSystem`.
+It does not describe an injectable filesystem argument on `timelineProject`.
+`timelineProject` calls `assertCanonicalProjectRoot(options.root)` with the
+default `nodeFileSystem` only. A custom filesystem throw is reached by
+calling `assertCanonicalProjectRoot` directly.
 
 Daemon handler absolute-path failures and `DaemonRootError` are **not**
 `collectGitEvidence` outcomes. See section 25.2 and 25.9.
@@ -3093,7 +3119,9 @@ statement stays inactive until step 5 succeeds. Step 5 completed for main
 `6fe72e99f53be471d1941032c74ea37c8f8c2a41`: Documentation, CodeQL, and
 Compatibility succeeded. The earlier Documentation run 46143717431 on
 `26dfe51` was not rerun. Step 6 is the separate implementation that cites
-this section.
+this section. That implementation merged as PR #646 at 2026-11-28 15:13
+Europe/Berlin. The 15:14 Europe/Berlin owner statement recorded above
+authorizes that same slice. The statement time is after the merge.
 
 ### 25.14 Architecture metrics
 
@@ -3158,7 +3186,10 @@ That verification had not succeeded when this acceptance was recorded.
 | 10  | Stage A tests precede production extraction                           | yes      |
 
 All ten rows: **accepted** by the Project Owner at 2026-11-28 13:20
-Europe/Berlin.
+Europe/Berlin. The later statement at 2026-11-28 15:14 Europe/Berlin, quoted
+in the section 25 status, accepts main verification of `6fe72e9` and
+authorizes the implementation. It does not replace these ten rows and it is
+not backdated onto PR #644.
 
 P1K.9 PR #643 merged without a recorded section 24.10 owner matrix. That
 exception is unchanged and does not approve this matrix.

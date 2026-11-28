@@ -7,9 +7,19 @@ All notable changes are documented here. This project follows Keep a Changelog p
 Changes listed here are merged after the current release-preparation scope and
 are not included in the current npm artifact until a later release.
 
+- Extract project-root validation and release timeline construction into
+  `packages/application/src/project-lifecycle/project-root.ts` and re-export
+  the same class, functions, and types from `@intentloom/application`. No
+  public API, CLI, or daemon-root behavior change. Merged in PR #646
+  (`fecace86f4baf4a532d4cdd358f2cfc1e4c74cf3`, 2026-11-28 15:13 Europe/Berlin).
+  The Project Owner statement at 2026-11-28 15:14 Europe/Berlin accepts main
+  verification of `6fe72e99` and authorizes this slice under section 25.17.
+  That statement is later than the merge and is not backdated.
+
 - Extract workspace proposal promote, review, and apply into
   `workspace-proposal-lifecycle.ts` with thin public barrel wrappers and an
-  internal adoption port. No public API or CLI behavior change (P1K.9, in review).
+  internal adoption port. No public API or CLI behavior change (P1K.9,
+  merged in PR #643, `800716340e22a92240ab5d769f5e347f0363c1e4`).
 
 - Repository engineering lifecycle, accessibility assessment, pull-request
   evidence, and release-readiness rules are documented for contributors

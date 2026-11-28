@@ -183,9 +183,12 @@ Import-only SCC membership remains `[3]`; re-export SCC membership remains
 `[4, 27, 3]`. P1K.10 Design First (section 25) is merged (PR #644,
 `26dfe51e56f8b37972dd167e71c6fa55e4920f85`). Section 25.17 was accepted on
 2026-11-28 13:20 Europe/Berlin after that merge. P1K.10 implementation
-extracts project root and timeline. Measured `index.ts` is 742 effective and
-777 physical lines; `project-root.ts` is 64 effective and 69 physical lines.
-P1K.11 through P1K.17 have not started. Section
+is merged (PR #646, `fecace86f4baf4a532d4cdd358f2cfc1e4c74cf3`). It extracts
+project root and timeline. Measured `index.ts` is 742 effective and 777
+physical lines; `project-root.ts` is 64 effective and 69 physical lines.
+At 2026-11-28 15:14 Europe/Berlin the Project Owner authorized that
+implementation under section 25.17. The statement is later than the merge
+and is not backdated. P1K.11 through P1K.17 have not started. Section
 14 is unchanged. Undo U4 and Desktop Undo U5 have not started.
 Neutron's R4A topology stays frozen.
 The measurements below remain the P1A baseline and are not restated as the
